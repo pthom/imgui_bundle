@@ -7,7 +7,7 @@ from litgen.litgen_options_imgui import litgen_options_imgui
 
 THIS_DIR = os.path.dirname(__file__)
 print(f"{THIS_DIR=}")
-CPP_HEADERS_DIR = THIS_DIR + "/hello_imgui/src/hello_imgui"
+CPP_HEADERS_DIR = THIS_DIR + "/external/hello_imgui/src/hello_imgui"
 CPP_GENERATED_PYBIND_DIR = THIS_DIR + "/bindings"
 assert os.path.isdir(CPP_HEADERS_DIR)
 assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
@@ -16,7 +16,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def make_hello_imgui_amalgamated_header():
     from make_amalgamation import AmalgamationOptions, write_amalgamate_header_file
 
-    hello_imgui_src_dir = THIS_DIR + "/hello_imgui/src/"
+    hello_imgui_src_dir = THIS_DIR + "/external/hello_imgui/src/"
     options = AmalgamationOptions()
 
     options.base_dir = hello_imgui_src_dir
