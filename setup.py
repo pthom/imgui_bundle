@@ -14,7 +14,7 @@ setup(
     extras_require={"test": ["pytest"]},
     python_requires=">=3.6",
     package_data={"hello_imgui": ["*.pyi"]},
-    install_requires = [
+    install_requires=[
         "lg-imgui @ git+https://github.com/pthom/lg_imgui.git",
-    ]
+    ],
 )
