@@ -59,7 +59,7 @@ endif()
 # This is the native python module name (`_lg_imgui`).
 # It will be wrapped in a standard python module `lg_imgui, which is located in bindings/lg_imgui
 set(python_native_module_name _hello_imgui)
-set(python_module_sources bindings/module.cpp bindings/pybind_hello_imgui.cpp ../imgui/bindings/pybind_imgui.cpp)
+set(python_module_sources bindings/module.cpp bindings/pybind_hello_imgui.cpp)
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
 target_link_libraries(${python_native_module_name} PRIVATE hello_imgui)
 
