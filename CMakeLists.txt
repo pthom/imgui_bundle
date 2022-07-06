@@ -23,7 +23,7 @@ set(BUILD_SHARED_LIBS ON)
 # C2. Add glfw (required by hello_imgui)
 add_subdirectory(external/glfw)
 
-# C3. Build custom imgui library, named hi_imgui
+# C3. Build custom imgui library
 if(NOT TARGET imgui)
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
     file(GLOB imgui_sources ${imgui_dir}/*.h ${imgui_dir}/*.cpp)
