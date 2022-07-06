@@ -290,7 +290,7 @@ class DefaultImGuiWindowType(Enum):
 #@@md
 #
 class ImGuiWindowParams:
-    default_im_gui_window_type:DefaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow
+    default_im_gui_window_type:DefaultImGuiWindowType = Literal[DefaultImGuiWindowType.provide_full_screen_window]
 
     background_color:ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
 
