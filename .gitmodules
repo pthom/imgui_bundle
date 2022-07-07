@@ -10,3 +10,6 @@
 [submodule "external/glfw"]
 	path = external/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "lg_cmake_utils"]
+	path = lg_cmake_utils
+	url = https://github.com/pthom/lg_cmake_utils.git
