@@ -11,6 +11,9 @@ add_subdirectory(external/pybind11)
 ####################################################
 # Build hello_imgui Bound C++ library
 ####################################################
+if (UNIX)
+    add_compile_options(-fPIC)
+endif()
 #   i. Build static libraries
 set(BUILD_SHARED_LIBS OFF)
 # 1. Build imgui (lib used by hello_imgui)
