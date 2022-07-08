@@ -40,8 +40,8 @@ endif()
 # Build python module that provides bindings to the library hello_imgui
 #########################################################################
 set(bound_library hello_imgui)                 # The library for which we are building bindings
-set(python_native_module_name _hello_imgui)    # This is the native python module name
-set(python_wrapper_module_name hello_imgui)    # This is the python wrapper around the native module
+set(python_native_module_name _lg_hello_imgui)    # This is the native python module name
+set(python_wrapper_module_name lg_hello_imgui)    # This is the python wrapper around the native module
 set(python_module_sources
 
     bindings/module.cpp

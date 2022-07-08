@@ -7,22 +7,21 @@
 
 namespace py = pybind11;
 
-void py_init_module_hello_imgui_inner(py::module& m);
+void py_init_module_hello_imgui(py::module& m);
 void py_init_module_imgui(py::module& m);
 
 
-void py_init_module_hello_imgui(py::module& m)
+void py_init_module_lg_hello_imgui(py::module& m)
 {
     auto module_imgui =  m.def_submodule("imgui");
     py_init_module_imgui(module_imgui);
 
     auto module_himgui =  m.def_submodule("hello_imgui");
-    py_init_module_hello_imgui_inner(module_himgui);
-
+    py_init_module_hello_imgui(module_himgui);
 }
 
 
-void py_init_module_hello_imgui_inner(py::module& m)
+void py_init_module_hello_imgui(py::module& m)
 {
     using namespace HelloImGui;
     using namespace HelloImGui::internal;
