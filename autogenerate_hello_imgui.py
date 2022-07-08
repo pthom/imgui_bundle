@@ -1,8 +1,6 @@
-import copy
 import os
 
 import litgen
-from litgen.litgen_options_imgui import litgen_options_imgui
 
 
 THIS_DIR = os.path.dirname(__file__)
@@ -31,7 +29,7 @@ def make_hello_imgui_amalgamated_header():
 def autogenerate():
     input_cpp_header = THIS_DIR + "/hello_imgui_amalgamation.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_hello_imgui.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/hello_imgui/__init__.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/hello_imgui/hello_imgui.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()

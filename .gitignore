@@ -4,3 +4,4 @@ build
 venv/
 venv_himgui/
 __pycache__
+imgui.ini
