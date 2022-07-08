@@ -11,25 +11,21 @@ add_subdirectory(external/pybind11)
 ####################################################
 # Build hello_imgui Bound C++ library
 ####################################################
-# Note: any sub shared library used by the bound C++ library should install its targets into the "lib/" subfolder
-# 1. Build imgui (lib used by implot)
+#   i. Build static libraries
+set(BUILD_SHARED_LIBS OFF)
+# 1. Build imgui (lib used by hello_imgui)
 set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
-add_imgui_target(${imgui_dir}) # This will install its target into lib/
-# 2. Build glfw (also linked by hello_imgui)
+add_imgui_target(${imgui_dir})
+# 2. Build glfw (also used by hello_imgui)
 add_subdirectory(external/glfw)
 
 # 3. Configure hello-imgui with the following options:
-#   i. Build a shared lib
-set(BUILD_SHARED_LIBS ON)
-#     ii. use glfw
+#     i. use glfw
 set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
 #     ii. use provided imgui version
 set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
 set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
 set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
-#     iii. use imgui as a shared lib
-set(HELLO_IMGUI_IMGUI_SHARED ON CACHE BOOL "" FORCE)
-#     iv. Note: hello_imgui itself will be a shared lib (see set(BUILD_SHARED_LIBS ON) on top of this file)
 
 # 4. Finally, add hello_imgui
 add_subdirectory(external/hello_imgui)
@@ -46,7 +42,15 @@ endif()
 set(bound_library hello_imgui)                 # The library for which we are building bindings
 set(python_native_module_name _hello_imgui)    # This is the native python module name
 set(python_wrapper_module_name hello_imgui)    # This is the python wrapper around the native module
-set(python_module_sources bindings/module.cpp bindings/pybind_${bound_library}.cpp)
+set(python_module_sources
+
+    bindings/module.cpp
+    bindings/pybind_${bound_library}.cpp
+
+    bindings/imgui_boxed_types.h
+    bindings/imgui_docking_internal_types.h
+    bindings/pybind_imgui.cpp
+    )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
 lg_setup_module(

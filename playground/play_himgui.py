@@ -4,8 +4,8 @@ import sys
 this_dir = os.path.dirname(__file__)
 sys.path.append(f"{this_dir}/../bindings")
 
-import lg_imgui as imgui
-import hello_imgui
+from hello_imgui import hello_imgui
+from hello_imgui import imgui
 
 text = "Hello"
 value = 42
