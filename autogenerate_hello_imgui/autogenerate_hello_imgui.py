@@ -2,11 +2,9 @@ import os
 
 import litgen
 
-from _copy_imgui_bindings import copy_imgui_bindings
 
 _THIS_DIR = os.path.dirname(__file__)
 LG_HELLO_IMGUI_DIR = os.path.realpath(_THIS_DIR + "/..")
-print(f"{LG_HELLO_IMGUI_DIR=}")
 CPP_HEADERS_DIR = LG_HELLO_IMGUI_DIR + "/external/hello_imgui/src/hello_imgui"
 CPP_GENERATED_PYBIND_DIR = LG_HELLO_IMGUI_DIR + "/bindings"
 assert os.path.isdir(CPP_HEADERS_DIR)
@@ -28,7 +26,9 @@ def make_hello_imgui_amalgamated_header():
     write_amalgamate_header_file(options)
 
 
-def autogenerate():
+def autogenerate_hello_imgui():
+    make_hello_imgui_amalgamated_header()
+
     input_cpp_header = LG_HELLO_IMGUI_DIR + "/hello_imgui_amalgamation.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_hello_imgui.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_hello_imgui/hello_imgui.pyi"
@@ -46,6 +46,4 @@ def autogenerate():
 
 if __name__ == "__main__":
     print("autogenerate_hello_imgui")
-    copy_imgui_bindings()
-    make_hello_imgui_amalgamated_header()
-    autogenerate()
+    autogenerate_hello_imgui()
