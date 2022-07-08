@@ -36,6 +36,21 @@ if (WIN32)
 endif()
 
 
+####################################################
+# Build implot and link it into hello_imgui
+####################################################
+set(implot_dir ${CMAKE_CURRENT_LIST_DIR}/external/implot)
+file(GLOB implot_sources ${implot_dir}/*.cpp ${implot_dir}/*.h)
+add_library(implot STATIC ${implot_sources})
+target_link_libraries(implot PUBLIC imgui)
+target_include_directories(implot PUBLIC ${implot_dir})
+lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
+lg_disable_warning_exception_in_destructor(implot)
+
+# finally link implot into hello_imgui
+target_link_libraries(hello_imgui PUBLIC implot)
+
+
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
 #########################################################################
@@ -50,6 +65,8 @@ set(python_module_sources
     bindings/imgui_boxed_types.h
     bindings/imgui_docking_internal_types.h
     bindings/pybind_imgui.cpp
+
+    bindings/pybind_implot.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
