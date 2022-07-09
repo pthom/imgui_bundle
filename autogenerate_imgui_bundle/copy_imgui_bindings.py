@@ -12,13 +12,13 @@ def copy_imgui_bindings():
     ├── imgui_boxed_types.h
     ├── imgui_docking_internal_types.h
     ├── lg_imgui/
-    │         ├── imgui.pyi                This file need to go to bindings/lg_hello_imgui
+    │         ├── imgui.pyi                This file need to go to bindings/lg_imgui_bundle
     └── pybind_imgui.cpp
 
-    from lg_imgui to the different lg_hello_imgui
+    from lg_imgui to the different lg_imgui_bundle
     """
 
-    child_library = "lg_hello_imgui"
+    child_library = "lg_imgui_bundle"
     src_folder = f"{LG_PROJECTS_DIR}/lg_imgui/bindings"
     dst_folder = f"{LG_PROJECTS_DIR}/{child_library}/bindings"
 

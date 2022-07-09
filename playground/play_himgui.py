@@ -1,7 +1,7 @@
 import os
 import sys
 
-from lg_hello_imgui import imgui, implot, hello_imgui
+from lg_imgui_bundle import imgui, implot, hello_imgui
 
 
 text = "Hello"

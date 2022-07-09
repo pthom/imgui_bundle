@@ -2,7 +2,7 @@ _skbuild/
 **/*.egg-info/
 build
 venv/
-venv_himgui/
+venv_bundle/
 __pycache__
 imgui.ini
 *.so

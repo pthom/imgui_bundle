@@ -11,7 +11,7 @@ void py_init_module_hello_imgui(py::module& m);
 void py_init_module_imgui(py::module& m);
 void py_init_module_implot(py::module& m);
 
-void py_init_module_lg_hello_imgui(py::module& m)
+void py_init_module_lg_imgui_bundle(py::module& m)
 {
     auto module_imgui =  m.def_submodule("imgui");
     py_init_module_imgui(module_imgui);
