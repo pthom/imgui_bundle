@@ -13,7 +13,7 @@ setup(
     include_package_data=True,
     extras_require={"test": ["pytest"]},
     python_requires=">=3.6",
-    package_data={"lg_hello_imgui": ["*.pyi"]},
+    package_data={"lg_hello_imgui": ["py.typed", "*.pyi"]},
     install_requires=[
     ],
 )
