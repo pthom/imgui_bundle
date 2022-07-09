@@ -1,9 +1,6 @@
 import os
 import sys
 
-this_dir = os.path.dirname(__file__)
-sys.path.append(f"{this_dir}/../bindings")
-
 from lg_hello_imgui import imgui, implot, hello_imgui
 
 
@@ -31,6 +28,5 @@ def gui_with_params():
 
 implot.create_context()
 params.callbacks.show_gui = gui_with_params
-hello_imgui.override_assets_folder(this_dir)
 
 hello_imgui.run(params)
