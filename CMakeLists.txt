@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(lg_imgui_bundle)
+project(lg_imgui_bundle VERSION "0.1.0")
 
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 
@@ -73,6 +73,7 @@ set(python_module_sources
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
+target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 lg_setup_module(
     ${bound_library}
     ${python_native_module_name}
