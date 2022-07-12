@@ -28,6 +28,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: install
+      if: platform == 'ubuntu-latest'
+      run: sudo apt-get update && sudo apt-get install -y libxrandr-dev
+
+
     - name: Build and install
       run: pip install --verbose .[test]
 
