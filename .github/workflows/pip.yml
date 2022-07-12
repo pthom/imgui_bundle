@@ -28,10 +28,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: install
-      if: github.platform_name == 'ubuntu-latest'
-      run: sudo apt-get update && sudo apt-get install -y libxrandr-dev
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
+#    - name: install libxrandr-dev on ubuntu
+#      if: github.platform_name == 'ubuntu-latest'
+#      run: sudo apt-get update && sudo apt-get install -y libxrandr-dev
+
+    - name: install xorg-dev on ubuntu
+      run: ./ci_scripts/install_requirements.sh
 
     - name: Build and install
       run: pip install --verbose .[test]
