@@ -1,0 +1,40 @@
+package:
+  name: example-lib
+  version: 0.0.1
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: python -m pip install . -vvv
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+
+  host:
+    - python
+    - pip
+    - pybind11 >=2.6.0
+    - scikit-build
+    - cmake >=3.18
+    - ninja
+
+  run:
+    - python
+
+
+test:
+  imports:
+    - example_lib
+  requires:
+    - pytest
+  source_files:
+    - tests
+  commands:
+    - pytest tests
+
+about:
+  summary: An example project built with pybind11, litgen and scikit-build.
+  license_file: LICENSE
