@@ -5,7 +5,35 @@ include(lg_cmake_utils/lg_cmake_utils.cmake)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_subdirectory(external/pybind11)
+
+####################################################
+# Add pybind11
+####################################################
+if(SKBUILD)
+    # Find pybind11 when building the pip module
+    # pybind is referenced in pyproject.toml, section [build-system]/requires
+
+    # Scikit-Build does not add your site-packages to the search path
+    # automatically, so we need to add it _or_ the pybind11 specific directory
+    # here.
+    execute_process(
+        COMMAND "${PYTHON_EXECUTABLE}" -c
+        "import pybind11; print(pybind11.get_cmake_dir())"
+        OUTPUT_VARIABLE _tmp_dir
+        OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT)
+    list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
+
+    # Now we can find pybind11
+    find_package(pybind11 CONFIG REQUIRED)
+else()
+    # Find pybind11 in a standard build (not driven by pip)
+
+    # Method 1: via a submodule
+    # add_subdirectory(external/pybind11)
+
+    # Method 2: via a global install + find_package (e.g `brew install pybind11`, `apt-get install python-pybind11`)
+    find_package(pybind11 CONFIG REQUIRED)
+endif()
 
 
 ####################################################
