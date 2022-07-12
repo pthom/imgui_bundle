@@ -456,10 +456,10 @@ void py_init_module_implot(py::module& m)
             {
                 float * row_ratios_adapt_modifiable = nullptr;
                 if (row_ratios.has_value())
-                    row_ratios_adapt_modifiable = & row_ratios.value();
+                    row_ratios_adapt_modifiable = & (*row_ratios);
                 float * col_ratios_adapt_modifiable = nullptr;
                 if (col_ratios.has_value())
-                    col_ratios_adapt_modifiable = & col_ratios.value();
+                    col_ratios_adapt_modifiable = & (*col_ratios);
 
                 IMPLOT_API bool r = BeginSubplots(title_id, rows, cols, size, flags, row_ratios_adapt_modifiable, col_ratios_adapt_modifiable);
                 return std::make_tuple(r, row_ratios, col_ratios);
@@ -1921,7 +1921,7 @@ void py_init_module_implot(py::module& m)
             {
                 bool * p_popen_adapt_modifiable = nullptr;
                 if (p_popen.has_value())
-                    p_popen_adapt_modifiable = & p_popen.value();
+                    p_popen_adapt_modifiable = & (*p_popen);
 
                 ShowMetricsWindow(p_popen_adapt_modifiable);
                 return p_popen;
@@ -1939,7 +1939,7 @@ void py_init_module_implot(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowDemoWindow(p_open_adapt_modifiable);
                 return p_open;

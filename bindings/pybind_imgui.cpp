@@ -100,7 +100,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowDemoWindow(p_open_adapt_modifiable);
                 return p_open;
@@ -118,7 +118,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowMetricsWindow(p_open_adapt_modifiable);
                 return p_open;
@@ -136,7 +136,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowDebugLogWindow(p_open_adapt_modifiable);
                 return p_open;
@@ -154,7 +154,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowStackToolWindow(p_open_adapt_modifiable);
                 return p_open;
@@ -172,7 +172,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 ShowAboutWindow(p_open_adapt_modifiable);
                 return p_open;
@@ -228,7 +228,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 IMGUI_API bool r = Begin(name, p_open_adapt_modifiable, flags);
                 return std::make_tuple(r, p_open);
@@ -1690,7 +1690,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 IMGUI_API bool r = BeginPopupModal(name, p_open_adapt_modifiable, flags);
                 return std::make_tuple(r, p_open);
@@ -1859,7 +1859,7 @@ void py_init_module_imgui(py::module& m)
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
-                    p_open_adapt_modifiable = & p_open.value();
+                    p_open_adapt_modifiable = & (*p_open);
 
                 IMGUI_API bool r = BeginTabItem(label, p_open_adapt_modifiable, flags);
                 return std::make_tuple(r, p_open);
