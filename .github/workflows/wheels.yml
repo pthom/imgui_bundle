@@ -50,10 +50,9 @@ jobs:
       with:
         submodules: true
 
-    - name: install xorg-dev on ubuntu
-      run: ./ci_scripts/install_requirements.sh
-
     - uses: pypa/cibuildwheel@v2.8.0
+      env:
+        CIBW_BEFORE_ALL_LINUX: yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
 
     - name: Verify clean directory
       run: git diff --exit-code
