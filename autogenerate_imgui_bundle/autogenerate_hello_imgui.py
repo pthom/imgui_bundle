@@ -1,6 +1,7 @@
 import os
 
 import litgen
+from litgen.make_amalgamated_header import AmalgamationOptions, write_amalgamate_header_file
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -12,8 +13,6 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def make_hello_imgui_amalgamated_header():
-    from make_amalgamation import AmalgamationOptions, write_amalgamate_header_file
-
     hello_imgui_src_dir = LG_HELLO_IMGUI_DIR + "/external/hello_imgui/src/"
     options = AmalgamationOptions()
 
