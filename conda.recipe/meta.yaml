@@ -27,7 +27,7 @@ requirements:
 
 test:
   imports:
-    - example_lib
+    - lg_imgui_bundle
   requires:
     - pytest
   source_files:
