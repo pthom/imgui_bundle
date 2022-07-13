@@ -51,8 +51,6 @@ jobs:
         submodules: true
 
     - uses: pypa/cibuildwheel@v2.8.0
-      env:
-        CIBW_BEFORE_ALL_LINUX: yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
 
     - name: Verify clean directory
       run: git diff --exit-code

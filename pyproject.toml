@@ -11,3 +11,24 @@ build-backend = "setuptools.build_meta"
 
 [tool.isort]
 profile = "black"
+
+
+#
+# Install glfw dev packages on manylinux: https://www.glfw.org/docs/3.3/compile.html#compile_deps
+
+# https://iscinumpy.dev/post/cibuildwheel-2-2-0/
+# cibuildwheel has added a new platform: musllinux
+# Remember, the manylinux1 image has been in maintenance mode, has no support for Python 3.10,
+# and will be fully retired at the end of 2021.
+#
+# This also means that installing things inside the images can vary even further;
+# * manylinux1 (CentOS 5), manylinux2010 (CentOS 6), and manylinux2014 (CentOS 7) all use yum;
+#     => yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel
+# * manylinux_2_24 (Debian 8) uses apt (and is stuck on GCC 6),
+#     => apt install xorg-dev
+# * musllinux_1_1 MUSL based distributions of Linux (like Alpine). uses apk
+[tool.cibuildwheel.linux]
+before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel"
+[[tool.cibuildwheel.overrides]]
+select = "*-musllinux*"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
