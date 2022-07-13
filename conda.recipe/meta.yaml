@@ -1,5 +1,5 @@
 package:
-  name: example-lib
+  name: lg-imgui-bundle
   version: 0.0.1
 
 source:
@@ -12,7 +12,7 @@ build:
 requirements:
   build:
     - {{ compiler('cxx') }}
-
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
   host:
     - python
     - pip
