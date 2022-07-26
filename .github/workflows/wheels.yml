@@ -15,7 +15,9 @@ on:
 env:
   CIBW_TEST_COMMAND: pytest {project}/tests
   CIBW_TEST_EXTRAS: test
-
+  CIBW_TEST_REQUIRES: pytest
+  # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
+  CIBW_TEST_SKIP: "pp3*"
 
 jobs:
   build_sdist:
