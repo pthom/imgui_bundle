@@ -4,12 +4,10 @@ name: Conda
 on:
   workflow_dispatch:
   pull_request:
-# Uncomment the lines below to activate this workflow on push. It can always be triggered manually from github's "Action" Tab.
-#  push:
-#    branches:
-#      - master
-#      - main
-
+  push:
+    branches:
+      - master
+      - main
 
 jobs:
   build:

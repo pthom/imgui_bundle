@@ -6,11 +6,10 @@ on:
   release:
     types:
       - published
-# Uncomment the lines below to activate this workflow on push. It can always be triggered manually from github's "Action" Tab.
-#  push:
-#    branches:
-#      - master
-#      - main
+  push:
+    branches:
+      - master
+      - main
 
 env:
   CIBW_TEST_COMMAND: pytest {project}/tests
