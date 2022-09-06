@@ -614,6 +614,10 @@ void py_init_module_implot(py::module& m)
                     PlotLine(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotLine(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotLine(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotLine(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotLine(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -660,6 +664,10 @@ void py_init_module_implot(py::module& m)
                     PlotLine(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotLine(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotLine(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotLine(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotLine(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -702,6 +710,10 @@ void py_init_module_implot(py::module& m)
                     PlotScatter(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotScatter(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotScatter(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotScatter(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotScatter(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -748,6 +760,10 @@ void py_init_module_implot(py::module& m)
                     PlotScatter(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotScatter(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotScatter(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotScatter(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotScatter(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -790,6 +806,10 @@ void py_init_module_implot(py::module& m)
                     PlotStairs(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotStairs(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotStairs(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotStairs(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotStairs(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -836,6 +856,10 @@ void py_init_module_implot(py::module& m)
                     PlotStairs(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotStairs(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotStairs(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotStairs(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotStairs(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -878,6 +902,10 @@ void py_init_module_implot(py::module& m)
                     PlotShaded(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotShaded(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotShaded(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotShaded(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotShaded(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -924,6 +952,10 @@ void py_init_module_implot(py::module& m)
                     PlotShaded(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotShaded(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotShaded(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotShaded(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotShaded(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -974,6 +1006,10 @@ void py_init_module_implot(py::module& m)
                     PlotShaded(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys1_from_pyarray), static_cast<const uint32_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'i')
                     PlotShaded(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys1_from_pyarray), static_cast<const int32_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
+                else if (ys2_type == 'L')
+                    PlotShaded(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys1_from_pyarray), static_cast<const uint64_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
+                else if (ys2_type == 'l')
+                    PlotShaded(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys1_from_pyarray), static_cast<const int64_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'f')
                     PlotShaded(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys1_from_pyarray), static_cast<const float *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'd')
@@ -1016,6 +1052,10 @@ void py_init_module_implot(py::module& m)
                     PlotBars(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotBars(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotBars(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotBars(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotBars(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1062,6 +1102,10 @@ void py_init_module_implot(py::module& m)
                     PlotBars(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -1112,6 +1156,10 @@ void py_init_module_implot(py::module& m)
                     PlotErrorBars(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'i')
                     PlotErrorBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
+                else if (err_type == 'L')
+                    PlotErrorBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<const uint64_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
+                else if (err_type == 'l')
+                    PlotErrorBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<const int64_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'f')
                     PlotErrorBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'd')
@@ -1166,6 +1214,10 @@ void py_init_module_implot(py::module& m)
                     PlotErrorBars(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(neg_from_pyarray), static_cast<const uint32_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'i')
                     PlotErrorBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(neg_from_pyarray), static_cast<const int32_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
+                else if (pos_type == 'L')
+                    PlotErrorBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<const uint64_t *>(neg_from_pyarray), static_cast<const uint64_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
+                else if (pos_type == 'l')
+                    PlotErrorBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<const int64_t *>(neg_from_pyarray), static_cast<const int64_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'f')
                     PlotErrorBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(neg_from_pyarray), static_cast<const float *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'd')
@@ -1208,6 +1260,10 @@ void py_init_module_implot(py::module& m)
                     PlotStems(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotStems(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotStems(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotStems(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotStems(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1254,6 +1310,10 @@ void py_init_module_implot(py::module& m)
                     PlotStems(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotStems(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotStems(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotStems(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotStems(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -1296,6 +1356,10 @@ void py_init_module_implot(py::module& m)
                     PlotInfLines(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'i')
                     PlotInfLines(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
+                else if (values_type == 'L')
+                    PlotInfLines(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
+                else if (values_type == 'l')
+                    PlotInfLines(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'f')
                     PlotInfLines(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1335,6 +1399,10 @@ void py_init_module_implot(py::module& m)
                     return PlotHistogram(label_id, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'i')
                     return PlotHistogram(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
+                else if (values_type == 'L')
+                    return PlotHistogram(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
+                else if (values_type == 'l')
+                    return PlotHistogram(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'f')
                     return PlotHistogram(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'd')
@@ -1378,6 +1446,10 @@ void py_init_module_implot(py::module& m)
                     return PlotHistogram2D(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'i')
                     return PlotHistogram2D(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
+                else if (ys_type == 'L')
+                    return PlotHistogram2D(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
+                else if (ys_type == 'l')
+                    return PlotHistogram2D(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'f')
                     return PlotHistogram2D(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'd')
@@ -1426,6 +1498,10 @@ void py_init_module_implot(py::module& m)
                     PlotDigital(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'i')
                     PlotDigital(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'L')
+                    PlotDigital(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                else if (ys_type == 'l')
+                    PlotDigital(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     PlotDigital(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')

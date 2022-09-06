@@ -1,11 +1,15 @@
 import os
 import sys
+import numpy as np
 
 from lg_imgui_bundle import imgui, implot, hello_imgui
 
 
 text = "Hello"
 value = 42
+
+xs = np.array((1, 2, 3, 4), np.int)
+ys = np.array((5, 6, 7, 8), np.int)
 
 
 def my_gui(params: hello_imgui.RunnerParams):
@@ -18,9 +22,12 @@ def my_gui(params: hello_imgui.RunnerParams):
         params.app_shall_exit = True
     implot.show_demo_window()
 
+    implot.begin_plot("My Plot")
+    implot.plot_bars("Bars", xs, ys, 3.)
+    implot.end_plot()
+
 
 params = hello_imgui.RunnerParams()
-
 
 def gui_with_params():
     my_gui(params)
