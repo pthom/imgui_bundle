@@ -52,9 +52,10 @@ void py_init_module_hello_imgui(py::module& m)
         assetFileFullPath, py::arg("asset_relative_filename"));
 
     m.def("override_assets_folder",
-        overrideAssetsFolder,
-        py::arg("folder"),
-        " Advanced: forces the assets folder location\n (when using this, automatic assets installation on mobile platforms may not work)");
+        overrideAssetsFolder, py::arg("folder"));
+
+    m.def("set_assets_folder",
+        setAssetsFolder, py::arg("folder"));
     // </namespace HelloImGui>
 
 
@@ -113,13 +114,19 @@ void py_init_module_hello_imgui(py::module& m)
 
     // <namespace HelloImGui>
     m.def("load_font_ttf",
-        LoadFontTTF, py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config") = ImFontConfig());
+        LoadFontTTF,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
 
     m.def("load_font_ttf_with_font_awesome_icons",
-        LoadFontTTF_WithFontAwesomeIcons, py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config_font") = ImFontConfig(), py::arg("config_icons") = ImFontConfig());
+        LoadFontTTF_WithFontAwesomeIcons,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config_font") = ImFontConfig(), py::arg("config_icons") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
 
     m.def("merge_font_awesome_to_last_font",
-        MergeFontAwesomeToLastFont, py::arg("font_size"), py::arg("config") = ImFontConfig());
+        MergeFontAwesomeToLastFont,
+        py::arg("font_size"), py::arg("config") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
 
 
     // <namespace ImGuiDefaultSettings>

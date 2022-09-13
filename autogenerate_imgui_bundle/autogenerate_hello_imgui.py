@@ -34,6 +34,7 @@ def autogenerate_hello_imgui():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.fn_return_force_policy_reference_for_pointers__regexes = [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
     generated_code = litgen.generate_code(options, filename=input_cpp_header)
 
     litgen.write_generated_code(
