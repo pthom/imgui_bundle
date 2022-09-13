@@ -91,10 +91,11 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
 
 
 
+# Advanced: forces the assets folder location
+# (when using this, automatic assets installation on mobile platforms may not work)
 def override_assets_folder(folder: str) -> None:
-    """ Advanced: forces the assets folder location
-     (when using this, automatic assets installation on mobile platforms may not work)
-    """
+    pass
+def set_assets_folder(folder: str) -> None:
     pass
 
 # </Namespace HelloImGui>
