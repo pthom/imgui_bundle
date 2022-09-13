@@ -1,16 +1,25 @@
-# HelloImGui bindings issues:
-#
-# * [ ] issue / embedded namespace
-#   HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
-#   ==>
-#   hello_imgui.load_default_font_with_font_awesome_icons()
-# * [ ] issue / Logger not found
-#   # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
-#  Typo in HelloImGui::DockableWindow.GuiFonction !
-# * [ ] ImGui transcribed to im_gui
-# * [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
-# * [ ] Rewrite parts of cpp code, to avoid mysterious inits of docking elements
-# * [ ] Pb /pass param ImVec2: should accept tuple
+"""
+HelloImGui bindings issues:
+
+* [ ] issue / embedded namespace
+  HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
+  ==>
+  hello_imgui.load_default_font_with_font_awesome_icons()
+
+* [ ] issue / Logger not found
+  # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
+ Typo in HelloImGui::DockableWindow.GuiFonction !
+
+* [ ] ImGui transcribed to im_gui
+
+* [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
+
+* [ ] Rewrite parts of cpp code, to avoid mysterious inits of docking elements
+
+* [ ] Pb /pass param ImVec2: should accept tuple?
+    Use IM_VEC2_CLASS_EXTRA (cf imconfig.h)?
+
+"""
 
 import os
 from enum import Enum
@@ -112,7 +121,7 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
 
-    runner_params.app_window_params.window_title = "Hello ImGUI: Advanced docking demo"
+    runner_params.app_window_params.window_title = "HelloImGui docking demo"
 
     # Provide a full screen dock space
     runner_params.im_gui_window_params.default_im_gui_window_type = \
@@ -122,6 +131,18 @@ def main():
     # Define the docking splits, i.e. the way the screen space is split in different
     # target zones for the dockable windows
     #
+    """
+    ___________________________________________
+    |        |                                |
+    | Left   |                                |
+    | Space  |    MainDockSpace               |
+    |        |                                |
+    |        |                                |
+    |        |                                |
+    -------------------------------------------
+    |     BottomSpace                         |
+    -------------------------------------------
+    """
 
     # First, add a space named "BottomSpace" whose height is 25% of the app height
     # This will split the preexisting default dockspace "MainDockSpace"
