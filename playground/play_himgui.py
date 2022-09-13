@@ -8,8 +8,8 @@ from lg_imgui_bundle import imgui, implot, hello_imgui
 text = "Hello"
 value = 42
 
-xs = np.array((1, 2, 3, 4), np.int)
-ys = np.array((5, 6, 7, 8), np.int)
+xs = np.array((1., 2., 3., 4.))
+ys = np.array((5., 6., 7., 8.))
 
 
 def my_gui(params: hello_imgui.RunnerParams):
