@@ -8,7 +8,6 @@
 #   # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
 #  Typo in HelloImGui::DockableWindow.GuiFonction !
 # * [ ] ImGui transcribed to im_gui
-# * [ ] Icons font awesome badly rendered (unicode issue?)
 # * [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
 # * [ ] Rewrite parts of cpp code, to avoid mysterious inits of docking elements
 # * [ ] Pb /pass param ImVec2: should accept tuple
@@ -21,6 +20,7 @@ from typing import Any
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 hello_imgui.set_assets_folder(THIS_DIR + "/assets")
+
 
 # Struct that holds the application's state
 class AppState:
