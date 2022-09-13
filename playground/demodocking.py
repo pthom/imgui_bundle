@@ -8,14 +8,19 @@
 #   # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
 #  Typo in HelloImGui::DockableWindow.GuiFonction !
 # * [ ] ImGui transcribed to im_gui
-# * [ ] Load font fails (path issue ?)
 # * [ ] Icons font awesome badly rendered (unicode issue?)
 # * [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
+# * [ ] Rewrite parts of cpp code, to avoid mysterious inits of docking elements
+# * [ ] Pb /pass param ImVec2: should accept tuple
 
+import os
 from enum import Enum
 from lg_imgui_bundle import imgui, implot, hello_imgui, icons_fontawesome
 from typing import Any
 
+
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+hello_imgui.set_assets_folder(THIS_DIR + "/assets")
 
 # Struct that holds the application's state
 class AppState:
@@ -43,8 +48,6 @@ def my_load_fonts():
     hello_imgui.load_default_font_with_font_awesome_icons()
     # HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();  # issue / embedded namespace
 
-    return
-
     # Then we load a second font from
     # Since this font is in a local assets/ folder, it was embedded automatically
     font_filename = "fonts/Akronim-Regular.ttf"
@@ -56,9 +59,9 @@ def my_load_fonts():
 def command_gui(state: AppState, logger: Any):
     imgui.text_wrapped("The font below was loaded from the application assets folder" \
                        "(those files are embedded automatically).")
-    #imgui.push_font(gAkronimFont)
+    imgui.push_font(gAkronimFont)
     imgui.text_wrapped("Hello, Dear ImGui! " + icons_fontawesome.ICON_FA_SMILE)
-    #imgui.pop_font()
+    imgui.pop_font()
     imgui.separator()
 
     # Edit 1 float using a slider from 0.0f to 1.0f
@@ -144,29 +147,30 @@ def main():
         # We now have three spaces: "MainDockSpace", "BottomSpace", and "LeftSpace"
     ]
 
+
+    #
+    # Define our dockable windows : each window provide a Gui callback
+    #
+
+    # A Command panel named "Commands" will be placed in "LeftSpace".
+    # Its Gui is provided by a lambda that calls "CommandGui"
+    commands_window = hello_imgui.DockableWindow()
+    commands_window.label = "Commands"
+    commands_window.dock_space_name = "LeftSpace"
+    commands_window.gui_fonction = lambda: command_gui(app_state, logger)
+
     # HelloImGui::Widgets::Logger is a Dockable Window, with the title "Logs"
     # and placed in the dockspace "BottomSpace"
     # (see src/hello_imgui/widgets/logger.h)
     # HelloImGui::Widgets::Logger logger("Logs", "BottomSpace");
     logger = None
 
-    # Define our dockable windows :
-    #  - Each window provide a Gui callback
-
-    commands_window = hello_imgui.DockableWindow()
-    commands_window.label = "Commands"
-    commands_window.dock_space_name = "LeftSpace"
-    commands_window.gui_fonction = lambda: command_gui(app_state, logger)
-
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
     dear_imgui_demo_window.gui_fonction = lambda: True
 
-    runner_params.docking_params.dockable_windows = \
-    [
-        # A Command panel named "Commands" will be placed in "LeftSpace".
-        # Its Gui is provided by a lambda that calls "CommandGui"
+    runner_params.docking_params.dockable_windows = [
         commands_window,
 
         # A Log  window named "Logs" will be placed in "BottomSpace"
