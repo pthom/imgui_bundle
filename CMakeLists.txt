@@ -82,7 +82,7 @@ file(GLOB implot_sources ${implot_dir}/*.cpp ${implot_dir}/*.h)
 add_library(implot STATIC ${implot_sources})
 target_link_libraries(implot PUBLIC imgui)
 target_include_directories(implot PUBLIC ${implot_dir})
-target_compile_definitions(implot PRIVATE IMPLOT_INSTANTIATE_ALL_NUMERIC_TYPES)
+target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
 lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
 lg_disable_warning_exception_in_destructor(implot)
 

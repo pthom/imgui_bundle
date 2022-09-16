@@ -1,14 +1,15 @@
 """
 HelloImGui bindings issues:
 
+* [ ] issue / Logger not found
+  # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
+
+* [ ] Typo in HelloImGui::DockableWindow.GuiFonction !
+
 * [ ] issue / embedded namespace
   HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
   ==>
   hello_imgui.load_default_font_with_font_awesome_icons()
-
-* [ ] issue / Logger not found
-  # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
- Typo in HelloImGui::DockableWindow.GuiFonction !
 
 * [ ] ImGui transcribed to im_gui
 
@@ -28,6 +29,12 @@ from typing import Any
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+
+# Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
+#
+# By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
+# and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
+# If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
 hello_imgui.set_assets_folder(THIS_DIR + "/assets")
 
 
