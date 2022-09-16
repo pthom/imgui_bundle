@@ -25,5 +25,6 @@ setup(
     python_requires=">=3.6",
     package_data={"lg_imgui_bundle": ["py.typed", "*.pyi", "assets/fonts/*.ttf"]},
     install_requires=[
+        "numpy >= 1.15"
     ],
 )
