@@ -1,31 +1,21 @@
 """
 HelloImGui bindings issues:
 
-* [ ] issue / Logger not found
-  # void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
-
-* [ ] Typo in HelloImGui::DockableWindow.GuiFonction !
+* [ ] ImGui transcribed to im_gui
 
 * [ ] issue / embedded namespace
   HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
   ==>
   hello_imgui.load_default_font_with_font_awesome_icons()
 
-* [ ] ImGui transcribed to im_gui
 
 * [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
-
-* [ ] Rewrite parts of cpp code, to avoid mysterious inits of docking elements
-
-* [ ] Pb /pass param ImVec2: should accept tuple?
-    Use IM_VEC2_CLASS_EXTRA (cf imconfig.h)?
 
 """
 
 import os
 from enum import Enum
 from lg_imgui_bundle import imgui, implot, hello_imgui, icons_fontawesome
-from typing import Any
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -71,25 +61,30 @@ def my_load_fonts():
 
 
 # CommandGui: the widgets on the left panel
-# void CommandGui(AppState & state, HelloImGui::Widgets::Logger & logger)
-def command_gui(state: AppState, logger: Any):
-    imgui.text_wrapped("The font below was loaded from the application assets folder" \
-                       "(those files are embedded automatically).")
+def command_gui(state: AppState):
     imgui.push_font(gAkronimFont)
-    imgui.text_wrapped("Hello, Dear ImGui! " + icons_fontawesome.ICON_FA_SMILE)
+    imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
+    hello_imgui.image_from_asset("world.jpg")
     imgui.pop_font()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("""
+        The custom font and the globe image below were loaded
+        from the application assets folder
+        (those files are embedded automatically).
+        """)
+
     imgui.separator()
+
 
     # Edit 1 float using a slider from 0.0f to 1.0f
     changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
     if changed:
-        pass
-        # logger.warning("state.f was changed to %f", state.f);
+        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {state.f}")
 
     # Buttons return true when clicked (most widgets return true when edited/activated)
     if imgui.button("Button"):
         state.counter += 1
-        # logger.info("Button was pressed", state.f);
+        hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
 
     imgui.same_line()
     imgui.text(f"counter = {state.counter}")
@@ -97,15 +92,14 @@ def command_gui(state: AppState, logger: Any):
     if state.rocket_state == AppState.RocketState.Init:
         if imgui.button(icons_fontawesome.ICON_FA_ROCKET + " Launch rocket"):
             state.rocket_state = AppState.RocketState.Preparing
-            # logger.warning("Rocket is being prepared");
-            print("Rocket is being prepared")
+            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
     elif state.rocket_state == AppState.RocketState.Preparing:
         imgui.text("Please Wait")
         state.rocket_progress += 0.003
         if state.rocket_progress >= 1.:
             state.rocket_state = AppState.RocketState.Launched
             print("Rocket was launched!")
-            # logger.warning("Rocket was launched!");
+            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocker was launched")
     elif state.rocket_state == AppState.RocketState.Launched:
         imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
         if imgui.button("Reset Rocket"):
@@ -114,144 +108,131 @@ def command_gui(state: AppState, logger: Any):
 
 
 # Our Gui in the status bar
-def status_bar_gui(appState: AppState):
-    if appState.rocket_state == AppState.RocketState.Preparing:
+def status_bar_gui(app_state: AppState):
+    if app_state.rocket_state == AppState.RocketState.Preparing:
         imgui.text("Rocket completion: ")
         imgui.same_line()
-        imgui.progress_bar(appState.rocket_progress, imgui.ImVec2(100., 15.))
+        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100., 15.))
 
 
 def main():
+    ################################################################################################
+    # Part 1: Define the application state, fill the status and menu bars, and load additional font
+    ################################################################################################
+
     # Our application state
     app_state = AppState()
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
 
-    runner_params.app_window_params.window_title = "HelloImGui docking demo"
-
-    # Provide a full screen dock space
-    runner_params.im_gui_window_params.default_im_gui_window_type = \
-        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    runner_params.app_window_params.window_title = "Docking demo";
 
     #
-    # Define the docking splits, i.e. the way the screen space is split in different
-    # target zones for the dockable windows
+    # Status bar
     #
-    """
-    ___________________________________________
-    |        |                                |
-    | Left   |                                |
-    | Space  |    MainDockSpace               |
-    |        |                                |
-    |        |                                |
-    |        |                                |
-    -------------------------------------------
-    |     BottomSpace                         |
-    -------------------------------------------
-    """
-
-    # First, add a space named "BottomSpace" whose height is 25% of the app height
-    # This will split the preexisting default dockspace "MainDockSpace"
-    # (which is provided by "Hello ImGui") in two parts.
-    split_main_bottom = hello_imgui.DockingSplit()
-    split_main_bottom.initial_dock = "MainDockSpace"
-    split_main_bottom.new_dock = "BottomSpace"
-    split_main_bottom.direction = imgui.ImGuiDir_.down
-    split_main_bottom.ratio = 0.25
-
-    # Then, add a space to the left which occupies a column
-    # whose width is 25% of the app width
-    split_main_left = hello_imgui.DockingSplit()
-    split_main_left.initial_dock = "MainDockSpace"
-    split_main_left.new_dock = "LeftSpace"
-    split_main_left.direction = imgui.ImGuiDir_.left
-    split_main_left.ratio = 0.25
-
-    runner_params.docking_params.docking_splits = \
-    [
-        split_main_bottom,
-        split_main_left,
-        # We now have three spaces: "MainDockSpace", "BottomSpace", and "LeftSpace"
-    ]
-
-
-    #
-    # Define our dockable windows : each window provide a Gui callback
-    #
-
-    # A Command panel named "Commands" will be placed in "LeftSpace".
-    # Its Gui is provided by a lambda that calls "CommandGui"
-    commands_window = hello_imgui.DockableWindow()
-    commands_window.label = "Commands"
-    commands_window.dock_space_name = "LeftSpace"
-    commands_window.gui_fonction = lambda: command_gui(app_state, logger)
-
-    # HelloImGui::Widgets::Logger is a Dockable Window, with the title "Logs"
-    # and placed in the dockspace "BottomSpace"
-    # (see src/hello_imgui/widgets/logger.h)
-    # HelloImGui::Widgets::Logger logger("Logs", "BottomSpace");
-    logger = None
-
-    dear_imgui_demo_window = hello_imgui.DockableWindow()
-    dear_imgui_demo_window.label = "Dear ImGui Demo"
-    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_fonction = lambda: True
-
-    runner_params.docking_params.dockable_windows = [
-        commands_window,
-
-        # A Log  window named "Logs" will be placed in "BottomSpace"
-        # It uses HelloImGui::Widgets::Logger
-        # logger,
-
-        # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace".
-        # Its Gui function is *not* provided here.
-        # This way, we can define the Gui of this window elsewhere: as long
-        # as we create a window named "Dear ImGui Demo", it will be placed
-        # in "MainDockSpace".
-        dear_imgui_demo_window,
-    ]
-
-    # We use the default Menu and status bar of Hello ImGui
+    # We use the default status bar of Hello ImGui
     runner_params.im_gui_window_params.show_status_bar = True
+    # uncomment next line in order to hide the FPS in the status bar
+    # runner_params.im_gui_window_params.show_status_fps = False
+    runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
 
-    # runnerParams.callbacks.ShowGui is the default Gui callback
-    # We call ImGui::ShowDemoWindow, which will create a window named "Dear ImGui Demo".
-    # It will automatically be placed in "MainDockSpace"
-    runner_params.callbacks.show_gui = lambda: imgui.show_demo_window()
+    #
+    # Menu bar
+    #
+    # We use the default menu of Hello ImGui, to which we add some more items
+    runner_params.im_gui_window_params.show_menu_bar = True
 
-    # Custom load fonts
-    runner_params.callbacks.load_additional_fonts = my_load_fonts
-
-    # Menu bar: we use the default menu of Hello ImGui,
-    # to which we add some more items
     def show_menu_gui():
         if imgui.begin_menu("My Menu"):
             if imgui.menu_item("Test me"):
                 print("It works")
                 # logger.warning("It works")
             imgui.end_menu()
-    runner_params.im_gui_window_params.show_menu_bar = True
     runner_params.callbacks.show_menus = show_menu_gui
 
-    # Status bar:
-    runner_params.im_gui_window_params.show_status_bar = True
-    # uncomment next line in order to hide the FPS in the status bar
-    # runner_params.im_gui_window_params.show_status_fps = False
-    runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
+    # Custom load fonts
+    runner_params.callbacks.load_additional_fonts = my_load_fonts
 
-    # In this demo, we also demonstrate multiple viewports (i.e multiple native windows)
-    # you can drag the inner windows outside out the main window in order to create another native window
-    def setup_im_gui_config():
-        io = imgui.get_io()
-        io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable
-        io.config_flags |= imgui.ImGuiConfigFlags_.viewports_enable
-    runner_params.callbacks.setup_im_gui_config = setup_im_gui_config
+    # optional native events handling
+    # runner_params.callbacks.any_backend_event_callback = ...
 
-    # Then, we run the app
+
+    ################################################################################################
+    # Part 2: Define the application layout and windows
+    ################################################################################################
+
+    #
+    #    2.1 Define the docking splits,
+    #    i.e. the way the screen space is split in different target zones for the dockable windows
+    #     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+    #
+    #    ___________________________________________
+    #    |        |                                |
+    #    | Left   |                                |
+    #    | Space  |    MainDockSpace               |
+    #    |        |                                |
+    #    |        |                                |
+    #    |        |                                |
+    #    -------------------------------------------
+    #    |     BottomSpace                         |
+    #    -------------------------------------------
+    #
+
+    # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
+    runner_params.im_gui_window_params.default_im_gui_window_type = \
+        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    # In this demo, we also demonstrate multiple viewports.
+    # you can drag windows outside out the main window in order to put their content into new native windows
+    runner_params.im_gui_window_params.enable_viewports = True
+
+    # Then, add a space named "BottomSpace" whose height is 25% of the app height.
+    # This will split the preexisting default dockspace "MainDockSpace" in two parts.
+    split_main_bottom = hello_imgui.DockingSplit()
+    split_main_bottom.initial_dock = "MainDockSpace"
+    split_main_bottom.new_dock = "BottomSpace"
+    split_main_bottom.direction = imgui.ImGuiDir_.down
+    split_main_bottom.ratio = 0.25
+
+    # Then, add a space to the left which occupies a column whose width is 25% of the app width
+    split_main_left = hello_imgui.DockingSplit()
+    split_main_left.initial_dock = "MainDockSpace"
+    split_main_left.new_dock = "LeftSpace"
+    split_main_left.direction = imgui.ImGuiDir_.left
+    split_main_left.ratio = 0.25
+
+    # Finally, transmit these splits to HelloImGui
+    runner_params.docking_params.docking_splits = [ split_main_bottom, split_main_left ]
+
+    #
+    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
+    #     in a docking split.
+    #
+
+    # A Command panel named "Commands" will be placed in "LeftSpace". Its Gui is provided calls "CommandGui"
+    commands_window = hello_imgui.DockableWindow()
+    commands_window.label = "Commands"
+    commands_window.dock_space_name = "LeftSpace"
+    commands_window.gui_function = lambda: command_gui(app_state)
+    # A Log  window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
+    logs_window = hello_imgui.DockableWindow()
+    logs_window.label = "Logs"
+    logs_window.dock_space_name = "BottomSpace"
+    logs_window.gui_function = hello_imgui.log_gui
+    # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
+    dear_imgui_demo_window = hello_imgui.DockableWindow()
+    dear_imgui_demo_window.label = "Dear ImGui Demo"
+    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+
+    # Finally, transmit these windows to HelloImGui
+    runner_params.docking_params.dockable_windows = [commands_window, logs_window, dear_imgui_demo_window]
+
+
+    ################################################################################################
+    # Part 3: Run the app
+    ################################################################################################
     hello_imgui.run(runner_params)
-    return 0
 
 
 if __name__ == "__main__":

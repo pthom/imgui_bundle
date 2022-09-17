@@ -108,6 +108,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("show_status_bar", &ImGuiWindowParams::showStatusBar, "")
         .def_readwrite("show_status_fps", &ImGuiWindowParams::showStatus_Fps, "")
         .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiWindowParams::configWindowsMoveFromTitleBarOnly, "")
+        .def_readwrite("enable_viewports", &ImGuiWindowParams::enableViewports, "")
         ;
     // </namespace HelloImGui>
 
@@ -185,7 +186,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("label", &DockableWindow::label, "")
         .def_readwrite("dock_space_name", &DockableWindow::dockSpaceName, "")
-        .def_readwrite("gui_fonction", &DockableWindow::GuiFonction, "")
+        .def_readwrite("gui_function", &DockableWindow::GuiFunction, "")
         .def_readwrite("is_visible", &DockableWindow::isVisible, "")
         .def_readwrite("can_be_closed", &DockableWindow::canBeClosed, "")
         .def_readwrite("call_begin_end", &DockableWindow::callBeginEnd, "")
@@ -237,6 +238,33 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
         .def_readwrite("fps", &RunnerParams::fps, "")
         ;
+    // </namespace HelloImGui>
+
+
+    // <namespace HelloImGui>
+    py::enum_<LogLevel>(m, "LogLevel", py::arithmetic(), "")
+        .value("debug", LogLevel::Debug, "")
+        .value("info", LogLevel::Info, "")
+        .value("warning", LogLevel::Warning, "")
+        .value("error", LogLevel::Error, "");
+
+
+    m.def("log",
+        [](LogLevel level, const char * const format)
+        {
+            auto Log_adapt_variadic_format = [](LogLevel level, const char * const format)
+            {
+                Log(level, "%s", format);
+            };
+
+            Log_adapt_variadic_format(level, format);
+        },     py::arg("level"), py::arg("format"));
+
+    m.def("log_clear",
+        LogClear);
+
+    m.def("log_gui",
+        LogGui);
     // </namespace HelloImGui>
 
 

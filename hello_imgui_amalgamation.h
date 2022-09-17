@@ -1308,6 +1308,8 @@ enum class DefaultImGuiWindowType
       * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.
         Make windows only movable from the title bar
 
+      * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
+        If true, you can drag windows outside out the main window in order to put their content into new native windows.
 @@md
  */
 struct ImGuiWindowParams
@@ -1324,6 +1326,8 @@ struct ImGuiWindowParams
     bool showStatus_Fps = true;
 
     bool configWindowsMoveFromTitleBarOnly = true;
+
+    bool enableViewports = false;
 };
 
 }  // namespace HelloImGui
@@ -1624,15 +1628,15 @@ struct DockableWindow
         bool isVisible_ = true,
         bool canBeClosed_ = true)
     : label(label_), dockSpaceName(dockSpaceName_),
-          GuiFonction(guiFonction_),
+      GuiFunction(guiFonction_),
       isVisible(isVisible_),
-          canBeClosed(canBeClosed_) {}
+      canBeClosed(canBeClosed_) {}
 
     std::string label;
 
     DockSpaceName dockSpaceName;
 
-    VoidFunction GuiFonction = {};
+    VoidFunction GuiFunction = {};
 
     bool isVisible = true;
     bool canBeClosed = true;
@@ -1766,6 +1770,35 @@ struct RunnerParams
 };
 
 }  // namespace HelloImGui
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+@@md#HelloImGui::Log
+
+    HelloImGui provides a simple Log utility that is able to collect message and display them with a specific widget.
+
+    * __HelloImGui::Log(LogLevel level, char const* const format, ... )__ will log a message (printf like format)
+    * __HelloImGui::LogClear()__ will clear the Log list
+    * __HelloImGui::LogGui()__ will display the Log widget
+
+@@md
+*/
+namespace HelloImGui
+{
+    enum class LogLevel
+    {
+        Debug,
+        Info,
+        Warning,
+        Error
+    };
+
+    void Log(LogLevel level, char const* const format, ...);
+    void LogClear();
+    void LogGui();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

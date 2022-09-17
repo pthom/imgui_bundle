@@ -276,6 +276,8 @@ class DefaultImGuiWindowType(Enum):
 #      * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.
 #        Make windows only movable from the title bar
 #
+#      * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
+#        If True, you can drag windows outside out the main window in order to put their content into new native windows.
 #@@md
 #
 class ImGuiWindowParams:
@@ -291,6 +293,8 @@ class ImGuiWindowParams:
     show_status_fps:bool = True
 
     config_windows_move_from_title_bar_only:bool = True
+
+    enable_viewports:bool = False
 
 # </Namespace HelloImGui>
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,7 +589,7 @@ class DockableWindow:
 
     dock_space_name:DockSpaceName
 
-    gui_fonction:VoidFunction = {}
+    gui_function:VoidFunction = {}
 
     is_visible:bool = True
     can_be_closed:bool = True
@@ -715,6 +719,35 @@ class RunnerParams:
     fps:int = 0
 
 # </Namespace HelloImGui>
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#*
+#@@md#HelloImGui::Log
+#
+#    HelloImGui provides a simple Log utility that is able to collect message and display them with a specific widget.
+#
+#    * __HelloImGui::Log(LogLevel level, char const* const format, ... )__ will log a message (printf like format)
+#    * __HelloImGui::LogClear()__ will clear the Log list
+#    * __HelloImGui::LogGui()__ will display the Log widget
+#
+#@@md
+#
+# <Namespace HelloImGui>
+class LogLevel(Enum):
+    debug = 0
+    info = 1
+    warning = 2
+    error = 3
+
+def log(level: LogLevel, format: str) -> None:
+    pass
+def log_clear() -> None:
+    pass
+def log_gui() -> None:
+    pass
+# </Namespace HelloImGui>
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
