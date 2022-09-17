@@ -281,7 +281,7 @@ class DefaultImGuiWindowType(Enum):
 #@@md
 #
 class ImGuiWindowParams:
-    default_im_gui_window_type:DefaultImGuiWindowType = Literal[DefaultImGuiWindowType.provide_full_screen_window]
+    default_imgui_window_type:DefaultImGuiWindowType = Literal[DefaultImGuiWindowType.provide_full_screen_window]
 
     background_color:ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
 
@@ -329,9 +329,9 @@ def merge_font_awesome_to_last_font(
 # <Namespace ImGuiDefaultSettings>
 def load_default_font_with_font_awesome_icons() -> None:
     pass
-def setup_default_im_gui_config() -> None:
+def setup_default_imgui_config() -> None:
     pass
-def setup_default_im_gui_style() -> None:
+def setup_default_imgui_style() -> None:
     pass
 # </Namespace ImGuiDefaultSettings>
 # </Namespace HelloImGui>
@@ -451,8 +451,8 @@ class RunnerCallbacks:
     any_backend_event_callback:AnyEventCallback = {}
 
     load_additional_fonts:VoidFunction = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons
-    setup_im_gui_config:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiConfig
-    setup_im_gui_style:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiStyle
+    setup_imgui_config:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiConfig
+    setup_imgui_style:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiStyle
 
 
 # </Namespace HelloImGui>
@@ -595,7 +595,7 @@ class DockableWindow:
     can_be_closed:bool = True
     call_begin_end:bool = True
     include_in_view_menu:bool = True
-    im_gui_window_flags:ImGuiWindowFlags = 0
+    imgui_window_flags:ImGuiWindowFlags = 0
 
     window_size:ImVec2 = ImVec2(0., 0.)
     window_size_condition:ImGuiCond = ImGuiCond_FirstUseEver
@@ -712,7 +712,7 @@ class BackendPointers:
 class RunnerParams:
     callbacks:RunnerCallbacks
     app_window_params:AppWindowParams
-    im_gui_window_params:ImGuiWindowParams
+    imgui_window_params:ImGuiWindowParams
     docking_params:DockingParams
     backend_pointers:BackendPointers
     app_shall_exit:bool = False

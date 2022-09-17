@@ -1,13 +1,10 @@
 """
 HelloImGui bindings issues:
 
-* [ ] ImGui transcribed to im_gui
-
 * [ ] issue / embedded namespace
   HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
   ==>
   hello_imgui.load_default_font_with_font_awesome_icons()
-
 
 * [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
 
@@ -132,7 +129,7 @@ def main():
     # Status bar
     #
     # We use the default status bar of Hello ImGui
-    runner_params.im_gui_window_params.show_status_bar = True
+    runner_params.imgui_window_params.show_status_bar = True
     # uncomment next line in order to hide the FPS in the status bar
     # runner_params.im_gui_window_params.show_status_fps = False
     runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
@@ -141,7 +138,7 @@ def main():
     # Menu bar
     #
     # We use the default menu of Hello ImGui, to which we add some more items
-    runner_params.im_gui_window_params.show_menu_bar = True
+    runner_params.imgui_window_params.show_menu_bar = True
 
     def show_menu_gui():
         if imgui.begin_menu("My Menu"):
@@ -180,11 +177,11 @@ def main():
     #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.im_gui_window_params.default_im_gui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = \
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     # In this demo, we also demonstrate multiple viewports.
     # you can drag windows outside out the main window in order to put their content into new native windows
-    runner_params.im_gui_window_params.enable_viewports = True
+    runner_params.imgui_window_params.enable_viewports = True
 
     # Then, add a space named "BottomSpace" whose height is 25% of the app height.
     # This will split the preexisting default dockspace "MainDockSpace" in two parts.

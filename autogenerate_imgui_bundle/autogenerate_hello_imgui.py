@@ -33,10 +33,15 @@ def autogenerate_hello_imgui():
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/hello_imgui.pyi"
 
     # Configure options
+    from codemanip.code_replacements import RegexReplacement
     options = litgen.LitgenOptions()
     options.fn_return_force_policy_reference_for_pointers__regexes = [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
-    generated_code = litgen.generate_code(options, filename=input_cpp_header)
+    options.names_replacements.replacements = [
+        RegexReplacement("imGui", "imgui"),
+        RegexReplacement("ImGui", "Imgui")
+    ]
 
+    generated_code = litgen.generate_code(options, filename=input_cpp_header)
     litgen.write_generated_code(
         generated_code,
         output_cpp_pydef_file=output_cpp_pydef_file,

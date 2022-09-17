@@ -100,7 +100,7 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassImGuiWindowParams = py::class_<ImGuiWindowParams>
         (m, "ImGuiWindowParams", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("default_im_gui_window_type", &ImGuiWindowParams::defaultImGuiWindowType, "")
+        .def_readwrite("default_imgui_window_type", &ImGuiWindowParams::defaultImGuiWindowType, "")
         .def_readwrite("background_color", &ImGuiWindowParams::backgroundColor, "")
         .def_readwrite("show_menu_bar", &ImGuiWindowParams::showMenuBar, "")
         .def_readwrite("show_menu_app", &ImGuiWindowParams::showMenu_App, "")
@@ -134,10 +134,10 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("load_default_font_with_font_awesome_icons",
         LoadDefaultFont_WithFontAwesomeIcons);
 
-    m.def("setup_default_im_gui_config",
+    m.def("setup_default_imgui_config",
         SetupDefaultImGuiConfig);
 
-    m.def("setup_default_im_gui_style",
+    m.def("setup_default_imgui_style",
         SetupDefaultImGuiStyle);
     // </namespace ImGuiDefaultSettings>
     // </namespace HelloImGui>
@@ -164,8 +164,8 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("before_exit", &RunnerCallbacks::BeforeExit, "")
         .def_readwrite("any_backend_event_callback", &RunnerCallbacks::AnyBackendEventCallback, "")
         .def_readwrite("load_additional_fonts", &RunnerCallbacks::LoadAdditionalFonts, "")
-        .def_readwrite("setup_im_gui_config", &RunnerCallbacks::SetupImGuiConfig, "")
-        .def_readwrite("setup_im_gui_style", &RunnerCallbacks::SetupImGuiStyle, "")
+        .def_readwrite("setup_imgui_config", &RunnerCallbacks::SetupImGuiConfig, "")
+        .def_readwrite("setup_imgui_style", &RunnerCallbacks::SetupImGuiStyle, "")
         ;
     // </namespace HelloImGui>
 
@@ -191,7 +191,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("can_be_closed", &DockableWindow::canBeClosed, "")
         .def_readwrite("call_begin_end", &DockableWindow::callBeginEnd, "")
         .def_readwrite("include_in_view_menu", &DockableWindow::includeInViewMenu, "")
-        .def_readwrite("im_gui_window_flags", &DockableWindow::imGuiWindowFlags, "")
+        .def_readwrite("imgui_window_flags", &DockableWindow::imGuiWindowFlags, "")
         .def_readwrite("window_size", &DockableWindow::windowSize, "")
         .def_readwrite("window_size_condition", &DockableWindow::windowSizeCondition, "")
         .def_readwrite("window_position", &DockableWindow::windowPosition, "")
@@ -232,7 +232,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("callbacks", &RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, "")
-        .def_readwrite("im_gui_window_params", &RunnerParams::imGuiWindowParams, "")
+        .def_readwrite("imgui_window_params", &RunnerParams::imGuiWindowParams, "")
         .def_readwrite("docking_params", &RunnerParams::dockingParams, "")
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, "")
         .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
