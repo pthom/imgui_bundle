@@ -2,6 +2,7 @@ import os
 
 import litgen
 from litgen.make_amalgamated_header import AmalgamationOptions, write_amalgamate_header_file
+from codemanip.code_utils import join_string_by_pipe_char
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -35,7 +36,8 @@ def autogenerate_hello_imgui():
     # Configure options
     from codemanip.code_replacements import RegexReplacement
     options = litgen.LitgenOptions()
-    options.fn_return_force_policy_reference_for_pointers__regexes = [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
+    options.fn_return_force_policy_reference_for_pointers__regex = join_string_by_pipe_char(
+        [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"])
     options.names_replacements.replacements = [
         RegexReplacement("imGui", "imgui"),
         RegexReplacement("ImGui", "Imgui")
