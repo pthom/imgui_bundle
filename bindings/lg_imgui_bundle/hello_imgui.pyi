@@ -18,7 +18,7 @@ DockSpaceName = str
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
 #*
 #@@md#AssetsStructure
 #
@@ -37,7 +37,6 @@ DockSpaceName = str
 #    Then you can load the asset "fonts/my_font.ttf", on all platforms.
 #
 #@@md
-#
 
 
 #*
@@ -60,8 +59,8 @@ DockSpaceName = str
 #@@md
 #*
 class AssetFileData:
-    data:Any = None
-    data_size:int = 0
+    data: Any = None
+    data_size: int = 0
 
 def load_asset_file_data(asset_path: str) -> AssetFileData:
     pass
@@ -85,7 +84,6 @@ def free_asset_file_data(asset_file_data: AssetFileData) -> None:
 #      Use LoadAssetFileData instead
 #
 #@@md
-#
 def asset_file_full_path(asset_relative_filename: str) -> str:
     pass
 
@@ -98,7 +96,8 @@ def override_assets_folder(folder: str) -> None:
 def set_assets_folder(folder: str) -> None:
     pass
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 # namespace HelloImGui
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,9 +153,8 @@ def set_assets_folder(folder: str) -> None:
 #    *Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
 #
 #@@md
-#
 
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
 def image_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -179,11 +177,13 @@ def image_button_from_asset(
 def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
     pass
 
-# <Namespace internal>
+# <namespace internal>
 def free_image_from_asset_map() -> None:
     pass
-# </Namespace internal>
-# </Namespace HelloImGui>
+# </namespace internal>
+
+# </namespace HelloImGui>
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
@@ -193,7 +193,7 @@ def free_image_from_asset_map() -> None:
 #                       hello_imgui/app_window_params.h included by hello_imgui/runner_params.h                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
 #*
 #@@md#AppWindowParams
 #
@@ -214,15 +214,17 @@ def free_image_from_asset_map() -> None:
 #*
 class AppWindowParams:
 
-    window_title:str = ""
-    window_size:ImVec2 = {800., 600.}
-    maximized:bool = False
-    full_screen:bool = False
-    window_position:ImVec2 = {-11000., -1.}
+    window_title: str = ""
+    window_size: ImVec2 = {800., 600.}
+    maximized: bool = False
+    full_screen: bool = False
+    window_position: ImVec2 = {-11000., -1.}
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
 
-# <Namespace HelloImGui>
+
+# <namespace HelloImGui>
+""" namespace HelloImGui"""
 #*
 #@@md#DefaultImGuiWindowType
 #
@@ -234,11 +236,8 @@ class AppWindowParams:
 #      * _NoDefaultWindow_: No default window is provided (except for ImGui's default "debug" window)
 #
 #@@md
-#
 class DefaultImGuiWindowType(Enum):
-    provide_full_screen_window = 0
-    provide_full_screen_dock_space = 1
-    no_default_window = 2
+    no_default_window = auto() # (= 2)
 
 #*
 #@@md#ImGuiWindowParams
@@ -279,24 +278,24 @@ class DefaultImGuiWindowType(Enum):
 #      * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
 #        If True, you can drag windows outside out the main window in order to put their content into new native windows.
 #@@md
-#
 class ImGuiWindowParams:
-    default_imgui_window_type:DefaultImGuiWindowType = Literal[DefaultImGuiWindowType.provide_full_screen_window]
+    default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow
 
-    background_color:ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
+    background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
 
-    show_menu_bar:bool = False
-    show_menu_app:bool = True
-    show_menu_view:bool = True
+    show_menu_bar: bool = False
+    show_menu_app: bool = True
+    show_menu_view: bool = True
 
-    show_status_bar:bool = False
-    show_status_fps:bool = True
+    show_status_bar: bool = False
+    show_status_fps: bool = True
 
-    config_windows_move_from_title_bar_only:bool = True
+    config_windows_move_from_title_bar_only: bool = True
 
-    enable_viewports:bool = False
+    enable_viewports: bool = False
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +303,8 @@ class ImGuiWindowParams:
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
+""" namespace HelloImGui"""
 def load_font_ttf(
     font_filename: str,
     font_size: float,
@@ -326,21 +326,25 @@ def merge_font_awesome_to_last_font(
     ) -> ImFont:
     pass
 
-# <Namespace ImGuiDefaultSettings>
+# <namespace ImGuiDefaultSettings>
+""" namespace ImGuiDefaultSettings"""
 def load_default_font_with_font_awesome_icons() -> None:
     pass
 def setup_default_imgui_config() -> None:
     pass
 def setup_default_imgui_style() -> None:
     pass
-# </Namespace ImGuiDefaultSettings>
-# </Namespace HelloImGui>
+# </namespace ImGuiDefaultSettings>
+
+# </namespace HelloImGui>
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h continued                                               //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <Namespace HelloImGui>
+
+# <namespace HelloImGui>
 #*
 #@@md#VoidFunction_AnyEventCallback
 #
@@ -379,12 +383,11 @@ def setup_default_imgui_style() -> None:
 #     or foreground).
 #
 #@@md
-#
 class MobileCallbacks:
-    on_destroy:VoidFunction = {}
-    on_low_memory:VoidFunction = {}
-    on_pause:VoidFunction = {}
-    on_resume:VoidFunction = {}
+    on_destroy: VoidFunction = {}
+    on_low_memory: VoidFunction = {}
+    on_pause: VoidFunction = {}
+    on_resume: VoidFunction = {}
 
 #*
 # @@md#RunnerCallbacks
@@ -440,29 +443,30 @@ class MobileCallbacks:
 #      * These events are currently handled only with SDL backend.
 #
 #@@md
-#
 class RunnerCallbacks:
-    show_gui:VoidFunction = {}
-    show_menus:VoidFunction = {}
-    show_status:VoidFunction = {}
-    post_init:VoidFunction = {}
-    before_exit:VoidFunction = {}
+    show_gui: VoidFunction = {}
+    show_menus: VoidFunction = {}
+    show_status: VoidFunction = {}
+    post_init: VoidFunction = {}
+    before_exit: VoidFunction = {}
 
-    any_backend_event_callback:AnyEventCallback = {}
+    any_backend_event_callback: AnyEventCallback = {}
 
-    load_additional_fonts:VoidFunction = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons
-    setup_imgui_config:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiConfig
-    setup_imgui_style:VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiStyle
+    load_additional_fonts: VoidFunction = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons
+    setup_imgui_config: VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiConfig
+    setup_imgui_style: VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiStyle
 
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 # namespace HelloImGui
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
+""" namespace HelloImGui"""
 #*
 #@@md#DockingIntro
 #
@@ -522,7 +526,6 @@ class RunnerCallbacks:
 #    ````
 #
 #@@md
-#
 
 #***************************************************************************
 
@@ -548,13 +551,12 @@ class RunnerCallbacks:
 #    * `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space
 #
 #@@md
-#
 class DockingSplit:
 
-    initial_dock:DockSpaceName
-    new_dock:DockSpaceName
-    direction:ImGuiDir_
-    ratio:float = 0.25
+    initial_dock: DockSpaceName
+    new_dock: DockSpaceName
+    direction: ImGuiDir_
+    ratio: float = 0.25
 
 #*
 #@@md#DockableWindow
@@ -585,25 +587,25 @@ class DockingSplit:
 #*
 class DockableWindow:
 
-    label:str
+    label: str
 
-    dock_space_name:DockSpaceName
+    dock_space_name: DockSpaceName
 
-    gui_function:VoidFunction = {}
+    gui_function: VoidFunction = {}
 
-    is_visible:bool = True
-    can_be_closed:bool = True
-    call_begin_end:bool = True
-    include_in_view_menu:bool = True
-    imgui_window_flags:ImGuiWindowFlags = 0
+    is_visible: bool = True
+    can_be_closed: bool = True
+    call_begin_end: bool = True
+    include_in_view_menu: bool = True
+    imgui_window_flags: ImGuiWindowFlags = 0
 
-    window_size:ImVec2 = ImVec2(0., 0.)
-    window_size_condition:ImGuiCond = ImGuiCond_FirstUseEver
+    window_size: ImVec2 = ImVec2(0., 0.)
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
-    window_position:ImVec2 = ImVec2(0., 0.)
-    window_position_condition:ImGuiCond = ImGuiCond_FirstUseEver
+    window_position: ImVec2 = ImVec2(0., 0.)
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
-    focus_window_at_next_frame:bool = False
+    focus_window_at_next_frame: bool = False
 
 #*
 #@@md#DockingParams
@@ -626,28 +628,29 @@ class DockableWindow:
 #     * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
 #
 #@@md
-#
 class DockingParams:
-    docking_splits:List[DockingSplit]
+    docking_splits: List[DockingSplit]
 
-    dockable_windows:List[DockableWindow]
+    dockable_windows: List[DockableWindow]
 
-    reset_user_dock_layout:bool = True
+    reset_user_dock_layout: bool = True
 
     # wasDockLayoutApplied is an internal variable
-    was_dock_layout_applied:bool = False
+    was_dock_layout_applied: bool = False
 
     def dockable_window_of_name(self, name: str) -> DockableWindow:
         pass
     def focus_dockable_window(self, window_name: str) -> None:
         pass
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
+""" namespace HelloImGui"""
 
 #*
 # @@md#BackendPointers
@@ -666,22 +669,24 @@ class DockingParams:
 #      Only filled if the backend is SDL (or emscripten + sdl)
 #
 #@@md
-#
 class BackendPointers:
     # GLFWwindow*
-    glfw_window:Any = None
+    glfw_window: Any = None
 
     # SDL_Window*
-    sdl_window:Any = None
+    sdl_window: Any = None
     # SDL_GLContext
-    sdl_gl_context:Any = None
+    sdl_gl_context: Any = None
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# <Namespace HelloImGui>
+
+# <namespace HelloImGui>
+""" namespace HelloImGui"""
 
 #*
 # @@md#RunnerParams
@@ -708,17 +713,17 @@ class BackendPointers:
 #       (only used on emscripten for the moment: 0 stands for "let the app or the browser decide")
 #
 #@@md
-#
 class RunnerParams:
-    callbacks:RunnerCallbacks
-    app_window_params:AppWindowParams
-    imgui_window_params:ImGuiWindowParams
-    docking_params:DockingParams
-    backend_pointers:BackendPointers
-    app_shall_exit:bool = False
-    fps:int = 0
+    callbacks: RunnerCallbacks
+    app_window_params: AppWindowParams
+    imgui_window_params: ImGuiWindowParams
+    docking_params: DockingParams
+    backend_pointers: BackendPointers
+    app_shall_exit: bool = False
+    fps: int = 0
 
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -732,13 +737,12 @@ class RunnerParams:
 #    * __HelloImGui::LogGui()__ will display the Log widget
 #
 #@@md
-#
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
 class LogLevel(Enum):
-    debug = 0
-    info = 1
-    warning = 2
-    error = 3
+    debug = auto()   # (= 0)
+    info = auto()    # (= 1)
+    warning = auto() # (= 2)
+    error = auto()   # (= 3)
 
 def log(level: LogLevel, format: str) -> None:
     pass
@@ -746,11 +750,13 @@ def log_clear() -> None:
     pass
 def log_gui() -> None:
     pass
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #*
 #@@md#HelloImGui::Run
 #
@@ -766,8 +772,7 @@ def log_gui() -> None:
 #    in order to start a simple application with ease.
 #
 #@@md
-#
-# <Namespace HelloImGui>
+# <namespace HelloImGui>
 def run(runner_params: RunnerParams) -> None:
     pass
 
@@ -777,7 +782,8 @@ def run(
     window_title: str = ""
     ) -> None:
     pass
-# </Namespace HelloImGui>
+# </namespace HelloImGui>
+
 
 #*
 #@@md#SDLMain
@@ -792,7 +798,6 @@ def run(
 #    and that your main() function returns an int.
 #
 #@@md
-#
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

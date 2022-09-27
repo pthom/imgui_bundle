@@ -19,12 +19,12 @@ def autogenerate_implot():
 
     # Configure options
     options = litgen_options_implot()
-    generated_code = litgen.generate_code(options, filename=input_cpp_header)
 
-    litgen.write_generated_code(
-        generated_code,
+    litgen.write_generated_code_for_file(
+        options,
+        input_cpp_header_file=input_cpp_header,
         output_cpp_pydef_file=output_cpp_pydef_file,
-        output_stub_pyi_file=output_stub_pyi_file,
+        output_stub_pyi_file=output_stub_pyi_file
     )
 
 

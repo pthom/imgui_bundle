@@ -99,13 +99,14 @@ set(python_wrapper_module_name lg_imgui_bundle)    # This is the python wrapper 
 set(python_module_sources
 
     bindings/module.cpp
-    bindings/pybind_${bound_library}.cpp
 
     bindings/imgui_boxed_types.h
     bindings/imgui_docking_internal_types.h
-    bindings/pybind_imgui.cpp
 
+    bindings/pybind_hello_imgui.cpp
+    bindings/pybind_imgui.cpp
     bindings/pybind_implot.cpp
+    bindings/pybind_lg_imgui_bundle.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
