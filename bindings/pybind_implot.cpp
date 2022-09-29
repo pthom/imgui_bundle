@@ -29,7 +29,7 @@ void py_init_module_implot(py::module& m)
 
     py::enum_<ImPlotFlags_>(m, "ImPlotFlags_", py::arithmetic(), "Options for plots (see BeginPlot).")    // implot.h:130
         .value("none", ImPlotFlags_None, "default")
-        .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by float hashes, e.g. \"##MyPlot\")")
+        .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\")")
         .value("no_legend", ImPlotFlags_NoLegend, "the legend will not be displayed")
         .value("no_mouse_text", ImPlotFlags_NoMouseText, "the mouse position, in plot coordinates, will not be displayed inside of the plot")
         .value("no_inputs", ImPlotFlags_NoInputs, "the user will not be able to interact with the plot")
@@ -56,7 +56,7 @@ void py_init_module_implot(py::module& m)
         .value("foreground", ImPlotAxisFlags_Foreground, "grid lines will be displayed in the foreground (i.e. on top of data) instead of the background")
         .value("invert", ImPlotAxisFlags_Invert, "the axis will be inverted")
         .value("auto_fit", ImPlotAxisFlags_AutoFit, "axis will be auto-fitting to data extents")
-        .value("range_fit", ImPlotAxisFlags_RangeFit, "axis will only fit points if the point is in the visible range of the orthogonal axis")
+        .value("range_fit", ImPlotAxisFlags_RangeFit, "axis will only fit points if the point is in the visible range of the **orthogonal** axis")
         .value("pan_stretch", ImPlotAxisFlags_PanStretch, "panning in a locked or constrained state will cause the axis to stretch if possible")
         .value("lock_min", ImPlotAxisFlags_LockMin, "the axis minimum value will be locked when panning/zooming")
         .value("lock_max", ImPlotAxisFlags_LockMax, "the axis maximum value will be locked when panning/zooming")
@@ -67,7 +67,7 @@ void py_init_module_implot(py::module& m)
 
     py::enum_<ImPlotSubplotFlags_>(m, "ImPlotSubplotFlags_", py::arithmetic(), "Options for subplots (see BeginSubplot)")    // implot.h:170
         .value("none", ImPlotSubplotFlags_None, "default")
-        .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by float hashes, e.g. \"##MySubplot\")")
+        .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MySubplot\")")
         .value("no_legend", ImPlotSubplotFlags_NoLegend, "the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)")
         .value("no_menus", ImPlotSubplotFlags_NoMenus, "the user will not be able to open context menus with right-click")
         .value("no_resize", ImPlotSubplotFlags_NoResize, "resize splitters between subplot cells will be not be provided")
@@ -322,8 +322,8 @@ void py_init_module_implot(py::module& m)
     py::enum_<ImPlotBin_>(m, "ImPlotBin_", py::arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")    // implot.h:458
         .value("sqrt", ImPlotBin_Sqrt, "k = sqrt(n)")
         .value("sturges", ImPlotBin_Sturges, "k = 1 + log2(n)")
-        .value("rice", ImPlotBin_Rice, "k = 2  cbrt(n)")
-        .value("scott", ImPlotBin_Scott, "w = 3.49  sigma / cbrt(n)");
+        .value("rice", ImPlotBin_Rice, "k = 2 * cbrt(n)")
+        .value("scott", ImPlotBin_Scott, "w = 3.49 * sigma / cbrt(n)");
 
 
     auto pyClassImPlotPoint = py::class_<ImPlotPoint>    // implot.h:466
@@ -399,7 +399,7 @@ void py_init_module_implot(py::module& m)
         (m, "ImPlotInputMap", "Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse.")
         .def_readwrite("pan", &ImPlotInputMap::Pan, "LMB    enables panning when held,")    // implot.h:556
         .def_readwrite("pan_mod", &ImPlotInputMap::PanMod, "none   optional modifier that must be held for panning/fitting")    // implot.h:557
-        .def_readwrite("fit", &ImPlotInputMap::Fit, "LMB    initiates fit when float clicked")    // implot.h:558
+        .def_readwrite("fit", &ImPlotInputMap::Fit, "LMB    initiates fit when double clicked")    // implot.h:558
         .def_readwrite("select", &ImPlotInputMap::Select, "RMB    begins box selection when pressed and confirms selection when released")    // implot.h:559
         .def_readwrite("select_cancel", &ImPlotInputMap::SelectCancel, "LMB    cancels active box selection when pressed; cannot be same as Select")    // implot.h:560
         .def_readwrite("select_mod", &ImPlotInputMap::SelectMod, "none   optional modifier that must be held for box selection")    // implot.h:561
@@ -415,13 +415,13 @@ void py_init_module_implot(py::module& m)
 
     m.def("create_context",    // implot.h:591
         ImPlot::CreateContext,
-        "Creates a new ImPlot context. Call this after ImGui.CreateContext.",
+        "Creates a new ImPlot context. Call this after ImGui::CreateContext.",
         pybind11::return_value_policy::reference);
 
     m.def("destroy_context",    // implot.h:593
         ImPlot::DestroyContext,
         py::arg("ctx") = py::none(),
-        "Destroys an ImPlot context. Call this before ImGui.DestroyContext. None = destroy current context.");
+        "Destroys an ImPlot context. Call this before ImGui::DestroyContext. None = destroy current context.");
 
     m.def("get_current_context",    // implot.h:595
         ImPlot::GetCurrentContext,
@@ -436,15 +436,15 @@ void py_init_module_implot(py::module& m)
     m.def("set_im_gui_context",    // implot.h:603
         ImPlot::SetImGuiContext,
         py::arg("ctx"),
-        "Sets the current ImGui context. This is ONLY necessary if you are compiling\n ImPlot as a DLL (not recommended) separate from your ImGui compilation. It\n sets the global variable GImGui, which is not shared across DLL boundaries.\n See GImGui documentation in imgui.cpp for more details.");
+        " Sets the current **ImGui** context. This is ONLY necessary if you are compiling\n ImPlot as a DLL (not recommended) separate from your ImGui compilation. It\n sets the global variable GImGui, which is not shared across DLL boundaries.\n See GImGui documentation in imgui.cpp for more details.");
 
     m.def("begin_plot",    // implot.h:625
         py::overload_cast<const char *, const ImVec2 &, ImPlotFlags>(ImPlot::BeginPlot),
         py::arg("title_id"), py::arg("size") = ImVec2(-1,0), py::arg("flags") = 0,
-        "Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use float hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the frame size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.");
+        " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.");
 
     m.def("end_plot",    // implot.h:629
-        ImPlot::EndPlot, "Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
+        ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
 
     m.def("begin_subplots",    // implot.h:681
         [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0, std::optional<float> row_ratios = std::nullopt, std::optional<float> col_ratios = std::nullopt) -> std::tuple<bool, std::optional<float>, std::optional<float>>
@@ -466,7 +466,7 @@ void py_init_module_implot(py::module& m)
         },     py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = py::none(), py::arg("col_ratios") = py::none());
 
     m.def("end_subplots",    // implot.h:691
-        ImPlot::EndSubplots, "Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end\n of an if statement conditioned on BeginSublots(). See example above.");
+        ImPlot::EndSubplots, " Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end\n of an if statement conditioned on BeginSublots(). See example above.");
 
     m.def("setup_axis",    // implot.h:723
         ImPlot::SetupAxis,
@@ -498,7 +498,7 @@ void py_init_module_implot(py::module& m)
     m.def("setup_axis_format",    // implot.h:729
         py::overload_cast<ImAxis, const char *>(ImPlot::SetupAxisFormat),
         py::arg("axis"), py::arg("fmt"),
-        "Sets the format of numeric axis labels via formater specifier (default=\"%g\"). Formated values will be float (i.e. use %f).");
+        "Sets the format of numeric axis labels via formater specifier (default=\"%g\"). Formated values will be double (i.e. use %f).");
 
     m.def("setup_axis_format",    // implot.h:731
         py::overload_cast<ImAxis, ImPlotFormatter, void *>(ImPlot::SetupAxisFormat),
@@ -546,7 +546,7 @@ void py_init_module_implot(py::module& m)
         "Set the location of the current plot's mouse position text (default = South|East).");
 
     m.def("setup_finish",    // implot.h:757
-        ImPlot::SetupFinish, "Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!\n Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.");
+        ImPlot::SetupFinish, " Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!\n Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.");
 
     m.def("set_next_axis_limits",    // implot.h:783
         ImPlot::SetNextAxisLimits,
@@ -1448,7 +1448,7 @@ void py_init_module_implot(py::module& m)
             return PlotHistogram_adapt_c_buffers(label_id, values, bins, bar_scale, range, flags);
         },
         py::arg("label_id"), py::arg("values"), py::arg("bins") = ImPlotBin_Sturges, py::arg("bar_scale") = 1.0, py::arg("range") = ImPlotRange(), py::arg("flags") = 0,
-        "Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.");
+        " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.");
 
     m.def("plot_histogram2_d",    // implot.h:898
         [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double
@@ -1497,7 +1497,7 @@ void py_init_module_implot(py::module& m)
             return PlotHistogram2D_adapt_c_buffers(label_id, xs, ys, x_bins, y_bins, range, flags);
         },
         py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("x_bins") = ImPlotBin_Sturges, py::arg("y_bins") = ImPlotBin_Sturges, py::arg("range") = ImPlotRect(), py::arg("flags") = 0,
-        "Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.");
+        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.");
 
     m.def("plot_digital",    // implot.h:901
         [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
@@ -1559,7 +1559,7 @@ void py_init_module_implot(py::module& m)
     m.def("plot_text",    // implot.h:908
         ImPlot::PlotText,
         py::arg("text"), py::arg("x"), py::arg("y"), py::arg("pix_offset") = ImVec2(0,0), py::arg("flags") = 0,
-        "Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot.PushStyleColor(ImPlotCol_InlayText, ...).");
+        "Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).");
 
     m.def("plot_dummy",    // implot.h:911
         ImPlot::PlotDummy,
@@ -1735,12 +1735,12 @@ void py_init_module_implot(py::module& m)
     m.def("hide_next_item",    // implot.h:987
         ImPlot::HideNextItem,
         py::arg("hidden") = true, py::arg("cond") = ImPlotCond_Once,
-        "Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.");
+        " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.");
 
     m.def("begin_aligned_plots",    // implot.h:996
         ImPlot::BeginAlignedPlots,
         py::arg("group_id"), py::arg("vertical") = true,
-        "Align axis padding over multiple plots in a single row or column. #group_id must\n be unique. If this function returns True, EndAlignedPlots() must be called.");
+        " Align axis padding over multiple plots in a single row or column. #group_id must\n be unique. If this function returns True, EndAlignedPlots() must be called.");
 
     m.def("end_aligned_plots",    // implot.h:998
         ImPlot::EndAlignedPlots, "Only call EndAlignedPlots() if BeginAlignedPlots() returns True!");
@@ -1770,7 +1770,7 @@ void py_init_module_implot(py::module& m)
         ImPlot::BeginDragDropTargetLegend, "Turns the current plot's legend into a drag and drop target. Don't forget to call EndDragDropTarget!");
 
     m.def("end_drag_drop_target",    // implot.h:1022
-        ImPlot::EndDragDropTarget, "Ends a drag and drop target (currently just an alias for ImGui.EndDragDropTarget).");
+        ImPlot::EndDragDropTarget, "Ends a drag and drop target (currently just an alias for ImGui::EndDragDropTarget).");
 
     m.def("begin_drag_drop_source_plot",    // implot.h:1028
         ImPlot::BeginDragDropSourcePlot,
@@ -1788,7 +1788,7 @@ void py_init_module_implot(py::module& m)
         "Turns an item in the current plot's legend into drag and drop source. Don't forget to call EndDragDropSource!");
 
     m.def("end_drag_drop_source",    // implot.h:1034
-        ImPlot::EndDragDropSource, "Ends a drag and drop source (currently just an alias for ImGui.EndDragDropSource).");
+        ImPlot::EndDragDropSource, "Ends a drag and drop source (currently just an alias for ImGui::EndDragDropSource).");
 
     m.def("get_style",    // implot.h:1070
         ImPlot::GetStyle,
@@ -1917,7 +1917,7 @@ void py_init_module_implot(py::module& m)
         "Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count.");
 
     m.def("next_colormap_color",    // implot.h:1160
-        ImPlot::NextColormapColor, "Returns the next color from the current colormap and advances the colormap for the current plot.\n Can also be used with no return value to skip colors if desired. You need to call this between Begin/EndPlot!");
+        ImPlot::NextColormapColor, " Returns the next color from the current colormap and advances the colormap for the current plot.\n Can also be used with no return value to skip colors if desired. You need to call this between Begin/EndPlot!");
 
     m.def("get_colormap_size",    // implot.h:1166
         ImPlot::GetColormapSize,
@@ -1937,7 +1937,7 @@ void py_init_module_implot(py::module& m)
     m.def("colormap_scale",    // implot.h:1173
         ImPlot::ColormapScale,
         py::arg("label"), py::arg("scale_min"), py::arg("scale_max"), py::arg("size") = ImVec2(0,0), py::arg("format") = "%g", py::arg("flags") = 0, py::arg("cmap") = IMPLOT_AUTO,
-        "Shows a vertical color scale with linear spaced ticks using the specified color map. Use float hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.");
+        "Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.");
 
     m.def("colormap_slider",    // implot.h:1175
         [](const char * label, float t, ImVec4 * out = NULL, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
@@ -1963,7 +1963,7 @@ void py_init_module_implot(py::module& m)
     m.def("bust_color_cache",    // implot.h:1186
         ImPlot::BustColorCache,
         py::arg("plot_title_id") = py::none(),
-        "When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
+        " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
 
     m.def("get_input_map",    // implot.h:1193
         ImPlot::GetInputMap,
@@ -1973,12 +1973,12 @@ void py_init_module_implot(py::module& m)
     m.def("map_input_default",    // implot.h:1196
         ImPlot::MapInputDefault,
         py::arg("dst") = py::none(),
-        "Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB float click, context menu = RMB click, zoom = scroll.");
+        "Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.");
 
     m.def("map_input_reverse",    // implot.h:1198
         ImPlot::MapInputReverse,
         py::arg("dst") = py::none(),
-        "Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB float click, context menu = RMB click, zoom = scroll.");
+        "Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.");
 
     m.def("item_icon",    // implot.h:1205
         py::overload_cast<const ImVec4 &>(ImPlot::ItemIcon), py::arg("col"));
