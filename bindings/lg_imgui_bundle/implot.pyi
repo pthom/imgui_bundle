@@ -990,7 +990,7 @@ def end_plot() -> None:    # implot.h:629
 #                              ImPlotSubplotFlags flags = 0,
 #                              float* row_ratios        = NULL,
 #                              float* col_ratios        = NULL);
-def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: ImPlotSubplotFlags = 0, row_ratios: Optional[float] = None, col_ratios: Optional[float] = None) -> Tuple[bool, Optional[float>, std.optional<float]]:    # implot.h:681
+def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: ImPlotSubplotFlags = 0, row_ratios: Optional[float] = None, col_ratios: Optional[float] = None) -> Tuple[bool, Optional[float], Optional[float]]:    # implot.h:681
     pass
 
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
