@@ -1,7 +1,7 @@
 import os
 
 import litgen
-from litgen.litgen_options_implot import litgen_options_implot
+from litgen.options_customized.litgen_options_implot import litgen_options_implot
 
 
 _THIS_DIR = os.path.dirname(__file__)
