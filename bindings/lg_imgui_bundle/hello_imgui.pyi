@@ -18,7 +18,6 @@ DockSpaceName = str
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-# <namespace HelloImGui>
 #*
 #@@md#AssetsStructure
 #
@@ -96,7 +95,6 @@ def override_assets_folder(folder: str) -> None:
 def set_assets_folder(folder: str) -> None:
     pass
 
-# </namespace HelloImGui>
 
 # namespace HelloImGui
 
@@ -154,7 +152,6 @@ def set_assets_folder(folder: str) -> None:
 #
 #@@md
 
-# <namespace HelloImGui>
 def image_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -177,12 +174,6 @@ def image_button_from_asset(
 def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
     pass
 
-# <namespace internal>
-def free_image_from_asset_map() -> None:
-    pass
-# </namespace internal>
-
-# </namespace HelloImGui>
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,7 +184,6 @@ def free_image_from_asset_map() -> None:
 #                       hello_imgui/app_window_params.h included by hello_imgui/runner_params.h                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <namespace HelloImGui>
 #*
 #@@md#AppWindowParams
 #
@@ -220,10 +210,8 @@ class AppWindowParams:
     full_screen: bool = False
     window_position: ImVec2 = {-11000., -1.}
 
-# </namespace HelloImGui>
 
 
-# <namespace HelloImGui>
 """ namespace HelloImGui"""
 #*
 #@@md#DefaultImGuiWindowType
@@ -237,7 +225,9 @@ class AppWindowParams:
 #
 #@@md
 class DefaultImGuiWindowType(Enum):
-    no_default_window = auto() # (= 2)
+    provide_full_screen_window = auto()     # (= 0)
+    provide_full_screen_dock_space = auto() # (= 1)
+    no_default_window = auto()              # (= 2)
 
 #*
 #@@md#ImGuiWindowParams
@@ -279,7 +269,7 @@ class DefaultImGuiWindowType(Enum):
 #        If True, you can drag windows outside out the main window in order to put their content into new native windows.
 #@@md
 class ImGuiWindowParams:
-    default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow
+    default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window
 
     background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
 
@@ -294,7 +284,6 @@ class ImGuiWindowParams:
 
     enable_viewports: bool = False
 
-# </namespace HelloImGui>
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
@@ -303,7 +292,6 @@ class ImGuiWindowParams:
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# <namespace HelloImGui>
 """ namespace HelloImGui"""
 def load_font_ttf(
     font_filename: str,
@@ -326,17 +314,6 @@ def merge_font_awesome_to_last_font(
     ) -> ImFont:
     pass
 
-# <namespace ImGuiDefaultSettings>
-""" namespace ImGuiDefaultSettings"""
-def load_default_font_with_font_awesome_icons() -> None:
-    pass
-def setup_default_imgui_config() -> None:
-    pass
-def setup_default_imgui_style() -> None:
-    pass
-# </namespace ImGuiDefaultSettings>
-
-# </namespace HelloImGui>
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -344,7 +321,6 @@ def setup_default_imgui_style() -> None:
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-# <namespace HelloImGui>
 #*
 #@@md#VoidFunction_AnyEventCallback
 #
@@ -452,12 +428,11 @@ class RunnerCallbacks:
 
     any_backend_event_callback: AnyEventCallback = {}
 
-    load_additional_fonts: VoidFunction = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons
-    setup_imgui_config: VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiConfig
-    setup_imgui_style: VoidFunction = ImGuiDefaultSettings::SetupDefaultImGuiStyle
+    load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
+    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig
+    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle
 
 
-# </namespace HelloImGui>
 
 # namespace HelloImGui
 
@@ -465,7 +440,6 @@ class RunnerCallbacks:
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <namespace HelloImGui>
 """ namespace HelloImGui"""
 #*
 #@@md#DockingIntro
@@ -642,14 +616,12 @@ class DockingParams:
         pass
     def focus_dockable_window(self, window_name: str) -> None:
         pass
-# </namespace HelloImGui>
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <namespace HelloImGui>
 """ namespace HelloImGui"""
 
 #*
@@ -678,14 +650,12 @@ class BackendPointers:
     # SDL_GLContext
     sdl_gl_context: Any = None
 
-# </namespace HelloImGui>
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# <namespace HelloImGui>
 """ namespace HelloImGui"""
 
 #*
@@ -722,7 +692,6 @@ class RunnerParams:
     app_shall_exit: bool = False
     fps: int = 0
 
-# </namespace HelloImGui>
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
@@ -737,7 +706,6 @@ class RunnerParams:
 #    * __HelloImGui::LogGui()__ will display the Log widget
 #
 #@@md
-# <namespace HelloImGui>
 class LogLevel(Enum):
     debug = auto()   # (= 0)
     info = auto()    # (= 1)
@@ -750,7 +718,6 @@ def log_clear() -> None:
     pass
 def log_gui() -> None:
     pass
-# </namespace HelloImGui>
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,7 +739,6 @@ def log_gui() -> None:
 #    in order to start a simple application with ease.
 #
 #@@md
-# <namespace HelloImGui>
 def run(runner_params: RunnerParams) -> None:
     pass
 
@@ -782,7 +748,6 @@ def run(
     window_title: str = ""
     ) -> None:
     pass
-# </namespace HelloImGui>
 
 
 #*
@@ -798,6 +763,19 @@ def run(
 #    and that your main() function returns an int.
 #
 #@@md
+
+# <submodule ImGuiDefaultSettings>
+class ImGuiDefaultSettings: # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
+    # (This corresponds to a C++ namespace. All method are static!)
+    """ namespace ImGuiDefaultSettings"""
+    def load_default_font_with_font_awesome_icons() -> None:
+        pass
+    def setup_default_imgui_config() -> None:
+        pass
+    def setup_default_imgui_style() -> None:
+        pass
+
+# </submodule ImGuiDefaultSettings>
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

@@ -393,7 +393,6 @@ class ImVec4:    # imgui.h:268
 # (Note that ImGui:: being a namespace, you can add extra ImGui:: functions in your own separate file. Please don't modify imgui source files!)
 #-----------------------------------------------------------------------------
 
-# <namespace ImGui>
 """ namespace ImGui"""
 # Context creation and access
 # - Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.
@@ -2065,7 +2064,6 @@ def find_viewport_by_platform_handle(platform_handle: Any) -> ImGuiViewport:    
     """ this is a helper for backends. the type platform_handle is decided by the backend (e.g. HWND, MyWindow*, GLFWwindow* etc.)"""
     pass
 
-# </namespace ImGui>
 
 
 #-----------------------------------------------------------------------------
@@ -5298,8 +5296,6 @@ class ImGuiPlatformImeData:    # imgui.h:3201
 # Please keep your copy of dear imgui up to date! Occasionally set '#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS' in imconfig.h to stay ahead.
 #-----------------------------------------------------------------------------
 
-# <namespace ImGui>
-# </namespace ImGui>
 
 
 
@@ -5323,7 +5319,6 @@ class ImGuiPlatformImeData:    # imgui.h:3201
 
 
 
-# <namespace ImGui>
 # ImGui::InputText() with std::string
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
@@ -5336,7 +5331,6 @@ def input_text_multiline(label: str, str: str, size: ImVec2 = ImVec2(0, 0), flag
 # }
 def input_text_with_hint(label: str, hint: str, str: str, flags: ImGuiInputTextFlags = 0, user_data: Any = None) -> Tuple[bool, str]:    # imgui_stdlib.h:17
     pass
-# </namespace ImGui>
 
 ####################    </generated_from:imgui_stdlib.h>    ####################
 

@@ -48,7 +48,7 @@ gAkronimFont: imgui.ImFont = None
 def my_load_fonts():
     global gAkronimFont
     # First, we load the default fonts (the font that was loaded first is the default font)
-    hello_imgui.load_default_font_with_font_awesome_icons()
+    hello_imgui.ImGuiDefaultSettings.load_default_font_with_font_awesome_icons()
     # HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();  # issue / embedded namespace
 
     # Then we load a second font from

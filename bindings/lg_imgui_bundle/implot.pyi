@@ -870,7 +870,6 @@ class ImPlotInputMap:    # implot.h:555
 
 
 
-# <namespace ImPlot>
 
 #-----------------------------------------------------------------------------
 # [SECTION] Contexts
@@ -991,7 +990,7 @@ def end_plot() -> None:    # implot.h:629
 #                              ImPlotSubplotFlags flags = 0,
 #                              float* row_ratios        = NULL,
 #                              float* col_ratios        = NULL);
-def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: ImPlotSubplotFlags = 0, row_ratios: Optional[float] = None, col_ratios: Optional[float] = None) -> Tuple[bool, Optional[float>, std::optional<float]]:    # implot.h:681
+def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: ImPlotSubplotFlags = 0, row_ratios: Optional[float] = None, col_ratios: Optional[float] = None) -> Tuple[bool, Optional[float>, std.optional<float]]:    # implot.h:681
     pass
 
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
@@ -1796,7 +1795,6 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:    # impl
     """ Shows the ImPlot demo window (add implot_demo.cpp to your sources!)"""
     pass
 
-# </namespace ImPlot>
 
 # namespace ImPlot
 
