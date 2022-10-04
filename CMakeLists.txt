@@ -100,7 +100,7 @@ set(python_module_sources
 
     bindings/module.cpp
 
-    bindings/imgui_boxed_types.h
+    bindings/litgen_glue_code.h
     bindings/imgui_docking_internal_types.h
 
     bindings/pybind_hello_imgui.cpp

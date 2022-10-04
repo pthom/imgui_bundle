@@ -6,7 +6,7 @@
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "imgui_docking_internal_types.h"
-#include "imgui_boxed_types.h"
+#include "litgen_glue_code.h"
 
 namespace py = pybind11;
 

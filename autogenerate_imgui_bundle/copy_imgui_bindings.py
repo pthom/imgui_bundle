@@ -9,7 +9,7 @@ def copy_imgui_bindings():
     """
     We want to copy the following files:
     bindings/
-    ├── imgui_boxed_types.h
+    ├── litgen_glue_code.h
     ├── imgui_docking_internal_types.h
     ├── lg_imgui/
     │         ├── imgui.pyi                This file need to go to bindings/lg_imgui_bundle
@@ -23,7 +23,7 @@ def copy_imgui_bindings():
     dst_folder = f"{LG_PROJECTS_DIR}/{child_library}/bindings"
 
     files_to_copy = [
-        "imgui_boxed_types.h",
+        "litgen_glue_code.h",
         "imgui_docking_internal_types.h",
         "pybind_imgui.cpp",
     ]
