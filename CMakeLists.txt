@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 ####################################################
 # Add pybind11
 ####################################################
-if(SKBUILD)
+if(DEFINED PYTHON_EXECUTABLE)
     # Find pybind11 when building the pip module
     # pybind is referenced in pyproject.toml, section [build-system]/requires
 
