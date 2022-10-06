@@ -237,14 +237,14 @@ void py_init_module_hello_imgui(py::module& m)
         py::overload_cast<VoidFunction, ImVec2, std::string>(HelloImGui::Run), py::arg("gui_fonction"), py::arg("window_size") = ImVec2(800.f, 600.f), py::arg("window_title") = "");
 
     { // <namespace ImGuiDefaultSettings>
-        py::module_ pyNamespaceImGuiDefaultSettings = m.def_submodule("ImGuiDefaultSettings", "namespace ImGuiDefaultSettings");
-        pyNamespaceImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",
+        py::module_ pyNsImGuiDefaultSettings = m.def_submodule("ImGuiDefaultSettings", "namespace ImGuiDefaultSettings");
+        pyNsImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",
             HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
 
-        pyNamespaceImGuiDefaultSettings.def("setup_default_imgui_config",
+        pyNsImGuiDefaultSettings.def("setup_default_imgui_config",
             HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig);
 
-        pyNamespaceImGuiDefaultSettings.def("setup_default_imgui_style",
+        pyNsImGuiDefaultSettings.def("setup_default_imgui_style",
             HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle);
     } // </namespace ImGuiDefaultSettings>
     ////////////////////    </generated_from:hello_imgui_amalgamation.h>    ////////////////////
