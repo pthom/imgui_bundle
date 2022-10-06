@@ -36,6 +36,7 @@ DockSpaceName = str
 #    Then you can load the asset "fonts/my_font.ttf", on all platforms.
 #
 #@@md
+#
 
 
 class AssetFileData:
@@ -85,6 +86,7 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
           Use LoadAssetFileData instead
 
     @@md
+
     """
     pass
 
@@ -153,6 +155,7 @@ def set_assets_folder(folder: str) -> None:
 #    *Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
 #
 #@@md
+#
 
 def image_from_asset(
     asset_path: str,
@@ -228,6 +231,7 @@ class DefaultImGuiWindowType(Enum):
           * _NoDefaultWindow_: No default window is provided (except for ImGui's default "debug" window)
 
     @@md
+
     """
     provide_full_screen_window = auto()     # (= 0)
     provide_full_screen_dock_space = auto() # (= 1)
@@ -273,6 +277,7 @@ class ImGuiWindowParams:
           * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
             If True, you can drag windows outside out the main window in order to put their content into new native windows.
     @@md
+
     """
     default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window
 
@@ -365,6 +370,7 @@ class MobileCallbacks:
          or foreground).
 
     @@md
+
     """
     on_destroy: VoidFunction = {}
     on_low_memory: VoidFunction = {}
@@ -426,6 +432,7 @@ class RunnerCallbacks:
           * These events are currently handled only with SDL backend.
 
     @@md
+
     """
     show_gui: VoidFunction = {}
     show_menus: VoidFunction = {}
@@ -507,6 +514,7 @@ class RunnerCallbacks:
 #    ````
 #
 #@@md
+#
 
 #***************************************************************************
 
@@ -533,6 +541,7 @@ class DockingSplit:
         * `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space
 
     @@md
+
     """
 
     initial_dock: DockSpaceName
@@ -612,6 +621,7 @@ class DockingParams:
          * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
 
     @@md
+
     """
     docking_splits: List[DockingSplit]
 
@@ -652,6 +662,7 @@ class BackendPointers:
           Only filled if the backend is SDL (or emscripten + sdl)
 
     @@md
+
     """
     # GLFWwindow*
     glfw_window: Any = None
@@ -695,6 +706,7 @@ class RunnerParams:
            (only used on emscripten for the moment: 0 stands for "let the app or the browser decide")
 
     @@md
+
     """
     callbacks: RunnerCallbacks
     app_window_params: AppWindowParams
@@ -718,6 +730,7 @@ class RunnerParams:
     * __HelloImGui::LogGui()__ will display the Log widget
 
 @@md
+
 """
 class LogLevel(Enum):
     debug = auto()   # (= 0)
@@ -752,6 +765,7 @@ def log_gui() -> None:
     in order to start a simple application with ease.
 
 @@md
+
 """
 def run(runner_params: RunnerParams) -> None:
     pass
@@ -777,6 +791,7 @@ def run(
 #    and that your main() function returns an int.
 #
 #@@md
+#
 
 # <submodule ImGuiDefaultSettings>
 class ImGuiDefaultSettings: # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings

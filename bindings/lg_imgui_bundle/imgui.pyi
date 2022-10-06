@@ -289,6 +289,8 @@ ImGuiStoragePair = Any
 # - For first-time users having issues compiling/linking/running or issues loading fonts:
 #   please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.
 
+#
+#
 #Index of this file:
 #// [SECTION] Header mess
 #// [SECTION] Forward declarations and basic types
@@ -304,6 +306,8 @@ ImGuiStoragePair = Any
 #// [SECTION] Viewports (ImGuiViewportFlags, ImGuiViewport)
 #// [SECTION] Platform Dependent Interfaces (ImGuiPlatformIO, ImGuiPlatformMonitor, ImGuiPlatformImeData)
 #// [SECTION] Obsolete functions and types
+#
+#
 
 
 # Configuration file with compile-time options (edit imconfig.h or '#define IMGUI_USER_CONFIG "myfilename.h" from your build system')
