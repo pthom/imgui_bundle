@@ -24,7 +24,8 @@ def autogenerate_implot():
         options,
         input_cpp_header_file=input_cpp_header,
         output_cpp_pydef_file=output_cpp_pydef_file,
-        output_stub_pyi_file=output_stub_pyi_file
+        output_stub_pyi_file=output_stub_pyi_file,
+        omit_boxed_types=True
     )
 
 
