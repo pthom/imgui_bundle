@@ -1,7 +1,7 @@
 import os
 
 import litgen
-from codemanip.make_amalgamated_header import AmalgamationOptions, write_amalgamate_header_file
+from codemanip import amalgamated_header
 from codemanip.code_utils import join_string_by_pipe_char
 
 
@@ -15,7 +15,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 def make_hello_imgui_amalgamated_header():
     hello_imgui_src_dir = LG_HELLO_IMGUI_DIR + "/external/hello_imgui/src/"
-    options = AmalgamationOptions()
+    options = amalgamated_header.AmalgamationOptions()
 
     options.base_dir = hello_imgui_src_dir
     options.local_includes_startwith = "hello_imgui/"
@@ -23,7 +23,7 @@ def make_hello_imgui_amalgamated_header():
     options.main_header_file = "hello_imgui.h"
     options.dst_amalgamated_header_file = LG_HELLO_IMGUI_DIR + "/hello_imgui_amalgamation.h"
 
-    write_amalgamate_header_file(options)
+    amalgamated_header.write_amalgamate_header_file(options)
 
 
 def autogenerate_hello_imgui():
