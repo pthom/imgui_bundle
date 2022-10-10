@@ -1,10 +1,10 @@
-from copy_imgui_bindings import copy_imgui_bindings
+from generate_imgui import autogenerate_imgui
 from generate_hello_imgui import autogenerate_hello_imgui
 from generate_implot import autogenerate_implot
 
 
 def main():
-    copy_imgui_bindings()
+    autogenerate_imgui()
     autogenerate_hello_imgui()
     autogenerate_implot()
 
