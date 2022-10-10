@@ -15,7 +15,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 def autogenerate_imgui() -> None:
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui/imgui.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui.pyi"
     output_glue_code_file = CPP_GENERATED_PYBIND_DIR + "/litgen_glue_code.h"
 
     # Configure options

@@ -592,10 +592,10 @@ class DockableWindow:
     imgui_window_flags: ImGuiWindowFlags = 0
 
     window_size: ImVec2 = ImVec2(0., 0.)
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = ImGuiCond_.first_use_ever
 
     window_position: ImVec2 = ImVec2(0., 0.)
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = ImGuiCond_.first_use_ever
 
     focus_window_at_next_frame: bool = False
 
