@@ -12,7 +12,8 @@ HelloImGui bindings issues:
 
 import os
 from enum import Enum
-from lg_imgui_bundle import imgui, implot, hello_imgui, icons_fontawesome
+
+from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))

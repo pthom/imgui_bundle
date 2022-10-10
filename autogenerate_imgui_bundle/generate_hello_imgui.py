@@ -1,8 +1,9 @@
 import os
 
-import litgen
 from codemanip import amalgamated_header
 from codemanip.code_utils import join_string_by_pipe_char
+
+import litgen
 
 
 _THIS_DIR = os.path.dirname(__file__)

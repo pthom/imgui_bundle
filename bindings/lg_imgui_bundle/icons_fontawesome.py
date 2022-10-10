@@ -4,7 +4,6 @@
 # for use with
 # https://github.com/FortAwesome/Font-Awesome/blob/master/webfonts/fa-solid-900.ttf,
 # https://github.com/FortAwesome/Font-Awesome/blob/master/webfonts/fa-regular-400.ttf,
-
 ICON_FA_CLOUD_SHOWERS_HEAVY = b"\xEF\x9D\x80".decode("utf-8")
 ICON_FA_CHEVRON_CIRCLE_RIGHT = b"\xEF\x84\xB8".decode("utf-8")
 ICON_FA_DHARMACHAKRA = b"\xEF\x99\x95".decode("utf-8")

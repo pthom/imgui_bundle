@@ -1,5 +1,6 @@
 import sys
 
+
 try:
     from skbuild import setup
 except ImportError:
