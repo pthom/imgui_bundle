@@ -5,8 +5,8 @@ from lg_imgui_bundle import hello_imgui, imgui, implot
 text = "Hello"
 value = 42
 
-xs = np.array((1., 2., 3., 4.))
-ys = np.array((5., 6., 7., 8.))
+xs = np.array((1.0, 2.0, 3.0, 4.0))
+ys = np.array((5.0, 6.0, 7.0, 8.0))
 
 
 def my_gui(params: hello_imgui.RunnerParams):
@@ -20,11 +20,12 @@ def my_gui(params: hello_imgui.RunnerParams):
     implot.show_demo_window()
 
     implot.begin_plot("My Plot")
-    implot.plot_bars("Bars", xs, ys, 3.)
+    implot.plot_bars("Bars", xs, ys, 3.0)
     implot.end_plot()
 
 
 params = hello_imgui.RunnerParams()
+
 
 def gui_with_params():
     my_gui(params)

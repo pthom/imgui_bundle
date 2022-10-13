@@ -28,9 +28,9 @@ hello_imgui.set_assets_folder(THIS_DIR + "/assets")
 
 # Struct that holds the application's state
 class AppState:
-    f: float = 0.
+    f: float = 0.0
     counter: int = 0
-    rocket_progress: float = 0.
+    rocket_progress: float = 0.0
 
     class RocketState(Enum):
         Init = 0
@@ -55,7 +55,7 @@ def my_load_fonts():
     # Then we load a second font from
     # Since this font is in a local assets/ folder, it was embedded automatically
     font_filename = "fonts/Akronim-Regular.ttf"
-    gAkronimFont = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.)
+    gAkronimFont = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
 
 
 # CommandGui: the widgets on the left panel
@@ -65,14 +65,15 @@ def command_gui(state: AppState):
     hello_imgui.image_from_asset("world.jpg")
     imgui.pop_font()
     if imgui.is_item_hovered():
-        imgui.set_tooltip("""
+        imgui.set_tooltip(
+            """
         The custom font and the globe image below were loaded
         from the application assets folder
         (those files are embedded automatically).
-        """)
+        """
+        )
 
     imgui.separator()
-
 
     # Edit 1 float using a slider from 0.0f to 1.0f
     changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
@@ -94,7 +95,7 @@ def command_gui(state: AppState):
     elif state.rocket_state == AppState.RocketState.Preparing:
         imgui.text("Please Wait")
         state.rocket_progress += 0.003
-        if state.rocket_progress >= 1.:
+        if state.rocket_progress >= 1.0:
             state.rocket_state = AppState.RocketState.Launched
             print("Rocket was launched!")
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocker was launched")
@@ -102,7 +103,7 @@ def command_gui(state: AppState):
         imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
         if imgui.button("Reset Rocket"):
             state.rocket_state = AppState.RocketState.Init
-            state.rocket_progress = 0.
+            state.rocket_progress = 0.0
 
 
 # Our Gui in the status bar
@@ -110,7 +111,7 @@ def status_bar_gui(app_state: AppState):
     if app_state.rocket_state == AppState.RocketState.Preparing:
         imgui.text("Rocket completion: ")
         imgui.same_line()
-        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100., 15.))
+        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100.0, 15.0))
 
 
 def main():
@@ -124,7 +125,7 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
 
-    runner_params.app_window_params.window_title = "Docking demo";
+    runner_params.app_window_params.window_title = "Docking demo"
 
     #
     # Status bar
@@ -147,6 +148,7 @@ def main():
                 print("It works")
                 # logger.warning("It works")
             imgui.end_menu()
+
     runner_params.callbacks.show_menus = show_menu_gui
 
     # Custom load fonts
@@ -154,7 +156,6 @@ def main():
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...
-
 
     ################################################################################################
     # Part 2: Define the application layout and windows
@@ -178,8 +179,9 @@ def main():
     #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.imgui_window_params.default_imgui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     # In this demo, we also demonstrate multiple viewports.
     # you can drag windows outside out the main window in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
@@ -200,7 +202,7 @@ def main():
     split_main_left.ratio = 0.25
 
     # Finally, transmit these splits to HelloImGui
-    runner_params.docking_params.docking_splits = [ split_main_bottom, split_main_left ]
+    runner_params.docking_params.docking_splits = [split_main_bottom, split_main_left]
 
     #
     # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
@@ -225,7 +227,6 @@ def main():
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [commands_window, logs_window, dear_imgui_demo_window]
-
 
     ################################################################################################
     # Part 3: Run the app
