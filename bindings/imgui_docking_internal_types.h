@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "imgui_internal.h"
 
 ////////////////////////////////////////////////////////////
 // Copy paste of Docking Internal Types from imgui.cpp

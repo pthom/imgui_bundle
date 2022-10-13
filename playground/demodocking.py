@@ -1,20 +1,7 @@
-"""
-HelloImGui bindings issues:
-
-* [ ] issue / embedded namespace
-  HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
-  ==>
-  hello_imgui.load_default_font_with_font_awesome_icons()
-
-* [ ] structs could be exported as dataclasses, so that we have an equivalent of designated initializers
-
-"""
-
 import os
 from enum import Enum
 
 from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
-
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 

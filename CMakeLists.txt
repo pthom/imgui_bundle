@@ -102,6 +102,7 @@ set(python_module_sources
 
     bindings/pybind_hello_imgui.cpp
     bindings/pybind_imgui.cpp
+    bindings/pybind_imgui_internal.cpp
     bindings/pybind_implot.cpp
     bindings/pybind_lg_imgui_bundle.cpp
     )
