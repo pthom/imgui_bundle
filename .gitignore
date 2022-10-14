@@ -143,3 +143,5 @@ cython_debug/
 _skbuild/
 
 imgui.ini
+pypi_info_token.md
+MANIFEST.in
