@@ -1,7 +1,10 @@
 import os
 
 import litgen
-from litgen.options_customized.litgen_options_imgui import litgen_options_imgui, ImguiOptionsType
+from litgen.options_customized.litgen_options_imgui import (
+    litgen_options_imgui,
+    ImguiOptionsType,
+)
 
 FLAG_DOCKING_BRANCH = True
 THIS_DIR = os.path.dirname(__file__)

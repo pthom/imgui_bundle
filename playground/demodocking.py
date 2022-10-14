@@ -213,7 +213,11 @@ def main():
     dear_imgui_demo_window.gui_function = imgui.show_demo_window
 
     # Finally, transmit these windows to HelloImGui
-    runner_params.docking_params.dockable_windows = [commands_window, logs_window, dear_imgui_demo_window]
+    runner_params.docking_params.dockable_windows = [
+        commands_window,
+        logs_window,
+        dear_imgui_demo_window,
+    ]
 
     ################################################################################################
     # Part 3: Run the app

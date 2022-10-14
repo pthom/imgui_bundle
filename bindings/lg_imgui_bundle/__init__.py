@@ -12,4 +12,11 @@ THIS_DIR = os.path.dirname(__file__)
 hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 
 
-__all__ = ["imgui", "imgui_internal", "hello_imgui", "implot", "icons_fontawesome", "__version__"]
+__all__ = [
+    "imgui",
+    "imgui_internal",
+    "hello_imgui",
+    "implot",
+    "icons_fontawesome",
+    "__version__",
+]
