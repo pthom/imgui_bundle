@@ -2,7 +2,7 @@
 import sys
 from typing import Literal, List, Any, Optional, Tuple
 import numpy as np
-from enum import Enum
+import enum
 import numpy
 
 ##################################################
@@ -185,537 +185,537 @@ ImGuiCond_Once = imgui.ImGuiCond_.once
 
 
 
-class ImAxis_(Enum):    # implot.h:116
+class ImAxis_(enum.Enum):    # implot.h:116
     """ Axis indices. The values assigned may change; NEVER hardcode these."""
     # horizontal axes
     # ImAxis_X1 = 0,     /* original C++ signature */
-    x1 = auto()    # (= 0)  # enabled by default
+    x1 = enum.auto()    # (= 0)  # enabled by default
     # ImAxis_X2,         /* original C++ signature */
-    x2 = auto()    # (= 1)  # disabled by default
+    x2 = enum.auto()    # (= 1)  # disabled by default
     # ImAxis_X3,         /* original C++ signature */
-    x3 = auto()    # (= 2)  # disabled by default
+    x3 = enum.auto()    # (= 2)  # disabled by default
     # vertical axes
     # ImAxis_Y1,         /* original C++ signature */
-    y1 = auto()    # (= 3)  # enabled by default
+    y1 = enum.auto()    # (= 3)  # enabled by default
     # ImAxis_Y2,         /* original C++ signature */
-    y2 = auto()    # (= 4)  # disabled by default
+    y2 = enum.auto()    # (= 4)  # disabled by default
     # ImAxis_Y3,         /* original C++ signature */
-    y3 = auto()    # (= 5)  # disabled by default
+    y3 = enum.auto()    # (= 5)  # disabled by default
     # ImAxis_COUNT    /* original C++ signature */
     # }
     # bookeeping
-    count = auto() # (= 6)
+    count = enum.auto() # (= 6)
 
-class ImPlotFlags_(Enum):    # implot.h:130
+class ImPlotFlags_(enum.Enum):    # implot.h:130
     """ Options for plots (see BeginPlot)."""
     # ImPlotFlags_None          = 0,           /* original C++ signature */
-    none = auto()          # (= 0)  # default
+    none = enum.auto()          # (= 0)  # default
     # ImPlotFlags_NoTitle       = 1 << 0,      /* original C++ signature */
-    no_title = auto()      # (= 1 << 0)  # the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot")
+    no_title = enum.auto()      # (= 1 << 0)  # the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MyPlot")
     # ImPlotFlags_NoLegend      = 1 << 1,      /* original C++ signature */
-    no_legend = auto()     # (= 1 << 1)  # the legend will not be displayed
+    no_legend = enum.auto()     # (= 1 << 1)  # the legend will not be displayed
     # ImPlotFlags_NoMouseText   = 1 << 2,      /* original C++ signature */
-    no_mouse_text = auto() # (= 1 << 2)  # the mouse position, in plot coordinates, will not be displayed inside of the plot
+    no_mouse_text = enum.auto() # (= 1 << 2)  # the mouse position, in plot coordinates, will not be displayed inside of the plot
     # ImPlotFlags_NoInputs      = 1 << 3,      /* original C++ signature */
-    no_inputs = auto()     # (= 1 << 3)  # the user will not be able to interact with the plot
+    no_inputs = enum.auto()     # (= 1 << 3)  # the user will not be able to interact with the plot
     # ImPlotFlags_NoMenus       = 1 << 4,      /* original C++ signature */
-    no_menus = auto()      # (= 1 << 4)  # the user will not be able to open context menus
+    no_menus = enum.auto()      # (= 1 << 4)  # the user will not be able to open context menus
     # ImPlotFlags_NoBoxSelect   = 1 << 5,      /* original C++ signature */
-    no_box_select = auto() # (= 1 << 5)  # the user will not be able to box-select
+    no_box_select = enum.auto() # (= 1 << 5)  # the user will not be able to box-select
     # ImPlotFlags_NoChild       = 1 << 6,      /* original C++ signature */
-    no_child = auto()      # (= 1 << 6)  # a child window region will not be used to capture mouse scroll (can boost performance for single ImGui window applications)
+    no_child = enum.auto()      # (= 1 << 6)  # a child window region will not be used to capture mouse scroll (can boost performance for single ImGui window applications)
     # ImPlotFlags_NoFrame       = 1 << 7,      /* original C++ signature */
-    no_frame = auto()      # (= 1 << 7)  # the ImGui frame will not be rendered
+    no_frame = enum.auto()      # (= 1 << 7)  # the ImGui frame will not be rendered
     # ImPlotFlags_Equal         = 1 << 8,      /* original C++ signature */
-    equal = auto()         # (= 1 << 8)  # x and y axes pairs will be constrained to have the same units/pixel
+    equal = enum.auto()         # (= 1 << 8)  # x and y axes pairs will be constrained to have the same units/pixel
     # ImPlotFlags_Crosshairs    = 1 << 9,      /* original C++ signature */
-    crosshairs = auto()    # (= 1 << 9)  # the default mouse cursor will be replaced with a crosshair when hovered
+    crosshairs = enum.auto()    # (= 1 << 9)  # the default mouse cursor will be replaced with a crosshair when hovered
     # ImPlotFlags_CanvasOnly    = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect | ImPlotFlags_NoMouseText    /* original C++ signature */
     # }
-    canvas_only = auto()   # (= ImPlotFlags_.no_title | ImPlotFlags_.no_legend | ImPlotFlags_.no_menus | ImPlotFlags_.no_box_select | ImPlotFlags_.no_mouse_text)
+    canvas_only = enum.auto()   # (= ImPlotFlags_.no_title | ImPlotFlags_.no_legend | ImPlotFlags_.no_menus | ImPlotFlags_.no_box_select | ImPlotFlags_.no_mouse_text)
 
-class ImPlotAxisFlags_(Enum):    # implot.h:146
+class ImPlotAxisFlags_(enum.Enum):    # implot.h:146
     """ Options for plot axes (see SetupAxis)."""
     # ImPlotAxisFlags_None          = 0,           /* original C++ signature */
-    none = auto()           # (= 0)  # default
+    none = enum.auto()           # (= 0)  # default
     # ImPlotAxisFlags_NoLabel       = 1 << 0,      /* original C++ signature */
-    no_label = auto()       # (= 1 << 0)  # the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)
+    no_label = enum.auto()       # (= 1 << 0)  # the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)
     # ImPlotAxisFlags_NoGridLines   = 1 << 1,      /* original C++ signature */
-    no_grid_lines = auto()  # (= 1 << 1)  # no grid lines will be displayed
+    no_grid_lines = enum.auto()  # (= 1 << 1)  # no grid lines will be displayed
     # ImPlotAxisFlags_NoTickMarks   = 1 << 2,      /* original C++ signature */
-    no_tick_marks = auto()  # (= 1 << 2)  # no tick marks will be displayed
+    no_tick_marks = enum.auto()  # (= 1 << 2)  # no tick marks will be displayed
     # ImPlotAxisFlags_NoTickLabels  = 1 << 3,      /* original C++ signature */
-    no_tick_labels = auto() # (= 1 << 3)  # no text labels will be displayed
+    no_tick_labels = enum.auto() # (= 1 << 3)  # no text labels will be displayed
     # ImPlotAxisFlags_NoInitialFit  = 1 << 4,      /* original C++ signature */
-    no_initial_fit = auto() # (= 1 << 4)  # axis will not be initially fit to data extents on the first rendered frame
+    no_initial_fit = enum.auto() # (= 1 << 4)  # axis will not be initially fit to data extents on the first rendered frame
     # ImPlotAxisFlags_NoMenus       = 1 << 5,      /* original C++ signature */
-    no_menus = auto()       # (= 1 << 5)  # the user will not be able to open context menus with right-click
+    no_menus = enum.auto()       # (= 1 << 5)  # the user will not be able to open context menus with right-click
     # ImPlotAxisFlags_NoSideSwitch  = 1 << 6,      /* original C++ signature */
-    no_side_switch = auto() # (= 1 << 6)  # the user will not be able to switch the axis side by dragging it
+    no_side_switch = enum.auto() # (= 1 << 6)  # the user will not be able to switch the axis side by dragging it
     # ImPlotAxisFlags_NoHighlight   = 1 << 7,      /* original C++ signature */
-    no_highlight = auto()   # (= 1 << 7)  # the axis will not have its background highlighted when hovered or held
+    no_highlight = enum.auto()   # (= 1 << 7)  # the axis will not have its background highlighted when hovered or held
     # ImPlotAxisFlags_Opposite      = 1 << 8,      /* original C++ signature */
-    opposite = auto()       # (= 1 << 8)  # axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)
+    opposite = enum.auto()       # (= 1 << 8)  # axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)
     # ImPlotAxisFlags_Foreground    = 1 << 9,      /* original C++ signature */
-    foreground = auto()     # (= 1 << 9)  # grid lines will be displayed in the foreground (i.e. on top of data) instead of the background
+    foreground = enum.auto()     # (= 1 << 9)  # grid lines will be displayed in the foreground (i.e. on top of data) instead of the background
     # ImPlotAxisFlags_Invert        = 1 << 10,     /* original C++ signature */
-    invert = auto()         # (= 1 << 10)  # the axis will be inverted
+    invert = enum.auto()         # (= 1 << 10)  # the axis will be inverted
     # ImPlotAxisFlags_AutoFit       = 1 << 11,     /* original C++ signature */
-    auto_fit = auto()       # (= 1 << 11)  # axis will be auto-fitting to data extents
+    auto_fit = enum.auto()       # (= 1 << 11)  # axis will be auto-fitting to data extents
     # ImPlotAxisFlags_RangeFit      = 1 << 12,     /* original C++ signature */
-    range_fit = auto()      # (= 1 << 12)  # axis will only fit points if the point is in the visible range of the **orthogonal** axis
+    range_fit = enum.auto()      # (= 1 << 12)  # axis will only fit points if the point is in the visible range of the **orthogonal** axis
     # ImPlotAxisFlags_PanStretch    = 1 << 13,     /* original C++ signature */
-    pan_stretch = auto()    # (= 1 << 13)  # panning in a locked or constrained state will cause the axis to stretch if possible
+    pan_stretch = enum.auto()    # (= 1 << 13)  # panning in a locked or constrained state will cause the axis to stretch if possible
     # ImPlotAxisFlags_LockMin       = 1 << 14,     /* original C++ signature */
-    lock_min = auto()       # (= 1 << 14)  # the axis minimum value will be locked when panning/zooming
+    lock_min = enum.auto()       # (= 1 << 14)  # the axis minimum value will be locked when panning/zooming
     # ImPlotAxisFlags_LockMax       = 1 << 15,     /* original C++ signature */
-    lock_max = auto()       # (= 1 << 15)  # the axis maximum value will be locked when panning/zooming
+    lock_max = enum.auto()       # (= 1 << 15)  # the axis maximum value will be locked when panning/zooming
     # ImPlotAxisFlags_Lock          = ImPlotAxisFlags_LockMin | ImPlotAxisFlags_LockMax,    /* original C++ signature */
-    lock = auto()           # (= ImPlotAxisFlags_.lock_min | ImPlotAxisFlags_.lock_max)
+    lock = enum.auto()           # (= ImPlotAxisFlags_.lock_min | ImPlotAxisFlags_.lock_max)
     # ImPlotAxisFlags_NoDecorations = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_NoTickMarks | ImPlotAxisFlags_NoTickLabels,    /* original C++ signature */
-    no_decorations = auto() # (= ImPlotAxisFlags_.no_label | ImPlotAxisFlags_.no_grid_lines | ImPlotAxisFlags_.no_tick_marks | ImPlotAxisFlags_.no_tick_labels)
+    no_decorations = enum.auto() # (= ImPlotAxisFlags_.no_label | ImPlotAxisFlags_.no_grid_lines | ImPlotAxisFlags_.no_tick_marks | ImPlotAxisFlags_.no_tick_labels)
     # ImPlotAxisFlags_AuxDefault    = ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite    /* original C++ signature */
     # }
-    aux_default = auto()    # (= ImPlotAxisFlags_.no_grid_lines | ImPlotAxisFlags_.opposite)
+    aux_default = enum.auto()    # (= ImPlotAxisFlags_.no_grid_lines | ImPlotAxisFlags_.opposite)
 
-class ImPlotSubplotFlags_(Enum):    # implot.h:170
+class ImPlotSubplotFlags_(enum.Enum):    # implot.h:170
     """ Options for subplots (see BeginSubplot)"""
     # ImPlotSubplotFlags_None        = 0,           /* original C++ signature */
-    none = auto()        # (= 0)  # default
+    none = enum.auto()        # (= 0)  # default
     # ImPlotSubplotFlags_NoTitle     = 1 << 0,      /* original C++ signature */
-    no_title = auto()    # (= 1 << 0)  # the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot")
+    no_title = enum.auto()    # (= 1 << 0)  # the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. "##MySubplot")
     # ImPlotSubplotFlags_NoLegend    = 1 << 1,      /* original C++ signature */
-    no_legend = auto()   # (= 1 << 1)  # the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)
+    no_legend = enum.auto()   # (= 1 << 1)  # the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)
     # ImPlotSubplotFlags_NoMenus     = 1 << 2,      /* original C++ signature */
-    no_menus = auto()    # (= 1 << 2)  # the user will not be able to open context menus with right-click
+    no_menus = enum.auto()    # (= 1 << 2)  # the user will not be able to open context menus with right-click
     # ImPlotSubplotFlags_NoResize    = 1 << 3,      /* original C++ signature */
-    no_resize = auto()   # (= 1 << 3)  # resize splitters between subplot cells will be not be provided
+    no_resize = enum.auto()   # (= 1 << 3)  # resize splitters between subplot cells will be not be provided
     # ImPlotSubplotFlags_NoAlign     = 1 << 4,      /* original C++ signature */
-    no_align = auto()    # (= 1 << 4)  # subplot edges will not be aligned vertically or horizontally
+    no_align = enum.auto()    # (= 1 << 4)  # subplot edges will not be aligned vertically or horizontally
     # ImPlotSubplotFlags_ShareItems  = 1 << 5,      /* original C++ signature */
-    share_items = auto() # (= 1 << 5)  # items across all subplots will be shared and rendered into a single legend entry
+    share_items = enum.auto() # (= 1 << 5)  # items across all subplots will be shared and rendered into a single legend entry
     # ImPlotSubplotFlags_LinkRows    = 1 << 6,      /* original C++ signature */
-    link_rows = auto()   # (= 1 << 6)  # link the y-axis limits of all plots in each row (does not apply to auxiliary axes)
+    link_rows = enum.auto()   # (= 1 << 6)  # link the y-axis limits of all plots in each row (does not apply to auxiliary axes)
     # ImPlotSubplotFlags_LinkCols    = 1 << 7,      /* original C++ signature */
-    link_cols = auto()   # (= 1 << 7)  # link the x-axis limits of all plots in each column (does not apply to auxiliary axes)
+    link_cols = enum.auto()   # (= 1 << 7)  # link the x-axis limits of all plots in each column (does not apply to auxiliary axes)
     # ImPlotSubplotFlags_LinkAllX    = 1 << 8,      /* original C++ signature */
-    link_all_x = auto()  # (= 1 << 8)  # link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+    link_all_x = enum.auto()  # (= 1 << 8)  # link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)
     # ImPlotSubplotFlags_LinkAllY    = 1 << 9,      /* original C++ signature */
-    link_all_y = auto()  # (= 1 << 9)  # link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)
+    link_all_y = enum.auto()  # (= 1 << 9)  # link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)
     # ImPlotSubplotFlags_ColMajor    = 1 << 10      /* original C++ signature */
-    col_major = auto()   # (= 1 << 10)  # subplots are added in column major order instead of the default row major order
+    col_major = enum.auto()   # (= 1 << 10)  # subplots are added in column major order instead of the default row major order
 
-class ImPlotLegendFlags_(Enum):    # implot.h:186
+class ImPlotLegendFlags_(enum.Enum):    # implot.h:186
     """ Options for legends (see SetupLegend)"""
     # ImPlotLegendFlags_None            = 0,          /* original C++ signature */
-    none = auto()              # (= 0)  # default
+    none = enum.auto()              # (= 0)  # default
     # ImPlotLegendFlags_NoButtons       = 1 << 0,     /* original C++ signature */
-    no_buttons = auto()        # (= 1 << 0)  # legend icons will not function as hide/show buttons
+    no_buttons = enum.auto()        # (= 1 << 0)  # legend icons will not function as hide/show buttons
     # ImPlotLegendFlags_NoHighlightItem = 1 << 1,     /* original C++ signature */
-    no_highlight_item = auto() # (= 1 << 1)  # plot items will not be highlighted when their legend entry is hovered
+    no_highlight_item = enum.auto() # (= 1 << 1)  # plot items will not be highlighted when their legend entry is hovered
     # ImPlotLegendFlags_NoHighlightAxis = 1 << 2,     /* original C++ signature */
-    no_highlight_axis = auto() # (= 1 << 2)  # axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)
+    no_highlight_axis = enum.auto() # (= 1 << 2)  # axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)
     # ImPlotLegendFlags_NoMenus         = 1 << 3,     /* original C++ signature */
-    no_menus = auto()          # (= 1 << 3)  # the user will not be able to open context menus with right-click
+    no_menus = enum.auto()          # (= 1 << 3)  # the user will not be able to open context menus with right-click
     # ImPlotLegendFlags_Outside         = 1 << 4,     /* original C++ signature */
-    outside = auto()           # (= 1 << 4)  # legend will be rendered outside of the plot area
+    outside = enum.auto()           # (= 1 << 4)  # legend will be rendered outside of the plot area
     # ImPlotLegendFlags_Horizontal      = 1 << 5,     /* original C++ signature */
-    horizontal = auto()        # (= 1 << 5)  # legend entries will be displayed horizontally
+    horizontal = enum.auto()        # (= 1 << 5)  # legend entries will be displayed horizontally
 
-class ImPlotMouseTextFlags_(Enum):    # implot.h:197
+class ImPlotMouseTextFlags_(enum.Enum):    # implot.h:197
     """ Options for mouse hover text (see SetupMouseText)"""
     # ImPlotMouseTextFlags_None        = 0,          /* original C++ signature */
-    none = auto()        # (= 0)  # default
+    none = enum.auto()        # (= 0)  # default
     # ImPlotMouseTextFlags_NoAuxAxes   = 1 << 0,     /* original C++ signature */
-    no_aux_axes = auto() # (= 1 << 0)  # only show the mouse position for primary axes
+    no_aux_axes = enum.auto() # (= 1 << 0)  # only show the mouse position for primary axes
     # ImPlotMouseTextFlags_NoFormat    = 1 << 1,     /* original C++ signature */
-    no_format = auto()   # (= 1 << 1)  # axes label formatters won't be used to render text
+    no_format = enum.auto()   # (= 1 << 1)  # axes label formatters won't be used to render text
     # ImPlotMouseTextFlags_ShowAlways  = 1 << 2,     /* original C++ signature */
-    show_always = auto() # (= 1 << 2)  # always display mouse position even if plot not hovered
+    show_always = enum.auto() # (= 1 << 2)  # always display mouse position even if plot not hovered
 
-class ImPlotDragToolFlags_(Enum):    # implot.h:205
+class ImPlotDragToolFlags_(enum.Enum):    # implot.h:205
     """ Options for DragPoint, DragLine, DragRect"""
     # ImPlotDragToolFlags_None      = 0,          /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotDragToolFlags_NoCursors = 1 << 0,     /* original C++ signature */
-    no_cursors = auto() # (= 1 << 0)  # drag tools won't change cursor icons when hovered or held
+    no_cursors = enum.auto() # (= 1 << 0)  # drag tools won't change cursor icons when hovered or held
     # ImPlotDragToolFlags_NoFit     = 1 << 1,     /* original C++ signature */
-    no_fit = auto()     # (= 1 << 1)  # the drag tool won't be considered for plot fits
+    no_fit = enum.auto()     # (= 1 << 1)  # the drag tool won't be considered for plot fits
     # ImPlotDragToolFlags_NoInputs  = 1 << 2,     /* original C++ signature */
-    no_inputs = auto()  # (= 1 << 2)  # lock the tool from user inputs
+    no_inputs = enum.auto()  # (= 1 << 2)  # lock the tool from user inputs
     # ImPlotDragToolFlags_Delayed   = 1 << 3,     /* original C++ signature */
-    delayed = auto()    # (= 1 << 3)  # tool rendering will be delayed one frame; useful when applying position-constraints
+    delayed = enum.auto()    # (= 1 << 3)  # tool rendering will be delayed one frame; useful when applying position-constraints
 
-class ImPlotColormapScaleFlags_(Enum):    # implot.h:214
+class ImPlotColormapScaleFlags_(enum.Enum):    # implot.h:214
     """ Flags for ColormapScale"""
     # ImPlotColormapScaleFlags_None     = 0,          /* original C++ signature */
-    none = auto()     # (= 0)  # default
+    none = enum.auto()     # (= 0)  # default
     # ImPlotColormapScaleFlags_NoLabel  = 1 << 0,     /* original C++ signature */
-    no_label = auto() # (= 1 << 0)  # the colormap axis label will not be displayed
+    no_label = enum.auto() # (= 1 << 0)  # the colormap axis label will not be displayed
     # ImPlotColormapScaleFlags_Opposite = 1 << 1,     /* original C++ signature */
-    opposite = auto() # (= 1 << 1)  # render the colormap label and tick labels on the opposite side
+    opposite = enum.auto() # (= 1 << 1)  # render the colormap label and tick labels on the opposite side
     # ImPlotColormapScaleFlags_Invert   = 1 << 2,     /* original C++ signature */
-    invert = auto()   # (= 1 << 2)  # invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
+    invert = enum.auto()   # (= 1 << 2)  # invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
 
-class ImPlotItemFlags_(Enum):    # implot.h:222
+class ImPlotItemFlags_(enum.Enum):    # implot.h:222
     """ Flags for ANY PlotX function"""
     # ImPlotItemFlags_None     = 0,    /* original C++ signature */
-    none = auto()      # (= 0)
+    none = enum.auto()      # (= 0)
     # ImPlotItemFlags_NoLegend = 1 << 0,     /* original C++ signature */
-    no_legend = auto() # (= 1 << 0)  # the item won't have a legend entry displayed
+    no_legend = enum.auto() # (= 1 << 0)  # the item won't have a legend entry displayed
     # ImPlotItemFlags_NoFit    = 1 << 1,     /* original C++ signature */
-    no_fit = auto()    # (= 1 << 1)  # the item won't be considered for plot fits
+    no_fit = enum.auto()    # (= 1 << 1)  # the item won't be considered for plot fits
 
-class ImPlotLineFlags_(Enum):    # implot.h:229
+class ImPlotLineFlags_(enum.Enum):    # implot.h:229
     """ Flags for PlotLine"""
     # ImPlotLineFlags_None        = 0,           /* original C++ signature */
-    none = auto()      # (= 0)  # default
+    none = enum.auto()      # (= 0)  # default
     # ImPlotLineFlags_Segments    = 1 << 10,     /* original C++ signature */
-    segments = auto()  # (= 1 << 10)  # a line segment will be rendered from every two consecutive points
+    segments = enum.auto()  # (= 1 << 10)  # a line segment will be rendered from every two consecutive points
     # ImPlotLineFlags_Loop        = 1 << 11,     /* original C++ signature */
-    loop = auto()      # (= 1 << 11)  # the last and first point will be connected to form a closed loop
+    loop = enum.auto()      # (= 1 << 11)  # the last and first point will be connected to form a closed loop
     # ImPlotLineFlags_SkipNaN     = 1 << 12,     /* original C++ signature */
-    skip_na_n = auto() # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
+    skip_na_n = enum.auto() # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
     # ImPlotLineFlags_NoClip      = 1 << 13,     /* original C++ signature */
-    no_clip = auto()   # (= 1 << 13)  # markers (if displayed) on the edge of a plot will not be clipped
+    no_clip = enum.auto()   # (= 1 << 13)  # markers (if displayed) on the edge of a plot will not be clipped
     # ImPlotLineFlags_Shaded      = 1 << 14,     /* original C++ signature */
-    shaded = auto()    # (= 1 << 14)  # a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
+    shaded = enum.auto()    # (= 1 << 14)  # a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ImPlotScatterFlags_(Enum):    # implot.h:239
+class ImPlotScatterFlags_(enum.Enum):    # implot.h:239
     """ Flags for PlotScatter"""
     # ImPlotScatterFlags_None   = 0,           /* original C++ signature */
-    none = auto()    # (= 0)  # default
+    none = enum.auto()    # (= 0)  # default
     # ImPlotScatterFlags_NoClip = 1 << 10,     /* original C++ signature */
-    no_clip = auto() # (= 1 << 10)  # markers on the edge of a plot will not be clipped
+    no_clip = enum.auto() # (= 1 << 10)  # markers on the edge of a plot will not be clipped
 
-class ImPlotStairsFlags_(Enum):    # implot.h:245
+class ImPlotStairsFlags_(enum.Enum):    # implot.h:245
     """ Flags for PlotStairs"""
     # ImPlotStairsFlags_None     = 0,           /* original C++ signature */
-    none = auto()     # (= 0)  # default
+    none = enum.auto()     # (= 0)  # default
     # ImPlotStairsFlags_PreStep  = 1 << 10,     /* original C++ signature */
-    pre_step = auto() # (= 1 << 10)  # the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]
+    pre_step = enum.auto() # (= 1 << 10)  # the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]
     # ImPlotStairsFlags_Shaded   = 1 << 11      /* original C++ signature */
-    shaded = auto()   # (= 1 << 11)  # a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
+    shaded = enum.auto()   # (= 1 << 11)  # a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ImPlotShadedFlags_(Enum):    # implot.h:252
+class ImPlotShadedFlags_(enum.Enum):    # implot.h:252
     """ Flags for PlotShaded (placeholder)"""
     # ImPlotShadedFlags_None  = 0     /* original C++ signature */
-    none = auto() # (= 0)  # default
+    none = enum.auto() # (= 0)  # default
 
-class ImPlotBarsFlags_(Enum):    # implot.h:257
+class ImPlotBarsFlags_(enum.Enum):    # implot.h:257
     """ Flags for PlotBars"""
     # ImPlotBarsFlags_None         = 0,           /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotBarsFlags_Horizontal   = 1 << 10,     /* original C++ signature */
-    horizontal = auto() # (= 1 << 10)  # bars will be rendered horizontally on the current y-axis
+    horizontal = enum.auto() # (= 1 << 10)  # bars will be rendered horizontally on the current y-axis
 
-class ImPlotBarGroupsFlags_(Enum):    # implot.h:263
+class ImPlotBarGroupsFlags_(enum.Enum):    # implot.h:263
     """ Flags for PlotBarGroups"""
     # ImPlotBarGroupsFlags_None        = 0,           /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotBarGroupsFlags_Horizontal  = 1 << 10,     /* original C++ signature */
-    horizontal = auto() # (= 1 << 10)  # bar groups will be rendered horizontally on the current y-axis
+    horizontal = enum.auto() # (= 1 << 10)  # bar groups will be rendered horizontally on the current y-axis
     # ImPlotBarGroupsFlags_Stacked     = 1 << 11,     /* original C++ signature */
-    stacked = auto()    # (= 1 << 11)  # items in a group will be stacked on top of each other
+    stacked = enum.auto()    # (= 1 << 11)  # items in a group will be stacked on top of each other
 
-class ImPlotErrorBarsFlags_(Enum):    # implot.h:270
+class ImPlotErrorBarsFlags_(enum.Enum):    # implot.h:270
     """ Flags for PlotErrorBars"""
     # ImPlotErrorBarsFlags_None       = 0,           /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotErrorBarsFlags_Horizontal = 1 << 10,     /* original C++ signature */
-    horizontal = auto() # (= 1 << 10)  # error bars will be rendered horizontally on the current y-axis
+    horizontal = enum.auto() # (= 1 << 10)  # error bars will be rendered horizontally on the current y-axis
 
-class ImPlotStemsFlags_(Enum):    # implot.h:276
+class ImPlotStemsFlags_(enum.Enum):    # implot.h:276
     """ Flags for PlotStems"""
     # ImPlotStemsFlags_None       = 0,           /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotStemsFlags_Horizontal = 1 << 10,     /* original C++ signature */
-    horizontal = auto() # (= 1 << 10)  # stems will be rendered horizontally on the current y-axis
+    horizontal = enum.auto() # (= 1 << 10)  # stems will be rendered horizontally on the current y-axis
 
-class ImPlotInfLinesFlags_(Enum):    # implot.h:282
+class ImPlotInfLinesFlags_(enum.Enum):    # implot.h:282
     """ Flags for PlotInfLines"""
     # ImPlotInfLinesFlags_None       = 0,          /* original C++ signature */
-    none = auto()       # (= 0)  # default
+    none = enum.auto()       # (= 0)  # default
     # ImPlotInfLinesFlags_Horizontal = 1 << 10     /* original C++ signature */
-    horizontal = auto() # (= 1 << 10)  # lines will be rendered horizontally on the current y-axis
+    horizontal = enum.auto() # (= 1 << 10)  # lines will be rendered horizontally on the current y-axis
 
-class ImPlotPieChartFlags_(Enum):    # implot.h:288
+class ImPlotPieChartFlags_(enum.Enum):    # implot.h:288
     """ Flags for PlotPieChart"""
     # ImPlotPieChartFlags_None      = 0,          /* original C++ signature */
-    none = auto()      # (= 0)  # default
+    none = enum.auto()      # (= 0)  # default
     # ImPlotPieChartFlags_Normalize = 1 << 10     /* original C++ signature */
-    normalize = auto() # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
+    normalize = enum.auto() # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
 
-class ImPlotHeatmapFlags_(Enum):    # implot.h:294
+class ImPlotHeatmapFlags_(enum.Enum):    # implot.h:294
     """ Flags for PlotHeatmap"""
     # ImPlotHeatmapFlags_None     = 0,           /* original C++ signature */
-    none = auto()      # (= 0)  # default
+    none = enum.auto()      # (= 0)  # default
     # ImPlotHeatmapFlags_ColMajor = 1 << 10,     /* original C++ signature */
-    col_major = auto() # (= 1 << 10)  # data will be read in column major order
+    col_major = enum.auto() # (= 1 << 10)  # data will be read in column major order
 
-class ImPlotHistogramFlags_(Enum):    # implot.h:300
+class ImPlotHistogramFlags_(enum.Enum):    # implot.h:300
     """ Flags for PlotHistogram and PlotHistogram2D"""
     # ImPlotHistogramFlags_None       = 0,           /* original C++ signature */
-    none = auto()        # (= 0)  # default
+    none = enum.auto()        # (= 0)  # default
     # ImPlotHistogramFlags_Horizontal = 1 << 10,     /* original C++ signature */
-    horizontal = auto()  # (= 1 << 10)  # histogram bars will be rendered horizontally (not supported by PlotHistogram2D)
+    horizontal = enum.auto()  # (= 1 << 10)  # histogram bars will be rendered horizontally (not supported by PlotHistogram2D)
     # ImPlotHistogramFlags_Cumulative = 1 << 11,     /* original C++ signature */
-    cumulative = auto()  # (= 1 << 11)  # each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)
+    cumulative = enum.auto()  # (= 1 << 11)  # each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)
     # ImPlotHistogramFlags_Density    = 1 << 12,     /* original C++ signature */
-    density = auto()     # (= 1 << 12)  # counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set
+    density = enum.auto()     # (= 1 << 12)  # counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set
     # ImPlotHistogramFlags_NoOutliers = 1 << 13,     /* original C++ signature */
-    no_outliers = auto() # (= 1 << 13)  # exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts
+    no_outliers = enum.auto() # (= 1 << 13)  # exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts
     # ImPlotHistogramFlags_ColMajor   = 1 << 14      /* original C++ signature */
-    col_major = auto()   # (= 1 << 14)  # data will be read in column major order (not supported by PlotHistogram)
+    col_major = enum.auto()   # (= 1 << 14)  # data will be read in column major order (not supported by PlotHistogram)
 
-class ImPlotDigitalFlags_(Enum):    # implot.h:310
+class ImPlotDigitalFlags_(enum.Enum):    # implot.h:310
     """ Flags for PlotDigital (placeholder)"""
     # ImPlotDigitalFlags_None = 0     /* original C++ signature */
-    none = auto() # (= 0)  # default
+    none = enum.auto() # (= 0)  # default
 
-class ImPlotImageFlags_(Enum):    # implot.h:315
+class ImPlotImageFlags_(enum.Enum):    # implot.h:315
     """ Flags for PlotImage (placeholder)"""
     # ImPlotImageFlags_None = 0     /* original C++ signature */
-    none = auto() # (= 0)  # default
+    none = enum.auto() # (= 0)  # default
 
-class ImPlotTextFlags_(Enum):    # implot.h:320
+class ImPlotTextFlags_(enum.Enum):    # implot.h:320
     """ Flags for PlotText"""
     # ImPlotTextFlags_None     = 0,           /* original C++ signature */
-    none = auto()     # (= 0)  # default
+    none = enum.auto()     # (= 0)  # default
     # ImPlotTextFlags_Vertical = 1 << 10      /* original C++ signature */
-    vertical = auto() # (= 1 << 10)  # text will be rendered vertically
+    vertical = enum.auto() # (= 1 << 10)  # text will be rendered vertically
 
-class ImPlotDummyFlags_(Enum):    # implot.h:326
+class ImPlotDummyFlags_(enum.Enum):    # implot.h:326
     """ Flags for PlotDummy (placeholder)"""
     # ImPlotDummyFlags_None = 0     /* original C++ signature */
-    none = auto() # (= 0)  # default
+    none = enum.auto() # (= 0)  # default
 
-class ImPlotCond_(Enum):    # implot.h:331
+class ImPlotCond_(enum.Enum):    # implot.h:331
     """ Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
     # ImPlotCond_None   = ImGuiCond_None,        /* original C++ signature */
-    none = auto()   # (= ImGuiCond_.none)  # No condition (always set the variable), same as _Always
+    none = enum.auto()   # (= ImGuiCond_.none)  # No condition (always set the variable), same as _Always
     # ImPlotCond_Always = ImGuiCond_Always,      /* original C++ signature */
-    always = auto() # (= ImGuiCond_.always)  # No condition (always set the variable)
+    always = enum.auto() # (= ImGuiCond_.always)  # No condition (always set the variable)
     # ImPlotCond_Once   = ImGuiCond_Once,        /* original C++ signature */
-    once = auto()   # (= ImGuiCond_.once)  # Set the variable once per runtime session (only the first call will succeed)
+    once = enum.auto()   # (= ImGuiCond_.once)  # Set the variable once per runtime session (only the first call will succeed)
 
-class ImPlotCol_(Enum):    # implot.h:339
+class ImPlotCol_(enum.Enum):    # implot.h:339
     """ Plot styling colors."""
     # item styling colors
     # ImPlotCol_Line,              /* original C++ signature */
-    line = auto()            # (= 0)  # plot line/outline color (defaults to next unused color in current colormap)
+    line = enum.auto()            # (= 0)  # plot line/outline color (defaults to next unused color in current colormap)
     # ImPlotCol_Fill,              /* original C++ signature */
-    fill = auto()            # (= 1)  # plot fill color for bars (defaults to the current line color)
+    fill = enum.auto()            # (= 1)  # plot fill color for bars (defaults to the current line color)
     # ImPlotCol_MarkerOutline,     /* original C++ signature */
-    marker_outline = auto()  # (= 2)  # marker outline color (defaults to the current line color)
+    marker_outline = enum.auto()  # (= 2)  # marker outline color (defaults to the current line color)
     # ImPlotCol_MarkerFill,        /* original C++ signature */
-    marker_fill = auto()     # (= 3)  # marker fill color (defaults to the current line color)
+    marker_fill = enum.auto()     # (= 3)  # marker fill color (defaults to the current line color)
     # ImPlotCol_ErrorBar,          /* original C++ signature */
-    error_bar = auto()       # (= 4)  # error bar color (defaults to ImGuiCol_Text)
+    error_bar = enum.auto()       # (= 4)  # error bar color (defaults to ImGuiCol_Text)
     # plot styling colors
     # ImPlotCol_FrameBg,           /* original C++ signature */
-    frame_bg = auto()        # (= 5)  # plot frame background color (defaults to ImGuiCol_FrameBg)
+    frame_bg = enum.auto()        # (= 5)  # plot frame background color (defaults to ImGuiCol_FrameBg)
     # ImPlotCol_PlotBg,            /* original C++ signature */
-    plot_bg = auto()         # (= 6)  # plot area background color (defaults to ImGuiCol_WindowBg)
+    plot_bg = enum.auto()         # (= 6)  # plot area background color (defaults to ImGuiCol_WindowBg)
     # ImPlotCol_PlotBorder,        /* original C++ signature */
-    plot_border = auto()     # (= 7)  # plot area border color (defaults to ImGuiCol_Border)
+    plot_border = enum.auto()     # (= 7)  # plot area border color (defaults to ImGuiCol_Border)
     # ImPlotCol_LegendBg,          /* original C++ signature */
-    legend_bg = auto()       # (= 8)  # legend background color (defaults to ImGuiCol_PopupBg)
+    legend_bg = enum.auto()       # (= 8)  # legend background color (defaults to ImGuiCol_PopupBg)
     # ImPlotCol_LegendBorder,      /* original C++ signature */
-    legend_border = auto()   # (= 9)  # legend border color (defaults to ImPlotCol_PlotBorder)
+    legend_border = enum.auto()   # (= 9)  # legend border color (defaults to ImPlotCol_PlotBorder)
     # ImPlotCol_LegendText,        /* original C++ signature */
-    legend_text = auto()     # (= 10)  # legend text color (defaults to ImPlotCol_InlayText)
+    legend_text = enum.auto()     # (= 10)  # legend text color (defaults to ImPlotCol_InlayText)
     # ImPlotCol_TitleText,         /* original C++ signature */
-    title_text = auto()      # (= 11)  # plot title text color (defaults to ImGuiCol_Text)
+    title_text = enum.auto()      # (= 11)  # plot title text color (defaults to ImGuiCol_Text)
     # ImPlotCol_InlayText,         /* original C++ signature */
-    inlay_text = auto()      # (= 12)  # color of text appearing inside of plots (defaults to ImGuiCol_Text)
+    inlay_text = enum.auto()      # (= 12)  # color of text appearing inside of plots (defaults to ImGuiCol_Text)
     # ImPlotCol_AxisText,          /* original C++ signature */
-    axis_text = auto()       # (= 13)  # axis label and tick lables color (defaults to ImGuiCol_Text)
+    axis_text = enum.auto()       # (= 13)  # axis label and tick lables color (defaults to ImGuiCol_Text)
     # ImPlotCol_AxisGrid,          /* original C++ signature */
-    axis_grid = auto()       # (= 14)  # axis grid color (defaults to 25% ImPlotCol_AxisText)
+    axis_grid = enum.auto()       # (= 14)  # axis grid color (defaults to 25% ImPlotCol_AxisText)
     # ImPlotCol_AxisTick,          /* original C++ signature */
-    axis_tick = auto()       # (= 15)  # axis tick color (defaults to AxisGrid)
+    axis_tick = enum.auto()       # (= 15)  # axis tick color (defaults to AxisGrid)
     # ImPlotCol_AxisBg,            /* original C++ signature */
-    axis_bg = auto()         # (= 16)  # background color of axis hover region (defaults to transparent)
+    axis_bg = enum.auto()         # (= 16)  # background color of axis hover region (defaults to transparent)
     # ImPlotCol_AxisBgHovered,     /* original C++ signature */
-    axis_bg_hovered = auto() # (= 17)  # axis hover color (defaults to ImGuiCol_ButtonHovered)
+    axis_bg_hovered = enum.auto() # (= 17)  # axis hover color (defaults to ImGuiCol_ButtonHovered)
     # ImPlotCol_AxisBgActive,      /* original C++ signature */
-    axis_bg_active = auto()  # (= 18)  # axis active color (defaults to ImGuiCol_ButtonActive)
+    axis_bg_active = enum.auto()  # (= 18)  # axis active color (defaults to ImGuiCol_ButtonActive)
     # ImPlotCol_Selection,         /* original C++ signature */
-    selection = auto()       # (= 19)  # box-selection color (defaults to yellow)
+    selection = enum.auto()       # (= 19)  # box-selection color (defaults to yellow)
     # ImPlotCol_Crosshairs,        /* original C++ signature */
-    crosshairs = auto()      # (= 20)  # crosshairs color (defaults to ImPlotCol_PlotBorder)
+    crosshairs = enum.auto()      # (= 20)  # crosshairs color (defaults to ImPlotCol_PlotBorder)
     # ImPlotCol_COUNT    /* original C++ signature */
     # }
-    count = auto()           # (= 21)
+    count = enum.auto()           # (= 21)
 
-class ImPlotStyleVar_(Enum):    # implot.h:367
+class ImPlotStyleVar_(enum.Enum):    # implot.h:367
     """ Plot styling variables."""
     # item styling variables
     # ImPlotStyleVar_LineWeight,             /* original C++ signature */
-    line_weight = auto()          # (= 0)  # float,  plot item line weight in pixels
+    line_weight = enum.auto()          # (= 0)  # float,  plot item line weight in pixels
     # ImPlotStyleVar_Marker,                 /* original C++ signature */
-    marker = auto()               # (= 1)  # int,    marker specification
+    marker = enum.auto()               # (= 1)  # int,    marker specification
     # ImPlotStyleVar_MarkerSize,             /* original C++ signature */
-    marker_size = auto()          # (= 2)  # float,  marker size in pixels (roughly the marker's "radius")
+    marker_size = enum.auto()          # (= 2)  # float,  marker size in pixels (roughly the marker's "radius")
     # ImPlotStyleVar_MarkerWeight,           /* original C++ signature */
-    marker_weight = auto()        # (= 3)  # float,  plot outline weight of markers in pixels
+    marker_weight = enum.auto()        # (= 3)  # float,  plot outline weight of markers in pixels
     # ImPlotStyleVar_FillAlpha,              /* original C++ signature */
-    fill_alpha = auto()           # (= 4)  # float,  alpha modifier applied to all plot item fills
+    fill_alpha = enum.auto()           # (= 4)  # float,  alpha modifier applied to all plot item fills
     # ImPlotStyleVar_ErrorBarSize,           /* original C++ signature */
-    error_bar_size = auto()       # (= 5)  # float,  error bar whisker width in pixels
+    error_bar_size = enum.auto()       # (= 5)  # float,  error bar whisker width in pixels
     # ImPlotStyleVar_ErrorBarWeight,         /* original C++ signature */
-    error_bar_weight = auto()     # (= 6)  # float,  error bar whisker weight in pixels
+    error_bar_weight = enum.auto()     # (= 6)  # float,  error bar whisker weight in pixels
     # ImPlotStyleVar_DigitalBitHeight,       /* original C++ signature */
-    digital_bit_height = auto()   # (= 7)  # float,  digital channels bit height (at 1) in pixels
+    digital_bit_height = enum.auto()   # (= 7)  # float,  digital channels bit height (at 1) in pixels
     # ImPlotStyleVar_DigitalBitGap,          /* original C++ signature */
-    digital_bit_gap = auto()      # (= 8)  # float,  digital channels bit padding gap in pixels
+    digital_bit_gap = enum.auto()      # (= 8)  # float,  digital channels bit padding gap in pixels
     # plot styling variables
     # ImPlotStyleVar_PlotBorderSize,         /* original C++ signature */
-    plot_border_size = auto()     # (= 9)  # float,  thickness of border around plot area
+    plot_border_size = enum.auto()     # (= 9)  # float,  thickness of border around plot area
     # ImPlotStyleVar_MinorAlpha,             /* original C++ signature */
-    minor_alpha = auto()          # (= 10)  # float,  alpha multiplier applied to minor axis grid lines
+    minor_alpha = enum.auto()          # (= 10)  # float,  alpha multiplier applied to minor axis grid lines
     # ImPlotStyleVar_MajorTickLen,           /* original C++ signature */
-    major_tick_len = auto()       # (= 11)  # ImVec2, major tick lengths for X and Y axes
+    major_tick_len = enum.auto()       # (= 11)  # ImVec2, major tick lengths for X and Y axes
     # ImPlotStyleVar_MinorTickLen,           /* original C++ signature */
-    minor_tick_len = auto()       # (= 12)  # ImVec2, minor tick lengths for X and Y axes
+    minor_tick_len = enum.auto()       # (= 12)  # ImVec2, minor tick lengths for X and Y axes
     # ImPlotStyleVar_MajorTickSize,          /* original C++ signature */
-    major_tick_size = auto()      # (= 13)  # ImVec2, line thickness of major ticks
+    major_tick_size = enum.auto()      # (= 13)  # ImVec2, line thickness of major ticks
     # ImPlotStyleVar_MinorTickSize,          /* original C++ signature */
-    minor_tick_size = auto()      # (= 14)  # ImVec2, line thickness of minor ticks
+    minor_tick_size = enum.auto()      # (= 14)  # ImVec2, line thickness of minor ticks
     # ImPlotStyleVar_MajorGridSize,          /* original C++ signature */
-    major_grid_size = auto()      # (= 15)  # ImVec2, line thickness of major grid lines
+    major_grid_size = enum.auto()      # (= 15)  # ImVec2, line thickness of major grid lines
     # ImPlotStyleVar_MinorGridSize,          /* original C++ signature */
-    minor_grid_size = auto()      # (= 16)  # ImVec2, line thickness of minor grid lines
+    minor_grid_size = enum.auto()      # (= 16)  # ImVec2, line thickness of minor grid lines
     # ImPlotStyleVar_PlotPadding,            /* original C++ signature */
-    plot_padding = auto()         # (= 17)  # ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    plot_padding = enum.auto()         # (= 17)  # ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
     # ImPlotStyleVar_LabelPadding,           /* original C++ signature */
-    label_padding = auto()        # (= 18)  # ImVec2, padding between axes labels, tick labels, and plot edge
+    label_padding = enum.auto()        # (= 18)  # ImVec2, padding between axes labels, tick labels, and plot edge
     # ImPlotStyleVar_LegendPadding,          /* original C++ signature */
-    legend_padding = auto()       # (= 19)  # ImVec2, legend padding from plot edges
+    legend_padding = enum.auto()       # (= 19)  # ImVec2, legend padding from plot edges
     # ImPlotStyleVar_LegendInnerPadding,     /* original C++ signature */
-    legend_inner_padding = auto() # (= 20)  # ImVec2, legend inner padding from legend edges
+    legend_inner_padding = enum.auto() # (= 20)  # ImVec2, legend inner padding from legend edges
     # ImPlotStyleVar_LegendSpacing,          /* original C++ signature */
-    legend_spacing = auto()       # (= 21)  # ImVec2, spacing between legend entries
+    legend_spacing = enum.auto()       # (= 21)  # ImVec2, spacing between legend entries
     # ImPlotStyleVar_MousePosPadding,        /* original C++ signature */
-    mouse_pos_padding = auto()    # (= 22)  # ImVec2, padding between plot edge and interior info text
+    mouse_pos_padding = enum.auto()    # (= 22)  # ImVec2, padding between plot edge and interior info text
     # ImPlotStyleVar_AnnotationPadding,      /* original C++ signature */
-    annotation_padding = auto()   # (= 23)  # ImVec2, text padding around annotation labels
+    annotation_padding = enum.auto()   # (= 23)  # ImVec2, text padding around annotation labels
     # ImPlotStyleVar_FitPadding,             /* original C++ signature */
-    fit_padding = auto()          # (= 24)  # ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
+    fit_padding = enum.auto()          # (= 24)  # ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
     # ImPlotStyleVar_PlotDefaultSize,        /* original C++ signature */
-    plot_default_size = auto()    # (= 25)  # ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
+    plot_default_size = enum.auto()    # (= 25)  # ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
     # ImPlotStyleVar_PlotMinSize,            /* original C++ signature */
-    plot_min_size = auto()        # (= 26)  # ImVec2, minimum size plot frame can be when shrunk
+    plot_min_size = enum.auto()        # (= 26)  # ImVec2, minimum size plot frame can be when shrunk
     # ImPlotStyleVar_COUNT    /* original C++ signature */
     # }
-    count = auto()                # (= 27)
+    count = enum.auto()                # (= 27)
 
-class ImPlotScale_(Enum):    # implot.h:401
+class ImPlotScale_(enum.Enum):    # implot.h:401
     """ Axis scale"""
     # ImPlotScale_Linear = 0,     /* original C++ signature */
-    linear = auto()  # (= 0)  # default linear scale
+    linear = enum.auto()  # (= 0)  # default linear scale
     # ImPlotScale_Time,           /* original C++ signature */
-    time = auto()    # (= 1)  # date/time scale
+    time = enum.auto()    # (= 1)  # date/time scale
     # ImPlotScale_Log10,          /* original C++ signature */
-    log10 = auto()   # (= 2)  # base 10 logartithmic scale
+    log10 = enum.auto()   # (= 2)  # base 10 logartithmic scale
     # ImPlotScale_SymLog,         /* original C++ signature */
-    sym_log = auto() # (= 3)  # symmetric log scale
+    sym_log = enum.auto() # (= 3)  # symmetric log scale
 
-class ImPlotMarker_(Enum):    # implot.h:409
+class ImPlotMarker_(enum.Enum):    # implot.h:409
     """ Marker specifications."""
     # ImPlotMarker_None = -1,     /* original C++ signature */
-    none = auto()     # (= -1)  # no marker
+    none = enum.auto()     # (= -1)  # no marker
     # ImPlotMarker_Circle,        /* original C++ signature */
-    circle = auto()   # (= 0)  # a circle marker (default)
+    circle = enum.auto()   # (= 0)  # a circle marker (default)
     # ImPlotMarker_Square,        /* original C++ signature */
-    square = auto()   # (= 1)  # a square maker
+    square = enum.auto()   # (= 1)  # a square maker
     # ImPlotMarker_Diamond,       /* original C++ signature */
-    diamond = auto()  # (= 2)  # a diamond marker
+    diamond = enum.auto()  # (= 2)  # a diamond marker
     # ImPlotMarker_Up,            /* original C++ signature */
-    up = auto()       # (= 3)  # an upward-pointing triangle marker
+    up = enum.auto()       # (= 3)  # an upward-pointing triangle marker
     # ImPlotMarker_Down,          /* original C++ signature */
-    down = auto()     # (= 4)  # an downward-pointing triangle marker
+    down = enum.auto()     # (= 4)  # an downward-pointing triangle marker
     # ImPlotMarker_Left,          /* original C++ signature */
-    left = auto()     # (= 5)  # an leftward-pointing triangle marker
+    left = enum.auto()     # (= 5)  # an leftward-pointing triangle marker
     # ImPlotMarker_Right,         /* original C++ signature */
-    right = auto()    # (= 6)  # an rightward-pointing triangle marker
+    right = enum.auto()    # (= 6)  # an rightward-pointing triangle marker
     # ImPlotMarker_Cross,         /* original C++ signature */
-    cross = auto()    # (= 7)  # a cross marker (not fillable)
+    cross = enum.auto()    # (= 7)  # a cross marker (not fillable)
     # ImPlotMarker_Plus,          /* original C++ signature */
-    plus = auto()     # (= 8)  # a plus marker (not fillable)
+    plus = enum.auto()     # (= 8)  # a plus marker (not fillable)
     # ImPlotMarker_Asterisk,      /* original C++ signature */
-    asterisk = auto() # (= 9)  # a asterisk marker (not fillable)
+    asterisk = enum.auto() # (= 9)  # a asterisk marker (not fillable)
     # ImPlotMarker_COUNT    /* original C++ signature */
     # }
-    count = auto()    # (= 10)
+    count = enum.auto()    # (= 10)
 
-class ImPlotColormap_(Enum):    # implot.h:425
+class ImPlotColormap_(enum.Enum):    # implot.h:425
     """ Built-in colormaps"""
     # ImPlotColormap_Deep     = 0,       /* original C++ signature */
-    deep = auto()     # (= 0)  # a.k.a. seaborn deep             (qual=True,  n=10) (default)
+    deep = enum.auto()     # (= 0)  # a.k.a. seaborn deep             (qual=True,  n=10) (default)
     # ImPlotColormap_Dark     = 1,       /* original C++ signature */
-    dark = auto()     # (= 1)  # a.k.a. matplotlib "Set1"        (qual=True,  n=9 )
+    dark = enum.auto()     # (= 1)  # a.k.a. matplotlib "Set1"        (qual=True,  n=9 )
     # ImPlotColormap_Pastel   = 2,       /* original C++ signature */
-    pastel = auto()   # (= 2)  # a.k.a. matplotlib "Pastel1"     (qual=True,  n=9 )
+    pastel = enum.auto()   # (= 2)  # a.k.a. matplotlib "Pastel1"     (qual=True,  n=9 )
     # ImPlotColormap_Paired   = 3,       /* original C++ signature */
-    paired = auto()   # (= 3)  # a.k.a. matplotlib "Paired"      (qual=True,  n=12)
+    paired = enum.auto()   # (= 3)  # a.k.a. matplotlib "Paired"      (qual=True,  n=12)
     # ImPlotColormap_Viridis  = 4,       /* original C++ signature */
-    viridis = auto()  # (= 4)  # a.k.a. matplotlib "viridis"     (qual=False, n=11)
+    viridis = enum.auto()  # (= 4)  # a.k.a. matplotlib "viridis"     (qual=False, n=11)
     # ImPlotColormap_Plasma   = 5,       /* original C++ signature */
-    plasma = auto()   # (= 5)  # a.k.a. matplotlib "plasma"      (qual=False, n=11)
+    plasma = enum.auto()   # (= 5)  # a.k.a. matplotlib "plasma"      (qual=False, n=11)
     # ImPlotColormap_Hot      = 6,       /* original C++ signature */
-    hot = auto()      # (= 6)  # a.k.a. matplotlib/MATLAB "hot"  (qual=False, n=11)
+    hot = enum.auto()      # (= 6)  # a.k.a. matplotlib/MATLAB "hot"  (qual=False, n=11)
     # ImPlotColormap_Cool     = 7,       /* original C++ signature */
-    cool = auto()     # (= 7)  # a.k.a. matplotlib/MATLAB "cool" (qual=False, n=11)
+    cool = enum.auto()     # (= 7)  # a.k.a. matplotlib/MATLAB "cool" (qual=False, n=11)
     # ImPlotColormap_Pink     = 8,       /* original C++ signature */
-    pink = auto()     # (= 8)  # a.k.a. matplotlib/MATLAB "pink" (qual=False, n=11)
+    pink = enum.auto()     # (= 8)  # a.k.a. matplotlib/MATLAB "pink" (qual=False, n=11)
     # ImPlotColormap_Jet      = 9,       /* original C++ signature */
-    jet = auto()      # (= 9)  # a.k.a. MATLAB "jet"             (qual=False, n=11)
+    jet = enum.auto()      # (= 9)  # a.k.a. MATLAB "jet"             (qual=False, n=11)
     # ImPlotColormap_Twilight = 10,      /* original C++ signature */
-    twilight = auto() # (= 10)  # a.k.a. matplotlib "twilight"    (qual=False, n=11)
+    twilight = enum.auto() # (= 10)  # a.k.a. matplotlib "twilight"    (qual=False, n=11)
     # ImPlotColormap_RdBu     = 11,      /* original C++ signature */
-    rd_bu = auto()    # (= 11)  # red/blue, Color Brewer          (qual=False, n=11)
+    rd_bu = enum.auto()    # (= 11)  # red/blue, Color Brewer          (qual=False, n=11)
     # ImPlotColormap_BrBG     = 12,      /* original C++ signature */
-    br_bg = auto()    # (= 12)  # brown/blue-green, Color Brewer  (qual=False, n=11)
+    br_bg = enum.auto()    # (= 12)  # brown/blue-green, Color Brewer  (qual=False, n=11)
     # ImPlotColormap_PiYG     = 13,      /* original C++ signature */
-    pi_yg = auto()    # (= 13)  # pink/yellow-green, Color Brewer (qual=False, n=11)
+    pi_yg = enum.auto()    # (= 13)  # pink/yellow-green, Color Brewer (qual=False, n=11)
     # ImPlotColormap_Spectral = 14,      /* original C++ signature */
-    spectral = auto() # (= 14)  # color spectrum, Color Brewer    (qual=False, n=11)
+    spectral = enum.auto() # (= 14)  # color spectrum, Color Brewer    (qual=False, n=11)
     # ImPlotColormap_Greys    = 15,      /* original C++ signature */
-    greys = auto()    # (= 15)  # white/black                     (qual=False, n=2 )
+    greys = enum.auto()    # (= 15)  # white/black                     (qual=False, n=2 )
 
-class ImPlotLocation_(Enum):    # implot.h:445
+class ImPlotLocation_(enum.Enum):    # implot.h:445
     """ Used to position items on a plot (e.g. legends, labels, etc.)"""
     # ImPlotLocation_Center    = 0,                                              /* original C++ signature */
-    center = auto()     # (= 0)  # center-center
+    center = enum.auto()     # (= 0)  # center-center
     # ImPlotLocation_North     = 1 << 0,                                         /* original C++ signature */
-    north = auto()      # (= 1 << 0)  # top-center
+    north = enum.auto()      # (= 1 << 0)  # top-center
     # ImPlotLocation_South     = 1 << 1,                                         /* original C++ signature */
-    south = auto()      # (= 1 << 1)  # bottom-center
+    south = enum.auto()      # (= 1 << 1)  # bottom-center
     # ImPlotLocation_West      = 1 << 2,                                         /* original C++ signature */
-    west = auto()       # (= 1 << 2)  # center-left
+    west = enum.auto()       # (= 1 << 2)  # center-left
     # ImPlotLocation_East      = 1 << 3,                                         /* original C++ signature */
-    east = auto()       # (= 1 << 3)  # center-right
+    east = enum.auto()       # (= 1 << 3)  # center-right
     # ImPlotLocation_NorthWest = ImPlotLocation_North | ImPlotLocation_West,     /* original C++ signature */
-    north_west = auto() # (= ImPlotLocation_.north | ImPlotLocation_.west)  # top-left
+    north_west = enum.auto() # (= ImPlotLocation_.north | ImPlotLocation_.west)  # top-left
     # ImPlotLocation_NorthEast = ImPlotLocation_North | ImPlotLocation_East,     /* original C++ signature */
-    north_east = auto() # (= ImPlotLocation_.north | ImPlotLocation_.east)  # top-right
+    north_east = enum.auto() # (= ImPlotLocation_.north | ImPlotLocation_.east)  # top-right
     # ImPlotLocation_SouthWest = ImPlotLocation_South | ImPlotLocation_West,     /* original C++ signature */
-    south_west = auto() # (= ImPlotLocation_.south | ImPlotLocation_.west)  # bottom-left
+    south_west = enum.auto() # (= ImPlotLocation_.south | ImPlotLocation_.west)  # bottom-left
     # ImPlotLocation_SouthEast = ImPlotLocation_South | ImPlotLocation_East      /* original C++ signature */
-    south_east = auto() # (= ImPlotLocation_.south | ImPlotLocation_.east)  # bottom-right
+    south_east = enum.auto() # (= ImPlotLocation_.south | ImPlotLocation_.east)  # bottom-right
 
-class ImPlotBin_(Enum):    # implot.h:458
+class ImPlotBin_(enum.Enum):    # implot.h:458
     """ Enums for different automatic histogram binning methods (k = bin count or w = bin width)"""
     # ImPlotBin_Sqrt    = -1,     /* original C++ signature */
-    sqrt = auto()    # (= -1)  # k = sqrt(n)
+    sqrt = enum.auto()    # (= -1)  # k = sqrt(n)
     # ImPlotBin_Sturges = -2,     /* original C++ signature */
-    sturges = auto() # (= -2)  # k = 1 + log2(n)
+    sturges = enum.auto() # (= -2)  # k = 1 + log2(n)
     # ImPlotBin_Rice    = -3,     /* original C++ signature */
-    rice = auto()    # (= -3)  # k = 2 * cbrt(n)
+    rice = enum.auto()    # (= -3)  # k = 2 * cbrt(n)
     # ImPlotBin_Scott   = -4,     /* original C++ signature */
-    scott = auto()   # (= -4)  # w = 3.49 * sigma / cbrt(n)
+    scott = enum.auto()   # (= -4)  # w = 3.49 * sigma / cbrt(n)
 
 class ImPlotPoint:    # implot.h:466
     """ Double precision version of ImVec2 used by ImPlot. Extensible by end users."""

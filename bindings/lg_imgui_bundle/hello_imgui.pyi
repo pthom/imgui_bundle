@@ -2,7 +2,7 @@
 import sys
 from typing import Literal, List, Any, Optional, Tuple
 import numpy as np
-from enum import Enum
+import enum
 import numpy
 
 # Manual code
@@ -219,7 +219,7 @@ class AppWindowParams:
 
 
 """ namespace HelloImGui"""
-class DefaultImGuiWindowType(Enum):
+class DefaultImGuiWindowType(enum.Enum):
     """*
     @@md#DefaultImGuiWindowType
 
@@ -233,9 +233,9 @@ class DefaultImGuiWindowType(Enum):
     @@md
 
     """
-    provide_full_screen_window = auto()     # (= 0)
-    provide_full_screen_dock_space = auto() # (= 1)
-    no_default_window = auto()              # (= 2)
+    provide_full_screen_window = enum.auto()     # (= 0)
+    provide_full_screen_dock_space = enum.auto() # (= 1)
+    no_default_window = enum.auto()              # (= 2)
 
 class ImGuiWindowParams:
     """*
@@ -732,11 +732,11 @@ class RunnerParams:
 @@md
 
 """
-class LogLevel(Enum):
-    debug = auto()   # (= 0)
-    info = auto()    # (= 1)
-    warning = auto() # (= 2)
-    error = auto()   # (= 3)
+class LogLevel(enum.Enum):
+    debug = enum.auto()   # (= 0)
+    info = enum.auto()    # (= 1)
+    warning = enum.auto() # (= 2)
+    error = enum.auto()   # (= 3)
 
 def log(level: LogLevel, format: str) -> None:
     pass
@@ -794,8 +794,8 @@ def run(
 #
 
 # <submodule ImGuiDefaultSettings>
-class ImGuiDefaultSettings: # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
-    # (This corresponds to a C++ namespace. All method are static!)
+class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
+    pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
     def load_default_font_with_font_awesome_icons() -> None:
         pass
