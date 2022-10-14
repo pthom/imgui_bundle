@@ -2111,7 +2111,7 @@ void py_init_module_imgui_main(py::module& m)
     m.def("color_convert_float4_to_u32",    // imgui.h:902
         ImGui::ColorConvertFloat4ToU32, py::arg("in_"));
 
-    m.def("color_convert_rg_bto_hsv",    // imgui.h:903
+    m.def("color_convert_rgb_to_hsv",    // imgui.h:903
         [](float r, float g, float b, float out_h, float out_s, float out_v) -> std::tuple<float, float, float>
         {
             auto ColorConvertRGBtoHSV_adapt_modifiable_immutable_to_return = [](float r, float g, float b, float out_h, float out_s, float out_v) -> std::tuple<float, float, float>
@@ -2127,7 +2127,7 @@ void py_init_module_imgui_main(py::module& m)
             return ColorConvertRGBtoHSV_adapt_modifiable_immutable_to_return(r, g, b, out_h, out_s, out_v);
         },     py::arg("r"), py::arg("g"), py::arg("b"), py::arg("out_h"), py::arg("out_s"), py::arg("out_v"));
 
-    m.def("color_convert_hs_vto_rgb",    // imgui.h:904
+    m.def("color_convert_hsv_to_rgb",    // imgui.h:904
         [](float h, float s, float v, float out_r, float out_g, float out_b) -> std::tuple<float, float, float>
         {
             auto ColorConvertHSVtoRGB_adapt_modifiable_immutable_to_return = [](float h, float s, float v, float out_r, float out_g, float out_b) -> std::tuple<float, float, float>

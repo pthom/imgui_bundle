@@ -1894,10 +1894,10 @@ def color_convert_u32_to_float4(in_: ImU32) -> ImVec4:    # imgui.h:901
 def color_convert_float4_to_u32(in_: ImVec4) -> ImU32:    # imgui.h:902
     pass
 # IMGUI_API void          ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v);    /* original C++ signature */
-def color_convert_rg_bto_hsv(r: float, g: float, b: float, out_h: float, out_s: float, out_v: float) -> Tuple[float, float, float]:    # imgui.h:903
+def color_convert_rgb_to_hsv(r: float, g: float, b: float, out_h: float, out_s: float, out_v: float) -> Tuple[float, float, float]:    # imgui.h:903
     pass
 # IMGUI_API void          ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b);    /* original C++ signature */
-def color_convert_hs_vto_rgb(h: float, s: float, v: float, out_r: float, out_g: float, out_b: float) -> Tuple[float, float, float]:    # imgui.h:904
+def color_convert_hsv_to_rgb(h: float, s: float, v: float, out_r: float, out_g: float, out_b: float) -> Tuple[float, float, float]:    # imgui.h:904
     pass
 
 # Inputs Utilities: Keyboard
