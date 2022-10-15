@@ -3,6 +3,7 @@ from enum import Enum
 
 from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
 from lg_imgui_bundle import imgui_color_text_edit
+
 TextEditor = imgui_color_text_edit.TextEditor
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))

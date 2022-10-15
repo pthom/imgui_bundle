@@ -12,10 +12,10 @@ class Example:
     # This is useful later with dealing with selections, deletion
     # or other operations.
 
-    m_Context: ed.EditorContext = None # Editor context, required to trace a editor state.
-    m_FirstFrame: bool = True          # Flag set for first frame only, some action need to be executed once.
-    m_Links: List[LinkInfo]            # List of live links. It is dynamic unless you want to create read-only view over nodes.
-    m_NextLinkId: int = 100            # Counter to help generate link ids. In real application this will probably based on pointer to user data structure.
+    m_Context: ed.EditorContext = None  # Editor context, required to trace a editor state.
+    m_FirstFrame: bool = True  # Flag set for first frame only, some action need to be executed once.
+    m_Links: List[LinkInfo]  # List of live links. It is dynamic unless you want to create read-only view over nodes.
+    m_NextLinkId: int = 100  # Counter to help generate link ids. In real application this will probably based on pointer to user data structure.
 
     class LinkInfo:
         Id: ed.LinkId
@@ -63,7 +63,7 @@ class Example:
         uniqueId += 1
         nodeA_InputPinId: ed.PinId = uniqueId
         uniqueId += 1
-        nodeA_OutputPinId:ed.PinId = uniqueId
+        nodeA_OutputPinId: ed.PinId = uniqueId
         uniqueId += 1
 
         if self.m_FirstFrame:
@@ -90,9 +90,8 @@ class Example:
         nodeB_OutputPinId: ed.NodeId = uniqueId
         uniqueId += 1
 
-        if (self.m_FirstFrame):
+        if self.m_FirstFrame:
             ed.set_node_position(nodeB_Id, imgui.ImVec2(210, 60))
-
 
         ed.begin_node(nodeB_Id)
         imgui.text("Node B")
@@ -113,7 +112,6 @@ class Example:
         # Submit Links
         for linkInfo in self.m_Links:
             ed.link(linkInfo.Id, linkInfo.InputId, linkInfo.OutputId)
-
 
         #
         # 2) Handle interactions
@@ -137,11 +135,11 @@ class Example:
                 #   * input invalid, output valid - user started to drag new ling from output pin
                 #   * input valid, output valid   - user dragged link over other pin, can be validated
 
-                if inputPinId and outputPinId: # both are valid, let's accept link
+                if inputPinId and outputPinId:  # both are valid, let's accept link
                     # ed.AcceptNewItem(): return true when user release mouse button.
                     if ed.accept_new_item():
                         # Since we accepted new link, lets add one to our list of links.
-                        self.m_Links.append(  ed.LinkId(self.m_NextLinkId), inputPinId, outputPinId  )
+                        self.m_Links.append(ed.LinkId(self.m_NextLinkId), inputPinId, outputPinId)
                         self.m_NextLinkId += 1
 
                         # Draw new link.
@@ -151,7 +149,7 @@ class Example:
                     # by calling ed.RejectNewItem():. This will allow editor to give
                     # visual feedback by changing link thickness and color.
 
-        ed.end_create() # Wraps up object creation action handling.
+        ed.end_create()  # Wraps up object creation action handling.
 
         # Handle deletion action
         if ed.BeginDelete():
@@ -169,7 +167,7 @@ class Example:
                 # You may reject link deletion by calling:
                 # ed.reject_deleted_item()
 
-        ed.end_delete() # Wrap up deletion action
+        ed.end_delete()  # Wrap up deletion action
 
         # End of interaction with editor.
         ed.end()
@@ -187,10 +185,10 @@ class Example:
 def main():
     example = Example()
     runner_params = hello_imgui.RunnerParams()
-    runner_params.callbacks.show_gui = lambda : example.OnFrame()
-    runner_params.callbacks.post_init = lambda : example.OnStart()
-    runner_params.callbacks.before_exit = lambda : example.OnStop()
-    runner_params.app_window_params.window_size = imgui.ImVec2(1200., 800.)
+    runner_params.callbacks.show_gui = lambda: example.OnFrame()
+    runner_params.callbacks.post_init = lambda: example.OnStart()
+    runner_params.callbacks.before_exit = lambda: example.OnStop()
+    runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
     hello_imgui.run(runner_params)
 
 

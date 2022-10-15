@@ -14,7 +14,7 @@ github/BalazsJako/ImGuiColorTextEdit (no commits since 2019)
 
 #### https://github.com/thedmd/imgui-node-editor
 2.3k Stars
-Integrations seems easy
+Integrations seems hard!!!
 
 ### Gizmo
 github/CedricGuillemet/ImGuizmo
@@ -28,7 +28,7 @@ https://github.com/altschuler/imgui-knobs
 
 ### Spinners
 https://github.com/dalerank/imspinner
-
+Integration is impossible, the header is riddled with macro black magic.
 
 texture inspector ?
 https://github.com/andyborrell/imgui_tex_inspect 
