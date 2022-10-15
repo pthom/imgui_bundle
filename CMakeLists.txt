@@ -88,7 +88,7 @@ target_link_libraries(hello_imgui PUBLIC implot)
 
 
 ####################################################
-# Build implot and link it into hello_imgui
+# Build ImguiColorTextEdit and link it into hello_imgui
 ####################################################
 set(imgui_color_text_edit_dir ${CMAKE_CURRENT_LIST_DIR}/external/ImGuiColorTextEdit)
 file(GLOB imgui_color_text_edit_sources ${imgui_color_text_edit_dir}/*.cpp ${imgui_color_text_edit_dir}/*.h)
@@ -97,6 +97,18 @@ target_link_libraries(imgui_color_text_edit PUBLIC imgui)
 target_include_directories(imgui_color_text_edit PUBLIC ${imgui_color_text_edit_dir})
 
 target_link_libraries(hello_imgui PUBLIC imgui_color_text_edit)
+
+
+####################################################
+# Build imgui-node-editor and link it into hello_imgui
+####################################################
+set(imgui_node_editor_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui-node-editor)
+file(GLOB imgui_node_editor_sources ${imgui_node_editor_dir}/*.cpp ${imgui_node_editor_dir}/*.h)
+add_library(imgui_node_editor STATIC ${imgui_node_editor_sources})
+target_link_libraries(imgui_node_editor PUBLIC imgui)
+target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_dir})
+
+target_link_libraries(hello_imgui PUBLIC imgui_node_editor)
 
 
 #########################################################################
@@ -118,6 +130,7 @@ set(python_module_sources
     bindings/pybind_implot.cpp
     bindings/pybind_lg_imgui_bundle.cpp
     bindings/pybind_imgui_color_text_edit.cpp
+    bindings/pybind_imgui_node_editor.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})

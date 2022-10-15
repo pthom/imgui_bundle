@@ -27,9 +27,7 @@ class AppState:
             this_file_code = f.read()
         self.text_editor = TextEditor()
         self.text_editor.set_text(this_file_code)
-        self.text_editor.set_language_definition(
-            TextEditor.LanguageDefinition.c()
-        )
+        self.text_editor.set_language_definition(TextEditor.LanguageDefinition.c())
 
     class RocketState(Enum):
         Init = 0
@@ -247,14 +245,14 @@ def main():
     editor_window = hello_imgui.DockableWindow()
     editor_window.label = "Code for this demo"
     editor_window.dock_space_name = "MainDockSpace"
-    editor_window.gui_function = lambda: editor_gui(app_state)
+    editor_window.gui_function = lambda: demo_editor_gui(app_state)
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
         commands_window,
         logs_window,
         dear_imgui_demo_window,
-        editor_window
+        editor_window,
     ]
 
     ################################################################################################
