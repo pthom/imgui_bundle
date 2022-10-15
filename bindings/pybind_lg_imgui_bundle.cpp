@@ -6,6 +6,7 @@ void py_init_module_hello_imgui(py::module& m);
 void py_init_module_imgui_main(py::module& m);
 void py_init_module_imgui_internal(py::module& m);
 void py_init_module_implot(py::module& m);
+void py_init_module_imgui_color_text_edit(py::module& m);
 
 void py_init_module_lg_imgui_bundle(py::module& m)
 {
@@ -20,4 +21,7 @@ void py_init_module_lg_imgui_bundle(py::module& m)
 
     auto module_implot =  m.def_submodule("implot");
     py_init_module_implot(module_implot);
+
+    auto module_imgui_color_text_edit =  m.def_submodule("imgui_color_text_edit");
+    py_init_module_imgui_color_text_edit(module_imgui_color_text_edit);
 }

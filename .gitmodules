@@ -15,3 +15,6 @@
 	url = https://github.com/epezent/implot.git
 [submodule "implot"]
 	url = https://github.com/epezent/implot.git
+[submodule "external/ImGuiColorTextEdit"]
+	path = external/ImGuiColorTextEdit
+	url = https://github.com/pthom/ImGuiColorTextEdit

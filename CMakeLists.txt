@@ -87,6 +87,18 @@ lg_disable_warning_exception_in_destructor(implot)
 target_link_libraries(hello_imgui PUBLIC implot)
 
 
+####################################################
+# Build implot and link it into hello_imgui
+####################################################
+set(imgui_color_text_edit_dir ${CMAKE_CURRENT_LIST_DIR}/external/ImGuiColorTextEdit)
+file(GLOB imgui_color_text_edit_sources ${imgui_color_text_edit_dir}/*.cpp ${imgui_color_text_edit_dir}/*.h)
+add_library(imgui_color_text_edit STATIC ${imgui_color_text_edit_sources})
+target_link_libraries(imgui_color_text_edit PUBLIC imgui)
+target_include_directories(imgui_color_text_edit PUBLIC ${imgui_color_text_edit_dir})
+
+target_link_libraries(hello_imgui PUBLIC imgui_color_text_edit)
+
+
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
 #########################################################################
@@ -105,6 +117,7 @@ set(python_module_sources
     bindings/pybind_imgui_internal.cpp
     bindings/pybind_implot.cpp
     bindings/pybind_lg_imgui_bundle.cpp
+    bindings/pybind_imgui_color_text_edit.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})

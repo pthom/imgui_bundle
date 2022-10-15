@@ -2,6 +2,8 @@ import os
 from enum import Enum
 
 from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
+from lg_imgui_bundle import imgui_color_text_edit
+TextEditor = imgui_color_text_edit.TextEditor
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -18,6 +20,16 @@ class AppState:
     f: float = 0.0
     counter: int = 0
     rocket_progress: float = 0.0
+    text_editor: TextEditor
+
+    def __init__(self):
+        with open(__file__) as f:
+            this_file_code = f.read()
+        self.text_editor = TextEditor()
+        self.text_editor.set_text(this_file_code)
+        self.text_editor.set_language_definition(
+            TextEditor.LanguageDefinition.c()
+        )
 
     class RocketState(Enum):
         Init = 0
@@ -25,6 +37,26 @@ class AppState:
         Launched = 2
 
     rocket_state: RocketState = RocketState.Init
+
+
+def editor_gui(app_state: AppState):
+    imgui.text("This editor is provided by imgui_color_text_edit")
+    imgui.text("It is able to colorize C, C++, hlsl, Sql, angel_script and lua code")
+
+    editor = app_state.text_editor
+
+    def show_palette_buttons():
+        if imgui.small_button("Dark palette"):
+            editor.set_palette(TextEditor.get_dark_palette())
+        imgui.same_line()
+        if imgui.small_button("Light palette"):
+            editor.set_palette(TextEditor.get_light_palette())
+        imgui.same_line()
+        if imgui.small_button("Retro blue palette"):
+            editor.set_palette(TextEditor.get_retro_blue_palette())
+
+    show_palette_buttons()
+    editor.render("Code")
 
 
 # MyLoadFonts: demonstrate
@@ -211,12 +243,18 @@ def main():
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
     dear_imgui_demo_window.gui_function = imgui.show_demo_window
+    # A window that display the code for this demo  will be placed in "MainDockSpace"
+    editor_window = hello_imgui.DockableWindow()
+    editor_window.label = "Code for this demo"
+    editor_window.dock_space_name = "MainDockSpace"
+    editor_window.gui_function = lambda: editor_gui(app_state)
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
         commands_window,
         logs_window,
         dear_imgui_demo_window,
+        editor_window
     ]
 
     ################################################################################################
