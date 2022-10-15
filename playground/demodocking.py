@@ -2,7 +2,7 @@ import os
 from enum import Enum
 
 from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
-from lg_imgui_bundle import imgui_color_text_edit
+from lg_imgui_bundle import imgui_color_text_edit, imgui_knobs
 
 TextEditor = imgui_color_text_edit.TextEditor
 
@@ -22,6 +22,8 @@ class AppState:
     counter: int = 0
     rocket_progress: float = 0.0
     text_editor: TextEditor
+    knob_int_value: int = 0
+    knob_value: float = 0.
 
     def __init__(self):
         with open(__file__) as f:
@@ -38,7 +40,7 @@ class AppState:
     rocket_state: RocketState = RocketState.Init
 
 
-def editor_gui(app_state: AppState):
+def demo_editor_gui(app_state: AppState):
     imgui.text("This editor is provided by imgui_color_text_edit")
     imgui.text("It is able to colorize C, C++, hlsl, Sql, angel_script and lua code")
 
@@ -56,6 +58,65 @@ def editor_gui(app_state: AppState):
 
     show_palette_buttons()
     editor.render("Code")
+
+
+def demo_knobs(app_state: AppState):
+    knob_types = {
+        "tick":       imgui_knobs.ImGuiKnobVariant_.tick,
+        "dot":        imgui_knobs.ImGuiKnobVariant_.dot,
+        "space":      imgui_knobs.ImGuiKnobVariant_.space,
+        "stepped":    imgui_knobs.ImGuiKnobVariant_.stepped,
+        "wiper":      imgui_knobs.ImGuiKnobVariant_.wiper,
+        "wiper_dot":  imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+        "wiper_only": imgui_knobs.ImGuiKnobVariant_.wiper_only
+    }
+
+    def show_float_knobs(knob_size: float):
+        imgui.push_id(f"{knob_size}_float")
+        for knob_typename, knob_type in knob_types.items():
+            changed, app_state.knob_value = imgui_knobs.knob(
+                knob_typename,
+                p_value=app_state.knob_value,
+                v_min=0.,
+                v_max=1.,
+                speed=0,
+                variant=knob_type,
+                steps=10,
+                size=knob_size
+            )
+            imgui.same_line()
+        imgui.new_line()
+        imgui.pop_id()
+
+    def show_int_knobs(knob_size: float):
+        imgui.push_id(f"{knob_size}_int")
+        for knob_typename, knob_type in knob_types.items():
+            changed, app_state.knob_int_value = imgui_knobs.knob_int(
+                knob_typename,
+                p_value=app_state.knob_int_value,
+                v_min=0,
+                v_max=10,
+                speed=0,
+                variant=knob_type,
+                steps=10,
+                size=knob_size
+            )
+            imgui.same_line()
+        imgui.new_line()
+        imgui.pop_id()
+
+    imgui.text("Some small knobs")
+    show_float_knobs(40.)
+    imgui.separator()
+    imgui.text("Some knobs on integer value")
+    show_int_knobs(60.)
+    imgui.separator()
+    imgui.text("Some big knobs")
+    show_float_knobs(70.)
+
+
+
+
 
 
 # MyLoadFonts: demonstrate
@@ -242,11 +303,18 @@ def main():
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
     dear_imgui_demo_window.gui_function = imgui.show_demo_window
-    # A window that display the code for this demo  will be placed in "MainDockSpace"
+    # A window that demonstrate the colored text editor (ImGuiColorTextEdit)
+    # (https://github.com/BalazsJako/ImGuiColorTextEdit)
     editor_window = hello_imgui.DockableWindow()
     editor_window.label = "Code for this demo"
     editor_window.dock_space_name = "MainDockSpace"
     editor_window.gui_function = lambda: demo_editor_gui(app_state)
+    # A window that demonstrate knobs
+    # (https://github.com/altschuler/imgui-knobs)
+    knobs_window = hello_imgui.DockableWindow()
+    knobs_window.label = "Knobs"
+    knobs_window.dock_space_name = "MainDockSpace"
+    knobs_window.gui_function = lambda: demo_knobs(app_state)
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
@@ -254,6 +322,7 @@ def main():
         logs_window,
         dear_imgui_demo_window,
         editor_window,
+        knobs_window
     ]
 
     ################################################################################################

@@ -21,3 +21,6 @@
 [submodule "external/imgui-node-editor"]
 	path = external/imgui-node-editor
 	url = https://github.com/thedmd/imgui-node-editor
+[submodule "external/imgui-knobs"]
+	path = external/imgui-knobs
+	url = https://github.com/altschuler/imgui-knobs

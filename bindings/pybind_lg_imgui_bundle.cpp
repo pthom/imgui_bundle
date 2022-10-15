@@ -8,6 +8,8 @@ void py_init_module_imgui_internal(py::module& m);
 void py_init_module_implot(py::module& m);
 void py_init_module_imgui_color_text_edit(py::module& m);
 void py_init_module_imgui_node_editor(py::module& m);
+void py_init_module_imgui_knobs(py::module& m);
+
 
 void py_init_module_lg_imgui_bundle(py::module& m)
 {
@@ -28,4 +30,7 @@ void py_init_module_lg_imgui_bundle(py::module& m)
 
     auto module_imgui_node_editor =  m.def_submodule("imgui_node_editor");
     py_init_module_imgui_node_editor(module_imgui_node_editor);
+
+    auto module_imgui_knobs =  m.def_submodule("imgui_knobs");
+    py_init_module_imgui_knobs(module_imgui_knobs);
 }

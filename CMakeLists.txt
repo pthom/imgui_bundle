@@ -111,6 +111,17 @@ target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_dir})
 target_link_libraries(hello_imgui PUBLIC imgui_node_editor)
 
 
+####################################################
+# Build imgui-knobs and link it into hello_imgui
+####################################################
+set(imgui_knobs_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui-knobs)
+file(GLOB imgui_knobs_sources ${imgui_knobs_dir}/*.cpp ${imgui_knobs_dir}/*.h)
+add_library(imgui_knobs STATIC ${imgui_knobs_sources})
+target_link_libraries(imgui_knobs PUBLIC imgui)
+target_include_directories(imgui_knobs PUBLIC ${imgui_knobs_dir})
+
+target_link_libraries(hello_imgui PUBLIC imgui_knobs)
+
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
 #########################################################################
@@ -131,6 +142,7 @@ set(python_module_sources
     bindings/pybind_lg_imgui_bundle.cpp
     bindings/pybind_imgui_color_text_edit.cpp
     bindings/pybind_imgui_node_editor.cpp
+    bindings/pybind_imgui_knobs.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
