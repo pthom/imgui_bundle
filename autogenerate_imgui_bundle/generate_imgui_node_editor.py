@@ -35,6 +35,10 @@ def autogenerate_imgui_node_editor():
         ]
     )
 
+    # options.class_template_options.add_specialization(
+    #
+    # )
+
     litgen.write_generated_code_for_files(
         options,
         input_cpp_header_files=input_cpp_headers,

@@ -24,7 +24,7 @@ class Example:
 
     def OnStart(self):
         config = ed.Config()
-        config.settings_file = "BasicInteraction.json"
+        # config.settings_file = "BasicInteraction.json"    # const char * !!!!
         self.m_Context = ed.create_editor(config)
 
     def OnStop(self):
