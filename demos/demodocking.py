@@ -140,7 +140,7 @@ def demo_file_dialog(app_state: AppState):
         if ifd.FileDialog.instance().has_result():
             # get_results: plural form - ShaderOpenDialog supports multi-selection
             res = ifd.FileDialog.instance().get_results()
-            filenames = [ f.path() for f in res ]
+            filenames = [f.path() for f in res]
             app_state.file_dialog_selection = "\n  ".join(filenames)
 
         ifd.FileDialog.instance().close()
