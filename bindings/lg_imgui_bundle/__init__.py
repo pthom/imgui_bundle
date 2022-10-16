@@ -5,6 +5,7 @@ from lg_imgui_bundle._lg_imgui_bundle import implot as implot
 from lg_imgui_bundle._lg_imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
 from lg_imgui_bundle._lg_imgui_bundle import imgui_node_editor as imgui_node_editor
 from lg_imgui_bundle._lg_imgui_bundle import imgui_knobs as imgui_knobs
+from lg_imgui_bundle._lg_imgui_bundle import im_file_dialog as im_file_dialog
 from lg_imgui_bundle import icons_fontawesome
 from lg_imgui_bundle._lg_imgui_bundle import __version__
 

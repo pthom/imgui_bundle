@@ -2,7 +2,7 @@ import os
 from enum import Enum
 
 from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
-from lg_imgui_bundle import imgui_color_text_edit, imgui_knobs
+from lg_imgui_bundle import imgui_color_text_edit
 
 TextEditor = imgui_color_text_edit.TextEditor
 
@@ -23,7 +23,8 @@ class AppState:
     rocket_progress: float = 0.0
     text_editor: TextEditor
     knob_int_value: int = 0
-    knob_value: float = 0.
+    knob_value: float = 0.0
+    file_dialog_selection: str = ""
 
     def __init__(self):
         with open(__file__) as f:
@@ -41,7 +42,7 @@ class AppState:
 
 
 def demo_editor_gui(app_state: AppState):
-    imgui.text("This editor is provided by imgui_color_text_edit")
+    imgui.text("This editor is provided by ImGuiColorTextEdit (https://github.com/BalazsJako/ImGuiColorTextEdit)")
     imgui.text("It is able to colorize C, C++, hlsl, Sql, angel_script and lua code")
 
     editor = app_state.text_editor
@@ -61,14 +62,16 @@ def demo_editor_gui(app_state: AppState):
 
 
 def demo_knobs(app_state: AppState):
+    from lg_imgui_bundle import imgui_knobs
+
     knob_types = {
-        "tick":       imgui_knobs.ImGuiKnobVariant_.tick,
-        "dot":        imgui_knobs.ImGuiKnobVariant_.dot,
-        "space":      imgui_knobs.ImGuiKnobVariant_.space,
-        "stepped":    imgui_knobs.ImGuiKnobVariant_.stepped,
-        "wiper":      imgui_knobs.ImGuiKnobVariant_.wiper,
-        "wiper_dot":  imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-        "wiper_only": imgui_knobs.ImGuiKnobVariant_.wiper_only
+        "tick": imgui_knobs.ImGuiKnobVariant_.tick,
+        "dot": imgui_knobs.ImGuiKnobVariant_.dot,
+        "space": imgui_knobs.ImGuiKnobVariant_.space,
+        "stepped": imgui_knobs.ImGuiKnobVariant_.stepped,
+        "wiper": imgui_knobs.ImGuiKnobVariant_.wiper,
+        "wiper_dot": imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+        "wiper_only": imgui_knobs.ImGuiKnobVariant_.wiper_only,
     }
 
     def show_float_knobs(knob_size: float):
@@ -77,12 +80,12 @@ def demo_knobs(app_state: AppState):
             changed, app_state.knob_value = imgui_knobs.knob(
                 knob_typename,
                 p_value=app_state.knob_value,
-                v_min=0.,
-                v_max=1.,
+                v_min=0.0,
+                v_max=1.0,
                 speed=0,
                 variant=knob_type,
                 steps=10,
-                size=knob_size
+                size=knob_size,
             )
             imgui.same_line()
         imgui.new_line()
@@ -99,24 +102,60 @@ def demo_knobs(app_state: AppState):
                 speed=0,
                 variant=knob_type,
                 steps=10,
-                size=knob_size
+                size=knob_size,
             )
             imgui.same_line()
         imgui.new_line()
         imgui.pop_id()
 
     imgui.text("Some small knobs")
-    show_float_knobs(40.)
+    show_float_knobs(40.0)
     imgui.separator()
     imgui.text("Some knobs on integer value")
-    show_int_knobs(60.)
+    show_int_knobs(60.0)
     imgui.separator()
     imgui.text("Some big knobs")
-    show_float_knobs(70.)
+    show_float_knobs(70.0)
 
 
+def demo_file_dialog(app_state: AppState):
+    from lg_imgui_bundle import im_file_dialog as ifd
 
+    if imgui.button("Open file"):
+        ifd.FileDialog.instance().open(
+            "ShaderOpenDialog",
+            "Open a shader",
+            "Image file (*.png*.jpg*.jpeg*.bmp*.tga).png,.jpg,.jpeg,.bmp,.tga,.*",
+            True,
+        )
+    if imgui.button("Open directory"):
+        ifd.FileDialog.instance().open("DirectoryOpenDialog", "Open a directory", "")
+    if imgui.button("Save file"):
+        ifd.FileDialog.instance().save("ShaderSaveDialog", "Save a shader", "*.sprj .sprj")
+    if len(app_state.file_dialog_selection) > 0:
+        imgui.text(f"Last file selection:\n  {app_state.file_dialog_selection}")
 
+    # file dialogs
+    if ifd.FileDialog.instance().is_done("ShaderOpenDialog"):
+        if ifd.FileDialog.instance().has_result():
+            # get_results: plural form - ShaderOpenDialog supports multi-selection
+            res = ifd.FileDialog.instance().get_results()
+            filenames = [ f.path() for f in res ]
+            app_state.file_dialog_selection = "\n  ".join(filenames)
+
+        ifd.FileDialog.instance().close()
+
+    if ifd.FileDialog.instance().is_done("DirectoryOpenDialog"):
+        if ifd.FileDialog.instance().has_result():
+            app_state.file_dialog_selection = ifd.FileDialog.instance().get_result().path()
+
+        ifd.FileDialog.instance().close()
+
+    if ifd.FileDialog.instance().is_done("ShaderSaveDialog"):
+        if ifd.FileDialog.instance().has_result():
+            app_state.file_dialog_selection = ifd.FileDialog.instance().get_result().path()
+
+        ifd.FileDialog.instance().close()
 
 
 # MyLoadFonts: demonstrate
@@ -315,6 +354,12 @@ def main():
     knobs_window.label = "Knobs"
     knobs_window.dock_space_name = "MainDockSpace"
     knobs_window.gui_function = lambda: demo_knobs(app_state)
+    # A window that demonstrate ImFileDialog
+    # (https://github.com/dfranx/ImFileDialog)
+    file_dialog_window = hello_imgui.DockableWindow()
+    file_dialog_window.label = "File Dialog"
+    file_dialog_window.dock_space_name = "MainDockSpace"
+    file_dialog_window.gui_function = lambda: demo_file_dialog(app_state)
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
@@ -322,7 +367,8 @@ def main():
         logs_window,
         dear_imgui_demo_window,
         editor_window,
-        knobs_window
+        knobs_window,
+        file_dialog_window,
     ]
 
     ################################################################################################

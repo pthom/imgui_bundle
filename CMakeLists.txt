@@ -132,6 +132,7 @@ set(python_module_sources
     bindings/pybind_imgui_color_text_edit.cpp
     bindings/pybind_imgui_node_editor.cpp
     bindings/pybind_imgui_knobs.cpp
+    bindings/pybind_im_file_dialog.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
