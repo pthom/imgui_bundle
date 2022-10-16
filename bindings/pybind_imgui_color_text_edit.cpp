@@ -3,7 +3,7 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-#include "TextEditor.h"
+#include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace py = pybind11;
 

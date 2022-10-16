@@ -3,7 +3,7 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-#include "imgui-knobs.h"  // Change this include to the library you are binding
+#include "imgui-knobs/imgui-knobs.h"  // Change this include to the library you are binding
 
 namespace py = pybind11;
 

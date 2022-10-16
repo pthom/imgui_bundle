@@ -3,8 +3,8 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-#include "imgui_node_editor_internal.h"
-#include "imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor_internal.h"
+#include "imgui-node-editor/imgui_node_editor.h"
 
 
 namespace py = pybind11;

@@ -4,8 +4,8 @@
 #include <pybind11/numpy.h>
 
 #include "imgui.h"
-#include "implot.h"
-#include "implot_internal.h"
+#include "implot/implot.h"
+#include "implot/implot_internal.h"
 #include "litgen_glue_code.h"
 
 

@@ -70,57 +70,48 @@ if (WIN32)
     set_target_properties(hello_imgui PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
+####################################################
+#
+####################################################
+function(add_simple_external_library target_name target_subdir)
+    set(target_source_dir ${CMAKE_CURRENT_LIST_DIR}/external/${target_subdir})
+    file(GLOB target_sources ${target_source_dir}/*.cpp ${target_source_dir}/*.h)
+    add_library(${target_name} STATIC ${target_sources})
+    target_link_libraries(${target_name} PUBLIC imgui)
+    target_include_directories(${target_name} PUBLIC ${target_source_dir}/..)
+
+    target_link_libraries(hello_imgui PUBLIC ${target_name})
+endfunction()
+
 
 ####################################################
 # Build implot and link it into hello_imgui
 ####################################################
-set(implot_dir ${CMAKE_CURRENT_LIST_DIR}/external/implot)
-file(GLOB implot_sources ${implot_dir}/*.cpp ${implot_dir}/*.h)
-add_library(implot STATIC ${implot_sources})
-target_link_libraries(implot PUBLIC imgui)
-target_include_directories(implot PUBLIC ${implot_dir})
+add_simple_external_library(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
 lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
 lg_disable_warning_exception_in_destructor(implot)
-
-# finally link implot into hello_imgui
-target_link_libraries(hello_imgui PUBLIC implot)
 
 
 ####################################################
 # Build ImguiColorTextEdit and link it into hello_imgui
 ####################################################
-set(imgui_color_text_edit_dir ${CMAKE_CURRENT_LIST_DIR}/external/ImGuiColorTextEdit)
-file(GLOB imgui_color_text_edit_sources ${imgui_color_text_edit_dir}/*.cpp ${imgui_color_text_edit_dir}/*.h)
-add_library(imgui_color_text_edit STATIC ${imgui_color_text_edit_sources})
-target_link_libraries(imgui_color_text_edit PUBLIC imgui)
-target_include_directories(imgui_color_text_edit PUBLIC ${imgui_color_text_edit_dir})
-
-target_link_libraries(hello_imgui PUBLIC imgui_color_text_edit)
+add_simple_external_library(imgui_color_text_edit ImGuiColorTextEdit)
 
 
 ####################################################
 # Build imgui-node-editor and link it into hello_imgui
 ####################################################
-set(imgui_node_editor_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui-node-editor)
-file(GLOB imgui_node_editor_sources ${imgui_node_editor_dir}/*.cpp ${imgui_node_editor_dir}/*.h)
-add_library(imgui_node_editor STATIC ${imgui_node_editor_sources})
-target_link_libraries(imgui_node_editor PUBLIC imgui)
-target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_dir})
-
-target_link_libraries(hello_imgui PUBLIC imgui_node_editor)
+add_simple_external_library(imgui_node_editor imgui-node-editor)
 
 
 ####################################################
 # Build imgui-knobs and link it into hello_imgui
 ####################################################
-set(imgui_knobs_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui-knobs)
-file(GLOB imgui_knobs_sources ${imgui_knobs_dir}/*.cpp ${imgui_knobs_dir}/*.h)
-add_library(imgui_knobs STATIC ${imgui_knobs_sources})
-target_link_libraries(imgui_knobs PUBLIC imgui)
-target_include_directories(imgui_knobs PUBLIC ${imgui_knobs_dir})
+add_simple_external_library(imgui_knobs imgui-knobs)
 
-target_link_libraries(hello_imgui PUBLIC imgui_knobs)
+
+
 
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui

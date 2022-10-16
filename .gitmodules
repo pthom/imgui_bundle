@@ -24,3 +24,6 @@
 [submodule "external/imgui-knobs"]
 	path = external/imgui-knobs
 	url = https://github.com/altschuler/imgui-knobs
+[submodule "external/ImFileDialog"]
+	path = external/ImFileDialog
+	url = https://github.com/pthom/ImFileDialog.git
