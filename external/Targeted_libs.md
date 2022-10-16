@@ -13,22 +13,23 @@ github/BalazsJako/ImGuiColorTextEdit (no commits since 2019)
 ### DONE: Knobs
 https://github.com/altschuler/imgui-knobs
 
-### Node editor
+### Spinner
+https://github.com/dalerank/imspinner/blob/master/imspinner.h
 
-#### https://github.com/thedmd/imgui-node-editor
+### File browser
+https://github.com/dfranx/ImFileDialog
+https://github.com/AirGuanZ/imgui-filebrowser
+https://github.com/gallickgunner/ImGui-Addons
+
+
+
+#### Node editor https://github.com/thedmd/imgui-node-editor
 2.3k Stars
 Integrations seems hard!!!
 
-### Gizmo
-github/CedricGuillemet/ImGuizmo
+### ImGuizmo
+https://github/CedricGuillemet/ImGuizmo
 Easy
-
-### Markdown
-https://github.com/juliettef/imgui_markdown
 
 ## texture inspector ?
 https://github.com/andyborrell/imgui_tex_inspect 
-
-### INCOMPATIBLE: Spinners
-https://github.com/dalerank/imspinner
-Integration is impossible, the header is riddled with macro black magic.

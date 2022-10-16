@@ -3,7 +3,7 @@ project(lg_imgui_bundle VERSION "0.1.0")
 
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 
 
 ####################################################
@@ -71,47 +71,45 @@ if (WIN32)
 endif()
 
 ####################################################
-#
+# add_simple_external_library : will add a target
+# when its folder structure is simple
 ####################################################
 function(add_simple_external_library target_name target_subdir)
-    set(target_source_dir ${CMAKE_CURRENT_LIST_DIR}/external/${target_subdir})
-    file(GLOB target_sources ${target_source_dir}/*.cpp ${target_source_dir}/*.h)
-    add_library(${target_name} STATIC ${target_sources})
+    add_library(${target_name} STATIC)
     target_link_libraries(${target_name} PUBLIC imgui)
+    set(target_source_dir ${CMAKE_CURRENT_LIST_DIR}/external/${target_subdir})
     target_include_directories(${target_name} PUBLIC ${target_source_dir}/..)
 
     target_link_libraries(hello_imgui PUBLIC ${target_name})
+endfunction()
+
+function(add_simple_external_library_with_sources target_name target_subdir)
+    add_simple_external_library(${target_name} ${target_subdir})
+    set(target_source_dir ${CMAKE_CURRENT_LIST_DIR}/external/${target_subdir})
+    file(GLOB target_sources ${target_source_dir}/*.cpp ${target_source_dir}/*.h)
+    target_sources(${target_name}  PRIVATE ${target_sources})
 endfunction()
 
 
 ####################################################
 # Build implot and link it into hello_imgui
 ####################################################
-add_simple_external_library(implot implot)
+add_simple_external_library_with_sources(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
 lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
 lg_disable_warning_exception_in_destructor(implot)
 
 
-####################################################
-# Build ImguiColorTextEdit and link it into hello_imgui
-####################################################
-add_simple_external_library(imgui_color_text_edit ImGuiColorTextEdit)
-
-
-####################################################
-# Build imgui-node-editor and link it into hello_imgui
-####################################################
-add_simple_external_library(imgui_node_editor imgui-node-editor)
-
-
-####################################################
-# Build imgui-knobs and link it into hello_imgui
-####################################################
-add_simple_external_library(imgui_knobs imgui-knobs)
-
-
-
+# Build ImguiColorTextEdit
+add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
+# Build imgui-node-editor
+add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
+# Build imgui-knobs
+add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
+# Build ImFileDialog
+add_simple_external_library(im_file_dialog ImFileDialog)
+target_sources(im_file_dialog  PRIVATE external/ImFileDialog/ImFileDialog.h external/ImFileDialog/ImFileDialog.cpp)
+target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello_imgui/internal)
 
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
@@ -145,3 +143,13 @@ lg_setup_module(
 )
 
 target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
+
+
+####################################################
+# Devel only
+####################################################
+option(LG_IMGUI_BUNDLE_DEVMODE OFF)
+mark_as_advanced(LG_IMGUI_BUNDLE_DEVMODE)
+if (LG_IMGUI_BUNDLE_DEVMODE)
+    add_subdirectory(external/_cpp_tests)
+endif()

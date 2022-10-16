@@ -1,0 +1,3 @@
+include(hello_imgui_add_app)
+hello_imgui_add_app(imfiledialog_test imfiledialog_test.main.cpp)
+target_link_libraries(imfiledialog_test PRIVATE im_file_dialog)
