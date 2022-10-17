@@ -201,9 +201,12 @@ class TextEditor:
             pass
 
 
-    def set_language_definition(self, a_language_def: LanguageDefinition) -> None:
+    def set_language_definition(
+        self,
+        a_language_def: TextEditor.LanguageDefinition
+        ) -> None:
         pass
-    def get_language_definition(self) -> LanguageDefinition:
+    def get_language_definition(self) -> TextEditor.LanguageDefinition:
         pass
 
     def get_palette(self) -> Palette:
@@ -257,11 +260,11 @@ class TextEditor:
     def set_colorizer_enable(self, a_value: bool) -> None:
         pass
 
-    def get_cursor_position(self) -> Coordinates:
+    def get_cursor_position(self) -> TextEditor.Coordinates:
         pass
     def set_cursor_position(
         self,
-        a_position: Coordinates,
+        a_position: TextEditor.Coordinates,
         cursor_line_on_page: int = -1
         ) -> None:
         pass
@@ -323,15 +326,15 @@ class TextEditor:
     def move_end(self, a_select: bool = False) -> None:
         pass
 
-    def set_selection_start(self, a_position: Coordinates) -> None:
+    def set_selection_start(self, a_position: TextEditor.Coordinates) -> None:
         pass
-    def set_selection_end(self, a_position: Coordinates) -> None:
+    def set_selection_end(self, a_position: TextEditor.Coordinates) -> None:
         pass
     def set_selection(
         self,
-        a_start: Coordinates,
-        a_end: Coordinates,
-        a_mode: SelectionMode = SelectionMode.normal
+        a_start: TextEditor.Coordinates,
+        a_end: TextEditor.Coordinates,
+        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal
         ) -> None:
         pass
     def select_word_under_cursor(self) -> None:

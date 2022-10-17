@@ -29,7 +29,7 @@ class Path:
 
 class FileDialog:
     # (static method)
-    def instance() -> ifd.FileDialog:
+    def instance() -> FileDialog:
         pass
 
     def __init__(self) -> None:

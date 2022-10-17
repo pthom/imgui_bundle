@@ -493,11 +493,11 @@ class ImPlotDummyFlags_(enum.Enum):    # implot.h:326
 class ImPlotCond_(enum.Enum):    # implot.h:331
     """ Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
     # ImPlotCond_None   = ImGuiCond_None,        /* original C++ signature */
-    none = enum.auto()   # (= ImGuiCond_.none)  # No condition (always set the variable), same as _Always
+    none = enum.auto()   # (= ImGuiCond_None)  # No condition (always set the variable), same as _Always
     # ImPlotCond_Always = ImGuiCond_Always,      /* original C++ signature */
-    always = enum.auto() # (= ImGuiCond_.always)  # No condition (always set the variable)
+    always = enum.auto() # (= ImGuiCond_Always)  # No condition (always set the variable)
     # ImPlotCond_Once   = ImGuiCond_Once,        /* original C++ signature */
-    once = enum.auto()   # (= ImGuiCond_.once)  # Set the variable once per runtime session (only the first call will succeed)
+    once = enum.auto()   # (= ImGuiCond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
 class ImPlotCol_(enum.Enum):    # implot.h:339
     """ Plot styling colors."""

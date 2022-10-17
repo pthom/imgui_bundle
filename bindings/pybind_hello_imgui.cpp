@@ -213,9 +213,9 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("log",
-        [](LogLevel level, const char * const format)
+        [](HelloImGui::LogLevel level, const char * const format)
         {
-            auto Log_adapt_variadic_format = [](LogLevel level, const char * const format)
+            auto Log_adapt_variadic_format = [](HelloImGui::LogLevel level, const char * const format)
             {
                 HelloImGui::Log(level, "%s", format);
             };
@@ -231,7 +231,7 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("run",
-        py::overload_cast<RunnerParams &>(HelloImGui::Run), py::arg("runner_params"));
+        py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run), py::arg("runner_params"));
 
     m.def("run",
         py::overload_cast<VoidFunction, ImVec2, std::string>(HelloImGui::Run), py::arg("gui_fonction"), py::arg("window_size") = ImVec2(800.f, 600.f), py::arg("window_title") = "");

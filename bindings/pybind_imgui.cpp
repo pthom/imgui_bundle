@@ -3359,19 +3359,8 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiTextFilter =
         py::class_<ImGuiTextFilter>    // imgui.h:2297
-            (m, "ImGuiTextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"")
-        .def(py::init<const char *>(),    // imgui.h:2299
-            py::arg("default_filter") = "")
-        .def("draw",    // imgui.h:2300
-            &ImGuiTextFilter::Draw,
-            py::arg("label") = "Filter (inc,-exc)", py::arg("width") = 0.0f,
-            "Helper calling InputText+Build")
-        .def("pass_filter",    // imgui.h:2301
-            &ImGuiTextFilter::PassFilter, py::arg("text"), py::arg("text_end") = py::none())
-        .def("build",    // imgui.h:2302
-            &ImGuiTextFilter::Build)
-        .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")    // imgui.h:2319
-        ;
+            (m, "ImGuiTextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"");
+
     { // inner classes & enums of ImGuiTextFilter
         auto pyClassImGuiTextFilter_ClassImGuiTextRange =
             py::class_<ImGuiTextFilter::ImGuiTextRange>    // imgui.h:2307
@@ -3384,10 +3373,40 @@ void py_init_module_imgui_main(py::module& m)
             ;
     } // end of inner classes & enums of ImGuiTextFilter
 
+    pyClassImGuiTextFilter
+        .def(py::init<const char *>(),    // imgui.h:2299
+            py::arg("default_filter") = "")
+        .def("draw",    // imgui.h:2300
+            &ImGuiTextFilter::Draw,
+            py::arg("label") = "Filter (inc,-exc)", py::arg("width") = 0.0f,
+            "Helper calling InputText+Build")
+        .def("pass_filter",    // imgui.h:2301
+            &ImGuiTextFilter::PassFilter, py::arg("text"), py::arg("text_end") = py::none())
+        .def("build",    // imgui.h:2302
+            &ImGuiTextFilter::Build)
+        .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")    // imgui.h:2319
+        ;
+
 
     auto pyClassImGuiStorage =
         py::class_<ImGuiStorage>    // imgui.h:2351
-            (m, "ImGuiStorage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.")
+            (m, "ImGuiStorage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.");
+
+    { // inner classes & enums of ImGuiStorage
+        auto pyClassImGuiStorage_ClassImGuiStoragePair =
+            py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2354
+                (pyClassImGuiStorage, "ImGuiStoragePair", "[Internal]")
+            .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2356
+            .def(py::init<ImGuiID, int>(),    // imgui.h:2358
+                py::arg("_key"), py::arg("_val_i"))
+            .def(py::init<ImGuiID, float>(),    // imgui.h:2359
+                py::arg("_key"), py::arg("_val_f"))
+            .def(py::init<ImGuiID, void *>(),    // imgui.h:2360
+                py::arg("_key"), py::arg("_val_p"))
+            ;
+    } // end of inner classes & enums of ImGuiStorage
+
+    pyClassImGuiStorage
         .def(py::init<>()) // implicit default constructor
         .def("get_int",    // imgui.h:2369
             &ImGuiStorage::GetInt, py::arg("key"), py::arg("default_val") = 0)
@@ -3427,19 +3446,6 @@ void py_init_module_imgui_main(py::module& m)
         .def("build_sort_by_key",    // imgui.h:2391
             &ImGuiStorage::BuildSortByKey, "For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once.")
         ;
-    { // inner classes & enums of ImGuiStorage
-        auto pyClassImGuiStorage_ClassImGuiStoragePair =
-            py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2354
-                (pyClassImGuiStorage, "ImGuiStoragePair", "[Internal]")
-            .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2356
-            .def(py::init<ImGuiID, int>(),    // imgui.h:2358
-                py::arg("_key"), py::arg("_val_i"))
-            .def(py::init<ImGuiID, float>(),    // imgui.h:2359
-                py::arg("_key"), py::arg("_val_f"))
-            .def(py::init<ImGuiID, void *>(),    // imgui.h:2360
-                py::arg("_key"), py::arg("_val_p"))
-            ;
-    } // end of inner classes & enums of ImGuiStorage
 
 
     auto pyClassImGuiListClipper =

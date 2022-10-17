@@ -99,7 +99,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
                 (pyClassTextEditor, "Glyph", "")
             .def_readwrite("m_char", &TextEditor::Glyph::mChar, "")
             .def_readwrite("m_color_index", &TextEditor::Glyph::mColorIndex, "")
-            .def(py::init<Char, PaletteIndex>(),
+            .def(py::init<Char, TextEditor::PaletteIndex>(),
                 py::arg("a_char"), py::arg("a_color_index"))
             ;
         auto pyClassTextEditor_ClassLanguageDefinition =
