@@ -3,7 +3,17 @@ from __future__ import annotations
 from typing import List
 from lg_imgui_bundle import hello_imgui, imgui, imgui_node_editor
 
-ed = imgui_node_editor.ax.NodeEditor
+ed = imgui_node_editor
+
+
+def unique_id():
+    # Add a static variable to the function
+    if not hasattr(unique_id, "last_id"):
+        unique_id.last_id = 1
+
+    r = unique_id.last_id
+    unique_id.last_id += 1
+    return r
 
 
 class Example:
@@ -16,6 +26,9 @@ class Example:
     m_FirstFrame: bool = True  # Flag set for first frame only, some action need to be executed once.
     m_Links: List[LinkInfo]  # List of live links. It is dynamic unless you want to create read-only view over nodes.
     m_NextLinkId: int = 100  # Counter to help generate link ids. In real application this will probably based on pointer to user data structure.
+
+    def __init__(self):
+        self.m_Links = []
 
     class LinkInfo:
         Id: ed.LinkId
@@ -52,58 +65,47 @@ class Example:
         # Start interaction with editor.
         ed.begin("My Editor", imgui.ImVec2(0.0, 0.0))
 
-        uniqueId = 1
-
         #
         # 1) Commit known data to editor
         #
 
         # Submit Node A
-        nodeA_Id: ed.NodeId = uniqueId
-        uniqueId += 1
-        nodeA_InputPinId: ed.PinId = uniqueId
-        uniqueId += 1
-        nodeA_OutputPinId: ed.PinId = uniqueId
-        uniqueId += 1
+        nodeA_Id = ed.NodeId(unique_id())
+        nodeA_InputPinId = ed.PinId(unique_id())
+        nodeA_OutputPinId = ed.PinId(unique_id())
 
         if self.m_FirstFrame:
-            ed.set_node_position(nodeA_Id, imgui.ImVec2(10, 10))
-
+            ed.set_node_position(nodeA_Id, imgui.ImVec2(200, -300))
         ed.begin_node(nodeA_Id)
         imgui.text("Node A")
-        ed.begin_pin(nodeA_InputPinId, ed.PinKind.Input)
+        ed.begin_pin(nodeA_InputPinId, ed.PinKind.input)
         imgui.text("-> In")
         ed.end_pin()
         imgui.same_line()
-        ed.begin_pin(nodeA_OutputPinId, ed.PinKind.Output)
+        ed.begin_pin(nodeA_OutputPinId, ed.PinKind.output)
         imgui.text("Out ->")
         ed.end_pin()
         ed.end_node()
 
         # Submit Node B
-        nodeB_Id: ed.NodeId = uniqueId
-        uniqueId += 1
-        nodeB_InputPinId1: ed.NodeId = uniqueId
-        uniqueId += 1
-        nodeB_InputPinId2: ed.NodeId = uniqueId
-        uniqueId += 1
-        nodeB_OutputPinId: ed.NodeId = uniqueId
-        uniqueId += 1
+        nodeB_Id = ed.NodeId(unique_id())
+        nodeB_InputPinId1 = ed.PinId(unique_id())
+        nodeB_InputPinId2 = ed.PinId(unique_id())
+        nodeB_OutputPinId = ed.PinId(unique_id())
 
         if self.m_FirstFrame:
             ed.set_node_position(nodeB_Id, imgui.ImVec2(210, 60))
-
         ed.begin_node(nodeB_Id)
         imgui.text("Node B")
         self.ImGuiEx_BeginColumn()
-        ed.begin_pin(nodeB_InputPinId1, ed.PinKind.Input)
+        ed.begin_pin(nodeB_InputPinId1, ed.PinKind.input)
         imgui.text("-> In1")
         ed.end_pin()
-        ed.begin_pin(nodeB_InputPinId2, ed.PinKind.Input)
+        ed.begin_pin(nodeB_InputPinId2, ed.PinKind.input)
         imgui.text("-> In2")
         ed.end_pin()
         self.ImGuiEx_NextColumn()
-        ed.begin_pin(nodeB_OutputPinId, ed.PinKind.Output)
+        ed.begin_pin(nodeB_OutputPinId, ed.PinKind.output)
         imgui.text("Out ->")
         ed.end_pin()
         self.ImGuiEx_EndColumn()
@@ -119,8 +121,8 @@ class Example:
         # Handle creation action, returns true if editor want to create new object (node or link)
         if ed.begin_create():
 
-            inputPinId: ed.PinId
-            outputPinId: ed.PinId
+            inputPinId = ed.PinId()
+            outputPinId = ed.PinId()
 
             if ed.query_new_link(inputPinId, outputPinId):
                 # QueryNewLink returns true if editor want to create new link between pins.
@@ -152,7 +154,7 @@ class Example:
         ed.end_create()  # Wraps up object creation action handling.
 
         # Handle deletion action
-        if ed.BeginDelete():
+        if ed.begin_delete():
 
             # There may be many links marked for deletion, let's loop over them.
             deletedLinkId: ed.LinkId
@@ -175,7 +177,7 @@ class Example:
         if self.m_FirstFrame:
             ed.navigate_to_content(0.0)
 
-        ed.SetCurrentEditor(None)
+        ed.set_current_editor(None)
 
         self.m_FirstFrame = False
 
@@ -190,6 +192,8 @@ def main():
     runner_params.callbacks.before_exit = lambda: example.OnStop()
     runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
     hello_imgui.run(runner_params)
+
+    example.OnStop()
 
 
 if __name__ == "__main__":
