@@ -1,14 +1,10 @@
 """ImFileDialog: based on https://github.com/dfranx/ImFileDialog
 Thanks to dfranx (https://github.com/dfranx)
 """
-
-
 # type: ignore
-import sys
-from typing import Literal, List, Any, Optional, Tuple, Dict
+from typing import List, Any
 import numpy as np
-import enum
-import numpy
+
 
 class Path:
     def __init__(self, path: str) -> None:
