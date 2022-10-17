@@ -19,11 +19,23 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_imgui() -> None:
     # Generate for imgui.h
     options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
+
+    # Workaround internal compiler error on MSVC:
+    # See failure logs: https://github.com/pthom/lg_imgui_bundle/actions/runs/3267470437/jobs/5372682867
+    # Commit 55d4d342efebb306bafd63b4fb72085f27f59e7d
+    options_imgui.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
+
     generator = litgen.LitgenGenerator(options_imgui)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
+
+    # Workaround internal compiler error on MSVC:
+    # See failure logs: https://github.com/pthom/lg_imgui_bundle/actions/runs/3267470437/jobs/5372682867
+    # Commit 55d4d342efebb306bafd63b4fb72085f27f59e7d
+    options_imgui_stdlib.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
+
     generator.lg_context.options = options_imgui_stdlib
     generator.process_cpp_file(CPP_HEADERS_DIR + "/misc/cpp/imgui_stdlib.h")
 

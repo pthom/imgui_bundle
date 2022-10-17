@@ -1481,27 +1481,6 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("is_open"), py::arg("cond") = 0,
         "set next TreeNode/CollapsingHeader open state.");
 
-    m.def("selectable",    // imgui.h:622
-        py::overload_cast<const char *, bool, ImGuiSelectableFlags, const ImVec2 &>(ImGui::Selectable),
-        py::arg("label"), py::arg("selected") = false, py::arg("flags") = 0, py::arg("size") = ImVec2(0, 0),
-        "\"bool selected\" carry the selection state (read-only). Selectable() is clicked is returns True so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height");
-
-    m.def("selectable",    // imgui.h:623
-        [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const ImVec2 & size = ImVec2(0, 0)) -> std::tuple<bool, bool>
-        {
-            auto Selectable_adapt_modifiable_immutable_to_return = [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const ImVec2 & size = ImVec2(0, 0)) -> std::tuple<bool, bool>
-            {
-                bool * p_selected_adapt_modifiable = & p_selected;
-
-                bool r = ImGui::Selectable(label, p_selected_adapt_modifiable, flags, size);
-                return std::make_tuple(r, p_selected);
-            };
-
-            return Selectable_adapt_modifiable_immutable_to_return(label, p_selected, flags, size);
-        },
-        py::arg("label"), py::arg("p_selected"), py::arg("flags") = 0, py::arg("size") = ImVec2(0, 0),
-        "\"bool* p_selected\" point to the selection state (read-write), as a convenient helper.");
-
     m.def("begin_list_box",    // imgui.h:631
         ImGui::BeginListBox,
         py::arg("label"), py::arg("size") = ImVec2(0, 0),
@@ -1533,64 +1512,6 @@ void py_init_module_imgui_main(py::module& m)
 
             return ListBox_adapt_c_string_list(label, current_item, items, height_in_items);
         },     py::arg("label"), py::arg("current_item"), py::arg("items"), py::arg("height_in_items") = -1);
-
-    m.def("plot_lines",    // imgui.h:638
-        [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
-        {
-            auto PlotLines_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
-            {
-                // convert py::array to C standard buffer (const)
-                const void * values_from_pyarray = values.data();
-                py::ssize_t values_count = values.shape()[0];
-                char values_type = values.dtype().char_();
-                if (values_type != 'f')
-                    throw std::runtime_error(std::string(R"msg(
-                            Bad type!  Expected a numpy array of native type:
-                                        const float *
-                                    Which is equivalent to
-                                        f
-                                    (using py::array::dtype().char_() as an id)
-                        )msg"));
-
-                // process stride default value (which was a sizeof in C++)
-                int values_stride = stride;
-                if (values_stride == -1)
-                    values_stride = (int)values.itemsize();
-
-                ImGui::PlotLines(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
-            };
-
-            PlotLines_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
-        },     py::arg("label"), py::arg("values"), py::arg("values_offset") = 0, py::arg("overlay_text") = py::none(), py::arg("scale_min") = FLT_MAX, py::arg("scale_max") = FLT_MAX, py::arg("graph_size") = ImVec2(0, 0), py::arg("stride") = -1);
-
-    m.def("plot_histogram",    // imgui.h:640
-        [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
-        {
-            auto PlotHistogram_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
-            {
-                // convert py::array to C standard buffer (const)
-                const void * values_from_pyarray = values.data();
-                py::ssize_t values_count = values.shape()[0];
-                char values_type = values.dtype().char_();
-                if (values_type != 'f')
-                    throw std::runtime_error(std::string(R"msg(
-                            Bad type!  Expected a numpy array of native type:
-                                        const float *
-                                    Which is equivalent to
-                                        f
-                                    (using py::array::dtype().char_() as an id)
-                        )msg"));
-
-                // process stride default value (which was a sizeof in C++)
-                int values_stride = stride;
-                if (values_stride == -1)
-                    values_stride = (int)values.itemsize();
-
-                ImGui::PlotHistogram(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
-            };
-
-            PlotHistogram_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
-        },     py::arg("label"), py::arg("values"), py::arg("values_offset") = 0, py::arg("overlay_text") = py::none(), py::arg("scale_min") = FLT_MAX, py::arg("scale_max") = FLT_MAX, py::arg("graph_size") = ImVec2(0, 0), py::arg("stride") = -1);
 
     m.def("value",    // imgui.h:645
         py::overload_cast<const char *, bool>(ImGui::Value), py::arg("prefix"), py::arg("b"));
@@ -4045,25 +3966,6 @@ void py_init_module_imgui_main(py::module& m)
 
             return InputText_adapt_modifiable_immutable_to_return(label, str, flags, user_data);
         },     py::arg("label"), py::arg("str"), py::arg("flags") = 0, py::arg("user_data") = py::none());
-
-    m.def("input_text_multiline",    // imgui_stdlib.h:16
-        [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
-        {
-            auto InputTextMultiline_adapt_exclude_params = [](const char * label, std::string * str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
-            {
-                auto r = ImGui::InputTextMultiline(label, str, size, flags, NULL, user_data);
-                return r;
-            };
-            auto InputTextMultiline_adapt_modifiable_immutable_to_return = [&InputTextMultiline_adapt_exclude_params](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
-            {
-                std::string * str_adapt_modifiable = & str;
-
-                bool r = InputTextMultiline_adapt_exclude_params(label, str_adapt_modifiable, size, flags, user_data);
-                return std::make_tuple(r, str);
-            };
-
-            return InputTextMultiline_adapt_modifiable_immutable_to_return(label, str, size, flags, user_data);
-        },     py::arg("label"), py::arg("str"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("user_data") = py::none());
 
     m.def("input_text_with_hint",    // imgui_stdlib.h:17
         [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
