@@ -18,8 +18,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ["3.7", "3.10", "pypy-3.8"]
+        platform: [windows-latest]
+        python-version: ["3.10"]
+#        platform: [windows-latest, macos-latest, ubuntu-latest]
+#        python-version: ["3.7", "3.10", "pypy-3.8"]
 
     steps:
     - uses: actions/checkout@v3
@@ -40,8 +42,11 @@ jobs:
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_requirements.sh
 
-    - name: Build and install
-      run: pip install --verbose .[test]
+    - name: Setup interactive tmate session
+      uses: mxschmitt/action-tmate@v3
 
-    - name: Test
-      run: pytest
+#    - name: Build and install
+#      run: pip install --verbose .[test]
+#
+#    - name: Test
+#      run: pytest
