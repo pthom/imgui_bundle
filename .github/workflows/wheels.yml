@@ -17,6 +17,7 @@ env:
   CIBW_TEST_REQUIRES: pytest
   # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
   CIBW_TEST_SKIP: "pp3*"
+  MACOSX_DEPLOYMENT_TARGET: "10.15"
 
 jobs:
   build_sdist:
