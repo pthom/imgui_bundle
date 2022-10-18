@@ -18,7 +18,7 @@ class ImplotContextHolder:
         implot.destroy_context()
 
     @staticmethod
-    def _instance() -> ImplotContextHolder:  # type: ignore
+    def _instance():  # type: ignore
         if not hasattr(ImplotContextHolder._instance, "_inst"):
             ImplotContextHolder._instance._inst = ImplotContextHolder()
         return ImplotContextHolder._instance._inst
@@ -49,7 +49,7 @@ class ImguiNodeEditorContextHolder:
         imgui_node_editor.destroy_editor(self._context)
 
     @staticmethod
-    def _instance(config: Optional[imgui_node_editor.Config] = None) -> ImguiNodeEditorContextHolder:  # type: ignore
+    def _instance(config: Optional[imgui_node_editor.Config] = None):  # type: ignore
         if not hasattr(ImguiNodeEditorContextHolder._instance, "_inst"):
             ImguiNodeEditorContextHolder._instance._inst = ImguiNodeEditorContextHolder(config)
         return ImguiNodeEditorContextHolder._instance._inst
