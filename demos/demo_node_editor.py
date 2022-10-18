@@ -51,7 +51,7 @@ class LinkInfo:
     output_id: ed.PinId
 
 
-class Example:
+class DemoNodeEditor:
     # Struct to hold basic information about connection between
     # pins. Note that connection (aka. link) has its own ID.
     # This is useful later with dealing with selections, deletion
@@ -69,6 +69,14 @@ class Example:
 
     def __init__(self):
         self.links = []
+
+    def __enter__(self):
+        self.on_start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_traceback):
+        self.on_stop()
+        return  False
 
     def on_start(self):
         config = ed.Config()
@@ -220,14 +228,27 @@ class Example:
 
 
 def main():
-    example = Example()
-    runner_params = hello_imgui.RunnerParams()
-    runner_params.callbacks.show_gui = lambda: example.on_frame()
-    runner_params.callbacks.post_init = lambda: example.on_start()
-    runner_params.callbacks.before_exit = lambda: example.on_stop()
-    runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
-    hello_imgui.run(runner_params)
+    def demo_bare():
+        demo = DemoNodeEditor()
+        demo.on_start()
 
+        runner_params = hello_imgui.RunnerParams()
+        runner_params.callbacks.show_gui = lambda: demo.on_frame()
+        runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
+        hello_imgui.run(runner_params)
+
+        demo.on_stop()
+
+    def demo_with_context_manager():
+        """Same demo, with a context manager (that will call __exit__ and __enter__)"""
+        with DemoNodeEditor() as example:
+            runner_params = hello_imgui.RunnerParams()
+            runner_params.callbacks.show_gui = lambda: example.on_frame()
+            runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
+            hello_imgui.run(runner_params)
+
+    # demo_with_context_manager()
+    demo_bare()
 
 if __name__ == "__main__":
     main()
