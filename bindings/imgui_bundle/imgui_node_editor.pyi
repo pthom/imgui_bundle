@@ -9,23 +9,44 @@ EditorContext = Any
 
 
 class NodeId:
-    def __init__(self, id: int):
+    def __init__(self, id: int=0):
         pass
     def id(self) -> int:
+        pass
+    @staticmethod
+    def create() -> NodeId:
+        """Creates a new NodeId with a unique id
+
+        Create your node once per session, not at each frame!
+        """
         pass
 
 
 class LinkId:
-    def __init__(self, id: int):
+    def __init__(self, id: int=0):
         pass
     def id(self) -> int:
+        pass
+    @staticmethod
+    def create() -> LinkId:
+        """Creates a new LinkId with a unique id
+
+        Create your node once per session, not at each frame!
+        """
         pass
 
 
 class PinId:
-    def __init__(self, id: int):
+    def __init__(self, id: int=0):
         pass
     def id(self) -> int:
+        pass
+    @staticmethod
+    def create() -> NodeId:
+        """Creates a new NodeId with a unique id
+
+        Create your node once per session, not at each frame!
+        """
         pass
 
 

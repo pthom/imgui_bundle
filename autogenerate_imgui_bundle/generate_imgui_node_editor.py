@@ -23,6 +23,8 @@ def autogenerate_imgui_node_editor():
     # Configure options
     # options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options = litgen.LitgenOptions()
+    options.fn_return_force_policy_reference_for_references__regex = r".*"
+    options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.namespace_root__regex = "^ax$|^NodeEditor$"
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
