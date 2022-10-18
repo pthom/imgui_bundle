@@ -160,11 +160,13 @@ def demo_file_dialog(app_state: AppState):
 
 def demo_implot():
     from demo_implot import demo_drag_rects
+
     demo_drag_rects()
 
 
 def demo_node_editor():
     from demo_node_editor import DemoNodeEditor
+
     if not hasattr(demo_node_editor, "demo_class"):
         demo_node_editor.demo = DemoNodeEditor()
     demo_node_editor.demo.on_frame()
@@ -172,12 +174,14 @@ def demo_node_editor():
 
 def demo_spinner():
     from imgui_bundle import imspinner
-    color= imgui.ImColor(0.3, 0.5, 0.9, 1.)
-    imspinner.spinner_moving_dots("spinner_moving_dots", 3., color, 28.)
+
+    color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
+    imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
     imgui.same_line()
-    imspinner.spinner_arc_rotation("spinner_arc_rotation", 10., 4., color)
+    imspinner.spinner_arc_rotation("spinner_arc_rotation", 10.0, 4.0, color)
     imgui.same_line()
-    imspinner.spinner_ang_triple("spinner_arc_fade", 5., 8., 11., 2.5, color, color, color)
+    imspinner.spinner_ang_triple("spinner_arc_fade", 5.0, 8.0, 11.0, 2.5, color, color, color)
+
 
 # MyLoadFonts: demonstrate
 # * how to load additional fonts

@@ -222,7 +222,9 @@ def demo_node_editor_app():
 
     runner_params = hello_imgui.RunnerParams()
 
-    runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    runner_params.imgui_window_params.default_imgui_window_type = (
+        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     runner_params.imgui_window_params.enable_viewports = True
 
     node_window = hello_imgui.DockableWindow()
