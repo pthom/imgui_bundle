@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from imgui_bundle import implot, imgui_node_editor
 from typing import Optional
 
@@ -12,6 +10,7 @@ class ImplotContextHolder:
     In bigger applications, it is advised to use the standard way,
     i.e. call yourself implot.create_context() and implot.destroy_context() when needed
     """
+
     def __init__(self):
         implot.create_context()
 
@@ -19,7 +18,7 @@ class ImplotContextHolder:
         implot.destroy_context()
 
     @staticmethod
-    def _instance() -> ImplotContextHolder:
+    def _instance() -> ImplotContextHolder:  # type: ignore
         if not hasattr(ImplotContextHolder._instance, "_inst"):
             ImplotContextHolder._instance._inst = ImplotContextHolder()
         return ImplotContextHolder._instance._inst
@@ -50,7 +49,7 @@ class ImguiNodeEditorContextHolder:
         imgui_node_editor.destroy_editor(self._context)
 
     @staticmethod
-    def _instance(config: Optional[imgui_node_editor.Config] = None) -> ImguiNodeEditorContextHolder:
+    def _instance(config: Optional[imgui_node_editor.Config] = None) -> ImguiNodeEditorContextHolder:  # type: ignore
         if not hasattr(ImguiNodeEditorContextHolder._instance, "_inst"):
             ImguiNodeEditorContextHolder._instance._inst = ImguiNodeEditorContextHolder(config)
         return ImguiNodeEditorContextHolder._instance._inst
@@ -63,5 +62,3 @@ class ImguiNodeEditorContextHolder:
     def set_as_current_editor():
         instance = ImguiNodeEditorContextHolder._instance()
         imgui_node_editor.set_current_editor(instance._context)
-
-
