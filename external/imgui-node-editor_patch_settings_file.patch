@@ -1,0 +1,43 @@
+diff --git a/imgui_node_editor.cpp b/imgui_node_editor.cpp
+index 3e15392..f56d4ae 100644
+--- a/imgui_node_editor.cpp
++++ b/imgui_node_editor.cpp
+@@ -5736,7 +5736,7 @@ std::string ed::Config::Load()
+             LoadSettings(const_cast<char*>(data.data()), UserPointer);
+         }
+     }
+-    else if (SettingsFile)
++    else if (!SettingsFile.empty())
+     {
+         std::ifstream file(SettingsFile);
+         if (file)
+@@ -5782,7 +5782,7 @@ bool ed::Config::Save(const std::string& data, SaveReasonFlags flags)
+     {
+         return SaveSettings(data.c_str(), data.size(), flags, UserPointer);
+     }
+-    else if (SettingsFile)
++    else if (!SettingsFile.empty())
+     {
+         std::ofstream settingsFile(SettingsFile);
+         if (settingsFile)
+diff --git a/imgui_node_editor.h b/imgui_node_editor.h
+index a173cde..12fca88 100644
+--- a/imgui_node_editor.h
++++ b/imgui_node_editor.h
+@@ -18,6 +18,7 @@
+ # include <imgui.h>
+ # include <cstdint> // std::uintXX_t
+ # include <utility> // std::move
++#include <string>
+ 
+ 
+ //------------------------------------------------------------------------------
+@@ -85,7 +86,7 @@ struct Config
+ {
+     using CanvasSizeModeAlias = ax::NodeEditor::CanvasSizeMode;
+ 
+-    const char*             SettingsFile;
++    std::string             SettingsFile;
+     ConfigSession           BeginSaveSession;
+     ConfigSession           EndSaveSession;
+     ConfigSaveSettings      SaveSettings;

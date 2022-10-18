@@ -1,10 +1,10 @@
 import os
+import patch
+import logging
 
 import litgen
 
 from codemanip.code_utils import join_string_by_pipe_char
-
-from litgen.options_customized.litgen_options_imgui import litgen_options_imgui, ImguiOptionsType
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -13,6 +13,23 @@ CPP_HEADERS_DIR = BUNDLE_DIR + "/external/imgui-node-editor"
 CPP_GENERATED_PYBIND_DIR = BUNDLE_DIR + "/bindings"
 assert os.path.isdir(CPP_HEADERS_DIR)
 assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
+
+
+def apply_patch():
+    """
+    Applies a simple patch to imgui-node-editor that will
+    change the type of Config::SettingsFile from char* to std::string
+    """
+
+    this_dir = os.path.realpath(os.path.dirname(__file__))
+    target_dir = f"{this_dir}/../external/imgui-node-editor"
+
+    patch_file = f"{target_dir}/../imgui-node-editor_patch_settings_file.patch"
+    patch_content = patch.fromfile(patch_file)
+
+    patch_success = patch_content.apply(root=target_dir)
+    if not patch_success:
+        logging.warning("apply_imgui_string_patch failed")
 
 
 def autogenerate_imgui_node_editor():
@@ -54,4 +71,5 @@ def autogenerate_imgui_node_editor():
 
 if __name__ == "__main__":
     print("autogenerate_imgui_node_editor")
+    apply_patch()
     autogenerate_imgui_node_editor()

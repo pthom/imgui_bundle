@@ -101,7 +101,7 @@ void py_init_module_imgui_node_editor(py::module& m)
     auto pyClassConfig =
         py::class_<ax::NodeEditor::Config>
             (m, "Config", "")
-        .def_readonly("settings_file", &ax::NodeEditor::Config::SettingsFile, "")
+        .def_readwrite("settings_file", &ax::NodeEditor::Config::SettingsFile, "")
         .def_readwrite("user_pointer", &ax::NodeEditor::Config::UserPointer, "")
         .def_readwrite("custom_zoom_levels", &ax::NodeEditor::Config::CustomZoomLevels, "")
         .def_readwrite("canvas_size_mode", &ax::NodeEditor::Config::CanvasSizeMode, "")

@@ -72,7 +72,7 @@ class Example:
 
     def on_start(self):
         config = ed.Config()
-        # config.settings_file = "BasicInteraction.json"    # const char * !!!!
+        config.settings_file = "BasicInteraction.json"
         self.context = ed.create_editor(config)
 
     def on_stop(self):
