@@ -10,6 +10,7 @@ ed = imgui_node_editor
 
 class IdProvider:
     """A simple utility to obtain unique ids, and to be able to restore them at each frame"""
+
     _next_id: int = 1
 
     def next_id(self):
@@ -27,8 +28,8 @@ ID = IdProvider()
 
 
 class ImGuiEx:
-    """Some additional tools for ImGui. Provide columns via begin/end_group
-    """
+    """Some additional tools for ImGui. Provide columns via begin/end_group"""
+
     @staticmethod
     def begin_column():
         imgui.begin_group()
@@ -76,7 +77,7 @@ class DemoNodeEditor:
 
     def __exit__(self, exc_type, exc_val, exc_traceback):
         self.on_stop()
-        return  False
+        return False
 
     def on_start(self):
         config = ed.Config()
@@ -112,7 +113,7 @@ class DemoNodeEditor:
         ed.begin_node(node_a_id)
 
         @run_anon_block
-        def _fill_node_a():       # This function emulates an anonymous block and
+        def _fill_node_a():  # This function emulates an anonymous block and
             imgui.text("Node A")  # will be evaluated right after its definition
             ed.begin_pin(node_a_input_pin_id, ed.PinKind.input)
             imgui.text("-> In")
@@ -136,8 +137,8 @@ class DemoNodeEditor:
         ed.begin_node(node_b_id)
 
         @run_anon_block
-        def _fill_node_b():        # This function emulates an anonymous block and
-            imgui.text("Node B")   # will be evaluated right after its definition
+        def _fill_node_b():  # This function emulates an anonymous block and
+            imgui.text("Node B")  # will be evaluated right after its definition
             ImGuiEx.begin_column()
             ed.begin_pin(node_b_input_pin_id1, ed.PinKind.input)
             imgui.text("-> In1")
@@ -249,6 +250,7 @@ def main():
 
     # demo_with_context_manager()
     demo_bare()
+
 
 if __name__ == "__main__":
     main()

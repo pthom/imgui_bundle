@@ -23,8 +23,5 @@ __all__ = [
     "hello_imgui",
     "implot",
     "icons_fontawesome",
-    "run_anon_block"
-    "__version__",
+    "run_anon_block" "__version__",
 ]
-
-
