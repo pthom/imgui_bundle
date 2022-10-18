@@ -6,6 +6,7 @@ from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text
 from imgui_bundle._imgui_bundle import imgui_node_editor as imgui_node_editor
 from imgui_bundle._imgui_bundle import imgui_knobs as imgui_knobs
 from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
+from imgui_bundle._imgui_bundle import imspinner as imspinner
 from imgui_bundle import icons_fontawesome
 from imgui_bundle.run_anon_block import run_anon_block as run_anon_block
 from imgui_bundle.context_holders import (

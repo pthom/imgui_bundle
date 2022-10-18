@@ -170,6 +170,15 @@ def demo_node_editor():
     demo_node_editor.demo.on_frame()
 
 
+def demo_spinner():
+    from imgui_bundle import imspinner
+    color= imgui.ImColor(0.3, 0.5, 0.9, 1.)
+    imspinner.spinner_moving_dots("spinner_moving_dots", 3., color, 28.)
+    imgui.same_line()
+    imspinner.spinner_arc_rotation("spinner_arc_rotation", 10., 4., color)
+    imgui.same_line()
+    imspinner.spinner_ang_triple("spinner_arc_fade", 5., 8., 11., 2.5, color, color, color)
+
 # MyLoadFonts: demonstrate
 # * how to load additional fonts
 # * how to use assets from the local assets/ folder
@@ -382,6 +391,11 @@ def main():
     node_window.label = "Node Editor"
     node_window.dock_space_name = "MainDockSpace"
     node_window.gui_function = demo_node_editor
+    # A window that demonstrate imspinner
+    spinner_window = hello_imgui.DockableWindow()
+    spinner_window.label = "Spinner"
+    spinner_window.dock_space_name = "MainDockSpace"
+    spinner_window.gui_function = demo_spinner
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
@@ -393,6 +407,7 @@ def main():
         knobs_window,
         file_dialog_window,
         implot_window,
+        spinner_window,
     ]
 
     ################################################################################################

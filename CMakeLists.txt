@@ -110,6 +110,8 @@ add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 add_simple_external_library(im_file_dialog ImFileDialog)
 target_sources(im_file_dialog  PRIVATE external/ImFileDialog/ImFileDialog.h external/ImFileDialog/ImFileDialog.cpp)
 target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello_imgui/internal)
+# Build imspinner
+add_simple_external_library_with_sources(imspinner imspinner)
 
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
@@ -133,6 +135,7 @@ set(python_module_sources
     bindings/pybind_imgui_node_editor.cpp
     bindings/pybind_imgui_knobs.cpp
     bindings/pybind_im_file_dialog.cpp
+    bindings/pybind_imspinner.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
