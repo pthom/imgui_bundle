@@ -18,7 +18,7 @@ def autogenerate_imgui_color_text_edit():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.member_exclude_by_type__regex = "Callback$"
+    options.member_exclude_by_type__regex = "Callback$|^char$"
 
     litgen.write_generated_code_for_file(
         options,

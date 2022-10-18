@@ -115,7 +115,7 @@ class TextEditor:
             pass
         def __init__(self, a_line: int, a_column: int) -> None:
             pass
-        # (static method)
+        @staticmethod
         def invalid() -> Coordinates:
             pass
 
@@ -159,7 +159,6 @@ class TextEditor:
         m_comment_start: str
         m_comment_end: str
         m_single_line_comment: str
-        m_preproc_char: char
         m_auto_indentation: bool
 
 
@@ -170,25 +169,25 @@ class TextEditor:
         def __init__(self) -> None:
             pass
 
-        # (static method)
+        @staticmethod
         def c_plus_plus() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def hlsl() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def glsl() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def c() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def sql() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def angel_script() -> LanguageDefinition:
             pass
-        # (static method)
+        @staticmethod
         def lua() -> LanguageDefinition:
             pass
 
@@ -354,13 +353,13 @@ class TextEditor:
     def redo(self, a_steps: int = 1) -> None:
         pass
 
-    # (static method)
+    @staticmethod
     def get_dark_palette() -> Palette:
         pass
-    # (static method)
+    @staticmethod
     def get_light_palette() -> Palette:
         pass
-    # (static method)
+    @staticmethod
     def get_retro_blue_palette() -> Palette:
         pass
 
