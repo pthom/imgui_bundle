@@ -1,7 +1,7 @@
 import os
 from enum import Enum
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, implot_create_global_context
 from imgui_bundle import imgui_color_text_edit
 
 TextEditor = imgui_color_text_edit.TextEditor
@@ -158,6 +158,11 @@ def demo_file_dialog(app_state: AppState):
         ifd.FileDialog.instance().close()
 
 
+def demo_implot():
+    from demo_implot import demo_drag_rects
+    demo_drag_rects()
+
+
 # MyLoadFonts: demonstrate
 # * how to load additional fonts
 # * how to use assets from the local assets/ folder
@@ -233,6 +238,8 @@ def status_bar_gui(app_state: AppState):
 
 
 def main():
+    implot_create_global_context()
+
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
     ################################################################################################
@@ -360,6 +367,11 @@ def main():
     file_dialog_window.label = "File Dialog"
     file_dialog_window.dock_space_name = "MainDockSpace"
     file_dialog_window.gui_function = lambda: demo_file_dialog(app_state)
+    # A window that demonstrate implot
+    implot_window = hello_imgui.DockableWindow()
+    implot_window.label = "Implot"
+    implot_window.dock_space_name = "MainDockSpace"
+    implot_window.gui_function = demo_implot
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
@@ -369,6 +381,7 @@ def main():
         editor_window,
         knobs_window,
         file_dialog_window,
+        implot_window,
     ]
 
     ################################################################################################
