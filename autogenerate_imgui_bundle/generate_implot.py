@@ -15,7 +15,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_implot():
     input_cpp_header = CPP_HEADERS_DIR + "/implot.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_implot.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/implot.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/implot.pyi"
 
     # Configure options
     options = litgen_options_implot()

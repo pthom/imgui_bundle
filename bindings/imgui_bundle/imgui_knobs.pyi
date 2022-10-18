@@ -3,7 +3,7 @@ from typing import Tuple
 import numpy as np
 import enum
 
-from lg_imgui_bundle.imgui import ImColor
+from imgui_bundle.imgui import ImColor
 
 
 ImGuiKnobFlags = int

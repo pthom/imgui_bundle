@@ -8,7 +8,7 @@ import enum
 ##################################################
 
 
-from lg_imgui_bundle.imgui import *
+from imgui_bundle.imgui import *
 
 
 """

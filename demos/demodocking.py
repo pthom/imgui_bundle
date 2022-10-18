@@ -1,8 +1,8 @@
 import os
 from enum import Enum
 
-from lg_imgui_bundle import hello_imgui, icons_fontawesome, imgui
-from lg_imgui_bundle import imgui_color_text_edit
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui
+from imgui_bundle import imgui_color_text_edit
 
 TextEditor = imgui_color_text_edit.TextEditor
 
@@ -10,7 +10,7 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
 #
-# By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
+# By default an assets folder is installed via pip inside site-packages/imgui_bundle/assets
 # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
 # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
 hello_imgui.set_assets_folder(THIS_DIR + "/assets")
@@ -62,7 +62,7 @@ def demo_editor_gui(app_state: AppState):
 
 
 def demo_knobs(app_state: AppState):
-    from lg_imgui_bundle import imgui_knobs
+    from imgui_bundle import imgui_knobs
 
     knob_types = {
         "tick": imgui_knobs.ImGuiKnobVariant_.tick,
@@ -119,7 +119,7 @@ def demo_knobs(app_state: AppState):
 
 
 def demo_file_dialog(app_state: AppState):
-    from lg_imgui_bundle import im_file_dialog as ifd
+    from imgui_bundle import im_file_dialog as ifd
 
     if imgui.button("Open file"):
         ifd.FileDialog.instance().open(

@@ -4,7 +4,7 @@ import numpy as np
 import enum
 
 
-from lg_imgui_bundle.imgui import (
+from imgui_bundle.imgui import (
     ImVec2, ImVec4,
     ImGuiMouseButton,
     ImGuiModFlags,
@@ -108,7 +108,7 @@ VoidPtr = Any
 ImTextureID = VoidPtr
 
 
-from lg_imgui_bundle.imgui import (
+from imgui_bundle.imgui import (
     ImVec2,
     ImVec4,
     ImGuiMouseButton,

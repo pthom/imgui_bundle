@@ -2,7 +2,7 @@
 from typing import Any
 import numpy as np
 import enum
-from lg_imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList, ImGuiMouseButton
+from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList, ImGuiMouseButton
 
 
 EditorContext = Any

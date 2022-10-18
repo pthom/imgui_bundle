@@ -5,7 +5,7 @@ import enum
 
 # Manual code
 DockSpaceName = str
-from lg_imgui_bundle.imgui import (
+from imgui_bundle.imgui import (
     ImVec2, ImVec4,
     ImFontConfig, ImFont,
     ImTextureID,

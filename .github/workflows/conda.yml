@@ -45,7 +45,7 @@ jobs:
         run: conda build conda.recipe
 
       - name: Install
-        run: conda install -c ${CONDA_PREFIX}/conda-bld/ lg-imgui-bundle
+        run: conda install -c ${CONDA_PREFIX}/conda-bld/ imgui-bundle
 
       - name: Test
         run: pytest tests

@@ -1,5 +1,5 @@
 package:
-  name: lg-imgui-bundle
+  name: imgui-bundle
   version: 0.0.1
 
 source:
@@ -38,7 +38,7 @@ requirements:
 
 test:
   imports:
-    - lg_imgui_bundle
+    - imgui_bundle
   requires:
     - pytest
   source_files:

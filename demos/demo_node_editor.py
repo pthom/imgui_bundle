@@ -1,7 +1,7 @@
 # Adapted from https://github.com/thedmd/imgui-node-editor/blob/master/examples/basic-interaction-example/basic-interaction-example.cpp
 from __future__ import annotations
 from typing import List
-from lg_imgui_bundle import hello_imgui, imgui, imgui_node_editor
+from imgui_bundle import hello_imgui, imgui, imgui_node_editor
 
 ed = imgui_node_editor
 

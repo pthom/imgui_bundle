@@ -14,7 +14,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_imgui_color_text_edit():
     input_cpp_header = CPP_HEADERS_DIR + "/TextEditor.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_color_text_edit.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui_color_text_edit.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_color_text_edit.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()

@@ -1,5 +1,5 @@
 import numpy as np
-from lg_imgui_bundle import hello_imgui, imgui, implot
+from imgui_bundle import hello_imgui, imgui, implot
 
 
 text = "Hello"

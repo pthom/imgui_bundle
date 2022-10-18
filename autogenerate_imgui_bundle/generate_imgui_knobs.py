@@ -14,7 +14,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_imgui_knobs():
     input_cpp_header = CPP_HEADERS_DIR + "/imgui-knobs.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_knobs.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui_knobs.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_knobs.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()

@@ -49,7 +49,7 @@ struct ImGuiTextFilter;             // Helper to parse and apply text filters (e
 struct ImGuiViewport;               // A Platform Window (always only one in 'master' branch), in the future may represent Platform Monitor
 """
 # We forward declare only the opaque structures
-from lg_imgui_bundle.imgui_internal import ImGuiContext, ImDrawListSharedData, ImFontBuilderIO
+from imgui_bundle.imgui_internal import ImGuiContext, ImDrawListSharedData, ImFontBuilderIO
 ImDrawVert = Any
 
 

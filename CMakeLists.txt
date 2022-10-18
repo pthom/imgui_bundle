@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(lg_imgui_bundle VERSION "0.1.0")
+project(imgui_bundle VERSION "0.1.0")
 
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 
@@ -115,8 +115,8 @@ target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello
 # Build python module that provides bindings to the library hello_imgui
 #########################################################################
 set(bound_library hello_imgui)                 # The library for which we are building bindings
-set(python_native_module_name _lg_imgui_bundle)    # This is the native python module name
-set(python_wrapper_module_name lg_imgui_bundle)    # This is the python wrapper around the native module
+set(python_native_module_name _imgui_bundle)    # This is the native python module name
+set(python_wrapper_module_name imgui_bundle)    # This is the python wrapper around the native module
 set(python_module_sources
 
     bindings/module.cpp

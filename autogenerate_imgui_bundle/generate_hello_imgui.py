@@ -32,7 +32,7 @@ def autogenerate_hello_imgui():
 
     input_cpp_header = LG_HELLO_IMGUI_DIR + "/hello_imgui_amalgamation.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_hello_imgui.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/hello_imgui.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/hello_imgui.pyi"
 
     # Configure options
     from codemanip.code_replacements import RegexReplacement

@@ -14,7 +14,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_im_file_dialog():
     input_cpp_header = CPP_HEADERS_DIR + "/ImFileDialog.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_im_file_dialog.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/im_file_dialog.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/im_file_dialog.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()

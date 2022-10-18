@@ -21,7 +21,7 @@ def autogenerate_imgui() -> None:
     options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
 
     # Workaround internal compiler error on MSVC:
-    # See failure logs: https://github.com/pthom/lg_imgui_bundle/actions/runs/3267470437/jobs/5372682867
+    # See failure logs: https://github.com/pthom/imgui_bundle/actions/runs/3267470437/jobs/5372682867
     # Commit 55d4d342efebb306bafd63b4fb72085f27f59e7d
     options_imgui.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
 
@@ -32,7 +32,7 @@ def autogenerate_imgui() -> None:
     options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
 
     # Workaround internal compiler error on MSVC:
-    # See failure logs: https://github.com/pthom/lg_imgui_bundle/actions/runs/3267470437/jobs/5372682867
+    # See failure logs: https://github.com/pthom/imgui_bundle/actions/runs/3267470437/jobs/5372682867
     # Commit 55d4d342efebb306bafd63b4fb72085f27f59e7d
     options_imgui_stdlib.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
 
@@ -41,7 +41,7 @@ def autogenerate_imgui() -> None:
 
     generator.write_generated_code(
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui.pyi",
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui.pyi",
         output_cpp_glue_code_file=CPP_GENERATED_PYBIND_DIR + "/litgen_glue_code.h",
     )
 
@@ -52,7 +52,7 @@ def autogenerate_imgui_internal() -> None:
         options_imgui_internal,
         input_cpp_header_file=CPP_HEADERS_DIR + "/imgui_internal.h",
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_internal.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui_internal.pyi",
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_internal.pyi",
     )
 
 

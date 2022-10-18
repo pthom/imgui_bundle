@@ -18,7 +18,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 def autogenerate_imgui_node_editor():
     input_cpp_headers = [CPP_HEADERS_DIR + "/imgui_node_editor.h"]
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_node_editor.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/lg_imgui_bundle/imgui_node_editor.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_node_editor.pyi"
 
     # Configure options
     # options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)

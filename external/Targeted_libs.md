@@ -1,4 +1,4 @@
-# Libs considered for possible inclusion in lg-imgui-bundle
+# Libs considered for possible inclusion in imgui-bundle
 
 (Extract from https://github.com/ocornut/imgui/wiki/Useful-Extensions#text-editors)
 

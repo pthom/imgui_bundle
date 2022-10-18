@@ -45,7 +45,7 @@ from typing import List, Any, Dict, Set
 import numpy as np
 import enum
 
-from lg_imgui_bundle.imgui import ImVec2
+from imgui_bundle.imgui import ImVec2
 
 
 String = str
