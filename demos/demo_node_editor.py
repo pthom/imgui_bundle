@@ -209,16 +209,32 @@ class DemoNodeEditor:
         # imgui.show_metrics_window()
 
 
-def demo_node_editor():
+def demo_node_editor_app():
+    config = ed.Config()
+    config.settings_file = "BasicInteraction.json"
+    ImguiNodeEditorContextHolder.start(config)
+
     demo = DemoNodeEditor()
+
+    def gui():
+        imgui.set_next_window_size(imgui.ImVec2(800, 600))
+        demo.on_frame()
+
     runner_params = hello_imgui.RunnerParams()
-    runner_params.callbacks.show_gui = lambda: demo.on_frame()
+
+    runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    runner_params.imgui_window_params.enable_viewports = True
+
+    node_window = hello_imgui.DockableWindow()
+    node_window.label = "Node Editor"
+    node_window.dock_space_name = "MainDockSpace"
+    node_window.gui_function = gui
+    runner_params.docking_params.dockable_windows = [node_window]
+
+    # runner_params.callbacks.show_gui = gui
     runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
     hello_imgui.run(runner_params)
 
 
 if __name__ == "__main__":
-    config = ed.Config()
-    config.settings_file = "BasicInteraction.json"
-    ImguiNodeEditorContextHolder.start(config)
-    demo_node_editor()
+    demo_node_editor_app()

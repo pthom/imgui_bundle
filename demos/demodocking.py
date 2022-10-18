@@ -1,8 +1,8 @@
 import os
 from enum import Enum
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, implot_create_global_context
-from imgui_bundle import imgui_color_text_edit
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, ImguiNodeEditorContextHolder, ImplotContextHolder
+from imgui_bundle import imgui_color_text_edit, imgui_node_editor
 
 TextEditor = imgui_color_text_edit.TextEditor
 
@@ -163,6 +163,13 @@ def demo_implot():
     demo_drag_rects()
 
 
+def demo_node_editor():
+    from demo_node_editor import DemoNodeEditor
+    if not hasattr(demo_node_editor, "demo_class"):
+        demo_node_editor.demo = DemoNodeEditor()
+    demo_node_editor.demo.on_frame()
+
+
 # MyLoadFonts: demonstrate
 # * how to load additional fonts
 # * how to use assets from the local assets/ folder
@@ -238,8 +245,6 @@ def status_bar_gui(app_state: AppState):
 
 
 def main():
-    implot_create_global_context()
-
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
     ################################################################################################
@@ -372,6 +377,11 @@ def main():
     implot_window.label = "Implot"
     implot_window.dock_space_name = "MainDockSpace"
     implot_window.gui_function = demo_implot
+    # A window that demonstrate imgui_node_editor
+    node_window = hello_imgui.DockableWindow()
+    node_window.label = "Node Editor"
+    node_window.dock_space_name = "MainDockSpace"
+    node_window.gui_function = demo_node_editor
 
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
@@ -379,6 +389,7 @@ def main():
         logs_window,
         dear_imgui_demo_window,
         editor_window,
+        node_window,
         knobs_window,
         file_dialog_window,
         implot_window,
@@ -391,4 +402,11 @@ def main():
 
 
 if __name__ == "__main__":
+
+    config = imgui_node_editor.Config()
+    config.settings_file = "BasicInteraction.json"
+    ImguiNodeEditorContextHolder.start(config)
+
+    ImplotContextHolder.start()
+
     main()
