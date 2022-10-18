@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import List
 from dataclasses import dataclass
-from imgui_bundle import hello_imgui, imgui, imgui_node_editor, run_anon_block
+from imgui_bundle import hello_imgui, imgui, imgui_node_editor, run_anon_block, ImguiNodeEditorContextHolder
 
 ed = imgui_node_editor
 
@@ -58,8 +58,6 @@ class DemoNodeEditor:
     # This is useful later with dealing with selections, deletion
     # or other operations.
 
-    # Editor context, required to trace a editor state.
-    context: ed.EditorContext = None
     # Flag set for first frame only, some action need to be executed once.
     is_first_frame: bool = True
     # List of live links. It is dynamic unless you want to create read-only view over nodes.
@@ -71,30 +69,13 @@ class DemoNodeEditor:
     def __init__(self):
         self.links = []
 
-    def __enter__(self):
-        self.on_start()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_traceback):
-        self.on_stop()
-        return False
-
-    def on_start(self):
-        config = ed.Config()
-        config.settings_file = "BasicInteraction.json"
-        self.context = ed.create_editor(config)
-
-    def on_stop(self):
-        ed.destroy_editor(self.context)
-
     def on_frame(self):
+        ImguiNodeEditorContextHolder.set_as_current_editor()
         ID.reset()
         io = imgui.get_io()
         imgui.text(f"FPS: {io.framerate}FPS")
 
         imgui.separator()
-
-        ed.set_current_editor(self.context)
 
         # Start interaction with editor.
         ed.begin("My Editor", imgui.ImVec2(0.0, 0.0))
@@ -228,29 +209,16 @@ class DemoNodeEditor:
         # imgui.show_metrics_window()
 
 
-def main():
-    def demo_bare():
-        demo = DemoNodeEditor()
-        demo.on_start()
-
-        runner_params = hello_imgui.RunnerParams()
-        runner_params.callbacks.show_gui = lambda: demo.on_frame()
-        runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
-        hello_imgui.run(runner_params)
-
-        demo.on_stop()
-
-    def demo_with_context_manager():
-        """Same demo, with a context manager (that will call __exit__ and __enter__)"""
-        with DemoNodeEditor() as example:
-            runner_params = hello_imgui.RunnerParams()
-            runner_params.callbacks.show_gui = lambda: example.on_frame()
-            runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
-            hello_imgui.run(runner_params)
-
-    # demo_with_context_manager()
-    demo_bare()
+def demo_node_editor():
+    demo = DemoNodeEditor()
+    runner_params = hello_imgui.RunnerParams()
+    runner_params.callbacks.show_gui = lambda: demo.on_frame()
+    runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
+    hello_imgui.run(runner_params)
 
 
 if __name__ == "__main__":
-    main()
+    config = ed.Config()
+    config.settings_file = "BasicInteraction.json"
+    ImguiNodeEditorContextHolder.start(config)
+    demo_node_editor()

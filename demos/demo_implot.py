@@ -2,7 +2,7 @@ import math
 from munch import Munch
 
 import numpy as np
-from imgui_bundle import imgui, implot, implot_create_global_context
+from imgui_bundle import imgui, implot, ImplotContextHolder
 
 
 ImVec2 = imgui.ImVec2
@@ -53,7 +53,7 @@ def demo_drag_rects():
 
 
 def main():
-    implot_create_global_context()
+    ImplotContextHolder.start()
     from imgui_bundle import hello_imgui
     params = hello_imgui.RunnerParams()
     params.callbacks.show_gui = demo_drag_rects
