@@ -523,11 +523,6 @@ void py_init_module_implot(py::module& m)
         py::arg("axis"), py::arg("scale"),
         "Sets an axis' scale using built-in options.");
 
-    m.def("setup_axis_scale",    // implot.h:739
-        py::overload_cast<ImAxis, ImPlotTransform, ImPlotTransform, void *>(ImPlot::SetupAxisScale),
-        py::arg("axis"), py::arg("forward"), py::arg("inverse"), py::arg("data") = py::none(),
-        "Sets an axis' scale using user supplied forward and inverse transfroms.");
-
     m.def("setup_axis_limits_constraints",    // implot.h:741
         ImPlot::SetupAxisLimitsConstraints,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"),
