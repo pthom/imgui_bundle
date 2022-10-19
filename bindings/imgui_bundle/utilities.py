@@ -1,5 +1,5 @@
+from typing import Any, Callable, Optional
 from imgui_bundle import implot, imgui_node_editor
-from typing import Optional
 
 
 class ImplotContextHolder:
@@ -62,3 +62,23 @@ class ImguiNodeEditorContextHolder:
     def set_as_current_editor():
         instance = ImguiNodeEditorContextHolder._instance()
         imgui_node_editor.set_current_editor(instance._context)
+
+
+def static(**kwargs):
+    """A decorator that adds static variables to a function
+    :param kwargs: list of static variables to add
+    :return: decorated function
+
+    Example:
+        @static(x=0)
+        def f():
+            f.x += 1
+            print(f.x)
+
+        invoking f three times would print 1, 2, 3.
+    """
+    def wrapper(function: Callable[[Any], Any]):
+        for key, value in kwargs.items():
+            setattr(function, key, value)
+        return function
+    return wrapper

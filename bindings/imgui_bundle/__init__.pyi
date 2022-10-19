@@ -7,5 +7,8 @@ from . import imgui_node_editor as imgui_node_editor
 from . import imgui_knobs as imgui_knobs
 from . import im_file_dialog as im_file_dialog
 from . import  imspinner as imspinner
-from . context_holders import ImplotContextHolder as ImplotContextHolder
-from .context_holders import ImguiNodeEditorContextHolder as ImguiNodeEditorContextHolder
+from . utilities import (
+    ImplotContextHolder as ImplotContextHolder,
+    ImguiNodeEditorContextHolder as ImguiNodeEditorContextHolder,
+    static as static
+)
