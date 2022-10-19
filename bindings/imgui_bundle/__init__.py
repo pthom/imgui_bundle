@@ -16,6 +16,8 @@ from imgui_bundle.utilities import (
 )
 from imgui_bundle._imgui_bundle import __version__
 
+from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor
+
 import os
 
 THIS_DIR = os.path.dirname(__file__)
@@ -30,5 +32,8 @@ __all__ = [
     "icons_fontawesome",
     "run_anon_block",
     "implot_create_global_context",
+    "ImVec2",
+    "ImVec4",
+    "ImColor",
     "__version__",
 ]
