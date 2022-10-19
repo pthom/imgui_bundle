@@ -1,8 +1,9 @@
+from typing import Any, Callable
 import math
 from munch import Munch
 
 import numpy as np
-from imgui_bundle import imgui, implot, ImplotContextHolder
+from imgui_bundle import imgui, implot, ImplotContextHolder, static
 
 
 ImVec2 = imgui.ImVec2
@@ -26,9 +27,11 @@ def _demo_drag_rects_statics() -> Munch:
     return r
 
 
+@static(statics = _demo_drag_rects_statics(), was_context_initialized=False)
 def demo_drag_rects():
-    if not hasattr(demo_drag_rects, "statics"):
-        demo_drag_rects.statics = _demo_drag_rects_statics()
+    if not demo_drag_rects.was_context_initialized:
+        ImplotContextHolder.start()
+        demo_drag_rects.was_context_initialized = True
     statics = demo_drag_rects.statics
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
@@ -65,13 +68,14 @@ def demo_drag_rects():
         implot.end_plot()
 
 
-def main():
-    ImplotContextHolder.start()
-    from imgui_bundle import hello_imgui
+def demo_implot():
+    demo_drag_rects()
 
+
+def main():
+    from imgui_bundle import hello_imgui
     params = hello_imgui.RunnerParams()
     params.callbacks.show_gui = demo_drag_rects
-
     hello_imgui.run(params)
 
 

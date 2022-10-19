@@ -222,18 +222,25 @@ def demo_node_editor_app():
 
     runner_params = hello_imgui.RunnerParams()
 
-    runner_params.imgui_window_params.default_imgui_window_type = (
-        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-    )
-    runner_params.imgui_window_params.enable_viewports = True
+    #
+    # With docking and viewports
+    #
+    # runner_params.imgui_window_params.default_imgui_window_type = (
+    #     hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    # )
+    # runner_params.imgui_window_params.enable_viewports = True
 
-    node_window = hello_imgui.DockableWindow()
-    node_window.label = "Node Editor"
-    node_window.dock_space_name = "MainDockSpace"
-    node_window.gui_function = gui
-    runner_params.docking_params.dockable_windows = [node_window]
+    # node_window = hello_imgui.DockableWindow()
+    # node_window.label = "Node Editor"
+    # node_window.dock_space_name = "MainDockSpace"
+    # node_window.gui_function = gui
+    # runner_params.docking_params.dockable_windows = [node_window]
 
-    # runner_params.callbacks.show_gui = gui
+    #
+    # Without docking:
+    #
+    runner_params.callbacks.show_gui = gui
+
     runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
     hello_imgui.run(runner_params)
 

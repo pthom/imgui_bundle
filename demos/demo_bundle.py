@@ -1,5 +1,5 @@
 import os
-from enum import Enum
+from typing import List, Callable
 
 from imgui_bundle import hello_imgui, icons_fontawesome, imgui, ImguiNodeEditorContextHolder, ImplotContextHolder
 from imgui_bundle import imgui_color_text_edit, imgui_node_editor
@@ -181,39 +181,15 @@ def main():
 
     # Our application state
     app_state = AppState()
-
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
-
     runner_params.app_window_params.window_title = "Docking demo"
-
-    #
     # Menu bar
-    #
-    # We use the default menu of Hello ImGui, to which we add some more items
     runner_params.imgui_window_params.show_menu_bar = True
-
 
     ################################################################################################
     # Part 2: Define the application layout and windows
     ################################################################################################
-
-    #
-    #    2.1 Define the docking splits,
-    #    i.e. the way the screen space is split in different target zones for the dockable windows
-    #     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
-    #
-    #    ___________________________________________
-    #    |        |                                |
-    #    | Left   |                                |
-    #    | Space  |    MainDockSpace               |
-    #    |        |                                |
-    #    |        |                                |
-    #    |        |                                |
-    #    -------------------------------------------
-    #    |     BottomSpace                         |
-    #    -------------------------------------------
-    #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
     runner_params.imgui_window_params.default_imgui_window_type = (
@@ -231,69 +207,33 @@ def main():
     split_main_bottom.direction = imgui.ImGuiDir_.down
     split_main_bottom.ratio = 0.25
 
-    # Finally, transmit these splits to HelloImGui
     runner_params.docking_params.docking_splits = [split_main_bottom]
 
     #
     # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
     #     in a docking split.
     #
+    dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    # A Log  window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
-    logs_window = hello_imgui.DockableWindow()
-    logs_window.label = "Logs"
-    logs_window.dock_space_name = "BottomSpace"
-    logs_window.gui_function = hello_imgui.log_gui
-    # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
-    dear_imgui_demo_window = hello_imgui.DockableWindow()
-    dear_imgui_demo_window.label = "Dear ImGui Demo"
-    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
-    # A window that demonstrate the colored text editor (ImGuiColorTextEdit)
-    # (https://github.com/BalazsJako/ImGuiColorTextEdit)
-    editor_window = hello_imgui.DockableWindow()
-    editor_window.label = "Code for this demo"
-    editor_window.dock_space_name = "MainDockSpace"
-    editor_window.gui_function = lambda: demo_editor_gui(app_state)
-    # A window that demonstrate knobs
-    # (https://github.com/altschuler/imgui-knobs)
-    knobs_window = hello_imgui.DockableWindow()
-    knobs_window.label = "Knobs"
-    knobs_window.dock_space_name = "MainDockSpace"
-    knobs_window.gui_function = lambda: demo_knobs(app_state)
-    # A window that demonstrate ImFileDialog
-    # (https://github.com/dfranx/ImFileDialog)
-    file_dialog_window = hello_imgui.DockableWindow()
-    file_dialog_window.label = "File Dialog"
-    file_dialog_window.dock_space_name = "MainDockSpace"
-    file_dialog_window.gui_function = lambda: demo_file_dialog(app_state)
-    # A window that demonstrate implot
-    implot_window = hello_imgui.DockableWindow()
-    implot_window.label = "Implot"
-    implot_window.dock_space_name = "MainDockSpace"
-    implot_window.gui_function = demo_implot
-    # A window that demonstrate imgui_node_editor
-    node_window = hello_imgui.DockableWindow()
-    node_window.label = "Node Editor"
-    node_window.dock_space_name = "MainDockSpace"
-    node_window.gui_function = demo_node_editor
-    # A window that demonstrate imspinner
-    spinner_window = hello_imgui.DockableWindow()
-    spinner_window.label = "Spinner"
-    spinner_window.dock_space_name = "MainDockSpace"
-    spinner_window.gui_function = demo_spinner
+    def add_dockable_window(label: str, gui_function: Callable[[None], None], dock_space_name: str = "MainDockSpace"):
+        window = hello_imgui.DockableWindow()
+        window.label = label
+        window.dock_space_name = dock_space_name
+        window.gui_function = gui_function
+        dockable_windows.append(window)
+        print("a")
 
-    # Finally, transmit these windows to HelloImGui
-    runner_params.docking_params.dockable_windows = [
-        logs_window,
-        dear_imgui_demo_window,
-        editor_window,
-        node_window,
-        knobs_window,
-        file_dialog_window,
-        implot_window,
-        spinner_window,
-    ]
+    add_dockable_window("Logs", hello_imgui.log_gui, "BottomSpace")
+    add_dockable_window("Dear ImGui Demo", imgui.show_demo_window)
+    add_dockable_window("Editor demo", lambda: demo_editor_gui(app_state))
+    add_dockable_window("Knobs", lambda: demo_knobs)
+    add_dockable_window("File dialog", lambda: demo_file_dialog)
+    add_dockable_window("Implot", demo_implot)
+    add_dockable_window("Node Editor", demo_node_editor)
+    add_dockable_window("Spinner", demo_spinner)
+
+    runner_params.docking_params.dockable_windows = dockable_windows
+
 
     ################################################################################################
     # Part 3: Run the app
