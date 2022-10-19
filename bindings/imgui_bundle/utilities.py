@@ -70,12 +70,20 @@ def static(**kwargs):
     :return: decorated function
 
     Example:
-        @static(x=0)
-        def f():
-            f.x += 1
-            print(f.x)
+        @static(x=0, y=0)
+        def my_function():
+            # static vars are stored as attributes of "my_function"
+            # we use static as a more readable synonym.
+            static = my_function
 
-        invoking f three times would print 1, 2, 3.
+            static.x += 1
+            static.y += 2
+            print(f"{static.f.x}, {static.f.x}")
+
+        invoking f three times would print 1, 2 then 2, 4, then 3, 6
+
+    Static variables are similar to global variables, with the same shortcomings!
+    Use them only in small scripts, never in production code!
     """
     def wrapper(function: Callable[[Any], Any]):
         for key, value in kwargs.items():

@@ -159,6 +159,7 @@ def demo_logger():
         hello_imgui.log(hello_imgui.LogLevel.warning, _fake_log_provider())
         hello_imgui.log(hello_imgui.LogLevel.error, _fake_log_provider())
 
+    # hello_imgui.log_gui will display the logs
     hello_imgui.log_gui()
 
 
