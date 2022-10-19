@@ -114,6 +114,16 @@ target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello
 add_simple_external_library_with_sources(imspinner imspinner)
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo)
+# Build imgui_md
+add_simple_external_library(imgui_md imgui_md/imgui_md)
+target_sources(imgui_md PRIVATE
+    external/imgui_md/imgui_md/imgui_md.cpp
+    external/imgui_md/imgui_md/imgui_md.h
+    external/imgui_md/md4c/src/md4c.c
+    external/imgui_md/md4c/src/md4c.h
+    )
+target_include_directories(imgui_md PUBLIC external/imgui_md/md4c/src)
+
 
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
