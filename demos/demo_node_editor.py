@@ -3,9 +3,13 @@
 from __future__ import annotations
 from typing import List
 from dataclasses import dataclass
-from imgui_bundle import hello_imgui, imgui, imgui_node_editor, run_anon_block, ImguiNodeEditorContextHolder
-
-ed = imgui_node_editor
+from imgui_bundle import (
+    imgui,
+    imgui_node_editor as ed,
+    static,  # Helper to get static variables
+    ImguiNodeEditorContextHolder,  # Helper to store ImGui node editor context
+    run_anon_block,  # helper to indent the code with anonymous blocks
+)
 
 
 class IdProvider:
@@ -70,12 +74,13 @@ class DemoNodeEditor:
         self.links = []
 
     def on_frame(self):
-        ImguiNodeEditorContextHolder.set_as_current_editor()
         ID.reset()
         io = imgui.get_io()
-        imgui.text(f"FPS: {io.framerate}FPS")
+        # imgui.text(f"FPS: {io.framerate}FPS")
 
         imgui.separator()
+
+        ImguiNodeEditorContextHolder.set_as_current_editor()
 
         # Start interaction with editor.
         ed.begin("My Editor", imgui.ImVec2(0.0, 0.0))
@@ -209,41 +214,24 @@ class DemoNodeEditor:
         # imgui.show_metrics_window()
 
 
-def demo_node_editor_app():
-    config = ed.Config()
-    config.settings_file = "BasicInteraction.json"
-    ImguiNodeEditorContextHolder.start(config)
+@static(was_context_inited = False)
+def demo_node_editor():
+    static = demo_node_editor
 
-    demo = DemoNodeEditor()
+    imgui.text("""imgui-node-editor: Node Editor built using Dear ImGui 
+    https://github.com/thedmd/imgui-node-editor
+    """)
 
-    def gui():
-        imgui.set_next_window_size(imgui.ImVec2(800, 600))
-        demo.on_frame()
+    if not static.was_context_inited:
+        config = ed.Config()
+        config.settings_file = "BasicInteraction.json"
+        ImguiNodeEditorContextHolder.start(config)
+        static.demo_node_editor = DemoNodeEditor()
+        static.was_context_inited = True
 
-    runner_params = hello_imgui.RunnerParams()
-
-    #
-    # With docking and viewports
-    #
-    # runner_params.imgui_window_params.default_imgui_window_type = (
-    #     hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-    # )
-    # runner_params.imgui_window_params.enable_viewports = True
-
-    # node_window = hello_imgui.DockableWindow()
-    # node_window.label = "Node Editor"
-    # node_window.dock_space_name = "MainDockSpace"
-    # node_window.gui_function = gui
-    # runner_params.docking_params.dockable_windows = [node_window]
-
-    #
-    # Without docking:
-    #
-    runner_params.callbacks.show_gui = gui
-
-    runner_params.app_window_params.window_size = imgui.ImVec2(1200.0, 800.0)
-    hello_imgui.run(runner_params)
+    static.demo_node_editor.on_frame()
 
 
 if __name__ == "__main__":
-    demo_node_editor_app()
+    from imgui_bundle import hello_imgui
+    hello_imgui.run(demo_node_editor)

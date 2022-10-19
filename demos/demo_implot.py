@@ -27,7 +27,7 @@ def _demo_drag_rects_statics() -> Munch:
     return r
 
 
-@static(statics = _demo_drag_rects_statics(), was_context_initialized=False)
+@static(statics=_demo_drag_rects_statics(), was_context_initialized=False)
 def demo_drag_rects():
     if not demo_drag_rects.was_context_initialized:
         ImplotContextHolder.start()
@@ -69,6 +69,13 @@ def demo_drag_rects():
 
 
 def demo_implot():
+    imgui.text("""ImPlot: Immediate Mode Plotting for ImGui
+    https://github.com/epezent/implot
+    You can see lots of demos together with their code at https://traineq.org/implot_demo/src/implot_demo.html""")
+    if imgui.button("View the full demo"):
+        import webbrowser
+        webbrowser.open("https://traineq.org/implot_demo/src/implot_demo.html")
+
     demo_drag_rects()
 
 

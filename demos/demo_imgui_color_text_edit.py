@@ -1,0 +1,45 @@
+from imgui_bundle import static, imgui, imgui_color_text_edit as ed
+
+
+TextEditor = ed.TextEditor
+
+
+def _prepare_text_editor():
+    with open(__file__) as f:
+        this_file_code = f.read()
+    editor = TextEditor()
+    editor.set_text(this_file_code)
+    editor.set_language_definition(TextEditor.LanguageDefinition.c())
+    return editor
+
+
+@static(editor = _prepare_text_editor())
+def demo_imgui_color_text_edit():
+    static = demo_imgui_color_text_edit
+    editor = static.editor
+
+    imgui.text("""ImGuiColorTextEdit: Colorizing text editor for ImGui 
+               https://github.com/BalazsJako/ImGuiColorTextEdit
+               It is able to colorize C, C++, hlsl, Sql, angel_script and lua code""")
+
+    def show_palette_buttons():
+        if imgui.small_button("Dark palette"):
+            editor.set_palette(ed.TextEditor.get_dark_palette())
+        imgui.same_line()
+        if imgui.small_button("Light palette"):
+            editor.set_palette(TextEditor.get_light_palette())
+        imgui.same_line()
+        if imgui.small_button("Retro blue palette"):
+            editor.set_palette(TextEditor.get_retro_blue_palette())
+
+    show_palette_buttons()
+    editor.render("Code")
+
+
+def main():
+    from imgui_bundle import hello_imgui
+    hello_imgui.run(demo_imgui_color_text_edit)
+
+
+if __name__ == "__main__":
+    main()
