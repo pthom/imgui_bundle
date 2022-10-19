@@ -46,13 +46,17 @@ def demo_params():
     hello_imgui.run(runner_params)
 
 
-@static(editor=text_edit.TextEditor())
+@static(was_inited=False)
 def demo_hello_imgui():
     static = demo_hello_imgui
-    editor: text_edit.TextEditor = static.editor
+    if not static.was_inited:
+        static.editor = text_edit.TextEditor()
+        static.editor.set_text("")
+        static.was_inited = True
+    editor = static.editor
 
     from imgui_bundle import imgui
-    from demo_hello_imgui_docking import demo_hello_imgui_docking
+    import demo_hello_imgui_docking
     import inspect
 
     imgui.text("""
@@ -66,14 +70,18 @@ def demo_hello_imgui():
         from multiprocessing import Process
         if imgui.button(label):
             editor.set_text(inspect.getsource(demo_function))
+            if demo_function == demo_hello_imgui_docking.main:
+                editor.set_text(inspect.getsource(demo_hello_imgui_docking))
             process = Process(target=demo_function)
             process.start()
 
     show_one_feature("Hello world", demo_simple)
     show_one_feature("Assets and Params", demo_params)
-    show_one_feature("Advanced docking demo", demo_hello_imgui_docking)
+    show_one_feature("Advanced docking demo", demo_hello_imgui_docking.main)
 
-    if len(editor.get_text()) > 0:
+    if len(editor.get_text()) > 1:
+        imgui.separator()
+        imgui.text("Code for this demo")
         editor.render("Code")
 
 

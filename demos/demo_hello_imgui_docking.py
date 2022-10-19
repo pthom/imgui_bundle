@@ -1,17 +1,18 @@
+"""A more complex app demo,
+
+It demonstrates:
+- How to use a specific application state (instead of using static variables)
+- How to set up a complex layout:
+    - dockable windows that can be moved, and even be detached from the main window
+    - status bar
+- A default menu, with default
+- log window
+- How to load assets and fonts
+"""
 import os
 from enum import Enum
 
 from imgui_bundle import hello_imgui, icons_fontawesome, imgui
-
-THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-
-# Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
-#
-# By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
-# and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
-# If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
-hello_imgui.set_assets_folder(THIS_DIR + "/assets")
-
 
 # Struct that holds the application's state
 class AppState:
@@ -101,7 +102,16 @@ def status_bar_gui(app_state: AppState):
         imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100.0, 15.0))
 
 
-def demo_hello_imgui_docking():
+def main():
+
+    # Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
+    #
+    # By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
+    # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
+    # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    hello_imgui.set_assets_folder(this_dir + "/assets")
+
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
     ################################################################################################
@@ -226,4 +236,4 @@ def demo_hello_imgui_docking():
 
 
 if __name__ == "__main__":
-    hello_imgui.run(demo_hello_imgui_docking)
+    hello_imgui.run(main)

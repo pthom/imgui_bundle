@@ -1,16 +1,17 @@
 import os
 from typing import List, Callable
 
-from imgui_bundle import hello_imgui, imgui, ImVec2
+from imgui_bundle import hello_imgui, ImVec2, static
 
 from demo_imgui import demo_imgui
+from demo_hello_imgui import demo_hello_imgui
 from demo_imgui_color_text_edit import demo_imgui_color_text_edit
 from demo_widgets import demo_widgets
 from demo_implot import demo_implot
 from demo_node_editor import demo_node_editor
 
 
-
+@static(first_frame=True)
 def main():
     ################################################################################################
     # Part 1: Define the runner params
@@ -57,15 +58,23 @@ def main():
         window.dock_space_name = dock_space_name
         window.gui_function = gui_function
         dockable_windows.append(window)
-        print("a")
 
     add_dockable_window("Dear ImGui Demo", demo_imgui)
+    add_dockable_window("Hello ImGui", demo_hello_imgui)
     add_dockable_window("Implot", demo_implot)
     add_dockable_window("Node Editor", demo_node_editor)
-    add_dockable_window("Widgets", demo_widgets)
     add_dockable_window("Editor demo", demo_imgui_color_text_edit)
-
+    add_dockable_window("Widgets", demo_widgets)
     runner_params.docking_params.dockable_windows = dockable_windows
+
+    def fake_gui():
+        if main.first_frame:
+            # fixme: this fails
+            runner_params.docking_params.focus_dockable_window("Dear ImGui Demo")
+            main.first_frame = False
+
+    runner_params.callbacks.show_gui = fake_gui
+
 
     ################################################################################################
     # Part 3: Run the app
