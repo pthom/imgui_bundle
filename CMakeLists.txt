@@ -121,8 +121,11 @@ target_sources(imgui_md PRIVATE
     external/imgui_md/imgui_md/imgui_md.h
     external/imgui_md/md4c/src/md4c.c
     external/imgui_md/md4c/src/md4c.h
+    external/imgui_md/imgui_md_wrapper.cpp
+    external/imgui_md/imgui_md_wrapper.h
     )
 target_include_directories(imgui_md PUBLIC external/imgui_md/md4c/src)
+target_link_libraries(imgui_md PUBLIC hello_imgui)
 
 
 #########################################################################
