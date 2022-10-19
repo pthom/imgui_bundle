@@ -33,11 +33,11 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 
-#include "ImGuizmo.h"
-#include "ImSequencer.h"
-#include "ImZoomSlider.h"
-#include "ImCurveEdit.h"
-#include "GraphEditor.h"
+#include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmo/ImSequencer.h"
+#include "ImGuizmo/ImZoomSlider.h"
+#include "ImGuizmo/ImCurveEdit.h"
+#include "ImGuizmo/GraphEditor.h"
 #include <math.h>
 #include <vector>
 #include <algorithm>

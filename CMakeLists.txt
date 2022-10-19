@@ -112,6 +112,8 @@ target_sources(im_file_dialog  PRIVATE external/ImFileDialog/ImFileDialog.h exte
 target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello_imgui/internal)
 # Build imspinner
 add_simple_external_library_with_sources(imspinner imspinner)
+# Build ImGuizmo
+add_simple_external_library_with_sources(imguizmo ImGuizmo)
 
 #########################################################################
 # Build python module that provides bindings to the library hello_imgui
