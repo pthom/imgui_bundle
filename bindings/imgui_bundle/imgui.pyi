@@ -1267,6 +1267,14 @@ def set_next_item_open(is_open: bool, cond: ImGuiCond = 0) -> None:    # imgui.h
 # Widgets: Selectables
 # - A selectable highlights when hovered, and can display another color when selected.
 # - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
+# IMGUI_API bool          Selectable(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
+def selectable(label: str, selected: bool = False, flags: ImGuiSelectableFlags = 0, size: ImVec2 = ImVec2(0, 0)) -> bool:    # imgui.h:622
+    """ "bool selected" carry the selection state (read-only). Selectable() is clicked is returns True so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height"""
+    pass
+# IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
+def selectable(label: str, p_selected: bool, flags: ImGuiSelectableFlags = 0, size: ImVec2 = ImVec2(0, 0)) -> Tuple[bool, bool]:    # imgui.h:623
+    """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
+    pass
 
 # Widgets: List Boxes
 # - This is essentially a thin wrapper to using BeginChild/EndChild with some stylistic changes.
@@ -1288,6 +1296,12 @@ def list_box(label: str, current_item: int, items: List[str], height_in_items: i
 
 # Widgets: Data Plotting
 # - Consider using ImPlot (https://github.com/epezent/implot) which is much better!
+# IMGUI_API void          PlotLines(const char* label, const float* values, int values_count, int values_offset = 0, const char* overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = sizeof(float));    /* original C++ signature */
+def plot_lines(label: str, values: np.ndarray, values_offset: int = 0, overlay_text: str = None, scale_min: float = sys.float_info.max, scale_max: float = sys.float_info.max, graph_size: ImVec2 = ImVec2(0, 0), stride: int = -1) -> None:    # imgui.h:638
+    pass
+# IMGUI_API void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset = 0, const char* overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = sizeof(float));    /* original C++ signature */
+def plot_histogram(label: str, values: np.ndarray, values_offset: int = 0, overlay_text: str = None, scale_min: float = sys.float_info.max, scale_max: float = sys.float_info.max, graph_size: ImVec2 = ImVec2(0, 0), stride: int = -1) -> None:    # imgui.h:640
+    pass
 
 # Widgets: Value() Helpers.
 # - Those are merely shortcut to calling Text() with a format string. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
@@ -5274,6 +5288,9 @@ class ImGuiPlatformImeData:    # imgui.h:3201
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
 def input_text(label: str, str: str, flags: ImGuiInputTextFlags = 0, user_data: Any = None) -> Tuple[bool, str]:    # imgui_stdlib.h:15
+    pass
+# IMGUI_API bool  InputTextMultiline(const char* label, std::string* str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
+def input_text_multiline(label: str, str: str, size: ImVec2 = ImVec2(0, 0), flags: ImGuiInputTextFlags = 0, user_data: Any = None) -> Tuple[bool, str]:    # imgui_stdlib.h:16
     pass
 # IMGUI_API bool  InputTextWithHint(const char* label, const char* hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
 # }

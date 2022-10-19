@@ -27,3 +27,6 @@
 [submodule "external/ImFileDialog"]
 	path = external/ImFileDialog
 	url = https://github.com/pthom/ImFileDialog.git
+[submodule "external/ImGuizmo"]
+	path = external/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
