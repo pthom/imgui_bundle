@@ -96,7 +96,7 @@ def main():
         window.gui_function = lambda: show_module_demo(demo_module, demo_function)
         dockable_windows.append(window)
 
-    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
+    # add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
     add_dockable_window("Hello ImGui", demo_hello_imgui, demo_hello_imgui.demo_hello_imgui)
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor.demo_node_editor)
@@ -105,6 +105,7 @@ def main():
     )
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
+    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
     runner_params.docking_params.dockable_windows = dockable_windows
 
     def fake_gui():
