@@ -214,13 +214,15 @@ class DemoNodeEditor:
         # imgui.show_metrics_window()
 
 
-@static(was_context_inited = False)
+@static(was_context_inited=False)
 def demo_node_editor():
     static = demo_node_editor
 
-    imgui.text("""imgui-node-editor: Node Editor built using Dear ImGui 
+    imgui.text(
+        """imgui-node-editor: Node Editor built using Dear ImGui 
     https://github.com/thedmd/imgui-node-editor
-    """)
+    """
+    )
 
     if not static.was_context_inited:
         config = ed.Config()
@@ -234,4 +236,5 @@ def demo_node_editor():
 
 if __name__ == "__main__":
     from imgui_bundle import hello_imgui
+
     hello_imgui.run(demo_node_editor)

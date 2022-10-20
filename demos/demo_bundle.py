@@ -13,7 +13,7 @@ import demo_node_editor
 import demo_imgui_md
 
 
-@static(was_initialized = None)
+@static(was_initialized=None)
 def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], None]):
     static = show_module_demo
 
@@ -24,6 +24,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], No
 
     if demo_module != static.last_module:
         import inspect
+
         code = inspect.getsource(demo_module)
         static.editor.set_text(code)
         static.last_module = demo_module
@@ -84,10 +85,11 @@ def main():
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
     def add_dockable_window(
-            label: str,
-            demo_module: ModuleType,
-            demo_function: Callable[[None], None],
-            dock_space_name: str = "MainDockSpace"):
+        label: str,
+        demo_module: ModuleType,
+        demo_function: Callable[[None], None],
+        dock_space_name: str = "MainDockSpace",
+    ):
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = dock_space_name
@@ -98,7 +100,9 @@ def main():
     add_dockable_window("Hello ImGui", demo_hello_imgui, demo_hello_imgui.demo_hello_imgui)
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor.demo_node_editor)
-    add_dockable_window("Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit)
+    add_dockable_window(
+        "Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
+    )
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
     runner_params.docking_params.dockable_windows = dockable_windows

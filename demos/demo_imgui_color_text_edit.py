@@ -13,14 +13,16 @@ def _prepare_text_editor():
     return editor
 
 
-@static(editor = _prepare_text_editor())
+@static(editor=_prepare_text_editor())
 def demo_imgui_color_text_edit():
     static = demo_imgui_color_text_edit
     editor = static.editor
 
-    imgui.text("""ImGuiColorTextEdit: Colorizing text editor for ImGui 
+    imgui.text(
+        """ImGuiColorTextEdit: Colorizing text editor for ImGui 
                https://github.com/BalazsJako/ImGuiColorTextEdit
-               It is able to colorize C, C++, hlsl, Sql, angel_script and lua code""")
+               It is able to colorize C, C++, hlsl, Sql, angel_script and lua code"""
+    )
 
     def show_palette_buttons():
         if imgui.small_button("Dark palette"):
@@ -38,6 +40,7 @@ def demo_imgui_color_text_edit():
 
 def main():
     from imgui_bundle import hello_imgui
+
     hello_imgui.run(demo_imgui_color_text_edit)
 
 

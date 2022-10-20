@@ -9,7 +9,7 @@ def demo_simple():
     def gui():
         imgui.text("Hello, world!")
 
-    hello_imgui.run(gui_fonction=gui, window_size=ImVec2(200, 50), window_title="Hello!" )
+    hello_imgui.run(gui_fonction=gui, window_size=ImVec2(200, 50), window_title="Hello!")
 
 
 def demo_params():
@@ -59,15 +59,18 @@ def demo_hello_imgui():
     import demo_hello_imgui_docking
     import inspect
 
-    imgui.text("""
+    imgui.text(
+        """
     HelloImGui is a wrapper around ImGui that enables to easily create applications with ImGui.
     Features
     - Easy setup
     - Advanced docking support with easy layout
-    """)
+    """
+    )
 
     def show_one_feature(label, demo_function):
         from multiprocessing import Process
+
         if imgui.button(label):
             editor.set_text(inspect.getsource(demo_function))
             if demo_function == demo_hello_imgui_docking.main:
@@ -87,4 +90,5 @@ def demo_hello_imgui():
 
 if __name__ == "__main__":
     from imgui_bundle import hello_imgui
+
     hello_imgui.run(demo_hello_imgui)

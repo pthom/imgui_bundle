@@ -85,8 +85,10 @@ def static(**kwargs):
     Static variables are similar to global variables, with the same shortcomings!
     Use them only in small scripts, never in production code!
     """
+
     def wrapper(function: Callable[[Any], Any]):
         for key, value in kwargs.items():
             setattr(function, key, value)
         return function
+
     return wrapper

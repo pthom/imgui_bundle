@@ -69,11 +69,14 @@ def demo_drag_rects():
 
 
 def demo_implot():
-    imgui.text("""ImPlot: Immediate Mode Plotting for ImGui
+    imgui.text(
+        """ImPlot: Immediate Mode Plotting for ImGui
     https://github.com/epezent/implot
-    You can see lots of demos together with their code at https://traineq.org/implot_demo/src/implot_demo.html""")
+    You can see lots of demos together with their code at https://traineq.org/implot_demo/src/implot_demo.html"""
+    )
     if imgui.button("View the full demo"):
         import webbrowser
+
         webbrowser.open("https://traineq.org/implot_demo/src/implot_demo.html")
 
     demo_drag_rects()
@@ -81,6 +84,7 @@ def demo_implot():
 
 def main():
     from imgui_bundle import hello_imgui
+
     params = hello_imgui.RunnerParams()
     params.callbacks.show_gui = demo_drag_rects
     hello_imgui.run(params)

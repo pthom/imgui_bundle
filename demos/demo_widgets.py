@@ -7,8 +7,10 @@ def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
 
-    imgui.text("""Knobs for ImGui
-    Python bindings for https://github.com/altschuler/imgui-knobs""")
+    imgui.text(
+        """Knobs for ImGui
+    Python bindings for https://github.com/altschuler/imgui-knobs"""
+    )
     knob_types = {
         "tick": imgui_knobs.ImGuiKnobVariant_.tick,
         "dot": imgui_knobs.ImGuiKnobVariant_.dot,
@@ -62,8 +64,10 @@ def demo_knobs():
 def demo_spinner():
     from imgui_bundle import imspinner
 
-    imgui.text("""Spinners for ImGui
-    https://github.com/dalerank/imspinner""")
+    imgui.text(
+        """Spinners for ImGui
+    https://github.com/dalerank/imspinner"""
+    )
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
@@ -73,14 +77,16 @@ def demo_spinner():
     imspinner.spinner_ang_triple("spinner_arc_fade", 5.0, 8.0, 11.0, 2.5, color, color, color)
 
 
-@static(selected_filename = "")
+@static(selected_filename="")
 def demo_file_dialog():
-    static = demo_file_dialog # Acces to static variable via static
+    static = demo_file_dialog  # Acces to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
-    imgui.text("""ImFileDialog: file dialogs for ImGui, with images preview
+    imgui.text(
+        """ImFileDialog: file dialogs for ImGui, with images preview
     https://github.com/pthom/ImFileDialog.git
-    """)
+    """
+    )
     if imgui.button("Open file"):
         ifd.FileDialog.instance().open(
             "ShaderOpenDialog",
@@ -124,35 +130,37 @@ def demo_file_dialog():
 def _fake_log_provider() -> str:
     try:
         from fortune import fortune
+
         message_provider = fortune
     except ImportError:
+
         def message_provider() -> str:
             import random
-            return random.choice([
-                """pip install fortune-python if you want real fortunes""",
-                """There's such a thing as too much point on a pencil.
+
+            return random.choice(
+                [
+                    """pip install fortune-python if you want real fortunes""",
+                    """There's such a thing as too much point on a pencil.
                -- H. Allen Smith, "Let the Crabgrass Grow" """,
-
-                """Santa Claus is watching!""",
-
-                """I'll meet you... on the dark side of the moon...
+                    """Santa Claus is watching!""",
+                    """I'll meet you... on the dark side of the moon...
                     -- Pink Floyd""",
-
-                """Money can't buy love, but it improves your bargaining position.
+                    """Money can't buy love, but it improves your bargaining position.
                                     -- Christopher Marlowe""",
-
-                """Those who in quarrels interpose, must often wipe a bloody nose.""",
-
-                """Everybody is somebody else's weirdo.
-                                    -- Dykstra"""
-            ])
+                    """Those who in quarrels interpose, must often wipe a bloody nose.""",
+                    """Everybody is somebody else's weirdo.
+                                    -- Dykstra""",
+                ]
+            )
 
     return message_provider()
 
 
 def demo_logger():
-    imgui.text("""A simple Log viewer inside HelloImGui
-    From https://github.com/leiradel/ImGuiAl""")
+    imgui.text(
+        """A simple Log viewer inside HelloImGui
+    From https://github.com/leiradel/ImGuiAl"""
+    )
     if imgui.button("Log some messages"):
         hello_imgui.log(hello_imgui.LogLevel.debug, _fake_log_provider())
         hello_imgui.log(hello_imgui.LogLevel.info, _fake_log_provider())

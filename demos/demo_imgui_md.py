@@ -52,7 +52,7 @@ def demo_imgui_md_main():
 
     # Initialize markdown and ask HelloImGui to load the required fonts
     markdown_options = imgui_md.MarkdownOptions()
-    markdown_options.font_options.regular_size = 15.
+    markdown_options.font_options.regular_size = 15.0
 
     imgui_md.initialize_markdown(markdown_options)
     runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()

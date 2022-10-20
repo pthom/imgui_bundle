@@ -14,7 +14,7 @@ from imgui_bundle.run_anon_block import run_anon_block as run_anon_block
 from imgui_bundle.utilities import (
     ImplotContextHolder as ImplotContextHolder,
     ImguiNodeEditorContextHolder as ImguiNodeEditorContextHolder,
-    static
+    static,
 )
 from imgui_bundle._imgui_bundle import __version__
 
