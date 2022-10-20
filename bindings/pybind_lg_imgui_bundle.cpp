@@ -11,6 +11,7 @@ void py_init_module_imgui_node_editor(py::module& m);
 void py_init_module_imgui_knobs(py::module& m);
 void py_init_module_im_file_dialog(py::module& m);
 void py_init_module_imspinner(py::module& m);
+void py_init_module_imgui_md(py::module& m);
 
 
 void py_init_module_lg_imgui_bundle(py::module& m)
@@ -41,4 +42,7 @@ void py_init_module_lg_imgui_bundle(py::module& m)
 
     auto module_imspinner =  m.def_submodule("imspinner");
     py_init_module_imspinner(module_imspinner);
+
+    auto module_imgui_md =  m.def_submodule("imgui_md");
+    py_init_module_imgui_md(module_imgui_md);
 }

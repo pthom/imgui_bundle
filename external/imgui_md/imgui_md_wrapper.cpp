@@ -352,7 +352,7 @@ assets/
             {
                 try
                 {
-                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage("broken.png");
+                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage("images/markdown_broken_image.png");
                 }
                 catch (std::runtime_error)
                 {

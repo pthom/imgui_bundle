@@ -16,7 +16,7 @@ namespace ImGuiMd
         std::string fontBasePath = "fonts/Roboto/Roboto";
         int maxHeaderLevel = 3;
         float sizeDiffBetweenLevels = 3.f;
-        float regularSize = 14.f;
+        float regularSize = 14.5f;
     };
 
 
@@ -30,6 +30,13 @@ namespace ImGuiMd
         ImVec4	col_border;
     };
 
+
+    using VoidFunction = std::function<void(void)>;
+    using StringFunction = std::function<void(std::string)>;
+    using HtmlDivFunction = std::function<void(const std::string& divClass, bool openingDiv)>;
+    using MarkdownImageFunction = std::function<std::optional<MarkdownImage>(const std::string&)>;
+
+
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path);
     void OnOpenLink_Default(const std::string& url);
 
@@ -37,14 +44,14 @@ namespace ImGuiMd
     struct MarkdownCallbacks
     {
         // The default version will open the link in a browser iif it starts with "http"
-        std::function<void(const std::string&)> OnOpenLink = OnOpenLink_Default;
+        StringFunction OnOpenLink = OnOpenLink_Default;
 
         // The default version will load the image as a cached texture and display it
-        std::function<std::optional<MarkdownImage>(const std::string&)> OnImage = OnImage_Default;
+        MarkdownImageFunction OnImage = OnImage_Default;
 
         // OnHtmlDiv does nothing by default, by you could write:
         //     In  C++:
-        //        markdownOptions.callbacks.openingDiv = [](const std::string& divClass, bool openingDiv)
+        //        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)
         //        {
         //            if (divClass == "red")
         //            {
@@ -54,7 +61,7 @@ namespace ImGuiMd
         //                    ImGui::PopStyleColor();
         //            }
         //        };
-        std::function<void(const std::string& divClass, bool openingDiv)> OnHtmlDiv;
+        HtmlDivFunction OnHtmlDiv;
     };
 
 
@@ -65,15 +72,24 @@ namespace ImGuiMd
     };
 
     // InitializeMarkdown: Call this once at application startup
-    void InitializeMarkdown(const MarkdownOptions& options);
+    // Don't forget to later call GetFontLoaderFunction(): it will return a function that you should call
+    // during ImGui initialization (and before rendering the first frame, since it will load the fonts)
+    //
+    // If using HelloImGui, the code would look like:
+    //     Python:
+    //        runner_params = hello_imgui.RunnerParams()
+    //
+    //        ... // Fill runner_params callbacks
+    //
+    //        # Initialize markdown and ask HelloImGui to load the required fonts
+    //        imgui_md.initialize_markdown()
+    //        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
+    //
+    //        hello_imgui.run(runnerParams)
+    void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
 
     // GetFontLoaderFunction() will return a function that you should call during ImGui initialization.
-    // If using HelloImGui, then simply add this:
-    //     For C++:
-    //         runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction()
-    //     For Python:
-    //         runnerParams.callbacks.load_additional_fonts = ImGuiMd::get_font_loader_function()
-    std::function<void(void)> GetFontLoaderFunction();
+    VoidFunction GetFontLoaderFunction();
 
     void Render(const std::string& markdownString);
 

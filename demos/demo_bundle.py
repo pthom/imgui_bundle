@@ -1,14 +1,37 @@
 import os
-from typing import List, Callable
+from typing import List, Callable, Optional
+from types import ModuleType
 
-from imgui_bundle import hello_imgui, ImVec2, static
+from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_md, imgui_color_text_edit as ed, static
 
-from demo_imgui import demo_imgui
-from demo_hello_imgui import demo_hello_imgui
-from demo_imgui_color_text_edit import demo_imgui_color_text_edit
-from demo_widgets import demo_widgets
-from demo_implot import demo_implot
-from demo_node_editor import demo_node_editor
+import demo_imgui
+import demo_hello_imgui
+import demo_imgui_color_text_edit
+import demo_widgets
+import demo_implot
+import demo_node_editor
+import demo_imgui_md
+
+
+@static(was_initialized = None)
+def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], None]):
+    static = show_module_demo
+
+    if not static.was_initialized:
+        static.editor = ed.TextEditor()
+        static.last_module = None
+        static.was_initialized = True
+
+    if demo_module != static.last_module:
+        import inspect
+        code = inspect.getsource(demo_module)
+        static.editor.set_text(code)
+        static.last_module = demo_module
+
+    if imgui.collapsing_header("Code for this demo"):
+        static.editor.render("Code")
+
+    demo_function()
 
 
 @static(first_frame=True)
@@ -19,8 +42,16 @@ def main():
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
+    # Window size and title
     runner_params.app_window_params.window_title = "Docking demo"
     runner_params.app_window_params.window_size = ImVec2(1000, 900)
+
+    # Initialize markdown and ask HelloImGui to load the required fonts
+    markdown_options = imgui_md.MarkdownOptions()
+    # markdown_options.font_options.regular_size = 14.5
+    imgui_md.initialize_markdown(markdown_options)
+    runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
+
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
 
@@ -52,19 +83,24 @@ def main():
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    def add_dockable_window(label: str, gui_function: Callable[[None], None], dock_space_name: str = "MainDockSpace"):
+    def add_dockable_window(
+            label: str,
+            demo_module: ModuleType,
+            demo_function: Callable[[None], None],
+            dock_space_name: str = "MainDockSpace"):
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = dock_space_name
-        window.gui_function = gui_function
+        window.gui_function = lambda: show_module_demo(demo_module, demo_function)
         dockable_windows.append(window)
 
-    add_dockable_window("Dear ImGui Demo", demo_imgui)
-    add_dockable_window("Hello ImGui", demo_hello_imgui)
-    add_dockable_window("Implot", demo_implot)
-    add_dockable_window("Node Editor", demo_node_editor)
-    add_dockable_window("Editor demo", demo_imgui_color_text_edit)
-    add_dockable_window("Widgets", demo_widgets)
+    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
+    add_dockable_window("Hello ImGui", demo_hello_imgui, demo_hello_imgui.demo_hello_imgui)
+    add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
+    add_dockable_window("Node Editor", demo_node_editor, demo_node_editor.demo_node_editor)
+    add_dockable_window("Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit)
+    add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
+    add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
     runner_params.docking_params.dockable_windows = dockable_windows
 
     def fake_gui():
@@ -74,7 +110,6 @@ def main():
             main.first_frame = False
 
     runner_params.callbacks.show_gui = fake_gui
-
 
     ################################################################################################
     # Part 3: Run the app

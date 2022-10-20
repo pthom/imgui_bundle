@@ -151,6 +151,7 @@ set(python_module_sources
     bindings/pybind_imgui_knobs.cpp
     bindings/pybind_im_file_dialog.cpp
     bindings/pybind_imspinner.cpp
+    bindings/pybind_imgui_md.cpp
     )
 
 pybind11_add_module(${python_native_module_name} ${python_module_sources})
