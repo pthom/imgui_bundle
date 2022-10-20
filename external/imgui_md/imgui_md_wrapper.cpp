@@ -11,11 +11,49 @@
 #include <utility>
 #include <map>
 #include <memory>
+#include <iostream>
+
+// [sub section]  BrowseToUrl()
+// A platform specific utility to open an url in a browser
+// (especially useful with emscripten version)
+// Specific per platform includes for BrowseToUrl
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#elif defined(_WIN32)
+#include <windows.h>
+#include <Shellapi.h>
+#elif defined(__APPLE__)
+#include <TargetConditionals.h>
+#endif
+
+namespace ImGuiMdBrowser
+{
+    void BrowseToUrl(const char *url)
+    {
+#if defined(__EMSCRIPTEN__)
+        char js_command[1024];
+    snprintf(js_command, 1024, "window.open(\"%s\");", url);
+    emscripten_run_script(js_command);
+#elif defined(_WIN32)
+        ShellExecuteA( NULL, "open", url, NULL, NULL, SW_SHOWNORMAL );
+#elif TARGET_OS_IPHONE
+        // Nothing on iOS
+#elif TARGET_OS_OSX
+        char cmd[1024];
+        snprintf(cmd, 1024, "open %s", url);
+        system(cmd);
+#elif defined(__linux__)
+        char cmd[1024];
+    snprintf(cmd, 1024, "xdg-open %s", url);
+    system(cmd);
+#endif
+    }
+}
 
 namespace ImGuiMd
 {
 
-    namespace MdFonts
+    namespace ImGuiMdFonts
     {
         struct MarkdownEmphasis
         {
@@ -118,8 +156,40 @@ namespace ImGuiMd
 
                         float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
                         std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-                        ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
-                        mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                        try
+                        {
+                            ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
+                            mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                        }
+                        catch (std::runtime_error)
+                        {
+                            std::string error_message = R"(
+Could not find required assets for ImGuiMd:
+We need to find the following files in the assets:
+
+assets/
+├── fonts/
+│     ├── Roboto/
+│     │     ├── LICENSE.txt
+│     │     ├── Roboto-Black.ttf
+│     │     ├── Roboto-BlackItalic.ttf
+│     │     ├── Roboto-Bold.ttf
+│     │     ├── Roboto-BoldItalic.ttf
+│     │     ├── Roboto-Italic.ttf
+│     │     ├── Roboto-Light.ttf
+│     │     ├── Roboto-LightItalic.ttf
+│     │     ├── Roboto-Medium.ttf
+│     │     ├── Roboto-MediumItalic.ttf
+│     │     ├── Roboto-Regular.ttf
+│     │     ├── Roboto-Thin.ttf
+│     │     └── Roboto-ThinItalic.ttf
+│     └── fontawesome-webfont.ttf
+└── images/
+    └── markdown_broken_image.png
+
+)";
+                            throw std::runtime_error(error_message);
+                        }
                     }
                 }
             }
@@ -130,25 +200,31 @@ namespace ImGuiMd
 
     } //namespace MdFonts
 
-
     struct MarkdownCollection
     {
         MarkdownCollection(const MarkdownFontOptions& options)
             : mFontCollection(options)
         {}
-        MdFonts::FontCollection mFontCollection;
+        ImGuiMdFonts::FontCollection mFontCollection;
         mutable std::map<std::string, HelloImGui::ImageGlPtr > mLoadedImages;
     };
 
 
-    class MarkdownRendererPImpl : public imgui_md
+    class MarkdownRenderer : public imgui_md
     {
     private:
+        MarkdownOptions mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
     public:
-        MarkdownRendererPImpl(const MarkdownFontOptions& markdownFontOptions)
-            : mMarkdownCollection(markdownFontOptions)
+        MarkdownRenderer(MarkdownOptions markdownOptions)
+            : mMarkdownOptions(markdownOptions)
+            , mMarkdownCollection(markdownOptions.fontOptions)
         {
+        }
+
+        std::map<std::string, HelloImGui::ImageGlPtr >& ImageCache()
+        {
+            return mMarkdownCollection.mLoadedImages;
         }
 
         void Render(const std::string& s)
@@ -162,7 +238,7 @@ namespace ImGuiMd
     private:
         ImFont* get_font() const override
         {
-            MdFonts::MarkdownTextStyle markdownTextStyle;
+            ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
             markdownTextStyle.headerLevel = m_hlevel;
             markdownTextStyle.markdownEmphasis.bold = m_is_strong;
             markdownTextStyle.markdownEmphasis.italic = m_is_em;
@@ -173,64 +249,129 @@ namespace ImGuiMd
 
         void open_url() const override
         {
-            //platform dependent code
-            //SDL_OpenURL(m_href.c_str());
+            if (mMarkdownOptions.callbacks.OnOpenLink)
+                mMarkdownOptions.callbacks.OnOpenLink(m_href);
         }
 
         bool get_image(image_info& nfo) const override
         {
-            std::string url = m_href;
-            if (mMarkdownCollection.mLoadedImages.find(url) == mMarkdownCollection.mLoadedImages.end())
-            {
-                try
-                {
-                    mMarkdownCollection.mLoadedImages[url] = HelloImGui::ImageGl::FactorImage(m_href.c_str());
-                }
-                catch (std::runtime_error)
-                {
-                    try
-                    {
-                        mMarkdownCollection.mLoadedImages[url] = HelloImGui::ImageGl::FactorImage("broken.png");
-                    }
-                    catch (std::runtime_error)
-                    {
-                        return false;
-                    }
-                }
-            }
+            if (! mMarkdownOptions.callbacks.OnImage)
+                return false;
 
-            auto imageGl = mMarkdownCollection.mLoadedImages[url].get();
+            std::optional<MarkdownImage> mdImage = mMarkdownOptions.callbacks.OnImage(m_href);
 
-            //use m_href to identify images
-            nfo.texture_id = imageGl->imTextureId;
-            nfo.size = imageGl->imageSize;
-            nfo.uv0 = { 0,0 };
-            nfo.uv1 = {1,1};
-            nfo.col_tint = { 1,1,1,1 };
-            nfo.col_border = { 0,0,0,0 };
+            if (! mdImage.has_value())
+                return false;
+
+            nfo.size = mdImage->size;
+            nfo.col_border = mdImage->col_border;
+            nfo.col_tint = mdImage->col_tint;
+            nfo.texture_id = mdImage->texture_id;
+            nfo.uv0 = mdImage->uv0;
+            nfo.uv1 = mdImage->uv1;
+
             return true;
         }
 
-        void html_div(const std::string& dclass, bool e) override
+        void html_div(const std::string& divClass, bool openingDiv) override
         {
-            if (dclass == "red") {
-                if (e) {
-                    m_table_border = false;
-                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
-                } else {
-                    ImGui::PopStyleColor();
-                    m_table_border = true;
-                }
-            }
+            if (!mMarkdownOptions.callbacks.OnHtmlDiv)
+                return;
+
+            mMarkdownOptions.callbacks.OnHtmlDiv(divClass, openingDiv);
         }
     };
 
-//
-// PImpl glue
-//
-    MarkdownRenderer::MarkdownRenderer(const MarkdownFontOptions& options)
-        : mImpl(std::make_unique<MarkdownRendererPImpl>(options)) {}
-    MarkdownRenderer::~MarkdownRenderer() = default;
-    void MarkdownRenderer::Render(const std::string& markdownString) { mImpl->Render(markdownString); }
+
+    // Global renderer
+    std::unique_ptr<MarkdownRenderer> gMarkdownRenderer;
+
+    // Global options
+    MarkdownOptions gMarkdownOptions;
+
+
+    void InitializeMarkdown(const MarkdownOptions& options)
+    {
+        static bool wasCalledAlready = false;
+        if (wasCalledAlready)
+            throw std::runtime_error("InitializeMarkdown can only be called once at application startup!");
+
+        gMarkdownOptions = options;
+        wasCalledAlready = true;
+    }
+
+
+    void Render(const std::string& markdownString)
+    {
+        if (!gMarkdownRenderer)
+        {
+            std::cerr << "ImGuiMd::Render : Markdown was not initialized!\n";
+            return;
+        }
+
+        gMarkdownRenderer->Render(markdownString);
+    }
+
+    std::function<void(void)> GetFontLoaderFunction()
+    {
+        auto fontLoaderFunction = []()
+        {
+            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(gMarkdownOptions);
+        };
+        return fontLoaderFunction;
+    }
+
+
+    void OnOpenLink_Default(const std::string& url)
+    {
+        if (strncmp(url.c_str(), "http", strlen("http")) != 0)
+        {
+            std::cerr << "ImGuiMd::OnOpenLink_Default url should start with http!\n";
+            return;
+        }
+        ImGuiMdBrowser::BrowseToUrl(url.c_str());
+    }
+
+
+    std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
+    {
+        if (!gMarkdownRenderer)
+        {
+            std::cerr << "Did you initialize ImGuiMd?\n";
+            return std::nullopt;
+        }
+
+        auto & imageCache = gMarkdownRenderer->ImageCache();
+        if (imageCache.find(image_path) == imageCache.end())
+        {
+            try
+            {
+                imageCache[image_path] = HelloImGui::ImageGl::FactorImage(image_path.c_str());
+            }
+            catch (std::runtime_error)
+            {
+                try
+                {
+                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage("broken.png");
+                }
+                catch (std::runtime_error)
+                {
+                    return std::nullopt;
+                }
+            }
+        }
+
+        auto imageGl = imageCache.at(image_path).get();
+
+        MarkdownImage r;
+
+        r.texture_id = imageGl->imTextureId;
+        r.size = imageGl->imageSize;
+        r.uv0 = { 0,0 };
+        r.uv1 = {1,1};
+        r.col_tint = { 1,1,1,1 };
+        r.col_border = { 0,0,0,0 };
+        return r;
+    }
 
 }

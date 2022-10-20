@@ -5,7 +5,7 @@
 
 //HelloImgGui::CallLoadFont(VoidFunction);
 
-void gui(ImGuiMd::MarkdownRenderer& markdownRenderer)
+void gui()
 {
     ImGui::Text("Hello");
     ImGui::Button("Truc");
@@ -42,24 +42,24 @@ Value-One | Long <br>explanation <br>with \<br\>\'s|1
 
 ![Alt text](world.jpg "a title")
 )md";
-    markdownRenderer.Render(m);
+    //markdownRenderer.Render(m);
+
+    ImGuiMd::Render(m);
 }
 
 
 int main(int , char *[])
 {
-    ImGuiMd::MarkdownFontOptions markdownFontOptions;
-     std::unique_ptr<ImGuiMd::MarkdownRenderer> markdownRenderer;
+    ImGuiMd::MarkdownOptions markdownOptions;
+    ImGuiMd::InitializeMarkdown(markdownOptions);
 
     HelloImGui::overrideAssetsFolder(
         "/Users/pascal/dvp/OpenSource/ImGuiWork/litgen/demos/litgen/imgui_bundle/external/_cpp_tests/imgui_md_test/assets");
 
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.LoadAdditionalFonts = [&]() {
-        markdownRenderer = std::make_unique<ImGuiMd::MarkdownRenderer>(markdownFontOptions);
-    };
+    runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
     runnerParams.callbacks.ShowGui = [&]() {
-        gui(*markdownRenderer);
+        gui();
     };
 
     HelloImGui::Run(runnerParams);
