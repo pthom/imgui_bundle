@@ -1,5 +1,5 @@
 from munch import Munch
-from imgui_bundle import static, imgui, hello_imgui
+from imgui_bundle import static, imgui, hello_imgui, imgui_md
 
 
 @static(knob_value=0, knob_int_value=0)
@@ -7,10 +7,9 @@ def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
 
-    imgui.text(
-        """Knobs for ImGui
-    Python bindings for https://github.com/altschuler/imgui-knobs"""
-    )
+    imgui_md.render("""
+# Knobs
+  [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.""")
     knob_types = {
         "tick": imgui_knobs.ImGuiKnobVariant_.tick,
         "dot": imgui_knobs.ImGuiKnobVariant_.dot,
@@ -64,10 +63,9 @@ def demo_knobs():
 def demo_spinner():
     from imgui_bundle import imspinner
 
-    imgui.text(
-        """Spinners for ImGui
-    https://github.com/dalerank/imspinner"""
-    )
+    imgui_md.render("""
+# Spinners
+  [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.""")
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
@@ -82,9 +80,9 @@ def demo_file_dialog():
     static = demo_file_dialog  # Acces to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
-    imgui.text(
-        """ImFileDialog: file dialogs for ImGui, with images preview
-    https://github.com/pthom/ImFileDialog.git
+    imgui_md.render("""
+# ImFileDialog
+ [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.    
     """
     )
     if imgui.button("Open file"):

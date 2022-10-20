@@ -5,6 +5,7 @@ from types import ModuleType
 from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_md, imgui_color_text_edit as ed, static
 
 import demo_imgui
+import demo_imgui_bundle
 import demo_hello_imgui
 import demo_imgui_color_text_edit
 import demo_widgets
@@ -106,6 +107,7 @@ def main():
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
     add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
+    add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
     runner_params.docking_params.dockable_windows = dockable_windows
 
     def fake_gui():

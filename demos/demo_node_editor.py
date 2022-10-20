@@ -5,6 +5,7 @@ from typing import List
 from dataclasses import dataclass
 from imgui_bundle import (
     imgui,
+    imgui_md,
     imgui_node_editor as ed,
     static,  # Helper to get static variables
     ImguiNodeEditorContextHolder,  # Helper to store ImGui node editor context
@@ -218,9 +219,11 @@ class DemoNodeEditor:
 def demo_node_editor():
     static = demo_node_editor
 
-    imgui.text(
-        """imgui-node-editor: Node Editor built using Dear ImGui 
-    https://github.com/thedmd/imgui-node-editor
+    imgui_md.render(
+        """
+# imgui-node-editor
+[imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
+Use the mouse wheel to zoom-unzoom.
     """
     )
 

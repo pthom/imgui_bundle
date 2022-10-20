@@ -1,6 +1,6 @@
 import os.path
 from imgui_bundle import static
-from imgui_bundle import imgui_color_text_edit as text_edit
+from imgui_bundle import imgui_color_text_edit as text_edit, imgui_md
 
 
 def demo_simple():
@@ -59,12 +59,14 @@ def demo_hello_imgui():
     import demo_hello_imgui_docking
     import inspect
 
-    imgui.text(
+    imgui_md.render(
         """
-    HelloImGui is a wrapper around ImGui that enables to easily create applications with ImGui.
-    Features
-    - Easy setup
-    - Advanced docking support with easy layout
+# HelloImGui
+[HelloImGui](https://github.com/pthom/hello_imgui) is a wrapper around ImGui that enables to easily create applications with ImGui.
+
+Features
+* Easy setup
+* Advanced docking support with easy layout
     """
     )
 
@@ -78,9 +80,23 @@ def demo_hello_imgui():
             process = Process(target=demo_function)
             process.start()
 
+    imgui.text("Click on any button to launch a demo, and see its code")
+    imgui.new_line()
+
+    imgui.text("Hello world demo: how to start an app in as few lines as possible")
     show_one_feature("Hello world", demo_simple)
+
+    imgui.text("How to run more complex application (via RunnerParams) and how to load assets")
     show_one_feature("Assets and Params", demo_params)
+
+    imgui.text("How to build complex applications layouts, with dockable panels, that can even become independent windows")
     show_one_feature("Advanced docking demo", demo_hello_imgui_docking.main)
+
+    imgui.new_line()
+    imgui_md.render("""
+* Hello ImGui [API Doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
+* Docking layout [specific documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#docking)
+    """)
 
     if len(editor.get_text()) > 1:
         imgui.separator()

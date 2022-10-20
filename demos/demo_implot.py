@@ -3,7 +3,7 @@ import math
 from munch import Munch
 
 import numpy as np
-from imgui_bundle import imgui, implot, ImplotContextHolder, static
+from imgui_bundle import imgui, implot, ImplotContextHolder, static, imgui_md
 
 
 ImVec2 = imgui.ImVec2
@@ -69,16 +69,16 @@ def demo_drag_rects():
 
 
 def demo_implot():
-    imgui.text(
-        """ImPlot: Immediate Mode Plotting for ImGui
-    https://github.com/epezent/implot
-    You can see lots of demos together with their code at https://traineq.org/implot_demo/src/implot_demo.html"""
+    imgui_md.render("""
+# ImPlot
+[Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
+You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)"""
     )
     if imgui.button("View the full demo"):
         import webbrowser
 
         webbrowser.open("https://traineq.org/implot_demo/src/implot_demo.html")
-
+    imgui.new_line()
     demo_drag_rects()
 
 
