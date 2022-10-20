@@ -67,10 +67,10 @@ namespace ImGuiMd
             static std::vector<MarkdownEmphasis> AllEmphasisVariants()
             {
                 return {
-                    { .italic = false, .bold = false },
-                    { .italic = false, .bold = true },
-                    { .italic = true, .bold = false },
-                    { .italic = true, .bold = true },
+                    { false, false },
+                    { false, true },
+                    { true, false },
+                    { true, true },
                 };
             }
         };
