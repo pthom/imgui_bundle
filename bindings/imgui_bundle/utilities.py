@@ -27,8 +27,6 @@ def run(
         - if `with_implot` is True, then a context for implot will be created/destroyed automatically
         - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
           will be created automatically.
-          Remember to call at each frame:
-                  imgui_node_editor.set_current_editor(imgui_bundle.current_node_editor_context())
     """
 
     global _NODE_EDITOR_CONTEXT
@@ -53,6 +51,7 @@ def run(
         if with_node_editor_config is None:
             with_node_editor_config = imgui_node_editor.Config()
         _NODE_EDITOR_CONTEXT = imgui_node_editor.create_editor(with_node_editor_config)
+        imgui_node_editor.set_current_editor(_NODE_EDITOR_CONTEXT)
 
     # load markdown fonts if needed
     if with_markdown or with_markdown_options is not None:
