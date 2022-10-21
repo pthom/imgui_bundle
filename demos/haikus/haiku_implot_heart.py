@@ -3,16 +3,19 @@ import numpy as np
 from imgui_bundle import implot, ImVec2, imgui_knobs, imgui, run
 
 
-t = np.arange(0, np.pi * 2, 0.01)
-x = np.power(np.sin(t), 3) * 16
-y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
-t0 = time.time() + 0.2
-heart_pulse_rate = 80
+interval = np.arange(0, np.pi * 2, 0.01)
+x = np.power(np.sin(interval), 3) * 16
+y = 13 * np.cos(interval) - 5 * np.cos(2 * interval) - 2 * np.cos(3 * interval) - np.cos(4 * interval)
+
+phase = 0; t0 = time.time() + 0.2; heart_pulse_rate = 80
 
 
 def gui():
-    global heart_pulse_rate
-    k = 0.8 + 0.1 * np.cos((time.time() - t0) * heart_pulse_rate / (np.pi * 2))
+    global heart_pulse_rate, phase, t0
+    t = time.time(); dt = t - t0
+    phase += dt * heart_pulse_rate / (np.pi * 2)
+    t0 = t
+    k = 0.8 + 0.1 * np.cos(phase)
     imgui.text("Bloat free code")
     implot.begin_plot("Heart")
     implot.plot_line("", x * k, y * k)
