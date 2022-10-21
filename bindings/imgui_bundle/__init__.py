@@ -12,8 +12,8 @@ from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle import icons_fontawesome
 from imgui_bundle.run_anon_block import run_anon_block as run_anon_block
 from imgui_bundle.utilities import (
-    ImplotContextHolder as ImplotContextHolder,
-    ImguiNodeEditorContextHolder as ImguiNodeEditorContextHolder,
+    run as run,
+    current_node_editor_context as current_node_editor_context,
     static,
 )
 from imgui_bundle._imgui_bundle import __version__

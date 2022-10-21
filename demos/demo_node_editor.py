@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from imgui_bundle import (
     imgui,
     imgui_md,
+    current_node_editor_context,
     imgui_node_editor as ed,
     static,  # Helper to get static variables
-    ImguiNodeEditorContextHolder,  # Helper to store ImGui node editor context
     run_anon_block,  # helper to indent the code with anonymous blocks
 )
 
@@ -81,7 +81,7 @@ class DemoNodeEditor:
 
         imgui.separator()
 
-        ImguiNodeEditorContextHolder.set_as_current_editor()
+        ed.set_current_editor(current_node_editor_context())
 
         # Start interaction with editor.
         ed.begin("My Editor", imgui.ImVec2(0.0, 0.0))
@@ -215,9 +215,11 @@ class DemoNodeEditor:
         # imgui.show_metrics_window()
 
 
-@static(was_context_inited=False)
+@static(demo_node_editor=None)
 def demo_node_editor():
     static = demo_node_editor
+    if static.demo_node_editor is None:
+        static.demo_node_editor = DemoNodeEditor()
 
     imgui_md.render(
         """
@@ -227,17 +229,11 @@ Use the mouse wheel to zoom-unzoom.
     """
     )
 
-    if not static.was_context_inited:
-        config = ed.Config()
-        config.settings_file = "BasicInteraction.json"
-        ImguiNodeEditorContextHolder.start(config)
-        static.demo_node_editor = DemoNodeEditor()
-        static.was_context_inited = True
-
     static.demo_node_editor.on_frame()
 
 
 if __name__ == "__main__":
-    from imgui_bundle import hello_imgui
-
-    hello_imgui.run(demo_node_editor)
+    config = ed.Config()
+    config.settings_file = "BasicInteraction.json"
+    import imgui_bundle
+    imgui_bundle.run(demo_node_editor, with_node_editor_config=config, with_markdown=True)

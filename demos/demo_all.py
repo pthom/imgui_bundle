@@ -2,7 +2,7 @@ import os
 from typing import List, Callable, Optional
 from types import ModuleType
 
-from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_md, imgui_color_text_edit as ed, static
+from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_color_text_edit as ed, static
 
 import demo_imgui
 import demo_imgui_bundle
@@ -47,12 +47,6 @@ def main():
     # Window size and title
     runner_params.app_window_params.window_title = "Docking demo"
     runner_params.app_window_params.window_size = ImVec2(1000, 900)
-
-    # Initialize markdown and ask HelloImGui to load the required fonts
-    markdown_options = imgui_md.MarkdownOptions()
-    # markdown_options.font_options.regular_size = 14.5
-    imgui_md.initialize_markdown(markdown_options)
-    runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
 
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
@@ -121,7 +115,8 @@ def main():
     ################################################################################################
     # Part 3: Run the app
     ################################################################################################
-    hello_imgui.run(runner_params)
+    import imgui_bundle
+    imgui_bundle.run(runner_params=runner_params, with_implot=True, with_node_editor=True, with_markdown=True)
 
 
 if __name__ == "__main__":

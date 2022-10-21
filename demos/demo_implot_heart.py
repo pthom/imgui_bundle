@@ -1,7 +1,6 @@
 import time
 import numpy as np
-from imgui_bundle import hello_imgui, implot, ImVec2, imgui_knobs, imgui
-import math
+from imgui_bundle import implot, ImVec2, imgui_knobs, imgui, run
 
 
 t = np.arange(0, np.pi * 2, 0.01)
@@ -13,14 +12,14 @@ heart_pulse_rate = 80
 
 def gui():
     global heart_pulse_rate
-    k = 0.8 + 0.1 * math.cos((time.time() - t0) * heart_pulse_rate / (math.pi * 2))
+    k = 0.8 + 0.1 * np.cos((time.time() - t0) * heart_pulse_rate / (np.pi * 2))
     imgui.text("Bloat free code")
     implot.begin_plot("##Heart")
     implot.plot_line("", x * k, y * k)
     implot.end_plot()
-    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180, speed=3)
+    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
 
 
-implot.create_context()  # or call ImplotContextHolder.start() which will destroy the context at exit
-hello_imgui.run(gui, window_size=ImVec2(300, 450))
-implot.destroy_context()
+run(gui, window_size=ImVec2(300, 450), window_title="Hello!", with_implot=True)
+
+

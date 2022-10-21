@@ -3,7 +3,7 @@ import math
 from munch import Munch
 
 import numpy as np
-from imgui_bundle import imgui, implot, ImplotContextHolder, static, imgui_md
+from imgui_bundle import imgui, implot, static, imgui_md
 
 
 ImVec2 = imgui.ImVec2
@@ -27,11 +27,8 @@ def _demo_drag_rects_statics() -> Munch:
     return r
 
 
-@static(statics=_demo_drag_rects_statics(), was_context_initialized=False)
+@static(statics=_demo_drag_rects_statics())
 def demo_drag_rects():
-    if not demo_drag_rects.was_context_initialized:
-        ImplotContextHolder.start()
-        demo_drag_rects.was_context_initialized = True
     statics = demo_drag_rects.statics
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
@@ -84,11 +81,8 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 
 def main():
-    from imgui_bundle import hello_imgui
-
-    params = hello_imgui.RunnerParams()
-    params.callbacks.show_gui = demo_drag_rects
-    hello_imgui.run(params)
+    from imgui_bundle import run
+    run(demo_drag_rects, with_implot=True)
 
 
 if __name__ == "__main__":

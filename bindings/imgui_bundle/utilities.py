@@ -1,67 +1,82 @@
 from typing import Any, Callable, Optional
-from imgui_bundle import implot, imgui_node_editor
+from imgui_bundle import implot, imgui_node_editor, hello_imgui, imgui, imgui_md
 
 
-class ImplotContextHolder:
-    """Utility to simplify the management of the lifetime of the implot context
-    Simply call ImplotContextHolder.start() at the start of the application,
-    and it will initialize a context that will be present for the rest of the app lifetime.
+VoidFunction = Callable[[None], None]
 
-    In bigger applications, it is advised to use the standard way,
-    i.e. call yourself implot.create_context() and implot.destroy_context() when needed
+
+_NODE_EDITOR_CONTEXT: Optional[imgui_node_editor.EditorContext] = None
+
+
+def run(
+        gui_fonction: Optional[VoidFunction] = None,
+        window_size: Optional[imgui.ImVec2] = None,
+        window_title: str = "",
+        runner_params: Optional[hello_imgui.RunnerParams] = None,
+        with_implot: bool = False,
+        with_node_editor: bool = False,
+        with_node_editor_config: Optional[imgui_node_editor.Config] = None,
+        with_markdown: bool = False,
+        with_markdown_options: Optional[imgui_md.MarkdownOptions] = None
+) -> None:
+    """Helper to run an hello_imgui app for imgui_bundle:
+
+        - You can specify your gui code either via `gui_function` or via `runner_params`
+        - if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized
+          (i.e. required fonts will be loaded)
+        - if `with_implot` is True, then a context for implot will be created/destroyed automatically
+        - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
+          will be created automatically.
+          Remember to call at each frame:
+                  imgui_node_editor.set_current_editor(imgui_bundle.current_node_editor_context())
     """
 
-    def __init__(self):
+    global _NODE_EDITOR_CONTEXT
+
+    # instantiate runner_params and set gui functio
+    if runner_params is None:
+        runner_params = hello_imgui.RunnerParams()
+    if gui_fonction is not None:
+        runner_params.callbacks.show_gui = gui_fonction
+    if window_size is not None:
+        runner_params.app_window_params.window_size = window_size;
+    if len(window_title) > 0:
+        runner_params.app_window_params.window_title = window_title;
+
+    # create implot context if required
+    if with_implot:
         implot.create_context()
 
-    def __del__(self):
+    # create imgui_node_editor context if required
+    if with_node_editor or with_node_editor_config is not None:
+        with_node_editor = True
+        if with_node_editor_config is None:
+            with_node_editor_config = imgui_node_editor.Config()
+        _NODE_EDITOR_CONTEXT = imgui_node_editor.create_editor(with_node_editor_config)
+
+    # load markdown fonts if needed
+    if with_markdown or with_markdown_options is not None:
+        with_markdown = True
+        if with_markdown_options is None:
+            with_markdown_options = imgui_md.MarkdownOptions()
+        imgui_md.initialize_markdown(with_markdown_options)
+        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
+
+    hello_imgui.run(runner_params)
+
+    if with_implot:
         implot.destroy_context()
 
-    @staticmethod
-    def _instance():  # type: ignore
-        if not hasattr(ImplotContextHolder._instance, "_inst"):
-            ImplotContextHolder._instance._inst = ImplotContextHolder()
-        return ImplotContextHolder._instance._inst
-
-    @staticmethod
-    def start():
-        _ = ImplotContextHolder._instance()
+    if with_node_editor:
+        imgui_node_editor.destroy_editor(_NODE_EDITOR_CONTEXT)
+        _NODE_EDITOR_CONTEXT = None
 
 
-class ImguiNodeEditorContextHolder:
-    """Utility class to simplify the management of the lifetime of the imgui_node_editor context
-    Simply call:
-        - ImguiNodeEditorContextHolder.start() at the start of the application
-        - ImguiNodeEditorContextHolder.set_as_current_editor() at each frame
-    The context will be destroyed when the app exits.
-
-    In bigger applications, it is advised to use the standard way,
-    i.e. call yourself imgui_node_editor.create_editor, imgui_node_editor.destroy_editor,
-    and imgui_node_editor.set_current_editor when needed
-    """
-
-    _context: imgui_node_editor.EditorContext
-
-    def __init__(self, config: Optional[imgui_node_editor.Config]):
-        self._context = imgui_node_editor.create_editor(config)
-
-    def __del__(self):
-        imgui_node_editor.destroy_editor(self._context)
-
-    @staticmethod
-    def _instance(config: Optional[imgui_node_editor.Config] = None):  # type: ignore
-        if not hasattr(ImguiNodeEditorContextHolder._instance, "_inst"):
-            ImguiNodeEditorContextHolder._instance._inst = ImguiNodeEditorContextHolder(config)
-        return ImguiNodeEditorContextHolder._instance._inst
-
-    @staticmethod
-    def start(config: Optional[imgui_node_editor.Config] = None):
-        _ = ImguiNodeEditorContextHolder._instance(config)
-
-    @staticmethod
-    def set_as_current_editor():
-        instance = ImguiNodeEditorContextHolder._instance()
-        imgui_node_editor.set_current_editor(instance._context)
+def current_node_editor_context() -> imgui_node_editor.EditorContext:
+    if _NODE_EDITOR_CONTEXT is None:
+        raise RuntimeError("""No current node editor context
+        Did you set with_node_editor_config when calling imgui_bundle.run()?""")
+    return _NODE_EDITOR_CONTEXT
 
 
 def static(**kwargs):
