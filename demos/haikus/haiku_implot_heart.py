@@ -14,12 +14,10 @@ def gui():
     global heart_pulse_rate
     k = 0.8 + 0.1 * np.cos((time.time() - t0) * heart_pulse_rate / (np.pi * 2))
     imgui.text("Bloat free code")
-    implot.begin_plot("##Heart")
+    implot.begin_plot("Heart")
     implot.plot_line("", x * k, y * k)
     implot.end_plot()
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
 
 
 run(gui, window_size=ImVec2(300, 450), window_title="Hello!", with_implot=True)
-
-
