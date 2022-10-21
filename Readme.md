@@ -3,8 +3,8 @@
 Hello
 
 <table>
-    <tr>
-<td> <img src="doc/images/heart.gif"> </td>
-<td>  <img src="doc/images/heart_code.png" width="350"></td>
-    </tr>
+<tr>
+    <td> <img src="doc/images/heart.gif"> </td>
+    <td>  <img src="doc/images/heart_code.png" width="350"></td> 
+</tr>
 </table>
