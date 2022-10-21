@@ -7,9 +7,11 @@ def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
 
-    imgui_md.render("""
+    imgui_md.render(
+        """
 # Knobs
-  [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.""")
+  [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui."""
+    )
     knob_types = {
         "tick": imgui_knobs.ImGuiKnobVariant_.tick,
         "dot": imgui_knobs.ImGuiKnobVariant_.dot,
@@ -63,9 +65,11 @@ def demo_knobs():
 def demo_spinner():
     from imgui_bundle import imspinner
 
-    imgui_md.render("""
+    imgui_md.render(
+        """
 # Spinners
-  [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.""")
+  [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui."""
+    )
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
@@ -80,7 +84,8 @@ def demo_file_dialog():
     static = demo_file_dialog  # Acces to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
-    imgui_md.render("""
+    imgui_md.render(
+        """
 # ImFileDialog
  [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.    
     """

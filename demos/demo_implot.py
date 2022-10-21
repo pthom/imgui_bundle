@@ -69,7 +69,8 @@ def demo_drag_rects():
 
 
 def demo_implot():
-    imgui_md.render("""
+    imgui_md.render(
+        """
 # ImPlot
 [Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
 You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)"""

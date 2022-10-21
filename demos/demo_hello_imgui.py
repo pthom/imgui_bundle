@@ -89,14 +89,18 @@ Features
     imgui.text("How to run more complex application (via RunnerParams) and how to load assets")
     show_one_feature("Assets and Params", demo_params)
 
-    imgui.text("How to build complex applications layouts, with dockable panels, that can even become independent windows")
+    imgui.text(
+        "How to build complex applications layouts, with dockable panels, that can even become independent windows"
+    )
     show_one_feature("Advanced docking demo", demo_hello_imgui_docking.main)
 
     imgui.new_line()
-    imgui_md.render("""
+    imgui_md.render(
+        """
 * Hello ImGui [API Doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
 * Docking layout [specific documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#docking)
-    """)
+    """
+    )
 
     if len(editor.get_text()) > 1:
         imgui.separator()
