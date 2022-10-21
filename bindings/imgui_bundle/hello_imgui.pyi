@@ -790,6 +790,9 @@ def run(
     ) -> None:
     pass
 
+def get_runner_params() -> RunnerParams:
+    pass
+
 
 #*
 #@@md#SDLMain

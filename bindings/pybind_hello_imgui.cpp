@@ -175,7 +175,9 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("reset_user_dock_layout", &HelloImGui::DockingParams::resetUserDockLayout, "")
         .def_readwrite("was_dock_layout_applied", &HelloImGui::DockingParams::wasDockLayoutApplied, "wasDockLayoutApplied is an internal variable")
         .def("dockable_window_of_name",
-            &HelloImGui::DockingParams::dockableWindowOfName, py::arg("name"))
+            &HelloImGui::DockingParams::dockableWindowOfName,
+            py::arg("name"),
+            pybind11::return_value_policy::reference)
         .def("focus_dockable_window",
             &HelloImGui::DockingParams::focusDockableWindow, py::arg("window_name"))
         ;
@@ -235,6 +237,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("run",
         py::overload_cast<VoidFunction, ImVec2, std::string>(HelloImGui::Run), py::arg("gui_fonction"), py::arg("window_size") = ImVec2(800.f, 600.f), py::arg("window_title") = "");
+
+    m.def("get_runner_params",
+        HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
 
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("ImGuiDefaultSettings", "namespace ImGuiDefaultSettings");
