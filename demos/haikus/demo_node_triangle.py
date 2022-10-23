@@ -6,18 +6,18 @@ class Lover:
     node_id: ed.NodeId
     pin_loves: ed.PinId
     pin_hates: ed.PinId
-    pin_self: ed.PinId
+    pin_in: ed.PinId
 
     def __init__(self, name: str) -> None:
         self.name = name
         self.node_id = ed.NodeId.create()
         self.pin_loves = ed.PinId.create();
         self.pin_hates = ed.PinId.create();
-        self.pin_self = ed.PinId.create()
+        self.pin_in = ed.PinId.create()
 
     def draw(self) -> None:
         ed.begin_node(self.node_id)
-        ed.begin_pin(self.pin_self, ed.PinKind.input); imgui.text(self.name); ed.end_pin()
+        ed.begin_pin(self.pin_in, ed.PinKind.input); imgui.text(self.name); ed.end_pin()
         ed.begin_pin(self.pin_loves, ed.PinKind.output), imgui.text("Loves"); ed.end_pin();
         ed.begin_pin(self.pin_hates, ed.PinKind.output); imgui.text("Hates"); ed.end_pin()
         ed.end_node()
@@ -38,9 +38,9 @@ class Tie:
         red = ImVec4(0.3, 0.8, 0.2, 1.)
         green = ImVec4(1., 0., 0., 1.)
         if self.kind == "loves":
-            ed.link(self.id, self.lover.pin_loves, self.loved.perception, green)
+            ed.link(self.id, self.lover.pin_loves, self.loved.pin_in, green)
         else:
-            ed.link(self.id, self.lover.pin_hates, self.loved.perception, red)
+            ed.link(self.id, self.lover.pin_hates, self.loved.pin_in, red)
 
 
 paul = Lover("Paul"); claire = Lover("Claire"); cesar = Lover("Cesar")

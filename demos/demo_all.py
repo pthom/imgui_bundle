@@ -36,7 +36,13 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], No
     demo_function()
 
 
-@static(first_frame=True)
+def demo_node_editor_separate_app():
+    if imgui.button("Run demo"):
+        import multiprocessing
+        p = multiprocessing.Process(target=demo_node_editor.main)
+        p.start()
+
+
 def main():
     ################################################################################################
     # Part 1: Define the runner params
@@ -63,16 +69,6 @@ def main():
     # you can drag windows outside out the main window in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
 
-    # # Then, add a space named "BottomSpace" whose height is 25% of the app height.
-    # # This will split the preexisting default dockspace "MainDockSpace" in two parts.
-    # split_main_bottom = hello_imgui.DockingSplit()
-    # split_main_bottom.initial_dock = "MainDockSpace"
-    # split_main_bottom.new_dock = "BottomSpace"
-    # split_main_bottom.direction = imgui.ImGuiDir_.down
-    # split_main_bottom.ratio = 0.25
-    #
-    # runner_params.docking_params.docking_splits = [split_main_bottom]
-
     #
     # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
     #     in a docking split.
@@ -91,26 +87,27 @@ def main():
         window.gui_function = lambda: show_module_demo(demo_module, demo_function)
         dockable_windows.append(window)
 
-    # add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
+    add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
+    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
     add_dockable_window("Hello ImGui", demo_hello_imgui, demo_hello_imgui.demo_hello_imgui)
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
-    add_dockable_window("Node Editor", demo_node_editor, demo_node_editor.demo_node_editor)
-    add_dockable_window(
-        "Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
-    )
-    add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
+    add_dockable_window("Node Editor", demo_node_editor, demo_node_editor_separate_app)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
-    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
-    add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
+    add_dockable_window("Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit)
+    add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
+
     runner_params.docking_params.dockable_windows = dockable_windows
 
-    def fake_gui():
-        if main.first_frame:
-            # fixme: this fails
-            runner_params.docking_params.focus_dockable_window("Dear ImGui Demo")
-            main.first_frame = False
+    # Main gui only responsibility it to give focus to ImGui Bundle dockable window
+    @static(nb_frames=0)
+    def show_gui():
+        if show_gui.nb_frames == 1:
+            # Focus cannot be given at frame 0, since some additional windows will
+            # be created after (and will steal the focus)
+            runner_params.docking_params.focus_dockable_window("ImGui Bundle")
+        show_gui.nb_frames += 1
 
-    runner_params.callbacks.show_gui = fake_gui
+    runner_params.callbacks.show_gui = show_gui
 
     ################################################################################################
     # Part 3: Run the app

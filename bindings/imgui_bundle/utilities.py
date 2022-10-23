@@ -97,7 +97,7 @@ def static(**kwargs):
         invoking f three times would print 1, 2 then 2, 4, then 3, 6
 
     Static variables are similar to global variables, with the same shortcomings!
-    Use them only in small scripts, never in production code!
+    Use them only in small scripts, not in production code!
     """
 
     def wrapper(function: Callable[[Any], Any]):

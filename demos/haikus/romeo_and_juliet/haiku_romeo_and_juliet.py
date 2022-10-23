@@ -1,6 +1,6 @@
 from typing import Any as _
 from dataclasses import dataclass
-from characters_and_intrigues_glossary import *
+from haikus.romeo_and_juliet.characters_and_intrigues_glossary import *
 
 
 """
@@ -26,7 +26,7 @@ class Intrigue:
 
     def fate_in_action(_):
         start_intrigue(_)
-        if _.feels == "loves":
+        if _.feels.startswith("love"):
             love_intrigue(_)
         else:
             feud(_)
@@ -36,11 +36,12 @@ class Intrigue:
             ======= Romeo and Juliet ====
 """
 
-Romeo = Character("Romeo"); Juliet = Character("Juliet"); Count_Paris = Character("Count Paris")
-Characters = [Romeo, Juliet, Count_Paris]
+Romeo = Character("Romeo"); Juliet = Character("Juliet"); Count_Paris = Character("Count Paris"); Mercutio = Character("Mercutio")
+Characters = [Romeo, Juliet, Count_Paris, Mercutio]
 Love_Intrigues = [
     Intrigue(Romeo, tenderly, "loves", Juliet),
     Intrigue(Juliet, tenderly, "loves", Romeo),
+    Intrigue(Mercutio, tenderly, "loves", Romeo),
     Intrigue(Count_Paris, tenderly, "loves", Juliet),
     Intrigue(Count_Paris, ferociously, "hates", Romeo),
     Intrigue(Juliet, ferociously, "hates", Count_Paris),

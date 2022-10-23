@@ -12,15 +12,13 @@ phase = 0; t0 = time.time() + 0.2; heart_pulse_rate = 80
 
 def gui():
     global heart_pulse_rate, phase, t0
-    t = time.time(); dt = t - t0
-    phase += dt * heart_pulse_rate / (np.pi * 2)
+    t = time.time();
+    phase += (t - t0) * heart_pulse_rate / (np.pi * 2); k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
-    k = 0.8 + 0.1 * np.cos(phase)
     imgui.text("Bloat free code")
-    implot.begin_plot("Heart")
-    implot.plot_line("", x * k, y * k)
-    implot.end_plot()
+    implot.begin_plot("Heart"); implot.plot_line("", x * k, y * k); implot.end_plot()
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
 
 
-run(gui, window_size=ImVec2(300, 450), window_title="Hello!", with_implot=True)
+if __name__ == "__main__":
+    run(gui, window_size=ImVec2(300, 450), window_title="Hello!", with_implot=True)

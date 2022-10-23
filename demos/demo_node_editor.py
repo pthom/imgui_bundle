@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from imgui_bundle import (
     imgui,
     imgui_md,
-    current_node_editor_context,
     imgui_node_editor as ed,
     static,  # Helper to get static variables
     run_anon_block,  # helper to indent the code with anonymous blocks
@@ -76,12 +75,10 @@ class DemoNodeEditor:
 
     def on_frame(self):
         ID.reset()
-        io = imgui.get_io()
+        # io = imgui.get_io()
         # imgui.text(f"FPS: {io.framerate}FPS")
 
         imgui.separator()
-
-        ed.set_current_editor(current_node_editor_context())
 
         # Start interaction with editor.
         ed.begin("My Editor", imgui.ImVec2(0.0, 0.0))
@@ -208,8 +205,6 @@ class DemoNodeEditor:
         if self.is_first_frame:
             ed.navigate_to_content(0.0)
 
-        ed.set_current_editor(None)
-
         self.is_first_frame = False
 
         # imgui.show_metrics_window()
@@ -232,8 +227,12 @@ Use the mouse wheel to zoom-unzoom.
     static.demo_node_editor.on_frame()
 
 
-if __name__ == "__main__":
+def main():
     config = ed.Config()
     config.settings_file = "BasicInteraction.json"
     import imgui_bundle
     imgui_bundle.run(demo_node_editor, with_node_editor_config=config, with_markdown=True)
+
+
+if __name__ == "__main__":
+    main()

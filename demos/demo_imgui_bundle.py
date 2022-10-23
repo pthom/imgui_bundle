@@ -20,6 +20,7 @@ class AppState:
 
 def show_code_advice(python_gui_function, cpp_code):
     import inspect
+    imgui.push_id(cpp_code)
 
     python_code = inspect.getsource(python_gui_function)
 
@@ -35,6 +36,7 @@ def show_code_advice(python_gui_function, cpp_code):
     imgui.input_text_multiline("##Python", unindent(python_code), code_size)
     imgui.end_group()
     python_gui_function()
+    imgui.pop_id()
 
 
 @static(value=0)
@@ -129,7 +131,7 @@ def demo_imgui_bundle():
     )
     imgui.separator()
 
-    if imgui.collapsing_header("About", imgui.ImGuiTreeNodeFlags_.default_open):
+    if imgui.collapsing_header("About"):
         md_render_unindent(
             """
             ### Batteries included
@@ -173,7 +175,7 @@ def demo_imgui_bundle():
             """
         Dear ImGui comes with a complete demo. It demonstrates all of the widgets, together with an example code on how to use them.
 
-        [ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html) is an easy way to consult this demo, and to see the corresponding code. The demo code is in C++, but read-on for advices on how to translate from C++ to python.
+        [ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html) is an easy way to consult this demo, and to see the corresponding code. The demo code is in C++, but read the part "Code advices" below for advices on how to translate from C++ to python.
         """
         )
         if imgui.button("Open imgui manual"):
@@ -186,3 +188,8 @@ def demo_imgui_bundle():
 
     if imgui.collapsing_header("TextInput and enums"):
         show_text_input_advice()
+
+
+if __name__ == "__main__":
+    import imgui_bundle
+    imgui_bundle.run(demo_imgui_bundle, with_markdown=True)

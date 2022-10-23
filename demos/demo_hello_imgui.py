@@ -46,6 +46,24 @@ def demo_params():
     hello_imgui.run(runner_params)
 
 
+def demo_implot_markdown_simple():
+    import numpy as np
+    from imgui_bundle import implot, imgui_md
+    import imgui_bundle
+    x = np.arange(0, np.pi * 4, 0.01)
+    y1 = np.cos(x)
+    y2 = np.sin(x)
+
+    def gui():
+        imgui_md.render("# This is the plot of _cosinus_ and *sinus*")        # Markdown
+        implot.begin_plot("Plot")
+        implot.plot_line("y1", x, y1)
+        implot.plot_line("y2", x, y2)
+        implot.end_plot()
+
+    imgui_bundle.run(gui, with_implot=True, with_markdown=True)
+
+
 @static(was_inited=False)
 def demo_hello_imgui():
     static = demo_hello_imgui
@@ -93,6 +111,11 @@ Features
         "How to build complex applications layouts, with dockable panels, that can even become independent windows"
     )
     show_one_feature("Advanced docking demo", demo_hello_imgui_docking.main)
+
+    imgui.text(
+        "How to quickly run an app that uses implot and/or markdown"
+    )
+    show_one_feature("Implot/Markdown simple", demo_implot_markdown_simple)
 
     imgui.new_line()
     imgui_md.render(

@@ -8,8 +8,8 @@ lament = ed.begin_node
 sober = ed.end_node
 Title = ed.begin
 the_end = ed.end
-tenderly = ImVec4(0.3, 0.8, 0.2, 1.)
-ferociously = ImVec4(1., 0., 0., 1.)
+tenderly = ImVec4(0.3, 0.5, 0.7, 1.)
+ferociously = ImVec4(0.9, 0.9, 0.2, 1.)
 
 
 def love_intrigue(intrigue):
