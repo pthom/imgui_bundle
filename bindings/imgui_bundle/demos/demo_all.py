@@ -4,14 +4,14 @@ from types import ModuleType
 
 from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_color_text_edit as ed, static
 
-import demo_imgui
-import demo_imgui_bundle
-import demo_hello_imgui
-import demo_imgui_color_text_edit
-import demo_widgets
-import demo_implot
-import demo_node_editor
-import demo_imgui_md
+from imgui_bundle.demos import demo_imgui
+from imgui_bundle.demos import demo_imgui_bundle
+from imgui_bundle.demos import demo_hello_imgui
+from imgui_bundle.demos import demo_imgui_color_text_edit
+from imgui_bundle.demos import demo_widgets
+from imgui_bundle.demos import demo_implot
+from imgui_bundle.demos import demo_node_editor
+from imgui_bundle.demos import demo_imgui_md
 
 
 @static(was_initialized=None)

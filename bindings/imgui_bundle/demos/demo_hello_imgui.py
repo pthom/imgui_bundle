@@ -74,7 +74,7 @@ def demo_hello_imgui():
     editor = static.editor
 
     from imgui_bundle import imgui
-    import demo_hello_imgui_docking
+    from imgui_bundle.demos import demo_hello_imgui_docking
     import inspect
 
     imgui_md.render(

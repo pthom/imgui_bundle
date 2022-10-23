@@ -1,5 +1,5 @@
 from imgui_bundle import imgui, imgui_md, static, ImVec2
-import code_str_utils
+from imgui_bundle.demos import code_str_utils
 import inspect
 
 
