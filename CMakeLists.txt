@@ -68,5 +68,8 @@ add_imgui_bundle_bindings()
 ####################################################
 # Devel only
 ####################################################
-add_subdirectory(demos_cpp)
-add_subdirectory(pybind_native_debug)
+option(IMGUI_BUNDLE_DEVEL_MODE OFF)
+if (IMGUI_BUNDLE_DEVEL_MODE)
+    add_subdirectory(demos_cpp)
+    add_subdirectory(pybind_native_debug)
+endif()
