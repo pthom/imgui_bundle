@@ -20,6 +20,7 @@ class AppState:
 
 def show_code_advice(python_gui_function, cpp_code):
     import inspect
+
     imgui.push_id(cpp_code)
 
     python_code = inspect.getsource(python_gui_function)
@@ -201,4 +202,5 @@ def demo_imgui_bundle():
 
 if __name__ == "__main__":
     import imgui_bundle
+
     imgui_bundle.run(demo_imgui_bundle, with_markdown=True)

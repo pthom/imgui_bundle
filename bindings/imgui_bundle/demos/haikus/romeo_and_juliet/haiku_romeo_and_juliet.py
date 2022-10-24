@@ -11,18 +11,25 @@ from haikus.romeo_and_juliet.characters_and_intrigues_glossary import *
 class Character:
     def __init__(my, name):
         my.name = name
-        my.soul = soul(); my.loves = conundrum(); my.enemies = conundrum(); my.social_being = conundrum()
+        my.soul = soul()
+        my.loves = conundrum()
+        my.enemies = conundrum()
+        my.social_being = conundrum()
 
     def fate_in_action(my):
         lament(my.soul)
         I(my.name, my.social_being)
-        I("love", my.loves); I("hate", my.enemies)
+        I("love", my.loves)
+        I("hate", my.enemies)
         sober()
 
 
 @dataclass
 class Intrigue:
-    hero: _;  deeply: _;  feels: _; for_character: _
+    hero: _
+    deeply: _
+    feels: _
+    for_character: _
 
     def fate_in_action(_):
         start_intrigue(_)
@@ -36,7 +43,10 @@ class Intrigue:
             ======= Romeo and Juliet ====
 """
 
-Romeo = Character("Romeo"); Juliet = Character("Juliet"); Count_Paris = Character("Count Paris"); Mercutio = Character("Mercutio")
+Romeo = Character("Romeo")
+Juliet = Character("Juliet")
+Count_Paris = Character("Count Paris")
+Mercutio = Character("Mercutio")
 Characters = [Romeo, Juliet, Count_Paris, Mercutio]
 Love_Intrigues = [
     Intrigue(Romeo, tenderly, "loves", Juliet),

@@ -231,6 +231,7 @@ def main():
     config = ed.Config()
     config.settings_file = "BasicInteraction.json"
     import imgui_bundle
+
     imgui_bundle.run(demo_node_editor, with_node_editor_config=config, with_markdown=True)
 
 

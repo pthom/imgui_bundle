@@ -82,6 +82,7 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 def main():
     from imgui_bundle import run
+
     run(demo_drag_rects, with_implot=True)
 
 

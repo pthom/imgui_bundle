@@ -39,6 +39,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], No
 def demo_node_editor_separate_app():
     if imgui.button("Run demo"):
         import multiprocessing
+
         p = multiprocessing.Process(target=demo_node_editor.main)
         p.start()
 
@@ -93,7 +94,9 @@ def main():
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor_separate_app)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
-    add_dockable_window("Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit)
+    add_dockable_window(
+        "Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
+    )
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
 
     runner_params.docking_params.dockable_windows = dockable_windows
@@ -113,6 +116,7 @@ def main():
     # Part 3: Run the app
     ################################################################################################
     import imgui_bundle
+
     imgui_bundle.run(runner_params=runner_params, with_implot=True, with_node_editor=True, with_markdown=True)
 
 

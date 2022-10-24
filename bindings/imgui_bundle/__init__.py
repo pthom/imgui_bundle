@@ -8,10 +8,7 @@ from imgui_bundle._imgui_bundle import imgui_knobs as imgui_knobs
 from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
 from imgui_bundle._imgui_bundle import imspinner as imspinner
 from imgui_bundle._imgui_bundle import imgui_md as imgui_md
-from imgui_bundle._imgui_bundle import (
-    run as run,
-    current_node_editor_context as current_node_editor_context
-)
+from imgui_bundle._imgui_bundle import run as run, current_node_editor_context as current_node_editor_context
 
 from imgui_bundle import icons_fontawesome
 from imgui_bundle.run_anon_block import run_anon_block as run_anon_block

@@ -11,6 +11,7 @@ def main() -> None:
     sys.path.append(path_lg_imgui_bundle)
 
     import demo_node_editor  # type: ignore
+
     demo_node_editor.main()
 
 
