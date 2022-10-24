@@ -293,8 +293,10 @@ assets/
     void InitializeMarkdown(const MarkdownOptions& options)
     {
         static bool wasCalledAlready = false;
-        if (wasCalledAlready)
-            throw std::runtime_error("InitializeMarkdown can only be called once at application startup!");
+        if (wasCalledAlready) {
+            std::cerr << "InitializeMarkdown can only be called once at application startup!\n";
+            return;
+        }
 
         gMarkdownOptions = options;
         wasCalledAlready = true;
