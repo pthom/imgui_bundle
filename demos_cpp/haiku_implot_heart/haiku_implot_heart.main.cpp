@@ -18,7 +18,7 @@ std::vector<double> VectorTimesK(const std::vector<double>& values, double k)
 int main(int , char *[])
 {
     std::vector<double> interval, x, y;
-    constexpr double pi =  3.1415926535; // the year is 2022, and pi is still not easily accessible in C++
+    constexpr double pi =  3.1415926535;
     double phase = 0., t0 = ImGuiBundle::Now() + 0.2;
     float heart_pulse_rate = 80.;
     for (double t = 0.; t < pi * 2.; t += 0.01)
