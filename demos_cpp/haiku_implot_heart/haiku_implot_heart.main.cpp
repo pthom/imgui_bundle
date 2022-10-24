@@ -1,81 +1,47 @@
-#include "hello_imgui/hello_imgui.h"
-#include "hello_imgui/hello_imgui_include_opengl.h"
 # include <imgui.h>
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#include "ImFileDialog/ImFileDialog.h"
+#include "implot/implot.h"
+#include "imgui-knobs/imgui-knobs.h"
+#include "imgui_bundle/imgui_bundle.h"
 
-#include <string>
+#include <cmath>
 
-void setup_texture_loader()
+
+std::vector<double> VectorTimesK(const std::vector<double>& values, double k)
 {
-    // ImFileDialog requires you to set the CreateTexture and DeleteTexture
-    ifd::FileDialog::Instance().CreateTexture = [](uint8_t* data, int w, int h, char fmt) -> void* {
-        GLuint tex;
-
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D, tex);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, (fmt == 0) ? GL_BGRA : GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        return (void*)tex;
-    };
-
-    ifd::FileDialog::Instance().DeleteTexture = [](void* tex) {
-        GLuint texID = (GLuint)((uintptr_t)tex);
-        glDeleteTextures(1, &texID);
-    };
-}
-
-
-void gui()
-{
-    ImGui::Begin("Control Panel");
-    if (ImGui::Button("Open file"))
-        ifd::FileDialog::Instance().Open("ShaderOpenDialog", "Open a shader", "Image file (*.png;*.jpg;*.jpeg;*.bmp;*.tga){.png,.jpg,.jpeg,.bmp,.tga},.*", true);
-    if (ImGui::Button("Open directory"))
-        ifd::FileDialog::Instance().Open("DirectoryOpenDialog", "Open a directory", "");
-    if (ImGui::Button("Save file"))
-        ifd::FileDialog::Instance().Save("ShaderSaveDialog", "Save a shader", "*.sprj {.sprj}");
-    ImGui::End();
-
-    // file dialogs
-    if (ifd::FileDialog::Instance().IsDone("ShaderOpenDialog")) {
-        if (ifd::FileDialog::Instance().HasResult()) {
-            const std::vector<std::filesystem::path>& res = ifd::FileDialog::Instance().GetResults();
-            for (const auto& r : res) // ShaderOpenDialog supports multiselection
-                printf("OPEN[%s]\n", r.u8string().c_str());
-        }
-        ifd::FileDialog::Instance().Close();
-    }
-    if (ifd::FileDialog::Instance().IsDone("DirectoryOpenDialog")) {
-        if (ifd::FileDialog::Instance().HasResult()) {
-            std::string res = ifd::FileDialog::Instance().GetResult().string();
-            printf("DIRECTORY[%s]\n", res.c_str());
-        }
-        ifd::FileDialog::Instance().Close();
-    }
-    if (ifd::FileDialog::Instance().IsDone("ShaderSaveDialog")) {
-        if (ifd::FileDialog::Instance().HasResult()) {
-            std::string res = ifd::FileDialog::Instance().GetResult().string();
-            printf("SAVE[%s]\n", res.c_str());
-        }
-        ifd::FileDialog::Instance().Close();
-    }
-
+    std::vector<double> r(values.size(), 0.);
+    for (size_t i = 0; i < values.size(); ++i)
+        r[i] = k * values[i];
+    return r;
 }
 
 
 int main(int , char *[])
 {
-    setup_texture_loader();
+    std::vector<double> interval, x, y;
+    constexpr double pi =  3.1415926535; // the year is 2022, and pi is still not easily accessible in C++
+    double phase = 0., t0 = ImGuiBundle::Now() + 0.2;
+    float heart_pulse_rate = 80.;
+    for (double t = 0.; t < pi * 2.; t += 0.01)
+    {
+        interval.push_back(t);
+        double x_ = pow(sin(t), 3.) * 16.; x.push_back(x_);
+        double y_ = 13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t); y.push_back(y_);
+    }
 
-    HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.ShowGui = gui;
-    HelloImGui::Run(runnerParams);
+    auto gui = [&]() {
+        double t = ImGuiBundle::Now();
+        phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
+        t0 = t;
+
+        ImGui::Text("Bloat free code");
+        auto xk = VectorTimesK(x, k);
+        auto yk = VectorTimesK(y, k);
+        ImPlot::BeginPlot("Heart"); ImPlot::PlotLine("", xk.data(), yk.data(), xk.size()); ImPlot::EndPlot();
+
+        ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
+    };
+
+    bool withImplot = true;
+    ImGuiBundle::Run(gui, ImVec2(300, 450), "Hello!", withImplot);
     return 0;
 }

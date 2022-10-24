@@ -52,7 +52,7 @@ int main(int , char *[])
 {
     ImGuiMd::MarkdownOptions markdownOptions;
     ImGuiMd::InitializeMarkdown(markdownOptions);
-    
+
     HelloImGui::RunnerParams runnerParams;
     runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
     runnerParams.callbacks.ShowGui = [&]() {
