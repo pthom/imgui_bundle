@@ -31,7 +31,7 @@ void im_file_dialog_setup_texture_loader()
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		return (void*)tex;
+		return (void*)(size_t)tex;
 	};
 
 	ifd::FileDialog::Instance().DeleteTexture = [](void* tex) {
