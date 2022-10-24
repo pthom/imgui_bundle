@@ -298,6 +298,7 @@ assets/
             return;
         }
 
+
         gMarkdownOptions = options;
         wasCalledAlready = true;
     }
