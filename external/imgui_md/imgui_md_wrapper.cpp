@@ -142,6 +142,7 @@ namespace ImGuiMd
                         return pair.second;
                 }
                 assert(false);
+                return nullptr;
             }
         private:
             void LoadFonts()
