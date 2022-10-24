@@ -39,7 +39,7 @@ setup(
     ]),
     package_dir={"": "bindings"},
     cmake_install_dir="bindings/imgui_bundle",
-    include_package_data=True,
+    # include_package_data=True,
     extras_require={"test": ["pytest"]},
     python_requires=">=3.6",
     package_data={"imgui_bundle": [
