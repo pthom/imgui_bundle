@@ -166,7 +166,7 @@ target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 ####################################################
 # Devel only
 ####################################################
-option(LG_IMGUI_BUNDLE_DEVMODE OFF)
+option(IMGUI_BUNDLE_DEVMODE OFF)
 mark_as_advanced(LG_IMGUI_BUNDLE_DEVMODE)
 if (LG_IMGUI_BUNDLE_DEVMODE)
     add_subdirectory(external/_cpp_tests)
