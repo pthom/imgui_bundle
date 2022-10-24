@@ -16,7 +16,7 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imgui.cpp
         bindings/pybind_imgui_internal.cpp
         bindings/pybind_implot.cpp
-        bindings/pybind_lg_imgui_bundle.cpp
+        bindings/pybind_imgui_bundle.cpp
         bindings/pybind_imgui_color_text_edit.cpp
         bindings/pybind_imgui_node_editor.cpp
         bindings/pybind_imgui_knobs.cpp

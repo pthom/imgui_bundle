@@ -7,6 +7,8 @@
 
 namespace ImGuiBundle
 {
+    using NodeEditorConfig = ax::NodeEditor::Config;
+
     //Helper to run a hello_imgui app for imgui_bundle:
     //
     //- if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized
@@ -15,10 +17,10 @@ namespace ImGuiBundle
     //- if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
     //    will be created automatically.
     void Run(
-        HelloImGui::RunnerParams& _runner_params,
+        HelloImGui::RunnerParams& runner_params,
         bool with_implot = false,
-        bool with_node_editor_ = false,
-        const std::optional<ax::NodeEditor::Config>& with_node_editor_config_ = std::nullopt,
+        bool with_node_editor = false,
+        const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt
     );
@@ -36,7 +38,7 @@ namespace ImGuiBundle
         const std::optional<std::string>& window_title = std::nullopt,
         bool with_implot = false,
         bool with_node_editor = false,
-        const std::optional<ax::NodeEditor::Config>& with_node_editor_config = std::nullopt,
+        const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt
     );

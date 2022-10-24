@@ -8,7 +8,7 @@
 namespace py = pybind11;
 
 
-void py_init_module_lg_imgui_bundle(py::module& m);
+void py_init_module_imgui_bundle(py::module& m);
 
 
 // This builds the native python module `_imgui_bundle`
@@ -21,5 +21,5 @@ PYBIND11_MODULE(_imgui_bundle, m)
     m.attr("__version__") = "dev";
     #endif
 
-    py_init_module_lg_imgui_bundle(m);
+    py_init_module_imgui_bundle(m);
 }

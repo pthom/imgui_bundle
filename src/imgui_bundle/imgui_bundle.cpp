@@ -16,8 +16,8 @@ namespace ImGuiBundle
     void Run(
         HelloImGui::RunnerParams& runner_params,
         bool with_implot,
-        bool with_node_editor_,
-        const std::optional<ax::NodeEditor::Config>& with_node_editor_config_,
+        bool with_node_editor,
+        const std::optional<NodeEditorConfig>& with_node_editor_config_,
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_
     )
@@ -27,14 +27,14 @@ namespace ImGuiBundle
             ImPlot::CreateContext();
 
         // create imgui_node_editor context if required
-        bool with_node_editor = with_node_editor_;
-        ax::NodeEditor::Config with_node_editor_config;
+        NodeEditorConfig with_node_editor_config;
         if (with_node_editor || with_node_editor_config_.has_value())
         {
             with_node_editor = true;
             if (with_node_editor_config_.has_value())
                 NODE_EDITOR_CONFIG = *with_node_editor_config_;
             _NODE_EDITOR_CONTEXT = ax::NodeEditor::CreateEditor(&NODE_EDITOR_CONFIG);
+            ax::NodeEditor::SetCurrentEditor(_NODE_EDITOR_CONTEXT.value());
         }
 
         // load markdown fonts if needed
@@ -67,7 +67,7 @@ namespace ImGuiBundle
         const std::optional<std::string>& window_title,
         bool with_implot,
         bool with_node_editor,
-        const std::optional<ax::NodeEditor::Config>& with_node_editor_config,
+        const std::optional<NodeEditorConfig>& with_node_editor_config,
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options
     )
