@@ -52,10 +52,7 @@ int main(int , char *[])
 {
     ImGuiMd::MarkdownOptions markdownOptions;
     ImGuiMd::InitializeMarkdown(markdownOptions);
-
-    HelloImGui::overrideAssetsFolder(
-        "/Users/pascal/dvp/OpenSource/ImGuiWork/litgen/demos/litgen/imgui_bundle/external/_cpp_tests/imgui_md_test/assets");
-
+    
     HelloImGui::RunnerParams runnerParams;
     runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
     runnerParams.callbacks.ShowGui = [&]() {
