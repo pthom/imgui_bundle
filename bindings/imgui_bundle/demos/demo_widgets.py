@@ -1,4 +1,3 @@
-from munch import Munch
 from imgui_bundle import static, imgui, hello_imgui, imgui_md
 
 
