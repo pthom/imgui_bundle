@@ -21,7 +21,6 @@ def demo_hello_imgui():
     editor = static.editor
 
     from imgui_bundle import imgui
-    import inspect
 
     imgui_md.render(
         """
@@ -77,6 +76,6 @@ Features
 
 
 if __name__ == "__main__":
-    from imgui_bundle import hello_imgui
+    from imgui_bundle import run
 
-    hello_imgui.run(demo_hello_imgui)
+    run(demo_hello_imgui, with_markdown=True)
