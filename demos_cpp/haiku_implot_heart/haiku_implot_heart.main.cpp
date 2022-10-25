@@ -1,4 +1,4 @@
-# include <imgui.h>
+#include <imgui.h>
 #include "implot/implot.h"
 #include "imgui-knobs/imgui-knobs.h"
 #include "imgui_bundle/imgui_bundle.h"
@@ -36,7 +36,7 @@ int main(int , char *[])
         ImGui::Text("Bloat free code");
         auto xk = VectorTimesK(x, k);
         auto yk = VectorTimesK(y, k);
-        ImPlot::BeginPlot("Heart"); ImPlot::PlotLine("", xk.data(), yk.data(), xk.size()); ImPlot::EndPlot();
+        ImPlot::BeginPlot("Heart"); ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size()); ImPlot::EndPlot();
 
         ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
     };
