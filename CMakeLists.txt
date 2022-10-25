@@ -6,12 +6,21 @@ set(CMAKE_CXX_STANDARD 17)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 
 
+if(SKBUILD)
+    set(IMGUI_BUNDLE_BUILD_PYTHON ON)
+    set(IMGUI_BUNDLE_BUILD_CPP OFF)
+else()
+    option(IMGUI_BUNDLE_BUILD_PYTHON OFF)
+    set(IMGUI_BUNDLE_BUILD_CPP ON)
+endif()
+
 #########################################################################
 # find pybind11
 #########################################################################
-include(cmake/find_pybind11.cmake)
-find_pybind11()  # provided by cmake/find_pybind11.cmake
-
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    include(cmake/find_pybind11.cmake)
+    find_pybind11()  # provided by cmake/find_pybind11.cmake
+endif()
 
 #########################################################################
 # Main library (imgui_bundle)
@@ -61,15 +70,18 @@ target_link_libraries(imgui_md PUBLIC hello_imgui)
 #########################################################################
 # Build python bindings
 #########################################################################
-include(cmake/add_imgui_bundle_bindings.cmake)
-add_imgui_bundle_bindings()
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    include(cmake/add_imgui_bundle_bindings.cmake)
+    add_imgui_bundle_bindings()
+endif()
 
 
 ####################################################
-# Devel only
+# C++ Apps
 ####################################################
-option(IMGUI_BUNDLE_DEVEL_MODE OFF)
-if (IMGUI_BUNDLE_DEVEL_MODE)
+if (IMGUI_BUNDLE_BUILD_CPP)
     add_subdirectory(demos_cpp)
-    add_subdirectory(pybind_native_debug)
+    if (IMGUI_BUNDLE_BUILD_PYTHON)
+        add_subdirectory(pybind_native_debug)
+    endif()
 endif()
