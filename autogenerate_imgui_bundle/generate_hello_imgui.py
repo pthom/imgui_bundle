@@ -22,7 +22,7 @@ def make_hello_imgui_amalgamated_header():
     options.local_includes_startwith = "hello_imgui/"
     options.include_subdirs = ["hello_imgui"]
     options.main_header_file = "hello_imgui.h"
-    options.dst_amalgamated_header_file = LG_HELLO_IMGUI_DIR + "/hello_imgui_amalgamation.h"
+    options.dst_amalgamated_header_file = _THIS_DIR + "/hello_imgui_amalgamation.h"
 
     amalgamated_header.write_amalgamate_header_file(options)
 
@@ -30,7 +30,7 @@ def make_hello_imgui_amalgamated_header():
 def autogenerate_hello_imgui():
     make_hello_imgui_amalgamated_header()
 
-    input_cpp_header = LG_HELLO_IMGUI_DIR + "/hello_imgui_amalgamation.h"
+    input_cpp_header = _THIS_DIR + "/hello_imgui_amalgamation.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_hello_imgui.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/hello_imgui.pyi"
 
