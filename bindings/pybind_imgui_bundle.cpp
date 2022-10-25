@@ -92,8 +92,8 @@ void py_init_module_imgui_bundle_inner(py::module& m)
         py::arg("gui_function"), py::arg("window_size") = py::none(), py::arg("window_title") = py::none(), py::arg("with_implot") = false, py::arg("with_node_editor") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown") = false, py::arg("with_markdown_options") = py::none(),
         "Helper to run a hello_imgui app for imgui_bundle:\n\n- if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized\n    (i.e. required fonts will be loaded)\n- if `with_implot` is True, then a context for implot will be created/destroyed automatically\n- if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor\n    will be created automatically.");
 
-    m.def("now",
-        ImGuiBundle::Now);
+    m.def("clock_seconds",
+        ImGuiBundle::ClockSeconds);
 
     m.def("current_node_editor_context",
         ImGuiBundle::CurrentNodeEditorContext);
