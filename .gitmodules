@@ -18,9 +18,6 @@
 [submodule "external/ImGuiColorTextEdit"]
 	path = external/ImGuiColorTextEdit
 	url = https://github.com/pthom/ImGuiColorTextEdit
-[submodule "external/imgui-node-editor"]
-	path = external/imgui-node-editor
-	url = https://github.com/thedmd/imgui-node-editor
 [submodule "external/imgui-knobs"]
 	path = external/imgui-knobs
 	url = https://github.com/altschuler/imgui-knobs
@@ -33,3 +30,6 @@
 [submodule "external/imgui_md/md4c"]
 	path = external/imgui_md/md4c
 	url = https://github.com/mity/md4c
+[submodule "external/imgui-node-editor"]
+	path = external/imgui-node-editor
+	url = https://github.com/pthom/imgui-node-editor.git

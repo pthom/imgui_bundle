@@ -45,7 +45,8 @@ namespace ImGuiMdBrowser
 #elif defined(__linux__)
         char cmd[1024];
     snprintf(cmd, 1024, "xdg-open %s", url);
-    system(cmd);
+    int r = system(cmd);
+    (void) r;
 #endif
     }
 }

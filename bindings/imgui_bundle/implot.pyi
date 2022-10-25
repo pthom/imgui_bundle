@@ -1,3 +1,7 @@
+"""ImPlot: Immediate Mode Plotting for ImGui
+Python bindings for https://github.com/epezent/implot
+"""
+
 # type: ignore
 from typing import Any, Optional, Tuple
 import numpy as np

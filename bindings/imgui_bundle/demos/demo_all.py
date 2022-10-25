@@ -40,6 +40,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], No
 def demo_node_editor_separate_app():
     if imgui.button("Run demo"):
         import subprocess
+
         this_dir = os.path.dirname(__file__)
         subprocess.Popen([sys.executable, this_dir + "/demo_node_editor.py"])
 

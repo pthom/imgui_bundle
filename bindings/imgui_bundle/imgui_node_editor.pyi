@@ -1,3 +1,7 @@
+"""Node editor built using ImGui
+Python bindings for https://github.com/thedmd/imgui-node-editor
+"""
+
 # type: ignore
 from typing import Any, List
 import numpy as np

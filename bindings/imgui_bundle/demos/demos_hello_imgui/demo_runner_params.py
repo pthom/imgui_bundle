@@ -33,7 +33,7 @@ def main():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     hello_imgui.set_assets_folder(this_dir + "/assets")
 
-    run(runner_params, with_markdown = True)
+    run(runner_params, with_markdown=True)
 
 
 if __name__ == "__main__":

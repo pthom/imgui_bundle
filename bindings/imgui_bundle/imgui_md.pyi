@@ -1,5 +1,5 @@
-"""Knobs for ImGui
-Python bindings for https://github.com/altschuler/imgui-knobs
+"""Markdown for ImGui
+Python bindings for https://github.com/mekhontsev/imgui_md (with an additional custom wrapper)
 """
 
 # type: ignore
