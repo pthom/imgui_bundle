@@ -1,0 +1,42 @@
+name: "cpp_library"
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      - dev
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "10.15"
+
+jobs:
+  build:
+    name: Build Cpp Library
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-2019, macos-latest, ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
+
+
+    - name: install xorg-dev on ubuntu
+      run: ./ci_scripts/install_requirements.sh
+
+    - name: Build and install
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        cmake --build .
