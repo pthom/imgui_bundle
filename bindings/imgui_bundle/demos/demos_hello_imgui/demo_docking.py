@@ -14,6 +14,7 @@ from enum import Enum
 
 from imgui_bundle import hello_imgui, icons_fontawesome, imgui
 
+
 # Struct that holds the application's state
 class AppState:
     f: float = 0.0
@@ -110,7 +111,7 @@ def main():
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
     # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/assets")
+    hello_imgui.set_assets_folder(this_dir + "/../assets")
 
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
@@ -236,4 +237,4 @@ def main():
 
 
 if __name__ == "__main__":
-    hello_imgui.run(main)
+    main()
