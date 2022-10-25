@@ -140,11 +140,11 @@ def demo_imgui_bundle():
             * [imgui](https://github.com/ocornut/imgui.git) : Immediate Gui library
             * [hello imgui](https://github.com/pthom/hello_imgui.git): multiplatform backend provider for imgui
             * [implot](https://github.com/epezent/implot): plotting library based on ImGui
-            * [ImGuiColorTextEdit](external/ImGuiColorTextEdit): Colorizing text editor
+            * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit): Colorizing text editor
             * [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): Node editor
             * [imgui-knobs](https://github.com/altschuler/imgui-knobs): Knobs for ImGui
             * [ImFileDialog](https://github.com/pthom/ImFileDialog.git): File dialogs 
-            * [imgui_md (markdown)](https://github.com/mekhontsev/imgui_md.git): Markdown for ImGui
+            * [imgui_md](https://github.com/mekhontsev/imgui_md.git): Markdown for ImGui
             * [imspinner](https://github.com/dalerank/imspinner): Spinners 
             
             ### Philosophy
