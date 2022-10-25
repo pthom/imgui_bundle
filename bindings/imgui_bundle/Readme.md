@@ -1,3 +1,9 @@
+![CppLib](https://github.com/pthom/imgui_bundle/workflows/CppLib/badge.svg)
+![Pip](https://github.com/pthom/imgui_bundle/workflows/Pip/badge.svg)
+![Wheels](https://github.com/pthom/imgui_bundle/workflows/Wheels/badge.svg)
+![Conda](https://github.com/pthom/imgui_bundle/workflows/Conda/badge.svg)
+
+
 # ImGui Bundle
 [ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui.git), including various useful libraries from its ecosystem.
 It enables to easily create ImGui applications in C++, as well as in Python.
