@@ -19,7 +19,7 @@ int main(int , char *[])
 {
     std::vector<double> interval, x, y;
     constexpr double pi =  3.1415926535;
-    double phase = 0., t0 = ImGuiBundle::Now() + 0.2;
+    double phase = 0., t0 = ImGuiBundle::ClockSeconds() + 0.2;
     float heart_pulse_rate = 80.;
     for (double t = 0.; t < pi * 2.; t += 0.01)
     {
@@ -29,7 +29,7 @@ int main(int , char *[])
     }
 
     auto gui = [&]() {
-        double t = ImGuiBundle::Now();
+        double t = ImGuiBundle::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
         t0 = t;
 

@@ -44,7 +44,7 @@ namespace ImGuiBundle
     );
 
 
-    double Now();
+    double ClockSeconds();
 
     ax::NodeEditor::EditorContext* CurrentNodeEditorContext();
 }

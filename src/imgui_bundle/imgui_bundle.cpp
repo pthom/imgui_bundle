@@ -98,7 +98,7 @@ namespace ImGuiBundle
     }
 
 
-    class StopWatch
+    class ClockSeconds_
     {
         // Typical C++ shamanic incantations to get a time in seconds
     private:
@@ -107,7 +107,7 @@ namespace ImGuiBundle
         std::chrono::time_point<Clock> mStart;
 
     public:
-        StopWatch() : mStart(Clock::now()) {}
+        ClockSeconds_() : mStart(Clock::now()) {}
 
         double elapsed() const
         {
@@ -116,9 +116,9 @@ namespace ImGuiBundle
         }
     };
 
-    double Now()
+    double ClockSeconds()
     {
-        static StopWatch watch;
+        static ClockSeconds_ watch;
         return watch.elapsed();
     }
 

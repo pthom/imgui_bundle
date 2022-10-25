@@ -51,7 +51,7 @@ def run(
     """
     pass
 
-def now() -> float:
+def clock_seconds() -> float:
     pass
 
 def current_node_editor_context() -> ax.NodeEditor.EditorContext:
