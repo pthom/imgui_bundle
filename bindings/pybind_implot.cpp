@@ -513,11 +513,6 @@ void py_init_module_implot(py::module& m)
         py::arg("axis"), py::arg("fmt"),
         "Sets the format of numeric axis labels via formater specifier (default=\"%g\"). Formated values will be double (i.e. use %f).");
 
-    m.def("setup_axis_format",    // implot.h:731
-        py::overload_cast<ImAxis, ImPlotFormatter, void *>(ImPlot::SetupAxisFormat),
-        py::arg("axis"), py::arg("formatter"), py::arg("data") = py::none(),
-        "Sets the format of numeric axis labels via formatter callback. Given #value, write a label into #buff. Optionally pass user data.");
-
     m.def("setup_axis_scale",    // implot.h:737
         py::overload_cast<ImAxis, ImPlotScale>(ImPlot::SetupAxisScale),
         py::arg("axis"), py::arg("scale"),

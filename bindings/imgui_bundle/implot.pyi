@@ -503,11 +503,11 @@ class ImPlotDummyFlags_(enum.Enum):    # implot.h:326
 class ImPlotCond_(enum.Enum):    # implot.h:331
     """ Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
     # ImPlotCond_None   = ImGuiCond_None,        /* original C++ signature */
-    none = enum.auto()   # (= ImGuiCond_.none)  # No condition (always set the variable), same as _Always
+    none = enum.auto()   # (= ImGuiCond_None)  # No condition (always set the variable), same as _Always
     # ImPlotCond_Always = ImGuiCond_Always,      /* original C++ signature */
-    always = enum.auto() # (= ImGuiCond_.always)  # No condition (always set the variable)
+    always = enum.auto() # (= ImGuiCond_Always)  # No condition (always set the variable)
     # ImPlotCond_Once   = ImGuiCond_Once,        /* original C++ signature */
-    once = enum.auto()   # (= ImGuiCond_.once)  # Set the variable once per runtime session (only the first call will succeed)
+    once = enum.auto()   # (= ImGuiCond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
 class ImPlotCol_(enum.Enum):    # implot.h:339
     """ Plot styling colors."""
@@ -1054,10 +1054,6 @@ def setup_axis_links(axis: ImAxis, link_min: float, link_max: float) -> Tuple[fl
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
 def setup_axis_format(axis: ImAxis, fmt: str) -> None:    # implot.h:729
     """ Sets the format of numeric axis labels via formater specifier (default="%g"). Formated values will be double (i.e. use %f)."""
-    pass
-# IMPLOT_API void SetupAxisFormat(ImAxis axis, ImPlotFormatter formatter, void* data=NULL);    /* original C++ signature */
-def setup_axis_format(axis: ImAxis, formatter: ImPlotFormatter, data: Any = None) -> None:    # implot.h:731
-    """ Sets the format of numeric axis labels via formatter callback. Given #value, write a label into #buff. Optionally pass user data."""
     pass
 # IMPLOT_API void SetupAxisScale(ImAxis axis, ImPlotScale scale);    /* original C++ signature */
 def setup_axis_scale(axis: ImAxis, scale: ImPlotScale) -> None:    # implot.h:737
