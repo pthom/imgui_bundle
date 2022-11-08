@@ -37,9 +37,14 @@ function (add_hello_imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
 
+
     # 4. Finally, add hello_imgui
     add_subdirectory(external/hello_imgui)
     target_link_libraries(imgui_bundle PUBLIC hello_imgui)
+
+    if (WIN32)
+        target_link_libraries(hello_imgui PUBLIC SDL2main)
+    endif()
 
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
