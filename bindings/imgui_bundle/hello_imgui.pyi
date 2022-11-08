@@ -202,32 +202,120 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 #                       hello_imgui/app_window_params.h included by hello_imgui/runner_params.h                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+""" namespace BackendApi"""
+
+
+class ScreenBounds:
+    position: ScreenPosition = {0, 0}
+    size: ScreenSize = {100, 100}
+
+    def top_left_corner(self) -> ScreenPosition:
+        pass
+    def bottom_right_corner(self) -> ScreenPosition:
+        pass
+    def center(self) -> ScreenPosition:
+        pass
+
+    def contains(self, pixel: ScreenPosition) -> bool:
+        pass
+
+    def win_position_centered(self, window_size: ScreenSize) -> ScreenPosition:
+        pass
+
+    def distance_from_pixel(self, point: ScreenPosition) -> int:
+        pass
+
+    def ensure_window_fits_this_monitor(
+        self,
+        window_bounds_original: ScreenBounds
+        ) -> ScreenBounds:
+        pass
+
+    def __eq__(self, other: ScreenBounds) -> bool:
+        pass
+
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/app_window_params.h continued                                              //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#*
+#@@md#AppWindowParams
+#
+#__AppWindowParams__ is a struct that defines the application window display params.
+#See [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)
+#for details.
+#
+#Members:
+#* `windowTitle`: _string, default=""_. Title of the application window
+#* `windowGeometry`: _WindowGeometry_
+#  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)
+#   _Note: on a mobile device, the application will always be full screen._
+#* `restorePreviousGeometry`: _bool, default=false_.
+#  If True, then save & restore windowGeometry from last run
+#
+#* `borderless`: _bool, default = false_.
+#* `resizable`: _bool, default = false_.
+#* `windowSizeState`: _WindowSizeState, default = Standard_ (minimized, maximized or standard)
+#
+#@@md
+#*
+
+
+class FullScreenMode(enum.Enum):
+    no_full_screen = enum.auto()                 # (= 0)
+    full_screen = enum.auto()                    # (= 1)  # Full screen with specified resolution
+    full_screen_desktop_resolution = enum.auto() # (= 2)  # Full screen with current desktop mode & resolution
+    full_monitor_work_area = enum.auto()         # (= 3)  # Fake full screen, maximized window on the selected monitor
+
+
+class WindowSizeState(enum.Enum):
+    standard = enum.auto()  # (= 0)
+    minimized = enum.auto() # (= 1)
+    maximized = enum.auto() # (= 2)
+
+
+class WindowPositionMode(enum.Enum):
+    os_default = enum.auto()     # (= 0)
+    monitor_center = enum.auto() # (= 1)
+    from_coords = enum.auto()    # (= 2)
+
+
+class WindowGeometry:
+    # used if fullScreenMode==NoFullScreen and sizeAuto==False
+    size: ScreenSize = ScreenSize{100, 100}
+
+    # If True, adapt the app window size to the presented widgets
+    size_auto: bool = False
+
+    full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen
+
+    position_mode: WindowPositionMode = WindowPositionMode.os_default
+
+    # used if windowPositionMode==FromCoords
+    position: ScreenPosition = ScreenPosition{0, 0}
+
+    # used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
+    monitor_idx: int = 0
+
+    window_size_state: WindowSizeState = WindowSizeState.standard
+
+
 class AppWindowParams:
-    """*
-    @@md#AppWindowParams
+    window_title: str
 
-    __AppWindowParams__ is a struct that defines the application window display params.
+    window_geometry: WindowGeometry
+    # if True, then save & restore from last run
+    restore_previous_geometry: bool
 
-    Members:
-    * `windowTitle`: _string, default=""_. Title of the application window
-    * `windowSize`: _ImVec2, default (800,600)_. Size of the window.
-    * `maximized`: _bool, default=false_. If this boolean flag is True, the application window
-       will occupy the full space of the primary screen
-    * `fullScreen`: _bool, default=false_. If this boolean flag is True, the application window
-       will be full screen, with no decorations.
-        _Note: on a mobile device, the application will always be full screen._
-    * `windowPosition`: _ImVec2, default=(-11000, -1)_. Position of the window if x >= -1000,
-       else let the OS decide
-
-    @@md
-    *
-    """
-
-    window_title: str = ""
-    window_size: ImVec2 = {800., 600.}
-    maximized: bool = False
-    full_screen: bool = False
-    window_position: ImVec2 = {-11000., -1.}
+    borderless: bool = False
+    resizable: bool = True
 
 
 
@@ -693,6 +781,12 @@ class BackendPointers:
 
 """ namespace HelloImGui"""
 
+class BackendType(enum.Enum):
+    first_available = enum.auto() # (= 0)
+    sdl = enum.auto()             # (= 1)
+    glfw = enum.auto()            # (= 2)
+    qt = enum.auto()              # (= 3)
+
 class RunnerParams:
     """*
      @@md#RunnerParams
@@ -711,13 +805,20 @@ class RunnerParams:
     * `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.
        A struct that contains optional pointers to the backend implementations. These pointers will be filled
        when the application starts
+    * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
+      Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
+      and available.
     * `appShallExit`: _bool, default=false_.
        will be set to True by the app when exiting.
        _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
        shall not exit._
-    * `fps`: _int, default = 0` when applicable, set the application refresh rate
-       (only used on emscripten for the moment: 0 stands for "let the app or the browser decide")
-
+    * `fpsIdle`: _float, default=4`
+      ImGui applications can consume a lot of CPU, since they update the screen very frequently.
+      In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
+      This is ok most of the time but if you are displaying animated widgets (for example a live video),
+      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed.
+    * `emscripten_fps`: _int, default = 0` set the application refresh rate
+       (only used on emscripten: 0 stands for "let the app or the browser decide")
     @@md
 
     """
@@ -726,8 +827,12 @@ class RunnerParams:
     imgui_window_params: ImGuiWindowParams
     docking_params: DockingParams
     backend_pointers: BackendPointers
+    backend_type: BackendType = BackendType.first_available
     app_shall_exit: bool = False
-    fps: int = 0
+
+    fps_idle: float = 4.
+
+    emscripten_fps: int = 0
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////

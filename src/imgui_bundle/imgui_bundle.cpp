@@ -75,7 +75,7 @@ namespace ImGuiBundle
         HelloImGui::RunnerParams runnerParams;
         runnerParams.callbacks.ShowGui = gui_function;
         if (window_size.has_value())
-            runnerParams.appWindowParams.windowSize = *window_size;
+            runnerParams.appWindowParams.windowGeometry.size = {(int)window_size.value().x, (int)window_size.value().y};
         if (window_title.has_value())
             runnerParams.appWindowParams.windowTitle = *window_title;
 

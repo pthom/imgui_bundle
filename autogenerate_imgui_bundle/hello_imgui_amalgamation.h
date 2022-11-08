@@ -1203,46 +1203,182 @@ namespace HelloImGui
 //                       hello_imgui/app_window_params.h included by hello_imgui/runner_params.h                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <array>
+
 namespace HelloImGui
 {
+    using ScreenPosition = std::array<int, 2>;
+    using ScreenSize = std::array<int, 2>;
+
+#define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
+
+    struct ScreenBounds
+    {
+        ScreenPosition position = {0, 0};
+        ScreenSize size = {100, 100};
+
+        ScreenPosition TopLeftCorner() const{ return position; }
+        ScreenPosition BottomRightCorner() const{ return { position[0] + size[0], position[1] + size[1] }; }
+        ScreenPosition Center() const{ return { position[0] + size[0] / 2, position[1] + size[1] / 2 }; }
+
+        bool Contains(ScreenPosition pixel) const{
+            ForDim2(dim) {
+                if (pixel[dim] < TopLeftCorner()[dim])
+                    return false;
+                if (pixel[dim] >= BottomRightCorner()[dim])
+                    return false;
+            }
+            return true;
+        }
+
+        ScreenPosition WinPositionCentered(ScreenSize windowSize) const {
+            return {
+                Center()[0] - windowSize[0] / 2,
+                Center()[1] - windowSize[1] / 2
+            };
+        }
+
+        int DistanceFromPixel(ScreenPosition point) const
+        {
+            auto distFromInterval = [](int a, int b, int x) {
+                if (x < a)
+                    return a - x;
+                else if (x > b)
+                    return x - b;
+                else
+                    return 0;
+            };
+            int distance = 0;
+            ForDim2(dim)
+                distance += distFromInterval(TopLeftCorner()[dim], BottomRightCorner()[dim], point[dim]);
+            return distance;
+        }
+
+        ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const
+        {
+            auto &self = *this;
+            ScreenBounds windowBoundsNew = windowBoundsOriginal;
+            ForDim2(dim)
+            {
+                // if window is to the left or to the top, move it
+                if (windowBoundsNew.position[dim] < self.position[dim])
+                    windowBoundsNew.position[dim] = self.position[dim];
+                // if the window is too big and does not fit the bottom right corner, try to move it
+                if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
+                    windowBoundsNew.position[dim] = self.BottomRightCorner()[dim] - 1 - windowBoundsNew.size[dim];
+                // if it was not enough, resize it
+                if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
+                    windowBoundsNew.size[dim] = self.size[dim];
+            }
+            return windowBoundsNew;
+        }
+
+        bool operator==(const ScreenBounds& other) const
+        {
+            auto &self = *this;
+            ForDim2(dim)
+            {
+                if (self.size[dim] != other.size[dim])
+                    return false;
+                if (self.position[dim] != other.position[dim])
+                    return false;
+            }
+            return true;
+        }
+    };
+} // namespace BackendApi
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/app_window_params.h continued                                              //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 /**
 @@md#AppWindowParams
 
 __AppWindowParams__ is a struct that defines the application window display params.
+See [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)
+for details.
 
 Members:
 * `windowTitle`: _string, default=""_. Title of the application window
-* `windowSize`: _ImVec2, default (800,600)_. Size of the window.
-* `maximized`: _bool, default=false_. If this boolean flag is true, the application window
-   will occupy the full space of the primary screen
-* `fullScreen`: _bool, default=false_. If this boolean flag is true, the application window
-   will be full screen, with no decorations.
-    _Note: on a mobile device, the application will always be full screen._
-* `windowPosition`: _ImVec2, default=(-11000, -1)_. Position of the window if x >= -1000,
-   else let the OS decide
+* `windowGeometry`: _WindowGeometry_
+  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)
+   _Note: on a mobile device, the application will always be full screen._
+* `restorePreviousGeometry`: _bool, default=false_.
+  If true, then save & restore windowGeometry from last run
+
+* `borderless`: _bool, default = false_.
+* `resizable`: _bool, default = false_.
+* `windowSizeState`: _WindowSizeState, default = Standard_ (minimized, maximized or standard)
 
 @@md
 **/
+
+
+namespace HelloImGui
+{
+enum class FullScreenMode
+{
+    NoFullScreen,
+    FullScreen,                    // Full screen with specified resolution
+    FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution
+    FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor
+};
+
+
+enum class WindowSizeState
+{
+    Standard,
+    Minimized,
+    Maximized
+};
+
+
+enum class WindowPositionMode
+{
+    OsDefault,
+    MonitorCenter,
+    FromCoords,
+};
+
+
+struct WindowGeometry
+{
+    // used if fullScreenMode==NoFullScreen and sizeAuto==false
+    ScreenSize size = ScreenSize{100, 100};
+
+    // If true, adapt the app window size to the presented widgets
+    bool sizeAuto = false;
+
+    FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;
+
+    WindowPositionMode positionMode = WindowPositionMode::OsDefault;
+
+    // used if windowPositionMode==FromCoords
+    ScreenPosition position = ScreenPosition{0, 0};
+
+    // used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
+    int monitorIdx = 0;
+
+    WindowSizeState windowSizeState = WindowSizeState::Standard;
+};
+
+
 struct AppWindowParams
 {
-    AppWindowParams(std::string windowTitle_ = "",
-                            ImVec2 windowSize_ = {800.f, 600.f},
-                            bool maximized_ = false,
-                            bool fullScreen_ = false,
-                            ImVec2 windowPosition_ = {-11000.f, -1.f})
-        : windowTitle(windowTitle_),
-          windowSize(windowSize_),
-          maximized(maximized_),
-          fullScreen(fullScreen_),
-          windowPosition(windowPosition_)
-    {
-    }
+    std::string windowTitle;
 
-    std::string windowTitle = "";
-    ImVec2 windowSize = {800.f, 600.f};
-    bool maximized = false;
-    bool fullScreen = false;
-    ImVec2 windowPosition = {-11000.f, -1.f};
+    WindowGeometry windowGeometry;
+    // if true, then save & restore from last run
+    bool restorePreviousGeometry;
+
+    bool borderless = false;
+    bool resizable = true;
 };
 
 }  // namespace HelloImGui
@@ -1734,6 +1870,14 @@ struct BackendPointers
 namespace HelloImGui
 {
 
+enum class BackendType
+{
+    FirstAvailable,
+    Sdl,
+    Glfw,
+    Qt
+};
+
 /**
  @@md#RunnerParams
 
@@ -1751,13 +1895,20 @@ namespace HelloImGui
 * `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.
    A struct that contains optional pointers to the backend implementations. These pointers will be filled
    when the application starts
+* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
+  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
+  and available.
 * `appShallExit`: _bool, default=false_.
    will be set to true by the app when exiting.
    _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
    shall not exit._
-* `fps`: _int, default = 0` when applicable, set the application refresh rate
-   (only used on emscripten for the moment: 0 stands for "let the app or the browser decide")
-
+* `fpsIdle`: _float, default=4`
+  ImGui applications can consume a lot of CPU, since they update the screen very frequently.
+  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
+  This is ok most of the time but if you are displaying animated widgets (for example a live video),
+  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed.
+* `emscripten_fps`: _int, default = 0` set the application refresh rate
+   (only used on emscripten: 0 stands for "let the app or the browser decide")
 @@md
  */
 struct RunnerParams
@@ -1767,8 +1918,12 @@ struct RunnerParams
     ImGuiWindowParams imGuiWindowParams;
     DockingParams dockingParams;
     BackendPointers backendPointers;
+    BackendType backendType = BackendType::FirstAvailable;
     bool appShallExit = false;
-    int fps = 0;
+
+    float fpsIdle = 4.f;
+
+    int emscripten_fps = 0;
 };
 
 }  // namespace HelloImGui

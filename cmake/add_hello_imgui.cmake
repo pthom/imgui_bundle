@@ -11,7 +11,11 @@ function (add_hello_imgui)
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
     add_imgui_target(${imgui_dir})
 
-    # 2. Build glfw (also used by hello_imgui)
+    if (APPLE)
+        enable_language(OBJC) # See https://gitlab.kitware.com/cmake/cmake/-/issues/24104
+    endif()
+
+    # 2.1 Build glfw (also used by hello_imgui)
     add_subdirectory(external/glfw)
     if (UNIX AND NOT APPLE)
         # Those are only needed for wheels build using cibuildwheel (cp36-manylinux_x86_64 wheel)
@@ -21,9 +25,13 @@ function (add_hello_imgui)
         target_compile_definitions(glfw PRIVATE _POSIX_SOURCE=POSIX_REQUIRED_STANDARD)
     endif()
 
+    # 2.2 Build sdl
+    add_subdirectory(external/SDL)
+
     # 3. Configure hello-imgui with the following options:
     #     i. use glfw
     set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
     #     ii. use provided imgui version
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)

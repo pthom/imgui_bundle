@@ -58,15 +58,73 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::ImTextureIdFromAsset, py::arg("asset_path"));
 
 
+    auto pyClassScreenBounds =
+        py::class_<HelloImGui::ScreenBounds>
+            (m, "ScreenBounds", "")
+        .def(py::init<>()) // implicit default constructor
+        .def_readwrite("position", &HelloImGui::ScreenBounds::position, "")
+        .def_readwrite("size", &HelloImGui::ScreenBounds::size, "")
+        .def("top_left_corner",
+            &HelloImGui::ScreenBounds::TopLeftCorner)
+        .def("bottom_right_corner",
+            &HelloImGui::ScreenBounds::BottomRightCorner)
+        .def("center",
+            &HelloImGui::ScreenBounds::Center)
+        .def("contains",
+            &HelloImGui::ScreenBounds::Contains, py::arg("pixel"))
+        .def("win_position_centered",
+            &HelloImGui::ScreenBounds::WinPositionCentered, py::arg("window_size"))
+        .def("distance_from_pixel",
+            &HelloImGui::ScreenBounds::DistanceFromPixel, py::arg("point"))
+        .def("ensure_window_fits_this_monitor",
+            &HelloImGui::ScreenBounds::EnsureWindowFitsThisMonitor, py::arg("window_bounds_original"))
+        .def("__eq__",
+            &HelloImGui::ScreenBounds::operator==, py::arg("other"))
+        ;
+
+
+    py::enum_<HelloImGui::FullScreenMode>(m, "FullScreenMode", py::arithmetic(), "")
+        .value("no_full_screen", HelloImGui::FullScreenMode::NoFullScreen, "")
+        .value("full_screen", HelloImGui::FullScreenMode::FullScreen, "Full screen with specified resolution")
+        .value("full_screen_desktop_resolution", HelloImGui::FullScreenMode::FullScreenDesktopResolution, "Full screen with current desktop mode & resolution")
+        .value("full_monitor_work_area", HelloImGui::FullScreenMode::FullMonitorWorkArea, "Fake full screen, maximized window on the selected monitor");
+
+
+    py::enum_<HelloImGui::WindowSizeState>(m, "WindowSizeState", py::arithmetic(), "")
+        .value("standard", HelloImGui::WindowSizeState::Standard, "")
+        .value("minimized", HelloImGui::WindowSizeState::Minimized, "")
+        .value("maximized", HelloImGui::WindowSizeState::Maximized, "");
+
+
+    py::enum_<HelloImGui::WindowPositionMode>(m, "WindowPositionMode", py::arithmetic(), "")
+        .value("os_default", HelloImGui::WindowPositionMode::OsDefault, "")
+        .value("monitor_center", HelloImGui::WindowPositionMode::MonitorCenter, "")
+        .value("from_coords", HelloImGui::WindowPositionMode::FromCoords, "");
+
+
+    auto pyClassWindowGeometry =
+        py::class_<HelloImGui::WindowGeometry>
+            (m, "WindowGeometry", "")
+        .def(py::init<>()) // implicit default constructor
+        .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False")
+        .def_readwrite("size_auto", &HelloImGui::WindowGeometry::sizeAuto, "If True, adapt the app window size to the presented widgets")
+        .def_readwrite("full_screen_mode", &HelloImGui::WindowGeometry::fullScreenMode, "")
+        .def_readwrite("position_mode", &HelloImGui::WindowGeometry::positionMode, "")
+        .def_readwrite("position", &HelloImGui::WindowGeometry::position, "used if windowPositionMode==FromCoords")
+        .def_readwrite("monitor_idx", &HelloImGui::WindowGeometry::monitorIdx, "used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen")
+        .def_readwrite("window_size_state", &HelloImGui::WindowGeometry::windowSizeState, "")
+        ;
+
+
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowSize`: _ImVec2, default (800,600)_. Size of the window.\n* `maximized`: _bool, default=false_. If this boolean flag is True, the application window\n   will occupy the full space of the primary screen\n* `fullScreen`: _bool, default=false_. If this boolean flag is True, the application window\n   will be full screen, with no decorations.\n    _Note: on a mobile device, the application will always be full screen._\n* `windowPosition`: _ImVec2, default=(-11000, -1)_. Position of the window if x >= -1000,\n   else let the OS decide\n\n@@md\n*")
+            (m, "AppWindowParams", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("window_title", &HelloImGui::AppWindowParams::windowTitle, "")
-        .def_readwrite("window_size", &HelloImGui::AppWindowParams::windowSize, "")
-        .def_readwrite("maximized", &HelloImGui::AppWindowParams::maximized, "")
-        .def_readwrite("full_screen", &HelloImGui::AppWindowParams::fullScreen, "")
-        .def_readwrite("window_position", &HelloImGui::AppWindowParams::windowPosition, "")
+        .def_readwrite("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, "")
+        .def_readwrite("restore_previous_geometry", &HelloImGui::AppWindowParams::restorePreviousGeometry, "if True, then save & restore from last run")
+        .def_readwrite("borderless", &HelloImGui::AppWindowParams::borderless, "")
+        .def_readwrite("resizable", &HelloImGui::AppWindowParams::resizable, "")
         ;
 
 
@@ -193,17 +251,26 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    py::enum_<HelloImGui::BackendType>(m, "BackendType", py::arithmetic(), "")
+        .value("first_available", HelloImGui::BackendType::FirstAvailable, "")
+        .value("sdl", HelloImGui::BackendType::Sdl, "")
+        .value("glfw", HelloImGui::BackendType::Glfw, "")
+        .value("qt", HelloImGui::BackendType::Qt, "");
+
+
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `appShallExit`: _bool, default=false_.\n   will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fps`: _int, default = 0` when applicable, set the application refresh rate\n   (only used on emscripten for the moment: 0 stands for \"let the app or the browser decide\")\n\n@@md\n")
+            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdle`: _float, default=4`\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed.\n* `emscripten_fps`: _int, default = 0` set the application refresh rate\n   (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("callbacks", &HelloImGui::RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &HelloImGui::RunnerParams::appWindowParams, "")
         .def_readwrite("imgui_window_params", &HelloImGui::RunnerParams::imGuiWindowParams, "")
         .def_readwrite("docking_params", &HelloImGui::RunnerParams::dockingParams, "")
         .def_readwrite("backend_pointers", &HelloImGui::RunnerParams::backendPointers, "")
+        .def_readwrite("backend_type", &HelloImGui::RunnerParams::backendType, "")
         .def_readwrite("app_shall_exit", &HelloImGui::RunnerParams::appShallExit, "")
-        .def_readwrite("fps", &HelloImGui::RunnerParams::fps, "")
+        .def_readwrite("fps_idle", &HelloImGui::RunnerParams::fpsIdle, "")
+        .def_readwrite("emscripten_fps", &HelloImGui::RunnerParams::emscripten_fps, "")
         ;
 
 
