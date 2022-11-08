@@ -20,6 +20,7 @@ def run(
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    fps_idle: float = 4.0,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 
@@ -28,6 +29,7 @@ def run(
     - if `with_implot` is True, then a context for implot will be created/destroyed automatically
     - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
         will be created automatically.
+     - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
     """
     pass
 
@@ -40,6 +42,7 @@ def run(
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    fps_idle: float = 4.0,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 
@@ -48,6 +51,7 @@ def run(
     - if `with_implot` is True, then a context for implot will be created/destroyed automatically
     - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
         will be created automatically.
+     - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
     """
     pass
 

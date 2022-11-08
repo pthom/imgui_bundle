@@ -16,13 +16,15 @@ namespace ImGuiBundle
     //- if `with_implot` is True, then a context for implot will be created/destroyed automatically
     //- if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
     //    will be created automatically.
+    // - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
     void Run(
         HelloImGui::RunnerParams& runner_params,
         bool with_implot = false,
         bool with_node_editor = false,
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt
+        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
+        float fpsIdle = 4.f
     );
 
     //Helper to run a hello_imgui app for imgui_bundle:
@@ -32,6 +34,7 @@ namespace ImGuiBundle
     //- if `with_implot` is True, then a context for implot will be created/destroyed automatically
     //- if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
     //    will be created automatically.
+    // - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
     void Run(
         const HelloImGui::VoidFunction& gui_function,
         const std::optional<ImVec2>& window_size = std::nullopt,
@@ -40,7 +43,8 @@ namespace ImGuiBundle
         bool with_node_editor = false,
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt
+        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
+        float fpsIdle = 4.f
     );
 
 

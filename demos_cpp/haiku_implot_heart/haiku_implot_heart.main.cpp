@@ -29,6 +29,7 @@ int main(int , char *[])
     }
 
     auto gui = [&]() {
+        HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
         double t = ImGuiBundle::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
         t0 = t;

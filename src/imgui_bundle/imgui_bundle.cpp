@@ -19,7 +19,8 @@ namespace ImGuiBundle
         bool with_node_editor,
         const std::optional<NodeEditorConfig>& with_node_editor_config_,
         bool with_markdown,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_
+        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_,
+        float fpsIdle
     )
     {
         // create implot context if required
@@ -47,6 +48,8 @@ namespace ImGuiBundle
             runner_params.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
         }
 
+        runner_params.fpsIdle = fpsIdle;
+
         HelloImGui::Run(runner_params);
 
         if (with_implot)
@@ -69,7 +72,8 @@ namespace ImGuiBundle
         bool with_node_editor,
         const std::optional<NodeEditorConfig>& with_node_editor_config,
         bool with_markdown,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options
+        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options,
+        float fpsIdle
     )
     {
         HelloImGui::RunnerParams runnerParams;
@@ -84,7 +88,8 @@ namespace ImGuiBundle
             with_node_editor,
             with_node_editor_config,
             with_markdown,
-            with_markdown_options
+            with_markdown_options,
+            fpsIdle
             );
     }
 

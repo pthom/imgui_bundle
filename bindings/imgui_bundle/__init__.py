@@ -11,8 +11,8 @@ from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,
-    clock_seconds as clock_seconds
-    )
+    clock_seconds as clock_seconds,
+)
 
 from imgui_bundle import icons_fontawesome
 from imgui_bundle.run_anon_block import run_anon_block as run_anon_block

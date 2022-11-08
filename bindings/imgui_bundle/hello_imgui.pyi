@@ -245,27 +245,6 @@ class ScreenBounds:
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#*
-#@@md#AppWindowParams
-#
-#__AppWindowParams__ is a struct that defines the application window display params.
-#See [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)
-#for details.
-#
-#Members:
-#* `windowTitle`: _string, default=""_. Title of the application window
-#* `windowGeometry`: _WindowGeometry_
-#  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)
-#   _Note: on a mobile device, the application will always be full screen._
-#* `restorePreviousGeometry`: _bool, default=false_.
-#  If True, then save & restore windowGeometry from last run
-#
-#* `borderless`: _bool, default = false_.
-#* `resizable`: _bool, default = false_.
-#* `windowSizeState`: _WindowSizeState, default = Standard_ (minimized, maximized or standard)
-#
-#@@md
-#*
 
 
 class FullScreenMode(enum.Enum):
@@ -288,8 +267,45 @@ class WindowPositionMode(enum.Enum):
 
 
 class WindowGeometry:
+    """*
+    @@md#WindowGeometry
+
+    __WindowGeometry__ is a struct that defines the window geometry.
+
+    Members:
+    * `size`: _int[2], default="{800, 600}"_. Size of the application window
+      used if fullScreenMode==NoFullScreen and sizeAuto==False
+    * `sizeAuto`: _bool, default=false_
+      If True, adapt the app window size to the presented widgets
+    * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
+       You can choose between several full screen modes:
+       ````cpp
+            NoFullScreen,
+            FullScreen,                    // Full screen with specified resolution
+            FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution
+            FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor
+        ````
+    * `positionMode`: _WindowPositionMode, default = OsDefault_.
+       You can choose between several window position modes:
+       ````cpp
+            OsDefault,
+            MonitorCenter,
+            FromCoords,
+        ````
+    * `monitorIdx`: _int, default = 0_.
+      used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
+    * `windowSizeState`: _WindowSizeState, default=Standard_
+       You can choose between several window size states:
+       ````cpp
+            Standard,
+            Minimized,
+            Maximized
+        ````
+    @@md
+    *
+    """
     # used if fullScreenMode==NoFullScreen and sizeAuto==False
-    size: ScreenSize = ScreenSize{100, 100}
+    size: ScreenSize = ScreenSize{800, 600}
 
     # If True, adapt the app window size to the presented widgets
     size_auto: bool = False
@@ -308,14 +324,42 @@ class WindowGeometry:
 
 
 class AppWindowParams:
+    """*
+    @@md#AppWindowParams
+
+    __AppWindowParams__ is a struct that defines the application window display params.
+    See [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)
+    for details.
+
+    Members:
+    * `windowTitle`: _string, default=""_. Title of the application window
+    * `windowGeometry`: _WindowGeometry_
+      Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)
+       _Note: on a mobile device, the application will always be full screen._
+    * `restorePreviousGeometry`: _bool, default=false_.
+      If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
+    * `borderless`: _bool, default = false_.
+    * `resizable`: _bool, default = false_.
+
+    Output Member:
+    * `outWindowDpiFactor`: _float, default = 1_.
+       This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1
+       on high resolution monitors (on MacOS, the scaling is handled by the system).
+       When loading fonts, their size should be multiplied by this factor.
+    @@md
+    *
+    """
     window_title: str
 
     window_geometry: WindowGeometry
+
     # if True, then save & restore from last run
-    restore_previous_geometry: bool
+    restore_previous_geometry: bool = False
 
     borderless: bool = False
     resizable: bool = True
+
+    out_window_dpi_factor: float = 1.
 
 
 
@@ -809,16 +853,17 @@ class RunnerParams:
       Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
       and available.
     * `appShallExit`: _bool, default=false_.
-       will be set to True by the app when exiting.
+       Will be set to True by the app when exiting.
        _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
        shall not exit._
-    * `fpsIdle`: _float, default=4`
+    * `fpsIdle`: _float, default=4_.
       ImGui applications can consume a lot of CPU, since they update the screen very frequently.
       In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
       This is ok most of the time but if you are displaying animated widgets (for example a live video),
-      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed.
-    * `emscripten_fps`: _int, default = 0` set the application refresh rate
-       (only used on emscripten: 0 stands for "let the app or the browser decide")
+      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
+      (you can change this value during the execution depending on your application refresh needs)
+    * `emscripten_fps`: _int, default = 0_.
+      Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
     @@md
 
     """
@@ -873,14 +918,19 @@ def log_gui() -> None:
 
 __HelloImGui::Run()__ will run an application with a single call.
 
-Two signatures are provided:
+Three signatures are provided:
 
 * `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
    Runs an application whose params and Gui are provided
 by runnerParams.
 
-* `HelloImGui::Run(guiFunction, windowSize, windowTitle)`: simple signature
-in order to start a simple application with ease.
+* `HelloImGui::Run(guiFunction, windowSize, windowTitle, fpsIdle=4)`: signature in order to start a simple application with ease.
+  `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
+
+* `HelloImGui::Run_AutoSize(guiFunction, windowTitle, restoreLastWindowGeometry = True, fpsIdle=4)`: signature
+in order to start a simple application, where the window size can be set automatically from the widgets,
+ and where the previous position size & position can be restored upon next launch. `fpsIdle` enables to set
+ the app FPS when it is idle (set it to 0 for maximum FPS).
 
 __HelloImGui::GetRunnerParams()__ is a convenience function that will return
 the runnerParams of the current application.
@@ -894,7 +944,17 @@ def run(runner_params: RunnerParams) -> None:
 def run(
     gui_function: VoidFunction,
     window_size: ImVec2 = ImVec2(800., 600.),
-    window_title: str = ""
+    window_title: str = "",
+    fps_idle: float = 4.
+    ) -> None:
+    pass
+
+def run_auto_size(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    restore_last_window_geometry: bool = True,
+    window_size: ImVec2 = ImVec2(0., 0.),
+    fps_idle: float = 4.
     ) -> None:
     pass
 
