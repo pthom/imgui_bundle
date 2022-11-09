@@ -35,6 +35,7 @@ ImGui Bundle include:
 * [ImFileDialog](https://github.com/pthom/ImFileDialog.git): File dialogs 
 * [imgui_md](https://github.com/mekhontsev/imgui_md.git): Markdown for ImGui
 * [imspinner](https://github.com/dalerank/imspinner): Spinners 
+* [imgui_toggle](https://github.com/cmdwtf/imgui_toggle): Toggle switch widget
 
 ## Philosophy
 * Closely mirrors the original API of ImGui and other libraries

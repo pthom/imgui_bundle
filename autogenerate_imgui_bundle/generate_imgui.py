@@ -28,6 +28,8 @@ def autogenerate_imgui() -> None:
     generator = litgen.LitgenGenerator(options_imgui)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
+    generator.process_cpp_file(REPO_DIR + "/external/imgui_toggle/imgui_toggle.h")
+
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
 

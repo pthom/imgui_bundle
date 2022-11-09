@@ -5275,6 +5275,50 @@ class ImGuiPlatformImeData:    # imgui.h:3201
 ####################    </generated_from:imgui.h>    ####################
 
 
+####################    <generated_from:imgui_toggle.h>    ####################
+
+
+class ImGuiToggleFlags_(enum.Enum):    # imgui_toggle.h:5
+    # ImGuiToggleFlags_None               = 0,    /* original C++ signature */
+    none = enum.auto()     # (= 0)
+    # ImGuiToggleFlags_Animated           = 1 << 0,     /* original C++ signature */
+    animated = enum.auto() # (= 1 << 0)  # The toggle should be animated. Mutually exclusive with ImGuiToggleFlags_Static.
+    # ImGuiToggleFlags_Static             = 1 << 1,     /* original C++ signature */
+    static = enum.auto()   # (= 1 << 1)  # The toggle should not animate. Mutually exclusive with ImGuiToggleFlags_Animated.
+    # ImGuiToggleFlags_Default            = ImGuiToggleFlags_Static,     /* original C++ signature */
+    default = enum.auto()  # (= ImGuiToggleFlags_.static)  # The default flags used when no ImGuiToggleFlags_ are specified.
+
+
+""" namespace ImGui"""
+# Widgets: Toggle Switches
+# - Toggles behave similarly to ImGui::Checkbox()
+# - Sometimes called a toggle switch, see also: https://en.wikipedia.org/wiki/Toggle_switch_(widget)
+# - They represent two mutually exclusive states, with an optional animation on the UI when toggled.
+# Optional parameters:
+# - flags: Values from the ImGuiToggleFlags_ enumeration to set toggle modes.
+# - speed: Animation speed scalar. (0,...] default: 1.0 (Overloads with this parameter imply ImGuiToggleFlags_Animated)
+# - frame_rounding: A scalar that controls how rounded the toggle frame is. 0 is square, 1 is round. (0, 1) default 1.0
+# - knob_rounding: A scalar that controls how rounded the toggle knob is. 0 is square, 1 is round. (0, 1) default 1.0
+# IMGUI_API bool Toggle(const char* label, bool* v);    /* original C++ signature */
+def toggle(label: str, v: bool) -> Tuple[bool, bool]:    # imgui_toggle.h:26
+    pass
+# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags);    /* original C++ signature */
+def toggle(label: str, v: bool, flags: ImGuiToggleFlags) -> Tuple[bool, bool]:    # imgui_toggle.h:27
+    pass
+# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed);    /* original C++ signature */
+def toggle(label: str, v: bool, flags: ImGuiToggleFlags, speed: float) -> Tuple[bool, bool]:    # imgui_toggle.h:28
+    pass
+# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding);    /* original C++ signature */
+def toggle(label: str, v: bool, flags: ImGuiToggleFlags, frame_rounding: float, knob_rounding: float) -> Tuple[bool, bool]:    # imgui_toggle.h:29
+    pass
+# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed, float frame_rounding, float knob_rounding);    /* original C++ signature */
+def toggle(label: str, v: bool, flags: ImGuiToggleFlags, speed: float, frame_rounding: float, knob_rounding: float) -> Tuple[bool, bool]:    # imgui_toggle.h:30
+    pass
+
+
+####################    </generated_from:imgui_toggle.h>    ####################
+
+
 ####################    <generated_from:imgui_stdlib.h>    ####################
 # dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)
 # This is also an example of how you may wrap your own similar types.

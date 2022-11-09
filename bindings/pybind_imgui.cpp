@@ -3,6 +3,7 @@
 #include <pybind11/numpy.h>
 
 #include "imgui.h"
+#include "imgui_toggle/imgui_toggle.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "imgui_docking_internal_types.h"
 #include "litgen_glue_code.h"
@@ -4024,6 +4025,86 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())    // imgui.h:3207
         ;
     ////////////////////    </generated_from:imgui.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imgui_toggle.h>    ////////////////////
+    py::enum_<ImGuiToggleFlags_>(m, "ImGuiToggleFlags_", py::arithmetic(), "")    // imgui_toggle.h:5
+        .value("none", ImGuiToggleFlags_None, "")
+        .value("animated", ImGuiToggleFlags_Animated, "The toggle should be animated. Mutually exclusive with ImGuiToggleFlags_Static.")
+        .value("static", ImGuiToggleFlags_Static, "The toggle should not animate. Mutually exclusive with ImGuiToggleFlags_Animated.")
+        .value("default", ImGuiToggleFlags_Default, "The default flags used when no ImGuiToggleFlags_ are specified.");
+
+
+    m.def("toggle",    // imgui_toggle.h:26
+        [](const char * label, bool v) -> std::tuple<bool, bool>
+        {
+            auto Toggle_adapt_modifiable_immutable_to_return = [](const char * label, bool v) -> std::tuple<bool, bool>
+            {
+                bool * v_adapt_modifiable = & v;
+
+                bool r = ImGui::Toggle(label, v_adapt_modifiable);
+                return std::make_tuple(r, v);
+            };
+
+            return Toggle_adapt_modifiable_immutable_to_return(label, v);
+        },     py::arg("label"), py::arg("v"));
+
+    m.def("toggle",    // imgui_toggle.h:27
+        [](const char * label, bool v, ImGuiToggleFlags flags) -> std::tuple<bool, bool>
+        {
+            auto Toggle_adapt_modifiable_immutable_to_return = [](const char * label, bool v, ImGuiToggleFlags flags) -> std::tuple<bool, bool>
+            {
+                bool * v_adapt_modifiable = & v;
+
+                bool r = ImGui::Toggle(label, v_adapt_modifiable, flags);
+                return std::make_tuple(r, v);
+            };
+
+            return Toggle_adapt_modifiable_immutable_to_return(label, v, flags);
+        },     py::arg("label"), py::arg("v"), py::arg("flags"));
+
+    m.def("toggle",    // imgui_toggle.h:28
+        [](const char * label, bool v, ImGuiToggleFlags flags, float speed) -> std::tuple<bool, bool>
+        {
+            auto Toggle_adapt_modifiable_immutable_to_return = [](const char * label, bool v, ImGuiToggleFlags flags, float speed) -> std::tuple<bool, bool>
+            {
+                bool * v_adapt_modifiable = & v;
+
+                bool r = ImGui::Toggle(label, v_adapt_modifiable, flags, speed);
+                return std::make_tuple(r, v);
+            };
+
+            return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, speed);
+        },     py::arg("label"), py::arg("v"), py::arg("flags"), py::arg("speed"));
+
+    m.def("toggle",    // imgui_toggle.h:29
+        [](const char * label, bool v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding) -> std::tuple<bool, bool>
+        {
+            auto Toggle_adapt_modifiable_immutable_to_return = [](const char * label, bool v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding) -> std::tuple<bool, bool>
+            {
+                bool * v_adapt_modifiable = & v;
+
+                bool r = ImGui::Toggle(label, v_adapt_modifiable, flags, frame_rounding, knob_rounding);
+                return std::make_tuple(r, v);
+            };
+
+            return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, frame_rounding, knob_rounding);
+        },     py::arg("label"), py::arg("v"), py::arg("flags"), py::arg("frame_rounding"), py::arg("knob_rounding"));
+
+    m.def("toggle",    // imgui_toggle.h:30
+        [](const char * label, bool v, ImGuiToggleFlags flags, float speed, float frame_rounding, float knob_rounding) -> std::tuple<bool, bool>
+        {
+            auto Toggle_adapt_modifiable_immutable_to_return = [](const char * label, bool v, ImGuiToggleFlags flags, float speed, float frame_rounding, float knob_rounding) -> std::tuple<bool, bool>
+            {
+                bool * v_adapt_modifiable = & v;
+
+                bool r = ImGui::Toggle(label, v_adapt_modifiable, flags, speed, frame_rounding, knob_rounding);
+                return std::make_tuple(r, v);
+            };
+
+            return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, speed, frame_rounding, knob_rounding);
+        },     py::arg("label"), py::arg("v"), py::arg("flags"), py::arg("speed"), py::arg("frame_rounding"), py::arg("knob_rounding"));
+    ////////////////////    </generated_from:imgui_toggle.h>    ////////////////////
 
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////

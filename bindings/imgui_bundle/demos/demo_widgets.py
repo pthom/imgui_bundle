@@ -78,6 +78,19 @@ def demo_spinner():
     imspinner.spinner_ang_triple("spinner_arc_fade", 5.0, 8.0, 11.0, 2.5, color, color, color)
 
 
+@static(toggle_a = True, toggle_b = True)
+def demo_toggle():
+    static = demo_toggle
+    imgui_md.render(
+        """
+# Toggle Switch
+  [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
+    )
+
+    changed, static.toggle_a = imgui.toggle("Default Toggle", static.toggle_a)
+    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ImGuiToggleFlags_.animated)
+
+
 @static(selected_filename="")
 def demo_file_dialog():
     static = demo_file_dialog  # Acces to static variable via static
@@ -159,9 +172,10 @@ def _fake_log_provider() -> str:
 
 
 def demo_logger():
-    imgui.text(
-        """A simple Log viewer inside HelloImGui
-    From https://github.com/leiradel/ImGuiAl"""
+    imgui_md.render(
+        """# Log Viewer
+A simple Log viewer from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+        """
     )
     if imgui.button("Log some messages"):
         hello_imgui.log(hello_imgui.LogLevel.debug, _fake_log_provider())
@@ -177,6 +191,7 @@ def demo_widgets():
     demo_file_dialog()
     imgui.separator()
     demo_knobs()
+    demo_toggle()
     imgui.separator()
     demo_spinner()
     imgui.separator()
