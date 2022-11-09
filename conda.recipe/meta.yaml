@@ -24,6 +24,7 @@ requirements:
     - {{ cdt('libxfixes-devel') }}  # [linux]
     - {{ cdt('mesa-libgl') }}  # [linux]
     - {{ cdt('mesa-libgl-devel') }}  # [linux]
+    - {{ cdt('libxcb') }}  # [linux]
   host:
     - python
     - pip

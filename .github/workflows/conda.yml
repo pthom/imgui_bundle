@@ -40,7 +40,7 @@ jobs:
           channels: conda-forge
 
       - name: Prepare
-        run: conda install conda-build conda-verify pytest
+        run: conda install conda-build conda-verify typing_extensions
 
       - name: Build
         run: conda build conda.recipe
