@@ -24,7 +24,7 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
-        float fpsIdle = 4.f,
+        float fpsIdle = 10.f,
         bool restoreLastWindowPosition=false
     );
 
@@ -45,7 +45,7 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
-        float fpsIdle = 4.f,
+        float fpsIdle = 10.f,
         bool restoreLastWindowPosition=false
     );
 

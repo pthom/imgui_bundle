@@ -859,7 +859,7 @@ class RunnerParams:
        Will be set to True by the app when exiting.
        _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
        shall not exit._
-    * `fpsIdle`: _float, default=4_.
+    * `fpsIdle`: _float, default=10_.
       ImGui applications can consume a lot of CPU, since they update the screen very frequently.
       In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
       This is ok most of the time but if you are displaying animated widgets (for example a live video),
@@ -878,7 +878,7 @@ class RunnerParams:
     backend_type: BackendType = BackendType.first_available
     app_shall_exit: bool = False
 
-    fps_idle: float = 4.
+    fps_idle: float = 10.
 
     emscripten_fps: int = 0
 
@@ -948,7 +948,7 @@ def run(
     gui_function: VoidFunction,
     window_size: ImVec2 = ImVec2(800., 600.),
     window_title: str = "",
-    fps_idle: float = 4.
+    fps_idle: float = 10.
     ) -> None:
     pass
 
@@ -957,7 +957,7 @@ def run_auto_size(
     window_title: str = "",
     restore_last_window_geometry: bool = True,
     window_size: ImVec2 = ImVec2(0., 0.),
-    fps_idle: float = 4.
+    fps_idle: float = 10.
     ) -> None:
     pass
 

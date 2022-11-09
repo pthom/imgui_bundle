@@ -1946,7 +1946,7 @@ enum class BackendType
    Will be set to true by the app when exiting.
    _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
    shall not exit._
-* `fpsIdle`: _float, default=4_.
+* `fpsIdle`: _float, default=10_.
   ImGui applications can consume a lot of CPU, since they update the screen very frequently.
   In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
   This is ok most of the time but if you are displaying animated widgets (for example a live video),
@@ -1966,7 +1966,7 @@ struct RunnerParams
     BackendType backendType = BackendType::FirstAvailable;
     bool appShallExit = false;
 
-    float fpsIdle = 4.f;
+    float fpsIdle = 10.f;
 
     int emscripten_fps = 0;
 };
@@ -2036,14 +2036,14 @@ namespace HelloImGui
     void Run(VoidFunction guiFunction,
         ImVec2 windowSize = ImVec2(800.f, 600.f),
         std::string windowTitle = "",
-        float fpsIdle = 4.f
+        float fpsIdle = 10.f
         );
 
     void Run_AutoSize(VoidFunction guiFunction,
              std::string windowTitle = "",
              bool restoreLastWindowGeometry = true,
              ImVec2 windowSize = ImVec2(0.f, 0.f),
-             float fpsIdle = 4.f
+             float fpsIdle = 10.f
              );
 
     RunnerParams* GetRunnerParams();
