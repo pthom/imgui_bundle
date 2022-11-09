@@ -190,6 +190,9 @@ class TextEditor:
         @staticmethod
         def lua() -> LanguageDefinition:
             pass
+        @staticmethod
+        def python() -> LanguageDefinition:
+            pass
 
 
     def set_language_definition(

@@ -9,7 +9,7 @@ def _prepare_text_editor():
         this_file_code = f.read()
     editor = TextEditor()
     editor.set_text(this_file_code)
-    editor.set_language_definition(TextEditor.LanguageDefinition.c())
+    editor.set_language_definition(TextEditor.LanguageDefinition.python())
     return editor
 
 

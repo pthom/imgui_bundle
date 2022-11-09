@@ -43,6 +43,9 @@ lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
 add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    target_compile_definitions(imgui_color_text_edit PRIVATE IMGUI_BUNDLE_BUILD_PYTHON)
+endif()
 # Build imgui-node-editor
 add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 # Build imgui-knobs

@@ -130,6 +130,8 @@ void py_init_module_imgui_color_text_edit(py::module& m)
                 &TextEditor::LanguageDefinition::AngelScript)
             .def_static("lua",
                 &TextEditor::LanguageDefinition::Lua)
+            .def_static("python",
+                &TextEditor::LanguageDefinition::Python)
             ;
     } // end of inner classes & enums of TextEditor
 
