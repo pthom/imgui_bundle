@@ -38,4 +38,4 @@ def start_intrigue(_):
 
 
 def begin_the(gui):
-    run(gui, with_node_editor=True, window_size=ImVec2(600, 600))
+    run(gui, with_node_editor=True, window_size=(600, 600))

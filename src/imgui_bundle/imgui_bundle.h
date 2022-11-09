@@ -20,10 +20,21 @@ namespace ImGuiBundle
 
     struct AddOnsParams
     {
+        // Set withImplot=true if you need to plot graphs
         bool withImplot = false;
+
+        // Set withMarkdown=true if you need to render Markdown
+        // (alternatively, you can set withMarkdownOptions)
         bool withMarkdown = false;
+
+        // Set withNodeEditor=true if you need to render a node editor
+        // (alternatively, you can set withNodeEditorConfig)
         bool withNodeEditor = false;
+
+        // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
+
+        // You can tweak MarkdownOptions (but this is optional)
         std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt;
     };
 
@@ -37,25 +48,34 @@ namespace ImGuiBundle
     //
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    // Helper to run an app inside imgui_bundle, using HelloImGui
+    constexpr ScreenSize DefaultScreenSize = {800, 600};
+
+    // Helper to run an app inside imgui_bundle, using HelloImGui:
     //
-    // - if `window_size` is not specified (i.e None or nullopt), then the window size will be computed to fit its widgets
-    // - if `with_implot` is True, then a context for implot will be created/destroyed automatically
-    // - if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized
-    //    (i.e. required fonts will be loaded)
-    // - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
-    //    will be created automatically.
-    // - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
+    // (HelloImGui::SimpleRunnerParams)
+    //     - `guiFunction`: the function that will render the ImGui widgets
+    //     - `windowTitle`: title of the window
+    //     - `windowSizeAuto`: if true, autosize the window from its inner widgets
+    //     - `windowRestorePreviousGeometry`: if true, restore window size and position from last run
+    //     - `windowSize`: size of the window
+    //     - `fpsIdle`: fps of the application when idle
+    //
+    // (ImGuiBundle::AddOnsParams)
+    //     - `with_implot`: if True, then a context for implot will be created/destroyed automatically
+    //     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
+    //       (i.e. required fonts will be loaded)
+    //     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
+    //       will be created automatically.
     void Run(
         // HelloImGui::SimpleRunnerParams below:
         const VoidFunction& guiFunction,
         const std::string& windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = {800, 600},
+        const ScreenSize& windowSize = DefaultScreenSize,
         float fpsIdle = 10.f,
 
-        // ImGuiBundle_AddOnsParams below:
+        // AddOnsParams below:
         bool withImplot = false,
         bool withMarkdown = false,
         bool withNodeEditor = false,

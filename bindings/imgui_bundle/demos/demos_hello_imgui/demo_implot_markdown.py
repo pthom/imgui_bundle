@@ -15,7 +15,7 @@ def main():
         implot.plot_line("y2", x, y2)
         implot.end_plot()
 
-    imgui_bundle.run(gui, with_implot=True, with_markdown=True, window_size=ImVec2(600, 400))
+    imgui_bundle.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
 
 
 if __name__ == "__main__":

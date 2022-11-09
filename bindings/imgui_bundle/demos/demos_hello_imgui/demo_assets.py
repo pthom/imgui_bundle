@@ -2,7 +2,7 @@ import os
 
 
 def main():
-    from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, run
+    from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, run, AddOnsParams
 
     def show_gui():
         """This is the code of the Gui displayed by this app"""
@@ -17,27 +17,20 @@ def main():
         if imgui.button("Bye"):
             # ... and immediately handle its action if it is clicked!
             # here, the flag appShallExit will tell HelloImGui to end the app.
-            runner_params.app_shall_exit = True
-
-    # Instantiate RunnerParams which will contains all the application params and callbacks
-    runner_params = hello_imgui.RunnerParams()
-
-    # Set the app windows parameters
-    runner_params.app_window_params.window_title = "Hello, globe!"
-    runner_params.app_window_params.window_geometry.size = (180, 210)
-
-    # Uncomment this to restore the window position and size from previous run
-    # runner_params.app_window_params.restore_previous_geometry = False
-
-    # runner_params.callbacks.show_gui should contain a function with the Gui code
-    runner_params.callbacks.show_gui = show_gui
+            hello_imgui.get_runner_params().app_shall_exit = True
 
     # Set the assets folder path
     this_dir = os.path.dirname(os.path.abspath(__file__))
     hello_imgui.set_assets_folder(this_dir + "/assets")
 
-    run(runner_params, with_markdown=True)
-
+    run(
+        gui_function=show_gui,
+        window_title="Hello, globe!",
+        window_size_auto=True,
+        with_markdown=True,
+        # Uncomment the next line to restore the window position and size from previous run
+        # window_restore_previous_geometry=True
+    )
 
 if __name__ == "__main__":
     main()

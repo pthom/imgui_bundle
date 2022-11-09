@@ -50,8 +50,8 @@ Features
     imgui.text("Hello world demo: how to start an app in as few lines as possible")
     show_one_feature("demos_hello_imgui/demo_hello_world.py")
 
-    imgui.text("How to run more complex application (via RunnerParams) and how to load assets")
-    show_one_feature("demos_hello_imgui/demo_runner_params.py")
+    imgui.text("How to load assets")
+    show_one_feature("demos_hello_imgui/demo_assets.py")
 
     imgui.text(
         "How to build complex applications layouts, with dockable panels, that can even become independent windows"
@@ -84,4 +84,4 @@ Features
 if __name__ == "__main__":
     from imgui_bundle import run
 
-    run(demo_hello_imgui, with_markdown=True, window_size=ImVec2(800, 800))
+    run(demo_hello_imgui, with_markdown=True, window_size=(800, 800))

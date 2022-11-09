@@ -237,7 +237,7 @@ def main():
         demo_node_editor,
         with_node_editor_config=config,
         with_markdown=True,
-        window_size=ImVec2(800, 600)
+        window_size=(800, 600)
     )
 
 

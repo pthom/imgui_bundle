@@ -36,7 +36,12 @@ namespace ImGuiBundle
             if (!addOnsParams.withMarkdownOptions.has_value())
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
-            runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
+
+            auto previousFontLoaderFunction = runnerParams.callbacks.LoadAdditionalFonts;
+            runnerParams.callbacks.LoadAdditionalFonts = [previousFontLoaderFunction](){
+                ImGuiMd::GetFontLoaderFunction()();
+                previousFontLoaderFunction();
+            };
         }
 
         HelloImGui::Run(runnerParams);

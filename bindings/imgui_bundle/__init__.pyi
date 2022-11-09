@@ -11,7 +11,8 @@ from . import  imgui_md as imgui_md
 from . imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,
-    clock_seconds as clock_seconds
+    clock_seconds as clock_seconds,
+    AddOnsParams as AddOnsParams
 )
 from . utilities import (
     static as static,

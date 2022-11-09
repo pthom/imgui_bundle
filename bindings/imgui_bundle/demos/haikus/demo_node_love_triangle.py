@@ -70,4 +70,4 @@ def gui():
     ed.end()
 
 
-run(gui, with_node_editor=True, window_size=ImVec2(450, 450), window_title="It will not end well...")
+run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")

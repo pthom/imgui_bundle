@@ -12,7 +12,7 @@ It demonstrates:
 import os
 from enum import Enum
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md
 
 
 # Struct that holds the application's state
@@ -49,6 +49,15 @@ def my_load_fonts():
 
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
+
+    imgui_md.render("""
+### Markdown Test
+* _underline_
+* *italic*
+* **bold**
+---
+    """[1:])
+
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
     hello_imgui.image_from_asset("world.jpg")
@@ -111,7 +120,7 @@ def main():
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
     # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/../assets")
+    hello_imgui.set_assets_folder(this_dir + "/assets")
 
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
@@ -235,7 +244,10 @@ def main():
     ################################################################################################
     # Part 3: Run the app
     ################################################################################################
-    hello_imgui.run(runner_params)
+    import imgui_bundle
+    addons_params = imgui_bundle.AddOnsParams()
+    addons_params.with_markdown = True
+    imgui_bundle.run(runner_params, addons_params)
 
 
 if __name__ == "__main__":

@@ -26,4 +26,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    run(gui, window_size=ImVec2(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)
+    run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)

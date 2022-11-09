@@ -86,11 +86,11 @@ void py_init_module_imgui_bundle_inner(py::module& m)
         py::class_<ImGuiBundle::AddOnsParams>
             (m, "AddOnsParams", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("with_implot", &ImGuiBundle::AddOnsParams::withImplot, "")
-        .def_readwrite("with_markdown", &ImGuiBundle::AddOnsParams::withMarkdown, "")
-        .def_readwrite("with_node_editor", &ImGuiBundle::AddOnsParams::withNodeEditor, "")
-        .def_readwrite("with_node_editor_config", &ImGuiBundle::AddOnsParams::withNodeEditorConfig, "")
-        .def_readwrite("with_markdown_options", &ImGuiBundle::AddOnsParams::withMarkdownOptions, "")
+        .def_readwrite("with_implot", &ImGuiBundle::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
+        .def_readwrite("with_markdown", &ImGuiBundle::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
+        .def_readwrite("with_node_editor", &ImGuiBundle::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
+        .def_readwrite("with_node_editor_config", &ImGuiBundle::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
+        .def_readwrite("with_markdown_options", &ImGuiBundle::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
         ;
 
 
@@ -99,6 +99,11 @@ void py_init_module_imgui_bundle_inner(py::module& m)
 
     m.def("run",
         py::overload_cast<const HelloImGui::SimpleRunnerParams &, const ImGuiBundle::AddOnsParams &>(ImGuiBundle::Run), py::arg("simple_params"), py::arg("add_ons_params") = ImGuiBundle::AddOnsParams());
+
+    m.def("run",
+        py::overload_cast<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float, bool, bool, bool, const std::optional<NodeEditorConfig> &, const std::optional<ImGuiMd::MarkdownOptions> &>(ImGuiBundle::Run),
+        py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = ImGuiBundle::DefaultScreenSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
+        " Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImGuiBundle::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.");
 
     m.def("clock_seconds",
         ImGuiBundle::ClockSeconds);

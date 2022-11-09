@@ -102,7 +102,7 @@ def main():
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
-    # Main gui only responsibility it to give focus to ImGui Bundle dockable window
+    # Main gui only responsibility is to give focus to ImGui Bundle dockable window
     @static(nb_frames=0)
     def show_gui():
         if show_gui.nb_frames == 1:
@@ -117,8 +117,12 @@ def main():
     # Part 3: Run the app
     ################################################################################################
     import imgui_bundle
-
-    imgui_bundle.run(runner_params=runner_params, with_implot=True, with_node_editor=True, with_markdown=True)
+    addons = imgui_bundle.AddOnsParams()
+    addons.with_markdown = True
+    addons.with_node_editor = True
+    addons.with_markdown = True
+    addons.with_implot = True
+    imgui_bundle.run(runner_params=runner_params, add_ons_params=addons)
 
 
 if __name__ == "__main__":

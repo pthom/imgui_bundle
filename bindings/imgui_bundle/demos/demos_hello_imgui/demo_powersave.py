@@ -12,9 +12,6 @@ In order to reduce the CPU usage, the FPS is reduced automatically when no user 
 As a consequence, the animation may below not be fluid. However, if you move the mouse over this window,
 the FPS will rise and the animation will be smooth again.
 """);
-# This is ok most of the time but if you are displaying animated widgets (for example a live video),
-# you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
-# (you can change this value during the execution depending on your application refresh needs)
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     radius1 = imgui.get_font_size()
@@ -31,7 +28,7 @@ the FPS will rise and the animation will be smooth again.
 def main():
     run(gui_function=gui,
         window_title="Power save",
-        window_size=ImVec2(400, 500),
+        window_size=(400, 500),
         with_markdown=True,
         fps_idle=4)
 
