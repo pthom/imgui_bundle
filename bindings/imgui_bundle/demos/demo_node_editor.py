@@ -9,6 +9,7 @@ from imgui_bundle import (
     imgui_node_editor as ed,
     static,  # Helper to get static variables
     run_anon_block,  # helper to indent the code with anonymous blocks
+    ImVec2
 )
 
 
@@ -232,7 +233,12 @@ def main():
     config.settings_file = "BasicInteraction.json"
     import imgui_bundle
 
-    imgui_bundle.run(demo_node_editor, with_node_editor_config=config, with_markdown=True)
+    imgui_bundle.run(
+        demo_node_editor,
+        with_node_editor_config=config,
+        with_markdown=True,
+        window_size=ImVec2(800, 600)
+    )
 
 
 if __name__ == "__main__":

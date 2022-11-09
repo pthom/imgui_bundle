@@ -34,36 +34,38 @@ Features
     """
     )
 
-    def show_one_feature(label, demo_file):
-        if imgui.button(label):
+    def show_one_feature(demo_file):
+        if imgui.button(demo_file):
             this_dir = os.path.dirname(__file__)
-            demos_folder = this_dir + "/demos_hello_imgui"
-            demo_file = demos_folder + "/" + demo_file
+            demo_file_path = this_dir + "/" + demo_file
 
-            with open(demo_file) as f:
+            with open(demo_file_path) as f:
                 code = f.read()
             editor.set_text(code)
-            subprocess.Popen([sys.executable, demo_file])
+            subprocess.Popen([sys.executable, demo_file_path])
 
     imgui.text("Click on any button to launch a demo, and see its code")
     imgui.new_line()
 
     imgui.text("Hello world demo: how to start an app in as few lines as possible")
-    show_one_feature("demo_hello_world", "demo_hello_world.py")
+    show_one_feature("demos_hello_imgui/demo_hello_world.py")
 
     imgui.text("How to run more complex application (via RunnerParams) and how to load assets")
-    show_one_feature("demo_runner_params", "demo_runner_params.py")
+    show_one_feature("demos_hello_imgui/demo_runner_params.py")
 
     imgui.text(
         "How to build complex applications layouts, with dockable panels, that can even become independent windows"
     )
-    show_one_feature("demo_docking", "demo_docking.py")
+    show_one_feature("demos_hello_imgui/demo_docking.py")
 
     imgui.text("How to quickly run an app that uses implot and/or markdown")
-    show_one_feature("demo_implot_markdown", "demo_implot_markdown.py")
+    show_one_feature("demos_hello_imgui/demo_implot_markdown.py")
 
     imgui.text("How to have smooth animations")
-    show_one_feature("demo_powersave", "demo_powersave.py")
+    show_one_feature("demos_hello_imgui/demo_powersave.py")
+
+    imgui.text("Animated heart")
+    show_one_feature("haikus/haiku_implot_heart.py")
 
     imgui.new_line()
     imgui_md.render(

@@ -40,24 +40,24 @@ class Tie:
         self.id = ed.LinkId.create()
 
     def draw(self) -> None:
-        red = ImVec4(0.3, 0.8, 0.2, 1.0)
-        green = ImVec4(1.0, 0.0, 0.0, 1.0)
+        red = ImVec4(1.0, 0.3, 0.2, 1.0)
+        green = ImVec4(0.3, 0.9, 0.0, 1.0)
         if self.kind == "loves":
             ed.link(self.id, self.lover.pin_loves, self.loved.pin_in, green)
         else:
             ed.link(self.id, self.lover.pin_hates, self.loved.pin_in, red)
 
 
-paul = Lover("Paul")
-claire = Lover("Claire")
-cesar = Lover("Cesar")
-lovers = [paul, claire, cesar]
+Romeo = Lover("Romeo")
+Juliet = Lover("Juliet")
+CountParis = Lover("Count Paris")
+lovers = [Romeo, Juliet, CountParis]
 links = [
-    Tie(paul, "loves", claire),
-    Tie(claire, "loves", paul),
-    Tie(cesar, "loves", claire),
-    Tie(cesar, "hates", paul),
-    Tie(claire, "hates", cesar),
+    Tie(Romeo, "loves", Juliet),
+    Tie(Juliet, "loves", CountParis),
+    Tie(CountParis, "loves", Juliet),
+    Tie(CountParis, "hates", Romeo),
+    Tie(Juliet, "hates", CountParis),
 ]
 
 
@@ -70,4 +70,4 @@ def gui():
     ed.end()
 
 
-run(gui, with_node_editor=True, window_size=ImVec2(300, 300), window_title="It will not end well...")
+run(gui, with_node_editor=True, window_size=ImVec2(450, 450), window_title="It will not end well...")
