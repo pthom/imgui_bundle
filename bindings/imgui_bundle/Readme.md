@@ -1,7 +1,6 @@
 ![CppLib](https://github.com/pthom/imgui_bundle/workflows/CppLib/badge.svg)
 ![Pip](https://github.com/pthom/imgui_bundle/workflows/Pip/badge.svg)
 ![Wheels](https://github.com/pthom/imgui_bundle/workflows/Wheels/badge.svg)
-![Conda](https://github.com/pthom/imgui_bundle/workflows/Conda/badge.svg)
 
 
 # ImGui Bundle
