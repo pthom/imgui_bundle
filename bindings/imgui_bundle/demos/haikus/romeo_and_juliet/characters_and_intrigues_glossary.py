@@ -1,7 +1,7 @@
 """
             ======= Glossary ====
 """
-from imgui_bundle import run, imgui, imgui_node_editor as ed, ImVec4
+from imgui_bundle import run, imgui, imgui_node_editor as ed, ImVec4, ImVec2
 
 conundrum = ed.PinId.create
 soul = ed.NodeId.create
@@ -9,8 +9,8 @@ lament = ed.begin_node
 sober = ed.end_node
 Title = ed.begin
 the_end = ed.end
-tenderly = ImVec4(0.3, 0.5, 0.7, 1.0)
-ferociously = ImVec4(0.9, 0.9, 0.2, 1.0)
+tenderly = ImVec4(0.3, 0.9, 0.4, 1.0)
+ferociously = ImVec4(0.9, 0.3, 0.2, 1.0)
 
 
 def love_intrigue(intrigue):
@@ -38,4 +38,4 @@ def start_intrigue(_):
 
 
 def begin_the(gui):
-    run(gui, with_node_editor=True)
+    run(gui, with_node_editor=True, window_size=ImVec2(600, 600))

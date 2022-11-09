@@ -1,6 +1,6 @@
 from typing import Any as _
 from dataclasses import dataclass
-from haikus.romeo_and_juliet.characters_and_intrigues_glossary import *
+from imgui_bundle.demos.haikus.romeo_and_juliet.characters_and_intrigues_glossary import *
 
 
 """
