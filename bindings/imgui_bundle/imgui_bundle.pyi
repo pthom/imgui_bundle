@@ -21,7 +21,7 @@ def run(
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     fps_idle: float = 10.0,
-    restore_last_window_position: bool = False,
+    restore_previous_geometry: bool = False,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 
@@ -44,16 +44,17 @@ def run(
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     fps_idle: float = 10.0,
-    restore_last_window_position: bool = False,
+    restore_previous_geometry: bool = False,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 
-    - if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized
-        (i.e. required fonts will be loaded)
+    - if `window_size` is not specified (i.e None or nullopt), then the window size will be computed to fit its widgets
     - if `with_implot` is True, then a context for implot will be created/destroyed automatically
+    - if `with_markdown` or `with_markdown_options` is specified, then  the markdown context will be initialized
+       (i.e. required fonts will be loaded)
     - if `with_node_editor` or with_node_editor_config` is specified, then a context for imgui_node_editor
-        will be created automatically.
-     - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
+       will be created automatically.
+    - `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
     """
     pass
 

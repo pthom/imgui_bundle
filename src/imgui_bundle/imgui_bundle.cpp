@@ -21,7 +21,7 @@ namespace ImGuiBundle
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_,
         float fpsIdle,
-        bool restoreLastWindowPosition
+        bool restorePreviousGeometry
     )
     {
         // create implot context if required
@@ -50,7 +50,7 @@ namespace ImGuiBundle
         }
 
         runner_params.fpsIdle = fpsIdle;
-        runner_params.appWindowParams.restorePreviousGeometry = restoreLastWindowPosition;
+        runner_params.appWindowParams.restorePreviousGeometry = restorePreviousGeometry;
 
         HelloImGui::Run(runner_params);
 
@@ -76,13 +76,15 @@ namespace ImGuiBundle
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options,
         float fpsIdle,
-        bool restoreLastWindowPosition
+        bool restorePreviousGeometry
     )
     {
         HelloImGui::RunnerParams runnerParams;
         runnerParams.callbacks.ShowGui = gui_function;
         if (window_size.has_value())
             runnerParams.appWindowParams.windowGeometry.size = {(int)window_size.value().x, (int)window_size.value().y};
+        else
+            runnerParams.appWindowParams.windowGeometry.sizeAuto = true;
         if (window_title.has_value())
             runnerParams.appWindowParams.windowTitle = *window_title;
 
@@ -93,7 +95,7 @@ namespace ImGuiBundle
             with_markdown,
             with_markdown_options,
             fpsIdle,
-            restoreLastWindowPosition
+            restorePreviousGeometry
             );
     }
 
