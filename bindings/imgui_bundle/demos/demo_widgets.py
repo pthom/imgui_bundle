@@ -184,4 +184,5 @@ def demo_widgets():
 
 
 if __name__ == "__main__":
-    hello_imgui.run(demo_widgets)
+    from imgui_bundle import run
+    run(demo_widgets, with_markdown=True)

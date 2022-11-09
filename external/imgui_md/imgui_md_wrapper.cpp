@@ -331,7 +331,7 @@ assets/
     {
         if (strncmp(url.c_str(), "http", strlen("http")) != 0)
         {
-            std::cerr << "ImGuiMd::OnOpenLink_Default url should start with http!\n";
+            std::cerr << "ImGuiMd::OnOpenLink_Default url \"" << url << "\" should start with http!\n";
             return;
         }
         ImGuiMdBrowser::BrowseToUrl(url.c_str());

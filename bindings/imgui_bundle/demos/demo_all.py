@@ -54,7 +54,7 @@ def main():
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
     runner_params.app_window_params.window_title = "ImGui Bundle"
-    runner_params.app_window_params.window_size = ImVec2(1000, 900)
+    runner_params.app_window_params.window_geometry.size = (1000, 900)
 
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True

@@ -1,5 +1,5 @@
 # type: ignore
-from typing import List, Any, Callable
+from typing import List, Any, Callable, Tuple
 import numpy as np
 import enum
 
@@ -18,6 +18,8 @@ from imgui_bundle.imgui import (
 
 VoidFunction = Callable[[None], None]
 AnyEventCallback = Callable[[Any], None]
+ScreenSize = Tuple[int, int]
+WindowPosition = Tuple[int, int]
 ImGuiCond_FirstUseEver = ImGuiCond_.first_use_ever
 
 
