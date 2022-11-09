@@ -129,6 +129,11 @@ namespace ImGuiMd
                 LoadFonts();
             }
 
+            ImFont* GetFontCode() const
+            {
+                return mFontCode;
+            }
+
             ImFont* GetFont(const MarkdownTextStyle& _markdownTextStyle) const
             {
                 MarkdownTextStyle markdownTextStyle = _markdownTextStyle;
@@ -148,24 +153,7 @@ namespace ImGuiMd
         private:
             void LoadFonts()
             {
-                for (int header_level = 0; header_level <= mMarkdownFontOptions.maxHeaderLevel; ++header_level)
-                {
-                    for (auto emphasisVariant: MarkdownEmphasis::AllEmphasisVariants())
-                    {
-                        MarkdownTextStyle markdownTextStyle;
-                        markdownTextStyle.markdownEmphasis = emphasisVariant;
-                        markdownTextStyle.headerLevel = header_level;
-
-                        float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
-                        std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-                        try
-                        {
-                            ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
-                            mFonts.push_back(std::make_pair(markdownTextStyle, font) );
-                        }
-                        catch (std::runtime_error)
-                        {
-                            std::string error_message = R"(
+                std::string error_message = R"(
 Could not find required assets for ImGuiMd:
 We need to find the following files in the assets:
 
@@ -185,19 +173,49 @@ assets/
 │     │     ├── Roboto-Regular.ttf
 │     │     ├── Roboto-Thin.ttf
 │     │     └── Roboto-ThinItalic.ttf
+│     ├── SourceCodePro-Regular
 │     └── fontawesome-webfont.ttf
 └── images/
     └── markdown_broken_image.png
 
 )";
+                for (int header_level = 0; header_level <= mMarkdownFontOptions.maxHeaderLevel; ++header_level)
+                {
+                    for (auto emphasisVariant: MarkdownEmphasis::AllEmphasisVariants())
+                    {
+                        MarkdownTextStyle markdownTextStyle;
+                        markdownTextStyle.markdownEmphasis = emphasisVariant;
+                        markdownTextStyle.headerLevel = header_level;
+
+                        float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
+                        std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
+                        try
+                        {
+                            ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
+                            mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                        }
+                        catch (std::runtime_error)
+                        {
                             throw std::runtime_error(error_message);
                         }
                     }
+                }
+
+                try
+                {
+                    float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
+                    mFontCode = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(
+                        "fonts/SourceCodePro-Regular.ttf", fontSize);
+                }
+                catch (std::runtime_error)
+                {
+                    throw std::runtime_error(error_message);
                 }
             }
 
             MarkdownFontOptions mMarkdownFontOptions;
             std::vector<std::pair<MarkdownTextStyle, ImFont*>> mFonts;
+            ImFont* mFontCode;
         };
 
     } //namespace MdFonts
@@ -240,13 +258,20 @@ assets/
     private:
         ImFont* get_font() const override
         {
-            ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
-            markdownTextStyle.headerLevel = m_hlevel;
-            markdownTextStyle.markdownEmphasis.bold = m_is_strong;
-            markdownTextStyle.markdownEmphasis.italic = m_is_em;
-
-            ImFont *r = mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
-            return r;
+            if (m_is_code)
+            {
+                // https://github.com/mekhontsev/imgui_md does not handle correctly code blocks
+                // so that we will never reach here...
+                return mMarkdownCollection.mFontCollection.GetFontCode();
+            }
+            else
+            {
+                ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
+                markdownTextStyle.headerLevel = m_hlevel;
+                markdownTextStyle.markdownEmphasis.bold = m_is_strong;
+                markdownTextStyle.markdownEmphasis.italic = m_is_em;
+                return mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+            }
         };
 
         void open_url() const override
