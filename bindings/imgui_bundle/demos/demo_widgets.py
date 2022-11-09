@@ -73,9 +73,13 @@ def demo_spinner():
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
     imgui.same_line()
-    imspinner.spinner_arc_rotation("spinner_arc_rotation", 10.0, 4.0, color)
+
+    radius = imgui.get_font_size() / 2.
+    imspinner.spinner_arc_rotation("spinner_arc_rotation", radius, 4.0, color)
     imgui.same_line()
-    imspinner.spinner_ang_triple("spinner_arc_fade", 5.0, 8.0, 11.0, 2.5, color, color, color)
+
+    radius1 = imgui.get_font_size() / 2.5
+    imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2., 2.5, color, color, color)
 
 
 @static(toggle_a = True, toggle_b = True)
