@@ -1,7 +1,7 @@
+set(CMAKE_CXX_STANDARD 20)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui_cmake")
 add_subdirectory(demo_haiku_implot_heart)
 add_subdirectory(demo_texteditor)
 add_subdirectory(demo_implot_markdown)
 add_subdirectory(demo_imgui_node_editor)
 add_subdirectory(demo_powersave)
-
