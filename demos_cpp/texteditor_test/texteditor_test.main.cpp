@@ -78,4 +78,6 @@ class CppElement(SrcmlWrapper):
     };
 
     ImGuiBundle::Run(gui, ImVec2(800, 600), "Text Editor");
+
+    return 0;
 }
