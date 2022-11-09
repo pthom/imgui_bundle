@@ -1,3 +1,0 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(imgui_md_test imgui_md_test.main.cpp)
-target_link_libraries(imgui_md_test PRIVATE imgui_bundle)

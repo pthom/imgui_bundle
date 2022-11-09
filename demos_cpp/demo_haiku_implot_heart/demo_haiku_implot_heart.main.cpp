@@ -28,8 +28,11 @@ int main(int , char *[])
         double y_ = 13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t); y.push_back(y_);
     }
 
-    auto gui = [&]() {
+    auto gui = [&]()
+    {
+        // By setting fpsIdle = 0, we make sure that the animation is smooth
         HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
+
         double t = ImGuiBundle::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
         t0 = t;
@@ -42,7 +45,9 @@ int main(int , char *[])
         ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
     };
 
-    bool withImplot = true;
-    ImGuiBundle::Run(gui, ImVec2(300, 450), "Hello!", withImplot);
+    ImGuiBundle::Run(
+        HelloImGui::SimpleRunnerParams{.guiFunction=gui, .windowTitle="Hello!", .windowSize={300, 450}},
+        ImGuiBundle::AddOnsParams{.withImplot=true}
+        );
     return 0;
 }

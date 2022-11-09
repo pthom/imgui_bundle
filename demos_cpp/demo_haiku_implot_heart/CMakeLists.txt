@@ -1,0 +1,3 @@
+include(hello_imgui_add_app)
+hello_imgui_add_app(demo_haiku_implot_heart demo_haiku_implot_heart.main.cpp)
+target_link_libraries(demo_haiku_implot_heart PRIVATE imgui_bundle)

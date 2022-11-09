@@ -12,52 +12,39 @@ namespace ImGuiBundle
     std::optional<ax::NodeEditor::EditorContext *> _NODE_EDITOR_CONTEXT;
     ax::NodeEditor::Config NODE_EDITOR_CONFIG;
 
-
-    void Run(
-        HelloImGui::RunnerParams& runner_params,
-        bool with_implot,
-        bool with_node_editor,
-        const std::optional<NodeEditorConfig>& with_node_editor_config_,
-        bool with_markdown,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_,
-        float fpsIdle,
-        bool restorePreviousGeometry
-    )
+    void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
     {
+        AddOnsParams addOnsParams = addOnsParams_;
+
         // create implot context if required
-        if (with_implot)
+        if (addOnsParams.withImplot)
             ImPlot::CreateContext();
 
         // create imgui_node_editor context if required
-        NodeEditorConfig with_node_editor_config;
-        if (with_node_editor || with_node_editor_config_.has_value())
+        if (addOnsParams.withNodeEditor || addOnsParams.withNodeEditorConfig.has_value())
         {
-            with_node_editor = true;
-            if (with_node_editor_config_.has_value())
-                NODE_EDITOR_CONFIG = *with_node_editor_config_;
+            addOnsParams.withNodeEditor = true;
+            if (addOnsParams.withNodeEditorConfig.has_value())
+                NODE_EDITOR_CONFIG = addOnsParams.withNodeEditorConfig.value();
             _NODE_EDITOR_CONTEXT = ax::NodeEditor::CreateEditor(&NODE_EDITOR_CONFIG);
             ax::NodeEditor::SetCurrentEditor(_NODE_EDITOR_CONTEXT.value());
         }
 
         // load markdown fonts if needed
-        if (with_markdown || with_markdown_options_.has_value())
+        if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
         {
-            ImGuiMd::MarkdownOptions markdown_options;
-            if (with_markdown_options_.has_value())
-                markdown_options = *with_markdown_options_;
-            ImGuiMd::InitializeMarkdown(markdown_options);
-            runner_params.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
+            if (!addOnsParams.withMarkdownOptions.has_value())
+                addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
+            ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
+            runnerParams.callbacks.LoadAdditionalFonts = ImGuiMd::GetFontLoaderFunction();
         }
 
-        runner_params.fpsIdle = fpsIdle;
-        runner_params.appWindowParams.restorePreviousGeometry = restorePreviousGeometry;
+        HelloImGui::Run(runnerParams);
 
-        HelloImGui::Run(runner_params);
-
-        if (with_implot)
+        if (addOnsParams.withImplot)
             ImPlot::DestroyContext();
 
-        if (with_node_editor)
+        if (addOnsParams.withNodeEditor)
         {
             assert(_NODE_EDITOR_CONTEXT.has_value());
             ax::NodeEditor::DestroyEditor(*_NODE_EDITOR_CONTEXT);
@@ -65,38 +52,46 @@ namespace ImGuiBundle
         }
     }
 
+    void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
+    {
+        HelloImGui::RunnerParams runnerParams = simpleParams.ToRunnerParams();
+        Run(runnerParams, addOnsParams);
+    }
+
 
     void Run(
-        const HelloImGui::VoidFunction& gui_function,
-        const std::optional<ImVec2>& window_size,
-        const std::optional<std::string>& window_title,
-        bool with_implot,
-        bool with_node_editor,
-        const std::optional<NodeEditorConfig>& with_node_editor_config,
-        bool with_markdown,
-        const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options,
+        // HelloImGui::SimpleRunnerParams below:
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle,
+        bool windowSizeAuto,
+        bool windowRestorePreviousGeometry,
+        const ScreenSize& windowSize,
         float fpsIdle,
-        bool restorePreviousGeometry
+
+        // ImGuiBundle_AddOnsParams below:
+        bool withImplot,
+        bool withMarkdown,
+        bool withNodeEditor,
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig,
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
     {
-        HelloImGui::RunnerParams runnerParams;
-        runnerParams.callbacks.ShowGui = gui_function;
-        if (window_size.has_value())
-            runnerParams.appWindowParams.windowGeometry.size = {(int)window_size.value().x, (int)window_size.value().y};
-        else
-            runnerParams.appWindowParams.windowGeometry.sizeAuto = true;
-        if (window_title.has_value())
-            runnerParams.appWindowParams.windowTitle = *window_title;
+        HelloImGui::SimpleRunnerParams simpleRunnerParams;
+        simpleRunnerParams.guiFunction = guiFunction;
+        simpleRunnerParams.windowTitle = windowTitle;
+        simpleRunnerParams.windowSizeAuto = windowSizeAuto;
+        simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
+        simpleRunnerParams.windowSize = windowSize;
+        simpleRunnerParams.fpsIdle = fpsIdle;
 
-        Run(runnerParams,
-            with_implot,
-            with_node_editor,
-            with_node_editor_config,
-            with_markdown,
-            with_markdown_options,
-            fpsIdle,
-            restorePreviousGeometry
-            );
+        AddOnsParams addOnsParams;
+        addOnsParams.withImplot = withImplot;
+        addOnsParams.withMarkdown = withMarkdown;
+        addOnsParams.withNodeEditor = withNodeEditor;
+        addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
+        addOnsParams.withMarkdownOptions = withMarkdownOptions;
+
+        Run(simpleRunnerParams, addOnsParams);
     }
 
 

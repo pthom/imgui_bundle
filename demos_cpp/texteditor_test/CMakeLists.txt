@@ -1,3 +1,0 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(texteditor_test texteditor_test.main.cpp)
-target_link_libraries(texteditor_test PRIVATE imgui_bundle)

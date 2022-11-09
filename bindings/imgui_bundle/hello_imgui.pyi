@@ -822,6 +822,7 @@ class BackendPointers:
 
 
 
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -883,6 +884,41 @@ class RunnerParams:
     emscripten_fps: int = 0
 
 
+class SimpleRunnerParams:
+    """*
+     @@md#SimpleRunnerParams
+
+    **RunnerParams** is a struct that contains simpler params adapted for simple uses
+
+     Members:
+    * `guiFunction`: _VoidFunction_.
+       Function that renders the Gui.
+    * `windowTitle`: _string, default=""_.
+       Title of the application window
+    * `windowSizeAuto`: _bool, default=false_.
+       If True, the size of the window will be computed from its widgets.
+    * `windowRestorePreviousGeometry`: _bool, default=true_.
+       If True, restore the size and position of the window between runs.
+    * `windowSize`: _ScreenSize, default={800, 600}_.
+       Size of the window
+    * `fpsIdle`: _float, default=10_.
+       FPS of the application when idle (set to 0 for full speed).
+    @@md
+
+    """
+    gui_function: VoidFunction
+    window_title: str = ""
+
+    window_size_auto: bool = False
+    window_restore_previous_geometry: bool = False
+    window_size: ScreenSize = {800, 600}
+
+    fps_idle: float = 10.
+
+    def to_runner_params(self) -> RunnerParams:
+        pass
+
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -924,19 +960,14 @@ __HelloImGui::Run()__ will run an application with a single call.
 Three signatures are provided:
 
 * `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
-   Runs an application whose params and Gui are provided
-by runnerParams.
+   Runs an application whose params and Gui are provided by runnerParams.
 
-* `HelloImGui::Run(guiFunction, windowSize, windowTitle, fpsIdle=4)`: signature in order to start a simple application with ease.
-  `fpsIdle` enables to set the app FPS when it is idle (set it to 0 for maximum FPS).
+* `HelloImGui::Run(const SimpleRunnerParams&)`:
+   Runs an application, using simpler params.
 
-* `HelloImGui::Run_AutoSize(guiFunction, windowTitle, restoreLastWindowGeometry = True, fpsIdle=4)`: signature
-in order to start a simple application, where the window size can be set automatically from the widgets,
- and where the previous position size & position can be restored upon next launch. `fpsIdle` enables to set
- the app FPS when it is idle (set it to 0 for maximum FPS).
+* `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`
 
-__HelloImGui::GetRunnerParams()__ is a convenience function that will return
-the runnerParams of the current application.
+__HelloImGui::GetRunnerParams()__ is a convenience function that will return the runnerParams of the current application.
 
  @@md
 
@@ -944,22 +975,9 @@ the runnerParams of the current application.
 def run(runner_params: RunnerParams) -> None:
     pass
 
-def run(
-    gui_function: VoidFunction,
-    window_size: ImVec2 = ImVec2(800., 600.),
-    window_title: str = "",
-    fps_idle: float = 10.
-    ) -> None:
+def run(simple_params: SimpleRunnerParams) -> None:
     pass
 
-def run_auto_size(
-    gui_function: VoidFunction,
-    window_title: str = "",
-    restore_last_window_geometry: bool = True,
-    window_size: ImVec2 = ImVec2(0., 0.),
-    fps_idle: float = 10.
-    ) -> None:
-    pass
 
 def get_runner_params() -> RunnerParams:
     pass

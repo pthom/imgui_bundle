@@ -275,6 +275,21 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    auto pyClassSimpleRunnerParams =
+        py::class_<HelloImGui::SimpleRunnerParams>
+            (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**RunnerParams** is a struct that contains simpler params adapted for simple uses\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n@@md\n")
+        .def(py::init<>()) // implicit default constructor
+        .def_readwrite("gui_function", &HelloImGui::SimpleRunnerParams::guiFunction, "")
+        .def_readwrite("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, "")
+        .def_readwrite("window_size_auto", &HelloImGui::SimpleRunnerParams::windowSizeAuto, "")
+        .def_readwrite("window_restore_previous_geometry", &HelloImGui::SimpleRunnerParams::windowRestorePreviousGeometry, "")
+        .def_readwrite("window_size", &HelloImGui::SimpleRunnerParams::windowSize, "")
+        .def_readwrite("fps_idle", &HelloImGui::SimpleRunnerParams::fpsIdle, "")
+        .def("to_runner_params",
+            &HelloImGui::SimpleRunnerParams::ToRunnerParams)
+        ;
+
+
     py::enum_<HelloImGui::LogLevel>(m, "LogLevel", py::arithmetic(), "")
         .value("debug", HelloImGui::LogLevel::Debug, "")
         .value("info", HelloImGui::LogLevel::Info, "")
@@ -304,10 +319,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run), py::arg("runner_params"));
 
     m.def("run",
-        py::overload_cast<VoidFunction, ImVec2, std::string, float>(HelloImGui::Run), py::arg("gui_function"), py::arg("window_size") = ImVec2(800.f, 600.f), py::arg("window_title") = "", py::arg("fps_idle") = 10.f);
-
-    m.def("run_auto_size",
-        HelloImGui::Run_AutoSize, py::arg("gui_function"), py::arg("window_title") = "", py::arg("restore_last_window_geometry") = true, py::arg("window_size") = ImVec2(0.f, 0.f), py::arg("fps_idle") = 10.f);
+        py::overload_cast<const HelloImGui::SimpleRunnerParams &>(HelloImGui::Run), py::arg("simple_params"));
 
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
