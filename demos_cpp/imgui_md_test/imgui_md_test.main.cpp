@@ -10,18 +10,6 @@ void gui()
     ImGui::Text("Hello");
     ImGui::Button("Truc");
 
-//    static MarkdownFontOptions markdownFontOptions;
-//    // Cannot modify a locked ImFontAtlas between NewFrame() and EndFrame/Render()
-//    static std::unique_ptr<MarkdownRenderer> markdownRenderer;
-//
-//    if (! markdownRenderer)
-//    {
-//        params.callbacks.LoadAdditionalFonts = [&](){
-//            markdownRenderer = std::make_unique<MarkdownRenderer>(markdownFontOptions);
-//        };
-//        return;
-//    }
-
     ImGui::Text("Hello");
 
     std::string m = R"md(

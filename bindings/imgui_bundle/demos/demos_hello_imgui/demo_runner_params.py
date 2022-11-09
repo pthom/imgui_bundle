@@ -24,7 +24,10 @@ def main():
 
     # Set the app windows parameters
     runner_params.app_window_params.window_title = "Hello, globe!"
-    runner_params.app_window_params.window_size = ImVec2(180, 210)
+    runner_params.app_window_params.window_geometry.size = (180, 210)
+
+    # Uncomment this to restore the window position and size from previous run
+    # runner_params.app_window_params.restore_previous_geometry = False
 
     # runner_params.callbacks.show_gui should contain a function with the Gui code
     runner_params.callbacks.show_gui = show_gui

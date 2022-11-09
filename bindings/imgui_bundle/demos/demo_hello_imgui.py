@@ -4,6 +4,7 @@ import os
 
 from imgui_bundle import static
 from imgui_bundle import imgui_color_text_edit as text_edit, imgui_md
+from imgui_bundle import ImVec2
 
 
 def python_path():
@@ -48,18 +49,21 @@ Features
     imgui.new_line()
 
     imgui.text("Hello world demo: how to start an app in as few lines as possible")
-    show_one_feature("Hello world", "demo_simple.py")
+    show_one_feature("demo_hello_world", "demo_hello_world.py")
 
     imgui.text("How to run more complex application (via RunnerParams) and how to load assets")
-    show_one_feature("Assets and Params", "demo_runner_params.py")
+    show_one_feature("demo_runner_params", "demo_runner_params.py")
 
     imgui.text(
         "How to build complex applications layouts, with dockable panels, that can even become independent windows"
     )
-    show_one_feature("Advanced docking demo", "demo_docking.py")
+    show_one_feature("demo_docking", "demo_docking.py")
 
     imgui.text("How to quickly run an app that uses implot and/or markdown")
-    show_one_feature("Implot/Markdown simple", "demo_implot_markdown.py")
+    show_one_feature("demo_implot_markdown", "demo_implot_markdown.py")
+
+    imgui.text("How to have smooth animations")
+    show_one_feature("demo_powersave", "demo_powersave.py")
 
     imgui.new_line()
     imgui_md.render(
@@ -78,4 +82,4 @@ Features
 if __name__ == "__main__":
     from imgui_bundle import run
 
-    run(demo_hello_imgui, with_markdown=True)
+    run(demo_hello_imgui, with_markdown=True, window_size=ImVec2(800, 800))

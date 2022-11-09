@@ -124,6 +124,8 @@ def main():
     runner_params = hello_imgui.RunnerParams()
 
     runner_params.app_window_params.window_title = "Docking demo"
+    runner_params.app_window_params.window_geometry.size = (1000, 800)
+    runner_params.app_window_params.restore_previous_geometry = True
 
     #
     # Status bar
