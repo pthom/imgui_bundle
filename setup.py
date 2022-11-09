@@ -35,11 +35,9 @@ setup(
             "imgui_bundle.assets.images",
 
             "imgui_bundle.demos",
+            "imgui_bundle.demos.haikus",
+            "imgui_bundle.demos.haikus.romeo_and_juliet",
             "imgui_bundle.demos.demos_hello_imgui",
-            "imgui_bundle.demos.demos_hello_imgui.assets",
-            "imgui_bundle.demos.demos_hello_imgui.assets.fonts",
-            "imgui_bundle.demos.demos_hello_imgui.assets.fonts.Roboto",
-            "imgui_bundle.demos.demos_hello_imgui.assets.images",
         ]
     ),
     package_dir={"": "bindings"},
@@ -56,9 +54,10 @@ setup(
             "assets/fonts/*.ttf",
             "assets/fonts/Roboto/*.*",
             "assets/images/*.*",
-            "demos/assets/*.*",
-            "demos/assets/fonts/*.*",
-            "demos/assets/images/*.*",
+            "demos/demos_hello_imgui/assets/*.*",
+            "demos/demos_hello_imgui/assets/fonts/*.*",
+            "demos/demos_hello_imgui/assets/fonts/Roboto/*.*",
+            "demos/demos_hello_imgui/assets/images/*.*",
         ]
     },
     install_requires=["numpy >= 1.15", "munch >= 2.0.0"],
