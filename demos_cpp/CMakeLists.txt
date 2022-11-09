@@ -3,3 +3,5 @@ add_subdirectory(demo_haiku_implot_heart)
 add_subdirectory(demo_texteditor)
 add_subdirectory(demo_implot_markdown)
 add_subdirectory(demo_imgui_node_editor)
+add_subdirectory(demo_powersave)
+
