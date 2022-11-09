@@ -146,3 +146,4 @@ _skbuild/
 imgui.ini
 pypi_info_token.md
 MANIFEST.in
+/imgui_app_window.ini
