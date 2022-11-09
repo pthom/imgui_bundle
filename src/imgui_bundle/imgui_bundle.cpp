@@ -20,7 +20,8 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config_,
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options_,
-        float fpsIdle
+        float fpsIdle,
+        bool restoreLastWindowPosition
     )
     {
         // create implot context if required
@@ -49,6 +50,7 @@ namespace ImGuiBundle
         }
 
         runner_params.fpsIdle = fpsIdle;
+        runner_params.appWindowParams.restorePreviousGeometry = restoreLastWindowPosition;
 
         HelloImGui::Run(runner_params);
 
@@ -73,7 +75,8 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config,
         bool with_markdown,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options,
-        float fpsIdle
+        float fpsIdle,
+        bool restoreLastWindowPosition
     )
     {
         HelloImGui::RunnerParams runnerParams;
@@ -89,7 +92,8 @@ namespace ImGuiBundle
             with_node_editor_config,
             with_markdown,
             with_markdown_options,
-            fpsIdle
+            fpsIdle,
+            restoreLastWindowPosition
             );
     }
 

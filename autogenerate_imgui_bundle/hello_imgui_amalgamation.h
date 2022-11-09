@@ -1375,7 +1375,7 @@ struct WindowGeometry
     WindowPositionMode positionMode = WindowPositionMode::OsDefault;
 
     // used if windowPositionMode==FromCoords
-    ScreenPosition position = ScreenPosition{0, 0};
+    ScreenPosition position = ScreenPosition{40, 40};
 
     // used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     int monitorIdx = 0;

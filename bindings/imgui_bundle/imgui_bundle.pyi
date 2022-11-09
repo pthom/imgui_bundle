@@ -21,6 +21,7 @@ def run(
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     fps_idle: float = 4.0,
+    restore_last_window_position: bool = False,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 
@@ -43,6 +44,7 @@ def run(
     with_markdown: bool = False,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     fps_idle: float = 4.0,
+    restore_last_window_position: bool = False,
 ) -> None:
     """Helper to run a hello_imgui app for imgui_bundle:
 

@@ -315,7 +315,7 @@ class WindowGeometry:
     position_mode: WindowPositionMode = WindowPositionMode.os_default
 
     # used if windowPositionMode==FromCoords
-    position: ScreenPosition = ScreenPosition{0, 0}
+    position: ScreenPosition = ScreenPosition{40, 40}
 
     # used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     monitor_idx: int = 0

@@ -24,7 +24,8 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
-        float fpsIdle = 4.f
+        float fpsIdle = 4.f,
+        bool restoreLastWindowPosition=false
     );
 
     //Helper to run a hello_imgui app for imgui_bundle:
@@ -44,7 +45,8 @@ namespace ImGuiBundle
         const std::optional<NodeEditorConfig>& with_node_editor_config = std::nullopt,
         bool with_markdown = false,
         const std::optional<ImGuiMd::MarkdownOptions> & with_markdown_options = std::nullopt,
-        float fpsIdle = 4.f
+        float fpsIdle = 4.f,
+        bool restoreLastWindowPosition=false
     );
 
 
