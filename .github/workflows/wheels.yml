@@ -15,6 +15,8 @@ env:
   CIBW_TEST_COMMAND: pytest {project}/tests
   CIBW_TEST_EXTRAS: test
   CIBW_TEST_REQUIRES: pytest
+  # Skip CPython 3.6, CPython 3.7, PyPy 3.7 (we start at 3.8, otherwise the build is too long on Github's CI and may be cancelled)
+  CIBW_SKIP: cp36-* cp37-* pp37-*
   # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
   CIBW_TEST_SKIP: "pp3*"
   MACOSX_DEPLOYMENT_TARGET: "10.15"
