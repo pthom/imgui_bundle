@@ -33,10 +33,17 @@ setup(
             "imgui_bundle.assets.fonts",
             "imgui_bundle.assets.fonts.Roboto",
             "imgui_bundle.assets.images",
+
             "imgui_bundle.demos",
             "imgui_bundle.demos.assets",
             "imgui_bundle.demos.assets",
             "imgui_bundle.demos.assets.fonts",
+
+            "imgui_bundle.demos.demos_hello_imgui",
+            "imgui_bundle.demos.demos_hello_imgui.assets",
+            "imgui_bundle.demos.demos_hello_imgui.assets.fonts",
+            "imgui_bundle.demos.demos_hello_imgui.assets.fonts.Roboto",
+            "imgui_bundle.demos.demos_hello_imgui.assets.images",
         ]
     ),
     package_dir={"": "bindings"},
