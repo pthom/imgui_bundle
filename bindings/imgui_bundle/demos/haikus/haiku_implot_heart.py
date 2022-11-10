@@ -1,11 +1,11 @@
 import time
 import numpy as np
-from imgui_bundle import implot, ImVec2, imgui_knobs, imgui, run
+from imgui_bundle import implot, imgui_knobs, imgui, run
 
 
-interval = np.arange(0, np.pi * 2, 0.01)
-x = np.power(np.sin(interval), 3) * 16
-y = 13 * np.cos(interval) - 5 * np.cos(2 * interval) - 2 * np.cos(3 * interval) - np.cos(4 * interval)
+t = np.arange(0, np.pi * 2, 0.01)
+x = np.power(np.sin(t), 3) * 16
+y = 13 * np.cos(t) - 5 * np.cos(2 * t) - 2 * np.cos(3 * t) - np.cos(4 * t)
 
 phase = 0
 t0 = time.time() + 0.2

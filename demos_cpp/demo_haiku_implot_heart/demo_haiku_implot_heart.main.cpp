@@ -46,8 +46,8 @@ int main(int , char *[])
     };
 
     ImGuiBundle::Run(
-        HelloImGui::SimpleRunnerParams{.guiFunction=gui, .windowTitle="Hello!", .windowSize={300, 450}},
-        ImGuiBundle::AddOnsParams{.withImplot=true}
-        );
+        gui, "Hello!",
+        /*sizeAuto=*/false , /*restoreGeom=*/false, /*size=*/{300, 450},
+        /*fpsIdle=*/ 25.f, /*withImplot=*/true);
     return 0;
 }
