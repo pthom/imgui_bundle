@@ -5,7 +5,6 @@
 
 #include <cmath>
 
-
 std::vector<double> VectorTimesK(const std::vector<double>& values, double k)
 {
     std::vector<double> r(values.size(), 0.);
@@ -13,7 +12,6 @@ std::vector<double> VectorTimesK(const std::vector<double>& values, double k)
         r[i] = k * values[i];
     return r;
 }
-
 
 int main(int , char *[])
 {
@@ -47,7 +45,7 @@ int main(int , char *[])
 
     ImGuiBundle::Run(
         gui, "Hello!",
-        /*sizeAuto=*/false , /*restoreGeom=*/false, /*size=*/{300, 450},
+        /*windowSizeAuto=*/false , /*windowRestorePreviousGeometry==*/false, /*windowSize=*/{300, 450},
         /*fpsIdle=*/ 25.f, /*withImplot=*/true);
     return 0;
 }
