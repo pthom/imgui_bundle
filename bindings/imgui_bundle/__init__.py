@@ -18,7 +18,8 @@ from imgui_bundle._imgui_bundle import (
 from imgui_bundle import icons_fontawesome
 from imgui_bundle.imgui_bundle_utils import (
     static as static,
-    run_anon_block as run_anon_block
+    run_anon_block as run_anon_block,
+    run_nb as run_nb
 )
 
 from imgui_bundle._imgui_bundle import __version__

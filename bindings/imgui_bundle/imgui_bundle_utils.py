@@ -1,5 +1,4 @@
-from typing import Any, Callable, Optional
-from imgui_bundle import implot, imgui_node_editor, hello_imgui, imgui, imgui_md
+from typing import Callable, Any
 
 
 def static(**kwargs):
@@ -32,9 +31,6 @@ def static(**kwargs):
     return wrapper
 
 
-from typing import Callable
-
-
 def run_anon_block(function: Callable[[None], None]):
     """Decorator for anonymous block
 
@@ -54,3 +50,40 @@ def run_anon_block(function: Callable[[None], None]):
 
     """
     function()  # type: ignore
+
+
+from typing import Tuple
+import imgui_bundle
+from imgui_bundle import hello_imgui
+
+VoidFunction = Callable[[None], None]
+ScreenSize = Tuple[int, int]
+
+
+def run_nb(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = True,
+    window_restore_previous_geometry: bool = True,
+    window_size: ScreenSize = (800, 600),
+    fps_idle: float = 10.0,
+    with_implot: bool = True,
+    with_markdown: bool = True,
+    with_node_editor: bool = True,
+    ) -> None:
+    """ImguiBundle app runner for jupyter notebook
+    
+    Provides 
+    """
+    imgui_bundle.run(
+        gui_function=gui_function,
+        window_title=window_title,
+        window_size_auto=window_size_auto,
+        window_restore_previous_geometry=window_restore_previous_geometry,
+        window_size=window_size,
+        fps_idle=fps_idle,
+        with_implot=with_implot,
+        with_markdown=with_markdown,
+        with_node_editor=with_node_editor        
+    )
+    pass
