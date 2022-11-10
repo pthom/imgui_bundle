@@ -14,8 +14,10 @@ from . imgui_bundle import (
     clock_seconds as clock_seconds,
     AddOnsParams as AddOnsParams
 )
-from . utilities import (
+from .imgui_bundle_utils import (
     static as static,
+    run_anon_block as run_anon_block,
+    run_nb as run_nb
 )
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)
 from . im_col32 import IM_COL32 as IM_COL32

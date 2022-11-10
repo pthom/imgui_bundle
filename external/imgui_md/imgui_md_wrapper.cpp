@@ -320,8 +320,9 @@ assets/
     void InitializeMarkdown(const MarkdownOptions& options)
     {
         static bool wasCalledAlready = false;
-        if (wasCalledAlready) {
-            std::cerr << "InitializeMarkdown can only be called once at application startup!\n";
+        if (wasCalledAlready)
+        {
+            //std::cerr << "InitializeMarkdown can only be called once at application startup!\n";
             return;
         }
 
