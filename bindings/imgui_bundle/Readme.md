@@ -16,9 +16,9 @@ __Request for feedback__ : ImGui Bundle is a brand-new python and C++ package (O
     <td> <img src="https://traineq.org/imgui_bundle_doc/heart.gif"> </td>
     <td>  
       <b>Python</b><br>
-      <img src="https://traineq.org/imgui_bundle_doc/heart_code.png" width="350"><br>
+      <img src="https://traineq.org/imgui_bundle_doc/heart_code2.png" width="350"><br>
       <b>C++</b><br>
-      <img src="https://traineq.org/imgui_bundle_doc/heart_code_cpp.png" width="350"><br>
+      <img src="https://traineq.org/imgui_bundle_doc/heart_code_cpp2.png" width="350"><br>
     </td> 
 </tr>
 </table>
@@ -81,4 +81,4 @@ The source for the demos can be found inside [bindings/imgui_bundle/demos](bindi
 git clone https://github.com/pthom/imgui_bundle.git
 ````
 
-Then, take inspiration from [demos_cpp/haiku_implot_heart](demos_cpp/haiku_implot_heart).
+Then, take inspiration from [demos_cpp/demo_haiku_implot_heart](demos_cpp/demo_haiku_implot_heart).
