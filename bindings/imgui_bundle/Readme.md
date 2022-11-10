@@ -16,9 +16,9 @@ __Request for feedback__ : ImGui Bundle is a brand-new python and C++ package (O
     <td> <img src="https://traineq.org/imgui_bundle_doc/heart.gif"> </td>
     <td>  
       <b>Python</b><br>
-      <img src="https://traineq.org/imgui_bundle_doc/heart_code.png" width="350"><br>
+      <img src="https://traineq.org/imgui_bundle_doc/heart_code2.png" width="350"><br>
       <b>C++</b><br>
-      <img src="https://traineq.org/imgui_bundle_doc/heart_code_cpp.png" width="350"><br>
+      <img src="https://traineq.org/imgui_bundle_doc/heart_code_cpp2.png" width="350"><br>
     </td> 
 </tr>
 </table>
