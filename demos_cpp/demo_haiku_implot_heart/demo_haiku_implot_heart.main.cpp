@@ -46,6 +46,7 @@ int main(int , char *[])
     ImGuiBundle::Run(
         gui, "Hello!",
         /*windowSizeAuto=*/false , /*windowRestorePreviousGeometry==*/false, /*windowSize=*/{300, 450},
+        /*sizeAuto=*/false , /*restoreGeom=*/false, /*size=*/{300, 450},
         /*fpsIdle=*/ 25.f, /*withImplot=*/true);
     return 0;
 }
