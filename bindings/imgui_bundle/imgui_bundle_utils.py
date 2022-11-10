@@ -55,6 +55,11 @@ def run_anon_block(function: Callable[[None], None]):
 from typing import Tuple
 import imgui_bundle
 from imgui_bundle import hello_imgui
+import numpy as np
+import cv2 # pip install opencv-python
+import PIL.Image  # pip install pillow
+from IPython.display import display
+
 
 VoidFunction = Callable[[None], None]
 ScreenSize = Tuple[int, int]
@@ -64,17 +69,24 @@ def run_nb(
     gui_function: VoidFunction,
     window_title: str = "",
     window_size_auto: bool = True,
-    window_restore_previous_geometry: bool = True,
-    window_size: ScreenSize = (800, 600),
+    window_restore_previous_geometry: bool = False,
+    window_size: ScreenSize = (0, 0),
     fps_idle: float = 10.0,
     with_implot: bool = True,
     with_markdown: bool = True,
-    with_node_editor: bool = True,
+    with_node_editor: bool = True,   
+    thumbnail_height = 150,
+    thumbnail_ratio = 1.,
     ) -> None:
     """ImguiBundle app runner for jupyter notebook
     
-    Provides 
+    * This runner will display a thumbnail of the app in the notebook after execution.
+    * By default, markdown, implot and node_editor are active.
+    * If window_size is left as its default value (0, 0), then the window will autosize
     """
+    if window_size[0] > 0 and window_size[1] > 0:
+        window_size_auto = False
+
     imgui_bundle.run(
         gui_function=gui_function,
         window_title=window_title,
@@ -86,4 +98,20 @@ def run_nb(
         with_markdown=with_markdown,
         with_node_editor=with_node_editor        
     )
-    pass
+    
+    from imgui_bundle import hello_imgui
+    app_image = hello_imgui.final_app_window_screenshot()
+       
+    resize_ratio = 1
+    if thumbnail_ratio != 1.:
+        resize_ratio = thumbnail_ratio
+    elif thumbnail_height > 0:
+        resize_ratio = thumbnail_height / app_image.shape[0]
+
+    if resize_ratio != 1:
+        thumbnail_image = cv2.resize(app_image, (0, 0), fx=resize_ratio, fy=resize_ratio, interpolation=cv2.INTER_AREA)
+    else:
+        thumbnail_image = app_image
+        
+    pil_image = PIL.Image.fromarray(thumbnail_image)
+    display(pil_image)
