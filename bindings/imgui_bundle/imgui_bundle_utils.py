@@ -52,13 +52,9 @@ def run_anon_block(function: Callable[[None], None]):
     function()  # type: ignore
 
 
-from typing import Tuple
+from typing import Tuple, Optional
 import imgui_bundle
 from imgui_bundle import hello_imgui
-import numpy as np
-import cv2 # pip install opencv-python
-import PIL.Image  # pip install pillow
-from IPython.display import display
 
 
 VoidFunction = Callable[[None], None]
@@ -68,6 +64,7 @@ ScreenSize = Tuple[int, int]
 def run_nb(
     gui_function: VoidFunction,
     window_title: str = "",
+    run_id: Optional[str] = None,
     window_size_auto: bool = True,
     window_restore_previous_geometry: bool = False,
     window_size: ScreenSize = (0, 0),
@@ -80,38 +77,90 @@ def run_nb(
     ) -> None:
     """ImguiBundle app runner for jupyter notebook
     
-    * This runner will display a thumbnail of the app in the notebook after execution.
-    * By default, markdown, implot and node_editor are active.
-    * If window_size is left as its default value (0, 0), then the window will autosize
-    """
-    if window_size[0] > 0 and window_size[1] > 0:
-        window_size_auto = False
+    This runner is able to:
+        * run an ImGui app from a jupyter notebook 
+        * display a thumbnail of the app + a "run" button in the cell output
 
-    imgui_bundle.run(
-        gui_function=gui_function,
-        window_title=window_title,
-        window_size_auto=window_size_auto,
-        window_restore_previous_geometry=window_restore_previous_geometry,
-        window_size=window_size,
-        fps_idle=fps_idle,
-        with_implot=with_implot,
-        with_markdown=with_markdown,
-        with_node_editor=with_node_editor        
-    )
+    * It is possible to run the app only if the user clicks on the Run button (and not during normal cell execution): 
+      for this, simply fill the param "run_id" with a unique id.
     
-    from imgui_bundle import hello_imgui
-    app_image = hello_imgui.final_app_window_screenshot()
-       
-    resize_ratio = 1
-    if thumbnail_ratio != 1.:
-        resize_ratio = thumbnail_ratio
-    elif thumbnail_height > 0:
-        resize_ratio = thumbnail_height / app_image.shape[0]
+    Warning: 
+        The run button only with "jupyter notebook". It does not work inside Visual studio code, or jupyter-lab.
 
-    if resize_ratio != 1:
-        thumbnail_image = cv2.resize(app_image, (0, 0), fx=resize_ratio, fy=resize_ratio, interpolation=cv2.INTER_AREA)
-    else:
-        thumbnail_image = app_image
+    If window_size is left as its default value (0, 0), then the window will autosize
+    """
+    import numpy as np
+    import cv2 # pip install opencv-python
+    import PIL.Image  # pip install pillow
+    from IPython.display import display
+    from IPython.core.display import HTML  # type: ignore
+    
+    def run_app():
+        nonlocal window_size_auto
+        if window_size[0] > 0 and window_size[1] > 0:
+            window_size_auto = False
+
+        imgui_bundle.run(
+            gui_function=gui_function,
+            window_title=window_title,
+            window_size_auto=window_size_auto,
+            window_restore_previous_geometry=window_restore_previous_geometry,
+            window_size=window_size,
+            fps_idle=fps_idle,
+            with_implot=with_implot,
+            with_markdown=with_markdown,
+            with_node_editor=with_node_editor        
+        )
         
-    pil_image = PIL.Image.fromarray(thumbnail_image)
-    display(pil_image)
+    def make_thumbnail(image):
+        resize_ratio = 1
+        if thumbnail_ratio != 1.:
+            resize_ratio = thumbnail_ratio
+        elif thumbnail_height > 0:
+            resize_ratio = thumbnail_height / image.shape[0]
+
+        if resize_ratio != 1:
+            thumbnail_image = cv2.resize(image, (0, 0), fx=resize_ratio, fy=resize_ratio, interpolation=cv2.INTER_AREA)
+        else:
+            thumbnail_image = image
+        return thumbnail_image
+    
+    def display_image(image):
+        pil_image = PIL.Image.fromarray(image)
+        display(pil_image)
+        
+    def run_app_and_display_thumb():
+        from imgui_bundle import hello_imgui
+        run_app()
+        app_image = hello_imgui.final_app_window_screenshot()
+        thumbnail = make_thumbnail(app_image)
+        display_image(thumbnail)
+        
+    def display_run_link():
+        html_code = f"""
+        <script>
+        function btnClick_{run_id}(btn) {{
+            // alert("btnClick_{run_id}");
+            cell_element = btn.parentElement.parentElement.parentElement.parentElement.parentElement;
+            cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element)
+            IPython.notebook.kernel.execute("imgui_bundle.JAVASCRIPT_RUN_ID='{run_id}'")
+            Jupyter.notebook.execute_cells([cell_idx])
+        }}
+        </script>        
+        <button onClick="btnClick_{run_id}(this)">Run</button>
+        """
+        display(HTML(html_code))
+    
+    if run_id is None:
+        run_app_and_display_thumb()
+    else:
+        if hasattr(imgui_bundle, "JAVASCRIPT_RUN_ID"):
+            print(f"{imgui_bundle.JAVASCRIPT_RUN_ID=} {run_id=}")
+            if imgui_bundle.JAVASCRIPT_RUN_ID == run_id:
+                run_app_and_display_thumb()
+        else:
+            print(f"imgui_bundle: no JAVASCRIPT_RUN_ID")
+            
+    display_run_link()
+    
+

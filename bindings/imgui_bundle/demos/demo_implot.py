@@ -65,6 +65,21 @@ def demo_drag_rects():
         implot.end_plot()
 
 
+def demo_mixed_plot():
+    implot.push_colormap(implot.ImPlotColormap_.deep)
+    if implot.begin_plot("Mixed plot"):
+        implot.setup_axes("x-axis", "y-axis")
+        implot.setup_axes_limits(-0.5, 9.5, 0, 10)
+        lin = np.array([8,8,9,7,8,8,8,9,7,8])
+        bar = np.array([1,2,5,3,4,1,2,5,3,4])
+        dot = np.array([7,6,6,7,8,5,6,5,8,7])
+        implot.plot_bars("Bars", bar, 0.5)
+        implot.plot_line("Line", lin)
+        implot.next_colormap_color() # skip green
+        implot.plot_scatter("Scatter", dot)
+        implot.end_plot()
+
+
 def demo_implot():
     imgui_md.render(
         """
@@ -77,13 +92,17 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
         webbrowser.open("https://traineq.org/implot_demo/src/implot_demo.html")
     imgui.new_line()
-    demo_drag_rects()
+
+    if imgui.collapsing_header("Drag Rects"):
+        demo_drag_rects()
+    if imgui.collapsing_header("Mixed plot"):
+        demo_mixed_plot()
 
 
 def main():
     from imgui_bundle import run
 
-    run(demo_drag_rects, with_implot=True)
+    run(demo_implot, with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":
