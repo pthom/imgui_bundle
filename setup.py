@@ -33,7 +33,6 @@ setup(
             "imgui_bundle.assets.fonts",
             "imgui_bundle.assets.fonts.Roboto",
             "imgui_bundle.assets.images",
-
             "imgui_bundle.demos",
             "imgui_bundle.demos.haikus",
             "imgui_bundle.demos.haikus.romeo_and_juliet",

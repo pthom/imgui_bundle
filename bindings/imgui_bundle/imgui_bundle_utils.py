@@ -71,30 +71,30 @@ def run_nb(
     fps_idle: float = 10.0,
     with_implot: bool = True,
     with_markdown: bool = True,
-    with_node_editor: bool = True,   
-    thumbnail_height = 150,
-    thumbnail_ratio = 1.,
-    ) -> None:
+    with_node_editor: bool = True,
+    thumbnail_height=150,
+    thumbnail_ratio=1.0,
+) -> None:
     """ImguiBundle app runner for jupyter notebook
-    
+
     This runner is able to:
-        * run an ImGui app from a jupyter notebook 
+        * run an ImGui app from a jupyter notebook
         * display a thumbnail of the app + a "run" button in the cell output
 
-    * It is possible to run the app only if the user clicks on the Run button (and not during normal cell execution): 
+    * It is possible to run the app only if the user clicks on the Run button (and not during normal cell execution):
       for this, simply fill the param "run_id" with a unique id.
-    
-    Warning: 
+
+    Warning:
         The run button only with "jupyter notebook". It does not work inside Visual studio code, or jupyter-lab.
 
     If window_size is left as its default value (0, 0), then the window will autosize
     """
     import numpy as np
-    import cv2 # pip install opencv-python
+    import cv2  # pip install opencv-python
     import PIL.Image  # pip install pillow
     from IPython.display import display
     from IPython.core.display import HTML  # type: ignore
-    
+
     def run_app():
         nonlocal window_size_auto
         if window_size[0] > 0 and window_size[1] > 0:
@@ -109,12 +109,12 @@ def run_nb(
             fps_idle=fps_idle,
             with_implot=with_implot,
             with_markdown=with_markdown,
-            with_node_editor=with_node_editor        
+            with_node_editor=with_node_editor,
         )
-        
+
     def make_thumbnail(image):
         resize_ratio = 1
-        if thumbnail_ratio != 1.:
+        if thumbnail_ratio != 1.0:
             resize_ratio = thumbnail_ratio
         elif thumbnail_height > 0:
             resize_ratio = thumbnail_height / image.shape[0]
@@ -124,18 +124,19 @@ def run_nb(
         else:
             thumbnail_image = image
         return thumbnail_image
-    
+
     def display_image(image):
         pil_image = PIL.Image.fromarray(image)
         display(pil_image)
-        
+
     def run_app_and_display_thumb():
         from imgui_bundle import hello_imgui
+
         run_app()
         app_image = hello_imgui.final_app_window_screenshot()
         thumbnail = make_thumbnail(app_image)
         display_image(thumbnail)
-        
+
     def display_run_link():
         html_code = f"""
         <script>
@@ -150,7 +151,7 @@ def run_nb(
         <button onClick="btnClick_{run_id}(this)">Run</button>
         """
         display(HTML(html_code))
-    
+
     if run_id is None:
         run_app_and_display_thumb()
     else:
@@ -160,7 +161,5 @@ def run_nb(
                 run_app_and_display_thumb()
         else:
             print(f"imgui_bundle: no JAVASCRIPT_RUN_ID")
-            
-    display_run_link()
-    
 
+    display_run_link()

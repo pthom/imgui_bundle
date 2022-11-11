@@ -70,12 +70,12 @@ def demo_mixed_plot():
     if implot.begin_plot("Mixed plot"):
         implot.setup_axes("x-axis", "y-axis")
         implot.setup_axes_limits(-0.5, 9.5, 0, 10)
-        lin = np.array([8,8,9,7,8,8,8,9,7,8])
-        bar = np.array([1,2,5,3,4,1,2,5,3,4])
-        dot = np.array([7,6,6,7,8,5,6,5,8,7])
+        lin = np.array([8, 8, 9, 7, 8, 8, 8, 9, 7, 8])
+        bar = np.array([1, 2, 5, 3, 4, 1, 2, 5, 3, 4])
+        dot = np.array([7, 6, 6, 7, 8, 5, 6, 5, 8, 7])
         implot.plot_bars("Bars", bar, 0.5)
         implot.plot_line("Line", lin)
-        implot.next_colormap_color() # skip green
+        implot.next_colormap_color()  # skip green
         implot.plot_scatter("Scatter", dot)
         implot.end_plot()
 

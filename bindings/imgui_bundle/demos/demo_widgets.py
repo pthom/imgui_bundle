@@ -58,7 +58,7 @@ def demo_knobs():
     imgui.text("Some small knobs")
     show_float_knobs(imgui.get_font_size() * 2.2)
     imgui.text("Some big knobs (int values)")
-    show_int_knobs(imgui.get_font_size() * 4.)
+    show_int_knobs(imgui.get_font_size() * 4.0)
 
 
 def demo_spinner():
@@ -74,15 +74,15 @@ def demo_spinner():
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
     imgui.same_line()
 
-    radius = imgui.get_font_size() / 2.
+    radius = imgui.get_font_size() / 2.0
     imspinner.spinner_arc_rotation("spinner_arc_rotation", radius, 4.0, color)
     imgui.same_line()
 
     radius1 = imgui.get_font_size() / 2.5
-    imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2., 2.5, color, color, color)
+    imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
 
 
-@static(toggle_a = True, toggle_b = True)
+@static(toggle_a=True, toggle_b=True)
 def demo_toggle():
     static = demo_toggle
     imgui_md.render(
@@ -206,4 +206,5 @@ def demo_widgets():
 
 if __name__ == "__main__":
     from imgui_bundle import run
+
     run(demo_widgets, with_markdown=True)

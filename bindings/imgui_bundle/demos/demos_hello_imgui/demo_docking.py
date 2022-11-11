@@ -50,13 +50,17 @@ def my_load_fonts():
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
 
-    imgui_md.render("""
+    imgui_md.render(
+        """
 ### Markdown Test
 * _underline_
 * *italic*
 * **bold**
 ---
-    """[1:])
+    """[
+            1:
+        ]
+    )
 
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
@@ -245,6 +249,7 @@ def main():
     # Part 3: Run the app
     ################################################################################################
     import imgui_bundle
+
     addons_params = imgui_bundle.AddOnsParams()
     addons_params.with_markdown = True
     imgui_bundle.run(runner_params, addons_params)

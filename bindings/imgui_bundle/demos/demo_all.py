@@ -117,6 +117,7 @@ def main():
     # Part 3: Run the app
     ################################################################################################
     import imgui_bundle
+
     addons = imgui_bundle.AddOnsParams()
     addons.with_markdown = True
     addons.with_node_editor = True

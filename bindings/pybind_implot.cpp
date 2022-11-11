@@ -600,6 +600,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -615,9 +622,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotLine(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotLine(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotLine(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotLine(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotLine(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotLine(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -652,6 +659,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -667,9 +681,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotLine(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotLine(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotLine(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotLine(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotLine(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotLine(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -700,6 +714,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -715,9 +736,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotScatter(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotScatter(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotScatter(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotScatter(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotScatter(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotScatter(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -752,6 +773,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -767,9 +795,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotScatter(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotScatter(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotScatter(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotScatter(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotScatter(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotScatter(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -800,6 +828,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -815,9 +850,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotStairs(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotStairs(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotStairs(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotStairs(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotStairs(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotStairs(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -852,6 +887,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -867,9 +909,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotStairs(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotStairs(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotStairs(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotStairs(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotStairs(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotStairs(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -900,6 +942,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -915,9 +964,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotShaded(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotShaded(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotShaded(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotShaded(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), yref, xscale, xstart, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -952,6 +1001,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -967,9 +1023,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotShaded(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotShaded(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotShaded(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotShaded(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), yref, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -1008,6 +1064,13 @@ void py_init_module_implot(py::module& m)
                 if (ys2_stride == -1)
                     ys2_stride = (int)ys2.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys2_type = ys2.dtype().char_();
                 if (ys2_type == 'B')
@@ -1023,9 +1086,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys2_type == 'i')
                     ImPlot::PlotShaded(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys1_from_pyarray), static_cast<const int32_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'L')
-                    ImPlot::PlotShaded(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys1_from_pyarray), static_cast<const uint64_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys1_from_pyarray), static_cast<const np_uint_l *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'l')
-                    ImPlot::PlotShaded(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys1_from_pyarray), static_cast<const int64_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
+                    ImPlot::PlotShaded(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys1_from_pyarray), static_cast<const np_int_l *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'f')
                     ImPlot::PlotShaded(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys1_from_pyarray), static_cast<const float *>(ys2_from_pyarray), static_cast<int>(ys2_count), flags, offset, ys2_stride);
                 else if (ys2_type == 'd')
@@ -1056,6 +1119,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -1071,9 +1141,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotBars(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotBars(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
+                    ImPlot::PlotBars(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotBars(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
+                    ImPlot::PlotBars(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotBars(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), bar_size, shift, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1108,6 +1178,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -1123,9 +1200,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
+                    ImPlot::PlotBars(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
+                    ImPlot::PlotBars(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -1164,6 +1241,13 @@ void py_init_module_implot(py::module& m)
                 if (err_stride == -1)
                     err_stride = (int)err.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char err_type = err.dtype().char_();
                 if (err_type == 'B')
@@ -1179,9 +1263,9 @@ void py_init_module_implot(py::module& m)
                 else if (err_type == 'i')
                     ImPlot::PlotErrorBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'L')
-                    ImPlot::PlotErrorBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<const uint64_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
+                    ImPlot::PlotErrorBars(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'l')
-                    ImPlot::PlotErrorBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<const int64_t *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
+                    ImPlot::PlotErrorBars(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'f')
                     ImPlot::PlotErrorBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(err_from_pyarray), static_cast<int>(err_count), flags, offset, err_stride);
                 else if (err_type == 'd')
@@ -1224,6 +1308,13 @@ void py_init_module_implot(py::module& m)
                 if (pos_stride == -1)
                     pos_stride = (int)pos.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char pos_type = pos.dtype().char_();
                 if (pos_type == 'B')
@@ -1239,9 +1330,9 @@ void py_init_module_implot(py::module& m)
                 else if (pos_type == 'i')
                     ImPlot::PlotErrorBars(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(neg_from_pyarray), static_cast<const int32_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'L')
-                    ImPlot::PlotErrorBars(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<const uint64_t *>(neg_from_pyarray), static_cast<const uint64_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
+                    ImPlot::PlotErrorBars(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(neg_from_pyarray), static_cast<const np_uint_l *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'l')
-                    ImPlot::PlotErrorBars(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<const int64_t *>(neg_from_pyarray), static_cast<const int64_t *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
+                    ImPlot::PlotErrorBars(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(neg_from_pyarray), static_cast<const np_int_l *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'f')
                     ImPlot::PlotErrorBars(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(neg_from_pyarray), static_cast<const float *>(pos_from_pyarray), static_cast<int>(pos_count), flags, offset, pos_stride);
                 else if (pos_type == 'd')
@@ -1272,6 +1363,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -1287,9 +1385,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotStems(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotStems(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
+                    ImPlot::PlotStems(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotStems(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
+                    ImPlot::PlotStems(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotStems(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), ref, scale, start, flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1324,6 +1422,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -1339,9 +1444,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotStems(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotStems(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
+                    ImPlot::PlotStems(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotStems(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
+                    ImPlot::PlotStems(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotStems(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), ref, flags, offset, ys_stride);
                 else if (ys_type == 'd')
@@ -1372,6 +1477,13 @@ void py_init_module_implot(py::module& m)
                 if (values_stride == -1)
                     values_stride = (int)values.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -1387,9 +1499,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     ImPlot::PlotInfLines(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'L')
-                    ImPlot::PlotInfLines(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
+                    ImPlot::PlotInfLines(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'l')
-                    ImPlot::PlotInfLines(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
+                    ImPlot::PlotInfLines(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'f')
                     ImPlot::PlotInfLines(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), flags, offset, values_stride);
                 else if (values_type == 'd')
@@ -1417,6 +1529,13 @@ void py_init_module_implot(py::module& m)
                 const void * values_from_pyarray = values.data();
                 py::ssize_t values_count = values.shape()[0];
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char values_type = values.dtype().char_();
                 if (values_type == 'B')
@@ -1432,9 +1551,9 @@ void py_init_module_implot(py::module& m)
                 else if (values_type == 'i')
                     return ImPlot::PlotHistogram(label_id, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'L')
-                    return ImPlot::PlotHistogram(label_id, static_cast<const uint64_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
+                    return ImPlot::PlotHistogram(label_id, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'l')
-                    return ImPlot::PlotHistogram(label_id, static_cast<const int64_t *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
+                    return ImPlot::PlotHistogram(label_id, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'f')
                     return ImPlot::PlotHistogram(label_id, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), bins, bar_scale, range, flags);
                 else if (values_type == 'd')
@@ -1466,6 +1585,13 @@ void py_init_module_implot(py::module& m)
                 const void * ys_from_pyarray = ys.data();
                 py::ssize_t ys_count = ys.shape()[0];
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -1481,9 +1607,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     return ImPlot::PlotHistogram2D(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'L')
-                    return ImPlot::PlotHistogram2D(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
+                    return ImPlot::PlotHistogram2D(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'l')
-                    return ImPlot::PlotHistogram2D(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
+                    return ImPlot::PlotHistogram2D(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'f')
                     return ImPlot::PlotHistogram2D(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, flags);
                 else if (ys_type == 'd')
@@ -1520,6 +1646,13 @@ void py_init_module_implot(py::module& m)
                 if (ys_stride == -1)
                     ys_stride = (int)ys.itemsize();
 
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
                 // call the correct template version by casting
                 char ys_type = ys.dtype().char_();
                 if (ys_type == 'B')
@@ -1535,9 +1668,9 @@ void py_init_module_implot(py::module& m)
                 else if (ys_type == 'i')
                     ImPlot::PlotDigital(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'L')
-                    ImPlot::PlotDigital(label_id, static_cast<const uint64_t *>(xs_from_pyarray), static_cast<const uint64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotDigital(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'l')
-                    ImPlot::PlotDigital(label_id, static_cast<const int64_t *>(xs_from_pyarray), static_cast<const int64_t *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
+                    ImPlot::PlotDigital(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'f')
                     ImPlot::PlotDigital(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), flags, offset, ys_stride);
                 else if (ys_type == 'd')

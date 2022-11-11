@@ -6,7 +6,7 @@ def gui():
 
 
 run(
-    gui_function=gui,       # The Gui function to run
+    gui_function=gui,  # The Gui function to run
     window_title="Hello!",  # the window title
     window_size_auto=True,  # Auto size the application window given its widgets
     # Uncomment the next line to restore window position and size from previous run
