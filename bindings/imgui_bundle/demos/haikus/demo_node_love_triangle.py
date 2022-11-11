@@ -70,4 +70,5 @@ def gui():
     ed.end()
 
 
-run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")
+if __name__ == "__main__":
+    run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")

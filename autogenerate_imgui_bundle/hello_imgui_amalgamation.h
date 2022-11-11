@@ -2041,6 +2041,11 @@ namespace HelloImGui
 //                       hello_imgui.h continued                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+#include <cstddef>
+#include <cstdint>
+
+
 /**
 @@md#HelloImGui::Run
 
@@ -2058,7 +2063,7 @@ Three signatures are provided:
 
 __HelloImGui::GetRunnerParams()__ is a convenience function that will return the runnerParams of the current application.
 
- @@md
+@@md
 */
 namespace HelloImGui
 {
@@ -2081,14 +2086,14 @@ namespace HelloImGui
 /**
 @@md#SDLMain
 
-    Warning for SDL apps under iOS and Android:
+Warning for SDL apps under iOS and Android:
 
-    SDL uses a dirty hack in order to _replace your main() function by its own main() function_,
-    which will then call your own main !
+SDL uses a dirty hack in order to _replace your main() function by its own main() function_,
+which will then call your own main !
 
-    Please make sure that the signature of your main() function is *exactly*
-        `int main(int argc, char **argv)`
-    and that your main() function returns an int.
+Please make sure that the signature of your main() function is *exactly*
+    `int main(int argc, char **argv)`
+and that your main() function returns an int.
 
 @@md
 */
