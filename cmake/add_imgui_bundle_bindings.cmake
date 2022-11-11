@@ -12,17 +12,17 @@ function(add_imgui_bundle_bindings)
         bindings/litgen_glue_code.h
         bindings/imgui_docking_internal_types.h
 
-#        bindings/pybind_hello_imgui.cpp
-#        bindings/pybind_imgui.cpp
-#        bindings/pybind_imgui_internal.cpp
-#        bindings/pybind_implot.cpp
-#        bindings/pybind_imgui_bundle.cpp
-#        bindings/pybind_imgui_color_text_edit.cpp
-#        bindings/pybind_imgui_node_editor.cpp
+        bindings/pybind_hello_imgui.cpp
+        bindings/pybind_imgui.cpp
+        bindings/pybind_imgui_internal.cpp
+        bindings/pybind_implot.cpp
+        bindings/pybind_imgui_bundle.cpp
+        bindings/pybind_imgui_color_text_edit.cpp
+        bindings/pybind_imgui_node_editor.cpp
         bindings/pybind_imgui_knobs.cpp
-#        bindings/pybind_im_file_dialog.cpp
-#        bindings/pybind_imspinner.cpp
-#        bindings/pybind_imgui_md.cpp
+        bindings/pybind_im_file_dialog.cpp
+        bindings/pybind_imspinner.cpp
+        bindings/pybind_imgui_md.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
