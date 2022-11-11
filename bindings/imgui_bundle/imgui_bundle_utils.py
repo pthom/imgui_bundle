@@ -155,7 +155,7 @@ def run_nb(
         run_app_and_display_thumb()
     else:
         if hasattr(imgui_bundle, "JAVASCRIPT_RUN_ID"):
-            print(f"{imgui_bundle.JAVASCRIPT_RUN_ID=} {run_id=}")
+            print("imgui_bundle.JAVASCRIPT_RUN_ID=" + imgui_bundle.JAVASCRIPT_RUN_ID + "{run_id=}")
             if imgui_bundle.JAVASCRIPT_RUN_ID == run_id:
                 run_app_and_display_thumb()
         else:
