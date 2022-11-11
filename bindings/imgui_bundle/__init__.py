@@ -12,15 +12,11 @@ from imgui_bundle._imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,
     clock_seconds as clock_seconds,
-    AddOnsParams as AddOnsParams
+    AddOnsParams as AddOnsParams,
 )
 
 from imgui_bundle import icons_fontawesome
-from imgui_bundle.imgui_bundle_utils import (
-    static as static,
-    run_anon_block as run_anon_block,
-    run_nb as run_nb
-)
+from imgui_bundle.imgui_bundle_utils import static as static, run_anon_block as run_anon_block, run_nb as run_nb
 
 from imgui_bundle._imgui_bundle import __version__
 

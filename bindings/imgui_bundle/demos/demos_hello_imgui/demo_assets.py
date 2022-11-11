@@ -32,5 +32,6 @@ def main():
         # window_restore_previous_geometry=True
     )
 
+
 if __name__ == "__main__":
     main()
