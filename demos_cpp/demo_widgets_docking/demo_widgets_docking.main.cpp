@@ -29,11 +29,10 @@ ImGui::SameLine();
 }
 )";
 
-struct AppState
+void demo_implot()
 {
-    std::vector<double> x, y1, y2;
-
-    AppState()
+    static std::vector<double> x, y1, y2;
+    if (x.empty())
     {
         double pi = 3.1415;
         for (int i = 0; i < 1000; ++i)
@@ -44,20 +43,17 @@ struct AppState
             y2.push_back(sin(x_));
         }
     }
-};
 
-void demo_implot(AppState& state)
-{
     ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");
     if (ImPlot::BeginPlot("Plot"))
     {
-        ImPlot::PlotLine("y1", state.x.data(), state.y1.data(), state.x.size());
-        ImPlot::PlotLine("y2", state.x.data(), state.y2.data(), state.x.size());
+        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
+        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
         ImPlot::EndPlot();
     }
 }
 
-void demo_widgets(AppState& appState)
+void demo_widgets()
 {
     ImGuiMd::Render(R"(
 # ImGui Bundle
@@ -187,9 +183,6 @@ Selected file names will be shown in the log panel at the bottom.
 
 int main(int, char **)
 {
-    AppState appState;
-
-
     HelloImGui::RunnerParams runnerParams;
 
     //
@@ -248,7 +241,7 @@ int main(int, char **)
     HelloImGui::DockableWindow implot_window;
     implot_window.label = "ImPlot";
     implot_window.dockSpaceName = "MainDockSpace";
-    implot_window.GuiFunction = [&appState]() { demo_implot(appState); };
+    implot_window.GuiFunction = demo_implot;
     // logsWindow
     HelloImGui::DockableWindow logsWindow;
     logsWindow.label = "Logs";
@@ -258,12 +251,12 @@ int main(int, char **)
     HelloImGui::DockableWindow demoWindow;
     demoWindow.label = "Dear ImGui Demo";
     demoWindow.dockSpaceName = "MainDockSpace";
-    demoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
+    demoWindow.GuiFunction = []() { ImGui::ShowDemoWindow(); };
     // demo_widgets
     HelloImGui::DockableWindow widgetsWindow;
     widgetsWindow.label = "Widgets demo";
     widgetsWindow.dockSpaceName = "MainDockSpace";
-    widgetsWindow.GuiFunction = [&appState] { demo_widgets(appState); };
+    widgetsWindow.GuiFunction = demo_widgets;
 
     // Finally, transmit these windows to HelloImGui
     runnerParams.dockingParams.dockableWindows = { implot_window, logsWindow, demoWindow, widgetsWindow };
