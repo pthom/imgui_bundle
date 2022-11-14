@@ -2,6 +2,7 @@
 
 #include "implot/implot.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
+#include "ImFileDialogTextureHelper.h"
 
 #include <chrono>
 
@@ -43,6 +44,8 @@ namespace ImGuiBundle
                 previousFontLoaderFunction();
             };
         }
+
+        ImFileDialogSetupTextureLoader();
 
         HelloImGui::Run(runnerParams);
 

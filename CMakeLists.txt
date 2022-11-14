@@ -52,8 +52,14 @@ add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build ImFileDialog
 add_simple_external_library(im_file_dialog ImFileDialog)
-target_sources(im_file_dialog  PRIVATE external/ImFileDialog/ImFileDialog.h external/ImFileDialog/ImFileDialog.cpp)
+target_sources(im_file_dialog  PRIVATE
+    external/ImFileDialog/ImFileDialog.h
+    external/ImFileDialog/ImFileDialog.cpp
+    external/ImFileDialogTextureHelper.h
+    external/ImFileDialogTextureHelper.cpp
+    )
 target_include_directories(im_file_dialog PRIVATE external/hello_imgui/src/hello_imgui/internal)
+target_link_libraries(im_file_dialog PRIVATE hello_imgui)
 # Build imspinner
 add_simple_external_library_with_sources(imspinner imspinner)
 # Build imgui_toggle
