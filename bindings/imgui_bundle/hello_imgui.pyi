@@ -366,6 +366,107 @@ class AppWindowParams:
 
 
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/imgui_theme.h included by hello_imgui/imgui_window_params.h                //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#
+# Theme tweak utilities for ImGui.
+# Reuse and adaptation of imgui_theme.h and imgui_theme.cpp file is granted for other projects,
+# provided the origin of those files is stated in the copied version
+# Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
+#
+
+""" namespace ImGuiTheme"""
+class ImGuiTheme_(enum.Enum):
+    imgui_colors_classic = enum.auto()   # (= 0)
+    imgui_colors_dark = enum.auto()      # (= 1)
+    imgui_colors_light = enum.auto()     # (= 2)
+    material_flat = enum.auto()          # (= 3)
+    photoshop_style = enum.auto()        # (= 4)
+    gray_variations = enum.auto()        # (= 5)
+    gray_variations_darker = enum.auto() # (= 6)
+    microsoft_style = enum.auto()        # (= 7)
+    cherry = enum.auto()                 # (= 8)
+    darcula = enum.auto()                # (= 9)
+    darcula_darker = enum.auto()         # (= 10)
+    light_rounded = enum.auto()          # (= 11)
+    so_dark_accent_blue = enum.auto()    # (= 12)
+    so_dark_accent_yellow = enum.auto()  # (= 13)
+    so_dark_accent_red = enum.auto()     # (= 14)
+    black_is_black = enum.auto()         # (= 15)
+    white_is_white = enum.auto()         # (= 16)
+    count = enum.auto()                  # (= 17)
+def imgui_theme_name(theme: ImGuiTheme_) -> str:
+    pass
+def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
+    pass
+def apply_theme(theme: ImGuiTheme_) -> None:
+    pass
+
+
+class ImGuiThemeTweaks:
+    # Common rounding for widgets. If < 0, this is ignored.
+    rounding: float = -1.
+    # If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)
+    rounding_scrollbar_ratio: float = 4.
+    # Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
+    alpha_multiplier: float = -1.
+
+    #
+    # HSV Color tweaks
+    #
+    # Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+    hue: float = -1.
+    # Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+    saturation_multiplier: float = -1.
+    # Multiply the value of all front widgets. If < 0, this is ignored.
+    value_multiplier_front: float = -1.
+    # Multiply the value of all backgrounds. If < 0, this is ignored.
+    value_multiplier_bg: float = -1.
+
+class ImGuiTweakedTheme:
+    theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
+    tweaks: ImGuiThemeTweaks = {}
+
+def tweaked_theme_theme_to_style(
+    tweaked_theme: ImGuiTweakedTheme
+    ) -> ImGuiStyle:
+    pass
+def apply_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
+    pass
+
+def show_theme_tweak_gui(tweaked_theme: ImGuiTweakedTheme) -> bool:
+    """ Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns True if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)"""
+    pass
+
+# Some tweakable themes
+def so_dark(hue: float) -> ImGuiStyle:
+    pass
+def shades_of_gray(
+    rounding: float = 0.,
+    value_multiplier_front: float = 1.,
+    value_multiplier_bg: float = 1.
+    ) -> ImGuiStyle:
+    pass
+def darcula(
+    rounding: float = 1.,
+    hue: float = -1.,
+    saturation_multiplier: float = 1.,
+    value_multiplier_front: float = 1.,
+    value_multiplier_bg: float = 1.,
+    alpha_bg_transparency: float = 1.
+    ) -> ImGuiStyle:
+    pass
+
+
+
+
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/imgui_window_params.h continued                                            //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 """ namespace HelloImGui"""
 class DefaultImGuiWindowType(enum.Enum):
     """*
@@ -424,6 +525,10 @@ class ImGuiWindowParams:
 
       * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
         If True, you can drag windows outside out the main window in order to put their content into new native windows.
+
+      * `tweakedTheme`: _string, default="ImGuiColorsDark"_.
+        Change the ImGui theme. Several themes are available, you can query the list by calling
+        HelloImGui::AvailableThemes()
     @@md
 
     """
@@ -441,6 +546,8 @@ class ImGuiWindowParams:
     config_windows_move_from_title_bar_only: bool = True
 
     enable_viewports: bool = False
+
+    tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////

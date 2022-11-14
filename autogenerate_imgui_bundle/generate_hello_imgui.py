@@ -38,7 +38,7 @@ def autogenerate_hello_imgui():
     from codemanip.code_replacements import RegexReplacement
 
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "^HelloImGui$"
+    options.namespace_root__regex = "^HelloImGui$|^ImGuiTheme$"
     options.fn_return_force_policy_reference_for_pointers__regex = join_string_by_pipe_char(
         [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
     )
