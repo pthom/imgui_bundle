@@ -1,3 +1,0 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(demo_implot_markdown demo_implot_markdown.main.cpp)
-target_link_libraries(demo_implot_markdown PRIVATE imgui_bundle)
