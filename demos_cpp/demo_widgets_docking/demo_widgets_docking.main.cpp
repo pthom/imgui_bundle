@@ -94,7 +94,7 @@ This is an example of markdown widget, with an included image:
             std::string knob_variant_name = knob_types[i].Name;
             float speed = 1.5f;
             const char *format = "%.3f";
-            float size = ImGui::GetFontSize() * ImGui::GetIO().FontGlobalScale * 10.f;
+            float size = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale * 2.5f;
             ImGuiKnobs::Knob(knob_variant_name.c_str(), &value, 0.f, 100.f, speed, format, knob_variant, size);
             if (i%3 != 2)
                 ImGui::SameLine();

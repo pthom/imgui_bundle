@@ -56,7 +56,7 @@ def demo_knobs():
         imgui.pop_id()
 
     imgui.text("Some small knobs")
-    knobs_size_small = imgui.get_font_size() * imgui.get_io().font_global_scale * 10
+    knobs_size_small = imgui.get_font_size() / imgui.get_io().font_global_scale * 2.5
     knobs_size_big = knobs_size_small * 1.5
     show_float_knobs(knobs_size_small)
     imgui.text("Some big knobs (int values)")
