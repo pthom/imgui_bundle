@@ -1,0 +1,8 @@
+[requires]
+opencv/4.5.5
+
+[generators]
+cmake_find_package
+
+[options]
+opencv:shared=False

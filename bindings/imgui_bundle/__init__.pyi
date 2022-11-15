@@ -8,6 +8,7 @@ from . import imgui_knobs as imgui_knobs
 from . import im_file_dialog as im_file_dialog
 from . import  imspinner as imspinner
 from . import  imgui_md as imgui_md
+from . import  immvision as immvision
 from . imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,

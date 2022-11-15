@@ -5,6 +5,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 
+option(IMGUI_BUNDLE_WITH_IMMVISION
+    "Add immvision support (requires OpenCV, which can be installed automatically via conan)"
+    ON)
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
+endif()
 
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
@@ -76,7 +82,11 @@ target_sources(imgui_md PRIVATE
     )
 target_include_directories(imgui_md PUBLIC external/imgui_md/md4c/src)
 target_link_libraries(imgui_md PUBLIC hello_imgui)
-
+# Build immvision
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_subdirectory(external/immvision)
+    target_link_libraries(imgui_bundle PUBLIC immvision)
+endif()
 
 #########################################################################
 # Build python bindings

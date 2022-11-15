@@ -1,0 +1,12 @@
+[requires]
+opencv/4.5.5
+
+[generators]
+cmake_find_package
+
+[options]
+opencv:shared=False
+opencv:with_ffmpeg=False
+opencv:dnn=False
+opencv:with_quirc=False
+opencv:with_ade=False

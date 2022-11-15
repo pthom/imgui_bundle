@@ -39,3 +39,6 @@
 [submodule "external/imgui_toggle"]
 	path = external/imgui_toggle
 	url = https://github.com/cmdwtf/imgui_toggle.git
+[submodule "external/immvision/cvnp"]
+	path = external/immvision/cvnp
+	url = https://github.com/pthom/cvnp.git

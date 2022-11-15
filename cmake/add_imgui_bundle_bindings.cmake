@@ -23,6 +23,7 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_im_file_dialog.cpp
         bindings/pybind_imspinner.cpp
         bindings/pybind_imgui_md.cpp
+        bindings/pybind_immvision.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
@@ -32,6 +33,12 @@ function(add_imgui_bundle_bindings)
         ${python_native_module_name}
         ${python_wrapper_module_name}
     )
+
+    # add cvnp for immvision
+    if (IMGUI_BUNDLE_WITH_IMMVISION)
+        add_subdirectory(external/immvision/cvnp)
+        target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+    endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 endfunction()

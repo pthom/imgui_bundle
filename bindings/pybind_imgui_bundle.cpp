@@ -16,6 +16,7 @@ void py_init_module_imgui_knobs(py::module& m);
 void py_init_module_im_file_dialog(py::module& m);
 void py_init_module_imspinner(py::module& m);
 void py_init_module_imgui_md(py::module& m);
+void py_init_module_immvision(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -51,6 +52,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_imgui_md =  m.def_submodule("imgui_md");
     py_init_module_imgui_md(module_imgui_md);
+
+    auto module_immvision =  m.def_submodule("immvision");
+    py_init_module_immvision(module_immvision);
 }
 
 
