@@ -7,7 +7,7 @@ include(lg_cmake_utils/lg_cmake_utils.cmake)
 
 option(IMGUI_BUNDLE_WITH_IMMVISION
     "Add immvision support (requires OpenCV, which can be installed automatically via conan)"
-    ON)
+    OFF)
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
