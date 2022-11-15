@@ -56,9 +56,11 @@ def demo_knobs():
         imgui.pop_id()
 
     imgui.text("Some small knobs")
-    show_float_knobs(imgui.get_font_size() * 2.2)
+    knobs_size_small = imgui.get_font_size() * imgui.get_io().font_global_scale * 10
+    knobs_size_big = knobs_size_small * 1.5
+    show_float_knobs(knobs_size_small)
     imgui.text("Some big knobs (int values)")
-    show_int_knobs(imgui.get_font_size() * 4.0)
+    show_int_knobs(knobs_size_big)
 
 
 def demo_spinner():
