@@ -12,6 +12,12 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 
+if(PROJECT_IS_TOP_LEVEL)
+    option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
+else()
+    option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
+endif()
+
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
     set(IMGUI_BUNDLE_BUILD_CPP OFF)
@@ -101,7 +107,7 @@ endif()
 # C++ Apps
 ####################################################
 if (IMGUI_BUNDLE_BUILD_CPP)
-    if(PROJECT_IS_TOP_LEVEL)
+    if(IMGUI_BUNDLE_BUILD_DEMOS)
         add_subdirectory(demos_cpp)
     endif()
     if (IMGUI_BUNDLE_BUILD_PYTHON)
