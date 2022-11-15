@@ -40,5 +40,11 @@ function(add_imgui_bundle_bindings)
         target_link_libraries(${python_native_module_name} PUBLIC cvnp)
     endif()
 
+    if(IMGUI_BUNDLE_BUILD_PYTHON)
+        # see add_imgui_bundle_bindings.cmake: glfw is built as a *shared* library
+        # We need to set the rpath, so that glfw's dll/dylib can be found in the same folder as imgui_bundle python lib.
+        lg_target_set_rpath(${python_native_module_name} ".")
+    endif()
+
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 endfunction()
