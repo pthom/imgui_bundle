@@ -67,11 +67,39 @@ This is an example of markdown widget, with an included image:
     ImGui::Separator();
 
     ImGuiMd::Render("# Additional widgets");
+    
+    // Knobs
     {
+        struct KnobVariantWithName
+        {
+            std::string Name;
+            ImGuiKnobVariant_ KnobVariant;
+        };
+        std::vector<KnobVariantWithName> knob_types {
+            { "tick", ImGuiKnobVariant_Tick },
+            { "dot", ImGuiKnobVariant_Dot },
+            { "space", ImGuiKnobVariant_Space },
+            { "stepped", ImGuiKnobVariant_Stepped },
+            { "wiper", ImGuiKnobVariant_Wiper },
+            { "wiper_dot", ImGuiKnobVariant_WiperDot },
+            { "wiper_only", ImGuiKnobVariant_WiperOnly },
+        };
+
         ImGui::BeginGroup();
         ImGuiMd::Render("### Knobs"); ImGui::NewLine();
         static float value = 50.f;
-        ImGuiKnobs::Knob("Knob", &value, 0.f, 100.f, 3.f);
+        for (size_t i = 0; i < knob_types.size(); ++i)
+        {
+            ImGuiKnobVariant_ knob_variant = knob_types[i].KnobVariant;
+            std::string knob_variant_name = knob_types[i].Name;
+            float speed = 1.5f;
+            const char *format = "%.3f";
+            float size = ImGui::GetFontSize() * ImGui::GetIO().FontGlobalScale * 10.f;
+            ImGuiKnobs::Knob(knob_variant_name.c_str(), &value, 0.f, 100.f, speed, format, knob_variant, size);
+            if (i%3 != 2)
+                ImGui::SameLine();
+        }
+        ImGui::NewLine();
         ImGui::EndGroup();
     }
 
