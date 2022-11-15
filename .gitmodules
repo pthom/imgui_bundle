@@ -20,7 +20,7 @@
 	url = https://github.com/pthom/ImGuiColorTextEdit
 [submodule "external/imgui-knobs"]
 	path = external/imgui-knobs
-	url = https://github.com/altschuler/imgui-knobs
+	url = https://github.com/pthom/imgui-knobs.git
 [submodule "external/ImFileDialog"]
 	path = external/ImFileDialog
 	url = https://github.com/pthom/ImFileDialog.git
