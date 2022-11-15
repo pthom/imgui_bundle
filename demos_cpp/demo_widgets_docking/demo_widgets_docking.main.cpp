@@ -176,7 +176,7 @@ Selected file names will be shown in the log panel at the bottom.
                 // get_results: plural form - ShaderOpenDialog supports multi-selection
                 auto results = ifd::FileDialog::Instance().GetResults();
                 for (auto path: results)
-                    HelloImGui::Log(HelloImGui::LogLevel::Info, path.c_str());
+                    HelloImGui::Log(HelloImGui::LogLevel::Info, path.string().c_str());
             }
             ifd::FileDialog::Instance().Close();
         }
