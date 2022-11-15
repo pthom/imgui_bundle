@@ -81,4 +81,5 @@ The source for the demos can be found inside [bindings/imgui_bundle/demos](bindi
 git clone https://github.com/pthom/imgui_bundle.git
 ````
 
-Then, take inspiration from [demos_cpp/demo_haiku_implot_heart](demos_cpp/demo_haiku_implot_heart).
+Then, take inspiration from [demos_cpp/demo_haiku_implot_heart](demos_cpp/demo_haiku_implot_heart), 
+or [demos_cpp/demo_widgets_docking](demos_cpp/demo_widgets_docking)
