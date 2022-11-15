@@ -101,7 +101,9 @@ endif()
 # C++ Apps
 ####################################################
 if (IMGUI_BUNDLE_BUILD_CPP)
-    add_subdirectory(demos_cpp)
+    if(PROJECT_IS_TOP_LEVEL)
+        add_subdirectory(demos_cpp)
+    endif()
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_subdirectory(pybind_native_debug)
         add_subdirectory(external/_sandbox)
