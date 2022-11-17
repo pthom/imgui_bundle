@@ -1,4 +1,4 @@
-from imgui_bundle import static, imgui, imgui_color_text_edit as ed, imgui_md
+from imgui_bundle import static, imgui, imgui_color_text_edit as ed, imgui_md, glfw
 
 
 TextEditor = ed.TextEditor
@@ -35,14 +35,19 @@ def demo_imgui_color_text_edit():
         if imgui.small_button("Retro blue palette"):
             editor.set_palette(TextEditor.get_retro_blue_palette())
 
+    if imgui.button("Test glfw link"):
+        from imgui_bundle import hello_imgui
+        window = hello_imgui.get_glfw_window()
+        glfw.set_window_pos(window, 10, 10)
+
     show_palette_buttons()
     editor.render("Code")
 
 
 def main():
-    from imgui_bundle import hello_imgui
+    from imgui_bundle import run
 
-    hello_imgui.run(demo_imgui_color_text_edit)
+    run(demo_imgui_color_text_edit, with_markdown=True)
 
 
 if __name__ == "__main__":
