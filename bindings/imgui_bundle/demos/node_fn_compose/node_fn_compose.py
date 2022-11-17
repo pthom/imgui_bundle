@@ -10,7 +10,8 @@ class AnyDataWithGui:
     """
     Override this class with your types, and implement a draw function that presents it content
     """
-    def gui_data(self, draw_thumbnail:bool = False) -> None:
+
+    def gui_data(self, draw_thumbnail: bool = False) -> None:
         imgui.text("draw\nnot implemented")
 
 
@@ -34,8 +35,10 @@ class FunctionWithGui(ABC):
 class _InputWithGui(FunctionWithGui):
     def __init__(self) -> None:
         pass
+
     def name(self):
         return "Input"
+
     def f(self, x: AnyDataWithGui):
         return x
 
@@ -43,8 +46,10 @@ class _InputWithGui(FunctionWithGui):
 class _OutputWithGui(FunctionWithGui):
     def __init__(self) -> None:
         pass
+
     def name(self):
         return "Output"
+
     def f(self, x: AnyDataWithGui):
         return None
 
@@ -59,7 +64,7 @@ class _FunctionNode:
     pin_output: ed.PinId
     link_id: ed.LinkId
 
-    def __init__(self, function: FunctionWithGui, next_function: Optional[FunctionWithGui]=None) -> None:
+    def __init__(self, function: FunctionWithGui, next_function: Optional[FunctionWithGui] = None) -> None:
         self.function = function
         self.next_function = next_function
         self.input_data = None
@@ -105,7 +110,6 @@ class _FunctionNode:
             return
         ed.link(self.link_id, self.pin_output, self.next_function.pin_input)
 
-
     def set_input(self, input_data: AnyDataWithGui) -> None:
         self.input_data = input_data
         if self.function is not None:
@@ -137,8 +141,8 @@ class FunctionCompositionNodes:
     def draw(self) -> None:
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
-            draw_input = (i != 0)
-            draw_output = (i != len(self.function_nodes) - 1)
+            draw_input = i != 0
+            draw_output = i != len(self.function_nodes) - 1
             fn.draw_node(draw_input=draw_input, draw_output=draw_output)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
@@ -146,13 +150,14 @@ class FunctionCompositionNodes:
 
 #######################
 
+
 class IntWithGui(AnyDataWithGui):
     value: int
 
     def __init__(self, value: int):
         self.value = value
 
-    def gui_data(self, draw_thumbnail:bool = False) -> None:
+    def gui_data(self, draw_thumbnail: bool = False) -> None:
         imgui.text(f"Int Value={self.value}")
 
 
@@ -175,11 +180,7 @@ class AddWithGui(FunctionWithGui):
 
 
 def test():
-    functions = [
-        AddWithGui(),
-        AddWithGui(),
-        AddWithGui()
-    ]
+    functions = [AddWithGui(), AddWithGui(), AddWithGui()]
     nodes = FunctionCompositionNodes(functions)
 
     x = IntWithGui(1)
@@ -197,5 +198,5 @@ def test():
     run(gui, with_node_editor=True, window_size=(800, 600), window_title="Functions composition")
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     test()

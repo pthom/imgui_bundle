@@ -8,6 +8,7 @@ def overlapping_pairs(iterable):
         yield (a, b)
         a = b
 
+
 # transform a list into a circular list of adjacent pairs
 # For example : [a, b, c] -> [ [a, b], [b, c], [c, a]]
 def overlapping_pairs_cyclic(iterable):
@@ -18,4 +19,4 @@ def overlapping_pairs_cyclic(iterable):
         yield (a, b)
         a = b
     last = a
-    yield(last, first)
+    yield (last, first)
