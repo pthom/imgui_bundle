@@ -9,6 +9,7 @@ from generate_imgui_color_text_edit import autogenerate_imgui_color_text_edit
 from generate_imgui_knobs import autogenerate_imgui_knobs
 from generate_imgui_node_editor import autogenerate_imgui_node_editor
 from generate_implot import autogenerate_implot
+from generate_glfw import autogenerate_glfw
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -48,6 +49,7 @@ def main():
     autogenerate_imgui_knobs()
     autogenerate_imgui_node_editor()
     autogenerate_implot()
+    autogenerate_glfw()
 
 
 if __name__ == "__main__":
