@@ -1486,10 +1486,15 @@ namespace ImGuiTheme
         float Hue = -1.f;
         // Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
         float SaturationMultiplier = -1.f;
-        // Multiply the value of all front widgets. If < 0, this is ignored.
+        // Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
         float ValueMultiplierFront = -1.f;
-        // Multiply the value of all backgrounds. If < 0, this is ignored.
+        // Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
         float ValueMultiplierBg = -1.f;
+        // Multiply the value (luminance) of text. If < 0, this is ignored.
+        float ValueMultiplierText = -1.f;
+        // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
+        // (Background of checkbox, radio button, plot, slider, text input)
+        float ValueMultiplierFrameBg = -1.f;
     };
 
     struct ImGuiTweakedTheme
@@ -2166,6 +2171,8 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 */
 namespace HelloImGui
 {
+    constexpr ScreenSize DefaultWindowSize = {800, 600};
+
     void Run(RunnerParams & runnerParams);
 
     void Run(const SimpleRunnerParams& simpleParams);
@@ -2175,7 +2182,7 @@ namespace HelloImGui
         const std::string& windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = {800, 600},
+        const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f
     );
 

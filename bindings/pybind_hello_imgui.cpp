@@ -201,8 +201,10 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("alpha_multiplier", &ImGuiTheme::ImGuiThemeTweaks::AlphaMultiplier, "Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.")
         .def_readwrite("hue", &ImGuiTheme::ImGuiThemeTweaks::Hue, "\n HSV Color tweaks\n\n Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.")
         .def_readwrite("saturation_multiplier", &ImGuiTheme::ImGuiThemeTweaks::SaturationMultiplier, "Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.")
-        .def_readwrite("value_multiplier_front", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFront, "Multiply the value of all front widgets. If < 0, this is ignored.")
-        .def_readwrite("value_multiplier_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierBg, "Multiply the value of all backgrounds. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_front", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFront, "Multiply the value (luminance) of all front widgets. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierBg, "Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_text", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierText, "Multiply the value (luminance) of text. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_frame_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFrameBg, " Multiply the value (luminance) of FrameBg. If < 0, this is ignored.\n (Background of checkbox, radio button, plot, slider, text input)")
         ;
 
 
@@ -428,6 +430,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("run",
         py::overload_cast<const HelloImGui::SimpleRunnerParams &>(HelloImGui::Run), py::arg("simple_params"));
+
+    m.def("run",
+        py::overload_cast<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float>(HelloImGui::Run), py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f);
 
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);

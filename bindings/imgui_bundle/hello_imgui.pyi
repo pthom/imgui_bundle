@@ -420,10 +420,15 @@ class ImGuiThemeTweaks:
     hue: float = -1.
     # Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
     saturation_multiplier: float = -1.
-    # Multiply the value of all front widgets. If < 0, this is ignored.
+    # Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
     value_multiplier_front: float = -1.
-    # Multiply the value of all backgrounds. If < 0, this is ignored.
+    # Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
     value_multiplier_bg: float = -1.
+    # Multiply the value (luminance) of text. If < 0, this is ignored.
+    value_multiplier_text: float = -1.
+    # Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
+    # (Background of checkbox, radio button, plot, slider, text input)
+    value_multiplier_frame_bg: float = -1.
 
 class ImGuiTweakedTheme:
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
@@ -1082,12 +1087,22 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 @@md
 
 """
+
 def run(runner_params: RunnerParams) -> None:
     pass
 
 def run(simple_params: SimpleRunnerParams) -> None:
     pass
 
+def run(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = False,
+    window_restore_previous_geometry: bool = False,
+    window_size: ScreenSize = DefaultWindowSize,
+    fps_idle: float = 10.
+    ) -> None:
+    pass
 
 def get_runner_params() -> RunnerParams:
     pass
