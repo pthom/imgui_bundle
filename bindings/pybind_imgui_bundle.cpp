@@ -28,7 +28,7 @@ void py_init_module_imgui_bundle(py::module& m)
     auto module_imgui =  m.def_submodule("imgui");
     py_init_module_imgui_main(module_imgui);
 
-    auto module_imgui_internal =  m.def_submodule("imgui_internal");
+    auto module_imgui_internal =  module_imgui.def_submodule("internal");
     py_init_module_imgui_internal(module_imgui_internal);
 
     auto module_himgui =  m.def_submodule("hello_imgui");

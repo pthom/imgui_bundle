@@ -3,6 +3,7 @@ import sys
 from typing import Literal, List, Any, Optional, Tuple
 import numpy as np
 import enum
+from . import internal as internal
 
 
 ##################################################

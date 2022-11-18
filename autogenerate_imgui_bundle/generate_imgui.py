@@ -43,7 +43,7 @@ def autogenerate_imgui() -> None:
 
     generator.write_generated_code(
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui.pyi",
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui/__init__.pyi",
         output_cpp_glue_code_file=CPP_GENERATED_PYBIND_DIR + "/litgen_glue_code.h",
     )
 
@@ -54,7 +54,7 @@ def autogenerate_imgui_internal() -> None:
         options_imgui_internal,
         input_cpp_header_file=CPP_HEADERS_DIR + "/imgui_internal.h",
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_internal.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_internal.pyi",
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui/internal.pyi",
     )
 
 

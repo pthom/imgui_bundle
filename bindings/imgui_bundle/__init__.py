@@ -1,5 +1,4 @@
 from imgui_bundle._imgui_bundle import imgui as imgui
-from imgui_bundle._imgui_bundle import imgui_internal as imgui_internal
 from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui
 from imgui_bundle._imgui_bundle import implot as implot
 from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
