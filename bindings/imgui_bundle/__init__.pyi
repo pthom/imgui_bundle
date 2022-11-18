@@ -20,5 +20,8 @@ from .imgui_bundle_utils import (
     run_anon_block as run_anon_block,
     run_nb as run_nb
 )
+
+from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui
+
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)
 from . im_col32 import IM_COL32 as IM_COL32

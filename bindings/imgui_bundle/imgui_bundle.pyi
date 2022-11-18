@@ -1,7 +1,7 @@
 """
 """
 
-from typing import Tuple
+from typing import Tuple, Optional, Callable
 import numpy as np
 import enum
 
@@ -10,6 +10,7 @@ from imgui_bundle.imgui_md import MarkdownOptions
 from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig
 
 
+VoidFunction = Callable[[None], None]
 ScreenSize = Tuple[int, int]
 DefaultScreenSize = (800, 600)
 
