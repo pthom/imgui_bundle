@@ -39,6 +39,9 @@ void use_venv_python()
     if (! std::filesystem::is_regular_file(python_program))
         throw std::runtime_error("Can find python program!");
 
+    std::cout << "pybind_native_debug: THIS_DIR=" << THIS_DIR << "\n";
+    std::cout << "    using python: " << python_program << "\n";
+
     std::wstring python_program_wstring(python_program.begin(), python_program.end());
     Py_SetProgramName(python_program_wstring.c_str());
 }

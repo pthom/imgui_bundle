@@ -1,7 +1,13 @@
+"""This is a direct adaptation of imgui example: imgui/examples/example_glfw_opengl3/main.cpp
+"""
+
 import sys
 import platform
 import OpenGL.GL as GL
 from imgui_bundle import imgui, imgui_backends
+# Always import glfw *after* imgui_bundle
+# (since imgui_bundle will set the correct path where to look for
+#  the correct version of the glfw dynamic library)
 import glfw
 
 
@@ -49,7 +55,7 @@ def main():
     io = imgui.get_io()
     io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
-    # io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable # Enable docking
+    io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable # Enable docking
     # io.config_flags |= imgui.ImGuiConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.ConfigViewportsNoAutoMerge = true;
     # io.ConfigViewportsNoTaskBarIcon = true;
@@ -65,7 +71,12 @@ def main():
         # style.Colors[ImGuiCol_WindowBg].w = 1.0f;  # unsettable from python!!!!
 
     # Setup Platform/Renderer backends
-    imgui_backends.glfw_init_for_open_gl(window, True)
+    import ctypes
+    # You need to transfer the window address to imgui_backends.glfw_init_for_open_gl
+    # proceed as shown below to get it.
+    window_address = ctypes.cast(window, ctypes.c_void_p).value
+    imgui_backends.glfw_init_for_open_gl(window_address, True)
+
     imgui_backends.open_gl3_init(glsl_version)
 
     # // Load Fonts
@@ -156,10 +167,8 @@ def main():
 
         # Rendering
         imgui.render()
-        display_w = glfw.BoxedInt()
-        display_h = glfw.BoxedInt()
-        glfw.get_framebuffer_size(window, display_w, display_h)
-        GL.glViewport(0, 0, display_w.value, display_h.value)
+        display_w, display_h = glfw.get_framebuffer_size(window)
+        GL.glViewport(0, 0, display_w, display_h)
         GL.glClearColor(
             clear_color[0] * clear_color[3],
             clear_color[1] * clear_color[3],

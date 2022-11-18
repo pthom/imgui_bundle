@@ -10,9 +10,9 @@ def main() -> None:
     print(path_lg_imgui_bundle)
     sys.path.append(path_lg_imgui_bundle)
 
-    import demo_node_editor  # type: ignore
+    import imgui_example_outer_glfw_opengl3  # type: ignore
 
-    demo_node_editor.main()
+    imgui_example_outer_glfw_opengl3.main()
 
 
 main()
