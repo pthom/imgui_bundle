@@ -32,5 +32,7 @@ def autogenerate_imgui_backends():
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui_backends")
-    autogenerate_imgui_backends()
+    # imgui_backend is now generated manually
+    pass
+    # print("autogenerate_imgui_backends")
+    # autogenerate_imgui_backends()
