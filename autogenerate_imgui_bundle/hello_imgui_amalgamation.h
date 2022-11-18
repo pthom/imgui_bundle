@@ -1328,6 +1328,9 @@ enum class WindowPositionMode
 };
 
 
+constexpr ScreenSize DefaultScreenSize = {800, 600};
+constexpr ScreenPosition DefaultScreenPosition = {40, 40};
+
 /**
 @@md#WindowGeometry
 
@@ -1366,8 +1369,8 @@ Members:
 **/
 struct WindowGeometry
 {
-    // used if fullScreenMode==NoFullScreen and sizeAuto==false
-    ScreenSize size = ScreenSize{800, 600};
+    // used if fullScreenMode==NoFullScreen and sizeAuto==false, default=(800, 600)
+    ScreenSize size = DefaultScreenSize;
 
     // If true, adapt the app window size to the presented widgets
     bool sizeAuto = false;
@@ -1376,8 +1379,8 @@ struct WindowGeometry
 
     WindowPositionMode positionMode = WindowPositionMode::OsDefault;
 
-    // used if windowPositionMode==FromCoords
-    ScreenPosition position = ScreenPosition{40, 40};
+    // used if windowPositionMode==FromCoords, default=(40, 40)
+    ScreenPosition position = DefaultScreenPosition;
 
     // used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     int monitorIdx = 0;

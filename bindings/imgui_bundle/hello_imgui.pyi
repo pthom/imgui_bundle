@@ -274,6 +274,7 @@ class WindowPositionMode(enum.Enum):
     from_coords = enum.auto()    # (= 2)
 
 
+
 class WindowGeometry:
     """*
     @@md#WindowGeometry
@@ -312,8 +313,8 @@ class WindowGeometry:
     @@md
     *
     """
-    # used if fullScreenMode==NoFullScreen and sizeAuto==False
-    size: ScreenSize = ScreenSize{800, 600}
+    # used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)
+    size: ScreenSize = DefaultScreenSize
 
     # If True, adapt the app window size to the presented widgets
     size_auto: bool = False
@@ -322,8 +323,8 @@ class WindowGeometry:
 
     position_mode: WindowPositionMode = WindowPositionMode.os_default
 
-    # used if windowPositionMode==FromCoords
-    position: ScreenPosition = ScreenPosition{40, 40}
+    # used if windowPositionMode==FromCoords, default=(40, 40)
+    position: ScreenPosition = DefaultScreenPosition
 
     # used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     monitor_idx: int = 0

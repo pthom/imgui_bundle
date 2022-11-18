@@ -142,11 +142,11 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::WindowGeometry>
             (m, "WindowGeometry", "*\n@@md#WindowGeometry\n\n__WindowGeometry__ is a struct that defines the window geometry.\n\nMembers:\n* `size`: _int[2], default=\"{800, 600}\"_. Size of the application window\n  used if fullScreenMode==NoFullScreen and sizeAuto==False\n* `sizeAuto`: _bool, default=false_\n  If True, adapt the app window size to the presented widgets\n* `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.\n   You can choose between several full screen modes:\n   ````cpp\n        NoFullScreen,\n        FullScreen,                    // Full screen with specified resolution\n        FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution\n        FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor\n    ````\n* `positionMode`: _WindowPositionMode, default = OsDefault_.\n   You can choose between several window position modes:\n   ````cpp\n        OsDefault,\n        MonitorCenter,\n        FromCoords,\n    ````\n* `monitorIdx`: _int, default = 0_.\n  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen\n* `windowSizeState`: _WindowSizeState, default=Standard_\n   You can choose between several window size states:\n   ````cpp\n        Standard,\n        Minimized,\n        Maximized\n    ````\n@@md\n*")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False")
+        .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)")
         .def_readwrite("size_auto", &HelloImGui::WindowGeometry::sizeAuto, "If True, adapt the app window size to the presented widgets")
         .def_readwrite("full_screen_mode", &HelloImGui::WindowGeometry::fullScreenMode, "")
         .def_readwrite("position_mode", &HelloImGui::WindowGeometry::positionMode, "")
-        .def_readwrite("position", &HelloImGui::WindowGeometry::position, "used if windowPositionMode==FromCoords")
+        .def_readwrite("position", &HelloImGui::WindowGeometry::position, "used if windowPositionMode==FromCoords, default=(40, 40)")
         .def_readwrite("monitor_idx", &HelloImGui::WindowGeometry::monitorIdx, "used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen")
         .def_readwrite("window_size_state", &HelloImGui::WindowGeometry::windowSizeState, "")
         ;
