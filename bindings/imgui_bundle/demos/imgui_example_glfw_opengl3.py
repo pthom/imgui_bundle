@@ -1,4 +1,7 @@
 """This is a direct adaptation of imgui example: imgui/examples/example_glfw_opengl3/main.cpp
+
+imgui_bundle can be used without hello imgui, and you can configure and run imgui, opengl and glfw (or sdl, etc.) manually,
+as shown here.
 """
 
 import sys
