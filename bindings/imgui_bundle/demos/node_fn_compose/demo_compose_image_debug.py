@@ -31,8 +31,7 @@ class CannyWithGui(FunctionWithGui):
         self.what_to_add = 1
 
     def f(self, x: ImageWithGui) -> ImageWithGui:
-        edge = cv2.Canny(x.image, self.t_lower, self.t_upper,
-                         apertureSize=self.aperture_size)
+        edge = cv2.Canny(x.image, self.t_lower, self.t_upper, apertureSize=self.aperture_size)
         return ImageWithGui(edge)
 
     def name(self):
@@ -61,7 +60,7 @@ def main():
     image_params_sobel.zoom_key = image_params.zoom_key
     image_params_sobel.image_display_size = image_params.image_display_size
     image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    image_gray = image_gray / 255.
+    image_gray = image_gray / 255.0
     sobel_x = cv2.Sobel(image_gray, cv2.CV_64F, 1, 0, ksize=5)
     # immvision.debug("sobel", sobel_x)
 

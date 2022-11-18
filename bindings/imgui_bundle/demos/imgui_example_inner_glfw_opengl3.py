@@ -10,7 +10,7 @@ def glfw_error_callback(error: int, description: str):
 
 def main():
     # Setup window
-    glfw.set_error_callback(glfw_error_callback);
+    glfw.set_error_callback(glfw_error_callback)
     if not glfw.init():
         sys.exit(1)
 
@@ -25,7 +25,7 @@ def main():
         glsl_version = "#version 150"
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE) # // 3.2+ only
+        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)  # // 3.2+ only
         glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL.GL_TRUE)
     else:
         # GL 3.0 + GLSL 130
@@ -38,22 +38,24 @@ def main():
     # Create window with graphics context
     w = glfw.GLFWwindow.null()
     m = glfw.GLFWmonitor.null()
-    window = glfw.create_window(1280, 720, "Dear ImGui GLFW+OpenGL3 example", glfw.GLFWmonitor.null(), glfw.GLFWwindow.null())
+    window = glfw.create_window(
+        1280, 720, "Dear ImGui GLFW+OpenGL3 example", glfw.GLFWmonitor.null(), glfw.GLFWwindow.null()
+    )
     if window is None:
-       sys.exit(1)
+        sys.exit(1)
     glfw.make_context_current(window)
-    glfw.swap_interval(1) # // Enable vsync
+    glfw.swap_interval(1)  # // Enable vsync
 
     # Setup Dear ImGui context
     # IMGUI_CHECKVERSION();
     imgui.create_context()
     io = imgui.get_io()
-    io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_keyboard # Enable Keyboard Controls
+    io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
     # io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable # Enable docking
     # io.config_flags |= imgui.ImGuiConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
-    #io.ConfigViewportsNoAutoMerge = true;
-    #io.ConfigViewportsNoTaskBarIcon = true;
+    # io.ConfigViewportsNoAutoMerge = true;
+    # io.ConfigViewportsNoTaskBarIcon = true;
 
     # Setup Dear ImGui style
     imgui.style_colors_dark()
@@ -68,7 +70,6 @@ def main():
     # Setup Platform/Renderer backends
     imgui_backends.glfw_init_for_open_gl(window, True)
     imgui_backends.open_gl3_init(glsl_version)
-
 
     # // Load Fonts
     # // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use imgui.PushFont()/PopFont() to select them.
@@ -116,23 +117,29 @@ def main():
             nonlocal show_demo_window, show_another_window, clear_color, counter, f
             # static float f = 0.0f;
             # static int counter = 0;
-            imgui.begin("Hello, world!") # Create a window called "Hello, world!" and append into it.
+            imgui.begin("Hello, world!")  # Create a window called "Hello, world!" and append into it.
 
             imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
-            _, show_demo_window = imgui.checkbox("Demo Window", show_demo_window) # Edit bools storing our window open/close state
+            _, show_demo_window = imgui.checkbox(
+                "Demo Window", show_demo_window
+            )  # Edit bools storing our window open/close state
             _, show_another_window = imgui.checkbox("Another Window", show_another_window)
 
             _, f = imgui.slider_float("float", f, 0.0, 1.0)  # Edit 1 float using a slider from 0.0f to 1.0f
-            _, clear_color = imgui.color_edit4("clear color", clear_color) # Edit 4 floats representing a color
+            _, clear_color = imgui.color_edit4("clear color", clear_color)  # Edit 4 floats representing a color
 
-            if imgui.button("Button"): # Buttons return true when clicked (most widgets return true when edited/activated)
+            if imgui.button(
+                "Button"
+            ):  # Buttons return true when clicked (most widgets return true when edited/activated)
                 counter += 1
 
-            imgui.same_line();
+            imgui.same_line()
             imgui.text(f"counter = {counter}")
 
-            imgui.text(f"Application average {1000.0 / imgui.get_io().framerate} ms/frame ({imgui.get_io().framerate:.1f} FPS)")
-            imgui.end();
+            imgui.text(
+                f"Application average {1000.0 / imgui.get_io().framerate} ms/frame ({imgui.get_io().framerate:.1f} FPS)"
+            )
+            imgui.end()
 
         show_simple_window()
 
@@ -140,8 +147,10 @@ def main():
         def gui_another_window():
             nonlocal show_another_window
             if show_another_window:
-                imgui.begin("Another Window", show_another_window) # Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-                imgui.text("Hello from another window!");
+                imgui.begin(
+                    "Another Window", show_another_window
+                )  # Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+                imgui.text("Hello from another window!")
                 if imgui.button("Close Me"):
                     show_another_window = False
                 imgui.end()
@@ -150,10 +159,16 @@ def main():
 
         # Rendering
         imgui.render()
-        display_w = glfw.BoxedInt(); display_h = glfw.BoxedInt()
+        display_w = glfw.BoxedInt()
+        display_h = glfw.BoxedInt()
         glfw.get_framebuffer_size(window, display_w, display_h)
         GL.glViewport(0, 0, display_w.value, display_h.value)
-        GL.glClearColor(clear_color[0] * clear_color[3], clear_color[1] * clear_color[3], clear_color[2] * clear_color[3], clear_color[3])
+        GL.glClearColor(
+            clear_color[0] * clear_color[3],
+            clear_color[1] * clear_color[3],
+            clear_color[2] * clear_color[3],
+            clear_color[3],
+        )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         imgui_backends.open_gl3_render_draw_data(imgui.get_draw_data())
 
@@ -163,9 +178,7 @@ def main():
         if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
-            imgui.render_platform_windows_default(
-                glfw.make_context_current(backup_current_context)
-            )
+            imgui.render_platform_windows_default(glfw.make_context_current(backup_current_context))
 
         glfw.swap_buffers(window)
 
@@ -176,7 +189,6 @@ def main():
 
     glfw.destroy_window(window)
     glfw.terminate()
-
 
 
 if __name__ == "__main__":

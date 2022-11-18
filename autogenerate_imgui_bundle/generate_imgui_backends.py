@@ -27,7 +27,7 @@ def autogenerate_imgui_backends():
 
     generator.write_generated_code(
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_backends.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_backends.pyi"
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_backends.pyi",
     )
 
 
