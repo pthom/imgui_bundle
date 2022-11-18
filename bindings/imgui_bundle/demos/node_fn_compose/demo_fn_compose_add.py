@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from imgui_bundle import imgui_node_editor as imgui_node_editor
+from imgui_bundle import imgui_node_editor as imgui_node_editor, run
 from imgui_bundle.demos.node_fn_compose.node_fn_compose import *
 
 
@@ -49,7 +49,7 @@ def main():
         ed.end()
 
     config_node = imgui_node_editor.Config()
-    config_node.settings_file = "demo_add.json"
+    config_node.settings_file = "demo_fn_compose_add.json"
     run(gui, with_node_editor_config=config_node, window_size=(800, 600), window_title="Functions composition")
 
 

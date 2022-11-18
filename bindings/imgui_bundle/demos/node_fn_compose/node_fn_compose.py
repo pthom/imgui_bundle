@@ -1,9 +1,32 @@
 from __future__ import annotations
-from imgui_bundle import run, imgui, imgui_node_editor as ed, icons_fontawesome
-from imgui_bundle.demos.node_fn_compose.functional_utils import overlapping_pairs
+from imgui_bundle import imgui, imgui_node_editor as ed, icons_fontawesome, ImVec2
 
-from typing import Callable, Any, List, Optional
+from typing import List, Optional
 from abc import ABC, abstractmethod
+
+
+# transform a list into a list of adjacent pairs
+# For example : [a, b, c] -> [ [a, b], [b, c]]
+def overlapping_pairs(iterable):
+    it = iter(iterable)
+    a = next(it, None)
+
+    for b in it:
+        yield (a, b)
+        a = b
+
+
+# transform a list into a circular list of adjacent pairs
+# For example : [a, b, c] -> [ [a, b], [b, c], [c, a]]
+def overlapping_pairs_cyclic(iterable):
+    it = iter(iterable)
+    a = next(it, None)
+    first = a
+    for b in it:
+        yield (a, b)
+        a = b
+    last = a
+    yield (last, first)
 
 
 class AnyDataWithGui:
@@ -74,8 +97,12 @@ class _FunctionNode:
         self.pin_output = ed.PinId.create()
         self.link_id = ed.LinkId.create()
 
-    def draw_node(self, draw_input: bool = True, draw_output: bool = True) -> None:
+    def draw_node(self, draw_input: bool, draw_output: bool, idx: int) -> None:
         ed.begin_node(self.node_id)
+        position = ed.get_node_position(self.node_id)
+        if position.x == 0 and position.y == 0:
+            width_between_nodes = 200
+            ed.set_node_position(self.node_id, ImVec2(idx * width_between_nodes + 1, 0) )
 
         imgui.text(self.function.name())
 
@@ -143,6 +170,6 @@ class FunctionCompositionNodes:
         for i, fn in enumerate(self.function_nodes):
             draw_input = i != 0
             draw_output = i != len(self.function_nodes) - 1
-            fn.draw_node(draw_input=draw_input, draw_output=draw_output)
+            fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
