@@ -59,7 +59,7 @@ setup(
             "demos/demos_hello_imgui/assets/images/*.*",
         ]
     },
-    install_requires=["numpy >= 1.15", "munch >= 2.0.0", "opencv-python >= 4.5"],
+    install_requires=["numpy >= 1.15", "munch >= 2.0.0", "opencv-python >= 4.5", "glfw > 2.5"],
     entry_points={
         "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos.demo_all:main"],
     },
