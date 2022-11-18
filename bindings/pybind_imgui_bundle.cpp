@@ -18,6 +18,7 @@ void py_init_module_imspinner(py::module& m);
 void py_init_module_imgui_md(py::module& m);
 void py_init_module_immvision(py::module& m);
 void py_init_module_glfw(py::module& m);
+void py_init_module_imgui_backends(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)

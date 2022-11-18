@@ -10,6 +10,7 @@ from imgui_bundle._imgui_bundle import imspinner as imspinner
 from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import immvision as immvision
 from imgui_bundle._imgui_bundle import glfw as glfw
+from imgui_bundle._imgui_bundle import imgui_backends as imgui_backends
 from imgui_bundle._imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,

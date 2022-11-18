@@ -25,6 +25,7 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imgui_md.cpp
         bindings/pybind_immvision.cpp
         bindings/pybind_glfw.cpp
+        bindings/pybind_imgui_backends.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
