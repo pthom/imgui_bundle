@@ -43,10 +43,11 @@ function(add_imgui_bundle_bindings)
     endif()
 
     if(IMGUI_BUNDLE_BUILD_PYTHON)
-        # if using shared libraries, we need to set the rpath,
-        # so that dll/dylibs can be found in the same folder as imgui_bundle python lib.
-
-        # lg_target_set_rpath(${python_native_module_name} ".")
+        if (IMGUI_BUNDLE_GLFW_DYNAMIC)
+            # if using shared libraries, we need to set the rpath,
+            # so that dll/dylibs can be found in the same folder as imgui_bundle python lib.
+            lg_target_set_rpath(${python_native_module_name} ".")
+        endif()
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})

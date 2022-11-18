@@ -30,6 +30,9 @@ import os
 THIS_DIR = os.path.dirname(__file__)
 hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 
+from imgui_bundle._set_glfw_pip_search_path import _set_glfw_pip_search_path
+_set_glfw_pip_search_path()
+
 
 __all__ = [
     "imgui",
