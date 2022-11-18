@@ -22,7 +22,7 @@ from imgui_bundle.imgui_bundle_utils import static as static, run_anon_block as 
 
 from imgui_bundle._imgui_bundle import __version__
 
-from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor
+from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
 from imgui_bundle.im_col32 import IM_COL32
 
 import os

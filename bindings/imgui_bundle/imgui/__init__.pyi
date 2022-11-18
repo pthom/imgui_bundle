@@ -12,6 +12,9 @@ from . import internal as internal
 
 VoidPtr = Any
 
+FLT_MIN: float # value defined by this module as the minimum acceptable C(++) float
+FLT_MAX: float # value defined by this module as the maximum acceptable C(++) float
+
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 #-----------------------------------------------------------------------------
