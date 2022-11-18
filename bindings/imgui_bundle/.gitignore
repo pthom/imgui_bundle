@@ -6,3 +6,4 @@ include/
 *.pyd
 *.so
 *.dylib
+*.so.*
