@@ -38,20 +38,11 @@ py::array_t<uint8_t> FinalAppWindowScreenshot()
 }
 
 
-#include "glfw/src/internal.h"
-// Atrocious wrapper around GLFW opaque types: GLFWwindow (see pybind_glfw.cpp for more info)
-struct GLFWwindow { _GLFWwindow _; };
-
-
 void py_init_module_hello_imgui(py::module& m)
 {
     using namespace HelloImGui;
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
-
-    m.def("get_glfw_window", []() {
-       return (GLFWwindow *) HelloImGui::GetRunnerParams()->backendPointers.glfwWindow;
-    }, py::return_value_policy::reference);
 
     m.def("get_glfw_window_address", []() {
         return (size_t) HelloImGui::GetRunnerParams()->backendPointers.glfwWindow;
