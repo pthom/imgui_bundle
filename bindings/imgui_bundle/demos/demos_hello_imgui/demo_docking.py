@@ -12,7 +12,7 @@ It demonstrates:
 import os
 from enum import Enum
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2
 
 
 # Struct that holds the application's state
@@ -49,22 +49,25 @@ def my_load_fonts():
 
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
-
+    # Note, you can also show the tweak theme widgets via:
+    # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
     imgui_md.render(
         """
-### Markdown Test
-* _underline_
-* *italic*
-* **bold**
----
+# Tweak the theme!
+
+Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
+You can even easily tweak their colors.
     """[
             1:
         ]
     )
 
+
+    imgui.separator()
+
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("world.jpg")
+    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip(
@@ -107,6 +110,19 @@ def command_gui(state: AppState):
             state.rocket_state = AppState.RocketState.Init
             state.rocket_progress = 0.0
 
+    imgui_md.render("""
+    --- 
+# Markdown Test
+
+## Title Level 2
+
+### Title level 3
+
+* _underline_
+* *italic*
+* **bold**
+---
+    """)
 
 # Our Gui in the status bar
 def status_bar_gui(app_state: AppState):

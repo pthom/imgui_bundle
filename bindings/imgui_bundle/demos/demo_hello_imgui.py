@@ -53,8 +53,9 @@ Features
     imgui.text("How to load assets")
     show_one_feature("demos_hello_imgui/demo_assets.py")
 
-    imgui.text(
-        "How to build complex applications layouts, with dockable panels, that can even become independent windows"
+    imgui.text_wrapped(
+        "How to build complex applications layouts, with dockable panels, that can even become independent windows. "
+        "How to customize the theme."
     )
     show_one_feature("demos_hello_imgui/demo_docking.py")
 
