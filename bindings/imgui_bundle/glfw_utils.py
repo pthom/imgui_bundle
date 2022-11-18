@@ -15,19 +15,22 @@ def _set_glfw_pip_search_path():
     this_dir = os.path.dirname(__file__)
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
-    elif platform.system() == "Window":
+    elif platform.system() == "Windows":
         lib_file = "glfw3.dll"
     elif platform.system() == "Linux":
         lib_file = "libglfw.so.3"
     else:
-        raise NotImplemented(f"Please implement set_pip_glfw_search_path() for your os {platform.system()}")
+        msg = f"Please implement set_pip_glfw_search_path() for your os: {platform.system()}\n"
+        raise NotImplementedError(msg)
     os.environ["PYGLFW_LIBRARY"] = f"{this_dir}/{lib_file}"
 
 
 _set_glfw_pip_search_path()
 
 
-import glfw
+# do not move this import at the top, it should be done after the call to _set_glfw_pip_search_path()
+import glfw 
+from typing import cast
 
 
 def glfw_window_hello_imgui() -> glfw._GLFWwindow:
@@ -39,4 +42,4 @@ def glfw_window_hello_imgui() -> glfw._GLFWwindow:
 
     window_address = hello_imgui.get_glfw_window_address()
     window_pointer = ctypes.cast(window_address, ctypes.POINTER(glfw._GLFWwindow))
-    return window_pointer
+    return cast(glfw._GLFWwindow, window_pointer)
