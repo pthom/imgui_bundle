@@ -21,7 +21,7 @@ def _set_glfw_pip_search_path():
     elif platform.system() == "Window":
         lib_file = "glfw3.dll"
     elif platform.system() == "Linux":
-        lib_file = "libglfw.3.so"
+        lib_file = "libglfw.so.3"
     else:
         raise NotImplemented(f"Please implement set_pip_glfw_search_path() for your os {platform.system()}")
     os.environ["PYGLFW_LIBRARY"] = f"{this_dir}/{lib_file}"
