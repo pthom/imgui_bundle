@@ -3515,7 +3515,7 @@ class ImNewWrapper:    # imgui.h:1825
 # and ImGui::PushStyleColor(ImGuiCol_XXX)/PopStyleColor() for colors.
 #-----------------------------------------------------------------------------
 
-class ImGuiStyle:    # imgui.h:1918
+class Style:    # imgui.h:1918
     # float       Alpha;    /* original C++ signature */
     alpha: float                                               # Global alpha applies to everything in Dear ImGui.    # imgui.h:1920
     # float       DisabledAlpha;    /* original C++ signature */
@@ -3611,7 +3611,7 @@ class ImGuiStyle:    # imgui.h:1918
 # Access via ImGui::GetIO(). Read 'Programmer guide' section in .cpp file for general usage.
 #-----------------------------------------------------------------------------
 
-class ImGuiKeyData:    # imgui.h:1975
+class KeyData:    # imgui.h:1975
     """ [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.
      If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.
     """
@@ -3624,7 +3624,7 @@ class ImGuiKeyData:    # imgui.h:1975
     # float       AnalogValue;    /* original C++ signature */
     analog_value: float        # 0.0..1.0 for gamepad values    # imgui.h:1980
 
-class ImGuiIO:    # imgui.h:1983
+class IO:    # imgui.h:1983
     #------------------------------------------------------------------
     # Configuration                            // Default value
     #------------------------------------------------------------------
@@ -3906,7 +3906,7 @@ class ImGuiIO:    # imgui.h:1983
 # [SECTION] Misc data structures
 #-----------------------------------------------------------------------------
 
-class ImGuiInputTextCallbackData:    # imgui.h:2169
+class InputTextCallbackData:    # imgui.h:2169
     """ Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.
      The callback function should return 0 by default.
      Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)
@@ -3956,7 +3956,7 @@ class ImGuiInputTextCallbackData:    # imgui.h:2169
     def insert_chars(self, pos: int, text: str, text_end: str = None) -> None:    # imgui.h:2192
         pass
 
-class ImGuiSizeCallbackData:    # imgui.h:2200
+class SizeCallbackData:    # imgui.h:2200
     """ Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().
      NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.
     """
@@ -3969,7 +3969,7 @@ class ImGuiSizeCallbackData:    # imgui.h:2200
     # ImVec2  DesiredSize;    /* original C++ signature */
     desired_size: ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.    # imgui.h:2205
 
-class ImGuiWindowClass:    # imgui.h:2215
+class WindowClass:    # imgui.h:2215
     """ [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.
      Important: the content of this class is still highly WIP and likely to change and be refactored
      before we stabilize Docking features. Please be mindful if using this.
@@ -3999,7 +3999,7 @@ class ImGuiWindowClass:    # imgui.h:2215
     def __init__(self) -> None:                        # imgui.h:2226
         pass
 
-class ImGuiPayload:    # imgui.h:2230
+class Payload:    # imgui.h:2230
     """ Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()"""
     # Members
     # void*           Data;    /* original C++ signature */
@@ -4023,7 +4023,7 @@ class ImGuiPayload:    # imgui.h:2230
     def __init__(self) -> None:    # imgui.h:2244
         pass
 
-class ImGuiTableColumnSortSpecs:    # imgui.h:2252
+class TableColumnSortSpecs:    # imgui.h:2252
     """ Sorting specification for one column of a table (sizeof == 12 bytes)"""
     # ImGuiID                     ColumnUserID;    /* original C++ signature */
     column_user_id: ImGuiID        # User id of the column (if specified by a TableSetupColumn() call)    # imgui.h:2254
@@ -4036,7 +4036,7 @@ class ImGuiTableColumnSortSpecs:    # imgui.h:2252
     def __init__(self) -> None:    # imgui.h:2259
         pass
 
-class ImGuiTableSortSpecs:    # imgui.h:2266
+class TableSortSpecs:    # imgui.h:2266
     """ Sorting specifications for a table (often handling sort specs for a single column, occasionally more)
      Obtained by calling TableGetSortSpecs().
      When 'SpecsDirty == True' you can sort your data. It will be True with sorting specs have changed since last call, or the first time.
@@ -4059,7 +4059,7 @@ class ImGuiTableSortSpecs:    # imgui.h:2266
 
 # Helper: Unicode defines
 
-class ImGuiOnceUponAFrame:    # imgui.h:2289
+class OnceUponAFrame:    # imgui.h:2289
     """ Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create an UI within deep-nested code that runs multiple times every frame.
      Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text("This will be called only once per frame");
     """
@@ -4069,7 +4069,7 @@ class ImGuiOnceUponAFrame:    # imgui.h:2289
     # mutable int RefFrame;    /* original C++ signature */
     ref_frame: int                 # imgui.h:2292
 
-class ImGuiTextFilter:    # imgui.h:2297
+class TextFilter:    # imgui.h:2297
     """ Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """
     # IMGUI_API           ImGuiTextFilter(const char* default_filter = "");    /* original C++ signature */
     def __init__(self, default_filter: str = "") -> None:                            # imgui.h:2299
@@ -4085,7 +4085,7 @@ class ImGuiTextFilter:    # imgui.h:2297
     def build(self) -> None:                                                         # imgui.h:2302
         pass
 
-    class ImGuiTextRange:                                                            # imgui.h:2307
+    class TextRange:                                                                 # imgui.h:2307
         """ [Internal]"""
         # const char*     b;    /* original C++ signature */
         b: str                                                                       # imgui.h:2309
@@ -4102,7 +4102,7 @@ class ImGuiTextFilter:    # imgui.h:2297
     count_grep: int                                                                  # imgui.h:2319
 
 
-class ImGuiStorage:    # imgui.h:2351
+class Storage:    # imgui.h:2351
     """ Helper: Key->Value storage
      Typically you don't have to worry about this since a storage is held within each Window.
      We use it to e.g. store collapse state for a tree (Int 0/1)
@@ -4112,7 +4112,7 @@ class ImGuiStorage:    # imgui.h:2351
      - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)
      Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.
     """
-    class ImGuiStoragePair:                                                      # imgui.h:2354
+    class StoragePair:                                                           # imgui.h:2354
         """ [Internal]"""
         # ImGuiID key;    /* original C++ signature */
         key: ImGuiID                                                             # imgui.h:2356
@@ -4177,7 +4177,7 @@ class ImGuiStorage:    # imgui.h:2351
         """ For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once."""
         pass
 
-class ImGuiListClipper:    # imgui.h:2414
+class ListClipper:    # imgui.h:2414
     """ Helper: Manually clip large list of items.
      If you have lots evenly spaced items and you have a random access to the list, you can perform coarse
      clipping based on visibility to only submit items that are in view.
@@ -5090,7 +5090,7 @@ class ImGuiViewportFlags_(enum.Enum):    # imgui.h:3021
     # ImGuiViewportFlags_CanHostOtherWindows      = 1 << 12       /* original C++ signature */
     can_host_other_windows = enum.auto() # (= 1 << 12)  # Main viewport: can host multiple imgui windows (secondary viewports are associated to a single window).
 
-class ImGuiViewport:    # imgui.h:3046
+class Viewport:    # imgui.h:3046
     """ - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
      - With multi-viewport enabled, we extend this concept to have multiple active viewports.
      - In the future we will extend this concept further to also represent Platform Monitor and support a "no main platform window" operation mode.
@@ -5193,7 +5193,7 @@ class ImGuiViewport:    # imgui.h:3046
 #   or you may decide to never setup those pointers and call your code directly. They are a convenience, not an obligatory interface.
 #-----------------------------------------------------------------------------
 
-class ImGuiPlatformIO:    # imgui.h:3129
+class PlatformIO:    # imgui.h:3129
     """ (Optional) Access via ImGui::GetPlatformIO()"""
     #------------------------------------------------------------------
     # Input - Backend interface/functions + Monitor List
@@ -5228,7 +5228,7 @@ class ImGuiPlatformIO:    # imgui.h:3129
         """ Zero clear"""
         pass
 
-class ImGuiPlatformMonitor:    # imgui.h:3192
+class PlatformMonitor:    # imgui.h:3192
     """ (Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.
      We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.
     """
@@ -5246,7 +5246,7 @@ class ImGuiPlatformMonitor:    # imgui.h:3192
     def __init__(self) -> None:    # imgui.h:3197
         pass
 
-class ImGuiPlatformImeData:    # imgui.h:3201
+class PlatformImeData:    # imgui.h:3201
     """ (Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function."""
     # bool    WantVisible;    /* original C++ signature */
     want_visible: bool             # A widget wants the IME to be visible    # imgui.h:3203

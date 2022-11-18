@@ -448,89 +448,89 @@ class ImGuiInputTextFlagsPrivate_(enum.Enum):    # imgui_internal.h:806
     """ Extend ImGuiInputTextFlags_"""
     # [Internal]
     # ImGuiInputTextFlags_Multiline           = 1 << 26,      /* original C++ signature */
-    im_gui_input_text_flags_multiline = enum.auto()      # (= 1 << 26)  # For internal use by InputTextMultiline()
+    input_text_flags_multiline = enum.auto()      # (= 1 << 26)  # For internal use by InputTextMultiline()
     # ImGuiInputTextFlags_NoMarkEdited        = 1 << 27,      /* original C++ signature */
-    im_gui_input_text_flags_no_mark_edited = enum.auto() # (= 1 << 27)  # For internal use by functions using InputText() before reformatting data
+    input_text_flags_no_mark_edited = enum.auto() # (= 1 << 27)  # For internal use by functions using InputText() before reformatting data
     # ImGuiInputTextFlags_MergedItem          = 1 << 28       /* original C++ signature */
-    im_gui_input_text_flags_merged_item = enum.auto()    # (= 1 << 28)  # For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.
+    input_text_flags_merged_item = enum.auto()    # (= 1 << 28)  # For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.
 
 class ImGuiButtonFlagsPrivate_(enum.Enum):    # imgui_internal.h:815
     """ Extend ImGuiButtonFlags_"""
     # ImGuiButtonFlags_PressedOnClick         = 1 << 4,       /* original C++ signature */
-    im_gui_button_flags_pressed_on_click = enum.auto()                  # (= 1 << 4)  # return True on click (mouse down event)
+    button_flags_pressed_on_click = enum.auto()                  # (= 1 << 4)  # return True on click (mouse down event)
     # ImGuiButtonFlags_PressedOnClickRelease  = 1 << 5,       /* original C++ signature */
-    im_gui_button_flags_pressed_on_click_release = enum.auto()          # (= 1 << 5)  # [Default] return True on click + release on same item <-- this is what the majority of Button are using
+    button_flags_pressed_on_click_release = enum.auto()          # (= 1 << 5)  # [Default] return True on click + release on same item <-- this is what the majority of Button are using
     # ImGuiButtonFlags_PressedOnClickReleaseAnywhere = 1 << 6,     /* original C++ signature */
-    im_gui_button_flags_pressed_on_click_release_anywhere = enum.auto() # (= 1 << 6)  # return True on click + release even if the release event is not done while hovering the item
+    button_flags_pressed_on_click_release_anywhere = enum.auto() # (= 1 << 6)  # return True on click + release even if the release event is not done while hovering the item
     # ImGuiButtonFlags_PressedOnRelease       = 1 << 7,       /* original C++ signature */
-    im_gui_button_flags_pressed_on_release = enum.auto()                # (= 1 << 7)  # return True on release (default requires click+release)
+    button_flags_pressed_on_release = enum.auto()                # (= 1 << 7)  # return True on release (default requires click+release)
     # ImGuiButtonFlags_PressedOnDoubleClick   = 1 << 8,       /* original C++ signature */
-    im_gui_button_flags_pressed_on_double_click = enum.auto()           # (= 1 << 8)  # return True on double-click (default requires click+release)
+    button_flags_pressed_on_double_click = enum.auto()           # (= 1 << 8)  # return True on double-click (default requires click+release)
     # ImGuiButtonFlags_PressedOnDragDropHold  = 1 << 9,       /* original C++ signature */
-    im_gui_button_flags_pressed_on_drag_drop_hold = enum.auto()         # (= 1 << 9)  # return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)
+    button_flags_pressed_on_drag_drop_hold = enum.auto()         # (= 1 << 9)  # return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)
     # ImGuiButtonFlags_Repeat                 = 1 << 10,      /* original C++ signature */
-    im_gui_button_flags_repeat = enum.auto()                            # (= 1 << 10)  # hold to repeat
+    button_flags_repeat = enum.auto()                            # (= 1 << 10)  # hold to repeat
     # ImGuiButtonFlags_FlattenChildren        = 1 << 11,      /* original C++ signature */
-    im_gui_button_flags_flatten_children = enum.auto()                  # (= 1 << 11)  # allow interactions even if a child window is overlapping
+    button_flags_flatten_children = enum.auto()                  # (= 1 << 11)  # allow interactions even if a child window is overlapping
     # ImGuiButtonFlags_AllowItemOverlap       = 1 << 12,      /* original C++ signature */
-    im_gui_button_flags_allow_item_overlap = enum.auto()                # (= 1 << 12)  # require previous frame HoveredId to either match id or be null before being usable, use along with SetItemAllowOverlap()
+    button_flags_allow_item_overlap = enum.auto()                # (= 1 << 12)  # require previous frame HoveredId to either match id or be null before being usable, use along with SetItemAllowOverlap()
     # ImGuiButtonFlags_DontClosePopups        = 1 << 13,      /* original C++ signature */
-    im_gui_button_flags_dont_close_popups = enum.auto()                 # (= 1 << 13)  # disable automatically closing parent popup on press // [UNUSED]
+    button_flags_dont_close_popups = enum.auto()                 # (= 1 << 13)  # disable automatically closing parent popup on press // [UNUSED]
     #ImGuiButtonFlags_Disabled             = 1 << 14,  // disable interactions -> use BeginDisabled() or ImGuiItemFlags_Disabled
     # ImGuiButtonFlags_AlignTextBaseLine      = 1 << 15,      /* original C++ signature */
-    im_gui_button_flags_align_text_base_line = enum.auto()              # (= 1 << 15)  # vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine
+    button_flags_align_text_base_line = enum.auto()              # (= 1 << 15)  # vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine
     # ImGuiButtonFlags_NoKeyModifiers         = 1 << 16,      /* original C++ signature */
-    im_gui_button_flags_no_key_modifiers = enum.auto()                  # (= 1 << 16)  # disable mouse interaction if a key modifier is held
+    button_flags_no_key_modifiers = enum.auto()                  # (= 1 << 16)  # disable mouse interaction if a key modifier is held
     # ImGuiButtonFlags_NoHoldingActiveId      = 1 << 17,      /* original C++ signature */
-    im_gui_button_flags_no_holding_active_id = enum.auto()              # (= 1 << 17)  # don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)
+    button_flags_no_holding_active_id = enum.auto()              # (= 1 << 17)  # don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)
     # ImGuiButtonFlags_NoNavFocus             = 1 << 18,      /* original C++ signature */
-    im_gui_button_flags_no_nav_focus = enum.auto()                      # (= 1 << 18)  # don't override navigation focus when activated
+    button_flags_no_nav_focus = enum.auto()                      # (= 1 << 18)  # don't override navigation focus when activated
     # ImGuiButtonFlags_NoHoveredOnFocus       = 1 << 19,      /* original C++ signature */
-    im_gui_button_flags_no_hovered_on_focus = enum.auto()               # (= 1 << 19)  # don't report as hovered when nav focus is on this item
+    button_flags_no_hovered_on_focus = enum.auto()               # (= 1 << 19)  # don't report as hovered when nav focus is on this item
     # ImGuiButtonFlags_PressedOnMask_         = ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_PressedOnClickRelease | ImGuiButtonFlags_PressedOnClickReleaseAnywhere | ImGuiButtonFlags_PressedOnRelease | ImGuiButtonFlags_PressedOnDoubleClick | ImGuiButtonFlags_PressedOnDragDropHold,    /* original C++ signature */
-    im_gui_button_flags_pressed_on_mask_ = enum.auto()                  # (= ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_click | ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_click_release | ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_click_release_anywhere | ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_release | ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_double_click | ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_drag_drop_hold)
+    button_flags_pressed_on_mask_ = enum.auto()                  # (= ImGuiButtonFlagsPrivate_.button_flags_pressed_on_click | ImGuiButtonFlagsPrivate_.button_flags_pressed_on_click_release | ImGuiButtonFlagsPrivate_.button_flags_pressed_on_click_release_anywhere | ImGuiButtonFlagsPrivate_.button_flags_pressed_on_release | ImGuiButtonFlagsPrivate_.button_flags_pressed_on_double_click | ImGuiButtonFlagsPrivate_.button_flags_pressed_on_drag_drop_hold)
     # ImGuiButtonFlags_PressedOnDefault_      = ImGuiButtonFlags_PressedOnClickRelease    /* original C++ signature */
     # }
-    im_gui_button_flags_pressed_on_default_ = enum.auto()               # (= ImGuiButtonFlagsPrivate_.im_gui_button_flags_pressed_on_click_release)
+    button_flags_pressed_on_default_ = enum.auto()               # (= ImGuiButtonFlagsPrivate_.button_flags_pressed_on_click_release)
 
 class ImGuiComboFlagsPrivate_(enum.Enum):    # imgui_internal.h:838
     """ Extend ImGuiComboFlags_"""
     # ImGuiComboFlags_CustomPreview           = 1 << 20       /* original C++ signature */
-    im_gui_combo_flags_custom_preview = enum.auto() # (= 1 << 20)  # enable BeginComboPreview()
+    combo_flags_custom_preview = enum.auto() # (= 1 << 20)  # enable BeginComboPreview()
 
 class ImGuiSliderFlagsPrivate_(enum.Enum):    # imgui_internal.h:844
     """ Extend ImGuiSliderFlags_"""
     # ImGuiSliderFlags_Vertical               = 1 << 20,      /* original C++ signature */
-    im_gui_slider_flags_vertical = enum.auto()  # (= 1 << 20)  # Should this slider be orientated vertically?
+    slider_flags_vertical = enum.auto()  # (= 1 << 20)  # Should this slider be orientated vertically?
     # ImGuiSliderFlags_ReadOnly               = 1 << 21    /* original C++ signature */
     # }
-    im_gui_slider_flags_read_only = enum.auto() # (= 1 << 21)
+    slider_flags_read_only = enum.auto() # (= 1 << 21)
 
 class ImGuiSelectableFlagsPrivate_(enum.Enum):    # imgui_internal.h:851
     """ Extend ImGuiSelectableFlags_"""
     # NB: need to be in sync with last value of ImGuiSelectableFlags_
     # ImGuiSelectableFlags_NoHoldingActiveID      = 1 << 20,    /* original C++ signature */
-    im_gui_selectable_flags_no_holding_active_id = enum.auto()     # (= 1 << 20)
+    selectable_flags_no_holding_active_id = enum.auto()     # (= 1 << 20)
     # ImGuiSelectableFlags_SelectOnNav            = 1 << 21,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_nav = enum.auto()            # (= 1 << 21)  # (WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.
+    selectable_flags_select_on_nav = enum.auto()            # (= 1 << 21)  # (WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.
     # ImGuiSelectableFlags_SelectOnClick          = 1 << 22,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_click = enum.auto()          # (= 1 << 22)  # Override button behavior to react on Click (default is Click+Release)
+    selectable_flags_select_on_click = enum.auto()          # (= 1 << 22)  # Override button behavior to react on Click (default is Click+Release)
     # ImGuiSelectableFlags_SelectOnRelease        = 1 << 23,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_release = enum.auto()        # (= 1 << 23)  # Override button behavior to react on Release (default is Click+Release)
+    selectable_flags_select_on_release = enum.auto()        # (= 1 << 23)  # Override button behavior to react on Release (default is Click+Release)
     # ImGuiSelectableFlags_SpanAvailWidth         = 1 << 24,      /* original C++ signature */
-    im_gui_selectable_flags_span_avail_width = enum.auto()         # (= 1 << 24)  # Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)
+    selectable_flags_span_avail_width = enum.auto()         # (= 1 << 24)  # Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)
     # ImGuiSelectableFlags_DrawHoveredWhenHeld    = 1 << 25,      /* original C++ signature */
-    im_gui_selectable_flags_draw_hovered_when_held = enum.auto()   # (= 1 << 25)  # Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.
+    selectable_flags_draw_hovered_when_held = enum.auto()   # (= 1 << 25)  # Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.
     # ImGuiSelectableFlags_SetNavIdOnHover        = 1 << 26,      /* original C++ signature */
-    im_gui_selectable_flags_set_nav_id_on_hover = enum.auto()      # (= 1 << 26)  # Set Nav/Focus ID on mouse hover (used by MenuItem)
+    selectable_flags_set_nav_id_on_hover = enum.auto()      # (= 1 << 26)  # Set Nav/Focus ID on mouse hover (used by MenuItem)
     # ImGuiSelectableFlags_NoPadWithHalfSpacing   = 1 << 27       /* original C++ signature */
-    im_gui_selectable_flags_no_pad_with_half_spacing = enum.auto() # (= 1 << 27)  # Disable padding each side with ItemSpacing * 0.5
+    selectable_flags_no_pad_with_half_spacing = enum.auto() # (= 1 << 27)  # Disable padding each side with ItemSpacing * 0.5
 
 class ImGuiTreeNodeFlagsPrivate_(enum.Enum):    # imgui_internal.h:865
     """ Extend ImGuiTreeNodeFlags_"""
     # ImGuiTreeNodeFlags_ClipLabelForTrailingButton = 1 << 20    /* original C++ signature */
     # }
-    im_gui_tree_node_flags_clip_label_for_trailing_button = enum.auto() # (= 1 << 20)
+    tree_node_flags_clip_label_for_trailing_button = enum.auto() # (= 1 << 20)
 
 class ImGuiSeparatorFlags_(enum.Enum):    # imgui_internal.h:870
     # ImGuiSeparatorFlags_None                = 0,    /* original C++ signature */
@@ -605,11 +605,11 @@ class ImGuiPopupPositionPolicy(enum.Enum):    # imgui_internal.h:921
     # }
     tooltip = enum.auto()   # (= 2)
 
-class ImGuiDataTypeTempStorage:    # imgui_internal.h:928
+class DataTypeTempStorage:    # imgui_internal.h:928
     # ImU8        Data[8];    /* original C++ signature */
     data: np.ndarray  # ndarray[type=ImU8, size=8]  # Can fit any data up to ImGuiDataType_COUNT    # imgui_internal.h:930
 
-class ImGuiDataTypeInfo:    # imgui_internal.h:934
+class DataTypeInfo:    # imgui_internal.h:934
     """ Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo()."""
     # size_t      Size;    /* original C++ signature */
     size: int       # Size in bytes    # imgui_internal.h:936
@@ -623,21 +623,21 @@ class ImGuiDataTypeInfo:    # imgui_internal.h:934
 class ImGuiDataTypePrivate_(enum.Enum):    # imgui_internal.h:943
     """ Extend ImGuiDataType_"""
     # ImGuiDataType_String = ImGuiDataType_COUNT + 1,    /* original C++ signature */
-    im_gui_data_type_string = enum.auto()  # (= ImGuiDataType_.count + 1)
+    data_type_string = enum.auto()  # (= ImGuiDataType_.count + 1)
     # ImGuiDataType_Pointer,    /* original C++ signature */
-    im_gui_data_type_pointer = enum.auto() # (= )
+    data_type_pointer = enum.auto() # (= )
     # ImGuiDataType_ID    /* original C++ signature */
     # }
-    im_gui_data_type_id = enum.auto()      # (= )
+    data_type_id = enum.auto()      # (= )
 
-class ImGuiColorMod:    # imgui_internal.h:951
+class ColorMod:    # imgui_internal.h:951
     """ Stacked color modifier, backup of modified data so we can restore it"""
     # ImGuiCol        Col;    /* original C++ signature */
     col: ImGuiCol           # imgui_internal.h:953
     # ImVec4          BackupValue;    /* original C++ signature */
     backup_value: ImVec4    # imgui_internal.h:954
 
-class ImGuiStyleMod:    # imgui_internal.h:958
+class StyleMod:    # imgui_internal.h:958
     """ Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable."""
     # ImGuiStyleVar   VarIdx;    /* original C++ signature */
     var_idx: ImGuiStyleVar                                        # imgui_internal.h:960
@@ -651,7 +651,7 @@ class ImGuiStyleMod:    # imgui_internal.h:958
     def __init__(self, idx: ImGuiStyleVar, v: ImVec2) -> None:    # imgui_internal.h:964
         pass
 
-class ImGuiComboPreviewData:    # imgui_internal.h:968
+class ComboPreviewData:    # imgui_internal.h:968
     """ Storage data for BeginComboPreview()/EndComboPreview()"""
     # ImRect          PreviewRect;    /* original C++ signature */
     preview_rect: ImRect                        # imgui_internal.h:970
@@ -670,7 +670,7 @@ class ImGuiComboPreviewData:    # imgui_internal.h:968
     def __init__(self) -> None:                 # imgui_internal.h:977
         pass
 
-class ImGuiGroupData:    # imgui_internal.h:981
+class GroupData:    # imgui_internal.h:981
     """ Stacked storage data for BeginGroup()/EndGroup()"""
     # ImGuiID     WindowID;    /* original C++ signature */
     window_id: ImGuiID                                # imgui_internal.h:983
@@ -695,7 +695,7 @@ class ImGuiGroupData:    # imgui_internal.h:981
     # bool        EmitItem;    /* original C++ signature */
     emit_item: bool                                   # imgui_internal.h:993
 
-class ImGuiMenuColumns:    # imgui_internal.h:997
+class MenuColumns:    # imgui_internal.h:997
     """ Simple column measurement, currently used for MenuItem() only.. This is very short-sighted/throw-away code and NOT a generic helper."""
     # ImU32       TotalWidth;    /* original C++ signature */
     total_width: ImU32             # imgui_internal.h:999
@@ -718,7 +718,7 @@ class ImGuiMenuColumns:    # imgui_internal.h:997
     def __init__(self) -> None:    # imgui_internal.h:1008
         pass
 
-class ImGuiInputTextState:    # imgui_internal.h:1016
+class InputTextState:    # imgui_internal.h:1016
     """ Internal state of the currently focused/edited text input box
      For a given item ID, access with ImGui::GetInputTextState()
     """
@@ -753,7 +753,7 @@ class ImGuiInputTextState:    # imgui_internal.h:1016
 
     # Cursor & Selection
 
-class ImGuiPopupData:    # imgui_internal.h:1052
+class PopupData:    # imgui_internal.h:1052
     """ Storage for current popup stack"""
     # ImGuiID             PopupId;    /* original C++ signature */
     popup_id: ImGuiID              # Set on OpenPopup()    # imgui_internal.h:1054
@@ -803,7 +803,7 @@ class ImGuiNextWindowDataFlags_(enum.Enum):    # imgui_internal.h:1066
     # }
     has_window_class = enum.auto()    # (= 1 << 10)
 
-class ImGuiNextWindowData:    # imgui_internal.h:1083
+class NextWindowData:    # imgui_internal.h:1083
     """ Storage for SetNexWindow** functions"""
     # ImGuiNextWindowDataFlags    Flags;    /* original C++ signature */
     flags: ImGuiNextWindowDataFlags    # imgui_internal.h:1085
@@ -857,7 +857,7 @@ class ImGuiNextItemDataFlags_(enum.Enum):    # imgui_internal.h:1110
     # }
     has_open = enum.auto()  # (= 1 << 1)
 
-class ImGuiNextItemData:    # imgui_internal.h:1117
+class NextItemData:    # imgui_internal.h:1117
     # ImGuiNextItemDataFlags      Flags;    /* original C++ signature */
     flags: ImGuiNextItemDataFlags    # imgui_internal.h:1119
     # float                       Width;    /* original C++ signature */
@@ -873,7 +873,7 @@ class ImGuiNextItemData:    # imgui_internal.h:1117
     def __init__(self) -> None:      # imgui_internal.h:1125
         pass
 
-class ImGuiLastItemData:    # imgui_internal.h:1130
+class LastItemData:    # imgui_internal.h:1130
     """ Status storage for the last submitted item"""
     # ImGuiID                 ID;    /* original C++ signature */
     id: ImGuiID                         # imgui_internal.h:1132
@@ -892,7 +892,7 @@ class ImGuiLastItemData:    # imgui_internal.h:1130
     def __init__(self) -> None:         # imgui_internal.h:1139
         pass
 
-class ImGuiStackSizes:    # imgui_internal.h:1142
+class StackSizes:    # imgui_internal.h:1142
     # short   SizeOfIDStack;    /* original C++ signature */
     size_of_id_stack: int             # imgui_internal.h:1144
     # short   SizeOfColorStack;    /* original C++ signature */
@@ -916,7 +916,7 @@ class ImGuiStackSizes:    # imgui_internal.h:1142
     def __init__(self) -> None:       # imgui_internal.h:1154
         pass
 
-class ImGuiWindowStackData:    # imgui_internal.h:1160
+class WindowStackData:    # imgui_internal.h:1160
     """ Data saved for each window pushed into the stack"""
     # ImGuiWindow*            Window;    /* original C++ signature */
     window: ImGuiWindow                                # imgui_internal.h:1162
@@ -925,7 +925,7 @@ class ImGuiWindowStackData:    # imgui_internal.h:1160
     # ImGuiStackSizes         StackSizesOnBegin;    /* original C++ signature */
     stack_sizes_on_begin: ImGuiStackSizes              # Store size of various stacks for asserting    # imgui_internal.h:1164
 
-class ImGuiShrinkWidthItem:    # imgui_internal.h:1167
+class ShrinkWidthItem:    # imgui_internal.h:1167
     # int         Index;    /* original C++ signature */
     index: int              # imgui_internal.h:1169
     # float       Width;    /* original C++ signature */
@@ -933,7 +933,7 @@ class ImGuiShrinkWidthItem:    # imgui_internal.h:1167
     # float       InitialWidth;    /* original C++ signature */
     initial_width: float    # imgui_internal.h:1171
 
-class ImGuiPtrOrIndex:    # imgui_internal.h:1174
+class PtrOrIndex:    # imgui_internal.h:1174
     # void*       Ptr;    /* original C++ signature */
     ptr: Any                                   # Either field can be set, not both. e.g. Dock node tab bars are loose while BeginTabBar() ones are in a pool.    # imgui_internal.h:1176
     # int         Index;    /* original C++ signature */
@@ -953,14 +953,14 @@ class ImGuiPtrOrIndex:    # imgui_internal.h:1174
 
 class ImGuiKeyPrivate_(enum.Enum):    # imgui_internal.h:1189
     # ImGuiKey_LegacyNativeKey_BEGIN  = 0,    /* original C++ signature */
-    im_gui_key_legacy_native_key_begin = enum.auto() # (= 0)
+    key_legacy_native_key_begin = enum.auto() # (= 0)
     # ImGuiKey_LegacyNativeKey_END    = 512,    /* original C++ signature */
-    im_gui_key_legacy_native_key_end = enum.auto()   # (= 512)
+    key_legacy_native_key_end = enum.auto()   # (= 512)
     # ImGuiKey_Gamepad_BEGIN          = ImGuiKey_GamepadStart,    /* original C++ signature */
-    im_gui_key_gamepad_begin = enum.auto()           # (= ImGuiKey_.gamepad_start)
+    key_gamepad_begin = enum.auto()           # (= ImGuiKey_.gamepad_start)
     # ImGuiKey_Gamepad_END            = ImGuiKey_GamepadRStickRight + 1    /* original C++ signature */
     # }
-    im_gui_key_gamepad_end = enum.auto()             # (= ImGuiKey_.gamepad_r_stick_right + 1)
+    key_gamepad_end = enum.auto()             # (= ImGuiKey_.gamepad_r_stick_right + 1)
 
 class ImGuiInputEventType(enum.Enum):    # imgui_internal.h:1197
     # ImGuiInputEventType_None = 0,    /* original C++ signature */
@@ -1002,39 +1002,39 @@ class ImGuiInputSource(enum.Enum):    # imgui_internal.h:1210
 
 # FIXME: Structures in the union below need to be declared as anonymous unions appears to be an extension?
 # Using ImVec2() would fail on Clang 'union member 'MousePos' has a non-trivial default constructor'
-class ImGuiInputEventMousePos:    # imgui_internal.h:1223
+class InputEventMousePos:    # imgui_internal.h:1223
     # float PosX,     /* original C++ signature */
     pos_x: float    # imgui_internal.h:1223
     # PosY;    /* original C++ signature */
     pos_y: float    # imgui_internal.h:1223
-class ImGuiInputEventMouseWheel:    # imgui_internal.h:1224
+class InputEventMouseWheel:    # imgui_internal.h:1224
     # float WheelX,     /* original C++ signature */
     wheel_x: float    # imgui_internal.h:1224
     # WheelY;    /* original C++ signature */
     wheel_y: float    # imgui_internal.h:1224
-class ImGuiInputEventMouseButton:    # imgui_internal.h:1225
+class InputEventMouseButton:    # imgui_internal.h:1225
     # int Button;    /* original C++ signature */
     button: int    # imgui_internal.h:1225
     # bool Down;    /* original C++ signature */
     down: bool     # imgui_internal.h:1225
-class ImGuiInputEventMouseViewport:    # imgui_internal.h:1226
+class InputEventMouseViewport:    # imgui_internal.h:1226
     # ImGuiID HoveredViewportID;    /* original C++ signature */
     hovered_viewport_id: ImGuiID    # imgui_internal.h:1226
-class ImGuiInputEventKey:    # imgui_internal.h:1227
+class InputEventKey:    # imgui_internal.h:1227
     # ImGuiKey Key;    /* original C++ signature */
     key: ImGuiKey          # imgui_internal.h:1227
     # bool Down;    /* original C++ signature */
     down: bool             # imgui_internal.h:1227
     # float AnalogValue;    /* original C++ signature */
     analog_value: float    # imgui_internal.h:1227
-class ImGuiInputEventText:    # imgui_internal.h:1228
+class InputEventText:    # imgui_internal.h:1228
     # unsigned int Char;    /* original C++ signature */
     char: int    # imgui_internal.h:1228
-class ImGuiInputEventAppFocused:    # imgui_internal.h:1229
+class InputEventAppFocused:    # imgui_internal.h:1229
     # bool Focused;    /* original C++ signature */
     focused: bool    # imgui_internal.h:1229
 
-class ImGuiInputEvent:    # imgui_internal.h:1231
+class InputEvent:    # imgui_internal.h:1231
     # ImGuiInputEventType             Type;    /* original C++ signature */
     type: ImGuiInputEventType      # imgui_internal.h:1233
     # ImGuiInputSource                Source;    /* original C++ signature */
@@ -1066,7 +1066,7 @@ class ImGuiNavReadMode(enum.Enum):    # imgui_internal.h:1251
 # [SECTION] Clipper support
 #-----------------------------------------------------------------------------
 
-class ImGuiListClipperRange:    # imgui_internal.h:1265
+class ListClipperRange:    # imgui_internal.h:1265
     # int     Min;    /* original C++ signature */
     min: int                       # imgui_internal.h:1267
     # int     Max;    /* original C++ signature */
@@ -1079,7 +1079,7 @@ class ImGuiListClipperRange:    # imgui_internal.h:1265
     pos_to_index_offset_max: ImS8  # Add to Min after converting to indices    # imgui_internal.h:1271
 
 
-class ImGuiListClipperData:    # imgui_internal.h:1278
+class ListClipperData:    # imgui_internal.h:1278
     """ Temporary clipper data, buffers shared/reused between instances"""
     # ImGuiListClipper*               ListClipper;    /* original C++ signature */
     list_clipper: ImGuiListClipper    # imgui_internal.h:1280
@@ -1197,7 +1197,7 @@ class ImGuiNavLayer(enum.Enum):    # imgui_internal.h:1353
     # }
     count = enum.auto() # (= 2)
 
-class ImGuiNavItemData:    # imgui_internal.h:1360
+class NavItemData:    # imgui_internal.h:1360
     # ImGuiWindow*        Window;    /* original C++ signature */
     window: ImGuiWindow            # Init,Move    // Best candidate window (result->ItemWindow->RootWindowForNav == request->Window)    # imgui_internal.h:1362
     # ImGuiID             ID;    /* original C++ signature */
@@ -1241,7 +1241,7 @@ class ImGuiOldColumnFlags_(enum.Enum):    # imgui_internal.h:1380
 
     # Obsolete names (will be removed)
 
-class ImGuiOldColumnData:    # imgui_internal.h:1400
+class OldColumnData:    # imgui_internal.h:1400
     # float               OffsetNorm;    /* original C++ signature */
     offset_norm: float                  # Column start offset, normalized 0.0 (far left) -> 1.0 (far right)    # imgui_internal.h:1402
     # float               OffsetNormBeforeResize;    /* original C++ signature */
@@ -1255,7 +1255,7 @@ class ImGuiOldColumnData:    # imgui_internal.h:1400
     def __init__(self) -> None:         # imgui_internal.h:1407
         pass
 
-class ImGuiOldColumns:    # imgui_internal.h:1410
+class OldColumns:    # imgui_internal.h:1410
     # ImGuiID             ID;    /* original C++ signature */
     id: ImGuiID                           # imgui_internal.h:1412
     # ImGuiOldColumnFlags Flags;    /* original C++ signature */
@@ -1307,44 +1307,44 @@ class ImGuiDockNodeFlagsPrivate_(enum.Enum):    # imgui_internal.h:1446
     """ Extend ImGuiDockNodeFlags_"""
     # [Internal]
     # ImGuiDockNodeFlags_DockSpace                = 1 << 10,      /* original C++ signature */
-    im_gui_dock_node_flags_dock_space = enum.auto()                 # (= 1 << 10)  # Local, Saved  // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.
+    dock_node_flags_dock_space = enum.auto()                 # (= 1 << 10)  # Local, Saved  // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.
     # ImGuiDockNodeFlags_CentralNode              = 1 << 11,      /* original C++ signature */
-    im_gui_dock_node_flags_central_node = enum.auto()               # (= 1 << 11)  # Local, Saved  // The central node has 2 main properties: stay visible when empty, only use "remaining" spaces from its neighbor.
+    dock_node_flags_central_node = enum.auto()               # (= 1 << 11)  # Local, Saved  // The central node has 2 main properties: stay visible when empty, only use "remaining" spaces from its neighbor.
     # ImGuiDockNodeFlags_NoTabBar                 = 1 << 12,      /* original C++ signature */
-    im_gui_dock_node_flags_no_tab_bar = enum.auto()                 # (= 1 << 12)  # Local, Saved  // Tab bar is completely unavailable. No triangle in the corner to enable it back.
+    dock_node_flags_no_tab_bar = enum.auto()                 # (= 1 << 12)  # Local, Saved  // Tab bar is completely unavailable. No triangle in the corner to enable it back.
     # ImGuiDockNodeFlags_HiddenTabBar             = 1 << 13,      /* original C++ signature */
-    im_gui_dock_node_flags_hidden_tab_bar = enum.auto()             # (= 1 << 13)  # Local, Saved  // Tab bar is hidden, with a triangle in the corner to show it again (NB: actual tab-bar instance may be destroyed as this is only used for single-window tab bar)
+    dock_node_flags_hidden_tab_bar = enum.auto()             # (= 1 << 13)  # Local, Saved  // Tab bar is hidden, with a triangle in the corner to show it again (NB: actual tab-bar instance may be destroyed as this is only used for single-window tab bar)
     # ImGuiDockNodeFlags_NoWindowMenuButton       = 1 << 14,      /* original C++ signature */
-    im_gui_dock_node_flags_no_window_menu_button = enum.auto()      # (= 1 << 14)  # Local, Saved  // Disable window/docking menu (that one that appears instead of the collapse button)
+    dock_node_flags_no_window_menu_button = enum.auto()      # (= 1 << 14)  # Local, Saved  // Disable window/docking menu (that one that appears instead of the collapse button)
     # ImGuiDockNodeFlags_NoCloseButton            = 1 << 15,      /* original C++ signature */
-    im_gui_dock_node_flags_no_close_button = enum.auto()            # (= 1 << 15)  # Local, Saved  //
+    dock_node_flags_no_close_button = enum.auto()            # (= 1 << 15)  # Local, Saved  //
     # ImGuiDockNodeFlags_NoDocking                = 1 << 16,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking = enum.auto()                 # (= 1 << 16)  # Local, Saved  // Disable any form of docking in this dockspace or individual node. (On a whole dockspace, this pretty much defeat the purpose of using a dockspace at all). Note: when turned on, existing docked nodes will be preserved.
+    dock_node_flags_no_docking = enum.auto()                 # (= 1 << 16)  # Local, Saved  // Disable any form of docking in this dockspace or individual node. (On a whole dockspace, this pretty much defeat the purpose of using a dockspace at all). Note: when turned on, existing docked nodes will be preserved.
     # ImGuiDockNodeFlags_NoDockingSplitMe         = 1 << 17,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_split_me = enum.auto()        # (= 1 << 17)  # [EXPERIMENTAL] Prevent another window/node from splitting this node.
+    dock_node_flags_no_docking_split_me = enum.auto()        # (= 1 << 17)  # [EXPERIMENTAL] Prevent another window/node from splitting this node.
     # ImGuiDockNodeFlags_NoDockingSplitOther      = 1 << 18,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_split_other = enum.auto()     # (= 1 << 18)  # [EXPERIMENTAL] Prevent this node from splitting another window/node.
+    dock_node_flags_no_docking_split_other = enum.auto()     # (= 1 << 18)  # [EXPERIMENTAL] Prevent this node from splitting another window/node.
     # ImGuiDockNodeFlags_NoDockingOverMe          = 1 << 19,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_me = enum.auto()         # (= 1 << 19)  # [EXPERIMENTAL] Prevent another window/node to be docked over this node.
+    dock_node_flags_no_docking_over_me = enum.auto()         # (= 1 << 19)  # [EXPERIMENTAL] Prevent another window/node to be docked over this node.
     # ImGuiDockNodeFlags_NoDockingOverOther       = 1 << 20,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_other = enum.auto()      # (= 1 << 20)  # [EXPERIMENTAL] Prevent this node to be docked over another window or non-empty node.
+    dock_node_flags_no_docking_over_other = enum.auto()      # (= 1 << 20)  # [EXPERIMENTAL] Prevent this node to be docked over another window or non-empty node.
     # ImGuiDockNodeFlags_NoDockingOverEmpty       = 1 << 21,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_empty = enum.auto()      # (= 1 << 21)  # [EXPERIMENTAL] Prevent this node to be docked over an empty node (e.g. DockSpace with no other windows)
+    dock_node_flags_no_docking_over_empty = enum.auto()      # (= 1 << 21)  # [EXPERIMENTAL] Prevent this node to be docked over an empty node (e.g. DockSpace with no other windows)
     # ImGuiDockNodeFlags_NoResizeX                = 1 << 22,      /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_x = enum.auto()                # (= 1 << 22)  # [EXPERIMENTAL]
+    dock_node_flags_no_resize_x = enum.auto()                # (= 1 << 22)  # [EXPERIMENTAL]
     # ImGuiDockNodeFlags_NoResizeY                = 1 << 23,      /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_y = enum.auto()                # (= 1 << 23)  # [EXPERIMENTAL]
+    dock_node_flags_no_resize_y = enum.auto()                # (= 1 << 23)  # [EXPERIMENTAL]
     # ImGuiDockNodeFlags_SharedFlagsInheritMask_  = ~0,    /* original C++ signature */
-    im_gui_dock_node_flags_shared_flags_inherit_mask_ = enum.auto() # (= ~0)
+    dock_node_flags_shared_flags_inherit_mask_ = enum.auto() # (= ~0)
     # ImGuiDockNodeFlags_NoResizeFlagsMask_       = ImGuiDockNodeFlags_NoResize | ImGuiDockNodeFlags_NoResizeX | ImGuiDockNodeFlags_NoResizeY,    /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_flags_mask_ = enum.auto()      # (= ImGuiDockNodeFlags_.no_resize | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_resize_x | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_resize_y)
+    dock_node_flags_no_resize_flags_mask_ = enum.auto()      # (= ImGuiDockNodeFlags_.no_resize | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_resize_x | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_resize_y)
     # ImGuiDockNodeFlags_LocalFlagsMask_          = ImGuiDockNodeFlags_NoSplit | ImGuiDockNodeFlags_NoResizeFlagsMask_ | ImGuiDockNodeFlags_AutoHideTabBar | ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_CentralNode | ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_HiddenTabBar | ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoDocking,    /* original C++ signature */
-    im_gui_dock_node_flags_local_flags_mask_ = enum.auto()          # (= ImGuiDockNodeFlags_.no_split | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_resize_flags_mask_ | ImGuiDockNodeFlags_.auto_hide_tab_bar | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_dock_space | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_central_node | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_tab_bar | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_hidden_tab_bar | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_window_menu_button | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_close_button | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_docking)
+    dock_node_flags_local_flags_mask_ = enum.auto()          # (= ImGuiDockNodeFlags_.no_split | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_resize_flags_mask_ | ImGuiDockNodeFlags_.auto_hide_tab_bar | ImGuiDockNodeFlagsPrivate_.dock_node_flags_dock_space | ImGuiDockNodeFlagsPrivate_.dock_node_flags_central_node | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_tab_bar | ImGuiDockNodeFlagsPrivate_.dock_node_flags_hidden_tab_bar | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_window_menu_button | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_close_button | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_docking)
     # ImGuiDockNodeFlags_LocalFlagsTransferMask_  = ImGuiDockNodeFlags_LocalFlagsMask_ & ~ImGuiDockNodeFlags_DockSpace,      /* original C++ signature */
-    im_gui_dock_node_flags_local_flags_transfer_mask_ = enum.auto() # (= ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_local_flags_mask_  ~ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_dock_space)  # When splitting those flags are moved to the inheriting child, never duplicated
+    dock_node_flags_local_flags_transfer_mask_ = enum.auto() # (= ImGuiDockNodeFlagsPrivate_.dock_node_flags_local_flags_mask_  ~ImGuiDockNodeFlagsPrivate_.dock_node_flags_dock_space)  # When splitting those flags are moved to the inheriting child, never duplicated
     # ImGuiDockNodeFlags_SavedFlagsMask_          = ImGuiDockNodeFlags_NoResizeFlagsMask_ | ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_CentralNode | ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_HiddenTabBar | ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoDocking    /* original C++ signature */
     # }
-    im_gui_dock_node_flags_saved_flags_mask_ = enum.auto()          # (= ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_resize_flags_mask_ | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_dock_space | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_central_node | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_tab_bar | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_hidden_tab_bar | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_window_menu_button | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_close_button | ImGuiDockNodeFlagsPrivate_.im_gui_dock_node_flags_no_docking)
+    dock_node_flags_saved_flags_mask_ = enum.auto()          # (= ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_resize_flags_mask_ | ImGuiDockNodeFlagsPrivate_.dock_node_flags_dock_space | ImGuiDockNodeFlagsPrivate_.dock_node_flags_central_node | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_tab_bar | ImGuiDockNodeFlagsPrivate_.dock_node_flags_hidden_tab_bar | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_window_menu_button | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_close_button | ImGuiDockNodeFlagsPrivate_.dock_node_flags_no_docking)
 
 class ImGuiDataAuthority_(enum.Enum):    # imgui_internal.h:1471
     """ Store the source authority (dock node vs window) of a field"""
@@ -1367,7 +1367,7 @@ class ImGuiDockNodeState(enum.Enum):    # imgui_internal.h:1478
     # }
     host_window_visible = enum.auto()                             # (= 3)
 
-class ImGuiDockNode:    # imgui_internal.h:1487
+class DockNode:    # imgui_internal.h:1487
     """ sizeof() 156~192"""
     # ImGuiID                 ID;    /* original C++ signature */
     id: ImGuiID                                 # imgui_internal.h:1489
@@ -1448,10 +1448,10 @@ class ImGuiWindowDockStyleCol(enum.Enum):    # imgui_internal.h:1553
     # }
     count = enum.auto()                # (= 6)
 
-class ImGuiWindowDockStyle:    # imgui_internal.h:1564
+class WindowDockStyle:    # imgui_internal.h:1564
     pass
 
-class ImGuiDockContext:    # imgui_internal.h:1569
+class DockContext:    # imgui_internal.h:1569
     # ImGuiStorage                    Nodes;    /* original C++ signature */
     nodes: ImGuiStorage            # Map ID -> ImGuiDockNode*: Active nodes    # imgui_internal.h:1571
     # bool                            WantFullRebuild;    /* original C++ signature */
@@ -1465,7 +1465,7 @@ class ImGuiDockContext:    # imgui_internal.h:1569
 # [SECTION] Viewport support
 #-----------------------------------------------------------------------------
 
-class ImGuiViewportP:    # imgui_internal.h:1586
+class ViewportP:    # imgui_internal.h:1586
     """ ImGuiViewport Private/Internals fields (cardinal sin: we are using inheritance!)
      Every instance of ImGuiViewport is in fact a ImGuiViewportP.
     """
@@ -1522,7 +1522,7 @@ class ImGuiViewportP:    # imgui_internal.h:1586
 # [SECTION] Settings support
 #-----------------------------------------------------------------------------
 
-class ImGuiWindowSettings:    # imgui_internal.h:1632
+class WindowSettings:    # imgui_internal.h:1632
     """ Windows data saved in imgui.ini file
      Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.
      (this is designed to be stored in a ImChunkStream buffer, with the variable-length Name following our structure)
@@ -1552,7 +1552,7 @@ class ImGuiWindowSettings:    # imgui_internal.h:1632
     def __init__(self) -> None:    # imgui_internal.h:1645
         pass
 
-class ImGuiSettingsHandler:    # imgui_internal.h:1649
+class SettingsHandler:    # imgui_internal.h:1649
     # const char* TypeName;    /* original C++ signature */
     type_name: str                 # Short description stored in .ini file. Disallowed characters: '[' ']'    # imgui_internal.h:1651
     # ImGuiID     TypeHash;    /* original C++ signature */
@@ -1591,7 +1591,7 @@ class ImGuiDebugLogFlags_(enum.Enum):    # imgui_internal.h:1668
     # ImGuiDebugLogFlags_OutputToTTY      = 1 << 10       /* original C++ signature */
     output_to_tty = enum.auto()   # (= 1 << 10)  # Also send output to TTY
 
-class ImGuiMetricsConfig:    # imgui_internal.h:1683
+class MetricsConfig:    # imgui_internal.h:1683
     # bool        ShowDebugLog;    /* original C++ signature */
     show_debug_log: bool                  # imgui_internal.h:1685
     # bool        ShowStackTool;    /* original C++ signature */
@@ -1624,7 +1624,7 @@ class ImGuiMetricsConfig:    # imgui_internal.h:1683
     def __init__(self) -> None:           # imgui_internal.h:1696
         pass
 
-class ImGuiStackLevelInfo:    # imgui_internal.h:1706
+class StackLevelInfo:    # imgui_internal.h:1706
     # ImGuiID                 ID;    /* original C++ signature */
     id: ImGuiID                    # imgui_internal.h:1708
     # ImS8                    QueryFrameCount;    /* original C++ signature */
@@ -1636,7 +1636,7 @@ class ImGuiStackLevelInfo:    # imgui_internal.h:1706
     def __init__(self) -> None:    # imgui_internal.h:1714
         pass
 
-class ImGuiStackTool:    # imgui_internal.h:1718
+class StackTool:    # imgui_internal.h:1718
     """ State for Stack tool queries"""
     # int                     LastActiveFrame;    /* original C++ signature */
     last_active_frame: int                # imgui_internal.h:1720
@@ -1675,7 +1675,7 @@ class ImGuiContextHookType(enum.Enum):    # imgui_internal.h:1735
     # ImGuiContextHookType_PendingRemoval_ }    /* original C++ signature */
     pending_removal_ = enum.auto() # (= 7)
 
-class ImGuiContextHook:    # imgui_internal.h:1737
+class ContextHook:    # imgui_internal.h:1737
     # ImGuiID                     HookId;    /* original C++ signature */
     hook_id: ImGuiID               # A unique ID assigned by AddContextHook()    # imgui_internal.h:1739
     # ImGuiContextHookType        Type;    /* original C++ signature */
@@ -1693,7 +1693,7 @@ class ImGuiContextHook:    # imgui_internal.h:1737
 # [SECTION] ImGuiContext (main Dear ImGui context)
 #-----------------------------------------------------------------------------
 
-class ImGuiContext:    # imgui_internal.h:1752
+class Context:    # imgui_internal.h:1752
     # bool                    Initialized;    /* original C++ signature */
     initialized: bool                                              # imgui_internal.h:1754
     # bool                    FontAtlasOwnedByContext;    /* original C++ signature */
@@ -2302,7 +2302,7 @@ class ImGuiContext:    # imgui_internal.h:1752
 # [SECTION] ImGuiWindowTempData, ImGuiWindow
 #-----------------------------------------------------------------------------
 
-class ImGuiWindowTempData:    # imgui_internal.h:2198
+class WindowTempData:    # imgui_internal.h:2198
     """ Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.
      (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)
      (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)
@@ -2380,7 +2380,7 @@ class ImGuiWindowTempData:    # imgui_internal.h:2198
     # float                   TextWrapPos;    /* original C++ signature */
     text_wrap_pos: float                    # Current text wrap pos.    # imgui_internal.h:2240
 
-class ImGuiWindow:    # imgui_internal.h:2246
+class Window:    # imgui_internal.h:2246
     """ Storage for one window"""
     # ImGuiID                 ID;    /* original C++ signature */
     id: ImGuiID                                                      # == ImHashStr(Name)    # imgui_internal.h:2249
@@ -2599,26 +2599,26 @@ class ImGuiWindow:    # imgui_internal.h:2246
 class ImGuiTabBarFlagsPrivate_(enum.Enum):    # imgui_internal.h:2388
     """ Extend ImGuiTabBarFlags_"""
     # ImGuiTabBarFlags_DockNode                   = 1 << 20,      /* original C++ signature */
-    im_gui_tab_bar_flags_dock_node = enum.auto()     # (= 1 << 20)  # Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]
+    tab_bar_flags_dock_node = enum.auto()     # (= 1 << 20)  # Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]
     # ImGuiTabBarFlags_IsFocused                  = 1 << 21,    /* original C++ signature */
-    im_gui_tab_bar_flags_is_focused = enum.auto()    # (= 1 << 21)
+    tab_bar_flags_is_focused = enum.auto()    # (= 1 << 21)
     # ImGuiTabBarFlags_SaveSettings               = 1 << 22       /* original C++ signature */
-    im_gui_tab_bar_flags_save_settings = enum.auto() # (= 1 << 22)  # FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs
+    tab_bar_flags_save_settings = enum.auto() # (= 1 << 22)  # FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs
 
 class ImGuiTabItemFlagsPrivate_(enum.Enum):    # imgui_internal.h:2396
     """ Extend ImGuiTabItemFlags_"""
     # ImGuiTabItemFlags_SectionMask_              = ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_Trailing,    /* original C++ signature */
-    im_gui_tab_item_flags_section_mask_ = enum.auto()   # (= ImGuiTabItemFlags_.leading | ImGuiTabItemFlags_.trailing)
+    tab_item_flags_section_mask_ = enum.auto()   # (= ImGuiTabItemFlags_.leading | ImGuiTabItemFlags_.trailing)
     # ImGuiTabItemFlags_NoCloseButton             = 1 << 20,      /* original C++ signature */
-    im_gui_tab_item_flags_no_close_button = enum.auto() # (= 1 << 20)  # Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)
+    tab_item_flags_no_close_button = enum.auto() # (= 1 << 20)  # Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)
     # ImGuiTabItemFlags_Button                    = 1 << 21,      /* original C++ signature */
-    im_gui_tab_item_flags_button = enum.auto()          # (= 1 << 21)  # Used by TabItemButton, change the tab item behavior to mimic a button
+    tab_item_flags_button = enum.auto()          # (= 1 << 21)  # Used by TabItemButton, change the tab item behavior to mimic a button
     # ImGuiTabItemFlags_Unsorted                  = 1 << 22,      /* original C++ signature */
-    im_gui_tab_item_flags_unsorted = enum.auto()        # (= 1 << 22)  # [Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.
+    tab_item_flags_unsorted = enum.auto()        # (= 1 << 22)  # [Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.
     # ImGuiTabItemFlags_Preview                   = 1 << 23       /* original C++ signature */
-    im_gui_tab_item_flags_preview = enum.auto()         # (= 1 << 23)  # [Docking] Display tab shape for docking preview (height is adjusted slightly to compensate for the yet missing tab bar)
+    tab_item_flags_preview = enum.auto()         # (= 1 << 23)  # [Docking] Display tab shape for docking preview (height is adjusted slightly to compensate for the yet missing tab bar)
 
-class ImGuiTabItem:    # imgui_internal.h:2406
+class TabItem:    # imgui_internal.h:2406
     """ Storage for one active tab item (sizeof() 48 bytes)"""
     # ImGuiID             ID;    /* original C++ signature */
     id: ImGuiID                    # imgui_internal.h:2408
@@ -2651,7 +2651,7 @@ class ImGuiTabItem:    # imgui_internal.h:2406
     def __init__(self) -> None:    # imgui_internal.h:2422
         pass
 
-class ImGuiTabBar:    # imgui_internal.h:2426
+class TabBar:    # imgui_internal.h:2426
     """ Storage for a tab bar (sizeof() 152 bytes)"""
     # ImGuiTabBarFlags    Flags;    /* original C++ signature */
     flags: ImGuiTabBarFlags                       # imgui_internal.h:2429
@@ -2725,7 +2725,7 @@ class ImGuiTabBar:    # imgui_internal.h:2426
 
 # Our current column maximum is 64 but we may raise that in the future.
 
-class ImGuiTableColumn:    # imgui_internal.h:2487
+class TableColumn:    # imgui_internal.h:2487
     """ [Internal] sizeof() ~ 104
      We use the terminology "Enabled" to refer to a column that is not Hidden by user/api.
      We use the terminology "Clipped" to refer to a column that is out of sight because of scrolling/clipping.
@@ -2822,7 +2822,7 @@ class ImGuiTableColumn:    # imgui_internal.h:2487
     def __init__(self) -> None:                      # imgui_internal.h:2531
         pass
 
-class ImGuiTableCellData:    # imgui_internal.h:2546
+class TableCellData:    # imgui_internal.h:2546
     """ Transient cell data stored per row.
      sizeof() ~ 6
     """
@@ -2831,7 +2831,7 @@ class ImGuiTableCellData:    # imgui_internal.h:2546
     # ImGuiTableColumnIdx         Column;    /* original C++ signature */
     column: ImGuiTableColumnIdx  # Column number    # imgui_internal.h:2549
 
-class ImGuiTableInstanceData:    # imgui_internal.h:2553
+class TableInstanceData:    # imgui_internal.h:2553
     """ Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)"""
     # float                       LastOuterHeight;    /* original C++ signature */
     last_outer_height: float       # Outer height from last frame // FIXME: multi-instance issue (#3955)    # imgui_internal.h:2555
@@ -2842,7 +2842,7 @@ class ImGuiTableInstanceData:    # imgui_internal.h:2553
     def __init__(self) -> None:    # imgui_internal.h:2558
         pass
 
-class ImGuiTable:    # imgui_internal.h:2562
+class Table:    # imgui_internal.h:2562
     """ FIXME-TABLE: more transient data could be stored in a per-stacked table structure: DrawSplitter, SortSpecs, incoming RowData"""
     # ImGuiID                     ID;    /* original C++ signature */
     id: ImGuiID                                            # imgui_internal.h:2564
@@ -3043,7 +3043,7 @@ class ImGuiTable:    # imgui_internal.h:2562
     def __init__(self) -> None:                            # imgui_internal.h:2669
         pass
 
-class ImGuiTableTempData:    # imgui_internal.h:2676
+class TableTempData:    # imgui_internal.h:2676
     """ Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).
      - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.
      - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.
@@ -3079,7 +3079,7 @@ class ImGuiTableTempData:    # imgui_internal.h:2676
     def __init__(self) -> None:             # imgui_internal.h:2693
         pass
 
-class ImGuiTableColumnSettings:    # imgui_internal.h:2697
+class TableColumnSettings:    # imgui_internal.h:2697
     """ sizeof() ~ 12"""
     # float                   WidthOrWeight;    /* original C++ signature */
     width_or_weight: float                # imgui_internal.h:2699
@@ -3105,7 +3105,7 @@ class ImGuiTableColumnSettings:    # imgui_internal.h:2697
     def __init__(self) -> None:           # imgui_internal.h:2708
         pass
 
-class ImGuiTableSettings:    # imgui_internal.h:2721
+class TableSettings:    # imgui_internal.h:2721
     """ This is designed to be stored in a single ImChunkStream (1 header followed by N ImGuiTableColumnSettings, etc.)"""
     # ImGuiID                     ID;    /* original C++ signature */
     id: ImGuiID                             # Set to 0 to invalidate/delete the setting    # imgui_internal.h:2723

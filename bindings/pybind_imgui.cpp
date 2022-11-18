@@ -2987,7 +2987,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiStyle =
         py::class_<ImGuiStyle>    // imgui.h:1918
-            (m, "ImGuiStyle", "")
+            (m, "Style", "")
         .def_readwrite("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")    // imgui.h:1920
         .def_readwrite("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")    // imgui.h:1921
         .def_readwrite("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")    // imgui.h:1922
@@ -3036,7 +3036,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiKeyData =
         py::class_<ImGuiKeyData>    // imgui.h:1975
-            (m, "ImGuiKeyData", " [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.\n If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.")
+            (m, "KeyData", " [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.\n If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("down", &ImGuiKeyData::Down, "True for if key is down")    // imgui.h:1977
         .def_readwrite("down_duration", &ImGuiKeyData::DownDuration, "Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)")    // imgui.h:1978
@@ -3047,7 +3047,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiIO =
         py::class_<ImGuiIO>    // imgui.h:1983
-            (m, "ImGuiIO", "")
+            (m, "IO", "")
         .def_readwrite("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation options, etc.")    // imgui.h:1989
         .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")    // imgui.h:1990
         .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")    // imgui.h:1991
@@ -3273,7 +3273,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiInputTextCallbackData =
         py::class_<ImGuiInputTextCallbackData>    // imgui.h:2169
-            (m, "ImGuiInputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
+            (m, "InputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
         .def_readwrite("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")    // imgui.h:2171
         .def_readwrite("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")    // imgui.h:2172
         .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")    // imgui.h:2173
@@ -3295,7 +3295,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiSizeCallbackData =
         py::class_<ImGuiSizeCallbackData>    // imgui.h:2200
-            (m, "ImGuiSizeCallbackData", " Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().\n NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.")
+            (m, "SizeCallbackData", " Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().\n NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints()")    // imgui.h:2202
         .def_readwrite("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")    // imgui.h:2203
@@ -3306,7 +3306,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiWindowClass =
         py::class_<ImGuiWindowClass>    // imgui.h:2215
-            (m, "ImGuiWindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
+            (m, "WindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
         .def_readwrite("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")    // imgui.h:2217
         .def_readwrite("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")    // imgui.h:2218
         .def_readwrite("viewport_flags_override_set", &ImGuiWindowClass::ViewportFlagsOverrideSet, "Viewport flags to set when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2219
@@ -3321,7 +3321,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiPayload =
         py::class_<ImGuiPayload>    // imgui.h:2230
-            (m, "ImGuiPayload", "Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()")
+            (m, "Payload", "Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()")
         .def_readwrite("data", &ImGuiPayload::Data, "Data (copied and owned by dear imgui)")    // imgui.h:2233
         .def_readwrite("data_size", &ImGuiPayload::DataSize, "Data size")    // imgui.h:2234
         .def_readwrite("source_id", &ImGuiPayload::SourceId, "Source item id")    // imgui.h:2237
@@ -3335,7 +3335,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiTableColumnSortSpecs =
         py::class_<ImGuiTableColumnSortSpecs>    // imgui.h:2252
-            (m, "ImGuiTableColumnSortSpecs", "Sorting specification for one column of a table (sizeof == 12 bytes)")
+            (m, "TableColumnSortSpecs", "Sorting specification for one column of a table (sizeof == 12 bytes)")
         .def_readwrite("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User id of the column (if specified by a TableSetupColumn() call)")    // imgui.h:2254
         .def_readwrite("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")    // imgui.h:2255
         .def_readwrite("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")    // imgui.h:2256
@@ -3345,7 +3345,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiTableSortSpecs =
         py::class_<ImGuiTableSortSpecs>    // imgui.h:2266
-            (m, "ImGuiTableSortSpecs", " Sorting specifications for a table (often handling sort specs for a single column, occasionally more)\n Obtained by calling TableGetSortSpecs().\n When 'SpecsDirty == True' you can sort your data. It will be True with sorting specs have changed since last call, or the first time.\n Make sure to set 'SpecsDirty = False' after sorting, else you may wastefully sort your data every frame!")
+            (m, "TableSortSpecs", " Sorting specifications for a table (often handling sort specs for a single column, occasionally more)\n Obtained by calling TableGetSortSpecs().\n When 'SpecsDirty == True' you can sort your data. It will be True with sorting specs have changed since last call, or the first time.\n Make sure to set 'SpecsDirty = False' after sorting, else you may wastefully sort your data every frame!")
         .def_readonly("specs", &ImGuiTableSortSpecs::Specs, "Pointer to sort spec array.")    // imgui.h:2268
         .def_readwrite("specs_count", &ImGuiTableSortSpecs::SpecsCount, "Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.")    // imgui.h:2269
         .def_readwrite("specs_dirty", &ImGuiTableSortSpecs::SpecsDirty, "Set to True when specs have changed since last time! Use this to sort again, then clear the flag.")    // imgui.h:2270
@@ -3355,7 +3355,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiOnceUponAFrame =
         py::class_<ImGuiOnceUponAFrame>    // imgui.h:2289
-            (m, "ImGuiOnceUponAFrame", " Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create an UI within deep-nested code that runs multiple times every frame.\n Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text(\"This will be called only once per frame\");")
+            (m, "OnceUponAFrame", " Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create an UI within deep-nested code that runs multiple times every frame.\n Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text(\"This will be called only once per frame\");")
         .def(py::init<>())    // imgui.h:2291
         .def_readwrite("ref_frame", &ImGuiOnceUponAFrame::RefFrame, "")    // imgui.h:2292
         ;
@@ -3363,19 +3363,19 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiTextFilter =
         py::class_<ImGuiTextFilter>    // imgui.h:2297
-            (m, "ImGuiTextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"");
+            (m, "TextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"");
 
-    { // inner classes & enums of ImGuiTextFilter
+    { // inner classes & enums of TextFilter
         auto pyClassImGuiTextFilter_ClassImGuiTextRange =
             py::class_<ImGuiTextFilter::ImGuiTextRange>    // imgui.h:2307
-                (pyClassImGuiTextFilter, "ImGuiTextRange", "[Internal]")
+                (pyClassImGuiTextFilter, "TextRange", "[Internal]")
             .def_readonly("b", &ImGuiTextFilter::ImGuiTextRange::b, "")    // imgui.h:2309
             .def_readonly("e", &ImGuiTextFilter::ImGuiTextRange::e, "")    // imgui.h:2310
             .def(py::init<>())    // imgui.h:2312
             .def(py::init<const char *, const char *>(),    // imgui.h:2313
                 py::arg("_b"), py::arg("_e"))
             ;
-    } // end of inner classes & enums of ImGuiTextFilter
+    } // end of inner classes & enums of TextFilter
 
     pyClassImGuiTextFilter
         .def(py::init<const char *>(),    // imgui.h:2299
@@ -3394,12 +3394,12 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiStorage =
         py::class_<ImGuiStorage>    // imgui.h:2351
-            (m, "ImGuiStorage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.");
+            (m, "Storage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.");
 
-    { // inner classes & enums of ImGuiStorage
+    { // inner classes & enums of Storage
         auto pyClassImGuiStorage_ClassImGuiStoragePair =
             py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2354
-                (pyClassImGuiStorage, "ImGuiStoragePair", "[Internal]")
+                (pyClassImGuiStorage, "StoragePair", "[Internal]")
             .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2356
             .def(py::init<ImGuiID, int>(),    // imgui.h:2358
                 py::arg("_key"), py::arg("_val_i"))
@@ -3408,7 +3408,7 @@ void py_init_module_imgui_main(py::module& m)
             .def(py::init<ImGuiID, void *>(),    // imgui.h:2360
                 py::arg("_key"), py::arg("_val_p"))
             ;
-    } // end of inner classes & enums of ImGuiStorage
+    } // end of inner classes & enums of Storage
 
     pyClassImGuiStorage
         .def(py::init<>()) // implicit default constructor
@@ -3454,7 +3454,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiListClipper =
         py::class_<ImGuiListClipper>    // imgui.h:2414
-            (m, "ImGuiListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have a random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
+            (m, "ListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have a random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
         .def_readwrite("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")    // imgui.h:2416
         .def_readwrite("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")    // imgui.h:2417
         .def_readwrite("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")    // imgui.h:2418
@@ -3978,7 +3978,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiViewport =
         py::class_<ImGuiViewport>    // imgui.h:3046
-            (m, "ImGuiViewport", " - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.\n - With multi-viewport enabled, we extend this concept to have multiple active viewports.\n - In the future we will extend this concept further to also represent Platform Monitor and support a \"no main platform window\" operation mode.\n - About Main Area vs Work Area:\n   - Main Area = entire viewport.\n   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).\n   - Windows are generally trying to stay within the Work Area of their host viewport.")
+            (m, "Viewport", " - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.\n - With multi-viewport enabled, we extend this concept to have multiple active viewports.\n - In the future we will extend this concept further to also represent Platform Monitor and support a \"no main platform window\" operation mode.\n - About Main Area vs Work Area:\n   - Main Area = entire viewport.\n   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).\n   - Windows are generally trying to stay within the Work Area of their host viewport.")
         .def_readwrite("id", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3048
         .def_readwrite("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")    // imgui.h:3049
         .def_readwrite("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")    // imgui.h:3050
@@ -4001,7 +4001,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiPlatformIO =
         py::class_<ImGuiPlatformIO>    // imgui.h:3129
-            (m, "ImGuiPlatformIO", "(Optional) Access via ImGui::GetPlatformIO()")
+            (m, "PlatformIO", "(Optional) Access via ImGui::GetPlatformIO()")
         .def(py::init<>(),    // imgui.h:3187
             "Zero clear")
         ;
@@ -4009,7 +4009,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiPlatformMonitor =
         py::class_<ImGuiPlatformMonitor>    // imgui.h:3192
-            (m, "ImGuiPlatformMonitor", " (Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.\n We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.")
+            (m, "PlatformMonitor", " (Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.\n We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.")
         .def_readwrite("main_pos", &ImGuiPlatformMonitor::MainPos, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3194
         .def_readwrite("main_size", &ImGuiPlatformMonitor::MainSize, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3194
         .def_readwrite("work_pos", &ImGuiPlatformMonitor::WorkPos, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3195
@@ -4021,7 +4021,7 @@ void py_init_module_imgui_main(py::module& m)
 
     auto pyClassImGuiPlatformImeData =
         py::class_<ImGuiPlatformImeData>    // imgui.h:3201
-            (m, "ImGuiPlatformImeData", "(Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function.")
+            (m, "PlatformImeData", "(Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function.")
         .def_readwrite("want_visible", &ImGuiPlatformImeData::WantVisible, "A widget wants the IME to be visible")    // imgui.h:3203
         .def_readwrite("input_pos", &ImGuiPlatformImeData::InputPos, "Position of the input cursor")    // imgui.h:3204
         .def_readwrite("input_line_height", &ImGuiPlatformImeData::InputLineHeight, "Line height")    // imgui.h:3205
