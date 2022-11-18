@@ -37,8 +37,10 @@ function(find_opencv_with_help)
   if (NOT OpenCV_FOUND AND IMMVISION_USE_CONAN)
     message(WARNING "Did not find a global OpenCV installation. Will try to install it via conan")
 
-     set(conan_folder ${CMAKE_CURRENT_BINARY_DIR}/conan_third)
-     file(MAKE_DIRECTORY ${conan_folder})
+    find_program(conan_executable "conan")
+    # message(FATAL_ERROR "conan_executable=${conan_executable}")
+    set(conan_folder ${CMAKE_CURRENT_BINARY_DIR}/conan_third)
+    file(MAKE_DIRECTORY ${conan_folder})
 
     if(WIN32)
       set(conanfile "conanfile_opencv_default.txt")
@@ -47,7 +49,7 @@ function(find_opencv_with_help)
     endif()
 
     execute_process(COMMAND
-        conan install ${CMAKE_CURRENT_LIST_DIR}/${conanfile}
+        ${conan_executable} install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing
         WORKING_DIRECTORY ${conan_folder}
         RESULT_VARIABLE conan_install_result
         )
