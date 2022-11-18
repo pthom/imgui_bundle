@@ -34,6 +34,7 @@ setup(
             "imgui_bundle.assets.fonts.Roboto",
             "imgui_bundle.assets.images",
             "imgui_bundle.demos",
+            "imgui_bundle.demos.node_fn_compose",
             "imgui_bundle.demos.haikus",
             "imgui_bundle.demos.haikus.romeo_and_juliet",
             "imgui_bundle.demos.demos_hello_imgui",
