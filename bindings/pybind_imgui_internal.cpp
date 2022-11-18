@@ -190,53 +190,53 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiInputTextFlagsPrivate_>(m, "ImGuiInputTextFlagsPrivate_", py::arithmetic(), "Extend ImGuiInputTextFlags_")    // imgui_internal.h:806
-        .value("input_text_flags_multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
-        .value("input_text_flags_no_mark_edited", ImGuiInputTextFlags_NoMarkEdited, "For internal use by functions using InputText() before reformatting data")
-        .value("input_text_flags_merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.");
+        .value("im_gui_input_text_flags_multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
+        .value("im_gui_input_text_flags_no_mark_edited", ImGuiInputTextFlags_NoMarkEdited, "For internal use by functions using InputText() before reformatting data")
+        .value("im_gui_input_text_flags_merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.");
 
 
     py::enum_<ImGuiButtonFlagsPrivate_>(m, "ImGuiButtonFlagsPrivate_", py::arithmetic(), "Extend ImGuiButtonFlags_")    // imgui_internal.h:815
-        .value("button_flags_pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
-        .value("button_flags_pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
-        .value("button_flags_pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
-        .value("button_flags_pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release)")
-        .value("button_flags_pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
-        .value("button_flags_pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
-        .value("button_flags_repeat", ImGuiButtonFlags_Repeat, "hold to repeat")
-        .value("button_flags_flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
-        .value("button_flags_allow_item_overlap", ImGuiButtonFlags_AllowItemOverlap, "require previous frame HoveredId to either match id or be null before being usable, use along with SetItemAllowOverlap()")
-        .value("button_flags_dont_close_popups", ImGuiButtonFlags_DontClosePopups, "disable automatically closing parent popup on press // [UNUSED]")
-        .value("button_flags_align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
-        .value("button_flags_no_key_modifiers", ImGuiButtonFlags_NoKeyModifiers, "disable mouse interaction if a key modifier is held")
-        .value("button_flags_no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
-        .value("button_flags_no_nav_focus", ImGuiButtonFlags_NoNavFocus, "don't override navigation focus when activated")
-        .value("button_flags_no_hovered_on_focus", ImGuiButtonFlags_NoHoveredOnFocus, "don't report as hovered when nav focus is on this item")
-        .value("button_flags_pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
-        .value("button_flags_pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
+        .value("im_gui_button_flags_pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
+        .value("im_gui_button_flags_pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
+        .value("im_gui_button_flags_pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
+        .value("im_gui_button_flags_pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release)")
+        .value("im_gui_button_flags_pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
+        .value("im_gui_button_flags_pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
+        .value("im_gui_button_flags_repeat", ImGuiButtonFlags_Repeat, "hold to repeat")
+        .value("im_gui_button_flags_flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
+        .value("im_gui_button_flags_allow_item_overlap", ImGuiButtonFlags_AllowItemOverlap, "require previous frame HoveredId to either match id or be null before being usable, use along with SetItemAllowOverlap()")
+        .value("im_gui_button_flags_dont_close_popups", ImGuiButtonFlags_DontClosePopups, "disable automatically closing parent popup on press // [UNUSED]")
+        .value("im_gui_button_flags_align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
+        .value("im_gui_button_flags_no_key_modifiers", ImGuiButtonFlags_NoKeyModifiers, "disable mouse interaction if a key modifier is held")
+        .value("im_gui_button_flags_no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
+        .value("im_gui_button_flags_no_nav_focus", ImGuiButtonFlags_NoNavFocus, "don't override navigation focus when activated")
+        .value("im_gui_button_flags_no_hovered_on_focus", ImGuiButtonFlags_NoHoveredOnFocus, "don't report as hovered when nav focus is on this item")
+        .value("im_gui_button_flags_pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
+        .value("im_gui_button_flags_pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
 
 
     py::enum_<ImGuiComboFlagsPrivate_>(m, "ImGuiComboFlagsPrivate_", py::arithmetic(), "Extend ImGuiComboFlags_")    // imgui_internal.h:838
-        .value("combo_flags_custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
+        .value("im_gui_combo_flags_custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
 
 
     py::enum_<ImGuiSliderFlagsPrivate_>(m, "ImGuiSliderFlagsPrivate_", py::arithmetic(), "Extend ImGuiSliderFlags_")    // imgui_internal.h:844
-        .value("slider_flags_vertical", ImGuiSliderFlags_Vertical, "Should this slider be orientated vertically?")
-        .value("slider_flags_read_only", ImGuiSliderFlags_ReadOnly, "");
+        .value("im_gui_slider_flags_vertical", ImGuiSliderFlags_Vertical, "Should this slider be orientated vertically?")
+        .value("im_gui_slider_flags_read_only", ImGuiSliderFlags_ReadOnly, "");
 
 
     py::enum_<ImGuiSelectableFlagsPrivate_>(m, "ImGuiSelectableFlagsPrivate_", py::arithmetic(), "Extend ImGuiSelectableFlags_")    // imgui_internal.h:851
-        .value("selectable_flags_no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
-        .value("selectable_flags_select_on_nav", ImGuiSelectableFlags_SelectOnNav, "(WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.")
-        .value("selectable_flags_select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
-        .value("selectable_flags_select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
-        .value("selectable_flags_span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
-        .value("selectable_flags_draw_hovered_when_held", ImGuiSelectableFlags_DrawHoveredWhenHeld, "Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.")
-        .value("selectable_flags_set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
-        .value("selectable_flags_no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5");
+        .value("im_gui_selectable_flags_no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
+        .value("im_gui_selectable_flags_select_on_nav", ImGuiSelectableFlags_SelectOnNav, "(WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.")
+        .value("im_gui_selectable_flags_select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
+        .value("im_gui_selectable_flags_select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
+        .value("im_gui_selectable_flags_span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
+        .value("im_gui_selectable_flags_draw_hovered_when_held", ImGuiSelectableFlags_DrawHoveredWhenHeld, "Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.")
+        .value("im_gui_selectable_flags_set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
+        .value("im_gui_selectable_flags_no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5");
 
 
     py::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "ImGuiTreeNodeFlagsPrivate_", py::arithmetic(), "Extend ImGuiTreeNodeFlags_")    // imgui_internal.h:865
-        .value("tree_node_flags_clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "");
+        .value("im_gui_tree_node_flags_clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "");
 
 
     py::enum_<ImGuiSeparatorFlags_>(m, "ImGuiSeparatorFlags_", py::arithmetic(), "")    // imgui_internal.h:870
@@ -288,7 +288,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiDataTypeTempStorage =
         py::class_<ImGuiDataTypeTempStorage>    // imgui_internal.h:928
-            (m, "DataTypeTempStorage", "")
+            (m, "ImGuiDataTypeTempStorage", "")
         .def(py::init<>()) // implicit default constructor
         .def_property("data",    // imgui_internal.h:930
             [](ImGuiDataTypeTempStorage &self) -> pybind11::array
@@ -303,7 +303,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiDataTypeInfo =
         py::class_<ImGuiDataTypeInfo>    // imgui_internal.h:934
-            (m, "DataTypeInfo", "Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo().")
+            (m, "ImGuiDataTypeInfo", "Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo().")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("size", &ImGuiDataTypeInfo::Size, "Size in bytes")    // imgui_internal.h:936
         .def_readonly("name", &ImGuiDataTypeInfo::Name, "Short descriptive name for the type, for debugging")    // imgui_internal.h:937
@@ -313,14 +313,14 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiDataTypePrivate_>(m, "ImGuiDataTypePrivate_", py::arithmetic(), "Extend ImGuiDataType_")    // imgui_internal.h:943
-        .value("data_type_string", ImGuiDataType_String, "")
-        .value("data_type_pointer", ImGuiDataType_Pointer, "")
-        .value("data_type_id", ImGuiDataType_ID, "");
+        .value("im_gui_data_type_string", ImGuiDataType_String, "")
+        .value("im_gui_data_type_pointer", ImGuiDataType_Pointer, "")
+        .value("im_gui_data_type_id", ImGuiDataType_ID, "");
 
 
     auto pyClassImGuiColorMod =
         py::class_<ImGuiColorMod>    // imgui_internal.h:951
-            (m, "ColorMod", "Stacked color modifier, backup of modified data so we can restore it")
+            (m, "ImGuiColorMod", "Stacked color modifier, backup of modified data so we can restore it")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("col", &ImGuiColorMod::Col, "")    // imgui_internal.h:953
         .def_readwrite("backup_value", &ImGuiColorMod::BackupValue, "")    // imgui_internal.h:954
@@ -329,7 +329,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiStyleMod =
         py::class_<ImGuiStyleMod>    // imgui_internal.h:958
-            (m, "StyleMod", "Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable.")
+            (m, "ImGuiStyleMod", "Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable.")
         .def_readwrite("var_idx", &ImGuiStyleMod::VarIdx, "")    // imgui_internal.h:960
         .def(py::init<ImGuiStyleVar, int>(),    // imgui_internal.h:962
             py::arg("idx"), py::arg("v"))
@@ -342,7 +342,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiComboPreviewData =
         py::class_<ImGuiComboPreviewData>    // imgui_internal.h:968
-            (m, "ComboPreviewData", "Storage data for BeginComboPreview()/EndComboPreview()")
+            (m, "ImGuiComboPreviewData", "Storage data for BeginComboPreview()/EndComboPreview()")
         .def_readwrite("preview_rect", &ImGuiComboPreviewData::PreviewRect, "")    // imgui_internal.h:970
         .def_readwrite("backup_cursor_pos", &ImGuiComboPreviewData::BackupCursorPos, "")    // imgui_internal.h:971
         .def_readwrite("backup_cursor_max_pos", &ImGuiComboPreviewData::BackupCursorMaxPos, "")    // imgui_internal.h:972
@@ -355,7 +355,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiGroupData =
         py::class_<ImGuiGroupData>    // imgui_internal.h:981
-            (m, "GroupData", "Stacked storage data for BeginGroup()/EndGroup()")
+            (m, "ImGuiGroupData", "Stacked storage data for BeginGroup()/EndGroup()")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("window_id", &ImGuiGroupData::WindowID, "")    // imgui_internal.h:983
         .def_readwrite("backup_cursor_pos", &ImGuiGroupData::BackupCursorPos, "")    // imgui_internal.h:984
@@ -373,7 +373,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiMenuColumns =
         py::class_<ImGuiMenuColumns>    // imgui_internal.h:997
-            (m, "MenuColumns", "Simple column measurement, currently used for MenuItem() only.. This is very short-sighted/throw-away code and NOT a generic helper.")
+            (m, "ImGuiMenuColumns", "Simple column measurement, currently used for MenuItem() only.. This is very short-sighted/throw-away code and NOT a generic helper.")
         .def_readwrite("total_width", &ImGuiMenuColumns::TotalWidth, "")    // imgui_internal.h:999
         .def_readwrite("next_total_width", &ImGuiMenuColumns::NextTotalWidth, "")    // imgui_internal.h:1000
         .def_readwrite("spacing", &ImGuiMenuColumns::Spacing, "")    // imgui_internal.h:1001
@@ -395,7 +395,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputTextState =
         py::class_<ImGuiInputTextState>    // imgui_internal.h:1016
-            (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
+            (m, "ImGuiInputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def_readwrite("id", &ImGuiInputTextState::ID, "widget id owning the text state")    // imgui_internal.h:1018
         .def_readwrite("cur_len_w", &ImGuiInputTextState::CurLenW, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")    // imgui_internal.h:1019
         .def_readwrite("cur_len_a", &ImGuiInputTextState::CurLenA, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")    // imgui_internal.h:1019
@@ -414,7 +414,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiPopupData =
         py::class_<ImGuiPopupData>    // imgui_internal.h:1052
-            (m, "PopupData", "Storage for current popup stack")
+            (m, "ImGuiPopupData", "Storage for current popup stack")
         .def_readwrite("popup_id", &ImGuiPopupData::PopupId, "Set on OpenPopup()")    // imgui_internal.h:1054
         .def_readwrite("window", &ImGuiPopupData::Window, "Resolved on BeginPopup() - may stay unresolved if user never calls OpenPopup()")    // imgui_internal.h:1055
         .def_readwrite("source_window", &ImGuiPopupData::SourceWindow, "Set on OpenPopup() copy of NavWindow at the time of opening the popup")    // imgui_internal.h:1056
@@ -444,7 +444,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiNextWindowData =
         py::class_<ImGuiNextWindowData>    // imgui_internal.h:1083
-            (m, "NextWindowData", "Storage for SetNexWindow** functions")
+            (m, "ImGuiNextWindowData", "Storage for SetNexWindow** functions")
         .def_readwrite("flags", &ImGuiNextWindowData::Flags, "")    // imgui_internal.h:1085
         .def_readwrite("pos_cond", &ImGuiNextWindowData::PosCond, "")    // imgui_internal.h:1086
         .def_readwrite("size_cond", &ImGuiNextWindowData::SizeCond, "")    // imgui_internal.h:1087
@@ -476,7 +476,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiNextItemData =
         py::class_<ImGuiNextItemData>    // imgui_internal.h:1117
-            (m, "NextItemData", "")
+            (m, "ImGuiNextItemData", "")
         .def_readwrite("flags", &ImGuiNextItemData::Flags, "")    // imgui_internal.h:1119
         .def_readwrite("width", &ImGuiNextItemData::Width, "Set by SetNextItemWidth()")    // imgui_internal.h:1120
         .def_readwrite("focus_scope_id", &ImGuiNextItemData::FocusScopeId, "Set by SetNextItemMultiSelectData() (!= 0 signify value has been set, so it's an alternate version of HasSelectionData, we don't use Flags for this because they are cleared too early. This is mostly used for debugging)")    // imgui_internal.h:1121
@@ -488,7 +488,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiLastItemData =
         py::class_<ImGuiLastItemData>    // imgui_internal.h:1130
-            (m, "LastItemData", "Status storage for the last submitted item")
+            (m, "ImGuiLastItemData", "Status storage for the last submitted item")
         .def_readwrite("id", &ImGuiLastItemData::ID, "")    // imgui_internal.h:1132
         .def_readwrite("in_flags", &ImGuiLastItemData::InFlags, "See ImGuiItemFlags_")    // imgui_internal.h:1133
         .def_readwrite("status_flags", &ImGuiLastItemData::StatusFlags, "See ImGuiItemStatusFlags_")    // imgui_internal.h:1134
@@ -501,7 +501,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiStackSizes =
         py::class_<ImGuiStackSizes>    // imgui_internal.h:1142
-            (m, "StackSizes", "")
+            (m, "ImGuiStackSizes", "")
         .def_readwrite("size_of_id_stack", &ImGuiStackSizes::SizeOfIDStack, "")    // imgui_internal.h:1144
         .def_readwrite("size_of_color_stack", &ImGuiStackSizes::SizeOfColorStack, "")    // imgui_internal.h:1145
         .def_readwrite("size_of_style_var_stack", &ImGuiStackSizes::SizeOfStyleVarStack, "")    // imgui_internal.h:1146
@@ -517,7 +517,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindowStackData =
         py::class_<ImGuiWindowStackData>    // imgui_internal.h:1160
-            (m, "WindowStackData", "Data saved for each window pushed into the stack")
+            (m, "ImGuiWindowStackData", "Data saved for each window pushed into the stack")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("window", &ImGuiWindowStackData::Window, "")    // imgui_internal.h:1162
         .def_readwrite("parent_last_item_data_backup", &ImGuiWindowStackData::ParentLastItemDataBackup, "")    // imgui_internal.h:1163
@@ -527,7 +527,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiShrinkWidthItem =
         py::class_<ImGuiShrinkWidthItem>    // imgui_internal.h:1167
-            (m, "ShrinkWidthItem", "")
+            (m, "ImGuiShrinkWidthItem", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("index", &ImGuiShrinkWidthItem::Index, "")    // imgui_internal.h:1169
         .def_readwrite("width", &ImGuiShrinkWidthItem::Width, "")    // imgui_internal.h:1170
@@ -537,7 +537,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiPtrOrIndex =
         py::class_<ImGuiPtrOrIndex>    // imgui_internal.h:1174
-            (m, "PtrOrIndex", "")
+            (m, "ImGuiPtrOrIndex", "")
         .def_readwrite("ptr", &ImGuiPtrOrIndex::Ptr, "Either field can be set, not both. e.g. Dock node tab bars are loose while BeginTabBar() ones are in a pool.")    // imgui_internal.h:1176
         .def_readwrite("index", &ImGuiPtrOrIndex::Index, "Usually index in a main pool.")    // imgui_internal.h:1177
         .def(py::init<void *>(),    // imgui_internal.h:1179
@@ -548,10 +548,10 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiKeyPrivate_>(m, "ImGuiKeyPrivate_", py::arithmetic(), "")    // imgui_internal.h:1189
-        .value("key_legacy_native_key_begin", ImGuiKey_LegacyNativeKey_BEGIN, "")
-        .value("key_legacy_native_key_end", ImGuiKey_LegacyNativeKey_END, "")
-        .value("key_gamepad_begin", ImGuiKey_Gamepad_BEGIN, "")
-        .value("key_gamepad_end", ImGuiKey_Gamepad_END, "");
+        .value("im_gui_key_legacy_native_key_begin", ImGuiKey_LegacyNativeKey_BEGIN, "")
+        .value("im_gui_key_legacy_native_key_end", ImGuiKey_LegacyNativeKey_END, "")
+        .value("im_gui_key_gamepad_begin", ImGuiKey_Gamepad_BEGIN, "")
+        .value("im_gui_key_gamepad_end", ImGuiKey_Gamepad_END, "");
 
 
     py::enum_<ImGuiInputEventType>(m, "ImGuiInputEventType", py::arithmetic(), "")    // imgui_internal.h:1197
@@ -578,7 +578,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventMousePos =
         py::class_<ImGuiInputEventMousePos>    // imgui_internal.h:1223
-            (m, "InputEventMousePos", "")
+            (m, "ImGuiInputEventMousePos", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("pos_x", &ImGuiInputEventMousePos::PosX, "")    // imgui_internal.h:1223
         .def_readwrite("pos_y", &ImGuiInputEventMousePos::PosY, "")    // imgui_internal.h:1223
@@ -587,7 +587,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventMouseWheel =
         py::class_<ImGuiInputEventMouseWheel>    // imgui_internal.h:1224
-            (m, "InputEventMouseWheel", "")
+            (m, "ImGuiInputEventMouseWheel", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("wheel_x", &ImGuiInputEventMouseWheel::WheelX, "")    // imgui_internal.h:1224
         .def_readwrite("wheel_y", &ImGuiInputEventMouseWheel::WheelY, "")    // imgui_internal.h:1224
@@ -596,7 +596,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventMouseButton =
         py::class_<ImGuiInputEventMouseButton>    // imgui_internal.h:1225
-            (m, "InputEventMouseButton", "")
+            (m, "ImGuiInputEventMouseButton", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("button", &ImGuiInputEventMouseButton::Button, "")    // imgui_internal.h:1225
         .def_readwrite("down", &ImGuiInputEventMouseButton::Down, "")    // imgui_internal.h:1225
@@ -605,7 +605,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventMouseViewport =
         py::class_<ImGuiInputEventMouseViewport>    // imgui_internal.h:1226
-            (m, "InputEventMouseViewport", "")
+            (m, "ImGuiInputEventMouseViewport", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("hovered_viewport_id", &ImGuiInputEventMouseViewport::HoveredViewportID, "")    // imgui_internal.h:1226
         ;
@@ -613,7 +613,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventKey =
         py::class_<ImGuiInputEventKey>    // imgui_internal.h:1227
-            (m, "InputEventKey", "")
+            (m, "ImGuiInputEventKey", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("key", &ImGuiInputEventKey::Key, "")    // imgui_internal.h:1227
         .def_readwrite("down", &ImGuiInputEventKey::Down, "")    // imgui_internal.h:1227
@@ -623,7 +623,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventText =
         py::class_<ImGuiInputEventText>    // imgui_internal.h:1228
-            (m, "InputEventText", "")
+            (m, "ImGuiInputEventText", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("char", &ImGuiInputEventText::Char, "")    // imgui_internal.h:1228
         ;
@@ -631,7 +631,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEventAppFocused =
         py::class_<ImGuiInputEventAppFocused>    // imgui_internal.h:1229
-            (m, "InputEventAppFocused", "")
+            (m, "ImGuiInputEventAppFocused", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("focused", &ImGuiInputEventAppFocused::Focused, "")    // imgui_internal.h:1229
         ;
@@ -639,7 +639,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiInputEvent =
         py::class_<ImGuiInputEvent>    // imgui_internal.h:1231
-            (m, "InputEvent", "")
+            (m, "ImGuiInputEvent", "")
         .def_readwrite("type", &ImGuiInputEvent::Type, "")    // imgui_internal.h:1233
         .def_readwrite("source", &ImGuiInputEvent::Source, "")    // imgui_internal.h:1234
         .def_readwrite("added_by_test_engine", &ImGuiInputEvent::AddedByTestEngine, "")    // imgui_internal.h:1245
@@ -658,7 +658,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiListClipperRange =
         py::class_<ImGuiListClipperRange>    // imgui_internal.h:1265
-            (m, "ListClipperRange", "")
+            (m, "ImGuiListClipperRange", "")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("min", &ImGuiListClipperRange::Min, "")    // imgui_internal.h:1267
         .def_readwrite("max", &ImGuiListClipperRange::Max, "")    // imgui_internal.h:1268
@@ -670,7 +670,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiListClipperData =
         py::class_<ImGuiListClipperData>    // imgui_internal.h:1278
-            (m, "ListClipperData", "Temporary clipper data, buffers shared/reused between instances")
+            (m, "ImGuiListClipperData", "Temporary clipper data, buffers shared/reused between instances")
         .def_readwrite("list_clipper", &ImGuiListClipperData::ListClipper, "")    // imgui_internal.h:1280
         .def_readwrite("lossyness_offset", &ImGuiListClipperData::LossynessOffset, "")    // imgui_internal.h:1281
         .def_readwrite("step_no", &ImGuiListClipperData::StepNo, "")    // imgui_internal.h:1282
@@ -740,7 +740,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiNavItemData =
         py::class_<ImGuiNavItemData>    // imgui_internal.h:1360
-            (m, "NavItemData", "")
+            (m, "ImGuiNavItemData", "")
         .def_readwrite("window", &ImGuiNavItemData::Window, "Init,Move    // Best candidate window (result->ItemWindow->RootWindowForNav == request->Window)")    // imgui_internal.h:1362
         .def_readwrite("id", &ImGuiNavItemData::ID, "Init,Move    // Best candidate item ID")    // imgui_internal.h:1363
         .def_readwrite("focus_scope_id", &ImGuiNavItemData::FocusScopeId, "Init,Move    // Best candidate focus scope ID")    // imgui_internal.h:1364
@@ -764,7 +764,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiOldColumnData =
         py::class_<ImGuiOldColumnData>    // imgui_internal.h:1400
-            (m, "OldColumnData", "")
+            (m, "ImGuiOldColumnData", "")
         .def_readwrite("offset_norm", &ImGuiOldColumnData::OffsetNorm, "Column start offset, normalized 0.0 (far left) -> 1.0 (far right)")    // imgui_internal.h:1402
         .def_readwrite("offset_norm_before_resize", &ImGuiOldColumnData::OffsetNormBeforeResize, "")    // imgui_internal.h:1403
         .def_readwrite("flags", &ImGuiOldColumnData::Flags, "Not exposed")    // imgui_internal.h:1404
@@ -775,7 +775,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiOldColumns =
         py::class_<ImGuiOldColumns>    // imgui_internal.h:1410
-            (m, "OldColumns", "")
+            (m, "ImGuiOldColumns", "")
         .def_readwrite("id", &ImGuiOldColumns::ID, "")    // imgui_internal.h:1412
         .def_readwrite("flags", &ImGuiOldColumns::Flags, "")    // imgui_internal.h:1413
         .def_readwrite("is_first_frame", &ImGuiOldColumns::IsFirstFrame, "")    // imgui_internal.h:1414
@@ -797,25 +797,25 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiDockNodeFlagsPrivate_>(m, "ImGuiDockNodeFlagsPrivate_", py::arithmetic(), "Extend ImGuiDockNodeFlags_")    // imgui_internal.h:1446
-        .value("dock_node_flags_dock_space", ImGuiDockNodeFlags_DockSpace, "Local, Saved  // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.")
-        .value("dock_node_flags_central_node", ImGuiDockNodeFlags_CentralNode, "Local, Saved  // The central node has 2 main properties: stay visible when empty, only use \"remaining\" spaces from its neighbor.")
-        .value("dock_node_flags_no_tab_bar", ImGuiDockNodeFlags_NoTabBar, "Local, Saved  // Tab bar is completely unavailable. No triangle in the corner to enable it back.")
-        .value("dock_node_flags_hidden_tab_bar", ImGuiDockNodeFlags_HiddenTabBar, "Local, Saved  // Tab bar is hidden, with a triangle in the corner to show it again (NB: actual tab-bar instance may be destroyed as this is only used for single-window tab bar)")
-        .value("dock_node_flags_no_window_menu_button", ImGuiDockNodeFlags_NoWindowMenuButton, "Local, Saved  // Disable window/docking menu (that one that appears instead of the collapse button)")
-        .value("dock_node_flags_no_close_button", ImGuiDockNodeFlags_NoCloseButton, "Local, Saved  //")
-        .value("dock_node_flags_no_docking", ImGuiDockNodeFlags_NoDocking, "Local, Saved  // Disable any form of docking in this dockspace or individual node. (On a whole dockspace, this pretty much defeat the purpose of using a dockspace at all). Note: when turned on, existing docked nodes will be preserved.")
-        .value("dock_node_flags_no_docking_split_me", ImGuiDockNodeFlags_NoDockingSplitMe, "[EXPERIMENTAL] Prevent another window/node from splitting this node.")
-        .value("dock_node_flags_no_docking_split_other", ImGuiDockNodeFlags_NoDockingSplitOther, "[EXPERIMENTAL] Prevent this node from splitting another window/node.")
-        .value("dock_node_flags_no_docking_over_me", ImGuiDockNodeFlags_NoDockingOverMe, "[EXPERIMENTAL] Prevent another window/node to be docked over this node.")
-        .value("dock_node_flags_no_docking_over_other", ImGuiDockNodeFlags_NoDockingOverOther, "[EXPERIMENTAL] Prevent this node to be docked over another window or non-empty node.")
-        .value("dock_node_flags_no_docking_over_empty", ImGuiDockNodeFlags_NoDockingOverEmpty, "[EXPERIMENTAL] Prevent this node to be docked over an empty node (e.g. DockSpace with no other windows)")
-        .value("dock_node_flags_no_resize_x", ImGuiDockNodeFlags_NoResizeX, "[EXPERIMENTAL]")
-        .value("dock_node_flags_no_resize_y", ImGuiDockNodeFlags_NoResizeY, "[EXPERIMENTAL]")
-        .value("dock_node_flags_shared_flags_inherit_mask_", ImGuiDockNodeFlags_SharedFlagsInheritMask_, "")
-        .value("dock_node_flags_no_resize_flags_mask_", ImGuiDockNodeFlags_NoResizeFlagsMask_, "")
-        .value("dock_node_flags_local_flags_mask_", ImGuiDockNodeFlags_LocalFlagsMask_, "")
-        .value("dock_node_flags_local_flags_transfer_mask_", ImGuiDockNodeFlags_LocalFlagsTransferMask_, "When splitting those flags are moved to the inheriting child, never duplicated")
-        .value("dock_node_flags_saved_flags_mask_", ImGuiDockNodeFlags_SavedFlagsMask_, "");
+        .value("im_gui_dock_node_flags_dock_space", ImGuiDockNodeFlags_DockSpace, "Local, Saved  // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.")
+        .value("im_gui_dock_node_flags_central_node", ImGuiDockNodeFlags_CentralNode, "Local, Saved  // The central node has 2 main properties: stay visible when empty, only use \"remaining\" spaces from its neighbor.")
+        .value("im_gui_dock_node_flags_no_tab_bar", ImGuiDockNodeFlags_NoTabBar, "Local, Saved  // Tab bar is completely unavailable. No triangle in the corner to enable it back.")
+        .value("im_gui_dock_node_flags_hidden_tab_bar", ImGuiDockNodeFlags_HiddenTabBar, "Local, Saved  // Tab bar is hidden, with a triangle in the corner to show it again (NB: actual tab-bar instance may be destroyed as this is only used for single-window tab bar)")
+        .value("im_gui_dock_node_flags_no_window_menu_button", ImGuiDockNodeFlags_NoWindowMenuButton, "Local, Saved  // Disable window/docking menu (that one that appears instead of the collapse button)")
+        .value("im_gui_dock_node_flags_no_close_button", ImGuiDockNodeFlags_NoCloseButton, "Local, Saved  //")
+        .value("im_gui_dock_node_flags_no_docking", ImGuiDockNodeFlags_NoDocking, "Local, Saved  // Disable any form of docking in this dockspace or individual node. (On a whole dockspace, this pretty much defeat the purpose of using a dockspace at all). Note: when turned on, existing docked nodes will be preserved.")
+        .value("im_gui_dock_node_flags_no_docking_split_me", ImGuiDockNodeFlags_NoDockingSplitMe, "[EXPERIMENTAL] Prevent another window/node from splitting this node.")
+        .value("im_gui_dock_node_flags_no_docking_split_other", ImGuiDockNodeFlags_NoDockingSplitOther, "[EXPERIMENTAL] Prevent this node from splitting another window/node.")
+        .value("im_gui_dock_node_flags_no_docking_over_me", ImGuiDockNodeFlags_NoDockingOverMe, "[EXPERIMENTAL] Prevent another window/node to be docked over this node.")
+        .value("im_gui_dock_node_flags_no_docking_over_other", ImGuiDockNodeFlags_NoDockingOverOther, "[EXPERIMENTAL] Prevent this node to be docked over another window or non-empty node.")
+        .value("im_gui_dock_node_flags_no_docking_over_empty", ImGuiDockNodeFlags_NoDockingOverEmpty, "[EXPERIMENTAL] Prevent this node to be docked over an empty node (e.g. DockSpace with no other windows)")
+        .value("im_gui_dock_node_flags_no_resize_x", ImGuiDockNodeFlags_NoResizeX, "[EXPERIMENTAL]")
+        .value("im_gui_dock_node_flags_no_resize_y", ImGuiDockNodeFlags_NoResizeY, "[EXPERIMENTAL]")
+        .value("im_gui_dock_node_flags_shared_flags_inherit_mask_", ImGuiDockNodeFlags_SharedFlagsInheritMask_, "")
+        .value("im_gui_dock_node_flags_no_resize_flags_mask_", ImGuiDockNodeFlags_NoResizeFlagsMask_, "")
+        .value("im_gui_dock_node_flags_local_flags_mask_", ImGuiDockNodeFlags_LocalFlagsMask_, "")
+        .value("im_gui_dock_node_flags_local_flags_transfer_mask_", ImGuiDockNodeFlags_LocalFlagsTransferMask_, "When splitting those flags are moved to the inheriting child, never duplicated")
+        .value("im_gui_dock_node_flags_saved_flags_mask_", ImGuiDockNodeFlags_SavedFlagsMask_, "");
 
 
     py::enum_<ImGuiDataAuthority_>(m, "ImGuiDataAuthority_", py::arithmetic(), "Store the source authority (dock node vs window) of a field")    // imgui_internal.h:1471
@@ -833,7 +833,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiDockNode =
         py::class_<ImGuiDockNode>    // imgui_internal.h:1487
-            (m, "DockNode", "sizeof() 156~192")
+            (m, "ImGuiDockNode", "sizeof() 156~192")
         .def_readwrite("id", &ImGuiDockNode::ID, "")    // imgui_internal.h:1489
         .def_readwrite("shared_flags", &ImGuiDockNode::SharedFlags, "(Write) Flags shared by all nodes of a same dockspace hierarchy (inherited from the root node)")    // imgui_internal.h:1490
         .def_readwrite("local_flags", &ImGuiDockNode::LocalFlags, "(Write) Flags specific to this node")    // imgui_internal.h:1491
@@ -876,14 +876,14 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindowDockStyle =
         py::class_<ImGuiWindowDockStyle>    // imgui_internal.h:1564
-            (m, "WindowDockStyle", "")
+            (m, "ImGuiWindowDockStyle", "")
         .def(py::init<>()) // implicit default constructor
         ;
 
 
     auto pyClassImGuiDockContext =
         py::class_<ImGuiDockContext>    // imgui_internal.h:1569
-            (m, "DockContext", "")
+            (m, "ImGuiDockContext", "")
         .def_readwrite("nodes", &ImGuiDockContext::Nodes, "Map ID -> ImGuiDockNode*: Active nodes")    // imgui_internal.h:1571
         .def_readwrite("want_full_rebuild", &ImGuiDockContext::WantFullRebuild, "")    // imgui_internal.h:1574
         .def(py::init<>())    // imgui_internal.h:1575
@@ -892,7 +892,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiViewportP =
         py::class_<ImGuiViewportP>    // imgui_internal.h:1586
-            (m, "ViewportP", " ImGuiViewport Private/Internals fields (cardinal sin: we are using inheritance!)\n Every instance of ImGuiViewport is in fact a ImGuiViewportP.")
+            (m, "ImGuiViewportP", " ImGuiViewport Private/Internals fields (cardinal sin: we are using inheritance!)\n Every instance of ImGuiViewport is in fact a ImGuiViewportP.")
         .def_readwrite("idx", &ImGuiViewportP::Idx, "")    // imgui_internal.h:1588
         .def_readwrite("last_frame_active", &ImGuiViewportP::LastFrameActive, "Last frame number this viewport was activated by a window")    // imgui_internal.h:1589
         .def_readwrite("last_front_most_stamp_count", &ImGuiViewportP::LastFrontMostStampCount, "Last stamp number from when a window hosted by this viewport was made front-most (by comparing this value between two viewport we have an implicit viewport z-order")    // imgui_internal.h:1590
@@ -926,7 +926,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindowSettings =
         py::class_<ImGuiWindowSettings>    // imgui_internal.h:1632
-            (m, "WindowSettings", " Windows data saved in imgui.ini file\n Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.\n (this is designed to be stored in a ImChunkStream buffer, with the variable-length Name following our structure)")
+            (m, "ImGuiWindowSettings", " Windows data saved in imgui.ini file\n Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.\n (this is designed to be stored in a ImChunkStream buffer, with the variable-length Name following our structure)")
         .def_readwrite("id", &ImGuiWindowSettings::ID, "")    // imgui_internal.h:1634
         .def_readwrite("pos", &ImGuiWindowSettings::Pos, "NB: Settings position are stored RELATIVE to the viewport! Whereas runtime ones are absolute positions.")    // imgui_internal.h:1635
         .def_readwrite("size", &ImGuiWindowSettings::Size, "")    // imgui_internal.h:1636
@@ -943,7 +943,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiSettingsHandler =
         py::class_<ImGuiSettingsHandler>    // imgui_internal.h:1649
-            (m, "SettingsHandler", "")
+            (m, "ImGuiSettingsHandler", "")
         .def_readonly("type_name", &ImGuiSettingsHandler::TypeName, "Short description stored in .ini file. Disallowed characters: '[' ']'")    // imgui_internal.h:1651
         .def_readwrite("type_hash", &ImGuiSettingsHandler::TypeHash, "== ImHashStr(TypeName)")    // imgui_internal.h:1652
         .def_readwrite("user_data", &ImGuiSettingsHandler::UserData, "")    // imgui_internal.h:1659
@@ -966,7 +966,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiMetricsConfig =
         py::class_<ImGuiMetricsConfig>    // imgui_internal.h:1683
-            (m, "MetricsConfig", "")
+            (m, "ImGuiMetricsConfig", "")
         .def_readwrite("show_debug_log", &ImGuiMetricsConfig::ShowDebugLog, "")    // imgui_internal.h:1685
         .def_readwrite("show_stack_tool", &ImGuiMetricsConfig::ShowStackTool, "")    // imgui_internal.h:1686
         .def_readwrite("show_windows_rects", &ImGuiMetricsConfig::ShowWindowsRects, "")    // imgui_internal.h:1687
@@ -983,7 +983,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiStackLevelInfo =
         py::class_<ImGuiStackLevelInfo>    // imgui_internal.h:1706
-            (m, "StackLevelInfo", "")
+            (m, "ImGuiStackLevelInfo", "")
         .def_readwrite("id", &ImGuiStackLevelInfo::ID, "")    // imgui_internal.h:1708
         .def_readwrite("query_frame_count", &ImGuiStackLevelInfo::QueryFrameCount, ">= 1: Query in progress")    // imgui_internal.h:1709
         .def_readwrite("query_success", &ImGuiStackLevelInfo::QuerySuccess, "Obtained result from DebugHookIdInfo()")    // imgui_internal.h:1710
@@ -993,7 +993,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiStackTool =
         py::class_<ImGuiStackTool>    // imgui_internal.h:1718
-            (m, "StackTool", "State for Stack tool queries")
+            (m, "ImGuiStackTool", "State for Stack tool queries")
         .def_readwrite("last_active_frame", &ImGuiStackTool::LastActiveFrame, "")    // imgui_internal.h:1720
         .def_readwrite("stack_level", &ImGuiStackTool::StackLevel, "-1: query stack and resize Results, >= 0: individual stack level")    // imgui_internal.h:1721
         .def_readwrite("query_id", &ImGuiStackTool::QueryId, "ID to query details for")    // imgui_internal.h:1722
@@ -1016,7 +1016,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiContextHook =
         py::class_<ImGuiContextHook>    // imgui_internal.h:1737
-            (m, "ContextHook", "")
+            (m, "ImGuiContextHook", "")
         .def_readwrite("hook_id", &ImGuiContextHook::HookId, "A unique ID assigned by AddContextHook()")    // imgui_internal.h:1739
         .def_readwrite("type", &ImGuiContextHook::Type, "")    // imgui_internal.h:1740
         .def_readwrite("owner", &ImGuiContextHook::Owner, "")    // imgui_internal.h:1741
@@ -1027,7 +1027,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiContext =
         py::class_<ImGuiContext>    // imgui_internal.h:1752
-            (m, "Context", "")
+            (m, "ImGuiContext", "")
         .def_readwrite("initialized", &ImGuiContext::Initialized, "")    // imgui_internal.h:1754
         .def_readwrite("font_atlas_owned_by_context", &ImGuiContext::FontAtlasOwnedByContext, "IO.Fonts-> is owned by the ImGuiContext and will be destructed along with it.")    // imgui_internal.h:1755
         .def_readwrite("io", &ImGuiContext::IO, "")    // imgui_internal.h:1756
@@ -1241,7 +1241,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindowTempData =
         py::class_<ImGuiWindowTempData>    // imgui_internal.h:2198
-            (m, "WindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
+            (m, "ImGuiWindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")    // imgui_internal.h:2201
         .def_readwrite("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")    // imgui_internal.h:2202
@@ -1280,7 +1280,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindow =
         py::class_<ImGuiWindow>    // imgui_internal.h:2246
-            (m, "Window", "Storage for one window")
+            (m, "ImGuiWindow", "Storage for one window")
         .def_readwrite("id", &ImGuiWindow::ID, "== ImHashStr(Name)")    // imgui_internal.h:2249
         .def_readwrite("flags", &ImGuiWindow::Flags, "See enum ImGuiWindowFlags_")    // imgui_internal.h:2250
         .def_readwrite("flags_previous_frame", &ImGuiWindow::FlagsPreviousFrame, "See enum ImGuiWindowFlags_")    // imgui_internal.h:2250
@@ -1383,22 +1383,22 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiTabBarFlagsPrivate_>(m, "ImGuiTabBarFlagsPrivate_", py::arithmetic(), "Extend ImGuiTabBarFlags_")    // imgui_internal.h:2388
-        .value("tab_bar_flags_dock_node", ImGuiTabBarFlags_DockNode, "Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]")
-        .value("tab_bar_flags_is_focused", ImGuiTabBarFlags_IsFocused, "")
-        .value("tab_bar_flags_save_settings", ImGuiTabBarFlags_SaveSettings, "FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs");
+        .value("im_gui_tab_bar_flags_dock_node", ImGuiTabBarFlags_DockNode, "Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]")
+        .value("im_gui_tab_bar_flags_is_focused", ImGuiTabBarFlags_IsFocused, "")
+        .value("im_gui_tab_bar_flags_save_settings", ImGuiTabBarFlags_SaveSettings, "FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs");
 
 
     py::enum_<ImGuiTabItemFlagsPrivate_>(m, "ImGuiTabItemFlagsPrivate_", py::arithmetic(), "Extend ImGuiTabItemFlags_")    // imgui_internal.h:2396
-        .value("tab_item_flags_section_mask_", ImGuiTabItemFlags_SectionMask_, "")
-        .value("tab_item_flags_no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
-        .value("tab_item_flags_button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
-        .value("tab_item_flags_unsorted", ImGuiTabItemFlags_Unsorted, "[Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.")
-        .value("tab_item_flags_preview", ImGuiTabItemFlags_Preview, "[Docking] Display tab shape for docking preview (height is adjusted slightly to compensate for the yet missing tab bar)");
+        .value("im_gui_tab_item_flags_section_mask_", ImGuiTabItemFlags_SectionMask_, "")
+        .value("im_gui_tab_item_flags_no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
+        .value("im_gui_tab_item_flags_button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
+        .value("im_gui_tab_item_flags_unsorted", ImGuiTabItemFlags_Unsorted, "[Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.")
+        .value("im_gui_tab_item_flags_preview", ImGuiTabItemFlags_Preview, "[Docking] Display tab shape for docking preview (height is adjusted slightly to compensate for the yet missing tab bar)");
 
 
     auto pyClassImGuiTabItem =
         py::class_<ImGuiTabItem>    // imgui_internal.h:2406
-            (m, "TabItem", "Storage for one active tab item (sizeof() 48 bytes)")
+            (m, "ImGuiTabItem", "Storage for one active tab item (sizeof() 48 bytes)")
         .def_readwrite("id", &ImGuiTabItem::ID, "")    // imgui_internal.h:2408
         .def_readwrite("flags", &ImGuiTabItem::Flags, "")    // imgui_internal.h:2409
         .def_readwrite("window", &ImGuiTabItem::Window, "When TabItem is part of a DockNode's TabBar, we hold on to a window.")    // imgui_internal.h:2410
@@ -1418,7 +1418,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTabBar =
         py::class_<ImGuiTabBar>    // imgui_internal.h:2426
-            (m, "TabBar", "Storage for a tab bar (sizeof() 152 bytes)")
+            (m, "ImGuiTabBar", "Storage for a tab bar (sizeof() 152 bytes)")
         .def_readwrite("flags", &ImGuiTabBar::Flags, "")    // imgui_internal.h:2429
         .def_readwrite("id", &ImGuiTabBar::ID, "Zero for tab-bars used by docking")    // imgui_internal.h:2430
         .def_readwrite("selected_tab_id", &ImGuiTabBar::SelectedTabId, "Selected tab/window")    // imgui_internal.h:2431
@@ -1455,7 +1455,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableColumn =
         py::class_<ImGuiTableColumn>    // imgui_internal.h:2487
-            (m, "TableColumn", " [Internal] sizeof() ~ 104\n We use the terminology \"Enabled\" to refer to a column that is not Hidden by user/api.\n We use the terminology \"Clipped\" to refer to a column that is out of sight because of scrolling/clipping.\n This is in contrast with some user-facing api such as IsItemVisible() / IsRectVisible() which use \"Visible\" to mean \"not clipped\".")
+            (m, "ImGuiTableColumn", " [Internal] sizeof() ~ 104\n We use the terminology \"Enabled\" to refer to a column that is not Hidden by user/api.\n We use the terminology \"Clipped\" to refer to a column that is out of sight because of scrolling/clipping.\n This is in contrast with some user-facing api such as IsItemVisible() / IsRectVisible() which use \"Visible\" to mean \"not clipped\".")
         .def_readwrite("flags", &ImGuiTableColumn::Flags, "Flags after some patching (not directly same as provided by user). See ImGuiTableColumnFlags_")    // imgui_internal.h:2489
         .def_readwrite("width_given", &ImGuiTableColumn::WidthGiven, "Final/actual width visible == (MaxX - MinX), locked in TableUpdateLayout(). May be > WidthRequest to honor minimum width, may be < WidthRequest to honor shrinking columns down in tight space.")    // imgui_internal.h:2490
         .def_readwrite("min_x", &ImGuiTableColumn::MinX, "Absolute positions")    // imgui_internal.h:2491
@@ -1500,7 +1500,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableCellData =
         py::class_<ImGuiTableCellData>    // imgui_internal.h:2546
-            (m, "TableCellData", " Transient cell data stored per row.\n sizeof() ~ 6")
+            (m, "ImGuiTableCellData", " Transient cell data stored per row.\n sizeof() ~ 6")
         .def(py::init<>()) // implicit default constructor
         .def_readwrite("bg_color", &ImGuiTableCellData::BgColor, "Actual color")    // imgui_internal.h:2548
         .def_readwrite("column", &ImGuiTableCellData::Column, "Column number")    // imgui_internal.h:2549
@@ -1509,7 +1509,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableInstanceData =
         py::class_<ImGuiTableInstanceData>    // imgui_internal.h:2553
-            (m, "TableInstanceData", "Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)")
+            (m, "ImGuiTableInstanceData", "Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)")
         .def_readwrite("last_outer_height", &ImGuiTableInstanceData::LastOuterHeight, "Outer height from last frame // FIXME: multi-instance issue (#3955)")    // imgui_internal.h:2555
         .def_readwrite("last_first_row_height", &ImGuiTableInstanceData::LastFirstRowHeight, "Height of first row from last frame // FIXME: possible multi-instance issue?")    // imgui_internal.h:2556
         .def(py::init<>())    // imgui_internal.h:2558
@@ -1518,7 +1518,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTable =
         py::class_<ImGuiTable>    // imgui_internal.h:2562
-            (m, "Table", "FIXME-TABLE: more transient data could be stored in a per-stacked table structure: DrawSplitter, SortSpecs, incoming RowData")
+            (m, "ImGuiTable", "FIXME-TABLE: more transient data could be stored in a per-stacked table structure: DrawSplitter, SortSpecs, incoming RowData")
         .def_readwrite("id", &ImGuiTable::ID, "")    // imgui_internal.h:2564
         .def_readwrite("flags", &ImGuiTable::Flags, "")    // imgui_internal.h:2565
         .def_readwrite("raw_data", &ImGuiTable::RawData, "Single allocation to hold Columns[], DisplayOrderToIndex[] and RowCellData[]")    // imgui_internal.h:2566
@@ -1629,7 +1629,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableTempData =
         py::class_<ImGuiTableTempData>    // imgui_internal.h:2676
-            (m, "TableTempData", " Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).\n - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.\n - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.")
+            (m, "ImGuiTableTempData", " Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).\n - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.\n - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.")
         .def_readwrite("table_index", &ImGuiTableTempData::TableIndex, "Index in g.Tables.Buf[] pool")    // imgui_internal.h:2678
         .def_readwrite("last_time_active", &ImGuiTableTempData::LastTimeActive, "Last timestamp this structure was used")    // imgui_internal.h:2679
         .def_readwrite("user_outer_size", &ImGuiTableTempData::UserOuterSize, "outer_size.x passed to BeginTable()")    // imgui_internal.h:2681
@@ -1648,7 +1648,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableColumnSettings =
         py::class_<ImGuiTableColumnSettings>    // imgui_internal.h:2697
-            (m, "TableColumnSettings", "sizeof() ~ 12")
+            (m, "ImGuiTableColumnSettings", "sizeof() ~ 12")
         .def_readwrite("width_or_weight", &ImGuiTableColumnSettings::WidthOrWeight, "")    // imgui_internal.h:2699
         .def_readwrite("user_id", &ImGuiTableColumnSettings::UserID, "")    // imgui_internal.h:2700
         .def_readwrite("index", &ImGuiTableColumnSettings::Index, "")    // imgui_internal.h:2701
@@ -1660,7 +1660,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableSettings =
         py::class_<ImGuiTableSettings>    // imgui_internal.h:2721
-            (m, "TableSettings", "This is designed to be stored in a single ImChunkStream (1 header followed by N ImGuiTableColumnSettings, etc.)")
+            (m, "ImGuiTableSettings", "This is designed to be stored in a single ImChunkStream (1 header followed by N ImGuiTableColumnSettings, etc.)")
         .def_readwrite("id", &ImGuiTableSettings::ID, "Set to 0 to invalidate/delete the setting")    // imgui_internal.h:2723
         .def_readwrite("save_flags", &ImGuiTableSettings::SaveFlags, "Indicate data we want to save using the Resizable/Reorderable/Sortable/Hideable flags (could be using its own flags..)")    // imgui_internal.h:2724
         .def_readwrite("ref_scale", &ImGuiTableSettings::RefScale, "Reference scale to be able to rescale columns on font/dpi changes.")    // imgui_internal.h:2725
