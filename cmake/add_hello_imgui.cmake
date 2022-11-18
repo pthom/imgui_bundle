@@ -16,7 +16,7 @@ function (add_hello_imgui)
     endif()
 
     # 2. Build glfw
-    if (IMGUI_BUNDLE_GLFW_DYNAMIC)
+    if (IMGUI_BUNDLE_BUILD_PYTHON)
         # Build glfw as a *shared* library:
         #   this is required if we want to be able to use python bindings
         #   for glfw, using https://github.com/FlorianRhiem/pyGLFW

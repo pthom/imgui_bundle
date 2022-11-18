@@ -8,7 +8,6 @@ from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
 from imgui_bundle._imgui_bundle import imspinner as imspinner
 from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import immvision as immvision
-from imgui_bundle._imgui_bundle import glfw as glfw
 from imgui_bundle._imgui_bundle import imgui_backends as imgui_backends
 from imgui_bundle._imgui_bundle import (
     run as run,
@@ -24,13 +23,15 @@ from imgui_bundle._imgui_bundle import __version__
 
 from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
 from imgui_bundle.im_col32 import IM_COL32
+from imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui
+
 
 import os
 
 THIS_DIR = os.path.dirname(__file__)
 hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 
-from imgui_bundle._set_glfw_pip_search_path import _set_glfw_pip_search_path
+from imgui_bundle.glfw_utils import _set_glfw_pip_search_path
 _set_glfw_pip_search_path()
 
 

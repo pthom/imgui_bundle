@@ -27,12 +27,6 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    option(IMGUI_BUNDLE_GLFW_DYNAMIC
-        "use glfw dynamic library provided by pip install glfw instead of a static version"
-        ON)
-endif()
-
 #########################################################################
 # find pybind11
 #########################################################################

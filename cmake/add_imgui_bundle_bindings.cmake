@@ -24,7 +24,6 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imspinner.cpp
         bindings/pybind_imgui_md.cpp
         bindings/pybind_immvision.cpp
-        bindings/pybind_glfw.cpp
         bindings/pybind_imgui_backends.cpp
         )
 
@@ -43,11 +42,9 @@ function(add_imgui_bundle_bindings)
     endif()
 
     if(IMGUI_BUNDLE_BUILD_PYTHON)
-        if (IMGUI_BUNDLE_GLFW_DYNAMIC)
-            # if using shared libraries, we need to set the rpath,
-            # so that dll/dylibs can be found in the same folder as imgui_bundle python lib.
-            lg_target_set_rpath(${python_native_module_name} ".")
-        endif()
+        # if using shared libraries, we need to set the rpath,
+        # so that dll/dylibs can be found in the same folder as imgui_bundle python lib.
+        lg_target_set_rpath(${python_native_module_name} ".")
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
