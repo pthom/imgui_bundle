@@ -1,13 +1,13 @@
 import os
 import sys
-from typing import List, Callable, Optional
+from typing import List, Callable
 from types import ModuleType
 
 from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_color_text_edit as ed, static
 
 from imgui_bundle.demos import demo_imgui
 from imgui_bundle.demos import demo_imgui_bundle
-from imgui_bundle.demos import demo_hello_imgui
+from imgui_bundle.demos import demo_apps
 from imgui_bundle.demos import demo_imgui_color_text_edit
 from imgui_bundle.demos import demo_widgets
 from imgui_bundle.demos import demo_implot
@@ -91,7 +91,7 @@ def main():
 
     add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
     add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
-    add_dockable_window("Hello ImGui", demo_hello_imgui, demo_hello_imgui.demo_hello_imgui)
+    add_dockable_window("Demo apps", demo_apps, demo_apps.demo_apps)
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor_separate_app)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)

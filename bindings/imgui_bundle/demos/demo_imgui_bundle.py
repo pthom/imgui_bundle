@@ -247,4 +247,4 @@ def demo_imgui_bundle():
 if __name__ == "__main__":
     import imgui_bundle
 
-    imgui_bundle.run(demo_imgui_bundle, with_markdown=True)
+    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))
