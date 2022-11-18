@@ -15,13 +15,13 @@ env:
 
 jobs:
   build:
-    name: Build with Pip
+    name: Pip
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         platform: [windows-2019, macos-latest, ubuntu-latest]
-        python-version: ["3.7", "3.10", "pypy-3.8"]
+        python-version: ["3.7", "3.10", "pypy-3.9"]
 
     steps:
     - uses: actions/checkout@v3
