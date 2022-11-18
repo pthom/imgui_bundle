@@ -12,6 +12,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 
+
 if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
 else()
@@ -24,6 +25,12 @@ if(SKBUILD)
 else()
     option(IMGUI_BUNDLE_BUILD_PYTHON OFF)
     set(IMGUI_BUNDLE_BUILD_CPP ON)
+endif()
+
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    option(IMGUI_BUNDLE_GLFW_DYNAMIC
+        "use glfw dynamic library provided by pip install glfw instead of a static version"
+        ON)
 endif()
 
 #########################################################################
