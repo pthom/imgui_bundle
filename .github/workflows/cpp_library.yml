@@ -30,9 +30,11 @@ jobs:
 #      uses: mxschmitt/action-tmate@v3
 
     - name: install xorg-dev on ubuntu
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: ./ci_scripts/install_xorg_dev.sh
 
     - name: install conan and pybind11
+      if: ${{ matrix.platform != 'windows-2019' }}
       run:  ./ci_scripts/install_conan_pybind11.sh
 
     - name: install conan and pybind11 on windows
