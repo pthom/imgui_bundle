@@ -57,23 +57,15 @@ Under C++, this is configurable (see Hello ImGui docs), with some adaptations in
 
 ## Install
 
-### Prerequisites
-Under linux / ubuntu, install `libgtk2.0-dev`
-
-````bash
-sudo apt-get install libgtk2.0-dev
-````
-
-### Install
 ````bash
 # Install from pypi
 pip install imgui-bundle
 
 # or install from clone
 git clone https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+pip install -v .
 ````
-
-
 
 ## Demo
 
