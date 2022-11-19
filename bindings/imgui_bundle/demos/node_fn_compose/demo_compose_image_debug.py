@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 
 import os.path
 import cv2
@@ -13,14 +14,20 @@ Image = np.ndarray
 
 
 class MainImageViewer:
-    image: Image
-    image_params: immvision.ImageParams
+    class ImageAndParams:
+        image: Image
+        image_params: immvision.ImageParams
+
+        def __init__(self):
+            self.image_params = immvision.ImageParams()
+
+    image_and_params: List[ImageAndParams]
 
     def __init__(self):
+        self.image_and_params = []
         self.image = np.zeros((200, 200,  3), np.int8)
         self.image_params = immvision.ImageParams()
         self.image_params.image_display_size = (400, 400)
-        self.image_params.zoom_key = "z"
         self.image_params.refresh_image = True
 
     def set_image(self, image):
@@ -42,7 +49,12 @@ class ImageWithGui(AnyDataWithGui):
     def gui_data(self, draw_thumbnail: bool = False) -> None:
         # imgui.push_id(str(id(self)))
         id_add = str(id(self))
-        immvision.image_display("Image##" + id_add, self.image, image_display_size=(100, 0))
+        immvision.image_display(
+            "Image##" + id_add,
+            self.image,
+            image_display_size=(100, 0),
+            refresh_image=True
+        )
         if imgui.is_item_clicked(0):
             IMAGE_VIEWER.set_image(self.image)
         # imgui.pop_id()

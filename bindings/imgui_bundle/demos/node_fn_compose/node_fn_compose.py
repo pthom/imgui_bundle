@@ -29,13 +29,13 @@ def overlapping_pairs_cyclic(iterable):
     yield (last, first)
 
 
-class AnyDataWithGui:
+class AnyDataWithGui(ABC):
     """
     Override this class with your types, and implement a draw function that presents it content
     """
-
+    @abstractmethod
     def gui_data(self, draw_thumbnail: bool = False) -> None:
-        imgui.text("draw\nnot implemented")
+        pass
 
 
 class FunctionWithGui(ABC):
@@ -74,13 +74,14 @@ class _OutputWithGui(FunctionWithGui):
         return "Output"
 
     def f(self, x: AnyDataWithGui):
-        return None
+        return x
 
 
 class _FunctionNode:
     function: Optional[FunctionWithGui]
     next_function: Optional[_FunctionNode]
     input_data: Optional[AnyDataWithGui]
+    output_data: Optional[AnyDataWithGui]
 
     node_id: ed.NodeId
     pin_input: ed.PinId
@@ -91,6 +92,7 @@ class _FunctionNode:
         self.function = function
         self.next_function = next_function
         self.input_data = None
+        self.output_data = None
 
         self.node_id = ed.NodeId.create()
         self.pin_input = ed.PinId.create()
@@ -108,22 +110,25 @@ class _FunctionNode:
 
         id_fn = str(id(self.function))
         imgui.push_id(id_fn)
-        if self.function.gui_params():
-            if self.input_data is not None and self.function is not None and self.next_function is not None:
-                output = self.function.f(self.input_data)
-                self.next_function.set_input(output)
+
+        params_changed= self.function.gui_params()
+        if params_changed:
+            if self.input_data is not None and self.function is not None:
+                self.output_data = self.function.f(self.input_data)
+                if self.next_function is not None:
+                    self.next_function.set_input(self.output_data)
         imgui.pop_id()
 
         if draw_input:
             ed.begin_pin(self.pin_input, ed.PinKind.input)
             imgui.text(icons_fontawesome.ICON_FA_CIRCLE)
             ed.end_pin()
-            if self.input_data is None:
-                imgui.text("None")
-            else:
-                self.input_data.gui_data(draw_thumbnail=True)
 
         if draw_output:
+            if self.output_data is None:
+                imgui.text("None")
+            else:
+                self.output_data.gui_data(draw_thumbnail=True)
             imgui.text(" " * 30)
             imgui.same_line()
             ed.begin_pin(self.pin_output, ed.PinKind.output)
@@ -140,9 +145,9 @@ class _FunctionNode:
     def set_input(self, input_data: AnyDataWithGui) -> None:
         self.input_data = input_data
         if self.function is not None:
-            output = self.function.f(input_data)
+            self.output_data = self.function.f(input_data)
             if self.next_function is not None:
-                self.next_function.set_input(output)
+                self.next_function.set_input(self.output_data)
 
 
 class FunctionCompositionNodes:
@@ -169,7 +174,7 @@ class FunctionCompositionNodes:
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
             draw_input = i != 0
-            draw_output = i != len(self.function_nodes) - 1
+            draw_output = True
             fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
