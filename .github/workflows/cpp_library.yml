@@ -26,14 +26,20 @@ jobs:
       with:
         submodules: true
 
-    - name: Setup interactive tmate session
-      uses: mxschmitt/action-tmate@v3
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
 
+      # ./ci_scripts/install_conan_pybind11.sh for linux and mac
+      #     + manual commands for windows, which does not run bash
     - name: install conan and pybind11
-      run: ./ci_scripts/install_conan_pybind11.sh
+      run: |
+        ./ci_scripts/install_conan_pybind11.sh
+        python3 -m pip install conan
+        conan profile new default --detect
+        python3 -m pip install pybind11
 
     - name: Build and install
       run: |
