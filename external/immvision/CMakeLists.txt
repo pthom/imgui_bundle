@@ -1,6 +1,5 @@
-option(IMMVISION_USE_CONAN "Use conan to build opencv" ON)
-include(${CMAKE_CURRENT_LIST_DIR}/find_opencv_with_help.cmake)
-find_opencv_with_help()
+include(${CMAKE_CURRENT_LIST_DIR}/find_opencv_with_conan.cmake)
+find_opencv_with_conan()
 
 add_library(immvision immvision.h immvision.cpp)
 target_include_directories(immvision PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)

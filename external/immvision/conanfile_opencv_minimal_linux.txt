@@ -1,0 +1,17 @@
+[requires]
+opencv/4.5.5
+
+[generators]
+cmake_find_package
+
+[options]
+# Opencv as a static library (so that we don't interfere with others)
+opencv:shared=False
+
+# disable unused libraries
+opencv:with_quirc=False
+opencv:with_ffmpeg=False
+opencv:dnn=False
+
+# Linux specific
+opencv:with_gtk=False
