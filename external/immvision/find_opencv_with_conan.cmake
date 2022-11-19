@@ -31,6 +31,33 @@ function(find_opencv_with_conan)
         message(FATAL_ERROR "This system (${CMAKE_SYSTEM_NAME}) is not yet supported for immvision/OpenCV")
     endif()
 
+    if (SKBUILD)
+        # Need to create the default conan profile under pip
+        set(conan_profile_command "${conan_executable} profile new default --detect")
+        set(conan_profile_command_list "${conan_profile_command}")
+        execute_process(COMMAND
+            ${conan_executable} profile new default --detect
+            WORKING_DIRECTORY ${conan_folder}
+            RESULT_VARIABLE conan_profile_result
+            )
+        if (NOT ${conan_profile_result} EQUAL "0")
+            message(WARNING "conan_profile_result=${conan_profile_result}")
+            message(FATAL_ERROR "conan profile failed!
+                The following command:
+                    ${conan_profile_command}
+                Failed, when it was run in the folder:
+                    ${conan_folder}
+                ")
+        endif()
+
+        if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+            execute_process(COMMAND
+                conan profile update settings.compiler.libcxx=libstdc++11 default
+            )
+        endif()
+
+    endif()
+
     set(conan_install_command "${conan_executable} install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing")
     set(conan_install_command_list "${conan_install_command}")
     separate_arguments(conan_install_command_list)
