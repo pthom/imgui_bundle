@@ -21,7 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         platform: [windows-2019, macos-latest, ubuntu-latest]
-        python-version: ["3.7", "3.10", "pypy-3.9"]
+        # "pypy-3.9" was removed from python-version because numpy install fails
+        python-version: ["3.7", "3.10"]
 
     steps:
     - uses: actions/checkout@v3
@@ -33,13 +34,14 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: install xorg-dev on ubuntu
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: ./ci_scripts/install_xorg_dev.sh
+
+      #    - name: Setup interactive tmate session
+      #      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       run: pip install --verbose .[test]
-
-#    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
 
     - name: Test
       run: pytest
