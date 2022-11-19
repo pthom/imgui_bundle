@@ -66,7 +66,7 @@ function (add_hello_imgui)
     add_subdirectory(external/hello_imgui)
     target_link_libraries(imgui_bundle PUBLIC hello_imgui)
 
-    if (WIN32)
+    if (WIN32 AND IMGUI_BUNDLE_WITH_SDL)
         target_link_libraries(hello_imgui PUBLIC SDL2main)
     endif()
 
