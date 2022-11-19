@@ -1,9 +1,9 @@
-function(find_opencv_with_conan)
+macro(try_install_opencv_with_conan)
     find_program(conan_executable "conan")
     if ("${conan_executable}" STREQUAL "conan_executable-NOTFOUND")
-        message(FATAL_ERROR "
-            conan C++ package manager is required by immvision (https://conan.io)
-            Please install it first (it will be used to build a static version of OpenCV, used by immvision)
+        message(WARNING "
+            conan C++ package manager (https://conan.io) can help to install OpenCV
+            If desired, install it before running cmake (it will be used to build a static version of OpenCV, used by immvision)
 
             On linux:
                 pip install conan
@@ -16,6 +16,7 @@ function(find_opencv_with_conan)
                 pip install conan
                 conan profile new default --detect
         ")
+        return()
     endif()
 
     set(conan_folder ${CMAKE_CURRENT_BINARY_DIR}/conan_third)
@@ -28,34 +29,7 @@ function(find_opencv_with_conan)
     elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         set(conanfile "conanfile_opencv_minimal_linux.txt")
     else()
-        message(FATAL_ERROR "This system (${CMAKE_SYSTEM_NAME}) is not yet supported for immvision/OpenCV")
-    endif()
-
-    if (SKBUILD)
-        # Need to create the default conan profile under pip
-        set(conan_profile_command "${conan_executable} profile new default --detect")
-        set(conan_profile_command_list "${conan_profile_command}")
-        execute_process(COMMAND
-            ${conan_executable} profile new default --detect
-            WORKING_DIRECTORY ${conan_folder}
-            RESULT_VARIABLE conan_profile_result
-            )
-        if (NOT ${conan_profile_result} EQUAL "0")
-            message(WARNING "conan_profile_result=${conan_profile_result}")
-            message(FATAL_ERROR "conan profile failed!
-                The following command:
-                    ${conan_profile_command}
-                Failed, when it was run in the folder:
-                    ${conan_folder}
-                ")
-        endif()
-
-        if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-            execute_process(COMMAND
-                conan profile update settings.compiler.libcxx=libstdc++11 default
-            )
-        endif()
-
+        message(WARNING "This system (${CMAKE_SYSTEM_NAME}) is not yet supported for installing OpenCV via conan for immvision")
     endif()
 
     set(conan_install_command "${conan_executable} install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing")
@@ -68,19 +42,25 @@ function(find_opencv_with_conan)
         )
     if (NOT ${conan_install_result} EQUAL "0")
         message(WARNING "conan_install_result=${conan_install_result}")
-        message(FATAL_ERROR "conan install failed!
+        message(WARNING "conan install failed!
             The following command:
                 ${conan_install_command}
             Failed, when it was run in the folder:
                 ${conan_folder}
         ")
+        return()
     endif()
 
     # For conan, add binary dir to module search path
-    list(APPEND CMAKE_MODULE_PATH ${conan_folder})
+    set(new_cmake_module_path ${CMAKE_MODULE_PATH} ${conan_folder})
+    set(CMAKE_MODULE_PATH ${new_cmake_module_path})
+endmacro()
 
+
+macro(find_opencv)
     find_package(OpenCV)
     if (NOT OpenCV_FOUND)
-        message(FATAL_ERROR ${opencv_install_help})
+        try_install_opencv_with_conan()
+        find_package(OpenCV)
     endif()
-endfunction()
+endmacro()
