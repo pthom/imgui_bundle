@@ -1,27 +1,26 @@
 function(find_pybind11)
+    if (NOT DEFINED PYTHON_EXECUTABLE)
+        find_program(PYTHON_EXECUTABLE "python")
+        if ("${PYTHON_EXECUTABLE}" STREQUAL "PYTHON_EXECUTABLE-NOTFOUND")
+            message(FATAL_ERROR "
+                Did not find python executable. Please run cmake with -DPYTHON_EXECUTABLE=/path/to/python")
+        endif()
+    endif()
+
     ####################################################
     # Add pybind11
     ####################################################
-    # Note there are several ways to provide pybind:
-    # - Method 1 (easiest): `pip install pybind11` and specify PYTHON_EXECUTABLE
-    # - Method 2: via a submodule +  add_subdirectory(external/pybind11)
-    # - Method 3: via a global install (`brew install pybind11`, `apt-get install python-pybind11`)
-    #      Note that apt packages may be out of date and might break the build (we require pybind11 from late 2021)
-    if(DEFINED PYTHON_EXECUTABLE)
-        # if PYTHON_EXECUTABLE is defined, and pybind11 is installed via pip,
-        # then add its path to CMAKE_PREFIX_PATH
-        #
-        # this is the case
-        # * when using SKBUILD, which set PYTHON_EXECUTABLE
-        #   (and pybind11 is referenced in pyproject.toml, section [build-system]/requires)
-        # * when building normally, if you set PYTHON_EXECUTABLE
-        execute_process(
-            COMMAND "${PYTHON_EXECUTABLE}" -c
-            "import pybind11; print(pybind11.get_cmake_dir())"
-            OUTPUT_VARIABLE _tmp_dir
-            OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT)
-        list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
-    endif()
+    execute_process(
+        COMMAND "${PYTHON_EXECUTABLE}" -c
+        "import pybind11; print(pybind11.get_cmake_dir())"
+        OUTPUT_VARIABLE _tmp_dir
+        OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT)
+    list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
 
-    find_package(pybind11 CONFIG REQUIRED)
+    find_package(pybind11 CONFIG)
+    if (NOT pybind11_FOUND)
+        message(FATAL_ERROR "pybind11 is required to build python bindings! Please install it with the command:
+            pip install pybind11
+        ")
+    endif()
 endfunction()
