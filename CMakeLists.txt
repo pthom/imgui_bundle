@@ -6,7 +6,7 @@ project(imgui_bundle VERSION "0.6.5") # Remember to mirror changes to setup.py!
 ###############################################################################
 # IMGUI_BUNDLE_WITH_IMMVISION
 #     immvision is an image viewer / debugger. It requires OpenCV which can be installed automatically via conan
-option(IMGUI_BUNDLE_WITH_IMMVISION "Add immvision support" OFF)
+option(IMGUI_BUNDLE_WITH_IMMVISION "Add immvision support" ON)
 
 # IMGUI_BUNDLE_WITH_SDL
 #     HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option.
