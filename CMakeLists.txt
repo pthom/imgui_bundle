@@ -1,24 +1,28 @@
 cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "0.6.5") # Remember to mirror changes to setup.py!
 
-set(CMAKE_CXX_STANDARD 17)
+###############################################################################
+# Build Options
+###############################################################################
+# IMGUI_BUNDLE_WITH_IMMVISION
+#     immvision is an image viewer / debugger. It requires OpenCV which can be installed automatically via conan
+option(IMGUI_BUNDLE_WITH_IMMVISION "Add immvision support" OFF)
 
-include(lg_cmake_utils/lg_cmake_utils.cmake)
+# IMGUI_BUNDLE_WITH_SDL
+#     HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option.
+option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
 
-option(IMGUI_BUNDLE_WITH_IMMVISION
-    "Add immvision support (requires OpenCV, which can be installed automatically via conan)"
-    OFF)
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
-endif()
-
-
+# IMGUI_BUNDLE_BUILD_DEMOS
+#     Build demos (on by default if this is the main project)
 if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
 else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
+# IMGUI_BUNDLE_BUILD_PYTHON:
+#    on by default when using pip install, off when building the cpp library
+#    (SKBUILD is set to on by pip install / setup.py)
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
     set(IMGUI_BUNDLE_BUILD_CPP OFF)
@@ -26,6 +30,17 @@ else()
     option(IMGUI_BUNDLE_BUILD_PYTHON OFF)
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
+
+
+########################################################
+
+include(lg_cmake_utils/lg_cmake_utils.cmake)
+set(CMAKE_CXX_STANDARD 17)
+
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
+endif()
+
 
 #########################################################################
 # find pybind11
