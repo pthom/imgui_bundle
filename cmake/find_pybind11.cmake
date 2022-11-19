@@ -1,6 +1,6 @@
 function(find_pybind11)
     if (NOT DEFINED PYTHON_EXECUTABLE)
-        find_program(PYTHON_EXECUTABLE "python")
+        find_program(PYTHON_EXECUTABLE "python3")
         if ("${PYTHON_EXECUTABLE}" STREQUAL "PYTHON_EXECUTABLE-NOTFOUND")
             message(FATAL_ERROR "
                 Did not find python executable. Please run cmake with -DPYTHON_EXECUTABLE=/path/to/python")

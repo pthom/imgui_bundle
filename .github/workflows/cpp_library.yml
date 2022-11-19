@@ -26,17 +26,18 @@ jobs:
       with:
         submodules: true
 
-
 #    - name: Setup interactive tmate session
 #      uses: mxschmitt/action-tmate@v3
 
-
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
+
+    - name: install conan and pybind11
+      run: ./ci_scripts/install_conan_pybind11.sh
 
     - name: Build and install
       run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -DIMGUI_BUNDLE_WITH_IMMVISION=ON -DIMGUI_BUNDLE_BUILD_PYTHON=ON
         cmake --build .
