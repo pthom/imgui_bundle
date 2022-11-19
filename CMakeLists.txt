@@ -55,7 +55,7 @@ endif()
 #########################################################################
 # Main library (imgui_bundle)
 #########################################################################
-add_library(imgui_bundle src/imgui_bundle/imgui_bundle.cpp src/imgui_bundle/imgui_bundle.h)
+add_library(imgui_bundle STATIC src/imgui_bundle/imgui_bundle.cpp src/imgui_bundle/imgui_bundle.h)
 target_include_directories(imgui_bundle PUBLIC src)
 
 
