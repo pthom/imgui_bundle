@@ -1,9 +1,11 @@
 macro(try_install_opencv_with_conan)
-    find_program(conan_executable "conan")
-    if ("${conan_executable}" STREQUAL "conan_executable-NOTFOUND")
-        message(WARNING "
-            conan C++ package manager (https://conan.io) can help to install OpenCV
-            If desired, install it before running cmake (it will be used to build a static version of OpenCV, used by immvision)
+
+    set(conan_help_message "
+
+            ---------------------------------------------------------------
+            immvision requires OpenCV, which can easily be built with Conan
+            ---------------------------------------------------------------
+            If desired, install it before running pip install or cmake.
 
             On linux:
                 pip install conan
@@ -15,9 +17,8 @@ macro(try_install_opencv_with_conan)
             On Windows
                 pip install conan
                 conan profile new default --detect
+            ---------------------------------------------------------------
         ")
-        return()
-    endif()
 
     set(conan_folder ${CMAKE_CURRENT_BINARY_DIR}/conan_third)
     file(MAKE_DIRECTORY ${conan_folder})
@@ -32,28 +33,29 @@ macro(try_install_opencv_with_conan)
         message(WARNING "This system (${CMAKE_SYSTEM_NAME}) is not yet supported for installing OpenCV via conan for immvision")
     endif()
 
-    set(conan_install_command "${conan_executable} install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing")
-    set(conan_install_command_list "${conan_install_command}")
-    separate_arguments(conan_install_command_list)
     execute_process(COMMAND
-        ${conan_install_command_list}
+        conan install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing
         WORKING_DIRECTORY ${conan_folder}
         RESULT_VARIABLE conan_install_result
         )
+
     if (NOT ${conan_install_result} EQUAL "0")
-        message(WARNING "conan_install_result=${conan_install_result}")
-        message(WARNING "conan install failed!
+        message(STATUS "conan install failed!
             The following command:
-                ${conan_install_command}
+                conan install ${CMAKE_CURRENT_LIST_DIR}/${conanfile} --build=missing
             Failed, when it was run in the folder:
                 ${conan_folder}
+            With the result:
+                ${conan_install_result}
         ")
-        return()
-    endif()
 
-    # For conan, add binary dir to module search path
-    set(new_cmake_module_path ${CMAKE_MODULE_PATH} ${conan_folder})
-    set(CMAKE_MODULE_PATH ${new_cmake_module_path})
+        message(${conan_help_message})
+
+    else()
+        # For conan, add binary dir to module search path
+        set(new_cmake_module_path ${CMAKE_MODULE_PATH} ${conan_folder})
+        set(CMAKE_MODULE_PATH ${new_cmake_module_path})
+    endif()
 endmacro()
 
 
