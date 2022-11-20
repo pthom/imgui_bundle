@@ -1,3 +1,1 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(demo_imgui_node_editor demo_imgui_node_editor.main.cpp)
-target_link_libraries(demo_imgui_node_editor PRIVATE imgui_bundle)
+imgui_bundle_add_app(demo_imgui_node_editor demo_imgui_node_editor.main.cpp)

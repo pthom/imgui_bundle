@@ -1,3 +1,1 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(demo_widgets_docking demo_widgets_docking.main.cpp imgui_basic_widgets.cpp)
-target_link_libraries(demo_widgets_docking PRIVATE imgui_bundle)
+imgui_bundle_add_app(demo_widgets_docking demo_widgets_docking.main.cpp imgui_basic_widgets.cpp)

@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "0.6.5") # Remember to mirror changes to setup.py!
 
+
+###############################################################################
+# imgui_bundle_add_app location
+###############################################################################
+# In order to use `hello_imgui_add_app`, just write
+#     list(APPEND CMAKE_MODULE_PATH ${HELLOIMGUI_CMAKE_PATH})
+#     include(imgui_bundle_add_app)
+# somewhere before calling `imgui_bundle_add_app`
+set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
+list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
+include(imgui_bundle_add_app)
+
 ###############################################################################
 # Build Options
 ###############################################################################
