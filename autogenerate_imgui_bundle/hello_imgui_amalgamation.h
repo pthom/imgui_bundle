@@ -1328,6 +1328,9 @@ enum class WindowPositionMode
 };
 
 
+constexpr ScreenSize DefaultScreenSize = {800, 600};
+constexpr ScreenPosition DefaultScreenPosition = {40, 40};
+
 /**
 @@md#WindowGeometry
 
@@ -1366,8 +1369,8 @@ Members:
 **/
 struct WindowGeometry
 {
-    // used if fullScreenMode==NoFullScreen and sizeAuto==false
-    ScreenSize size = ScreenSize{800, 600};
+    // used if fullScreenMode==NoFullScreen and sizeAuto==false, default=(800, 600)
+    ScreenSize size = DefaultScreenSize;
 
     // If true, adapt the app window size to the presented widgets
     bool sizeAuto = false;
@@ -1376,8 +1379,8 @@ struct WindowGeometry
 
     WindowPositionMode positionMode = WindowPositionMode::OsDefault;
 
-    // used if windowPositionMode==FromCoords
-    ScreenPosition position = ScreenPosition{40, 40};
+    // used if windowPositionMode==FromCoords, default=(40, 40)
+    ScreenPosition position = DefaultScreenPosition;
 
     // used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     int monitorIdx = 0;
@@ -1486,10 +1489,15 @@ namespace ImGuiTheme
         float Hue = -1.f;
         // Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
         float SaturationMultiplier = -1.f;
-        // Multiply the value of all front widgets. If < 0, this is ignored.
+        // Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
         float ValueMultiplierFront = -1.f;
-        // Multiply the value of all backgrounds. If < 0, this is ignored.
+        // Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
         float ValueMultiplierBg = -1.f;
+        // Multiply the value (luminance) of text. If < 0, this is ignored.
+        float ValueMultiplierText = -1.f;
+        // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
+        // (Background of checkbox, radio button, plot, slider, text input)
+        float ValueMultiplierFrameBg = -1.f;
     };
 
     struct ImGuiTweakedTheme
@@ -2166,6 +2174,8 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 */
 namespace HelloImGui
 {
+    constexpr ScreenSize DefaultWindowSize = {800, 600};
+
     void Run(RunnerParams & runnerParams);
 
     void Run(const SimpleRunnerParams& simpleParams);
@@ -2175,7 +2185,7 @@ namespace HelloImGui
         const std::string& windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = {800, 600},
+        const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f
     );
 

@@ -1,23 +1,30 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "0.6.5") # Remember to mirror changes to setup.py!
 
-set(CMAKE_CXX_STANDARD 17)
+###############################################################################
+# Build Options
+###############################################################################
+# IMGUI_BUNDLE_WITH_IMMVISION
+#     immvision is an image viewer / debugger. It requires OpenCV which can be installed automatically via conan
+option(IMGUI_BUNDLE_WITH_IMMVISION "Add immvision support. Fail il OpenCV not found" OFF)
+option(IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND "Add immvision support if opencv is found" ON)
 
-include(lg_cmake_utils/lg_cmake_utils.cmake)
 
-option(IMGUI_BUNDLE_WITH_IMMVISION
-    "Add immvision support (requires OpenCV, which can be installed automatically via conan)"
-    OFF)
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
-endif()
+# IMGUI_BUNDLE_WITH_SDL
+#     HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option.
+option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
 
+# IMGUI_BUNDLE_BUILD_DEMOS
+#     Build demos (on by default if this is the main project)
 if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
 else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
+# IMGUI_BUNDLE_BUILD_PYTHON:
+#    on by default when using pip install, off when building the cpp library
+#    (SKBUILD is set to on by pip install / setup.py)
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
     set(IMGUI_BUNDLE_BUILD_CPP OFF)
@@ -25,6 +32,17 @@ else()
     option(IMGUI_BUNDLE_BUILD_PYTHON OFF)
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
+
+
+########################################################
+
+include(lg_cmake_utils/lg_cmake_utils.cmake)
+set(CMAKE_CXX_STANDARD 17)
+
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
+endif()
+
 
 #########################################################################
 # find pybind11
@@ -37,7 +55,7 @@ endif()
 #########################################################################
 # Main library (imgui_bundle)
 #########################################################################
-add_library(imgui_bundle src/imgui_bundle/imgui_bundle.cpp src/imgui_bundle/imgui_bundle.h)
+add_library(imgui_bundle STATIC src/imgui_bundle/imgui_bundle.cpp src/imgui_bundle/imgui_bundle.h)
 target_include_directories(imgui_bundle PUBLIC src)
 
 
@@ -89,9 +107,11 @@ target_sources(imgui_md PRIVATE
 target_include_directories(imgui_md PUBLIC external/imgui_md/md4c/src)
 target_link_libraries(imgui_md PUBLIC hello_imgui)
 # Build immvision
-if (IMGUI_BUNDLE_WITH_IMMVISION)
+if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
     add_subdirectory(external/immvision)
-    target_link_libraries(imgui_bundle PUBLIC immvision)
+    if (IMGUI_BUNDLE_WITH_IMMVISION)
+        target_link_libraries(imgui_bundle PUBLIC immvision)
+    endif()
 endif()
 
 #########################################################################
@@ -114,4 +134,10 @@ if (IMGUI_BUNDLE_BUILD_CPP)
         add_subdirectory(pybind_native_debug)
         add_subdirectory(external/_sandbox)
     endif()
+endif()
+
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: ON")
+else()
+    message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: OFF")
 endif()

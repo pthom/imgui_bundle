@@ -6,7 +6,9 @@ requires = [
     "cmake>=3.22",
     "scikit-build>=0.14.1",
     "ninja; platform_system!='Windows'",
-    "patch>=1.16"
+    "patch>=1.16",
+    "conan>=1.5",
+    "distro<=1.7.0,>=1.0.2"
 ]
 build-backend = "setuptools.build_meta"
 

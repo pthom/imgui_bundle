@@ -24,6 +24,7 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imspinner.cpp
         bindings/pybind_imgui_md.cpp
         bindings/pybind_immvision.cpp
+        bindings/pybind_imgui_backends.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
@@ -38,6 +39,12 @@ function(add_imgui_bundle_bindings)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         add_subdirectory(external/immvision/cvnp)
         target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+    endif()
+
+    if(IMGUI_BUNDLE_BUILD_PYTHON)
+        # if using shared libraries, we need to set the rpath,
+        # so that dll/dylibs can be found in the same folder as imgui_bundle python lib.
+        lg_target_set_rpath(${python_native_module_name} ".")
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})

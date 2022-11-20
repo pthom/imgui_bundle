@@ -37,14 +37,15 @@ py::array_t<uint8_t> FinalAppWindowScreenshot()
     return r;
 }
 
+
 void py_init_module_hello_imgui(py::module& m)
 {
     using namespace HelloImGui;
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
 
-    m.def("_glfw_pointer", [](const RunnerParams& params) {
-       return (size_t)params.backendPointers.glfwWindow;
+    m.def("get_glfw_window_address", []() {
+        return (size_t) HelloImGui::GetRunnerParams()->backendPointers.glfwWindow;
     });
 
 
@@ -136,11 +137,11 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::WindowGeometry>
             (m, "WindowGeometry", "*\n@@md#WindowGeometry\n\n__WindowGeometry__ is a struct that defines the window geometry.\n\nMembers:\n* `size`: _int[2], default=\"{800, 600}\"_. Size of the application window\n  used if fullScreenMode==NoFullScreen and sizeAuto==False\n* `sizeAuto`: _bool, default=false_\n  If True, adapt the app window size to the presented widgets\n* `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.\n   You can choose between several full screen modes:\n   ````cpp\n        NoFullScreen,\n        FullScreen,                    // Full screen with specified resolution\n        FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution\n        FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor\n    ````\n* `positionMode`: _WindowPositionMode, default = OsDefault_.\n   You can choose between several window position modes:\n   ````cpp\n        OsDefault,\n        MonitorCenter,\n        FromCoords,\n    ````\n* `monitorIdx`: _int, default = 0_.\n  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen\n* `windowSizeState`: _WindowSizeState, default=Standard_\n   You can choose between several window size states:\n   ````cpp\n        Standard,\n        Minimized,\n        Maximized\n    ````\n@@md\n*")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False")
+        .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)")
         .def_readwrite("size_auto", &HelloImGui::WindowGeometry::sizeAuto, "If True, adapt the app window size to the presented widgets")
         .def_readwrite("full_screen_mode", &HelloImGui::WindowGeometry::fullScreenMode, "")
         .def_readwrite("position_mode", &HelloImGui::WindowGeometry::positionMode, "")
-        .def_readwrite("position", &HelloImGui::WindowGeometry::position, "used if windowPositionMode==FromCoords")
+        .def_readwrite("position", &HelloImGui::WindowGeometry::position, "used if windowPositionMode==FromCoords, default=(40, 40)")
         .def_readwrite("monitor_idx", &HelloImGui::WindowGeometry::monitorIdx, "used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen")
         .def_readwrite("window_size_state", &HelloImGui::WindowGeometry::windowSizeState, "")
         ;
@@ -201,8 +202,10 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("alpha_multiplier", &ImGuiTheme::ImGuiThemeTweaks::AlphaMultiplier, "Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.")
         .def_readwrite("hue", &ImGuiTheme::ImGuiThemeTweaks::Hue, "\n HSV Color tweaks\n\n Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.")
         .def_readwrite("saturation_multiplier", &ImGuiTheme::ImGuiThemeTweaks::SaturationMultiplier, "Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.")
-        .def_readwrite("value_multiplier_front", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFront, "Multiply the value of all front widgets. If < 0, this is ignored.")
-        .def_readwrite("value_multiplier_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierBg, "Multiply the value of all backgrounds. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_front", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFront, "Multiply the value (luminance) of all front widgets. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierBg, "Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_text", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierText, "Multiply the value (luminance) of text. If < 0, this is ignored.")
+        .def_readwrite("value_multiplier_frame_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFrameBg, " Multiply the value (luminance) of FrameBg. If < 0, this is ignored.\n (Background of checkbox, radio button, plot, slider, text input)")
         ;
 
 
@@ -428,6 +431,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("run",
         py::overload_cast<const HelloImGui::SimpleRunnerParams &>(HelloImGui::Run), py::arg("simple_params"));
+
+    m.def("run",
+        py::overload_cast<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float>(HelloImGui::Run), py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f);
 
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);

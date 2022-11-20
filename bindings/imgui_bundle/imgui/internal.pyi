@@ -2,13 +2,20 @@
 from typing import Any, List, Tuple
 import enum
 
+from imgui_bundle.imgui import (
+    ImFont,
+    ImU32,
+    ImColor,
+    ImVec4,
+    ImVec2,
+)
 
 ##################################################
 #    Manually inserted code (typedefs, etc.)
 ##################################################
 
 
-from imgui_bundle.imgui import *
+# from imgui_bundle.imgui import
 
 
 """

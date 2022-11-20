@@ -63,6 +63,8 @@ pip install imgui-bundle
 
 # or install from clone
 git clone https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+pip install -v .
 ````
 
 ## Demo

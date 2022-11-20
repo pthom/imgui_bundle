@@ -1,17 +1,41 @@
 from __future__ import annotations
-from imgui_bundle import run, imgui, imgui_node_editor as ed, icons_fontawesome
-from imgui_bundle.demos.node_fn_compose.functional_utils import overlapping_pairs
+from imgui_bundle import imgui, imgui_node_editor as ed, icons_fontawesome, ImVec2
 
-from typing import Callable, Any, List, Optional
+from typing import List, Optional
 from abc import ABC, abstractmethod
 
 
-class AnyDataWithGui:
+# transform a list into a list of adjacent pairs
+# For example : [a, b, c] -> [ [a, b], [b, c]]
+def overlapping_pairs(iterable):
+    it = iter(iterable)
+    a = next(it, None)
+
+    for b in it:
+        yield (a, b)
+        a = b
+
+
+# transform a list into a circular list of adjacent pairs
+# For example : [a, b, c] -> [ [a, b], [b, c], [c, a]]
+def overlapping_pairs_cyclic(iterable):
+    it = iter(iterable)
+    a = next(it, None)
+    first = a
+    for b in it:
+        yield (a, b)
+        a = b
+    last = a
+    yield (last, first)
+
+
+class AnyDataWithGui(ABC):
     """
     Override this class with your types, and implement a draw function that presents it content
     """
-    def gui_data(self, draw_thumbnail:bool = False) -> None:
-        imgui.text("draw\nnot implemented")
+    @abstractmethod
+    def gui_data(self, draw_thumbnail: bool = False) -> None:
+        pass
 
 
 class FunctionWithGui(ABC):
@@ -34,8 +58,10 @@ class FunctionWithGui(ABC):
 class _InputWithGui(FunctionWithGui):
     def __init__(self) -> None:
         pass
+
     def name(self):
         return "Input"
+
     def f(self, x: AnyDataWithGui):
         return x
 
@@ -43,55 +69,66 @@ class _InputWithGui(FunctionWithGui):
 class _OutputWithGui(FunctionWithGui):
     def __init__(self) -> None:
         pass
+
     def name(self):
         return "Output"
+
     def f(self, x: AnyDataWithGui):
-        return None
+        return x
 
 
 class _FunctionNode:
     function: Optional[FunctionWithGui]
     next_function: Optional[_FunctionNode]
     input_data: Optional[AnyDataWithGui]
+    output_data: Optional[AnyDataWithGui]
 
     node_id: ed.NodeId
     pin_input: ed.PinId
     pin_output: ed.PinId
     link_id: ed.LinkId
 
-    def __init__(self, function: FunctionWithGui, next_function: Optional[FunctionWithGui]=None) -> None:
+    def __init__(self, function: FunctionWithGui, next_function: Optional[FunctionWithGui] = None) -> None:
         self.function = function
         self.next_function = next_function
         self.input_data = None
+        self.output_data = None
 
         self.node_id = ed.NodeId.create()
         self.pin_input = ed.PinId.create()
         self.pin_output = ed.PinId.create()
         self.link_id = ed.LinkId.create()
 
-    def draw_node(self, draw_input: bool = True, draw_output: bool = True) -> None:
+    def draw_node(self, draw_input: bool, draw_output: bool, idx: int) -> None:
         ed.begin_node(self.node_id)
+        position = ed.get_node_position(self.node_id)
+        if position.x == 0 and position.y == 0:
+            width_between_nodes = 200
+            ed.set_node_position(self.node_id, ImVec2(idx * width_between_nodes + 1, 0) )
 
         imgui.text(self.function.name())
 
         id_fn = str(id(self.function))
         imgui.push_id(id_fn)
-        if self.function.gui_params():
-            if self.input_data is not None and self.function is not None and self.next_function is not None:
-                output = self.function.f(self.input_data)
-                self.next_function.set_input(output)
+
+        params_changed= self.function.gui_params()
+        if params_changed:
+            if self.input_data is not None and self.function is not None:
+                self.output_data = self.function.f(self.input_data)
+                if self.next_function is not None:
+                    self.next_function.set_input(self.output_data)
         imgui.pop_id()
 
         if draw_input:
             ed.begin_pin(self.pin_input, ed.PinKind.input)
             imgui.text(icons_fontawesome.ICON_FA_CIRCLE)
             ed.end_pin()
-            if self.input_data is None:
-                imgui.text("None")
-            else:
-                self.input_data.gui_data(draw_thumbnail=True)
 
         if draw_output:
+            if self.output_data is None:
+                imgui.text("None")
+            else:
+                self.output_data.gui_data(draw_thumbnail=True)
             imgui.text(" " * 30)
             imgui.same_line()
             ed.begin_pin(self.pin_output, ed.PinKind.output)
@@ -105,13 +142,12 @@ class _FunctionNode:
             return
         ed.link(self.link_id, self.pin_output, self.next_function.pin_input)
 
-
     def set_input(self, input_data: AnyDataWithGui) -> None:
         self.input_data = input_data
         if self.function is not None:
-            output = self.function.f(input_data)
+            self.output_data = self.function.f(input_data)
             if self.next_function is not None:
-                self.next_function.set_input(output)
+                self.next_function.set_input(self.output_data)
 
 
 class FunctionCompositionNodes:
@@ -137,65 +173,8 @@ class FunctionCompositionNodes:
     def draw(self) -> None:
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
-            draw_input = (i != 0)
-            draw_output = (i != len(self.function_nodes) - 1)
-            fn.draw_node(draw_input=draw_input, draw_output=draw_output)
+            draw_input = i != 0
+            draw_output = True
+            fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
-
-
-#######################
-
-class IntWithGui(AnyDataWithGui):
-    value: int
-
-    def __init__(self, value: int):
-        self.value = value
-
-    def gui_data(self, draw_thumbnail:bool = False) -> None:
-        imgui.text(f"Int Value={self.value}")
-
-
-class AddWithGui(FunctionWithGui):
-    what_to_add: int
-
-    def __init__(self):
-        self.what_to_add = 1
-
-    def f(self, x: IntWithGui) -> IntWithGui:
-        return IntWithGui(x.value + self.what_to_add)
-
-    def name(self):
-        return "Add"
-
-    def gui_params(self) -> bool:
-        imgui.set_next_item_width(100)
-        changed, self.what_to_add = imgui.slider_int("##What to add", self.what_to_add, 0, 10)
-        return changed
-
-
-def test():
-    functions = [
-        AddWithGui(),
-        AddWithGui(),
-        AddWithGui()
-    ]
-    nodes = FunctionCompositionNodes(functions)
-
-    x = IntWithGui(1)
-
-    def gui():
-        nonlocal x
-        _, x.value = imgui.slider_int("X", x.value, 0, 10)
-        if imgui.button("Apply"):
-            nodes.set_input(x)
-
-        ed.begin("AAA")
-        nodes.draw()
-        ed.end()
-
-    run(gui, with_node_editor=True, window_size=(800, 600), window_title="Functions composition")
-
-
-if __name__ =="__main__":
-    test()

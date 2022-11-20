@@ -3,6 +3,7 @@ import sys
 from typing import Literal, List, Any, Optional, Tuple
 import numpy as np
 import enum
+from . import internal as internal
 
 
 ##################################################
@@ -10,6 +11,9 @@ import enum
 ##################################################
 
 VoidPtr = Any
+
+FLT_MIN: float # value defined by this module as the minimum acceptable C(++) float
+FLT_MAX: float # value defined by this module as the maximum acceptable C(++) float
 
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types

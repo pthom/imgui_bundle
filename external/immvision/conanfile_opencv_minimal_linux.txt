@@ -12,3 +12,6 @@ opencv:shared=False
 opencv:with_quirc=False
 opencv:with_ffmpeg=False
 opencv:dnn=False
+
+# Linux specific
+opencv:with_gtk=False
