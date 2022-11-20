@@ -24,6 +24,8 @@ from imgui_bundle._imgui_bundle import __version__
 from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
 from imgui_bundle.im_col32 import IM_COL32
 
+from imgui_bundle._imgui_bundle.hello_imgui import RunnerParams as RunnerParams, SimpleRunnerParams as SimpleRunnerParams
+
 # By importing imgui_bundle.glfw_utils below,
 # _set_glfw_pip_search_path() will set os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip
 # uses our glfw library.
