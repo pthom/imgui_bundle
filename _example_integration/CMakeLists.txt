@@ -12,7 +12,6 @@ Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
     imgui_bundle
     GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git
-    DOWNLOAD_NO_PROGRESS OFF
     GIT_PROGRESS TRUE
     # Enter the desired git tag below
     GIT_TAG main
