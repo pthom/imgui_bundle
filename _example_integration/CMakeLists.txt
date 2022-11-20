@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(helloworld_with_helloimgui)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 
 ##########################################################
@@ -15,7 +15,7 @@ FetchContent_Declare(
     DOWNLOAD_NO_PROGRESS OFF
     GIT_PROGRESS TRUE
     # Enter the desired git tag below
-    GIT_TAG dev
+    GIT_TAG main
 )
 FetchContent_MakeAvailable(imgui_bundle)
 # Make cmake function `imgui_bundle_add_app` available

@@ -49,7 +49,7 @@ And below is a graph created with ImPlot:
     };
     HelloImGui::SimpleRunnerParams runnnerParams;
     runnnerParams.guiFunction = gui;
-    runnnerParams.windowSizeAuto = true;
+    runnnerParams.windowSize = {600, 800};
 
     ImGuiBundle::AddOnsParams addOnsParams;
     addOnsParams.withMarkdown = true;
