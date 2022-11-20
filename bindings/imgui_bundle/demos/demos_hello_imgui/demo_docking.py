@@ -62,7 +62,6 @@ You can even easily tweak their colors.
         ]
     )
 
-
     imgui.separator()
 
     imgui.push_font(gAkronimFont)
@@ -110,7 +109,8 @@ You can even easily tweak their colors.
             state.rocket_state = AppState.RocketState.Init
             state.rocket_progress = 0.0
 
-    imgui_md.render("""
+    imgui_md.render(
+        """
     --- 
 # Markdown Test
 
@@ -122,7 +122,9 @@ You can even easily tweak their colors.
 * *italic*
 * **bold**
 ---
-    """)
+    """
+    )
+
 
 # Our Gui in the status bar
 def status_bar_gui(app_state: AppState):

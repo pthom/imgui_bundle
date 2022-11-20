@@ -33,6 +33,7 @@ class AnyDataWithGui(ABC):
     """
     Override this class with your types, and implement a draw function that presents it content
     """
+
     @abstractmethod
     def gui_data(self, draw_thumbnail: bool = False) -> None:
         pass
@@ -104,14 +105,14 @@ class _FunctionNode:
         position = ed.get_node_position(self.node_id)
         if position.x == 0 and position.y == 0:
             width_between_nodes = 200
-            ed.set_node_position(self.node_id, ImVec2(idx * width_between_nodes + 1, 0) )
+            ed.set_node_position(self.node_id, ImVec2(idx * width_between_nodes + 1, 0))
 
         imgui.text(self.function.name())
 
         id_fn = str(id(self.function))
         imgui.push_id(id_fn)
 
-        params_changed= self.function.gui_params()
+        params_changed = self.function.gui_params()
         if params_changed:
             if self.input_data is not None and self.function is not None:
                 self.output_data = self.function.f(self.input_data)

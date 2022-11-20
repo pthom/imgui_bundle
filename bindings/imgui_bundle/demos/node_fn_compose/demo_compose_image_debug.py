@@ -25,7 +25,7 @@ class MainImageViewer:
 
     def __init__(self):
         self.image_and_params = []
-        self.image = np.zeros((200, 200,  3), np.int8)
+        self.image = np.zeros((200, 200, 3), np.int8)
         self.image_params = immvision.ImageParams()
         self.image_params.image_display_size = (400, 400)
         self.image_params.refresh_image = True
@@ -49,20 +49,15 @@ class ImageWithGui(AnyDataWithGui):
     def gui_data(self, draw_thumbnail: bool = False) -> None:
         # imgui.push_id(str(id(self)))
         id_add = str(id(self))
-        immvision.image_display(
-            "Image##" + id_add,
-            self.image,
-            image_display_size=(100, 0),
-            refresh_image=True
-        )
+        immvision.image_display("Image##" + id_add, self.image, image_display_size=(100, 0), refresh_image=True)
         if imgui.is_item_clicked(0):
             IMAGE_VIEWER.set_image(self.image)
         # imgui.pop_id()
 
 
 class GaussianBlurWithGui(FunctionWithGui):
-    sigma_x: float = 3.
-    sigma_y: float = 3.
+    sigma_x: float = 3.0
+    sigma_y: float = 3.0
 
     def f(self, x: ImageWithGui) -> ImageWithGui:
         ksize = (0, 0)
@@ -74,9 +69,9 @@ class GaussianBlurWithGui(FunctionWithGui):
 
     def gui_params(self) -> bool:
         imgui.set_next_item_width(100)
-        changed1, self.sigma_x = imgui.slider_float("sigma_x", self.sigma_x, 0.1, 15.)
+        changed1, self.sigma_x = imgui.slider_float("sigma_x", self.sigma_x, 0.1, 15.0)
         imgui.set_next_item_width(100)
-        changed2, self.sigma_y = imgui.slider_float("sigma_y", self.sigma_y, 0.1, 15.)
+        changed2, self.sigma_y = imgui.slider_float("sigma_y", self.sigma_y, 0.1, 15.0)
         return changed1 or changed2
 
 

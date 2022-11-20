@@ -34,7 +34,8 @@ imgui_example_glfw_opengl3.py is a direct adaptation of an example from Dear ImG
 [imgui/examples/example_glfw_opengl3/main.cpp](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
 
 You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example.
-""")
+"""
+    )
     show_one_feature("imgui_example_glfw_opengl3.py")
 
 

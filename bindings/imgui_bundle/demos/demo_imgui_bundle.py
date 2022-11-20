@@ -118,30 +118,36 @@ def show_text_input_advice():
 
 def demo_add_window_size_callback():
     import imgui_bundle
-    import glfw # always import glfw *after* imgui_bundle!!!
+    import glfw  # always import glfw *after* imgui_bundle!!!
+
     # Get the glfw window used by hello imgui
     window = imgui_bundle.glfw_window_hello_imgui()
 
     # define a callback
-    def my_window_size_callback(window: glfw._GLFWwindow, w:int, h:int):
+    def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
         from imgui_bundle import hello_imgui
+
         hello_imgui.log(hello_imgui.LogLevel.info, f"Window size changed to {w}x{h}")
 
     glfw.set_window_size_callback(window, my_window_size_callback)
 
-@static(text_editor = None)
+
+@static(text_editor=None)
 def show_glfw_callback_advice():
     static = show_glfw_callback_advice
     if static.text_editor is None:
         import inspect
+
         static.text_editor = imgui_color_text_edit.TextEditor()
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     md_render_unindent("For more complex applications, you can set various callbacks, using glfw.")
     if imgui.button("Add glfw callback"):
         demo_add_window_size_callback()
-        hello_imgui.log(hello_imgui.LogLevel.warning,
-            "A callback was handed to watch the window size. Change this window size and look at the logs")
+        hello_imgui.log(
+            hello_imgui.LogLevel.warning,
+            "A callback was handed to watch the window size. Change this window size and look at the logs",
+        )
 
     imgui.text("Code for this demo")
     static.text_editor.render("Code", ImVec2(500, 150))

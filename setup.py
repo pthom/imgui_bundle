@@ -61,8 +61,8 @@ setup(
         ]
     },
     install_requires=[
-        "numpy >= 1.15", 
-        "munch >= 2.0.0", 
+        "numpy >= 1.15",
+        "munch >= 2.0.0",
         "glfw > 2.5",
         "PyOpenGL >= 3.0",
         # "opencv-python >= 4.5",

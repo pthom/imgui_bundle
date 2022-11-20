@@ -12,6 +12,7 @@ def _set_glfw_pip_search_path():
     """
     import os
     import platform
+
     this_dir = os.path.dirname(__file__)
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
@@ -29,7 +30,7 @@ _set_glfw_pip_search_path()
 
 
 # do not move this import at the top, it should be done after the call to _set_glfw_pip_search_path()
-import glfw 
+import glfw
 from typing import cast
 
 
