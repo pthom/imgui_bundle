@@ -129,7 +129,9 @@ class _FunctionNode:
             if self.output_data is None:
                 imgui.text("None")
             else:
+                imgui.push_id(str(id(self.output_data)))
                 self.output_data.gui_data(draw_thumbnail=True)
+                imgui.pop_id()
             imgui.text(" " * 30)
             imgui.same_line()
             ed.begin_pin(self.pin_output, ed.PinKind.output)

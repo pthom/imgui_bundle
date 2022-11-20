@@ -6,9 +6,8 @@ import cv2
 import numpy as np
 
 from imgui_bundle import imgui as imgui
-from imgui_bundle import imgui_node_editor as imgui_node_editor, immvision as immvision, run
+from imgui_bundle import imgui_node_editor as imgui_node_editor, immvision as immvision
 from imgui_bundle.demos.node_fn_compose.node_fn_compose import *
-
 
 Image = np.ndarray
 
@@ -25,16 +24,18 @@ class MainImageViewer:
 
     def __init__(self):
         self.image_and_params = []
-        self.image = np.zeros((200, 200, 3), np.int8)
+        self.image = None
         self.image_params = immvision.ImageParams()
         self.image_params.image_display_size = (400, 400)
-        self.image_params.refresh_image = True
+        # self.image_params.
+        # self.image_params.refresh_image = True
 
     def set_image(self, image):
         self.image = image
 
     def gui(self):
-        immvision.image("Image Debug", self.image, self.image_params)
+        if self.image is not None:
+            immvision.image("Image Debug", self.image, self.image_params)
 
 
 IMAGE_VIEWER = MainImageViewer()
@@ -45,14 +46,13 @@ class ImageWithGui(AnyDataWithGui):
 
     def __init__(self, image: Image):
         self.image = image
+        self.first_frame = True
 
     def gui_data(self, draw_thumbnail: bool = False) -> None:
-        # imgui.push_id(str(id(self)))
-        id_add = str(id(self))
-        immvision.image_display("Image##" + id_add, self.image, image_display_size=(100, 0), refresh_image=True)
+        immvision.image_display("Image", self.image, image_display_size=(200, 0), refresh_image=self.first_frame)
+        self.first_frame = False
         if imgui.is_item_clicked(0):
             IMAGE_VIEWER.set_image(self.image)
-        # imgui.pop_id()
 
 
 class GaussianBlurWithGui(FunctionWithGui):
@@ -127,7 +127,31 @@ def main():
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_compose_image_debug.json"
-    run(gui, with_node_editor_config=config_node, window_size=(1200, 1000), window_title="Functions composition")
+
+    import imgui_bundle
+    from imgui_bundle import hello_imgui
+
+    add_ons_params = imgui_bundle.AddOnsParams()
+    add_ons_params.with_node_editor_config = config_node
+
+    runner_params = imgui_bundle.RunnerParams()
+    runner_params.app_window_params.window_geometry.size = (1200, 800)
+    runner_params.app_window_params.window_title = "Image functions composition"
+    # runner_params.imgui_window_params.enable_viewports
+    # runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+
+    split = hello_imgui.DockingSplit(
+        initial_dock_="MainDockSpace", new_dock_="Functions", ratio_=0.5, direction_=imgui.ImGuiDir_.down)
+    runner_params.docking_params.docking_splits = [split]
+
+    window_functions = hello_imgui.DockableWindow(
+        label_="Functions", dock_space_name_="Functions", gui_function_=gui)
+    window_inspector = hello_imgui.DockableWindow(
+        label_="Inspector", dock_space_name_="MainDockSpace", gui_function_=immvision.inspector_show)
+
+    runner_params.docking_params.dockable_windows = [window_functions, window_inspector]
+
+    imgui_bundle.run(runner_params, add_ons_params)
 
 
 if __name__ == "__main__":
