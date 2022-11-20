@@ -13,15 +13,21 @@ from imgui_bundle.imgui import (
     ImGuiWindowFlags,
     ImGuiCond,
     ImGuiCond_,
+    ImGuiStyle
 )
 
 
 VoidFunction = Callable[[None], None]
 AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
-WindowPosition = Tuple[int, int]
+ScreenPosition = Tuple[int, int]
 ImGuiCond_FirstUseEver = ImGuiCond_.first_use_ever
 
+DefaultScreenSize = (800, 600)
+DefaultWindowSize = (800, 600)
+DefaultScreenPosition = (40, 40)
+
+ImGuiDir_Down = ImGuiDir_.down
 
 def get_glfw_window():
     """Returns a pointer to the app GLFW window (when using GLFW)"""
@@ -411,7 +417,7 @@ def apply_theme(theme: ImGuiTheme_) -> None:
     pass
 
 
-class ImGuiThemeTweaks:
+class ImguiThemeTweaks:
     # Common rounding for widgets. If < 0, this is ignored.
     rounding: float = -1.
     # If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)
@@ -436,7 +442,7 @@ class ImGuiThemeTweaks:
     # (Background of checkbox, radio button, plot, slider, text input)
     value_multiplier_frame_bg: float = -1.
 
-class ImGuiTweakedTheme:
+class ImguiTweakedTheme:
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
     tweaks: ImGuiThemeTweaks = {}
 
@@ -497,7 +503,7 @@ class DefaultImGuiWindowType(enum.Enum):
     provide_full_screen_dock_space = enum.auto() # (= 1)
     no_default_window = enum.auto()              # (= 2)
 
-class ImGuiWindowParams:
+class ImguiWindowParams:
     """*
     @@md#ImGuiWindowParams
 
@@ -809,6 +815,14 @@ class DockingSplit:
     @@md
 
     """
+    def __init__(
+        self,
+        initial_dock_: DockSpaceName = "",
+        new_dock_: DockSpaceName = "",
+        direction_: ImGuiDir_ = ImGuiDir_Down,
+        ratio_: float = 0.25
+        ) -> None:
+        pass
 
     initial_dock: DockSpaceName
     new_dock: DockSpaceName
@@ -844,6 +858,15 @@ class DockableWindow:
     @@md
     *
     """
+    def __init__(
+        self,
+        label_: str = "",
+        dock_space_name_: DockSpaceName = "",
+        gui_function_: VoidFunction = VoidFunction(),
+        is_visible_: bool = True,
+        can_be_closed_: bool = True
+        ) -> None:
+        pass
 
     label: str
 
@@ -991,7 +1014,7 @@ class RunnerParams:
     """
     callbacks: RunnerCallbacks
     app_window_params: AppWindowParams
-    imgui_window_params: ImGuiWindowParams
+    imgui_window_params: ImguiWindowParams
     docking_params: DockingParams
     backend_pointers: BackendPointers
     backend_type: BackendType = BackendType.first_available
