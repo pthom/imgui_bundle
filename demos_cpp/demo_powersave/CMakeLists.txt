@@ -1,3 +1,1 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(demo_powersave demo_powersave.main.cpp)
-target_link_libraries(demo_powersave PRIVATE imgui_bundle)
+imgui_bundle_add_app(demo_powersave demo_powersave.main.cpp)
