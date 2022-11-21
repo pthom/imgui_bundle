@@ -43,6 +43,7 @@ Image = np.ndarray
 
 class ImageWithGui(AnyDataWithGui):
     image: Image
+    name: str
 
     def __init__(self, image: Image):
         self.image = image
@@ -51,7 +52,7 @@ class ImageWithGui(AnyDataWithGui):
     def gui_data(self, draw_thumbnail: bool = False) -> None:
         immvision.image_display("Image", self.image, image_display_size=(200, 0), refresh_image=self.first_frame)
         self.first_frame = False
-        if imgui.is_item_clicked(0):
+        if imgui.small_button("Inspect"):
             immvision.inspector_add_image(self.image, "Image")
 
 
@@ -59,7 +60,8 @@ class GaussianBlurWithGui(FunctionWithGui):
     sigma_x: float = 3.0
     sigma_y: float = 3.0
 
-    def f(self, x: ImageWithGui) -> ImageWithGui:
+    def f(self, x: AnyDataWithGui) -> ImageWithGui:
+        assert type(x) == ImageWithGui
         ksize = (0, 0)
         blur = cv2.GaussianBlur(x.image, ksize=ksize, sigmaX=self.sigma_x, sigmaY=self.sigma_y)
         return ImageWithGui(blur)
@@ -80,7 +82,8 @@ class CannyWithGui(FunctionWithGui):
     t_upper = 200  # Upper threshold
     aperture_size = 5  # Aperture size (3, 5, or 7)
 
-    def f(self, x: ImageWithGui) -> ImageWithGui:
+    def f(self, x: AnyDataWithGui) -> ImageWithGui:
+        assert type(x) == ImageWithGui
         edge = cv2.Canny(x.image, self.t_lower, self.t_upper, apertureSize=self.aperture_size)
         return ImageWithGui(edge)
 
@@ -98,7 +101,8 @@ class CannyWithGui(FunctionWithGui):
         imgui.same_line()
         changed3 = False
         for aperture_value in [3, 5, 7]:
-            clicked, self.aperture_size = imgui.radio_button(str(aperture_value), self.aperture_size, aperture_value)
+            clicked: bool
+            clicked, self.aperture_size = imgui.radio_button(str(aperture_value), self.aperture_size, aperture_value) #type: ignore
             if clicked:
                 changed3 = True
             imgui.same_line()
@@ -135,7 +139,7 @@ def main():
     add_ons_params.with_node_editor_config = config_node
 
     runner_params = imgui_bundle.RunnerParams()
-    runner_params.app_window_params.window_geometry.size = (1200, 800)
+    runner_params.app_window_params.window_geometry.size = (1400, 1200)
     runner_params.app_window_params.window_title = "Image functions composition"
     # runner_params.imgui_window_params.enable_viewports
     runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space

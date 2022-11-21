@@ -48,6 +48,7 @@ class FunctionWithGui(ABC):
     def name(self) -> str:
         pass
 
+    @abstractmethod
     def gui_params(self) -> bool:
         """override this if you want to provide a gui for the function inner params
         (i.e neither input nor output params, but the function internal state)
@@ -66,6 +67,9 @@ class _InputWithGui(FunctionWithGui):
     def f(self, x: AnyDataWithGui):
         return x
 
+    def gui_params(self) -> bool:
+        return False
+
 
 class _OutputWithGui(FunctionWithGui):
     def __init__(self) -> None:
@@ -77,10 +81,13 @@ class _OutputWithGui(FunctionWithGui):
     def f(self, x: AnyDataWithGui):
         return x
 
+    def gui_params(self) -> bool:
+        return False
+
 
 class _FunctionNode:
     function: Optional[FunctionWithGui]
-    next_function: Optional[_FunctionNode]
+    next_function_node: Optional[_FunctionNode]
     input_data: Optional[AnyDataWithGui]
     output_data: Optional[AnyDataWithGui]
 
@@ -89,9 +96,9 @@ class _FunctionNode:
     pin_output: ed.PinId
     link_id: ed.LinkId
 
-    def __init__(self, function: FunctionWithGui, next_function: Optional[FunctionWithGui] = None) -> None:
+    def __init__(self, function: FunctionWithGui, next_function_node: Optional[_FunctionNode] = None) -> None:
         self.function = function
-        self.next_function = next_function
+        self.next_function_node = next_function_node
         self.input_data = None
         self.output_data = None
 
@@ -101,11 +108,14 @@ class _FunctionNode:
         self.link_id = ed.LinkId.create()
 
     def draw_node(self, draw_input: bool, draw_output: bool, idx: int) -> None:
+        assert self.function is not None
+
         ed.begin_node(self.node_id)
         position = ed.get_node_position(self.node_id)
         if position.x == 0 and position.y == 0:
             width_between_nodes = 200
-            ed.set_node_position(self.node_id, ImVec2(idx * width_between_nodes + 1, 0))
+            position = ImVec2(idx * width_between_nodes + 1, 0) # type: ignore
+            ed.set_node_position(self.node_id, position)
 
         imgui.text(self.function.name())
 
@@ -116,8 +126,8 @@ class _FunctionNode:
         if params_changed:
             if self.input_data is not None and self.function is not None:
                 self.output_data = self.function.f(self.input_data)
-                if self.next_function is not None:
-                    self.next_function.set_input(self.output_data)
+                if self.next_function_node is not None:
+                    self.next_function_node.set_input(self.output_data)
         imgui.pop_id()
 
         if draw_input:
@@ -141,16 +151,16 @@ class _FunctionNode:
         ed.end_node()
 
     def draw_link(self) -> None:
-        if self.next_function is None:
+        if self.next_function_node is None:
             return
-        ed.link(self.link_id, self.pin_output, self.next_function.pin_input)
+        ed.link(self.link_id, self.pin_output, self.next_function_node.pin_input)
 
     def set_input(self, input_data: AnyDataWithGui) -> None:
         self.input_data = input_data
         if self.function is not None:
             self.output_data = self.function.f(input_data)
-            if self.next_function is not None:
-                self.next_function.set_input(self.output_data)
+            if self.next_function_node is not None:
+                self.next_function_node.set_input(self.output_data)
 
 
 class FunctionCompositionNodes:

@@ -20,7 +20,8 @@ class AddWithGui(FunctionWithGui):
     def __init__(self):
         self.what_to_add = 1
 
-    def f(self, x: IntWithGui) -> IntWithGui:
+    def f(self, x: AnyDataWithGui) -> IntWithGui:
+        assert type(x) == IntWithGui
         return IntWithGui(x.value + self.what_to_add)
 
     def name(self):
