@@ -47,5 +47,7 @@ __all__ = [
 "ImVec2",
 "ImVec4",
 "ImColor",
+"FLT_MIN",
+"FLT_MAX",
 "__version__",
 ]
