@@ -1,4 +1,5 @@
-from imgui_bundle import imgui, ImVec2, run
+# type: ignore
+from imgui_bundle import imgui, run
 
 
 def gui():

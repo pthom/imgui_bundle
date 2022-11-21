@@ -25,7 +25,7 @@ def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
 
     python_code = inspect.getsource(python_gui_function)
 
-    code_size = ImVec2(500, 150)
+    code_size = ImVec2(500, 150) # type: ignore
 
     imgui.begin_group()
     imgui.text("C++ code")
@@ -53,7 +53,7 @@ def demo_radio_button():
     clicked, static.value = imgui.radio_button("radio c", static.value, 2)
 
 
-def show_basic_code_advices():
+def show_basic_code_advices() -> None:
     cpp_code = """
         void DemoRadioButton()
         {
@@ -85,9 +85,9 @@ def show_basic_code_advices():
 
 
 @static(text="")
-def demo_input_text_decimal():
+def demo_input_text_decimal() -> None:
     static = demo_input_text_decimal
-    changed, static.text = imgui.input_text("decimal", static.text, imgui.ImGuiInputTextFlags_.chars_decimal)
+    changed, static.text = imgui.input_text("decimal", static.text, imgui.ImGuiInputTextFlags_.chars_decimal) # type: ignore
 
 
 def show_text_input_advice():
@@ -118,7 +118,8 @@ def show_text_input_advice():
 
 def demo_add_window_size_callback():
     import imgui_bundle
-    import glfw  # always import glfw *after* imgui_bundle!!!
+    # always import glfw *after* imgui_bundle!!!
+    import glfw # type: ignore
 
     # Get the glfw window used by hello imgui
     window = imgui_bundle.glfw_window_hello_imgui()
@@ -155,13 +156,8 @@ def show_glfw_callback_advice():
     hello_imgui.log_gui()
 
 
-def show_callback_avice():
-    imgui.new_line()
-    show_python_vs_cpp_code_advice()
-
-
 @static(is_initialized=False)
-def demo_imgui_bundle():
+def demo_imgui_bundle() -> None:
     static = demo_imgui_bundle
 
     if not static.is_initialized:
@@ -221,7 +217,7 @@ def demo_imgui_bundle():
                 app_state.counter += 1
 
         imgui.input_text_multiline(
-            "##immediate_gui_example", unindent(inspect.getsource(immediate_gui_example)), ImVec2(500, 150)
+            "##immediate_gui_example", unindent(inspect.getsource(immediate_gui_example)), ImVec2(500, 150) # type: ignore
         )
         imgui.text("Displays this:")
         immediate_gui_example()
@@ -253,4 +249,4 @@ def demo_imgui_bundle():
 if __name__ == "__main__":
     import imgui_bundle
 
-    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))
+    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800)) # type: ignore

@@ -26,4 +26,4 @@ def demo_imgui():
 if __name__ == "__main__":
     from imgui_bundle import run
 
-    run(gui_function=demo_imgui, with_markdown=True, window_size=(800, 600))
+    run(gui_function=demo_imgui, with_markdown=True, window_size=(800, 600))  # type: ignore

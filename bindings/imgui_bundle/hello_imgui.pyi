@@ -16,7 +16,7 @@ from imgui_bundle.imgui import (
 )
 
 
-VoidFunction = Callable[[None], None]
+VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
 ScreenPosition = Tuple[int, int]

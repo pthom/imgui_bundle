@@ -16,7 +16,7 @@ from imgui_bundle.demos import demo_imgui_md
 
 
 @static(was_initialized=None)
-def show_module_demo(demo_module: ModuleType, demo_function: Callable[[None], None]):
+def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None]) -> None:
     static = show_module_demo
 
     if not static.was_initialized:
@@ -45,7 +45,7 @@ def demo_node_editor_separate_app():
         subprocess.Popen([sys.executable, this_dir + "/demo_node_editor.py"])
 
 
-def main():
+def main() -> None:
     ################################################################################################
     # Part 1: Define the runner params
     ################################################################################################
@@ -80,13 +80,15 @@ def main():
     def add_dockable_window(
         label: str,
         demo_module: ModuleType,
-        demo_function: Callable[[None], None],
+        demo_function: Callable[[], None],
         dock_space_name: str = "MainDockSpace",
     ):
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = dock_space_name
-        window.gui_function = lambda: show_module_demo(demo_module, demo_function)
+        def win_fn() -> None:
+            show_module_demo(demo_module, demo_function)
+        window.gui_function = win_fn
         dockable_windows.append(window)
 
     add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)

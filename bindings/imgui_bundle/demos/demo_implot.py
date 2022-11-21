@@ -1,6 +1,5 @@
-from typing import Any, Callable
 import math
-from munch import Munch
+from munch import Munch # type: ignore
 
 import numpy as np
 from imgui_bundle import imgui, implot, static, imgui_md
@@ -22,7 +21,7 @@ def _demo_drag_rects_statics() -> Munch:
     r.y_data1 = np.sin(arg)
     r.y_data2 = r.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
     r.y_data3 = r.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-    r.rect = implot.ImPlotRect(0.0025, 0.0045, 0, 0.5)
+    r.rect = implot.ImPlotRect(0.0025, 0.0045, 0, 0.5) # type: ignore
     r.flags = implot.ImPlotDragToolFlags_.none
     return r
 

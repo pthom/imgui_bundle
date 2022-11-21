@@ -7,8 +7,12 @@ import enum
 
 from imgui_bundle.hello_imgui import RunnerParams
 from imgui_bundle.imgui_md import MarkdownOptions
+from imgui_bundle import imgui_md, hello_imgui
 from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig
 
+
+ImGuiMd = imgui_md
+HelloImGui = hello_imgui
 
 VoidFunction = Callable[[None], None]
 ScreenSize = Tuple[int, int]

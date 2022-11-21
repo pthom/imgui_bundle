@@ -32,7 +32,7 @@ class AppState:
 # MyLoadFonts: demonstrate
 # * how to load additional fonts
 # * how to use assets from the local assets/ folder
-gAkronimFont: imgui.ImFont = None
+gAkronimFont: imgui.ImFont
 
 
 def my_load_fonts():
@@ -66,7 +66,7 @@ You can even easily tweak their colors.
 
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))
+    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))  # type: ignore
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip(
@@ -131,7 +131,7 @@ def status_bar_gui(app_state: AppState):
     if app_state.rocket_state == AppState.RocketState.Preparing:
         imgui.text("Rocket completion: ")
         imgui.same_line()
-        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100.0, 15.0))
+        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100.0, 15.0))  # type: ignore
 
 
 def main():
