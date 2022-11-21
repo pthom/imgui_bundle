@@ -35,7 +35,7 @@ class AddWithGui(FunctionWithGui):
 
 def main():
     functions = [AddWithGui(), AddWithGui(), AddWithGui()]
-    nodes = FunctionCompositionNodes(functions)
+    nodes = FunctionsCompositionGraph(functions)
 
     x = IntWithGui(1)
 

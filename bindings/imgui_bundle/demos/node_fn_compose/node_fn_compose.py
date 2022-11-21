@@ -5,30 +5,6 @@ from typing import List, Optional
 from abc import ABC, abstractmethod
 
 
-# transform a list into a list of adjacent pairs
-# For example : [a, b, c] -> [ [a, b], [b, c]]
-def overlapping_pairs(iterable):
-    it = iter(iterable)
-    a = next(it, None)
-
-    for b in it:
-        yield (a, b)
-        a = b
-
-
-# transform a list into a circular list of adjacent pairs
-# For example : [a, b, c] -> [ [a, b], [b, c], [c, a]]
-def overlapping_pairs_cyclic(iterable):
-    it = iter(iterable)
-    a = next(it, None)
-    first = a
-    for b in it:
-        yield (a, b)
-        a = b
-    last = a
-    yield (last, first)
-
-
 class AnyDataWithGui(ABC):
     """
     Override this class with your types, and implement a draw function that presents it content
@@ -55,6 +31,36 @@ class FunctionWithGui(ABC):
         It should return True if the inner params were changed.
         """
         pass
+
+
+class FunctionsCompositionGraph:
+    function_nodes: List[_FunctionNode]
+
+    def __init__(self, functions: List[FunctionWithGui]) -> None:
+        input_fake_function = _InputWithGui()
+        output_fake_function = _OutputWithGui()
+
+        self.function_nodes = []
+        self.function_nodes.append(_FunctionNode(input_fake_function))
+        for f in functions:
+            function_node = _FunctionNode(f)
+            self.function_nodes.append(function_node)
+        self.function_nodes.append(_FunctionNode(output_fake_function))
+
+        for f1, f2 in overlapping_pairs(self.function_nodes):
+            f1.next_function_node = f2
+
+    def set_input(self, input_data: AnyDataWithGui) -> None:
+        self.function_nodes[0].set_input(input_data)
+
+    def draw(self) -> None:
+        # draw function nodes
+        for i, fn in enumerate(self.function_nodes):
+            draw_input = i != 0
+            draw_output = True
+            fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
+        for i, fn in enumerate(self.function_nodes):
+            fn.draw_link()
 
 
 class _InputWithGui(FunctionWithGui):
@@ -163,31 +169,12 @@ class _FunctionNode:
                 self.next_function_node.set_input(self.output_data)
 
 
-class FunctionCompositionNodes:
-    function_nodes: List[_FunctionNode]
+# transform a list into a list of adjacent pairs
+# For example : [a, b, c] -> [ [a, b], [b, c]]
+def overlapping_pairs(iterable):
+    it = iter(iterable)
+    a = next(it, None)
 
-    def __init__(self, functions: List[FunctionWithGui]) -> None:
-        input_fake_function = _InputWithGui()
-        output_fake_function = _OutputWithGui()
-
-        self.function_nodes = []
-        self.function_nodes.append(_FunctionNode(input_fake_function))
-        for f in functions:
-            function_node = _FunctionNode(f)
-            self.function_nodes.append(function_node)
-        self.function_nodes.append(_FunctionNode(output_fake_function))
-
-        for f1, f2 in overlapping_pairs(self.function_nodes):
-            f1.next_function = f2
-
-    def set_input(self, input_data: AnyDataWithGui) -> None:
-        self.function_nodes[0].set_input(input_data)
-
-    def draw(self) -> None:
-        # draw function nodes
-        for i, fn in enumerate(self.function_nodes):
-            draw_input = i != 0
-            draw_output = True
-            fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
-        for i, fn in enumerate(self.function_nodes):
-            fn.draw_link()
+    for b in it:
+        yield (a, b)
+        a = b
