@@ -6,13 +6,15 @@ THIS_DIR = os.path.dirname(__file__)
 
 
 def main() -> None:
-    path_lg_imgui_bundle = os.path.realpath(f"{THIS_DIR}/../demos_python")
-    print(path_lg_imgui_bundle)
-    sys.path.append(path_lg_imgui_bundle)
+    path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python")
+    print(path_demos)
+    sys.path.append(path_demos)
 
-    import imgui_example_outer_glfw_opengl3  # type: ignore
+    path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python/node_fn_compose/")
+    sys.path.append(path_demos)
 
-    imgui_example_outer_glfw_opengl3.main()
+    import demo_compose_image_debug  # type: ignore
+    demo_compose_image_debug.main()
 
 
 main()

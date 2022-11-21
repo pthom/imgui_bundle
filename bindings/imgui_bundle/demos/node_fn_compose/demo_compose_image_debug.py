@@ -12,33 +12,33 @@ from imgui_bundle.demos.node_fn_compose.node_fn_compose import *
 Image = np.ndarray
 
 
-class MainImageViewer:
-    class ImageAndParams:
-        image: Image
-        image_params: immvision.ImageParams
-
-        def __init__(self):
-            self.image_params = immvision.ImageParams()
-
-    image_and_params: List[ImageAndParams]
-
-    def __init__(self):
-        self.image_and_params = []
-        self.image = None
-        self.image_params = immvision.ImageParams()
-        self.image_params.image_display_size = (400, 400)
-        # self.image_params.
-        # self.image_params.refresh_image = True
-
-    def set_image(self, image):
-        self.image = image
-
-    def gui(self):
-        if self.image is not None:
-            immvision.image("Image Debug", self.image, self.image_params)
-
-
-IMAGE_VIEWER = MainImageViewer()
+# class MainImageViewer:
+#     class ImageAndParams:
+#         image: Image
+#         image_params: immvision.ImageParams
+#
+#         def __init__(self):
+#             self.image_params = immvision.ImageParams()
+#
+#     image_and_params: List[ImageAndParams]
+#
+#     def __init__(self):
+#         self.image_and_params = []
+#         self.image = None
+#         self.image_params = immvision.ImageParams()
+#         self.image_params.image_display_size = (400, 400)
+#         # self.image_params.
+#         # self.image_params.refresh_image = True
+#
+#     def set_image(self, image):
+#         self.image = image
+#
+#     def gui(self):
+#         if self.image is not None:
+#             immvision.image("Image Debug", self.image, self.image_params)
+#
+#
+# IMAGE_VIEWER = MainImageViewer()
 
 
 class ImageWithGui(AnyDataWithGui):
@@ -52,7 +52,7 @@ class ImageWithGui(AnyDataWithGui):
         immvision.image_display("Image", self.image, image_display_size=(200, 0), refresh_image=self.first_frame)
         self.first_frame = False
         if imgui.is_item_clicked(0):
-            IMAGE_VIEWER.set_image(self.image)
+            immvision.inspector_add_image(self.image, "Image")
 
 
 class GaussianBlurWithGui(FunctionWithGui):
@@ -120,7 +120,7 @@ def main():
 
     def gui():
         imgui.text(f"FPS: {imgui.get_io().framerate}")
-        IMAGE_VIEWER.gui()
+        # IMAGE_VIEWER.gui()
         ed.begin("AAA")
         nodes.draw()
         ed.end()
@@ -138,7 +138,7 @@ def main():
     runner_params.app_window_params.window_geometry.size = (1200, 800)
     runner_params.app_window_params.window_title = "Image functions composition"
     # runner_params.imgui_window_params.enable_viewports
-    # runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
 
     split = hello_imgui.DockingSplit(
         initial_dock_="MainDockSpace", new_dock_="Functions", ratio_=0.5, direction_=imgui.ImGuiDir_.down)
