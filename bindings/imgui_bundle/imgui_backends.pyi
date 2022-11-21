@@ -20,6 +20,9 @@
 #  On computer platform the GLSL version default to "#version 130". On OpenGL ES 3 platform it defaults to "#version 300 es"
 #  Only override if your GL version doesn't handle this GLSL version. See GLSL version table at the top of imgui_impl_opengl3.cpp.
 
+from imgui_bundle.imgui import ImDrawData
+
+
 # Backend API
 def open_gl3_init(glsl_version: str = None) -> bool:
     pass
@@ -132,6 +135,6 @@ def glfw_key_callback(
 def glfw_char_callback(window_address: int, c: int) -> None:
     pass
 
-def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
-    pass
+# def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
+#     pass
 ####################    </generated_from:imgui_impl_glfw.h>    ####################

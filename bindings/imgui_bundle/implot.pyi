@@ -7,13 +7,8 @@ import numpy as np
 import enum
 
 
-from imgui_bundle.imgui import (
-    ImVec2, ImVec4,
-    ImGuiMouseButton,
-    ImGuiModFlags,
-    ImU32,
-    ImDrawList,
-)
+from imgui_bundle.imgui import ImVec4
+
 
 ImGuiContext = Any
 

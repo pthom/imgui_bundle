@@ -1,7 +1,7 @@
 """ImFileDialog: based on https://github.com/dfranx/ImFileDialog
 Thanks to dfranx (https://github.com/dfranx)
 """
-# type: ignore
+from __future__ import annotations
 from typing import List, Any
 import numpy as np
 
