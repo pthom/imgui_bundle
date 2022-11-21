@@ -1,4 +1,3 @@
-# type: ignore
 from typing import Any, List, Tuple
 import enum
 

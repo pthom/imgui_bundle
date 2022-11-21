@@ -1,4 +1,3 @@
-# type: ignore
 from typing import List, Any, Callable, Tuple
 import numpy as np
 import enum

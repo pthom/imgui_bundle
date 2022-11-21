@@ -1,4 +1,3 @@
-# type: ignore
 import sys
 from typing import Literal, List, Any, Optional, Tuple
 import numpy as np

@@ -2,7 +2,6 @@
 Python bindings for https://github.com/mekhontsev/imgui_md (with an additional custom wrapper)
 """
 
-# type: ignore
 from typing import Tuple, Callable
 import numpy as np
 import enum

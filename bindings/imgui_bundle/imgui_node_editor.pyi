@@ -2,7 +2,6 @@
 Python bindings for https://github.com/thedmd/imgui-node-editor
 """
 
-# type: ignore
 from typing import Any, List
 import numpy as np
 import enum
@@ -46,7 +45,7 @@ class PinId:
     def id(self) -> int:
         pass
     @staticmethod
-    def create() -> NodeId:
+    def create() -> PinId:
         """Creates a new NodeId with a unique id
 
         Create your node once per session, not at each frame!

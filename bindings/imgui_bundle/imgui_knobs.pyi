@@ -2,7 +2,6 @@
 Python bindings for https://github.com/altschuler/imgui-knobs
 """
 
-# type: ignore
 from typing import Tuple
 import numpy as np
 import enum

@@ -1,5 +1,3 @@
-# type: ignore
-
 # Note: all this code is generated *manually*
 
 # dear imgui: Renderer Backend for modern OpenGL with shaders / programmatic pipeline
