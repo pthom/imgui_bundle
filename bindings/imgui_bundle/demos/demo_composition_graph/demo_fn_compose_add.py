@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from imgui_bundle import imgui_node_editor as imgui_node_editor, run
+from imgui_bundle import imgui, run, imgui_node_editor
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 
 
@@ -19,23 +17,18 @@ class AddWithGui(FunctionWithGui):
 
     def gui_params(self) -> bool:
         imgui.set_next_item_width(100)
-        changed, self.what_to_add = imgui.slider_int("##What to add", self.what_to_add, 0, 10)
+        changed, self.what_to_add = imgui.slider_int("", self.what_to_add, 0, 10)
         return changed
 
 
 def main():
     functions = [AddWithGui(), AddWithGui(), AddWithGui()]
-    nodes = FunctionsCompositionGraph(functions)
+    functions_graph = FunctionsCompositionGraph(functions)
 
-    x = IntWithGui(1)
+    functions_graph.set_input(IntWithGui(1))
 
     def gui():
-        nonlocal x
-        _, x.value = imgui.slider_int("X", x.value, 0, 10)
-        if imgui.button("Apply"):
-            nodes.set_input(x)
-
-        ed.begin(""); nodes.draw(); ed.end()
+        functions_graph.draw();
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_fn_compose_add.json"

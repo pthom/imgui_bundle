@@ -51,6 +51,9 @@ class FunctionsCompositionGraph:
         self.function_nodes[0].set_input(input_data)
 
     def draw(self) -> None:
+        imgui.push_id(str(id(self)))
+
+        ed.begin("FunctionsCompositionGraph")
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
             draw_input = i != 0
@@ -58,17 +61,9 @@ class FunctionsCompositionGraph:
             fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
+        ed.end()
 
-
-class IntWithGui(AnyDataWithGui):
-    value: int
-
-    def __init__(self, value: int):
-        self.value = value
-
-    def gui_data(self, function_name: str) -> None:
-        imgui.text(f"{function_name}")
-        imgui.text(f"Int Value={self.value}")
+        imgui.pop_id()
 
 
 class _InputWithGui(FunctionWithGui):

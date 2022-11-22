@@ -6,30 +6,9 @@ import cv2
 import numpy as np
 
 from imgui_bundle import imgui, hello_imgui
-from imgui_bundle import imgui_node_editor as imgui_node_editor, immvision as immvision
+from imgui_bundle import imgui_node_editor as imgui_node_editor
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
-
-Image = np.ndarray
-
-
-class ImageWithGui(AnyDataWithGui):
-    image: Image
-    image_params: immvision.ImageParams
-    name: str
-
-    def __init__(self, image: Image):
-        self.image = image
-        self.first_frame = True
-        self.image_params = immvision.ImageParams()
-        self.image_params.image_display_size = (250, 0)
-        self.image_params.zoom_key = "z"
-
-    def gui_data(self, function_name: str) -> None:
-        self.image_params.refresh_image = self.first_frame
-        immvision.image(function_name, self.image, self.image_params)
-        self.first_frame = False
-        if imgui.small_button("Inspect"):
-            immvision.inspector_add_image(self.image, "Image")
+from imgui_bundle.demos.demo_composition_graph.functions_composition_graph.image_with_gui import *
 
 
 class GaussianBlurWithGui(FunctionWithGui):
@@ -89,15 +68,12 @@ class CannyWithGui(FunctionWithGui):
 def main():
     this_dir = os.path.dirname(__file__)
     resource_dir = this_dir + "/../immvision/resources"
-
     image = cv2.imread(resource_dir + "/house.jpg")
+    x = ImageWithGui(image)
 
     functions = [GaussianBlurWithGui(), CannyWithGui()]
-    nodes = FunctionsCompositionGraph(functions)
-
-    x = ImageWithGui(image)
-    nodes.set_input(x)
-
+    composition_graph = FunctionsCompositionGraph(functions)
+    composition_graph.set_input(x)
 
     def gui():
         runner_params = hello_imgui.get_runner_params()
@@ -106,10 +82,7 @@ def main():
 
         imgui.begin("graph")
         imgui.text(f"FPS: {imgui.get_io().framerate}")
-        # IMAGE_VIEWER.gui()
-        ed.begin("AAA")
-        nodes.draw()
-        ed.end()
+        composition_graph.draw()
         imgui.end()
 
         imgui.begin("Inspector")
