@@ -30,6 +30,34 @@ def font_atlas_get_tex_data_as_rgba32_experimental(font_atlas: ImFontAtlas) -> n
     pass
 
 
+def font_atlas_add_font_from_file_ttf_experimental(
+        font_atlas: ImFontAtlas,
+        filename: str,
+        size_pixels: float,
+        font_cfg: Optional[ImFontConfig] = None,
+        glyph_ranges_as_int_list = []
+    ) -> ImFont:
+    """A version of ImFontAtlas.add_font_from_file_ttf that allows to pass glyph range as a parameter,
+       since the member function does not allow glyph ranges.
+
+        glyph_ranges_as_int_list should be organized in pairs, and should end with a final zero.
+        As an example, below is the C++ code for the Korean glyph range:
+
+        const ImWchar*  ImFontAtlas::GetGlyphRangesKorean()
+        {
+            static const ImWchar ranges[] =
+            {
+                0x0020, 0x00FF, // Basic Latin + Latin Supplement
+                0x3131, 0x3163, // Korean alphabets
+                0xAC00, 0xD7A3, // Korean characters
+                0xFFFD, 0xFFFD, // Invalid
+                0,
+            };
+            return &ranges[0];
+        }
+    """
+    pass
+
 
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
