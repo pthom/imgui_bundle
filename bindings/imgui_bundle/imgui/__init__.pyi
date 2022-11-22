@@ -25,6 +25,11 @@ def set_io_log_filename(filename: str) -> None:
     pass
 
 
+def font_atlas_get_tex_data_as_rgba32_experimental(font_atlas: ImFontAtlas) -> np.ndarray:
+    """Manual binding for ImFontAtlas.get_tex_data_as_rgba32"""
+    pass
+
+
 
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
