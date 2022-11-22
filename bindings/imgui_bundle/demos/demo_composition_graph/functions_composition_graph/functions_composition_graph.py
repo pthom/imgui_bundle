@@ -25,7 +25,7 @@ class FunctionWithGui(ABC):
 
     def gui_params(self) -> bool:
         """override this if you want to provide a gui for the function inner params
-        (i.e neither input nor output params, but the function internal state)
+        (i.e. neither input nor output params, but the function internal state)
         It should return True if the inner params were changed.
         """
         return False

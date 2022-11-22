@@ -8,3 +8,4 @@ add_subdirectory(demo_imgui_node_editor)
 add_subdirectory(demo_powersave)
 
 add_subdirectory(demos_immvision)
+add_subdirectory(demo_composition_graph)
