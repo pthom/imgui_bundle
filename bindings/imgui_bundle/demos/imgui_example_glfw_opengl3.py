@@ -189,7 +189,8 @@ def main():
         if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
-            imgui.render_platform_windows_default(glfw.make_context_current(backup_current_context))
+            imgui.render_platform_windows_default()
+            glfw.make_context_current(backup_current_context)
 
         glfw.swap_buffers(window)
 
