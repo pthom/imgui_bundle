@@ -18,7 +18,7 @@ class GaussianBlurWithGui(FunctionWithGui):
     def f(self, x: AnyDataWithGui) -> ImageWithGui:
         assert type(x) == ImageWithGui
         ksize = (0, 0)
-        blur = cv2.GaussianBlur(x.image, ksize=ksize, sigmaX=self.sigma_x, sigmaY=self.sigma_y)
+        blur = cv2.GaussianBlur(x.array, ksize=ksize, sigmaX=self.sigma_x, sigmaY=self.sigma_y)
         return ImageWithGui(blur)
 
     def name(self):
@@ -39,7 +39,7 @@ class CannyWithGui(FunctionWithGui):
 
     def f(self, x: AnyDataWithGui) -> ImageWithGui:
         assert type(x) == ImageWithGui
-        edge = cv2.Canny(x.image, self.t_lower, self.t_upper, apertureSize=self.aperture_size)
+        edge = cv2.Canny(x.array, self.t_lower, self.t_upper, apertureSize=self.aperture_size)
         return ImageWithGui(edge)
 
     def name(self):
@@ -69,9 +69,12 @@ def main():
     this_dir = os.path.dirname(__file__)
     resource_dir = this_dir + "/../immvision/resources"
     image = cv2.imread(resource_dir + "/house.jpg")
+
     x = ImageWithGui(image)
 
-    functions = [GaussianBlurWithGui(), CannyWithGui()]
+    # functions = [GaussianBlurWithGui(), CannyWithGui()]
+    functions = [ SplitChannelsWithGui(), AdjustChannelsWithGui(), MergeChannelsWithGui() ]
+
     composition_graph = FunctionsCompositionGraph(functions)
     composition_graph.set_input(x)
 
