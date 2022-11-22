@@ -93,10 +93,11 @@ namespace VisualProg
                 else
                 {
                     ImGui::PushID(self._outputData.get());
+                    ImGui::BeginGroup();
                     self._outputData->GuiData(self._function->Name());
+                    ImGui::EndGroup();
                     ImGui::PopID();
                 }
-                ImGui::Text("                              ");
                 ImGui::SameLine();
                 ed::BeginPin(self._pinOutput, ed::PinKind::Output);
                 ImGui::Text(ICON_FA_CIRCLE);

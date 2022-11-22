@@ -147,10 +147,11 @@ class _FunctionNode:
             if self.output_data is None:
                 imgui.text("None")
             else:
+                imgui.begin_group()
                 imgui.push_id(str(id(self.output_data)))
                 self.output_data.gui_data(function_name=self.function.name())
                 imgui.pop_id()
-            imgui.text(" " * 30)
+                imgui.end_group()
             imgui.same_line()
             ed.begin_pin(self.pin_output, ed.PinKind.output)
             imgui.text(icons_fontawesome.ICON_FA_CIRCLE)
