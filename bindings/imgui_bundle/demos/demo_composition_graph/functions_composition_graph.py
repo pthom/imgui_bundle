@@ -1,6 +1,5 @@
 from __future__ import annotations
 from imgui_bundle import imgui, imgui_node_editor as ed, icons_fontawesome, ImVec2
-
 from typing import List, Optional
 from abc import ABC, abstractmethod
 
@@ -11,7 +10,7 @@ class AnyDataWithGui(ABC):
     """
 
     @abstractmethod
-    def gui_data(self, draw_thumbnail: bool = False) -> None:
+    def gui_data(self, function_name: str) -> None:
         pass
 
 
@@ -38,14 +37,12 @@ class FunctionsCompositionGraph:
 
     def __init__(self, functions: List[FunctionWithGui]) -> None:
         input_fake_function = _InputWithGui()
-        output_fake_function = _OutputWithGui()
 
         self.function_nodes = []
         self.function_nodes.append(_FunctionNode(input_fake_function))
         for f in functions:
             function_node = _FunctionNode(f)
             self.function_nodes.append(function_node)
-        self.function_nodes.append(_FunctionNode(output_fake_function))
 
         for f1, f2 in overlapping_pairs(self.function_nodes):
             f1.next_function_node = f2
@@ -61,6 +58,17 @@ class FunctionsCompositionGraph:
             fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
+
+
+class IntWithGui(AnyDataWithGui):
+    value: int
+
+    def __init__(self, value: int):
+        self.value = value
+
+    def gui_data(self, function_name: str) -> None:
+        imgui.text(f"{function_name}")
+        imgui.text(f"Int Value={self.value}")
 
 
 class _InputWithGui(FunctionWithGui):
@@ -146,7 +154,7 @@ class _FunctionNode:
                 imgui.text("None")
             else:
                 imgui.push_id(str(id(self.output_data)))
-                self.output_data.gui_data(draw_thumbnail=True)
+                self.output_data.gui_data(function_name=self.function.name())
                 imgui.pop_id()
             imgui.text(" " * 30)
             imgui.same_line()

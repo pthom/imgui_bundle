@@ -1,17 +1,7 @@
 from __future__ import annotations
 
 from imgui_bundle import imgui_node_editor as imgui_node_editor, run
-from imgui_bundle.demos.node_fn_compose.node_fn_compose import *
-
-
-class IntWithGui(AnyDataWithGui):
-    value: int
-
-    def __init__(self, value: int):
-        self.value = value
-
-    def gui_data(self, draw_thumbnail: bool = False) -> None:
-        imgui.text(f"Int Value={self.value}")
+from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 
 
 class AddWithGui(FunctionWithGui):
@@ -45,13 +35,11 @@ def main():
         if imgui.button("Apply"):
             nodes.set_input(x)
 
-        ed.begin("AAA")
-        nodes.draw()
-        ed.end()
+        ed.begin(""); nodes.draw(); ed.end()
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_fn_compose_add.json"
-    run(gui, with_node_editor_config=config_node, window_size=(800, 600), window_title="Functions composition")
+    run(gui, with_node_editor_config=config_node, window_size=(800, 600), window_title="Additions")
 
 
 if __name__ == "__main__":

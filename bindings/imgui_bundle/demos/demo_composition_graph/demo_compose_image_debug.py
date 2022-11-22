@@ -5,9 +5,9 @@ import os.path
 import cv2
 import numpy as np
 
-from imgui_bundle import imgui as imgui
+from imgui_bundle import imgui, hello_imgui
 from imgui_bundle import imgui_node_editor as imgui_node_editor, immvision as immvision
-from imgui_bundle.demos.node_fn_compose.node_fn_compose import *
+from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 
 Image = np.ndarray
 
@@ -24,9 +24,9 @@ class ImageWithGui(AnyDataWithGui):
         self.image_params.image_display_size = (250, 0)
         self.image_params.zoom_key = "z"
 
-    def gui_data(self, draw_thumbnail: bool = False) -> None:
+    def gui_data(self, function_name: str) -> None:
         self.image_params.refresh_image = self.first_frame
-        immvision.image("Image", self.image, self.image_params)
+        immvision.image(function_name, self.image, self.image_params)
         self.first_frame = False
         if imgui.small_button("Inspect"):
             immvision.inspector_add_image(self.image, "Image")
@@ -98,18 +98,29 @@ def main():
     x = ImageWithGui(image)
     nodes.set_input(x)
 
+
     def gui():
+        runner_params = hello_imgui.get_runner_params()
+        runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+        runner_params.imgui_window_params.enable_viewports = True
+
+        imgui.begin("graph")
         imgui.text(f"FPS: {imgui.get_io().framerate}")
         # IMAGE_VIEWER.gui()
         ed.begin("AAA")
         nodes.draw()
         ed.end()
+        imgui.end()
+
+        imgui.begin("Inspector")
+        immvision.inspector_show()
+        imgui.end()
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_compose_image_debug.json"
 
     import imgui_bundle
-    imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1200, 600))
+    imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1200, 1000))
 
 
 if __name__ == "__main__":
