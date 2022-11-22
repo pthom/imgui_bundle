@@ -14,6 +14,18 @@ VoidPtr = Any
 FLT_MIN: float # value defined by this module as the minimum acceptable C(++) float
 FLT_MAX: float # value defined by this module as the maximum acceptable C(++) float
 
+
+def set_io_ini_filename(filename: str) -> None:
+    """set imgui.get_io().ini_filename"""
+    pass
+
+
+def set_io_log_filename(filename: str) -> None:
+    """set imgui.get_io().log_filename"""
+    pass
+
+
+
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 #-----------------------------------------------------------------------------
