@@ -14,6 +14,7 @@ namespace VisualProg
 
     std::vector<cv::Mat> SplitChannels(const Image& image);
 
+    bool _GuiEditSize(cv::Size* size);
 
     struct ImageWithGui: public AnyDataWithGui
     {
@@ -36,9 +37,14 @@ namespace VisualProg
             auto& self = *this;
             self._imageParams.RefreshImage = _firstFrame;
             self._firstFrame = false;
+
+            ImGui::SetNextItemWidth(100.f);
+            _GuiEditSize(&self._imageParams.ImageDisplaySize);
+
             ImmVision::Image(std::string(function_name), self._array, &self._imageParams);
             if (ImGui::SmallButton("inspect"))
                 ImmVision::Inspector_AddImage(self._array, std::string(function_name));
+
         }
     };
     using ImageWithGuiPtr = std::shared_ptr<ImageWithGui>;
@@ -82,6 +88,10 @@ namespace VisualProg
             bool refreshImage = self.firstFrame;
             self.firstFrame = false;
 
+            if (_GuiEditSize(&self._imageParams[0].ImageDisplaySize))
+                for (auto& params: self._imageParams)
+                    params.ImageDisplaySize = self._imageParams[0].ImageDisplaySize;
+
             for (size_t i = 0; i < self._arrays.size(); ++i)
             {
                 auto& image = self._arrays[i];
@@ -100,13 +110,13 @@ namespace VisualProg
 
     struct AdjustImage
     {
-        float powValue = 1.f;
+        float powExponent = 1.f;
 
         Image Apply(const Image& image)
         {
             auto& self = *this;
             Image r;
-            cv::pow(image, self.powValue, r);
+            cv::pow(image, self.powExponent, r);
             return r;
         }
 
@@ -114,7 +124,7 @@ namespace VisualProg
         {
             auto& self = *this;
             ImGui::SetNextItemWidth(100.f);
-            bool changed = ImGui::SliderFloat("power", &self.powValue, 0., 10.);
+            bool changed = ImGui::SliderFloat("power", &self.powExponent, 0., 10., "%.1f", ImGuiSliderFlags_Logarithmic);
             return changed;
         }
     };
@@ -182,20 +192,23 @@ namespace VisualProg
                 _channelAdjustParams.push_back(AdjustImage());
         }
 
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+        AnyDataWithGuiPtr f (const AnyDataWithGuiPtr& x) override
         {
             auto& self = *this;
             // assert type(x) == ImagesWithGui
             auto asImages = dynamic_cast<ImagesWithGui*>(x.get());
             assert(asImages);
 
-            auto& channels = asImages->_arrays;
-            _addParamsOnDemand(channels.size());
+            const auto& original_channels = asImages->_arrays;
+            _addParamsOnDemand(original_channels.size());
 
-            for (size_t i = 0; i < channels.size(); ++i)
-                channels[i] = self._channelAdjustParams[i].Apply(channels[i]);
+            std::vector<Image> adjustedChannels;
+            for (size_t i = 0; i < original_channels.size(); ++i)
+            {
+                adjustedChannels.push_back(self._channelAdjustParams[i].Apply(original_channels[i]));
+            }
 
-            auto r = std::make_shared<ImagesWithGui>(channels);
+            auto r = std::make_shared<ImagesWithGui>(adjustedChannels);
             return r;
         }
 

@@ -10,6 +10,7 @@ int main(int, char**)
     using namespace VisualProg;
 
     cv::Mat image = cv::imread("resources/house.jpg");
+    cv::resize(image, image, cv::Size(), 0.3, 0.3);
 
     auto x = std::make_shared<ImageWithGui>(image);
 

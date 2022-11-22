@@ -69,6 +69,7 @@ def main():
     this_dir = os.path.dirname(__file__)
     resource_dir = this_dir + "/../immvision/resources"
     image = cv2.imread(resource_dir + "/house.jpg")
+    image = cv2.resize(image, (int(image.shape[1] * 0.3), int(image.shape[0] * 0.3)))
 
     x = ImageWithGui(image)
 

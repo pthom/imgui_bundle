@@ -12,4 +12,34 @@ namespace VisualProg
         return r;
     }
 
+    bool _GuiEditSize(cv::Size* size)
+    {
+        auto modifySizeByRatio = [](cv::Size* size, double ratio)
+        {
+            size->width = (int)((double)size->width * ratio + 0.5);
+            size->height = (int)((double)size->height * ratio + 0.5);
+        };
+
+        bool changed = false;
+
+        double ratio = 1.05;
+        ImGui::PushButtonRepeat(true);
+        ImGui::Text("Thubmnail size");
+        ImGui::SameLine();
+        if (ImGui::SmallButton(" smaller "))
+        {
+            changed = true;
+            modifySizeByRatio(size, 1. / ratio);
+        }
+        ImGui::SameLine();
+        if (ImGui::SmallButton(" bigger "))
+        {
+            changed = true;
+            modifySizeByRatio(size, ratio);
+        }
+        ImGui::PopButtonRepeat();
+
+        return changed;
+    }
+
 }

@@ -2,7 +2,7 @@ from imgui_bundle.demos.demo_composition_graph.functions_composition_graph impor
 from imgui_bundle import immvision, imgui
 
 import numpy as np
-from typing import List, Union
+from typing import List, Tuple
 
 
 Image = np.ndarray
@@ -27,6 +27,7 @@ class ImageWithGui(AnyDataWithGui):
 
     def gui_data(self, function_name: str) -> None:
         self.image_params.refresh_image = self.first_frame
+        _, self.image_params.image_display_size = gui_edit_size(self.image_params.image_display_size)
         immvision.image(function_name, self.array, self.image_params)
         self.first_frame = False
         if imgui.small_button("Inspect"):
@@ -63,6 +64,11 @@ class ImagesWithGui(AnyDataWithGui):
         refresh_image = self.first_frame
         self.first_frame = False
 
+        changed, self.images_params[0].image_display_size = gui_edit_size(self.images_params[0].image_display_size)
+        if changed:
+            for params in self.images_params:
+                params.image_display_size = self.images_params[0].image_display_size
+
         for i, image in enumerate(self.array):
             image_params = self.images_params[i] if i < len(self.images_params) else self.images_params[0]
             image_params.refresh_image = refresh_image
@@ -73,15 +79,17 @@ class ImagesWithGui(AnyDataWithGui):
 
 
 class AdjustImage:
-    pow_value: float = 1
+    pow_exponent: float = 1
 
     def apply(self, image: Image) -> Image:
-        image_adjusted = np.power(image, self.pow_value)
+        image_adjusted = np.power(image, self.pow_exponent)
         return image_adjusted
 
     def gui_params(self) -> bool:
         imgui.set_next_item_width(100)
-        changed, self.pow_value = imgui.slider_float("power", self.pow_value, 0., 10.)
+        changed, self.pow_exponent = imgui.slider_float(
+            "power", self.pow_exponent, 0., 10.,
+            flags=imgui.ImGuiSliderFlags_.logarithmic)
         return changed
 
 
@@ -128,14 +136,15 @@ class AdjustChannelsWithGui(FunctionWithGui):
 
     def f(self, x: AnyDataWithGui) -> ImagesWithGui:
         assert type(x) == ImagesWithGui
-        channels = x.array
 
-        self.add_params_on_demand(len(channels))
+        original_channels = x.array
+        self.add_params_on_demand(len(original_channels))
 
-        for i in range(len(channels)):
-            channels[i] = self.channel_adjust_params[i].apply(channels[i])
+        adjusted_channels = np.zeros_like(original_channels)
+        for i in range(len(original_channels)):
+            adjusted_channels[i] = self.channel_adjust_params[i].apply(original_channels[i])
 
-        r = ImagesWithGui(channels)
+        r = ImagesWithGui(adjusted_channels)
         return r
 
     def name(self) -> str:
@@ -162,3 +171,28 @@ class MergeChannelsWithGui(FunctionWithGui):
     def name(self) -> str:
         return "MergeChannels"
 
+
+CvSize = Tuple[int, int]
+
+
+def gui_edit_size(size: CvSize) -> Tuple[bool, CvSize]:
+    def modify_size_by_ratio(ratio: float) -> CvSize:
+        w = int(size[0] * ratio + 0.5)
+        h = int(size[1] * ratio + 0.5)
+        return w, h
+
+    changed = False
+    ratio = 1.05
+    imgui.push_button_repeat(True)
+    imgui.text("Thumbnail size")
+    imgui.same_line()
+    if imgui.small_button(" smaller "):
+        size = modify_size_by_ratio(1. / ratio)
+        changed = True
+    imgui.same_line()
+    if imgui.small_button(" bigger "):
+        size = modify_size_by_ratio(ratio)
+        changed = True
+    imgui.pop_button_repeat()
+
+    return changed, size
