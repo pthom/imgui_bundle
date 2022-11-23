@@ -6,6 +6,7 @@ from imgui_bundle import immvision, imgui
 from imgui_bundle import imgui_node_editor, implot, ImVec2
 
 import numpy as np
+import math
 from typing import List, Tuple, Optional
 import cv2
 
@@ -165,39 +166,89 @@ def gui_edit_size(size: CvSize) -> Tuple[bool, CvSize]:
 
 class LutImage:
     pow_exponent: float = 1
+    min_in = 0
+    min_out = 0
+    max_in = 1
+    max_out = 1
 
+    _lut_table: np.ndarray
     _lut_graph: np.ndarray
     _lut_graph_needs_refresh: bool = True
 
     def apply(self, image: Image) -> Image:
-        image_adjusted = np.power(image, self.pow_exponent)
+        if not hasattr(self, "_lut_table"):
+            self._prepare_lut()
+        lut_uint8 = (self._lut_table * 255.).astype(np.uint8)
+        image_uint8 = (image * 255.).astype(np.uint8)
+        image_with_lut_uint8 = np.zeros_like(image_uint8)
+        cv2.LUT(image_uint8, lut_uint8, image_with_lut_uint8)
+        image_adjusted = image_with_lut_uint8 / 255.0
         return image_adjusted
 
-    def _show_lut_graph_opencv(self):
+    def _show_lut_graph(self):
         if not hasattr(self, "_lut_graph"):
-            self._prepare_lut_graph_opencv()
+            self._prepare_lut_graph()
         immvision.image_display("Lut", self._lut_graph, refresh_image=self._lut_graph_needs_refresh)
         self._lut_graph_needs_refresh = False
 
-    def _prepare_lut_graph_opencv(self):
-        x = np.arange(0.0, 1.0, 1.0 / 255.0)
-        y = np.power(x, self.pow_exponent)
+    def _prepare_lut_graph(self):
         graph_size = int(imgui_bundle.em_size() * 2.)
-        self._lut_graph = immvision._draw_lut_graph(list(x), list(y), (graph_size, graph_size))  # type: ignore
+        x = np.arange(0.0, 1.0, 1.0 / 256.0)
+        self._lut_graph = immvision._draw_lut_graph(list(x), list(self._lut_table), (graph_size, graph_size))  # type: ignore
         self._lut_graph_needs_refresh = True
 
+    def _prepare_lut(self):
+        x = np.arange(0.0, 1.0, 1.0 / 256.0)
+        y = (x - self.min_in) / (self.max_in - self.min_in)
+        y = np.clip(y, 0.0, 1.0)
+        y = np.power(y, self.pow_exponent)
+        y = np.clip(y, 0.0, 1.0)
+        y = self.min_out + (self.max_out - self.min_out) * y
+        y = np.clip(y, 0.0, 1.0)
+        self._lut_table = y
+
     def gui_params(self) -> bool:
-        self._show_lut_graph_opencv()
+        self._show_lut_graph()
         imgui.same_line()
 
         imgui.begin_group()
-        imgui.text("Gamma power")
-        imgui.set_next_item_width(100)
-        changed, self.pow_exponent = imgui.slider_float(
-            "##power", self.pow_exponent, 0.0, 10.0, flags=imgui.ImGuiSliderFlags_.logarithmic
-        )
+
+        changed = False
+        idx_slider = 0
+
+        def show_slider(label: str, v: float, min: float, max: float, logarithmic: bool) -> float:
+            nonlocal idx_slider, changed
+            imgui.set_next_item_width(70)
+            idx_slider += 1
+            flags = imgui.ImGuiSliderFlags_.logarithmic if logarithmic else 0
+            edited_this_slider, v = imgui.slider_float(
+                f"{label}##slider{idx_slider}", v, min, max, flags=flags)
+            if edited_this_slider:
+                changed = True
+            return v
+
+        def show_01_slider(label: str, v: float) -> float:
+            return show_slider(label, v, 0, 1, False)
+
+        def show_two_01_sliders(label: str, v_min: float, v_max) -> float:
+            v_min = show_01_slider(f"##{label}v_min", v_min)
+            imgui.same_line()
+            v_max = show_01_slider(f"{label}##v_max", v_max)
+            if math.fabs(v_max - v_min) < 1E-3:  # avoid div by 0
+                v_min = v_max - 0.01
+            return v_min, v_max
+
+        self.pow_exponent = show_slider("Gamma power", self.pow_exponent, 0.0, 10.0, True)
+        self.min_in, self.max_in = show_two_01_sliders("In", self.min_in, self.max_in)
+        self.min_out, self.max_out = show_two_01_sliders("Out", self.min_out, self.max_out)
+        # self.min_in = show_01_slider("min in", self.min_in)
+        # self.max_in = show_01_slider("max in", self.max_in)
+        # self.min_out = show_01_slider("min out", self.min_out)
+        # self.max_out = show_01_slider("max out", self.max_out)
+
         if changed:
-            self._prepare_lut_graph_opencv()
+            self._prepare_lut()
+            self._prepare_lut_graph()
         imgui.end_group()
         return changed
 
