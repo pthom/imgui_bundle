@@ -97,7 +97,7 @@ struct ImGuiTextFilter;             // Helper to parse and apply text filters (e
 struct ImGuiViewport;               // A Platform Window (always only one in 'master' branch), in the future may represent Platform Monitor
 """
 # We forward declare only the opaque structures
-from imgui_bundle.imgui_internal import ImGuiContext, ImDrawListSharedData, ImFontBuilderIO
+from imgui_bundle.imgui.internal import ImGuiContext, ImDrawListSharedData, ImFontBuilderIO
 ImDrawVert = Any
 
 
@@ -179,7 +179,7 @@ ImGuiTableRowFlags = int     # -> enum ImGuiTableRowFlags_   # Flags: For TableN
 ImGuiTreeNodeFlags = int     # -> enum ImGuiTreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
 ImGuiViewportFlags = int     # -> enum ImGuiViewportFlags_   # Flags: for ImGuiViewport
 ImGuiWindowFlags = int       # -> enum ImGuiWindowFlags_     # Flags: for Begin(), BeginChild()
-
+ImGuiToggleFlags = int       # -> enum ImGuiToggleFlags_
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
