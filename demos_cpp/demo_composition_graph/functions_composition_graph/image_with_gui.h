@@ -1,11 +1,28 @@
 #pragma once
 #include "functions_composition_graph.h"
 #include "immvision/immvision.h"
-
+#include "ImFileDialog/ImFileDialog.h"
 #include <fplus/fplus.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
+
+
+#include "imgui-node-editor/imgui_node_editor.h"
+#include "imgui-node-editor/imgui_node_editor_internal.h"
+inline void SuspendNodeEditorCanvas()
+{
+    auto context  = ax::NodeEditor::GetCurrentEditor();
+    auto context_cast = (ax::NodeEditor::Detail::EditorContext *)context;
+    context_cast->Suspend();
+}
+inline void ResumeNodeEditorCanvas()
+{
+    auto context  = ax::NodeEditor::GetCurrentEditor();
+    auto context_cast = (ax::NodeEditor::Detail::EditorContext *)context;
+    context_cast->Resume();
+}
 
 
 namespace VisualProg
@@ -44,7 +61,36 @@ namespace VisualProg
             ImmVision::Image(std::string(function_name), self._array, &self._imageParams);
             if (ImGui::SmallButton("inspect"))
                 ImmVision::Inspector_AddImage(self._array, std::string(function_name));
+        }
 
+        std::shared_ptr<AnyDataWithGui> GuiSetInput() override
+        {
+            std::shared_ptr<ImageWithGui> result = nullptr;
+            if (ImGui::Button("Select image file"))
+            {
+                ifd::FileDialog::Instance().Open(
+                    "ImageOpenDialog",
+                    "Choose an image",
+                    "Image file (*.png*.jpg*.jpeg*.bmp*.tga).png,.jpg,.jpeg,.bmp,.tga,.*",
+                    false
+                );
+            }
+
+            SuspendNodeEditorCanvas();
+            if (ifd::FileDialog::Instance().IsDone("ImageOpenDialog"))
+            {
+                if (ifd::FileDialog::Instance().HasResult())
+                {
+                    auto ifd_result = ifd::FileDialog::Instance().GetResult();
+                    cv::Mat image = cv::imread(ifd_result.c_str());
+                    if (! image.empty())
+                        result = std::make_shared<ImageWithGui>(image);
+                }
+                ifd::FileDialog::Instance().Close();
+            }
+            ResumeNodeEditorCanvas();
+
+            return result;
         }
     };
     using ImageWithGuiPtr = std::shared_ptr<ImageWithGui>;
@@ -108,28 +154,6 @@ namespace VisualProg
     using ImagesWithGuiPtr = std::shared_ptr<ImagesWithGui>;
 
 
-    struct AdjustImage
-    {
-        float powExponent = 1.f;
-
-        Image Apply(const Image& image)
-        {
-            auto& self = *this;
-            Image r;
-            cv::pow(image, self.powExponent, r);
-            return r;
-        }
-
-        bool GuiParams()
-        {
-            auto& self = *this;
-            ImGui::SetNextItemWidth(100.f);
-            bool changed = ImGui::SliderFloat("power", &self.powExponent, 0., 10., "%.1f", ImGuiSliderFlags_Logarithmic);
-            return changed;
-        }
-    };
-
-
     // Splits a CV_8UC3 into normalized float channels (i.e. with values between 0 and 1)
     struct SplitChannelsWithGui: public FunctionWithGui
     {
@@ -160,9 +184,57 @@ namespace VisualProg
     };
 
 
-    struct AdjustImageWithGui: public FunctionWithGui
+    // Merges normalized float image into a CV_8UC3 image
+    struct MergeChannelsWithGui: public FunctionWithGui
     {
-        AdjustImage _adjustImage;
+        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+        {
+            auto &self = *this;
+            // assert type(x) == ImagesWithGui
+            auto asImages = dynamic_cast<ImagesWithGui *>(x.get());
+            assert(asImages);
+
+            cv::Mat image_float;
+            cv::merge(asImages->_arrays, image_float);
+
+            image_float = image_float * 255.;
+
+            cv::Mat imageUInt8;
+            image_float.convertTo(imageUInt8, CV_MAKE_TYPE(CV_8U, image_float.channels()));
+
+            auto r = std::make_shared<ImageWithGui>(imageUInt8);
+            return r;
+        }
+
+        std::string Name() override { return "MergeChannels"; }
+    };
+
+
+    struct LutImage
+    {
+        float powExponent = 1.f;
+
+        Image Apply(const Image& image)
+        {
+            auto& self = *this;
+            Image r;
+            cv::pow(image, self.powExponent, r);
+            return r;
+        }
+
+        bool GuiParams()
+        {
+            auto& self = *this;
+            ImGui::SetNextItemWidth(100.f);
+            bool changed = ImGui::SliderFloat("power", &self.powExponent, 0., 10., "%.1f", ImGuiSliderFlags_Logarithmic);
+            return changed;
+        }
+    };
+
+
+    struct LutImageWithGui: public FunctionWithGui
+    {
+        LutImage _lutImage;
 
         AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
         {
@@ -170,26 +242,26 @@ namespace VisualProg
             auto asImage = dynamic_cast<ImageWithGui*>(x.get());
             assert(asImage);
 
-            auto image_adjusted = _adjustImage.Apply(asImage->_array);
+            auto image_adjusted = _lutImage.Apply(asImage->_array);
 
             auto r = std::make_shared<ImageWithGui>(image_adjusted);
             return r;
         }
 
-        std::string Name() override { return "AdjustImage"; }
+        std::string Name() override { return "ImageLut"; }
 
-        bool GuiParams() override { return _adjustImage.GuiParams(); }
+        bool GuiParams() override { return _lutImage.GuiParams(); }
     };
 
 
-    struct AdjustChannelsWithGui: public FunctionWithGui
+    struct LutChannelsWithGui: public FunctionWithGui
     {
-        std::vector<AdjustImage> _channelAdjustParams;
+        std::vector<LutImage> _channelAdjustParams;
 
         void _addParamsOnDemand(size_t nbChannels)
         {
             while(_channelAdjustParams.size() < nbChannels)
-                _channelAdjustParams.push_back(AdjustImage());
+                _channelAdjustParams.push_back(LutImage());
         }
 
         AnyDataWithGuiPtr f (const AnyDataWithGuiPtr& x) override
@@ -226,31 +298,5 @@ namespace VisualProg
             }
             return changed;
         }
-    };
-
-
-    // Merges normalized float image into a CV_8UC3 image
-    struct MergeChannelsWithGui: public FunctionWithGui
-    {
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
-        {
-            auto &self = *this;
-            // assert type(x) == ImagesWithGui
-            auto asImages = dynamic_cast<ImagesWithGui *>(x.get());
-            assert(asImages);
-
-            cv::Mat image_float;
-            cv::merge(asImages->_arrays, image_float);
-
-            image_float = image_float * 255.;
-
-            cv::Mat imageUInt8;
-            image_float.convertTo(imageUInt8, CV_MAKE_TYPE(CV_8U, image_float.channels()));
-
-            auto r = std::make_shared<ImageWithGui>(imageUInt8);
-            return r;
-        }
-
-        std::string Name() override { return "MergeChannels"; }
     };
 }

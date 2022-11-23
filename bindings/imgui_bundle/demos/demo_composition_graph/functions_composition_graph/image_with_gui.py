@@ -1,9 +1,13 @@
 from __future__ import annotations
+
+import imgui_bundle
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import AnyDataWithGui, FunctionWithGui
 from imgui_bundle import immvision, imgui
+from imgui_bundle import imgui_node_editor, implot, ImVec2
 
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Optional
+import cv2
 
 
 Image = np.ndarray
@@ -33,6 +37,30 @@ class ImageWithGui(AnyDataWithGui):
         self.first_frame = False
         if imgui.small_button("Inspect"):
             immvision.inspector_add_image(self.array, function_name)
+
+    def gui_set_input(self) -> Optional[ImageWithGui]:
+        from imgui_bundle import im_file_dialog as ifd
+
+        if imgui.button("Select image file"):
+            ifd.FileDialog.instance().open(
+                "ImageOpenDialog",
+                "Choose an image",
+                "Image file (*.png*.jpg*.jpeg*.bmp*.tga).png,.jpg,.jpeg,.bmp,.tga,.*",
+                False,
+            )
+
+        result = None
+        imgui_node_editor.suspend_editor_canvas()
+        if ifd.FileDialog.instance().is_done("ImageOpenDialog"):
+            if ifd.FileDialog.instance().has_result():
+                ifd_result = ifd.FileDialog.instance().get_result().path()
+                image = cv2.imread(ifd_result)
+                if image is not None:
+                    result = ImageWithGui(image)
+            ifd.FileDialog.instance().close()
+        imgui_node_editor.resume_editor_canvas()
+
+        return result
 
 
 class ImagesWithGui(AnyDataWithGui):
@@ -80,21 +108,6 @@ class ImagesWithGui(AnyDataWithGui):
                 immvision.inspector_add_image(image, label)
 
 
-class AdjustImage:
-    pow_exponent: float = 1
-
-    def apply(self, image: Image) -> Image:
-        image_adjusted = np.power(image, self.pow_exponent)
-        return image_adjusted
-
-    def gui_params(self) -> bool:
-        imgui.set_next_item_width(100)
-        changed, self.pow_exponent = imgui.slider_float(
-            "power", self.pow_exponent, 0.0, 10.0, flags=imgui.ImGuiSliderFlags_.logarithmic
-        )
-        return changed
-
-
 class SplitChannelsWithGui(FunctionWithGui):
     def f(self, x: AnyDataWithGui) -> ImagesWithGui:
         assert type(x) == ImageWithGui
@@ -105,60 +118,6 @@ class SplitChannelsWithGui(FunctionWithGui):
 
     def name(self) -> str:
         return "SplitChannels"
-
-
-class AdjustImageWithGui(FunctionWithGui):
-    adjust_image: AdjustImage
-
-    def __init__(self):
-        self.adjust_image = AdjustImage()
-
-    def f(self, x: AnyDataWithGui) -> ImageWithGui:
-        assert type(x) == ImageWithGui
-
-        image_adjusted = self.adjust_image.apply(x.array)
-        return ImageWithGui(image_adjusted)
-
-    def name(self) -> str:
-        return "AdjustImage"
-
-    def gui_params(self) -> bool:
-        return self.adjust_image.gui_params()
-
-
-class AdjustChannelsWithGui(FunctionWithGui):
-    channel_adjust_params: List[AdjustImage]
-
-    def __init__(self):
-        self.channel_adjust_params = []
-
-    def add_params_on_demand(self, nb_channels: int):
-        while len(self.channel_adjust_params) < nb_channels:
-            self.channel_adjust_params.append(AdjustImage())
-
-    def f(self, x: AnyDataWithGui) -> ImagesWithGui:
-        assert type(x) == ImagesWithGui
-
-        original_channels = x.array
-        self.add_params_on_demand(len(original_channels))
-
-        adjusted_channels = np.zeros_like(original_channels)
-        for i in range(len(original_channels)):
-            adjusted_channels[i] = self.channel_adjust_params[i].apply(original_channels[i])
-
-        r = ImagesWithGui(adjusted_channels)
-        return r
-
-    def name(self) -> str:
-        return "ProcessChannels"
-
-    def gui_params(self) -> bool:
-        changed = False
-        for i, channel_adjust_param in enumerate(self.channel_adjust_params):
-            imgui.push_id(i)
-            changed |= channel_adjust_param.gui_params()
-            imgui.pop_id()
-        return changed
 
 
 class MergeChannelsWithGui(FunctionWithGui):
@@ -198,3 +157,100 @@ def gui_edit_size(size: CvSize) -> Tuple[bool, CvSize]:
     imgui.pop_button_repeat()
 
     return changed, size
+
+
+###############################################################################
+#     LUT
+###############################################################################
+
+class LutImage:
+    pow_exponent: float = 1
+
+    _lut_graph: np.ndarray
+    _lut_graph_needs_refresh: bool = True
+
+    def apply(self, image: Image) -> Image:
+        image_adjusted = np.power(image, self.pow_exponent)
+        return image_adjusted
+
+    def _show_lut_graph_opencv(self):
+        if not hasattr(self, "_lut_graph"):
+            self._prepare_lut_graph_opencv()
+        immvision.image_display("Lut", self._lut_graph, refresh_image=self._lut_graph_needs_refresh)
+        self._lut_graph_needs_refresh = False
+
+    def _prepare_lut_graph_opencv(self):
+        x = np.arange(0.0, 1.0, 1.0 / 255.0)
+        y = np.power(x, self.pow_exponent)
+        graph_size = int(imgui_bundle.em_size() * 2.)
+        self._lut_graph = immvision._draw_lut_graph(list(x), list(y), (graph_size, graph_size))  # type: ignore
+        self._lut_graph_needs_refresh = True
+
+    def gui_params(self) -> bool:
+        self._show_lut_graph_opencv()
+        imgui.same_line()
+
+        imgui.begin_group()
+        imgui.text("Gamma power")
+        imgui.set_next_item_width(100)
+        changed, self.pow_exponent = imgui.slider_float(
+            "##power", self.pow_exponent, 0.0, 10.0, flags=imgui.ImGuiSliderFlags_.logarithmic
+        )
+        if changed:
+            self._prepare_lut_graph_opencv()
+        imgui.end_group()
+        return changed
+
+
+class LutImageWithGui(FunctionWithGui):
+    lut_image: LutImage
+
+    def __init__(self):
+        self.lut_image = LutImage()
+
+    def f(self, x: AnyDataWithGui) -> ImageWithGui:
+        assert type(x) == ImageWithGui
+
+        image_adjusted = self.lut_image.apply(x.array)
+        return ImageWithGui(image_adjusted)
+
+    def name(self) -> str:
+        return "LUT"
+
+    def gui_params(self) -> bool:
+        return self.lut_image.gui_params()
+
+
+class LutChannelsWithGui(FunctionWithGui):
+    channel_luts: List[LutImage]
+
+    def __init__(self):
+        self.channel_luts = []
+
+    def add_params_on_demand(self, nb_channels: int):
+        while len(self.channel_luts) < nb_channels:
+            self.channel_luts.append(LutImage())
+
+    def f(self, x: AnyDataWithGui) -> ImagesWithGui:
+        assert type(x) == ImagesWithGui
+
+        original_channels = x.array
+        self.add_params_on_demand(len(original_channels))
+
+        adjusted_channels = np.zeros_like(original_channels)
+        for i in range(len(original_channels)):
+            adjusted_channels[i] = self.channel_luts[i].apply(original_channels[i])
+
+        r = ImagesWithGui(adjusted_channels)
+        return r
+
+    def name(self) -> str:
+        return "LUT channels"
+
+    def gui_params(self) -> bool:
+        changed = False
+        for i, channel_adjust_param in enumerate(self.channel_luts):
+            imgui.push_id(i)
+            changed |= channel_adjust_param.gui_params()
+            imgui.pop_id()
+        return changed

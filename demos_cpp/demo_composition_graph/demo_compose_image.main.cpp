@@ -16,7 +16,7 @@ int main(int, char**)
 
     std::vector<FunctionWithGuiPtr> functions {
         std::make_shared<SplitChannelsWithGui>(),
-        std::make_shared<AdjustChannelsWithGui>(),
+        std::make_shared<LutChannelsWithGui>(),
         std::make_shared<MergeChannelsWithGui>(),
     };
 

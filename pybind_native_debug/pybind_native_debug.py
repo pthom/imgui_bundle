@@ -10,7 +10,7 @@ def main() -> None:
     print(path_demos)
     sys.path.append(path_demos)
 
-    path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python/node_fn_compose/")
+    path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python/demo_composition_graph/")
     sys.path.append(path_demos)
 
     import demo_compose_image_debug  # type: ignore

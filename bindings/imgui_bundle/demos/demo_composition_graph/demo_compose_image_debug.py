@@ -74,7 +74,7 @@ def main():
     x = ImageWithGui(image)
 
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
-    functions = [SplitChannelsWithGui(), AdjustChannelsWithGui(), MergeChannelsWithGui()]
+    functions = [SplitChannelsWithGui(), LutChannelsWithGui(), MergeChannelsWithGui()]
 
     composition_graph = FunctionsCompositionGraph(functions)
     composition_graph.set_input(x)
@@ -98,7 +98,11 @@ def main():
 
     import imgui_bundle
 
-    imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1200, 1000))
+    imgui_bundle.run(
+        gui,
+        with_node_editor_config=config_node,
+        with_implot=True,
+        window_size=(1200, 1000))
 
 
 if __name__ == "__main__":
