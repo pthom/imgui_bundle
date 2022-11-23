@@ -96,6 +96,18 @@ class CanvasSizeMode(enum.Enum):
     )  # (= 1)  # Previous view will be scaled to fit new view on X axis
     center_only = enum.auto()  # (= 2)  # Previous view will be centered on new view
 
+class SaveReasonFlags(enum.Enum):
+    """------------------------------------------------------------------------------"""
+
+    none = enum.auto()  # (= 0x00000000)
+    navigation = enum.auto()  # (= 0x00000001)
+    position = enum.auto()  # (= 0x00000002)
+    size = enum.auto()  # (= 0x00000004)
+    selection = enum.auto()  # (= 0x00000008)
+    add_node = enum.auto()  # (= 0x00000010)
+    remove_node = enum.auto()  # (= 0x00000020)
+    user = enum.auto()  # (= 0x00000040)
+
 class Config:
 
     settings_file: str

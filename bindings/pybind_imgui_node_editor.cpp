@@ -98,6 +98,17 @@ void py_init_module_imgui_node_editor(py::module& m)
         .value("center_only", ax::NodeEditor::CanvasSizeMode::CenterOnly, "Previous view will be centered on new view");
 
 
+    py::enum_<ax::NodeEditor::SaveReasonFlags>(m, "SaveReasonFlags", py::arithmetic(), "------------------------------------------------------------------------------")
+        .value("none", ax::NodeEditor::SaveReasonFlags::None, "")
+        .value("navigation", ax::NodeEditor::SaveReasonFlags::Navigation, "")
+        .value("position", ax::NodeEditor::SaveReasonFlags::Position, "")
+        .value("size", ax::NodeEditor::SaveReasonFlags::Size, "")
+        .value("selection", ax::NodeEditor::SaveReasonFlags::Selection, "")
+        .value("add_node", ax::NodeEditor::SaveReasonFlags::AddNode, "")
+        .value("remove_node", ax::NodeEditor::SaveReasonFlags::RemoveNode, "")
+        .value("user", ax::NodeEditor::SaveReasonFlags::User, "");
+
+
     auto pyClassConfig =
         py::class_<ax::NodeEditor::Config>
             (m, "Config", "")
