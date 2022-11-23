@@ -1,3 +1,4 @@
+from __future__ import annotations
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import AnyDataWithGui, FunctionWithGui
 from imgui_bundle import immvision, imgui
 
@@ -10,7 +11,7 @@ Image = np.ndarray
 
 def split_channels(image: Image) -> Image:
     assert len(image.shape) == 3
-    depth_first = np.squeeze(np.dsplit(image,image.shape[-1]))
+    depth_first = np.squeeze(np.dsplit(image, image.shape[-1]))
     return depth_first
 
 
@@ -38,12 +39,13 @@ class ImagesWithGui(AnyDataWithGui):
     array: Image
     images_params: List[immvision.ImageParams]
 
-    def __init__(self,
-                 images: Image, # images is a numpy of several image along the first axis
-                 zoom_key="z",
-                 image_display_width=200,
-                 share_image_params: bool = False
-                 ):
+    def __init__(
+        self,
+        images: Image,  # images is a numpy of several image along the first axis
+        zoom_key="z",
+        image_display_width=200,
+        share_image_params: bool = False,
+    ):
         self.array = images
         self.first_frame = True
 
@@ -88,8 +90,8 @@ class AdjustImage:
     def gui_params(self) -> bool:
         imgui.set_next_item_width(100)
         changed, self.pow_exponent = imgui.slider_float(
-            "power", self.pow_exponent, 0., 10.,
-            flags=imgui.ImGuiSliderFlags_.logarithmic)
+            "power", self.pow_exponent, 0.0, 10.0, flags=imgui.ImGuiSliderFlags_.logarithmic
+        )
         return changed
 
 
@@ -97,7 +99,7 @@ class SplitChannelsWithGui(FunctionWithGui):
     def f(self, x: AnyDataWithGui) -> ImagesWithGui:
         assert type(x) == ImageWithGui
         channels = split_channels(x.array)
-        channels_normalized = channels / 255.
+        channels_normalized = channels / 255.0
         r = ImagesWithGui(channels_normalized)
         return r
 
@@ -164,7 +166,7 @@ class MergeChannelsWithGui(FunctionWithGui):
         assert type(x) == ImagesWithGui
         channels = [c for c in x.array]
         image_float = np.dstack(channels)
-        image_int = (image_float * 255.).astype("uint8")
+        image_int = (image_float * 255.0).astype("uint8")
         r = ImageWithGui(image_int)
         return r
 
@@ -187,7 +189,7 @@ def gui_edit_size(size: CvSize) -> Tuple[bool, CvSize]:
     imgui.text("Thumbnail size")
     imgui.same_line()
     if imgui.small_button(" smaller "):
-        size = modify_size_by_ratio(1. / ratio)
+        size = modify_size_by_ratio(1.0 / ratio)
         changed = True
     imgui.same_line()
     if imgui.small_button(" bigger "):
