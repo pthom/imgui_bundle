@@ -57,7 +57,7 @@ class CannyWithGui(FunctionWithGui):
         changed3 = False
         for aperture_value in [3, 5, 7]:
             clicked: bool
-            clicked, self.aperture_size = imgui.radio_button(str(aperture_value), self.aperture_size, aperture_value) #type: ignore
+            clicked, self.aperture_size = imgui.radio_button(str(aperture_value), self.aperture_size, aperture_value)  # type: ignore
             if clicked:
                 changed3 = True
             imgui.same_line()
@@ -68,35 +68,36 @@ class CannyWithGui(FunctionWithGui):
 def main():
     this_dir = os.path.dirname(__file__)
     resource_dir = this_dir + "/../immvision/resources"
-    image = cv2.imread(resource_dir + "/house.jpg")
+    image = cv2.imread(resource_dir + "/tennis.jpg")
     image = cv2.resize(image, (int(image.shape[1] * 0.3), int(image.shape[0] * 0.3)))
 
     x = ImageWithGui(image)
 
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
-    functions = [ SplitChannelsWithGui(), AdjustChannelsWithGui(), MergeChannelsWithGui() ]
+    functions = [SplitChannelsWithGui(), AdjustChannelsWithGui(), MergeChannelsWithGui()]
 
     composition_graph = FunctionsCompositionGraph(functions)
     composition_graph.set_input(x)
 
     def gui():
-        runner_params = hello_imgui.get_runner_params()
-        runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-        runner_params.imgui_window_params.enable_viewports = True
+        # runner_params = hello_imgui.get_runner_params()
+        # runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+        # runner_params.imgui_window_params.enable_viewports = True
 
-        imgui.begin("graph")
+        # imgui.begin("graph")
         imgui.text(f"FPS: {imgui.get_io().framerate}")
         composition_graph.draw()
-        imgui.end()
+        # imgui.end()
 
-        imgui.begin("Inspector")
-        immvision.inspector_show()
-        imgui.end()
+        # imgui.begin("Inspector")
+        # immvision.inspector_show()
+        # imgui.end()
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_compose_image_debug.json"
 
     import imgui_bundle
+
     imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1200, 1000))
 
 

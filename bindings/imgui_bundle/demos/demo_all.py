@@ -86,8 +86,10 @@ def main() -> None:
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = dock_space_name
+
         def win_fn() -> None:
             show_module_demo(demo_module, demo_function)
+
         window.gui_function = win_fn
         dockable_windows.append(window)
 

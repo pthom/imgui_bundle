@@ -28,7 +28,7 @@ def main():
     functions_graph.set_input(IntWithGui(1))
 
     def gui():
-        functions_graph.draw();
+        functions_graph.draw()
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_fn_compose_add.json"

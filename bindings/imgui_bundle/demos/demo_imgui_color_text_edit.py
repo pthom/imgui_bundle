@@ -37,7 +37,7 @@ def demo_imgui_color_text_edit():
 
     if imgui.button("Test glfw link"):
         import imgui_bundle
-        import glfw # type: ignore
+        import glfw  # type: ignore
 
         window = imgui_bundle.glfw_window_hello_imgui()
         glfw.set_window_pos(window, 10, 10)

@@ -6,13 +6,13 @@ as shown here.
 
 import sys
 import platform
-import OpenGL.GL as GL # type: ignore
+import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui, imgui_backends
 
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for
 #  the correct version of the glfw dynamic library)
-import glfw # type: ignore
+import glfw  # type: ignore
 
 
 def glfw_error_callback(error: int, description: str):

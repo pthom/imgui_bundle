@@ -14,6 +14,7 @@ def main() -> None:
     sys.path.append(path_demos)
 
     import demo_compose_image_debug  # type: ignore
+
     demo_compose_image_debug.main()
 
 
