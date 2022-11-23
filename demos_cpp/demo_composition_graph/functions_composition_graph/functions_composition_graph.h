@@ -15,6 +15,10 @@ namespace VisualProg
     {
         // Override this by implementing a draw function that presents the data content
         virtual void GuiData(std::string_view function_name) = 0;
+
+        // Override this if you want to provide a visual way to set the input of
+        // a function composition graph
+        virtual std::shared_ptr<AnyDataWithGui> GuiSetInput() { return nullptr; }
     };
     using AnyDataWithGuiPtr = std::shared_ptr<AnyDataWithGui>;
 

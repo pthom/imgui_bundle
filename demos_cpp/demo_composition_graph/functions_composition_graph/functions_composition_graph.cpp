@@ -50,7 +50,7 @@ namespace VisualProg
             self._linkId = ed::LinkId(counter++);
         }
 
-        void DrawNode(bool draw_input, bool draw_output, int idx)
+        void DrawNode(int idx)
         {
             auto& self = *this;
             assert(self._function);
@@ -79,6 +79,7 @@ namespace VisualProg
             }
             ImGui::PopID();
 
+            bool draw_input = (idx != 0);
             if (draw_input)
             {
                 ed::BeginPin(self._pinInput, ed::PinKind::Input);
@@ -86,7 +87,15 @@ namespace VisualProg
                 ed::EndPin();
             }
 
-            if (draw_output)
+            bool draw_input_set_data = (idx == 0);
+            if (draw_input_set_data)
+            {
+                auto new_value = self._inputData->GuiSetInput();
+                if (new_value)
+                    self.SetInput(new_value);
+            }
+
+            // draw output
             {
                 if (! self._outputData)
                     ImGui::Text("None");
@@ -185,11 +194,7 @@ namespace VisualProg
             ed::Begin("FunctionsCompositionGraph");
             // draw function nodes
             for(size_t i = 0; i < self._functionNodes.size(); ++i)
-            {
-                bool drawInput = (i != 0);
-                bool drawOutput = true;
-                self._functionNodes[i]->DrawNode(drawInput, drawOutput, i);
-            }
+                self._functionNodes[i]->DrawNode(i);
             // Note: those loops shall not be merged
             for(size_t i = 0; i < self._functionNodes.size(); ++i)
                 self._functionNodes[i]->DrawLink();

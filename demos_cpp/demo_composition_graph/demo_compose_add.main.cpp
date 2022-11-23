@@ -12,10 +12,21 @@ struct IntWithGui: public AnyDataWithGui
 
     IntWithGui(int value): _value(value){}
 
-    virtual void GuiData(std::string_view function_name)
+    virtual void GuiData(std::string_view function_name) override
     {
         ImGui::Text("%s", function_name.data());
         ImGui::Text("Int Value %i", _value);
+    }
+
+    std::shared_ptr<AnyDataWithGui> GuiSetInput() override
+    {
+        ImGui::SetNextItemWidth(100.f);
+        int v = _value;
+        bool changed = ImGui::SliderInt("value", &v, 0, 1000);
+        if (changed)
+            return std::make_shared<IntWithGui>(v);
+        else
+            return nullptr;
     }
 };
 

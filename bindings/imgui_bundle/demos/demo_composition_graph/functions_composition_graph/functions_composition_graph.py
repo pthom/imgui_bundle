@@ -13,6 +13,11 @@ class AnyDataWithGui(ABC):
     def gui_data(self, function_name: str) -> None:
         pass
 
+    def gui_set_input(self) -> Optional[AnyDataWithGui]:
+        """Override this if you want to provide a visual way to set the input of
+        a function composition graph"""
+        return None
+
 
 class FunctionWithGui(ABC):
     @abstractmethod
@@ -55,9 +60,7 @@ class FunctionsCompositionGraph:
         ed.begin("FunctionsCompositionGraph")
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
-            draw_input = i != 0
-            draw_output = True
-            fn.draw_node(draw_input=draw_input, draw_output=draw_output, idx=i)
+            fn.draw_node(idx=i)
         for i, fn in enumerate(self.function_nodes):
             fn.draw_link()
         ed.end()
@@ -115,14 +118,14 @@ class _FunctionNode:
         self.pin_output = ed.PinId.create()
         self.link_id = ed.LinkId.create()
 
-    def draw_node(self, draw_input: bool, draw_output: bool, idx: int) -> None:
+    def draw_node(self, idx: int) -> None:
         assert self.function is not None
 
         ed.begin_node(self.node_id)
         position = ed.get_node_position(self.node_id)
         if position.x == 0 and position.y == 0:
             width_between_nodes = 200
-            position = ImVec2(idx * width_between_nodes + 1, 0) # type: ignore
+            position = ImVec2(idx * width_between_nodes + 1, 0)  # type: ignore
             ed.set_node_position(self.node_id, position)
 
         imgui.text(self.function.name())
@@ -138,12 +141,19 @@ class _FunctionNode:
                     self.next_function_node.set_input(self.output_data)
         imgui.pop_id()
 
-        if draw_input:
+        draw_input_pin = idx != 0
+        if draw_input_pin:
             ed.begin_pin(self.pin_input, ed.PinKind.input)
             imgui.text(icons_fontawesome.ICON_FA_CIRCLE)
             ed.end_pin()
 
-        if draw_output:
+        draw_input_set_data = idx == 0
+        if draw_input_set_data:
+            new_value = self.input_data.gui_set_input()
+            if new_value is not None:
+                self.set_input(new_value)
+
+        def draw_output():
             if self.output_data is None:
                 imgui.text("None")
             else:
@@ -156,6 +166,8 @@ class _FunctionNode:
             ed.begin_pin(self.pin_output, ed.PinKind.output)
             imgui.text(icons_fontawesome.ICON_FA_CIRCLE)
             ed.end_pin()
+
+        draw_output()
 
         ed.end_node()
 
