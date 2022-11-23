@@ -14,12 +14,14 @@ from . imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,
     clock_seconds as clock_seconds,
-    AddOnsParams as AddOnsParams
+    AddOnsParams as AddOnsParams,
+    visible_font_size as visible_font_size,
+    em_size as em_size
 )
 from .imgui_bundle_utils import (
     static as static,
     run_anon_block as run_anon_block,
-    run_nb as run_nb
+    run_nb as run_nb,
 )
 
 from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui

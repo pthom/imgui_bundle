@@ -14,6 +14,8 @@ from imgui_bundle._imgui_bundle import (
     current_node_editor_context as current_node_editor_context,
     clock_seconds as clock_seconds,
     AddOnsParams as AddOnsParams,
+    visible_font_size as visible_font_size,
+    em_size as em_size
 )
 
 from imgui_bundle import icons_fontawesome

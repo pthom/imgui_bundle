@@ -85,4 +85,16 @@ namespace ImGuiBundle
 
     double ClockSeconds();
     ax::NodeEditor::EditorContext* CurrentNodeEditorContext();
+
+    // Visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
+    // In order to scale your widgets properly on all platforms, use multiples of this size.
+    // (on MacOS with retina FontGlobalScale can be equal to 2)
+    float VisibleFontSize();
+
+    // EmSize returns the visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
+    // In order to scale your widgets properly on all platforms, use multiples of this size.
+    // (on MacOS with retina FontGlobalScale can be equal to 2)
+    // (EmSize is an alias for VisibleFontSize)
+    float EmSize();
+
 }
