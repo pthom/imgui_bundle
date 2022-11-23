@@ -19,6 +19,8 @@ def apply_patch():
     """
     Applies a simple patch to imgui-node-editor that will
     change the type of Config::SettingsFile from char* to std::string
+
+    This is not needed anymore, since we use a fork where the patch is already applied
     """
 
     this_dir = os.path.realpath(os.path.dirname(__file__))
@@ -33,7 +35,6 @@ def apply_patch():
 
 
 def autogenerate_imgui_node_editor():
-    input_cpp_headers = [CPP_HEADERS_DIR + "/imgui_node_editor.h"]
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_node_editor.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_node_editor.pyi"
 
@@ -62,17 +63,16 @@ def autogenerate_imgui_node_editor():
     # options.class_template_options.add_specialization(
     #
     # )
+    generator = litgen.LitgenGenerator(options)
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
+    # generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor_internal.h")
 
-    litgen.write_generated_code_for_files(
-        options,
-        input_cpp_header_files=input_cpp_headers,
+    generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
         output_stub_pyi_file=output_stub_pyi_file,
-        omit_boxed_types=True,
     )
 
 
 if __name__ == "__main__":
     print("autogenerate_imgui_node_editor")
-    apply_patch()
     autogenerate_imgui_node_editor()
