@@ -14,7 +14,6 @@ namespace VisualProg
     ///////////////////////////////////////////////////////////////////////////
 
     class _FunctionNode;
-    using _FunctionNodePtr = std::shared_ptr<_FunctionNode>;
 
     class _FunctionsCompositionGraphPimpl;
 
@@ -24,9 +23,9 @@ namespace VisualProg
 
         // members
         FunctionWithGuiPtr _function;
-        _FunctionNodePtr _nextFunctionNode;
-        AnyDataWithGuiPtr _inputData;
-        AnyDataWithGuiPtr _outputData;
+        _FunctionNode* _nextFunctionNode = nullptr;
+        AnyDataWithGuiPtr _inputDataWithGui;
+        AnyDataWithGuiPtr _outputDataWithGui;
 
         ed::NodeId _nodeId;
         ed::PinId _pinInput;
@@ -35,13 +34,12 @@ namespace VisualProg
 
     public:
 
-        explicit _FunctionNode(FunctionWithGuiPtr function, _FunctionNodePtr nextFunctionNode = nullptr)
+        explicit _FunctionNode(FunctionWithGuiPtr function)
         {
             auto& self = *this;
             self._function = function;
-            self._nextFunctionNode = nextFunctionNode;
-            self._inputData = nullptr;
-            self._outputData = nullptr;
+            self._inputDataWithGui = function->InputGui();
+            self._outputDataWithGui = function->OutputGui();
 
             static int counter = 0;
             self._nodeId = ed::NodeId(counter++);
@@ -70,11 +68,12 @@ namespace VisualProg
             bool params_changed = self._function->GuiParams();
             if (params_changed)
             {
-                if (self._inputData && self._function)
+                if (self._inputDataWithGui->Get().has_value() && self._function)
                 {
-                    self._outputData = self._function->f(self._inputData);
+                    auto r = self._function->f(self._inputDataWithGui->Get());
+                    self._outputDataWithGui->Set(r);
                     if (self._nextFunctionNode)
-                        self._nextFunctionNode->SetInput(self._outputData);
+                        self._nextFunctionNode->SetInput(r);
                 }
             }
             ImGui::PopID();
@@ -90,20 +89,20 @@ namespace VisualProg
             bool draw_input_set_data = (idx == 0);
             if (draw_input_set_data)
             {
-                auto new_value = self._inputData->GuiSetInput();
-                if (new_value)
+                auto new_value = self._inputDataWithGui->GuiSetInput();
+                if (new_value.has_value())
                     self.SetInput(new_value);
             }
 
             // draw output
             {
-                if (! self._outputData)
+                if (! self._outputDataWithGui->Get().has_value())
                     ImGui::Text("None");
                 else
                 {
-                    ImGui::PushID(self._outputData.get());
+                    ImGui::PushID(&self._outputDataWithGui);
                     ImGui::BeginGroup();
-                    self._outputData->GuiData(self._function->Name());
+                    self._outputDataWithGui->GuiData(self._function->Name());
                     ImGui::EndGroup();
                     ImGui::PopID();
                 }
@@ -124,33 +123,41 @@ namespace VisualProg
             ed::Link(self._linkId, self._pinOutput, self._nextFunctionNode->_pinInput);
         }
 
-        void SetInput(AnyDataWithGuiPtr input_data)
+        void SetInput(const std::any& input_data)
         {
             auto& self = *this;
-            self._inputData = input_data;
+            self._inputDataWithGui->Set(input_data);
             if (self._function)
             {
-                self._outputData = self._function->f(input_data);
+                auto r = self._function->f(input_data);
+                self._outputDataWithGui->Set(r);
 
                 if (self._nextFunctionNode)
-                    self._nextFunctionNode->SetInput(self._outputData);
+                    self._nextFunctionNode->SetInput(r);
             }
         }
     };
 
 
     ///////////////////////////////////////////////////////////////////////////
-    //          _InputWithGui & _OutputWithGui
+    //          _InputWithGui
     ///////////////////////////////////////////////////////////////////////////
 
-    struct IdentityFunctionWithGui: public FunctionWithGui
+
+    struct _InputWithGui: public FunctionWithGui
     {
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override { return x; }
+        std::any f(const std::any& x) override { return x; }
         bool GuiParams() override { return false; }
+        std::string Name() override { return "Input"; }
+
+        AnyDataWithGuiPtr InputGui() override { return _inputGui; }
+        AnyDataWithGuiPtr OutputGui() override { return _outputGui; }
+
+        AnyDataWithGuiPtr _inputGui;
+        AnyDataWithGuiPtr _outputGui;
     };
 
-    struct _InputWithGui: public IdentityFunctionWithGui { std::string Name() override { return "Input"; } };
-    struct _OutputWithGui: public IdentityFunctionWithGui { std::string Name() override { return "Output"; } };
+
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -159,31 +166,37 @@ namespace VisualProg
 
     class _FunctionsCompositionGraphPimpl
     {
-        std::vector<_FunctionNodePtr> _functionNodes;
+        std::vector<_FunctionNode> _functionNodes;
 
     public:
         explicit _FunctionsCompositionGraphPimpl(const std::vector<FunctionWithGuiPtr>& functions)
         {
+            assert(functions.size() > 0);
+            const auto& f0 = functions[0];
+
             auto& self = *this;
 
             auto input_fake_function = std::make_shared<_InputWithGui>();
-            auto input_node = std::make_shared<_FunctionNode>(input_fake_function);
+            input_fake_function->_inputGui = f0->InputGui();
+            input_fake_function->_outputGui = f0->InputGui();
+            auto input_node = _FunctionNode(input_fake_function);
             self._functionNodes.push_back(input_node);
 
             for(const auto& f: functions)
-            {
-                auto functionNode = std::make_shared<_FunctionNode>(f);
-                self._functionNodes.push_back(functionNode);
-            }
+                self._functionNodes.push_back(_FunctionNode(f));
 
-            for (const auto& f_pair:  fplus::overlapping_pairs(self._functionNodes))
-                f_pair.first->_nextFunctionNode = f_pair.second;
+            for (size_t i = 0; i < self._functionNodes.size() - 1; ++i)
+            {
+                auto& f0 = self._functionNodes[i];
+                auto& f1 = self._functionNodes[i + 1];
+                f0._nextFunctionNode = &f1;
+            }
         }
 
-        void SetInput(AnyDataWithGuiPtr inputData)
+        void SetInput(const std::any& input)
         {
             auto& self = *this;
-            self._functionNodes[0]->SetInput(inputData);
+            self._functionNodes[0].SetInput(input);
         }
 
         void Draw()
@@ -194,10 +207,10 @@ namespace VisualProg
             ed::Begin("FunctionsCompositionGraph");
             // draw function nodes
             for(size_t i = 0; i < self._functionNodes.size(); ++i)
-                self._functionNodes[i]->DrawNode(i);
+                self._functionNodes[i].DrawNode(i);
             // Note: those loops shall not be merged
             for(size_t i = 0; i < self._functionNodes.size(); ++i)
-                self._functionNodes[i]->DrawLink();
+                self._functionNodes[i].DrawLink();
             ed::End();
 
             ImGui::PopID();
@@ -216,10 +229,10 @@ namespace VisualProg
         _impl = std::make_unique<_FunctionsCompositionGraphPimpl>(functions);
     }
 
-    void FunctionsCompositionGraph::SetInput(AnyDataWithGuiPtr&& input)
+    void FunctionsCompositionGraph::SetInput(const std::any& input)
     {
         using T = AnyDataWithGuiPtr;
-        _impl->SetInput(std::forward<T>(input));
+        _impl->SetInput(input);
     }
 
     void FunctionsCompositionGraph::Draw()

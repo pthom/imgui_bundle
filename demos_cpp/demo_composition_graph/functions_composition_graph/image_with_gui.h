@@ -39,7 +39,7 @@ namespace VisualProg
         ImmVision::ImageParams _imageParams;
         bool _firstFrame;
 
-        ImageWithGui(const Image& image, const std::string& zoomKey = "z", int imageDisplayWidth = 200)
+        ImageWithGui(const Image& image = cv::Mat(), const std::string& zoomKey = "z", int imageDisplayWidth = 200)
         {
             auto& self = *this;
             self._array = image;
@@ -47,6 +47,18 @@ namespace VisualProg
             self._imageParams = ImmVision::ImageParams();
             self._imageParams.ImageDisplaySize = cv::Size(imageDisplayWidth, 0);
             self._imageParams.ZoomKey = zoomKey;
+        }
+
+        void Set(const std::any& v) override
+        {
+            auto& self = *this;
+            self._array = std::any_cast<const Image&>(v);
+            self._firstFrame = true;
+        }
+
+        std::any Get() override
+        {
+            return _array;
         }
 
         void GuiData(std::string_view function_name) override
@@ -63,9 +75,9 @@ namespace VisualProg
                 ImmVision::Inspector_AddImage(self._array, std::string(function_name));
         }
 
-        std::shared_ptr<AnyDataWithGui> GuiSetInput() override
+        std::any GuiSetInput() override
         {
-            std::shared_ptr<ImageWithGui> result = nullptr;
+            std::any result;
             if (ImGui::Button("Select image file"))
             {
                 ifd::FileDialog::Instance().Open(
@@ -84,7 +96,7 @@ namespace VisualProg
                     auto ifd_result = ifd::FileDialog::Instance().GetResult();
                     cv::Mat image = cv::imread(ifd_result.c_str());
                     if (! image.empty())
-                        result = std::make_shared<ImageWithGui>(image);
+                        result = image;
                 }
                 ifd::FileDialog::Instance().Close();
             }
@@ -99,33 +111,33 @@ namespace VisualProg
     struct ImagesWithGui: public AnyDataWithGui
     {
         std::vector<cv::Mat> _arrays;
-        std::vector<ImmVision::ImageParams> _imageParams;
+        ImmVision::ImageParams _imageParams;
         bool firstFrame;
 
-        ImagesWithGui(const std::vector<cv::Mat>& images,
+        ImagesWithGui(const std::vector<cv::Mat>& images = {},
                       std::string zoomKey = "z",
-                      int imageDisplayWidth = 200,
-                      bool shareImageParams = false
+                      int imageDisplayWidth = 200
                       )
         {
             auto& self = *this;
             self._arrays = images;
             self.firstFrame = true;
 
-            auto makeImageParams = [imageDisplayWidth, zoomKey](){
-                auto imageParams = ImmVision::ImageParams();
-                imageParams.ImageDisplaySize = cv::Size(imageDisplayWidth, 0);
-                imageParams.ZoomKey = zoomKey;
-                return imageParams;
-            };
+            self._imageParams = ImmVision::ImageParams();
+            self._imageParams.ImageDisplaySize = {imageDisplayWidth, 0};
+            self._imageParams.ZoomKey =zoomKey;
+        }
 
-            if (shareImageParams)
-                self._imageParams.push_back(makeImageParams());
-            else
-            {
-                for (size_t i = 0; i < images.size(); ++i)
-                    self._imageParams.push_back(makeImageParams());
-            }
+        void Set(const std::any& v) override
+        {
+            auto& self = *this;
+            self._arrays = std::any_cast<const std::vector<cv::Mat>&>(v);
+            self.firstFrame = true;
+        }
+
+        std::any Get() override
+        {
+            return _arrays;
         }
 
         void GuiData(std::string_view function_name) override
@@ -134,17 +146,14 @@ namespace VisualProg
             bool refreshImage = self.firstFrame;
             self.firstFrame = false;
 
-            if (_GuiEditSize(&self._imageParams[0].ImageDisplaySize))
-                for (auto& params: self._imageParams)
-                    params.ImageDisplaySize = self._imageParams[0].ImageDisplaySize;
+            _GuiEditSize(&self._imageParams.ImageDisplaySize);
 
             for (size_t i = 0; i < self._arrays.size(); ++i)
             {
                 auto& image = self._arrays[i];
-                ImmVision::ImageParams& imageParams = (i < self._imageParams.size()) ? self._imageParams[0] : self._imageParams[i];
-                imageParams.RefreshImage = refreshImage;
+                self._imageParams.RefreshImage = refreshImage;
                 std::string label = std::string(function_name) + " - " + std::to_string(i);
-                ImmVision::Image(label, image, &imageParams);
+                ImmVision::Image(label, image, &self._imageParams);
                 if (ImGui::SmallButton("inspect"))
                     ImmVision::Inspector_AddImage(image, label);
             }
@@ -157,13 +166,11 @@ namespace VisualProg
     // Splits a CV_8UC3 into normalized float channels (i.e. with values between 0 and 1)
     struct SplitChannelsWithGui: public FunctionWithGui
     {
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+        std::any f(const std::any& x) override
         {
-            // assert type(x) == ImageWithGui
-            auto asImage = dynamic_cast<ImageWithGui*>(x.get());
-            assert(asImage);
+            const Image& asImage = std::any_cast<const Image&>(x);
 
-            std::vector<Image> channels = SplitChannels(asImage->_array);
+            std::vector<Image> channels = SplitChannels(asImage);
             std::vector<Image> channels_normalized;
             for (auto& channel: channels)
             {
@@ -172,41 +179,42 @@ namespace VisualProg
                 channel_normalized = channel_normalized / 255.;
                 channels_normalized.push_back(channel_normalized);
             }
-
-            auto r = std::make_shared<ImagesWithGui>(channels_normalized);
-            return r;
+            return channels_normalized;
         }
 
         std::string Name() override
         {
             return "SplitChannels";
         }
+
+        AnyDataWithGuiPtr InputGui() override { return std::make_shared<ImageWithGui>(); }
+        AnyDataWithGuiPtr OutputGui() override { return std::make_shared<ImagesWithGui>(); }
     };
 
 
     // Merges normalized float image into a CV_8UC3 image
     struct MergeChannelsWithGui: public FunctionWithGui
     {
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+        std::any f(const std::any& x) override
         {
             auto &self = *this;
-            // assert type(x) == ImagesWithGui
-            auto asImages = dynamic_cast<ImagesWithGui *>(x.get());
-            assert(asImages);
+            const auto& asImages = std::any_cast<const std::vector<cv::Mat>&>(x);
 
             cv::Mat image_float;
-            cv::merge(asImages->_arrays, image_float);
+            cv::merge(asImages, image_float);
 
             image_float = image_float * 255.;
 
             cv::Mat imageUInt8;
             image_float.convertTo(imageUInt8, CV_MAKE_TYPE(CV_8U, image_float.channels()));
 
-            auto r = std::make_shared<ImageWithGui>(imageUInt8);
-            return r;
+            return imageUInt8;
         }
 
         std::string Name() override { return "MergeChannels"; }
+
+        AnyDataWithGuiPtr InputGui() override { return std::make_shared<ImagesWithGui>(); }
+        AnyDataWithGuiPtr OutputGui() override { return std::make_shared<ImageWithGui>(); }
     };
 
 
@@ -236,21 +244,20 @@ namespace VisualProg
     {
         LutImage _lutImage;
 
-        AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+        std::any f(const std::any& x) override
         {
-            // assert type(x) == ImageWithGui
-            auto asImage = dynamic_cast<ImageWithGui*>(x.get());
-            assert(asImage);
-
-            auto image_adjusted = _lutImage.Apply(asImage->_array);
-
-            auto r = std::make_shared<ImageWithGui>(image_adjusted);
-            return r;
+            const auto& asImage = std::any_cast<const cv::Mat&>(x);
+            auto image_adjusted = _lutImage.Apply(asImage);
+            return image_adjusted;
         }
 
-        std::string Name() override { return "ImageLut"; }
+        std::string Name() override { return "LUT"; }
 
         bool GuiParams() override { return _lutImage.GuiParams(); }
+
+        AnyDataWithGuiPtr InputGui() override { return std::make_shared<ImageWithGui>(); }
+        AnyDataWithGuiPtr OutputGui() override { return std::make_shared<ImageWithGui>(); }
+
     };
 
 
@@ -264,14 +271,12 @@ namespace VisualProg
                 _channelAdjustParams.push_back(LutImage());
         }
 
-        AnyDataWithGuiPtr f (const AnyDataWithGuiPtr& x) override
+        std::any f (const std::any& x) override
         {
             auto& self = *this;
-            // assert type(x) == ImagesWithGui
-            auto asImages = dynamic_cast<ImagesWithGui*>(x.get());
-            assert(asImages);
+            const auto& asImages =  std::any_cast<const std::vector<cv::Mat>&>(x);
 
-            const auto& original_channels = asImages->_arrays;
+            const auto& original_channels = asImages;
             _addParamsOnDemand(original_channels.size());
 
             std::vector<Image> adjustedChannels;
@@ -280,8 +285,7 @@ namespace VisualProg
                 adjustedChannels.push_back(self._channelAdjustParams[i].Apply(original_channels[i]));
             }
 
-            auto r = std::make_shared<ImagesWithGui>(adjustedChannels);
-            return r;
+            return adjustedChannels;
         }
 
         std::string Name() override { return "AdjustChannels"; }
@@ -298,5 +302,8 @@ namespace VisualProg
             }
             return changed;
         }
+
+        AnyDataWithGuiPtr InputGui() override { return std::make_shared<ImagesWithGui>(); }
+        AnyDataWithGuiPtr OutputGui() override { return std::make_shared<ImagesWithGui>(); }
     };
 }

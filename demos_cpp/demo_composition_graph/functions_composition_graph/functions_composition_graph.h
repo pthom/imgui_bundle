@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <any>
 
 
 namespace VisualProg
@@ -13,12 +14,16 @@ namespace VisualProg
     //  Derive this class with your own types (i.e. add your types as members)
     struct AnyDataWithGui
     {
+        // Override this
+        virtual void Set(const std::any& v) = 0;
+        virtual std::any Get() = 0;
+
         // Override this by implementing a draw function that presents the data content
         virtual void GuiData(std::string_view function_name) = 0;
 
         // Override this if you want to provide a visual way to set the input of
         // a function composition graph
-        virtual std::shared_ptr<AnyDataWithGui> GuiSetInput() { return nullptr; }
+        virtual std::any GuiSetInput() { return {}; }
     };
     using AnyDataWithGuiPtr = std::shared_ptr<AnyDataWithGui>;
 
@@ -31,7 +36,7 @@ namespace VisualProg
     struct FunctionWithGui
     {
         // implement your function by overriding this
-        virtual AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) = 0;
+        virtual std::any f(const std::any& x) = 0;
 
         // Displayed name of the function
         virtual std::string Name() = 0;
@@ -40,6 +45,10 @@ namespace VisualProg
         // (i.e. neither input nor output params, but the function internal state)
         // It should return True if the inner params were changed.
         virtual bool GuiParams() { return false; }
+
+        // Override this
+        virtual AnyDataWithGuiPtr InputGui() = 0;
+        virtual AnyDataWithGuiPtr OutputGui() = 0;
     };
     using FunctionWithGuiPtr = std::shared_ptr<FunctionWithGui>;
 
@@ -53,7 +62,7 @@ namespace VisualProg
     public:
         FunctionsCompositionGraph(const std::vector<FunctionWithGuiPtr>& functions);
         ~FunctionsCompositionGraph();
-        void SetInput(AnyDataWithGuiPtr&& input);
+        void SetInput(const std::any& input);
         void Draw();
     };
 }

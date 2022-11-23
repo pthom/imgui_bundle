@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Any
 
 import imgui_bundle
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import AnyDataWithGui, FunctionWithGui
@@ -21,25 +22,34 @@ def split_channels(image: Image) -> Image:
 
 
 class ImageWithGui(AnyDataWithGui):
-    array: Image
+    array: Optional[Image]
     image_params: immvision.ImageParams
 
-    def __init__(self, image: Image, zoom_key="z", image_display_width=200):
+    def __init__(self, image: Optional[Image] = None, zoom_key="z", image_display_width=200):
         self.array = image
         self.first_frame = True
         self.image_params = immvision.ImageParams()
         self.image_params.image_display_size = (image_display_width, 0)
         self.image_params.zoom_key = zoom_key
 
+    def get(self) -> Optional[Any]:
+        return self.array
+
+    def set(self, v: Any) -> None:
+        assert type(v) == Image
+        self.array = v
+        self.first_frame = True
+
     def gui_data(self, function_name: str) -> None:
         self.image_params.refresh_image = self.first_frame
         _, self.image_params.image_display_size = gui_edit_size(self.image_params.image_display_size)
-        immvision.image(function_name, self.array, self.image_params)
-        self.first_frame = False
+        if self.array is not None:
+            immvision.image(function_name, self.array, self.image_params)
+            self.first_frame = False
         if imgui.small_button("Inspect"):
             immvision.inspector_add_image(self.array, function_name)
 
-    def gui_set_input(self) -> Optional[ImageWithGui]:
+    def gui_set_input(self) -> Optional[Any]:
         from imgui_bundle import im_file_dialog as ifd
 
         if imgui.button("Select image file"):
@@ -57,81 +67,85 @@ class ImageWithGui(AnyDataWithGui):
                 ifd_result = ifd.FileDialog.instance().get_result().path()
                 image = cv2.imread(ifd_result)
                 if image is not None:
-                    result = ImageWithGui(image)
+                    result = image
             ifd.FileDialog.instance().close()
         imgui_node_editor.resume_editor_canvas()
 
         return result
 
 
+
 class ImagesWithGui(AnyDataWithGui):
-    array: Image
-    images_params: List[immvision.ImageParams]
+    array: Optional[Image]  # We are displaying the different channels of this image
+    images_params: immvision.ImageParams
 
     def __init__(
         self,
-        images: Image,  # images is a numpy of several image along the first axis
+        images: Optional[Image] = None,  # images is a numpy of several image along the first axis
         zoom_key="z",
-        image_display_width=200,
-        share_image_params: bool = False,
+        image_display_width=200
     ):
         self.array = images
         self.first_frame = True
 
-        def make_image_params():
-            image_params = immvision.ImageParams()
-            image_params.image_display_size = (image_display_width, 0)
-            image_params.zoom_key = zoom_key
-            return image_params
+        self.image_params = immvision.ImageParams()
+        self.image_params.image_display_size = (image_display_width, 0)
+        self.image_params.zoom_key = zoom_key
 
-        self.images_params = []
-        if share_image_params:
-            self.images_params.append(make_image_params())
-        else:
-            for i in range(len(images)):
-                self.images_params.append(make_image_params())
+    def set(self, v: Any) -> None:
+        assert type(v) == Image
+        self.array = v
+
+    def get(self) -> Optional[Any]:
+        return self.array
 
     def gui_data(self, function_name: str) -> None:
         refresh_image = self.first_frame
         self.first_frame = False
 
-        changed, self.images_params[0].image_display_size = gui_edit_size(self.images_params[0].image_display_size)
-        if changed:
-            for params in self.images_params:
-                params.image_display_size = self.images_params[0].image_display_size
-
-        for i, image in enumerate(self.array):
-            image_params = self.images_params[i] if i < len(self.images_params) else self.images_params[0]
-            image_params.refresh_image = refresh_image
-            label = f"{function_name} - {i}"
-            immvision.image(label, image, image_params)
-            if imgui.small_button("Inspect"):
-                immvision.inspector_add_image(image, label)
+        changed, self.image_params.image_display_size = gui_edit_size(self.image_params.image_display_size)
+        if self.array is not None:
+            for i, image in enumerate(self.array):
+                self.image_params.refresh_image = refresh_image
+                label = f"{function_name} - {i}"
+                immvision.image(label, image, self.image_params)
+                if imgui.small_button("Inspect"):
+                    immvision.inspector_add_image(image, label)
 
 
 class SplitChannelsWithGui(FunctionWithGui):
-    def f(self, x: AnyDataWithGui) -> ImagesWithGui:
-        assert type(x) == ImageWithGui
-        channels = split_channels(x.array)
+    def f(self, x: Any) -> Any:
+        assert type(x) == Image
+        channels = split_channels(x)
         channels_normalized = channels / 255.0
-        r = ImagesWithGui(channels_normalized)
-        return r
+        return channels_normalized
 
     def name(self) -> str:
         return "SplitChannels"
 
+    def input_gui(self) -> AnyDataWithGui:
+        return ImageWithGui()
+
+    def output_gui(self) -> AnyDataWithGui:
+        return ImagesWithGui()
+
 
 class MergeChannelsWithGui(FunctionWithGui):
-    def f(self, x: AnyDataWithGui) -> ImageWithGui:
-        assert type(x) == ImagesWithGui
-        channels = [c for c in x.array]
+    def f(self, x: Any) -> Any:
+        assert type(x) == Image
+        channels = [c for c in x]
         image_float = np.dstack(channels)
-        image_int = (image_float * 255.0).astype("uint8")
-        r = ImageWithGui(image_int)
-        return r
+        image_uint8 = (image_float * 255.0).astype("uint8")
+        return image_uint8
 
     def name(self) -> str:
         return "MergeChannels"
+
+    def input_gui(self) -> AnyDataWithGui:
+        return ImagesWithGui()
+
+    def output_gui(self) -> AnyDataWithGui:
+        return ImageWithGui()
 
 
 CvSize = Tuple[int, int]
@@ -165,11 +179,11 @@ def gui_edit_size(size: CvSize) -> Tuple[bool, CvSize]:
 ###############################################################################
 
 class LutImage:
-    pow_exponent: float = 1
-    min_in = 0
-    min_out = 0
-    max_in = 1
-    max_out = 1
+    pow_exponent: float = 1.0
+    min_in: float = 0.0
+    min_out: float = 0.0
+    max_in: float = 1.0
+    max_out: float = 1.0
 
     _lut_table: np.ndarray
     _lut_graph: np.ndarray
@@ -222,7 +236,7 @@ class LutImage:
             idx_slider += 1
             flags = imgui.ImGuiSliderFlags_.logarithmic if logarithmic else 0
             edited_this_slider, v = imgui.slider_float(
-                f"{label}##slider{idx_slider}", v, min, max, flags=flags)
+                f"{label}##slider{idx_slider}", v, min, max, flags=flags)  # type: ignore
             if edited_this_slider:
                 changed = True
             return v
@@ -230,7 +244,7 @@ class LutImage:
         def show_01_slider(label: str, v: float) -> float:
             return show_slider(label, v, 0, 1, False)
 
-        def show_two_01_sliders(label: str, v_min: float, v_max) -> float:
+        def show_two_01_sliders(label: str, v_min: float, v_max) -> Tuple[float, float]:
             v_min = show_01_slider(f"##{label}v_min", v_min)
             imgui.same_line()
             v_max = show_01_slider(f"{label}##v_max", v_max)
@@ -259,11 +273,10 @@ class LutImageWithGui(FunctionWithGui):
     def __init__(self):
         self.lut_image = LutImage()
 
-    def f(self, x: AnyDataWithGui) -> ImageWithGui:
-        assert type(x) == ImageWithGui
-
-        image_adjusted = self.lut_image.apply(x.array)
-        return ImageWithGui(image_adjusted)
+    def f(self, x: Any) -> Any:
+        assert type(x) == Image
+        image_adjusted = self.lut_image.apply(x)
+        return image_adjusted
 
     def name(self) -> str:
         return "LUT"
@@ -271,37 +284,47 @@ class LutImageWithGui(FunctionWithGui):
     def gui_params(self) -> bool:
         return self.lut_image.gui_params()
 
+    def input_gui(self) -> AnyDataWithGui:
+        return ImageWithGui()
+
+    def output_gui(self) -> AnyDataWithGui:
+        return ImageWithGui()
+
 
 class LutChannelsWithGui(FunctionWithGui):
-    channel_luts: List[LutImage]
-
-    def __init__(self):
-        self.channel_luts = []
+    channel_adjust_params: List[LutImage]
 
     def add_params_on_demand(self, nb_channels: int):
-        while len(self.channel_luts) < nb_channels:
-            self.channel_luts.append(LutImage())
+        if not hasattr(self, "channel_adjust_params"):
+            self.channel_adjust_params = []
+        while len(self.channel_adjust_params) < nb_channels:
+            self.channel_adjust_params.append(LutImage())
 
-    def f(self, x: AnyDataWithGui) -> ImagesWithGui:
-        assert type(x) == ImagesWithGui
+    def f(self, x: Any) -> Any:
+        assert type(x) == Image
 
-        original_channels = x.array
+        original_channels = x
         self.add_params_on_demand(len(original_channels))
 
         adjusted_channels = np.zeros_like(original_channels)
         for i in range(len(original_channels)):
-            adjusted_channels[i] = self.channel_luts[i].apply(original_channels[i])
+            adjusted_channels[i] = self.channel_adjust_params[i].apply(original_channels[i])
 
-        r = ImagesWithGui(adjusted_channels)
-        return r
+        return adjusted_channels
 
     def name(self) -> str:
         return "LUT channels"
 
     def gui_params(self) -> bool:
         changed = False
-        for i, channel_adjust_param in enumerate(self.channel_luts):
-            imgui.push_id(i)
+        for i, channel_adjust_param in enumerate(self.channel_adjust_params):
+            imgui.push_id(str(i))
             changed |= channel_adjust_param.gui_params()
             imgui.pop_id()
         return changed
+
+    def input_gui(self) -> AnyDataWithGui:
+        return ImagesWithGui()
+
+    def output_gui(self) -> AnyDataWithGui:
+        return ImagesWithGui()

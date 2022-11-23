@@ -1,6 +1,6 @@
 from __future__ import annotations
 from imgui_bundle import imgui, imgui_node_editor as ed, icons_fontawesome, ImVec2
-from typing import List, Optional
+from typing import List, Optional, Any
 from abc import ABC, abstractmethod
 
 
@@ -8,20 +8,29 @@ class AnyDataWithGui(ABC):
     """
     Override this class with your types, and implement a draw function that presents it content
     """
-
     @abstractmethod
     def gui_data(self, function_name: str) -> None:
+        """Override this by implementing a draw function that presents the data content"""
         pass
 
-    def gui_set_input(self) -> Optional[AnyDataWithGui]:
+    def gui_set_input(self) -> Optional[Any]:
         """Override this if you want to provide a visual way to set the input of
         a function composition graph"""
         return None
 
+    @abstractmethod
+    def set(self, v: Any) -> None:
+        """Override this"""
+        pass
+
+    @abstractmethod
+    def get(self) -> Optional[Any]:
+        """Override this"""
+        pass
 
 class FunctionWithGui(ABC):
     @abstractmethod
-    def f(self, x: AnyDataWithGui) -> AnyDataWithGui:
+    def f(self, x: Any) -> Any:
         pass
 
     @abstractmethod
@@ -35,24 +44,42 @@ class FunctionWithGui(ABC):
         """
         return False
 
+    @abstractmethod
+    def input_gui(self) -> AnyDataWithGui:
+        """Override this"""
+        pass
+
+    @abstractmethod
+    def output_gui(self) -> AnyDataWithGui:
+        """Override this"""
+        pass
+
 
 class FunctionsCompositionGraph:
     function_nodes: List[_FunctionNode]
 
     def __init__(self, functions: List[FunctionWithGui]) -> None:
+        assert len(functions) > 0
+        f0 = functions[0]
+
         input_fake_function = _InputWithGui()
+        input_fake_function._input_gui = f0.input_gui()
+        input_fake_function._output_gui = f0.input_gui()
 
+        input_node = _FunctionNode(input_fake_function)
         self.function_nodes = []
-        self.function_nodes.append(_FunctionNode(input_fake_function))
+        self.function_nodes.append(input_node)
+
         for f in functions:
-            function_node = _FunctionNode(f)
-            self.function_nodes.append(function_node)
+            self.function_nodes.append(_FunctionNode(f))
 
-        for f1, f2 in overlapping_pairs(self.function_nodes):
-            f1.next_function_node = f2
+        for i in range(len(self.function_nodes) - 1):
+            fn0 = self.function_nodes[i]
+            fn1 = self.function_nodes[i + 1]
+            fn0.next_function_node = fn1
 
-    def set_input(self, input_data: AnyDataWithGui) -> None:
-        self.function_nodes[0].set_input(input_data)
+    def set_input(self, input: Any) -> None:
+        self.function_nodes[0].set_input(input)
 
     def draw(self) -> None:
         imgui.push_id(str(id(self)))
@@ -61,7 +88,8 @@ class FunctionsCompositionGraph:
         # draw function nodes
         for i, fn in enumerate(self.function_nodes):
             fn.draw_node(idx=i)
-        for i, fn in enumerate(self.function_nodes):
+        # Note: those loops shall not be merged
+        for fn in self.function_nodes:
             fn.draw_link()
         ed.end()
 
@@ -69,49 +97,41 @@ class FunctionsCompositionGraph:
 
 
 class _InputWithGui(FunctionWithGui):
-    def __init__(self) -> None:
-        pass
+    _input_gui: AnyDataWithGui
+    _output_gui: AnyDataWithGui
+
+    def f(self, x: Any) -> Any:
+        return x
+
+    def gui_params(self) -> bool:
+        return False
 
     def name(self):
         return "Input"
 
-    def f(self, x: AnyDataWithGui):
-        return x
+    def input_gui(self) -> AnyDataWithGui:
+        return self._input_gui
 
-    def gui_params(self) -> bool:
-        return False
-
-
-class _OutputWithGui(FunctionWithGui):
-    def __init__(self) -> None:
-        pass
-
-    def name(self):
-        return "Output"
-
-    def f(self, x: AnyDataWithGui):
-        return x
-
-    def gui_params(self) -> bool:
-        return False
+    def output_gui(self) -> AnyDataWithGui:
+        return self._output_gui
 
 
 class _FunctionNode:
-    function: Optional[FunctionWithGui]
+    function: FunctionWithGui
     next_function_node: Optional[_FunctionNode]
-    input_data: Optional[AnyDataWithGui]
-    output_data: Optional[AnyDataWithGui]
+    input_data_with_gui: AnyDataWithGui
+    output_data_with_gui: AnyDataWithGui
 
     node_id: ed.NodeId
     pin_input: ed.PinId
     pin_output: ed.PinId
     link_id: ed.LinkId
 
-    def __init__(self, function: FunctionWithGui, next_function_node: Optional[_FunctionNode] = None) -> None:
+    def __init__(self, function: FunctionWithGui) -> None:
         self.function = function
-        self.next_function_node = next_function_node
-        self.input_data = None
-        self.output_data = None
+        self.next_function_node = None
+        self.input_data_with_gui = function.input_gui()
+        self.output_data_with_gui = function.output_gui()
 
         self.node_id = ed.NodeId.create()
         self.pin_input = ed.PinId.create()
@@ -135,10 +155,11 @@ class _FunctionNode:
 
         params_changed = self.function.gui_params()
         if params_changed:
-            if self.input_data is not None and self.function is not None:
-                self.output_data = self.function.f(self.input_data)
+            if self.input_data_with_gui.get() is not None and self.function is not None:
+                r = self.function.f(self.input_data_with_gui.get())
+                self.output_data_with_gui.set(r)
                 if self.next_function_node is not None:
-                    self.next_function_node.set_input(self.output_data)
+                    self.next_function_node.set_input(r)
         imgui.pop_id()
 
         draw_input_pin = idx != 0
@@ -149,17 +170,17 @@ class _FunctionNode:
 
         draw_input_set_data = idx == 0
         if draw_input_set_data:
-            new_value = self.input_data.gui_set_input()
+            new_value = self.input_data_with_gui.gui_set_input()
             if new_value is not None:
                 self.set_input(new_value)
 
         def draw_output():
-            if self.output_data is None:
+            if self.output_data_with_gui.get() is None:
                 imgui.text("None")
             else:
+                imgui.push_id(str(id(self.output_data_with_gui)))
                 imgui.begin_group()
-                imgui.push_id(str(id(self.output_data)))
-                self.output_data.gui_data(function_name=self.function.name())
+                self.output_data_with_gui.gui_data(function_name=self.function.name())
                 imgui.pop_id()
                 imgui.end_group()
             imgui.same_line()
@@ -176,12 +197,13 @@ class _FunctionNode:
             return
         ed.link(self.link_id, self.pin_output, self.next_function_node.pin_input)
 
-    def set_input(self, input_data: AnyDataWithGui) -> None:
-        self.input_data = input_data
+    def set_input(self, input_data: Any) -> None:
+        self.input_data_with_gui.set(input_data)
         if self.function is not None:
-            self.output_data = self.function.f(input_data)
+            r = self.function.f(input_data)
+            self.output_data_with_gui.set(r)
             if self.next_function_node is not None:
-                self.next_function_node.set_input(self.output_data)
+                self.next_function_node.set_input(r)
 
 
 # transform a list into a list of adjacent pairs

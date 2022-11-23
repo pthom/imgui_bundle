@@ -10,7 +10,8 @@ struct IntWithGui: public AnyDataWithGui
 {
     int _value = 0;
 
-    IntWithGui(int value): _value(value){}
+    std::any Get() override { return _value; }
+    void Set(const std::any& v) override { _value = std::any_cast<int>(v); }
 
     virtual void GuiData(std::string_view function_name) override
     {
@@ -18,15 +19,15 @@ struct IntWithGui: public AnyDataWithGui
         ImGui::Text("Int Value %i", _value);
     }
 
-    std::shared_ptr<AnyDataWithGui> GuiSetInput() override
+    std::any GuiSetInput() override
     {
         ImGui::SetNextItemWidth(100.f);
         int v = _value;
         bool changed = ImGui::SliderInt("value", &v, 0, 1000);
         if (changed)
-            return std::make_shared<IntWithGui>(v);
+            return v;
         else
-            return nullptr;
+            return {};
     }
 };
 
@@ -34,11 +35,10 @@ struct AddWithGui: public FunctionWithGui
 {
     int _whatToAdd = 1;
 
-    AnyDataWithGuiPtr f(const AnyDataWithGuiPtr& x) override
+    std::any f(const std::any& x) override
     {
-        auto asInt = dynamic_cast<IntWithGui*>(x.get());
-        assert(asInt);
-        auto r = std::make_shared<IntWithGui>(asInt->_value + _whatToAdd);
+        int asInt = std::any_cast<int>(x);
+        int r = asInt + _whatToAdd;
         return r;
     }
 
@@ -51,6 +51,8 @@ struct AddWithGui: public FunctionWithGui
         return changed;
     }
 
+    AnyDataWithGuiPtr InputGui() override { return std::make_shared<IntWithGui>(); }
+    AnyDataWithGuiPtr OutputGui() override { return std::make_shared<IntWithGui>(); }
 };
 
 /*
@@ -60,12 +62,10 @@ int main(int, char**)
 {
     std::vector<FunctionWithGuiPtr> functions = {
         std::make_shared<AddWithGui>(),
-        std::make_shared<AddWithGui>(),
-        std::make_shared<AddWithGui>(),
     };
 
     FunctionsCompositionGraph functions_graph(functions);
-    functions_graph.SetInput( std::make_shared<IntWithGui>(1) );
+    functions_graph.SetInput(1);
 
     auto gui = [&]() {
         functions_graph.Draw();

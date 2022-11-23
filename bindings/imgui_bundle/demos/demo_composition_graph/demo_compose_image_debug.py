@@ -72,13 +72,11 @@ def main():
     # image = cv2.imread(resource_dir + "/tennis.jpg")
     image = cv2.resize(image, (int(image.shape[1] * 0.5), int(image.shape[0] * 0.5)))
 
-    x = ImageWithGui(image)
-
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
     functions = [SplitChannelsWithGui(), LutChannelsWithGui(), MergeChannelsWithGui()]
 
     composition_graph = FunctionsCompositionGraph(functions)
-    composition_graph.set_input(x)
+    composition_graph.set_input(image)
 
     def gui():
         # runner_params = hello_imgui.get_runner_params()

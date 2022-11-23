@@ -1,3 +1,4 @@
+from typing import Any
 from imgui_bundle import imgui, run, imgui_node_editor
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 
@@ -8,9 +9,9 @@ class AddWithGui(FunctionWithGui):
     def __init__(self):
         self.what_to_add = 1
 
-    def f(self, x: AnyDataWithGui) -> IntWithGui:
-        assert type(x) == IntWithGui
-        return IntWithGui(x.value + self.what_to_add)
+    def f(self, x: Any) -> int:
+        assert type(x) == int
+        return x + self.what_to_add
 
     def name(self):
         return "Add"
@@ -20,12 +21,18 @@ class AddWithGui(FunctionWithGui):
         changed, self.what_to_add = imgui.slider_int("", self.what_to_add, 0, 10)
         return changed
 
+    def input_gui(self) -> AnyDataWithGui:
+        return IntWithGui()
+
+    def output_gui(self) -> AnyDataWithGui:
+        return IntWithGui()
+
 
 def main():
     functions = [AddWithGui(), AddWithGui(), AddWithGui()]
     functions_graph = FunctionsCompositionGraph(functions)
 
-    functions_graph.set_input(IntWithGui(1))
+    functions_graph.set_input(1)
 
     def gui():
         functions_graph.draw()

@@ -12,8 +12,6 @@ int main(int, char**)
     cv::Mat image = cv::imread("resources/house.jpg");
     cv::resize(image, image, cv::Size(), 0.3, 0.3);
 
-    auto x = std::make_shared<ImageWithGui>(image);
-
     std::vector<FunctionWithGuiPtr> functions {
         std::make_shared<SplitChannelsWithGui>(),
         std::make_shared<LutChannelsWithGui>(),
@@ -21,7 +19,7 @@ int main(int, char**)
     };
 
     FunctionsCompositionGraph compositionGraph(functions);
-    compositionGraph.SetInput(x);
+    compositionGraph.SetInput(image);
 
     auto gui = [&](){
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
