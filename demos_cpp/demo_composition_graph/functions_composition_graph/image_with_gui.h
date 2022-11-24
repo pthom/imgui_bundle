@@ -96,7 +96,7 @@ namespace VisualProg
                 if (ifd::FileDialog::Instance().HasResult())
                 {
                     auto ifd_result = ifd::FileDialog::Instance().GetResult();
-                    cv::Mat image = cv::imread(ifd_result.c_str());
+                    cv::Mat image = cv::imread(ifd_result.string());
                     if (! image.empty())
                         result = image;
                 }
