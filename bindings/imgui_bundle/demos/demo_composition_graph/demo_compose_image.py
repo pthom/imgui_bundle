@@ -71,7 +71,7 @@ class CannyWithGui(FunctionWithGui):
 class OilPaintingWithGui(FunctionWithGui):
     dynRatio = 1  # image is divided by dynRatio before histogram processing
     size = 3  # size	neighbouring size is 2-size+1
-    color_conversion: CvColorConversionCode	# color space conversion code
+    color_conversion: CvColorConversionCode  # color space conversion code
 
     def __init__(self):
         self.input_gui = ImageWithGui()
@@ -104,7 +104,7 @@ def main():
 
     split_lut_merge_gui = Split_Lut_Merge_WithGui(ColorType.BGR)
 
-    functions = [ split_lut_merge_gui.split, split_lut_merge_gui.lut, split_lut_merge_gui.merge, OilPaintingWithGui() ]
+    functions = [split_lut_merge_gui.split, split_lut_merge_gui.lut, split_lut_merge_gui.merge, OilPaintingWithGui()]
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
 
     composition_graph = FunctionsCompositionGraph(functions)
@@ -116,9 +116,6 @@ def main():
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_compose_image.json"
     imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1600, 1000), fps_idle=0)
-
-
-
 
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
     # functions = [GaussianBlurWithGui(), CannyWithGui()]

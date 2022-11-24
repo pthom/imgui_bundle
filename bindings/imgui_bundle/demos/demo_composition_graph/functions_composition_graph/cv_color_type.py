@@ -36,6 +36,7 @@ class ColorConversion:
 @dataclass
 class ColorConversionPair:
     """Two inverse color conversions"""
+
     name: str
     conversion: ColorConversion
     inv_conversion: ColorConversion
@@ -113,15 +114,13 @@ def compute_possible_conversion_pairs(color_type: ColorType) -> List[ColorConver
         conversion_code_inv = cv_color_conversion_code_between(other_color_type, color_type)
         if conversion_code is not None and conversion_code_inv is not None:
             conversion_direct = ColorConversion(
-                f"{color_type.name}=>{other_color_type.name}",
-                color_type, other_color_type, conversion_code
+                f"{color_type.name}=>{other_color_type.name}", color_type, other_color_type, conversion_code
             )
             conversion_inv = ColorConversion(
-                f"{other_color_type.name}=>{color_type.name}",
-                other_color_type, color_type, conversion_code_inv
+                f"{other_color_type.name}=>{color_type.name}", other_color_type, color_type, conversion_code_inv
             )
             conversion_pair = ColorConversionPair(
-                f"{color_type.name}=>{other_color_type.name}=>{color_type.name}",
-                conversion_direct, conversion_inv)
+                f"{color_type.name}=>{other_color_type.name}=>{color_type.name}", conversion_direct, conversion_inv
+            )
             r.append(conversion_pair)
     return r

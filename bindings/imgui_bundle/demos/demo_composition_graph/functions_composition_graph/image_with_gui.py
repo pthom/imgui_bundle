@@ -84,7 +84,7 @@ class ImageChannelsWithGui(AnyDataWithGui):
         self,
         images: Optional[Image] = None,  # images is a numpy of several image along the first axis
         zoom_key="z",
-        image_display_width=200
+        image_display_width=200,
     ):
         self.array = images
         self.first_frame = True
@@ -132,7 +132,7 @@ class SplitChannelsWithGui(FunctionWithGui):
         if self.color_conversion is not None:
             x_converted = cv2.cvtColor(x, self.color_conversion.conversion_code)
         else:
-        	x_converted = x
+            x_converted = x
         channels = split_channels(x_converted)
         channels_normalized = channels / 255.0
         return channels_normalized
@@ -193,7 +193,8 @@ class Split_Lut_Merge_WithGui:
     def gui_select_conversion(self) -> bool:
         changed = False
         _, self.show_possible_color_conversions = imgui.checkbox(
-            "Show Color Conversions", self.show_possible_color_conversions)
+            "Show Color Conversions", self.show_possible_color_conversions
+        )
         if self.show_possible_color_conversions:
             if imgui.radio_button("None", self.current_conversion_pair == None):
                 changed = True
@@ -267,8 +268,8 @@ class LutImage:
     def apply(self, image: Image) -> Image:
         if not hasattr(self, "_lut_table"):
             self._prepare_lut()
-        lut_uint8 = (self._lut_table * 255.).astype(np.uint8)
-        image_uint8 = (image * 255.).astype(np.uint8)
+        lut_uint8 = (self._lut_table * 255.0).astype(np.uint8)
+        image_uint8 = (image * 255.0).astype(np.uint8)
         image_with_lut_uint8 = np.zeros_like(image_uint8)
         cv2.LUT(image_uint8, lut_uint8, image_with_lut_uint8)
         image_adjusted = image_with_lut_uint8 / 255.0
@@ -276,13 +277,15 @@ class LutImage:
 
     @staticmethod
     def _lut_graph_size() -> float:
-        graph_size = int(imgui_bundle.em_size() * 2.)
+        graph_size = int(imgui_bundle.em_size() * 2.0)
         return graph_size
 
     def _show_lut_graph(self, channel_name: str) -> Point2d:
         if not hasattr(self, "_lut_graph"):
             self._prepare_lut_graph()
-        mouse_position = immvision.image_display(channel_name, self._lut_graph, refresh_image=self._lut_graph_needs_refresh)
+        mouse_position = immvision.image_display(
+            channel_name, self._lut_graph, refresh_image=self._lut_graph_needs_refresh
+        )
         self._lut_graph_needs_refresh = False
         return mouse_position
 
@@ -311,7 +314,7 @@ class LutImage:
             r: Optional[Point2d] = None
             graph_size = self._lut_graph_size()
             if mouse_position[0] >= 0:
-                r = ( mouse_position[0] / graph_size, 1 - mouse_position[1] / graph_size)
+                r = (mouse_position[0] / graph_size, 1 - mouse_position[1] / graph_size)
                 return r
             else:
                 return None
@@ -323,7 +326,7 @@ class LutImage:
 
         if mouse_position_normalized is not None and imgui.is_mouse_dragging(0, drag_threshold):
             drag_delta = imgui.get_mouse_drag_delta(mouse_button)
-            drag_horizontal = (math.fabs(drag_delta.x) > math.fabs(drag_delta.y))
+            drag_horizontal = math.fabs(drag_delta.x) > math.fabs(drag_delta.y)
             drag_vertical = not drag_horizontal
             imgui.reset_mouse_drag_delta(mouse_button)
 
@@ -369,7 +372,8 @@ class LutImage:
             idx_slider += 1
             flags = imgui.ImGuiSliderFlags_.logarithmic if logarithmic else 0
             edited_this_slider, v = imgui.slider_float(
-                f"{label}##slider{idx_slider}", v, min, max, flags=flags)  # type: ignore
+                f"{label}##slider{idx_slider}", v, min, max, flags=flags
+            )  # type: ignore
             if edited_this_slider:
                 changed = True
             return v
@@ -381,7 +385,7 @@ class LutImage:
             v_min = show_01_slider(f"##{label}v_min", v_min)
             imgui.same_line()
             v_max = show_01_slider(f"{label}##v_max", v_max)
-            if math.fabs(v_max - v_min) < 1E-3:  # avoid div by 0
+            if math.fabs(v_max - v_min) < 1e-3:  # avoid div by 0
                 v_min = v_max - 0.01
             return v_min, v_max
 
