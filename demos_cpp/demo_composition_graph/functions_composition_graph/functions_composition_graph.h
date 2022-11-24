@@ -28,13 +28,17 @@ namespace VisualProg
     using AnyDataWithGuiPtr = std::shared_ptr<AnyDataWithGui>;
 
 
-    // FunctionWithGui: any function that can be presented visually, with
+    // FunctionWithGui: any function that can be presented visually:
     // - a displayed name
     // - a gui in order to modify the internal params
-    // - a pure function f: AnyDataWithGui -> AnyDataWithGui
-    //  Derive this class with your own functions
+    // - a pure function f: Any -> Any
+    // Override this class with your functions which you want to vizualize in a graph"""
     struct FunctionWithGui
     {
+        // input_gui and output_gui should be filled during construction
+        AnyDataWithGuiPtr InputGui;
+        AnyDataWithGuiPtr OutputGui;
+
         // implement your function by overriding this
         virtual std::any f(const std::any& x) = 0;
 
@@ -45,10 +49,6 @@ namespace VisualProg
         // (i.e. neither input nor output params, but the function internal state)
         // It should return True if the inner params were changed.
         virtual bool GuiParams() { return false; }
-
-        // Override this
-        virtual AnyDataWithGuiPtr InputGui() = 0;
-        virtual AnyDataWithGuiPtr OutputGui() = 0;
     };
     using FunctionWithGuiPtr = std::shared_ptr<FunctionWithGui>;
 

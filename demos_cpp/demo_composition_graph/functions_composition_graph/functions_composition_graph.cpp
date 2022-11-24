@@ -38,8 +38,8 @@ namespace VisualProg
         {
             auto& self = *this;
             self._function = function;
-            self._inputDataWithGui = function->InputGui();
-            self._outputDataWithGui = function->OutputGui();
+            self._inputDataWithGui = function->InputGui;
+            self._outputDataWithGui = function->OutputGui;
 
             static int counter = 0;
             self._nodeId = ed::NodeId(counter++);
@@ -149,12 +149,6 @@ namespace VisualProg
         std::any f(const std::any& x) override { return x; }
         bool GuiParams() override { return false; }
         std::string Name() override { return "Input"; }
-
-        AnyDataWithGuiPtr InputGui() override { return _inputGui; }
-        AnyDataWithGuiPtr OutputGui() override { return _outputGui; }
-
-        AnyDataWithGuiPtr _inputGui;
-        AnyDataWithGuiPtr _outputGui;
     };
 
 
@@ -177,8 +171,8 @@ namespace VisualProg
             auto& self = *this;
 
             auto input_fake_function = std::make_shared<_InputWithGui>();
-            input_fake_function->_inputGui = f0->InputGui();
-            input_fake_function->_outputGui = f0->InputGui();
+            input_fake_function->InputGui = f0->InputGui;
+            input_fake_function->OutputGui = f0->InputGui;
             auto input_node = _FunctionNode(input_fake_function);
             self._functionNodes.push_back(input_node);
 

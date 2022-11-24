@@ -8,6 +8,8 @@ class AddWithGui(FunctionWithGui):
 
     def __init__(self):
         self.what_to_add = 1
+        self.input_gui = IntWithGui()
+        self.output_gui = IntWithGui()
 
     def f(self, x: Any) -> int:
         assert type(x) == int
@@ -20,12 +22,6 @@ class AddWithGui(FunctionWithGui):
         imgui.set_next_item_width(100)
         changed, self.what_to_add = imgui.slider_int("", self.what_to_add, 0, 10)
         return changed
-
-    def input_gui(self) -> AnyDataWithGui:
-        return IntWithGui()
-
-    def output_gui(self) -> AnyDataWithGui:
-        return IntWithGui()
 
 
 def main():

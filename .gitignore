@@ -148,4 +148,5 @@ pypi_info_token.md
 MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
+_icons_test/
 /demo_compose_image_debug.json

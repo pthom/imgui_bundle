@@ -35,6 +35,13 @@ struct AddWithGui: public FunctionWithGui
 {
     int _whatToAdd = 1;
 
+    AddWithGui()
+    {
+        auto& self = *this;
+        self.InputGui = std::make_shared<IntWithGui>();
+        self.OutputGui = std::make_shared<IntWithGui>();
+    }
+
     std::any f(const std::any& x) override
     {
         int asInt = std::any_cast<int>(x);
@@ -50,9 +57,6 @@ struct AddWithGui: public FunctionWithGui
         bool changed = ImGui::SliderInt("What to add", &_whatToAdd, 0, 10);
         return changed;
     }
-
-    AnyDataWithGuiPtr InputGui() override { return std::make_shared<IntWithGui>(); }
-    AnyDataWithGuiPtr OutputGui() override { return std::make_shared<IntWithGui>(); }
 };
 
 /*

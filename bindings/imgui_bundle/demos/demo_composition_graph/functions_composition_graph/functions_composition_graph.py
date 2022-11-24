@@ -28,7 +28,19 @@ class AnyDataWithGui(ABC):
         """Override this"""
         pass
 
+
 class FunctionWithGui(ABC):
+    """Override this class with your functions which you want to vizualize in a graph
+    // FunctionWithGui: any function that can be presented visually, with
+    // - a displayed name
+    // - a gui in order to modify the internal params
+    // - a pure function f: AnyDataWithGui -> AnyDataWithGui
+    """
+
+    # input_gui and output_gui should be filled during construction
+    input_gui: AnyDataWithGui
+    output_gui: AnyDataWithGui
+
     @abstractmethod
     def f(self, x: Any) -> Any:
         pass
@@ -44,16 +56,6 @@ class FunctionWithGui(ABC):
         """
         return False
 
-    @abstractmethod
-    def input_gui(self) -> AnyDataWithGui:
-        """Override this"""
-        pass
-
-    @abstractmethod
-    def output_gui(self) -> AnyDataWithGui:
-        """Override this"""
-        pass
-
 
 class FunctionsCompositionGraph:
     function_nodes: List[_FunctionNode]
@@ -63,8 +65,8 @@ class FunctionsCompositionGraph:
         f0 = functions[0]
 
         input_fake_function = _InputWithGui()
-        input_fake_function._input_gui = f0.input_gui()
-        input_fake_function._output_gui = f0.input_gui()
+        input_fake_function.input_gui = f0.input_gui
+        input_fake_function.output_gui = f0.input_gui
 
         input_node = _FunctionNode(input_fake_function)
         self.function_nodes = []
@@ -97,9 +99,6 @@ class FunctionsCompositionGraph:
 
 
 class _InputWithGui(FunctionWithGui):
-    _input_gui: AnyDataWithGui
-    _output_gui: AnyDataWithGui
-
     def f(self, x: Any) -> Any:
         return x
 
@@ -108,12 +107,6 @@ class _InputWithGui(FunctionWithGui):
 
     def name(self):
         return "Input"
-
-    def input_gui(self) -> AnyDataWithGui:
-        return self._input_gui
-
-    def output_gui(self) -> AnyDataWithGui:
-        return self._output_gui
 
 
 class _FunctionNode:
@@ -130,8 +123,8 @@ class _FunctionNode:
     def __init__(self, function: FunctionWithGui) -> None:
         self.function = function
         self.next_function_node = None
-        self.input_data_with_gui = function.input_gui()
-        self.output_data_with_gui = function.output_gui()
+        self.input_data_with_gui = function.input_gui
+        self.output_data_with_gui = function.output_gui
 
         self.node_id = ed.NodeId.create()
         self.pin_input = ed.PinId.create()

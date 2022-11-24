@@ -10,19 +10,23 @@ int main(int, char**)
     using namespace VisualProg;
 
     cv::Mat image = cv::imread("resources/house.jpg");
-    cv::resize(image, image, cv::Size(), 0.3, 0.3);
+    cv::resize(image, image, cv::Size(), 0.5, 0.5);
+
+    auto split_lut_merge_gui = Split_Lut_Merge_WithGui(ColorType::BGR);
+
+//    std::vector<FunctionWithGuiPtr> functions {
+//        std::make_shared<SplitChannelsWithGui>(),
+//        std::make_shared<LutChannelsWithGui>(),
+//        std::make_shared<MergeChannelsWithGui>(),
+//    };
 
     std::vector<FunctionWithGuiPtr> functions {
-        std::make_shared<SplitChannelsWithGui>(),
-        std::make_shared<LutChannelsWithGui>(),
-        std::make_shared<MergeChannelsWithGui>(),
-    };
+        split_lut_merge_gui._split, split_lut_merge_gui._lut, split_lut_merge_gui._merge};
 
     FunctionsCompositionGraph compositionGraph(functions);
     compositionGraph.SetInput(image);
 
     auto gui = [&](){
-        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         compositionGraph.Draw();
     };
 
@@ -33,7 +37,7 @@ int main(int, char**)
     addOnsParams.withNodeEditorConfig = nodeEditorConfig;
     HelloImGui::SimpleRunnerParams params;
     params.guiFunction = gui;
-    params.windowSize = {1200, 1000};
+    params.windowSize = {1600, 1000};
     ImGuiBundle::Run(params, addOnsParams);
 
     return 0;
