@@ -41,6 +41,8 @@ py::array_t<uint8_t> FinalAppWindowScreenshot()
 void py_init_module_hello_imgui(py::module& m)
 {
     using namespace HelloImGui;
+    using namespace ImGuiTheme;
+
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
 
@@ -55,7 +57,16 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassAssetFileData =
         py::class_<HelloImGui::AssetFileData>
             (m, "AssetFileData", "*\n@@md#LoadAssetFileData\n\n* `AssetFileData LoadAssetFileData(const char *assetPath)` will load an entire asset file into memory.\n This works on all platforms, including android.\n ````cpp\n    struct AssetFileData\n    {\n        None * data = None;\n        size_t dataSize = 0;\n    };\n ````\n* `FreeAssetFileData(AssetFileData * assetFileData)` will free the memory.\n\n  Note about ImGui: \"ImGui::GetIO().Fonts->AddFontFromMemoryTTF\" takes ownership of the data\n  and will free the memory for you.\n\n@@md\n*")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        void * data = nullptr, size_t dataSize = 0)
+        {
+            auto r = std::make_unique<HelloImGui::AssetFileData>();
+            r->data = data;
+            r->dataSize = dataSize;
+            return r;
+        })
+        , py::arg("data") = py::none(), py::arg("data_size") = 0
+        )
         .def_readwrite("data", &HelloImGui::AssetFileData::data, "")
         .def_readwrite("data_size", &HelloImGui::AssetFileData::dataSize, "")
         ;
@@ -92,7 +103,16 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassScreenBounds =
         py::class_<HelloImGui::ScreenBounds>
             (m, "ScreenBounds", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ScreenPosition position = HelloImGui::DefaultScreenPosition, ScreenSize size = HelloImGui::DefaultWindowSize)
+        {
+            auto r = std::make_unique<HelloImGui::ScreenBounds>();
+            r->position = position;
+            r->size = size;
+            return r;
+        })
+        , py::arg("position") = HelloImGui::DefaultScreenPosition, py::arg("size") = HelloImGui::DefaultWindowSize
+        )
         .def_readwrite("position", &HelloImGui::ScreenBounds::position, "")
         .def_readwrite("size", &HelloImGui::ScreenBounds::size, "")
         .def("top_left_corner",
@@ -136,7 +156,21 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassWindowGeometry =
         py::class_<HelloImGui::WindowGeometry>
             (m, "WindowGeometry", "*\n@@md#WindowGeometry\n\n__WindowGeometry__ is a struct that defines the window geometry.\n\nMembers:\n* `size`: _int[2], default=\"{800, 600}\"_. Size of the application window\n  used if fullScreenMode==NoFullScreen and sizeAuto==False\n* `sizeAuto`: _bool, default=false_\n  If True, adapt the app window size to the presented widgets\n* `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.\n   You can choose between several full screen modes:\n   ````cpp\n        NoFullScreen,\n        FullScreen,                    // Full screen with specified resolution\n        FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution\n        FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor\n    ````\n* `positionMode`: _WindowPositionMode, default = OsDefault_.\n   You can choose between several window position modes:\n   ````cpp\n        OsDefault,\n        MonitorCenter,\n        FromCoords,\n    ````\n* `monitorIdx`: _int, default = 0_.\n  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen\n* `windowSizeState`: _WindowSizeState, default=Standard_\n   You can choose between several window size states:\n   ````cpp\n        Standard,\n        Minimized,\n        Maximized\n    ````\n@@md\n*")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ScreenSize size = HelloImGui::DefaultWindowSize, bool sizeAuto = false, HelloImGui::FullScreenMode fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen, HelloImGui::WindowPositionMode positionMode = HelloImGui::WindowPositionMode::OsDefault, ScreenPosition position = HelloImGui::DefaultScreenPosition, int monitorIdx = 0, HelloImGui::WindowSizeState windowSizeState = HelloImGui::WindowSizeState::Standard)
+        {
+            auto r = std::make_unique<HelloImGui::WindowGeometry>();
+            r->size = size;
+            r->sizeAuto = sizeAuto;
+            r->fullScreenMode = fullScreenMode;
+            r->positionMode = positionMode;
+            r->position = position;
+            r->monitorIdx = monitorIdx;
+            r->windowSizeState = windowSizeState;
+            return r;
+        })
+        , py::arg("size") = HelloImGui::DefaultWindowSize, py::arg("size_auto") = false, py::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, py::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, py::arg("position") = HelloImGui::DefaultScreenPosition, py::arg("monitor_idx") = 0, py::arg("window_size_state") = HelloImGui::WindowSizeState::Standard
+        )
         .def_readwrite("size", &HelloImGui::WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)")
         .def_readwrite("size_auto", &HelloImGui::WindowGeometry::sizeAuto, "If True, adapt the app window size to the presented widgets")
         .def_readwrite("full_screen_mode", &HelloImGui::WindowGeometry::fullScreenMode, "")
@@ -150,7 +184,20 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
             (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_.\n* `resizable`: _bool, default = false_.\n\nOutput Member:\n* `outWindowDpiFactor`: _float, default = 1_.\n   This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1\n   on high resolution monitors (on MacOS, the scaling is handled by the system).\n   When loading fonts, their size should be multiplied by this factor.\n@@md\n*")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        std::string windowTitle, HelloImGui::WindowGeometry windowGeometry, bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, float outWindowDpiFactor = 1.)
+        {
+            auto r = std::make_unique<HelloImGui::AppWindowParams>();
+            r->windowTitle = windowTitle;
+            r->windowGeometry = windowGeometry;
+            r->restorePreviousGeometry = restorePreviousGeometry;
+            r->borderless = borderless;
+            r->resizable = resizable;
+            r->outWindowDpiFactor = outWindowDpiFactor;
+            return r;
+        })
+        , py::arg("window_title"), py::arg("window_geometry"), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("out_window_dpi_factor") = 1.
+        )
         .def_readwrite("window_title", &HelloImGui::AppWindowParams::windowTitle, "")
         .def_readwrite("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, "")
         .def_readwrite("restore_previous_geometry", &HelloImGui::AppWindowParams::restorePreviousGeometry, "if True, then save & restore from last run")
@@ -196,7 +243,6 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassImGuiThemeTweaks =
         py::class_<ImGuiTheme::ImGuiThemeTweaks>
             (m, "ImguiThemeTweaks", "")
-        .def(py::init<>()) // implicit default constructor
         .def_readwrite("rounding", &ImGuiTheme::ImGuiThemeTweaks::Rounding, "Common rounding for widgets. If < 0, this is ignored.")
         .def_readwrite("rounding_scrollbar_ratio", &ImGuiTheme::ImGuiThemeTweaks::RoundingScrollbarRatio, "If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)")
         .def_readwrite("alpha_multiplier", &ImGuiTheme::ImGuiThemeTweaks::AlphaMultiplier, "Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.")
@@ -206,13 +252,23 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("value_multiplier_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierBg, "Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.")
         .def_readwrite("value_multiplier_text", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierText, "Multiply the value (luminance) of text. If < 0, this is ignored.")
         .def_readwrite("value_multiplier_frame_bg", &ImGuiTheme::ImGuiThemeTweaks::ValueMultiplierFrameBg, " Multiply the value (luminance) of FrameBg. If < 0, this is ignored.\n (Background of checkbox, radio button, plot, slider, text input)")
+        .def(py::init<>())
         ;
 
 
     auto pyClassImGuiTweakedTheme =
         py::class_<ImGuiTheme::ImGuiTweakedTheme>
             (m, "ImguiTweakedTheme", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiTheme::ImGuiTheme_ Theme = ImGuiTheme::ImGuiTheme_DarculaDarker, ImGuiTheme::ImGuiThemeTweaks Tweaks = ImGuiTheme::ImGuiThemeTweaks())
+        {
+            auto r = std::make_unique<ImGuiTheme::ImGuiTweakedTheme>();
+            r->Theme = Theme;
+            r->Tweaks = Tweaks;
+            return r;
+        })
+        , py::arg("theme") = ImGuiTheme::ImGuiTheme_DarculaDarker, py::arg("tweaks") = ImGuiTheme::ImGuiThemeTweaks()
+        )
         .def_readwrite("theme", &ImGuiTheme::ImGuiTweakedTheme::Theme, "")
         .def_readwrite("tweaks", &ImGuiTheme::ImGuiTweakedTheme::Tweaks, "")
         ;
@@ -248,7 +304,24 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassImGuiWindowParams =
         py::class_<HelloImGui::ImGuiWindowParams>
             (m, "ImguiWindowParams", "*\n@@md#ImGuiWindowParams\n\n__ImGuiWindowParams__ is a struct that defines the ImGui inner windows params\nThese settings affect the imgui inner windows inside the application window.\nIn order to change the application window settings, change the _AppWindowsParams_\n\n Members:\n\n  * `defaultImGuiWindowType`: _DefaultImGuiWindowType, default=ProvideFullScreenWindow_.\n      By default, a full window is provided in the background. You can still\n      add windows on top of it, since the Z-order of this background window is always behind\n\n  * `backgroundColor`: _ImVec4, default=ImVec4(0.45, 0.55, 0.60, 1.00)_.\n      This is the \"clearColor\", only visible is defaultImGuiWindowType is NoDefaultWindow.\n\n  * `showMenuBar`: _bool, default=false_.\n    Show Menu bar on top of imgui main window\n    You can customize the menu via `RunnerCallbacks.ShowMenus()`\n\n  * `showMenu_App`: _bool, default=true_.\n    If menu bar is shown, include or not the default app menu (with Quit button)\n\n  * `showMenu_View`: _bool, default=true_.\n    If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and\n    set the docked windows and status bar visibility)\n\n  * `showStatusBar`: _bool, default=false_.\n    Flag that enable to show a Status bar at the bottom. You can customize the status bar\n    via RunnerCallbacks.ShowStatus()\n\n  * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.\n\n  * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.\n    Make windows only movable from the title bar\n\n  * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)\n    If True, you can drag windows outside out the main window in order to put their content into new native windows.\n\n  * `tweakedTheme`: _string, default=\"ImGuiColorsDark\"_.\n    Change the ImGui theme. Several themes are available, you can query the list by calling\n    HelloImGui::AvailableThemes()\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiTheme::ImGuiTweakedTheme tweakedTheme, HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false)
+        {
+            auto r = std::make_unique<HelloImGui::ImGuiWindowParams>();
+            r->tweakedTheme = tweakedTheme;
+            r->defaultImGuiWindowType = defaultImGuiWindowType;
+            r->backgroundColor = backgroundColor;
+            r->showMenuBar = showMenuBar;
+            r->showMenu_App = showMenu_App;
+            r->showMenu_View = showMenu_View;
+            r->showStatusBar = showStatusBar;
+            r->showStatus_Fps = showStatus_Fps;
+            r->configWindowsMoveFromTitleBarOnly = configWindowsMoveFromTitleBarOnly;
+            r->enableViewports = enableViewports;
+            return r;
+        })
+        , py::arg("tweaked_theme"), py::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, py::arg("background_color") = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), py::arg("show_menu_bar") = false, py::arg("show_menu_app") = true, py::arg("show_menu_view") = true, py::arg("show_status_bar") = false, py::arg("show_status_fps") = true, py::arg("config_windows_move_from_title_bar_only") = true, py::arg("enable_viewports") = false
+        )
         .def_readwrite("default_imgui_window_type", &HelloImGui::ImGuiWindowParams::defaultImGuiWindowType, "")
         .def_readwrite("background_color", &HelloImGui::ImGuiWindowParams::backgroundColor, "")
         .def_readwrite("show_menu_bar", &HelloImGui::ImGuiWindowParams::showMenuBar, "")
@@ -260,6 +333,13 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("enable_viewports", &HelloImGui::ImGuiWindowParams::enableViewports, "")
         .def_readwrite("tweaked_theme", &HelloImGui::ImGuiWindowParams::tweakedTheme, "")
         ;
+
+
+    m.def("empty_void_function",
+        HelloImGui::EmptyVoidFunction);
+
+    m.def("empty_event_callback",
+        HelloImGui::EmptyEventCallback);
 
 
     m.def("load_font_ttf",
@@ -281,7 +361,18 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassMobileCallbacks =
         py::class_<HelloImGui::MobileCallbacks>
             (m, "MobileCallbacks", "*\n@@md#MobileCallbacks\n\n**MobileCallbacks** is a struct that contains callbacks that are called by the application\n when running under \"Android, iOS and WinRT\".\n These events are specific to mobile and embedded devices that have different requirements\n than your usual desktop application. These events must be handled quickly,\n since often the OS needs an immediate response and will terminate your process shortly\n after sending the event if you do not handle them apprpriately.\n\n Note: on mobile devices, it is not possible to \"Quit\" an application, it can only be put on Pause.\n\n * `OnDestroy`: _VoidFunction, default=empty_. The application is being terminated by the OS.\n * `OnLowMemory`: _VoidFunction, default=empty_. The application is low on memory, free memory if possible.\n * `OnPause`: _VoidFunction, default=empty_. The application is about to enter the background.\n * `OnResume`: _VoidFunction, default=empty_. The application is has come to foreground and is now interactive.\n\n Note: 'OnPause' and 'OnResume' are called twice consecutively under iOS (before and after entering background\n or foreground).\n\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        VoidFunction OnDestroy = HelloImGui::EmptyVoidFunction(), VoidFunction OnLowMemory = HelloImGui::EmptyVoidFunction(), VoidFunction OnPause = HelloImGui::EmptyVoidFunction(), VoidFunction OnResume = HelloImGui::EmptyVoidFunction())
+        {
+            auto r = std::make_unique<HelloImGui::MobileCallbacks>();
+            r->OnDestroy = OnDestroy;
+            r->OnLowMemory = OnLowMemory;
+            r->OnPause = OnPause;
+            r->OnResume = OnResume;
+            return r;
+        })
+        , py::arg("on_destroy") = HelloImGui::EmptyVoidFunction(), py::arg("on_low_memory") = HelloImGui::EmptyVoidFunction(), py::arg("on_pause") = HelloImGui::EmptyVoidFunction(), py::arg("on_resume") = HelloImGui::EmptyVoidFunction()
+        )
         .def_readwrite("on_destroy", &HelloImGui::MobileCallbacks::OnDestroy, "")
         .def_readwrite("on_low_memory", &HelloImGui::MobileCallbacks::OnLowMemory, "")
         .def_readwrite("on_pause", &HelloImGui::MobileCallbacks::OnPause, "")
@@ -292,7 +383,23 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassRunnerCallbacks =
         py::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", "*\n @@md#RunnerCallbacks\n\n **RunnerCallbacks** is a struct that contains the callbacks that are called by the application\n\n _Members_\n\n* `ShowGui`: *VoidFunction, default=empty*.\n  Fill it with a function that will add your widgets.\n\n* `ShowMenus`: *VoidFunction, default=empty*.\n    A function that will render your menus. Fill it with a function that will add ImGui menus by calling:\n    _ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()_\n\n    _Notes:_\n    * you do not need to call _ImGui::BeginMenuBar_ and _ImGui::EndMenuBar_\n    * Some default menus can be provided: see _ImGuiWindowParams_ options\n      (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)\n\n* `ShowStatus`: *VoidFunction, default=empty*.\n  A function that will add items to the status bar. Use small items (ImGui::Text for example),\n  since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.\n\n* `PostInit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once after OpenGL and ImGui are inited\n\n* `BeforeExit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once before exiting (when OpenGL and ImGui are\n    still inited)\n\n* `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.\n  Callbacks for events from a specific backend. _Only implemented for SDL, where the event\n  will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled and shall not be processed further.\n\n* `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.\n   A function that is called when fonts are ready to be loaded.\n   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.\n\n* `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)\n\n* `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, setup your own style by providing your own SetupImGuiStyle callback\n\n\n* `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application\n    when running under \"Android, iOS and WinRT\".\nNotes:\n  * 'mobileCallbacks' is present only if the target device is a mobile device (iOS, Android).\n     Use `#ifdef HELLOIMGUI_MOBILEDEVICE` to detect this.\n  * These events are currently handled only with SDL backend.\n\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback(), VoidFunction LoadAdditionalFonts = HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), VoidFunction SetupImGuiConfig = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(), VoidFunction SetupImGuiStyle = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle())
+        {
+            auto r = std::make_unique<HelloImGui::RunnerCallbacks>();
+            r->ShowGui = ShowGui;
+            r->ShowMenus = ShowMenus;
+            r->ShowStatus = ShowStatus;
+            r->PostInit = PostInit;
+            r->BeforeExit = BeforeExit;
+            r->AnyBackendEventCallback = AnyBackendEventCallback;
+            r->LoadAdditionalFonts = LoadAdditionalFonts;
+            r->SetupImGuiConfig = SetupImGuiConfig;
+            r->SetupImGuiStyle = SetupImGuiStyle;
+            return r;
+        })
+        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback(), py::arg("load_additional_fonts") = HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), py::arg("setup_imgui_config") = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(), py::arg("setup_imgui_style") = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle()
+        )
         .def_readwrite("show_gui", &HelloImGui::RunnerCallbacks::ShowGui, "")
         .def_readwrite("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, "")
         .def_readwrite("show_status", &HelloImGui::RunnerCallbacks::ShowStatus, "")
@@ -341,7 +448,18 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassDockingParams =
         py::class_<HelloImGui::DockingParams>
             (m, "DockingParams", "*\n@@md#DockingParams\n\n**DockingParams** contains all the settings concerning the docking,\n together _with the Gui functions for the docked windows_.\n\n _Members:_\n\n* `dockingSplits`: _vector[DockingSplit]_.\n  Defines the way docking splits should be applied on the screen in order to create new Dock Spaces\n* `dockableWindows`: _vector[DockableWindow]_.\n  List of the dockable windows, together with their Gui code\n* `resetUserDockLayout`: _bool, default=true_.\n  Reset user layout at application startup\n\n _Helpers:_\n\n * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window\n * `None focusDockableWindow(const std::string& name)`: will focus a dockable window\n\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        std::vector<DockingSplit> dockingSplits, std::vector<DockableWindow> dockableWindows, bool resetUserDockLayout = true, bool wasDockLayoutApplied = false)
+        {
+            auto r = std::make_unique<HelloImGui::DockingParams>();
+            r->dockingSplits = dockingSplits;
+            r->dockableWindows = dockableWindows;
+            r->resetUserDockLayout = resetUserDockLayout;
+            r->wasDockLayoutApplied = wasDockLayoutApplied;
+            return r;
+        })
+        , py::arg("docking_splits"), py::arg("dockable_windows"), py::arg("reset_user_dock_layout") = true, py::arg("was_dock_layout_applied") = false
+        )
         .def_readwrite("docking_splits", &HelloImGui::DockingParams::dockingSplits, "")
         .def_readwrite("dockable_windows", &HelloImGui::DockingParams::dockableWindows, "")
         .def_readwrite("reset_user_dock_layout", &HelloImGui::DockingParams::resetUserDockLayout, "")
@@ -358,7 +476,17 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassBackendPointers =
         py::class_<HelloImGui::BackendPointers>
             (m, "BackendPointers", "*\n @@md#BackendPointers\n\n**BackendPointers** is a struct that contains optional pointers to the backend implementations (for SDL and GLFW).\n\nThese pointers will be filled when the application starts, and you can use them to customize\nyour application behavior using the selected backend.\n\n Members:\n* `glfwWindow`: _void *, default=nullptr_. Pointer to the main GLFW window (of type `GLFWwindow*`).\n  Only filled if the backend is GLFW.\n* `sdlWindow`: _void *, default=nullptr_. Pointer to the main SDL window (of type `SDL_Window*`).\n  Only filled if the backend is SDL (or emscripten + sdl)\n* `sdlGlContext`: _void *, default=nullptr_. Pointer to SDL's GlContext (of type `SDL_GLContext`).\n  Only filled if the backend is SDL (or emscripten + sdl)\n\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        void * glfwWindow = nullptr, void * sdlWindow = nullptr, void * sdlGlContext = nullptr)
+        {
+            auto r = std::make_unique<HelloImGui::BackendPointers>();
+            r->glfwWindow = glfwWindow;
+            r->sdlWindow = sdlWindow;
+            r->sdlGlContext = sdlGlContext;
+            return r;
+        })
+        , py::arg("glfw_window") = py::none(), py::arg("sdl_window") = py::none(), py::arg("sdl_gl_context") = py::none()
+        )
         .def_readwrite("glfw_window", &HelloImGui::BackendPointers::glfwWindow, "")
         .def_readwrite("sdl_window", &HelloImGui::BackendPointers::sdlWindow, "")
         .def_readwrite("sdl_gl_context", &HelloImGui::BackendPointers::sdlGlContext, "")
@@ -375,7 +503,23 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
             (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        HelloImGui::RunnerCallbacks callbacks, HelloImGui::AppWindowParams appWindowParams, HelloImGui::ImGuiWindowParams imGuiWindowParams, HelloImGui::DockingParams dockingParams, HelloImGui::BackendPointers backendPointers, HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, int emscripten_fps = 0)
+        {
+            auto r = std::make_unique<HelloImGui::RunnerParams>();
+            r->callbacks = callbacks;
+            r->appWindowParams = appWindowParams;
+            r->imGuiWindowParams = imGuiWindowParams;
+            r->dockingParams = dockingParams;
+            r->backendPointers = backendPointers;
+            r->backendType = backendType;
+            r->appShallExit = appShallExit;
+            r->fpsIdle = fpsIdle;
+            r->emscripten_fps = emscripten_fps;
+            return r;
+        })
+        , py::arg("callbacks"), py::arg("app_window_params"), py::arg("imgui_window_params"), py::arg("docking_params"), py::arg("backend_pointers"), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("app_shall_exit") = false, py::arg("fps_idle") = 10.f, py::arg("emscripten_fps") = 0
+        )
         .def_readwrite("callbacks", &HelloImGui::RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &HelloImGui::RunnerParams::appWindowParams, "")
         .def_readwrite("imgui_window_params", &HelloImGui::RunnerParams::imGuiWindowParams, "")
@@ -391,7 +535,20 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassSimpleRunnerParams =
         py::class_<HelloImGui::SimpleRunnerParams>
             (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**RunnerParams** is a struct that contains simpler params adapted for simple uses\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n@@md\n")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        VoidFunction guiFunction, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 10.f)
+        {
+            auto r = std::make_unique<HelloImGui::SimpleRunnerParams>();
+            r->guiFunction = guiFunction;
+            r->windowTitle = windowTitle;
+            r->windowSizeAuto = windowSizeAuto;
+            r->windowRestorePreviousGeometry = windowRestorePreviousGeometry;
+            r->windowSize = windowSize;
+            r->fpsIdle = fpsIdle;
+            return r;
+        })
+        , py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f
+        )
         .def_readwrite("gui_function", &HelloImGui::SimpleRunnerParams::guiFunction, "")
         .def_readwrite("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, "")
         .def_readwrite("window_size_auto", &HelloImGui::SimpleRunnerParams::windowSizeAuto, "")
