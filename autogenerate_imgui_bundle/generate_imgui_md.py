@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_imgui_md():
+    print("autogenerate_imgui_md")
     input_cpp_header = CPP_HEADERS_DIR + "/imgui_md_wrapper.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_md.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_md.pyi"
@@ -33,5 +34,4 @@ def autogenerate_imgui_md():
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui_md")
     autogenerate_imgui_md()

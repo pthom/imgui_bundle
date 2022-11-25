@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_immvision():
+    print("autogenerate_immvision")
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_immvision.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/immvision.pyi"
 
@@ -31,5 +32,4 @@ def autogenerate_immvision():
 
 
 if __name__ == "__main__":
-    print("autogenerate_immvision")
     autogenerate_immvision()

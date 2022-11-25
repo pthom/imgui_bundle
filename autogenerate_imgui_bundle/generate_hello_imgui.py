@@ -1,5 +1,6 @@
 import os
 
+from srcmlcpp.scrml_warning_settings import WarningType
 from codemanip import amalgamated_header
 from codemanip.code_utils import join_string_by_pipe_char
 
@@ -16,6 +17,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 def make_hello_imgui_amalgamated_header():
     hello_imgui_src_dir = LG_HELLO_IMGUI_DIR + "/external/hello_imgui/src/"
+
     options = amalgamated_header.AmalgamationOptions()
 
     options.base_dir = hello_imgui_src_dir
@@ -28,6 +30,7 @@ def make_hello_imgui_amalgamated_header():
 
 
 def autogenerate_hello_imgui():
+    print("autogenerate_hello_imgui")
     make_hello_imgui_amalgamated_header()
 
     input_cpp_header = _THIS_DIR + "/hello_imgui_amalgamation.h"
@@ -38,6 +41,8 @@ def autogenerate_hello_imgui():
     from codemanip.code_replacements import RegexReplacement
 
     options = litgen.LitgenOptions()
+    options.srcmlcpp_options.ignored_warnings = [WarningType.LitgenIgnoreElement]
+    options.srcmlcpp_options.ignored_warning_parts = ["gAssetsSubfolderFolderName"]
     options.namespace_root__regex = "^HelloImGui$|^ImGuiTheme$"
     options.fn_return_force_policy_reference_for_pointers__regex = join_string_by_pipe_char(
         [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
@@ -57,5 +62,4 @@ def autogenerate_hello_imgui():
 
 
 if __name__ == "__main__":
-    print("autogenerate_hello_imgui")
     autogenerate_hello_imgui()

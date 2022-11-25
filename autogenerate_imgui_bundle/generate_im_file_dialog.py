@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_im_file_dialog():
+    print("autogenerate_im_file_dialog")
     input_cpp_header = CPP_HEADERS_DIR + "/ImFileDialog.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_im_file_dialog.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/im_file_dialog.pyi"
@@ -36,5 +37,4 @@ def autogenerate_im_file_dialog():
 
 
 if __name__ == "__main__":
-    print("autogenerate_im_file_dialog")
     autogenerate_im_file_dialog()

@@ -17,6 +17,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_imgui() -> None:
+    print("autogenerate_imgui")
     # Generate for imgui.h
     options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
 
@@ -26,12 +27,17 @@ def autogenerate_imgui() -> None:
     # options_imgui.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
 
     generator = litgen.LitgenGenerator(options_imgui)
+
+    print("Processing imgui.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
+    print("Processing imgui_toggle.h")
+    options_imgui.srcmlcpp_options.flag_show_progress = False
     generator.process_cpp_file(REPO_DIR + "/external/imgui_toggle/imgui_toggle.h")
 
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
+    options_imgui.srcmlcpp_options.flag_quiet = True
 
     # Workaround internal compiler error on MSVC:
     # See failure logs: https://github.com/pthom/imgui_bundle/actions/runs/3267470437/jobs/5372682867
@@ -39,6 +45,7 @@ def autogenerate_imgui() -> None:
     # options_imgui_stdlib.fn_exclude_by_name__regex += "|^Selectable$|^PlotLines$|^PlotHistogram$|^InputTextMultiline$"
 
     generator.lg_context.options = options_imgui_stdlib
+    print("Processing imgui_stdlib.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/misc/cpp/imgui_stdlib.h")
 
     generator.write_generated_code(
@@ -49,6 +56,7 @@ def autogenerate_imgui() -> None:
 
 
 def autogenerate_imgui_internal() -> None:
+    print("Processing imgui_internal.h")
     options_imgui_internal = litgen_options_imgui(ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH)
     litgen.write_generated_code_for_file(
         options_imgui_internal,
@@ -59,6 +67,5 @@ def autogenerate_imgui_internal() -> None:
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui")
     autogenerate_imgui()
     autogenerate_imgui_internal()

@@ -35,12 +35,21 @@ def apply_patch():
 
 
 def autogenerate_imgui_node_editor():
+    print("autogenerate_imgui_node_editor")
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_node_editor.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_node_editor.pyi"
 
     # Configure options
     # options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options = litgen.LitgenOptions()
+    options.srcmlcpp_options.ignored_warning_parts = [
+        "explicit SafePointerType",
+        "Colors[StyleColor_Count]",
+        "template <typename T2, typename Tag2>",
+        "template <typename Tag>",
+        " inline SaveReasonFlags operator |",
+        "SaveReasonFlags operator &",
+    ]
     options.python_run_black_formatter = True
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
@@ -74,5 +83,4 @@ def autogenerate_imgui_node_editor():
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui_node_editor")
     autogenerate_imgui_node_editor()
