@@ -87,6 +87,9 @@ class AssetFileData:
     """
     data: Any = None
     data_size: int = 0
+    def __init__(self, data: Any = None, data_size: int = 0) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 def load_asset_file_data(asset_path: str) -> AssetFileData:
     pass
@@ -223,9 +226,10 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 """ namespace BackendApi"""
 
 
+
 class ScreenBounds:
-    position: ScreenPosition = {0, 0}
-    size: ScreenSize = {100, 100}
+    position: ScreenPosition = DefaultScreenPosition
+    size: ScreenSize = DefaultWindowSize
 
     def top_left_corner(self) -> ScreenPosition:
         pass
@@ -250,6 +254,13 @@ class ScreenBounds:
         pass
 
     def __eq__(self, other: ScreenBounds) -> bool:
+        pass
+    def __init__(
+        self,
+        position: ScreenPosition = DefaultScreenPosition,
+        size: ScreenSize = DefaultWindowSize
+        ) -> None:
+        """Auto-generated default constructor"""
         pass
 
 
@@ -277,7 +288,6 @@ class WindowPositionMode(enum.Enum):
     os_default = enum.auto()     # (= 0)
     monitor_center = enum.auto() # (= 1)
     from_coords = enum.auto()    # (= 2)
-
 
 
 class WindowGeometry:
@@ -319,7 +329,7 @@ class WindowGeometry:
     *
     """
     # used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)
-    size: ScreenSize = DefaultScreenSize
+    size: ScreenSize = DefaultWindowSize
 
     # If True, adapt the app window size to the presented widgets
     size_auto: bool = False
@@ -335,6 +345,18 @@ class WindowGeometry:
     monitor_idx: int = 0
 
     window_size_state: WindowSizeState = WindowSizeState.standard
+    def __init__(
+        self,
+        size: ScreenSize = DefaultWindowSize,
+        size_auto: bool = False,
+        full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen,
+        position_mode: WindowPositionMode = WindowPositionMode.os_default,
+        position: ScreenPosition = DefaultScreenPosition,
+        monitor_idx: int = 0,
+        window_size_state: WindowSizeState = WindowSizeState.standard
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 class AppWindowParams:
@@ -374,6 +396,17 @@ class AppWindowParams:
     resizable: bool = True
 
     out_window_dpi_factor: float = 1.
+    def __init__(
+        self,
+        window_title: str,
+        window_geometry: WindowGeometry,
+        restore_previous_geometry: bool = False,
+        borderless: bool = False,
+        resizable: bool = True,
+        out_window_dpi_factor: float = 1.
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 
@@ -441,9 +474,19 @@ class ImguiThemeTweaks:
     # (Background of checkbox, radio button, plot, slider, text input)
     value_multiplier_frame_bg: float = -1.
 
+    def __init__(self) -> None:
+        pass
+
 class ImguiTweakedTheme:
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
-    tweaks: ImGuiThemeTweaks = {}
+    tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
+    def __init__(
+        self,
+        theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
+        tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 def tweaked_theme_theme_to_style(
     tweaked_theme: ImGuiTweakedTheme
@@ -564,15 +607,56 @@ class ImguiWindowParams:
     enable_viewports: bool = False
 
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
+    def __init__(
+        self,
+        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme,
+        default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
+        background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00),
+        show_menu_bar: bool = False,
+        show_menu_app: bool = True,
+        show_menu_view: bool = True,
+        show_status_bar: bool = False,
+        show_status_fps: bool = True,
+        config_windows_move_from_title_bar_only: bool = True,
+        enable_viewports: bool = False
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#*
+#@@md#VoidFunction_AnyEventCallback
+#
+#**VoidFunctionPointer** can hold any None(None) function.
+#````cpp
+#using VoidFunction = std::function<None(None)>
+#````
+#
+#**AnyEventCallback** can hold any bool(None *) function.
+#  It is designed to handle callbacks for a specific backend.
+#````cpp
+#using AnyEventCallback = std::function<bool(None * backendEvent)>
+#````
+#
+#@@md
+#*
+
+def empty_void_function() -> VoidFunction:
+    pass
+def empty_event_callback() -> AnyEventCallback:
+    pass
+
+
+
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 """ namespace HelloImGui"""
 def load_font_ttf(
     font_filename: str,
@@ -597,27 +681,10 @@ def merge_font_awesome_to_last_font(
 
 
 
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h continued                                               //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-#*
-#@@md#VoidFunction_AnyEventCallback
-#
-#**VoidFunctionPointer** can hold any None(None) function.
-#````cpp
-#using VoidFunction = std::function<None(None)>
-#````
-#
-#**AnyEventCallback** can hold any bool(None *) function.
-#  It is designed to handle callbacks for a specific backend.
-#````cpp
-#using AnyEventCallback = std::function<bool(None * backendEvent)>
-#````
-#
-#@@md
-#*
 
 class MobileCallbacks:
     """*
@@ -643,10 +710,19 @@ class MobileCallbacks:
     @@md
 
     """
-    on_destroy: VoidFunction = {}
-    on_low_memory: VoidFunction = {}
-    on_pause: VoidFunction = {}
-    on_resume: VoidFunction = {}
+    on_destroy: VoidFunction = EmptyVoidFunction()
+    on_low_memory: VoidFunction = EmptyVoidFunction()
+    on_pause: VoidFunction = EmptyVoidFunction()
+    on_resume: VoidFunction = EmptyVoidFunction()
+    def __init__(
+        self,
+        on_destroy: VoidFunction = EmptyVoidFunction(),
+        on_low_memory: VoidFunction = EmptyVoidFunction(),
+        on_pause: VoidFunction = EmptyVoidFunction(),
+        on_resume: VoidFunction = EmptyVoidFunction()
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 class RunnerCallbacks:
     """*
@@ -705,18 +781,32 @@ class RunnerCallbacks:
     @@md
 
     """
-    show_gui: VoidFunction = {}
-    show_menus: VoidFunction = {}
-    show_status: VoidFunction = {}
-    post_init: VoidFunction = {}
-    before_exit: VoidFunction = {}
+    show_gui: VoidFunction = EmptyVoidFunction()
+    show_menus: VoidFunction = EmptyVoidFunction()
+    show_status: VoidFunction = EmptyVoidFunction()
+    post_init: VoidFunction = EmptyVoidFunction()
+    before_exit: VoidFunction = EmptyVoidFunction()
 
-    any_backend_event_callback: AnyEventCallback = {}
+    any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
-    load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
-    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig
-    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle
+    load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons()
+    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig()
+    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
 
+    def __init__(
+        self,
+        show_gui: VoidFunction = EmptyVoidFunction(),
+        show_menus: VoidFunction = EmptyVoidFunction(),
+        show_status: VoidFunction = EmptyVoidFunction(),
+        post_init: VoidFunction = EmptyVoidFunction(),
+        before_exit: VoidFunction = EmptyVoidFunction(),
+        any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
+        load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons(),
+        setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig(),
+        setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 # namespace HelloImGui
@@ -924,6 +1014,15 @@ class DockingParams:
         pass
     def focus_dockable_window(self, window_name: str) -> None:
         pass
+    def __init__(
+        self,
+        docking_splits: List[DockingSplit],
+        dockable_windows: List[DockableWindow],
+        reset_user_dock_layout: bool = True,
+        was_dock_layout_applied: bool = False
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -959,6 +1058,14 @@ class BackendPointers:
     sdl_window: Any = None
     # SDL_GLContext
     sdl_gl_context: Any = None
+    def __init__(
+        self,
+        glfw_window: Any = None,
+        sdl_window: Any = None,
+        sdl_gl_context: Any = None
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 
@@ -1013,7 +1120,7 @@ class RunnerParams:
     """
     callbacks: RunnerCallbacks
     app_window_params: AppWindowParams
-    imgui_window_params: ImguiWindowParams
+    imgui_window_params: ImGuiWindowParams
     docking_params: DockingParams
     backend_pointers: BackendPointers
     backend_type: BackendType = BackendType.first_available
@@ -1022,6 +1129,20 @@ class RunnerParams:
     fps_idle: float = 10.
 
     emscripten_fps: int = 0
+    def __init__(
+        self,
+        callbacks: RunnerCallbacks,
+        app_window_params: AppWindowParams,
+        imgui_window_params: ImGuiWindowParams,
+        docking_params: DockingParams,
+        backend_pointers: BackendPointers,
+        backend_type: BackendType = BackendType.first_available,
+        app_shall_exit: bool = False,
+        fps_idle: float = 10.,
+        emscripten_fps: int = 0
+        ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 
 class SimpleRunnerParams:
@@ -1051,11 +1172,22 @@ class SimpleRunnerParams:
 
     window_size_auto: bool = False
     window_restore_previous_geometry: bool = False
-    window_size: ScreenSize = {800, 600}
+    window_size: ScreenSize = DefaultWindowSize
 
     fps_idle: float = 10.
 
     def to_runner_params(self) -> RunnerParams:
+        pass
+    def __init__(
+        self,
+        gui_function: VoidFunction,
+        window_title: str = "",
+        window_size_auto: bool = False,
+        window_restore_previous_geometry: bool = False,
+        window_size: ScreenSize = DefaultWindowSize,
+        fps_idle: float = 10.
+        ) -> None:
+        """Auto-generated default constructor"""
         pass
 
 
@@ -1115,7 +1247,6 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 @@md
 
 """
-
 def run(runner_params: RunnerParams) -> None:
     pass
 
@@ -1155,11 +1286,11 @@ def get_runner_params() -> RunnerParams:
 class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
-    def load_default_font_with_font_awesome_icons() -> None:
+    def load_default_font_with_font_awesome_icons() -> VoidFunction:
         pass
-    def setup_default_imgui_config() -> None:
+    def setup_default_imgui_config() -> VoidFunction:
         pass
-    def setup_default_imgui_style() -> None:
+    def setup_default_imgui_style() -> VoidFunction:
         pass
 
 # </submodule ImGuiDefaultSettings>

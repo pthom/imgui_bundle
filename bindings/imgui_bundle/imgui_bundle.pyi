@@ -43,6 +43,16 @@ class AddOnsParams:
 
     # You can tweak MarkdownOptions (but this is optional)
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None
+    def __init__(
+        self,
+        with_implot: bool = False,
+        with_markdown: bool = False,
+        with_node_editor: bool = False,
+        with_node_editor_config: Optional[NodeEditorConfig] = None,
+        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 def run(
     runner_params: HelloImGui.RunnerParams,

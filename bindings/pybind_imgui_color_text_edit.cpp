@@ -90,7 +90,16 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         auto pyClassTextEditor_ClassIdentifier =
             py::class_<TextEditor::Identifier>
                 (pyClassTextEditor, "Identifier", "")
-            .def(py::init<>()) // implicit default constructor
+            .def(py::init<>([](
+            TextEditor::Coordinates mLocation, std::string mDeclaration)
+            {
+                auto r = std::make_unique<TextEditor::Identifier>();
+                r->mLocation = mLocation;
+                r->mDeclaration = mDeclaration;
+                return r;
+            })
+            , py::arg("m_location"), py::arg("m_declaration")
+            )
             .def_readwrite("m_location", &TextEditor::Identifier::mLocation, "")
             .def_readwrite("m_declaration", &TextEditor::Identifier::mDeclaration, "")
             ;

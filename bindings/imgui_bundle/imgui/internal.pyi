@@ -327,7 +327,10 @@ class ImBitVector:    # imgui_internal.h:580
     """ Helper: ImBitVector
      Store 1-bit per value.
     """
-    pass
+    # ImBitVector(ImVector<ImU32> Storage);    /* original C++ signature */
+    def __init__(self, storage: List[ImU32]) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 
 
@@ -387,6 +390,10 @@ class ImDrawDataBuilder:    # imgui_internal.h:752
 
     # IMGUI_API void FlattenIntoSingleLayer();    /* original C++ signature */
     def flatten_into_single_layer(self) -> None:    # imgui_internal.h:759
+        pass
+    # ImDrawDataBuilder();    /* original C++ signature */
+    def __init__(self) -> None:                     # Line:3
+        """Auto-generated default constructor"""
         pass
 
 #-----------------------------------------------------------------------------
@@ -606,18 +613,26 @@ class ImGuiPopupPositionPolicy(enum.Enum):    # imgui_internal.h:921
 
 class ImGuiDataTypeTempStorage:    # imgui_internal.h:928
     # ImU8        Data[8];    /* original C++ signature */
-    data: np.ndarray  # ndarray[type=ImU8, size=8]  # Can fit any data up to ImGuiDataType_COUNT    # imgui_internal.h:930
+    data: np.ndarray               # ndarray[type=ImU8, size=8]  # Can fit any data up to ImGuiDataType_COUNT    # imgui_internal.h:930
+    # ImGuiDataTypeTempStorage();    /* original C++ signature */
+    def __init__(self) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiDataTypeInfo:    # imgui_internal.h:934
     """ Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo()."""
     # size_t      Size;    /* original C++ signature */
-    size: int       # Size in bytes    # imgui_internal.h:936
+    size: int                                 # Size in bytes    # imgui_internal.h:936
     # const char* Name;    /* original C++ signature */
-    name: str       # Short descriptive name for the type, for debugging    # imgui_internal.h:937
+    name: str                                 # Short descriptive name for the type, for debugging    # imgui_internal.h:937
     # const char* PrintFmt;    /* original C++ signature */
-    print_fmt: str  # Default printf format for the type    # imgui_internal.h:938
+    print_fmt: str                            # Default printf format for the type    # imgui_internal.h:938
     # const char* ScanFmt;    /* original C++ signature */
-    scan_fmt: str   # Default scanf format for the type    # imgui_internal.h:939
+    scan_fmt: str                             # Default scanf format for the type    # imgui_internal.h:939
+    # ImGuiDataTypeInfo(size_t Size);    /* original C++ signature */
+    def __init__(self, size: int) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiDataTypePrivate_(enum.Enum):    # imgui_internal.h:943
     """ Extend ImGuiDataType_"""
@@ -632,9 +647,13 @@ class ImGuiDataTypePrivate_(enum.Enum):    # imgui_internal.h:943
 class ImGuiColorMod:    # imgui_internal.h:951
     """ Stacked color modifier, backup of modified data so we can restore it"""
     # ImGuiCol        Col;    /* original C++ signature */
-    col: ImGuiCol           # imgui_internal.h:953
+    col: ImGuiCol                                                       # imgui_internal.h:953
     # ImVec4          BackupValue;    /* original C++ signature */
-    backup_value: ImVec4    # imgui_internal.h:954
+    backup_value: ImVec4                                                # imgui_internal.h:954
+    # ImGuiColorMod(ImGuiCol Col, ImVec4 BackupValue);    /* original C++ signature */
+    def __init__(self, col: ImGuiCol, backup_value: ImVec4) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiStyleMod:    # imgui_internal.h:958
     """ Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable."""
@@ -672,27 +691,31 @@ class ImGuiComboPreviewData:    # imgui_internal.h:968
 class ImGuiGroupData:    # imgui_internal.h:981
     """ Stacked storage data for BeginGroup()/EndGroup()"""
     # ImGuiID     WindowID;    /* original C++ signature */
-    window_id: ImGuiID                                # imgui_internal.h:983
+    window_id: ImGuiID                                                                                                                                                                                                                                                                                                                                                               # imgui_internal.h:983
     # ImVec2      BackupCursorPos;    /* original C++ signature */
-    backup_cursor_pos: ImVec2                         # imgui_internal.h:984
+    backup_cursor_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                        # imgui_internal.h:984
     # ImVec2      BackupCursorMaxPos;    /* original C++ signature */
-    backup_cursor_max_pos: ImVec2                     # imgui_internal.h:985
+    backup_cursor_max_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                    # imgui_internal.h:985
     # ImVec1      BackupIndent;    /* original C++ signature */
-    backup_indent: ImVec1                             # imgui_internal.h:986
+    backup_indent: ImVec1                                                                                                                                                                                                                                                                                                                                                            # imgui_internal.h:986
     # ImVec1      BackupGroupOffset;    /* original C++ signature */
-    backup_group_offset: ImVec1                       # imgui_internal.h:987
+    backup_group_offset: ImVec1                                                                                                                                                                                                                                                                                                                                                      # imgui_internal.h:987
     # ImVec2      BackupCurrLineSize;    /* original C++ signature */
-    backup_curr_line_size: ImVec2                     # imgui_internal.h:988
+    backup_curr_line_size: ImVec2                                                                                                                                                                                                                                                                                                                                                    # imgui_internal.h:988
     # float       BackupCurrLineTextBaseOffset;    /* original C++ signature */
-    backup_curr_line_text_base_offset: float          # imgui_internal.h:989
+    backup_curr_line_text_base_offset: float                                                                                                                                                                                                                                                                                                                                         # imgui_internal.h:989
     # ImGuiID     BackupActiveIdIsAlive;    /* original C++ signature */
-    backup_active_id_is_alive: ImGuiID                # imgui_internal.h:990
+    backup_active_id_is_alive: ImGuiID                                                                                                                                                                                                                                                                                                                                               # imgui_internal.h:990
     # bool        BackupActiveIdPreviousFrameIsAlive;    /* original C++ signature */
-    backup_active_id_previous_frame_is_alive: bool    # imgui_internal.h:991
+    backup_active_id_previous_frame_is_alive: bool                                                                                                                                                                                                                                                                                                                                   # imgui_internal.h:991
     # bool        BackupHoveredIdIsAlive;    /* original C++ signature */
-    backup_hovered_id_is_alive: bool                  # imgui_internal.h:992
+    backup_hovered_id_is_alive: bool                                                                                                                                                                                                                                                                                                                                                 # imgui_internal.h:992
     # bool        EmitItem;    /* original C++ signature */
-    emit_item: bool                                   # imgui_internal.h:993
+    emit_item: bool                                                                                                                                                                                                                                                                                                                                                                  # imgui_internal.h:993
+    # ImGuiGroupData(ImGuiID WindowID, ImVec2 BackupCursorPos, ImVec2 BackupCursorMaxPos, ImVec1 BackupIndent, ImVec1 BackupGroupOffset, ImVec2 BackupCurrLineSize, float BackupCurrLineTextBaseOffset, ImGuiID BackupActiveIdIsAlive, bool BackupActiveIdPreviousFrameIsAlive, bool BackupHoveredIdIsAlive, bool EmitItem);    /* original C++ signature */
+    def __init__(self, window_id: ImGuiID, backup_cursor_pos: ImVec2, backup_cursor_max_pos: ImVec2, backup_indent: ImVec1, backup_group_offset: ImVec1, backup_curr_line_size: ImVec2, backup_curr_line_text_base_offset: float, backup_active_id_is_alive: ImGuiID, backup_active_id_previous_frame_is_alive: bool, backup_hovered_id_is_alive: bool, emit_item: bool) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiMenuColumns:    # imgui_internal.h:997
     """ Simple column measurement, currently used for MenuItem() only.. This is very short-sighted/throw-away code and NOT a generic helper."""
@@ -918,19 +941,27 @@ class ImGuiStackSizes:    # imgui_internal.h:1142
 class ImGuiWindowStackData:    # imgui_internal.h:1160
     """ Data saved for each window pushed into the stack"""
     # ImGuiWindow*            Window;    /* original C++ signature */
-    window: ImGuiWindow                                # imgui_internal.h:1162
+    window: ImGuiWindow                                                                                                                         # imgui_internal.h:1162
     # ImGuiLastItemData       ParentLastItemDataBackup;    /* original C++ signature */
-    parent_last_item_data_backup: ImGuiLastItemData    # imgui_internal.h:1163
+    parent_last_item_data_backup: ImGuiLastItemData                                                                                             # imgui_internal.h:1163
     # ImGuiStackSizes         StackSizesOnBegin;    /* original C++ signature */
-    stack_sizes_on_begin: ImGuiStackSizes              # Store size of various stacks for asserting    # imgui_internal.h:1164
+    stack_sizes_on_begin: ImGuiStackSizes                                                                                                       # Store size of various stacks for asserting    # imgui_internal.h:1164
+    # ImGuiWindowStackData(ImGuiWindow * Window, ImGuiLastItemData ParentLastItemDataBackup, ImGuiStackSizes StackSizesOnBegin);    /* original C++ signature */
+    def __init__(self, window: ImGuiWindow, parent_last_item_data_backup: ImGuiLastItemData, stack_sizes_on_begin: ImGuiStackSizes) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiShrinkWidthItem:    # imgui_internal.h:1167
     # int         Index;    /* original C++ signature */
-    index: int              # imgui_internal.h:1169
+    index: int                                                                     # imgui_internal.h:1169
     # float       Width;    /* original C++ signature */
-    width: float            # imgui_internal.h:1170
+    width: float                                                                   # imgui_internal.h:1170
     # float       InitialWidth;    /* original C++ signature */
-    initial_width: float    # imgui_internal.h:1171
+    initial_width: float                                                           # imgui_internal.h:1171
+    # ImGuiShrinkWidthItem(int Index, float Width, float InitialWidth);    /* original C++ signature */
+    def __init__(self, index: int, width: float, initial_width: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiPtrOrIndex:    # imgui_internal.h:1174
     # void*       Ptr;    /* original C++ signature */
@@ -1003,35 +1034,63 @@ class ImGuiInputSource(enum.Enum):    # imgui_internal.h:1210
 # Using ImVec2() would fail on Clang 'union member 'MousePos' has a non-trivial default constructor'
 class ImGuiInputEventMousePos:    # imgui_internal.h:1223
     # float PosX,     /* original C++ signature */
-    pos_x: float    # imgui_internal.h:1223
+    pos_x: float                                               # imgui_internal.h:1223
     # PosY;    /* original C++ signature */
-    pos_y: float    # imgui_internal.h:1223
+    pos_y: float                                               # imgui_internal.h:1223
+    # ImGuiInputEventMousePos(float PosX, float PosY);    /* original C++ signature */
+    def __init__(self, pos_x: float, pos_y: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventMouseWheel:    # imgui_internal.h:1224
     # float WheelX,     /* original C++ signature */
-    wheel_x: float    # imgui_internal.h:1224
+    wheel_x: float                                                 # imgui_internal.h:1224
     # WheelY;    /* original C++ signature */
-    wheel_y: float    # imgui_internal.h:1224
+    wheel_y: float                                                 # imgui_internal.h:1224
+    # ImGuiInputEventMouseWheel(float WheelX, float WheelY);    /* original C++ signature */
+    def __init__(self, wheel_x: float, wheel_y: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventMouseButton:    # imgui_internal.h:1225
     # int Button;    /* original C++ signature */
-    button: int    # imgui_internal.h:1225
+    button: int                                             # imgui_internal.h:1225
     # bool Down;    /* original C++ signature */
-    down: bool     # imgui_internal.h:1225
+    down: bool                                              # imgui_internal.h:1225
+    # ImGuiInputEventMouseButton(int Button, bool Down);    /* original C++ signature */
+    def __init__(self, button: int, down: bool) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventMouseViewport:    # imgui_internal.h:1226
     # ImGuiID HoveredViewportID;    /* original C++ signature */
-    hovered_viewport_id: ImGuiID    # imgui_internal.h:1226
+    hovered_viewport_id: ImGuiID                                 # imgui_internal.h:1226
+    # ImGuiInputEventMouseViewport(ImGuiID HoveredViewportID);    /* original C++ signature */
+    def __init__(self, hovered_viewport_id: ImGuiID) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventKey:    # imgui_internal.h:1227
     # ImGuiKey Key;    /* original C++ signature */
-    key: ImGuiKey          # imgui_internal.h:1227
+    key: ImGuiKey                                                                  # imgui_internal.h:1227
     # bool Down;    /* original C++ signature */
-    down: bool             # imgui_internal.h:1227
+    down: bool                                                                     # imgui_internal.h:1227
     # float AnalogValue;    /* original C++ signature */
-    analog_value: float    # imgui_internal.h:1227
+    analog_value: float                                                            # imgui_internal.h:1227
+    # ImGuiInputEventKey(ImGuiKey Key, bool Down, float AnalogValue);    /* original C++ signature */
+    def __init__(self, key: ImGuiKey, down: bool, analog_value: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventText:    # imgui_internal.h:1228
     # unsigned int Char;    /* original C++ signature */
-    char: int    # imgui_internal.h:1228
+    char: int                                 # imgui_internal.h:1228
+    # ImGuiInputEventText(unsigned int Char);    /* original C++ signature */
+    def __init__(self, char: int) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 class ImGuiInputEventAppFocused:    # imgui_internal.h:1229
     # bool Focused;    /* original C++ signature */
-    focused: bool    # imgui_internal.h:1229
+    focused: bool                                 # imgui_internal.h:1229
+    # ImGuiInputEventAppFocused(bool Focused);    /* original C++ signature */
+    def __init__(self, focused: bool) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiInputEvent:    # imgui_internal.h:1231
     # ImGuiInputEventType             Type;    /* original C++ signature */
@@ -1067,16 +1126,20 @@ class ImGuiNavReadMode(enum.Enum):    # imgui_internal.h:1251
 
 class ImGuiListClipperRange:    # imgui_internal.h:1265
     # int     Min;    /* original C++ signature */
-    min: int                       # imgui_internal.h:1267
+    min: int                                                                                                                                     # imgui_internal.h:1267
     # int     Max;    /* original C++ signature */
-    max: int                       # imgui_internal.h:1268
+    max: int                                                                                                                                     # imgui_internal.h:1268
     # bool    PosToIndexConvert;    /* original C++ signature */
-    pos_to_index_convert: bool     # Begin/End are absolute position (will be converted to indices later)    # imgui_internal.h:1269
+    pos_to_index_convert: bool                                                                                                                   # Begin/End are absolute position (will be converted to indices later)    # imgui_internal.h:1269
     # ImS8    PosToIndexOffsetMin;    /* original C++ signature */
-    pos_to_index_offset_min: ImS8  # Add to Min after converting to indices    # imgui_internal.h:1270
+    pos_to_index_offset_min: ImS8                                                                                                                # Add to Min after converting to indices    # imgui_internal.h:1270
     # ImS8    PosToIndexOffsetMax;    /* original C++ signature */
-    pos_to_index_offset_max: ImS8  # Add to Min after converting to indices    # imgui_internal.h:1271
+    pos_to_index_offset_max: ImS8                                                                                                                # Add to Min after converting to indices    # imgui_internal.h:1271
 
+    # ImGuiListClipperRange(int Min, int Max, bool PosToIndexConvert, ImS8 PosToIndexOffsetMin, ImS8 PosToIndexOffsetMax);    /* original C++ signature */
+    def __init__(self, min: int, max: int, pos_to_index_convert: bool, pos_to_index_offset_min: ImS8, pos_to_index_offset_max: ImS8) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiListClipperData:    # imgui_internal.h:1278
     """ Temporary clipper data, buffers shared/reused between instances"""
@@ -1448,7 +1511,10 @@ class ImGuiWindowDockStyleCol(enum.Enum):    # imgui_internal.h:1553
     count = enum.auto()                # (= 6)
 
 class ImGuiWindowDockStyle:    # imgui_internal.h:1564
-    pass
+    # ImGuiWindowDockStyle();    /* original C++ signature */
+    def __init__(self) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiDockContext:    # imgui_internal.h:1569
     # ImGuiStorage                    Nodes;    /* original C++ signature */
@@ -2308,76 +2374,80 @@ class ImGuiWindowTempData:    # imgui_internal.h:2198
     """
     # Layout
     # ImVec2                  CursorPos;    /* original C++ signature */
-    cursor_pos: ImVec2                      # Current emitting position, in absolute coordinates.    # imgui_internal.h:2201
+    cursor_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # Current emitting position, in absolute coordinates.    # imgui_internal.h:2201
     # ImVec2                  CursorPosPrevLine;    /* original C++ signature */
-    cursor_pos_prev_line: ImVec2            # imgui_internal.h:2202
+    cursor_pos_prev_line: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            # imgui_internal.h:2202
     # ImVec2                  CursorStartPos;    /* original C++ signature */
-    cursor_start_pos: ImVec2                # Initial position after Begin(), generally ~ window position + WindowPadding.    # imgui_internal.h:2203
+    cursor_start_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # Initial position after Begin(), generally ~ window position + WindowPadding.    # imgui_internal.h:2203
     # ImVec2                  CursorMaxPos;    /* original C++ signature */
-    cursor_max_pos: ImVec2                  # Used to implicitly calculate ContentSize at the beginning of next frame, for scrolling range and auto-resize. Always growing during the frame.    # imgui_internal.h:2204
+    cursor_max_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Used to implicitly calculate ContentSize at the beginning of next frame, for scrolling range and auto-resize. Always growing during the frame.    # imgui_internal.h:2204
     # ImVec2                  IdealMaxPos;    /* original C++ signature */
-    ideal_max_pos: ImVec2                   # Used to implicitly calculate ContentSizeIdeal at the beginning of next frame, for auto-resize only. Always growing during the frame.    # imgui_internal.h:2205
+    ideal_max_pos: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   # Used to implicitly calculate ContentSizeIdeal at the beginning of next frame, for auto-resize only. Always growing during the frame.    # imgui_internal.h:2205
     # ImVec2                  CurrLineSize;    /* original C++ signature */
-    curr_line_size: ImVec2                  # imgui_internal.h:2206
+    curr_line_size: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # imgui_internal.h:2206
     # ImVec2                  PrevLineSize;    /* original C++ signature */
-    prev_line_size: ImVec2                  # imgui_internal.h:2207
+    prev_line_size: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # imgui_internal.h:2207
     # float                   CurrLineTextBaseOffset;    /* original C++ signature */
-    curr_line_text_base_offset: float       # Baseline offset (0.0 by default on a new line, generally == style.FramePadding.y when a framed item has been added).    # imgui_internal.h:2208
+    curr_line_text_base_offset: float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # Baseline offset (0.0 by default on a new line, generally == style.FramePadding.y when a framed item has been added).    # imgui_internal.h:2208
     # float                   PrevLineTextBaseOffset;    /* original C++ signature */
-    prev_line_text_base_offset: float       # imgui_internal.h:2209
+    prev_line_text_base_offset: float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # imgui_internal.h:2209
     # bool                    IsSameLine;    /* original C++ signature */
-    is_same_line: bool                      # imgui_internal.h:2210
+    is_same_line: bool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # imgui_internal.h:2210
     # ImVec1                  Indent;    /* original C++ signature */
-    indent: ImVec1                          # Indentation / start position from left of window (increased by TreePush/TreePop, etc.)    # imgui_internal.h:2211
+    indent: ImVec1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          # Indentation / start position from left of window (increased by TreePush/TreePop, etc.)    # imgui_internal.h:2211
     # ImVec1                  ColumnsOffset;    /* original C++ signature */
-    columns_offset: ImVec1                  # Offset to the current column (if ColumnsCurrent > 0). FIXME: This and the above should be a stack to allow use cases like Tree->Column->Tree. Need revamp columns API.    # imgui_internal.h:2212
+    columns_offset: ImVec1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Offset to the current column (if ColumnsCurrent > 0). FIXME: This and the above should be a stack to allow use cases like Tree->Column->Tree. Need revamp columns API.    # imgui_internal.h:2212
     # ImVec1                  GroupOffset;    /* original C++ signature */
-    group_offset: ImVec1                    # imgui_internal.h:2213
+    group_offset: ImVec1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # imgui_internal.h:2213
     # ImVec2                  CursorStartPosLossyness;    /* original C++ signature */
-    cursor_start_pos_lossyness: ImVec2      # Record the loss of precision of CursorStartPos due to really large scrolling amount. This is used by clipper to compensentate and fix the most common use case of large scroll area.    # imgui_internal.h:2214
+    cursor_start_pos_lossyness: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # Record the loss of precision of CursorStartPos due to really large scrolling amount. This is used by clipper to compensentate and fix the most common use case of large scroll area.    # imgui_internal.h:2214
 
     # Keyboard/Gamepad navigation
     # ImGuiNavLayer           NavLayerCurrent;    /* original C++ signature */
-    nav_layer_current: ImGuiNavLayer        # Current layer, 0..31 (we currently only use 0..1)    # imgui_internal.h:2217
+    nav_layer_current: ImGuiNavLayer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        # Current layer, 0..31 (we currently only use 0..1)    # imgui_internal.h:2217
     # short                   NavLayersActiveMask;    /* original C++ signature */
-    nav_layers_active_mask: int             # Which layers have been written to (result from previous frame)    # imgui_internal.h:2218
+    nav_layers_active_mask: int                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             # Which layers have been written to (result from previous frame)    # imgui_internal.h:2218
     # short                   NavLayersActiveMaskNext;    /* original C++ signature */
-    nav_layers_active_mask_next: int        # Which layers have been written to (accumulator for current frame)    # imgui_internal.h:2219
+    nav_layers_active_mask_next: int                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        # Which layers have been written to (accumulator for current frame)    # imgui_internal.h:2219
     # ImGuiID                 NavFocusScopeIdCurrent;    /* original C++ signature */
-    nav_focus_scope_id_current: ImGuiID     # Current focus scope ID while appending    # imgui_internal.h:2220
+    nav_focus_scope_id_current: ImGuiID                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     # Current focus scope ID while appending    # imgui_internal.h:2220
     # bool                    NavHideHighlightOneFrame;    /* original C++ signature */
-    nav_hide_highlight_one_frame: bool      # imgui_internal.h:2221
+    nav_hide_highlight_one_frame: bool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # imgui_internal.h:2221
     # bool                    NavHasScroll;    /* original C++ signature */
-    nav_has_scroll: bool                    # Set when scrolling can be used (ScrollMax > 0.0)    # imgui_internal.h:2222
+    nav_has_scroll: bool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # Set when scrolling can be used (ScrollMax > 0.0)    # imgui_internal.h:2222
 
     # Miscellaneous
     # bool                    MenuBarAppending;    /* original C++ signature */
-    menu_bar_appending: bool                # FIXME: Remove this    # imgui_internal.h:2225
+    menu_bar_appending: bool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # FIXME: Remove this    # imgui_internal.h:2225
     # ImVec2                  MenuBarOffset;    /* original C++ signature */
-    menu_bar_offset: ImVec2                 # MenuBarOffset.x is sort of equivalent of a per-layer CursorPos.x, saved/restored as we switch to the menu bar. The only situation when MenuBarOffset.y is > 0 if when (SafeAreaPadding.y > FramePadding.y), often used on TVs.    # imgui_internal.h:2226
+    menu_bar_offset: ImVec2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 # MenuBarOffset.x is sort of equivalent of a per-layer CursorPos.x, saved/restored as we switch to the menu bar. The only situation when MenuBarOffset.y is > 0 if when (SafeAreaPadding.y > FramePadding.y), often used on TVs.    # imgui_internal.h:2226
     # ImGuiMenuColumns        MenuColumns;    /* original C++ signature */
-    menu_columns: ImGuiMenuColumns          # Simplified columns storage for menu items measurement    # imgui_internal.h:2227
+    menu_columns: ImGuiMenuColumns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          # Simplified columns storage for menu items measurement    # imgui_internal.h:2227
     # int                     TreeDepth;    /* original C++ signature */
-    tree_depth: int                         # Current tree depth.    # imgui_internal.h:2228
+    tree_depth: int                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         # Current tree depth.    # imgui_internal.h:2228
     # ImU32                   TreeJumpToParentOnPopMask;    /* original C++ signature */
-    tree_jump_to_parent_on_pop_mask: ImU32  # Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.    # imgui_internal.h:2229
+    tree_jump_to_parent_on_pop_mask: ImU32                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.    # imgui_internal.h:2229
     # ImGuiStorage*           StateStorage;    /* original C++ signature */
-    state_storage: ImGuiStorage             # Current persistent per-window storage (store e.g. tree node open/close state)    # imgui_internal.h:2231
+    state_storage: ImGuiStorage                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             # Current persistent per-window storage (store e.g. tree node open/close state)    # imgui_internal.h:2231
     # ImGuiOldColumns*        CurrentColumns;    /* original C++ signature */
-    current_columns: ImGuiOldColumns        # Current columns set    # imgui_internal.h:2232
+    current_columns: ImGuiOldColumns                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        # Current columns set    # imgui_internal.h:2232
     # int                     CurrentTableIdx;    /* original C++ signature */
-    current_table_idx: int                  # Current table index (into g.Tables)    # imgui_internal.h:2233
+    current_table_idx: int                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  # Current table index (into g.Tables)    # imgui_internal.h:2233
     # ImGuiLayoutType         LayoutType;    /* original C++ signature */
-    layout_type: ImGuiLayoutType            # imgui_internal.h:2234
+    layout_type: ImGuiLayoutType                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            # imgui_internal.h:2234
     # ImGuiLayoutType         ParentLayoutType;    /* original C++ signature */
-    parent_layout_type: ImGuiLayoutType     # Layout type of parent window at the time of Begin()    # imgui_internal.h:2235
+    parent_layout_type: ImGuiLayoutType                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     # Layout type of parent window at the time of Begin()    # imgui_internal.h:2235
 
     # Local parameters stacks
     # We store the current settings outside of the vectors to increase memory locality (reduce cache misses). The vectors are rarely modified. Also it allows us to not heap allocate for short-lived windows which are not using those settings.
     # float                   ItemWidth;    /* original C++ signature */
-    item_width: float                       # Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).    # imgui_internal.h:2239
+    item_width: float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).    # imgui_internal.h:2239
     # float                   TextWrapPos;    /* original C++ signature */
-    text_wrap_pos: float                    # Current text wrap pos.    # imgui_internal.h:2240
+    text_wrap_pos: float                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    # Current text wrap pos.    # imgui_internal.h:2240
+    # ImGuiWindowTempData(ImVec2 CursorPos, ImVec2 CursorPosPrevLine, ImVec2 CursorStartPos, ImVec2 CursorMaxPos, ImVec2 IdealMaxPos, ImVec2 CurrLineSize, ImVec2 PrevLineSize, float CurrLineTextBaseOffset, float PrevLineTextBaseOffset, bool IsSameLine, ImVec1 Indent, ImVec1 ColumnsOffset, ImVec1 GroupOffset, ImVec2 CursorStartPosLossyness, ImGuiNavLayer NavLayerCurrent, short NavLayersActiveMask, short NavLayersActiveMaskNext, ImGuiID NavFocusScopeIdCurrent, bool NavHideHighlightOneFrame, bool NavHasScroll, bool MenuBarAppending, ImVec2 MenuBarOffset, ImGuiMenuColumns MenuColumns, int TreeDepth, ImU32 TreeJumpToParentOnPopMask, ImVector<ImGuiWindow*> ChildWindows, ImGuiStorage * StateStorage, ImGuiOldColumns * CurrentColumns, int CurrentTableIdx, ImGuiLayoutType LayoutType, ImGuiLayoutType ParentLayoutType, float ItemWidth, float TextWrapPos, ImVector<float> ItemWidthStack, ImVector<float> TextWrapPosStack);    /* original C++ signature */
+    def __init__(self, cursor_pos: ImVec2, cursor_pos_prev_line: ImVec2, cursor_start_pos: ImVec2, cursor_max_pos: ImVec2, ideal_max_pos: ImVec2, curr_line_size: ImVec2, prev_line_size: ImVec2, curr_line_text_base_offset: float, prev_line_text_base_offset: float, is_same_line: bool, indent: ImVec1, columns_offset: ImVec1, group_offset: ImVec1, cursor_start_pos_lossyness: ImVec2, nav_layer_current: ImGuiNavLayer, nav_layers_active_mask: int, nav_layers_active_mask_next: int, nav_focus_scope_id_current: ImGuiID, nav_hide_highlight_one_frame: bool, nav_has_scroll: bool, menu_bar_appending: bool, menu_bar_offset: ImVec2, menu_columns: ImGuiMenuColumns, tree_depth: int, tree_jump_to_parent_on_pop_mask: ImU32, child_windows: List[ImGuiWindow], state_storage: ImGuiStorage, current_columns: ImGuiOldColumns, current_table_idx: int, layout_type: ImGuiLayoutType, parent_layout_type: ImGuiLayoutType, item_width: float, text_wrap_pos: float, item_width_stack: List[float], text_wrap_pos_stack: List[float]) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiWindow:    # imgui_internal.h:2246
     """ Storage for one window"""
@@ -2826,9 +2896,13 @@ class ImGuiTableCellData:    # imgui_internal.h:2546
      sizeof() ~ 6
     """
     # ImU32                       BgColor;    /* original C++ signature */
-    bg_color: ImU32              # Actual color    # imgui_internal.h:2548
+    bg_color: ImU32                                                              # Actual color    # imgui_internal.h:2548
     # ImGuiTableColumnIdx         Column;    /* original C++ signature */
-    column: ImGuiTableColumnIdx  # Column number    # imgui_internal.h:2549
+    column: ImGuiTableColumnIdx                                                  # Column number    # imgui_internal.h:2549
+    # ImGuiTableCellData(ImU32 BgColor, ImGuiTableColumnIdx Column);    /* original C++ signature */
+    def __init__(self, bg_color: ImU32, column: ImGuiTableColumnIdx) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiTableInstanceData:    # imgui_internal.h:2553
     """ Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)"""
@@ -4144,7 +4218,10 @@ def debug_render_viewport_thumbnail(draw_list: ImDrawList, viewport: ImGuiViewpo
 
 class ImFontBuilderIO:    # imgui_internal.h:3218
     """ This structure is likely to evolve as we add support for incremental atlas updates"""
-    pass
+    # ImFontBuilderIO();    /* original C++ signature */
+    def __init__(self) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 # Helper for font builder
 

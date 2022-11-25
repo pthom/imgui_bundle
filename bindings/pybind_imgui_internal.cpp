@@ -126,7 +126,15 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImBitVector =
         py::class_<ImBitVector>    // imgui_internal.h:580
             (m, "ImBitVector", " Helper: ImBitVector\n Store 1-bit per value.")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImVector<ImU32> Storage)
+        {
+            auto r = std::make_unique<ImBitVector>();
+            r->Storage = Storage;
+            return r;
+        })
+        , py::arg("storage")
+        )
         ;
 
 
@@ -304,7 +312,15 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiDataTypeInfo =
         py::class_<ImGuiDataTypeInfo>    // imgui_internal.h:934
             (m, "ImGuiDataTypeInfo", "Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo().")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        size_t Size)
+        {
+            auto r = std::make_unique<ImGuiDataTypeInfo>();
+            r->Size = Size;
+            return r;
+        })
+        , py::arg("size")
+        )
         .def_readwrite("size", &ImGuiDataTypeInfo::Size, "Size in bytes")    // imgui_internal.h:936
         .def_readonly("name", &ImGuiDataTypeInfo::Name, "Short descriptive name for the type, for debugging")    // imgui_internal.h:937
         .def_readonly("print_fmt", &ImGuiDataTypeInfo::PrintFmt, "Default printf format for the type")    // imgui_internal.h:938
@@ -321,7 +337,16 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiColorMod =
         py::class_<ImGuiColorMod>    // imgui_internal.h:951
             (m, "ImGuiColorMod", "Stacked color modifier, backup of modified data so we can restore it")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiCol Col, ImVec4 BackupValue)
+        {
+            auto r = std::make_unique<ImGuiColorMod>();
+            r->Col = Col;
+            r->BackupValue = BackupValue;
+            return r;
+        })
+        , py::arg("col"), py::arg("backup_value")
+        )
         .def_readwrite("col", &ImGuiColorMod::Col, "")    // imgui_internal.h:953
         .def_readwrite("backup_value", &ImGuiColorMod::BackupValue, "")    // imgui_internal.h:954
         ;
@@ -356,7 +381,25 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiGroupData =
         py::class_<ImGuiGroupData>    // imgui_internal.h:981
             (m, "ImGuiGroupData", "Stacked storage data for BeginGroup()/EndGroup()")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiID WindowID, ImVec2 BackupCursorPos, ImVec2 BackupCursorMaxPos, ImVec1 BackupIndent, ImVec1 BackupGroupOffset, ImVec2 BackupCurrLineSize, float BackupCurrLineTextBaseOffset, ImGuiID BackupActiveIdIsAlive, bool BackupActiveIdPreviousFrameIsAlive, bool BackupHoveredIdIsAlive, bool EmitItem)
+        {
+            auto r = std::make_unique<ImGuiGroupData>();
+            r->WindowID = WindowID;
+            r->BackupCursorPos = BackupCursorPos;
+            r->BackupCursorMaxPos = BackupCursorMaxPos;
+            r->BackupIndent = BackupIndent;
+            r->BackupGroupOffset = BackupGroupOffset;
+            r->BackupCurrLineSize = BackupCurrLineSize;
+            r->BackupCurrLineTextBaseOffset = BackupCurrLineTextBaseOffset;
+            r->BackupActiveIdIsAlive = BackupActiveIdIsAlive;
+            r->BackupActiveIdPreviousFrameIsAlive = BackupActiveIdPreviousFrameIsAlive;
+            r->BackupHoveredIdIsAlive = BackupHoveredIdIsAlive;
+            r->EmitItem = EmitItem;
+            return r;
+        })
+        , py::arg("window_id"), py::arg("backup_cursor_pos"), py::arg("backup_cursor_max_pos"), py::arg("backup_indent"), py::arg("backup_group_offset"), py::arg("backup_curr_line_size"), py::arg("backup_curr_line_text_base_offset"), py::arg("backup_active_id_is_alive"), py::arg("backup_active_id_previous_frame_is_alive"), py::arg("backup_hovered_id_is_alive"), py::arg("emit_item")
+        )
         .def_readwrite("window_id", &ImGuiGroupData::WindowID, "")    // imgui_internal.h:983
         .def_readwrite("backup_cursor_pos", &ImGuiGroupData::BackupCursorPos, "")    // imgui_internal.h:984
         .def_readwrite("backup_cursor_max_pos", &ImGuiGroupData::BackupCursorMaxPos, "")    // imgui_internal.h:985
@@ -518,7 +561,17 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiWindowStackData =
         py::class_<ImGuiWindowStackData>    // imgui_internal.h:1160
             (m, "ImGuiWindowStackData", "Data saved for each window pushed into the stack")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiWindow * Window, ImGuiLastItemData ParentLastItemDataBackup, ImGuiStackSizes StackSizesOnBegin)
+        {
+            auto r = std::make_unique<ImGuiWindowStackData>();
+            r->Window = Window;
+            r->ParentLastItemDataBackup = ParentLastItemDataBackup;
+            r->StackSizesOnBegin = StackSizesOnBegin;
+            return r;
+        })
+        , py::arg("window"), py::arg("parent_last_item_data_backup"), py::arg("stack_sizes_on_begin")
+        )
         .def_readwrite("window", &ImGuiWindowStackData::Window, "")    // imgui_internal.h:1162
         .def_readwrite("parent_last_item_data_backup", &ImGuiWindowStackData::ParentLastItemDataBackup, "")    // imgui_internal.h:1163
         .def_readwrite("stack_sizes_on_begin", &ImGuiWindowStackData::StackSizesOnBegin, "Store size of various stacks for asserting")    // imgui_internal.h:1164
@@ -528,7 +581,17 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiShrinkWidthItem =
         py::class_<ImGuiShrinkWidthItem>    // imgui_internal.h:1167
             (m, "ImGuiShrinkWidthItem", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        int Index, float Width, float InitialWidth)
+        {
+            auto r = std::make_unique<ImGuiShrinkWidthItem>();
+            r->Index = Index;
+            r->Width = Width;
+            r->InitialWidth = InitialWidth;
+            return r;
+        })
+        , py::arg("index"), py::arg("width"), py::arg("initial_width")
+        )
         .def_readwrite("index", &ImGuiShrinkWidthItem::Index, "")    // imgui_internal.h:1169
         .def_readwrite("width", &ImGuiShrinkWidthItem::Width, "")    // imgui_internal.h:1170
         .def_readwrite("initial_width", &ImGuiShrinkWidthItem::InitialWidth, "")    // imgui_internal.h:1171
@@ -579,7 +642,16 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventMousePos =
         py::class_<ImGuiInputEventMousePos>    // imgui_internal.h:1223
             (m, "ImGuiInputEventMousePos", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        float PosX, float PosY)
+        {
+            auto r = std::make_unique<ImGuiInputEventMousePos>();
+            r->PosX = PosX;
+            r->PosY = PosY;
+            return r;
+        })
+        , py::arg("pos_x"), py::arg("pos_y")
+        )
         .def_readwrite("pos_x", &ImGuiInputEventMousePos::PosX, "")    // imgui_internal.h:1223
         .def_readwrite("pos_y", &ImGuiInputEventMousePos::PosY, "")    // imgui_internal.h:1223
         ;
@@ -588,7 +660,16 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventMouseWheel =
         py::class_<ImGuiInputEventMouseWheel>    // imgui_internal.h:1224
             (m, "ImGuiInputEventMouseWheel", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        float WheelX, float WheelY)
+        {
+            auto r = std::make_unique<ImGuiInputEventMouseWheel>();
+            r->WheelX = WheelX;
+            r->WheelY = WheelY;
+            return r;
+        })
+        , py::arg("wheel_x"), py::arg("wheel_y")
+        )
         .def_readwrite("wheel_x", &ImGuiInputEventMouseWheel::WheelX, "")    // imgui_internal.h:1224
         .def_readwrite("wheel_y", &ImGuiInputEventMouseWheel::WheelY, "")    // imgui_internal.h:1224
         ;
@@ -597,7 +678,16 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventMouseButton =
         py::class_<ImGuiInputEventMouseButton>    // imgui_internal.h:1225
             (m, "ImGuiInputEventMouseButton", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        int Button, bool Down)
+        {
+            auto r = std::make_unique<ImGuiInputEventMouseButton>();
+            r->Button = Button;
+            r->Down = Down;
+            return r;
+        })
+        , py::arg("button"), py::arg("down")
+        )
         .def_readwrite("button", &ImGuiInputEventMouseButton::Button, "")    // imgui_internal.h:1225
         .def_readwrite("down", &ImGuiInputEventMouseButton::Down, "")    // imgui_internal.h:1225
         ;
@@ -606,7 +696,15 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventMouseViewport =
         py::class_<ImGuiInputEventMouseViewport>    // imgui_internal.h:1226
             (m, "ImGuiInputEventMouseViewport", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiID HoveredViewportID)
+        {
+            auto r = std::make_unique<ImGuiInputEventMouseViewport>();
+            r->HoveredViewportID = HoveredViewportID;
+            return r;
+        })
+        , py::arg("hovered_viewport_id")
+        )
         .def_readwrite("hovered_viewport_id", &ImGuiInputEventMouseViewport::HoveredViewportID, "")    // imgui_internal.h:1226
         ;
 
@@ -614,7 +712,17 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventKey =
         py::class_<ImGuiInputEventKey>    // imgui_internal.h:1227
             (m, "ImGuiInputEventKey", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImGuiKey Key, bool Down, float AnalogValue)
+        {
+            auto r = std::make_unique<ImGuiInputEventKey>();
+            r->Key = Key;
+            r->Down = Down;
+            r->AnalogValue = AnalogValue;
+            return r;
+        })
+        , py::arg("key"), py::arg("down"), py::arg("analog_value")
+        )
         .def_readwrite("key", &ImGuiInputEventKey::Key, "")    // imgui_internal.h:1227
         .def_readwrite("down", &ImGuiInputEventKey::Down, "")    // imgui_internal.h:1227
         .def_readwrite("analog_value", &ImGuiInputEventKey::AnalogValue, "")    // imgui_internal.h:1227
@@ -624,7 +732,15 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventText =
         py::class_<ImGuiInputEventText>    // imgui_internal.h:1228
             (m, "ImGuiInputEventText", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        unsigned int Char)
+        {
+            auto r = std::make_unique<ImGuiInputEventText>();
+            r->Char = Char;
+            return r;
+        })
+        , py::arg("char")
+        )
         .def_readwrite("char", &ImGuiInputEventText::Char, "")    // imgui_internal.h:1228
         ;
 
@@ -632,7 +748,15 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputEventAppFocused =
         py::class_<ImGuiInputEventAppFocused>    // imgui_internal.h:1229
             (m, "ImGuiInputEventAppFocused", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        bool Focused)
+        {
+            auto r = std::make_unique<ImGuiInputEventAppFocused>();
+            r->Focused = Focused;
+            return r;
+        })
+        , py::arg("focused")
+        )
         .def_readwrite("focused", &ImGuiInputEventAppFocused::Focused, "")    // imgui_internal.h:1229
         ;
 
@@ -659,7 +783,19 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiListClipperRange =
         py::class_<ImGuiListClipperRange>    // imgui_internal.h:1265
             (m, "ImGuiListClipperRange", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        int Min, int Max, bool PosToIndexConvert, ImS8 PosToIndexOffsetMin, ImS8 PosToIndexOffsetMax)
+        {
+            auto r = std::make_unique<ImGuiListClipperRange>();
+            r->Min = Min;
+            r->Max = Max;
+            r->PosToIndexConvert = PosToIndexConvert;
+            r->PosToIndexOffsetMin = PosToIndexOffsetMin;
+            r->PosToIndexOffsetMax = PosToIndexOffsetMax;
+            return r;
+        })
+        , py::arg("min"), py::arg("max"), py::arg("pos_to_index_convert"), py::arg("pos_to_index_offset_min"), py::arg("pos_to_index_offset_max")
+        )
         .def_readwrite("min", &ImGuiListClipperRange::Min, "")    // imgui_internal.h:1267
         .def_readwrite("max", &ImGuiListClipperRange::Max, "")    // imgui_internal.h:1268
         .def_readwrite("pos_to_index_convert", &ImGuiListClipperRange::PosToIndexConvert, "Begin/End are absolute position (will be converted to indices later)")    // imgui_internal.h:1269
@@ -1242,7 +1378,49 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiWindowTempData =
         py::class_<ImGuiWindowTempData>    // imgui_internal.h:2198
             (m, "ImGuiWindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImVec2 CursorPos, ImVec2 CursorPosPrevLine, ImVec2 CursorStartPos, ImVec2 CursorMaxPos, ImVec2 IdealMaxPos, ImVec2 CurrLineSize, ImVec2 PrevLineSize, float CurrLineTextBaseOffset, float PrevLineTextBaseOffset, bool IsSameLine, ImVec1 Indent, ImVec1 ColumnsOffset, ImVec1 GroupOffset, ImVec2 CursorStartPosLossyness, ImGuiNavLayer NavLayerCurrent, short NavLayersActiveMask, short NavLayersActiveMaskNext, ImGuiID NavFocusScopeIdCurrent, bool NavHideHighlightOneFrame, bool NavHasScroll, bool MenuBarAppending, ImVec2 MenuBarOffset, ImGuiMenuColumns MenuColumns, int TreeDepth, ImU32 TreeJumpToParentOnPopMask, ImVector<ImGuiWindow*> ChildWindows, ImGuiStorage * StateStorage, ImGuiOldColumns * CurrentColumns, int CurrentTableIdx, ImGuiLayoutType LayoutType, ImGuiLayoutType ParentLayoutType, float ItemWidth, float TextWrapPos, ImVector<float> ItemWidthStack, ImVector<float> TextWrapPosStack)
+        {
+            auto r = std::make_unique<ImGuiWindowTempData>();
+            r->CursorPos = CursorPos;
+            r->CursorPosPrevLine = CursorPosPrevLine;
+            r->CursorStartPos = CursorStartPos;
+            r->CursorMaxPos = CursorMaxPos;
+            r->IdealMaxPos = IdealMaxPos;
+            r->CurrLineSize = CurrLineSize;
+            r->PrevLineSize = PrevLineSize;
+            r->CurrLineTextBaseOffset = CurrLineTextBaseOffset;
+            r->PrevLineTextBaseOffset = PrevLineTextBaseOffset;
+            r->IsSameLine = IsSameLine;
+            r->Indent = Indent;
+            r->ColumnsOffset = ColumnsOffset;
+            r->GroupOffset = GroupOffset;
+            r->CursorStartPosLossyness = CursorStartPosLossyness;
+            r->NavLayerCurrent = NavLayerCurrent;
+            r->NavLayersActiveMask = NavLayersActiveMask;
+            r->NavLayersActiveMaskNext = NavLayersActiveMaskNext;
+            r->NavFocusScopeIdCurrent = NavFocusScopeIdCurrent;
+            r->NavHideHighlightOneFrame = NavHideHighlightOneFrame;
+            r->NavHasScroll = NavHasScroll;
+            r->MenuBarAppending = MenuBarAppending;
+            r->MenuBarOffset = MenuBarOffset;
+            r->MenuColumns = MenuColumns;
+            r->TreeDepth = TreeDepth;
+            r->TreeJumpToParentOnPopMask = TreeJumpToParentOnPopMask;
+            r->ChildWindows = ChildWindows;
+            r->StateStorage = StateStorage;
+            r->CurrentColumns = CurrentColumns;
+            r->CurrentTableIdx = CurrentTableIdx;
+            r->LayoutType = LayoutType;
+            r->ParentLayoutType = ParentLayoutType;
+            r->ItemWidth = ItemWidth;
+            r->TextWrapPos = TextWrapPos;
+            r->ItemWidthStack = ItemWidthStack;
+            r->TextWrapPosStack = TextWrapPosStack;
+            return r;
+        })
+        , py::arg("cursor_pos"), py::arg("cursor_pos_prev_line"), py::arg("cursor_start_pos"), py::arg("cursor_max_pos"), py::arg("ideal_max_pos"), py::arg("curr_line_size"), py::arg("prev_line_size"), py::arg("curr_line_text_base_offset"), py::arg("prev_line_text_base_offset"), py::arg("is_same_line"), py::arg("indent"), py::arg("columns_offset"), py::arg("group_offset"), py::arg("cursor_start_pos_lossyness"), py::arg("nav_layer_current"), py::arg("nav_layers_active_mask"), py::arg("nav_layers_active_mask_next"), py::arg("nav_focus_scope_id_current"), py::arg("nav_hide_highlight_one_frame"), py::arg("nav_has_scroll"), py::arg("menu_bar_appending"), py::arg("menu_bar_offset"), py::arg("menu_columns"), py::arg("tree_depth"), py::arg("tree_jump_to_parent_on_pop_mask"), py::arg("child_windows"), py::arg("state_storage"), py::arg("current_columns"), py::arg("current_table_idx"), py::arg("layout_type"), py::arg("parent_layout_type"), py::arg("item_width"), py::arg("text_wrap_pos"), py::arg("item_width_stack"), py::arg("text_wrap_pos_stack")
+        )
         .def_readwrite("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")    // imgui_internal.h:2201
         .def_readwrite("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")    // imgui_internal.h:2202
         .def_readwrite("cursor_start_pos", &ImGuiWindowTempData::CursorStartPos, "Initial position after Begin(), generally ~ window position + WindowPadding.")    // imgui_internal.h:2203
@@ -1501,7 +1679,16 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiTableCellData =
         py::class_<ImGuiTableCellData>    // imgui_internal.h:2546
             (m, "ImGuiTableCellData", " Transient cell data stored per row.\n sizeof() ~ 6")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImU32 BgColor, ImGuiTableColumnIdx Column)
+        {
+            auto r = std::make_unique<ImGuiTableCellData>();
+            r->BgColor = BgColor;
+            r->Column = Column;
+            return r;
+        })
+        , py::arg("bg_color"), py::arg("column")
+        )
         .def_readwrite("bg_color", &ImGuiTableCellData::BgColor, "Actual color")    // imgui_internal.h:2548
         .def_readwrite("column", &ImGuiTableCellData::Column, "Column number")    // imgui_internal.h:2549
         ;

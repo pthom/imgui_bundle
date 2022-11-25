@@ -3536,7 +3536,10 @@ class ImGuiCond_(enum.Enum):    # imgui.h:1806
 #-----------------------------------------------------------------------------
 
 class ImNewWrapper:    # imgui.h:1825
-    pass
+    # ImNewWrapper();    /* original C++ signature */
+    def __init__(self) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 # This is only required so we can use the symmetrical new()
 
 #-----------------------------------------------------------------------------
@@ -3660,13 +3663,17 @@ class ImGuiKeyData:    # imgui.h:1975
      If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.
     """
     # bool        Down;    /* original C++ signature */
-    down: bool                 # True for if key is down    # imgui.h:1977
+    down: bool                                                                                                       # True for if key is down    # imgui.h:1977
     # float       DownDuration;    /* original C++ signature */
-    down_duration: float       # Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)    # imgui.h:1978
+    down_duration: float                                                                                             # Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)    # imgui.h:1978
     # float       DownDurationPrev;    /* original C++ signature */
-    down_duration_prev: float  # Last frame duration the key has been down    # imgui.h:1979
+    down_duration_prev: float                                                                                        # Last frame duration the key has been down    # imgui.h:1979
     # float       AnalogValue;    /* original C++ signature */
-    analog_value: float        # 0.0..1.0 for gamepad values    # imgui.h:1980
+    analog_value: float                                                                                              # 0.0..1.0 for gamepad values    # imgui.h:1980
+    # ImGuiKeyData(bool Down, float DownDuration, float DownDurationPrev, float AnalogValue);    /* original C++ signature */
+    def __init__(self, down: bool, down_duration: float, down_duration_prev: float, analog_value: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiIO:    # imgui.h:1983
     #------------------------------------------------------------------
@@ -4005,13 +4012,17 @@ class ImGuiSizeCallbackData:    # imgui.h:2200
      NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.
     """
     # void*   UserData;    /* original C++ signature */
-    user_data: Any        # Read-only.   What user passed to SetNextWindowSizeConstraints()    # imgui.h:2202
+    user_data: Any                                                                                          # Read-only.   What user passed to SetNextWindowSizeConstraints()    # imgui.h:2202
     # ImVec2  Pos;    /* original C++ signature */
-    pos: ImVec2           # Read-only.   Window position, for reference.    # imgui.h:2203
+    pos: ImVec2                                                                                             # Read-only.   Window position, for reference.    # imgui.h:2203
     # ImVec2  CurrentSize;    /* original C++ signature */
-    current_size: ImVec2  # Read-only.   Current window size.    # imgui.h:2204
+    current_size: ImVec2                                                                                    # Read-only.   Current window size.    # imgui.h:2204
     # ImVec2  DesiredSize;    /* original C++ signature */
-    desired_size: ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.    # imgui.h:2205
+    desired_size: ImVec2                                                                                    # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.    # imgui.h:2205
+    # ImGuiSizeCallbackData(void * UserData, ImVec2 Pos, ImVec2 CurrentSize, ImVec2 DesiredSize);    /* original C++ signature */
+    def __init__(self, user_data: Any, pos: ImVec2, current_size: ImVec2, desired_size: ImVec2) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiWindowClass:    # imgui.h:2215
     """ [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.
@@ -4146,80 +4157,6 @@ class ImGuiTextFilter:    # imgui.h:2297
     count_grep: int                                                                  # imgui.h:2319
 
 
-class ImGuiStorage:    # imgui.h:2351
-    """ Helper: Key->Value storage
-     Typically you don't have to worry about this since a storage is held within each Window.
-     We use it to e.g. store collapse state for a tree (Int 0/1)
-     This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)
-     You can use it as custom user storage for temporary values. Declare your own storage if, for example:
-     - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).
-     - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)
-     Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.
-    """
-    class ImGuiStoragePair:                                                      # imgui.h:2354
-        """ [Internal]"""
-        # ImGuiID key;    /* original C++ signature */
-        key: ImGuiID                                                             # imgui.h:2356
-        # ImGuiStoragePair(ImGuiID _key, int _val_i)      { key = _key; val_i = _val_i; }    /* original C++ signature */
-        def __init__(self, _key: ImGuiID, _val_i: int) -> None:                  # imgui.h:2358
-            pass
-        # ImGuiStoragePair(ImGuiID _key, float _val_f)    { key = _key; val_f = _val_f; }    /* original C++ signature */
-        def __init__(self, _key: ImGuiID, _val_f: float) -> None:                # imgui.h:2359
-            pass
-        # ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }    /* original C++ signature */
-        def __init__(self, _key: ImGuiID, _val_p: Any) -> None:                  # imgui.h:2360
-            pass
-
-
-    # IMGUI_API int       GetInt(ImGuiID key, int default_val = 0) const;    /* original C++ signature */
-    def get_int(self, key: ImGuiID, default_val: int = 0) -> int:                # imgui.h:2369
-        pass
-    # IMGUI_API void      SetInt(ImGuiID key, int val);    /* original C++ signature */
-    def set_int(self, key: ImGuiID, val: int) -> None:                           # imgui.h:2370
-        pass
-    # IMGUI_API bool      GetBool(ImGuiID key, bool default_val = false) const;    /* original C++ signature */
-    def get_bool(self, key: ImGuiID, default_val: bool = False) -> bool:         # imgui.h:2371
-        pass
-    # IMGUI_API void      SetBool(ImGuiID key, bool val);    /* original C++ signature */
-    def set_bool(self, key: ImGuiID, val: bool) -> None:                         # imgui.h:2372
-        pass
-    # IMGUI_API float     GetFloat(ImGuiID key, float default_val = 0.0f) const;    /* original C++ signature */
-    def get_float(self, key: ImGuiID, default_val: float = 0.0) -> float:        # imgui.h:2373
-        pass
-    # IMGUI_API void      SetFloat(ImGuiID key, float val);    /* original C++ signature */
-    def set_float(self, key: ImGuiID, val: float) -> None:                       # imgui.h:2374
-        pass
-    # IMGUI_API void*     GetVoidPtr(ImGuiID key) const;     /* original C++ signature */
-    def get_void_ptr(self, key: ImGuiID) -> Any:                                 # imgui.h:2375
-        """ default_val is None"""
-        pass
-    # IMGUI_API void      SetVoidPtr(ImGuiID key, void* val);    /* original C++ signature */
-    def set_void_ptr(self, key: ImGuiID, val: Any) -> None:                      # imgui.h:2376
-        pass
-
-    # - Get***Ref() functions finds pair, insert on demand if missing, return pointer. Useful if you intend to do Get+Set.
-    # - References are only valid until a new value is added to the storage. Calling a Set***() function or a Get***Ref() function invalidates the pointer.
-    # - A typical use case where this is convenient for quick hacking (e.g. add storage during a live Edit&Continue session if you can't modify existing struct)
-    #      float* pvar = ImGui::GetFloatRef(key); ImGui::SliderFloat("var", pvar, 0, 100.0); some_var += *pvar;
-    # IMGUI_API int*      GetIntRef(ImGuiID key, int default_val = 0);    /* original C++ signature */
-    def get_int_ref(self, key: ImGuiID, default_val: int = 0) -> int:            # imgui.h:2382
-        pass
-    # IMGUI_API bool*     GetBoolRef(ImGuiID key, bool default_val = false);    /* original C++ signature */
-    def get_bool_ref(self, key: ImGuiID, default_val: bool = False) -> bool:     # imgui.h:2383
-        pass
-    # IMGUI_API float*    GetFloatRef(ImGuiID key, float default_val = 0.0f);    /* original C++ signature */
-    def get_float_ref(self, key: ImGuiID, default_val: float = 0.0) -> float:    # imgui.h:2384
-        pass
-
-    # IMGUI_API void      SetAllInt(int val);    /* original C++ signature */
-    def set_all_int(self, val: int) -> None:                                     # imgui.h:2388
-        """ Use on your own storage if you know only integer are being stored (open/close all tree nodes)"""
-        pass
-
-    # IMGUI_API void      BuildSortByKey();    /* original C++ signature */
-    def build_sort_by_key(self) -> None:                                         # imgui.h:2391
-        """ For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once."""
-        pass
 
 class ImGuiListClipper:    # imgui.h:2414
     """ Helper: Manually clip large list of items.
@@ -4358,15 +4295,22 @@ class ImDrawCmd:    # imgui.h:2514
 class ImDrawCmdHeader:    # imgui.h:2547
     """ [Internal] For use by ImDrawList"""
     # ImVec4          ClipRect;    /* original C++ signature */
-    clip_rect: ImVec4          # imgui.h:2549
+    clip_rect: ImVec4                                                                           # imgui.h:2549
     # ImTextureID     TextureId;    /* original C++ signature */
-    texture_id: ImTextureID    # imgui.h:2550
+    texture_id: ImTextureID                                                                     # imgui.h:2550
     # unsigned int    VtxOffset;    /* original C++ signature */
-    vtx_offset: int            # imgui.h:2551
+    vtx_offset: int                                                                             # imgui.h:2551
+    # ImDrawCmdHeader(ImVec4 ClipRect, ImTextureID TextureId, unsigned int VtxOffset);    /* original C++ signature */
+    def __init__(self, clip_rect: ImVec4, texture_id: ImTextureID, vtx_offset: int) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImDrawChannel:    # imgui.h:2555
     """ [Internal] For use by ImDrawListSplitter"""
-    pass
+    # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer, ImVector<ImDrawIdx> _IdxBuffer);    /* original C++ signature */
+    def __init__(self, _cmd_buffer: List[ImDrawCmd], _idx_buffer: List[ImDrawIdx]) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 
 class ImDrawListSplitter:    # imgui.h:2564
@@ -4760,23 +4704,27 @@ class ImFontGlyph:    # imgui.h:2799
      (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)
     """
     # float           AdvanceX;    /* original C++ signature */
-    advance_x: float  # Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)    # imgui.h:2804
+    advance_x: float                                                                                                                         # Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)    # imgui.h:2804
     # float           X0,     /* original C++ signature */
-    x0: float         # Glyph corners    # imgui.h:2805
+    x0: float                                                                                                                                # Glyph corners    # imgui.h:2805
     # Y0,     /* original C++ signature */
-    y0: float         # Glyph corners    # imgui.h:2805
+    y0: float                                                                                                                                # Glyph corners    # imgui.h:2805
     # X1,     /* original C++ signature */
-    x1: float         # Glyph corners    # imgui.h:2805
+    x1: float                                                                                                                                # Glyph corners    # imgui.h:2805
     # Y1;    /* original C++ signature */
-    y1: float         # Glyph corners    # imgui.h:2805
+    y1: float                                                                                                                                # Glyph corners    # imgui.h:2805
     # float           U0,     /* original C++ signature */
-    u0: float         # Texture coordinates    # imgui.h:2806
+    u0: float                                                                                                                                # Texture coordinates    # imgui.h:2806
     # V0,     /* original C++ signature */
-    v0: float         # Texture coordinates    # imgui.h:2806
+    v0: float                                                                                                                                # Texture coordinates    # imgui.h:2806
     # U1,     /* original C++ signature */
-    u1: float         # Texture coordinates    # imgui.h:2806
+    u1: float                                                                                                                                # Texture coordinates    # imgui.h:2806
     # V1;    /* original C++ signature */
-    v1: float         # Texture coordinates    # imgui.h:2806
+    v1: float                                                                                                                                # Texture coordinates    # imgui.h:2806
+    # ImFontGlyph(float AdvanceX, float X0, float Y0, float X1, float Y1, float U0, float V0, float U1, float V1);    /* original C++ signature */
+    def __init__(self, advance_x: float, x0: float, y0: float, x1: float, y1: float, u0: float, v0: float, u1: float, v1: float) -> None:    # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImFontGlyphRangesBuilder:    # imgui.h:2811
     """ Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().

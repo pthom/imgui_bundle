@@ -44,6 +44,16 @@ class ColormapScaleFromStatsData:
     use_stats_min: bool = False
     # If UseStatsMin is True, then ColormapScaleMax will be calculated from the matrix max value instead of a sigma based value
     use_stats_max: bool = False
+    def __init__(
+        self,
+        active_on_full_image: bool = True,
+        active_on_roi: bool = False,
+        nb_sigmas: float = 1.5,
+        use_stats_min: bool = False,
+        use_stats_max: bool = False,
+    ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 class ColormapSettingsData:
     """Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)
@@ -70,6 +80,16 @@ class ColormapSettingsData:
 
     # Internal value: stores the name of the Colormap that is hovered by the mouse
     internal_colormap_hovered: str = ""
+    def __init__(
+        self,
+        colormap: str = "None",
+        colormap_scale_min: float = 0.0,
+        colormap_scale_max: float = 1.0,
+        colormap_scale_from_stats: ColormapScaleFromStatsData = ColormapScaleFromStatsData(),
+        internal_colormap_hovered: str = "",
+    ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 class MouseInformation:
     """Contains information about the mouse inside an image
@@ -91,6 +111,14 @@ class MouseInformation:
     #
     # Note: you can query ImGui::IsMouseDown(mouse_button) (c++) or imgui.is_mouse_down(mouse_button) (Python)
     #
+    def __init__(
+        self,
+        is_mouse_hovering: bool = False,
+        mouse_position: cv.Point2 = cv.Point2(-1.0, -1.0),
+        mouse_position_displayed: cv.Point = cv.Point(-1, -1),
+    ) -> None:
+        """Auto-generated default constructor"""
+        pass
 
 class ImageParams:
     """Set of display parameters and options for an Image
@@ -191,6 +219,36 @@ class ImageParams:
     # Mouse position information. These values are filled after displaying an image
     mouse_info: MouseInformation = MouseInformation()
 
+    def __init__(
+        self,
+        refresh_image: bool = False,
+        image_display_size: cv.Size = cv.Size(),
+        zoom_pan_matrix: cv.Matx33 = cv.Matx33.eye(),
+        zoom_key: str = "",
+        colormap_settings: ColormapSettingsData = ColormapSettingsData(),
+        colormap_key: str = "",
+        pan_with_mouse: bool = True,
+        zoom_with_mouse_wheel: bool = True,
+        is_color_order_bgr: bool = True,
+        selected_channel: int = -1,
+        show_school_paper_background: bool = True,
+        show_alpha_channel_checkerboard: bool = True,
+        show_grid: bool = True,
+        draw_values_on_zoomed_pixels: bool = True,
+        show_image_info: bool = True,
+        show_pixel_info: bool = True,
+        show_zoom_buttons: bool = True,
+        show_options_panel: bool = False,
+        show_options_in_tooltip: bool = False,
+        show_options_button: bool = True,
+        watched_pixels: List[cv.Point] = List[cv.Point](),
+        add_watched_pixel_on_double_click: bool = True,
+        highlight_watched_pixels: bool = True,
+        mouse_info: MouseInformation = MouseInformation(),
+    ) -> None:
+        """Auto-generated default constructor"""
+        pass
+
 def factor_image_params_display_only() -> ImageParams:
     """Create ImageParams that display the image only, with no decoration, and no user interaction"""
     pass
@@ -211,15 +269,16 @@ def make_zoom_pan_matrix_full_view(
 ) -> cv.Matx33:
     pass
 
-def image(label_id: str, mat: cv.Mat, params: ImageParams) -> None:
+def image(label: str, mat: cv.Mat, params: ImageParams) -> None:
     """Display an image, with full user control: zoom, pan, watch pixels, etc.
 
-    :param label_id
+    :param label
         A legend that will be displayed.
         Important notes:
             - With ImGui and ImmVision, widgets *must* have a unique Ids.
               For this widget, the id is given by this label.
               Two widgets (for example) two images *cannot* have the same label or the same id!
+              (you can use ImGui::PushID / ImGui::PopID to circumvent this, or add suffixes with ##)
 
               If they do, they might not refresh correctly!
               To circumvent this, you can:
@@ -316,7 +375,7 @@ def clear_texture_cache() -> None:
     """
     pass
 
-def get_cached_rgba_image(label_id: str) -> cv.Mat:
+def get_cached_rgba_image(label: str) -> cv.Mat:
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
