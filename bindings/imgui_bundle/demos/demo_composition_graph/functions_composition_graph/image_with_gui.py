@@ -165,7 +165,7 @@ class MergeChannelsWithGui(FunctionWithGui):
         image_converted = image_uint8
         if self.color_conversion is not None:
             image_converted = cv2.cvtColor(image_uint8, self.color_conversion.conversion_code)
-        return image_uint8
+        return image_converted
 
     def name(self) -> str:
         r = "Merge Channels"
