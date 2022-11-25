@@ -13,6 +13,8 @@ namespace py = pybind11;
 
 void py_init_module_im_file_dialog(py::module& m)
 {
+    using namespace ifd;
+
 	py::class_<std::filesystem::path>(m, "Path")
 		.def(py::init<std::string>())
 		.def("__str__", [](const std::filesystem::path& self) { return self.string(); })
@@ -36,55 +38,55 @@ void py_init_module_im_file_dialog(py::module& m)
                 (pyClassFileDialog, "FileTreeNode", "")
             .def(py::init<const std::string &>(),
                 py::arg("path"))
-            .def_readwrite("path", &ifd::FileDialog::FileTreeNode::Path, "")
-            .def_readwrite("read", &ifd::FileDialog::FileTreeNode::Read, "")
-            .def_readwrite("children", &ifd::FileDialog::FileTreeNode::Children, "")
+            .def_readwrite("path", &FileDialog::FileTreeNode::Path, "")
+            .def_readwrite("read", &FileDialog::FileTreeNode::Read, "")
+            .def_readwrite("children", &FileDialog::FileTreeNode::Children, "")
             ;
         auto pyClassFileDialog_ClassFileData =
             py::class_<ifd::FileDialog::FileData>
                 (pyClassFileDialog, "FileData", "")
             .def(py::init<const std::filesystem::path &>(),
                 py::arg("path"))
-            .def_readwrite("path", &ifd::FileDialog::FileData::Path, "")
-            .def_readwrite("is_directory", &ifd::FileDialog::FileData::IsDirectory, "")
-            .def_readwrite("size", &ifd::FileDialog::FileData::Size, "")
-            .def_readwrite("date_modified", &ifd::FileDialog::FileData::DateModified, "")
-            .def_readwrite("has_icon_preview", &ifd::FileDialog::FileData::HasIconPreview, "")
-            .def_readwrite("icon_preview", &ifd::FileDialog::FileData::IconPreview, "")
-            .def_readwrite("icon_preview_data", &ifd::FileDialog::FileData::IconPreviewData, "")
-            .def_readwrite("icon_preview_width", &ifd::FileDialog::FileData::IconPreviewWidth, "")
-            .def_readwrite("icon_preview_height", &ifd::FileDialog::FileData::IconPreviewHeight, "")
+            .def_readwrite("path", &FileDialog::FileData::Path, "")
+            .def_readwrite("is_directory", &FileDialog::FileData::IsDirectory, "")
+            .def_readwrite("size", &FileDialog::FileData::Size, "")
+            .def_readwrite("date_modified", &FileDialog::FileData::DateModified, "")
+            .def_readwrite("has_icon_preview", &FileDialog::FileData::HasIconPreview, "")
+            .def_readwrite("icon_preview", &FileDialog::FileData::IconPreview, "")
+            .def_readwrite("icon_preview_data", &FileDialog::FileData::IconPreviewData, "")
+            .def_readwrite("icon_preview_width", &FileDialog::FileData::IconPreviewWidth, "")
+            .def_readwrite("icon_preview_height", &FileDialog::FileData::IconPreviewHeight, "")
             ;
     } // end of inner classes & enums of FileDialog
 
     pyClassFileDialog
         .def_static("instance",
-            &ifd::FileDialog::Instance, pybind11::return_value_policy::reference)
+            &FileDialog::Instance, pybind11::return_value_policy::reference)
         .def(py::init<>())
         .def("save",
-            &ifd::FileDialog::Save, py::arg("key"), py::arg("title"), py::arg("filter"), py::arg("starting_dir") = "")
+            &FileDialog::Save, py::arg("key"), py::arg("title"), py::arg("filter"), py::arg("starting_dir") = "")
         .def("open",
-            &ifd::FileDialog::Open, py::arg("key"), py::arg("title"), py::arg("filter"), py::arg("is_multiselect") = false, py::arg("starting_dir") = "")
+            &FileDialog::Open, py::arg("key"), py::arg("title"), py::arg("filter"), py::arg("is_multiselect") = false, py::arg("starting_dir") = "")
         .def("is_done",
-            &ifd::FileDialog::IsDone, py::arg("key"))
+            &FileDialog::IsDone, py::arg("key"))
         .def("has_result",
-            &ifd::FileDialog::HasResult)
+            &FileDialog::HasResult)
         .def("get_result",
-            &ifd::FileDialog::GetResult)
+            &FileDialog::GetResult)
         .def("get_results",
-            &ifd::FileDialog::GetResults)
+            &FileDialog::GetResults)
         .def("close",
-            &ifd::FileDialog::Close)
+            &FileDialog::Close)
         .def("remove_favorite",
-            &ifd::FileDialog::RemoveFavorite, py::arg("path"))
+            &FileDialog::RemoveFavorite, py::arg("path"))
         .def("add_favorite",
-            &ifd::FileDialog::AddFavorite, py::arg("path"))
+            &FileDialog::AddFavorite, py::arg("path"))
         .def("get_favorites",
-            &ifd::FileDialog::GetFavorites)
+            &FileDialog::GetFavorites)
         .def("set_zoom",
-            &ifd::FileDialog::SetZoom, py::arg("z"))
+            &FileDialog::SetZoom, py::arg("z"))
         .def("get_zoom",
-            &ifd::FileDialog::GetZoom)
+            &FileDialog::GetZoom)
         ;
     ////////////////////    </generated_from:ImFileDialog.h>    ////////////////////
 
