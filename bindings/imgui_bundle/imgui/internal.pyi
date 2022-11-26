@@ -355,8 +355,8 @@ class ImBitVector:  # imgui_internal.h:580
     Store 1-bit per value.
     """
 
-    # ImBitVector(ImVector<ImU32> Storage = ImVector<ImU32>());    /* original C++ signature */
-    def __init__(self, storage: List[ImU32] = List[ImU32]()) -> None:  # Line:3
+    # ImBitVector();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -2714,7 +2714,7 @@ class ImGuiWindowTempData:  # imgui_internal.h:2198
     item_width: float  # Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).    # imgui_internal.h:2239
     # float                   TextWrapPos;    /* original C++ signature */
     text_wrap_pos: float  # Current text wrap pos.    # imgui_internal.h:2240
-    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), ImGuiID NavFocusScopeIdCurrent = ImGuiID(), bool NavHideHighlightOneFrame = bool(), bool NavHasScroll = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
+    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), ImGuiID NavFocusScopeIdCurrent = ImGuiID(), bool NavHideHighlightOneFrame = bool(), bool NavHasScroll = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float());    /* original C++ signature */
     def __init__(
         self,
         cursor_pos: ImVec2 = ImVec2(),
@@ -2742,14 +2742,11 @@ class ImGuiWindowTempData:  # imgui_internal.h:2198
         menu_columns: ImGuiMenuColumns = ImGuiMenuColumns(),
         tree_depth: int = int(),
         tree_jump_to_parent_on_pop_mask: ImU32 = ImU32(),
-        child_windows: List[ImGuiWindow] = List[ImGuiWindow](),
         current_table_idx: int = int(),
         layout_type: ImGuiLayoutType = ImGuiLayoutType(),
         parent_layout_type: ImGuiLayoutType = ImGuiLayoutType(),
         item_width: float = float(),
         text_wrap_pos: float = float(),
-        item_width_stack: List[float] = List[float](),
-        text_wrap_pos_stack: List[float] = List[float](),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass

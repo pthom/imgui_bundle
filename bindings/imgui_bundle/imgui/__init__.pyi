@@ -5686,12 +5686,8 @@ class ImDrawCmdHeader:  # imgui.h:2547
 class ImDrawChannel:  # imgui.h:2555
     """[Internal] For use by ImDrawListSplitter"""
 
-    # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>());    /* original C++ signature */
-    def __init__(
-        self,
-        _cmd_buffer: List[ImDrawCmd] = List[ImDrawCmd](),
-        _idx_buffer: List[ImDrawIdx] = List[ImDrawIdx](),
-    ) -> None:  # Line:3
+    # ImDrawChannel();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 

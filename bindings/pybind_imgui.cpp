@@ -3565,16 +3565,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImDrawChannel =
         py::class_<ImDrawChannel>    // imgui.h:2555
             (m, "ImDrawChannel", "[Internal] For use by ImDrawListSplitter")
-        .def(py::init<>([](
-        ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>())
-        {
-            auto r = std::make_unique<ImDrawChannel>();
-            r->_CmdBuffer = _CmdBuffer;
-            r->_IdxBuffer = _IdxBuffer;
-            return r;
-        })
-        , py::arg("_cmd_buffer") = ImVector<ImDrawCmd>(), py::arg("_idx_buffer") = ImVector<ImDrawIdx>()
-        )
+        .def(py::init<>()) // implicit default constructor
         ;
 
 

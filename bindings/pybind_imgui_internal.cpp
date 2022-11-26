@@ -126,15 +126,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImBitVector =
         py::class_<ImBitVector>    // imgui_internal.h:580
             (m, "ImBitVector", " Helper: ImBitVector\n Store 1-bit per value.")
-        .def(py::init<>([](
-        ImVector<ImU32> Storage = ImVector<ImU32>())
-        {
-            auto r = std::make_unique<ImBitVector>();
-            r->Storage = Storage;
-            return r;
-        })
-        , py::arg("storage") = ImVector<ImU32>()
-        )
+        .def(py::init<>()) // implicit default constructor
         ;
 
 
@@ -1370,7 +1362,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiWindowTempData>    // imgui_internal.h:2198
             (m, "ImGuiWindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
         .def(py::init<>([](
-        ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), ImGuiID NavFocusScopeIdCurrent = ImGuiID(), bool NavHideHighlightOneFrame = bool(), bool NavHasScroll = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>())
+        ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), ImGuiID NavFocusScopeIdCurrent = ImGuiID(), bool NavHideHighlightOneFrame = bool(), bool NavHasScroll = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float())
         {
             auto r = std::make_unique<ImGuiWindowTempData>();
             r->CursorPos = CursorPos;
@@ -1398,17 +1390,14 @@ void py_init_module_imgui_internal(py::module& m)
             r->MenuColumns = MenuColumns;
             r->TreeDepth = TreeDepth;
             r->TreeJumpToParentOnPopMask = TreeJumpToParentOnPopMask;
-            r->ChildWindows = ChildWindows;
             r->CurrentTableIdx = CurrentTableIdx;
             r->LayoutType = LayoutType;
             r->ParentLayoutType = ParentLayoutType;
             r->ItemWidth = ItemWidth;
             r->TextWrapPos = TextWrapPos;
-            r->ItemWidthStack = ItemWidthStack;
-            r->TextWrapPosStack = TextWrapPosStack;
             return r;
         })
-        , py::arg("cursor_pos") = ImVec2(), py::arg("cursor_pos_prev_line") = ImVec2(), py::arg("cursor_start_pos") = ImVec2(), py::arg("cursor_max_pos") = ImVec2(), py::arg("ideal_max_pos") = ImVec2(), py::arg("curr_line_size") = ImVec2(), py::arg("prev_line_size") = ImVec2(), py::arg("curr_line_text_base_offset") = float(), py::arg("prev_line_text_base_offset") = float(), py::arg("is_same_line") = bool(), py::arg("indent") = ImVec1(), py::arg("columns_offset") = ImVec1(), py::arg("group_offset") = ImVec1(), py::arg("cursor_start_pos_lossyness") = ImVec2(), py::arg("nav_layer_current") = ImGuiNavLayer(), py::arg("nav_layers_active_mask") = short(), py::arg("nav_layers_active_mask_next") = short(), py::arg("nav_focus_scope_id_current") = ImGuiID(), py::arg("nav_hide_highlight_one_frame") = bool(), py::arg("nav_has_scroll") = bool(), py::arg("menu_bar_appending") = bool(), py::arg("menu_bar_offset") = ImVec2(), py::arg("menu_columns") = ImGuiMenuColumns(), py::arg("tree_depth") = int(), py::arg("tree_jump_to_parent_on_pop_mask") = ImU32(), py::arg("child_windows") = ImVector<ImGuiWindow*>(), py::arg("current_table_idx") = int(), py::arg("layout_type") = ImGuiLayoutType(), py::arg("parent_layout_type") = ImGuiLayoutType(), py::arg("item_width") = float(), py::arg("text_wrap_pos") = float(), py::arg("item_width_stack") = ImVector<float>(), py::arg("text_wrap_pos_stack") = ImVector<float>()
+        , py::arg("cursor_pos") = ImVec2(), py::arg("cursor_pos_prev_line") = ImVec2(), py::arg("cursor_start_pos") = ImVec2(), py::arg("cursor_max_pos") = ImVec2(), py::arg("ideal_max_pos") = ImVec2(), py::arg("curr_line_size") = ImVec2(), py::arg("prev_line_size") = ImVec2(), py::arg("curr_line_text_base_offset") = float(), py::arg("prev_line_text_base_offset") = float(), py::arg("is_same_line") = bool(), py::arg("indent") = ImVec1(), py::arg("columns_offset") = ImVec1(), py::arg("group_offset") = ImVec1(), py::arg("cursor_start_pos_lossyness") = ImVec2(), py::arg("nav_layer_current") = ImGuiNavLayer(), py::arg("nav_layers_active_mask") = short(), py::arg("nav_layers_active_mask_next") = short(), py::arg("nav_focus_scope_id_current") = ImGuiID(), py::arg("nav_hide_highlight_one_frame") = bool(), py::arg("nav_has_scroll") = bool(), py::arg("menu_bar_appending") = bool(), py::arg("menu_bar_offset") = ImVec2(), py::arg("menu_columns") = ImGuiMenuColumns(), py::arg("tree_depth") = int(), py::arg("tree_jump_to_parent_on_pop_mask") = ImU32(), py::arg("current_table_idx") = int(), py::arg("layout_type") = ImGuiLayoutType(), py::arg("parent_layout_type") = ImGuiLayoutType(), py::arg("item_width") = float(), py::arg("text_wrap_pos") = float()
         )
         .def_readwrite("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")    // imgui_internal.h:2201
         .def_readwrite("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")    // imgui_internal.h:2202
