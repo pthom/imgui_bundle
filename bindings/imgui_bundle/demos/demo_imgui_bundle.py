@@ -250,4 +250,8 @@ def demo_imgui_bundle() -> None:
 if __name__ == "__main__":
     import imgui_bundle
 
+    from imgui_bundle import RunnerParams
+
+    params = RunnerParams()
+
     imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore

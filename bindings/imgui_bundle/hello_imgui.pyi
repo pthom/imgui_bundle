@@ -28,6 +28,10 @@ DefaultScreenPosition = (40, 40)
 
 ImGuiDir_Down = ImGuiDir_.down
 
+EmptyVoidFunction: VoidFunction
+EmptyEventCallback: AnyEventCallback
+
+
 def get_glfw_window():
     """Returns a pointer to the app GLFW window (when using GLFW)"""
     pass
@@ -87,7 +91,7 @@ class AssetFileData:
     """
     data: Any = None
     data_size: int = 0
-    def __init__(self, data: Any = None, data_size: int = 0) -> None:
+    def __init__(self, data_size: int = 0) -> None:
         """Auto-generated default constructor"""
         pass
 
@@ -398,8 +402,8 @@ class AppWindowParams:
     out_window_dpi_factor: float = 1.
     def __init__(
         self,
-        window_title: str,
-        window_geometry: WindowGeometry,
+        window_title: str = "",
+        window_geometry: WindowGeometry = WindowGeometry(),
         restore_previous_geometry: bool = False,
         borderless: bool = False,
         resizable: bool = True,
@@ -609,7 +613,6 @@ class ImguiWindowParams:
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
     def __init__(
         self,
-        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
         background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00),
         show_menu_bar: bool = False,
@@ -618,7 +621,8 @@ class ImguiWindowParams:
         show_status_bar: bool = False,
         show_status_fps: bool = True,
         config_windows_move_from_title_bar_only: bool = True,
-        enable_viewports: bool = False
+        enable_viewports: bool = False,
+        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme()
         ) -> None:
         """Auto-generated default constructor"""
         pass
@@ -1016,8 +1020,8 @@ class DockingParams:
         pass
     def __init__(
         self,
-        docking_splits: List[DockingSplit],
-        dockable_windows: List[DockableWindow],
+        docking_splits: List[DockingSplit] = List[DockingSplit](),
+        dockable_windows: List[DockableWindow] = List[DockableWindow](),
         reset_user_dock_layout: bool = True,
         was_dock_layout_applied: bool = False
         ) -> None:
@@ -1058,12 +1062,7 @@ class BackendPointers:
     sdl_window: Any = None
     # SDL_GLContext
     sdl_gl_context: Any = None
-    def __init__(
-        self,
-        glfw_window: Any = None,
-        sdl_window: Any = None,
-        sdl_gl_context: Any = None
-        ) -> None:
+    def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
 
@@ -1131,11 +1130,11 @@ class RunnerParams:
     emscripten_fps: int = 0
     def __init__(
         self,
-        callbacks: RunnerCallbacks,
-        app_window_params: AppWindowParams,
-        imgui_window_params: ImGuiWindowParams,
-        docking_params: DockingParams,
-        backend_pointers: BackendPointers,
+        callbacks: RunnerCallbacks = RunnerCallbacks(),
+        app_window_params: AppWindowParams = AppWindowParams(),
+        imgui_window_params: ImGuiWindowParams = ImGuiWindowParams(),
+        docking_params: DockingParams = DockingParams(),
+        backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
         app_shall_exit: bool = False,
         fps_idle: float = 10.,
@@ -1180,7 +1179,7 @@ class SimpleRunnerParams:
         pass
     def __init__(
         self,
-        gui_function: VoidFunction,
+        gui_function: VoidFunction = VoidFunction(),
         window_title: str = "",
         window_size_auto: bool = False,
         window_restore_previous_geometry: bool = False,

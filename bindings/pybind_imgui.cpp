@@ -3114,7 +3114,7 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImGuiKeyData>    // imgui.h:1975
             (m, "ImGuiKeyData", " [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.\n If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.")
         .def(py::init<>([](
-        bool Down, float DownDuration, float DownDurationPrev, float AnalogValue)
+        bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float())
         {
             auto r = std::make_unique<ImGuiKeyData>();
             r->Down = Down;
@@ -3123,7 +3123,7 @@ void py_init_module_imgui_main(py::module& m)
             r->AnalogValue = AnalogValue;
             return r;
         })
-        , py::arg("down"), py::arg("down_duration"), py::arg("down_duration_prev"), py::arg("analog_value")
+        , py::arg("down") = bool(), py::arg("down_duration") = float(), py::arg("down_duration_prev") = float(), py::arg("analog_value") = float()
         )
         .def_readwrite("down", &ImGuiKeyData::Down, "True for if key is down")    // imgui.h:1977
         .def_readwrite("down_duration", &ImGuiKeyData::DownDuration, "Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)")    // imgui.h:1978
@@ -3384,16 +3384,15 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImGuiSizeCallbackData>    // imgui.h:2200
             (m, "ImGuiSizeCallbackData", " Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().\n NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.")
         .def(py::init<>([](
-        void * UserData, ImVec2 Pos, ImVec2 CurrentSize, ImVec2 DesiredSize)
+        ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2())
         {
             auto r = std::make_unique<ImGuiSizeCallbackData>();
-            r->UserData = UserData;
             r->Pos = Pos;
             r->CurrentSize = CurrentSize;
             r->DesiredSize = DesiredSize;
             return r;
         })
-        , py::arg("user_data"), py::arg("pos"), py::arg("current_size"), py::arg("desired_size")
+        , py::arg("pos") = ImVec2(), py::arg("current_size") = ImVec2(), py::arg("desired_size") = ImVec2()
         )
         .def_readwrite("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints()")    // imgui.h:2202
         .def_readwrite("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")    // imgui.h:2203
@@ -3548,15 +3547,14 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImDrawCmdHeader>    // imgui.h:2547
             (m, "ImDrawCmdHeader", "[Internal] For use by ImDrawList")
         .def(py::init<>([](
-        ImVec4 ClipRect, ImTextureID TextureId, unsigned int VtxOffset)
+        ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID())
         {
             auto r = std::make_unique<ImDrawCmdHeader>();
             r->ClipRect = ClipRect;
             r->TextureId = TextureId;
-            r->VtxOffset = VtxOffset;
             return r;
         })
-        , py::arg("clip_rect"), py::arg("texture_id"), py::arg("vtx_offset")
+        , py::arg("clip_rect") = ImVec4(), py::arg("texture_id") = ImTextureID()
         )
         .def_readwrite("clip_rect", &ImDrawCmdHeader::ClipRect, "")    // imgui.h:2549
         .def_readwrite("texture_id", &ImDrawCmdHeader::TextureId, "")    // imgui.h:2550
@@ -3568,14 +3566,14 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImDrawChannel>    // imgui.h:2555
             (m, "ImDrawChannel", "[Internal] For use by ImDrawListSplitter")
         .def(py::init<>([](
-        ImVector<ImDrawCmd> _CmdBuffer, ImVector<ImDrawIdx> _IdxBuffer)
+        ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>())
         {
             auto r = std::make_unique<ImDrawChannel>();
             r->_CmdBuffer = _CmdBuffer;
             r->_IdxBuffer = _IdxBuffer;
             return r;
         })
-        , py::arg("_cmd_buffer"), py::arg("_idx_buffer")
+        , py::arg("_cmd_buffer") = ImVector<ImDrawCmd>(), py::arg("_idx_buffer") = ImVector<ImDrawIdx>()
         )
         ;
 
@@ -3810,7 +3808,7 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImFontGlyph>    // imgui.h:2799
             (m, "ImFontGlyph", " Hold rendering data for one glyph.\n (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)")
         .def(py::init<>([](
-        float AdvanceX, float X0, float Y0, float X1, float Y1, float U0, float V0, float U1, float V1)
+        float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float())
         {
             auto r = std::make_unique<ImFontGlyph>();
             r->AdvanceX = AdvanceX;
@@ -3824,7 +3822,7 @@ void py_init_module_imgui_main(py::module& m)
             r->V1 = V1;
             return r;
         })
-        , py::arg("advance_x"), py::arg("x0"), py::arg("y0"), py::arg("x1"), py::arg("y1"), py::arg("u0"), py::arg("v0"), py::arg("u1"), py::arg("v1")
+        , py::arg("advance_x") = float(), py::arg("x0") = float(), py::arg("y0") = float(), py::arg("x1") = float(), py::arg("y1") = float(), py::arg("u0") = float(), py::arg("v0") = float(), py::arg("u1") = float(), py::arg("v1") = float()
         )
         .def_readwrite("advance_x", &ImFontGlyph::AdvanceX, "Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)")    // imgui.h:2804
         .def_readwrite("x0", &ImFontGlyph::X0, "Glyph corners")    // imgui.h:2805

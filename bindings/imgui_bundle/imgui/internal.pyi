@@ -355,8 +355,8 @@ class ImBitVector:  # imgui_internal.h:580
     Store 1-bit per value.
     """
 
-    # ImBitVector(ImVector<ImU32> Storage);    /* original C++ signature */
-    def __init__(self, storage: List[ImU32]) -> None:  # Line:3
+    # ImBitVector(ImVector<ImU32> Storage = ImVector<ImU32>());    /* original C++ signature */
+    def __init__(self, storage: List[ImU32] = List[ImU32]()) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -756,8 +756,8 @@ class ImGuiDataTypeInfo:  # imgui_internal.h:934
     print_fmt: str  # Default printf format for the type    # imgui_internal.h:938
     # const char* ScanFmt;    /* original C++ signature */
     scan_fmt: str  # Default scanf format for the type    # imgui_internal.h:939
-    # ImGuiDataTypeInfo(size_t Size);    /* original C++ signature */
-    def __init__(self, size: int) -> None:  # Line:3
+    # ImGuiDataTypeInfo(size_t Size = size_t());    /* original C++ signature */
+    def __init__(self, size: int = int()) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -779,8 +779,10 @@ class ImGuiColorMod:  # imgui_internal.h:951
     col: ImGuiCol  # imgui_internal.h:953
     # ImVec4          BackupValue;    /* original C++ signature */
     backup_value: ImVec4  # imgui_internal.h:954
-    # ImGuiColorMod(ImGuiCol Col, ImVec4 BackupValue);    /* original C++ signature */
-    def __init__(self, col: ImGuiCol, backup_value: ImVec4) -> None:  # Line:3
+    # ImGuiColorMod(ImGuiCol Col = ImGuiCol(), ImVec4 BackupValue = ImVec4());    /* original C++ signature */
+    def __init__(
+        self, col: ImGuiCol = ImGuiCol(), backup_value: ImVec4 = ImVec4()
+    ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -844,20 +846,20 @@ class ImGuiGroupData:  # imgui_internal.h:981
     backup_hovered_id_is_alive: bool  # imgui_internal.h:992
     # bool        EmitItem;    /* original C++ signature */
     emit_item: bool  # imgui_internal.h:993
-    # ImGuiGroupData(ImGuiID WindowID, ImVec2 BackupCursorPos, ImVec2 BackupCursorMaxPos, ImVec1 BackupIndent, ImVec1 BackupGroupOffset, ImVec2 BackupCurrLineSize, float BackupCurrLineTextBaseOffset, ImGuiID BackupActiveIdIsAlive, bool BackupActiveIdPreviousFrameIsAlive, bool BackupHoveredIdIsAlive, bool EmitItem);    /* original C++ signature */
+    # ImGuiGroupData(ImGuiID WindowID = ImGuiID(), ImVec2 BackupCursorPos = ImVec2(), ImVec2 BackupCursorMaxPos = ImVec2(), ImVec1 BackupIndent = ImVec1(), ImVec1 BackupGroupOffset = ImVec1(), ImVec2 BackupCurrLineSize = ImVec2(), float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupActiveIdPreviousFrameIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool EmitItem = bool());    /* original C++ signature */
     def __init__(
         self,
-        window_id: ImGuiID,
-        backup_cursor_pos: ImVec2,
-        backup_cursor_max_pos: ImVec2,
-        backup_indent: ImVec1,
-        backup_group_offset: ImVec1,
-        backup_curr_line_size: ImVec2,
-        backup_curr_line_text_base_offset: float,
-        backup_active_id_is_alive: ImGuiID,
-        backup_active_id_previous_frame_is_alive: bool,
-        backup_hovered_id_is_alive: bool,
-        emit_item: bool,
+        window_id: ImGuiID = ImGuiID(),
+        backup_cursor_pos: ImVec2 = ImVec2(),
+        backup_cursor_max_pos: ImVec2 = ImVec2(),
+        backup_indent: ImVec1 = ImVec1(),
+        backup_group_offset: ImVec1 = ImVec1(),
+        backup_curr_line_size: ImVec2 = ImVec2(),
+        backup_curr_line_text_base_offset: float = float(),
+        backup_active_id_is_alive: ImGuiID = ImGuiID(),
+        backup_active_id_previous_frame_is_alive: bool = bool(),
+        backup_hovered_id_is_alive: bool = bool(),
+        emit_item: bool = bool(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -1096,12 +1098,11 @@ class ImGuiWindowStackData:  # imgui_internal.h:1160
     parent_last_item_data_backup: ImGuiLastItemData  # imgui_internal.h:1163
     # ImGuiStackSizes         StackSizesOnBegin;    /* original C++ signature */
     stack_sizes_on_begin: ImGuiStackSizes  # Store size of various stacks for asserting    # imgui_internal.h:1164
-    # ImGuiWindowStackData(ImGuiWindow * Window, ImGuiLastItemData ParentLastItemDataBackup, ImGuiStackSizes StackSizesOnBegin);    /* original C++ signature */
+    # ImGuiWindowStackData(ImGuiLastItemData ParentLastItemDataBackup = ImGuiLastItemData(), ImGuiStackSizes StackSizesOnBegin = ImGuiStackSizes());    /* original C++ signature */
     def __init__(
         self,
-        window: ImGuiWindow,
-        parent_last_item_data_backup: ImGuiLastItemData,
-        stack_sizes_on_begin: ImGuiStackSizes,
+        parent_last_item_data_backup: ImGuiLastItemData = ImGuiLastItemData(),
+        stack_sizes_on_begin: ImGuiStackSizes = ImGuiStackSizes(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -1113,9 +1114,9 @@ class ImGuiShrinkWidthItem:  # imgui_internal.h:1167
     width: float  # imgui_internal.h:1170
     # float       InitialWidth;    /* original C++ signature */
     initial_width: float  # imgui_internal.h:1171
-    # ImGuiShrinkWidthItem(int Index, float Width, float InitialWidth);    /* original C++ signature */
+    # ImGuiShrinkWidthItem(int Index = int(), float Width = float(), float InitialWidth = float());    /* original C++ signature */
     def __init__(
-        self, index: int, width: float, initial_width: float
+        self, index: int = int(), width: float = float(), initial_width: float = float()
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -1193,8 +1194,10 @@ class ImGuiInputEventMousePos:  # imgui_internal.h:1223
     pos_x: float  # imgui_internal.h:1223
     # PosY;    /* original C++ signature */
     pos_y: float  # imgui_internal.h:1223
-    # ImGuiInputEventMousePos(float PosX, float PosY);    /* original C++ signature */
-    def __init__(self, pos_x: float, pos_y: float) -> None:  # Line:3
+    # ImGuiInputEventMousePos(float PosX = float(), float PosY = float());    /* original C++ signature */
+    def __init__(
+        self, pos_x: float = float(), pos_y: float = float()
+    ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -1203,8 +1206,10 @@ class ImGuiInputEventMouseWheel:  # imgui_internal.h:1224
     wheel_x: float  # imgui_internal.h:1224
     # WheelY;    /* original C++ signature */
     wheel_y: float  # imgui_internal.h:1224
-    # ImGuiInputEventMouseWheel(float WheelX, float WheelY);    /* original C++ signature */
-    def __init__(self, wheel_x: float, wheel_y: float) -> None:  # Line:3
+    # ImGuiInputEventMouseWheel(float WheelX = float(), float WheelY = float());    /* original C++ signature */
+    def __init__(
+        self, wheel_x: float = float(), wheel_y: float = float()
+    ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -1213,16 +1218,16 @@ class ImGuiInputEventMouseButton:  # imgui_internal.h:1225
     button: int  # imgui_internal.h:1225
     # bool Down;    /* original C++ signature */
     down: bool  # imgui_internal.h:1225
-    # ImGuiInputEventMouseButton(int Button, bool Down);    /* original C++ signature */
-    def __init__(self, button: int, down: bool) -> None:  # Line:3
+    # ImGuiInputEventMouseButton(int Button = int(), bool Down = bool());    /* original C++ signature */
+    def __init__(self, button: int = int(), down: bool = bool()) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
 class ImGuiInputEventMouseViewport:  # imgui_internal.h:1226
     # ImGuiID HoveredViewportID;    /* original C++ signature */
     hovered_viewport_id: ImGuiID  # imgui_internal.h:1226
-    # ImGuiInputEventMouseViewport(ImGuiID HoveredViewportID);    /* original C++ signature */
-    def __init__(self, hovered_viewport_id: ImGuiID) -> None:  # Line:3
+    # ImGuiInputEventMouseViewport(ImGuiID HoveredViewportID = ImGuiID());    /* original C++ signature */
+    def __init__(self, hovered_viewport_id: ImGuiID = ImGuiID()) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -1233,9 +1238,12 @@ class ImGuiInputEventKey:  # imgui_internal.h:1227
     down: bool  # imgui_internal.h:1227
     # float AnalogValue;    /* original C++ signature */
     analog_value: float  # imgui_internal.h:1227
-    # ImGuiInputEventKey(ImGuiKey Key, bool Down, float AnalogValue);    /* original C++ signature */
+    # ImGuiInputEventKey(ImGuiKey Key = ImGuiKey(), bool Down = bool(), float AnalogValue = float());    /* original C++ signature */
     def __init__(
-        self, key: ImGuiKey, down: bool, analog_value: float
+        self,
+        key: ImGuiKey = ImGuiKey(),
+        down: bool = bool(),
+        analog_value: float = float(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -1243,16 +1251,16 @@ class ImGuiInputEventKey:  # imgui_internal.h:1227
 class ImGuiInputEventText:  # imgui_internal.h:1228
     # unsigned int Char;    /* original C++ signature */
     char: int  # imgui_internal.h:1228
-    # ImGuiInputEventText(unsigned int Char);    /* original C++ signature */
-    def __init__(self, char: int) -> None:  # Line:3
+    # ImGuiInputEventText();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
 class ImGuiInputEventAppFocused:  # imgui_internal.h:1229
     # bool Focused;    /* original C++ signature */
     focused: bool  # imgui_internal.h:1229
-    # ImGuiInputEventAppFocused(bool Focused);    /* original C++ signature */
-    def __init__(self, focused: bool) -> None:  # Line:3
+    # ImGuiInputEventAppFocused(bool Focused = bool());    /* original C++ signature */
+    def __init__(self, focused: bool = bool()) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 
@@ -1301,14 +1309,14 @@ class ImGuiListClipperRange:  # imgui_internal.h:1265
     # ImS8    PosToIndexOffsetMax;    /* original C++ signature */
     pos_to_index_offset_max: ImS8  # Add to Min after converting to indices    # imgui_internal.h:1271
 
-    # ImGuiListClipperRange(int Min, int Max, bool PosToIndexConvert, ImS8 PosToIndexOffsetMin, ImS8 PosToIndexOffsetMax);    /* original C++ signature */
+    # ImGuiListClipperRange(int Min = int(), int Max = int(), bool PosToIndexConvert = bool(), ImS8 PosToIndexOffsetMin = ImS8(), ImS8 PosToIndexOffsetMax = ImS8());    /* original C++ signature */
     def __init__(
         self,
-        min: int,
-        max: int,
-        pos_to_index_convert: bool,
-        pos_to_index_offset_min: ImS8,
-        pos_to_index_offset_max: ImS8,
+        min: int = int(),
+        max: int = int(),
+        pos_to_index_convert: bool = bool(),
+        pos_to_index_offset_min: ImS8 = ImS8(),
+        pos_to_index_offset_max: ImS8 = ImS8(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -2706,44 +2714,42 @@ class ImGuiWindowTempData:  # imgui_internal.h:2198
     item_width: float  # Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).    # imgui_internal.h:2239
     # float                   TextWrapPos;    /* original C++ signature */
     text_wrap_pos: float  # Current text wrap pos.    # imgui_internal.h:2240
-    # ImGuiWindowTempData(ImVec2 CursorPos, ImVec2 CursorPosPrevLine, ImVec2 CursorStartPos, ImVec2 CursorMaxPos, ImVec2 IdealMaxPos, ImVec2 CurrLineSize, ImVec2 PrevLineSize, float CurrLineTextBaseOffset, float PrevLineTextBaseOffset, bool IsSameLine, ImVec1 Indent, ImVec1 ColumnsOffset, ImVec1 GroupOffset, ImVec2 CursorStartPosLossyness, ImGuiNavLayer NavLayerCurrent, short NavLayersActiveMask, short NavLayersActiveMaskNext, ImGuiID NavFocusScopeIdCurrent, bool NavHideHighlightOneFrame, bool NavHasScroll, bool MenuBarAppending, ImVec2 MenuBarOffset, ImGuiMenuColumns MenuColumns, int TreeDepth, ImU32 TreeJumpToParentOnPopMask, ImVector<ImGuiWindow*> ChildWindows, ImGuiStorage * StateStorage, ImGuiOldColumns * CurrentColumns, int CurrentTableIdx, ImGuiLayoutType LayoutType, ImGuiLayoutType ParentLayoutType, float ItemWidth, float TextWrapPos, ImVector<float> ItemWidthStack, ImVector<float> TextWrapPosStack);    /* original C++ signature */
+    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), ImGuiID NavFocusScopeIdCurrent = ImGuiID(), bool NavHideHighlightOneFrame = bool(), bool NavHasScroll = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
     def __init__(
         self,
-        cursor_pos: ImVec2,
-        cursor_pos_prev_line: ImVec2,
-        cursor_start_pos: ImVec2,
-        cursor_max_pos: ImVec2,
-        ideal_max_pos: ImVec2,
-        curr_line_size: ImVec2,
-        prev_line_size: ImVec2,
-        curr_line_text_base_offset: float,
-        prev_line_text_base_offset: float,
-        is_same_line: bool,
-        indent: ImVec1,
-        columns_offset: ImVec1,
-        group_offset: ImVec1,
-        cursor_start_pos_lossyness: ImVec2,
-        nav_layer_current: ImGuiNavLayer,
-        nav_layers_active_mask: int,
-        nav_layers_active_mask_next: int,
-        nav_focus_scope_id_current: ImGuiID,
-        nav_hide_highlight_one_frame: bool,
-        nav_has_scroll: bool,
-        menu_bar_appending: bool,
-        menu_bar_offset: ImVec2,
-        menu_columns: ImGuiMenuColumns,
-        tree_depth: int,
-        tree_jump_to_parent_on_pop_mask: ImU32,
-        child_windows: List[ImGuiWindow],
-        state_storage: ImGuiStorage,
-        current_columns: ImGuiOldColumns,
-        current_table_idx: int,
-        layout_type: ImGuiLayoutType,
-        parent_layout_type: ImGuiLayoutType,
-        item_width: float,
-        text_wrap_pos: float,
-        item_width_stack: List[float],
-        text_wrap_pos_stack: List[float],
+        cursor_pos: ImVec2 = ImVec2(),
+        cursor_pos_prev_line: ImVec2 = ImVec2(),
+        cursor_start_pos: ImVec2 = ImVec2(),
+        cursor_max_pos: ImVec2 = ImVec2(),
+        ideal_max_pos: ImVec2 = ImVec2(),
+        curr_line_size: ImVec2 = ImVec2(),
+        prev_line_size: ImVec2 = ImVec2(),
+        curr_line_text_base_offset: float = float(),
+        prev_line_text_base_offset: float = float(),
+        is_same_line: bool = bool(),
+        indent: ImVec1 = ImVec1(),
+        columns_offset: ImVec1 = ImVec1(),
+        group_offset: ImVec1 = ImVec1(),
+        cursor_start_pos_lossyness: ImVec2 = ImVec2(),
+        nav_layer_current: ImGuiNavLayer = ImGuiNavLayer(),
+        nav_layers_active_mask: int = int(),
+        nav_layers_active_mask_next: int = int(),
+        nav_focus_scope_id_current: ImGuiID = ImGuiID(),
+        nav_hide_highlight_one_frame: bool = bool(),
+        nav_has_scroll: bool = bool(),
+        menu_bar_appending: bool = bool(),
+        menu_bar_offset: ImVec2 = ImVec2(),
+        menu_columns: ImGuiMenuColumns = ImGuiMenuColumns(),
+        tree_depth: int = int(),
+        tree_jump_to_parent_on_pop_mask: ImU32 = ImU32(),
+        child_windows: List[ImGuiWindow] = List[ImGuiWindow](),
+        current_table_idx: int = int(),
+        layout_type: ImGuiLayoutType = ImGuiLayoutType(),
+        parent_layout_type: ImGuiLayoutType = ImGuiLayoutType(),
+        item_width: float = float(),
+        text_wrap_pos: float = float(),
+        item_width_stack: List[float] = List[float](),
+        text_wrap_pos_stack: List[float] = List[float](),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -3218,8 +3224,12 @@ class ImGuiTableCellData:  # imgui_internal.h:2546
     bg_color: ImU32  # Actual color    # imgui_internal.h:2548
     # ImGuiTableColumnIdx         Column;    /* original C++ signature */
     column: ImGuiTableColumnIdx  # Column number    # imgui_internal.h:2549
-    # ImGuiTableCellData(ImU32 BgColor, ImGuiTableColumnIdx Column);    /* original C++ signature */
-    def __init__(self, bg_color: ImU32, column: ImGuiTableColumnIdx) -> None:  # Line:3
+    # ImGuiTableCellData(ImU32 BgColor = ImU32(), ImGuiTableColumnIdx Column = ImGuiTableColumnIdx());    /* original C++ signature */
+    def __init__(
+        self,
+        bg_color: ImU32 = ImU32(),
+        column: ImGuiTableColumnIdx = ImGuiTableColumnIdx(),
+    ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
 

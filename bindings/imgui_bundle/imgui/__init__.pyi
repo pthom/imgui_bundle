@@ -5014,13 +5014,13 @@ class ImGuiKeyData:  # imgui.h:1975
     down_duration_prev: float  # Last frame duration the key has been down    # imgui.h:1979
     # float       AnalogValue;    /* original C++ signature */
     analog_value: float  # 0.0..1.0 for gamepad values    # imgui.h:1980
-    # ImGuiKeyData(bool Down, float DownDuration, float DownDurationPrev, float AnalogValue);    /* original C++ signature */
+    # ImGuiKeyData(bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float());    /* original C++ signature */
     def __init__(
         self,
-        down: bool,
-        down_duration: float,
-        down_duration_prev: float,
-        analog_value: float,
+        down: bool = bool(),
+        down_duration: float = float(),
+        down_duration_prev: float = float(),
+        analog_value: float = float(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -5378,9 +5378,12 @@ class ImGuiSizeCallbackData:  # imgui.h:2200
     current_size: ImVec2  # Read-only.   Current window size.    # imgui.h:2204
     # ImVec2  DesiredSize;    /* original C++ signature */
     desired_size: ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.    # imgui.h:2205
-    # ImGuiSizeCallbackData(void * UserData, ImVec2 Pos, ImVec2 CurrentSize, ImVec2 DesiredSize);    /* original C++ signature */
+    # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
-        self, user_data: Any, pos: ImVec2, current_size: ImVec2, desired_size: ImVec2
+        self,
+        pos: ImVec2 = ImVec2(),
+        current_size: ImVec2 = ImVec2(),
+        desired_size: ImVec2 = ImVec2(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -5673,9 +5676,9 @@ class ImDrawCmdHeader:  # imgui.h:2547
     texture_id: ImTextureID  # imgui.h:2550
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int  # imgui.h:2551
-    # ImDrawCmdHeader(ImVec4 ClipRect, ImTextureID TextureId, unsigned int VtxOffset);    /* original C++ signature */
+    # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
     def __init__(
-        self, clip_rect: ImVec4, texture_id: ImTextureID, vtx_offset: int
+        self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -5683,9 +5686,11 @@ class ImDrawCmdHeader:  # imgui.h:2547
 class ImDrawChannel:  # imgui.h:2555
     """[Internal] For use by ImDrawListSplitter"""
 
-    # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer, ImVector<ImDrawIdx> _IdxBuffer);    /* original C++ signature */
+    # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>());    /* original C++ signature */
     def __init__(
-        self, _cmd_buffer: List[ImDrawCmd], _idx_buffer: List[ImDrawIdx]
+        self,
+        _cmd_buffer: List[ImDrawCmd] = List[ImDrawCmd](),
+        _idx_buffer: List[ImDrawIdx] = List[ImDrawIdx](),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass
@@ -6311,18 +6316,18 @@ class ImFontGlyph:  # imgui.h:2799
     u1: float  # Texture coordinates    # imgui.h:2806
     # V1;    /* original C++ signature */
     v1: float  # Texture coordinates    # imgui.h:2806
-    # ImFontGlyph(float AdvanceX, float X0, float Y0, float X1, float Y1, float U0, float V0, float U1, float V1);    /* original C++ signature */
+    # ImFontGlyph(float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float());    /* original C++ signature */
     def __init__(
         self,
-        advance_x: float,
-        x0: float,
-        y0: float,
-        x1: float,
-        y1: float,
-        u0: float,
-        v0: float,
-        u1: float,
-        v1: float,
+        advance_x: float = float(),
+        x0: float = float(),
+        y0: float = float(),
+        x1: float = float(),
+        y1: float = float(),
+        u0: float = float(),
+        v0: float = float(),
+        u1: float = float(),
+        v1: float = float(),
     ) -> None:  # Line:3
         """Auto-generated default constructor"""
         pass

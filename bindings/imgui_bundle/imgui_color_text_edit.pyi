@@ -139,7 +139,11 @@ class TextEditor:
     class Identifier:
         m_location: Coordinates
         m_declaration: str
-        def __init__(self, m_location: Coordinates, m_declaration: str) -> None:
+        def __init__(
+            self,
+            m_location: Coordinates = Coordinates(),
+            m_declaration: str = ""
+            ) -> None:
             """Auto-generated default constructor"""
             pass
 

@@ -13,12 +13,14 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_implot():
+    print("autogenerate_hello_implot")
     input_cpp_header = CPP_HEADERS_DIR + "/implot.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_implot.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/implot.pyi"
 
     # Configure options
     options = litgen_options_implot()
+    options.srcmlcpp_options.flag_show_progress = True
 
     litgen.write_generated_code_for_file(
         options,
@@ -30,5 +32,4 @@ def autogenerate_implot():
 
 
 if __name__ == "__main__":
-    print("autogenerate_hello_implot")
     autogenerate_implot()
