@@ -50,6 +50,8 @@ def autogenerate_imgui_node_editor():
         " inline SaveReasonFlags operator |",
         "SaveReasonFlags operator &",
     ]
+    options.original_location_flag_show = True
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"

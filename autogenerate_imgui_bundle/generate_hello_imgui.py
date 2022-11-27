@@ -41,6 +41,8 @@ def autogenerate_hello_imgui():
     from codemanip.code_replacements import RegexReplacement
 
     options = litgen.LitgenOptions()
+    # options.original_location_flag_show = True
+    options.original_signature_flag_show = True
     options.srcmlcpp_options.ignored_warnings = [WarningType.LitgenIgnoreElement]
     options.srcmlcpp_options.ignored_warning_parts = ["gAssetsSubfolderFolderName"]
     options.namespace_root__regex = "^HelloImGui$|^ImGuiTheme$"

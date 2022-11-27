@@ -89,19 +89,25 @@ class AssetFileData:
     @@md
     *
     """
+    # void * data = nullptr;    /* original C++ signature */
     data: Any = None
+    # size_t dataSize = 0;    /* original C++ signature */
     data_size: int = 0
+    # AssetFileData(size_t dataSize = 0);    /* original C++ signature */
     def __init__(self, data_size: int = 0) -> None:
         """Auto-generated default constructor"""
         pass
 
+# AssetFileData LoadAssetFileData(const char *assetPath);    /* original C++ signature */
 def load_asset_file_data(asset_path: str) -> AssetFileData:
     pass
+# void FreeAssetFileData(AssetFileData * assetFileData);    /* original C++ signature */
 def free_asset_file_data(asset_file_data: AssetFileData) -> None:
     pass
 
 
 
+# std::string assetFileFullPath(const std::string& assetRelativeFilename);    /* original C++ signature */
 def asset_file_full_path(asset_relative_filename: str) -> str:
     """*
     @@md#assetFileFullPath
@@ -126,8 +132,10 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
 
 # Advanced: forces the assets folder location
 # (when using this, automatic assets installation on mobile platforms may not work)
+# void overrideAssetsFolder(const char* folder);    /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
     pass
+# void setAssetsFolder(const char* folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
     pass
 
@@ -189,6 +197,7 @@ def set_assets_folder(folder: str) -> None:
 #@@md
 #
 
+# void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1), const ImVec4& tint_col = ImVec4(1,1,1,1), const ImVec4& border_col = ImVec4(0,0,0,0));    /* original C++ signature */
 def image_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -198,6 +207,7 @@ def image_from_asset(
     border_col: ImVec4 = ImVec4(0,0,0,0)
     ) -> None:
     pass
+# bool ImageButtonFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0),  const ImVec2& uv1 = ImVec2(1,1), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0), const ImVec4& tint_col = ImVec4(1,1,1,1));    /* original C++ signature */
 def image_button_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -208,6 +218,7 @@ def image_button_from_asset(
     tint_col: ImVec4 = ImVec4(1,1,1,1)
     ) -> bool:
     pass
+# ImTextureID ImTextureIdFromAsset(const char *assetPath);    /* original C++ signature */
 def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
     pass
 
@@ -232,33 +243,99 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 
 
 class ScreenBounds:
+    # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
     position: ScreenPosition = DefaultScreenPosition
+    # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
     size: ScreenSize = DefaultWindowSize
 
+    # ScreenPosition TopLeftCorner() const{ return position; }    /* original C++ signature */
     def top_left_corner(self) -> ScreenPosition:
         pass
+    # ScreenPosition BottomRightCorner() const{ return { position[0] + size[0], position[1] + size[1] }; }    /* original C++ signature */
     def bottom_right_corner(self) -> ScreenPosition:
         pass
+    # ScreenPosition Center() const{ return { position[0] + size[0] / 2, position[1] + size[1] / 2 }; }    /* original C++ signature */
     def center(self) -> ScreenPosition:
         pass
 
+    # bool Contains(ScreenPosition pixel) const{    /* original C++ signature */
+    #             ForDim2(dim) {
+    #                 if (pixel[dim] < TopLeftCorner()[dim])
+    #                     return false;
+    #                 if (pixel[dim] >= BottomRightCorner()[dim])
+    #                     return false;
+    #             }
+    #             return true;
+    #         }
     def contains(self, pixel: ScreenPosition) -> bool:
         pass
 
+    # ScreenPosition WinPositionCentered(ScreenSize windowSize) const {    /* original C++ signature */
+    #             return {
+    #                 Center()[0] - windowSize[0] / 2,
+    #                 Center()[1] - windowSize[1] / 2
+    #             };
+    #         }
     def win_position_centered(self, window_size: ScreenSize) -> ScreenPosition:
         pass
 
+    # int DistanceFromPixel(ScreenPosition point) const    /* original C++ signature */
+    #         {
+    #             auto distFromInterval = [](int a, int b, int x) {
+    #                 if (x < a)
+    #                     return a - x;
+    #                 else if (x > b)
+    #                     return x - b;
+    #                 else
+    #                     return 0;
+    #             };
+    #             int distance = 0;
+    #             ForDim2(dim)
+    #                 distance += distFromInterval(TopLeftCorner()[dim], BottomRightCorner()[dim], point[dim]);
+    #             return distance;
+    #         }
     def distance_from_pixel(self, point: ScreenPosition) -> int:
         pass
 
+    # ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const    /* original C++ signature */
+    #         {
+    #             auto &self = *this;
+    #             ScreenBounds windowBoundsNew = windowBoundsOriginal;
+    #             ForDim2(dim)
+    #             {
+    #                 // if window is to the left or to the top, move it
+    #                 if (windowBoundsNew.position[dim] < self.position[dim])
+    #                     windowBoundsNew.position[dim] = self.position[dim];
+    #                 // if the window is too big and does not fit the bottom right corner, try to move it
+    #                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
+    #                     windowBoundsNew.position[dim] = self.BottomRightCorner()[dim] - 1 - windowBoundsNew.size[dim];
+    #                 // if it was not enough, resize it
+    #                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
+    #                     windowBoundsNew.size[dim] = self.size[dim];
+    #             }
+    #             return windowBoundsNew;
+    #         }
     def ensure_window_fits_this_monitor(
         self,
         window_bounds_original: ScreenBounds
         ) -> ScreenBounds:
         pass
 
+    # bool operator==(const ScreenBounds& other) const    /* original C++ signature */
+    #         {
+    #             auto &self = *this;
+    #             ForDim2(dim)
+    #             {
+    #                 if (self.size[dim] != other.size[dim])
+    #                     return false;
+    #                 if (self.position[dim] != other.position[dim])
+    #                     return false;
+    #             }
+    #             return true;
+    #         }
     def __eq__(self, other: ScreenBounds) -> bool:
         pass
+    # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(
         self,
         position: ScreenPosition = DefaultScreenPosition,
@@ -276,21 +353,33 @@ class ScreenBounds:
 
 
 class FullScreenMode(enum.Enum):
+    # NoFullScreen,    /* original C++ signature */
     no_full_screen = enum.auto()                 # (= 0)
+    # FullScreen,                        /* original C++ signature */
     full_screen = enum.auto()                    # (= 1)  # Full screen with specified resolution
+    # FullScreenDesktopResolution,       /* original C++ signature */
     full_screen_desktop_resolution = enum.auto() # (= 2)  # Full screen with current desktop mode & resolution
+    # FullMonitorWorkArea                /* original C++ signature */
     full_monitor_work_area = enum.auto()         # (= 3)  # Fake full screen, maximized window on the selected monitor
 
 
 class WindowSizeState(enum.Enum):
+    # Standard,    /* original C++ signature */
     standard = enum.auto()  # (= 0)
+    # Minimized,    /* original C++ signature */
     minimized = enum.auto() # (= 1)
+    # Maximized    /* original C++ signature */
+    # }
     maximized = enum.auto() # (= 2)
 
 
 class WindowPositionMode(enum.Enum):
+    # OsDefault,    /* original C++ signature */
     os_default = enum.auto()     # (= 0)
+    # MonitorCenter,    /* original C++ signature */
     monitor_center = enum.auto() # (= 1)
+    # FromCoords,    /* original C++ signature */
+    # }
     from_coords = enum.auto()    # (= 2)
 
 
@@ -332,23 +421,31 @@ class WindowGeometry:
     @@md
     *
     """
+    # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
     # used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)
     size: ScreenSize = DefaultWindowSize
 
+    # bool sizeAuto = false;    /* original C++ signature */
     # If True, adapt the app window size to the presented widgets
     size_auto: bool = False
 
+    # FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;    /* original C++ signature */
     full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen
 
+    # WindowPositionMode positionMode = WindowPositionMode::OsDefault;    /* original C++ signature */
     position_mode: WindowPositionMode = WindowPositionMode.os_default
 
+    # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
     # used if windowPositionMode==FromCoords, default=(40, 40)
     position: ScreenPosition = DefaultScreenPosition
 
+    # int monitorIdx = 0;    /* original C++ signature */
     # used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     monitor_idx: int = 0
 
+    # WindowSizeState windowSizeState = WindowSizeState::Standard;    /* original C++ signature */
     window_size_state: WindowSizeState = WindowSizeState.standard
+    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard);    /* original C++ signature */
     def __init__(
         self,
         size: ScreenSize = DefaultWindowSize,
@@ -389,17 +486,24 @@ class AppWindowParams:
     @@md
     *
     """
+    # std::string windowTitle;    /* original C++ signature */
     window_title: str
 
+    # WindowGeometry windowGeometry;    /* original C++ signature */
     window_geometry: WindowGeometry
 
+    # bool restorePreviousGeometry = false;    /* original C++ signature */
     # if True, then save & restore from last run
     restore_previous_geometry: bool = False
 
+    # bool borderless = false;    /* original C++ signature */
     borderless: bool = False
+    # bool resizable = true;    /* original C++ signature */
     resizable: bool = True
 
+    # float outWindowDpiFactor = 1.;    /* original C++ signature */
     out_window_dpi_factor: float = 1.
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, float outWindowDpiFactor = 1.);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -427,63 +531,98 @@ class AppWindowParams:
 
 """ namespace ImGuiTheme"""
 class ImGuiTheme_(enum.Enum):
+    # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
     imgui_colors_classic = enum.auto()   # (= 0)
+    # ImGuiTheme_ImGuiColorsDark,    /* original C++ signature */
     imgui_colors_dark = enum.auto()      # (= 1)
+    # ImGuiTheme_ImGuiColorsLight,    /* original C++ signature */
     imgui_colors_light = enum.auto()     # (= 2)
+    # ImGuiTheme_MaterialFlat,    /* original C++ signature */
     material_flat = enum.auto()          # (= 3)
+    # ImGuiTheme_PhotoshopStyle,    /* original C++ signature */
     photoshop_style = enum.auto()        # (= 4)
+    # ImGuiTheme_GrayVariations,    /* original C++ signature */
     gray_variations = enum.auto()        # (= 5)
+    # ImGuiTheme_GrayVariations_Darker,    /* original C++ signature */
     gray_variations_darker = enum.auto() # (= 6)
+    # ImGuiTheme_MicrosoftStyle,    /* original C++ signature */
     microsoft_style = enum.auto()        # (= 7)
+    # ImGuiTheme_Cherry,    /* original C++ signature */
     cherry = enum.auto()                 # (= 8)
+    # ImGuiTheme_Darcula,    /* original C++ signature */
     darcula = enum.auto()                # (= 9)
+    # ImGuiTheme_DarculaDarker,    /* original C++ signature */
     darcula_darker = enum.auto()         # (= 10)
+    # ImGuiTheme_LightRounded,    /* original C++ signature */
     light_rounded = enum.auto()          # (= 11)
+    # ImGuiTheme_SoDark_AccentBlue,    /* original C++ signature */
     so_dark_accent_blue = enum.auto()    # (= 12)
+    # ImGuiTheme_SoDark_AccentYellow,    /* original C++ signature */
     so_dark_accent_yellow = enum.auto()  # (= 13)
+    # ImGuiTheme_SoDark_AccentRed,    /* original C++ signature */
     so_dark_accent_red = enum.auto()     # (= 14)
+    # ImGuiTheme_BlackIsBlack,    /* original C++ signature */
     black_is_black = enum.auto()         # (= 15)
+    # ImGuiTheme_WhiteIsWhite,    /* original C++ signature */
     white_is_white = enum.auto()         # (= 16)
+    # ImGuiTheme_Count    /* original C++ signature */
+    #     }
     count = enum.auto()                  # (= 17)
+# const char* ImGuiTheme_Name(ImGuiTheme_ theme);    /* original C++ signature */
 def imgui_theme_name(theme: ImGuiTheme_) -> str:
     pass
+# ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);    /* original C++ signature */
 def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
     pass
+# void ApplyTheme(ImGuiTheme_ theme);    /* original C++ signature */
 def apply_theme(theme: ImGuiTheme_) -> None:
     pass
 
 
 class ImguiThemeTweaks:
+    # float Rounding = -1.f;    /* original C++ signature */
     # Common rounding for widgets. If < 0, this is ignored.
     rounding: float = -1.
+    # float RoundingScrollbarRatio = 4.f;    /* original C++ signature */
     # If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)
     rounding_scrollbar_ratio: float = 4.
+    # float AlphaMultiplier = -1.f;    /* original C++ signature */
     # Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
     alpha_multiplier: float = -1.
 
+    # float Hue = -1.f;    /* original C++ signature */
     #
     # HSV Color tweaks
     #
     # Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
     hue: float = -1.
+    # float SaturationMultiplier = -1.f;    /* original C++ signature */
     # Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
     saturation_multiplier: float = -1.
+    # float ValueMultiplierFront = -1.f;    /* original C++ signature */
     # Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
     value_multiplier_front: float = -1.
+    # float ValueMultiplierBg = -1.f;    /* original C++ signature */
     # Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
     value_multiplier_bg: float = -1.
+    # float ValueMultiplierText = -1.f;    /* original C++ signature */
     # Multiply the value (luminance) of text. If < 0, this is ignored.
     value_multiplier_text: float = -1.
+    # float ValueMultiplierFrameBg = -1.f;    /* original C++ signature */
     # Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
     # (Background of checkbox, radio button, plot, slider, text input)
     value_multiplier_frame_bg: float = -1.
 
+    # ImGuiThemeTweaks() {}    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
 class ImguiTweakedTheme:
+    # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
+    # ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();    /* original C++ signature */
     tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
+    # ImGuiTweakedTheme(ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker, ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks());    /* original C++ signature */
     def __init__(
         self,
         theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
@@ -492,26 +631,39 @@ class ImguiTweakedTheme:
         """Auto-generated default constructor"""
         pass
 
+# ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
 def tweaked_theme_theme_to_style(
     tweaked_theme: ImGuiTweakedTheme
     ) -> ImGuiStyle:
     pass
+# void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
 def apply_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
     pass
 
+# bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);    /* original C++ signature */
 def show_theme_tweak_gui(tweaked_theme: ImGuiTweakedTheme) -> bool:
     """ Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns True if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)"""
     pass
 
 # Some tweakable themes
+# ImGuiStyle SoDark(float hue);    /* original C++ signature */
 def so_dark(hue: float) -> ImGuiStyle:
     pass
+# ImGuiStyle ShadesOfGray(float rounding=0.f, float value_multiplier_front=1.f, float value_multiplier_bg=1.f);    /* original C++ signature */
 def shades_of_gray(
     rounding: float = 0.,
     value_multiplier_front: float = 1.,
     value_multiplier_bg: float = 1.
     ) -> ImGuiStyle:
     pass
+# ImGuiStyle Darcula(    /* original C++ signature */
+#         float rounding=1.f,
+#         float hue=-1.f,
+#         float saturation_multiplier=1.f,
+#         float value_multiplier_front=1.f,
+#         float value_multiplier_bg=1.f,
+#         float alpha_bg_transparency=1.f
+#     );
 def darcula(
     rounding: float = 1.,
     hue: float = -1.,
@@ -545,8 +697,12 @@ class DefaultImGuiWindowType(enum.Enum):
     @@md
 
     """
+    # ProvideFullScreenWindow,    /* original C++ signature */
     provide_full_screen_window = enum.auto()     # (= 0)
+    # ProvideFullScreenDockSpace,    /* original C++ signature */
     provide_full_screen_dock_space = enum.auto() # (= 1)
+    # NoDefaultWindow    /* original C++ signature */
+    # }
     no_default_window = enum.auto()              # (= 2)
 
 class ImguiWindowParams:
@@ -595,22 +751,33 @@ class ImguiWindowParams:
     @@md
 
     """
+    # DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow;    /* original C++ signature */
     default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window
 
+    # ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);    /* original C++ signature */
     background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
 
+    # bool showMenuBar = false;    /* original C++ signature */
     show_menu_bar: bool = False
+    # bool showMenu_App = true;    /* original C++ signature */
     show_menu_app: bool = True
+    # bool showMenu_View = true;    /* original C++ signature */
     show_menu_view: bool = True
 
+    # bool showStatusBar = false;    /* original C++ signature */
     show_status_bar: bool = False
+    # bool showStatus_Fps = true;    /* original C++ signature */
     show_status_fps: bool = True
 
+    # bool configWindowsMoveFromTitleBarOnly = true;    /* original C++ signature */
     config_windows_move_from_title_bar_only: bool = True
 
+    # bool enableViewports = false;    /* original C++ signature */
     enable_viewports: bool = False
 
+    # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
@@ -649,8 +816,11 @@ class ImguiWindowParams:
 #@@md
 #*
 
+# inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
 def empty_void_function() -> VoidFunction:
     pass
+# inline AnyEventCallback EmptyEventCallback() {return {}; }    /* original C++ signature */
+# }
 def empty_event_callback() -> AnyEventCallback:
     pass
 
@@ -662,6 +832,7 @@ def empty_event_callback() -> AnyEventCallback:
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 """ namespace HelloImGui"""
+# ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());    /* original C++ signature */
 def load_font_ttf(
     font_filename: str,
     font_size: float,
@@ -669,6 +840,7 @@ def load_font_ttf(
     config: ImFontConfig = ImFontConfig()
     ) -> ImFont:
     pass
+# ImFont* LoadFontTTF_WithFontAwesomeIcons(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig configFont = ImFontConfig(), ImFontConfig configIcons = ImFontConfig());    /* original C++ signature */
 def load_font_ttf_with_font_awesome_icons(
     font_filename: str,
     font_size: float,
@@ -677,6 +849,7 @@ def load_font_ttf_with_font_awesome_icons(
     config_icons: ImFontConfig = ImFontConfig()
     ) -> ImFont:
     pass
+# ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());    /* original C++ signature */
 def merge_font_awesome_to_last_font(
     font_size: float,
     config: ImFontConfig = ImFontConfig()
@@ -714,10 +887,15 @@ class MobileCallbacks:
     @@md
 
     """
+    # VoidFunction OnDestroy = EmptyVoidFunction();    /* original C++ signature */
     on_destroy: VoidFunction = EmptyVoidFunction()
+    # VoidFunction OnLowMemory = EmptyVoidFunction();    /* original C++ signature */
     on_low_memory: VoidFunction = EmptyVoidFunction()
+    # VoidFunction OnPause = EmptyVoidFunction();    /* original C++ signature */
     on_pause: VoidFunction = EmptyVoidFunction()
+    # VoidFunction OnResume = EmptyVoidFunction();    /* original C++ signature */
     on_resume: VoidFunction = EmptyVoidFunction()
+    # MobileCallbacks(VoidFunction OnDestroy = EmptyVoidFunction(), VoidFunction OnLowMemory = EmptyVoidFunction(), VoidFunction OnPause = EmptyVoidFunction(), VoidFunction OnResume = EmptyVoidFunction());    /* original C++ signature */
     def __init__(
         self,
         on_destroy: VoidFunction = EmptyVoidFunction(),
@@ -785,18 +963,28 @@ class RunnerCallbacks:
     @@md
 
     """
+    # VoidFunction ShowGui = EmptyVoidFunction();    /* original C++ signature */
     show_gui: VoidFunction = EmptyVoidFunction()
+    # VoidFunction ShowMenus = EmptyVoidFunction();    /* original C++ signature */
     show_menus: VoidFunction = EmptyVoidFunction()
+    # VoidFunction ShowStatus = EmptyVoidFunction();    /* original C++ signature */
     show_status: VoidFunction = EmptyVoidFunction()
+    # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
     post_init: VoidFunction = EmptyVoidFunction()
+    # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
     before_exit: VoidFunction = EmptyVoidFunction()
 
+    # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
+    # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons()
+    # VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig();    /* original C++ signature */
     setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig()
+    # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle();    /* original C++ signature */
     setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
 
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig(), VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -908,6 +1096,9 @@ class DockingSplit:
     @@md
 
     """
+    # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
+    #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f)
+    #       : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_) {}
     def __init__(
         self,
         initial_dock_: DockSpaceName = "",
@@ -917,9 +1108,13 @@ class DockingSplit:
         ) -> None:
         pass
 
+    # DockSpaceName initialDock;    /* original C++ signature */
     initial_dock: DockSpaceName
+    # DockSpaceName newDock;    /* original C++ signature */
     new_dock: DockSpaceName
+    # ImGuiDir_ direction;    /* original C++ signature */
     direction: ImGuiDir_
+    # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
 
 class DockableWindow:
@@ -951,6 +1146,16 @@ class DockableWindow:
     @@md
     *
     """
+    # DockableWindow(    /* original C++ signature */
+    #         const std::string & label_ = "",
+    #         const DockSpaceName & dockSpaceName_ = "",
+    #         const VoidFunction guiFunction_ = VoidFunction(),
+    #         bool isVisible_ = true,
+    #         bool canBeClosed_ = true)
+    #     : label(label_), dockSpaceName(dockSpaceName_),
+    #       GuiFunction(guiFunction_),
+    #       isVisible(isVisible_),
+    #       canBeClosed(canBeClosed_) {}
     def __init__(
         self,
         label_: str = "",
@@ -961,24 +1166,37 @@ class DockableWindow:
         ) -> None:
         pass
 
+    # std::string label;    /* original C++ signature */
     label: str
 
+    # DockSpaceName dockSpaceName;    /* original C++ signature */
     dock_space_name: DockSpaceName
 
+    # VoidFunction GuiFunction = {};    /* original C++ signature */
     gui_function: VoidFunction = {}
 
+    # bool isVisible = true;    /* original C++ signature */
     is_visible: bool = True
+    # bool canBeClosed = true;    /* original C++ signature */
     can_be_closed: bool = True
+    # bool callBeginEnd = true;    /* original C++ signature */
     call_begin_end: bool = True
+    # bool includeInViewMenu = true;    /* original C++ signature */
     include_in_view_menu: bool = True
+    # ImGuiWindowFlags imGuiWindowFlags = 0;    /* original C++ signature */
     imgui_window_flags: ImGuiWindowFlags = 0
 
+    # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
+    # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
+    # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
+    # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
+    # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
 
 class DockingParams:
@@ -1005,19 +1223,26 @@ class DockingParams:
     @@md
 
     """
+    # std::vector<DockingSplit> dockingSplits;    /* original C++ signature */
     docking_splits: List[DockingSplit]
 
+    # std::vector<DockableWindow> dockableWindows;    /* original C++ signature */
     dockable_windows: List[DockableWindow]
 
+    # bool resetUserDockLayout = true;    /* original C++ signature */
     reset_user_dock_layout: bool = True
 
+    # bool wasDockLayoutApplied = false;    /* original C++ signature */
     # wasDockLayoutApplied is an internal variable
     was_dock_layout_applied: bool = False
 
+    # DockableWindow * dockableWindowOfName(const std::string & name);    /* original C++ signature */
     def dockable_window_of_name(self, name: str) -> DockableWindow:
         pass
+    # void focusDockableWindow(const std::string& windowName);    /* original C++ signature */
     def focus_dockable_window(self, window_name: str) -> None:
         pass
+    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), bool resetUserDockLayout = true, bool wasDockLayoutApplied = false);    /* original C++ signature */
     def __init__(
         self,
         docking_splits: List[DockingSplit] = List[DockingSplit](),
@@ -1056,12 +1281,16 @@ class BackendPointers:
 
     """
     # GLFWwindow*
+    # void* glfwWindow     = nullptr;    /* original C++ signature */
     glfw_window: Any = None
 
     # SDL_Window*
+    # void* sdlWindow      = nullptr;    /* original C++ signature */
     sdl_window: Any = None
     # SDL_GLContext
+    # void* sdlGlContext   = nullptr;    /* original C++ signature */
     sdl_gl_context: Any = None
+    # BackendPointers();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -1076,9 +1305,14 @@ class BackendPointers:
 """ namespace HelloImGui"""
 
 class BackendType(enum.Enum):
+    # FirstAvailable,    /* original C++ signature */
     first_available = enum.auto() # (= 0)
+    # Sdl,    /* original C++ signature */
     sdl = enum.auto()             # (= 1)
+    # Glfw,    /* original C++ signature */
     glfw = enum.auto()            # (= 2)
+    # Qt    /* original C++ signature */
+    # }
     qt = enum.auto()              # (= 3)
 
 class RunnerParams:
@@ -1117,17 +1351,27 @@ class RunnerParams:
     @@md
 
     """
+    # RunnerCallbacks callbacks;    /* original C++ signature */
     callbacks: RunnerCallbacks
+    # AppWindowParams appWindowParams;    /* original C++ signature */
     app_window_params: AppWindowParams
+    # ImGuiWindowParams imGuiWindowParams;    /* original C++ signature */
     imgui_window_params: ImGuiWindowParams
+    # DockingParams dockingParams;    /* original C++ signature */
     docking_params: DockingParams
+    # BackendPointers backendPointers;    /* original C++ signature */
     backend_pointers: BackendPointers
+    # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
     backend_type: BackendType = BackendType.first_available
+    # bool appShallExit = false;    /* original C++ signature */
     app_shall_exit: bool = False
 
+    # float fpsIdle = 10.f;    /* original C++ signature */
     fps_idle: float = 10.
 
+    # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1166,17 +1410,25 @@ class SimpleRunnerParams:
     @@md
 
     """
+    # VoidFunction guiFunction;    /* original C++ signature */
     gui_function: VoidFunction
+    # std::string windowTitle = "";    /* original C++ signature */
     window_title: str = ""
 
+    # bool windowSizeAuto = false;    /* original C++ signature */
     window_size_auto: bool = False
+    # bool windowRestorePreviousGeometry = false;    /* original C++ signature */
     window_restore_previous_geometry: bool = False
+    # ScreenSize windowSize = DefaultWindowSize;    /* original C++ signature */
     window_size: ScreenSize = DefaultWindowSize
 
+    # float fpsIdle = 10.f;    /* original C++ signature */
     fps_idle: float = 10.
 
+    # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
+    # SimpleRunnerParams(VoidFunction guiFunction = VoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 10.f);    /* original C++ signature */
     def __init__(
         self,
         gui_function: VoidFunction = VoidFunction(),
@@ -1206,15 +1458,24 @@ HelloImGui provides a simple Log utility that is able to collect message and dis
 
 """
 class LogLevel(enum.Enum):
+    # Debug,    /* original C++ signature */
     debug = enum.auto()   # (= 0)
+    # Info,    /* original C++ signature */
     info = enum.auto()    # (= 1)
+    # Warning,    /* original C++ signature */
     warning = enum.auto() # (= 2)
+    # Error    /* original C++ signature */
+    #     }
     error = enum.auto()   # (= 3)
 
+# void Log(LogLevel level, char const* const format, ...);    /* original C++ signature */
 def log(level: LogLevel, format: str) -> None:
     pass
+# void LogClear();    /* original C++ signature */
 def log_clear() -> None:
     pass
+# void LogGui();    /* original C++ signature */
+# }
 def log_gui() -> None:
     pass
 
@@ -1246,12 +1507,22 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 @@md
 
 """
+# void Run(RunnerParams & runnerParams);    /* original C++ signature */
 def run(runner_params: RunnerParams) -> None:
     pass
 
+# void Run(const SimpleRunnerParams& simpleParams);    /* original C++ signature */
 def run(simple_params: SimpleRunnerParams) -> None:
     pass
 
+# void Run(    /* original C++ signature */
+#         const VoidFunction& guiFunction,
+#         const std::string& windowTitle = "",
+#         bool windowSizeAuto = false,
+#         bool windowRestorePreviousGeometry = false,
+#         const ScreenSize& windowSize = DefaultWindowSize,
+#         float fpsIdle = 10.f
+#     );
 def run(
     gui_function: VoidFunction,
     window_title: str = "",
@@ -1262,6 +1533,8 @@ def run(
     ) -> None:
     pass
 
+# RunnerParams* GetRunnerParams();    /* original C++ signature */
+# }
 def get_runner_params() -> RunnerParams:
     pass
 
@@ -1285,10 +1558,14 @@ def get_runner_params() -> RunnerParams:
 class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
+    # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     def load_default_font_with_font_awesome_icons() -> VoidFunction:
         pass
+    # VoidFunction SetupDefaultImGuiConfig();    /* original C++ signature */
     def setup_default_imgui_config() -> VoidFunction:
         pass
+    # VoidFunction SetupDefaultImGuiStyle();    /* original C++ signature */
+    # }
     def setup_default_imgui_style() -> VoidFunction:
         pass
 
