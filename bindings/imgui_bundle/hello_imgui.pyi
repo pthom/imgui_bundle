@@ -27,6 +27,7 @@ DefaultWindowSize = (800, 600)
 DefaultScreenPosition = (40, 40)
 
 ImGuiDir_Down = ImGuiDir_.down
+ImGuiTheme = imgui_bundle.hello_imgui
 
 EmptyVoidFunction: VoidFunction
 EmptyEventCallback: AnyEventCallback
@@ -579,7 +580,7 @@ def apply_theme(theme: ImGuiTheme_) -> None:
     pass
 
 
-class ImguiThemeTweaks:
+class ImGuiThemeTweaks:
     # float Rounding = -1.f;    /* original C++ signature */
     # Common rounding for widgets. If < 0, this is ignored.
     rounding: float = -1.
@@ -617,7 +618,7 @@ class ImguiThemeTweaks:
     def __init__(self) -> None:
         pass
 
-class ImguiTweakedTheme:
+class ImGuiTweakedTheme:
     # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
     # ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();    /* original C++ signature */
@@ -705,7 +706,7 @@ class DefaultImGuiWindowType(enum.Enum):
     # }
     no_default_window = enum.auto()              # (= 2)
 
-class ImguiWindowParams:
+class ImGuiWindowParams:
     """*
     @@md#ImGuiWindowParams
 
