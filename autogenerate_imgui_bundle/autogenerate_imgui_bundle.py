@@ -9,6 +9,7 @@ from generate_imgui_color_text_edit import autogenerate_imgui_color_text_edit
 from generate_imgui_knobs import autogenerate_imgui_knobs
 from generate_imgui_node_editor import autogenerate_imgui_node_editor
 from generate_implot import autogenerate_implot
+from generate_immvision import autogenerate_immvision
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -42,15 +43,16 @@ def autogenerate_imgui_bundle():
 
 
 def main():
-    autogenerate_imgui_bundle()
-    autogenerate_hello_imgui()
-    autogenerate_im_file_dialog()
     autogenerate_imgui()
     autogenerate_imgui_internal()
+    autogenerate_implot()
+    autogenerate_immvision()
+    autogenerate_imgui_node_editor()
+    autogenerate_hello_imgui()
+    autogenerate_imgui_bundle()
+    autogenerate_im_file_dialog()
     autogenerate_imgui_color_text_edit()
     autogenerate_imgui_knobs()
-    autogenerate_imgui_node_editor()
-    autogenerate_implot()
 
 
 if __name__ == "__main__":

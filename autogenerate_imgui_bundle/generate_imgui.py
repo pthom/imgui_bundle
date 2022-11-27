@@ -9,7 +9,6 @@ from litgen.options_customized.litgen_options_imgui import (
 FLAG_DOCKING_BRANCH = True
 THIS_DIR = os.path.dirname(__file__)
 REPO_DIR = os.path.abspath(THIS_DIR + "/..")
-print(f"{THIS_DIR=}")
 CPP_HEADERS_DIR = REPO_DIR + "/external/imgui"
 CPP_GENERATED_PYBIND_DIR = REPO_DIR + "/bindings"
 assert os.path.isdir(CPP_HEADERS_DIR)
