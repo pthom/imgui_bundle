@@ -62,17 +62,6 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         auto pyClassTextEditor_ClassBreakpoint =
             py::class_<TextEditor::Breakpoint>
                 (pyClassTextEditor, "Breakpoint", "")
-            .def(py::init<>([](
-            int mLine = int(), bool mEnabled = bool(), std::string mCondition = std::string())
-            {
-                auto r = std::make_unique<TextEditor::Breakpoint>();
-                r->mLine = mLine;
-                r->mEnabled = mEnabled;
-                r->mCondition = mCondition;
-                return r;
-            })
-            , py::arg("m_line") = int(), py::arg("m_enabled") = bool(), py::arg("m_condition") = std::string()
-            )
             .def_readwrite("m_line", &TextEditor::Breakpoint::mLine, "")
             .def_readwrite("m_enabled", &TextEditor::Breakpoint::mEnabled, "")
             .def_readwrite("m_condition", &TextEditor::Breakpoint::mCondition, "")
@@ -104,16 +93,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         auto pyClassTextEditor_ClassIdentifier =
             py::class_<TextEditor::Identifier>
                 (pyClassTextEditor, "Identifier", "")
-            .def(py::init<>([](
-            TextEditor::Coordinates mLocation = TextEditor::Coordinates(), std::string mDeclaration = std::string())
-            {
-                auto r = std::make_unique<TextEditor::Identifier>();
-                r->mLocation = mLocation;
-                r->mDeclaration = mDeclaration;
-                return r;
-            })
-            , py::arg("m_location") = TextEditor::Coordinates(), py::arg("m_declaration") = std::string()
-            )
+            .def(py::init<>()) // implicit default constructor
             .def_readwrite("m_location", &TextEditor::Identifier::mLocation, "")
             .def_readwrite("m_declaration", &TextEditor::Identifier::mDeclaration, "")
             ;
@@ -128,24 +108,6 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         auto pyClassTextEditor_ClassLanguageDefinition =
             py::class_<TextEditor::LanguageDefinition>
                 (pyClassTextEditor, "LanguageDefinition", "")
-            .def(py::init<>([](
-            std::string mName = std::string(), Keywords mKeywords = Keywords(), Identifiers mIdentifiers = Identifiers(), Identifiers mPreprocIdentifiers = Identifiers(), std::string mCommentStart = std::string(), std::string mCommentEnd = std::string(), std::string mSingleLineComment = std::string(), bool mAutoIndentation = bool(), TokenRegexStrings mTokenRegexStrings = TokenRegexStrings(), bool mCaseSensitive = bool())
-            {
-                auto r = std::make_unique<TextEditor::LanguageDefinition>();
-                r->mName = mName;
-                r->mKeywords = mKeywords;
-                r->mIdentifiers = mIdentifiers;
-                r->mPreprocIdentifiers = mPreprocIdentifiers;
-                r->mCommentStart = mCommentStart;
-                r->mCommentEnd = mCommentEnd;
-                r->mSingleLineComment = mSingleLineComment;
-                r->mAutoIndentation = mAutoIndentation;
-                r->mTokenRegexStrings = mTokenRegexStrings;
-                r->mCaseSensitive = mCaseSensitive;
-                return r;
-            })
-            , py::arg("m_name") = std::string(), py::arg("m_keywords") = Keywords(), py::arg("m_identifiers") = Identifiers(), py::arg("m_preproc_identifiers") = Identifiers(), py::arg("m_comment_start") = std::string(), py::arg("m_comment_end") = std::string(), py::arg("m_single_line_comment") = std::string(), py::arg("m_auto_indentation") = bool(), py::arg("m_token_regex_strings") = TokenRegexStrings(), py::arg("m_case_sensitive") = bool()
-            )
             .def_readwrite("m_name", &TextEditor::LanguageDefinition::mName, "")
             .def_readwrite("m_keywords", &TextEditor::LanguageDefinition::mKeywords, "")
             .def_readwrite("m_identifiers", &TextEditor::LanguageDefinition::mIdentifiers, "")

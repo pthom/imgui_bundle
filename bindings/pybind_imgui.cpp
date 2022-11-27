@@ -3064,54 +3064,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiStyle =
         py::class_<ImGuiStyle>    // imgui.h:1918
             (m, "ImGuiStyle", "")
-        .def(py::init<>([](
-        float Alpha = float(), float DisabledAlpha = float(), ImVec2 WindowPadding = ImVec2(), float WindowRounding = float(), float WindowBorderSize = float(), ImVec2 WindowMinSize = ImVec2(), ImVec2 WindowTitleAlign = ImVec2(), ImGuiDir WindowMenuButtonPosition = ImGuiDir(), float ChildRounding = float(), float ChildBorderSize = float(), float PopupRounding = float(), float PopupBorderSize = float(), ImVec2 FramePadding = ImVec2(), float FrameRounding = float(), float FrameBorderSize = float(), ImVec2 ItemSpacing = ImVec2(), ImVec2 ItemInnerSpacing = ImVec2(), ImVec2 CellPadding = ImVec2(), ImVec2 TouchExtraPadding = ImVec2(), float IndentSpacing = float(), float ColumnsMinSpacing = float(), float ScrollbarSize = float(), float ScrollbarRounding = float(), float GrabMinSize = float(), float GrabRounding = float(), float LogSliderDeadzone = float(), float TabRounding = float(), float TabBorderSize = float(), float TabMinWidthForCloseButton = float(), ImGuiDir ColorButtonPosition = ImGuiDir(), ImVec2 ButtonTextAlign = ImVec2(), ImVec2 SelectableTextAlign = ImVec2(), ImVec2 DisplayWindowPadding = ImVec2(), ImVec2 DisplaySafeAreaPadding = ImVec2(), float MouseCursorScale = float(), bool AntiAliasedLines = bool(), bool AntiAliasedLinesUseTex = bool(), bool AntiAliasedFill = bool(), float CurveTessellationTol = float(), float CircleTessellationMaxError = float())
-        {
-            auto r = std::make_unique<ImGuiStyle>();
-            r->Alpha = Alpha;
-            r->DisabledAlpha = DisabledAlpha;
-            r->WindowPadding = WindowPadding;
-            r->WindowRounding = WindowRounding;
-            r->WindowBorderSize = WindowBorderSize;
-            r->WindowMinSize = WindowMinSize;
-            r->WindowTitleAlign = WindowTitleAlign;
-            r->WindowMenuButtonPosition = WindowMenuButtonPosition;
-            r->ChildRounding = ChildRounding;
-            r->ChildBorderSize = ChildBorderSize;
-            r->PopupRounding = PopupRounding;
-            r->PopupBorderSize = PopupBorderSize;
-            r->FramePadding = FramePadding;
-            r->FrameRounding = FrameRounding;
-            r->FrameBorderSize = FrameBorderSize;
-            r->ItemSpacing = ItemSpacing;
-            r->ItemInnerSpacing = ItemInnerSpacing;
-            r->CellPadding = CellPadding;
-            r->TouchExtraPadding = TouchExtraPadding;
-            r->IndentSpacing = IndentSpacing;
-            r->ColumnsMinSpacing = ColumnsMinSpacing;
-            r->ScrollbarSize = ScrollbarSize;
-            r->ScrollbarRounding = ScrollbarRounding;
-            r->GrabMinSize = GrabMinSize;
-            r->GrabRounding = GrabRounding;
-            r->LogSliderDeadzone = LogSliderDeadzone;
-            r->TabRounding = TabRounding;
-            r->TabBorderSize = TabBorderSize;
-            r->TabMinWidthForCloseButton = TabMinWidthForCloseButton;
-            r->ColorButtonPosition = ColorButtonPosition;
-            r->ButtonTextAlign = ButtonTextAlign;
-            r->SelectableTextAlign = SelectableTextAlign;
-            r->DisplayWindowPadding = DisplayWindowPadding;
-            r->DisplaySafeAreaPadding = DisplaySafeAreaPadding;
-            r->MouseCursorScale = MouseCursorScale;
-            r->AntiAliasedLines = AntiAliasedLines;
-            r->AntiAliasedLinesUseTex = AntiAliasedLinesUseTex;
-            r->AntiAliasedFill = AntiAliasedFill;
-            r->CurveTessellationTol = CurveTessellationTol;
-            r->CircleTessellationMaxError = CircleTessellationMaxError;
-            return r;
-        })
-        , py::arg("alpha") = float(), py::arg("disabled_alpha") = float(), py::arg("window_padding") = ImVec2(), py::arg("window_rounding") = float(), py::arg("window_border_size") = float(), py::arg("window_min_size") = ImVec2(), py::arg("window_title_align") = ImVec2(), py::arg("window_menu_button_position") = ImGuiDir(), py::arg("child_rounding") = float(), py::arg("child_border_size") = float(), py::arg("popup_rounding") = float(), py::arg("popup_border_size") = float(), py::arg("frame_padding") = ImVec2(), py::arg("frame_rounding") = float(), py::arg("frame_border_size") = float(), py::arg("item_spacing") = ImVec2(), py::arg("item_inner_spacing") = ImVec2(), py::arg("cell_padding") = ImVec2(), py::arg("touch_extra_padding") = ImVec2(), py::arg("indent_spacing") = float(), py::arg("columns_min_spacing") = float(), py::arg("scrollbar_size") = float(), py::arg("scrollbar_rounding") = float(), py::arg("grab_min_size") = float(), py::arg("grab_rounding") = float(), py::arg("log_slider_deadzone") = float(), py::arg("tab_rounding") = float(), py::arg("tab_border_size") = float(), py::arg("tab_min_width_for_close_button") = float(), py::arg("color_button_position") = ImGuiDir(), py::arg("button_text_align") = ImVec2(), py::arg("selectable_text_align") = ImVec2(), py::arg("display_window_padding") = ImVec2(), py::arg("display_safe_area_padding") = ImVec2(), py::arg("mouse_cursor_scale") = float(), py::arg("anti_aliased_lines") = bool(), py::arg("anti_aliased_lines_use_tex") = bool(), py::arg("anti_aliased_fill") = bool(), py::arg("curve_tessellation_tol") = float(), py::arg("circle_tessellation_max_error") = float()
-        )
         .def_readwrite("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")    // imgui.h:1920
         .def_readwrite("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")    // imgui.h:1921
         .def_readwrite("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")    // imgui.h:1922
@@ -3161,18 +3113,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiKeyData =
         py::class_<ImGuiKeyData>    // imgui.h:1975
             (m, "ImGuiKeyData", " [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.\n If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.")
-        .def(py::init<>([](
-        bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float())
-        {
-            auto r = std::make_unique<ImGuiKeyData>();
-            r->Down = Down;
-            r->DownDuration = DownDuration;
-            r->DownDurationPrev = DownDurationPrev;
-            r->AnalogValue = AnalogValue;
-            return r;
-        })
-        , py::arg("down") = bool(), py::arg("down_duration") = float(), py::arg("down_duration_prev") = float(), py::arg("analog_value") = float()
-        )
+        .def(py::init<>()) // implicit default constructor
         .def_readwrite("down", &ImGuiKeyData::Down, "True for if key is down")    // imgui.h:1977
         .def_readwrite("down_duration", &ImGuiKeyData::DownDuration, "Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)")    // imgui.h:1978
         .def_readwrite("down_duration_prev", &ImGuiKeyData::DownDurationPrev, "Last frame duration the key has been down")    // imgui.h:1979
@@ -3183,74 +3124,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiIO =
         py::class_<ImGuiIO>    // imgui.h:1983
             (m, "ImGuiIO", "")
-        .def(py::init<>([](
-        ImGuiConfigFlags ConfigFlags = ImGuiConfigFlags(), ImGuiBackendFlags BackendFlags = ImGuiBackendFlags(), ImVec2 DisplaySize = ImVec2(), float DeltaTime = float(), float IniSavingRate = float(), float MouseDoubleClickTime = float(), float MouseDoubleClickMaxDist = float(), float MouseDragThreshold = float(), float KeyRepeatDelay = float(), float KeyRepeatRate = float(), float FontGlobalScale = float(), bool FontAllowUserScaling = bool(), ImVec2 DisplayFramebufferScale = ImVec2(), bool ConfigDockingNoSplit = bool(), bool ConfigDockingWithShift = bool(), bool ConfigDockingAlwaysTabBar = bool(), bool ConfigDockingTransparentPayload = bool(), bool ConfigViewportsNoAutoMerge = bool(), bool ConfigViewportsNoTaskBarIcon = bool(), bool ConfigViewportsNoDecoration = bool(), bool ConfigViewportsNoDefaultParent = bool(), bool MouseDrawCursor = bool(), bool ConfigMacOSXBehaviors = bool(), bool ConfigInputTrickleEventQueue = bool(), bool ConfigInputTextCursorBlink = bool(), bool ConfigDragClickToInputText = bool(), bool ConfigWindowsResizeFromEdges = bool(), bool ConfigWindowsMoveFromTitleBarOnly = bool(), float ConfigMemoryCompactTimer = float(), bool WantCaptureMouse = bool(), bool WantCaptureKeyboard = bool(), bool WantTextInput = bool(), bool WantSetMousePos = bool(), bool WantSaveIniSettings = bool(), bool NavActive = bool(), bool NavVisible = bool(), float Framerate = float(), int MetricsRenderVertices = int(), int MetricsRenderIndices = int(), int MetricsRenderWindows = int(), int MetricsActiveWindows = int(), int MetricsActiveAllocations = int(), ImVec2 MouseDelta = ImVec2(), ImVec2 MousePos = ImVec2(), float MouseWheel = float(), float MouseWheelH = float(), ImGuiID MouseHoveredViewport = ImGuiID(), bool KeyCtrl = bool(), bool KeyShift = bool(), bool KeyAlt = bool(), bool KeySuper = bool(), ImGuiModFlags KeyMods = ImGuiModFlags(), bool WantCaptureMouseUnlessPopupClose = bool(), ImVec2 MousePosPrev = ImVec2(), float PenPressure = float(), bool AppFocusLost = bool(), bool AppAcceptingEvents = bool(), ImS8 BackendUsingLegacyKeyArrays = ImS8(), bool BackendUsingLegacyNavInputArray = bool(), ImWchar16 InputQueueSurrogate = ImWchar16())
-        {
-            auto r = std::make_unique<ImGuiIO>();
-            r->ConfigFlags = ConfigFlags;
-            r->BackendFlags = BackendFlags;
-            r->DisplaySize = DisplaySize;
-            r->DeltaTime = DeltaTime;
-            r->IniSavingRate = IniSavingRate;
-            r->MouseDoubleClickTime = MouseDoubleClickTime;
-            r->MouseDoubleClickMaxDist = MouseDoubleClickMaxDist;
-            r->MouseDragThreshold = MouseDragThreshold;
-            r->KeyRepeatDelay = KeyRepeatDelay;
-            r->KeyRepeatRate = KeyRepeatRate;
-            r->FontGlobalScale = FontGlobalScale;
-            r->FontAllowUserScaling = FontAllowUserScaling;
-            r->DisplayFramebufferScale = DisplayFramebufferScale;
-            r->ConfigDockingNoSplit = ConfigDockingNoSplit;
-            r->ConfigDockingWithShift = ConfigDockingWithShift;
-            r->ConfigDockingAlwaysTabBar = ConfigDockingAlwaysTabBar;
-            r->ConfigDockingTransparentPayload = ConfigDockingTransparentPayload;
-            r->ConfigViewportsNoAutoMerge = ConfigViewportsNoAutoMerge;
-            r->ConfigViewportsNoTaskBarIcon = ConfigViewportsNoTaskBarIcon;
-            r->ConfigViewportsNoDecoration = ConfigViewportsNoDecoration;
-            r->ConfigViewportsNoDefaultParent = ConfigViewportsNoDefaultParent;
-            r->MouseDrawCursor = MouseDrawCursor;
-            r->ConfigMacOSXBehaviors = ConfigMacOSXBehaviors;
-            r->ConfigInputTrickleEventQueue = ConfigInputTrickleEventQueue;
-            r->ConfigInputTextCursorBlink = ConfigInputTextCursorBlink;
-            r->ConfigDragClickToInputText = ConfigDragClickToInputText;
-            r->ConfigWindowsResizeFromEdges = ConfigWindowsResizeFromEdges;
-            r->ConfigWindowsMoveFromTitleBarOnly = ConfigWindowsMoveFromTitleBarOnly;
-            r->ConfigMemoryCompactTimer = ConfigMemoryCompactTimer;
-            r->WantCaptureMouse = WantCaptureMouse;
-            r->WantCaptureKeyboard = WantCaptureKeyboard;
-            r->WantTextInput = WantTextInput;
-            r->WantSetMousePos = WantSetMousePos;
-            r->WantSaveIniSettings = WantSaveIniSettings;
-            r->NavActive = NavActive;
-            r->NavVisible = NavVisible;
-            r->Framerate = Framerate;
-            r->MetricsRenderVertices = MetricsRenderVertices;
-            r->MetricsRenderIndices = MetricsRenderIndices;
-            r->MetricsRenderWindows = MetricsRenderWindows;
-            r->MetricsActiveWindows = MetricsActiveWindows;
-            r->MetricsActiveAllocations = MetricsActiveAllocations;
-            r->MouseDelta = MouseDelta;
-            r->MousePos = MousePos;
-            r->MouseWheel = MouseWheel;
-            r->MouseWheelH = MouseWheelH;
-            r->MouseHoveredViewport = MouseHoveredViewport;
-            r->KeyCtrl = KeyCtrl;
-            r->KeyShift = KeyShift;
-            r->KeyAlt = KeyAlt;
-            r->KeySuper = KeySuper;
-            r->KeyMods = KeyMods;
-            r->WantCaptureMouseUnlessPopupClose = WantCaptureMouseUnlessPopupClose;
-            r->MousePosPrev = MousePosPrev;
-            r->PenPressure = PenPressure;
-            r->AppFocusLost = AppFocusLost;
-            r->AppAcceptingEvents = AppAcceptingEvents;
-            r->BackendUsingLegacyKeyArrays = BackendUsingLegacyKeyArrays;
-            r->BackendUsingLegacyNavInputArray = BackendUsingLegacyNavInputArray;
-            r->InputQueueSurrogate = InputQueueSurrogate;
-            return r;
-        })
-        , py::arg("config_flags") = ImGuiConfigFlags(), py::arg("backend_flags") = ImGuiBackendFlags(), py::arg("display_size") = ImVec2(), py::arg("delta_time") = float(), py::arg("ini_saving_rate") = float(), py::arg("mouse_double_click_time") = float(), py::arg("mouse_double_click_max_dist") = float(), py::arg("mouse_drag_threshold") = float(), py::arg("key_repeat_delay") = float(), py::arg("key_repeat_rate") = float(), py::arg("font_global_scale") = float(), py::arg("font_allow_user_scaling") = bool(), py::arg("display_framebuffer_scale") = ImVec2(), py::arg("config_docking_no_split") = bool(), py::arg("config_docking_with_shift") = bool(), py::arg("config_docking_always_tab_bar") = bool(), py::arg("config_docking_transparent_payload") = bool(), py::arg("config_viewports_no_auto_merge") = bool(), py::arg("config_viewports_no_task_bar_icon") = bool(), py::arg("config_viewports_no_decoration") = bool(), py::arg("config_viewports_no_default_parent") = bool(), py::arg("mouse_draw_cursor") = bool(), py::arg("config_mac_osx_behaviors") = bool(), py::arg("config_input_trickle_event_queue") = bool(), py::arg("config_input_text_cursor_blink") = bool(), py::arg("config_drag_click_to_input_text") = bool(), py::arg("config_windows_resize_from_edges") = bool(), py::arg("config_windows_move_from_title_bar_only") = bool(), py::arg("config_memory_compact_timer") = float(), py::arg("want_capture_mouse") = bool(), py::arg("want_capture_keyboard") = bool(), py::arg("want_text_input") = bool(), py::arg("want_set_mouse_pos") = bool(), py::arg("want_save_ini_settings") = bool(), py::arg("nav_active") = bool(), py::arg("nav_visible") = bool(), py::arg("framerate") = float(), py::arg("metrics_render_vertices") = int(), py::arg("metrics_render_indices") = int(), py::arg("metrics_render_windows") = int(), py::arg("metrics_active_windows") = int(), py::arg("metrics_active_allocations") = int(), py::arg("mouse_delta") = ImVec2(), py::arg("mouse_pos") = ImVec2(), py::arg("mouse_wheel") = float(), py::arg("mouse_wheel_h") = float(), py::arg("mouse_hovered_viewport") = ImGuiID(), py::arg("key_ctrl") = bool(), py::arg("key_shift") = bool(), py::arg("key_alt") = bool(), py::arg("key_super") = bool(), py::arg("key_mods") = ImGuiModFlags(), py::arg("want_capture_mouse_unless_popup_close") = bool(), py::arg("mouse_pos_prev") = ImVec2(), py::arg("pen_pressure") = float(), py::arg("app_focus_lost") = bool(), py::arg("app_accepting_events") = bool(), py::arg("backend_using_legacy_key_arrays") = ImS8(), py::arg("backend_using_legacy_nav_input_array") = bool(), py::arg("input_queue_surrogate") = ImWchar16()
-        )
         .def_readwrite("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation options, etc.")    // imgui.h:1989
         .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")    // imgui.h:1990
         .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")    // imgui.h:1991
@@ -3477,24 +3350,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiInputTextCallbackData =
         py::class_<ImGuiInputTextCallbackData>    // imgui.h:2169
             (m, "ImGuiInputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
-        .def(py::init<>([](
-        ImGuiInputTextFlags EventFlag = ImGuiInputTextFlags(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags(), ImWchar EventChar = ImWchar(), ImGuiKey EventKey = ImGuiKey(), int BufTextLen = int(), int BufSize = int(), bool BufDirty = bool(), int CursorPos = int(), int SelectionStart = int(), int SelectionEnd = int())
-        {
-            auto r = std::make_unique<ImGuiInputTextCallbackData>();
-            r->EventFlag = EventFlag;
-            r->Flags = Flags;
-            r->EventChar = EventChar;
-            r->EventKey = EventKey;
-            r->BufTextLen = BufTextLen;
-            r->BufSize = BufSize;
-            r->BufDirty = BufDirty;
-            r->CursorPos = CursorPos;
-            r->SelectionStart = SelectionStart;
-            r->SelectionEnd = SelectionEnd;
-            return r;
-        })
-        , py::arg("event_flag") = ImGuiInputTextFlags(), py::arg("flags") = ImGuiInputTextFlags(), py::arg("event_char") = ImWchar(), py::arg("event_key") = ImGuiKey(), py::arg("buf_text_len") = int(), py::arg("buf_size") = int(), py::arg("buf_dirty") = bool(), py::arg("cursor_pos") = int(), py::arg("selection_start") = int(), py::arg("selection_end") = int()
-        )
         .def_readwrite("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")    // imgui.h:2171
         .def_readwrite("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")    // imgui.h:2172
         .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")    // imgui.h:2173
@@ -3517,17 +3372,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiSizeCallbackData =
         py::class_<ImGuiSizeCallbackData>    // imgui.h:2200
             (m, "ImGuiSizeCallbackData", " Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().\n NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.")
-        .def(py::init<>([](
-        ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2())
-        {
-            auto r = std::make_unique<ImGuiSizeCallbackData>();
-            r->Pos = Pos;
-            r->CurrentSize = CurrentSize;
-            r->DesiredSize = DesiredSize;
-            return r;
-        })
-        , py::arg("pos") = ImVec2(), py::arg("current_size") = ImVec2(), py::arg("desired_size") = ImVec2()
-        )
+        .def(py::init<>()) // implicit default constructor
         .def_readwrite("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints()")    // imgui.h:2202
         .def_readwrite("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")    // imgui.h:2203
         .def_readwrite("current_size", &ImGuiSizeCallbackData::CurrentSize, "Read-only.   Current window size.")    // imgui.h:2204
@@ -3538,22 +3383,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiWindowClass =
         py::class_<ImGuiWindowClass>    // imgui.h:2215
             (m, "ImGuiWindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
-        .def(py::init<>([](
-        ImGuiID ClassId = ImGuiID(), ImGuiID ParentViewportId = ImGuiID(), ImGuiViewportFlags ViewportFlagsOverrideSet = ImGuiViewportFlags(), ImGuiViewportFlags ViewportFlagsOverrideClear = ImGuiViewportFlags(), ImGuiTabItemFlags TabItemFlagsOverrideSet = ImGuiTabItemFlags(), ImGuiDockNodeFlags DockNodeFlagsOverrideSet = ImGuiDockNodeFlags(), bool DockingAlwaysTabBar = bool(), bool DockingAllowUnclassed = bool())
-        {
-            auto r = std::make_unique<ImGuiWindowClass>();
-            r->ClassId = ClassId;
-            r->ParentViewportId = ParentViewportId;
-            r->ViewportFlagsOverrideSet = ViewportFlagsOverrideSet;
-            r->ViewportFlagsOverrideClear = ViewportFlagsOverrideClear;
-            r->TabItemFlagsOverrideSet = TabItemFlagsOverrideSet;
-            r->DockNodeFlagsOverrideSet = DockNodeFlagsOverrideSet;
-            r->DockingAlwaysTabBar = DockingAlwaysTabBar;
-            r->DockingAllowUnclassed = DockingAllowUnclassed;
-            return r;
-        })
-        , py::arg("class_id") = ImGuiID(), py::arg("parent_viewport_id") = ImGuiID(), py::arg("viewport_flags_override_set") = ImGuiViewportFlags(), py::arg("viewport_flags_override_clear") = ImGuiViewportFlags(), py::arg("tab_item_flags_override_set") = ImGuiTabItemFlags(), py::arg("dock_node_flags_override_set") = ImGuiDockNodeFlags(), py::arg("docking_always_tab_bar") = bool(), py::arg("docking_allow_unclassed") = bool()
-        )
         .def_readwrite("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")    // imgui.h:2217
         .def_readwrite("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")    // imgui.h:2218
         .def_readwrite("viewport_flags_override_set", &ImGuiWindowClass::ViewportFlagsOverrideSet, "Viewport flags to set when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2219
@@ -3569,20 +3398,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiPayload =
         py::class_<ImGuiPayload>    // imgui.h:2230
             (m, "ImGuiPayload", "Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()")
-        .def(py::init<>([](
-        int DataSize = int(), ImGuiID SourceId = ImGuiID(), ImGuiID SourceParentId = ImGuiID(), int DataFrameCount = int(), bool Preview = bool(), bool Delivery = bool())
-        {
-            auto r = std::make_unique<ImGuiPayload>();
-            r->DataSize = DataSize;
-            r->SourceId = SourceId;
-            r->SourceParentId = SourceParentId;
-            r->DataFrameCount = DataFrameCount;
-            r->Preview = Preview;
-            r->Delivery = Delivery;
-            return r;
-        })
-        , py::arg("data_size") = int(), py::arg("source_id") = ImGuiID(), py::arg("source_parent_id") = ImGuiID(), py::arg("data_frame_count") = int(), py::arg("preview") = bool(), py::arg("delivery") = bool()
-        )
         .def_readwrite("data", &ImGuiPayload::Data, "Data (copied and owned by dear imgui)")    // imgui.h:2233
         .def_readwrite("data_size", &ImGuiPayload::DataSize, "Data size")    // imgui.h:2234
         .def_readwrite("source_id", &ImGuiPayload::SourceId, "Source item id")    // imgui.h:2237
@@ -3597,17 +3412,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiTableColumnSortSpecs =
         py::class_<ImGuiTableColumnSortSpecs>    // imgui.h:2252
             (m, "ImGuiTableColumnSortSpecs", "Sorting specification for one column of a table (sizeof == 12 bytes)")
-        .def(py::init<>([](
-        ImGuiID ColumnUserID = ImGuiID(), ImS16 ColumnIndex = ImS16(), ImS16 SortOrder = ImS16())
-        {
-            auto r = std::make_unique<ImGuiTableColumnSortSpecs>();
-            r->ColumnUserID = ColumnUserID;
-            r->ColumnIndex = ColumnIndex;
-            r->SortOrder = SortOrder;
-            return r;
-        })
-        , py::arg("column_user_id") = ImGuiID(), py::arg("column_index") = ImS16(), py::arg("sort_order") = ImS16()
-        )
         .def_readwrite("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User id of the column (if specified by a TableSetupColumn() call)")    // imgui.h:2254
         .def_readwrite("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")    // imgui.h:2255
         .def_readwrite("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")    // imgui.h:2256
@@ -3618,16 +3422,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiTableSortSpecs =
         py::class_<ImGuiTableSortSpecs>    // imgui.h:2266
             (m, "ImGuiTableSortSpecs", " Sorting specifications for a table (often handling sort specs for a single column, occasionally more)\n Obtained by calling TableGetSortSpecs().\n When 'SpecsDirty == True' you can sort your data. It will be True with sorting specs have changed since last call, or the first time.\n Make sure to set 'SpecsDirty = False' after sorting, else you may wastefully sort your data every frame!")
-        .def(py::init<>([](
-        int SpecsCount = int(), bool SpecsDirty = bool())
-        {
-            auto r = std::make_unique<ImGuiTableSortSpecs>();
-            r->SpecsCount = SpecsCount;
-            r->SpecsDirty = SpecsDirty;
-            return r;
-        })
-        , py::arg("specs_count") = int(), py::arg("specs_dirty") = bool()
-        )
         .def_readonly("specs", &ImGuiTableSortSpecs::Specs, "Pointer to sort spec array.")    // imgui.h:2268
         .def_readwrite("specs_count", &ImGuiTableSortSpecs::SpecsCount, "Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.")    // imgui.h:2269
         .def_readwrite("specs_dirty", &ImGuiTableSortSpecs::SpecsDirty, "Set to True when specs have changed since last time! Use this to sort again, then clear the flag.")    // imgui.h:2270
@@ -3756,19 +3550,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiListClipper =
         py::class_<ImGuiListClipper>    // imgui.h:2414
             (m, "ImGuiListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have a random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
-        .def(py::init<>([](
-        int DisplayStart = int(), int DisplayEnd = int(), int ItemsCount = int(), float ItemsHeight = float(), float StartPosY = float())
-        {
-            auto r = std::make_unique<ImGuiListClipper>();
-            r->DisplayStart = DisplayStart;
-            r->DisplayEnd = DisplayEnd;
-            r->ItemsCount = ItemsCount;
-            r->ItemsHeight = ItemsHeight;
-            r->StartPosY = StartPosY;
-            return r;
-        })
-        , py::arg("display_start") = int(), py::arg("display_end") = int(), py::arg("items_count") = int(), py::arg("items_height") = float(), py::arg("start_pos_y") = float()
-        )
         .def_readwrite("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")    // imgui.h:2416
         .def_readwrite("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")    // imgui.h:2417
         .def_readwrite("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")    // imgui.h:2418
@@ -3809,16 +3590,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImDrawCmd =
         py::class_<ImDrawCmd>    // imgui.h:2514
             (m, "ImDrawCmd", " Typically, 1 command = 1 GPU draw call (unless command is a callback)\n - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,\n   this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.\n   Backends made for <1.71. will typically ignore the VtxOffset fields.\n - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).")
-        .def(py::init<>([](
-        ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID())
-        {
-            auto r = std::make_unique<ImDrawCmd>();
-            r->ClipRect = ClipRect;
-            r->TextureId = TextureId;
-            return r;
-        })
-        , py::arg("clip_rect") = ImVec4(), py::arg("texture_id") = ImTextureID()
-        )
         .def_readwrite("clip_rect", &ImDrawCmd::ClipRect, "4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in \"viewport\" coordinates")    // imgui.h:2516
         .def_readwrite("texture_id", &ImDrawCmd::TextureId, "4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.")    // imgui.h:2517
         .def_readwrite("vtx_offset", &ImDrawCmd::VtxOffset, "4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.")    // imgui.h:2518
@@ -3833,16 +3604,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImDrawCmdHeader =
         py::class_<ImDrawCmdHeader>    // imgui.h:2547
             (m, "ImDrawCmdHeader", "[Internal] For use by ImDrawList")
-        .def(py::init<>([](
-        ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID())
-        {
-            auto r = std::make_unique<ImDrawCmdHeader>();
-            r->ClipRect = ClipRect;
-            r->TextureId = TextureId;
-            return r;
-        })
-        , py::arg("clip_rect") = ImVec4(), py::arg("texture_id") = ImTextureID()
-        )
+        .def(py::init<>()) // implicit default constructor
         .def_readwrite("clip_rect", &ImDrawCmdHeader::ClipRect, "")    // imgui.h:2549
         .def_readwrite("texture_id", &ImDrawCmdHeader::TextureId, "")    // imgui.h:2550
         .def_readwrite("vtx_offset", &ImDrawCmdHeader::VtxOffset, "")    // imgui.h:2551
@@ -3859,16 +3621,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImDrawListSplitter =
         py::class_<ImDrawListSplitter>    // imgui.h:2564
             (m, "ImDrawListSplitter", " Split/Merge functions are used to split the draw list into different layers which can be drawn into out of order.\n This is used by the Columns/Tables API, so items of each column can be batched together in a same draw call.")
-        .def(py::init<>([](
-        int _Current = int(), int _Count = int())
-        {
-            auto r = std::make_unique<ImDrawListSplitter>();
-            r->_Current = _Current;
-            r->_Count = _Count;
-            return r;
-        })
-        , py::arg("_current") = int(), py::arg("_count") = int()
-        )
         .def_readwrite("_current", &ImDrawListSplitter::_Current, "Current channel number (0)")    // imgui.h:2566
         .def_readwrite("_count", &ImDrawListSplitter::_Count, "Number of active channels (1+)")    // imgui.h:2567
         .def(py::init<>())    // imgui.h:2570
@@ -4049,21 +3801,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImDrawData =
         py::class_<ImDrawData>    // imgui.h:2747
             (m, "ImDrawData", " All draw data to render a Dear ImGui frame\n (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,\n as this is one of the oldest structure exposed by the library! Basically, ImDrawList == CmdList)")
-        .def(py::init<>([](
-        bool Valid = bool(), int CmdListsCount = int(), int TotalIdxCount = int(), int TotalVtxCount = int(), ImVec2 DisplayPos = ImVec2(), ImVec2 DisplaySize = ImVec2(), ImVec2 FramebufferScale = ImVec2())
-        {
-            auto r = std::make_unique<ImDrawData>();
-            r->Valid = Valid;
-            r->CmdListsCount = CmdListsCount;
-            r->TotalIdxCount = TotalIdxCount;
-            r->TotalVtxCount = TotalVtxCount;
-            r->DisplayPos = DisplayPos;
-            r->DisplaySize = DisplaySize;
-            r->FramebufferScale = FramebufferScale;
-            return r;
-        })
-        , py::arg("valid") = bool(), py::arg("cmd_lists_count") = int(), py::arg("total_idx_count") = int(), py::arg("total_vtx_count") = int(), py::arg("display_pos") = ImVec2(), py::arg("display_size") = ImVec2(), py::arg("framebuffer_scale") = ImVec2()
-        )
         .def_readwrite("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")    // imgui.h:2749
         .def_readwrite("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render")    // imgui.h:2750
         .def_readwrite("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")    // imgui.h:2751
@@ -4086,28 +3823,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFontConfig =
         py::class_<ImFontConfig>    // imgui.h:2770
             (m, "ImFontConfig", "")
-        .def(py::init<>([](
-        int FontDataSize = int(), bool FontDataOwnedByAtlas = bool(), int FontNo = int(), float SizePixels = float(), int OversampleH = int(), int OversampleV = int(), bool PixelSnapH = bool(), ImVec2 GlyphExtraSpacing = ImVec2(), ImVec2 GlyphOffset = ImVec2(), float GlyphMinAdvanceX = float(), float GlyphMaxAdvanceX = float(), bool MergeMode = bool(), float RasterizerMultiply = float(), ImWchar EllipsisChar = ImWchar())
-        {
-            auto r = std::make_unique<ImFontConfig>();
-            r->FontDataSize = FontDataSize;
-            r->FontDataOwnedByAtlas = FontDataOwnedByAtlas;
-            r->FontNo = FontNo;
-            r->SizePixels = SizePixels;
-            r->OversampleH = OversampleH;
-            r->OversampleV = OversampleV;
-            r->PixelSnapH = PixelSnapH;
-            r->GlyphExtraSpacing = GlyphExtraSpacing;
-            r->GlyphOffset = GlyphOffset;
-            r->GlyphMinAdvanceX = GlyphMinAdvanceX;
-            r->GlyphMaxAdvanceX = GlyphMaxAdvanceX;
-            r->MergeMode = MergeMode;
-            r->RasterizerMultiply = RasterizerMultiply;
-            r->EllipsisChar = EllipsisChar;
-            return r;
-        })
-        , py::arg("font_data_size") = int(), py::arg("font_data_owned_by_atlas") = bool(), py::arg("font_no") = int(), py::arg("size_pixels") = float(), py::arg("oversample_h") = int(), py::arg("oversample_v") = int(), py::arg("pixel_snap_h") = bool(), py::arg("glyph_extra_spacing") = ImVec2(), py::arg("glyph_offset") = ImVec2(), py::arg("glyph_min_advance_x") = float(), py::arg("glyph_max_advance_x") = float(), py::arg("merge_mode") = bool(), py::arg("rasterizer_multiply") = float(), py::arg("ellipsis_char") = ImWchar()
-        )
         .def_readwrite("font_data", &ImFontConfig::FontData, "// TTF/OTF data")    // imgui.h:2772
         .def_readwrite("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")    // imgui.h:2773
         .def_readwrite("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")    // imgui.h:2774
@@ -4132,23 +3847,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFontGlyph =
         py::class_<ImFontGlyph>    // imgui.h:2799
             (m, "ImFontGlyph", " Hold rendering data for one glyph.\n (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)")
-        .def(py::init<>([](
-        float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float())
-        {
-            auto r = std::make_unique<ImFontGlyph>();
-            r->AdvanceX = AdvanceX;
-            r->X0 = X0;
-            r->Y0 = Y0;
-            r->X1 = X1;
-            r->Y1 = Y1;
-            r->U0 = U0;
-            r->V0 = V0;
-            r->U1 = U1;
-            r->V1 = V1;
-            return r;
-        })
-        , py::arg("advance_x") = float(), py::arg("x0") = float(), py::arg("y0") = float(), py::arg("x1") = float(), py::arg("y1") = float(), py::arg("u0") = float(), py::arg("v0") = float(), py::arg("u1") = float(), py::arg("v1") = float()
-        )
+        .def(py::init<>()) // implicit default constructor
         .def_readwrite("advance_x", &ImFontGlyph::AdvanceX, "Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)")    // imgui.h:2804
         .def_readwrite("x0", &ImFontGlyph::X0, "Glyph corners")    // imgui.h:2805
         .def_readwrite("y0", &ImFontGlyph::Y0, "Glyph corners")    // imgui.h:2805
@@ -4183,16 +3882,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFontAtlasCustomRect =
         py::class_<ImFontAtlasCustomRect>    // imgui.h:2826
             (m, "ImFontAtlasCustomRect", "See ImFontAtlas::AddCustomRectXXX functions.")
-        .def(py::init<>([](
-        float GlyphAdvanceX = float(), ImVec2 GlyphOffset = ImVec2())
-        {
-            auto r = std::make_unique<ImFontAtlasCustomRect>();
-            r->GlyphAdvanceX = GlyphAdvanceX;
-            r->GlyphOffset = GlyphOffset;
-            return r;
-        })
-        , py::arg("glyph_advance_x") = float(), py::arg("glyph_offset") = ImVec2()
-        )
         .def_readwrite("width", &ImFontAtlasCustomRect::Width, "Input    // Desired rectangle dimension")    // imgui.h:2828
         .def_readwrite("height", &ImFontAtlasCustomRect::Height, "Input    // Desired rectangle dimension")    // imgui.h:2828
         .def_readwrite("x", &ImFontAtlasCustomRect::X, "Output   // Packed position in Atlas")    // imgui.h:2829
@@ -4215,27 +3904,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFontAtlas =
         py::class_<ImFontAtlas>    // imgui.h:2864
             (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n It is the user-code responsibility to setup/build the atlas, then upload the pixel data into a texture accessible by your graphics api.\n  - Optionally, call any of the AddFont*** functions. If you don't call any, the default font embedded in the code will be loaded for you.\n  - Call GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Upload the pixels data into a texture within your graphics system (see imgui_impl_xxxx.cpp examples)\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n    This value will be passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID for more details.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and and various other reasons! We will address them in the future!")
-        .def(py::init<>([](
-        ImFontAtlasFlags Flags = ImFontAtlasFlags(), ImTextureID TexID = ImTextureID(), int TexDesiredWidth = int(), int TexGlyphPadding = int(), bool Locked = bool(), bool TexReady = bool(), bool TexPixelsUseColors = bool(), int TexWidth = int(), int TexHeight = int(), ImVec2 TexUvScale = ImVec2(), ImVec2 TexUvWhitePixel = ImVec2(), int PackIdMouseCursors = int(), int PackIdLines = int())
-        {
-            auto r = std::make_unique<ImFontAtlas>();
-            r->Flags = Flags;
-            r->TexID = TexID;
-            r->TexDesiredWidth = TexDesiredWidth;
-            r->TexGlyphPadding = TexGlyphPadding;
-            r->Locked = Locked;
-            r->TexReady = TexReady;
-            r->TexPixelsUseColors = TexPixelsUseColors;
-            r->TexWidth = TexWidth;
-            r->TexHeight = TexHeight;
-            r->TexUvScale = TexUvScale;
-            r->TexUvWhitePixel = TexUvWhitePixel;
-            r->PackIdMouseCursors = PackIdMouseCursors;
-            r->PackIdLines = PackIdLines;
-            return r;
-        })
-        , py::arg("flags") = ImFontAtlasFlags(), py::arg("tex_id") = ImTextureID(), py::arg("tex_desired_width") = int(), py::arg("tex_glyph_padding") = int(), py::arg("locked") = bool(), py::arg("tex_ready") = bool(), py::arg("tex_pixels_use_colors") = bool(), py::arg("tex_width") = int(), py::arg("tex_height") = int(), py::arg("tex_uv_scale") = ImVec2(), py::arg("tex_uv_white_pixel") = ImVec2(), py::arg("pack_id_mouse_cursors") = int(), py::arg("pack_id_lines") = int()
-        )
         .def(py::init<>())    // imgui.h:2866
         .def("add_font",    // imgui.h:2868
             &ImFontAtlas::AddFont,
@@ -4335,25 +4003,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFont =
         py::class_<ImFont>    // imgui.h:2965
             (m, "ImFont", " Font runtime data and rendering\n ImFontAtlas automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().")
-        .def(py::init<>([](
-        float FallbackAdvanceX = float(), float FontSize = float(), short ConfigDataCount = short(), ImWchar FallbackChar = ImWchar(), ImWchar EllipsisChar = ImWchar(), ImWchar DotChar = ImWchar(), bool DirtyLookupTables = bool(), float Scale = float(), float Ascent = float(), float Descent = float(), int MetricsTotalSurface = int())
-        {
-            auto r = std::make_unique<ImFont>();
-            r->FallbackAdvanceX = FallbackAdvanceX;
-            r->FontSize = FontSize;
-            r->ConfigDataCount = ConfigDataCount;
-            r->FallbackChar = FallbackChar;
-            r->EllipsisChar = EllipsisChar;
-            r->DotChar = DotChar;
-            r->DirtyLookupTables = DirtyLookupTables;
-            r->Scale = Scale;
-            r->Ascent = Ascent;
-            r->Descent = Descent;
-            r->MetricsTotalSurface = MetricsTotalSurface;
-            return r;
-        })
-        , py::arg("fallback_advance_x") = float(), py::arg("font_size") = float(), py::arg("config_data_count") = short(), py::arg("fallback_char") = ImWchar(), py::arg("ellipsis_char") = ImWchar(), py::arg("dot_char") = ImWchar(), py::arg("dirty_lookup_tables") = bool(), py::arg("scale") = float(), py::arg("ascent") = float(), py::arg("descent") = float(), py::arg("metrics_total_surface") = int()
-        )
         .def_readwrite("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")    // imgui.h:2969
         .def_readwrite("font_size", &ImFont::FontSize, "4     // in  //            // Height of characters/line, set during loading (don't change after loading)")    // imgui.h:2970
         .def_readonly("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")    // imgui.h:2975
@@ -4425,25 +4074,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiViewport =
         py::class_<ImGuiViewport>    // imgui.h:3046
             (m, "ImGuiViewport", " - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.\n - With multi-viewport enabled, we extend this concept to have multiple active viewports.\n - In the future we will extend this concept further to also represent Platform Monitor and support a \"no main platform window\" operation mode.\n - About Main Area vs Work Area:\n   - Main Area = entire viewport.\n   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).\n   - Windows are generally trying to stay within the Work Area of their host viewport.")
-        .def(py::init<>([](
-        ImGuiID ID = ImGuiID(), ImGuiViewportFlags Flags = ImGuiViewportFlags(), ImVec2 Pos = ImVec2(), ImVec2 Size = ImVec2(), ImVec2 WorkPos = ImVec2(), ImVec2 WorkSize = ImVec2(), float DpiScale = float(), ImGuiID ParentViewportId = ImGuiID(), bool PlatformRequestMove = bool(), bool PlatformRequestResize = bool(), bool PlatformRequestClose = bool())
-        {
-            auto r = std::make_unique<ImGuiViewport>();
-            r->ID = ID;
-            r->Flags = Flags;
-            r->Pos = Pos;
-            r->Size = Size;
-            r->WorkPos = WorkPos;
-            r->WorkSize = WorkSize;
-            r->DpiScale = DpiScale;
-            r->ParentViewportId = ParentViewportId;
-            r->PlatformRequestMove = PlatformRequestMove;
-            r->PlatformRequestResize = PlatformRequestResize;
-            r->PlatformRequestClose = PlatformRequestClose;
-            return r;
-        })
-        , py::arg("id") = ImGuiID(), py::arg("flags") = ImGuiViewportFlags(), py::arg("pos") = ImVec2(), py::arg("size") = ImVec2(), py::arg("work_pos") = ImVec2(), py::arg("work_size") = ImVec2(), py::arg("dpi_scale") = float(), py::arg("parent_viewport_id") = ImGuiID(), py::arg("platform_request_move") = bool(), py::arg("platform_request_resize") = bool(), py::arg("platform_request_close") = bool()
-        )
         .def_readwrite("id", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3048
         .def_readwrite("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")    // imgui.h:3049
         .def_readwrite("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")    // imgui.h:3050
@@ -4475,19 +4105,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiPlatformMonitor =
         py::class_<ImGuiPlatformMonitor>    // imgui.h:3192
             (m, "ImGuiPlatformMonitor", " (Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.\n We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.")
-        .def(py::init<>([](
-        ImVec2 MainPos = ImVec2(), ImVec2 MainSize = ImVec2(), ImVec2 WorkPos = ImVec2(), ImVec2 WorkSize = ImVec2(), float DpiScale = float())
-        {
-            auto r = std::make_unique<ImGuiPlatformMonitor>();
-            r->MainPos = MainPos;
-            r->MainSize = MainSize;
-            r->WorkPos = WorkPos;
-            r->WorkSize = WorkSize;
-            r->DpiScale = DpiScale;
-            return r;
-        })
-        , py::arg("main_pos") = ImVec2(), py::arg("main_size") = ImVec2(), py::arg("work_pos") = ImVec2(), py::arg("work_size") = ImVec2(), py::arg("dpi_scale") = float()
-        )
         .def_readwrite("main_pos", &ImGuiPlatformMonitor::MainPos, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3194
         .def_readwrite("main_size", &ImGuiPlatformMonitor::MainSize, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3194
         .def_readwrite("work_pos", &ImGuiPlatformMonitor::WorkPos, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3195
@@ -4500,17 +4117,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiPlatformImeData =
         py::class_<ImGuiPlatformImeData>    // imgui.h:3201
             (m, "ImGuiPlatformImeData", "(Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function.")
-        .def(py::init<>([](
-        bool WantVisible = bool(), ImVec2 InputPos = ImVec2(), float InputLineHeight = float())
-        {
-            auto r = std::make_unique<ImGuiPlatformImeData>();
-            r->WantVisible = WantVisible;
-            r->InputPos = InputPos;
-            r->InputLineHeight = InputLineHeight;
-            return r;
-        })
-        , py::arg("want_visible") = bool(), py::arg("input_pos") = ImVec2(), py::arg("input_line_height") = float()
-        )
         .def_readwrite("want_visible", &ImGuiPlatformImeData::WantVisible, "A widget wants the IME to be visible")    // imgui.h:3203
         .def_readwrite("input_pos", &ImGuiPlatformImeData::InputPos, "Position of the input cursor")    // imgui.h:3204
         .def_readwrite("input_line_height", &ImGuiPlatformImeData::InputLineHeight, "Line height")    // imgui.h:3205

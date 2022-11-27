@@ -93,19 +93,7 @@ void py_init_module_imgui_bundle_inner(py::module& m)
     auto pyClassAddOnsParams =
         py::class_<ImGuiBundle::AddOnsParams>
             (m, "AddOnsParams", "")
-        .def(py::init<>([](
-        bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
-        {
-            auto r = std::make_unique<AddOnsParams>();
-            r->withImplot = withImplot;
-            r->withMarkdown = withMarkdown;
-            r->withNodeEditor = withNodeEditor;
-            r->withNodeEditorConfig = withNodeEditorConfig;
-            r->withMarkdownOptions = withMarkdownOptions;
-            return r;
-        })
-        , py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none()
-        )
+        .def(py::init<>()) // implicit default constructor
         .def_readwrite("with_implot", &AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
         .def_readwrite("with_markdown", &AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
         .def_readwrite("with_node_editor", &AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
