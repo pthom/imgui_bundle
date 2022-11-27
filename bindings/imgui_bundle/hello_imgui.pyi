@@ -617,7 +617,6 @@ class ImguiThemeTweaks:
     def __init__(self) -> None:
         pass
 
-
 class ImguiTweakedTheme:
     # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
@@ -1118,7 +1117,6 @@ class DockingSplit:
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
 
-
 class DockableWindow:
     """*
     @@md#DockableWindow
@@ -1200,7 +1198,6 @@ class DockableWindow:
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
-
 
 class DockingParams:
     """*

@@ -99,7 +99,6 @@ class TextEditor:
         def __init__(self) -> None:
             pass
 
-
     class Coordinates:
         """ Represents a character coordinate from the user's point of view,
          i. e. consider an uniform grid (assuming fixed-width font) on the
@@ -137,7 +136,6 @@ class TextEditor:
         def __ge__(self, o: Coordinates) -> bool:
             pass
 
-
     class Identifier:
         m_location: Coordinates
         m_declaration: str
@@ -156,7 +154,6 @@ class TextEditor:
 
         def __init__(self, a_char: Char, a_color_index: PaletteIndex) -> None:
             pass
-
 
 
     class LanguageDefinition:
@@ -202,7 +199,6 @@ class TextEditor:
         @staticmethod
         def python() -> LanguageDefinition:
             pass
-
 
 
     def set_language_definition(
