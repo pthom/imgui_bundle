@@ -81,16 +81,6 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         auto pyClassTextEditor_ClassCoordinates =
             py::class_<TextEditor::Coordinates>
                 (pyClassTextEditor, "Coordinates", " Represents a character coordinate from the user's point of view,\n i. e. consider an uniform grid (assuming fixed-width font) on the\n screen as it is rendered, and each cell has its own coordinate, starting from 0.\n Tabs are counted as [1..mTabSize] count empty spaces, depending on\n how many space is necessary to reach the next tab stop.\n For example, coordinate (1, 5) represents the character 'B' in a line \"\tABC\", when mTabSize = 4,\n because it is rendered as \"    ABC\" on the screen.")
-            .def(py::init<>([](
-            int mLine = int(), int mColumn = int())
-            {
-                auto r = std::make_unique<TextEditor::Coordinates>();
-                r->mLine = mLine;
-                r->mColumn = mColumn;
-                return r;
-            })
-            , py::arg("m_line") = int(), py::arg("m_column") = int()
-            )
             .def_readwrite("m_line", &TextEditor::Coordinates::mLine, "")
             .def_readwrite("m_column", &TextEditor::Coordinates::mColumn, "")
             .def(py::init<>())

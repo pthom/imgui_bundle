@@ -337,16 +337,6 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotPoint =
         py::class_<ImPlotPoint>    // implot.h:466
             (m, "ImPlotPoint", "Double precision version of ImVec2 used by ImPlot. Extensible by end users.")
-        .def(py::init<>([](
-        double x = double(), double y = double())
-        {
-            auto r = std::make_unique<ImPlotPoint>();
-            r->x = x;
-            r->y = y;
-            return r;
-        })
-        , py::arg("x") = double(), py::arg("y") = double()
-        )
         .def_readwrite("x", &ImPlotPoint::x, "")    // implot.h:467
         .def_readwrite("y", &ImPlotPoint::y, "")    // implot.h:467
         .def(py::init<>())    // implot.h:468
@@ -360,16 +350,6 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotRange =
         py::class_<ImPlotRange>    // implot.h:480
             (m, "ImPlotRange", "Range defined by a min/max value.")
-        .def(py::init<>([](
-        double Min = double(), double Max = double())
-        {
-            auto r = std::make_unique<ImPlotRange>();
-            r->Min = Min;
-            r->Max = Max;
-            return r;
-        })
-        , py::arg("min") = double(), py::arg("max") = double()
-        )
         .def_readwrite("min", &ImPlotRange::Min, "")    // implot.h:481
         .def_readwrite("max", &ImPlotRange::Max, "")    // implot.h:481
         .def(py::init<>())    // implot.h:482
@@ -381,16 +361,6 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotRect =
         py::class_<ImPlotRect>    // implot.h:490
             (m, "ImPlotRect", "Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max().")
-        .def(py::init<>([](
-        ImPlotRange X = ImPlotRange(), ImPlotRange Y = ImPlotRange())
-        {
-            auto r = std::make_unique<ImPlotRect>();
-            r->X = X;
-            r->Y = Y;
-            return r;
-        })
-        , py::arg("x") = ImPlotRange(), py::arg("y") = ImPlotRange()
-        )
         .def_readwrite("x", &ImPlotRect::X, "")    // implot.h:491
         .def_readwrite("y", &ImPlotRect::Y, "")    // implot.h:491
         .def(py::init<>())    // implot.h:492

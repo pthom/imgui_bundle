@@ -142,8 +142,6 @@ class Config:  # imgui_node_editor.h:85
     settings_file: str  # imgui_node_editor.h:89
     # void*                   UserPointer;    /* original C++ signature */
     user_pointer: Any  # imgui_node_editor.h:96
-    # ImVector<float>         CustomZoomLevels;    /* original C++ signature */
-    custom_zoom_levels: List[float]  # imgui_node_editor.h:97
     # CanvasSizeModeAlias     CanvasSizeMode;    /* original C++ signature */
     canvas_size_mode: CanvasSizeMode  # imgui_node_editor.h:98
     # int                     DragButtonIndex;    /* original C++ signature */
@@ -174,11 +172,10 @@ class Config:  # imgui_node_editor.h:85
     #     }
     def __init__(self) -> None:  # imgui_node_editor.h:104
         pass
-    # Config(std::string SettingsFile = std::string(), ImVector<float> CustomZoomLevels = ImVector<float>(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int());    /* original C++ signature */
+    # Config(std::string SettingsFile = std::string(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int());    /* original C++ signature */
     def __init__(  # Line:3
         self,
         settings_file: str = "",
-        custom_zoom_levels: List[float] = List[float](),
         canvas_size_mode: CanvasSizeMode = CanvasSizeMode(),
         drag_button_index: int = int(),
         select_button_index: int = int(),

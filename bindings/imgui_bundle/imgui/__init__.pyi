@@ -419,10 +419,6 @@ class ImVec2:  # imgui.h:255
     def __init__(self, _x: float, _y: float) -> None:  # imgui.h:259
         pass
     # We very rarely use this [] operator, the assert overhead is fine.
-    # ImVec2(float x = float(), float y = float());    /* original C++ signature */
-    def __init__(self, x: float = float(), y: float = float()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
-        pass
 
 class ImVec4:  # imgui.h:268
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
@@ -442,16 +438,6 @@ class ImVec4:  # imgui.h:268
     def __init__(
         self, _x: float, _y: float, _z: float, _w: float
     ) -> None:  # imgui.h:272
-        pass
-    # ImVec4(float x = float(), float y = float(), float z = float(), float w = float());    /* original C++ signature */
-    def __init__(
-        self,
-        x: float = float(),
-        y: float = float(),
-        z: float = float(),
-        w: float = float(),
-    ) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
         pass
 
 # -----------------------------------------------------------------------------
@@ -5675,10 +5661,6 @@ class ImGuiOnceUponAFrame:  # imgui.h:2289
         pass
     # mutable int RefFrame;    /* original C++ signature */
     ref_frame: int  # imgui.h:2292
-    # ImGuiOnceUponAFrame();    /* original C++ signature */
-    def __init__(self) -> None:  # Line:3
-        """Auto-generated default constructor"""
-        pass
 
 class ImGuiTextFilter:  # imgui.h:2297
     """Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """
@@ -5713,15 +5695,104 @@ class ImGuiTextFilter:  # imgui.h:2297
         # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
         def __init__(self, _b: str, _e: str) -> None:  # imgui.h:2313
             pass
-        # ImGuiTextRange();    /* original C++ signature */
-        def __init__(self) -> None:  # Line:3
-            """Auto-generated default constructor"""
-            pass
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int  # imgui.h:2319
-    # ImGuiTextFilter(int CountGrep = int());    /* original C++ signature */
-    def __init__(self, count_grep: int = int()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
+
+class ImGuiTextBuffer:  # imgui.h:2324
+    """Helper: Growable text buffer for logging/accumulating text
+    (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')
+    """
+
+    # ImGuiTextBuffer()   { }    /* original C++ signature */
+    def __init__(self) -> None:  # imgui.h:2329
+        pass
+    # IMGUI_API void      append(const char* str, const char* str_end = NULL);    /* original C++ signature */
+    def append(self, str: str, str_end: str = None) -> None:  # imgui.h:2338
+        pass
+    # IMGUI_API void      appendf(const char* fmt, ...) ;    /* original C++ signature */
+    def appendf(self, fmt: str) -> None:  # imgui.h:2339
+        pass
+
+class ImGuiStorage:  # imgui.h:2351
+    """Helper: Key->Value storage
+    Typically you don't have to worry about this since a storage is held within each Window.
+    We use it to e.g. store collapse state for a tree (Int 0/1)
+    This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)
+    You can use it as custom user storage for temporary values. Declare your own storage if, for example:
+    - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).
+    - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)
+    Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.
+    """
+
+    class ImGuiStoragePair:  # imgui.h:2354
+        """[Internal]"""
+
+        # ImGuiID key;    /* original C++ signature */
+        key: ImGuiID  # imgui.h:2356
+        # ImGuiStoragePair(ImGuiID _key, int _val_i)      { key = _key; val_i = _val_i; }    /* original C++ signature */
+        def __init__(self, _key: ImGuiID, _val_i: int) -> None:  # imgui.h:2358
+            pass
+        # ImGuiStoragePair(ImGuiID _key, float _val_f)    { key = _key; val_f = _val_f; }    /* original C++ signature */
+        def __init__(self, _key: ImGuiID, _val_f: float) -> None:  # imgui.h:2359
+            pass
+        # ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }    /* original C++ signature */
+        def __init__(self, _key: ImGuiID, _val_p: Any) -> None:  # imgui.h:2360
+            pass
+    # IMGUI_API int       GetInt(ImGuiID key, int default_val = 0) const;    /* original C++ signature */
+    def get_int(self, key: ImGuiID, default_val: int = 0) -> int:  # imgui.h:2369
+        pass
+    # IMGUI_API void      SetInt(ImGuiID key, int val);    /* original C++ signature */
+    def set_int(self, key: ImGuiID, val: int) -> None:  # imgui.h:2370
+        pass
+    # IMGUI_API bool      GetBool(ImGuiID key, bool default_val = false) const;    /* original C++ signature */
+    def get_bool(self, key: ImGuiID, default_val: bool = False) -> bool:  # imgui.h:2371
+        pass
+    # IMGUI_API void      SetBool(ImGuiID key, bool val);    /* original C++ signature */
+    def set_bool(self, key: ImGuiID, val: bool) -> None:  # imgui.h:2372
+        pass
+    # IMGUI_API float     GetFloat(ImGuiID key, float default_val = 0.0f) const;    /* original C++ signature */
+    def get_float(
+        self, key: ImGuiID, default_val: float = 0.0
+    ) -> float:  # imgui.h:2373
+        pass
+    # IMGUI_API void      SetFloat(ImGuiID key, float val);    /* original C++ signature */
+    def set_float(self, key: ImGuiID, val: float) -> None:  # imgui.h:2374
+        pass
+    # IMGUI_API void*     GetVoidPtr(ImGuiID key) const;     /* original C++ signature */
+    def get_void_ptr(self, key: ImGuiID) -> Any:  # imgui.h:2375
+        """default_val is None"""
+        pass
+    # IMGUI_API void      SetVoidPtr(ImGuiID key, void* val);    /* original C++ signature */
+    def set_void_ptr(self, key: ImGuiID, val: Any) -> None:  # imgui.h:2376
+        pass
+    # - Get***Ref() functions finds pair, insert on demand if missing, return pointer. Useful if you intend to do Get+Set.
+    # - References are only valid until a new value is added to the storage. Calling a Set***() function or a Get***Ref() function invalidates the pointer.
+    # - A typical use case where this is convenient for quick hacking (e.g. add storage during a live Edit&Continue session if you can't modify existing struct)
+    #      float* pvar = ImGui::GetFloatRef(key); ImGui::SliderFloat("var", pvar, 0, 100.0); some_var += *pvar;
+    # IMGUI_API int*      GetIntRef(ImGuiID key, int default_val = 0);    /* original C++ signature */
+    def get_int_ref(self, key: ImGuiID, default_val: int = 0) -> int:  # imgui.h:2382
+        pass
+    # IMGUI_API bool*     GetBoolRef(ImGuiID key, bool default_val = false);    /* original C++ signature */
+    def get_bool_ref(
+        self, key: ImGuiID, default_val: bool = False
+    ) -> bool:  # imgui.h:2383
+        pass
+    # IMGUI_API float*    GetFloatRef(ImGuiID key, float default_val = 0.0f);    /* original C++ signature */
+    def get_float_ref(
+        self, key: ImGuiID, default_val: float = 0.0
+    ) -> float:  # imgui.h:2384
+        pass
+    # IMGUI_API void      SetAllInt(int val);    /* original C++ signature */
+    def set_all_int(self, val: int) -> None:  # imgui.h:2388
+        """Use on your own storage if you know only integer are being stored (open/close all tree nodes)"""
+        pass
+    # IMGUI_API void      BuildSortByKey();    /* original C++ signature */
+    def build_sort_by_key(self) -> None:  # imgui.h:2391
+        """For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once."""
+        pass
+    # ImGuiStorage();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
+        """Auto-generated default constructor"""
         pass
 
 class ImGuiListClipper:  # imgui.h:2414
@@ -5830,10 +5901,6 @@ class ImColor:  # imgui.h:2465
     def __init__(self, rgba: ImU32) -> None:  # imgui.h:2473
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
-    # ImColor(ImVec4 Value = ImVec4());    /* original C++ signature */
-    def __init__(self, value: ImVec4 = ImVec4()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
-        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
@@ -6602,10 +6669,6 @@ class ImFontGlyphRangesBuilder:  # imgui.h:2811
     def build_ranges(self, out_ranges: List[ImWchar]) -> None:  # imgui.h:2822
         """Output new ranges"""
         pass
-    # ImFontGlyphRangesBuilder();    /* original C++ signature */
-    def __init__(self) -> None:  # Line:3
-        """Auto-generated default constructor"""
-        pass
 
 class ImFontAtlasCustomRect:  # imgui.h:2826
     """See ImFontAtlas::AddCustomRectXXX functions."""
@@ -7238,10 +7301,6 @@ class ImGuiPlatformIO:  # imgui.h:3129
     # ImGuiPlatformIO()               { memset(this, 0, sizeof(*this)); }         /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:3187
         """Zero clear"""
-        pass
-    # ImGuiPlatformIO();    /* original C++ signature */
-    def __init__(self) -> None:  # Line:3
-        """Auto-generated default constructor"""
         pass
 
 class ImGuiPlatformMonitor:  # imgui.h:3192

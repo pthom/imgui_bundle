@@ -305,10 +305,6 @@ class ImVec1:  # imgui_internal.h:490
     # constexpr ImVec1(float _x) : x(_x) { }    /* original C++ signature */
     def __init__(self, _x: float) -> None:  # imgui_internal.h:494
         pass
-    # ImVec1(float x = float());    /* original C++ signature */
-    def __init__(self, x: float = float()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
-        pass
 
 class ImVec2ih:  # imgui_internal.h:498
     """Helper: ImVec2ih (2D vector, half-size integer, for long-term packed storage)"""
@@ -325,10 +321,6 @@ class ImVec2ih:  # imgui_internal.h:498
         pass
     # constexpr explicit ImVec2ih(const ImVec2& rhs) : x((short)rhs.x), y((short)rhs.y) {}    /* original C++ signature */
     def __init__(self, rhs: ImVec2) -> None:  # imgui_internal.h:503
-        pass
-    # ImVec2ih(short x = short(), short y = short());    /* original C++ signature */
-    def __init__(self, x: int = int(), y: int = int()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
         pass
 
 class ImRect:  # imgui_internal.h:508
@@ -354,12 +346,6 @@ class ImRect:  # imgui_internal.h:508
     def __init__(
         self, x1: float, y1: float, x2: float, y2: float
     ) -> None:  # imgui_internal.h:516
-        pass
-    # ImRect(ImVec2 Min = ImVec2(), ImVec2 Max = ImVec2());    /* original C++ signature */
-    def __init__(
-        self, min: ImVec2 = ImVec2(), max: ImVec2 = ImVec2()
-    ) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
         pass
 
 # Helper: ImBitArray
@@ -957,8 +943,6 @@ class ImGuiInputTextState:  # imgui_internal.h:1016
     buf_capacity_a: int  # end-user buffer capacity    # imgui_internal.h:1024
     # float                   ScrollX;    /* original C++ signature */
     scroll_x: float  # horizontal scrolling/offset    # imgui_internal.h:1025
-    # ImStb::STB_TexteditState Stb;    /* original C++ signature */
-    stb: ImStb.STB_TexteditState  # state for stb_textedit.h    # imgui_internal.h:1026
     # float                   CursorAnim;    /* original C++ signature */
     cursor_anim: float  # timer for cursor blink, reset on every user action so the cursor reappears immediately    # imgui_internal.h:1027
     # bool                    CursorFollow;    /* original C++ signature */
@@ -974,7 +958,7 @@ class ImGuiInputTextState:  # imgui_internal.h:1016
     def __init__(self) -> None:  # imgui_internal.h:1033
         pass
     # Cursor & Selection
-    # ImGuiInputTextState(ImGuiID ID = ImGuiID(), int CurLenW = int(), int CurLenA = int(), bool TextAIsValid = bool(), int BufCapacityA = int(), float ScrollX = float(), ImStb::STB_TexteditState Stb = ImStb::STB_TexteditState(), float CursorAnim = float(), bool CursorFollow = bool(), bool SelectedAllMouseLock = bool(), bool Edited = bool(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags());    /* original C++ signature */
+    # ImGuiInputTextState(ImGuiID ID = ImGuiID(), int CurLenW = int(), int CurLenA = int(), bool TextAIsValid = bool(), int BufCapacityA = int(), float ScrollX = float(), float CursorAnim = float(), bool CursorFollow = bool(), bool SelectedAllMouseLock = bool(), bool Edited = bool(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags());    /* original C++ signature */
     def __init__(
         self,
         id: ImGuiID = ImGuiID(),
@@ -983,7 +967,6 @@ class ImGuiInputTextState:  # imgui_internal.h:1016
         text_a_is_valid: bool = bool(),
         buf_capacity_a: int = int(),
         scroll_x: float = float(),
-        stb: ImStb.STB_TexteditState = ImStb.STB_TexteditState(),
         cursor_anim: float = float(),
         cursor_follow: bool = bool(),
         selected_all_mouse_lock: bool = bool(),

@@ -1131,16 +1131,7 @@ class DockingSplit:
     direction: ImGuiDir_
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
-    # DockingSplit(DockSpaceName initialDock = DockSpaceName(), DockSpaceName newDock = DockSpaceName(), ImGuiDir_ direction = ImGuiDir_(), float ratio = 0.25f);    /* original C++ signature */
-    def __init__(
-        self,
-        initial_dock: DockSpaceName = DockSpaceName(),
-        new_dock: DockSpaceName = DockSpaceName(),
-        direction: ImGuiDir_ = ImGuiDir_(),
-        ratio: float = 0.25
-        ) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
+
 
 class DockableWindow:
     """*
@@ -1223,25 +1214,7 @@ class DockableWindow:
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
-    # DockableWindow(std::string label = std::string(), DockSpaceName dockSpaceName = DockSpaceName(), VoidFunction GuiFunction = EmptyVoidFunction(), bool isVisible = true, bool canBeClosed = true, bool callBeginEnd = true, bool includeInViewMenu = true, ImGuiWindowFlags imGuiWindowFlags = 0, ImVec2 windowSize = ImVec2(0.f, 0.f), ImGuiCond windowSizeCondition = ImGuiCond_FirstUseEver, ImVec2 windowPosition = ImVec2(0.f, 0.f), ImGuiCond windowPositionCondition = ImGuiCond_FirstUseEver, bool focusWindowAtNextFrame = false);    /* original C++ signature */
-    def __init__(
-        self,
-        label: str = "",
-        dock_space_name: DockSpaceName = DockSpaceName(),
-        gui_function: VoidFunction = EmptyVoidFunction(),
-        is_visible: bool = True,
-        can_be_closed: bool = True,
-        call_begin_end: bool = True,
-        include_in_view_menu: bool = True,
-        imgui_window_flags: ImGuiWindowFlags = 0,
-        window_size: ImVec2 = ImVec2(0., 0.),
-        window_size_condition: ImGuiCond = ImGuiCond_.first_use_ever,
-        window_position: ImVec2 = ImVec2(0., 0.),
-        window_position_condition: ImGuiCond = ImGuiCond_.first_use_ever,
-        focus_window_at_next_frame: bool = False
-        ) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
+
 
 class DockingParams:
     """*

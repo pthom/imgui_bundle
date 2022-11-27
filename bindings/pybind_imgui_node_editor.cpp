@@ -48,7 +48,7 @@ void py_init_module_imgui_node_editor(py::module& m)
     using namespace ax::NodeEditor;
     using CanvasSizeModeAlias = ax::NodeEditor::CanvasSizeMode;
 
-    
+
     py::class_<EditorContext>(m, "EditorContext");
 
     py::class_<NodeId>(m, "NodeId")
@@ -123,11 +123,10 @@ void py_init_module_imgui_node_editor(py::module& m)
         py::class_<ax::NodeEditor::Config>    // imgui_node_editor.h:85
             (m, "Config", "")
         .def(py::init<>([](
-        std::string SettingsFile = std::string(), ImVector<float> CustomZoomLevels = ImVector<float>(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int())
+        std::string SettingsFile = std::string(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int())
         {
             auto r = std::make_unique<Config>();
             r->SettingsFile = SettingsFile;
-            r->CustomZoomLevels = CustomZoomLevels;
             r->CanvasSizeMode = CanvasSizeMode;
             r->DragButtonIndex = DragButtonIndex;
             r->SelectButtonIndex = SelectButtonIndex;
@@ -135,11 +134,10 @@ void py_init_module_imgui_node_editor(py::module& m)
             r->ContextMenuButtonIndex = ContextMenuButtonIndex;
             return r;
         })
-        , py::arg("settings_file") = std::string(), py::arg("custom_zoom_levels") = ImVector<float>(), py::arg("canvas_size_mode") = CanvasSizeModeAlias(), py::arg("drag_button_index") = int(), py::arg("select_button_index") = int(), py::arg("navigate_button_index") = int(), py::arg("context_menu_button_index") = int()
+        , py::arg("settings_file") = std::string(), py::arg("canvas_size_mode") = CanvasSizeModeAlias(), py::arg("drag_button_index") = int(), py::arg("select_button_index") = int(), py::arg("navigate_button_index") = int(), py::arg("context_menu_button_index") = int()
         )
         .def_readwrite("settings_file", &Config::SettingsFile, "")    // imgui_node_editor.h:89
         .def_readwrite("user_pointer", &Config::UserPointer, "")    // imgui_node_editor.h:96
-        .def_readwrite("custom_zoom_levels", &Config::CustomZoomLevels, "")    // imgui_node_editor.h:97
         .def_readwrite("canvas_size_mode", &Config::CanvasSizeMode, "")    // imgui_node_editor.h:98
         .def_readwrite("drag_button_index", &Config::DragButtonIndex, "Mouse button index drag action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:99
         .def_readwrite("select_button_index", &Config::SelectButtonIndex, "Mouse button index select action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:100

@@ -1002,10 +1002,6 @@ class ImPlotPoint:  # implot.h:466
     # ImPlotPoint(const ImVec2& p)          { x = p.x; y = p.y; }    /* original C++ signature */
     def __init__(self, p: ImVec2) -> None:  # implot.h:470
         pass
-    # ImPlotPoint(double x = double(), double y = double());    /* original C++ signature */
-    def __init__(self, x: float = float(), y: float = float()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
-        pass
 
 class ImPlotRange:  # implot.h:480
     """Range defined by a min/max value."""
@@ -1019,10 +1015,6 @@ class ImPlotRange:  # implot.h:480
         pass
     # ImPlotRange(double _min, double _max) { Min = _min; Max = _max;                                   }    /* original C++ signature */
     def __init__(self, _min: float, _max: float) -> None:  # implot.h:483
-        pass
-    # ImPlotRange(double Min = double(), double Max = double());    /* original C++ signature */
-    def __init__(self, min: float = float(), max: float = float()) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
         pass
 
 class ImPlotRect:  # implot.h:490
@@ -1039,12 +1031,6 @@ class ImPlotRect:  # implot.h:490
     def __init__(
         self, x_min: float, x_max: float, y_min: float, y_max: float
     ) -> None:  # implot.h:493
-        pass
-    # ImPlotRect(ImPlotRange X = ImPlotRange(), ImPlotRange Y = ImPlotRange());    /* original C++ signature */
-    def __init__(
-        self, x: ImPlotRange = ImPlotRange(), y: ImPlotRange = ImPlotRange()
-    ) -> None:  # Line:3
-        """Auto-generated default constructor with named params"""
         pass
 
 class ImPlotStyle:  # implot.h:504

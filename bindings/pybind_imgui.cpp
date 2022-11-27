@@ -98,16 +98,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImVec2 =
         py::class_<ImVec2>    // imgui.h:255
             (m, "ImVec2", "")
-        .def(py::init<>([](
-        float x = float(), float y = float())
-        {
-            auto r = std::make_unique<ImVec2>();
-            r->x = x;
-            r->y = y;
-            return r;
-        })
-        , py::arg("x") = float(), py::arg("y") = float()
-        )
         .def_readwrite("x", &ImVec2::x, "")    // imgui.h:257
         .def_readwrite("y", &ImVec2::y, "")    // imgui.h:257
         .def(py::init<>())    // imgui.h:258
@@ -119,18 +109,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImVec4 =
         py::class_<ImVec4>    // imgui.h:268
             (m, "ImVec4", "ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]")
-        .def(py::init<>([](
-        float x = float(), float y = float(), float z = float(), float w = float())
-        {
-            auto r = std::make_unique<ImVec4>();
-            r->x = x;
-            r->y = y;
-            r->z = z;
-            r->w = w;
-            return r;
-        })
-        , py::arg("x") = float(), py::arg("y") = float(), py::arg("z") = float(), py::arg("w") = float()
-        )
         .def_readwrite("x", &ImVec4::x, "")    // imgui.h:270
         .def_readwrite("y", &ImVec4::y, "")    // imgui.h:270
         .def_readwrite("z", &ImVec4::z, "")    // imgui.h:270
@@ -3660,7 +3638,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiOnceUponAFrame =
         py::class_<ImGuiOnceUponAFrame>    // imgui.h:2289
             (m, "ImGuiOnceUponAFrame", " Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create an UI within deep-nested code that runs multiple times every frame.\n Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text(\"This will be called only once per frame\");")
-        .def(py::init<>()) // implicit default constructor
         .def(py::init<>())    // imgui.h:2291
         .def_readwrite("ref_frame", &ImGuiOnceUponAFrame::RefFrame, "")    // imgui.h:2292
         ;
@@ -3674,7 +3651,6 @@ void py_init_module_imgui_main(py::module& m)
         auto pyClassImGuiTextFilter_ClassImGuiTextRange =
             py::class_<ImGuiTextFilter::ImGuiTextRange>    // imgui.h:2307
                 (pyClassImGuiTextFilter, "ImGuiTextRange", "[Internal]")
-            .def(py::init<>()) // implicit default constructor
             .def_readonly("b", &ImGuiTextFilter::ImGuiTextRange::b, "")    // imgui.h:2309
             .def_readonly("e", &ImGuiTextFilter::ImGuiTextRange::e, "")    // imgui.h:2310
             .def(py::init<>())    // imgui.h:2312
@@ -3684,15 +3660,6 @@ void py_init_module_imgui_main(py::module& m)
     } // end of inner classes & enums of ImGuiTextFilter
 
     pyClassImGuiTextFilter
-        .def(py::init<>([](
-        int CountGrep = int())
-        {
-            auto r = std::make_unique<ImGuiTextFilter>();
-            r->CountGrep = CountGrep;
-            return r;
-        })
-        , py::arg("count_grep") = int()
-        )
         .def(py::init<const char *>(),    // imgui.h:2299
             py::arg("default_filter") = "")
         .def("draw",    // imgui.h:2300
@@ -3704,6 +3671,85 @@ void py_init_module_imgui_main(py::module& m)
         .def("build",    // imgui.h:2302
             &ImGuiTextFilter::Build)
         .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")    // imgui.h:2319
+        ;
+
+
+    auto pyClassImGuiTextBuffer =
+        py::class_<ImGuiTextBuffer>    // imgui.h:2324
+            (m, "ImGuiTextBuffer", " Helper: Growable text buffer for logging/accumulating text\n (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')")
+        .def(py::init<>())    // imgui.h:2329
+        .def("append",    // imgui.h:2338
+            &ImGuiTextBuffer::append, py::arg("str"), py::arg("str_end") = py::none())
+        .def("appendf",    // imgui.h:2339
+            [](ImGuiTextBuffer & self, const char * fmt)
+            {
+                auto appendf_adapt_variadic_format = [&self](const char * fmt)
+                {
+                    self.appendf("%s", fmt);
+                };
+
+                appendf_adapt_variadic_format(fmt);
+            },     py::arg("fmt"))
+        ;
+
+
+    auto pyClassImGuiStorage =
+        py::class_<ImGuiStorage>    // imgui.h:2351
+            (m, "ImGuiStorage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.");
+
+    { // inner classes & enums of ImGuiStorage
+        auto pyClassImGuiStorage_ClassImGuiStoragePair =
+            py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2354
+                (pyClassImGuiStorage, "ImGuiStoragePair", "[Internal]")
+            .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2356
+            .def(py::init<ImGuiID, int>(),    // imgui.h:2358
+                py::arg("_key"), py::arg("_val_i"))
+            .def(py::init<ImGuiID, float>(),    // imgui.h:2359
+                py::arg("_key"), py::arg("_val_f"))
+            .def(py::init<ImGuiID, void *>(),    // imgui.h:2360
+                py::arg("_key"), py::arg("_val_p"))
+            ;
+    } // end of inner classes & enums of ImGuiStorage
+
+    pyClassImGuiStorage
+        .def(py::init<>()) // implicit default constructor
+        .def("get_int",    // imgui.h:2369
+            &ImGuiStorage::GetInt, py::arg("key"), py::arg("default_val") = 0)
+        .def("set_int",    // imgui.h:2370
+            &ImGuiStorage::SetInt, py::arg("key"), py::arg("val"))
+        .def("get_bool",    // imgui.h:2371
+            &ImGuiStorage::GetBool, py::arg("key"), py::arg("default_val") = false)
+        .def("set_bool",    // imgui.h:2372
+            &ImGuiStorage::SetBool, py::arg("key"), py::arg("val"))
+        .def("get_float",    // imgui.h:2373
+            &ImGuiStorage::GetFloat, py::arg("key"), py::arg("default_val") = 0.0f)
+        .def("set_float",    // imgui.h:2374
+            &ImGuiStorage::SetFloat, py::arg("key"), py::arg("val"))
+        .def("get_void_ptr",    // imgui.h:2375
+            &ImGuiStorage::GetVoidPtr,
+            py::arg("key"),
+            "default_val is None",
+            pybind11::return_value_policy::reference)
+        .def("set_void_ptr",    // imgui.h:2376
+            &ImGuiStorage::SetVoidPtr, py::arg("key"), py::arg("val"))
+        .def("get_int_ref",    // imgui.h:2382
+            &ImGuiStorage::GetIntRef,
+            py::arg("key"), py::arg("default_val") = 0,
+            pybind11::return_value_policy::reference)
+        .def("get_bool_ref",    // imgui.h:2383
+            &ImGuiStorage::GetBoolRef,
+            py::arg("key"), py::arg("default_val") = false,
+            pybind11::return_value_policy::reference)
+        .def("get_float_ref",    // imgui.h:2384
+            &ImGuiStorage::GetFloatRef,
+            py::arg("key"), py::arg("default_val") = 0.0f,
+            pybind11::return_value_policy::reference)
+        .def("set_all_int",    // imgui.h:2388
+            &ImGuiStorage::SetAllInt,
+            py::arg("val"),
+            "Use on your own storage if you know only integer are being stored (open/close all tree nodes)")
+        .def("build_sort_by_key",    // imgui.h:2391
+            &ImGuiStorage::BuildSortByKey, "For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once.")
         ;
 
 
@@ -3747,15 +3793,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImColor =
         py::class_<ImColor>    // imgui.h:2465
             (m, "ImColor", " Helper: ImColor() implicitly converts colors to either ImU32 (packed 4x1 byte) or ImVec4 (4x1 float)\n Prefer using IM_COL32() macros if you want a guaranteed compile-time ImU32 for usage with ImDrawList API.\n **Avoid storing ImColor! Store either u32 of ImVec4. This is not a full-featured color class. MAY OBSOLETE.\n **None of the ImGui API are using ImColor directly but you can use it as a convenience to pass colors in either ImU32 or ImVec4 formats. Explicitly cast to ImU32 or ImVec4 if needed.")
-        .def(py::init<>([](
-        ImVec4 Value = ImVec4())
-        {
-            auto r = std::make_unique<ImColor>();
-            r->Value = Value;
-            return r;
-        })
-        , py::arg("value") = ImVec4()
-        )
         .def_readwrite("value", &ImColor::Value, "")    // imgui.h:2467
         .def(py::init<>())    // imgui.h:2469
         .def(py::init<float, float, float, float>(),    // imgui.h:2470
@@ -4127,7 +4164,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImFontGlyphRangesBuilder =
         py::class_<ImFontGlyphRangesBuilder>    // imgui.h:2811
             (m, "ImFontGlyphRangesBuilder", " Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().\n This is essentially a tightly packed of vector of 64k booleans = 8KB storage.")
-        .def(py::init<>()) // implicit default constructor
         .def(py::init<>())    // imgui.h:2815
         .def("add_text",    // imgui.h:2820
             &ImFontGlyphRangesBuilder::AddText,
@@ -4431,7 +4467,6 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiPlatformIO =
         py::class_<ImGuiPlatformIO>    // imgui.h:3129
             (m, "ImGuiPlatformIO", "(Optional) Access via ImGui::GetPlatformIO()")
-        .def(py::init<>()) // implicit default constructor
         .def(py::init<>(),    // imgui.h:3187
             "Zero clear")
         ;

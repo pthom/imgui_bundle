@@ -88,15 +88,6 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImVec1 =
         py::class_<ImVec1>    // imgui_internal.h:490
             (m, "ImVec1", "")
-        .def(py::init<>([](
-        float x = float())
-        {
-            auto r = std::make_unique<ImVec1>();
-            r->x = x;
-            return r;
-        })
-        , py::arg("x") = float()
-        )
         .def_readwrite("x", &ImVec1::x, "")    // imgui_internal.h:492
         .def(py::init<>())    // imgui_internal.h:493
         .def(py::init<float>(),    // imgui_internal.h:494
@@ -107,16 +98,6 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImVec2ih =
         py::class_<ImVec2ih>    // imgui_internal.h:498
             (m, "ImVec2ih", "Helper: ImVec2ih (2D vector, half-size integer, for long-term packed storage)")
-        .def(py::init<>([](
-        short x = short(), short y = short())
-        {
-            auto r = std::make_unique<ImVec2ih>();
-            r->x = x;
-            r->y = y;
-            return r;
-        })
-        , py::arg("x") = short(), py::arg("y") = short()
-        )
         .def_readwrite("x", &ImVec2ih::x, "")    // imgui_internal.h:500
         .def_readwrite("y", &ImVec2ih::y, "")    // imgui_internal.h:500
         .def(py::init<>())    // imgui_internal.h:501
@@ -130,16 +111,6 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImRect =
         py::class_<ImRect>    // imgui_internal.h:508
             (m, "ImRect", " Helper: ImRect (2D axis aligned bounding-box)\n NB: we can't rely on ImVec2 math operators being available here!")
-        .def(py::init<>([](
-        ImVec2 Min = ImVec2(), ImVec2 Max = ImVec2())
-        {
-            auto r = std::make_unique<ImRect>();
-            r->Min = Min;
-            r->Max = Max;
-            return r;
-        })
-        , py::arg("min") = ImVec2(), py::arg("max") = ImVec2()
-        )
         .def_readwrite("min", &ImRect::Min, "Upper-left")    // imgui_internal.h:510
         .def_readwrite("max", &ImRect::Max, "Lower-right")    // imgui_internal.h:511
         .def(py::init<>())    // imgui_internal.h:513
@@ -505,7 +476,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiInputTextState>    // imgui_internal.h:1016
             (m, "ImGuiInputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def(py::init<>([](
-        ImGuiID ID = ImGuiID(), int CurLenW = int(), int CurLenA = int(), bool TextAIsValid = bool(), int BufCapacityA = int(), float ScrollX = float(), ImStb::STB_TexteditState Stb = ImStb::STB_TexteditState(), float CursorAnim = float(), bool CursorFollow = bool(), bool SelectedAllMouseLock = bool(), bool Edited = bool(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags())
+        ImGuiID ID = ImGuiID(), int CurLenW = int(), int CurLenA = int(), bool TextAIsValid = bool(), int BufCapacityA = int(), float ScrollX = float(), float CursorAnim = float(), bool CursorFollow = bool(), bool SelectedAllMouseLock = bool(), bool Edited = bool(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags())
         {
             auto r = std::make_unique<ImGuiInputTextState>();
             r->ID = ID;
@@ -514,7 +485,6 @@ void py_init_module_imgui_internal(py::module& m)
             r->TextAIsValid = TextAIsValid;
             r->BufCapacityA = BufCapacityA;
             r->ScrollX = ScrollX;
-            r->Stb = Stb;
             r->CursorAnim = CursorAnim;
             r->CursorFollow = CursorFollow;
             r->SelectedAllMouseLock = SelectedAllMouseLock;
@@ -522,7 +492,7 @@ void py_init_module_imgui_internal(py::module& m)
             r->Flags = Flags;
             return r;
         })
-        , py::arg("id") = ImGuiID(), py::arg("cur_len_w") = int(), py::arg("cur_len_a") = int(), py::arg("text_a_is_valid") = bool(), py::arg("buf_capacity_a") = int(), py::arg("scroll_x") = float(), py::arg("stb") = ImStb::STB_TexteditState(), py::arg("cursor_anim") = float(), py::arg("cursor_follow") = bool(), py::arg("selected_all_mouse_lock") = bool(), py::arg("edited") = bool(), py::arg("flags") = ImGuiInputTextFlags()
+        , py::arg("id") = ImGuiID(), py::arg("cur_len_w") = int(), py::arg("cur_len_a") = int(), py::arg("text_a_is_valid") = bool(), py::arg("buf_capacity_a") = int(), py::arg("scroll_x") = float(), py::arg("cursor_anim") = float(), py::arg("cursor_follow") = bool(), py::arg("selected_all_mouse_lock") = bool(), py::arg("edited") = bool(), py::arg("flags") = ImGuiInputTextFlags()
         )
         .def_readwrite("id", &ImGuiInputTextState::ID, "widget id owning the text state")    // imgui_internal.h:1018
         .def_readwrite("cur_len_w", &ImGuiInputTextState::CurLenW, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")    // imgui_internal.h:1019
@@ -530,7 +500,6 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("text_a_is_valid", &ImGuiInputTextState::TextAIsValid, "temporary UTF8 buffer is not initially valid before we make the widget active (until then we pull the data from user argument)")    // imgui_internal.h:1023
         .def_readwrite("buf_capacity_a", &ImGuiInputTextState::BufCapacityA, "end-user buffer capacity")    // imgui_internal.h:1024
         .def_readwrite("scroll_x", &ImGuiInputTextState::ScrollX, "horizontal scrolling/offset")    // imgui_internal.h:1025
-        .def_readwrite("stb", &ImGuiInputTextState::Stb, "state for stb_textedit.h")    // imgui_internal.h:1026
         .def_readwrite("cursor_anim", &ImGuiInputTextState::CursorAnim, "timer for cursor blink, reset on every user action so the cursor reappears immediately")    // imgui_internal.h:1027
         .def_readwrite("cursor_follow", &ImGuiInputTextState::CursorFollow, "set when we want scrolling to follow the current cursor position (not always!)")    // imgui_internal.h:1028
         .def_readwrite("selected_all_mouse_lock", &ImGuiInputTextState::SelectedAllMouseLock, "after a double-click to select all, we ignore further mouse drags to update selection")    // imgui_internal.h:1029

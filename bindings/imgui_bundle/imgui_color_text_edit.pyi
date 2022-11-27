@@ -143,9 +143,7 @@ class TextEditor:
 
         def __ge__(self, o: Coordinates) -> bool:
             pass
-        def __init__(self, m_line: int = int(), m_column: int = int()) -> None:
-            """Auto-generated default constructor with named params"""
-            pass
+
 
     class Identifier:
         m_location: Coordinates

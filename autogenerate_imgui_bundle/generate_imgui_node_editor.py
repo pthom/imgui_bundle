@@ -68,15 +68,12 @@ def autogenerate_imgui_node_editor():
             "ConfigSaveNodeSettings",
             "ConfigLoadNodeSettings",
             "ConfigSession",
+            r"^ImVector",
         ]
     )
 
-    # options.class_template_options.add_specialization(
-    #
-    # )
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
-    # generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor_internal.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
