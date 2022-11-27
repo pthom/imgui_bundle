@@ -337,6 +337,16 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotPoint =
         py::class_<ImPlotPoint>    // implot.h:466
             (m, "ImPlotPoint", "Double precision version of ImVec2 used by ImPlot. Extensible by end users.")
+        .def(py::init<>([](
+        double x = double(), double y = double())
+        {
+            auto r = std::make_unique<ImPlotPoint>();
+            r->x = x;
+            r->y = y;
+            return r;
+        })
+        , py::arg("x") = double(), py::arg("y") = double()
+        )
         .def_readwrite("x", &ImPlotPoint::x, "")    // implot.h:467
         .def_readwrite("y", &ImPlotPoint::y, "")    // implot.h:467
         .def(py::init<>())    // implot.h:468
@@ -350,6 +360,16 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotRange =
         py::class_<ImPlotRange>    // implot.h:480
             (m, "ImPlotRange", "Range defined by a min/max value.")
+        .def(py::init<>([](
+        double Min = double(), double Max = double())
+        {
+            auto r = std::make_unique<ImPlotRange>();
+            r->Min = Min;
+            r->Max = Max;
+            return r;
+        })
+        , py::arg("min") = double(), py::arg("max") = double()
+        )
         .def_readwrite("min", &ImPlotRange::Min, "")    // implot.h:481
         .def_readwrite("max", &ImPlotRange::Max, "")    // implot.h:481
         .def(py::init<>())    // implot.h:482
@@ -361,6 +381,16 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotRect =
         py::class_<ImPlotRect>    // implot.h:490
             (m, "ImPlotRect", "Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max().")
+        .def(py::init<>([](
+        ImPlotRange X = ImPlotRange(), ImPlotRange Y = ImPlotRange())
+        {
+            auto r = std::make_unique<ImPlotRect>();
+            r->X = X;
+            r->Y = Y;
+            return r;
+        })
+        , py::arg("x") = ImPlotRange(), py::arg("y") = ImPlotRange()
+        )
         .def_readwrite("x", &ImPlotRect::X, "")    // implot.h:491
         .def_readwrite("y", &ImPlotRect::Y, "")    // implot.h:491
         .def(py::init<>())    // implot.h:492
@@ -372,6 +402,45 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotStyle =
         py::class_<ImPlotStyle>    // implot.h:504
             (m, "ImPlotStyle", "Plot style structure")
+        .def(py::init<>([](
+        float LineWeight = float(), int Marker = int(), float MarkerSize = float(), float MarkerWeight = float(), float FillAlpha = float(), float ErrorBarSize = float(), float ErrorBarWeight = float(), float DigitalBitHeight = float(), float DigitalBitGap = float(), float PlotBorderSize = float(), float MinorAlpha = float(), ImVec2 MajorTickLen = ImVec2(), ImVec2 MinorTickLen = ImVec2(), ImVec2 MajorTickSize = ImVec2(), ImVec2 MinorTickSize = ImVec2(), ImVec2 MajorGridSize = ImVec2(), ImVec2 MinorGridSize = ImVec2(), ImVec2 PlotPadding = ImVec2(), ImVec2 LabelPadding = ImVec2(), ImVec2 LegendPadding = ImVec2(), ImVec2 LegendInnerPadding = ImVec2(), ImVec2 LegendSpacing = ImVec2(), ImVec2 MousePosPadding = ImVec2(), ImVec2 AnnotationPadding = ImVec2(), ImVec2 FitPadding = ImVec2(), ImVec2 PlotDefaultSize = ImVec2(), ImVec2 PlotMinSize = ImVec2(), ImPlotColormap Colormap = ImPlotColormap(), bool UseLocalTime = bool(), bool UseISO8601 = bool(), bool Use24HourClock = bool())
+        {
+            auto r = std::make_unique<ImPlotStyle>();
+            r->LineWeight = LineWeight;
+            r->Marker = Marker;
+            r->MarkerSize = MarkerSize;
+            r->MarkerWeight = MarkerWeight;
+            r->FillAlpha = FillAlpha;
+            r->ErrorBarSize = ErrorBarSize;
+            r->ErrorBarWeight = ErrorBarWeight;
+            r->DigitalBitHeight = DigitalBitHeight;
+            r->DigitalBitGap = DigitalBitGap;
+            r->PlotBorderSize = PlotBorderSize;
+            r->MinorAlpha = MinorAlpha;
+            r->MajorTickLen = MajorTickLen;
+            r->MinorTickLen = MinorTickLen;
+            r->MajorTickSize = MajorTickSize;
+            r->MinorTickSize = MinorTickSize;
+            r->MajorGridSize = MajorGridSize;
+            r->MinorGridSize = MinorGridSize;
+            r->PlotPadding = PlotPadding;
+            r->LabelPadding = LabelPadding;
+            r->LegendPadding = LegendPadding;
+            r->LegendInnerPadding = LegendInnerPadding;
+            r->LegendSpacing = LegendSpacing;
+            r->MousePosPadding = MousePosPadding;
+            r->AnnotationPadding = AnnotationPadding;
+            r->FitPadding = FitPadding;
+            r->PlotDefaultSize = PlotDefaultSize;
+            r->PlotMinSize = PlotMinSize;
+            r->Colormap = Colormap;
+            r->UseLocalTime = UseLocalTime;
+            r->UseISO8601 = UseISO8601;
+            r->Use24HourClock = Use24HourClock;
+            return r;
+        })
+        , py::arg("line_weight") = float(), py::arg("marker") = int(), py::arg("marker_size") = float(), py::arg("marker_weight") = float(), py::arg("fill_alpha") = float(), py::arg("error_bar_size") = float(), py::arg("error_bar_weight") = float(), py::arg("digital_bit_height") = float(), py::arg("digital_bit_gap") = float(), py::arg("plot_border_size") = float(), py::arg("minor_alpha") = float(), py::arg("major_tick_len") = ImVec2(), py::arg("minor_tick_len") = ImVec2(), py::arg("major_tick_size") = ImVec2(), py::arg("minor_tick_size") = ImVec2(), py::arg("major_grid_size") = ImVec2(), py::arg("minor_grid_size") = ImVec2(), py::arg("plot_padding") = ImVec2(), py::arg("label_padding") = ImVec2(), py::arg("legend_padding") = ImVec2(), py::arg("legend_inner_padding") = ImVec2(), py::arg("legend_spacing") = ImVec2(), py::arg("mouse_pos_padding") = ImVec2(), py::arg("annotation_padding") = ImVec2(), py::arg("fit_padding") = ImVec2(), py::arg("plot_default_size") = ImVec2(), py::arg("plot_min_size") = ImVec2(), py::arg("colormap") = ImPlotColormap(), py::arg("use_local_time") = bool(), py::arg("use_iso8601") = bool(), py::arg("use24_hour_clock") = bool()
+        )
         .def_readwrite("line_weight", &ImPlotStyle::LineWeight, "= 1,      item line weight in pixels")    // implot.h:506
         .def_readwrite("marker", &ImPlotStyle::Marker, "= ImPlotMarker_None, marker specification")    // implot.h:507
         .def_readwrite("marker_size", &ImPlotStyle::MarkerSize, "= 4,      marker size in pixels (roughly the marker's \"radius\")")    // implot.h:508
@@ -410,6 +479,26 @@ void py_init_module_implot(py::module& m)
     auto pyClassImPlotInputMap =
         py::class_<ImPlotInputMap>    // implot.h:555
             (m, "ImPlotInputMap", "Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse.")
+        .def(py::init<>([](
+        ImGuiMouseButton Pan = ImGuiMouseButton(), ImGuiModFlags PanMod = ImGuiModFlags(), ImGuiMouseButton Fit = ImGuiMouseButton(), ImGuiMouseButton Select = ImGuiMouseButton(), ImGuiMouseButton SelectCancel = ImGuiMouseButton(), ImGuiModFlags SelectMod = ImGuiModFlags(), ImGuiModFlags SelectHorzMod = ImGuiModFlags(), ImGuiModFlags SelectVertMod = ImGuiModFlags(), ImGuiMouseButton Menu = ImGuiMouseButton(), ImGuiModFlags OverrideMod = ImGuiModFlags(), ImGuiModFlags ZoomMod = ImGuiModFlags(), float ZoomRate = float())
+        {
+            auto r = std::make_unique<ImPlotInputMap>();
+            r->Pan = Pan;
+            r->PanMod = PanMod;
+            r->Fit = Fit;
+            r->Select = Select;
+            r->SelectCancel = SelectCancel;
+            r->SelectMod = SelectMod;
+            r->SelectHorzMod = SelectHorzMod;
+            r->SelectVertMod = SelectVertMod;
+            r->Menu = Menu;
+            r->OverrideMod = OverrideMod;
+            r->ZoomMod = ZoomMod;
+            r->ZoomRate = ZoomRate;
+            return r;
+        })
+        , py::arg("pan") = ImGuiMouseButton(), py::arg("pan_mod") = ImGuiModFlags(), py::arg("fit") = ImGuiMouseButton(), py::arg("select") = ImGuiMouseButton(), py::arg("select_cancel") = ImGuiMouseButton(), py::arg("select_mod") = ImGuiModFlags(), py::arg("select_horz_mod") = ImGuiModFlags(), py::arg("select_vert_mod") = ImGuiModFlags(), py::arg("menu") = ImGuiMouseButton(), py::arg("override_mod") = ImGuiModFlags(), py::arg("zoom_mod") = ImGuiModFlags(), py::arg("zoom_rate") = float()
+        )
         .def_readwrite("pan", &ImPlotInputMap::Pan, "LMB    enables panning when held,")    // implot.h:556
         .def_readwrite("pan_mod", &ImPlotInputMap::PanMod, "none   optional modifier that must be held for panning/fitting")    // implot.h:557
         .def_readwrite("fit", &ImPlotInputMap::Fit, "LMB    initiates fit when double clicked")    // implot.h:558

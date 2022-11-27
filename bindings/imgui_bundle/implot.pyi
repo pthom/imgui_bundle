@@ -1002,6 +1002,10 @@ class ImPlotPoint:  # implot.h:466
     # ImPlotPoint(const ImVec2& p)          { x = p.x; y = p.y; }    /* original C++ signature */
     def __init__(self, p: ImVec2) -> None:  # implot.h:470
         pass
+    # ImPlotPoint(double x = double(), double y = double());    /* original C++ signature */
+    def __init__(self, x: float = float(), y: float = float()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImPlotRange:  # implot.h:480
     """Range defined by a min/max value."""
@@ -1015,6 +1019,10 @@ class ImPlotRange:  # implot.h:480
         pass
     # ImPlotRange(double _min, double _max) { Min = _min; Max = _max;                                   }    /* original C++ signature */
     def __init__(self, _min: float, _max: float) -> None:  # implot.h:483
+        pass
+    # ImPlotRange(double Min = double(), double Max = double());    /* original C++ signature */
+    def __init__(self, min: float = float(), max: float = float()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImPlotRect:  # implot.h:490
@@ -1031,6 +1039,12 @@ class ImPlotRect:  # implot.h:490
     def __init__(
         self, x_min: float, x_max: float, y_min: float, y_max: float
     ) -> None:  # implot.h:493
+        pass
+    # ImPlotRect(ImPlotRange X = ImPlotRange(), ImPlotRange Y = ImPlotRange());    /* original C++ signature */
+    def __init__(
+        self, x: ImPlotRange = ImPlotRange(), y: ImPlotRange = ImPlotRange()
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImPlotStyle:  # implot.h:504
@@ -1106,6 +1120,43 @@ class ImPlotStyle:  # implot.h:504
     # IMPLOT_API ImPlotStyle();    /* original C++ signature */
     def __init__(self) -> None:  # implot.h:542
         pass
+    # ImPlotStyle(float LineWeight = float(), int Marker = int(), float MarkerSize = float(), float MarkerWeight = float(), float FillAlpha = float(), float ErrorBarSize = float(), float ErrorBarWeight = float(), float DigitalBitHeight = float(), float DigitalBitGap = float(), float PlotBorderSize = float(), float MinorAlpha = float(), ImVec2 MajorTickLen = ImVec2(), ImVec2 MinorTickLen = ImVec2(), ImVec2 MajorTickSize = ImVec2(), ImVec2 MinorTickSize = ImVec2(), ImVec2 MajorGridSize = ImVec2(), ImVec2 MinorGridSize = ImVec2(), ImVec2 PlotPadding = ImVec2(), ImVec2 LabelPadding = ImVec2(), ImVec2 LegendPadding = ImVec2(), ImVec2 LegendInnerPadding = ImVec2(), ImVec2 LegendSpacing = ImVec2(), ImVec2 MousePosPadding = ImVec2(), ImVec2 AnnotationPadding = ImVec2(), ImVec2 FitPadding = ImVec2(), ImVec2 PlotDefaultSize = ImVec2(), ImVec2 PlotMinSize = ImVec2(), ImPlotColormap Colormap = ImPlotColormap(), bool UseLocalTime = bool(), bool UseISO8601 = bool(), bool Use24HourClock = bool());    /* original C++ signature */
+    def __init__(
+        self,
+        line_weight: float = float(),
+        marker: int = int(),
+        marker_size: float = float(),
+        marker_weight: float = float(),
+        fill_alpha: float = float(),
+        error_bar_size: float = float(),
+        error_bar_weight: float = float(),
+        digital_bit_height: float = float(),
+        digital_bit_gap: float = float(),
+        plot_border_size: float = float(),
+        minor_alpha: float = float(),
+        major_tick_len: ImVec2 = ImVec2(),
+        minor_tick_len: ImVec2 = ImVec2(),
+        major_tick_size: ImVec2 = ImVec2(),
+        minor_tick_size: ImVec2 = ImVec2(),
+        major_grid_size: ImVec2 = ImVec2(),
+        minor_grid_size: ImVec2 = ImVec2(),
+        plot_padding: ImVec2 = ImVec2(),
+        label_padding: ImVec2 = ImVec2(),
+        legend_padding: ImVec2 = ImVec2(),
+        legend_inner_padding: ImVec2 = ImVec2(),
+        legend_spacing: ImVec2 = ImVec2(),
+        mouse_pos_padding: ImVec2 = ImVec2(),
+        annotation_padding: ImVec2 = ImVec2(),
+        fit_padding: ImVec2 = ImVec2(),
+        plot_default_size: ImVec2 = ImVec2(),
+        plot_min_size: ImVec2 = ImVec2(),
+        colormap: ImPlotColormap = ImPlotColormap(),
+        use_local_time: bool = bool(),
+        use_iso8601: bool = bool(),
+        use24_hour_clock: bool = bool(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImPlotInputMap:  # implot.h:555
     """Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse."""
@@ -1136,6 +1187,24 @@ class ImPlotInputMap:  # implot.h:555
     zoom_rate: float  # 0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert    # implot.h:567
     # IMPLOT_API ImPlotInputMap();    /* original C++ signature */
     def __init__(self) -> None:  # implot.h:568
+        pass
+    # ImPlotInputMap(ImGuiMouseButton Pan = ImGuiMouseButton(), ImGuiModFlags PanMod = ImGuiModFlags(), ImGuiMouseButton Fit = ImGuiMouseButton(), ImGuiMouseButton Select = ImGuiMouseButton(), ImGuiMouseButton SelectCancel = ImGuiMouseButton(), ImGuiModFlags SelectMod = ImGuiModFlags(), ImGuiModFlags SelectHorzMod = ImGuiModFlags(), ImGuiModFlags SelectVertMod = ImGuiModFlags(), ImGuiMouseButton Menu = ImGuiMouseButton(), ImGuiModFlags OverrideMod = ImGuiModFlags(), ImGuiModFlags ZoomMod = ImGuiModFlags(), float ZoomRate = float());    /* original C++ signature */
+    def __init__(
+        self,
+        pan: ImGuiMouseButton = ImGuiMouseButton(),
+        pan_mod: ImGuiModFlags = ImGuiModFlags(),
+        fit: ImGuiMouseButton = ImGuiMouseButton(),
+        select: ImGuiMouseButton = ImGuiMouseButton(),
+        select_cancel: ImGuiMouseButton = ImGuiMouseButton(),
+        select_mod: ImGuiModFlags = ImGuiModFlags(),
+        select_horz_mod: ImGuiModFlags = ImGuiModFlags(),
+        select_vert_mod: ImGuiModFlags = ImGuiModFlags(),
+        menu: ImGuiMouseButton = ImGuiMouseButton(),
+        override_mod: ImGuiModFlags = ImGuiModFlags(),
+        zoom_mod: ImGuiModFlags = ImGuiModFlags(),
+        zoom_rate: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 # -----------------------------------------------------------------------------

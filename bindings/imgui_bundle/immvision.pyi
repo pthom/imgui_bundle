@@ -58,7 +58,7 @@ class ColormapScaleFromStatsData:  # immvision.h:28
         use_stats_min: bool = False,
         use_stats_max: bool = False,
     ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ColormapSettingsData:  # immvision.h:47
@@ -102,7 +102,7 @@ class ColormapSettingsData:  # immvision.h:47
         colormap_scale_from_stats: ColormapScaleFromStatsData = ColormapScaleFromStatsData(),
         internal_colormap_hovered: str = "",
     ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class MouseInformation:  # immvision.h:73
@@ -135,7 +135,7 @@ class MouseInformation:  # immvision.h:73
         mouse_position: cv.Point2 = cv.Point2(-1.0, -1.0),
         mouse_position_displayed: cv.Point = cv.Point(-1, -1),
     ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImageParams:  # immvision.h:93
@@ -289,7 +289,7 @@ class ImageParams:  # immvision.h:93
         highlight_watched_pixels: bool = True,
         mouse_info: MouseInformation = MouseInformation(),
     ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 # IMMVISION_API ImageParams FactorImageParamsDisplayOnly();    /* original C++ signature */

@@ -419,6 +419,10 @@ class ImVec2:  # imgui.h:255
     def __init__(self, _x: float, _y: float) -> None:  # imgui.h:259
         pass
     # We very rarely use this [] operator, the assert overhead is fine.
+    # ImVec2(float x = float(), float y = float());    /* original C++ signature */
+    def __init__(self, x: float = float(), y: float = float()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImVec4:  # imgui.h:268
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
@@ -438,6 +442,16 @@ class ImVec4:  # imgui.h:268
     def __init__(
         self, _x: float, _y: float, _z: float, _w: float
     ) -> None:  # imgui.h:272
+        pass
+    # ImVec4(float x = float(), float y = float(), float z = float(), float w = float());    /* original C++ signature */
+    def __init__(
+        self,
+        x: float = float(),
+        y: float = float(),
+        z: float = float(),
+        w: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 # -----------------------------------------------------------------------------
@@ -4993,6 +5007,52 @@ class ImGuiStyle:  # imgui.h:1918
     # IMGUI_API void ScaleAllSizes(float scale_factor);    /* original C++ signature */
     def scale_all_sizes(self, scale_factor: float) -> None:  # imgui.h:1963
         pass
+    # ImGuiStyle(float Alpha = float(), float DisabledAlpha = float(), ImVec2 WindowPadding = ImVec2(), float WindowRounding = float(), float WindowBorderSize = float(), ImVec2 WindowMinSize = ImVec2(), ImVec2 WindowTitleAlign = ImVec2(), ImGuiDir WindowMenuButtonPosition = ImGuiDir(), float ChildRounding = float(), float ChildBorderSize = float(), float PopupRounding = float(), float PopupBorderSize = float(), ImVec2 FramePadding = ImVec2(), float FrameRounding = float(), float FrameBorderSize = float(), ImVec2 ItemSpacing = ImVec2(), ImVec2 ItemInnerSpacing = ImVec2(), ImVec2 CellPadding = ImVec2(), ImVec2 TouchExtraPadding = ImVec2(), float IndentSpacing = float(), float ColumnsMinSpacing = float(), float ScrollbarSize = float(), float ScrollbarRounding = float(), float GrabMinSize = float(), float GrabRounding = float(), float LogSliderDeadzone = float(), float TabRounding = float(), float TabBorderSize = float(), float TabMinWidthForCloseButton = float(), ImGuiDir ColorButtonPosition = ImGuiDir(), ImVec2 ButtonTextAlign = ImVec2(), ImVec2 SelectableTextAlign = ImVec2(), ImVec2 DisplayWindowPadding = ImVec2(), ImVec2 DisplaySafeAreaPadding = ImVec2(), float MouseCursorScale = float(), bool AntiAliasedLines = bool(), bool AntiAliasedLinesUseTex = bool(), bool AntiAliasedFill = bool(), float CurveTessellationTol = float(), float CircleTessellationMaxError = float());    /* original C++ signature */
+    def __init__(
+        self,
+        alpha: float = float(),
+        disabled_alpha: float = float(),
+        window_padding: ImVec2 = ImVec2(),
+        window_rounding: float = float(),
+        window_border_size: float = float(),
+        window_min_size: ImVec2 = ImVec2(),
+        window_title_align: ImVec2 = ImVec2(),
+        window_menu_button_position: ImGuiDir = ImGuiDir(),
+        child_rounding: float = float(),
+        child_border_size: float = float(),
+        popup_rounding: float = float(),
+        popup_border_size: float = float(),
+        frame_padding: ImVec2 = ImVec2(),
+        frame_rounding: float = float(),
+        frame_border_size: float = float(),
+        item_spacing: ImVec2 = ImVec2(),
+        item_inner_spacing: ImVec2 = ImVec2(),
+        cell_padding: ImVec2 = ImVec2(),
+        touch_extra_padding: ImVec2 = ImVec2(),
+        indent_spacing: float = float(),
+        columns_min_spacing: float = float(),
+        scrollbar_size: float = float(),
+        scrollbar_rounding: float = float(),
+        grab_min_size: float = float(),
+        grab_rounding: float = float(),
+        log_slider_deadzone: float = float(),
+        tab_rounding: float = float(),
+        tab_border_size: float = float(),
+        tab_min_width_for_close_button: float = float(),
+        color_button_position: ImGuiDir = ImGuiDir(),
+        button_text_align: ImVec2 = ImVec2(),
+        selectable_text_align: ImVec2 = ImVec2(),
+        display_window_padding: ImVec2 = ImVec2(),
+        display_safe_area_padding: ImVec2 = ImVec2(),
+        mouse_cursor_scale: float = float(),
+        anti_aliased_lines: bool = bool(),
+        anti_aliased_lines_use_tex: bool = bool(),
+        anti_aliased_fill: bool = bool(),
+        curve_tessellation_tol: float = float(),
+        circle_tessellation_max_error: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] ImGuiIO
@@ -5022,7 +5082,7 @@ class ImGuiKeyData:  # imgui.h:1975
         down_duration_prev: float = float(),
         analog_value: float = float(),
     ) -> None:  # Line:3
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImGuiIO:  # imgui.h:1983
@@ -5307,6 +5367,72 @@ class ImGuiIO:  # imgui.h:1983
     # IMGUI_API   ImGuiIO();    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2153
         pass
+    # ImGuiIO(ImGuiConfigFlags ConfigFlags = ImGuiConfigFlags(), ImGuiBackendFlags BackendFlags = ImGuiBackendFlags(), ImVec2 DisplaySize = ImVec2(), float DeltaTime = float(), float IniSavingRate = float(), float MouseDoubleClickTime = float(), float MouseDoubleClickMaxDist = float(), float MouseDragThreshold = float(), float KeyRepeatDelay = float(), float KeyRepeatRate = float(), float FontGlobalScale = float(), bool FontAllowUserScaling = bool(), ImVec2 DisplayFramebufferScale = ImVec2(), bool ConfigDockingNoSplit = bool(), bool ConfigDockingWithShift = bool(), bool ConfigDockingAlwaysTabBar = bool(), bool ConfigDockingTransparentPayload = bool(), bool ConfigViewportsNoAutoMerge = bool(), bool ConfigViewportsNoTaskBarIcon = bool(), bool ConfigViewportsNoDecoration = bool(), bool ConfigViewportsNoDefaultParent = bool(), bool MouseDrawCursor = bool(), bool ConfigMacOSXBehaviors = bool(), bool ConfigInputTrickleEventQueue = bool(), bool ConfigInputTextCursorBlink = bool(), bool ConfigDragClickToInputText = bool(), bool ConfigWindowsResizeFromEdges = bool(), bool ConfigWindowsMoveFromTitleBarOnly = bool(), float ConfigMemoryCompactTimer = float(), bool WantCaptureMouse = bool(), bool WantCaptureKeyboard = bool(), bool WantTextInput = bool(), bool WantSetMousePos = bool(), bool WantSaveIniSettings = bool(), bool NavActive = bool(), bool NavVisible = bool(), float Framerate = float(), int MetricsRenderVertices = int(), int MetricsRenderIndices = int(), int MetricsRenderWindows = int(), int MetricsActiveWindows = int(), int MetricsActiveAllocations = int(), ImVec2 MouseDelta = ImVec2(), ImVec2 MousePos = ImVec2(), float MouseWheel = float(), float MouseWheelH = float(), ImGuiID MouseHoveredViewport = ImGuiID(), bool KeyCtrl = bool(), bool KeyShift = bool(), bool KeyAlt = bool(), bool KeySuper = bool(), ImGuiModFlags KeyMods = ImGuiModFlags(), bool WantCaptureMouseUnlessPopupClose = bool(), ImVec2 MousePosPrev = ImVec2(), float PenPressure = float(), bool AppFocusLost = bool(), bool AppAcceptingEvents = bool(), ImS8 BackendUsingLegacyKeyArrays = ImS8(), bool BackendUsingLegacyNavInputArray = bool(), ImWchar16 InputQueueSurrogate = ImWchar16());    /* original C++ signature */
+    def __init__(
+        self,
+        config_flags: ImGuiConfigFlags = ImGuiConfigFlags(),
+        backend_flags: ImGuiBackendFlags = ImGuiBackendFlags(),
+        display_size: ImVec2 = ImVec2(),
+        delta_time: float = float(),
+        ini_saving_rate: float = float(),
+        mouse_double_click_time: float = float(),
+        mouse_double_click_max_dist: float = float(),
+        mouse_drag_threshold: float = float(),
+        key_repeat_delay: float = float(),
+        key_repeat_rate: float = float(),
+        font_global_scale: float = float(),
+        font_allow_user_scaling: bool = bool(),
+        display_framebuffer_scale: ImVec2 = ImVec2(),
+        config_docking_no_split: bool = bool(),
+        config_docking_with_shift: bool = bool(),
+        config_docking_always_tab_bar: bool = bool(),
+        config_docking_transparent_payload: bool = bool(),
+        config_viewports_no_auto_merge: bool = bool(),
+        config_viewports_no_task_bar_icon: bool = bool(),
+        config_viewports_no_decoration: bool = bool(),
+        config_viewports_no_default_parent: bool = bool(),
+        mouse_draw_cursor: bool = bool(),
+        config_mac_osx_behaviors: bool = bool(),
+        config_input_trickle_event_queue: bool = bool(),
+        config_input_text_cursor_blink: bool = bool(),
+        config_drag_click_to_input_text: bool = bool(),
+        config_windows_resize_from_edges: bool = bool(),
+        config_windows_move_from_title_bar_only: bool = bool(),
+        config_memory_compact_timer: float = float(),
+        want_capture_mouse: bool = bool(),
+        want_capture_keyboard: bool = bool(),
+        want_text_input: bool = bool(),
+        want_set_mouse_pos: bool = bool(),
+        want_save_ini_settings: bool = bool(),
+        nav_active: bool = bool(),
+        nav_visible: bool = bool(),
+        framerate: float = float(),
+        metrics_render_vertices: int = int(),
+        metrics_render_indices: int = int(),
+        metrics_render_windows: int = int(),
+        metrics_active_windows: int = int(),
+        metrics_active_allocations: int = int(),
+        mouse_delta: ImVec2 = ImVec2(),
+        mouse_pos: ImVec2 = ImVec2(),
+        mouse_wheel: float = float(),
+        mouse_wheel_h: float = float(),
+        mouse_hovered_viewport: ImGuiID = ImGuiID(),
+        key_ctrl: bool = bool(),
+        key_shift: bool = bool(),
+        key_alt: bool = bool(),
+        key_super: bool = bool(),
+        key_mods: ImGuiModFlags = ImGuiModFlags(),
+        want_capture_mouse_unless_popup_close: bool = bool(),
+        mouse_pos_prev: ImVec2 = ImVec2(),
+        pen_pressure: float = float(),
+        app_focus_lost: bool = bool(),
+        app_accepting_events: bool = bool(),
+        backend_using_legacy_key_arrays: ImS8 = ImS8(),
+        backend_using_legacy_nav_input_array: bool = bool(),
+        input_queue_surrogate: ImWchar16 = ImWchar16(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures
@@ -5364,6 +5490,22 @@ class ImGuiInputTextCallbackData:  # imgui.h:2169
         self, pos: int, text: str, text_end: str = None
     ) -> None:  # imgui.h:2192
         pass
+    # ImGuiInputTextCallbackData(ImGuiInputTextFlags EventFlag = ImGuiInputTextFlags(), ImGuiInputTextFlags Flags = ImGuiInputTextFlags(), ImWchar EventChar = ImWchar(), ImGuiKey EventKey = ImGuiKey(), int BufTextLen = int(), int BufSize = int(), bool BufDirty = bool(), int CursorPos = int(), int SelectionStart = int(), int SelectionEnd = int());    /* original C++ signature */
+    def __init__(
+        self,
+        event_flag: ImGuiInputTextFlags = ImGuiInputTextFlags(),
+        flags: ImGuiInputTextFlags = ImGuiInputTextFlags(),
+        event_char: ImWchar = ImWchar(),
+        event_key: ImGuiKey = ImGuiKey(),
+        buf_text_len: int = int(),
+        buf_size: int = int(),
+        buf_dirty: bool = bool(),
+        cursor_pos: int = int(),
+        selection_start: int = int(),
+        selection_end: int = int(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImGuiSizeCallbackData:  # imgui.h:2200
     """Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().
@@ -5385,7 +5527,7 @@ class ImGuiSizeCallbackData:  # imgui.h:2200
         current_size: ImVec2 = ImVec2(),
         desired_size: ImVec2 = ImVec2(),
     ) -> None:  # Line:3
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImGuiWindowClass:  # imgui.h:2215
@@ -5418,6 +5560,20 @@ class ImGuiWindowClass:  # imgui.h:2215
     # ImGuiWindowClass() { memset(this, 0, sizeof(*this)); ParentViewportId = (ImGuiID)-1; DockingAllowUnclassed = true; }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2226
         pass
+    # ImGuiWindowClass(ImGuiID ClassId = ImGuiID(), ImGuiID ParentViewportId = ImGuiID(), ImGuiViewportFlags ViewportFlagsOverrideSet = ImGuiViewportFlags(), ImGuiViewportFlags ViewportFlagsOverrideClear = ImGuiViewportFlags(), ImGuiTabItemFlags TabItemFlagsOverrideSet = ImGuiTabItemFlags(), ImGuiDockNodeFlags DockNodeFlagsOverrideSet = ImGuiDockNodeFlags(), bool DockingAlwaysTabBar = bool(), bool DockingAllowUnclassed = bool());    /* original C++ signature */
+    def __init__(
+        self,
+        class_id: ImGuiID = ImGuiID(),
+        parent_viewport_id: ImGuiID = ImGuiID(),
+        viewport_flags_override_set: ImGuiViewportFlags = ImGuiViewportFlags(),
+        viewport_flags_override_clear: ImGuiViewportFlags = ImGuiViewportFlags(),
+        tab_item_flags_override_set: ImGuiTabItemFlags = ImGuiTabItemFlags(),
+        dock_node_flags_override_set: ImGuiDockNodeFlags = ImGuiDockNodeFlags(),
+        docking_always_tab_bar: bool = bool(),
+        docking_allow_unclassed: bool = bool(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImGuiPayload:  # imgui.h:2230
     """Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()"""
@@ -5443,6 +5599,18 @@ class ImGuiPayload:  # imgui.h:2230
     # ImGuiPayload()  { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2244
         pass
+    # ImGuiPayload(int DataSize = int(), ImGuiID SourceId = ImGuiID(), ImGuiID SourceParentId = ImGuiID(), int DataFrameCount = int(), bool Preview = bool(), bool Delivery = bool());    /* original C++ signature */
+    def __init__(
+        self,
+        data_size: int = int(),
+        source_id: ImGuiID = ImGuiID(),
+        source_parent_id: ImGuiID = ImGuiID(),
+        data_frame_count: int = int(),
+        preview: bool = bool(),
+        delivery: bool = bool(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImGuiTableColumnSortSpecs:  # imgui.h:2252
     """Sorting specification for one column of a table (sizeof == 12 bytes)"""
@@ -5456,6 +5624,15 @@ class ImGuiTableColumnSortSpecs:  # imgui.h:2252
 
     # ImGuiTableColumnSortSpecs() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2259
+        pass
+    # ImGuiTableColumnSortSpecs(ImGuiID ColumnUserID = ImGuiID(), ImS16 ColumnIndex = ImS16(), ImS16 SortOrder = ImS16());    /* original C++ signature */
+    def __init__(
+        self,
+        column_user_id: ImGuiID = ImGuiID(),
+        column_index: ImS16 = ImS16(),
+        sort_order: ImS16 = ImS16(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImGuiTableSortSpecs:  # imgui.h:2266
@@ -5475,6 +5652,12 @@ class ImGuiTableSortSpecs:  # imgui.h:2266
     # ImGuiTableSortSpecs()       { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2272
         pass
+    # ImGuiTableSortSpecs(int SpecsCount = int(), bool SpecsDirty = bool());    /* original C++ signature */
+    def __init__(
+        self, specs_count: int = int(), specs_dirty: bool = bool()
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, ImColor)
@@ -5492,6 +5675,10 @@ class ImGuiOnceUponAFrame:  # imgui.h:2289
         pass
     # mutable int RefFrame;    /* original C++ signature */
     ref_frame: int  # imgui.h:2292
+    # ImGuiOnceUponAFrame();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiTextFilter:  # imgui.h:2297
     """Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """
@@ -5526,8 +5713,16 @@ class ImGuiTextFilter:  # imgui.h:2297
         # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
         def __init__(self, _b: str, _e: str) -> None:  # imgui.h:2313
             pass
+        # ImGuiTextRange();    /* original C++ signature */
+        def __init__(self) -> None:  # Line:3
+            """Auto-generated default constructor"""
+            pass
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int  # imgui.h:2319
+    # ImGuiTextFilter(int CountGrep = int());    /* original C++ signature */
+    def __init__(self, count_grep: int = int()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImGuiListClipper:  # imgui.h:2414
     """Helper: Manually clip large list of items.
@@ -5592,6 +5787,18 @@ class ImGuiListClipper:  # imgui.h:2414
         pass
     # item_max is exclusive e.g. use (42, 42+1) to make item 42 always visible BUT due to alignment/padding of certain items it is likely that an extra item may be included on either end of the display range.
 
+    # ImGuiListClipper(int DisplayStart = int(), int DisplayEnd = int(), int ItemsCount = int(), float ItemsHeight = float(), float StartPosY = float());    /* original C++ signature */
+    def __init__(
+        self,
+        display_start: int = int(),
+        display_end: int = int(),
+        items_count: int = int(),
+        items_height: float = float(),
+        start_pos_y: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
+
 # Helpers macros to generate 32-bit encoded colors
 # User can declare their own format by #defining the 5 _SHIFT/_MASK macros in their imconfig file.
 
@@ -5623,6 +5830,10 @@ class ImColor:  # imgui.h:2465
     def __init__(self, rgba: ImU32) -> None:  # imgui.h:2473
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
+    # ImColor(ImVec4 Value = ImVec4());    /* original C++ signature */
+    def __init__(self, value: ImVec4 = ImVec4()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
@@ -5664,6 +5875,12 @@ class ImDrawCmd:  # imgui.h:2514
     def __init__(self) -> None:  # imgui.h:2524
         """Also ensure our padding fields are zeroed"""
         pass
+    # ImDrawCmd(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
+    def __init__(
+        self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # Vertex layout
 
@@ -5680,7 +5897,7 @@ class ImDrawCmdHeader:  # imgui.h:2547
     def __init__(
         self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()
     ) -> None:  # Line:3
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImDrawChannel:  # imgui.h:2555
@@ -5717,6 +5934,10 @@ class ImDrawListSplitter:  # imgui.h:2564
     def set_current_channel(
         self, draw_list: ImDrawList, channel_idx: int
     ) -> None:  # imgui.h:2576
+        pass
+    # ImDrawListSplitter(int _Current = int(), int _Count = int());    /* original C++ signature */
+    def __init__(self, _current: int = int(), _count: int = int()) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImDrawFlags_(enum.Enum):  # imgui.h:2581
@@ -6242,6 +6463,19 @@ class ImDrawData:  # imgui.h:2747
     def scale_clip_rects(self, fb_scale: ImVec2) -> None:  # imgui.h:2763
         """Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution."""
         pass
+    # ImDrawData(bool Valid = bool(), int CmdListsCount = int(), int TotalIdxCount = int(), int TotalVtxCount = int(), ImVec2 DisplayPos = ImVec2(), ImVec2 DisplaySize = ImVec2(), ImVec2 FramebufferScale = ImVec2());    /* original C++ signature */
+    def __init__(
+        self,
+        valid: bool = bool(),
+        cmd_lists_count: int = int(),
+        total_idx_count: int = int(),
+        total_vtx_count: int = int(),
+        display_pos: ImVec2 = ImVec2(),
+        display_size: ImVec2 = ImVec2(),
+        framebuffer_scale: ImVec2 = ImVec2(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontAtlasFlags, ImFontAtlas, ImFontGlyphRangesBuilder, ImFont)
@@ -6288,6 +6522,26 @@ class ImFontConfig:  # imgui.h:2770
     # IMGUI_API ImFontConfig();    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2794
         pass
+    # ImFontConfig(int FontDataSize = int(), bool FontDataOwnedByAtlas = bool(), int FontNo = int(), float SizePixels = float(), int OversampleH = int(), int OversampleV = int(), bool PixelSnapH = bool(), ImVec2 GlyphExtraSpacing = ImVec2(), ImVec2 GlyphOffset = ImVec2(), float GlyphMinAdvanceX = float(), float GlyphMaxAdvanceX = float(), bool MergeMode = bool(), float RasterizerMultiply = float(), ImWchar EllipsisChar = ImWchar());    /* original C++ signature */
+    def __init__(
+        self,
+        font_data_size: int = int(),
+        font_data_owned_by_atlas: bool = bool(),
+        font_no: int = int(),
+        size_pixels: float = float(),
+        oversample_h: int = int(),
+        oversample_v: int = int(),
+        pixel_snap_h: bool = bool(),
+        glyph_extra_spacing: ImVec2 = ImVec2(),
+        glyph_offset: ImVec2 = ImVec2(),
+        glyph_min_advance_x: float = float(),
+        glyph_max_advance_x: float = float(),
+        merge_mode: bool = bool(),
+        rasterizer_multiply: float = float(),
+        ellipsis_char: ImWchar = ImWchar(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImFontGlyph:  # imgui.h:2799
     """Hold rendering data for one glyph.
@@ -6325,7 +6579,7 @@ class ImFontGlyph:  # imgui.h:2799
         u1: float = float(),
         v1: float = float(),
     ) -> None:  # Line:3
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImFontGlyphRangesBuilder:  # imgui.h:2811
@@ -6347,6 +6601,10 @@ class ImFontGlyphRangesBuilder:  # imgui.h:2811
     # IMGUI_API void  BuildRanges(ImVector<ImWchar>* out_ranges);                     /* original C++ signature */
     def build_ranges(self, out_ranges: List[ImWchar]) -> None:  # imgui.h:2822
         """Output new ranges"""
+        pass
+    # ImFontGlyphRangesBuilder();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
+        """Auto-generated default constructor"""
         pass
 
 class ImFontAtlasCustomRect:  # imgui.h:2826
@@ -6370,6 +6628,12 @@ class ImFontAtlasCustomRect:  # imgui.h:2826
     font: ImFont  # Input    // For custom font glyphs only: target font    # imgui.h:2833
     # ImFontAtlasCustomRect()         { Width = Height = 0; X = Y = 0xFFFF; GlyphID = 0; GlyphAdvanceX = 0.0f; GlyphOffset = ImVec2(0, 0); Font = NULL; }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:2834
+        pass
+    # ImFontAtlasCustomRect(float GlyphAdvanceX = float(), ImVec2 GlyphOffset = ImVec2());    /* original C++ signature */
+    def __init__(
+        self, glyph_advance_x: float = float(), glyph_offset: ImVec2 = ImVec2()
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 class ImFontAtlasFlags_(enum.Enum):  # imgui.h:2839
@@ -6610,6 +6874,25 @@ class ImFontAtlas:  # imgui.h:2864
     # [Obsolete]
     # typedef ImFontAtlasCustomRect    CustomRect;         // OBSOLETED in 1.72+
     # typedef ImFontGlyphRangesBuilder GlyphRangesBuilder; // OBSOLETED in 1.67+
+    # ImFontAtlas(ImFontAtlasFlags Flags = ImFontAtlasFlags(), ImTextureID TexID = ImTextureID(), int TexDesiredWidth = int(), int TexGlyphPadding = int(), bool Locked = bool(), bool TexReady = bool(), bool TexPixelsUseColors = bool(), int TexWidth = int(), int TexHeight = int(), ImVec2 TexUvScale = ImVec2(), ImVec2 TexUvWhitePixel = ImVec2(), int PackIdMouseCursors = int(), int PackIdLines = int());    /* original C++ signature */
+    def __init__(
+        self,
+        flags: ImFontAtlasFlags = ImFontAtlasFlags(),
+        tex_id: ImTextureID = ImTextureID(),
+        tex_desired_width: int = int(),
+        tex_glyph_padding: int = int(),
+        locked: bool = bool(),
+        tex_ready: bool = bool(),
+        tex_pixels_use_colors: bool = bool(),
+        tex_width: int = int(),
+        tex_height: int = int(),
+        tex_uv_scale: ImVec2 = ImVec2(),
+        tex_uv_white_pixel: ImVec2 = ImVec2(),
+        pack_id_mouse_cursors: int = int(),
+        pack_id_lines: int = int(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImFont:  # imgui.h:2965
     """Font runtime data and rendering
@@ -6723,6 +7006,23 @@ class ImFont:  # imgui.h:2965
         pass
     # IMGUI_API bool              IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last);    /* original C++ signature */
     def is_glyph_range_unused(self, c_begin: int, c_last: int) -> bool:  # imgui.h:3013
+        pass
+    # ImFont(float FallbackAdvanceX = float(), float FontSize = float(), short ConfigDataCount = short(), ImWchar FallbackChar = ImWchar(), ImWchar EllipsisChar = ImWchar(), ImWchar DotChar = ImWchar(), bool DirtyLookupTables = bool(), float Scale = float(), float Ascent = float(), float Descent = float(), int MetricsTotalSurface = int());    /* original C++ signature */
+    def __init__(
+        self,
+        fallback_advance_x: float = float(),
+        font_size: float = float(),
+        config_data_count: int = int(),
+        fallback_char: ImWchar = ImWchar(),
+        ellipsis_char: ImWchar = ImWchar(),
+        dot_char: ImWchar = ImWchar(),
+        dirty_lookup_tables: bool = bool(),
+        scale: float = float(),
+        ascent: float = float(),
+        descent: float = float(),
+        metrics_total_surface: int = int(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 # -----------------------------------------------------------------------------
@@ -6838,6 +7138,23 @@ class ImGuiViewport:  # imgui.h:3046
     def __init__(self) -> None:  # imgui.h:3071
         pass
     # Helpers
+    # ImGuiViewport(ImGuiID ID = ImGuiID(), ImGuiViewportFlags Flags = ImGuiViewportFlags(), ImVec2 Pos = ImVec2(), ImVec2 Size = ImVec2(), ImVec2 WorkPos = ImVec2(), ImVec2 WorkSize = ImVec2(), float DpiScale = float(), ImGuiID ParentViewportId = ImGuiID(), bool PlatformRequestMove = bool(), bool PlatformRequestResize = bool(), bool PlatformRequestClose = bool());    /* original C++ signature */
+    def __init__(
+        self,
+        id: ImGuiID = ImGuiID(),
+        flags: ImGuiViewportFlags = ImGuiViewportFlags(),
+        pos: ImVec2 = ImVec2(),
+        size: ImVec2 = ImVec2(),
+        work_pos: ImVec2 = ImVec2(),
+        work_size: ImVec2 = ImVec2(),
+        dpi_scale: float = float(),
+        parent_viewport_id: ImGuiID = ImGuiID(),
+        platform_request_move: bool = bool(),
+        platform_request_resize: bool = bool(),
+        platform_request_close: bool = bool(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Platform Dependent Interfaces (for e.g. multi-viewport support)
@@ -6922,6 +7239,10 @@ class ImGuiPlatformIO:  # imgui.h:3129
     def __init__(self) -> None:  # imgui.h:3187
         """Zero clear"""
         pass
+    # ImGuiPlatformIO();    /* original C++ signature */
+    def __init__(self) -> None:  # Line:3
+        """Auto-generated default constructor"""
+        pass
 
 class ImGuiPlatformMonitor:  # imgui.h:3192
     """(Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.
@@ -6941,6 +7262,17 @@ class ImGuiPlatformMonitor:  # imgui.h:3192
     # ImGuiPlatformMonitor()          { MainPos = MainSize = WorkPos = WorkSize = ImVec2(0, 0); DpiScale = 1.0f; }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:3197
         pass
+    # ImGuiPlatformMonitor(ImVec2 MainPos = ImVec2(), ImVec2 MainSize = ImVec2(), ImVec2 WorkPos = ImVec2(), ImVec2 WorkSize = ImVec2(), float DpiScale = float());    /* original C++ signature */
+    def __init__(
+        self,
+        main_pos: ImVec2 = ImVec2(),
+        main_size: ImVec2 = ImVec2(),
+        work_pos: ImVec2 = ImVec2(),
+        work_size: ImVec2 = ImVec2(),
+        dpi_scale: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImGuiPlatformImeData:  # imgui.h:3201
     """(Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function."""
@@ -6954,6 +7286,15 @@ class ImGuiPlatformImeData:  # imgui.h:3201
 
     # ImGuiPlatformImeData() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:  # imgui.h:3207
+        pass
+    # ImGuiPlatformImeData(bool WantVisible = bool(), ImVec2 InputPos = ImVec2(), float InputLineHeight = float());    /* original C++ signature */
+    def __init__(
+        self,
+        want_visible: bool = bool(),
+        input_pos: ImVec2 = ImVec2(),
+        input_line_height: float = float(),
+    ) -> None:  # Line:3
+        """Auto-generated default constructor with named params"""
         pass
 
 # -----------------------------------------------------------------------------

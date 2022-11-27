@@ -51,7 +51,7 @@ class AddOnsParams:
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 def run(

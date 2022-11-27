@@ -146,7 +146,7 @@ class TextEditor:
             m_location: Coordinates = Coordinates(),
             m_declaration: str = ""
             ) -> None:
-            """Auto-generated default constructor"""
+            """Auto-generated default constructor with named params"""
             pass
 
 

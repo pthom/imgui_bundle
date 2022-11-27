@@ -95,7 +95,7 @@ class AssetFileData:
     data_size: int = 0
     # AssetFileData(size_t dataSize = 0);    /* original C++ signature */
     def __init__(self, data_size: int = 0) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 # AssetFileData LoadAssetFileData(const char *assetPath);    /* original C++ signature */
@@ -341,7 +341,7 @@ class ScreenBounds:
         position: ScreenPosition = DefaultScreenPosition,
         size: ScreenSize = DefaultWindowSize
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -456,7 +456,7 @@ class WindowGeometry:
         monitor_idx: int = 0,
         window_size_state: WindowSizeState = WindowSizeState.standard
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -513,7 +513,7 @@ class AppWindowParams:
         resizable: bool = True,
         out_window_dpi_factor: float = 1.
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -629,7 +629,7 @@ class ImguiTweakedTheme:
         theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
         tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 # ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
@@ -792,7 +792,7 @@ class ImguiWindowParams:
         enable_viewports: bool = False,
         tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme()
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -904,7 +904,7 @@ class MobileCallbacks:
         on_pause: VoidFunction = EmptyVoidFunction(),
         on_resume: VoidFunction = EmptyVoidFunction()
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 class RunnerCallbacks:
@@ -998,7 +998,7 @@ class RunnerCallbacks:
         setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig(),
         setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -1253,7 +1253,7 @@ class DockingParams:
         reset_user_dock_layout: bool = True,
         was_dock_layout_applied: bool = False
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -1387,7 +1387,7 @@ class RunnerParams:
         fps_idle: float = 10.,
         emscripten_fps: int = 0
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
@@ -1441,7 +1441,7 @@ class SimpleRunnerParams:
         window_size: ScreenSize = DefaultWindowSize,
         fps_idle: float = 10.
         ) -> None:
-        """Auto-generated default constructor"""
+        """Auto-generated default constructor with named params"""
         pass
 
 
