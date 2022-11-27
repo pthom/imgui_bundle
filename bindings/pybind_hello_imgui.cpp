@@ -242,6 +242,23 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassImGuiThemeTweaks =
         py::class_<ImGuiTheme::ImGuiThemeTweaks>
             (m, "ImguiThemeTweaks", "")
+        .def(py::init<>([](
+        float Rounding = -1.f, float RoundingScrollbarRatio = 4.f, float AlphaMultiplier = -1.f, float Hue = -1.f, float SaturationMultiplier = -1.f, float ValueMultiplierFront = -1.f, float ValueMultiplierBg = -1.f, float ValueMultiplierText = -1.f, float ValueMultiplierFrameBg = -1.f)
+        {
+            auto r = std::make_unique<ImGuiThemeTweaks>();
+            r->Rounding = Rounding;
+            r->RoundingScrollbarRatio = RoundingScrollbarRatio;
+            r->AlphaMultiplier = AlphaMultiplier;
+            r->Hue = Hue;
+            r->SaturationMultiplier = SaturationMultiplier;
+            r->ValueMultiplierFront = ValueMultiplierFront;
+            r->ValueMultiplierBg = ValueMultiplierBg;
+            r->ValueMultiplierText = ValueMultiplierText;
+            r->ValueMultiplierFrameBg = ValueMultiplierFrameBg;
+            return r;
+        })
+        , py::arg("rounding") = -1.f, py::arg("rounding_scrollbar_ratio") = 4.f, py::arg("alpha_multiplier") = -1.f, py::arg("hue") = -1.f, py::arg("saturation_multiplier") = -1.f, py::arg("value_multiplier_front") = -1.f, py::arg("value_multiplier_bg") = -1.f, py::arg("value_multiplier_text") = -1.f, py::arg("value_multiplier_frame_bg") = -1.f
+        )
         .def_readwrite("rounding", &ImGuiThemeTweaks::Rounding, "Common rounding for widgets. If < 0, this is ignored.")
         .def_readwrite("rounding_scrollbar_ratio", &ImGuiThemeTweaks::RoundingScrollbarRatio, "If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)")
         .def_readwrite("alpha_multiplier", &ImGuiThemeTweaks::AlphaMultiplier, "Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.")
@@ -414,6 +431,18 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassDockingSplit =
         py::class_<HelloImGui::DockingSplit>
             (m, "DockingSplit", "*\n@@md#DockingSplit\n\n**DockingSplit** is a struct that defines the way the docking splits should be applied on the screen\nin order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,\nin order to partition the screen at your will.\n\n_Members:_\n\n* `initialDock`: _DockSpaceName (aka string)_\n\n    id of the space that should be split.\n    At the start, there is only one Dock Space named \"MainDockSpace\".\n    You should start by partitioning this space, in order to create a new dock space.\n\n* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created\n* `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.\nDirection where this dock space should be created\n* `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space\n\n@@md\n")
+        .def(py::init<>([](
+        DockSpaceName initialDock = DockSpaceName(), DockSpaceName newDock = DockSpaceName(), ImGuiDir_ direction = ImGuiDir_(), float ratio = 0.25f)
+        {
+            auto r = std::make_unique<DockingSplit>();
+            r->initialDock = initialDock;
+            r->newDock = newDock;
+            r->direction = direction;
+            r->ratio = ratio;
+            return r;
+        })
+        , py::arg("initial_dock") = DockSpaceName(), py::arg("new_dock") = DockSpaceName(), py::arg("direction") = ImGuiDir_(), py::arg("ratio") = 0.25f
+        )
         .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir_, float>(),
             py::arg("initial_dock_") = "", py::arg("new_dock_") = "", py::arg("direction_") = ImGuiDir_Down, py::arg("ratio_") = 0.25f)
         .def_readwrite("initial_dock", &DockingSplit::initialDock, "")
@@ -426,6 +455,27 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassDockableWindow =
         py::class_<HelloImGui::DockableWindow>
             (m, "DockableWindow", "*\n@@md#DockableWindow\n\n**DockableWindow** is a struct that represents a window that can be docked.\n\n_Members:_\n\n* `label`: _string_. Title of the window.\n* `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window\n   should initialy be placed\n* `GuiFunction`: _VoidFuntion_. Any function that will render this window's Gui.\n* `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.\n* `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.\n* `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End\n   calls should be added automatically (with the given \"label\"). Set to False if you want to call\n   ImGui::Begin/End yourself\n* `includeInViewMenu`: _bool, default=true_. Flag that indicates whether this window should be mentioned\n   in the view menu.\n* `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_. Window flags, see enum ImGuiWindowFlags_\n* `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window size (unused if docked)\n* `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window size.\n* `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window position (unused if docked)\n* `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window position.\n* `focusWindowAtNextFrame`: _bool, default = false_. If set to True this window will be focused at the next frame.\n\n@@md\n*")
+        .def(py::init<>([](
+        std::string label = std::string(), DockSpaceName dockSpaceName = DockSpaceName(), VoidFunction GuiFunction = HelloImGui::EmptyVoidFunction(), bool isVisible = true, bool canBeClosed = true, bool callBeginEnd = true, bool includeInViewMenu = true, ImGuiWindowFlags imGuiWindowFlags = 0, ImVec2 windowSize = ImVec2(0.f, 0.f), ImGuiCond windowSizeCondition = ImGuiCond_FirstUseEver, ImVec2 windowPosition = ImVec2(0.f, 0.f), ImGuiCond windowPositionCondition = ImGuiCond_FirstUseEver, bool focusWindowAtNextFrame = false)
+        {
+            auto r = std::make_unique<DockableWindow>();
+            r->label = label;
+            r->dockSpaceName = dockSpaceName;
+            r->GuiFunction = GuiFunction;
+            r->isVisible = isVisible;
+            r->canBeClosed = canBeClosed;
+            r->callBeginEnd = callBeginEnd;
+            r->includeInViewMenu = includeInViewMenu;
+            r->imGuiWindowFlags = imGuiWindowFlags;
+            r->windowSize = windowSize;
+            r->windowSizeCondition = windowSizeCondition;
+            r->windowPosition = windowPosition;
+            r->windowPositionCondition = windowPositionCondition;
+            r->focusWindowAtNextFrame = focusWindowAtNextFrame;
+            return r;
+        })
+        , py::arg("label") = std::string(), py::arg("dock_space_name") = DockSpaceName(), py::arg("gui_function") = HelloImGui::EmptyVoidFunction(), py::arg("is_visible") = true, py::arg("can_be_closed") = true, py::arg("call_begin_end") = true, py::arg("include_in_view_menu") = true, py::arg("imgui_window_flags") = 0, py::arg("window_size") = ImVec2(0.f, 0.f), py::arg("window_size_condition") = ImGuiCond_FirstUseEver, py::arg("window_position") = ImVec2(0.f, 0.f), py::arg("window_position_condition") = ImGuiCond_FirstUseEver, py::arg("focus_window_at_next_frame") = false
+        )
         .def(py::init<const std::string &, const DockSpaceName &, const VoidFunction, bool, bool>(),
             py::arg("label_") = "", py::arg("dock_space_name_") = "", py::arg("gui_function_") = VoidFunction(), py::arg("is_visible_") = true, py::arg("can_be_closed_") = true)
         .def_readwrite("label", &DockableWindow::label, "")

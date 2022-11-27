@@ -174,6 +174,19 @@ class Config:  # imgui_node_editor.h:85
     #     }
     def __init__(self) -> None:  # imgui_node_editor.h:104
         pass
+    # Config(std::string SettingsFile = std::string(), ImVector<float> CustomZoomLevels = ImVector<float>(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int());    /* original C++ signature */
+    def __init__(  # Line:3
+        self,
+        settings_file: str = "",
+        custom_zoom_levels: List[float] = List[float](),
+        canvas_size_mode: CanvasSizeMode = CanvasSizeMode(),
+        drag_button_index: int = int(),
+        select_button_index: int = int(),
+        navigate_button_index: int = int(),
+        context_menu_button_index: int = int(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 class StyleColor(enum.Enum):  # imgui_node_editor.h:125
     """------------------------------------------------------------------------------"""
@@ -382,6 +395,37 @@ class Style:  # imgui_node_editor.h:181
     #         Colors[StyleColor_GroupBorder]        = ImColor(255, 255, 255,  32);
     #     }
     def __init__(self) -> None:  # imgui_node_editor.h:210
+        pass
+    # Style(ImVec4 NodePadding = ImVec4(), float NodeRounding = float(), float NodeBorderWidth = float(), float HoveredNodeBorderWidth = float(), float SelectedNodeBorderWidth = float(), float PinRounding = float(), float PinBorderWidth = float(), float LinkStrength = float(), ImVec2 SourceDirection = ImVec2(), ImVec2 TargetDirection = ImVec2(), float ScrollDuration = float(), float FlowMarkerDistance = float(), float FlowSpeed = float(), float FlowDuration = float(), ImVec2 PivotAlignment = ImVec2(), ImVec2 PivotSize = ImVec2(), ImVec2 PivotScale = ImVec2(), float PinCorners = float(), float PinRadius = float(), float PinArrowSize = float(), float PinArrowWidth = float(), float GroupRounding = float(), float GroupBorderWidth = float(), float HighlightConnectedLinks = float(), float SnapLinkToPinDir = float());    /* original C++ signature */
+    def __init__(  # Line:3
+        self,
+        node_padding: ImVec4 = ImVec4(),
+        node_rounding: float = float(),
+        node_border_width: float = float(),
+        hovered_node_border_width: float = float(),
+        selected_node_border_width: float = float(),
+        pin_rounding: float = float(),
+        pin_border_width: float = float(),
+        link_strength: float = float(),
+        source_direction: ImVec2 = ImVec2(),
+        target_direction: ImVec2 = ImVec2(),
+        scroll_duration: float = float(),
+        flow_marker_distance: float = float(),
+        flow_speed: float = float(),
+        flow_duration: float = float(),
+        pivot_alignment: ImVec2 = ImVec2(),
+        pivot_size: ImVec2 = ImVec2(),
+        pivot_scale: ImVec2 = ImVec2(),
+        pin_corners: float = float(),
+        pin_radius: float = float(),
+        pin_arrow_size: float = float(),
+        pin_arrow_width: float = float(),
+        group_rounding: float = float(),
+        group_border_width: float = float(),
+        highlight_connected_links: float = float(),
+        snap_link_to_pin_dir: float = float(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
         pass
 
 # ------------------------------------------------------------------------------

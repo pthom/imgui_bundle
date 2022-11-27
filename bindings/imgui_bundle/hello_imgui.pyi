@@ -616,7 +616,21 @@ class ImguiThemeTweaks:
     # ImGuiThemeTweaks() {}    /* original C++ signature */
     def __init__(self) -> None:
         pass
-
+    # ImGuiThemeTweaks(float Rounding = -1.f, float RoundingScrollbarRatio = 4.f, float AlphaMultiplier = -1.f, float Hue = -1.f, float SaturationMultiplier = -1.f, float ValueMultiplierFront = -1.f, float ValueMultiplierBg = -1.f, float ValueMultiplierText = -1.f, float ValueMultiplierFrameBg = -1.f);    /* original C++ signature */
+    def __init__(
+        self,
+        rounding: float = -1.,
+        rounding_scrollbar_ratio: float = 4.,
+        alpha_multiplier: float = -1.,
+        hue: float = -1.,
+        saturation_multiplier: float = -1.,
+        value_multiplier_front: float = -1.,
+        value_multiplier_bg: float = -1.,
+        value_multiplier_text: float = -1.,
+        value_multiplier_frame_bg: float = -1.
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 class ImguiTweakedTheme:
     # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
@@ -1117,7 +1131,16 @@ class DockingSplit:
     direction: ImGuiDir_
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
-
+    # DockingSplit(DockSpaceName initialDock = DockSpaceName(), DockSpaceName newDock = DockSpaceName(), ImGuiDir_ direction = ImGuiDir_(), float ratio = 0.25f);    /* original C++ signature */
+    def __init__(
+        self,
+        initial_dock: DockSpaceName = DockSpaceName(),
+        new_dock: DockSpaceName = DockSpaceName(),
+        direction: ImGuiDir_ = ImGuiDir_(),
+        ratio: float = 0.25
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 class DockableWindow:
     """*
@@ -1174,8 +1197,8 @@ class DockableWindow:
     # DockSpaceName dockSpaceName;    /* original C++ signature */
     dock_space_name: DockSpaceName
 
-    # VoidFunction GuiFunction = {};    /* original C++ signature */
-    gui_function: VoidFunction = {}
+    # VoidFunction GuiFunction = EmptyVoidFunction();    /* original C++ signature */
+    gui_function: VoidFunction = EmptyVoidFunction()
 
     # bool isVisible = true;    /* original C++ signature */
     is_visible: bool = True
@@ -1200,7 +1223,25 @@ class DockableWindow:
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
-
+    # DockableWindow(std::string label = std::string(), DockSpaceName dockSpaceName = DockSpaceName(), VoidFunction GuiFunction = EmptyVoidFunction(), bool isVisible = true, bool canBeClosed = true, bool callBeginEnd = true, bool includeInViewMenu = true, ImGuiWindowFlags imGuiWindowFlags = 0, ImVec2 windowSize = ImVec2(0.f, 0.f), ImGuiCond windowSizeCondition = ImGuiCond_FirstUseEver, ImVec2 windowPosition = ImVec2(0.f, 0.f), ImGuiCond windowPositionCondition = ImGuiCond_FirstUseEver, bool focusWindowAtNextFrame = false);    /* original C++ signature */
+    def __init__(
+        self,
+        label: str = "",
+        dock_space_name: DockSpaceName = DockSpaceName(),
+        gui_function: VoidFunction = EmptyVoidFunction(),
+        is_visible: bool = True,
+        can_be_closed: bool = True,
+        call_begin_end: bool = True,
+        include_in_view_menu: bool = True,
+        imgui_window_flags: ImGuiWindowFlags = 0,
+        window_size: ImVec2 = ImVec2(0., 0.),
+        window_size_condition: ImGuiCond = ImGuiCond_.first_use_ever,
+        window_position: ImVec2 = ImVec2(0., 0.),
+        window_position_condition: ImGuiCond = ImGuiCond_.first_use_ever,
+        focus_window_at_next_frame: bool = False
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 class DockingParams:
     """*

@@ -98,7 +98,14 @@ class TextEditor:
 
         def __init__(self) -> None:
             pass
-
+        def __init__(
+            self,
+            m_line: int = int(),
+            m_enabled: bool = bool(),
+            m_condition: str = ""
+            ) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
 
     class Coordinates:
         """ Represents a character coordinate from the user's point of view,
@@ -136,7 +143,9 @@ class TextEditor:
 
         def __ge__(self, o: Coordinates) -> bool:
             pass
-
+        def __init__(self, m_line: int = int(), m_column: int = int()) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
 
     class Identifier:
         m_location: Coordinates
@@ -202,7 +211,21 @@ class TextEditor:
         @staticmethod
         def python() -> LanguageDefinition:
             pass
-
+        def __init__(
+            self,
+            m_name: str = "",
+            m_keywords: Keywords = Keywords(),
+            m_identifiers: Identifiers = Identifiers(),
+            m_preproc_identifiers: Identifiers = Identifiers(),
+            m_comment_start: str = "",
+            m_comment_end: str = "",
+            m_single_line_comment: str = "",
+            m_auto_indentation: bool = bool(),
+            m_token_regex_strings: TokenRegexStrings = TokenRegexStrings(),
+            m_case_sensitive: bool = bool()
+            ) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
 
 
     def set_language_definition(

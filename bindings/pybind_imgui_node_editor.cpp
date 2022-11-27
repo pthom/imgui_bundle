@@ -46,7 +46,9 @@ PYBIND11_MAKE_OPAQUE(ax::NodeEditor::EditorContext);
 void py_init_module_imgui_node_editor(py::module& m)
 {
     using namespace ax::NodeEditor;
+    using CanvasSizeModeAlias = ax::NodeEditor::CanvasSizeMode;
 
+    
     py::class_<EditorContext>(m, "EditorContext");
 
     py::class_<NodeId>(m, "NodeId")
@@ -120,6 +122,21 @@ void py_init_module_imgui_node_editor(py::module& m)
     auto pyClassConfig =
         py::class_<ax::NodeEditor::Config>    // imgui_node_editor.h:85
             (m, "Config", "")
+        .def(py::init<>([](
+        std::string SettingsFile = std::string(), ImVector<float> CustomZoomLevels = ImVector<float>(), CanvasSizeModeAlias CanvasSizeMode = CanvasSizeModeAlias(), int DragButtonIndex = int(), int SelectButtonIndex = int(), int NavigateButtonIndex = int(), int ContextMenuButtonIndex = int())
+        {
+            auto r = std::make_unique<Config>();
+            r->SettingsFile = SettingsFile;
+            r->CustomZoomLevels = CustomZoomLevels;
+            r->CanvasSizeMode = CanvasSizeMode;
+            r->DragButtonIndex = DragButtonIndex;
+            r->SelectButtonIndex = SelectButtonIndex;
+            r->NavigateButtonIndex = NavigateButtonIndex;
+            r->ContextMenuButtonIndex = ContextMenuButtonIndex;
+            return r;
+        })
+        , py::arg("settings_file") = std::string(), py::arg("custom_zoom_levels") = ImVector<float>(), py::arg("canvas_size_mode") = CanvasSizeModeAlias(), py::arg("drag_button_index") = int(), py::arg("select_button_index") = int(), py::arg("navigate_button_index") = int(), py::arg("context_menu_button_index") = int()
+        )
         .def_readwrite("settings_file", &Config::SettingsFile, "")    // imgui_node_editor.h:89
         .def_readwrite("user_pointer", &Config::UserPointer, "")    // imgui_node_editor.h:96
         .def_readwrite("custom_zoom_levels", &Config::CustomZoomLevels, "")    // imgui_node_editor.h:97
@@ -187,6 +204,39 @@ void py_init_module_imgui_node_editor(py::module& m)
     auto pyClassStyle =
         py::class_<ax::NodeEditor::Style>    // imgui_node_editor.h:181
             (m, "Style", "")
+        .def(py::init<>([](
+        ImVec4 NodePadding = ImVec4(), float NodeRounding = float(), float NodeBorderWidth = float(), float HoveredNodeBorderWidth = float(), float SelectedNodeBorderWidth = float(), float PinRounding = float(), float PinBorderWidth = float(), float LinkStrength = float(), ImVec2 SourceDirection = ImVec2(), ImVec2 TargetDirection = ImVec2(), float ScrollDuration = float(), float FlowMarkerDistance = float(), float FlowSpeed = float(), float FlowDuration = float(), ImVec2 PivotAlignment = ImVec2(), ImVec2 PivotSize = ImVec2(), ImVec2 PivotScale = ImVec2(), float PinCorners = float(), float PinRadius = float(), float PinArrowSize = float(), float PinArrowWidth = float(), float GroupRounding = float(), float GroupBorderWidth = float(), float HighlightConnectedLinks = float(), float SnapLinkToPinDir = float())
+        {
+            auto r = std::make_unique<Style>();
+            r->NodePadding = NodePadding;
+            r->NodeRounding = NodeRounding;
+            r->NodeBorderWidth = NodeBorderWidth;
+            r->HoveredNodeBorderWidth = HoveredNodeBorderWidth;
+            r->SelectedNodeBorderWidth = SelectedNodeBorderWidth;
+            r->PinRounding = PinRounding;
+            r->PinBorderWidth = PinBorderWidth;
+            r->LinkStrength = LinkStrength;
+            r->SourceDirection = SourceDirection;
+            r->TargetDirection = TargetDirection;
+            r->ScrollDuration = ScrollDuration;
+            r->FlowMarkerDistance = FlowMarkerDistance;
+            r->FlowSpeed = FlowSpeed;
+            r->FlowDuration = FlowDuration;
+            r->PivotAlignment = PivotAlignment;
+            r->PivotSize = PivotSize;
+            r->PivotScale = PivotScale;
+            r->PinCorners = PinCorners;
+            r->PinRadius = PinRadius;
+            r->PinArrowSize = PinArrowSize;
+            r->PinArrowWidth = PinArrowWidth;
+            r->GroupRounding = GroupRounding;
+            r->GroupBorderWidth = GroupBorderWidth;
+            r->HighlightConnectedLinks = HighlightConnectedLinks;
+            r->SnapLinkToPinDir = SnapLinkToPinDir;
+            return r;
+        })
+        , py::arg("node_padding") = ImVec4(), py::arg("node_rounding") = float(), py::arg("node_border_width") = float(), py::arg("hovered_node_border_width") = float(), py::arg("selected_node_border_width") = float(), py::arg("pin_rounding") = float(), py::arg("pin_border_width") = float(), py::arg("link_strength") = float(), py::arg("source_direction") = ImVec2(), py::arg("target_direction") = ImVec2(), py::arg("scroll_duration") = float(), py::arg("flow_marker_distance") = float(), py::arg("flow_speed") = float(), py::arg("flow_duration") = float(), py::arg("pivot_alignment") = ImVec2(), py::arg("pivot_size") = ImVec2(), py::arg("pivot_scale") = ImVec2(), py::arg("pin_corners") = float(), py::arg("pin_radius") = float(), py::arg("pin_arrow_size") = float(), py::arg("pin_arrow_width") = float(), py::arg("group_rounding") = float(), py::arg("group_border_width") = float(), py::arg("highlight_connected_links") = float(), py::arg("snap_link_to_pin_dir") = float()
+        )
         .def_readwrite("node_padding", &Style::NodePadding, "")    // imgui_node_editor.h:183
         .def_readwrite("node_rounding", &Style::NodeRounding, "")    // imgui_node_editor.h:184
         .def_readwrite("node_border_width", &Style::NodeBorderWidth, "")    // imgui_node_editor.h:185
