@@ -49,8 +49,12 @@ def autogenerate_hello_imgui():
     options.fn_return_force_policy_reference_for_pointers__regex = join_string_by_pipe_char(
         [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
     )
-    options.names_replacements.replacements = [
+    options.var_names_replacements.replacements = [
         RegexReplacement("imGui", "imgui"),
+        RegexReplacement("ImGui", "Imgui"),
+    ]
+    options.function_names_replacements.replacements = [
+        # RegexReplacement("imGui", "imgui"),
         RegexReplacement("ImGui", "Imgui"),
     ]
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
