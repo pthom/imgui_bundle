@@ -35,11 +35,6 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("col_a"), py::arg("col_b"),
         "Helpers: Color Blending");
 
-    m.def("im_file_load_to_memory",    // imgui_internal.h:411
-        ImFileLoadToMemory,
-        py::arg("filename"), py::arg("mode"), py::arg("out_file_size") = py::none(), py::arg("padding_bytes") = 0,
-        pybind11::return_value_policy::reference);
-
     m.def("im_bezier_cubic_calc",    // imgui_internal.h:476
         ImBezierCubicCalc, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("t"));
 

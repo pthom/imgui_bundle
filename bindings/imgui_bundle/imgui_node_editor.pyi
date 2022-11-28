@@ -392,7 +392,9 @@ def get_current_editor() -> EditorContext:  # imgui_node_editor.h:271
     pass
 
 # EditorContext* CreateEditor(const Config* config = nullptr);    /* original C++ signature */
-def create_editor(config: Config = None) -> EditorContext:  # imgui_node_editor.h:272
+def create_editor(
+    config: Optional[Config] = None,
+) -> EditorContext:  # imgui_node_editor.h:272
     pass
 
 # void DestroyEditor(EditorContext* ctx);    /* original C++ signature */
@@ -400,7 +402,9 @@ def destroy_editor(ctx: EditorContext) -> None:  # imgui_node_editor.h:273
     pass
 
 # const Config& GetConfig(EditorContext* ctx = nullptr);    /* original C++ signature */
-def get_config(ctx: EditorContext = None) -> Config:  # imgui_node_editor.h:274
+def get_config(
+    ctx: Optional[EditorContext] = None,
+) -> Config:  # imgui_node_editor.h:274
     pass
 
 # Style& GetStyle();    /* original C++ signature */
@@ -594,7 +598,7 @@ def begin_delete() -> bool:  # imgui_node_editor.h:326
 
 # bool QueryDeletedLink(LinkId* linkId, PinId* startId = nullptr, PinId* endId = nullptr);    /* original C++ signature */
 def query_deleted_link(  # imgui_node_editor.h:327
-    link_id: LinkId, start_id: PinId = None, end_id: PinId = None
+    link_id: LinkId, start_id: Optional[PinId] = None, end_id: Optional[PinId] = None
 ) -> bool:
     pass
 

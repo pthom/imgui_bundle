@@ -451,11 +451,13 @@ class ImVec4:  # imgui.h:268
 # - DLL users: heaps and globals are not shared across DLL boundaries! You will need to call SetCurrentContext() + SetAllocatorFunctions()
 #   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for details.
 # IMGUI_API ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = NULL);    /* original C++ signature */
-def create_context(shared_font_atlas: ImFontAtlas = None) -> Context:  # imgui.h:290
+def create_context(
+    shared_font_atlas: Optional[ImFontAtlas] = None,
+) -> Context:  # imgui.h:290
     pass
 
 # IMGUI_API void          DestroyContext(ImGuiContext* ctx = NULL);       /* original C++ signature */
-def destroy_context(ctx: Context = None) -> None:  # imgui.h:291
+def destroy_context(ctx: Optional[Context] = None) -> None:  # imgui.h:291
     """None = destroy current context"""
     pass
 
@@ -529,7 +531,7 @@ def show_about_window(p_open: Optional[bool] = None) -> Optional[bool]:  # imgui
     pass
 
 # IMGUI_API void          ShowStyleEditor(ImGuiStyle* ref = NULL);        /* original C++ signature */
-def show_style_editor(ref: Style = None) -> None:  # imgui.h:309
+def show_style_editor(ref: Optional[Style] = None) -> None:  # imgui.h:309
     """add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)"""
     pass
 
@@ -555,17 +557,17 @@ def get_version() -> str:  # imgui.h:313
 
 # Styles
 # IMGUI_API void          StyleColorsDark(ImGuiStyle* dst = NULL);        /* original C++ signature */
-def style_colors_dark(dst: Style = None) -> None:  # imgui.h:316
+def style_colors_dark(dst: Optional[Style] = None) -> None:  # imgui.h:316
     """new, recommended style (default)"""
     pass
 
 # IMGUI_API void          StyleColorsLight(ImGuiStyle* dst = NULL);       /* original C++ signature */
-def style_colors_light(dst: Style = None) -> None:  # imgui.h:317
+def style_colors_light(dst: Optional[Style] = None) -> None:  # imgui.h:317
     """best used with borders and a custom, thicker font"""
     pass
 
 # IMGUI_API void          StyleColorsClassic(ImGuiStyle* dst = NULL);     /* original C++ signature */
-def style_colors_classic(dst: Style = None) -> None:  # imgui.h:318
+def style_colors_classic(dst: Optional[Style] = None) -> None:  # imgui.h:318
     """classic imgui style"""
     pass
 
@@ -689,7 +691,7 @@ def set_next_window_size(size: ImVec2, cond: Cond = 0) -> None:  # imgui.h:364
 
 # IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL);     /* original C++ signature */
 def set_next_window_size_constraints(
-    size_min: ImVec2, size_max: ImVec2, custom_callback_data: Any = None
+    size_min: ImVec2, size_max: ImVec2, custom_callback_data: Optional[Any] = None
 ) -> None:  # imgui.h:365
     """set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. Sizes will be rounded down. Use callback to apply non-trivial programmatic constraints."""
     pass
@@ -1139,7 +1141,7 @@ def get_id(ptr_id: Any) -> ID:  # imgui.h:482
 
 # Widgets: Text
 # IMGUI_API void          TextUnformatted(const char* text, const char* text_end = NULL);     /* original C++ signature */
-def text_unformatted(text: str, text_end: str = None) -> None:  # imgui.h:485
+def text_unformatted(text: str, text_end: Optional[str] = None) -> None:  # imgui.h:485
     """raw text without formatting. Roughly equivalent to Text("%s", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text."""
     pass
 
@@ -1252,7 +1254,7 @@ def radio_button(label: str, v: int, v_button: int) -> Tuple[bool, int]:  # imgu
 def progress_bar(
     fraction: float,
     size_arg: ImVec2 = ImVec2(-sys.float_info.min, 0),
-    overlay: str = None,
+    overlay: Optional[str] = None,
 ) -> None:  # imgui.h:513
     pass
 
@@ -1361,7 +1363,7 @@ def drag_float_range2(
     v_min: float = 0.0,
     v_max: float = 0.0,
     format: str = "%.3",
-    format_max: str = None,
+    format_max: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> Tuple[bool, float, float]:  # imgui.h:541
     pass
@@ -1424,7 +1426,7 @@ def drag_int_range2(
     v_min: int = 0,
     v_max: int = 0,
     format: str = "%d",
-    format_max: str = None,
+    format_max: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> Tuple[bool, int, int]:  # imgui.h:546
     pass
@@ -1435,9 +1437,9 @@ def drag_scalar(
     data_type: DataType,
     p_data: Any,
     v_speed: float = 1.0,
-    p_min: Any = None,
-    p_max: Any = None,
-    format: str = None,
+    p_min: Optional[Any] = None,
+    p_max: Optional[Any] = None,
+    format: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> bool:  # imgui.h:547
     pass
@@ -1449,9 +1451,9 @@ def drag_scalar_n(
     p_data: Any,
     components: int,
     v_speed: float = 1.0,
-    p_min: Any = None,
-    p_max: Any = None,
-    format: str = None,
+    p_min: Optional[Any] = None,
+    p_max: Optional[Any] = None,
+    format: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> bool:  # imgui.h:548
     pass
@@ -1569,7 +1571,7 @@ def slider_scalar(
     p_data: Any,
     p_min: Any,
     p_max: Any,
-    format: str = None,
+    format: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> bool:  # imgui.h:565
     pass
@@ -1582,7 +1584,7 @@ def slider_scalar_n(
     components: int,
     p_min: Any,
     p_max: Any,
-    format: str = None,
+    format: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> bool:  # imgui.h:566
     pass
@@ -1619,7 +1621,7 @@ def v_slider_scalar(
     p_data: Any,
     p_min: Any,
     p_max: Any,
-    format: str = None,
+    format: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> bool:  # imgui.h:569
     pass
@@ -1696,9 +1698,9 @@ def input_scalar(
     label: str,
     data_type: DataType,
     p_data: Any,
-    p_step: Any = None,
-    p_step_fast: Any = None,
-    format: str = None,
+    p_step: Optional[Any] = None,
+    p_step_fast: Optional[Any] = None,
+    format: Optional[str] = None,
     flags: InputTextFlags = 0,
 ) -> bool:  # imgui.h:586
     pass
@@ -1709,9 +1711,9 @@ def input_scalar_n(
     data_type: DataType,
     p_data: Any,
     components: int,
-    p_step: Any = None,
-    p_step_fast: Any = None,
-    format: str = None,
+    p_step: Optional[Any] = None,
+    p_step_fast: Optional[Any] = None,
+    format: Optional[str] = None,
     flags: InputTextFlags = 0,
 ) -> bool:  # imgui.h:587
     pass
@@ -1739,7 +1741,10 @@ def color_picker3(
 
 # IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
 def color_picker4(
-    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: float = None
+    label: str,
+    col: List[float],
+    flags: ColorEditFlags = 0,
+    ref_col: Optional[float] = None,
 ) -> Tuple[bool, List[float]]:  # imgui.h:595
     pass
 
@@ -1789,7 +1794,7 @@ def tree_push(str_id: str) -> None:  # imgui.h:611
     pass
 
 # IMGUI_API void          TreePush(const void* ptr_id = NULL);                                    /* original C++ signature */
-def tree_push(ptr_id: Any = None) -> None:  # imgui.h:612
+def tree_push(ptr_id: Optional[Any] = None) -> None:  # imgui.h:612
     """ " """
     pass
 
@@ -1872,7 +1877,7 @@ def plot_lines(
     label: str,
     values: np.ndarray,
     values_offset: int = 0,
-    overlay_text: str = None,
+    overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
     graph_size: ImVec2 = ImVec2(0, 0),
@@ -1885,7 +1890,7 @@ def plot_histogram(
     label: str,
     values: np.ndarray,
     values_offset: int = 0,
-    overlay_text: str = None,
+    overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
     graph_size: ImVec2 = ImVec2(0, 0),
@@ -1908,7 +1913,9 @@ def value(prefix: str, v: int) -> None:  # imgui.h:647
     pass
 
 # IMGUI_API void          Value(const char* prefix, float v, const char* float_format = NULL);    /* original C++ signature */
-def value(prefix: str, v: float, float_format: str = None) -> None:  # imgui.h:648
+def value(
+    prefix: str, v: float, float_format: Optional[str] = None
+) -> None:  # imgui.h:648
     pass
 
 # Widgets: Menus
@@ -1948,7 +1955,10 @@ def end_menu() -> None:  # imgui.h:660
 
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true);      /* original C++ signature */
 def menu_item(
-    label: str, shortcut: str = None, selected: bool = False, enabled: bool = True
+    label: str,
+    shortcut: Optional[str] = None,
+    selected: bool = False,
+    enabled: bool = True,
 ) -> bool:  # imgui.h:661
     """return True when activated."""
     pass
@@ -2025,7 +2035,7 @@ def open_popup(id_: ID, popup_flags: PopupFlags = 0) -> None:  # imgui.h:696
 
 # IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);       /* original C++ signature */
 def open_popup_on_item_click(
-    str_id: str = None, popup_flags: PopupFlags = 1
+    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
 ) -> None:  # imgui.h:697
     """helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
     pass
@@ -2042,21 +2052,21 @@ def close_current_popup() -> None:  # imgui.h:698
 #  - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
 # IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
 def begin_popup_context_item(
-    str_id: str = None, popup_flags: PopupFlags = 1
+    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
 ) -> bool:  # imgui.h:705
     """open+begin popup when clicked on last item. Use str_id==None to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!"""
     pass
 
 # IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);    /* original C++ signature */
 def begin_popup_context_window(
-    str_id: str = None, popup_flags: PopupFlags = 1
+    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
 ) -> bool:  # imgui.h:706
     """open+begin popup when clicked on current window."""
     pass
 
 # IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
 def begin_popup_context_void(
-    str_id: str = None, popup_flags: PopupFlags = 1
+    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
 ) -> bool:  # imgui.h:707
     """open+begin popup when clicked in None (where there are no windows)."""
     pass
@@ -2209,7 +2219,7 @@ def table_set_bg_color(
 # - You can also use SameLine(pos_x) to mimic simplified columns.
 # IMGUI_API void          Columns(int count = 1, const char* id = NULL, bool border = true);    /* original C++ signature */
 def columns(
-    count: int = 1, id_: str = None, border: bool = True
+    count: int = 1, id_: Optional[str] = None, border: bool = True
 ) -> None:  # imgui.h:774
     pass
 
@@ -2299,15 +2309,15 @@ def dock_space(
     id_: ID,
     size: ImVec2 = ImVec2(0, 0),
     flags: DockNodeFlags = 0,
-    window_class: WindowClass = None,
+    window_class: Optional[WindowClass] = None,
 ) -> ID:  # imgui.h:805
     pass
 
 # IMGUI_API ImGuiID       DockSpaceOverViewport(const ImGuiViewport* viewport = NULL, ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space_over_viewport(
-    viewport: Viewport = None,
+    viewport: Optional[Viewport] = None,
     flags: DockNodeFlags = 0,
-    window_class: WindowClass = None,
+    window_class: Optional[WindowClass] = None,
 ) -> ID:  # imgui.h:806
     pass
 
@@ -2338,7 +2348,9 @@ def log_to_tty(auto_open_depth: int = -1) -> None:  # imgui.h:814
     pass
 
 # IMGUI_API void          LogToFile(int auto_open_depth = -1, const char* filename = NULL);       /* original C++ signature */
-def log_to_file(auto_open_depth: int = -1, filename: str = None) -> None:  # imgui.h:815
+def log_to_file(
+    auto_open_depth: int = -1, filename: Optional[str] = None
+) -> None:  # imgui.h:815
     """start logging to file"""
     pass
 
@@ -2615,7 +2627,7 @@ def end_child_frame() -> None:  # imgui.h:895
 # IMGUI_API ImVec2        CalcTextSize(const char* text, const char* text_end = NULL, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);    /* original C++ signature */
 def calc_text_size(
     text: str,
-    text_end: str = None,
+    text_end: Optional[str] = None,
     hide_text_after_double_hash: bool = False,
     wrap_width: float = -1.0,
 ) -> ImVec2:  # imgui.h:898
@@ -2720,7 +2732,7 @@ def is_mouse_hovering_rect(
     pass
 
 # IMGUI_API bool          IsMousePosValid(const ImVec2* mouse_pos = NULL);                        /* original C++ signature */
-def is_mouse_pos_valid(mouse_pos: ImVec2 = None) -> bool:  # imgui.h:929
+def is_mouse_pos_valid(mouse_pos: Optional[ImVec2] = None) -> bool:  # imgui.h:929
     """by convention we use (-FLT_MAX,-FLT_MAX) to denote that there is no mouse available"""
     pass
 
@@ -2804,7 +2816,9 @@ def save_ini_settings_to_disk(ini_filename: str) -> None:  # imgui.h:951
     pass
 
 # IMGUI_API const char*   SaveIniSettingsToMemory(size_t* out_ini_size = NULL);                   /* original C++ signature */
-def save_ini_settings_to_memory(out_ini_size: int = None) -> str:  # imgui.h:952
+def save_ini_settings_to_memory(
+    out_ini_size: Optional[int] = None,
+) -> str:  # imgui.h:952
     """return a zero-terminated string with the .ini data which you can save by your own mean. call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings."""
     pass
 
@@ -2846,7 +2860,7 @@ def update_platform_windows() -> None:  # imgui.h:971
 
 # IMGUI_API void              RenderPlatformWindowsDefault(void* platform_render_arg = NULL, void* renderer_render_arg = NULL);     /* original C++ signature */
 def render_platform_windows_default(
-    platform_render_arg: Any = None, renderer_render_arg: Any = None
+    platform_render_arg: Optional[Any] = None, renderer_render_arg: Optional[Any] = None
 ) -> None:  # imgui.h:972
     """call in main loop. will call RenderWindow/SwapBuffers platform functions for each secondary viewport which doesn't have the ImGuiViewportFlags_Minimized flag set. May be reimplemented by user for custom rendering needs."""
     pass
@@ -5325,7 +5339,7 @@ class InputTextCallbackData:  # imgui.h:2169
         pass
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
     def insert_chars(
-        self, pos: int, text: str, text_end: str = None
+        self, pos: int, text: str, text_end: Optional[str] = None
     ) -> None:  # imgui.h:2192
         pass
 
@@ -5470,7 +5484,9 @@ class TextFilter:  # imgui.h:2297
         """Helper calling InputText+Build"""
         pass
     # IMGUI_API bool      PassFilter(const char* text, const char* text_end = NULL) const;    /* original C++ signature */
-    def pass_filter(self, text: str, text_end: str = None) -> bool:  # imgui.h:2301
+    def pass_filter(
+        self, text: str, text_end: Optional[str] = None
+    ) -> bool:  # imgui.h:2301
         pass
     # IMGUI_API void      Build();    /* original C++ signature */
     def build(self) -> None:  # imgui.h:2302
@@ -5502,7 +5518,7 @@ class TextBuffer:  # imgui.h:2324
     def __init__(self) -> None:  # imgui.h:2329
         pass
     # IMGUI_API void      append(const char* str, const char* str_end = NULL);    /* original C++ signature */
-    def append(self, str: str, str_end: str = None) -> None:  # imgui.h:2338
+    def append(self, str: str, str_end: Optional[str] = None) -> None:  # imgui.h:2338
         pass
     # IMGUI_API void      appendf(const char* fmt, ...) ;    /* original C++ signature */
     def appendf(self, fmt: str) -> None:  # imgui.h:2339
@@ -6022,7 +6038,7 @@ class ImDrawList:  # imgui.h:2619
         pass
     # IMGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
     def add_text(
-        self, pos: ImVec2, col: ImU32, text_begin: str, text_end: str = None
+        self, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None
     ) -> None:  # imgui.h:2671
         pass
     # IMGUI_API void  AddText(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL);    /* original C++ signature */
@@ -6033,9 +6049,9 @@ class ImDrawList:  # imgui.h:2619
         pos: ImVec2,
         col: ImU32,
         text_begin: str,
-        text_end: str = None,
+        text_end: Optional[str] = None,
         wrap_width: float = 0.0,
-        cpu_fine_clip_rect: ImVec4 = None,
+        cpu_fine_clip_rect: Optional[ImVec4] = None,
     ) -> None:  # imgui.h:2672
         pass
     # IMGUI_API void  AddPolyline(const ImVec2* points, int num_points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
@@ -6392,7 +6408,9 @@ class ImFontGlyphRangesBuilder:  # imgui.h:2811
     def __init__(self) -> None:  # imgui.h:2815
         pass
     # IMGUI_API void  AddText(const char* text, const char* text_end = NULL);         /* original C++ signature */
-    def add_text(self, text: str, text_end: str = None) -> None:  # imgui.h:2820
+    def add_text(
+        self, text: str, text_end: Optional[str] = None
+    ) -> None:  # imgui.h:2820
         """Add string (each character of the UTF-8 string are added)"""
         pass
     # IMGUI_API void  AddRanges(const ImWchar* ranges);                               /* original C++ signature */
@@ -6472,15 +6490,17 @@ class ImFontAtlas:  # imgui.h:2864
     def add_font(self, font_cfg: ImFontConfig) -> ImFont:  # imgui.h:2868
         pass
     # IMGUI_API ImFont*           AddFontDefault(const ImFontConfig* font_cfg = NULL);    /* original C++ signature */
-    def add_font_default(self, font_cfg: ImFontConfig = None) -> ImFont:  # imgui.h:2869
+    def add_font_default(
+        self, font_cfg: Optional[ImFontConfig] = None
+    ) -> ImFont:  # imgui.h:2869
         pass
     # IMGUI_API ImFont*           AddFontFromFileTTF(const char* filename, float size_pixels, const ImFontConfig* font_cfg = NULL, const ImWchar* glyph_ranges = NULL);    /* original C++ signature */
     def add_font_from_file_ttf(
         self,
         filename: str,
         size_pixels: float,
-        font_cfg: ImFontConfig = None,
-        glyph_ranges: ImWchar = None,
+        font_cfg: Optional[ImFontConfig] = None,
+        glyph_ranges: Optional[ImWchar] = None,
     ) -> ImFont:  # imgui.h:2870
         pass
     # IMGUI_API ImFont*           AddFontFromMemoryTTF(void* font_data, int font_size, float size_pixels, const ImFontConfig* font_cfg = NULL, const ImWchar* glyph_ranges = NULL);     /* original C++ signature */
@@ -6489,8 +6509,8 @@ class ImFontAtlas:  # imgui.h:2864
         font_data: Any,
         font_size: int,
         size_pixels: float,
-        font_cfg: ImFontConfig = None,
-        glyph_ranges: ImWchar = None,
+        font_cfg: Optional[ImFontConfig] = None,
+        glyph_ranges: Optional[ImWchar] = None,
     ) -> ImFont:  # imgui.h:2871
         """Note: Transfer ownership of 'ttf_data' to ImFontAtlas! Will be deleted after destruction of the atlas. Set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed."""
         pass
@@ -6500,8 +6520,8 @@ class ImFontAtlas:  # imgui.h:2864
         compressed_font_data: Any,
         compressed_font_size: int,
         size_pixels: float,
-        font_cfg: ImFontConfig = None,
-        glyph_ranges: ImWchar = None,
+        font_cfg: Optional[ImFontConfig] = None,
+        glyph_ranges: Optional[ImWchar] = None,
     ) -> ImFont:  # imgui.h:2872
         """'compressed_font_data' still owned by caller. Compress with binary_to_compressed_c.cpp."""
         pass
@@ -6510,8 +6530,8 @@ class ImFontAtlas:  # imgui.h:2864
         self,
         compressed_font_data_base85: str,
         size_pixels: float,
-        font_cfg: ImFontConfig = None,
-        glyph_ranges: ImWchar = None,
+        font_cfg: Optional[ImFontConfig] = None,
+        glyph_ranges: Optional[ImWchar] = None,
     ) -> ImFont:  # imgui.h:2873
         """'compressed_font_data_base85' still owned by caller. Compress with binary_to_compressed_c.cpp with -base85 parameter."""
         pass
@@ -7098,7 +7118,7 @@ def toggle(
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
 def input_text(
-    label: str, str: str, flags: InputTextFlags = 0, user_data: Any = None
+    label: str, str: str, flags: InputTextFlags = 0, user_data: Optional[Any] = None
 ) -> Tuple[bool, str]:  # imgui_stdlib.h:15
     pass
 
@@ -7108,14 +7128,18 @@ def input_text_multiline(
     str: str,
     size: ImVec2 = ImVec2(0, 0),
     flags: InputTextFlags = 0,
-    user_data: Any = None,
+    user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:  # imgui_stdlib.h:16
     pass
 
 # IMGUI_API bool  InputTextWithHint(const char* label, const char* hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);    /* original C++ signature */
 # }
 def input_text_with_hint(
-    label: str, hint: str, str: str, flags: InputTextFlags = 0, user_data: Any = None
+    label: str,
+    hint: str,
+    str: str,
+    flags: InputTextFlags = 0,
+    user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:  # imgui_stdlib.h:17
     pass
 ####################    </generated_from:imgui_stdlib.h>    ####################

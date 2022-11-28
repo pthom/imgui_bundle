@@ -23,7 +23,7 @@ class AppState:
     name = ""
 
 
-@static(editors = {})
+@static(editors={})
 def show_code_editor(code: str, is_cpp: bool):
     static = show_code_editor
     editors: Dict[str, TextEditor] = static.editors
@@ -45,6 +45,7 @@ def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
     static = show_python_vs_cpp_code_advice
 
     import inspect
+
     python_code = inspect.getsource(python_gui_function)
 
     imgui.push_id(str(id(python_gui_function)))
@@ -78,7 +79,9 @@ def demo_radio_button():
 
 
 def show_basic_code_advices() -> None:
-    cpp_code = code_str_utils.unindent_code("""
+    cpp_code = (
+        code_str_utils.unindent_code(
+            """
         void DemoRadioButton()
         {
             static int value = 0;
@@ -86,7 +89,11 @@ def show_basic_code_advices() -> None:
             ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
             ImGui::RadioButton("radio c", &value, 2);
         }
-    """, flag_strip_empty_lines=True) + "\n"
+    """,
+            flag_strip_empty_lines=True,
+        )
+        + "\n"
+    )
 
     md_render_unindent(
         """
@@ -123,7 +130,9 @@ def demo_input_text_decimal() -> None:
 
 
 def show_text_input_advice():
-    cpp_code = code_str_utils.unindent_code("""
+    cpp_code = (
+        code_str_utils.unindent_code(
+            """
         void DemoInputTextDecimal()
         {
             static char text[64] = "";
@@ -135,7 +144,11 @@ def show_text_input_advice():
                                     "decimal", text, 64, 
                                     ImGuiInputTextFlags_CharsDecimal);
         }
-        """, flag_strip_empty_lines=True) + "\n"
+        """,
+            flag_strip_empty_lines=True,
+        )
+        + "\n"
+    )
 
     md_render_unindent(
         """

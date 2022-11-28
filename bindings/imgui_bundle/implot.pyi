@@ -1144,7 +1144,7 @@ def create_context() -> Context:  # implot.h:591
     pass
 
 # IMPLOT_API void DestroyContext(ImPlotContext* ctx = NULL);    /* original C++ signature */
-def destroy_context(ctx: Context = None) -> None:  # implot.h:593
+def destroy_context(ctx: Optional[Context] = None) -> None:  # implot.h:593
     """Destroys an ImPlot context. Call this before ImGui::DestroyContext. None = destroy current context."""
     pass
 
@@ -1307,7 +1307,7 @@ def end_subplots() -> None:  # implot.h:691
 
 # IMPLOT_API void SetupAxis(ImAxis axis, const char* label=NULL, ImPlotAxisFlags flags=0);    /* original C++ signature */
 def setup_axis(
-    axis: ImAxis, label: str = None, flags: AxisFlags = 0
+    axis: ImAxis, label: Optional[str] = None, flags: AxisFlags = 0
 ) -> None:  # implot.h:723
     """Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label."""
     pass
@@ -2066,22 +2066,22 @@ def get_style() -> Style:  # implot.h:1070
     pass
 
 # IMPLOT_API void StyleColorsAuto(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_auto(dst: Style = None) -> None:  # implot.h:1073
+def style_colors_auto(dst: Optional[Style] = None) -> None:  # implot.h:1073
     """Style plot colors for current ImGui style (default)."""
     pass
 
 # IMPLOT_API void StyleColorsClassic(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_classic(dst: Style = None) -> None:  # implot.h:1075
+def style_colors_classic(dst: Optional[Style] = None) -> None:  # implot.h:1075
     """Style plot colors for ImGui "Classic"."""
     pass
 
 # IMPLOT_API void StyleColorsDark(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_dark(dst: Style = None) -> None:  # implot.h:1077
+def style_colors_dark(dst: Optional[Style] = None) -> None:  # implot.h:1077
     """Style plot colors for ImGui "Dark"."""
     pass
 
 # IMPLOT_API void StyleColorsLight(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_light(dst: Style = None) -> None:  # implot.h:1079
+def style_colors_light(dst: Optional[Style] = None) -> None:  # implot.h:1079
     """Style plot colors for ImGui "Light"."""
     pass
 
@@ -2282,7 +2282,7 @@ def colormap_scale(
 def colormap_slider(
     label: str,
     t: float,
-    out: ImVec4 = None,
+    out: Optional[ImVec4] = None,
     format: str = "",
     cmap: Colormap = IMPLOT_AUTO,
 ) -> Tuple[bool, float]:  # implot.h:1175
@@ -2297,7 +2297,7 @@ def colormap_button(
     pass
 
 # IMPLOT_API void BustColorCache(const char* plot_title_id = NULL);    /* original C++ signature */
-def bust_color_cache(plot_title_id: str = None) -> None:  # implot.h:1186
+def bust_color_cache(plot_title_id: Optional[str] = None) -> None:  # implot.h:1186
     """When items in a plot sample their color from a colormap, the color is cached and does not change
     unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,
     item colors will NOT update. If you need item colors to resample the new colormap, then use this
@@ -2318,12 +2318,12 @@ def get_input_map() -> InputMap:  # implot.h:1193
     pass
 
 # IMPLOT_API void MapInputDefault(ImPlotInputMap* dst = NULL);    /* original C++ signature */
-def map_input_default(dst: InputMap = None) -> None:  # implot.h:1196
+def map_input_default(dst: Optional[InputMap] = None) -> None:  # implot.h:1196
     """Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll."""
     pass
 
 # IMPLOT_API void MapInputReverse(ImPlotInputMap* dst = NULL);    /* original C++ signature */
-def map_input_reverse(dst: InputMap = None) -> None:  # implot.h:1198
+def map_input_reverse(dst: Optional[InputMap] = None) -> None:  # implot.h:1198
     """Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll."""
     pass
 
@@ -2375,7 +2375,7 @@ def show_input_map_selector(label: str) -> bool:  # implot.h:1221
     pass
 
 # IMPLOT_API void ShowStyleEditor(ImPlotStyle* ref = NULL);    /* original C++ signature */
-def show_style_editor(ref: Style = None) -> None:  # implot.h:1223
+def show_style_editor(ref: Optional[Style] = None) -> None:  # implot.h:1223
     """Shows ImPlot style editor block (not a window)."""
     pass
 

@@ -50,7 +50,6 @@ TextFlags = int  #             // -> enum TextFlags_          // Flags: for Text
 TooltipFlags = int  #          // -> enum TooltipFlags_       // Flags: for BeginTooltipEx()
 
 
-TextBuffer = Any
 ImFileHandle = Any
 
 # // Our current column maximum is 64 but we may raise that in the future.
@@ -227,11 +226,6 @@ def im_alpha_blend_colors(col_a: ImU32, col_b: ImU32) -> ImU32:  # imgui_interna
 # We unfortunately don't have a unary- operator for ImVec2 because this would needs to be defined inside the class itself.
 
 # Helpers: File System
-# IMGUI_API void*             ImFileLoadToMemory(const char* filename, const char* mode, size_t* out_file_size = NULL, int padding_bytes = 0);    /* original C++ signature */
-def im_file_load_to_memory(
-    filename: str, mode: str, out_file_size: int = None, padding_bytes: int = 0
-) -> Any:  # imgui_internal.h:411
-    pass
 
 # - Wrapper for standard libs functions. (Note that imgui_demo.cpp does _not_ use them to keep the code easy to copy)
 # - ImMin/ImMax/ImClamp/ImLerp/ImSwap are used by widgets which support variety of types: signed/unsigned int/long long float/double
@@ -3869,7 +3863,7 @@ def item_size(
 
 # IMGUI_API bool          ItemAdd(const ImRect& bb, ImGuiID id, const ImRect* nav_bb = NULL, ImGuiItemFlags extra_flags = 0);    /* original C++ signature */
 def item_add(
-    bb: ImRect, id_: ID, nav_bb: ImRect = None, extra_flags: ItemFlags = 0
+    bb: ImRect, id_: ID, nav_bb: Optional[ImRect] = None, extra_flags: ItemFlags = 0
 ) -> bool:  # imgui_internal.h:2849
     pass
 
@@ -3942,7 +3936,7 @@ def log_to_buffer(auto_open_depth: int = -1) -> None:  # imgui_internal.h:2877
 
 # IMGUI_API void          LogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
 def log_rendered_text(
-    ref_pos: ImVec2, text: str, text_end: str = None
+    ref_pos: ImVec2, text: str, text_end: Optional[str] = None
 ) -> None:  # imgui_internal.h:2878
     pass
 
@@ -4039,7 +4033,7 @@ def begin_menu_ex(
 def menu_item_ex(
     label: str,
     icon: str,
-    shortcut: str = None,
+    shortcut: Optional[str] = None,
     selected: bool = False,
     enabled: bool = True,
 ) -> bool:  # imgui_internal.h:2899
@@ -4747,7 +4741,10 @@ def tab_item_label_and_close_button(
 # NB: All position are in absolute pixels coordinates (we are never using window coordinates internally)
 # IMGUI_API void          RenderText(ImVec2 pos, const char* text, const char* text_end = NULL, bool hide_text_after_hash = true);    /* original C++ signature */
 def render_text(
-    pos: ImVec2, text: str, text_end: str = None, hide_text_after_hash: bool = True
+    pos: ImVec2,
+    text: str,
+    text_end: Optional[str] = None,
+    hide_text_after_hash: bool = True,
 ) -> None:  # imgui_internal.h:3091
     pass
 
@@ -4765,7 +4762,7 @@ def render_text_clipped(
     text_end: str,
     text_size_if_known: ImVec2,
     align: ImVec2 = ImVec2(0, 0),
-    clip_rect: ImRect = None,
+    clip_rect: Optional[ImRect] = None,
 ) -> None:  # imgui_internal.h:3093
     pass
 
@@ -4778,7 +4775,7 @@ def render_text_clipped_ex(
     text_end: str,
     text_size_if_known: ImVec2,
     align: ImVec2 = ImVec2(0, 0),
-    clip_rect: ImRect = None,
+    clip_rect: Optional[ImRect] = None,
 ) -> None:  # imgui_internal.h:3094
     pass
 
@@ -4833,7 +4830,7 @@ def render_nav_highlight(
 
 # IMGUI_API const char*   FindRenderedTextEnd(const char* text, const char* text_end = NULL);     /* original C++ signature */
 def find_rendered_text_end(
-    text: str, text_end: str = None
+    text: str, text_end: Optional[str] = None
 ) -> str:  # imgui_internal.h:3100
     """Find the optional ## from which we stop displaying text."""
     pass
@@ -4906,7 +4903,7 @@ def calc_rounding_flags_for_rect_in_rect(
 # Widgets
 # IMGUI_API void          TextEx(const char* text, const char* text_end = NULL, ImGuiTextFlags flags = 0);    /* original C++ signature */
 def text_ex(
-    text: str, text_end: str = None, flags: TextFlags = 0
+    text: str, text_end: Optional[str] = None, flags: TextFlags = 0
 ) -> None:  # imgui_internal.h:3114
     pass
 
@@ -5048,7 +5045,7 @@ def splitter_behavior(
 
 # IMGUI_API bool          TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* label, const char* label_end = NULL);    /* original C++ signature */
 def tree_node_behavior(
-    id_: ID, flags: TreeNodeFlags, label: str, label_end: str = None
+    id_: ID, flags: TreeNodeFlags, label: str, label_end: Optional[str] = None
 ) -> bool:  # imgui_internal.h:3135
     pass
 
