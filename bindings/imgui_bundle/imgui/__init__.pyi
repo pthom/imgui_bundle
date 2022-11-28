@@ -6494,15 +6494,6 @@ class ImFontAtlas:  # imgui.h:2864
         self, font_cfg: Optional[ImFontConfig] = None
     ) -> ImFont:  # imgui.h:2869
         pass
-    # IMGUI_API ImFont*           AddFontFromFileTTF(const char* filename, float size_pixels, const ImFontConfig* font_cfg = NULL, const ImWchar* glyph_ranges = NULL);    /* original C++ signature */
-    def add_font_from_file_ttf(
-        self,
-        filename: str,
-        size_pixels: float,
-        font_cfg: Optional[ImFontConfig] = None,
-        glyph_ranges: Optional[ImWchar] = None,
-    ) -> ImFont:  # imgui.h:2870
-        pass
     # IMGUI_API ImFont*           AddFontFromMemoryTTF(void* font_data, int font_size, float size_pixels, const ImFontConfig* font_cfg = NULL, const ImWchar* glyph_ranges = NULL);     /* original C++ signature */
     def add_font_from_memory_ttf(
         self,

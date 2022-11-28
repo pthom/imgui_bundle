@@ -3959,10 +3959,6 @@ void py_init_module_imgui_main(py::module& m)
             &ImFontAtlas::AddFontDefault,
             py::arg("font_cfg") = py::none(),
             pybind11::return_value_policy::reference)
-        .def("add_font_from_file_ttf",    // imgui.h:2870
-            &ImFontAtlas::AddFontFromFileTTF,
-            py::arg("filename"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges") = py::none(),
-            pybind11::return_value_policy::reference)
         .def("add_font_from_memory_ttf",    // imgui.h:2871
             &ImFontAtlas::AddFontFromMemoryTTF,
             py::arg("font_data"), py::arg("font_size"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges") = py::none(),
