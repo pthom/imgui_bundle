@@ -115,25 +115,25 @@ class TextEditor:
         def __init__(self, a_line: int, a_column: int) -> None:
             pass
         @staticmethod
-        def invalid() -> Coordinates:
+        def invalid() -> TextEditor.Coordinates:
             pass
 
-        def __eq__(self, o: Coordinates) -> bool:
+        def __eq__(self,  o: TextEditor.Coordinates) -> bool:
             pass
 
-        def __ne__(self, o: Coordinates) -> bool:
+        def __ne__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
-        def __lt__(self, o: Coordinates) -> bool:
+        def __lt__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
-        def __gt__(self, o: Coordinates) -> bool:
+        def __gt__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
-        def __le__(self, o: Coordinates) -> bool:
+        def __le__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
-        def __ge__(self, o: Coordinates) -> bool:
+        def __ge__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
     class Identifier:
@@ -176,28 +176,28 @@ class TextEditor:
             pass
 
         @staticmethod
-        def c_plus_plus() -> LanguageDefinition:
+        def c_plus_plus() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def hlsl() -> LanguageDefinition:
+        def hlsl() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def glsl() -> LanguageDefinition:
+        def glsl() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def c() -> LanguageDefinition:
+        def c() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def sql() -> LanguageDefinition:
+        def sql() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def angel_script() -> LanguageDefinition:
+        def angel_script() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def lua() -> LanguageDefinition:
+        def lua() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def python() -> LanguageDefinition:
+        def python() -> TextEditor.LanguageDefinition:
             pass
 
 
