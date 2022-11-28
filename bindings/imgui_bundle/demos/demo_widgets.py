@@ -94,7 +94,7 @@ def demo_toggle():
     )
 
     changed, static.toggle_a = imgui.toggle("Default Toggle", static.toggle_a)
-    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ImGuiToggleFlags_.animated)
+    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ToggleFlags_.animated)
 
 
 @static(selected_filename="")

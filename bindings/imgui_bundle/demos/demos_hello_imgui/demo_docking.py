@@ -222,14 +222,14 @@ def main():
     split_main_bottom = hello_imgui.DockingSplit()
     split_main_bottom.initial_dock = "MainDockSpace"
     split_main_bottom.new_dock = "BottomSpace"
-    split_main_bottom.direction = imgui.ImGuiDir_.down
+    split_main_bottom.direction = imgui.Dir_.down
     split_main_bottom.ratio = 0.25
 
     # Then, add a space to the left which occupies a column whose width is 25% of the app width
     split_main_left = hello_imgui.DockingSplit()
     split_main_left.initial_dock = "MainDockSpace"
     split_main_left.new_dock = "LeftSpace"
-    split_main_left.direction = imgui.ImGuiDir_.left
+    split_main_left.direction = imgui.Dir_.left
     split_main_left.ratio = 0.25
 
     # Finally, transmit these splits to HelloImGui

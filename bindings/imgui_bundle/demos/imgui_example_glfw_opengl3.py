@@ -57,9 +57,9 @@ def main():
     # IMGUI_CHECKVERSION();
     imgui.create_context()
     io = imgui.get_io()
-    io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
+    io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
-    io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable  # Enable docking
+    io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
     # io.config_flags |= imgui.ImGuiConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.ConfigViewportsNoAutoMerge = true;
     # io.ConfigViewportsNoTaskBarIcon = true;
@@ -70,7 +70,7 @@ def main():
 
     # When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     style = imgui.get_style()
-    if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable:
+    if io.config_flags & imgui.ConfigFlags_.viewports_enable:
         style.window_rounding = 0.0
         # style.Colors[ImGuiCol_WindowBg].w = 1.0f;  # unsettable from python!!!!
 
@@ -186,7 +186,7 @@ def main():
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
         #  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-        if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable > 0:
+        if io.config_flags & imgui.ConfigFlags_.viewports_enable > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
             imgui.render_platform_windows_default()

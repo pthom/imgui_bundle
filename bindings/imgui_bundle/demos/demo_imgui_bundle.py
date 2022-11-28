@@ -84,10 +84,18 @@ def show_basic_code_advices() -> None:
     show_python_vs_cpp_code_advice(demo_radio_button, cpp_code)
 
 
+# fmt: off
+
 @static(text="")
 def demo_input_text_decimal() -> None:
     static = demo_input_text_decimal
-    changed, static.text = imgui.input_text("decimal", static.text, imgui.ImGuiInputTextFlags_.chars_decimal)  # type: ignore
+    flags:imgui.InputTextFlags_ = (
+            imgui.InputTextFlags_.chars_uppercase
+          | imgui.InputTextFlags_.chars_no_blank
+        )
+    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
+
+# fmt: on
 
 
 def show_text_input_advice():
@@ -95,21 +103,34 @@ def show_text_input_advice():
         void DemoInputTextDecimal()
         {
             static char text[64] = "";
+            ImGuiInputTextFlags flags = (
+                  ImGuiInputTextFlags_CharsUppercase
+                | ImGuiInputTextFlags_CharsNoBlank
+            );
             bool changed = ImGui::InputText(
-                                            "decimal", text, 64, 
-                                            ImGuiInputTextFlags_CharsDecimal);
+                                    "decimal", text, 64, 
+                                    ImGuiInputTextFlags_CharsDecimal);
         }
         """
     md_render_unindent(
         """
         In the example below, two differences are important:
         
-        * ImGui::InputText aka imgui.input_text
+        ## InputText functions:
+        imgui.input_text (Python) is equivalent to ImGui::InputText (C++) 
         
-           * In C++, it uses two parameters for the text: the text pointer, and its length.
-           * In python, you can simply pass a string, and get back its modified value in the returned tuple.
+        * In C++, it uses two parameters for the text: the text pointer, and its length.
+        * In python, you can simply pass a string, and get back its modified value in the returned tuple.
         
-        * ImGuiInputTextFlags_ is an enum in python (note the trailing underscore). You will find many similar enums.
+        ## Enums handling:
+
+        * `ImGuiInputTextFlags_` (C++) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore). 
+        * `ImGuiInputTextFlags` (C++) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
+        
+        You will find many similar enums. 
+        
+        The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).
+        
     """
     )
     imgui.new_line()
