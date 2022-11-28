@@ -30,7 +30,7 @@ _set_glfw_pip_search_path()
 
 
 # do not move this import at the top, it should be done after the call to _set_glfw_pip_search_path()
-import glfw
+import glfw  # type: ignore
 from typing import cast
 
 

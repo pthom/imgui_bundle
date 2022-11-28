@@ -2,10 +2,14 @@
 Python bindings for https://github.com/thedmd/imgui-node-editor
 """
 
-from typing import Any, List
+from typing import Any, Optional
 import numpy as np
 import enum
-from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList, ImGuiMouseButton
+from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList
+from imgui_bundle import imgui
+
+
+ImGuiMouseButton = imgui.MouseButton
 
 
 EditorContext = Any

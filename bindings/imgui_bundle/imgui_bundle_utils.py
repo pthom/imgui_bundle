@@ -87,7 +87,7 @@ def run_nb(
     """
     import cv2  # pip install opencv-python
     import PIL.Image  # pip install pillow
-    from IPython.display import display
+    from IPython.display import display  # type: ignore
     from IPython.core.display import HTML  # type: ignore
 
     def run_app():
