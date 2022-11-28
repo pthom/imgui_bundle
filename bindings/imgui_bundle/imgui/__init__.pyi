@@ -143,43 +143,43 @@ typedef int ImGuiTreeNodeFlags;     // -> enum ImGuiTreeNodeFlags_   // Flags: f
 typedef int ImGuiViewportFlags;     // -> enum ImGuiViewportFlags_   // Flags: for ImGuiViewport
 typedef int ImGuiWindowFlags;       // -> enum ImGuiWindowFlags_     // Flags: for Begin(), BeginChild()
 """
-Col = int               # -> enum ImGuiCol_             # Enum: A color identifier for styling
-Cond = int              # -> enum ImGuiCond_            # Enum: A condition for many Set*() functions
-DataType = int          # -> enum ImGuiDataType_        # Enum: A primary data type
-Dir = int               # -> enum ImGuiDir_             # Enum: A cardinal direction
-Key = int               # -> enum ImGuiKey_             # Enum: A key identifier
-NavInput = int          # -> enum ImGuiNavInput_        # Enum: An input identifier for navigation
-MouseButton = int       # -> enum ImGuiMouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
-MouseCursor = int       # -> enum ImGuiMouseCursor_     # Enum: A mouse cursor identifier
-SortDirection = int     # -> enum ImGuiSortDirection_   # Enum: A sorting direction (ascending or descending)
-StyleVar = int          # -> enum ImGuiStyleVar_        # Enum: A variable identifier for styling
-TableBgTarget = int     # -> enum ImGuiTableBgTarget_   # Enum: A color target for TableSetBgColor()
+Col = int               # -> enum Col_             # Enum: A color identifier for styling
+Cond = int              # -> enum Cond_            # Enum: A condition for many Set*() functions
+DataType = int          # -> enum DataType_        # Enum: A primary data type
+Dir = int               # -> enum Dir_             # Enum: A cardinal direction
+Key = int               # -> enum Key_             # Enum: A key identifier
+NavInput = int          # -> enum NavInput_        # Enum: An input identifier for navigation
+MouseButton = int       # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
+MouseCursor = int       # -> enum MouseCursor_     # Enum: A mouse cursor identifier
+SortDirection = int     # -> enum SortDirection_   # Enum: A sorting direction (ascending or descending)
+StyleVar = int          # -> enum StyleVar_        # Enum: A variable identifier for styling
+TableBgTarget = int     # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
 ImDrawFlags = int            # -> enum ImDrawFlags_          # Flags: for ImDrawList functions
 ImDrawListFlags = int        # -> enum ImDrawListFlags_      # Flags: for ImDrawList instance
 ImFontAtlasFlags = int       # -> enum ImFontAtlasFlags_     # Flags: for ImFontAtlas build
-BackendFlags = int      # -> enum ImGuiBackendFlags_    # Flags: for io.BackendFlags
-ButtonFlags = int       # -> enum ImGuiButtonFlags_     # Flags: for InvisibleButton()
-ColorEditFlags = int    # -> enum ImGuiColorEditFlags_  # Flags: for ColorEdit4(), ColorPicker4() etc.
-ConfigFlags = int       # -> enum ImGuiConfigFlags_     # Flags: for io.ConfigFlags
-ComboFlags = int        # -> enum ImGuiComboFlags_      # Flags: for BeginCombo()
-DockNodeFlags = int     # -> enum ImGuiDockNodeFlags_   // Flags: for DockSpace()
-DragDropFlags = int     # -> enum ImGuiDragDropFlags_   # Flags: for BeginDragDropSource(), AcceptDragDropPayload()
-FocusedFlags = int      # -> enum ImGuiFocusedFlags_    # Flags: for IsWindowFocused()
-HoveredFlags = int      # -> enum ImGuiHoveredFlags_    # Flags: for IsItemHovered(), IsWindowHovered() etc.
-InputTextFlags = int    # -> enum ImGuiInputTextFlags_  # Flags: for InputText(), InputTextMultiline()
-ModFlags = int          # -> enum ImGuiModFlags_        # Flags: for io.KeyMods (Ctrl/Shift/Alt/Super)
-PopupFlags = int        # -> enum ImGuiPopupFlags_      # Flags: for OpenPopup*(), BeginPopupContext*(), IsPopupOpen()
-SelectableFlags = int   # -> enum ImGuiSelectableFlags_ # Flags: for Selectable()
-SliderFlags = int       # -> enum ImGuiSliderFlags_     # Flags: for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
-TabBarFlags = int       # -> enum ImGuiTabBarFlags_     # Flags: for BeginTabBar()
-TabItemFlags = int      # -> enum ImGuiTabItemFlags_    # Flags: for BeginTabItem()
-TableFlags = int        # -> enum ImGuiTableFlags_      # Flags: For BeginTable()
-TableColumnFlags = int  # -> enum ImGuiTableColumnFlags_# Flags: For TableSetupColumn()
-TableRowFlags = int     # -> enum ImGuiTableRowFlags_   # Flags: For TableNextRow()
-TreeNodeFlags = int     # -> enum ImGuiTreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
-ViewportFlags = int     # -> enum ImGuiViewportFlags_   # Flags: for ImGuiViewport
-WindowFlags = int       # -> enum ImGuiWindowFlags_     # Flags: for Begin(), BeginChild()
-ToggleFlags = int       # -> enum ImGuiToggleFlags_
+BackendFlags = int      # -> enum BackendFlags_    # Flags: for io.BackendFlags
+ButtonFlags = int       # -> enum ButtonFlags_     # Flags: for InvisibleButton()
+ColorEditFlags = int    # -> enum ColorEditFlags_  # Flags: for ColorEdit4(), ColorPicker4() etc.
+ConfigFlags = int       # -> enum ConfigFlags_     # Flags: for io.ConfigFlags
+ComboFlags = int        # -> enum ComboFlags_      # Flags: for BeginCombo()
+DockNodeFlags = int     # -> enum DockNodeFlags_   // Flags: for DockSpace()
+DragDropFlags = int     # -> enum DragDropFlags_   # Flags: for BeginDragDropSource(), AcceptDragDropPayload()
+FocusedFlags = int      # -> enum FocusedFlags_    # Flags: for IsWindowFocused()
+HoveredFlags = int      # -> enum HoveredFlags_    # Flags: for IsItemHovered(), IsWindowHovered() etc.
+InputTextFlags = int    # -> enum InputTextFlags_  # Flags: for InputText(), InputTextMultiline()
+ModFlags = int          # -> enum ModFlags_        # Flags: for io.KeyMods (Ctrl/Shift/Alt/Super)
+PopupFlags = int        # -> enum PopupFlags_      # Flags: for OpenPopup*(), BeginPopupContext*(), IsPopupOpen()
+SelectableFlags = int   # -> enum SelectableFlags_ # Flags: for Selectable()
+SliderFlags = int       # -> enum SliderFlags_     # Flags: for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
+TabBarFlags = int       # -> enum TabBarFlags_     # Flags: for BeginTabBar()
+TabItemFlags = int      # -> enum TabItemFlags_    # Flags: for BeginTabItem()
+TableFlags = int        # -> enum TableFlags_      # Flags: For BeginTable()
+TableColumnFlags = int  # -> enum TableColumnFlags_# Flags: For TableSetupColumn()
+TableRowFlags = int     # -> enum TableRowFlags_   # Flags: For TableNextRow()
+TreeNodeFlags = int     # -> enum TreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
+ViewportFlags = int     # -> enum ViewportFlags_   # Flags: for ImGuiViewport
+WindowFlags = int       # -> enum WindowFlags_     # Flags: for Begin(), BeginChild()
+ToggleFlags = int       # -> enum ToggleFlags_
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]

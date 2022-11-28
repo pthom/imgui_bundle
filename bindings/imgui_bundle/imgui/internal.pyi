@@ -32,22 +32,22 @@ typedef int ImGuiSeparatorFlags;        // -> enum ImGuiSeparatorFlags_     // F
 typedef int ImGuiTextFlags;             // -> enum ImGuiTextFlags_          // Flags: for TextEx()
 typedef int ImGuiTooltipFlags;          // -> enum ImGuiTooltipFlags_       // Flags: for BeginTooltipEx()
 """
-DataAuthority = int #         // -> enum ImGuiDataAuthority_      // Enum: for storing the source authority (dock node vs window) of a field
-LayoutType = int  #            // -> enum ImGuiLayoutType_         // Enum: Horizontal or vertical
-ActivateFlags = int  #         // -> enum ImGuiActivateFlags_      // Flags: for navigation/focus function (will be for ActivateItem() later)
-DebugLogFlags = int  #         // -> enum ImGuiDebugLogFlags_      // Flags: for ShowDebugLogWindow(), g.DebugLogFlags
-ItemFlags = int  #             // -> enum ImGuiItemFlags_          // Flags: for PushItemFlag()
-ItemStatusFlags = int  #       // -> enum ImGuiItemStatusFlags_    // Flags: for DC.LastItemStatusFlags
-OldColumnFlags = int  #        // -> enum ImGuiOldColumnFlags_     // Flags: for BeginColumns()
-NavHighlightFlags = int  #     // -> enum ImGuiNavHighlightFlags_  // Flags: for RenderNavHighlight()
-NavDirSourceFlags = int  #     // -> enum ImGuiNavDirSourceFlags_  // Flags: for GetNavInputAmount2d()
-NavMoveFlags = int  #          // -> enum ImGuiNavMoveFlags_       // Flags: for navigation requests
-NextItemDataFlags = int  #     // -> enum ImGuiNextItemDataFlags_  // Flags: for SetNextItemXXX() functions
-NextWindowDataFlags = int  #   // -> enum ImGuiNextWindowDataFlags_// Flags: for SetNextWindowXXX() functions
-ScrollFlags = int  #           // -> enum ImGuiScrollFlags_        // Flags: for ScrollToItem() and navigation requests
-SeparatorFlags = int  #        // -> enum ImGuiSeparatorFlags_     // Flags: for SeparatorEx()
-TextFlags = int  #             // -> enum ImGuiTextFlags_          // Flags: for TextEx()
-TooltipFlags = int  #          // -> enum ImGuiTooltipFlags_       // Flags: for BeginTooltipEx()
+DataAuthority = int #         // -> enum DataAuthority_      // Enum: for storing the source authority (dock node vs window) of a field
+LayoutType = int  #            // -> enum LayoutType_         // Enum: Horizontal or vertical
+ActivateFlags = int  #         // -> enum ActivateFlags_      // Flags: for navigation/focus function (will be for ActivateItem() later)
+DebugLogFlags = int  #         // -> enum DebugLogFlags_      // Flags: for ShowDebugLogWindow(), g.DebugLogFlags
+ItemFlags = int  #             // -> enum ItemFlags_          // Flags: for PushItemFlag()
+ItemStatusFlags = int  #       // -> enum ItemStatusFlags_    // Flags: for DC.LastItemStatusFlags
+OldColumnFlags = int  #        // -> enum OldColumnFlags_     // Flags: for BeginColumns()
+NavHighlightFlags = int  #     // -> enum NavHighlightFlags_  // Flags: for RenderNavHighlight()
+NavDirSourceFlags = int  #     // -> enum NavDirSourceFlags_  // Flags: for GetNavInputAmount2d()
+NavMoveFlags = int  #          // -> enum NavMoveFlags_       // Flags: for navigation requests
+NextItemDataFlags = int  #     // -> enum NextItemDataFlags_  // Flags: for SetNextItemXXX() functions
+NextWindowDataFlags = int  #   // -> enum NextWindowDataFlags_// Flags: for SetNextWindowXXX() functions
+ScrollFlags = int  #           // -> enum ScrollFlags_        // Flags: for ScrollToItem() and navigation requests
+SeparatorFlags = int  #        // -> enum SeparatorFlags_     // Flags: for SeparatorEx()
+TextFlags = int  #             // -> enum TextFlags_          // Flags: for TextEx()
+TooltipFlags = int  #          // -> enum TooltipFlags_       // Flags: for BeginTooltipEx()
 
 
 TextBuffer = Any
