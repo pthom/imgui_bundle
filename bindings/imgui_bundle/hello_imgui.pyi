@@ -3,16 +3,15 @@ import numpy as np
 import enum
 
 # Manual code
+import imgui_bundle.imgui
+
 DockSpaceName = str
 from imgui_bundle.imgui import (
     ImVec2, ImVec4,
     ImFontConfig, ImFont,
     ImTextureID,
-    ImGuiDir_,
-    ImGuiWindowFlags,
-    ImGuiCond,
-    ImGuiCond_,
-    ImGuiStyle
+    Dir_,
+    Cond_,
 )
 
 
@@ -20,14 +19,19 @@ VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
 ScreenPosition = Tuple[int, int]
-ImGuiCond_FirstUseEver = ImGuiCond_.first_use_ever
+ImGuiCond_FirstUseEver = Cond_.first_use_ever
 
 DefaultScreenSize = (800, 600)
 DefaultWindowSize = (800, 600)
 DefaultScreenPosition = (40, 40)
 
-ImGuiDir_Down = ImGuiDir_.down
+ImGuiCond = imgui_bundle.imgui.Cond
+ImGuiDir_Down = Dir_.down
 ImGuiTheme = imgui_bundle.hello_imgui
+ImGuiStyle = imgui_bundle.imgui.Style
+ImGuiDir_ = imgui_bundle.imgui.Dir_
+ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
+
 
 EmptyVoidFunction: VoidFunction
 EmptyEventCallback: AnyEventCallback
@@ -1104,7 +1108,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_.down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1190,12 +1194,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_.first_use_ever
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_.first_use_ever
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
