@@ -370,7 +370,7 @@ class LutImage:
             nonlocal idx_slider, changed
             imgui.set_next_item_width(70)
             idx_slider += 1
-            flags = imgui.ImGuiSliderFlags_.logarithmic if logarithmic else 0
+            flags = imgui.SliderFlags_.logarithmic if logarithmic else 0
             edited_this_slider, v = imgui.slider_float(
                 f"{label}##slider{idx_slider}", v, min, max, flags=flags
             )  # type: ignore
