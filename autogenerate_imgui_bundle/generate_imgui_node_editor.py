@@ -58,8 +58,8 @@ def autogenerate_imgui_node_editor():
     options.namespace_root__regex = "^ax$|^NodeEditor$"
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
-    options.code_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
-    options.code_replacements.add_last_replacement(r"CanvasSizeModeAlias", "CanvasSizeMode")
+    options.type_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
+    options.type_replacements.add_last_replacement(r"CanvasSizeModeAlias", "CanvasSizeMode")
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
             # All those types are C style functions pointers

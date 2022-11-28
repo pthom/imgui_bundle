@@ -21,8 +21,8 @@ def autogenerate_imgui_md():
     options = litgen.LitgenOptions()
     options.namespace_root__regex = "ImGuiMd"
     options.python_run_black_formatter = True
-    options.code_replacements.add_last_replacement("OnOpenLink_Default", "on_open_link_default")
-    options.code_replacements.add_last_replacement("OnImage_Default", "on_image_default")
+    options.value_replacements.add_last_replacement("OnOpenLink_Default", "on_open_link_default")
+    options.value_replacements.add_last_replacement("OnImage_Default", "on_image_default")
 
     litgen.write_generated_code_for_file(
         options,

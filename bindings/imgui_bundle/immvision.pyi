@@ -118,7 +118,7 @@ class MouseInformation:  # immvision.h:73
     # cv::Point2d MousePosition = cv::Point2d(-1., -1.);    /* original C++ signature */
     # Mouse position in the original image/matrix
     # This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image
-    mouse_position: cv.Point2 = cv.Point2(-1.0, -1.0)  # immvision.h:80
+    mouse_position: cv.Point2d = cv.Point2(-1.0, -1.0)  # immvision.h:80
     # cv::Point MousePosition_Displayed = cv::Point(-1, -1);    /* original C++ signature */
     # Mouse position in the displayed portion of the image (the original image can be zoomed,
     # and only show a subset if it may be shown).
@@ -132,7 +132,7 @@ class MouseInformation:  # immvision.h:73
     def __init__(  # Line:3
         self,
         is_mouse_hovering: bool = False,
-        mouse_position: cv.Point2 = cv.Point2(-1.0, -1.0),
+        mouse_position: cv.Point2d = cv.Point2(-1.0, -1.0),
         mouse_position_displayed: cv.Point = cv.Point(-1, -1),
     ) -> None:
         """Auto-generated default constructor with named params"""
@@ -176,7 +176,7 @@ class ImageParams:  # immvision.h:93
 
     # cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye();    /* original C++ signature */
     # ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point
-    zoom_pan_matrix: cv.Matx33 = cv.Matx33.eye()  # immvision.h:124
+    zoom_pan_matrix: cv.Matx33d = cv.Matx33.eye()  # immvision.h:124
     # std::string ZoomKey = "";    /* original C++ signature */
     # If displaying several images, those with the same ZoomKey will zoom and pan together
     zoom_key: str = ""  # immvision.h:126
@@ -266,7 +266,7 @@ class ImageParams:  # immvision.h:93
         self,
         refresh_image: bool = False,
         image_display_size: cv.Size = cv.Size(),
-        zoom_pan_matrix: cv.Matx33 = cv.Matx33.eye(),
+        zoom_pan_matrix: cv.Matx33d = cv.Matx33.eye(),
         zoom_key: str = "",
         colormap_settings: ColormapSettingsData = ColormapSettingsData(),
         colormap_key: str = "",
@@ -303,8 +303,8 @@ def factor_image_params_display_only() -> ImageParams:  # immvision.h:193
 #                         const cv::Size displayedImageSize
 #     );
 def make_zoom_pan_matrix(  # immvision.h:197
-    zoom_center: cv.Point2, zoom_ratio: float, displayed_image_size: cv.Size
-) -> cv.Matx33:
+    zoom_center: cv.Point2d, zoom_ratio: float, displayed_image_size: cv.Size
+) -> cv.Matx33d:
     """Create a zoom/pan matrix centered around a given point of interest"""
     pass
 
@@ -314,7 +314,7 @@ def make_zoom_pan_matrix(  # immvision.h:197
 #     );
 def make_zoom_pan_matrix_scale_one(  # immvision.h:203
     image_size: cv.Size, displayed_image_size: cv.Size
-) -> cv.Matx33:
+) -> cv.Matx33d:
     pass
 
 # IMMVISION_API cv::Matx33d MakeZoomPanMatrix_FullView(    /* original C++ signature */
@@ -323,7 +323,7 @@ def make_zoom_pan_matrix_scale_one(  # immvision.h:203
 #     );
 def make_zoom_pan_matrix_full_view(  # immvision.h:208
     image_size: cv.Size, displayed_image_size: cv.Size
-) -> cv.Matx33:
+) -> cv.Matx33d:
     pass
 
 # IMMVISION_API void Image(const std::string& label, const cv::Mat& mat, ImageParams* params);    /* original C++ signature */
@@ -380,7 +380,7 @@ def image_display(  # immvision.h:294
     refresh_image: bool = False,
     show_options_button: bool = False,
     is_bgr_or_bgra: bool = True,
-) -> cv.Point2:
+) -> cv.Point2d:
     """Only, display the image, with no decoration, and no user interaction (by default)
 
     Parameters:
@@ -484,7 +484,7 @@ def inspector_add_image(  # immvision.h:342
     legend: str,
     zoom_key: str = "",
     colormap_key: str = "",
-    zoom_center: cv.Point2 = cv.Point2(),
+    zoom_center: cv.Point2d = cv.Point2(),
     zoom_ratio: float = -1.0,
     is_color_order_bgr: bool = True,
 ) -> None:
