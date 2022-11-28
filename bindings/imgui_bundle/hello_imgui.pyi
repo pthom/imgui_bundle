@@ -33,8 +33,12 @@ ImGuiDir_ = imgui_bundle.imgui.Dir_
 ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
 
 
-EmptyVoidFunction: VoidFunction
-EmptyEventCallback: AnyEventCallback
+def EmptyVoidFunction() -> VoidFunction:
+    pass
+
+
+def EmptyEventCallback() -> AnyEventCallback:
+    pass
 
 
 def get_glfw_window():
