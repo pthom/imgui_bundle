@@ -446,7 +446,7 @@ void py_init_module_implot(py::module& m)
         py::arg("ctx"),
         "Sets the current ImPlot context.");
 
-    m.def("set_im_gui_context",    // implot.h:603
+    m.def("set_imgui_context",    // implot.h:603
         ImPlot::SetImGuiContext,
         py::arg("ctx"),
         " Sets the current **ImGui** context. This is ONLY necessary if you are compiling\n ImPlot as a DLL (not recommended) separate from your ImGui compilation. It\n sets the global variable GImGui, which is not shared across DLL boundaries.\n See GImGui documentation in imgui.cpp for more details.");

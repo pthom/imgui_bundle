@@ -1165,7 +1165,7 @@ def set_current_context(ctx: ImPlotContext) -> None:  # implot.h:597
     pass
 
 # IMPLOT_API void SetImGuiContext(ImGuiContext* ctx);    /* original C++ signature */
-def set_im_gui_context(ctx: ImGui_Context) -> None:  # implot.h:603
+def set_imgui_context(ctx: ImGui_Context) -> None:  # implot.h:603
     """Sets the current **ImGui** context. This is ONLY necessary if you are compiling
     ImPlot as a DLL (not recommended) separate from your ImGui compilation. It
     sets the global variable GImGui, which is not shared across DLL boundaries.
