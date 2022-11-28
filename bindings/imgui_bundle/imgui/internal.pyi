@@ -1,13 +1,9 @@
 from typing import Any, List, Tuple
 import enum
+import numpy as np
 
-from imgui_bundle.imgui import (
-    ImFont,
-    ImU32,
-    ImColor,
-    ImVec4,
-    ImVec2,
-)
+from imgui_bundle.imgui import *
+
 
 ##################################################
 #    Manually inserted code (typedefs, etc.)
