@@ -427,7 +427,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::DockableWindow>
             (m, "DockableWindow", "*\n@@md#DockableWindow\n\n**DockableWindow** is a struct that represents a window that can be docked.\n\n_Members:_\n\n* `label`: _string_. Title of the window.\n* `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window\n   should initialy be placed\n* `GuiFunction`: _VoidFuntion_. Any function that will render this window's Gui.\n* `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.\n* `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.\n* `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End\n   calls should be added automatically (with the given \"label\"). Set to False if you want to call\n   ImGui::Begin/End yourself\n* `includeInViewMenu`: _bool, default=true_. Flag that indicates whether this window should be mentioned\n   in the view menu.\n* `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_. Window flags, see enum ImGuiWindowFlags_\n* `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window size (unused if docked)\n* `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window size.\n* `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window position (unused if docked)\n* `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window position.\n* `focusWindowAtNextFrame`: _bool, default = false_. If set to True this window will be focused at the next frame.\n\n@@md\n*")
         .def(py::init<const std::string &, const DockSpaceName &, const VoidFunction, bool, bool>(),
-            py::arg("label_") = "", py::arg("dock_space_name_") = "", py::arg("gui_function_") = VoidFunction(), py::arg("is_visible_") = true, py::arg("can_be_closed_") = true)
+            py::arg("label_") = "", py::arg("dock_space_name_") = "", py::arg("gui_function_") = HelloImGui::EmptyVoidFunction(), py::arg("is_visible_") = true, py::arg("can_be_closed_") = true)
         .def_readwrite("label", &DockableWindow::label, "")
         .def_readwrite("dock_space_name", &DockableWindow::dockSpaceName, "")
         .def_readwrite("gui_function", &DockableWindow::GuiFunction, "")
@@ -525,7 +525,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::SimpleRunnerParams>
             (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**RunnerParams** is a struct that contains simpler params adapted for simple uses\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n@@md\n")
         .def(py::init<>([](
-        VoidFunction guiFunction = VoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 10.f)
+        VoidFunction guiFunction = HelloImGui::EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 10.f)
         {
             auto r = std::make_unique<SimpleRunnerParams>();
             r->guiFunction = guiFunction;
@@ -536,7 +536,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->fpsIdle = fpsIdle;
             return r;
         })
-        , py::arg("gui_function") = VoidFunction(), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f
+        , py::arg("gui_function") = HelloImGui::EmptyVoidFunction(), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f
         )
         .def_readwrite("gui_function", &SimpleRunnerParams::guiFunction, "")
         .def_readwrite("window_title", &SimpleRunnerParams::windowTitle, "")

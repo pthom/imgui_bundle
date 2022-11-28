@@ -14,7 +14,6 @@ from imgui_bundle.imgui import (
     Cond_,
 )
 
-
 VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
@@ -1158,7 +1157,7 @@ class DockableWindow:
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
     #         const DockSpaceName & dockSpaceName_ = "",
-    #         const VoidFunction guiFunction_ = VoidFunction(),
+    #         const VoidFunction guiFunction_ = EmptyVoidFunction(),
     #         bool isVisible_ = true,
     #         bool canBeClosed_ = true)
     #     : label(label_), dockSpaceName(dockSpaceName_),
@@ -1169,7 +1168,7 @@ class DockableWindow:
         self,
         label_: str = "",
         dock_space_name_: DockSpaceName = "",
-        gui_function_: VoidFunction = VoidFunction(),
+        gui_function_: VoidFunction = EmptyVoidFunction(),
         is_visible_: bool = True,
         can_be_closed_: bool = True
         ) -> None:
@@ -1419,8 +1418,8 @@ class SimpleRunnerParams:
     @@md
 
     """
-    # VoidFunction guiFunction;    /* original C++ signature */
-    gui_function: VoidFunction
+    # VoidFunction guiFunction = EmptyVoidFunction();    /* original C++ signature */
+    gui_function: VoidFunction = EmptyVoidFunction()
     # std::string windowTitle = "";    /* original C++ signature */
     window_title: str = ""
 
@@ -1437,10 +1436,10 @@ class SimpleRunnerParams:
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
-    # SimpleRunnerParams(VoidFunction guiFunction = VoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 10.f);    /* original C++ signature */
+    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 10.f);    /* original C++ signature */
     def __init__(
         self,
-        gui_function: VoidFunction = VoidFunction(),
+        gui_function: VoidFunction = EmptyVoidFunction(),
         window_title: str = "",
         window_size_auto: bool = False,
         window_restore_previous_geometry: bool = False,

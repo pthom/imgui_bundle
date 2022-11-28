@@ -120,9 +120,9 @@ def show_basic_code_advices() -> None:
 @static(text="")
 def demo_input_text_decimal() -> None:
     static = demo_input_text_decimal
-    flags:imgui.InputTextFlags_ = (
-            imgui.InputTextFlags_.chars_uppercase
-          | imgui.InputTextFlags_.chars_no_blank
+    flags:imgui.InputTextFlags = (
+            imgui.InputTextFlags_.chars_uppercase.value
+          | imgui.InputTextFlags_.chars_no_blank.value
         )
     changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
 

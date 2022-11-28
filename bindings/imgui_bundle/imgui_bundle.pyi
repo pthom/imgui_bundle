@@ -5,7 +5,7 @@ from typing import Tuple, Optional, Callable
 import numpy as np
 
 from imgui_bundle import imgui_md, hello_imgui
-from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig
+from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig, EditorContext as NodeEditorContext
 from imgui_bundle import imgui_node_editor
 
 ImGuiMd = imgui_md
@@ -107,7 +107,7 @@ def run(
 def clock_seconds() -> float:
     pass
 
-def current_node_editor_context() -> ax.NodeEditor.EditorContext:
+def current_node_editor_context() -> NodeEditorContext:
     pass
 
 def visible_font_size() -> float:

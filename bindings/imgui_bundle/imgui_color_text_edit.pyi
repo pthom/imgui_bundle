@@ -118,7 +118,7 @@ class TextEditor:
         def invalid() -> TextEditor.Coordinates:
             pass
 
-        def __eq__(self,  o: TextEditor.Coordinates) -> bool:
+        def __eq__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
         def __ne__(self, o: TextEditor.Coordinates) -> bool:

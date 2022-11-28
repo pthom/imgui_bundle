@@ -8,6 +8,7 @@
 namespace ImGuiBundle
 {
     using NodeEditorConfig = ax::NodeEditor::Config;
+    using NodeEditorContext = ax::NodeEditor::EditorContext;
     using VoidFunction = std::function<void(void)>;
     using ScreenSize = std::array<int, 2>;
 
@@ -84,7 +85,8 @@ namespace ImGuiBundle
     );
 
     double ClockSeconds();
-    ax::NodeEditor::EditorContext* CurrentNodeEditorContext();
+
+    NodeEditorContext* CurrentNodeEditorContext();
 
     // Visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
     // In order to scale your widgets properly on all platforms, use multiples of this size.
