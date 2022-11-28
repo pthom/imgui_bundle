@@ -1,6 +1,11 @@
+from typing import Dict
+import imgui_bundle
 from imgui_bundle import imgui, imgui_md, static, ImVec2, hello_imgui, imgui_color_text_edit
 from imgui_bundle.demos import code_str_utils
 import inspect
+
+
+TextEditor = imgui_color_text_edit.TextEditor
 
 
 def unindent(s: str):
@@ -18,25 +23,44 @@ class AppState:
     name = ""
 
 
+@static(editors = {})
+def show_code_editor(code: str, is_cpp: bool):
+    static = show_code_editor
+    editors: Dict[str, TextEditor] = static.editors
+
+    if code not in editors.keys():
+        editors[code] = TextEditor()
+        if is_cpp:
+            editors[code].set_language_definition(TextEditor.LanguageDefinition.c_plus_plus())
+        else:
+            editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
+
+    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
+    editors[code].set_text(code)
+    editor_title = "cpp" if is_cpp else "python"
+    editors[code].render(f"##{editor_title}", editor_size)
+
+
 def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
+    static = show_python_vs_cpp_code_advice
+
     import inspect
+    python_code = inspect.getsource(python_gui_function)
 
     imgui.push_id(str(id(python_gui_function)))
 
-    python_code = inspect.getsource(python_gui_function)
-
-    code_size = ImVec2(500, 150)  # type: ignore
+    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
 
     imgui.begin_group()
     imgui.text("C++ code")
-    imgui.input_text_multiline("##C++", unindent(cpp_code), code_size)
+    show_code_editor(cpp_code, True)
     imgui.end_group()
 
     imgui.same_line()
 
     imgui.begin_group()
     imgui.text("Python code")
-    imgui.input_text_multiline("##Python", unindent(python_code), code_size)
+    show_code_editor(python_code, False)
     imgui.end_group()
 
     python_gui_function()
@@ -54,7 +78,7 @@ def demo_radio_button():
 
 
 def show_basic_code_advices() -> None:
-    cpp_code = """
+    cpp_code = code_str_utils.unindent_code("""
         void DemoRadioButton()
         {
             static int value = 0;
@@ -62,7 +86,7 @@ def show_basic_code_advices() -> None:
             ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
             ImGui::RadioButton("radio c", &value, 2);
         }
-    """
+    """, flag_strip_empty_lines=True) + "\n"
 
     md_render_unindent(
         """
@@ -99,7 +123,7 @@ def demo_input_text_decimal() -> None:
 
 
 def show_text_input_advice():
-    cpp_code = """
+    cpp_code = code_str_utils.unindent_code("""
         void DemoInputTextDecimal()
         {
             static char text[64] = "";
@@ -111,7 +135,8 @@ def show_text_input_advice():
                                     "decimal", text, 64, 
                                     ImGuiInputTextFlags_CharsDecimal);
         }
-        """
+        """, flag_strip_empty_lines=True) + "\n"
+
     md_render_unindent(
         """
         In the example below, two differences are important:
@@ -161,7 +186,7 @@ def show_glfw_callback_advice():
     if static.text_editor is None:
         import inspect
 
-        static.text_editor = imgui_color_text_edit.TextEditor()
+        static.text_editor = TextEditor()
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     md_render_unindent("For more complex applications, you can set various callbacks, using glfw.")
@@ -238,9 +263,9 @@ def demo_imgui_bundle() -> None:
                 # And returns true if it was clicked: you can *immediately* handle the click
                 app_state.counter += 1
 
-        imgui.input_text_multiline(
-            "##immediate_gui_example", unindent(inspect.getsource(immediate_gui_example)), ImVec2(500, 150)  # type: ignore
-        )
+        python_code = unindent(inspect.getsource(immediate_gui_example))
+        # imgui.input_text_multiline("##immediate_gui_example", python_code, ImVec2(500, 150))
+        show_code_editor(python_code, False)
         imgui.text("Displays this:")
         immediate_gui_example()
         imgui.separator()
