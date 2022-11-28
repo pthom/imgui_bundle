@@ -6188,7 +6188,7 @@ class ImDrawList:  # imgui.h:2619
         """This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible"""
         pass
     # IMGUI_API ImDrawList* CloneOutput() const;                                      /* original C++ signature */
-    def clone_output(self) -> ImDrawList:  # imgui.h:2702
+    def clone_output(self) -> "ImDrawList":  # imgui.h:2702
         """Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer."""
         pass
     # Advanced: Channels

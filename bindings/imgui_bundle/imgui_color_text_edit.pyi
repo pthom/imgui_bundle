@@ -115,25 +115,25 @@ class TextEditor:
         def __init__(self, a_line: int, a_column: int) -> None:
             pass
         @staticmethod
-        def invalid() -> Coordinates:
+        def invalid() -> "Coordinates":
             pass
 
-        def __eq__(self, o: Coordinates) -> bool:
+        def __eq__(self, o: "Coordinates") -> bool:
             pass
 
-        def __ne__(self, o: Coordinates) -> bool:
+        def __ne__(self, o: "Coordinates") -> bool:
             pass
 
-        def __lt__(self, o: Coordinates) -> bool:
+        def __lt__(self, o: "Coordinates") -> bool:
             pass
 
-        def __gt__(self, o: Coordinates) -> bool:
+        def __gt__(self, o: "Coordinates") -> bool:
             pass
 
-        def __le__(self, o: Coordinates) -> bool:
+        def __le__(self, o: "Coordinates") -> bool:
             pass
 
-        def __ge__(self, o: Coordinates) -> bool:
+        def __ge__(self, o: "Coordinates") -> bool:
             pass
 
     class Identifier:
@@ -176,28 +176,28 @@ class TextEditor:
             pass
 
         @staticmethod
-        def c_plus_plus() -> LanguageDefinition:
+        def c_plus_plus() -> "LanguageDefinition":
             pass
         @staticmethod
-        def hlsl() -> LanguageDefinition:
+        def hlsl() -> "LanguageDefinition":
             pass
         @staticmethod
-        def glsl() -> LanguageDefinition:
+        def glsl() -> "LanguageDefinition":
             pass
         @staticmethod
-        def c() -> LanguageDefinition:
+        def c() -> "LanguageDefinition":
             pass
         @staticmethod
-        def sql() -> LanguageDefinition:
+        def sql() -> "LanguageDefinition":
             pass
         @staticmethod
-        def angel_script() -> LanguageDefinition:
+        def angel_script() -> "LanguageDefinition":
             pass
         @staticmethod
-        def lua() -> LanguageDefinition:
+        def lua() -> "LanguageDefinition":
             pass
         @staticmethod
-        def python() -> LanguageDefinition:
+        def python() -> "LanguageDefinition":
             pass
 
 

@@ -322,8 +322,8 @@ class ScreenBounds:
     #         }
     def ensure_window_fits_this_monitor(
         self,
-        window_bounds_original: ScreenBounds
-        ) -> ScreenBounds:
+        window_bounds_original: "ScreenBounds"
+        ) -> "ScreenBounds":
         pass
 
     # bool operator==(const ScreenBounds& other) const    /* original C++ signature */
@@ -338,7 +338,7 @@ class ScreenBounds:
     #             }
     #             return true;
     #         }
-    def __eq__(self, other: ScreenBounds) -> bool:
+    def __eq__(self, other: "ScreenBounds") -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(

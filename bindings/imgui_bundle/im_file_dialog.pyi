@@ -23,7 +23,7 @@ class Path:
 ####################    <generated_from:ImFileDialog.h>    ####################
 class FileDialog:
     @staticmethod
-    def instance() -> FileDialog:
+    def instance() -> "FileDialog":
         pass
     def __init__(self) -> None:
         pass
