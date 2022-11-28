@@ -13,28 +13,28 @@ struct GLFWcursor;
 
 void py_init_module_imgui_backends(py::module& m)
 {
-    m.def("open_gl3_init",
-        ImGui_ImplOpenGL3_Init, py::arg("glsl_version") = py::none());
+    m.def("opengl3_init",
+        ImGui_ImplOpenGL3_Init, py::arg("glsl_version"));
 
-    m.def("open_gl3_shutdown",
+    m.def("opengl3_shutdown",
         ImGui_ImplOpenGL3_Shutdown);
 
-    m.def("open_gl3_new_frame",
+    m.def("opengl3_new_frame",
         ImGui_ImplOpenGL3_NewFrame);
 
-    m.def("open_gl3_render_draw_data",
+    m.def("opengl3_render_draw_data",
         ImGui_ImplOpenGL3_RenderDrawData, py::arg("draw_data"));
 
-    m.def("open_gl3_create_fonts_texture",
+    m.def("opengl3_create_fonts_texture",
         ImGui_ImplOpenGL3_CreateFontsTexture);
 
-    m.def("open_gl3_destroy_fonts_texture",
+    m.def("opengl3_destroy_fonts_texture",
         ImGui_ImplOpenGL3_DestroyFontsTexture);
 
-    m.def("open_gl3_create_device_objects",
+    m.def("opengl3_create_device_objects",
         ImGui_ImplOpenGL3_CreateDeviceObjects);
 
-    m.def("open_gl3_destroy_device_objects",
+    m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
     ////////////////////    </generated_from:imgui_impl_opengl3.h>    ////////////////////
 

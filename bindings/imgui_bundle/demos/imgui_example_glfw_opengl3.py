@@ -82,7 +82,7 @@ def main():
     window_address = ctypes.cast(window, ctypes.c_void_p).value
     imgui_backends.glfw_init_for_open_gl(window_address, True)
 
-    imgui_backends.open_gl3_init(glsl_version)
+    imgui_backends.opengl3_init(glsl_version)
 
     # // Load Fonts
     # // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use imgui.PushFont()/PopFont() to select them.
@@ -117,7 +117,7 @@ def main():
         glfw.poll_events()
 
         # Start the Dear ImGui frame
-        imgui_backends.open_gl3_new_frame()
+        imgui_backends.opengl3_new_frame()
         imgui_backends.glfw_new_frame()
         imgui.new_frame()
 
@@ -181,7 +181,7 @@ def main():
             clear_color[3],
         )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-        imgui_backends.open_gl3_render_draw_data(imgui.get_draw_data())
+        imgui_backends.opengl3_render_draw_data(imgui.get_draw_data())
 
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -195,7 +195,7 @@ def main():
         glfw.swap_buffers(window)
 
     # Cleanup
-    imgui_backends.open_gl3_shutdown()
+    imgui_backends.opengl3_shutdown()
     imgui_backends.glfw_shutdown()
     imgui.destroy_context()
 
