@@ -310,7 +310,7 @@ void py_init_module_imgui_main(py::module& m)
         py::overload_cast<const char *, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("flags") = 0);
 
     m.def("begin_child",    // imgui.h:344
-        py::overload_cast<ImGuiID, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("flags") = 0);
+        py::overload_cast<ImGuiID, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("flags") = 0);
 
     m.def("end_child",    // imgui.h:345
         ImGui::EndChild);
@@ -1777,7 +1777,7 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("open_popup",    // imgui.h:696
         py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::OpenPopup),
-        py::arg("id"), py::arg("popup_flags") = 0,
+        py::arg("id_"), py::arg("popup_flags") = 0,
         "id overload to facilitate calling from nested stacks");
 
     m.def("open_popup_on_item_click",    // imgui.h:697
@@ -1879,7 +1879,7 @@ void py_init_module_imgui_main(py::module& m)
         "change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details.");
 
     m.def("columns",    // imgui.h:774
-        ImGui::Columns, py::arg("count") = 1, py::arg("id") = py::none(), py::arg("border") = true);
+        ImGui::Columns, py::arg("count") = 1, py::arg("id_") = py::none(), py::arg("border") = true);
 
     m.def("next_column",    // imgui.h:775
         ImGui::NextColumn, "next column, defaults to current row or next row if the current row is finished");
@@ -1950,7 +1950,7 @@ void py_init_module_imgui_main(py::module& m)
         "notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name.");
 
     m.def("dock_space",    // imgui.h:805
-        ImGui::DockSpace, py::arg("id"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("window_class") = py::none());
+        ImGui::DockSpace, py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("window_class") = py::none());
 
     m.def("dock_space_over_viewport",    // imgui.h:806
         ImGui::DockSpaceOverViewport, py::arg("viewport") = py::none(), py::arg("flags") = 0, py::arg("window_class") = py::none());
@@ -2174,7 +2174,7 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("begin_child_frame",    // imgui.h:894
         ImGui::BeginChildFrame,
-        py::arg("id"), py::arg("size"), py::arg("flags") = 0,
+        py::arg("id_"), py::arg("size"), py::arg("flags") = 0,
         "helper to create a child window / scrolling region that looks like a normal widget frame");
 
     m.def("end_child_frame",    // imgui.h:895
@@ -2377,7 +2377,7 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("find_viewport_by_id",    // imgui.h:974
         ImGui::FindViewportByID,
-        py::arg("id"),
+        py::arg("id_"),
         "this is a helper for backends.",
         pybind11::return_value_policy::reference);
 
@@ -3197,7 +3197,7 @@ void py_init_module_imgui_main(py::module& m)
             "Queue a mouse wheel update")
         .def("add_mouse_viewport_event",    // imgui.h:2068
             &ImGuiIO::AddMouseViewportEvent,
-            py::arg("id"),
+            py::arg("id_"),
             "Queue a mouse hovered viewport. Requires backend to set ImGuiBackendFlags_HasMouseHoveredViewport to call this (for multi-viewport support).")
         .def("add_focus_event",    // imgui.h:2069
             &ImGuiIO::AddFocusEvent,
@@ -4023,7 +4023,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("add_custom_rect_regular",    // imgui.h:2917
             &ImFontAtlas::AddCustomRectRegular, py::arg("width"), py::arg("height"))
         .def("add_custom_rect_font_glyph",    // imgui.h:2918
-            &ImFontAtlas::AddCustomRectFontGlyph, py::arg("font"), py::arg("id"), py::arg("width"), py::arg("height"), py::arg("advance_x"), py::arg("offset") = ImVec2(0, 0))
+            &ImFontAtlas::AddCustomRectFontGlyph, py::arg("font"), py::arg("id_"), py::arg("width"), py::arg("height"), py::arg("advance_x"), py::arg("offset") = ImVec2(0, 0))
         .def("calc_custom_rect_uv",    // imgui.h:2922
             &ImFontAtlas::CalcCustomRectUV, py::arg("rect"), py::arg("out_uv_min"), py::arg("out_uv_max"))
         .def("get_mouse_cursor_tex_data",    // imgui.h:2923
@@ -4120,7 +4120,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiViewport =
         py::class_<ImGuiViewport>    // imgui.h:3046
             (m, "Viewport", " - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.\n - With multi-viewport enabled, we extend this concept to have multiple active viewports.\n - In the future we will extend this concept further to also represent Platform Monitor and support a \"no main platform window\" operation mode.\n - About Main Area vs Work Area:\n   - Main Area = entire viewport.\n   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).\n   - Windows are generally trying to stay within the Work Area of their host viewport.")
-        .def_readwrite("id", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3048
+        .def_readwrite("id_", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3048
         .def_readwrite("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")    // imgui.h:3049
         .def_readwrite("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")    // imgui.h:3050
         .def_readwrite("size", &ImGuiViewport::Size, "Main Area: Size of the viewport.")    // imgui.h:3051

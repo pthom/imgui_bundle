@@ -1716,7 +1716,7 @@ void py_init_module_implot(py::module& m)
 
             return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags);
         },
-        py::arg("id"), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("size") = 4, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("size") = 4, py::arg("flags") = 0,
         "Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_x",    // implot.h:924
@@ -1732,7 +1732,7 @@ void py_init_module_implot(py::module& m)
 
             return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags);
         },
-        py::arg("id"), py::arg("x"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
         "Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_y",    // implot.h:926
@@ -1748,7 +1748,7 @@ void py_init_module_implot(py::module& m)
 
             return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags);
         },
-        py::arg("id"), py::arg("y"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("y"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
         "Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_rect",    // implot.h:928
@@ -1767,7 +1767,7 @@ void py_init_module_implot(py::module& m)
 
             return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags);
         },
-        py::arg("id"), py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"), py::arg("col"), py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"), py::arg("col"), py::arg("flags") = 0,
         "Shows a draggable and resizeable rectangle.");
 
     m.def("annotation",    // implot.h:931

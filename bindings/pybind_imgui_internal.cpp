@@ -431,7 +431,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiInputTextState =
         py::class_<ImGuiInputTextState>    // imgui_internal.h:1016
             (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
-        .def_readwrite("id", &ImGuiInputTextState::ID, "widget id owning the text state")    // imgui_internal.h:1018
+        .def_readwrite("id_", &ImGuiInputTextState::ID, "widget id owning the text state")    // imgui_internal.h:1018
         .def_readwrite("cur_len_w", &ImGuiInputTextState::CurLenW, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")    // imgui_internal.h:1019
         .def_readwrite("cur_len_a", &ImGuiInputTextState::CurLenA, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")    // imgui_internal.h:1019
         .def_readwrite("text_a_is_valid", &ImGuiInputTextState::TextAIsValid, "temporary UTF8 buffer is not initially valid before we make the widget active (until then we pull the data from user argument)")    // imgui_internal.h:1023
@@ -523,7 +523,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiLastItemData =
         py::class_<ImGuiLastItemData>    // imgui_internal.h:1130
             (m, "LastItemData", "Status storage for the last submitted item")
-        .def_readwrite("id", &ImGuiLastItemData::ID, "")    // imgui_internal.h:1132
+        .def_readwrite("id_", &ImGuiLastItemData::ID, "")    // imgui_internal.h:1132
         .def_readwrite("in_flags", &ImGuiLastItemData::InFlags, "See ImGuiItemFlags_")    // imgui_internal.h:1133
         .def_readwrite("status_flags", &ImGuiLastItemData::StatusFlags, "See ImGuiItemStatusFlags_")    // imgui_internal.h:1134
         .def_readwrite("rect", &ImGuiLastItemData::Rect, "Full rectangle")    // imgui_internal.h:1135
@@ -860,7 +860,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiNavItemData>    // imgui_internal.h:1360
             (m, "NavItemData", "")
         .def_readwrite("window", &ImGuiNavItemData::Window, "Init,Move    // Best candidate window (result->ItemWindow->RootWindowForNav == request->Window)")    // imgui_internal.h:1362
-        .def_readwrite("id", &ImGuiNavItemData::ID, "Init,Move    // Best candidate item ID")    // imgui_internal.h:1363
+        .def_readwrite("id_", &ImGuiNavItemData::ID, "Init,Move    // Best candidate item ID")    // imgui_internal.h:1363
         .def_readwrite("focus_scope_id", &ImGuiNavItemData::FocusScopeId, "Init,Move    // Best candidate focus scope ID")    // imgui_internal.h:1364
         .def_readwrite("rect_rel", &ImGuiNavItemData::RectRel, "Init,Move    // Best candidate bounding box in window relative space")    // imgui_internal.h:1365
         .def_readwrite("in_flags", &ImGuiNavItemData::InFlags, "????,Move    // Best candidate item flags")    // imgui_internal.h:1366
@@ -894,7 +894,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiOldColumns =
         py::class_<ImGuiOldColumns>    // imgui_internal.h:1410
             (m, "OldColumns", "")
-        .def_readwrite("id", &ImGuiOldColumns::ID, "")    // imgui_internal.h:1412
+        .def_readwrite("id_", &ImGuiOldColumns::ID, "")    // imgui_internal.h:1412
         .def_readwrite("flags", &ImGuiOldColumns::Flags, "")    // imgui_internal.h:1413
         .def_readwrite("is_first_frame", &ImGuiOldColumns::IsFirstFrame, "")    // imgui_internal.h:1414
         .def_readwrite("is_being_resized", &ImGuiOldColumns::IsBeingResized, "")    // imgui_internal.h:1415
@@ -952,7 +952,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiDockNode =
         py::class_<ImGuiDockNode>    // imgui_internal.h:1487
             (m, "DockNode", "sizeof() 156~192")
-        .def_readwrite("id", &ImGuiDockNode::ID, "")    // imgui_internal.h:1489
+        .def_readwrite("id_", &ImGuiDockNode::ID, "")    // imgui_internal.h:1489
         .def_readwrite("shared_flags", &ImGuiDockNode::SharedFlags, "(Write) Flags shared by all nodes of a same dockspace hierarchy (inherited from the root node)")    // imgui_internal.h:1490
         .def_readwrite("local_flags", &ImGuiDockNode::LocalFlags, "(Write) Flags specific to this node")    // imgui_internal.h:1491
         .def_readwrite("local_flags_in_windows", &ImGuiDockNode::LocalFlagsInWindows, "(Write) Flags specific to this node, applied from windows")    // imgui_internal.h:1492
@@ -978,7 +978,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("selected_tab_id", &ImGuiDockNode::SelectedTabId, "[Leaf node only] Which of our tab/window is selected.")    // imgui_internal.h:1515
         .def_readwrite("want_close_tab_id", &ImGuiDockNode::WantCloseTabId, "[Leaf node only] Set when closing a specific tab/window.")    // imgui_internal.h:1516
         .def(py::init<ImGuiID>(),    // imgui_internal.h:1532
-            py::arg("id"))
+            py::arg("id_"))
         ;
 
 
@@ -1045,7 +1045,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiWindowSettings =
         py::class_<ImGuiWindowSettings>    // imgui_internal.h:1632
             (m, "WindowSettings", " Windows data saved in imgui.ini file\n Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.\n (this is designed to be stored in a ImChunkStream buffer, with the variable-length Name following our structure)")
-        .def_readwrite("id", &ImGuiWindowSettings::ID, "")    // imgui_internal.h:1634
+        .def_readwrite("id_", &ImGuiWindowSettings::ID, "")    // imgui_internal.h:1634
         .def_readwrite("pos", &ImGuiWindowSettings::Pos, "NB: Settings position are stored RELATIVE to the viewport! Whereas runtime ones are absolute positions.")    // imgui_internal.h:1635
         .def_readwrite("size", &ImGuiWindowSettings::Size, "")    // imgui_internal.h:1636
         .def_readwrite("viewport_pos", &ImGuiWindowSettings::ViewportPos, "")    // imgui_internal.h:1637
@@ -1102,7 +1102,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiStackLevelInfo =
         py::class_<ImGuiStackLevelInfo>    // imgui_internal.h:1706
             (m, "StackLevelInfo", "")
-        .def_readwrite("id", &ImGuiStackLevelInfo::ID, "")    // imgui_internal.h:1708
+        .def_readwrite("id_", &ImGuiStackLevelInfo::ID, "")    // imgui_internal.h:1708
         .def_readwrite("query_frame_count", &ImGuiStackLevelInfo::QueryFrameCount, ">= 1: Query in progress")    // imgui_internal.h:1709
         .def_readwrite("query_success", &ImGuiStackLevelInfo::QuerySuccess, "Obtained result from DebugHookIdInfo()")    // imgui_internal.h:1710
         .def(py::init<>())    // imgui_internal.h:1714
@@ -1436,7 +1436,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiWindow =
         py::class_<ImGuiWindow>    // imgui_internal.h:2246
             (m, "Window", "Storage for one window")
-        .def_readwrite("id", &ImGuiWindow::ID, "== ImHashStr(Name)")    // imgui_internal.h:2249
+        .def_readwrite("id_", &ImGuiWindow::ID, "== ImHashStr(Name)")    // imgui_internal.h:2249
         .def_readwrite("flags", &ImGuiWindow::Flags, "See enum ImGuiWindowFlags_")    // imgui_internal.h:2250
         .def_readwrite("flags_previous_frame", &ImGuiWindow::FlagsPreviousFrame, "See enum ImGuiWindowFlags_")    // imgui_internal.h:2250
         .def_readwrite("window_class", &ImGuiWindow::WindowClass, "Advanced users only. Set with SetNextWindowClass()")    // imgui_internal.h:2251
@@ -1554,7 +1554,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiTabItem =
         py::class_<ImGuiTabItem>    // imgui_internal.h:2406
             (m, "TabItem", "Storage for one active tab item (sizeof() 48 bytes)")
-        .def_readwrite("id", &ImGuiTabItem::ID, "")    // imgui_internal.h:2408
+        .def_readwrite("id_", &ImGuiTabItem::ID, "")    // imgui_internal.h:2408
         .def_readwrite("flags", &ImGuiTabItem::Flags, "")    // imgui_internal.h:2409
         .def_readwrite("window", &ImGuiTabItem::Window, "When TabItem is part of a DockNode's TabBar, we hold on to a window.")    // imgui_internal.h:2410
         .def_readwrite("last_frame_visible", &ImGuiTabItem::LastFrameVisible, "")    // imgui_internal.h:2411
@@ -1575,7 +1575,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiTabBar>    // imgui_internal.h:2426
             (m, "TabBar", "Storage for a tab bar (sizeof() 152 bytes)")
         .def_readwrite("flags", &ImGuiTabBar::Flags, "")    // imgui_internal.h:2429
-        .def_readwrite("id", &ImGuiTabBar::ID, "Zero for tab-bars used by docking")    // imgui_internal.h:2430
+        .def_readwrite("id_", &ImGuiTabBar::ID, "Zero for tab-bars used by docking")    // imgui_internal.h:2430
         .def_readwrite("selected_tab_id", &ImGuiTabBar::SelectedTabId, "Selected tab/window")    // imgui_internal.h:2431
         .def_readwrite("next_selected_tab_id", &ImGuiTabBar::NextSelectedTabId, "Next selected tab/window. Will also trigger a scrolling animation")    // imgui_internal.h:2432
         .def_readwrite("visible_tab_id", &ImGuiTabBar::VisibleTabId, "Can occasionally be != SelectedTabId (e.g. when previewing contents for CTRL+TAB preview)")    // imgui_internal.h:2433
@@ -1683,7 +1683,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiTable =
         py::class_<ImGuiTable>    // imgui_internal.h:2562
             (m, "Table", "FIXME-TABLE: more transient data could be stored in a per-stacked table structure: DrawSplitter, SortSpecs, incoming RowData")
-        .def_readwrite("id", &ImGuiTable::ID, "")    // imgui_internal.h:2564
+        .def_readwrite("id_", &ImGuiTable::ID, "")    // imgui_internal.h:2564
         .def_readwrite("flags", &ImGuiTable::Flags, "")    // imgui_internal.h:2565
         .def_readwrite("raw_data", &ImGuiTable::RawData, "Single allocation to hold Columns[], DisplayOrderToIndex[] and RowCellData[]")    // imgui_internal.h:2566
         .def_readwrite("temp_data", &ImGuiTable::TempData, "Transient data while table is active. Point within g.CurrentTableStack[]")    // imgui_internal.h:2567
@@ -1825,7 +1825,7 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiTableSettings =
         py::class_<ImGuiTableSettings>    // imgui_internal.h:2721
             (m, "TableSettings", "This is designed to be stored in a single ImChunkStream (1 header followed by N ImGuiTableColumnSettings, etc.)")
-        .def_readwrite("id", &ImGuiTableSettings::ID, "Set to 0 to invalidate/delete the setting")    // imgui_internal.h:2723
+        .def_readwrite("id_", &ImGuiTableSettings::ID, "Set to 0 to invalidate/delete the setting")    // imgui_internal.h:2723
         .def_readwrite("save_flags", &ImGuiTableSettings::SaveFlags, "Indicate data we want to save using the Resizable/Reorderable/Sortable/Hideable flags (could be using its own flags..)")    // imgui_internal.h:2724
         .def_readwrite("ref_scale", &ImGuiTableSettings::RefScale, "Reference scale to be able to rescale columns on font/dpi changes.")    // imgui_internal.h:2725
         .def_readwrite("columns_count", &ImGuiTableSettings::ColumnsCount, "")    // imgui_internal.h:2726
@@ -1837,7 +1837,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("find_window_by_id",    // imgui_internal.h:2748
         ImGui::FindWindowByID,
-        py::arg("id"),
+        py::arg("id_"),
         pybind11::return_value_policy::reference);
 
     m.def("find_window_by_name",    // imgui_internal.h:2749
@@ -1980,7 +1980,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("find_window_settings",    // imgui_internal.h:2809
         ImGui::FindWindowSettings,
-        py::arg("id"),
+        py::arg("id_"),
         pybind11::return_value_policy::reference);
 
     m.def("find_or_create_window_settings",    // imgui_internal.h:2810
@@ -2026,10 +2026,10 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::ScrollToRectEx, py::arg("window"), py::arg("rect"), py::arg("flags") = 0);
 
     m.def("set_active_id",    // imgui_internal.h:2836
-        ImGui::SetActiveID, py::arg("id"), py::arg("window"));
+        ImGui::SetActiveID, py::arg("id_"), py::arg("window"));
 
     m.def("set_focus_id",    // imgui_internal.h:2837
-        ImGui::SetFocusID, py::arg("id"), py::arg("window"));
+        ImGui::SetFocusID, py::arg("id_"), py::arg("window"));
 
     m.def("clear_active_id",    // imgui_internal.h:2838
         ImGui::ClearActiveID);
@@ -2038,19 +2038,19 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::GetHoveredID);
 
     m.def("set_hovered_id",    // imgui_internal.h:2840
-        ImGui::SetHoveredID, py::arg("id"));
+        ImGui::SetHoveredID, py::arg("id_"));
 
     m.def("keep_alive_id",    // imgui_internal.h:2841
-        ImGui::KeepAliveID, py::arg("id"));
+        ImGui::KeepAliveID, py::arg("id_"));
 
     m.def("mark_item_edited",    // imgui_internal.h:2842
         ImGui::MarkItemEdited,
-        py::arg("id"),
+        py::arg("id_"),
         "Mark data associated to given item as \"edited\", used by IsItemDeactivatedAfterEdit() function.");
 
     m.def("push_override_id",    // imgui_internal.h:2843
         ImGui::PushOverrideID,
-        py::arg("id"),
+        py::arg("id_"),
         "Push given value as-is at the top of the ID stack (whereas PushID combines old and new hashes)");
 
     m.def("get_id_with_seed",    // imgui_internal.h:2844
@@ -2062,13 +2062,13 @@ void py_init_module_imgui_internal(py::module& m)
         "Basic Helpers for widget code");
 
     m.def("item_add",    // imgui_internal.h:2849
-        ImGui::ItemAdd, py::arg("bb"), py::arg("id"), py::arg("nav_bb") = py::none(), py::arg("extra_flags") = 0);
+        ImGui::ItemAdd, py::arg("bb"), py::arg("id_"), py::arg("nav_bb") = py::none(), py::arg("extra_flags") = 0);
 
     m.def("item_hoverable",    // imgui_internal.h:2850
-        ImGui::ItemHoverable, py::arg("bb"), py::arg("id"));
+        ImGui::ItemHoverable, py::arg("bb"), py::arg("id_"));
 
     m.def("is_clipped_ex",    // imgui_internal.h:2851
-        ImGui::IsClippedEx, py::arg("bb"), py::arg("id"));
+        ImGui::IsClippedEx, py::arg("bb"), py::arg("id_"));
 
     m.def("set_last_item_data",    // imgui_internal.h:2852
         ImGui::SetLastItemData, py::arg("item_id"), py::arg("in_flags"), py::arg("status_flags"), py::arg("item_rect"));
@@ -2114,10 +2114,10 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::LogSetNextTextDecoration, py::arg("prefix"), py::arg("suffix"));
 
     m.def("begin_child_ex",    // imgui_internal.h:2882
-        ImGui::BeginChildEx, py::arg("name"), py::arg("id"), py::arg("size_arg"), py::arg("border"), py::arg("flags"));
+        ImGui::BeginChildEx, py::arg("name"), py::arg("id_"), py::arg("size_arg"), py::arg("border"), py::arg("flags"));
 
     m.def("open_popup_ex",    // imgui_internal.h:2883
-        py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::OpenPopupEx), py::arg("id"), py::arg("popup_flags") = ImGuiPopupFlags_None);
+        py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::OpenPopupEx), py::arg("id_"), py::arg("popup_flags") = ImGuiPopupFlags_None);
 
     m.def("close_popup_to_level",    // imgui_internal.h:2884
         py::overload_cast<int, bool>(ImGui::ClosePopupToLevel), py::arg("remaining"), py::arg("restore_focus_to_window_under_popup"));
@@ -2129,10 +2129,10 @@ void py_init_module_imgui_internal(py::module& m)
         py::overload_cast<>(ImGui::ClosePopupsExceptModals));
 
     m.def("is_popup_open",    // imgui_internal.h:2887
-        py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::IsPopupOpen), py::arg("id"), py::arg("popup_flags"));
+        py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::IsPopupOpen), py::arg("id_"), py::arg("popup_flags"));
 
     m.def("begin_popup_ex",    // imgui_internal.h:2888
-        py::overload_cast<ImGuiID, ImGuiWindowFlags>(ImGui::BeginPopupEx), py::arg("id"), py::arg("extra_flags"));
+        py::overload_cast<ImGuiID, ImGuiWindowFlags>(ImGui::BeginPopupEx), py::arg("id_"), py::arg("extra_flags"));
 
     m.def("begin_tooltip_ex",    // imgui_internal.h:2889
         ImGui::BeginTooltipEx, py::arg("tooltip_flags"), py::arg("extra_window_flags"));
@@ -2213,17 +2213,17 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("activate_item",    // imgui_internal.h:2920
         ImGui::ActivateItem,
-        py::arg("id"),
+        py::arg("id_"),
         "Remotely activate a button, checkbox, tree node etc. given its unique ID. activation is queued and processed on the next frame when the item is encountered again.");
 
     m.def("set_nav_window",    // imgui_internal.h:2921
         ImGui::SetNavWindow, py::arg("window"));
 
     m.def("set_nav_id",    // imgui_internal.h:2922
-        ImGui::SetNavID, py::arg("id"), py::arg("nav_layer"), py::arg("focus_scope_id"), py::arg("rect_rel"));
+        ImGui::SetNavID, py::arg("id_"), py::arg("nav_layer"), py::arg("focus_scope_id"), py::arg("rect_rel"));
 
     m.def("push_focus_scope",    // imgui_internal.h:2927
-        ImGui::PushFocusScope, py::arg("id"));
+        ImGui::PushFocusScope, py::arg("id_"));
 
     m.def("pop_focus_scope",    // imgui_internal.h:2928
         ImGui::PopFocusScope);
@@ -2366,7 +2366,7 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::IsDragDropActive);
 
     m.def("begin_drag_drop_target_custom",    // imgui_internal.h:3005
-        ImGui::BeginDragDropTargetCustom, py::arg("bb"), py::arg("id"));
+        ImGui::BeginDragDropTargetCustom, py::arg("bb"), py::arg("id_"));
 
     m.def("clear_drag_drop",    // imgui_internal.h:3006
         ImGui::ClearDragDrop);
@@ -2399,7 +2399,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("find_or_create_columns",    // imgui_internal.h:3017
         ImGui::FindOrCreateColumns,
-        py::arg("window"), py::arg("id"),
+        py::arg("window"), py::arg("id_"),
         pybind11::return_value_policy::reference);
 
     m.def("get_column_offset_from_norm",    // imgui_internal.h:3018
@@ -2431,11 +2431,11 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("table_find_by_id",    // imgui_internal.h:3032
         py::overload_cast<ImGuiID>(ImGui::TableFindByID),
-        py::arg("id"),
+        py::arg("id_"),
         pybind11::return_value_policy::reference);
 
     m.def("begin_table_ex",    // imgui_internal.h:3033
-        ImGui::BeginTableEx, py::arg("name"), py::arg("id"), py::arg("columns_count"), py::arg("flags") = 0, py::arg("outer_size") = ImVec2(0, 0), py::arg("inner_width") = 0.0f);
+        ImGui::BeginTableEx, py::arg("name"), py::arg("id_"), py::arg("columns_count"), py::arg("flags") = 0, py::arg("outer_size") = ImVec2(0, 0), py::arg("inner_width") = 0.0f);
 
     m.def("table_begin_init_memory",    // imgui_internal.h:3034
         py::overload_cast<ImGuiTable *, int>(ImGui::TableBeginInitMemory), py::arg("table"), py::arg("columns_count"));
@@ -2542,12 +2542,12 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("table_settings_create",    // imgui_internal.h:3070
         py::overload_cast<ImGuiID, int>(ImGui::TableSettingsCreate),
-        py::arg("id"), py::arg("columns_count"),
+        py::arg("id_"), py::arg("columns_count"),
         pybind11::return_value_policy::reference);
 
     m.def("table_settings_find_by_id",    // imgui_internal.h:3071
         py::overload_cast<ImGuiID>(ImGui::TableSettingsFindByID),
-        py::arg("id"),
+        py::arg("id_"),
         pybind11::return_value_policy::reference);
 
     m.def("begin_tab_bar_ex",    // imgui_internal.h:3074
@@ -2642,7 +2642,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("render_nav_highlight",    // imgui_internal.h:3099
         ImGui::RenderNavHighlight,
-        py::arg("bb"), py::arg("id"), py::arg("flags") = ImGuiNavHighlightFlags_TypeDefault,
+        py::arg("bb"), py::arg("id_"), py::arg("flags") = ImGuiNavHighlightFlags_TypeDefault,
         "Navigation highlight");
 
     m.def("find_rendered_text_end",    // imgui_internal.h:3100
@@ -2685,10 +2685,10 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::ButtonEx, py::arg("label"), py::arg("size_arg") = ImVec2(0, 0), py::arg("flags") = 0);
 
     m.def("close_button",    // imgui_internal.h:3116
-        ImGui::CloseButton, py::arg("id"), py::arg("pos"));
+        ImGui::CloseButton, py::arg("id_"), py::arg("pos"));
 
     m.def("collapse_button",    // imgui_internal.h:3117
-        ImGui::CollapseButton, py::arg("id"), py::arg("pos"), py::arg("dock_node"));
+        ImGui::CollapseButton, py::arg("id_"), py::arg("pos"), py::arg("dock_node"));
 
     m.def("arrow_button_ex",    // imgui_internal.h:3118
         ImGui::ArrowButtonEx, py::arg("str_id"), py::arg("dir"), py::arg("size_arg"), py::arg("flags") = 0);
@@ -2697,10 +2697,10 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::Scrollbar, py::arg("axis"));
 
     m.def("scrollbar_ex",    // imgui_internal.h:3120
-        ImGui::ScrollbarEx, py::arg("bb"), py::arg("id"), py::arg("axis"), py::arg("p_scroll_v"), py::arg("avail_v"), py::arg("contents_v"), py::arg("flags"));
+        ImGui::ScrollbarEx, py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("p_scroll_v"), py::arg("avail_v"), py::arg("contents_v"), py::arg("flags"));
 
     m.def("image_button_ex",    // imgui_internal.h:3121
-        ImGui::ImageButtonEx, py::arg("id"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("padding"), py::arg("bg_col"), py::arg("tint_col"));
+        ImGui::ImageButtonEx, py::arg("id_"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("padding"), py::arg("bg_col"), py::arg("tint_col"));
 
     m.def("get_window_scrollbar_rect",    // imgui_internal.h:3122
         ImGui::GetWindowScrollbarRect, py::arg("window"), py::arg("axis"));
@@ -2738,13 +2738,13 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ButtonBehavior_adapt_modifiable_immutable_to_return(bb, id, out_hovered, out_held, flags);
-        },     py::arg("bb"), py::arg("id"), py::arg("out_hovered"), py::arg("out_held"), py::arg("flags") = 0);
+        },     py::arg("bb"), py::arg("id_"), py::arg("out_hovered"), py::arg("out_held"), py::arg("flags") = 0);
 
     m.def("drag_behavior",    // imgui_internal.h:3132
-        py::overload_cast<ImGuiID, ImGuiDataType, void *, float, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::DragBehavior), py::arg("id"), py::arg("data_type"), py::arg("p_v"), py::arg("v_speed"), py::arg("p_min"), py::arg("p_max"), py::arg("format"), py::arg("flags"));
+        py::overload_cast<ImGuiID, ImGuiDataType, void *, float, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::DragBehavior), py::arg("id_"), py::arg("data_type"), py::arg("p_v"), py::arg("v_speed"), py::arg("p_min"), py::arg("p_max"), py::arg("format"), py::arg("flags"));
 
     m.def("slider_behavior",    // imgui_internal.h:3133
-        py::overload_cast<const ImRect &, ImGuiID, ImGuiDataType, void *, const void *, const void *, const char *, ImGuiSliderFlags, ImRect *>(ImGui::SliderBehavior), py::arg("bb"), py::arg("id"), py::arg("data_type"), py::arg("p_v"), py::arg("p_min"), py::arg("p_max"), py::arg("format"), py::arg("flags"), py::arg("out_grab_bb"));
+        py::overload_cast<const ImRect &, ImGuiID, ImGuiDataType, void *, const void *, const void *, const char *, ImGuiSliderFlags, ImRect *>(ImGui::SliderBehavior), py::arg("bb"), py::arg("id_"), py::arg("data_type"), py::arg("p_v"), py::arg("p_min"), py::arg("p_max"), py::arg("format"), py::arg("flags"), py::arg("out_grab_bb"));
 
     m.def("splitter_behavior",    // imgui_internal.h:3134
         [](const ImRect & bb, ImGuiID id, ImGuiAxis axis, py::array & size1, py::array & size2, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, ImU32 bg_col = 0) -> bool
@@ -2782,18 +2782,18 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return SplitterBehavior_adapt_c_buffers(bb, id, axis, size1, size2, min_size2, hover_extend, hover_visibility_delay, bg_col);
-        },     py::arg("bb"), py::arg("id"), py::arg("axis"), py::arg("size1"), py::arg("size2"), py::arg("min_size2"), py::arg("hover_extend") = 0.0f, py::arg("hover_visibility_delay") = 0.0f, py::arg("bg_col") = 0);
+        },     py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("size1"), py::arg("size2"), py::arg("min_size2"), py::arg("hover_extend") = 0.0f, py::arg("hover_visibility_delay") = 0.0f, py::arg("bg_col") = 0);
 
     m.def("tree_node_behavior",    // imgui_internal.h:3135
-        ImGui::TreeNodeBehavior, py::arg("id"), py::arg("flags"), py::arg("label"), py::arg("label_end") = py::none());
+        ImGui::TreeNodeBehavior, py::arg("id_"), py::arg("flags"), py::arg("label"), py::arg("label_end") = py::none());
 
     m.def("tree_node_behavior_is_open",    // imgui_internal.h:3136
         ImGui::TreeNodeBehaviorIsOpen,
-        py::arg("id"), py::arg("flags") = 0,
+        py::arg("id_"), py::arg("flags") = 0,
         "Consume previous SetNextItemOpen() data, if any. May return True when logging");
 
     m.def("tree_push_override_id",    // imgui_internal.h:3137
-        ImGui::TreePushOverrideID, py::arg("id"));
+        ImGui::TreePushOverrideID, py::arg("id_"));
 
     m.def("color_tooltip",    // imgui_internal.h:3165
         ImGui::ColorTooltip, py::arg("text"), py::arg("col"), py::arg("flags"));
@@ -2834,7 +2834,7 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::ShowFontAtlas, py::arg("atlas"));
 
     m.def("debug_hook_id_info",    // imgui_internal.h:3191
-        ImGui::DebugHookIdInfo, py::arg("id"), py::arg("data_type"), py::arg("data_id"), py::arg("data_id_end"));
+        ImGui::DebugHookIdInfo, py::arg("id_"), py::arg("data_type"), py::arg("data_id"), py::arg("data_id_end"));
 
     m.def("debug_node_columns",    // imgui_internal.h:3192
         ImGui::DebugNodeColumns, py::arg("columns"));

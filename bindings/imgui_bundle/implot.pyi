@@ -6,7 +6,6 @@ from typing import Any, Optional, Tuple
 import numpy as np
 import enum
 
-
 from imgui_bundle.imgui import ImVec4
 
 
@@ -1787,7 +1786,7 @@ def plot_dummy(label_id: str, flags: ImPlotDummyFlags = 0) -> None:  # implot.h:
 
 # IMPLOT_API bool DragPoint(int id, double* x, double* y, const ImVec4& col, float size = 4, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_point(
-    id: int,
+    id_: int,
     x: float,
     y: float,
     col: ImVec4,
@@ -1799,21 +1798,29 @@ def drag_point(
 
 # IMPLOT_API bool DragLineX(int id, double* x, const ImVec4& col, float thickness = 1, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_line_x(
-    id: int, x: float, col: ImVec4, thickness: float = 1, flags: ImPlotDragToolFlags = 0
+    id_: int,
+    x: float,
+    col: ImVec4,
+    thickness: float = 1,
+    flags: ImPlotDragToolFlags = 0,
 ) -> Tuple[bool, float]:  # implot.h:924
     """Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text."""
     pass
 
 # IMPLOT_API bool DragLineY(int id, double* y, const ImVec4& col, float thickness = 1, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_line_y(
-    id: int, y: float, col: ImVec4, thickness: float = 1, flags: ImPlotDragToolFlags = 0
+    id_: int,
+    y: float,
+    col: ImVec4,
+    thickness: float = 1,
+    flags: ImPlotDragToolFlags = 0,
 ) -> Tuple[bool, float]:  # implot.h:926
     """Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text."""
     pass
 
 # IMPLOT_API bool DragRect(int id, double* x1, double* y1, double* x2, double* y2, const ImVec4& col, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_rect(
-    id: int,
+    id_: int,
     x1: float,
     y1: float,
     x2: float,

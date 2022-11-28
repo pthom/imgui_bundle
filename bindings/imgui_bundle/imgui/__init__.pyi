@@ -610,7 +610,7 @@ def begin_child(
 
 # IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0);    /* original C++ signature */
 def begin_child(
-    id: ID, size: ImVec2 = ImVec2(0, 0), border: bool = False, flags: WindowFlags = 0
+    id_: ID, size: ImVec2 = ImVec2(0, 0), border: bool = False, flags: WindowFlags = 0
 ) -> bool:  # imgui.h:344
     pass
 
@@ -2019,7 +2019,7 @@ def open_popup(str_id: str, popup_flags: PopupFlags = 0) -> None:  # imgui.h:695
     pass
 
 # IMGUI_API void          OpenPopup(ImGuiID id, ImGuiPopupFlags popup_flags = 0);                                 /* original C++ signature */
-def open_popup(id: ID, popup_flags: PopupFlags = 0) -> None:  # imgui.h:696
+def open_popup(id_: ID, popup_flags: PopupFlags = 0) -> None:  # imgui.h:696
     """id overload to facilitate calling from nested stacks"""
     pass
 
@@ -2208,7 +2208,9 @@ def table_set_bg_color(
 # Legacy Columns API (prefer using Tables!)
 # - You can also use SameLine(pos_x) to mimic simplified columns.
 # IMGUI_API void          Columns(int count = 1, const char* id = NULL, bool border = true);    /* original C++ signature */
-def columns(count: int = 1, id: str = None, border: bool = True) -> None:  # imgui.h:774
+def columns(
+    count: int = 1, id_: str = None, border: bool = True
+) -> None:  # imgui.h:774
     pass
 
 # IMGUI_API void          NextColumn();                                                           /* original C++ signature */
@@ -2294,7 +2296,7 @@ def set_tab_item_closed(tab_or_docked_window_label: str) -> None:  # imgui.h:790
 #   e.g. if you have multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly.
 # IMGUI_API ImGuiID       DockSpace(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space(
-    id: ID,
+    id_: ID,
     size: ImVec2 = ImVec2(0, 0),
     flags: DockNodeFlags = 0,
     window_class: WindowClass = None,
@@ -2600,7 +2602,7 @@ def get_state_storage() -> Storage:  # imgui.h:893
 
 # IMGUI_API bool          BeginChildFrame(ImGuiID id, const ImVec2& size, ImGuiWindowFlags flags = 0);     /* original C++ signature */
 def begin_child_frame(
-    id: ID, size: ImVec2, flags: WindowFlags = 0
+    id_: ID, size: ImVec2, flags: WindowFlags = 0
 ) -> bool:  # imgui.h:894
     """helper to create a child window / scrolling region that looks like a normal widget frame"""
     pass
@@ -2855,7 +2857,7 @@ def destroy_platform_windows() -> None:  # imgui.h:973
     pass
 
 # IMGUI_API ImGuiViewport*    FindViewportByID(ImGuiID id);                                       /* original C++ signature */
-def find_viewport_by_id(id: ID) -> Viewport:  # imgui.h:974
+def find_viewport_by_id(id_: ID) -> Viewport:  # imgui.h:974
     """this is a helper for backends."""
     pass
 
@@ -5118,7 +5120,7 @@ class IO:  # imgui.h:1983
         """Queue a mouse wheel update"""
         pass
     # IMGUI_API void  AddMouseViewportEvent(ImGuiID id);                          /* original C++ signature */
-    def add_mouse_viewport_event(self, id: ID) -> None:  # imgui.h:2068
+    def add_mouse_viewport_event(self, id_: ID) -> None:  # imgui.h:2068
         """Queue a mouse hovered viewport. Requires backend to set ImGuiBackendFlags_HasMouseHoveredViewport to call this (for multi-viewport support)."""
         pass
     # IMGUI_API void  AddFocusEvent(bool focused);                                /* original C++ signature */
@@ -6595,7 +6597,7 @@ class ImFontAtlas:  # imgui.h:2864
     def add_custom_rect_font_glyph(
         self,
         font: ImFont,
-        id: ImWchar,
+        id_: ImWchar,
         width: int,
         height: int,
         advance_x: float,
@@ -6849,7 +6851,7 @@ class Viewport:  # imgui.h:3046
     """
 
     # ImGuiID             ID;    /* original C++ signature */
-    id: ID  # Unique identifier for the viewport    # imgui.h:3048
+    id_: ID  # Unique identifier for the viewport    # imgui.h:3048
     # ImGuiViewportFlags  Flags;    /* original C++ signature */
     flags: ViewportFlags  # See ImGuiViewportFlags_    # imgui.h:3049
     # ImVec2              Pos;    /* original C++ signature */
