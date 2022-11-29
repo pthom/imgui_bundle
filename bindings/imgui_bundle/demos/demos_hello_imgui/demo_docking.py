@@ -142,7 +142,7 @@ def main():
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
     # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/assets")
+    hello_imgui.set_assets_folder(this_dir + "/../assets")
 
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font

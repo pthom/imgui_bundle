@@ -21,7 +21,7 @@ def main():
 
     # Set the assets folder path
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/assets")
+    hello_imgui.set_assets_folder(this_dir + "/../assets")
 
     run(
         gui_function=show_gui,

@@ -99,6 +99,20 @@ def main():
     # //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     # //IM_ASSERT(font != NULL);
 
+    imgui.get_io().fonts.add_font_default()
+    font_filename = "/Users/pascal/dvp/OpenSource/ImGuiWork/litgen/demos/litgen/imgui_bundle/bindings/imgui_bundle/assets/fonts/SourceCodePro-Regular.ttf"
+    custom_font = imgui.font_atlas_add_font_from_file_ttf(
+        imgui.get_io().fonts,
+        font_filename,
+        48.,
+        None,
+        #FONT_CONFIG,
+        # glyph_ranges_as_int_list=[ 0x20, 500, 0 ]
+    )
+    # imgui.get_io().fonts.build()
+    print(id(custom_font))
+
+
     # Our state
     show_demo_window = True
     show_another_window = False
@@ -120,6 +134,12 @@ def main():
         imgui_backends.opengl3_new_frame()
         imgui_backends.glfw_new_frame()
         imgui.new_frame()
+
+        _id = id(custom_font)
+        imgui.push_font(custom_font)
+        imgui.text("ALLO")
+        imgui.pop_font()
+
 
         # 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if show_demo_window:
