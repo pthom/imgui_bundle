@@ -1,5 +1,5 @@
+set(_THIS_MODULE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
-set(_THIS_MODULE_BASE_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 function(lg_disable_warning_exception_in_destructor target)
     # Disable warning due to IM_ASSERT implementation which uses exceptions (see lg_imgui_imconfig.h)
@@ -22,7 +22,7 @@ function(add_imgui imgui_dir)
         file(GLOB imgui_sources ${imgui_dir}/*.h ${imgui_dir}/*.cpp ${imgui_dir}/misc/cpp/*.cpp ${imgui_dir}/misc/cpp/*.h)
         add_library(imgui STATIC ${imgui_sources})
         target_include_directories(imgui PUBLIC ${imgui_dir})
-        target_compile_definitions(imgui PRIVATE IMGUI_USER_CONFIG="${_THIS_MODULE_BASE_DIR}/lg_imgui_imconfig.h")
+        target_compile_definitions(imgui PRIVATE IMGUI_USER_CONFIG="${_THIS_MODULE_DIR}/imgui_bundle_config.h")
         lg_disable_warning_exception_in_destructor(imgui)
         install(TARGETS imgui DESTINATION ./lib/)
 
