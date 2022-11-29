@@ -25,9 +25,9 @@ def set_io_log_filename(filename: str) -> None:
     pass
 
 
-def font_atlas_get_tex_data_as_rgba32_experimental(font_atlas: ImFontAtlas) -> np.ndarray:
-    """Manual binding for ImFontAtlas.get_tex_data_as_rgba32"""
-    pass
+# def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
+#     """Manual binding for ImFontAtlas.get_tex_data_as_rgba32"""
+#     pass
 
 
 def font_atlas_add_font_from_file_ttf(

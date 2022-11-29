@@ -13,25 +13,19 @@
 namespace py = pybind11;
 
 
-// GetTexDataAsAlpha8 & GetTexDataAsAlpha8
-// ===> Hack pyClassImFontAtlas
-// ````cpp
-// struct ImFontAtlas {
-//     IMGUI_API void              GetTexDataAsAlpha8(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL);
-//     IMGUI_API void              GetTexDataAsAlpha8(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL);
-pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)
-{
-    unsigned char *pixels;
-    int width, height, bytes_per_pixel;
-    self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
-    std::vector<std::size_t> shape = {(size_t) height, (size_t) width, (size_t) bytes_per_pixel};
-    auto r = pybind11::array(
-        pybind11::format_descriptor<uint8_t>::format(),
-        shape,
-        pixels
-    );
-    return r;
-};
+//pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)   // Broken
+//{
+//    unsigned char *pixels;
+//    int width, height, bytes_per_pixel;
+//    self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
+//    std::vector<std::size_t> shape = {(size_t) height * (size_t) width * (size_t) bytes_per_pixel};
+//    auto r = pybind11::array(
+//        pybind11::format_descriptor<uint8_t>::format(),
+//        shape,
+//        pixels
+//    );
+//    return r;
+//};
 
 
 void py_init_module_imgui_main(py::module& m)
@@ -48,7 +42,7 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("set_io_ini_filename", PatchImGui::set_imgui_io_filename);
     m.def("set_io_log_filename", PatchImGui::set_imgui_log_filename);
-    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
+    // m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
     m.def("font_atlas_add_font_from_file_ttf", PatchImGui::font_atlas_add_font_from_file_ttf,
           py::arg("font_atlas"),
