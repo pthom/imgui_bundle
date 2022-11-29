@@ -1,3 +1,5 @@
+include(${CMAKE_CURRENT_LIST_DIR}/add_imgui.cmake)
+
 ####################################################
 # Build hello_imgui Bound C++ library
 ####################################################
@@ -9,7 +11,7 @@ function (add_hello_imgui)
     set(BUILD_SHARED_LIBS OFF)
     # 1. Build imgui (lib used by hello_imgui)
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
-    add_imgui_target(${imgui_dir})
+    add_imgui(${imgui_dir})
 
     if (APPLE)
         enable_language(OBJC) # See https://gitlab.kitware.com/cmake/cmake/-/issues/24104
