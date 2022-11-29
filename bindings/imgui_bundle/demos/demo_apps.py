@@ -40,12 +40,13 @@ You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show
 
 
 def demo_custom_font():
-    imgui_md.render("""
+    imgui_md.render(
+        """
 ### How to load custom fonts (with icons)
 You can load custom font and merge icons into them.
-    """)
+    """
+    )
     show_one_feature("demo_custom_font.py")
-
 
 
 def demo_hello_imgui():

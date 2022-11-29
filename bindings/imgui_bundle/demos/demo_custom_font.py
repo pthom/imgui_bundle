@@ -38,6 +38,7 @@ def my_load_fonts_manually():
     )
     # ii. ... Aad merge icons into the previous font
     from imgui_bundle import icons_fontawesome
+
     font_filename = this_dir + "/assets/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
