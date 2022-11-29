@@ -42,12 +42,7 @@ class ShellCommands:
         """
 
         def _cmd_to_echo_and_cmd_lines(cmd: str) -> [str]:
-            lines_with_echo = [
-                "echo '###### Run command ######'",
-                f"echo '{cmd}'",
-                "echo ''",
-                cmd
-            ]
+            lines_with_echo = ["echo '###### Run command ######'", f"echo '{cmd}'", "echo ''", cmd]
             return lines_with_echo
 
         lines = self.shell_commands.split("\n")
@@ -169,18 +164,13 @@ class ExternalLibrary:
 
 def lib_glfw() -> ExternalLibrary:
     return ExternalLibrary(
-        name="glfw",
-        official_git_url="https://github.com/glfw/glfw.git",
-        official_branch="master",
-        official_tag="3.3.8"
+        name="glfw", official_git_url="https://github.com/glfw/glfw.git", official_branch="master", official_tag="3.3.8"
     )
 
 
 def lib_hello_imgui() -> ExternalLibrary:
     return ExternalLibrary(
-        name="hello_imgui",
-        official_git_url="https://github.com/pthom/hello_imgui.git",
-        official_branch="master"
+        name="hello_imgui", official_git_url="https://github.com/pthom/hello_imgui.git", official_branch="master"
     )
 
 
@@ -189,7 +179,7 @@ def lib_im_file_dialog() -> ExternalLibrary:
         name="ImFileDialog",
         official_git_url="https://github.com/dfranx/ImFileDialog.git",
         official_branch="main",
-        fork_git_url="https://github.com/ImFileDialog.git"
+        fork_git_url="https://github.com/ImFileDialog.git",
     )
 
 
@@ -199,16 +189,16 @@ def lib_imgui() -> ExternalLibrary:
         official_git_url="https://github.com/ocornut/imgui.git",
         official_branch="docking",
         fork_git_url="https://github.com/imgui.git",
-        fork_branch="imgui_bundle"
+        fork_branch="imgui_bundle",
     )
 
 
 def lib_imgui_knobs() -> ExternalLibrary:
     return ExternalLibrary(
-        name = "imgui-knobs",
+        name="imgui-knobs",
         official_git_url="https://github.com/altschuler/imgui-knobs",
         official_branch="main",
-        fork_git_url="https://github.com/imgui-knobs.git"
+        fork_git_url="https://github.com/imgui-knobs.git",
     )
 
 
@@ -217,23 +207,23 @@ def lib_imgui_node_editor() -> ExternalLibrary:
         name="imgui-node-editor",
         official_git_url="https://github.com/thedmd/imgui-node-editor.git",
         official_branch="develop",
-        fork_git_url="https://github.com/imgui-node-editor.git"
+        fork_git_url="https://github.com/imgui-node-editor.git",
     )
 
 
 def lib_imgui_md() -> ExternalLibrary:
     return ExternalLibrary(
-        name = "imgui_md",
+        name="imgui_md",
         official_git_url="https://github.com/mekhontsev/imgui_md",
         official_branch="main",
         custom_path_in_external_libraries_dir="imgui_md/imgui_md",
-        fork_git_url="https://github.com/imgui_md.git"
+        fork_git_url="https://github.com/imgui_md.git",
     )
 
 
 def lib_md4c() -> ExternalLibrary:
     return ExternalLibrary(
-        name = "md4c",
+        name="md4c",
         official_git_url="https://github.com/mity/md4c",
         official_branch="master",
         custom_path_in_external_libraries_dir="imgui_md/md4c",
@@ -242,9 +232,7 @@ def lib_md4c() -> ExternalLibrary:
 
 def lib_imgui_toggle() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imgui_toggle",
-        official_git_url="https://github.com/cmdwtf/imgui_toggle.git",
-        official_branch="main"
+        name="imgui_toggle", official_git_url="https://github.com/cmdwtf/imgui_toggle.git", official_branch="main"
     )
 
 
@@ -253,7 +241,7 @@ def lib_imgui_color_text_edit() -> ExternalLibrary:
         name="ImGuiColorTextEdit",
         official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
         official_branch="dev",
-        fork_git_url="https://github.com/ImGuiColorTextEdit.git"
+        fork_git_url="https://github.com/ImGuiColorTextEdit.git",
     )
 
 
@@ -261,7 +249,7 @@ def lib_immvision() -> ExternalLibrary:
     return ExternalLibrary(
         name="immvision",
         official_git_url="https://github.com/pthom/immvision.git",
-        custom_path_in_external_libraries_dir="immvision/immvision"
+        custom_path_in_external_libraries_dir="immvision/immvision",
     )
 
 
@@ -270,23 +258,19 @@ def lib_cvnp() -> ExternalLibrary:
         name="cvnp",
         official_git_url="https://github.com/pthom/cvnp.git",
         official_branch="master",
-        custom_path_in_external_libraries_dir="immvision/cvnp"
+        custom_path_in_external_libraries_dir="immvision/cvnp",
     )
 
 
 def lib_implot() -> ExternalLibrary:
     return ExternalLibrary(
-        name="implot",
-        official_git_url="https://github.com/epezent/implot.git",
-        official_branch="master"
+        name="implot", official_git_url="https://github.com/epezent/implot.git", official_branch="master"
     )
 
 
 def lib_imspinner() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imspinner",
-        official_git_url="https://github.com/dalerank/imspinner.git",
-        official_branch="master"
+        name="imspinner", official_git_url="https://github.com/dalerank/imspinner.git", official_branch="master"
     )
 
 
@@ -387,6 +371,7 @@ def play():
     # imspinner
     # ---------
 
+
 class CliCommands:
     def hello(self):
         print("Hello")
@@ -394,9 +379,6 @@ class CliCommands:
 
 def cli_command() -> None:
     fire.Fire(CliCommands)
-
-
-
 
 
 if __name__ == "__main__":
