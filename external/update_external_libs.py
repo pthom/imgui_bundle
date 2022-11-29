@@ -18,6 +18,7 @@ CommandsString = str
 @dataclass
 class ShellCommands:
     shell_commands: str
+    abort_on_error: bool = True
 
     def command(self):
         commands = self._chain_and_echo_commands(step_by_step_echo=False)
@@ -28,7 +29,7 @@ class ShellCommands:
         subprocess.check_call(commands, shell=True)
 
     def __str__(self):
-        return self._chain_and_echo_commands(step_by_step_echo=False)
+        return self._chain_and_echo_commands(step_by_step_echo=True)
 
     def _chain_and_echo_commands(self, step_by_step_echo: bool) -> CommandsString:
         """
@@ -38,7 +39,12 @@ class ShellCommands:
         """
 
         def _cmd_to_echo_and_cmd_lines(cmd: str) -> [str]:
-            lines_with_echo = ["echo '###### Run command ######'", f"echo '{cmd}'", "echo ''", cmd]
+            lines_with_echo = [
+                "echo '###### Run command ######'",
+                f"echo '{cmd}'",
+                "echo ''",
+                cmd
+            ]
             return lines_with_echo
 
         lines = self.shell_commands.split("\n")
@@ -60,11 +66,19 @@ class ShellCommands:
                 else:
                     lines_with_echo = lines_with_echo + [line]
 
-                    # End of line joiner
-        end_line = " &&         \\\n"
+        # End of line joiner
+        if self.abort_on_error:
+            end_line = " &&          \\\n"
+        else:
+            end_line = " || true  &&  \\\n"
 
         r = end_line.join(lines_with_echo)
-        r = r.replace("&& &&", "&& ")
+        if self.abort_on_error:
+            r = r.replace("&& &&", "&& ")
+
+        if not self.abort_on_error:
+            r += " || true"
+
         return r
 
 
@@ -91,15 +105,35 @@ class ExternalLibrary:
         else:
             return external_libraries_dir() + "/" + self.name
 
-    # def pull_official(self) -> ShellCommands:
-    #     cmd = f"""
-    #     cd {self.folder()}
-    #     git checkout {self.official_branch}
-    #     git pull {self.official_remote_name} {self.official_branch}
-    #     """
-    #     return ShellCommands(cmd)
+    def run_update_official(self) -> ShellCommands:
+        assert self.fork_git_url is None  # if this is a fork, use run_rebase_fork_on_official_changes!
 
-    def add_remotes(self) -> ShellCommands:
+        def official_tag_to_checkout():
+            if self.official_tag is not None:
+                return self.official_tag
+            else:
+                return f"{self.official_remote_name}/{self.official_branch}"
+
+        cmd = f"""
+        cd {self.folder()}
+        git fetch {self.official_remote_name}
+        git checkout {official_tag_to_checkout()}
+        """
+        return ShellCommands(cmd)
+
+    def run_rm_remotes(self) -> ShellCommands:
+        cmd = f"""
+        cd {self.folder()}
+        git remote rm origin
+        git remote rm {self.official_remote_name}
+        """
+        if self.fork_git_url is not None:
+            cmd += f"""
+            git remote rm {self.fork_remote_name}
+            """
+        return ShellCommands(cmd, abort_on_error=False)
+
+    def run_add_remotes(self) -> ShellCommands:
         cmd = f"""
         cd {self.folder()}
         git remote add {self.official_remote_name} {self.official_git_url}
@@ -110,7 +144,7 @@ class ExternalLibrary:
             """
         return ShellCommands(cmd)
 
-    def merge_official_changes_into_fork(self) -> ShellCommands:
+    def run_rebase_fork_on_official_changes(self) -> ShellCommands:
         assert self.fork_git_url is not None
         cmd = f"""
         cd {self.folder()}
@@ -138,6 +172,7 @@ def lib_glfw() -> ExternalLibrary:
         name="glfw",
         official_git_url="https://github.com/glfw/glfw.git",
         official_branch="master",
+        official_tag="3.3.8"
     )
 
 
@@ -152,14 +187,19 @@ def lib_im_file_dialog() -> ExternalLibrary:
 
 def play():
     # lib = lib_imgui_node_editor()
-    # cmd = lib.merge_official_changes_into_fork()
+    # cmd = lib.run_rebase_fork_on_official_changes()
     # cmd.run()
     # print(cmd)
 
-    lib = lib_im_file_dialog()
-    cmd = lib.merge_official_changes_into_fork()
-    print(cmd)
+    # lib = lib_im_file_dialog()
+    # cmd = lib.run_rebase_fork_on_official_changes()
+    # print(cmd)
 
+    lib = lib_glfw()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    print(lib.run_update_official())
+    lib.run_update_official().run()
 
 
 class CliCommands:
