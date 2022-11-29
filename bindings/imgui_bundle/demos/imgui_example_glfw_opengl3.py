@@ -3,7 +3,7 @@
 imgui_bundle can be used without hello imgui, and you can configure and run imgui, opengl and glfw (or sdl, etc.) manually,
 as shown here.
 """
-
+import os.path
 import sys
 import platform
 import OpenGL.GL as GL  # type: ignore
@@ -99,19 +99,35 @@ def main():
     # //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     # //IM_ASSERT(font != NULL);
 
-    imgui.get_io().fonts.add_font_default()
-    font_filename = "/Users/pascal/dvp/OpenSource/ImGuiWork/litgen/demos/litgen/imgui_bundle/bindings/imgui_bundle/assets/fonts/SourceCodePro-Regular.ttf"
+    # Load font example, with a merged font for icons
+    # ------------------------------------------------
+    # i. Load default font
+    font_atlas = imgui.get_io().fonts
+    font_atlas.add_font_default()
+    this_dir = os.path.dirname(__file__)
+    font_size_pixel = 48.0
+    # i. Load another font...
+    font_filename = this_dir + "/assets/fonts/Akronim-Regular.ttf"
+    glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
     custom_font = imgui.font_atlas_add_font_from_file_ttf(
-        imgui.get_io().fonts,
-        font_filename,
-        48.,
-        None,
-        #FONT_CONFIG,
-        # glyph_ranges_as_int_list=[ 0x20, 500, 0 ]
+        font_atlas=imgui.get_io().fonts,
+        filename=font_filename,
+        size_pixels=font_size_pixel,
+        glyph_ranges_as_int_list=glyph_range,
     )
-    # imgui.get_io().fonts.build()
-    print(id(custom_font))
-
+    # ii. ... And merge icons into the previous font
+    from imgui_bundle import icons_fontawesome
+    font_filename = this_dir + "/assets/fonts/fontawesome-webfont.ttf"
+    font_config = imgui.ImFontConfig()
+    font_config.merge_mode = True
+    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
+    custom_font = imgui.font_atlas_add_font_from_file_ttf(
+        font_atlas,
+        filename=font_filename,
+        size_pixels=font_size_pixel,
+        glyph_ranges_as_int_list=icons_range,
+        font_cfg=font_config,
+    )
 
     # Our state
     show_demo_window = True
@@ -135,12 +151,6 @@ def main():
         imgui_backends.glfw_new_frame()
         imgui.new_frame()
 
-        _id = id(custom_font)
-        imgui.push_font(custom_font)
-        imgui.text("ALLO")
-        imgui.pop_font()
-
-
         # 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if show_demo_window:
             show_demo_window = imgui.show_demo_window(show_demo_window)
@@ -151,6 +161,12 @@ def main():
             # static float f = 0.0f;
             # static int counter = 0;
             imgui.begin("Hello, world!")  # Create a window called "Hello, world!" and append into it.
+
+            # Demo custom font
+            _id = id(custom_font)
+            imgui.push_font(custom_font)
+            imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
+            imgui.pop_font()
 
             imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
             _, show_demo_window = imgui.checkbox(

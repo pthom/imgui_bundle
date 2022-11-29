@@ -58,6 +58,34 @@ def font_atlas_add_font_from_file_ttf(
     """
     pass
 
+def font_atlas_glyph_ranges_default(font_atlas: ImFontAtlas):
+    """Basic Latin, Extended Latin"""
+    pass
+def font_atlas_glyph_ranges_greek(font_atlas: ImFontAtlas):
+    """Default + Greek and Coptic"""
+    pass
+def font_atlas_glyph_ranges_korean(font_atlas: ImFontAtlas):
+    """Default + Korean characters"""
+    pass
+def font_atlas_glyph_ranges_japanese(font_atlas: ImFontAtlas):
+    """Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
+    pass
+def font_atlas_glyph_ranges_chinese_full(font_atlas: ImFontAtlas):
+    """Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
+    pass
+def font_atlas_glyph_ranges_chinese_simplified_common(font_atlas: ImFontAtlas):
+    """Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
+    pass
+def font_atlas_glyph_ranges_cyrillic(font_atlas: ImFontAtlas):
+    """Default + about 400 Cyrillic characters"""
+    pass
+def font_atlas_glyph_ranges_thai(font_atlas: ImFontAtlas):
+    """Default + Thai characters"""
+    pass
+def font_atlas_glyph_ranges_vietnamese(font_atlas: ImFontAtlas):
+    """Default + Vietnamese characters"""
+    pass
+
 
 #-----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
