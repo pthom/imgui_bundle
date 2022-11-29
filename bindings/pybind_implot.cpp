@@ -95,17 +95,18 @@ void py_init_module_implot(py::module& m)
         .value("no_highlight_axis", ImPlotLegendFlags_NoHighlightAxis, "axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)")
         .value("no_menus", ImPlotLegendFlags_NoMenus, "the user will not be able to open context menus with right-click")
         .value("outside", ImPlotLegendFlags_Outside, "legend will be rendered outside of the plot area")
-        .value("horizontal", ImPlotLegendFlags_Horizontal, "legend entries will be displayed horizontally");
+        .value("horizontal", ImPlotLegendFlags_Horizontal, "legend entries will be displayed horizontally")
+        .value("sort", ImPlotLegendFlags_Sort, "legend entries will be displayed in alphabetical order");
 
 
-    py::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", py::arithmetic(), "Options for mouse hover text (see SetupMouseText)")    // implot.h:197
+    py::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", py::arithmetic(), "Options for mouse hover text (see SetupMouseText)")    // implot.h:198
         .value("none", ImPlotMouseTextFlags_None, "default")
         .value("no_aux_axes", ImPlotMouseTextFlags_NoAuxAxes, "only show the mouse position for primary axes")
         .value("no_format", ImPlotMouseTextFlags_NoFormat, "axes label formatters won't be used to render text")
         .value("show_always", ImPlotMouseTextFlags_ShowAlways, "always display mouse position even if plot not hovered");
 
 
-    py::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", py::arithmetic(), "Options for DragPoint, DragLine, DragRect")    // implot.h:205
+    py::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", py::arithmetic(), "Options for DragPoint, DragLine, DragRect")    // implot.h:206
         .value("none", ImPlotDragToolFlags_None, "default")
         .value("no_cursors", ImPlotDragToolFlags_NoCursors, "drag tools won't change cursor icons when hovered or held")
         .value("no_fit", ImPlotDragToolFlags_NoFit, "the drag tool won't be considered for plot fits")
@@ -113,20 +114,20 @@ void py_init_module_implot(py::module& m)
         .value("delayed", ImPlotDragToolFlags_Delayed, "tool rendering will be delayed one frame; useful when applying position-constraints");
 
 
-    py::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", py::arithmetic(), "Flags for ColormapScale")    // implot.h:214
+    py::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", py::arithmetic(), "Flags for ColormapScale")    // implot.h:215
         .value("none", ImPlotColormapScaleFlags_None, "default")
         .value("no_label", ImPlotColormapScaleFlags_NoLabel, "the colormap axis label will not be displayed")
         .value("opposite", ImPlotColormapScaleFlags_Opposite, "render the colormap label and tick labels on the opposite side")
         .value("invert", ImPlotColormapScaleFlags_Invert, "invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)");
 
 
-    py::enum_<ImPlotItemFlags_>(m, "ItemFlags_", py::arithmetic(), "Flags for ANY PlotX function")    // implot.h:222
+    py::enum_<ImPlotItemFlags_>(m, "ItemFlags_", py::arithmetic(), "Flags for ANY PlotX function")    // implot.h:223
         .value("none", ImPlotItemFlags_None, "")
         .value("no_legend", ImPlotItemFlags_NoLegend, "the item won't have a legend entry displayed")
         .value("no_fit", ImPlotItemFlags_NoFit, "the item won't be considered for plot fits");
 
 
-    py::enum_<ImPlotLineFlags_>(m, "LineFlags_", py::arithmetic(), "Flags for PlotLine")    // implot.h:229
+    py::enum_<ImPlotLineFlags_>(m, "LineFlags_", py::arithmetic(), "Flags for PlotLine")    // implot.h:230
         .value("none", ImPlotLineFlags_None, "default")
         .value("segments", ImPlotLineFlags_Segments, "a line segment will be rendered from every two consecutive points")
         .value("loop", ImPlotLineFlags_Loop, "the last and first point will be connected to form a closed loop")
@@ -135,58 +136,58 @@ void py_init_module_implot(py::module& m)
         .value("shaded", ImPlotLineFlags_Shaded, "a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
 
-    py::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", py::arithmetic(), "Flags for PlotScatter")    // implot.h:239
+    py::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", py::arithmetic(), "Flags for PlotScatter")    // implot.h:240
         .value("none", ImPlotScatterFlags_None, "default")
         .value("no_clip", ImPlotScatterFlags_NoClip, "markers on the edge of a plot will not be clipped");
 
 
-    py::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", py::arithmetic(), "Flags for PlotStairs")    // implot.h:245
+    py::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", py::arithmetic(), "Flags for PlotStairs")    // implot.h:246
         .value("none", ImPlotStairsFlags_None, "default")
         .value("pre_step", ImPlotStairsFlags_PreStep, "the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]")
         .value("shaded", ImPlotStairsFlags_Shaded, "a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
 
-    py::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", py::arithmetic(), "Flags for PlotShaded (placeholder)")    // implot.h:252
+    py::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", py::arithmetic(), "Flags for PlotShaded (placeholder)")    // implot.h:253
         .value("none", ImPlotShadedFlags_None, "default");
 
 
-    py::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", py::arithmetic(), "Flags for PlotBars")    // implot.h:257
+    py::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", py::arithmetic(), "Flags for PlotBars")    // implot.h:258
         .value("none", ImPlotBarsFlags_None, "default")
         .value("horizontal", ImPlotBarsFlags_Horizontal, "bars will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", py::arithmetic(), "Flags for PlotBarGroups")    // implot.h:263
+    py::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", py::arithmetic(), "Flags for PlotBarGroups")    // implot.h:264
         .value("none", ImPlotBarGroupsFlags_None, "default")
         .value("horizontal", ImPlotBarGroupsFlags_Horizontal, "bar groups will be rendered horizontally on the current y-axis")
         .value("stacked", ImPlotBarGroupsFlags_Stacked, "items in a group will be stacked on top of each other");
 
 
-    py::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", py::arithmetic(), "Flags for PlotErrorBars")    // implot.h:270
+    py::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", py::arithmetic(), "Flags for PlotErrorBars")    // implot.h:271
         .value("none", ImPlotErrorBarsFlags_None, "default")
         .value("horizontal", ImPlotErrorBarsFlags_Horizontal, "error bars will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", py::arithmetic(), "Flags for PlotStems")    // implot.h:276
+    py::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", py::arithmetic(), "Flags for PlotStems")    // implot.h:277
         .value("none", ImPlotStemsFlags_None, "default")
         .value("horizontal", ImPlotStemsFlags_Horizontal, "stems will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", py::arithmetic(), "Flags for PlotInfLines")    // implot.h:282
+    py::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", py::arithmetic(), "Flags for PlotInfLines")    // implot.h:283
         .value("none", ImPlotInfLinesFlags_None, "default")
         .value("horizontal", ImPlotInfLinesFlags_Horizontal, "lines will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", py::arithmetic(), "Flags for PlotPieChart")    // implot.h:288
+    py::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", py::arithmetic(), "Flags for PlotPieChart")    // implot.h:289
         .value("none", ImPlotPieChartFlags_None, "default")
         .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)");
 
 
-    py::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", py::arithmetic(), "Flags for PlotHeatmap")    // implot.h:294
+    py::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", py::arithmetic(), "Flags for PlotHeatmap")    // implot.h:295
         .value("none", ImPlotHeatmapFlags_None, "default")
         .value("col_major", ImPlotHeatmapFlags_ColMajor, "data will be read in column major order");
 
 
-    py::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", py::arithmetic(), "Flags for PlotHistogram and PlotHistogram2D")    // implot.h:300
+    py::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", py::arithmetic(), "Flags for PlotHistogram and PlotHistogram2D")    // implot.h:301
         .value("none", ImPlotHistogramFlags_None, "default")
         .value("horizontal", ImPlotHistogramFlags_Horizontal, "histogram bars will be rendered horizontally (not supported by PlotHistogram2D)")
         .value("cumulative", ImPlotHistogramFlags_Cumulative, "each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)")
@@ -195,30 +196,30 @@ void py_init_module_implot(py::module& m)
         .value("col_major", ImPlotHistogramFlags_ColMajor, "data will be read in column major order (not supported by PlotHistogram)");
 
 
-    py::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", py::arithmetic(), "Flags for PlotDigital (placeholder)")    // implot.h:310
+    py::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", py::arithmetic(), "Flags for PlotDigital (placeholder)")    // implot.h:311
         .value("none", ImPlotDigitalFlags_None, "default");
 
 
-    py::enum_<ImPlotImageFlags_>(m, "ImageFlags_", py::arithmetic(), "Flags for PlotImage (placeholder)")    // implot.h:315
+    py::enum_<ImPlotImageFlags_>(m, "ImageFlags_", py::arithmetic(), "Flags for PlotImage (placeholder)")    // implot.h:316
         .value("none", ImPlotImageFlags_None, "default");
 
 
-    py::enum_<ImPlotTextFlags_>(m, "TextFlags_", py::arithmetic(), "Flags for PlotText")    // implot.h:320
+    py::enum_<ImPlotTextFlags_>(m, "TextFlags_", py::arithmetic(), "Flags for PlotText")    // implot.h:321
         .value("none", ImPlotTextFlags_None, "default")
         .value("vertical", ImPlotTextFlags_Vertical, "text will be rendered vertically");
 
 
-    py::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", py::arithmetic(), "Flags for PlotDummy (placeholder)")    // implot.h:326
+    py::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", py::arithmetic(), "Flags for PlotDummy (placeholder)")    // implot.h:327
         .value("none", ImPlotDummyFlags_None, "default");
 
 
-    py::enum_<ImPlotCond_>(m, "Cond_", py::arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")    // implot.h:331
+    py::enum_<ImPlotCond_>(m, "Cond_", py::arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")    // implot.h:332
         .value("none", ImPlotCond_None, "No condition (always set the variable), same as _Always")
         .value("always", ImPlotCond_Always, "No condition (always set the variable)")
         .value("once", ImPlotCond_Once, "Set the variable once per runtime session (only the first call will succeed)");
 
 
-    py::enum_<ImPlotCol_>(m, "Col_", py::arithmetic(), "Plot styling colors.")    // implot.h:339
+    py::enum_<ImPlotCol_>(m, "Col_", py::arithmetic(), "Plot styling colors.")    // implot.h:340
         .value("line", ImPlotCol_Line, "plot line/outline color (defaults to next unused color in current colormap)")
         .value("fill", ImPlotCol_Fill, "plot fill color for bars (defaults to the current line color)")
         .value("marker_outline", ImPlotCol_MarkerOutline, "marker outline color (defaults to the current line color)")
@@ -243,7 +244,7 @@ void py_init_module_implot(py::module& m)
         .value("count", ImPlotCol_COUNT, "");
 
 
-    py::enum_<ImPlotStyleVar_>(m, "StyleVar_", py::arithmetic(), "Plot styling variables.")    // implot.h:367
+    py::enum_<ImPlotStyleVar_>(m, "StyleVar_", py::arithmetic(), "Plot styling variables.")    // implot.h:368
         .value("line_weight", ImPlotStyleVar_LineWeight, "float,  plot item line weight in pixels")
         .value("marker", ImPlotStyleVar_Marker, "int,    marker specification")
         .value("marker_size", ImPlotStyleVar_MarkerSize, "float,  marker size in pixels (roughly the marker's \"radius\")")
@@ -274,14 +275,14 @@ void py_init_module_implot(py::module& m)
         .value("count", ImPlotStyleVar_COUNT, "");
 
 
-    py::enum_<ImPlotScale_>(m, "Scale_", py::arithmetic(), "Axis scale")    // implot.h:401
+    py::enum_<ImPlotScale_>(m, "Scale_", py::arithmetic(), "Axis scale")    // implot.h:402
         .value("linear", ImPlotScale_Linear, "default linear scale")
         .value("time", ImPlotScale_Time, "date/time scale")
         .value("log10", ImPlotScale_Log10, "base 10 logartithmic scale")
         .value("sym_log", ImPlotScale_SymLog, "symmetric log scale");
 
 
-    py::enum_<ImPlotMarker_>(m, "Marker_", py::arithmetic(), "Marker specifications.")    // implot.h:409
+    py::enum_<ImPlotMarker_>(m, "Marker_", py::arithmetic(), "Marker specifications.")    // implot.h:410
         .value("none", ImPlotMarker_None, "no marker")
         .value("circle", ImPlotMarker_Circle, "a circle marker (default)")
         .value("square", ImPlotMarker_Square, "a square maker")
@@ -296,7 +297,7 @@ void py_init_module_implot(py::module& m)
         .value("count", ImPlotMarker_COUNT, "");
 
 
-    py::enum_<ImPlotColormap_>(m, "Colormap_", py::arithmetic(), "Built-in colormaps")    // implot.h:425
+    py::enum_<ImPlotColormap_>(m, "Colormap_", py::arithmetic(), "Built-in colormaps")    // implot.h:426
         .value("deep", ImPlotColormap_Deep, "a.k.a. seaborn deep             (qual=True,  n=10) (default)")
         .value("dark", ImPlotColormap_Dark, "a.k.a. matplotlib \"Set1\"        (qual=True,  n=9 )")
         .value("pastel", ImPlotColormap_Pastel, "a.k.a. matplotlib \"Pastel1\"     (qual=True,  n=9 )")
@@ -315,7 +316,7 @@ void py_init_module_implot(py::module& m)
         .value("greys", ImPlotColormap_Greys, "white/black                     (qual=False, n=2 )");
 
 
-    py::enum_<ImPlotLocation_>(m, "Location_", py::arithmetic(), "Used to position items on a plot (e.g. legends, labels, etc.)")    // implot.h:445
+    py::enum_<ImPlotLocation_>(m, "Location_", py::arithmetic(), "Used to position items on a plot (e.g. legends, labels, etc.)")    // implot.h:446
         .value("center", ImPlotLocation_Center, "center-center")
         .value("north", ImPlotLocation_North, "top-center")
         .value("south", ImPlotLocation_South, "bottom-center")
@@ -327,7 +328,7 @@ void py_init_module_implot(py::module& m)
         .value("south_east", ImPlotLocation_SouthEast, "bottom-right");
 
 
-    py::enum_<ImPlotBin_>(m, "Bin_", py::arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")    // implot.h:458
+    py::enum_<ImPlotBin_>(m, "Bin_", py::arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")    // implot.h:459
         .value("sqrt", ImPlotBin_Sqrt, "k = sqrt(n)")
         .value("sturges", ImPlotBin_Sturges, "k = 1 + log2(n)")
         .value("rice", ImPlotBin_Rice, "k = 2 * cbrt(n)")
@@ -335,131 +336,131 @@ void py_init_module_implot(py::module& m)
 
 
     auto pyClassImPlotPoint =
-        py::class_<ImPlotPoint>    // implot.h:466
+        py::class_<ImPlotPoint>    // implot.h:467
             (m, "Point", "Double precision version of ImVec2 used by ImPlot. Extensible by end users.")
-        .def_readwrite("x", &ImPlotPoint::x, "")    // implot.h:467
-        .def_readwrite("y", &ImPlotPoint::y, "")    // implot.h:467
-        .def(py::init<>())    // implot.h:468
-        .def(py::init<double, double>(),    // implot.h:469
+        .def_readwrite("x", &ImPlotPoint::x, "")    // implot.h:468
+        .def_readwrite("y", &ImPlotPoint::y, "")    // implot.h:468
+        .def(py::init<>())    // implot.h:469
+        .def(py::init<double, double>(),    // implot.h:470
             py::arg("_x"), py::arg("_y"))
-        .def(py::init<const ImVec2 &>(),    // implot.h:470
+        .def(py::init<const ImVec2 &>(),    // implot.h:471
             py::arg("p"))
         ;
 
 
     auto pyClassImPlotRange =
-        py::class_<ImPlotRange>    // implot.h:480
+        py::class_<ImPlotRange>    // implot.h:481
             (m, "Range", "Range defined by a min/max value.")
-        .def_readwrite("min", &ImPlotRange::Min, "")    // implot.h:481
-        .def_readwrite("max", &ImPlotRange::Max, "")    // implot.h:481
-        .def(py::init<>())    // implot.h:482
-        .def(py::init<double, double>(),    // implot.h:483
+        .def_readwrite("min", &ImPlotRange::Min, "")    // implot.h:482
+        .def_readwrite("max", &ImPlotRange::Max, "")    // implot.h:482
+        .def(py::init<>())    // implot.h:483
+        .def(py::init<double, double>(),    // implot.h:484
             py::arg("_min"), py::arg("_max"))
         ;
 
 
     auto pyClassImPlotRect =
-        py::class_<ImPlotRect>    // implot.h:490
+        py::class_<ImPlotRect>    // implot.h:491
             (m, "Rect", "Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max().")
-        .def_readwrite("x", &ImPlotRect::X, "")    // implot.h:491
-        .def_readwrite("y", &ImPlotRect::Y, "")    // implot.h:491
-        .def(py::init<>())    // implot.h:492
-        .def(py::init<double, double, double, double>(),    // implot.h:493
+        .def_readwrite("x", &ImPlotRect::X, "")    // implot.h:492
+        .def_readwrite("y", &ImPlotRect::Y, "")    // implot.h:492
+        .def(py::init<>())    // implot.h:493
+        .def(py::init<double, double, double, double>(),    // implot.h:494
             py::arg("x_min"), py::arg("x_max"), py::arg("y_min"), py::arg("y_max"))
         ;
 
 
     auto pyClassImPlotStyle =
-        py::class_<ImPlotStyle>    // implot.h:504
+        py::class_<ImPlotStyle>    // implot.h:505
             (m, "Style", "Plot style structure")
-        .def_readwrite("line_weight", &ImPlotStyle::LineWeight, "= 1,      item line weight in pixels")    // implot.h:506
-        .def_readwrite("marker", &ImPlotStyle::Marker, "= ImPlotMarker_None, marker specification")    // implot.h:507
-        .def_readwrite("marker_size", &ImPlotStyle::MarkerSize, "= 4,      marker size in pixels (roughly the marker's \"radius\")")    // implot.h:508
-        .def_readwrite("marker_weight", &ImPlotStyle::MarkerWeight, "= 1,      outline weight of markers in pixels")    // implot.h:509
-        .def_readwrite("fill_alpha", &ImPlotStyle::FillAlpha, "= 1,      alpha modifier applied to plot fills")    // implot.h:510
-        .def_readwrite("error_bar_size", &ImPlotStyle::ErrorBarSize, "= 5,      error bar whisker width in pixels")    // implot.h:511
-        .def_readwrite("error_bar_weight", &ImPlotStyle::ErrorBarWeight, "= 1.5,    error bar whisker weight in pixels")    // implot.h:512
-        .def_readwrite("digital_bit_height", &ImPlotStyle::DigitalBitHeight, "= 8,      digital channels bit height (at y = 1.0) in pixels")    // implot.h:513
-        .def_readwrite("digital_bit_gap", &ImPlotStyle::DigitalBitGap, "= 4,      digital channels bit padding gap in pixels")    // implot.h:514
-        .def_readwrite("plot_border_size", &ImPlotStyle::PlotBorderSize, "= 1,      line thickness of border around plot area")    // implot.h:516
-        .def_readwrite("minor_alpha", &ImPlotStyle::MinorAlpha, "= 0.25    alpha multiplier applied to minor axis grid lines")    // implot.h:517
-        .def_readwrite("major_tick_len", &ImPlotStyle::MajorTickLen, "= 10,10   major tick lengths for X and Y axes")    // implot.h:518
-        .def_readwrite("minor_tick_len", &ImPlotStyle::MinorTickLen, "= 5,5     minor tick lengths for X and Y axes")    // implot.h:519
-        .def_readwrite("major_tick_size", &ImPlotStyle::MajorTickSize, "= 1,1     line thickness of major ticks")    // implot.h:520
-        .def_readwrite("minor_tick_size", &ImPlotStyle::MinorTickSize, "= 1,1     line thickness of minor ticks")    // implot.h:521
-        .def_readwrite("major_grid_size", &ImPlotStyle::MajorGridSize, "= 1,1     line thickness of major grid lines")    // implot.h:522
-        .def_readwrite("minor_grid_size", &ImPlotStyle::MinorGridSize, "= 1,1     line thickness of minor grid lines")    // implot.h:523
-        .def_readwrite("plot_padding", &ImPlotStyle::PlotPadding, "= 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)")    // implot.h:524
-        .def_readwrite("label_padding", &ImPlotStyle::LabelPadding, "= 5,5     padding between axes labels, tick labels, and plot edge")    // implot.h:525
-        .def_readwrite("legend_padding", &ImPlotStyle::LegendPadding, "= 10,10   legend padding from plot edges")    // implot.h:526
-        .def_readwrite("legend_inner_padding", &ImPlotStyle::LegendInnerPadding, "= 5,5     legend inner padding from legend edges")    // implot.h:527
-        .def_readwrite("legend_spacing", &ImPlotStyle::LegendSpacing, "= 5,0     spacing between legend entries")    // implot.h:528
-        .def_readwrite("mouse_pos_padding", &ImPlotStyle::MousePosPadding, "= 10,10   padding between plot edge and interior mouse location text")    // implot.h:529
-        .def_readwrite("annotation_padding", &ImPlotStyle::AnnotationPadding, "= 2,2     text padding around annotation labels")    // implot.h:530
-        .def_readwrite("fit_padding", &ImPlotStyle::FitPadding, "= 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")    // implot.h:531
-        .def_readwrite("plot_default_size", &ImPlotStyle::PlotDefaultSize, "= 400,300 default size used when ImVec2(0,0) is passed to BeginPlot")    // implot.h:532
-        .def_readwrite("plot_min_size", &ImPlotStyle::PlotMinSize, "= 200,150 minimum size plot frame can be when shrunk")    // implot.h:533
-        .def_readwrite("colormap", &ImPlotStyle::Colormap, "The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.")    // implot.h:537
-        .def_readwrite("use_local_time", &ImPlotStyle::UseLocalTime, "= False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled")    // implot.h:539
-        .def_readwrite("use_iso8601", &ImPlotStyle::UseISO8601, "= False,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)")    // implot.h:540
-        .def_readwrite("use24_hour_clock", &ImPlotStyle::Use24HourClock, "= False,  times will be formatted using a 24 hour clock")    // implot.h:541
-        .def(py::init<>())    // implot.h:542
+        .def_readwrite("line_weight", &ImPlotStyle::LineWeight, "= 1,      item line weight in pixels")    // implot.h:507
+        .def_readwrite("marker", &ImPlotStyle::Marker, "= ImPlotMarker_None, marker specification")    // implot.h:508
+        .def_readwrite("marker_size", &ImPlotStyle::MarkerSize, "= 4,      marker size in pixels (roughly the marker's \"radius\")")    // implot.h:509
+        .def_readwrite("marker_weight", &ImPlotStyle::MarkerWeight, "= 1,      outline weight of markers in pixels")    // implot.h:510
+        .def_readwrite("fill_alpha", &ImPlotStyle::FillAlpha, "= 1,      alpha modifier applied to plot fills")    // implot.h:511
+        .def_readwrite("error_bar_size", &ImPlotStyle::ErrorBarSize, "= 5,      error bar whisker width in pixels")    // implot.h:512
+        .def_readwrite("error_bar_weight", &ImPlotStyle::ErrorBarWeight, "= 1.5,    error bar whisker weight in pixels")    // implot.h:513
+        .def_readwrite("digital_bit_height", &ImPlotStyle::DigitalBitHeight, "= 8,      digital channels bit height (at y = 1.0) in pixels")    // implot.h:514
+        .def_readwrite("digital_bit_gap", &ImPlotStyle::DigitalBitGap, "= 4,      digital channels bit padding gap in pixels")    // implot.h:515
+        .def_readwrite("plot_border_size", &ImPlotStyle::PlotBorderSize, "= 1,      line thickness of border around plot area")    // implot.h:517
+        .def_readwrite("minor_alpha", &ImPlotStyle::MinorAlpha, "= 0.25    alpha multiplier applied to minor axis grid lines")    // implot.h:518
+        .def_readwrite("major_tick_len", &ImPlotStyle::MajorTickLen, "= 10,10   major tick lengths for X and Y axes")    // implot.h:519
+        .def_readwrite("minor_tick_len", &ImPlotStyle::MinorTickLen, "= 5,5     minor tick lengths for X and Y axes")    // implot.h:520
+        .def_readwrite("major_tick_size", &ImPlotStyle::MajorTickSize, "= 1,1     line thickness of major ticks")    // implot.h:521
+        .def_readwrite("minor_tick_size", &ImPlotStyle::MinorTickSize, "= 1,1     line thickness of minor ticks")    // implot.h:522
+        .def_readwrite("major_grid_size", &ImPlotStyle::MajorGridSize, "= 1,1     line thickness of major grid lines")    // implot.h:523
+        .def_readwrite("minor_grid_size", &ImPlotStyle::MinorGridSize, "= 1,1     line thickness of minor grid lines")    // implot.h:524
+        .def_readwrite("plot_padding", &ImPlotStyle::PlotPadding, "= 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)")    // implot.h:525
+        .def_readwrite("label_padding", &ImPlotStyle::LabelPadding, "= 5,5     padding between axes labels, tick labels, and plot edge")    // implot.h:526
+        .def_readwrite("legend_padding", &ImPlotStyle::LegendPadding, "= 10,10   legend padding from plot edges")    // implot.h:527
+        .def_readwrite("legend_inner_padding", &ImPlotStyle::LegendInnerPadding, "= 5,5     legend inner padding from legend edges")    // implot.h:528
+        .def_readwrite("legend_spacing", &ImPlotStyle::LegendSpacing, "= 5,0     spacing between legend entries")    // implot.h:529
+        .def_readwrite("mouse_pos_padding", &ImPlotStyle::MousePosPadding, "= 10,10   padding between plot edge and interior mouse location text")    // implot.h:530
+        .def_readwrite("annotation_padding", &ImPlotStyle::AnnotationPadding, "= 2,2     text padding around annotation labels")    // implot.h:531
+        .def_readwrite("fit_padding", &ImPlotStyle::FitPadding, "= 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")    // implot.h:532
+        .def_readwrite("plot_default_size", &ImPlotStyle::PlotDefaultSize, "= 400,300 default size used when ImVec2(0,0) is passed to BeginPlot")    // implot.h:533
+        .def_readwrite("plot_min_size", &ImPlotStyle::PlotMinSize, "= 200,150 minimum size plot frame can be when shrunk")    // implot.h:534
+        .def_readwrite("colormap", &ImPlotStyle::Colormap, "The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.")    // implot.h:538
+        .def_readwrite("use_local_time", &ImPlotStyle::UseLocalTime, "= False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled")    // implot.h:540
+        .def_readwrite("use_iso8601", &ImPlotStyle::UseISO8601, "= False,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)")    // implot.h:541
+        .def_readwrite("use24_hour_clock", &ImPlotStyle::Use24HourClock, "= False,  times will be formatted using a 24 hour clock")    // implot.h:542
+        .def(py::init<>())    // implot.h:543
         ;
 
 
     auto pyClassImPlotInputMap =
-        py::class_<ImPlotInputMap>    // implot.h:555
+        py::class_<ImPlotInputMap>    // implot.h:562
             (m, "InputMap", "Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse.")
-        .def_readwrite("pan", &ImPlotInputMap::Pan, "LMB    enables panning when held,")    // implot.h:556
-        .def_readwrite("pan_mod", &ImPlotInputMap::PanMod, "none   optional modifier that must be held for panning/fitting")    // implot.h:557
-        .def_readwrite("fit", &ImPlotInputMap::Fit, "LMB    initiates fit when double clicked")    // implot.h:558
-        .def_readwrite("select", &ImPlotInputMap::Select, "RMB    begins box selection when pressed and confirms selection when released")    // implot.h:559
-        .def_readwrite("select_cancel", &ImPlotInputMap::SelectCancel, "LMB    cancels active box selection when pressed; cannot be same as Select")    // implot.h:560
-        .def_readwrite("select_mod", &ImPlotInputMap::SelectMod, "none   optional modifier that must be held for box selection")    // implot.h:561
-        .def_readwrite("select_horz_mod", &ImPlotInputMap::SelectHorzMod, "Alt    expands active box selection horizontally to plot edge when held")    // implot.h:562
-        .def_readwrite("select_vert_mod", &ImPlotInputMap::SelectVertMod, "Shift  expands active box selection vertically to plot edge when held")    // implot.h:563
-        .def_readwrite("menu", &ImPlotInputMap::Menu, "RMB    opens context menus (if enabled) when clicked")    // implot.h:564
-        .def_readwrite("override_mod", &ImPlotInputMap::OverrideMod, "Ctrl   when held, all input is ignored; used to enable axis/plots as DND sources")    // implot.h:565
-        .def_readwrite("zoom_mod", &ImPlotInputMap::ZoomMod, "none   optional modifier that must be held for scroll wheel zooming")    // implot.h:566
-        .def_readwrite("zoom_rate", &ImPlotInputMap::ZoomRate, "0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert")    // implot.h:567
-        .def(py::init<>())    // implot.h:568
+        .def_readwrite("pan", &ImPlotInputMap::Pan, "LMB    enables panning when held,")    // implot.h:563
+        .def_readwrite("pan_mod", &ImPlotInputMap::PanMod, "none   optional modifier that must be held for panning/fitting")    // implot.h:564
+        .def_readwrite("fit", &ImPlotInputMap::Fit, "LMB    initiates fit when double clicked")    // implot.h:565
+        .def_readwrite("select", &ImPlotInputMap::Select, "RMB    begins box selection when pressed and confirms selection when released")    // implot.h:566
+        .def_readwrite("select_cancel", &ImPlotInputMap::SelectCancel, "LMB    cancels active box selection when pressed; cannot be same as Select")    // implot.h:567
+        .def_readwrite("select_mod", &ImPlotInputMap::SelectMod, "none   optional modifier that must be held for box selection")    // implot.h:568
+        .def_readwrite("select_horz_mod", &ImPlotInputMap::SelectHorzMod, "Alt    expands active box selection horizontally to plot edge when held")    // implot.h:569
+        .def_readwrite("select_vert_mod", &ImPlotInputMap::SelectVertMod, "Shift  expands active box selection vertically to plot edge when held")    // implot.h:570
+        .def_readwrite("menu", &ImPlotInputMap::Menu, "RMB    opens context menus (if enabled) when clicked")    // implot.h:571
+        .def_readwrite("override_mod", &ImPlotInputMap::OverrideMod, "Ctrl   when held, all input is ignored; used to enable axis/plots as DND sources")    // implot.h:572
+        .def_readwrite("zoom_mod", &ImPlotInputMap::ZoomMod, "none   optional modifier that must be held for scroll wheel zooming")    // implot.h:573
+        .def_readwrite("zoom_rate", &ImPlotInputMap::ZoomRate, "0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert")    // implot.h:574
+        .def(py::init<>())    // implot.h:575
         ;
 
 
-    m.def("create_context",    // implot.h:591
+    m.def("create_context",    // implot.h:598
         ImPlot::CreateContext,
         "Creates a new ImPlot context. Call this after ImGui::CreateContext.",
         pybind11::return_value_policy::reference);
 
-    m.def("destroy_context",    // implot.h:593
+    m.def("destroy_context",    // implot.h:600
         ImPlot::DestroyContext,
         py::arg("ctx") = py::none(),
         "Destroys an ImPlot context. Call this before ImGui::DestroyContext. None = destroy current context.");
 
-    m.def("get_current_context",    // implot.h:595
+    m.def("get_current_context",    // implot.h:602
         ImPlot::GetCurrentContext,
         "Returns the current ImPlot context. None if no context has ben set.",
         pybind11::return_value_policy::reference);
 
-    m.def("set_current_context",    // implot.h:597
+    m.def("set_current_context",    // implot.h:604
         ImPlot::SetCurrentContext,
         py::arg("ctx"),
         "Sets the current ImPlot context.");
 
-    m.def("set_imgui_context",    // implot.h:603
+    m.def("set_imgui_context",    // implot.h:610
         ImPlot::SetImGuiContext,
         py::arg("ctx"),
         " Sets the current **ImGui** context. This is ONLY necessary if you are compiling\n ImPlot as a DLL (not recommended) separate from your ImGui compilation. It\n sets the global variable GImGui, which is not shared across DLL boundaries.\n See GImGui documentation in imgui.cpp for more details.");
 
-    m.def("begin_plot",    // implot.h:625
+    m.def("begin_plot",    // implot.h:632
         py::overload_cast<const char *, const ImVec2 &, ImPlotFlags>(ImPlot::BeginPlot),
         py::arg("title_id"), py::arg("size") = ImVec2(-1,0), py::arg("flags") = 0,
         " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.");
 
-    m.def("end_plot",    // implot.h:629
+    m.def("end_plot",    // implot.h:636
         ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
 
-    m.def("begin_subplots",    // implot.h:681
+    m.def("begin_subplots",    // implot.h:688
         [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0, std::optional<float> row_ratios = std::nullopt, std::optional<float> col_ratios = std::nullopt) -> std::tuple<bool, std::optional<float>, std::optional<float>>
         {
             auto BeginSubplots_adapt_modifiable_immutable_to_return = [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0, std::optional<float> row_ratios = std::nullopt, std::optional<float> col_ratios = std::nullopt) -> std::tuple<bool, std::optional<float>, std::optional<float>>
@@ -478,20 +479,20 @@ void py_init_module_implot(py::module& m)
             return BeginSubplots_adapt_modifiable_immutable_to_return(title_id, rows, cols, size, flags, row_ratios, col_ratios);
         },     py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = py::none(), py::arg("col_ratios") = py::none());
 
-    m.def("end_subplots",    // implot.h:691
+    m.def("end_subplots",    // implot.h:698
         ImPlot::EndSubplots, " Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end\n of an if statement conditioned on BeginSublots(). See example above.");
 
-    m.def("setup_axis",    // implot.h:723
+    m.def("setup_axis",    // implot.h:730
         ImPlot::SetupAxis,
         py::arg("axis"), py::arg("label") = py::none(), py::arg("flags") = 0,
         "Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label.");
 
-    m.def("setup_axis_limits",    // implot.h:725
+    m.def("setup_axis_limits",    // implot.h:732
         ImPlot::SetupAxisLimits,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.");
 
-    m.def("setup_axis_links",    // implot.h:727
+    m.def("setup_axis_links",    // implot.h:734
         [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
         {
             auto SetupAxisLinks_adapt_modifiable_immutable_to_return = [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
@@ -508,55 +509,55 @@ void py_init_module_implot(py::module& m)
         py::arg("axis"), py::arg("link_min"), py::arg("link_max"),
         "Links an axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot.");
 
-    m.def("setup_axis_format",    // implot.h:729
+    m.def("setup_axis_format",    // implot.h:736
         py::overload_cast<ImAxis, const char *>(ImPlot::SetupAxisFormat),
         py::arg("axis"), py::arg("fmt"),
         "Sets the format of numeric axis labels via formater specifier (default=\"%g\"). Formated values will be double (i.e. use %f).");
 
-    m.def("setup_axis_scale",    // implot.h:737
+    m.def("setup_axis_scale",    // implot.h:744
         py::overload_cast<ImAxis, ImPlotScale>(ImPlot::SetupAxisScale),
         py::arg("axis"), py::arg("scale"),
         "Sets an axis' scale using built-in options.");
 
-    m.def("setup_axis_limits_constraints",    // implot.h:741
+    m.def("setup_axis_limits_constraints",    // implot.h:748
         ImPlot::SetupAxisLimitsConstraints,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"),
         "Sets an axis' limits constraints.");
 
-    m.def("setup_axis_zoom_constraints",    // implot.h:743
+    m.def("setup_axis_zoom_constraints",    // implot.h:750
         ImPlot::SetupAxisZoomConstraints,
         py::arg("axis"), py::arg("z_min"), py::arg("z_max"),
         "Sets an axis' zoom constraints.");
 
-    m.def("setup_axes",    // implot.h:746
+    m.def("setup_axes",    // implot.h:753
         ImPlot::SetupAxes,
         py::arg("x_label"), py::arg("y_label"), py::arg("x_flags") = 0, py::arg("y_flags") = 0,
         "Sets the label and/or flags for primary X and Y axes (shorthand for two calls to SetupAxis).");
 
-    m.def("setup_axes_limits",    // implot.h:748
+    m.def("setup_axes_limits",    // implot.h:755
         ImPlot::SetupAxesLimits,
         py::arg("x_min"), py::arg("x_max"), py::arg("y_min"), py::arg("y_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).");
 
-    m.def("setup_legend",    // implot.h:751
+    m.def("setup_legend",    // implot.h:758
         ImPlot::SetupLegend,
         py::arg("location"), py::arg("flags") = 0,
         "Sets up the plot legend.");
 
-    m.def("setup_mouse_text",    // implot.h:753
+    m.def("setup_mouse_text",    // implot.h:760
         ImPlot::SetupMouseText,
         py::arg("location"), py::arg("flags") = 0,
         "Set the location of the current plot's mouse position text (default = South|East).");
 
-    m.def("setup_finish",    // implot.h:757
+    m.def("setup_finish",    // implot.h:764
         ImPlot::SetupFinish, " Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!\n Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.");
 
-    m.def("set_next_axis_limits",    // implot.h:783
+    m.def("set_next_axis_limits",    // implot.h:790
         ImPlot::SetNextAxisLimits,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.");
 
-    m.def("set_next_axis_links",    // implot.h:785
+    m.def("set_next_axis_links",    // implot.h:792
         [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
         {
             auto SetNextAxisLinks_adapt_modifiable_immutable_to_return = [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
@@ -573,20 +574,20 @@ void py_init_module_implot(py::module& m)
         py::arg("axis"), py::arg("link_min"), py::arg("link_max"),
         "Links an upcoming axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot!");
 
-    m.def("set_next_axis_to_fit",    // implot.h:787
+    m.def("set_next_axis_to_fit",    // implot.h:794
         ImPlot::SetNextAxisToFit,
         py::arg("axis"),
         "Set an upcoming axis to auto fit to its data.");
 
-    m.def("set_next_axes_limits",    // implot.h:790
+    m.def("set_next_axes_limits",    // implot.h:797
         ImPlot::SetNextAxesLimits,
         py::arg("x_min"), py::arg("x_max"), py::arg("y_min"), py::arg("y_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).");
 
-    m.def("set_next_axes_to_fit",    // implot.h:792
+    m.def("set_next_axes_to_fit",    // implot.h:799
         ImPlot::SetNextAxesToFit, "Sets all upcoming axes to auto fit to their data.");
 
-    m.def("plot_line",    // implot.h:847
+    m.def("plot_line",    // implot.h:854
         [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
@@ -641,7 +642,7 @@ void py_init_module_implot(py::module& m)
             PlotLine_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_line",    // implot.h:848
+    m.def("plot_line",    // implot.h:855
         [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
@@ -700,7 +701,7 @@ void py_init_module_implot(py::module& m)
             PlotLine_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_scatter",    // implot.h:852
+    m.def("plot_scatter",    // implot.h:859
         [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
@@ -755,7 +756,7 @@ void py_init_module_implot(py::module& m)
             PlotScatter_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_scatter",    // implot.h:853
+    m.def("plot_scatter",    // implot.h:860
         [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
@@ -814,7 +815,7 @@ void py_init_module_implot(py::module& m)
             PlotScatter_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_stairs",    // implot.h:857
+    m.def("plot_stairs",    // implot.h:864
         [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
@@ -869,7 +870,7 @@ void py_init_module_implot(py::module& m)
             PlotStairs_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_stairs",    // implot.h:858
+    m.def("plot_stairs",    // implot.h:865
         [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
@@ -928,7 +929,7 @@ void py_init_module_implot(py::module& m)
             PlotStairs_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_shaded",    // implot.h:862
+    m.def("plot_shaded",    // implot.h:869
         [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
@@ -983,7 +984,7 @@ void py_init_module_implot(py::module& m)
             PlotShaded_adapt_c_buffers(label_id, values, yref, xscale, xstart, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("yref") = 0, py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_shaded",    // implot.h:863
+    m.def("plot_shaded",    // implot.h:870
         [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
@@ -1042,7 +1043,7 @@ void py_init_module_implot(py::module& m)
             PlotShaded_adapt_c_buffers(label_id, xs, ys, yref, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("yref") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_shaded",    // implot.h:864
+    m.def("plot_shaded",    // implot.h:871
         [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
@@ -1105,7 +1106,7 @@ void py_init_module_implot(py::module& m)
             PlotShaded_adapt_c_buffers(label_id, xs, ys1, ys2, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys1"), py::arg("ys2"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_bars",    // implot.h:868
+    m.def("plot_bars",    // implot.h:875
         [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1160,7 +1161,7 @@ void py_init_module_implot(py::module& m)
             PlotBars_adapt_c_buffers(label_id, values, bar_size, shift, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("bar_size") = 0.67, py::arg("shift") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_bars",    // implot.h:869
+    m.def("plot_bars",    // implot.h:876
         [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1219,7 +1220,7 @@ void py_init_module_implot(py::module& m)
             PlotBars_adapt_c_buffers(label_id, xs, ys, bar_size, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("bar_size"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_error_bars",    // implot.h:876
+    m.def("plot_error_bars",    // implot.h:883
         [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1282,7 +1283,7 @@ void py_init_module_implot(py::module& m)
             PlotErrorBars_adapt_c_buffers(label_id, xs, ys, err, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("err"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_error_bars",    // implot.h:877
+    m.def("plot_error_bars",    // implot.h:884
         [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1349,7 +1350,7 @@ void py_init_module_implot(py::module& m)
             PlotErrorBars_adapt_c_buffers(label_id, xs, ys, neg, pos, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("neg"), py::arg("pos"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_stems",    // implot.h:880
+    m.def("plot_stems",    // implot.h:887
         [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1404,7 +1405,7 @@ void py_init_module_implot(py::module& m)
             PlotStems_adapt_c_buffers(label_id, values, ref, scale, start, flags, offset, stride);
         },     py::arg("label_id"), py::arg("values"), py::arg("ref") = 0, py::arg("scale") = 1, py::arg("start") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_stems",    // implot.h:881
+    m.def("plot_stems",    // implot.h:888
         [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
@@ -1463,7 +1464,7 @@ void py_init_module_implot(py::module& m)
             PlotStems_adapt_c_buffers(label_id, xs, ys, ref, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("ref") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_inf_lines",    // implot.h:884
+    m.def("plot_inf_lines",    // implot.h:891
         [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotInfLines_adapt_c_buffers = [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0, int stride = -1)
@@ -1520,7 +1521,7 @@ void py_init_module_implot(py::module& m)
         py::arg("label_id"), py::arg("values"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1,
         "Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).");
 
-    m.def("plot_histogram",    // implot.h:894
+    m.def("plot_histogram",    // implot.h:901
         [](const char * label_id, const py::array & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), ImPlotHistogramFlags flags = 0) -> double
         {
             auto PlotHistogram_adapt_c_buffers = [](const char * label_id, const py::array & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), ImPlotHistogramFlags flags = 0) -> double
@@ -1572,7 +1573,7 @@ void py_init_module_implot(py::module& m)
         py::arg("label_id"), py::arg("values"), py::arg("bins") = ImPlotBin_Sturges, py::arg("bar_scale") = 1.0, py::arg("range") = ImPlotRange(), py::arg("flags") = 0,
         " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.");
 
-    m.def("plot_histogram2_d",    // implot.h:898
+    m.def("plot_histogram2_d",    // implot.h:905
         [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double
         {
             auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double
@@ -1628,7 +1629,7 @@ void py_init_module_implot(py::module& m)
         py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("x_bins") = ImPlotBin_Sturges, py::arg("y_bins") = ImPlotBin_Sturges, py::arg("range") = ImPlotRect(), py::arg("flags") = 0,
         " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.");
 
-    m.def("plot_digital",    // implot.h:901
+    m.def("plot_digital",    // implot.h:908
         [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotDigital_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
@@ -1687,22 +1688,22 @@ void py_init_module_implot(py::module& m)
             PlotDigital_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
-    m.def("plot_image",    // implot.h:905
+    m.def("plot_image",    // implot.h:912
         ImPlot::PlotImage,
         py::arg("label_id"), py::arg("user_texture_id"), py::arg("bounds_min"), py::arg("bounds_max"), py::arg("uv0") = ImVec2(0,0), py::arg("uv1") = ImVec2(1,1), py::arg("tint_col") = ImVec4(1,1,1,1), py::arg("flags") = 0,
         "Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).");
 
-    m.def("plot_text",    // implot.h:908
+    m.def("plot_text",    // implot.h:915
         ImPlot::PlotText,
         py::arg("text"), py::arg("x"), py::arg("y"), py::arg("pix_offset") = ImVec2(0,0), py::arg("flags") = 0,
         "Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).");
 
-    m.def("plot_dummy",    // implot.h:911
+    m.def("plot_dummy",    // implot.h:918
         ImPlot::PlotDummy,
         py::arg("label_id"), py::arg("flags") = 0,
         "Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)");
 
-    m.def("drag_point",    // implot.h:922
+    m.def("drag_point",    // implot.h:929
         [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double>
         {
             auto DragPoint_adapt_modifiable_immutable_to_return = [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double>
@@ -1719,7 +1720,7 @@ void py_init_module_implot(py::module& m)
         py::arg("id_"), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("size") = 4, py::arg("flags") = 0,
         "Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.");
 
-    m.def("drag_line_x",    // implot.h:924
+    m.def("drag_line_x",    // implot.h:931
         [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
         {
             auto DragLineX_adapt_modifiable_immutable_to_return = [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
@@ -1735,7 +1736,7 @@ void py_init_module_implot(py::module& m)
         py::arg("id_"), py::arg("x"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
         "Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.");
 
-    m.def("drag_line_y",    // implot.h:926
+    m.def("drag_line_y",    // implot.h:933
         [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
         {
             auto DragLineY_adapt_modifiable_immutable_to_return = [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
@@ -1751,7 +1752,7 @@ void py_init_module_implot(py::module& m)
         py::arg("id_"), py::arg("y"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
         "Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.");
 
-    m.def("drag_rect",    // implot.h:928
+    m.def("drag_rect",    // implot.h:935
         [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double, double, double>
         {
             auto DragRect_adapt_modifiable_immutable_to_return = [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double, double, double>
@@ -1770,10 +1771,10 @@ void py_init_module_implot(py::module& m)
         py::arg("id_"), py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"), py::arg("col"), py::arg("flags") = 0,
         "Shows a draggable and resizeable rectangle.");
 
-    m.def("annotation",    // implot.h:931
+    m.def("annotation",    // implot.h:938
         py::overload_cast<double, double, const ImVec4 &, const ImVec2 &, bool, bool>(ImPlot::Annotation), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("pix_offset"), py::arg("clamp"), py::arg("round") = false);
 
-    m.def("annotation",    // implot.h:932
+    m.def("annotation",    // implot.h:939
         [](double x, double y, const ImVec4 & col, const ImVec2 & pix_offset, bool clamp, const char * fmt)
         {
             auto Annotation_adapt_variadic_format = [](double x, double y, const ImVec4 & col, const ImVec2 & pix_offset, bool clamp, const char * fmt)
@@ -1784,10 +1785,10 @@ void py_init_module_implot(py::module& m)
             Annotation_adapt_variadic_format(x, y, col, pix_offset, clamp, fmt);
         },     py::arg("x"), py::arg("y"), py::arg("col"), py::arg("pix_offset"), py::arg("clamp"), py::arg("fmt"));
 
-    m.def("tag_x",    // implot.h:936
+    m.def("tag_x",    // implot.h:943
         py::overload_cast<double, const ImVec4 &, bool>(ImPlot::TagX), py::arg("x"), py::arg("col"), py::arg("round") = false);
 
-    m.def("tag_x",    // implot.h:937
+    m.def("tag_x",    // implot.h:944
         [](double x, const ImVec4 & col, const char * fmt)
         {
             auto TagX_adapt_variadic_format = [](double x, const ImVec4 & col, const char * fmt)
@@ -1798,10 +1799,10 @@ void py_init_module_implot(py::module& m)
             TagX_adapt_variadic_format(x, col, fmt);
         },     py::arg("x"), py::arg("col"), py::arg("fmt"));
 
-    m.def("tag_y",    // implot.h:941
+    m.def("tag_y",    // implot.h:948
         py::overload_cast<double, const ImVec4 &, bool>(ImPlot::TagY), py::arg("y"), py::arg("col"), py::arg("round") = false);
 
-    m.def("tag_y",    // implot.h:942
+    m.def("tag_y",    // implot.h:949
         [](double y, const ImVec4 & col, const char * fmt)
         {
             auto TagY_adapt_variadic_format = [](double y, const ImVec4 & col, const char * fmt)
@@ -1812,270 +1813,270 @@ void py_init_module_implot(py::module& m)
             TagY_adapt_variadic_format(y, col, fmt);
         },     py::arg("y"), py::arg("col"), py::arg("fmt"));
 
-    m.def("set_axis",    // implot.h:950
+    m.def("set_axis",    // implot.h:957
         ImPlot::SetAxis, py::arg("axis"));
 
-    m.def("set_axes",    // implot.h:951
+    m.def("set_axes",    // implot.h:958
         ImPlot::SetAxes, py::arg("x_axis"), py::arg("y_axis"));
 
-    m.def("pixels_to_plot",    // implot.h:954
+    m.def("pixels_to_plot",    // implot.h:961
         py::overload_cast<const ImVec2 &, ImAxis, ImAxis>(ImPlot::PixelsToPlot), py::arg("pix"), py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO);
 
-    m.def("pixels_to_plot",    // implot.h:955
+    m.def("pixels_to_plot",    // implot.h:962
         py::overload_cast<float, float, ImAxis, ImAxis>(ImPlot::PixelsToPlot), py::arg("x"), py::arg("y"), py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO);
 
-    m.def("plot_to_pixels",    // implot.h:958
+    m.def("plot_to_pixels",    // implot.h:965
         py::overload_cast<const ImPlotPoint &, ImAxis, ImAxis>(ImPlot::PlotToPixels), py::arg("plt"), py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO);
 
-    m.def("plot_to_pixels",    // implot.h:959
+    m.def("plot_to_pixels",    // implot.h:966
         py::overload_cast<double, double, ImAxis, ImAxis>(ImPlot::PlotToPixels), py::arg("x"), py::arg("y"), py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO);
 
-    m.def("get_plot_pos",    // implot.h:962
+    m.def("get_plot_pos",    // implot.h:969
         ImPlot::GetPlotPos, "Get the current Plot position (top-left) in pixels.");
 
-    m.def("get_plot_size",    // implot.h:964
+    m.def("get_plot_size",    // implot.h:971
         ImPlot::GetPlotSize, "Get the curent Plot size in pixels.");
 
-    m.def("get_plot_mouse_pos",    // implot.h:967
+    m.def("get_plot_mouse_pos",    // implot.h:974
         ImPlot::GetPlotMousePos,
         py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO,
         "Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.");
 
-    m.def("get_plot_limits",    // implot.h:969
+    m.def("get_plot_limits",    // implot.h:976
         ImPlot::GetPlotLimits,
         py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO,
         "Returns the current plot axis range.");
 
-    m.def("is_plot_hovered",    // implot.h:972
+    m.def("is_plot_hovered",    // implot.h:979
         ImPlot::IsPlotHovered, "Returns True if the plot area in the current plot is hovered.");
 
-    m.def("is_axis_hovered",    // implot.h:974
+    m.def("is_axis_hovered",    // implot.h:981
         ImPlot::IsAxisHovered,
         py::arg("axis"),
         "Returns True if the axis label area in the current plot is hovered.");
 
-    m.def("is_subplots_hovered",    // implot.h:976
+    m.def("is_subplots_hovered",    // implot.h:983
         ImPlot::IsSubplotsHovered, "Returns True if the bounding frame of a subplot is hovered.");
 
-    m.def("is_plot_selected",    // implot.h:979
+    m.def("is_plot_selected",    // implot.h:986
         ImPlot::IsPlotSelected, "Returns True if the current plot is being box selected.");
 
-    m.def("get_plot_selection",    // implot.h:981
+    m.def("get_plot_selection",    // implot.h:988
         ImPlot::GetPlotSelection,
         py::arg("x_axis") = IMPLOT_AUTO, py::arg("y_axis") = IMPLOT_AUTO,
         "Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.");
 
-    m.def("cancel_plot_selection",    // implot.h:983
+    m.def("cancel_plot_selection",    // implot.h:990
         ImPlot::CancelPlotSelection, "Cancels a the current plot box selection.");
 
-    m.def("hide_next_item",    // implot.h:987
+    m.def("hide_next_item",    // implot.h:994
         ImPlot::HideNextItem,
         py::arg("hidden") = true, py::arg("cond") = ImPlotCond_Once,
         " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.");
 
-    m.def("begin_aligned_plots",    // implot.h:996
+    m.def("begin_aligned_plots",    // implot.h:1003
         ImPlot::BeginAlignedPlots,
         py::arg("group_id"), py::arg("vertical") = true,
         " Align axis padding over multiple plots in a single row or column. #group_id must\n be unique. If this function returns True, EndAlignedPlots() must be called.");
 
-    m.def("end_aligned_plots",    // implot.h:998
+    m.def("end_aligned_plots",    // implot.h:1005
         ImPlot::EndAlignedPlots, "Only call EndAlignedPlots() if BeginAlignedPlots() returns True!");
 
-    m.def("begin_legend_popup",    // implot.h:1005
+    m.def("begin_legend_popup",    // implot.h:1012
         ImPlot::BeginLegendPopup,
         py::arg("label_id"), py::arg("mouse_button") = 1,
         "Begin a popup for a legend entry.");
 
-    m.def("end_legend_popup",    // implot.h:1007
+    m.def("end_legend_popup",    // implot.h:1014
         ImPlot::EndLegendPopup, "End a popup for a legend entry.");
 
-    m.def("is_legend_entry_hovered",    // implot.h:1009
+    m.def("is_legend_entry_hovered",    // implot.h:1016
         ImPlot::IsLegendEntryHovered,
         py::arg("label_id"),
         "Returns True if a plot item legend entry is hovered.");
 
-    m.def("begin_drag_drop_target_plot",    // implot.h:1016
+    m.def("begin_drag_drop_target_plot",    // implot.h:1023
         ImPlot::BeginDragDropTargetPlot, "Turns the current plot's plotting area into a drag and drop target. Don't forget to call EndDragDropTarget!");
 
-    m.def("begin_drag_drop_target_axis",    // implot.h:1018
+    m.def("begin_drag_drop_target_axis",    // implot.h:1025
         ImPlot::BeginDragDropTargetAxis,
         py::arg("axis"),
         "Turns the current plot's X-axis into a drag and drop target. Don't forget to call EndDragDropTarget!");
 
-    m.def("begin_drag_drop_target_legend",    // implot.h:1020
+    m.def("begin_drag_drop_target_legend",    // implot.h:1027
         ImPlot::BeginDragDropTargetLegend, "Turns the current plot's legend into a drag and drop target. Don't forget to call EndDragDropTarget!");
 
-    m.def("end_drag_drop_target",    // implot.h:1022
+    m.def("end_drag_drop_target",    // implot.h:1029
         ImPlot::EndDragDropTarget, "Ends a drag and drop target (currently just an alias for ImGui::EndDragDropTarget).");
 
-    m.def("begin_drag_drop_source_plot",    // implot.h:1028
+    m.def("begin_drag_drop_source_plot",    // implot.h:1035
         ImPlot::BeginDragDropSourcePlot,
         py::arg("flags") = 0,
         "Turns the current plot's plotting area into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!");
 
-    m.def("begin_drag_drop_source_axis",    // implot.h:1030
+    m.def("begin_drag_drop_source_axis",    // implot.h:1037
         ImPlot::BeginDragDropSourceAxis,
         py::arg("axis"), py::arg("flags") = 0,
         "Turns the current plot's X-axis into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!");
 
-    m.def("begin_drag_drop_source_item",    // implot.h:1032
+    m.def("begin_drag_drop_source_item",    // implot.h:1039
         ImPlot::BeginDragDropSourceItem,
         py::arg("label_id"), py::arg("flags") = 0,
         "Turns an item in the current plot's legend into drag and drop source. Don't forget to call EndDragDropSource!");
 
-    m.def("end_drag_drop_source",    // implot.h:1034
+    m.def("end_drag_drop_source",    // implot.h:1041
         ImPlot::EndDragDropSource, "Ends a drag and drop source (currently just an alias for ImGui::EndDragDropSource).");
 
-    m.def("get_style",    // implot.h:1070
+    m.def("get_style",    // implot.h:1077
         ImPlot::GetStyle,
         "Provides access to plot style structure for permanant modifications to colors, sizes, etc.",
         pybind11::return_value_policy::reference);
 
-    m.def("style_colors_auto",    // implot.h:1073
+    m.def("style_colors_auto",    // implot.h:1080
         ImPlot::StyleColorsAuto,
         py::arg("dst") = py::none(),
         "Style plot colors for current ImGui style (default).");
 
-    m.def("style_colors_classic",    // implot.h:1075
+    m.def("style_colors_classic",    // implot.h:1082
         ImPlot::StyleColorsClassic,
         py::arg("dst") = py::none(),
         "Style plot colors for ImGui \"Classic\".");
 
-    m.def("style_colors_dark",    // implot.h:1077
+    m.def("style_colors_dark",    // implot.h:1084
         ImPlot::StyleColorsDark,
         py::arg("dst") = py::none(),
         "Style plot colors for ImGui \"Dark\".");
 
-    m.def("style_colors_light",    // implot.h:1079
+    m.def("style_colors_light",    // implot.h:1086
         ImPlot::StyleColorsLight,
         py::arg("dst") = py::none(),
         "Style plot colors for ImGui \"Light\".");
 
-    m.def("push_style_color",    // implot.h:1086
+    m.def("push_style_color",    // implot.h:1093
         py::overload_cast<ImPlotCol, ImU32>(ImPlot::PushStyleColor), py::arg("idx"), py::arg("col"));
 
-    m.def("push_style_color",    // implot.h:1087
+    m.def("push_style_color",    // implot.h:1094
         py::overload_cast<ImPlotCol, const ImVec4 &>(ImPlot::PushStyleColor), py::arg("idx"), py::arg("col"));
 
-    m.def("pop_style_color",    // implot.h:1089
+    m.def("pop_style_color",    // implot.h:1096
         ImPlot::PopStyleColor,
         py::arg("count") = 1,
         "Undo temporary style color modification(s). Undo multiple pushes at once by increasing count.");
 
-    m.def("push_style_var",    // implot.h:1092
+    m.def("push_style_var",    // implot.h:1099
         py::overload_cast<ImPlotStyleVar, float>(ImPlot::PushStyleVar),
         py::arg("idx"), py::arg("val"),
         "Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!");
 
-    m.def("push_style_var",    // implot.h:1094
+    m.def("push_style_var",    // implot.h:1101
         py::overload_cast<ImPlotStyleVar, int>(ImPlot::PushStyleVar),
         py::arg("idx"), py::arg("val"),
         "Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!");
 
-    m.def("push_style_var",    // implot.h:1096
+    m.def("push_style_var",    // implot.h:1103
         py::overload_cast<ImPlotStyleVar, const ImVec2 &>(ImPlot::PushStyleVar),
         py::arg("idx"), py::arg("val"),
         "Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!");
 
-    m.def("pop_style_var",    // implot.h:1098
+    m.def("pop_style_var",    // implot.h:1105
         ImPlot::PopStyleVar,
         py::arg("count") = 1,
         "Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count.");
 
-    m.def("set_next_line_style",    // implot.h:1106
+    m.def("set_next_line_style",    // implot.h:1113
         ImPlot::SetNextLineStyle,
         py::arg("col") = IMPLOT_AUTO_COL, py::arg("weight") = IMPLOT_AUTO,
         "Set the line color and weight for the next item only.");
 
-    m.def("set_next_fill_style",    // implot.h:1108
+    m.def("set_next_fill_style",    // implot.h:1115
         ImPlot::SetNextFillStyle,
         py::arg("col") = IMPLOT_AUTO_COL, py::arg("alpha_mod") = IMPLOT_AUTO,
         "Set the fill color for the next item only.");
 
-    m.def("set_next_marker_style",    // implot.h:1110
+    m.def("set_next_marker_style",    // implot.h:1117
         ImPlot::SetNextMarkerStyle,
         py::arg("marker") = IMPLOT_AUTO, py::arg("size") = IMPLOT_AUTO, py::arg("fill") = IMPLOT_AUTO_COL, py::arg("weight") = IMPLOT_AUTO, py::arg("outline") = IMPLOT_AUTO_COL,
         "Set the marker style for the next item only.");
 
-    m.def("set_next_error_bar_style",    // implot.h:1112
+    m.def("set_next_error_bar_style",    // implot.h:1119
         ImPlot::SetNextErrorBarStyle,
         py::arg("col") = IMPLOT_AUTO_COL, py::arg("size") = IMPLOT_AUTO, py::arg("weight") = IMPLOT_AUTO,
         "Set the error bar style for the next item only.");
 
-    m.def("get_last_item_color",    // implot.h:1115
+    m.def("get_last_item_color",    // implot.h:1122
         ImPlot::GetLastItemColor, "Gets the last item primary color (i.e. its legend icon color)");
 
-    m.def("get_style_color_name",    // implot.h:1118
+    m.def("get_style_color_name",    // implot.h:1125
         ImPlot::GetStyleColorName,
         py::arg("idx"),
         "Returns the null terminated string name for an ImPlotCol.",
         pybind11::return_value_policy::reference);
 
-    m.def("get_marker_name",    // implot.h:1120
+    m.def("get_marker_name",    // implot.h:1127
         ImPlot::GetMarkerName,
         py::arg("idx"),
         "Returns the null terminated string name for an ImPlotMarker.",
         pybind11::return_value_policy::reference);
 
-    m.def("add_colormap",    // implot.h:1141
+    m.def("add_colormap",    // implot.h:1148
         py::overload_cast<const char *, const ImVec4 *, int, bool>(ImPlot::AddColormap), py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true);
 
-    m.def("add_colormap",    // implot.h:1142
+    m.def("add_colormap",    // implot.h:1149
         py::overload_cast<const char *, const ImU32 *, int, bool>(ImPlot::AddColormap), py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true);
 
-    m.def("get_colormap_count",    // implot.h:1145
+    m.def("get_colormap_count",    // implot.h:1152
         ImPlot::GetColormapCount, "Returns the number of available colormaps (i.e. the built-in + user-added count).");
 
-    m.def("get_colormap_name",    // implot.h:1147
+    m.def("get_colormap_name",    // implot.h:1154
         ImPlot::GetColormapName,
         py::arg("cmap"),
         "Returns a null terminated string name for a colormap given an index. Returns None if index is invalid.",
         pybind11::return_value_policy::reference);
 
-    m.def("get_colormap_index",    // implot.h:1149
+    m.def("get_colormap_index",    // implot.h:1156
         ImPlot::GetColormapIndex,
         py::arg("name"),
         "Returns an index number for a colormap given a valid string name. Returns -1 if name is invalid.");
 
-    m.def("push_colormap",    // implot.h:1152
+    m.def("push_colormap",    // implot.h:1159
         py::overload_cast<ImPlotColormap>(ImPlot::PushColormap),
         py::arg("cmap"),
         "Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to call PopColormap!");
 
-    m.def("push_colormap",    // implot.h:1154
+    m.def("push_colormap",    // implot.h:1161
         py::overload_cast<const char *>(ImPlot::PushColormap),
         py::arg("name"),
         "Push a colormap by string name. Use built-in names such as \"Default\", \"Deep\", \"Jet\", etc. or a string you provided to AddColormap. Don't forget to call PopColormap!");
 
-    m.def("pop_colormap",    // implot.h:1156
+    m.def("pop_colormap",    // implot.h:1163
         ImPlot::PopColormap,
         py::arg("count") = 1,
         "Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count.");
 
-    m.def("next_colormap_color",    // implot.h:1160
+    m.def("next_colormap_color",    // implot.h:1167
         ImPlot::NextColormapColor, " Returns the next color from the current colormap and advances the colormap for the current plot.\n Can also be used with no return value to skip colors if desired. You need to call this between Begin/EndPlot!");
 
-    m.def("get_colormap_size",    // implot.h:1166
+    m.def("get_colormap_size",    // implot.h:1173
         ImPlot::GetColormapSize,
         py::arg("cmap") = IMPLOT_AUTO,
         "Returns the size of a colormap.");
 
-    m.def("get_colormap_color",    // implot.h:1168
+    m.def("get_colormap_color",    // implot.h:1175
         ImPlot::GetColormapColor,
         py::arg("idx"), py::arg("cmap") = IMPLOT_AUTO,
         "Returns a color from a colormap given an index >= 0 (modulo will be performed).");
 
-    m.def("sample_colormap",    // implot.h:1170
+    m.def("sample_colormap",    // implot.h:1177
         ImPlot::SampleColormap,
         py::arg("t"), py::arg("cmap") = IMPLOT_AUTO,
         "Sample a color from the current colormap given t between 0 and 1.");
 
-    m.def("colormap_scale",    // implot.h:1173
+    m.def("colormap_scale",    // implot.h:1180
         ImPlot::ColormapScale,
         py::arg("label"), py::arg("scale_min"), py::arg("scale_max"), py::arg("size") = ImVec2(0,0), py::arg("format") = "%g", py::arg("flags") = 0, py::arg("cmap") = IMPLOT_AUTO,
         "Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.");
 
-    m.def("colormap_slider",    // implot.h:1175
+    m.def("colormap_slider",    // implot.h:1182
         [](const char * label, float t, ImVec4 * out = NULL, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
         {
             auto ColormapSlider_adapt_modifiable_immutable_to_return = [](const char * label, float t, ImVec4 * out = NULL, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
@@ -2091,77 +2092,77 @@ void py_init_module_implot(py::module& m)
         py::arg("label"), py::arg("t"), py::arg("out") = py::none(), py::arg("format") = "", py::arg("cmap") = IMPLOT_AUTO,
         "Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].");
 
-    m.def("colormap_button",    // implot.h:1177
+    m.def("colormap_button",    // implot.h:1184
         ImPlot::ColormapButton,
         py::arg("label"), py::arg("size") = ImVec2(0,0), py::arg("cmap") = IMPLOT_AUTO,
         "Shows a button with a colormap gradient brackground.");
 
-    m.def("bust_color_cache",    // implot.h:1186
+    m.def("bust_color_cache",    // implot.h:1193
         ImPlot::BustColorCache,
         py::arg("plot_title_id") = py::none(),
         " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
 
-    m.def("get_input_map",    // implot.h:1193
+    m.def("get_input_map",    // implot.h:1200
         ImPlot::GetInputMap,
         "Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.",
         pybind11::return_value_policy::reference);
 
-    m.def("map_input_default",    // implot.h:1196
+    m.def("map_input_default",    // implot.h:1203
         ImPlot::MapInputDefault,
         py::arg("dst") = py::none(),
         "Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.");
 
-    m.def("map_input_reverse",    // implot.h:1198
+    m.def("map_input_reverse",    // implot.h:1205
         ImPlot::MapInputReverse,
         py::arg("dst") = py::none(),
         "Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll.");
 
-    m.def("item_icon",    // implot.h:1205
+    m.def("item_icon",    // implot.h:1212
         py::overload_cast<const ImVec4 &>(ImPlot::ItemIcon), py::arg("col"));
 
-    m.def("item_icon",    // implot.h:1206
+    m.def("item_icon",    // implot.h:1213
         py::overload_cast<ImU32>(ImPlot::ItemIcon), py::arg("col"));
 
-    m.def("colormap_icon",    // implot.h:1207
+    m.def("colormap_icon",    // implot.h:1214
         ImPlot::ColormapIcon, py::arg("cmap"));
 
-    m.def("get_plot_draw_list",    // implot.h:1210
+    m.def("get_plot_draw_list",    // implot.h:1217
         ImPlot::GetPlotDrawList,
         "Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.",
         pybind11::return_value_policy::reference);
 
-    m.def("push_plot_clip_rect",    // implot.h:1212
+    m.def("push_plot_clip_rect",    // implot.h:1219
         ImPlot::PushPlotClipRect,
         py::arg("expand") = 0,
         "Push clip rect for rendering to current plot area. The rect can be expanded or contracted by #expand pixels. Call between Begin/EndPlot.");
 
-    m.def("pop_plot_clip_rect",    // implot.h:1214
+    m.def("pop_plot_clip_rect",    // implot.h:1221
         ImPlot::PopPlotClipRect, "Pop plot clip rect. Call between Begin/EndPlot.");
 
-    m.def("show_style_selector",    // implot.h:1217
+    m.def("show_style_selector",    // implot.h:1224
         ImPlot::ShowStyleSelector,
         py::arg("label"),
         "Shows ImPlot style selector dropdown menu.");
 
-    m.def("show_colormap_selector",    // implot.h:1219
+    m.def("show_colormap_selector",    // implot.h:1226
         ImPlot::ShowColormapSelector,
         py::arg("label"),
         "Shows ImPlot colormap selector dropdown menu.");
 
-    m.def("show_input_map_selector",    // implot.h:1221
+    m.def("show_input_map_selector",    // implot.h:1228
         ImPlot::ShowInputMapSelector,
         py::arg("label"),
         "Shows ImPlot input map selector dropdown menu.");
 
-    m.def("show_style_editor",    // implot.h:1223
+    m.def("show_style_editor",    // implot.h:1230
         ImPlot::ShowStyleEditor,
         py::arg("ref") = py::none(),
         "Shows ImPlot style editor block (not a window).");
 
-    m.def("show_user_guide",    // implot.h:1225
+    m.def("show_user_guide",    // implot.h:1232
         ImPlot::ShowUserGuide, "Add basic help/info block for end users (not a window).");
 
-    m.def("show_metrics_window",    // implot.h:1227
+    m.def("show_metrics_window",    // implot.h:1234
         [](std::optional<bool> p_popen = std::nullopt) -> std::optional<bool>
         {
             auto ShowMetricsWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_popen = std::nullopt) -> std::optional<bool>
@@ -2179,7 +2180,7 @@ void py_init_module_implot(py::module& m)
         py::arg("p_popen") = py::none(),
         "Shows ImPlot metrics/debug information window.");
 
-    m.def("show_demo_window",    // implot.h:1234
+    m.def("show_demo_window",    // implot.h:1241
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
         {
             auto ShowDemoWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>

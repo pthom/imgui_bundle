@@ -211,6 +211,10 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::SetShowWhitespaces, py::arg("a_value"))
         .def("is_showing_whitespaces",
             &TextEditor::IsShowingWhitespaces)
+        .def("set_show_short_tab_glyphs",
+            &TextEditor::SetShowShortTabGlyphs, py::arg("a_value"))
+        .def("is_showing_short_tab_glyphs",
+            &TextEditor::IsShowingShortTabGlyphs)
         .def("set_tab_size",
             &TextEditor::SetTabSize, py::arg("a_value"))
         .def("get_tab_size",

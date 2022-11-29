@@ -7024,17 +7024,29 @@ class PlatformImeData:  # imgui.h:3196
 
 ####################    <generated_from:imgui_toggle.h>    ####################
 class ToggleFlags_(enum.Enum):  # imgui_toggle.h:5
-    # ImGuiToggleFlags_None               = 0,    /* original C++ signature */
+    # ImGuiToggleFlags_None                   = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImGuiToggleFlags_Animated           = 1 << 0,     /* original C++ signature */
+    # ImGuiToggleFlags_Animated               = 1 << 0,     /* original C++ signature */
     animated = (
         enum.auto()
     )  # (= 1 << 0)  # The toggle should be animated. Mutually exclusive with ImGuiToggleFlags_Static.
-    # ImGuiToggleFlags_Static             = 1 << 1,     /* original C++ signature */
+    # ImGuiToggleFlags_Static                 = 1 << 1,     /* original C++ signature */
     static = (
         enum.auto()
     )  # (= 1 << 1)  # The toggle should not animate. Mutually exclusive with ImGuiToggleFlags_Animated.
-    # ImGuiToggleFlags_Default            = ImGuiToggleFlags_Static,     /* original C++ signature */
+    # ImGuiToggleFlags_BorderedFrame          = 1 << 2,     /* original C++ signature */
+    bordered_frame = (
+        enum.auto()
+    )  # (= 1 << 2)  # The toggle should have a border drawn on the frame.
+    # ImGuiToggleFlags_BorderedKnob           = 1 << 3,     /* original C++ signature */
+    bordered_knob = (
+        enum.auto()
+    )  # (= 1 << 3)  # The toggle should have a border drawn on the knob.
+    # ImGuiToggleFlags_Bordered               = ImGuiToggleFlags_BorderedFrame | ImGuiToggleFlags_BorderedKnob,     /* original C++ signature */
+    bordered = (
+        enum.auto()
+    )  # (= ToggleFlags_BorderedFrame | ToggleFlags_BorderedKnob)  # Shorthand for bordered frame and knob.
+    # ImGuiToggleFlags_Default                = ImGuiToggleFlags_Static,     /* original C++ signature */
     default = (
         enum.auto()
     )  # (= ToggleFlags_Static)  # The default flags used when no ImGuiToggleFlags_ are specified.
@@ -7050,25 +7062,25 @@ class ToggleFlags_(enum.Enum):  # imgui_toggle.h:5
 # - frame_rounding: A scalar that controls how rounded the toggle frame is. 0 is square, 1 is round. (0, 1) default 1.0
 # - knob_rounding: A scalar that controls how rounded the toggle knob is. 0 is square, 1 is round. (0, 1) default 1.0
 # IMGUI_API bool Toggle(const char* label, bool* v);    /* original C++ signature */
-def toggle(label: str, v: bool) -> Tuple[bool, bool]:  # imgui_toggle.h:26
+def toggle(label: str, v: bool) -> Tuple[bool, bool]:  # imgui_toggle.h:29
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags);    /* original C++ signature */
 def toggle(
     label: str, v: bool, flags: ToggleFlags
-) -> Tuple[bool, bool]:  # imgui_toggle.h:27
+) -> Tuple[bool, bool]:  # imgui_toggle.h:30
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed);    /* original C++ signature */
 def toggle(
     label: str, v: bool, flags: ToggleFlags, speed: float
-) -> Tuple[bool, bool]:  # imgui_toggle.h:28
+) -> Tuple[bool, bool]:  # imgui_toggle.h:31
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding);    /* original C++ signature */
 def toggle(
     label: str, v: bool, flags: ToggleFlags, frame_rounding: float, knob_rounding: float
-) -> Tuple[bool, bool]:  # imgui_toggle.h:29
+) -> Tuple[bool, bool]:  # imgui_toggle.h:32
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed, float frame_rounding, float knob_rounding);    /* original C++ signature */
@@ -7079,7 +7091,7 @@ def toggle(
     speed: float,
     frame_rounding: float,
     knob_rounding: float,
-) -> Tuple[bool, bool]:  # imgui_toggle.h:30
+) -> Tuple[bool, bool]:  # imgui_toggle.h:33
     pass
 ####################    </generated_from:imgui_toggle.h>    ####################
 

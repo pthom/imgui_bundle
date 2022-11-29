@@ -289,6 +289,11 @@ class TextEditor:
     def is_showing_whitespaces(self) -> bool:
         pass
 
+    def set_show_short_tab_glyphs(self, a_value: bool) -> None:
+        pass
+    def is_showing_short_tab_glyphs(self) -> bool:
+        pass
+
     def set_tab_size(self, a_value: int) -> None:
         pass
     def get_tab_size(self) -> int:
