@@ -4,6 +4,7 @@
 #include <optional>
 #include <vector>
 
+// Specific patches for python bindings, where ImWChar* cannot be bound to python
 
 namespace PatchImGui
 {
