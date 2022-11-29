@@ -132,7 +132,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
     endif()
 endif()
 # Build ImGuizmo
-add_simple_external_library_with_sources(imguizmo ImGuizmo)
+add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
 
 
 #########################################################################
