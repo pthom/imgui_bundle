@@ -185,21 +185,43 @@ def lib_im_file_dialog() -> ExternalLibrary:
     )
 
 
+def lib_imgui_knobs() -> ExternalLibrary:
+    return ExternalLibrary(
+        name = "imgui-knobs",
+        official_git_url="https://github.com/altschuler/imgui-knobs",
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui-knobs.git"
+    )
+
+
 def play():
+    pass
+
+    # imgui-node-editor
+    # -----------------
     # lib = lib_imgui_node_editor()
     # cmd = lib.run_rebase_fork_on_official_changes()
     # cmd.run()
-    # print(cmd)
 
+    # ImFileDialog
+    # ------------
     # lib = lib_im_file_dialog()
     # cmd = lib.run_rebase_fork_on_official_changes()
-    # print(cmd)
+    # cmd.run()
 
-    lib = lib_glfw()
+    # GLFW
+    # ----
+    # lib = lib_glfw()
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
-    print(lib.run_update_official())
-    lib.run_update_official().run()
+    # lib.run_update_official().run()
+
+    # imgui-knobs
+    # -----------
+    lib = lib_imgui_knobs()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    lib.run_rebase_fork_on_official_changes().run()
 
 
 class CliCommands:
