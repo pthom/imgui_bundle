@@ -45,3 +45,6 @@
 [submodule "external/immvision/immvision"]
 	path = external/immvision/immvision
 	url = https://github.com/pthom/immvision.git
+[submodule "external/ImGuizmo"]
+	path = external/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
