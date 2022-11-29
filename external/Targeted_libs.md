@@ -1,6 +1,6 @@
 # Libs considered for inclusion in imgui-bundle
 
-(Extract from https://github.com/ocornut/imgui/wiki/Useful-Extensions#text-editors)
+(Extract from https://github.com/ocornut/imgui/wiki/Useful-Extensions)
 
 ### DONE: Text editor
 ImGuiColorTextEdit: Colorizing text editor for Dear ImGui (2017-2019)
@@ -13,16 +13,16 @@ https://github.com/altschuler/imgui-knobs
 ### DONE: File browser
 https://github.com/dfranx/ImFileDialog
     
-#### DONE: Node editor 
+### DONE: Node editor 
 https://github.com/thedmd/imgui-node-editor
 
-### Done Spinner
+### DONE: Spinner
 https://github.com/dalerank/imspinner/blob/master/imspinner.h
 
-## immvision
+### DONE: immvision
 https://github.com/pthom/immvision
 
-## texture inspector ?
+### texture inspector ?
 https://github.com/andyborrell/imgui_tex_inspect 
 
 ### Not compatible: ImGuizmo

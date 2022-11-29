@@ -2,8 +2,6 @@
 https://github.com/dalerank/imspinner
 """
 
-# type: ignore
-from typing import Tuple
 import numpy as np
 import enum
 

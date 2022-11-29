@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_im_file_dialog():
+    print("autogenerate_im_file_dialog")
     input_cpp_header = CPP_HEADERS_DIR + "/ImFileDialog.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_im_file_dialog.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/im_file_dialog.pyi"
@@ -21,10 +22,10 @@ def autogenerate_im_file_dialog():
     options.python_run_black_formatter = True
     options.namespace_root__regex = "^ifd$"
     options.fn_return_force_policy_reference_for_references__regex = "^Instance$"
-    options.code_replacements.add_first_replacement("std::filesystem::path", "Path")
+    options.type_replacements.add_first_replacement("std::filesystem::path", "Path")
     options.member_exclude_by_name__regex = "CreateTexture|DeleteTexture"
-    options.code_replacements.add_last_replacement(r"std.vector<(\w*)>", r"List[\1]")
-    options.code_replacements.add_last_replacement(r"time_t", r"int")
+    options.type_replacements.add_last_replacement(r"std.vector<(\w*)>", r"List[\1]")
+    options.type_replacements.add_last_replacement(r"time_t", r"int")
 
     litgen.write_generated_code_for_file(
         options,
@@ -36,5 +37,4 @@ def autogenerate_im_file_dialog():
 
 
 if __name__ == "__main__":
-    print("autogenerate_im_file_dialog")
     autogenerate_im_file_dialog()

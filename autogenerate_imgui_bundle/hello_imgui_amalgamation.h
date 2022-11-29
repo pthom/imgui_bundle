@@ -1216,12 +1216,15 @@ namespace HelloImGui
     using ScreenPosition = std::array<int, 2>;
     using ScreenSize = std::array<int, 2>;
 
+    constexpr ScreenPosition DefaultScreenPosition = {0, 0};
+    constexpr ScreenSize DefaultWindowSize = {800, 600};
+
 #define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
 
     struct ScreenBounds
     {
-        ScreenPosition position = {0, 0};
-        ScreenSize size = {100, 100};
+        ScreenPosition position = DefaultScreenPosition;
+        ScreenSize size = DefaultWindowSize;
 
         ScreenPosition TopLeftCorner() const{ return position; }
         ScreenPosition BottomRightCorner() const{ return { position[0] + size[0], position[1] + size[1] }; }
@@ -1328,9 +1331,6 @@ enum class WindowPositionMode
 };
 
 
-constexpr ScreenSize DefaultScreenSize = {800, 600};
-constexpr ScreenPosition DefaultScreenPosition = {40, 40};
-
 /**
 @@md#WindowGeometry
 
@@ -1370,7 +1370,7 @@ Members:
 struct WindowGeometry
 {
     // used if fullScreenMode==NoFullScreen and sizeAuto==false, default=(800, 600)
-    ScreenSize size = DefaultScreenSize;
+    ScreenSize size = DefaultWindowSize;
 
     // If true, adapt the app window size to the presented widgets
     bool sizeAuto = false;
@@ -1498,12 +1498,14 @@ namespace ImGuiTheme
         // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
         // (Background of checkbox, radio button, plot, slider, text input)
         float ValueMultiplierFrameBg = -1.f;
+
+        ImGuiThemeTweaks() {}
     };
 
     struct ImGuiTweakedTheme
     {
         ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;
-        ImGuiThemeTweaks Tweaks = {};
+        ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();
     };
 
     ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);
@@ -1622,28 +1624,6 @@ struct ImGuiWindowParams
 //                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace HelloImGui
-{
-ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());
-ImFont* LoadFontTTF_WithFontAwesomeIcons(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig configFont = ImFontConfig(), ImFontConfig configIcons = ImFontConfig());
-ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
-
-namespace ImGuiDefaultSettings
-{
-void LoadDefaultFont_WithFontAwesomeIcons();
-void SetupDefaultImGuiConfig();
-void SetupDefaultImGuiStyle();
-}  // namespace ImGuiDefaultSettings
-}  // namespace HelloImGui
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/runner_callbacks.h continued                                               //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 namespace HelloImGui
 {
 /**
@@ -1665,6 +1645,37 @@ using AnyEventCallback = std::function<bool(void * backendEvent)>
 using VoidFunction = std::function<void(void)>;
 using AnyEventCallback = std::function<bool(void * backendEvent)>;
 
+inline VoidFunction EmptyVoidFunction() { return {}; }
+inline AnyEventCallback EmptyEventCallback() {return {}; }
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace HelloImGui
+{
+ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());
+ImFont* LoadFontTTF_WithFontAwesomeIcons(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig configFont = ImFontConfig(), ImFontConfig configIcons = ImFontConfig());
+ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
+
+namespace ImGuiDefaultSettings
+{
+VoidFunction LoadDefaultFont_WithFontAwesomeIcons();
+VoidFunction SetupDefaultImGuiConfig();
+VoidFunction SetupDefaultImGuiStyle();
+}  // namespace ImGuiDefaultSettings
+}  // namespace HelloImGui
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/runner_callbacks.h continued                                               //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace HelloImGui
+{
 /**
 @@md#MobileCallbacks
 
@@ -1689,10 +1700,10 @@ using AnyEventCallback = std::function<bool(void * backendEvent)>;
  */
 struct MobileCallbacks
 {
-    VoidFunction OnDestroy = {};
-    VoidFunction OnLowMemory = {};
-    VoidFunction OnPause = {};
-    VoidFunction OnResume = {};
+    VoidFunction OnDestroy = EmptyVoidFunction();
+    VoidFunction OnLowMemory = EmptyVoidFunction();
+    VoidFunction OnPause = EmptyVoidFunction();
+    VoidFunction OnResume = EmptyVoidFunction();
 };
 
 /**
@@ -1752,17 +1763,17 @@ Notes:
  */
 struct RunnerCallbacks
 {
-    VoidFunction ShowGui = {};
-    VoidFunction ShowMenus = {};
-    VoidFunction ShowStatus = {};
-    VoidFunction PostInit = {};
-    VoidFunction BeforeExit = {};
+    VoidFunction ShowGui = EmptyVoidFunction();
+    VoidFunction ShowMenus = EmptyVoidFunction();
+    VoidFunction ShowStatus = EmptyVoidFunction();
+    VoidFunction PostInit = EmptyVoidFunction();
+    VoidFunction BeforeExit = EmptyVoidFunction();
 
-    AnyEventCallback AnyBackendEventCallback = {};
+    AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();
 
-    VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;
-    VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig;
-    VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle;
+    VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
+    VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig();
+    VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle();
 
 #ifdef HELLOIMGUI_MOBILEDEVICE
     MobileCallbacks mobileCallbacks;
@@ -1870,7 +1881,7 @@ Direction where this dock space should be created
 */
 struct DockingSplit
 {
-    DockingSplit(const DockSpaceName& initialDock_ = {}, const DockSpaceName& newDock_ = {},
+    DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",
                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f)
       : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_) {}
 
@@ -1912,11 +1923,11 @@ struct DockableWindow
     DockableWindow(
         const std::string & label_ = "",
         const DockSpaceName & dockSpaceName_ = "",
-        const VoidFunction guiFonction_ = {},
+        const VoidFunction guiFunction_ = EmptyVoidFunction(),
         bool isVisible_ = true,
         bool canBeClosed_ = true)
     : label(label_), dockSpaceName(dockSpaceName_),
-      GuiFunction(guiFonction_),
+      GuiFunction(guiFunction_),
       isVisible(isVisible_),
       canBeClosed(canBeClosed_) {}
 
@@ -1924,7 +1935,7 @@ struct DockableWindow
 
     DockSpaceName dockSpaceName;
 
-    VoidFunction GuiFunction = {};
+    VoidFunction GuiFunction = EmptyVoidFunction();
 
     bool isVisible = true;
     bool canBeClosed = true;
@@ -2102,12 +2113,12 @@ struct RunnerParams
  */
 struct SimpleRunnerParams
 {
-    VoidFunction guiFunction;
+    VoidFunction guiFunction = EmptyVoidFunction();
     std::string windowTitle = "";
 
     bool windowSizeAuto = false;
     bool windowRestorePreviousGeometry = false;
-    ScreenSize windowSize = {800, 600};
+    ScreenSize windowSize = DefaultWindowSize;
 
     float fpsIdle = 10.f;
 
@@ -2174,8 +2185,6 @@ __HelloImGui::GetRunnerParams()__ is a convenience function that will return the
 */
 namespace HelloImGui
 {
-    constexpr ScreenSize DefaultWindowSize = {800, 600};
-
     void Run(RunnerParams & runnerParams);
 
     void Run(const SimpleRunnerParams& simpleParams);

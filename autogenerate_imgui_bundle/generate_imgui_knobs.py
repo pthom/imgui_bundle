@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_imgui_knobs():
+    print("autogenerate_imgui_knobs")
     input_cpp_header = CPP_HEADERS_DIR + "/imgui-knobs.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_knobs.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_knobs.pyi"
@@ -32,5 +33,4 @@ def autogenerate_imgui_knobs():
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui_knobs")
     autogenerate_imgui_knobs()

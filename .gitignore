@@ -149,3 +149,4 @@ MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
 BasicInteraction.json
+demo_compose_image_debug.json

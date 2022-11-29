@@ -20,7 +20,8 @@ class Lover:
         ed.begin_pin(self.pin_in, ed.PinKind.input)
         imgui.text(self.name)
         ed.end_pin()
-        ed.begin_pin(self.pin_loves, ed.PinKind.output), imgui.text("Loves")
+        ed.begin_pin(self.pin_loves, ed.PinKind.output)
+        imgui.text("Loves")
         ed.end_pin()
         ed.begin_pin(self.pin_hates, ed.PinKind.output)
         imgui.text("Hates")
@@ -40,8 +41,8 @@ class Tie:
         self.id = ed.LinkId.create()
 
     def draw(self) -> None:
-        red = ImVec4(1.0, 0.3, 0.2, 1.0)
-        green = ImVec4(0.3, 0.9, 0.0, 1.0)
+        red = ImVec4(1.0, 0.3, 0.2, 1.0)  # type: ignore
+        green = ImVec4(0.3, 0.9, 0.0, 1.0)  # type: ignore
         if self.kind == "loves":
             ed.link(self.id, self.lover.pin_loves, self.loved.pin_in, green)
         else:
@@ -71,4 +72,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")
+    run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore

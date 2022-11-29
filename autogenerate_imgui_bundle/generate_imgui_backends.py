@@ -19,7 +19,6 @@ def autogenerate_imgui_backends():
     options = litgen.LitgenOptions()
     options.python_run_black_formatter = True
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_IMPL_API"
-    options.names_replacements.add_last_replacement("^ImGui_Impl", "")
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_impl_opengl3.h")

@@ -12,6 +12,7 @@ def _set_glfw_pip_search_path():
     """
     import os
     import platform
+
     this_dir = os.path.dirname(__file__)
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
@@ -29,7 +30,7 @@ _set_glfw_pip_search_path()
 
 
 # do not move this import at the top, it should be done after the call to _set_glfw_pip_search_path()
-import glfw 
+import glfw  # type: ignore
 from typing import cast
 
 
@@ -40,6 +41,6 @@ def glfw_window_hello_imgui() -> glfw._GLFWwindow:
     import ctypes
     from imgui_bundle import hello_imgui
 
-    window_address = hello_imgui.get_glfw_window_address()
+    window_address = hello_imgui.get_glfw_window_address()  # type: ignore
     window_pointer = ctypes.cast(window_address, ctypes.POINTER(glfw._GLFWwindow))
     return cast(glfw._GLFWwindow, window_pointer)

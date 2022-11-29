@@ -1,6 +1,11 @@
+from typing import Dict
+import imgui_bundle
 from imgui_bundle import imgui, imgui_md, static, ImVec2, hello_imgui, imgui_color_text_edit
 from imgui_bundle.demos import code_str_utils
 import inspect
+
+
+TextEditor = imgui_color_text_edit.TextEditor
 
 
 def unindent(s: str):
@@ -18,25 +23,45 @@ class AppState:
     name = ""
 
 
-def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
-    import inspect
+@static(editors={})
+def show_code_editor(code: str, is_cpp: bool):
+    static = show_code_editor
+    editors: Dict[str, TextEditor] = static.editors
 
-    imgui.push_id(str(id(python_gui_function)))
+    if code not in editors.keys():
+        editors[code] = TextEditor()
+        if is_cpp:
+            editors[code].set_language_definition(TextEditor.LanguageDefinition.c_plus_plus())
+        else:
+            editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
+
+    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
+    editors[code].set_text(code)
+    editor_title = "cpp" if is_cpp else "python"
+    editors[code].render(f"##{editor_title}", editor_size)
+
+
+def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
+    static = show_python_vs_cpp_code_advice
+
+    import inspect
 
     python_code = inspect.getsource(python_gui_function)
 
-    code_size = ImVec2(500, 150)
+    imgui.push_id(str(id(python_gui_function)))
+
+    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
 
     imgui.begin_group()
     imgui.text("C++ code")
-    imgui.input_text_multiline("##C++", unindent(cpp_code), code_size)
+    show_code_editor(cpp_code, True)
     imgui.end_group()
 
     imgui.same_line()
 
     imgui.begin_group()
     imgui.text("Python code")
-    imgui.input_text_multiline("##Python", unindent(python_code), code_size)
+    show_code_editor(python_code, False)
     imgui.end_group()
 
     python_gui_function()
@@ -53,8 +78,10 @@ def demo_radio_button():
     clicked, static.value = imgui.radio_button("radio c", static.value, 2)
 
 
-def show_basic_code_advices():
-    cpp_code = """
+def show_basic_code_advices() -> None:
+    cpp_code = (
+        code_str_utils.unindent_code(
+            """
         void DemoRadioButton()
         {
             static int value = 0;
@@ -62,7 +89,11 @@ def show_basic_code_advices():
             ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
             ImGui::RadioButton("radio c", &value, 2);
         }
-    """
+    """,
+            flag_strip_empty_lines=True,
+        )
+        + "\n"
+    )
 
     md_render_unindent(
         """
@@ -84,32 +115,60 @@ def show_basic_code_advices():
     show_python_vs_cpp_code_advice(demo_radio_button, cpp_code)
 
 
+# fmt: off
+
 @static(text="")
-def demo_input_text_decimal():
+def demo_input_text_decimal() -> None:
     static = demo_input_text_decimal
-    changed, static.text = imgui.input_text("decimal", static.text, imgui.ImGuiInputTextFlags_.chars_decimal)
+    flags:imgui.InputTextFlags = (
+            imgui.InputTextFlags_.chars_uppercase.value
+          | imgui.InputTextFlags_.chars_no_blank.value
+        )
+    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
+
+# fmt: on
 
 
 def show_text_input_advice():
-    cpp_code = """
+    cpp_code = (
+        code_str_utils.unindent_code(
+            """
         void DemoInputTextDecimal()
         {
             static char text[64] = "";
+            ImGuiInputTextFlags flags = (
+                  ImGuiInputTextFlags_CharsUppercase
+                | ImGuiInputTextFlags_CharsNoBlank
+            );
             bool changed = ImGui::InputText(
-                                            "decimal", text, 64, 
-                                            ImGuiInputTextFlags_CharsDecimal);
+                                    "decimal", text, 64, 
+                                    ImGuiInputTextFlags_CharsDecimal);
         }
-        """
+        """,
+            flag_strip_empty_lines=True,
+        )
+        + "\n"
+    )
+
     md_render_unindent(
         """
         In the example below, two differences are important:
         
-        * ImGui::InputText aka imgui.input_text
+        ## InputText functions:
+        imgui.input_text (Python) is equivalent to ImGui::InputText (C++) 
         
-           * In C++, it uses two parameters for the text: the text pointer, and its length.
-           * In python, you can simply pass a string, and get back its modified value in the returned tuple.
+        * In C++, it uses two parameters for the text: the text pointer, and its length.
+        * In python, you can simply pass a string, and get back its modified value in the returned tuple.
         
-        * ImGuiInputTextFlags_ is an enum in python (note the trailing underscore). You will find many similar enums.
+        ## Enums handling:
+
+        * `ImGuiInputTextFlags_` (C++) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore). 
+        * `ImGuiInputTextFlags` (C++) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
+        
+        You will find many similar enums. 
+        
+        The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).
+        
     """
     )
     imgui.new_line()
@@ -118,30 +177,38 @@ def show_text_input_advice():
 
 def demo_add_window_size_callback():
     import imgui_bundle
-    import glfw # always import glfw *after* imgui_bundle!!!
+
+    # always import glfw *after* imgui_bundle!!!
+    import glfw  # type: ignore
+
     # Get the glfw window used by hello imgui
     window = imgui_bundle.glfw_window_hello_imgui()
 
     # define a callback
-    def my_window_size_callback(window: glfw._GLFWwindow, w:int, h:int):
+    def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
         from imgui_bundle import hello_imgui
+
         hello_imgui.log(hello_imgui.LogLevel.info, f"Window size changed to {w}x{h}")
 
     glfw.set_window_size_callback(window, my_window_size_callback)
 
-@static(text_editor = None)
+
+@static(text_editor=None)
 def show_glfw_callback_advice():
     static = show_glfw_callback_advice
     if static.text_editor is None:
         import inspect
-        static.text_editor = imgui_color_text_edit.TextEditor()
+
+        static.text_editor = TextEditor()
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     md_render_unindent("For more complex applications, you can set various callbacks, using glfw.")
     if imgui.button("Add glfw callback"):
         demo_add_window_size_callback()
-        hello_imgui.log(hello_imgui.LogLevel.warning,
-            "A callback was handed to watch the window size. Change this window size and look at the logs")
+        hello_imgui.log(
+            hello_imgui.LogLevel.warning,
+            "A callback was handed to watch the window size. Change this window size and look at the logs",
+        )
 
     imgui.text("Code for this demo")
     static.text_editor.render("Code", ImVec2(500, 150))
@@ -149,13 +216,8 @@ def show_glfw_callback_advice():
     hello_imgui.log_gui()
 
 
-def show_callback_avice():
-    imgui.new_line()
-    show_python_vs_cpp_code_advice()
-
-
 @static(is_initialized=False)
-def demo_imgui_bundle():
+def demo_imgui_bundle() -> None:
     static = demo_imgui_bundle
 
     if not static.is_initialized:
@@ -214,9 +276,9 @@ def demo_imgui_bundle():
                 # And returns true if it was clicked: you can *immediately* handle the click
                 app_state.counter += 1
 
-        imgui.input_text_multiline(
-            "##immediate_gui_example", unindent(inspect.getsource(immediate_gui_example)), ImVec2(500, 150)
-        )
+        python_code = unindent(inspect.getsource(immediate_gui_example))
+        # imgui.input_text_multiline("##immediate_gui_example", python_code, ImVec2(500, 150))
+        show_code_editor(python_code, False)
         imgui.text("Displays this:")
         immediate_gui_example()
         imgui.separator()
@@ -247,4 +309,8 @@ def demo_imgui_bundle():
 if __name__ == "__main__":
     import imgui_bundle
 
-    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))
+    from imgui_bundle import RunnerParams
+
+    params = RunnerParams()
+
+    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore

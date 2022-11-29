@@ -1,4 +1,5 @@
-from typing import Callable, Any
+from typing import Callable, Any, Tuple, Optional
+import imgui_bundle
 
 
 def static(**kwargs):
@@ -52,11 +53,6 @@ def run_anon_block(function: Callable[[None], None]):
     function()  # type: ignore
 
 
-from typing import Tuple, Optional
-import imgui_bundle
-from imgui_bundle import hello_imgui
-
-
 VoidFunction = Callable[[None], None]
 ScreenSize = Tuple[int, int]
 
@@ -89,10 +85,9 @@ def run_nb(
 
     If window_size is left as its default value (0, 0), then the window will autosize
     """
-    import numpy as np
     import cv2  # pip install opencv-python
     import PIL.Image  # pip install pillow
-    from IPython.display import display
+    from IPython.display import display  # type: ignore
     from IPython.core.display import HTML  # type: ignore
 
     def run_app():

@@ -37,7 +37,8 @@ def demo_imgui_color_text_edit():
 
     if imgui.button("Test glfw link"):
         import imgui_bundle
-        import glfw
+        import glfw  # type: ignore
+
         window = imgui_bundle.glfw_window_hello_imgui()
         glfw.set_window_pos(window, 10, 10)
 
@@ -48,7 +49,6 @@ def demo_imgui_color_text_edit():
         # window_address = hello_imgui.get_glfw_window_address()
         # window_pointer = ctypes.cast(window_address, ctypes.POINTER(glfw._GLFWwindow))
         # glfw.set_window_pos(window_pointer, 10, 10)
-
 
     show_palette_buttons()
     editor.render("Code")

@@ -94,7 +94,7 @@ def demo_toggle():
     )
 
     changed, static.toggle_a = imgui.toggle("Default Toggle", static.toggle_a)
-    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ImGuiToggleFlags_.animated)
+    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ToggleFlags_.animated)
 
 
 @static(selected_filename="")
@@ -150,7 +150,7 @@ def demo_file_dialog():
 
 def _fake_log_provider() -> str:
     try:
-        from fortune import fortune
+        from fortune import fortune  # type: ignore
 
         message_provider = fortune
     except ImportError:
@@ -209,4 +209,4 @@ def demo_widgets():
 if __name__ == "__main__":
     from imgui_bundle import run
 
-    run(demo_widgets, with_markdown=True)
+    run(demo_widgets, with_markdown=True)  # type: ignore

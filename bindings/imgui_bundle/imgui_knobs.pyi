@@ -2,8 +2,7 @@
 Python bindings for https://github.com/altschuler/imgui-knobs
 """
 
-# type: ignore
-from typing import Tuple
+from typing import Tuple, Optional
 import numpy as np
 import enum
 
@@ -51,7 +50,7 @@ def knob(
     v_min: float,
     v_max: float,
     speed: float = 0,
-    format: str = None,
+    format: Optional[str] = None,
     variant: ImGuiKnobVariant = ImGuiKnobVariant_.tick,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,
@@ -65,7 +64,7 @@ def knob_int(
     v_min: int,
     v_max: int,
     speed: float = 0,
-    format: str = None,
+    format: Optional[str] = None,
     variant: ImGuiKnobVariant = ImGuiKnobVariant_.tick,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,

@@ -3,15 +3,16 @@
 imgui_bundle can be used without hello imgui, and you can configure and run imgui, opengl and glfw (or sdl, etc.) manually,
 as shown here.
 """
-
+import os.path
 import sys
 import platform
-import OpenGL.GL as GL
+import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui, imgui_backends
+
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for
 #  the correct version of the glfw dynamic library)
-import glfw
+import glfw  # type: ignore
 
 
 def glfw_error_callback(error: int, description: str):
@@ -56,9 +57,9 @@ def main():
     # IMGUI_CHECKVERSION();
     imgui.create_context()
     io = imgui.get_io()
-    io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
+    io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ImGuiConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
-    io.config_flags |= imgui.ImGuiConfigFlags_.docking_enable # Enable docking
+    io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
     # io.config_flags |= imgui.ImGuiConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.ConfigViewportsNoAutoMerge = true;
     # io.ConfigViewportsNoTaskBarIcon = true;
@@ -69,18 +70,19 @@ def main():
 
     # When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     style = imgui.get_style()
-    if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable:
+    if io.config_flags & imgui.ConfigFlags_.viewports_enable:
         style.window_rounding = 0.0
         # style.Colors[ImGuiCol_WindowBg].w = 1.0f;  # unsettable from python!!!!
 
     # Setup Platform/Renderer backends
     import ctypes
+
     # You need to transfer the window address to imgui_backends.glfw_init_for_open_gl
     # proceed as shown below to get it.
     window_address = ctypes.cast(window, ctypes.c_void_p).value
     imgui_backends.glfw_init_for_open_gl(window_address, True)
 
-    imgui_backends.open_gl3_init(glsl_version)
+    imgui_backends.opengl3_init(glsl_version)
 
     # // Load Fonts
     # // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use imgui.PushFont()/PopFont() to select them.
@@ -96,6 +98,37 @@ def main():
     # //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
     # //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     # //IM_ASSERT(font != NULL);
+
+    # Load font example, with a merged font for icons
+    # ------------------------------------------------
+    # i. Load default font
+    font_atlas = imgui.get_io().fonts
+    font_atlas.add_font_default()
+    this_dir = os.path.dirname(__file__)
+    font_size_pixel = 48.0
+    # i. Load another font...
+    font_filename = this_dir + "/assets/fonts/Akronim-Regular.ttf"
+    glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
+    custom_font = imgui.font_atlas_add_font_from_file_ttf(
+        font_atlas=imgui.get_io().fonts,
+        filename=font_filename,
+        size_pixels=font_size_pixel,
+        glyph_ranges_as_int_list=glyph_range,
+    )
+    # ii. ... And merge icons into the previous font
+    from imgui_bundle import icons_fontawesome
+
+    font_filename = this_dir + "/assets/fonts/fontawesome-webfont.ttf"
+    font_config = imgui.ImFontConfig()
+    font_config.merge_mode = True
+    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
+    custom_font = imgui.font_atlas_add_font_from_file_ttf(
+        font_atlas,
+        filename=font_filename,
+        size_pixels=font_size_pixel,
+        glyph_ranges_as_int_list=icons_range,
+        font_cfg=font_config,
+    )
 
     # Our state
     show_demo_window = True
@@ -115,7 +148,7 @@ def main():
         glfw.poll_events()
 
         # Start the Dear ImGui frame
-        imgui_backends.open_gl3_new_frame()
+        imgui_backends.opengl3_new_frame()
         imgui_backends.glfw_new_frame()
         imgui.new_frame()
 
@@ -129,6 +162,12 @@ def main():
             # static float f = 0.0f;
             # static int counter = 0;
             imgui.begin("Hello, world!")  # Create a window called "Hello, world!" and append into it.
+
+            # Demo custom font
+            _id = id(custom_font)
+            imgui.push_font(custom_font)
+            imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
+            imgui.pop_font()
 
             imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
             _, show_demo_window = imgui.checkbox(
@@ -179,20 +218,21 @@ def main():
             clear_color[3],
         )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-        imgui_backends.open_gl3_render_draw_data(imgui.get_draw_data())
+        imgui_backends.opengl3_render_draw_data(imgui.get_draw_data())
 
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
         #  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-        if io.config_flags & imgui.ImGuiConfigFlags_.viewports_enable > 0:
+        if io.config_flags & imgui.ConfigFlags_.viewports_enable > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
-            imgui.render_platform_windows_default(glfw.make_context_current(backup_current_context))
+            imgui.render_platform_windows_default()
+            glfw.make_context_current(backup_current_context)
 
         glfw.swap_buffers(window)
 
     # Cleanup
-    imgui_backends.open_gl3_shutdown()
+    imgui_backends.opengl3_shutdown()
     imgui_backends.glfw_shutdown()
     imgui.destroy_context()
 

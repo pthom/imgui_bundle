@@ -217,11 +217,11 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
 
     if (editTransformDecomposition)
     {
-        if (ImGui::IsKeyPressed('t'))
+        if (ImGui::IsKeyPressed(ImGuiKey_T))
             mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-        if (ImGui::IsKeyPressed('e'))
+        if (ImGui::IsKeyPressed(ImGuiKey_E))
             mCurrentGizmoOperation = ImGuizmo::ROTATE;
-        if (ImGui::IsKeyPressed('r')) // r Key
+        if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
             mCurrentGizmoOperation = ImGuizmo::SCALE;
         if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
             mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -248,7 +248,7 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
             if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
                 mCurrentGizmoMode = ImGuizmo::WORLD;
         }
-        if (ImGui::IsKeyPressed('s'))
+        if (ImGui::IsKeyPressed(ImGuiKey_S))
             useSnap = !useSnap;
         ImGui::Checkbox("##UseSnap", &useSnap);
         ImGui::SameLine();
@@ -909,7 +909,7 @@ int main(int, char**)
     // run app!
     //
     HelloImGui::RunnerParams params;
-    params.appWindowParams.windowSize = {1280.f, 720.f};
+    params.appWindowParams.windowGeometry.size = {1280, 720};
     params.callbacks.ShowGui = gui;
     params.callbacks.PostInit = initProcTexture;
 

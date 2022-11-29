@@ -34,8 +34,19 @@ imgui_example_glfw_opengl3.py is a direct adaptation of an example from Dear ImG
 [imgui/examples/example_glfw_opengl3/main.cpp](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
 
 You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example.
-""")
+"""
+    )
     show_one_feature("imgui_example_glfw_opengl3.py")
+
+
+def demo_custom_font():
+    imgui_md.render(
+        """
+### How to load custom fonts (with icons)
+You can load custom font and merge icons into them.
+    """
+    )
+    show_one_feature("demo_custom_font.py")
 
 
 def demo_hello_imgui():
@@ -84,6 +95,7 @@ How to customize the theme."""
 def demo_apps():
     imgui.begin_child("##Doc", ImVec2(0, imgui.get_window_height() - 300))
     demo_imgui()
+    demo_custom_font()
     demo_hello_imgui()
     imgui.end_child()
 
@@ -96,4 +108,4 @@ def demo_apps():
 if __name__ == "__main__":
     from imgui_bundle import run
 
-    run(demo_apps, with_markdown=True, window_size=(800, 800))
+    run(demo_apps, with_markdown=True, window_size=(800, 800))  # type: ignore

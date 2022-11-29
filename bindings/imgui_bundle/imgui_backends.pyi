@@ -1,5 +1,3 @@
-# type: ignore
-
 # Note: all this code is generated *manually*
 
 # dear imgui: Renderer Backend for modern OpenGL with shaders / programmatic pipeline
@@ -22,30 +20,34 @@
 #  On computer platform the GLSL version default to "#version 130". On OpenGL ES 3 platform it defaults to "#version 300 es"
 #  Only override if your GL version doesn't handle this GLSL version. See GLSL version table at the top of imgui_impl_opengl3.cpp.
 
+from typing import Optional
+from imgui_bundle.imgui import ImDrawData
+
+
 # Backend API
-def open_gl3_init(glsl_version: str = None) -> bool:
+def opengl3_init(glsl_version: str) -> bool:
     pass
 
-def open_gl3_shutdown() -> None:
+def opengl3_shutdown() -> None:
     pass
 
-def open_gl3_new_frame() -> None:
+def opengl3_new_frame() -> None:
     pass
 
-def open_gl3_render_draw_data(draw_data: ImDrawData) -> None:
+def opengl3_render_draw_data(draw_data: ImDrawData) -> None:
     pass
 
 # (Optional) Called by Init/NewFrame/Shutdown
-def open_gl3_create_fonts_texture() -> bool:
+def opengl3_create_fonts_texture() -> bool:
     pass
 
-def open_gl3_destroy_fonts_texture() -> None:
+def opengl3_destroy_fonts_texture() -> None:
     pass
 
-def open_gl3_create_device_objects() -> bool:
+def opengl3_create_device_objects() -> bool:
     pass
 
-def open_gl3_destroy_device_objects() -> None:
+def opengl3_destroy_device_objects() -> None:
     pass
 
 # Specific OpenGL ES versions
@@ -134,6 +136,6 @@ def glfw_key_callback(
 def glfw_char_callback(window_address: int, c: int) -> None:
     pass
 
-def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
-    pass
+# def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
+#     pass
 ####################    </generated_from:imgui_impl_glfw.h>    ####################

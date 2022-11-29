@@ -19,6 +19,8 @@ def apply_patch():
     """
     Applies a simple patch to imgui-node-editor that will
     change the type of Config::SettingsFile from char* to std::string
+
+    This is not needed anymore, since we use a fork where the patch is already applied
     """
 
     this_dir = os.path.realpath(os.path.dirname(__file__))
@@ -33,21 +35,31 @@ def apply_patch():
 
 
 def autogenerate_imgui_node_editor():
-    input_cpp_headers = [CPP_HEADERS_DIR + "/imgui_node_editor.h"]
+    print("autogenerate_imgui_node_editor")
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_node_editor.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_node_editor.pyi"
 
     # Configure options
     # options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options = litgen.LitgenOptions()
+    options.srcmlcpp_options.ignored_warning_parts = [
+        "explicit SafePointerType",
+        "Colors[StyleColor_Count]",
+        "template <typename T2, typename Tag2>",
+        "template <typename Tag>",
+        " inline SaveReasonFlags operator |",
+        "SaveReasonFlags operator &",
+    ]
+    options.original_location_flag_show = True
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.namespace_root__regex = "^ax$|^NodeEditor$"
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
-    options.code_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
-    options.code_replacements.add_last_replacement(r"CanvasSizeModeAlias", "CanvasSizeMode")
+    options.type_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
+    options.type_replacements.add_last_replacement(r"CanvasSizeModeAlias", "CanvasSizeMode")
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
             # All those types are C style functions pointers
@@ -56,23 +68,18 @@ def autogenerate_imgui_node_editor():
             "ConfigSaveNodeSettings",
             "ConfigLoadNodeSettings",
             "ConfigSession",
+            r"^ImVector",
         ]
     )
 
-    # options.class_template_options.add_specialization(
-    #
-    # )
+    generator = litgen.LitgenGenerator(options)
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
 
-    litgen.write_generated_code_for_files(
-        options,
-        input_cpp_header_files=input_cpp_headers,
+    generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
         output_stub_pyi_file=output_stub_pyi_file,
-        omit_boxed_types=True,
     )
 
 
 if __name__ == "__main__":
-    print("autogenerate_imgui_node_editor")
-    apply_patch()
     autogenerate_imgui_node_editor()

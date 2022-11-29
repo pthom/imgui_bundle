@@ -1,6 +1,5 @@
-from typing import Any, Callable
 import math
-from munch import Munch
+from munch import Munch  # type: ignore
 
 import numpy as np
 from imgui_bundle import imgui, implot, static, imgui_md
@@ -22,8 +21,8 @@ def _demo_drag_rects_statics() -> Munch:
     r.y_data1 = np.sin(arg)
     r.y_data2 = r.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
     r.y_data3 = r.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-    r.rect = implot.ImPlotRect(0.0025, 0.0045, 0, 0.5)
-    r.flags = implot.ImPlotDragToolFlags_.none
+    r.rect = implot.Rect(0.0025, 0.0045, 0, 0.5)  # type: ignore
+    r.flags = implot.DragToolFlags_.none
     return r
 
 
@@ -32,11 +31,11 @@ def demo_drag_rects():
     statics = demo_drag_rects.statics
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
-    _, statics.flags = imgui.checkbox_flags("NoCursors", statics.flags, implot.ImPlotDragToolFlags_.no_cursors)
+    _, statics.flags = imgui.checkbox_flags("NoCursors", statics.flags, implot.DragToolFlags_.no_cursors)
     imgui.same_line()
-    _, statics.flags = imgui.checkbox_flags("NoFit", statics.flags, implot.ImPlotDragToolFlags_.no_fit)
+    _, statics.flags = imgui.checkbox_flags("NoFit", statics.flags, implot.DragToolFlags_.no_fit)
     imgui.same_line()
-    _, statics.flags = imgui.checkbox_flags("NoInput", statics.flags, implot.ImPlotDragToolFlags_.no_inputs)
+    _, statics.flags = imgui.checkbox_flags("NoInput", statics.flags, implot.DragToolFlags_.no_inputs)
 
     if implot.begin_plot("##Main", ImVec2(-1, 200)):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_tick_labels, implot.ImPlotAxisFlags_.no_tick_labels)
@@ -54,10 +53,10 @@ def demo_drag_rects():
             statics.flags,
         )
         implot.end_plot()
-    if implot.begin_plot("##rect", ImVec2(-1, 200), implot.ImPlotFlags_.canvas_only):
+    if implot.begin_plot("##rect", ImVec2(-1, 200), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
-            statics.rect.x.min, statics.rect.x.max, statics.rect.y.min, statics.rect.y.max, imgui.ImGuiCond_.always
+            statics.rect.x.min, statics.rect.x.max, statics.rect.y.min, statics.rect.y.max, imgui.Cond_.always
         )
         implot.plot_line("Signal 1", statics.x_data, statics.y_data1)
         implot.plot_line("Signal 2", statics.x_data, statics.y_data2)
@@ -66,7 +65,7 @@ def demo_drag_rects():
 
 
 def demo_mixed_plot():
-    implot.push_colormap(implot.ImPlotColormap_.deep)
+    implot.push_colormap(implot.Colormap_.deep)
     if implot.begin_plot("Mixed plot"):
         implot.setup_axes("x-axis", "y-axis")
         implot.setup_axes_limits(-0.5, 9.5, 0, 10)

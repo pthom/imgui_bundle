@@ -1,0 +1,1 @@
+imgui_bundle_add_app(demo_guizmo_curve_edit demo_guizmo_curve_edit.main.cpp)

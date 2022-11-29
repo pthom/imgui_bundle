@@ -3,12 +3,13 @@
 
 from typing import Tuple, Optional, Callable
 import numpy as np
-import enum
 
-from imgui_bundle.hello_imgui import RunnerParams
-from imgui_bundle.imgui_md import MarkdownOptions
-from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig
+from imgui_bundle import imgui_md, hello_imgui
+from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig, EditorContext as NodeEditorContext
+from imgui_bundle import imgui_node_editor
 
+ImGuiMd = imgui_md
+HelloImGui = hello_imgui
 
 VoidFunction = Callable[[None], None]
 ScreenSize = Tuple[int, int]
@@ -42,6 +43,16 @@ class AddOnsParams:
 
     # You can tweak MarkdownOptions (but this is optional)
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None
+    def __init__(
+        self,
+        with_implot: bool = False,
+        with_markdown: bool = False,
+        with_node_editor: bool = False,
+        with_node_editor_config: Optional[NodeEditorConfig] = None,
+        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 def run(
     runner_params: HelloImGui.RunnerParams,
@@ -96,7 +107,22 @@ def run(
 def clock_seconds() -> float:
     pass
 
-def current_node_editor_context() -> ax.NodeEditor.EditorContext:
+def current_node_editor_context() -> NodeEditorContext:
+    pass
+
+def visible_font_size() -> float:
+    """Visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
+    In order to scale your widgets properly on all platforms, use multiples of this size.
+    (on MacOS with retina FontGlobalScale can be equal to 2)
+    """
+    pass
+
+def em_size() -> float:
+    """EmSize returns the visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
+    In order to scale your widgets properly on all platforms, use multiples of this size.
+    (on MacOS with retina FontGlobalScale can be equal to 2)
+    (EmSize is an alias for VisibleFontSize)
+    """
     pass
 ####################    </generated_from:imgui_bundle.h>    ####################
 

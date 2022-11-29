@@ -54,6 +54,9 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
+endif()
 
 
 #########################################################################
@@ -67,21 +70,24 @@ endif()
 #########################################################################
 # Main library (imgui_bundle)
 #########################################################################
-add_library(imgui_bundle STATIC src/imgui_bundle/imgui_bundle.cpp src/imgui_bundle/imgui_bundle.h)
+file(GLOB imgui_bundle_sources src/imgui_bundle/*.cpp src/imgui_bundle/*.h)
+add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
-
 
 #########################################################################
 # Build external libraries
 #########################################################################
 include(cmake/add_simple_library.cmake) # Tooling to build libraries and link them to imgui_bundle
-# Build hello_imgui
+# Build imgui + hello_imgui
 include(cmake/add_hello_imgui.cmake)
 add_hello_imgui()
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    target_compile_definitions(imgui PUBLIC IMGUI_BUNDLE_BUILD_PYTHON)
+endif()
 # Build implot
 add_simple_external_library_with_sources(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
-lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
+lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/cmake/imgui_bundle_config.h)
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
 add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
@@ -125,6 +131,9 @@ if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
         target_link_libraries(imgui_bundle PUBLIC immvision)
     endif()
 endif()
+# Build ImGuizmo
+add_simple_external_library_with_sources(imguizmo ImGuizmo)
+
 
 #########################################################################
 # Build python bindings
