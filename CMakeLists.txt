@@ -81,7 +81,7 @@ add_hello_imgui()
 # Build implot
 add_simple_external_library_with_sources(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
-lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/lg_cmake_utils/lg_imgui_imconfig.h)
+lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/cmake/imgui_bundle_config.h)
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
 add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
