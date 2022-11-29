@@ -1,6 +1,6 @@
 [submodule "external/imgui"]
 	path = external/imgui
-	url = https://github.com/ocornut/imgui.git
+	url = https://github.com/pthom/imgui.git
 [submodule "external/hello_imgui"]
 	path = external/hello_imgui
 	url = https://github.com/pthom/hello_imgui.git
