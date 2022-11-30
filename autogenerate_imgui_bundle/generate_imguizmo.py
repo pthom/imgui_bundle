@@ -43,14 +43,19 @@ def autogenerate_imguizmo():
     def process_one_stl_file(header_file: str, options: litgen.LitgenOptions):
         amalgamation = make_amalgamated_header(header_file)
         options_backup = generator.lg_context.options
-        generator.lg_context.options = options_curve
-        generator.process_cpp_code(code=amalgamation, filename="ImCurveEditStl.h")
+        generator.lg_context.options = options
+        generator.process_cpp_code(code=amalgamation, filename=header_file)
         generator.lg_context.options = options_backup
 
     # Process ImCurveEditStl
     options_curve = copy.deepcopy(options)
     options_curve.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
     process_one_stl_file("ImCurveEditStl.h", options_curve)
+
+    # Process ImGradientStl
+    options_gradient = copy.deepcopy(options)
+    options_gradient.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
+    process_one_stl_file("ImGradientStl.h", options_gradient)
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
