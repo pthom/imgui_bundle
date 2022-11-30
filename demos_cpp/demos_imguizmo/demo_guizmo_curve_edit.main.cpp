@@ -1,8 +1,10 @@
+// Demo curve editing with ImGuizmo
+// See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_curve_edit.py
+
 #include "demos_interface.h"
 
 #include "imgui.h"
 #include "imgui_bundle/imgui_bundle.h"
-#include "imgui_md/imgui_md_wrapper.h"
 #include "ImGuizmo/ImCurveEdit.h"
 
 #include <algorithm>
@@ -109,9 +111,8 @@ VoidFunction make_closure_demo_guizmo_curve_edit()
     // rampEdit will be encapsulated in the closure
     RampEdit rampEdit;
 
-    static const char* labels[] = { "Translation", "Rotation" , "Scale" };
-    rampEdit.mMin = ImVec2(-100.f, 0.f); //ImVec2(float(mFrameMin), 0.f);
-    rampEdit.mMax = ImVec2(300.f, 1.f); //ImVec2(float(mFrameMax), 1.f);
+    rampEdit.mMin = ImVec2(-100.f, 0.f);
+    rampEdit.mMax = ImVec2(300.f, 1.f);
 
     auto gui = [rampEdit]() mutable { // mutable => this is a closure
         for (int i = 0; i < 3; i++)
@@ -136,11 +137,7 @@ int main()
     auto gui = make_closure_demo_guizmo_curve_edit();
 
     // Run app
-    HelloImGui::SimpleRunnerParams runnerParams;
-    runnerParams.windowSize = {850, 600};
-    runnerParams.guiFunction = gui;
-    ImGuiBundle::AddOnsParams addOnsParams;
-    addOnsParams.withMarkdown = true;
-    ImGuiBundle::Run(runnerParams, addOnsParams);
+    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize = {850, 600}};
+    ImGuiBundle::Run(runnerParams);
 }
 #endif

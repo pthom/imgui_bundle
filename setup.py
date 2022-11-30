@@ -39,6 +39,7 @@ setup(
             "imgui_bundle.demos.haikus",
             "imgui_bundle.demos.haikus.romeo_and_juliet",
             "imgui_bundle.demos.demos_hello_imgui",
+            "imgui_bundle.demos.demos_imguizmo",
         ]
     ),
     package_dir={"": "bindings"},
