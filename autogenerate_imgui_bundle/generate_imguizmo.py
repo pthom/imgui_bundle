@@ -1,3 +1,4 @@
+from typing import Optional
 import copy
 import os
 
@@ -40,12 +41,15 @@ def autogenerate_imguizmo():
 
     generator = litgen.LitgenGenerator(options)
 
-    def process_one_amalgamated_file(header_file: str, options: litgen.LitgenOptions):
-        amalgamation = make_amalgamated_header(header_file)
+    def process_one_file_backup_options(code: Optional[str], filename: str, options: litgen.LitgenOptions):
         options_backup = generator.lg_context.options
         generator.lg_context.options = options
-        generator.process_cpp_code(code=amalgamation, filename=header_file)
+        generator.process_cpp_code(code=code, filename=filename)
         generator.lg_context.options = options_backup
+
+    def process_one_amalgamated_file(header_file: str, options: litgen.LitgenOptions):
+        amalgamation = make_amalgamated_header(header_file)
+        process_one_file_backup_options(code=amalgamation, filename=header_file, options=options)
 
     # Process ImCurveEditStl
     options_curve = copy.deepcopy(options)
@@ -63,6 +67,21 @@ def autogenerate_imguizmo():
     options_slider.var_names_replacements.add_last_replacement("im_gui_zoom_slider_flags_", "")
     options_slider.type_replacements.add_last_replacement("ImGuiPopupFlags_", "ImGuiZoomSliderFlags_")
     process_one_amalgamated_file("ImZoomSliderStl.h", options_slider)
+
+    # Process ImSequencer:
+    # abandoned due to double pointer in the public API
+    # --------------
+    # options_sequencer = copy.deepcopy(options)
+    # options_sequencer.fn_exclude_by_name__regex = r"^Get$"
+    # process_one_amalgamated_file("ImSequencerStl.h", options_sequencer)
+
+    # Process GraphEditor:
+    # cowardly avoided because of double pointers in structs + pointer to enum in params
+    # --------------
+    # options_graph = copy.deepcopy(options)
+    # header_file = f"{HEADER_PARENT_DIR}/{OFFICIAL_SUBDIR}/GraphEditor.h"
+    # process_one_file_backup_options(code=None, filename=header_file, options=options_graph)
+
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
