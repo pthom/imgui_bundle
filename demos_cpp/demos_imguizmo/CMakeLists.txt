@@ -1,3 +1,4 @@
 imgui_bundle_add_app(demo_guizmo_curve_edit demo_guizmo_curve_edit.main.cpp)
 imgui_bundle_add_app(demo_guizmo_gradient demo_guizmo_gradient.main.cpp)
 imgui_bundle_add_app(demo_guizmo_zoom_slider demo_guizmo_zoom_slider.main.cpp)
+imgui_bundle_add_app(demo_guizmo_sequencer demo_guizmo_sequencer.main.cpp)
