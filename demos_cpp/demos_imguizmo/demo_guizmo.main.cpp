@@ -36,6 +36,7 @@
 #include "imgui_internal.h"
 
 #include <math.h>
+#include <string>
 
 
 bool useWindow = true;
@@ -424,7 +425,29 @@ int main()
     auto gui = make_closure_demo_guizmo();
 
     // Run app
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize = {1000, 800}};
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
+    runnerParams.imGuiWindowParams.enableViewports = true;
+    runnerParams.callbacks.ShowGui = gui;
+    runnerParams.appWindowParams.windowGeometry.size = {1200, 800};
+    // Docking Splits
+    {
+        HelloImGui::DockingSplit split;
+        split.initialDock = "MainDockSpace";
+        split.newDock = "EditorDock";
+        split.direction = ImGuiDir_Left;
+        split.ratio = 0.25f;
+        runnerParams.dockingParams.dockingSplits = {split};
+    }
+    // Dockable windows
+    HelloImGui::DockableWindow winEditor;
+    winEditor.label = "Editor";
+    winEditor.dockSpaceName = "EditorDock";
+    HelloImGui::DockableWindow winGuizmo;
+    winGuizmo.label = "Gizmo";
+    winGuizmo.dockSpaceName = "MainDockSpace";
+    runnerParams.dockingParams.dockableWindows = { winEditor, winGuizmo};
+
     ImGuiBundle::Run(runnerParams);
 }
 #endif
