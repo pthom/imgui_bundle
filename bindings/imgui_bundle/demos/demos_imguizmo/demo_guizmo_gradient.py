@@ -16,7 +16,7 @@ def mul_scalar_imvec4(a: ImVec4, k: float) -> ImVec4:
     return ImVec4(a.x * k, a.y * k, a.z * k, a.w * k)
 
 
-ImVec4.__add__ = add_imvec4           # monkey patching
+ImVec4.__add__ = add_imvec4  # monkey patching
 ImVec4.__mul__ = mul_scalar_imvec4
 
 
@@ -26,31 +26,31 @@ class MyGradient(imguizmo.ImGradient.DelegateStl):
     def __init__(self) -> None:
         imguizmo.ImGradient.DelegateStl.__init__(self)
         # The last value (ImVec4.w) stores the position on a line
-        nb_elems = 4.
+        nb_elems = 4.0
         pos = 0.0
         dpos = 1.0 / (nb_elems - 1.0)
         self.points = []
-        self.points.append(ImVec4(1,1,1,pos)); pos += dpos
-        self.points.append(ImVec4(0,1,1,pos)); pos += dpos
-        self.points.append(ImVec4(1,0,1,pos)); pos += dpos
-        self.points.append(ImVec4(1,1,0,pos)); pos += dpos
+        self.points.append(ImVec4(1, 1, 1, pos))
+        pos += dpos
+        self.points.append(ImVec4(0, 1, 1, pos))
+        pos += dpos
+        self.points.append(ImVec4(1, 0, 1, pos))
+        pos += dpos
+        self.points.append(ImVec4(1, 1, 0, pos))
+        pos += dpos
 
     def get_points_list(self) -> List[ImVec4]:
         return self.points
-    
-    def edit_point(                             # overridable (pure virtual)
-            self,
-            point_index: int,
-            value: ImVec4
-            ) -> int:
+
+    def edit_point(self, point_index: int, value: ImVec4) -> int:  # overridable (pure virtual)
         self.points[point_index] = value
         return 0
 
     def get_point(self, t: float) -> ImVec4:
         sorted_values = self.sorted_values()
-        if t <= 0.:
+        if t <= 0.0:
             return sorted_values[0]
-        elif t >= 1.:
+        elif t >= 1.0:
             return sorted_values[-1]
 
         idx = len(sorted_values) - 1
@@ -68,7 +68,7 @@ class MyGradient(imguizmo.ImGradient.DelegateStl):
     def add_point(self, value: ImVec4) -> None:
         self.points.append(value)
 
-    def sorted_values(self) ->List[ImVec4]:
+    def sorted_values(self) -> List[ImVec4]:
         r = sorted(self.points, key=lambda p: p.w)
         return r
 
@@ -79,12 +79,15 @@ def make_closure_demo_guizmo_gradient() -> VoidFunction:
     size = ImVec2(400, 20)
 
     def gui() -> VoidFunction:
-        result: bool; selection: int
+        result: bool
+        selection: int
         result, selection = imguizmo.ImGradient.edit_stl(my_gradient, size)
-        imgui.text_wrapped("""
+        imgui.text_wrapped(
+            """
             I'm not sure about the purpose of this widget.
             You can drag squares, and double click to add some more
-        """)
+        """
+        )
 
     return gui
 

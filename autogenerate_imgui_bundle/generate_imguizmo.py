@@ -40,7 +40,7 @@ def autogenerate_imguizmo():
 
     generator = litgen.LitgenGenerator(options)
 
-    def process_one_stl_file(header_file: str, options: litgen.LitgenOptions):
+    def process_one_amalgamated_file(header_file: str, options: litgen.LitgenOptions):
         amalgamation = make_amalgamated_header(header_file)
         options_backup = generator.lg_context.options
         generator.lg_context.options = options
@@ -50,12 +50,19 @@ def autogenerate_imguizmo():
     # Process ImCurveEditStl
     options_curve = copy.deepcopy(options)
     options_curve.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
-    process_one_stl_file("ImCurveEditStl.h", options_curve)
+    process_one_amalgamated_file("ImCurveEditStl.h", options_curve)
 
     # Process ImGradientStl
     options_gradient = copy.deepcopy(options)
     options_gradient.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
-    process_one_stl_file("ImGradientStl.h", options_gradient)
+    process_one_amalgamated_file("ImGradientStl.h", options_gradient)
+
+    # Process ImZoomSlider
+    options_slider = copy.deepcopy(options)
+    options_slider.srcmlcpp_options.ignored_warning_parts = ["Ignoring template function"]
+    options_slider.var_names_replacements.add_last_replacement("im_gui_zoom_slider_flags_", "")
+    options_slider.type_replacements.add_last_replacement("ImGuiPopupFlags_", "ImGuiZoomSliderFlags_")
+    process_one_amalgamated_file("ImZoomSliderStl.h", options_slider)
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

@@ -3,6 +3,7 @@
 #include <vector>
 #include <tuple>
 
+
 namespace ImCurveEdit
 {
 #define override_final override
