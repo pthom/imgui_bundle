@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ImGuizmo/ImGuizmo.h"
 #include "imgui.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 #include <optional>
 #include <vector>
@@ -16,29 +16,18 @@ namespace IMGUIZMO_NAMESPACE
     template<int N>
     struct MatrixFixedSize
     {
-    private:
-        // By default, the `_values` are stored privately on the stack...
-        float _values[N];
     public:
-        MatrixFixedSize() { values = _values; }
-        MatrixFixedSize(const std::vector<float>& v) {
+        float values[N];
+
+        MatrixFixedSize() { for (int i = 0; i < N; ++i) values[i] = 0.; }
+        explicit MatrixFixedSize(const std::vector<float>& v) {
             IM_ASSERT(v.size() == N);
-            values = _values;
-            for (int i = 0; i < N; ++i)
-                values[i] = v[i];
+            for (int i = 0; i < N; ++i) values[i] = v[i];
         }
 
-        // ...and you access them via the public `values` member (since `values` points to `_values` by default)
-        float *values;
-
-        // ...or via [] like with a standard C array
+        // access via [] like with a standard C array
         float operator[](size_t i) const { return values[i]; }
         float& operator[](size_t i) { return values[i]; }
-
-        // By default, the values are on the stack, but we can also use values from shared memory:
-        //   this is used only when accessing matrices transferred from numpy / python,
-        //   and in this case the stack values are ignored
-        void use_external_values(float* address) { values = address; }
     };
 
     using Matrix16 = MatrixFixedSize<16>;

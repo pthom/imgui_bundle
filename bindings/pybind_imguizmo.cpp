@@ -1,4 +1,5 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -25,67 +26,64 @@ using namespace ImGuizmo;
 // ----------------------------------------------------------------------------
 namespace matrix_to_numpy
 {
-
-    template<typename MatrixXX>
-    py::capsule make_capsule_matrix(const MatrixXX& m)
+    template<int N>
+    std::vector<pybind11::ssize_t> matrix_shape()
     {
-        return py::capsule(new MatrixXX(m)
-            , [](void *v) { delete reinterpret_cast<MatrixXX*>(v); }
-        );
+        // we will transcribe a Matrix16 into a 4x4 matrix on python side
+        // But the others will stay flat
+        if (N == 3)
+            return {3};
+        else if (N == 6)
+            return {6};
+        else if (N == 16)
+            return {4, 4};
+        else
+            throw std::runtime_error("pybind_imguizmo.cpp: matrix_to_numpy::matrix_shape => bad N");
     }
 
-    // we will transcribe a Matrix16 into a 4x4 matrix on python side
-    std::vector<pybind11::ssize_t> matrix_shape(const Matrix16& m) { return {4, 4};}
-    std::vector<pybind11::ssize_t> matrix_shape(const Matrix3& m) { return {3};}
-    std::vector<pybind11::ssize_t> matrix_shape(const Matrix6& m) { return {6};}
-
-    std::vector<pybind11::ssize_t> matrix_strides(const Matrix6& m) {
-        return {sizeof(float)};
-    }
-    std::vector<pybind11::ssize_t> matrix_strides(const Matrix3& m) {
-        return {sizeof(float)};
-    }
-    std::vector<pybind11::ssize_t> matrix_strides(const Matrix16& m) {
-        return {
-            sizeof(float) * 4,
-            sizeof(float)
-        };
-    }
-
-
-    template<typename MatrixXX>
-    pybind11::array matrix_to_nparray(const MatrixXX& m, bool share_memory)
+    template<int N>
+    std::vector<pybind11::ssize_t> matrix_strides()
     {
-        auto shape = matrix_shape(m);
-        auto strides = matrix_strides(m);
+        pybind11::ssize_t s = sizeof(float);
+        if ((N == 3) || (N == 6))
+            return {s};
+        else if (N == 16)
+            return { 4 * s, s };
+        else
+            throw std::runtime_error("pybind_imguizmo.cpp: matrix_to_numpy::matrix_strides => bad N");
+    }
+
+    template<int N>
+    pybind11::array matrix_to_nparray(const MatrixFixedSize<N>& m)
+    {
+        auto shape = matrix_shape<N>();
+        auto strides = matrix_strides<N>();
 
         static std::string float_numpy_str = pybind11::format_descriptor<float>::format();
         static auto dtype_float = pybind11::dtype(float_numpy_str);
 
-        std::cout << "matrix_to_nparray shape = " + fplus::show(shape) + "\n";
-        if (share_memory)
-            return pybind11::array(dtype_float, shape, strides, m.values, make_capsule_matrix(m));
-        else
-            return pybind11::array(dtype_float, shape, strides, m.values);
+        // std::cout << "matrix_to_nparray shape = " + fplus::show(shape) + "\n";
+        return pybind11::array(dtype_float, shape, strides, m.values);
     }
 
-    template<typename MatrixXX>
-    MatrixXX nparray_to_matrix(pybind11::array& a)
+    template<int N>
+    MatrixFixedSize<N> nparray_to_matrix(pybind11::array& a)
     {
-        MatrixXX r;
+        MatrixFixedSize<N> r;
 
-        // Check input array type and dimensions...
+        // Check input array type
         if (a.dtype().kind() != pybind11::format_descriptor<float>::c)
-            throw std::runtime_error("Only numpy arrays of type float are supported!");
-        auto expected_shape = matrix_shape(r);
-        if (a.ndim() != expected_shape.size())
-            throw std::runtime_error("Bad shape ndim!");
-        for (size_t i = 0; i < a.ndim(); ++i)
-            if (a.shape()[i] != expected_shape[i])
-                throw std::runtime_error("Bad shape!");
+            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type float are supported!");
 
-        // ...and then share its guts with MatrixXX
-        r.use_external_values((float *)a.mutable_data(0));
+        // Check input array total length
+        if (a.size() != N)
+            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / bad size!");
+
+        // ...and then copy its values
+        float* np_values_ptr = (float *) a.data();
+        for (int i = 0; i < N; ++i)
+            r.values[i] = np_values_ptr[i];
+
         return r;
     }
 
@@ -117,7 +115,7 @@ namespace pybind11
 //                return true;
 
                 auto a = reinterpret_borrow<array>(src);
-                value =  matrix_to_numpy::nparray_to_matrix<MatrixFixedSize<N>>(a);
+                value =  matrix_to_numpy::nparray_to_matrix<N>(a);
                 return true;
             }
 
@@ -129,8 +127,7 @@ namespace pybind11
              */
             static handle cast(const MatrixFixedSize<N> &m, return_value_policy, handle defval)
             {
-                bool share_memory = true;
-                auto a = matrix_to_numpy::matrix_to_nparray(m, true);
+                auto a = matrix_to_numpy::matrix_to_nparray<N>(m);
                 return a.release();
             }
         };
