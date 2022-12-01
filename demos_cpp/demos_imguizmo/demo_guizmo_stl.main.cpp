@@ -29,14 +29,13 @@
 
 #include "demos_interface.h"
 #include "imgui_bundle/imgui_bundle.h"
-#include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmoStl/ImGuizmoStl.h"
 
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 
 #include <math.h>
-#include <string>
 
 
 bool useWindow = true;
@@ -44,7 +43,24 @@ int gizmoCount = 1;
 float camDistance = 8.f;
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 
-float objectMatrix[4][16] = {
+
+using ImGuizmo::Matrix16;
+using ImGuizmo::Matrix3;
+using ImGuizmo::Matrix6;
+
+
+template<typename T>
+std::vector<T> vec_n_first(std::vector<T> const &v, size_t n)
+{
+    auto first = v.cbegin();
+    auto last = v.cbegin() + n;
+
+    std::vector<T> vec(first, last);
+    return vec;
+}
+
+
+std::vector<Matrix16> objectMatrix = {
     { 1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
@@ -66,13 +82,13 @@ float objectMatrix[4][16] = {
         0.f, 0.f, 2.f, 1.f }
 };
 
-static const float identityMatrix[16] =
+static const ImGuizmo::Matrix16 identityMatrix =
     { 1.f, 0.f, 0.f, 0.f,
       0.f, 1.f, 0.f, 0.f,
       0.f, 0.f, 1.f, 0.f,
       0.f, 0.f, 0.f, 1.f };
 
-void Frustum(float left, float right, float bottom, float top, float znear, float zfar, float* m16)
+void Frustum(float left, float right, float bottom, float top, float znear, float zfar, Matrix16& m16)
 {
     float temp, temp2, temp3, temp4;
     temp = 2.0f * znear;
@@ -97,7 +113,7 @@ void Frustum(float left, float right, float bottom, float top, float znear, floa
     m16[15] = 0.0;
 }
 
-void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, float* m16)
+void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, Matrix16& m16)
 {
     float ymax, xmax;
     ymax = znear * tanf(fovyInDegrees * 3.141592f / 180.0f);
@@ -105,19 +121,19 @@ void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar
     Frustum(-xmax, xmax, -ymax, ymax, znear, zfar, m16);
 }
 
-void Cross(const float* a, const float* b, float* r)
+void Cross(const Matrix3& a, const Matrix3& b, Matrix3& r)
 {
     r[0] = a[1] * b[2] - a[2] * b[1];
     r[1] = a[2] * b[0] - a[0] * b[2];
     r[2] = a[0] * b[1] - a[1] * b[0];
 }
 
-float Dot(const float* a, const float* b)
+float Dot(const Matrix3& a, const Matrix3& b)
 {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
-void Normalize(const float* a, float* r)
+void Normalize(const Matrix3& a, Matrix3& r)
 {
     float il = 1.f / (sqrtf(Dot(a, a)) + FLT_EPSILON);
     r[0] = a[0] * il;
@@ -125,9 +141,9 @@ void Normalize(const float* a, float* r)
     r[2] = a[2] * il;
 }
 
-void LookAt(const float* eye, const float* at, const float* up, float* m16)
+void LookAt(const Matrix3& eye, const Matrix3& at, const Matrix3& up, Matrix16& m16)
 {
-    float X[3], Y[3], Z[3], tmp[3];
+    Matrix3 X, Y, Z, tmp;
 
     tmp[0] = eye[0] - at[0];
     tmp[1] = eye[1] - at[1];
@@ -159,7 +175,7 @@ void LookAt(const float* eye, const float* at, const float* up, float* m16)
     m16[15] = 1.0f;
 }
 
-void OrthoGraphic(const float l, float r, float b, const float t, float zn, const float zf, float* m16)
+void OrthoGraphic(const float l, float r, float b, const float t, float zn, const float zf, Matrix16& m16)
 {
     m16[0] = 2 / (r - l);
     m16[1] = 0.0f;
@@ -179,7 +195,7 @@ void OrthoGraphic(const float l, float r, float b, const float t, float zn, cons
     m16[15] = 1.0f;
 }
 
-inline void rotationY(const float angle, float* m16)
+inline void rotationY(const float angle, Matrix16& m16)
 {
     float c = cosf(angle);
     float s = sinf(angle);
@@ -202,13 +218,13 @@ inline void rotationY(const float angle, float* m16)
     m16[15] = 1.0f;
 }
 
-void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bool editTransformDecomposition)
+void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& matrix, bool editTransformDecomposition)
 {
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
     static bool useSnap = false;
-    static float snap[3] = { 1.f, 1.f, 1.f };
-    static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
-    static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
+    static Matrix3 snap = { 1.f, 1.f, 1.f };
+    static Matrix6 bounds = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+    static Matrix3 boundsSnap = { 0.1f, 0.1f, 0.1f };
     static bool boundSizing = false;
     static bool boundSizingSnap = false;
 
@@ -230,12 +246,11 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
             mCurrentGizmoOperation = ImGuizmo::SCALE;
         if (ImGui::RadioButton("Universal", mCurrentGizmoOperation == ImGuizmo::UNIVERSAL))
             mCurrentGizmoOperation = ImGuizmo::UNIVERSAL;
-        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-        ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
-        ImGui::InputFloat3("Tr", matrixTranslation);
-        ImGui::InputFloat3("Rt", matrixRotation);
-        ImGui::InputFloat3("Sc", matrixScale);
-        ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
+        auto matrixComponents = ImGuizmo::DecomposeMatrixToComponents(matrix);
+        ImGui::InputFloat3("Tr", matrixComponents.Translation.values);
+        ImGui::InputFloat3("Rt", matrixComponents.Rotation.values);
+        ImGui::InputFloat3("Sc", matrixComponents.Scale.values);
+        matrix = ImGuizmo::RecomposeMatrixFromComponents(matrixComponents);
 
         if (mCurrentGizmoOperation != ImGuizmo::SCALE)
         {
@@ -270,7 +285,7 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
             ImGui::PushID(3);
             ImGui::Checkbox("##BoundSizing", &boundSizingSnap);
             ImGui::SameLine();
-            ImGui::InputFloat3("Snap", boundsSnap);
+            ImGui::InputFloat3("Snap", boundsSnap.values);
             ImGui::PopID();
         }
     }
@@ -300,10 +315,27 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
     }
 
     ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
-    ImGuizmo::DrawCubes(cameraView, cameraProjection, &objectMatrix[0][0], gizmoCount);
-    ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
 
-    ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+    ImGuizmo::DrawCubes(cameraView, cameraProjection, vec_n_first(objectMatrix, gizmoCount));
+
+    ImGuizmo::Manipulate(
+        cameraView.values,
+        cameraProjection.values,
+        mCurrentGizmoOperation,
+        mCurrentGizmoMode,
+        matrix.values,
+        NULL,
+        useSnap ? snap.values : NULL,
+        boundSizing ? bounds.values : NULL,
+        boundSizingSnap ? boundsSnap.values : NULL
+        );
+
+    ImGuizmo::ViewManipulate(
+        cameraView,
+        camDistance,
+        ImVec2(viewManipulateRight - 128, viewManipulateTop),
+        ImVec2(128, 128),
+        0x10101010);
 
     if (useWindow)
     {
@@ -317,13 +349,13 @@ VoidFunction make_closure_demo_guizmo()
 {
     int lastUsing = 0;
 
-    float cameraView[16] =
+    Matrix16 cameraView =
         { 1.f, 0.f, 0.f, 0.f,
           0.f, 1.f, 0.f, 0.f,
           0.f, 0.f, 1.f, 0.f,
           0.f, 0.f, 0.f, 1.f };
 
-    float cameraProjection[16];
+    Matrix16 cameraProjection;
 
     // Camera projection
     bool isPerspective = true;
@@ -378,9 +410,9 @@ VoidFunction make_closure_demo_guizmo()
 
         if (viewDirty || firstFrame)
         {
-            float eye[] = { cosf(camYAngle) * cosf(camXAngle) * camDistance, sinf(camXAngle) * camDistance, sinf(camYAngle) * cosf(camXAngle) * camDistance };
-            float at[] = { 0.f, 0.f, 0.f };
-            float up[] = { 0.f, 1.f, 0.f };
+            Matrix3 eye = { cosf(camYAngle) * cosf(camXAngle) * camDistance, sinf(camXAngle) * camDistance, sinf(camYAngle) * cosf(camXAngle) * camDistance };
+            Matrix3 at = { 0.f, 0.f, 0.f };
+            Matrix3 up = { 0.f, 1.f, 0.f };
             LookAt(eye, at, up, cameraView);
             firstFrame = false;
         }
