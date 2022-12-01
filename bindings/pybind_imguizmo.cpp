@@ -1,7 +1,5 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/eigen.h>
-//#include <pybind11/stl.h>
-#include <pybind11/functional.h>
+#include <pybind11/numpy.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
@@ -11,8 +9,133 @@
 #include "ImGuizmoStl/ImZoomSliderStl.h"
 #include "ImGuizmoStl/ImGuizmoStl.h"
 
+#include <fplus/fplus.hpp>
 
 namespace py = pybind11;
+using namespace ImGuizmo;
+
+
+// ============================================================================
+// Hairy conversions between MatrixXX and numpy arrays, with shared memory
+// (inspired by my previous work on cvnp (https://github.com/pthom/cvnp)
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Part 1 : Conversion utilities
+// ----------------------------------------------------------------------------
+namespace matrix_to_numpy
+{
+
+    template<typename MatrixXX>
+    py::capsule make_capsule_matrix(const MatrixXX& m)
+    {
+        return py::capsule(new MatrixXX(m)
+            , [](void *v) { delete reinterpret_cast<MatrixXX*>(v); }
+        );
+    }
+
+    // we will transcribe a Matrix16 into a 4x4 matrix on python side
+    std::vector<pybind11::ssize_t> matrix_shape(const Matrix16& m) { return {4, 4};}
+    std::vector<pybind11::ssize_t> matrix_shape(const Matrix3& m) { return {3};}
+    std::vector<pybind11::ssize_t> matrix_shape(const Matrix6& m) { return {6};}
+
+    std::vector<pybind11::ssize_t> matrix_strides(const Matrix6& m) {
+        return {sizeof(float)};
+    }
+    std::vector<pybind11::ssize_t> matrix_strides(const Matrix3& m) {
+        return {sizeof(float)};
+    }
+    std::vector<pybind11::ssize_t> matrix_strides(const Matrix16& m) {
+        return {
+            sizeof(float) * 4,
+            sizeof(float)
+        };
+    }
+
+
+    template<typename MatrixXX>
+    pybind11::array matrix_to_nparray(const MatrixXX& m, bool share_memory)
+    {
+        auto shape = matrix_shape(m);
+        auto strides = matrix_strides(m);
+
+        static std::string float_numpy_str = pybind11::format_descriptor<float>::format();
+        static auto dtype_float = pybind11::dtype(float_numpy_str);
+
+        std::cout << "matrix_to_nparray shape = " + fplus::show(shape) + "\n";
+        if (share_memory)
+            return pybind11::array(dtype_float, shape, strides, m.values, make_capsule_matrix(m));
+        else
+            return pybind11::array(dtype_float, shape, strides, m.values);
+    }
+
+    template<typename MatrixXX>
+    MatrixXX nparray_to_matrix(pybind11::array& a)
+    {
+        MatrixXX r;
+
+        // Check input array type and dimensions...
+        if (a.dtype().kind() != pybind11::format_descriptor<float>::c)
+            throw std::runtime_error("Only numpy arrays of type float are supported!");
+        auto expected_shape = matrix_shape(r);
+        if (a.ndim() != expected_shape.size())
+            throw std::runtime_error("Bad shape ndim!");
+        for (size_t i = 0; i < a.ndim(); ++i)
+            if (a.shape()[i] != expected_shape[i])
+                throw std::runtime_error("Bad shape!");
+
+        // ...and then share its guts with MatrixXX
+        r.use_external_values((float *)a.mutable_data(0));
+        return r;
+    }
+
+}
+
+// ----------------------------------------------------------------------------
+// Part 1 : Type casters numpy.array <=> MatrixXX
+// ----------------------------------------------------------------------------
+namespace pybind11
+{
+    namespace detail
+    {
+        template<int N>
+        struct type_caster<MatrixFixedSize<N>>
+        {
+        public:
+        PYBIND11_TYPE_CASTER(MatrixFixedSize<N>, _("numpy.ndarray"));
+
+            /**
+             * Conversion part 1 (Python->C++):
+             * Return false upon failure.
+             * The second argument indicates whether implicit conversions should be applied.
+             */
+            bool load(handle src, bool)
+            {
+//                auto a = reinterpret_borrow<array>(src);
+//                auto new_mat = cv::Mat(cvnp::nparray_to_mat(a));
+//                value.Value = new_mat;
+//                return true;
+
+                auto a = reinterpret_borrow<array>(src);
+                value =  matrix_to_numpy::nparray_to_matrix<MatrixFixedSize<N>>(a);
+                return true;
+            }
+
+            /**
+             * Conversion part 2 (C++ -> Python):
+             * The second and third arguments are used to indicate the return value policy and parent object
+             * (for ``return_value_policy::reference_internal``) and are generally
+             * ignored by implicit casters.
+             */
+            static handle cast(const MatrixFixedSize<N> &m, return_value_policy, handle defval)
+            {
+                bool share_memory = true;
+                auto a = matrix_to_numpy::matrix_to_nparray(m, true);
+                return a.release();
+            }
+        };
+    }
+}
 
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -430,8 +553,6 @@ public:
 
 void py_init_module_imguizmo(py::module& m)
 {
-    using namespace ImGuizmo;
-
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // <litgen_pydef> // Autogenerated code below! Do not edit!
     ////////////////////    <generated_from:ImCurveEditStl.h>    ////////////////////
@@ -661,51 +782,6 @@ void py_init_module_imguizmo(py::module& m)
 
         pyNsImGuizmo.def("get_style",
             ImGuizmo::GetStyle);
-        auto pyNsImGuizmo_ClassMatrix16 =
-            py::class_<ImGuizmo::Matrix16>
-                (pyNsImGuizmo, "Matrix16", "Matrix16 can be cast to float[16] aka float* (if you really need it)")
-            .def(py::init<>()) // implicit default constructor
-            .def_property("values",
-                [](ImGuizmo::Matrix16 &self) -> pybind11::array
-                {
-                    auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
-                    auto base = pybind11::array(dtype, {16}, {sizeof(float)});
-                    return pybind11::array(dtype, {16}, {sizeof(float)}, self.values, base);
-                }, [](ImGuizmo::Matrix16& self) {},
-                "")
-            ;
-
-
-        auto pyNsImGuizmo_ClassMatrix3 =
-            py::class_<ImGuizmo::Matrix3>
-                (pyNsImGuizmo, "Matrix3", "")
-            .def(py::init<>()) // implicit default constructor
-            .def_property("values",
-                [](ImGuizmo::Matrix3 &self) -> pybind11::array
-                {
-                    auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
-                    auto base = pybind11::array(dtype, {3}, {sizeof(float)});
-                    return pybind11::array(dtype, {3}, {sizeof(float)}, self.values, base);
-                }, [](ImGuizmo::Matrix3& self) {},
-                "")
-            ;
-
-
-        auto pyNsImGuizmo_ClassMatrix6 =
-            py::class_<ImGuizmo::Matrix6>
-                (pyNsImGuizmo, "Matrix6", "")
-            .def(py::init<>()) // implicit default constructor
-            .def_property("values",
-                [](ImGuizmo::Matrix6 &self) -> pybind11::array
-                {
-                    auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
-                    auto base = pybind11::array(dtype, {6}, {sizeof(float)});
-                    return pybind11::array(dtype, {6}, {sizeof(float)}, self.values, base);
-                }, [](ImGuizmo::Matrix6& self) {},
-                "")
-            ;
-
-
         auto pyNsImGuizmo_ClassMatrixComponents =
             py::class_<ImGuizmo::MatrixComponents>
                 (pyNsImGuizmo, "MatrixComponents", "")
@@ -716,28 +792,43 @@ void py_init_module_imguizmo(py::module& m)
             ;
 
 
+        pyNsImGuizmo.def("my_16",
+            ImGuizmo::my_16,
+            "return_value_policy::reference",
+            pybind11::return_value_policy::reference);
+
+        pyNsImGuizmo.def("my_6",
+            ImGuizmo::my_6,
+            "return_value_policy::reference",
+            pybind11::return_value_policy::reference);
+
+        pyNsImGuizmo.def("my_3",
+            ImGuizmo::my_3,
+            "return_value_policy::reference",
+            pybind11::return_value_policy::reference);
+
         pyNsImGuizmo.def("decompose_matrix_to_components",
-            py::overload_cast<const ImGuizmo::Matrix16 &>(ImGuizmo::DecomposeMatrixToComponents), py::arg("matrix"));
+            py::overload_cast<const Matrix16 &>(ImGuizmo::DecomposeMatrixToComponents), py::arg("matrix"));
 
         pyNsImGuizmo.def("recompose_matrix_from_components",
             py::overload_cast<const ImGuizmo::MatrixComponents &>(ImGuizmo::RecomposeMatrixFromComponents), py::arg("matrix_components"));
 
         pyNsImGuizmo.def("draw_cubes",
-            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const std::vector<Matrix16> &>(ImGuizmo::DrawCubes), py::arg("view"), py::arg("projection"), py::arg("matrices"));
+            py::overload_cast<const Matrix16 &, const Matrix16 &, const std::vector<Matrix16> &>(ImGuizmo::DrawCubes), py::arg("view"), py::arg("projection"), py::arg("matrices"));
 
         pyNsImGuizmo.def("draw_grid",
-            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const float>(ImGuizmo::DrawGrid), py::arg("view"), py::arg("projection"), py::arg("matrix"), py::arg("grid_size"));
+            py::overload_cast<const Matrix16 &, const Matrix16 &, const Matrix16 &, const float>(ImGuizmo::DrawGrid), py::arg("view"), py::arg("projection"), py::arg("matrix"), py::arg("grid_size"));
 
         pyNsImGuizmo.def("manipulate",
-            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate), py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none());
+            py::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate), py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none());
 
         pyNsImGuizmo.def("view_manipulate",
-            py::overload_cast<ImGuizmo::Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            py::overload_cast<Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             py::arg("view"), py::arg("length"), py::arg("position"), py::arg("size"), py::arg("background_color"),
             "\n Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en\n It seems to be a defensive patent in the US. I don't think it will bring troubles using it as\n other software are using the same mechanics. But just in case, you are now warned!\n");
 
         pyNsImGuizmo.def("view_manipulate",
-            py::overload_cast<ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            py::overload_cast<Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("length"), py::arg("position"), py::arg("size"), py::arg("background_color"),
             "use this version if you did not call Manipulate before and you are just using ViewManipulate");
     } // </namespace ImGuizmo>

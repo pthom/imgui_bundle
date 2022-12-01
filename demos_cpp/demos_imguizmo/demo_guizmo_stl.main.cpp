@@ -60,33 +60,44 @@ std::vector<T> vec_n_first(std::vector<T> const &v, size_t n)
 }
 
 
+float f[16] = { 1.f, 0.f, 0.f, 0.f,
+             0.f, 1.f, 0.f, 0.f,
+             0.f, 0.f, 1.f, 0.f,
+             0.f, 0.f, 0.f, 1.f };
+
+Matrix16 m({ 1.f, 0.f, 0.f, 0.f,
+             0.f, 1.f, 0.f, 0.f,
+             0.f, 0.f, 1.f, 0.f,
+             0.f, 0.f, 0.f, 1.f });
+
 std::vector<Matrix16> objectMatrix = {
-    { 1.f, 0.f, 0.f, 0.f,
+    Matrix16({
+        1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
-        0.f, 0.f, 0.f, 1.f },
-
-    { 1.f, 0.f, 0.f, 0.f,
+        0.f, 0.f, 0.f, 1.f }),
+    Matrix16({
+        1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
-        2.f, 0.f, 0.f, 1.f },
-
-    { 1.f, 0.f, 0.f, 0.f,
+        2.f, 0.f, 0.f, 1.f }),
+    Matrix16({
+        1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
-        2.f, 0.f, 2.f, 1.f },
-
-    { 1.f, 0.f, 0.f, 0.f,
+        2.f, 0.f, 2.f, 1.f }),
+    Matrix16({
+        1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
-        0.f, 0.f, 2.f, 1.f }
+        0.f, 0.f, 2.f, 1.f })
 };
 
-static const ImGuizmo::Matrix16 identityMatrix =
+static const ImGuizmo::Matrix16 identityMatrix(
     { 1.f, 0.f, 0.f, 0.f,
       0.f, 1.f, 0.f, 0.f,
       0.f, 0.f, 1.f, 0.f,
-      0.f, 0.f, 0.f, 1.f };
+      0.f, 0.f, 0.f, 1.f });
 
 void Frustum(float left, float right, float bottom, float top, float znear, float zfar, Matrix16& m16)
 {
@@ -222,9 +233,9 @@ void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& m
 {
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
     static bool useSnap = false;
-    static Matrix3 snap = { 1.f, 1.f, 1.f };
-    static Matrix6 bounds = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
-    static Matrix3 boundsSnap = { 0.1f, 0.1f, 0.1f };
+    static Matrix3 snap({ 1.f, 1.f, 1.f });
+    static Matrix6 bounds({ -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f });
+    static Matrix3 boundsSnap({ 0.1f, 0.1f, 0.1f });
     static bool boundSizing = false;
     static bool boundSizingSnap = false;
 
@@ -349,11 +360,11 @@ VoidFunction make_closure_demo_guizmo()
 {
     int lastUsing = 0;
 
-    Matrix16 cameraView =
+    Matrix16 cameraView(
         { 1.f, 0.f, 0.f, 0.f,
           0.f, 1.f, 0.f, 0.f,
           0.f, 0.f, 1.f, 0.f,
-          0.f, 0.f, 0.f, 1.f };
+          0.f, 0.f, 0.f, 1.f });
 
     Matrix16 cameraProjection;
 
@@ -410,9 +421,9 @@ VoidFunction make_closure_demo_guizmo()
 
         if (viewDirty || firstFrame)
         {
-            Matrix3 eye = { cosf(camYAngle) * cosf(camXAngle) * camDistance, sinf(camXAngle) * camDistance, sinf(camYAngle) * cosf(camXAngle) * camDistance };
-            Matrix3 at = { 0.f, 0.f, 0.f };
-            Matrix3 up = { 0.f, 1.f, 0.f };
+            Matrix3 eye({ cosf(camYAngle) * cosf(camXAngle) * camDistance, sinf(camXAngle) * camDistance, sinf(camYAngle) * cosf(camXAngle) * camDistance });
+            Matrix3 at({ 0.f, 0.f, 0.f });
+            Matrix3 up({ 0.f, 1.f, 0.f });
             LookAt(eye, at, up, cameraView);
             firstFrame = false;
         }

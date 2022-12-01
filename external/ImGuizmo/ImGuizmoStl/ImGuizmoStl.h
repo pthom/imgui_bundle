@@ -13,31 +13,37 @@
 
 namespace IMGUIZMO_NAMESPACE
 {
-    // Matrix16 can be cast to float[16] aka float* (if you really need it)
-    struct Matrix16
+    template<int N>
+    struct MatrixFixedSize
     {
-        float values[16];
+    private:
+        // By default, the `_values` are stored privately on the stack...
+        float _values[N];
+    public:
+        MatrixFixedSize() { values = _values; }
+        MatrixFixedSize(const std::vector<float>& v) {
+            IM_ASSERT(v.size() == N);
+            values = _values;
+            for (int i = 0; i < N; ++i)
+                values[i] = v[i];
+        }
 
+        // ...and you access them via the public `values` member (since `values` points to `_values` by default)
+        float *values;
+
+        // ...or via [] like with a standard C array
         float operator[](size_t i) const { return values[i]; }
         float& operator[](size_t i) { return values[i]; }
+
+        // By default, the values are on the stack, but we can also use values from shared memory:
+        //   this is used only when accessing matrices transferred from numpy / python,
+        //   and in this case the stack values are ignored
+        void use_external_values(float* address) { values = address; }
     };
 
-    struct Matrix3
-    {
-        float values[3];
-
-        float operator[](size_t i) const { return values[i]; }
-        float& operator[](size_t i) { return values[i]; }
-    };
-
-
-    struct Matrix6
-    {
-        float values[6];
-
-        float operator[](size_t i) const { return values[i]; }
-        float& operator[](size_t i) { return values[i]; }
-    };
+    using Matrix16 = MatrixFixedSize<16>;
+    using Matrix6 = MatrixFixedSize<6>;
+    using Matrix3 = MatrixFixedSize<3>;
 
 
     struct MatrixComponents
@@ -46,6 +52,10 @@ namespace IMGUIZMO_NAMESPACE
         Matrix3 Rotation;
         Matrix3 Scale;
     };
+
+    IMGUI_API Matrix16& my_16(); // py::return_value_policy::reference
+    IMGUI_API Matrix6 my_6(); // py::return_value_policy::reference
+    IMGUI_API Matrix3& my_3(); // py::return_value_policy::reference
 
     // helper functions for manualy editing translation/rotation/scale with an input float
     // translation, rotation and scale float points to 3 floats each

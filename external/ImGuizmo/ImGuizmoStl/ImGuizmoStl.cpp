@@ -4,6 +4,22 @@
 
 namespace IMGUIZMO_NAMESPACE
 {
+    Matrix16& my_16() // py::return_value_policy::reference
+    {
+        static Matrix16 r;
+        return r;
+    }
+    Matrix6 my_6() // py::return_value_policy::reference
+    {
+        static Matrix6 r;
+        return r;
+    }
+    Matrix3& my_3() // py::return_value_policy::reference
+    {
+        static Matrix3 r;
+        return r;
+    }
+
     MatrixComponents DecomposeMatrixToComponents(const Matrix16 &matrix)
     {
         MatrixComponents r;
