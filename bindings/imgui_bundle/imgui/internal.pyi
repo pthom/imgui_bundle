@@ -3763,6 +3763,10 @@ class TableSettings:  # imgui_internal.h:2907
 # If this ever crash because g.CurrentWindow is None it means that either
 # - ImGui::NewFrame() has never been called, which is illegal.
 # - You are calling ImGui functions after ImGui::EndFrame()/ImGui::Render() and before the next ImGui::NewFrame(), which is also illegal.
+# IMGUI_API ImGuiWindow*  GetCurrentWindow()          { ImGuiContext& g = *GImGui; g.CurrentWindow->WriteAccessed = true; return g.CurrentWindow; }    /* original C++ signature */
+def get_current_window() -> Window:  # imgui_internal.h:2933
+    pass
+
 # IMGUI_API ImGuiWindow*  FindWindowByID(ImGuiID id);    /* original C++ signature */
 def find_window_by_id(id_: ID) -> Window:  # imgui_internal.h:2934
     pass
