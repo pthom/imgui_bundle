@@ -135,7 +135,16 @@ endif()
 add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
 add_simple_external_library_with_sources(imguizmo_stl ImGuizmo/ImGuizmoStl)
 target_link_libraries(imguizmo_stl PUBLIC imguizmo)
-
+# Build imgui_tex_inspect
+add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
+target_sources(imgui_tex_inspect PRIVATE
+    external/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
+    external/imgui_tex_inspect/backends/tex_inspect_opengl.h
+    )
+target_include_directories(imgui_tex_inspect PRIVATE external/imgui_tex_inspect)
+target_include_directories(imgui_tex_inspect PRIVATE external/imgui/backends)
+target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_include_directories(imgui_tex_inspect PRIVATE external/hello_imgui/external/OpenGL_Loaders/glad/include)
 
 #########################################################################
 # Build python bindings
