@@ -1,12 +1,14 @@
 # Demo ImGuizmo (only the 3D gizmo)
 # See equivalent python program: demos_cpp/demos_imguizmo/demo_guizmo_stl.main.cpp
 from typing import List, Tuple
-import imgui_bundle
-from imgui_bundle import imgui, imguizmo, hello_imgui, static, ImVec2, ImVec4
-from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
+from dataclasses import dataclass
 import numpy as np
 import math
 import munch  # type: ignore
+
+import imgui_bundle
+from imgui_bundle import imgui, imguizmo, hello_imgui, static, ImVec2, ImVec4
+from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 
 # pip install PyGLM
 import glm
@@ -23,12 +25,34 @@ gizmoCount = 1
 camDistance = 8.0
 mCurrentGizmoOperation = gizmo.OPERATION.translate
 
-objectMatrix: List[Matrix6] = [
-    np.eye(4, dtype=np.float32),
-    np.array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0], np.float32),
-    np.array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 0.0, 2.0, 1.0], np.float32),
-    np.array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 2.0, 1.0], np.float32),
+# fmt: off
+gObjectMatrix: List[Matrix6] = [
+    np.array([
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+    ], np.float32),
+    np.array([
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        2.0, 0.0, 0.0, 1.0
+    ], np.float32),
+    np.array([
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        2.0, 0.0, 2.0, 1.0
+    ], np.float32),
+    np.array([
+        1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 2.0, 1.0
+    ], np.float32),
 ]
+# fmt: on
 
 identityMatrix = np.eye(4, dtype=np.float32)
 
@@ -66,8 +90,18 @@ def input_only_first_value_matrix3(label: str, matrix3: Matrix3) -> Tuple[bool, 
     return changed, matrix3
 
 
+# Change from the original version: returns a tuple (changed, newCameraView)
+@dataclass
+class EditTransformResult:
+    changed: bool
+    objectMatrix: Matrix16
+    cameraView: Matrix16
+
+
 @static(statics=None)
-def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matrix16, editTransformDecomposition: bool):
+def EditTransform(
+    cameraView: Matrix16, cameraProjection: Matrix16, objectMatrix: Matrix16, editTransformDecomposition: bool
+) -> EditTransformResult:
     statics = EditTransform.statics
     global mCurrentGizmoOperation
     if statics is None:
@@ -81,6 +115,8 @@ def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matr
         statics.boundSizing = False
         statics.boundSizingSnap = False
         statics.gizmoWindowFlags = 0
+
+    r = EditTransformResult(changed=False, objectMatrix=objectMatrix, cameraView=cameraView)
 
     if editTransformDecomposition:
         if imgui.is_key_pressed(imgui.Key.t):
@@ -100,11 +136,17 @@ def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matr
         if imgui.radio_button("Universal", mCurrentGizmoOperation == gizmo.OPERATION.universal):
             mCurrentGizmoOperation = gizmo.OPERATION.universal
 
-        matrixComponents = gizmo.decompose_matrix_to_components(matrix)
-        _, matrixComponents.translation = input_matrix3("Tr", matrixComponents.translation)
-        _, matrixComponents.rotation = input_matrix3("Rt", matrixComponents.rotation)
-        _, matrixComponents.scale = input_matrix3("Sc", matrixComponents.scale)
-        matrix = gizmo.recompose_matrix_from_components(matrixComponents)
+        matrixComponents = gizmo.decompose_matrix_to_components(objectMatrix)
+        edited = False
+        edit_one, matrixComponents.translation = input_matrix3("Tr", matrixComponents.translation)
+        edited |= edit_one
+        edit_one, matrixComponents.rotation = input_matrix3("Rt", matrixComponents.rotation)
+        edited |= edit_one
+        edit_one, matrixComponents.scale = input_matrix3("Sc", matrixComponents.scale)
+        edited |= edit_one
+        if edited:
+            r.changed = True
+            r.objectMatrix = gizmo.recompose_matrix_from_components(matrixComponents)
 
         if mCurrentGizmoOperation != gizmo.OPERATION.scale:
             if imgui.radio_button("Local", statics.mCurrentGizmoMode == gizmo.MODE.local):
@@ -133,52 +175,60 @@ def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matr
             _, statics.boundsSnap = input_matrix3("Snap", statics.boundsSnap)
             imgui.pop_id()
 
-        io = imgui.get_io()
-        viewManipulateRight = io.display_size.x
-        viewManipulateTop = 0.0
+    io = imgui.get_io()
+    viewManipulateRight = io.display_size.x
+    viewManipulateTop = 0.0
 
-        if useWindow:
-            imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing)
-            imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing)
-            imgui.push_style_color(imgui.Col_.window_bg, imgui.ImColor(0.35, 0.3, 0.3).value)
-            imgui.begin("Gizmo", None, statics.gizmoWindowFlags)
-            gizmo.set_drawlist()
-            windowWidth = imgui.get_window_width()
-            windowHeight = imgui.get_window_height()
-            gizmo.set_rect(imgui.get_window_pos().x, imgui.get_window_pos().y, windowWidth, windowHeight)
-            viewManipulateRight = imgui.get_window_pos().x + windowWidth
-            viewManipulateTop = imgui.get_window_pos().y
-            window = imgui.internal.get_current_window()
-            if imgui.is_window_hovered() and imgui.is_mouse_hovering_rect(window.inner_rect.min, window.inner_rect.max):
-                statics.gizmoWindowFlags = imgui.WindowFlags_.no_move
-            else:
-                statics.gizmoWindowFlags = 0
+    if useWindow:
+        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing)
+        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing)
+        imgui.push_style_color(imgui.Col_.window_bg, imgui.ImColor(0.35, 0.3, 0.3).value)
+        imgui.begin("Gizmo", None, statics.gizmoWindowFlags)
+        gizmo.set_drawlist()
+        windowWidth = imgui.get_window_width()
+        windowHeight = imgui.get_window_height()
+        gizmo.set_rect(imgui.get_window_pos().x, imgui.get_window_pos().y, windowWidth, windowHeight)
+        viewManipulateRight = imgui.get_window_pos().x + windowWidth
+        viewManipulateTop = imgui.get_window_pos().y
+        window = imgui.internal.get_current_window()
+        if imgui.is_window_hovered() and imgui.is_mouse_hovering_rect(window.inner_rect.min, window.inner_rect.max):
+            statics.gizmoWindowFlags = imgui.WindowFlags_.no_move
         else:
-            gizmo.set_rect(0, 0, io.display_size.x, io.display_size.y)
+            statics.gizmoWindowFlags = 0
+    else:
+        gizmo.set_rect(0, 0, io.display_size.x, io.display_size.y)
 
-        gizmo.draw_grid(cameraView, cameraProjection, identityMatrix, 100.0)
+    gizmo.draw_grid(cameraView, cameraProjection, identityMatrix, 100.0)
 
-        gizmo.draw_cubes(cameraView, cameraProjection, objectMatrix[:gizmoCount])
+    gizmo.draw_cubes(cameraView, cameraProjection, gObjectMatrix[:gizmoCount])
 
-        gizmo.manipulate(
-            cameraView,
-            cameraProjection,
-            mCurrentGizmoOperation,
-            statics.mCurrentGizmoMode,
-            matrix,
-            None,
-            statics.snap if statics.useSnap else None,
-            statics.bounds if statics.boundSizing else None,
-            statics.boundsSnap if statics.boundSizingSnap else None,
-        )
+    changed, new_matrix = gizmo.manipulate(
+        cameraView,
+        cameraProjection,
+        mCurrentGizmoOperation,
+        statics.mCurrentGizmoMode,
+        objectMatrix,
+        None,
+        statics.snap if statics.useSnap else None,
+        statics.bounds if statics.boundSizing else None,
+        statics.boundsSnap if statics.boundSizingSnap else None,
+    )
+    if changed:
+        r.changed = True
+        r.objectMatrix = new_matrix
 
-        gizmo.view_manipulate(
-            cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010
-        )
+    changed, new_camera_view = gizmo.view_manipulate(
+        cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010
+    )
+    if changed:
+        r.changed = True
+        r.cameraView = new_camera_view
 
-        if useWindow:
-            imgui.end()
-            imgui.pop_style_color()
+    if useWindow:
+        imgui.end()
+        imgui.pop_style_color()
+
+    return r
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -203,7 +253,8 @@ def make_closure_demo_guizmo() -> GuiFunction:
 
         io = imgui.get_io()
         if isPerspective:
-            cameraProjection = glm.perspective(fov, io.display_size.x / io.display_size.y, 0.1, 100.0)
+            radians = glm.radians(fov)  # The gui is in degree, we need radians for glm
+            cameraProjection = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)
             cameraProjection = np.array(cameraProjection)
         else:
             viewHeight = viewWidth * io.display_size.y / io.display_size.x
@@ -274,7 +325,10 @@ def make_closure_demo_guizmo() -> GuiFunction:
         for matId in range(gizmoCount):
             gizmo.set_id(matId)
 
-            EditTransform(cameraView, cameraProjection, objectMatrix[matId], lastUsing == matId)
+            result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)
+            if result.changed:
+                gObjectMatrix[matId] = result.objectMatrix
+                cameraView = result.cameraView
             if gizmo.is_using():
                 lastUsing = matId
 

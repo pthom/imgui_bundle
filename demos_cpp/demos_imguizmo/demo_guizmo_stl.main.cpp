@@ -60,7 +60,7 @@ std::vector<T> vec_n_first(std::vector<T> const &v, size_t n)
 }
 
 
-std::vector<Matrix16> objectMatrix = {
+std::vector<Matrix16> gObjectMatrix = {
     Matrix16({
         1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
@@ -219,8 +219,30 @@ inline void rotationY(const float angle, Matrix16& m16)
     m16[15] = 1.0f;
 }
 
-void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& matrix, bool editTransformDecomposition)
+template<typename T>
+std::optional<T> ifFlag(bool flag, const T& value)
 {
+    if (flag)
+        return value;
+    else
+        return std::nullopt;
+}
+
+// Change from the original version: returns a tuple (changed, newCameraView)
+struct EditTransformResult
+{
+    bool changed = false;
+    Matrix16 objectMatrix;
+    Matrix16 cameraView;
+};
+[[nodiscard]] EditTransformResult EditTransform(const Matrix16& cameraView, const Matrix16& cameraProjection, const Matrix16& objectMatrix, bool editTransformDecomposition)
+{
+    EditTransformResult r {
+        .changed = false,
+        .objectMatrix = objectMatrix,
+        .cameraView = cameraView
+    };
+
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
     static bool useSnap = false;
     static Matrix3 snap({ 1.f, 1.f, 1.f });
@@ -247,11 +269,15 @@ void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& m
             mCurrentGizmoOperation = ImGuizmo::SCALE;
         if (ImGui::RadioButton("Universal", mCurrentGizmoOperation == ImGuizmo::UNIVERSAL))
             mCurrentGizmoOperation = ImGuizmo::UNIVERSAL;
-        auto matrixComponents = ImGuizmo::DecomposeMatrixToComponents(matrix);
-        ImGui::InputFloat3("Tr", matrixComponents.Translation.values);
-        ImGui::InputFloat3("Rt", matrixComponents.Rotation.values);
-        ImGui::InputFloat3("Sc", matrixComponents.Scale.values);
-        matrix = ImGuizmo::RecomposeMatrixFromComponents(matrixComponents);
+        auto matrixComponents = ImGuizmo::DecomposeMatrixToComponents(objectMatrix);
+        bool edited = false;
+        edited |= ImGui::InputFloat3("Tr", matrixComponents.Translation.values);
+        edited |= ImGui::InputFloat3("Rt", matrixComponents.Rotation.values);
+        edited |= ImGui::InputFloat3("Sc", matrixComponents.Scale.values);
+        if (edited) {
+            r.objectMatrix = ImGuizmo::RecomposeMatrixFromComponents(matrixComponents);
+            r.changed = true;
+        }
 
         if (mCurrentGizmoOperation != ImGuizmo::SCALE)
         {
@@ -317,32 +343,42 @@ void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& m
 
     ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
 
-    ImGuizmo::DrawCubes(cameraView, cameraProjection, vec_n_first(objectMatrix, gizmoCount));
+    ImGuizmo::DrawCubes(cameraView, cameraProjection, vec_n_first(gObjectMatrix, gizmoCount));
 
-    ImGuizmo::Manipulate(
-        cameraView.values,
-        cameraProjection.values,
+    auto [changedMatrix, newObjectMatrix] = ImGuizmo::Manipulate(
+        cameraView,
+        cameraProjection,
         mCurrentGizmoOperation,
         mCurrentGizmoMode,
-        matrix.values,
-        NULL,
-        useSnap ? snap.values : NULL,
-        boundSizing ? bounds.values : NULL,
-        boundSizingSnap ? boundsSnap.values : NULL
+        objectMatrix,
+        std::nullopt,
+        ifFlag(useSnap, snap),
+        ifFlag(boundSizing, bounds),
+        ifFlag(boundSizingSnap, boundsSnap)
         );
+    if (changedMatrix) {
+        r.changed = true;
+        r.objectMatrix = newObjectMatrix;
+    }
 
-    ImGuizmo::ViewManipulate(
+    auto [changedView, newCameraView] = ImGuizmo::ViewManipulate(
         cameraView,
         camDistance,
         ImVec2(viewManipulateRight - 128, viewManipulateTop),
         ImVec2(128, 128),
         0x10101010);
+    if (changedView) {
+        r.cameraView = newCameraView;
+        r.changed = true;
+    }
 
     if (useWindow)
     {
         ImGui::End();
         ImGui::PopStyleColor(1);
     }
+
+    return r;
 }
 
 // This returns a closure function that will later be invoked to run the app
@@ -438,7 +474,12 @@ VoidFunction make_closure_demo_guizmo()
         {
             ImGuizmo::SetID(matId);
 
-            EditTransform(cameraView, cameraProjection, objectMatrix[matId], lastUsing == matId);
+            auto result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
+            if (result.changed)
+            {
+                cameraView = result.cameraView;
+                gObjectMatrix[matId] = result.objectMatrix;
+            }
             if (ImGuizmo::IsUsing())
             {
                 lastUsing = matId;

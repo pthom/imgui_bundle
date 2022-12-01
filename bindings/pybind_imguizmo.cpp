@@ -789,21 +789,6 @@ void py_init_module_imguizmo(py::module& m)
             ;
 
 
-        pyNsImGuizmo.def("my_16",
-            ImGuizmo::my_16,
-            "return_value_policy::reference",
-            pybind11::return_value_policy::reference);
-
-        pyNsImGuizmo.def("my_6",
-            ImGuizmo::my_6,
-            "return_value_policy::reference",
-            pybind11::return_value_policy::reference);
-
-        pyNsImGuizmo.def("my_3",
-            ImGuizmo::my_3,
-            "return_value_policy::reference",
-            pybind11::return_value_policy::reference);
-
         pyNsImGuizmo.def("decompose_matrix_to_components",
             py::overload_cast<const Matrix16 &>(ImGuizmo::DecomposeMatrixToComponents), py::arg("matrix"));
 
@@ -817,17 +802,19 @@ void py_init_module_imguizmo(py::module& m)
             py::overload_cast<const Matrix16 &, const Matrix16 &, const Matrix16 &, const float>(ImGuizmo::DrawGrid), py::arg("view"), py::arg("projection"), py::arg("matrix"), py::arg("grid_size"));
 
         pyNsImGuizmo.def("manipulate",
-            py::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate), py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none());
+            py::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, const Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate),
+            py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("object_matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none(),
+            "Manipulate may change the gObjectMatrix parameter: if it was changed, it will return (True, newObjectMatrix)");
 
         pyNsImGuizmo.def("view_manipulate",
-            py::overload_cast<Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            py::overload_cast<const Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             py::arg("view"), py::arg("length"), py::arg("position"), py::arg("size"), py::arg("background_color"),
-            "\n Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en\n It seems to be a defensive patent in the US. I don't think it will bring troubles using it as\n other software are using the same mechanics. But just in case, you are now warned!\n");
+            "\n Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en\n It seems to be a defensive patent in the US. I don't think it will bring troubles using it as\n other software are using the same mechanics. But just in case, you are now warned!\n\n ViewManipulate may change the view parameter: if it was changed, it will return (True, newView)");
 
         pyNsImGuizmo.def("view_manipulate",
-            py::overload_cast<Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            py::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("length"), py::arg("position"), py::arg("size"), py::arg("background_color"),
-            "use this version if you did not call Manipulate before and you are just using ViewManipulate");
+            " use this version if you did not call Manipulate before and you are just using ViewManipulate\n ViewManipulate may change the view parameter: if it was changed, it will return (True, newView)");
     } // </namespace ImGuizmo>
     ////////////////////    </generated_from:ImGuizmoStl.h>    ////////////////////
 

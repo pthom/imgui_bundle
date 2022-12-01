@@ -91,7 +91,11 @@ def autogenerate_imguizmo():
         return code
 
     options_guizmo.srcmlcpp_options.code_preprocess_function = preprocess_code
-    options_guizmo.srcmlcpp_options.ignored_warning_parts = ["ImVec4 Colors[COLOR::COUNT]", "Ignoring template class"]
+    options_guizmo.srcmlcpp_options.ignored_warning_parts = [
+        "ImVec4 Colors[COLOR::COUNT]",
+        "Ignoring template class",
+        "float values[N]",
+    ]
     options_guizmo.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options_guizmo.fn_exclude_by_param_type__regex = r"float[ ]*\*"
     options_guizmo.class_exclude_by_name__regex = r"^Matrix16$|^Matrix6$|^Matrix3$"

@@ -44,7 +44,7 @@ int gizmoCount = 1;
 float camDistance = 8.f;
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 
-float objectMatrix[4][16] = {
+float gObjectMatrix[4][16] = {
     { 1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,
@@ -300,7 +300,7 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
     }
 
     ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
-    ImGuizmo::DrawCubes(cameraView, cameraProjection, &objectMatrix[0][0], gizmoCount);
+    ImGuizmo::DrawCubes(cameraView, cameraProjection, &gObjectMatrix[0][0], gizmoCount);
     ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
 
     ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
@@ -405,7 +405,7 @@ VoidFunction make_closure_demo_guizmo()
         {
             ImGuizmo::SetID(matId);
 
-            EditTransform(cameraView, cameraProjection, objectMatrix[matId], lastUsing == matId);
+            EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
             if (ImGuizmo::IsUsing())
             {
                 lastUsing = matId;

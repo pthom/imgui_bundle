@@ -5,6 +5,9 @@
 
 #include <optional>
 #include <vector>
+#include <array>
+#include <tuple>
+
 
 #ifndef IMGUIZMO_NAMESPACE
 #define IMGUIZMO_NAMESPACE ImGuizmo
@@ -20,14 +23,19 @@ namespace IMGUIZMO_NAMESPACE
         float values[N];
 
         MatrixFixedSize() { for (int i = 0; i < N; ++i) values[i] = 0.; }
-        explicit MatrixFixedSize(const std::vector<float>& v) {
-            IM_ASSERT(v.size() == N);
-            for (int i = 0; i < N; ++i) values[i] = v[i];
-        }
+
+        explicit MatrixFixedSize(const std::array<float, N>& v) {
+            for (int i = 0; i < N; ++i) values[i] = v[i]; }
 
         // access via [] like with a standard C array
         float operator[](size_t i) const { return values[i]; }
         float& operator[](size_t i) { return values[i]; }
+
+        // == and !=
+        bool operator==(const MatrixFixedSize<N>&o){
+            for (int i = 0; i < N; ++i) if (values[i] != o[i]) return false;
+            return true; }
+        bool operator!=(const MatrixFixedSize<N>&o){ return ! (*this == o); }
     };
 
     using Matrix16 = MatrixFixedSize<16>;
@@ -41,10 +49,6 @@ namespace IMGUIZMO_NAMESPACE
         Matrix3 Rotation;
         Matrix3 Scale;
     };
-
-    IMGUI_API Matrix16& my_16(); // py::return_value_policy::reference
-    IMGUI_API Matrix6 my_6(); // py::return_value_policy::reference
-    IMGUI_API Matrix3& my_3(); // py::return_value_policy::reference
 
     // helper functions for manualy editing translation/rotation/scale with an input float
     // translation, rotation and scale float points to 3 floats each
@@ -65,12 +69,13 @@ namespace IMGUIZMO_NAMESPACE
     IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices);
     IMGUI_API void DrawGrid(const Matrix16& view, const Matrix16& projection, const Matrix16& matrix, const float gridSize);
 
-    IMGUI_API bool Manipulate(
+    // Manipulate may change the gObjectMatrix parameter: if it was changed, it will return (true, newObjectMatrix)
+    [[nodiscard]] IMGUI_API  std::tuple<bool, Matrix16> Manipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
-        Matrix16& matrix,
+        const Matrix16& objectMatrix, // This is edited and returned as new_matrix if changed
         std::optional<Matrix16> deltaMatrix = std::nullopt,
         std::optional<Matrix3> snap = std::nullopt,
         std::optional<Matrix6> localBounds = std::nullopt,
@@ -82,15 +87,22 @@ namespace IMGUIZMO_NAMESPACE
     // It seems to be a defensive patent in the US. I don't think it will bring troubles using it as
     // other software are using the same mechanics. But just in case, you are now warned!
     //
-    IMGUI_API void ViewManipulate(Matrix16& view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor);
+    // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
+    [[nodiscard]] IMGUI_API std::tuple<bool, Matrix16> ViewManipulate(
+        const Matrix16& view, //
+        float length,
+        ImVec2 position,
+        ImVec2 size,
+        ImU32 backgroundColor);
 
     // use this version if you did not call Manipulate before and you are just using ViewManipulate
-    IMGUI_API void ViewManipulate(
-        Matrix16& view,
+    // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
+    [[nodiscard]] IMGUI_API std::tuple<bool, Matrix16> ViewManipulate(
+        const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
-        Matrix16& matrix,
+        Matrix16& matrix, // !!!
         float length,
         ImVec2 position,
         ImVec2 size,

@@ -13,9 +13,12 @@ def main() -> None:
     path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python/demo_composition_graph/")
     sys.path.append(path_demos)
 
-    import demo_compose_image_debug  # type: ignore
+    path_demos = os.path.realpath(f"{THIS_DIR}/../demos_python/demos_imguizmo/")
+    sys.path.append(path_demos)
 
-    demo_compose_image_debug.main()
+    import demo_guizmo_stl  # type: ignore
+
+    demo_guizmo_stl.main()
 
 
 main()
