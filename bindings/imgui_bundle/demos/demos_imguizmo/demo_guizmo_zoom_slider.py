@@ -2,7 +2,9 @@
 # See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_zoom_slider.main.cpp
 
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, run_anon_block
+from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 import imgui_bundle
+
 
 ImZoomSlider = imguizmo.ImZoomSlider
 
@@ -41,7 +43,7 @@ def draw_zoomable_grid(
 
 
 # This returns a closure function that will later be invoked to run the app
-def make_closure_demo_guizmo_zoom_slider():
+def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
     # Values between 0. and 1. that represent the current viewed portion
     view_min = ImVec2(0.1, 0.3)
     view_max = ImVec2(0.6, 0.8)

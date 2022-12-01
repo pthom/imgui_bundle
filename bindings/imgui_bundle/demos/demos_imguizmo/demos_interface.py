@@ -1,4 +1,4 @@
 from typing import Callable
 
 
-VoidFunction = Callable[[], None]
+GuiFunction = Callable[[], None]

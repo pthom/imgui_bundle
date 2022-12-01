@@ -1,5 +1,5 @@
-// Demo ImGuizmo (only the 3D widget)
-// See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/Wrapper/demo_guizmo.py
+// Demo ImGuizmo (only the 3D gizmo)
+// See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_stl.py
 
 // https://github.com/CedricGuillemet/ImGuizmo
 // v 1.89 WIP
@@ -59,16 +59,6 @@ std::vector<T> vec_n_first(std::vector<T> const &v, size_t n)
     return vec;
 }
 
-
-float f[16] = { 1.f, 0.f, 0.f, 0.f,
-             0.f, 1.f, 0.f, 0.f,
-             0.f, 0.f, 1.f, 0.f,
-             0.f, 0.f, 0.f, 1.f };
-
-Matrix16 m({ 1.f, 0.f, 0.f, 0.f,
-             0.f, 1.f, 0.f, 0.f,
-             0.f, 0.f, 1.f, 0.f,
-             0.f, 0.f, 0.f, 1.f });
 
 std::vector<Matrix16> objectMatrix = {
     Matrix16({
@@ -310,7 +300,7 @@ void EditTransform(Matrix16& cameraView, Matrix16& cameraProjection, Matrix16& m
         ImGui::SetNextWindowSize(ImVec2(800, 400), ImGuiCond_Appearing);
         ImGui::SetNextWindowPos(ImVec2(400,20), ImGuiCond_Appearing);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImVec4)ImColor(0.35f, 0.3f, 0.3f));
-        ImGui::Begin("Gizmo", 0, gizmoWindowFlags);
+        ImGui::Begin("Gizmo", NULL, gizmoWindowFlags);
         ImGuizmo::SetDrawlist();
         float windowWidth = (float)ImGui::GetWindowWidth();
         float windowHeight = (float)ImGui::GetWindowHeight();

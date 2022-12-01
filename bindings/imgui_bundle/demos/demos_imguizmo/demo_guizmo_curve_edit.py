@@ -5,7 +5,7 @@ from typing import List
 
 import imgui_bundle
 from imgui_bundle import imguizmo, ImVec2, imgui
-from imgui_bundle.demos.demos_imguizmo.demos_interface import VoidFunction
+from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 
 
 ImCurveEdit = imguizmo.ImCurveEdit
@@ -106,7 +106,7 @@ class RampEdit(ImCurveEdit.DelegateStl):
         return 0
 
 
-def make_closure_demo_guizmo_curve_edit() -> VoidFunction:
+def make_closure_demo_guizmo_curve_edit() -> GuiFunction:
     # ramp_edit will be encapsulated in the closure
     ramp_edit = RampEdit()
     ramp_edit.min = ImVec2(-100.0, 0.0)

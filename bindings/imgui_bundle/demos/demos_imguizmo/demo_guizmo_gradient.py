@@ -3,7 +3,7 @@
 # Hum... I don't get the point of this widget
 
 from typing import List
-from imgui_bundle.demos.demos_imguizmo.demos_interface import VoidFunction
+from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo
 import imgui_bundle
 
@@ -74,11 +74,11 @@ class MyGradient(imguizmo.ImGradient.DelegateStl):
 
 
 # This returns a closure function that will later be invoked to run the app
-def make_closure_demo_guizmo_gradient() -> VoidFunction:
+def make_closure_demo_guizmo_gradient() -> GuiFunction:
     my_gradient = MyGradient()
     size = ImVec2(400, 20)
 
-    def gui() -> VoidFunction:
+    def gui():
         result: bool
         selection: int
         result, selection = imguizmo.ImGradient.edit_stl(my_gradient, size)
