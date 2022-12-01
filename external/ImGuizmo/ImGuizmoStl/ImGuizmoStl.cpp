@@ -21,7 +21,7 @@ namespace IMGUIZMO_NAMESPACE
         return r;
     }
 
-    IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<const Matrix16> & matrices, int matrixCount)
+    IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices)
     {
         std::vector<float> matrices_continuous_guts;
         matrices_continuous_guts.reserve(16 * matrices.size());
@@ -45,7 +45,7 @@ namespace IMGUIZMO_NAMESPACE
         Matrix16& matrix,
         std::optional<Matrix16> deltaMatrix,
         std::optional<Matrix3> snap,
-        std::optional<Matrix3> localBounds,
+        std::optional<Matrix6> localBounds,
         std::optional<Matrix3> boundsSnap
     )
     {

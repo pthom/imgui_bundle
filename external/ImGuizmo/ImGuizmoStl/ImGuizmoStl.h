@@ -22,10 +22,18 @@ namespace IMGUIZMO_NAMESPACE
         float& operator[](size_t i) { return values[i]; }
     };
 
-    // Matrix3 can be cast to float[3] aka float*
     struct Matrix3
     {
         float values[3];
+
+        float operator[](size_t i) const { return values[i]; }
+        float& operator[](size_t i) { return values[i]; }
+    };
+
+
+    struct Matrix6
+    {
+        float values[6];
 
         float operator[](size_t i) const { return values[i]; }
         float& operator[](size_t i) { return values[i]; }
@@ -55,7 +63,7 @@ namespace IMGUIZMO_NAMESPACE
     IMGUI_API Matrix16 RecomposeMatrixFromComponents(const MatrixComponents& matrixComponents);
 
     // Render a cube with face color corresponding to face normal. Usefull for debug/tests
-    IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<const Matrix16> & matrices, int matrixCount);
+    IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices);
     IMGUI_API void DrawGrid(const Matrix16& view, const Matrix16& projection, const Matrix16& matrix, const float gridSize);
 
     IMGUI_API bool Manipulate(
@@ -66,7 +74,7 @@ namespace IMGUIZMO_NAMESPACE
         Matrix16& matrix,
         std::optional<Matrix16> deltaMatrix = std::nullopt,
         std::optional<Matrix3> snap = std::nullopt,
-        std::optional<Matrix3> localBounds = std::nullopt,
+        std::optional<Matrix6> localBounds = std::nullopt,
         std::optional<Matrix3> boundsSnap = std::nullopt
     );
 

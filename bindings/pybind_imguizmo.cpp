@@ -678,7 +678,7 @@ void py_init_module_imguizmo(py::module& m)
 
         auto pyNsImGuizmo_ClassMatrix3 =
             py::class_<ImGuizmo::Matrix3>
-                (pyNsImGuizmo, "Matrix3", "Matrix3 can be cast to float[3] aka float*")
+                (pyNsImGuizmo, "Matrix3", "")
             .def(py::init<>()) // implicit default constructor
             .def_property("values",
                 [](ImGuizmo::Matrix3 &self) -> pybind11::array
@@ -687,6 +687,21 @@ void py_init_module_imguizmo(py::module& m)
                     auto base = pybind11::array(dtype, {3}, {sizeof(float)});
                     return pybind11::array(dtype, {3}, {sizeof(float)}, self.values, base);
                 }, [](ImGuizmo::Matrix3& self) {},
+                "")
+            ;
+
+
+        auto pyNsImGuizmo_ClassMatrix6 =
+            py::class_<ImGuizmo::Matrix6>
+                (pyNsImGuizmo, "Matrix6", "")
+            .def(py::init<>()) // implicit default constructor
+            .def_property("values",
+                [](ImGuizmo::Matrix6 &self) -> pybind11::array
+                {
+                    auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
+                    auto base = pybind11::array(dtype, {6}, {sizeof(float)});
+                    return pybind11::array(dtype, {6}, {sizeof(float)}, self.values, base);
+                }, [](ImGuizmo::Matrix6& self) {},
                 "")
             ;
 
@@ -708,13 +723,13 @@ void py_init_module_imguizmo(py::module& m)
             py::overload_cast<const ImGuizmo::MatrixComponents &>(ImGuizmo::RecomposeMatrixFromComponents), py::arg("matrix_components"));
 
         pyNsImGuizmo.def("draw_cubes",
-            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const std::vector<const Matrix16> &, int>(ImGuizmo::DrawCubes), py::arg("view"), py::arg("projection"), py::arg("matrices"), py::arg("matrix_count"));
+            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const std::vector<Matrix16> &>(ImGuizmo::DrawCubes), py::arg("view"), py::arg("projection"), py::arg("matrices"));
 
         pyNsImGuizmo.def("draw_grid",
             py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const float>(ImGuizmo::DrawGrid), py::arg("view"), py::arg("projection"), py::arg("matrix"), py::arg("grid_size"));
 
         pyNsImGuizmo.def("manipulate",
-            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix3>, std::optional<Matrix3>>(ImGuizmo::Manipulate), py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none());
+            py::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate), py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none());
 
         pyNsImGuizmo.def("view_manipulate",
             py::overload_cast<ImGuizmo::Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
