@@ -325,8 +325,8 @@ class ScreenBounds:
     #         }
     def ensure_window_fits_this_monitor(
         self,
-        window_bounds_original: ScreenBounds
-        ) -> ScreenBounds:
+        window_bounds_original: HelloImGui.ScreenBounds
+        ) -> HelloImGui.ScreenBounds:
         pass
 
     # bool operator==(const ScreenBounds& other) const    /* original C++ signature */
@@ -341,7 +341,7 @@ class ScreenBounds:
     #             }
     #             return true;
     #         }
-    def __eq__(self, other: ScreenBounds) -> bool:
+    def __eq__(self, other: HelloImGui.ScreenBounds) -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(
@@ -1567,13 +1567,16 @@ class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *subm
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
     # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
+    @staticmethod
     def load_default_font_with_font_awesome_icons() -> VoidFunction:
         pass
     # VoidFunction SetupDefaultImGuiConfig();    /* original C++ signature */
+    @staticmethod
     def setup_default_imgui_config() -> VoidFunction:
         pass
     # VoidFunction SetupDefaultImGuiStyle();    /* original C++ signature */
     # }
+    @staticmethod
     def setup_default_imgui_style() -> VoidFunction:
         pass
 
