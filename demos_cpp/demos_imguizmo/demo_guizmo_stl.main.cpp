@@ -382,7 +382,7 @@ struct EditTransformResult
 }
 
 // This returns a closure function that will later be invoked to run the app
-VoidFunction make_closure_demo_guizmo()
+GuiFunction make_closure_demo_guizmo()
 {
     int lastUsing = 0;
 

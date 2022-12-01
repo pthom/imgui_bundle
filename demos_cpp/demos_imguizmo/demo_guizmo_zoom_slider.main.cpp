@@ -56,7 +56,7 @@ void DrawZoomableGrid(
 
 
 // This returns a closure function that will later be invoked to run the app
-VoidFunction make_closure_demo_guizmo_zoom_slider()
+GuiFunction make_closure_demo_guizmo_zoom_slider()
 {
     // Values between 0. and 1. that represent the current viewed portion
     ImVec2 viewMin(0.1f, 0.3f), viewMax(0.6f, 0.8f);

@@ -105,7 +105,7 @@ private:
 
 
 // This returns a closure function that will later be invoked to run the app
-VoidFunction make_closure_demo_guizmo_curve_edit()
+GuiFunction make_closure_demo_guizmo_curve_edit()
 {
     // rampEdit will be encapsulated in the closure
     RampEdit rampEdit;

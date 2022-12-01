@@ -77,7 +77,7 @@ struct MyGradient: public ImGradient::DelegateStl
 
 
 // This returns a closure function that will later be invoked to run the app
-VoidFunction make_closure_demo_guizmo_gradient()
+GuiFunction make_closure_demo_guizmo_gradient()
 {
     MyGradient myGradient;
     ImVec2 size(400.f, 20.f);

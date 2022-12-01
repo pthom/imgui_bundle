@@ -212,7 +212,7 @@ struct MySequence : public ImSequencer::SequenceInterface
 
 
 // This returns a closure function that will later be invoked to run the app
-VoidFunction make_closure_demo_guizmo_sequencer()
+GuiFunction make_closure_demo_guizmo_sequencer()
 {
     // sequence with default values
     MySequence mySequence;
