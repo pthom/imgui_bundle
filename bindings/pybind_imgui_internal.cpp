@@ -1925,6 +1925,9 @@ void py_init_module_imgui_internal(py::module& m)
         ;
 
 
+    m.def("get_current_window",    // imgui_internal.h:2933
+        ImGui::GetCurrentWindow, pybind11::return_value_policy::reference);
+
     m.def("find_window_by_id",    // imgui_internal.h:2934
         ImGui::FindWindowByID,
         py::arg("id_"),
