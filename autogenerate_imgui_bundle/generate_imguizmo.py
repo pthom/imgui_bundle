@@ -82,6 +82,19 @@ def autogenerate_imguizmo():
     # header_file = f"{HEADER_PARENT_DIR}/{OFFICIAL_SUBDIR}/GraphEditor.h"
     # process_one_file_backup_options(code=None, filename=header_file, options=options_graph)
 
+    # Process ImGuizmo:
+    options_guizmo = copy.deepcopy(options)
+    def preprocess_code(code: str) -> str:
+        code = code.replace("IMGUIZMO_NAMESPACE", "ImGuizmo")
+        # code = code.replace("COLOR::COUNT", "15")
+        return code
+    options_guizmo.srcmlcpp_options.code_preprocess_function = preprocess_code
+    options_guizmo.srcmlcpp_options.ignored_warning_parts = ["ImVec4 Colors[COLOR::COUNT]"]
+    options_guizmo.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
+    options_guizmo.fn_exclude_by_param_type__regex = r"float[ ]*\*"
+    options_guizmo.fn_force_overload__regex = \
+        "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"
+    process_one_amalgamated_file("ImGuizmoStl.h", options_guizmo)
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

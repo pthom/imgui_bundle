@@ -264,6 +264,8 @@ void EditTransform(float* cameraView, float* cameraProjection, float* matrix, bo
             case ImGuizmo::SCALE:
                 ImGui::InputFloat("Scale Snap", &snap[0]);
                 break;
+            default:
+                break;
         }
         ImGui::Checkbox("Bound Sizing", &boundSizing);
         if (boundSizing)

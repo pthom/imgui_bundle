@@ -1,8 +1,11 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Any
 from imgui_bundle.imgui import ImVec2, ImVec4
 from imgui_bundle.imgui.internal import ImRect
 import enum
+import numpy as np
 
+from imgui_bundle.imgui import ImU32
+ImGuiContext = Any
 
 ImGuiZoomSliderFlags = int
 ImGuiZoomSliderFlags_None = ImZoomSlider.ImGuiZoomSliderFlags_.none
@@ -255,5 +258,319 @@ class ImZoomSlider:  # Proxy class that introduces typings for the *submodule* I
 
 # </submodule ImZoomSlider>
 ####################    </generated_from:ImZoomSliderStl.h>    ####################
+
+
+####################    <generated_from:ImGuizmoStl.h>    ####################
+# THIS FILE WAS GENERATED AUTOMATICALLY. DO NOT EDIT.
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       ImGuizmoStl/ImGuizmoStl.h                                                              //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       ImGuizmo/ImGuizmo.h included by ImGuizmoStl/ImGuizmoStl.h                              //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# https://github.com/CedricGuillemet/ImGuizmo
+# v 1.89 WIP
+#
+# The MIT License(MIT)
+#
+# Copyright(c) 2021 Cedric Guillemet
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files(the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions :
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# -------------------------------------------------------------------------------------------
+# History :
+# 2019/11/03 View gizmo
+# 2016/09/11 Behind camera culling. Scaling Delta matrix not multiplied by source matrix scales. local/world rotation and translation fixed. Display message is incorrect (X: ... Y:...) in local mode.
+# 2016/09/09 Hatched negative axis. Snapping. Documentation update.
+# 2016/09/04 Axis switch and translation plan autohiding. Scale transform stability improved
+# 2016/09/01 Mogwai changed to Manipulate. Draw debug cube. Fixed inverted scale. Mixing scale and translation/rotation gives bad results.
+# 2016/08/31 First version
+#
+# -------------------------------------------------------------------------------------------
+# Future (no order):
+#
+# - Multi view
+# - display rotation/translation/scale infos in local/world space and not only local
+# - finish local/world matrix application
+# - OPERATION as bitmask
+#
+# -------------------------------------------------------------------------------------------
+# Example
+
+
+
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       ImGuizmoStl/ImGuizmoStl.h continued                                                    //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+# <submodule ImGuizmo>
+class ImGuizmo:  # Proxy class that introduces typings for the *submodule* ImGuizmo
+    pass  # (This corresponds to a C++ namespace. All method are static!)
+    def set_drawlist(drawlist: Optional[ImDrawList] = None) -> None:
+        """ call inside your own window and before Manipulate() in order to draw gizmo to that window.
+         Or pass a specific ImDrawList to draw to (e.g. ImGui::GetForegroundDrawList()).
+        """
+        pass
+
+    def begin_frame() -> None:
+        """ call BeginFrame right after ImGui_XXXX_NewFrame();"""
+        pass
+
+    def set_im_gui_context(ctx: ImGuiContext) -> None:
+        """ this is necessary because when imguizmo is compiled into a dll, and imgui into another
+         globals are not shared between them.
+         More details at https://stackoverflow.com/questions/19373061/what-happens-to-global-and-static-variables-in-a-shared-library-when-it-is-dynam
+         expose method to set imgui context
+        """
+        pass
+
+    def is_over() -> bool:
+        """ return True if mouse cursor is over any gizmo control (axis, plan or screen component)"""
+        pass
+
+    def is_using() -> bool:
+        """ return True if mouse IsOver or if the gizmo is in moving state"""
+        pass
+
+    def enable(enable: bool) -> None:
+        """ enable/disable the gizmo. Stay in the state until next call to Enable.
+         gizmo is rendered with gray half transparent color when disabled
+        """
+        pass
+
+    # helper functions for manualy editing translation/rotation/scale with an input float
+    # translation, rotation and scale float points to 3 floats each
+    # Angles are in degrees (more suitable for human editing)
+    # example:
+    # float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+    # ImGuizmo::DecomposeMatrixToComponents(gizmoMatrix.m16, matrixTranslation, matrixRotation, matrixScale);
+    # ImGui::InputFloat3("Tr", matrixTranslation, 3);
+    # ImGui::InputFloat3("Rt", matrixRotation, 3);
+    # ImGui::InputFloat3("Sc", matrixScale, 3);
+    # ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, gizmoMatrix.m16);
+    #
+    # These functions have some numerical stability issues for now. Use with caution.
+
+    def set_rect(x: float, y: float, width: float, height: float) -> None:
+        pass
+    def set_orthographic(is_orthographic: bool) -> None:
+        """ default is False"""
+        pass
+
+    # Render a cube with face color corresponding to face normal. Usefull for debug/tests
+
+    class OPERATION(enum.Enum):
+        """ call it when you want a gizmo
+         Needs view and projection matrices.
+         matrix parameter is the source matrix (where will be gizmo be drawn) and might be transformed by the function. Return deltaMatrix is optional
+         translation is applied in world space
+        """
+        translate_x = enum.auto()   # (= (1u << 0))
+        translate_y = enum.auto()   # (= (1u << 1))
+        translate_z = enum.auto()   # (= (1u << 2))
+        rotate_x = enum.auto()      # (= (1u << 3))
+        rotate_y = enum.auto()      # (= (1u << 4))
+        rotate_z = enum.auto()      # (= (1u << 5))
+        rotate_screen = enum.auto() # (= (1u << 6))
+        scale_x = enum.auto()       # (= (1u << 7))
+        scale_y = enum.auto()       # (= (1u << 8))
+        scale_z = enum.auto()       # (= (1u << 9))
+        bounds = enum.auto()        # (= (1u << 10))
+        scale_xu = enum.auto()      # (= (1u << 11))
+        scale_yu = enum.auto()      # (= (1u << 12))
+        scale_zu = enum.auto()      # (= (1u << 13))
+
+        translate = enum.auto()     # (= OPERATION.translate_x | OPERATION.translate_y | OPERATION.translate_z)
+        rotate = enum.auto()        # (= OPERATION.rotate_x | OPERATION.rotate_y | OPERATION.rotate_z | OPERATION.rotate_screen)
+        scale = enum.auto()         # (= OPERATION.scale_x | OPERATION.scale_y | OPERATION.scale_z)
+        scaleu = enum.auto()        # (= OPERATION.scale_xu | OPERATION.scale_yu | OPERATION.scale_zu)  # universal
+        universal = enum.auto()     # (= OPERATION.translate | OPERATION.rotate | OPERATION.scaleu)
+
+
+    class MODE(enum.Enum):
+        local = enum.auto() # (= 0)
+        world = enum.auto() # (= 1)
+
+
+
+    def set_id(id: int) -> None:
+        pass
+
+    # return True if the cursor is over the operation's gizmo
+    def is_over(op: OPERATION) -> bool:
+        pass
+    def set_gizmo_size_clip_space(value: float) -> None:
+        pass
+
+    def allow_axis_flip(value: bool) -> None:
+        """ Allow axis to flip
+         When True (default), the guizmo axis flip for better visibility
+         When False, they always stay along the positive world/local axis
+        """
+        pass
+
+    class COLOR(enum.Enum):
+        direction_x = enum.auto()           # (= 0)  # directionColor[0]
+        direction_y = enum.auto()           # (= 1)  # directionColor[1]
+        direction_z = enum.auto()           # (= 2)  # directionColor[2]
+        plane_x = enum.auto()               # (= 3)  # planeColor[0]
+        plane_y = enum.auto()               # (= 4)  # planeColor[1]
+        plane_z = enum.auto()               # (= 5)  # planeColor[2]
+        selection = enum.auto()             # (= 6)  # selectionColor
+        inactive = enum.auto()              # (= 7)  # inactiveColor
+        translation_line = enum.auto()      # (= 8)  # translationLineColor
+        scale_line = enum.auto()            # (= 9)
+        rotation_using_border = enum.auto() # (= 10)
+        rotation_using_fill = enum.auto()   # (= 11)
+        hatched_axis_lines = enum.auto()    # (= 12)
+        text = enum.auto()                  # (= 13)
+        text_shadow = enum.auto()           # (= 14)
+        count = enum.auto()                 # (= 15)
+
+    class Style:
+        def __init__(self) -> None:
+            pass
+
+        translation_line_thickness: float     # Thickness of lines for translation gizmo
+        translation_line_arrow_size: float    # Size of arrow at the end of lines for translation gizmo
+        rotation_line_thickness: float        # Thickness of lines for rotation gizmo
+        rotation_outer_line_thickness: float  # Thickness of line surrounding the rotation gizmo
+        scale_line_thickness: float           # Thickness of lines for scale gizmo
+        scale_line_circle_size: float         # Size of circle at the end of lines for scale gizmo
+        hatched_axis_line_thickness: float    # Thickness of hatched axis lines
+        center_circle_size: float             # Size of circle at the center of the translate/scale gizmo
+
+
+    def get_style() -> Style:
+        pass
+    class Matrix16:
+        """ Matrix16 can be cast to float[16] aka float* (if you really need it)"""
+        values: np.ndarray  # ndarray[type=float, size=16]
+        def __init__(self) -> None:
+            """Autogenerated default constructor"""
+            pass
+
+    class Matrix3:
+        """ Matrix3 can be cast to float[3] aka float*"""
+        values: np.ndarray  # ndarray[type=float, size=3]
+        def __init__(self) -> None:
+            """Autogenerated default constructor"""
+            pass
+
+
+    class MatrixComponents:
+        translation: Matrix3
+        rotation: Matrix3
+        scale: Matrix3
+        def __init__(self) -> None:
+            """Autogenerated default constructor"""
+            pass
+
+    # helper functions for manualy editing translation/rotation/scale with an input float
+    # translation, rotation and scale float points to 3 floats each
+    # Angles are in degrees (more suitable for human editing)
+    # example:
+    # float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+    # ImGuizmo::DecomposeMatrixToComponents(gizmoMatrix.m16, matrixTranslation, matrixRotation, matrixScale);
+    # ImGui::InputFloat3("Tr", matrixTranslation, 3);
+    # ImGui::InputFloat3("Rt", matrixRotation, 3);
+    # ImGui::InputFloat3("Sc", matrixScale, 3);
+    # ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, gizmoMatrix.m16);
+    #
+    # These functions have some numerical stability issues for now. Use with caution.
+    def decompose_matrix_to_components(matrix: Matrix16) -> MatrixComponents:
+        pass
+    def recompose_matrix_from_components(
+        matrix_components: MatrixComponents
+        ) -> Matrix16:
+        pass
+
+    # Render a cube with face color corresponding to face normal. Usefull for debug/tests
+    def draw_cubes(
+        view: Matrix16,
+        projection: Matrix16,
+        matrices: std.vector< Matrix16>,
+        matrix_count: int
+        ) -> None:
+        pass
+    def draw_grid(
+        view: Matrix16,
+        projection: Matrix16,
+        matrix: Matrix16,
+        grid_size: float
+        ) -> None:
+        pass
+
+    def manipulate(
+        view: Matrix16,
+        projection: Matrix16,
+        operation: OPERATION,
+        mode: MODE,
+        matrix: Matrix16,
+        delta_matrix: Optional[Matrix16] = None,
+        snap: Optional[Matrix3] = None,
+        local_bounds: Optional[Matrix3] = None,
+        bounds_snap: Optional[Matrix3] = None
+        ) -> bool:
+        pass
+
+    def view_manipulate(
+        view: Matrix16,
+        length: float,
+        position: ImVec2,
+        size: ImVec2,
+        background_color: ImU32
+        ) -> None:
+        """
+         Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en
+         It seems to be a defensive patent in the US. I don't think it will bring troubles using it as
+         other software are using the same mechanics. But just in case, you are now warned!
+
+        """
+        pass
+
+    def view_manipulate(
+        view: Matrix16,
+        projection: Matrix16,
+        operation: OPERATION,
+        mode: MODE,
+        matrix: Matrix16,
+        length: float,
+        position: ImVec2,
+        size: ImVec2,
+        background_color: ImU32
+        ) -> None:
+        """ use this version if you did not call Manipulate before and you are just using ViewManipulate"""
+        pass
+
+
+
+# </submodule ImGuizmo>
+####################    </generated_from:ImGuizmoStl.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!
