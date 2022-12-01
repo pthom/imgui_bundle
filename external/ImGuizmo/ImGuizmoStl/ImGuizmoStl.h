@@ -17,12 +17,18 @@ namespace IMGUIZMO_NAMESPACE
     struct Matrix16
     {
         float values[16];
+
+        float operator[](size_t i) const { return values[i]; }
+        float& operator[](size_t i) { return values[i]; }
     };
 
     // Matrix3 can be cast to float[3] aka float*
     struct Matrix3
     {
         float values[3];
+
+        float operator[](size_t i) const { return values[i]; }
+        float& operator[](size_t i) { return values[i]; }
     };
 
 
