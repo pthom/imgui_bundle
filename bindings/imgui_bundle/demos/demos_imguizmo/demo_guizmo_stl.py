@@ -52,7 +52,7 @@ def input_matrix3(label: str, matrix3: Matrix3) -> Tuple[bool, Matrix3]:
     mat_values = list(matrix3)
     changed, new_values = imgui.input_float3(label, mat_values)
     if changed:
-        matrix3 = np.array(new_values)
+        matrix3 = np.array(new_values, np.float32)
     return changed, matrix3
 
 
@@ -69,8 +69,10 @@ def input_only_first_value_matrix3(label: str, matrix3: Matrix3) -> Tuple[bool, 
 @static(statics=None)
 def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matrix16, editTransformDecomposition: bool):
     statics = EditTransform.statics
+    global mCurrentGizmoOperation
     if statics is None:
-        statics = munch.Munch()
+        EditTransform.statics = munch.Munch()
+        statics = EditTransform.statics
         statics.mCurrentGizmoMode = gizmo.MODE.local
         statics.useSnap = False
         statics.snap = np.array([1.0, 1.0, 1.0], np.float32)
@@ -166,7 +168,7 @@ def EditTransform(cameraView: Matrix16, cameraProjection: Matrix16, matrix: Matr
             matrix,
             None,
             statics.snap if statics.useSnap else None,
-            statics.bounds if statics.boundsSizing else None,
+            statics.bounds if statics.boundSizing else None,
             statics.boundsSnap if statics.boundSizingSnap else None,
         )
 
@@ -229,7 +231,7 @@ def make_closure_demo_guizmo() -> GuiFunction:
         if imgui.radio_button("Perspective", isPerspective):
             isPerspective = True
         imgui.same_line()
-        if imgui.RadioButton("Orthographic", not isPerspective):
+        if imgui.radio_button("Orthographic", not isPerspective):
             isPerspective = False
         if isPerspective:
             _, fov = imgui.slider_float("Fov", fov, 20.0, 110.0)
