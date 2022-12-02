@@ -84,9 +84,11 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
 
         # And do some drawing depending on the zoom
         draw_zoomable_grid(
-            zoomZoneMin, zoomZoneMax,
+            zoomZoneMin,
+            zoomZoneMax,
             ImVec2(view_horizontal.min, view_vertical.min),
-            ImVec2(view_horizontal.max, view_vertical.max))
+            ImVec2(view_horizontal.max, view_vertical.max),
+        )
 
         # Draw the vertical slider
         imgui.same_line()
@@ -100,13 +102,12 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         if sliderResult and link_zooms:
             avgH = view_horizontal.center()
             lengthV = view_vertical.length()
-            view_horizontal = ImZoomSlider.Range(avgH - lengthV / 2., avgH + lengthV / 2.)
+            view_horizontal = ImZoomSlider.Range(avgH - lengthV / 2.0, avgH + lengthV / 2.0)
         imgui.pop_id()
 
         # Draw the horizontal slider
         imgui.push_id(19)
-        sliderResult = ImZoomSlider.im_zoom_slider_pure(
-            ImZoomSlider.Range(0.0, 1.0), view_horizontal, 0.1)
+        sliderResult = ImZoomSlider.im_zoom_slider_pure(ImZoomSlider.Range(0.0, 1.0), view_horizontal, 0.1)
         if sliderResult:
             view_horizontal = sliderResult.value
 
@@ -114,7 +115,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         if sliderResult and link_zooms:
             avgV = view_vertical.center()
             lengthH = view_horizontal.length()
-            view_horizontal = ImZoomSlider.Range(avgV - lengthH / 2., avgV + lengthH / 2.)
+            view_horizontal = ImZoomSlider.Range(avgV - lengthH / 2.0, avgV + lengthH / 2.0)
         imgui.pop_id()
 
     return gui

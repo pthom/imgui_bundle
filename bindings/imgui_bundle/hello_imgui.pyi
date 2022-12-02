@@ -1562,8 +1562,8 @@ def get_runner_params() -> RunnerParams:
 #@@md
 #
 
-# <submodule ImGuiDefaultSettings>
-class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
+# <submodule imgui_default_settings>
+class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
     # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
@@ -1580,7 +1580,7 @@ class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *subm
     def setup_default_imgui_style() -> VoidFunction:
         pass
 
-# </submodule ImGuiDefaultSettings>
+# </submodule imgui_default_settings>
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

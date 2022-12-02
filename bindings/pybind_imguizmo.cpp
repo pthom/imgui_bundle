@@ -602,7 +602,7 @@ void py_init_module_imguizmo(py::module& m)
     ////////////////////    <generated_from:ImCurveEditPure.h>    ////////////////////
 
     { // <namespace ImCurveEdit>
-        py::module_ pyNsImCurveEdit = m.def_submodule("ImCurveEdit", "");
+        py::module_ pyNsImCurveEdit = m.def_submodule("im_curve_edit", "");
         py::enum_<ImCurveEdit::CurveType>(pyNsImCurveEdit, "CurveType", py::arithmetic(), "")
             .value("curve_none", ImCurveEdit::CurveNone, "")
             .value("curve_discrete", ImCurveEdit::CurveDiscrete, "")
@@ -668,7 +668,7 @@ void py_init_module_imguizmo(py::module& m)
     ////////////////////    <generated_from:ImGradientPure.h>    ////////////////////
 
     { // <namespace ImGradient>
-        py::module_ pyNsImGradient = m.def_submodule("ImGradient", "");
+        py::module_ pyNsImGradient = m.def_submodule("im_gradient", "");
         auto pyNsImGradient_ClassDelegate =
             py::class_<ImGradient::Delegate, ImGradient::Delegate_trampoline>
                 (pyNsImGradient, "Delegate", "")
@@ -698,7 +698,7 @@ void py_init_module_imguizmo(py::module& m)
     ////////////////////    <generated_from:ImZoomSliderPure.h>    ////////////////////
 
     { // <namespace ImZoomSlider>
-        py::module_ pyNsImZoomSlider = m.def_submodule("ImZoomSlider", "namespace");
+        py::module_ pyNsImZoomSlider = m.def_submodule("im_zoom_slider", "namespace");
         py::enum_<ImZoomSlider::ImGuiPopupFlags_>(pyNsImZoomSlider, "ImGuiZoomSliderFlags_", py::arithmetic(), "")
             .value("none", ImZoomSlider::ImGuiZoomSliderFlags_None, "")
             .value("vertical", ImZoomSlider::ImGuiZoomSliderFlags_Vertical, "")
@@ -728,7 +728,7 @@ void py_init_module_imguizmo(py::module& m)
     ////////////////////    <generated_from:ImGuizmoPure.h>    ////////////////////
 
     { // <namespace ImGuizmo>
-        py::module_ pyNsImGuizmo = m.def_submodule("ImGuizmo", "");
+        py::module_ pyNsImGuizmo = m.def_submodule("im_guizmo", "");
         pyNsImGuizmo.def("set_drawlist",
             ImGuizmo::SetDrawlist,
             py::arg("drawlist") = py::none(),

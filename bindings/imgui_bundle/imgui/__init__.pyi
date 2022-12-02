@@ -5478,6 +5478,9 @@ class OnceUponAFrame:  # imgui.h:2282
         pass
     # mutable int RefFrame;    /* original C++ signature */
     ref_frame: int  # imgui.h:2285
+    # operator bool() const { int current_frame = ImGui::GetFrameCount(); if (RefFrame == current_frame) return false; RefFrame = current_frame; return true; }    /* original C++ signature */
+    def __bool__(self) -> bool:  # imgui.h:2286
+        pass
 
 class TextFilter:  # imgui.h:2290
     """Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """

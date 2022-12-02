@@ -5639,11 +5639,11 @@ class ImFontBuilderIO:  # imgui_internal.h:3476
 
 # -----------------------------------------------------------------------------
 
-# <submodule ImStb>
-class ImStb:  # Proxy class that introduces typings for the *submodule* ImStb
+# <submodule im_stb>
+class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
     pass  # (This corresponds to a C++ namespace. All method are static!)
 
-# </submodule ImStb>
+# </submodule im_stb>
 ####################    </generated_from:imgui_internal.h>    ####################
 
 # </litgen_stub>

@@ -8,7 +8,7 @@ def my_load_fonts_via_hello_imgui():
     # It will load them from the assets/ folder.
 
     # First, we load the default fonts (the font that was loaded first is the default font)
-    hello_imgui.ImGuiDefaultSettings.load_default_font_with_font_awesome_icons()
+    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
     font_filename = "fonts/Akronim-Regular.ttf"
     acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 100.0)
     return acronym_font
@@ -65,8 +65,8 @@ def main():
     def callback_load_font():
         nonlocal custom_font
         # Choose your own loading method below
-        custom_font = my_load_fonts_manually()
-        # custom_font = my_load_fonts_via_hello_imgui()
+        # custom_font = my_load_fonts_manually()
+        custom_font = my_load_fonts_via_hello_imgui()
 
     runner_params = imgui_bundle.RunnerParams()
     runner_params.callbacks.load_additional_fonts = callback_load_font

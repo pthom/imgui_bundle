@@ -8,17 +8,17 @@ from imgui_bundle import imguizmo, ImVec2, imgui
 from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 
 
-ImCurveEdit = imguizmo.ImCurveEdit
+im_curve_edit = imguizmo.im_curve_edit
 
 
-class RampEdit(ImCurveEdit.DelegatePure):
+class RampEdit(im_curve_edit.DelegatePure):
     points: List[List[ImVec2]]
     visible: List[bool]
     min: ImVec2
     max: ImVec2
 
     def __init__(self):
-        ImCurveEdit.DelegatePure.__init__(self)
+        im_curve_edit.DelegatePure.__init__(self)
 
         self.points = []
         self.points.append(
@@ -69,8 +69,8 @@ class RampEdit(ImCurveEdit.DelegatePure):
     def get_points_list(self, curve_index: int) -> List[ImVec2]:  # overridable (pure virtual)
         return self.points[curve_index]
 
-    def get_curve_type(self, param_0: int) -> imguizmo.ImCurveEdit.CurveType:
-        return imguizmo.ImCurveEdit.CurveType.curve_smooth
+    def get_curve_type(self, param_0: int) -> im_curve_edit.CurveType:
+        return im_curve_edit.CurveType.curve_smooth
 
     def edit_point(self, curve_index: int, point_index: int, value: ImVec2) -> int:  # overridable (pure virtual)
         self.points[curve_index][point_index] = value

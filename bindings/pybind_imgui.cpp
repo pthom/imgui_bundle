@@ -3418,6 +3418,8 @@ void py_init_module_imgui_main(py::module& m)
             (m, "OnceUponAFrame", " Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create a UI within deep-nested code that runs multiple times every frame.\n Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text(\"This will be called only once per frame\");")
         .def(py::init<>())    // imgui.h:2284
         .def_readwrite("ref_frame", &ImGuiOnceUponAFrame::RefFrame, "")    // imgui.h:2285
+        .def("__bool__",    // imgui.h:2286
+            &ImGuiOnceUponAFrame::operator bool)
         ;
 
 

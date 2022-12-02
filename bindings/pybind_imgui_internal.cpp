@@ -3075,7 +3075,7 @@ void py_init_module_imgui_internal(py::module& m)
         ;
 
     { // <namespace ImStb>
-        py::module_ pyNsImStb = m.def_submodule("ImStb", "");
+        py::module_ pyNsImStb = m.def_submodule("im_stb", "");
     } // </namespace ImStb>
     ////////////////////    </generated_from:imgui_internal.h>    ////////////////////
 

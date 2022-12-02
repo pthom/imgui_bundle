@@ -587,7 +587,7 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
 
     { // <namespace ImGuiDefaultSettings>
-        py::module_ pyNsImGuiDefaultSettings = m.def_submodule("ImGuiDefaultSettings", "namespace ImGuiDefaultSettings");
+        py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");
         pyNsImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",
             HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
 
