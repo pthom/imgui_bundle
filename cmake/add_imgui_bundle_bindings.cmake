@@ -41,6 +41,7 @@ function(add_imgui_bundle_bindings)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         add_subdirectory(external/immvision/cvnp)
         target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+        target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 
     if(IMGUI_BUNDLE_BUILD_PYTHON)
