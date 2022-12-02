@@ -234,6 +234,7 @@ def lib_imgui_tex_inspect() -> ExternalLibrary:
         name="imgui_tex_inspect",
         official_git_url="https://github.com/andyborrell/imgui_tex_inspect.git",
         official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui_tex_inspect.git",
     )
 
 
@@ -361,7 +362,7 @@ def play():
     # lib = lib_imgui_tex_inspect()
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
-    # lib.run_update_official().run()
+    # lib.run_rebase_fork_on_official_changes().run()
 
     # lib_imgui_toggle
     # ----------------
