@@ -59,6 +59,8 @@ def autogenerate_hello_imgui():
         RegexReplacement("ImGui", "Imgui"),
     ]
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
+    # setAssetsFolder & SetAssetsFolder offer the same function
+    options.fn_exclude_by_name__regex = r"^setAssetsFolder$"
 
     litgen.write_generated_code_for_file(
         options,

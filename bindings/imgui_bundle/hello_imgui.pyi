@@ -147,7 +147,7 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
 # void overrideAssetsFolder(const char* folder);    /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
     pass
-# void setAssetsFolder(const char* folder);    /* original C++ signature */
+# void SetAssetsFolder(const char* folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
     pass
 
@@ -1115,7 +1115,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1201,12 +1201,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
