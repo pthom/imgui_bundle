@@ -16,7 +16,7 @@ def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
 
     # Then we load our custom font
     font_filename = "fonts/Akronim-Regular.ttf"
-    acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 100.0)
+    acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
     return acronym_font
 
 
@@ -32,7 +32,7 @@ def my_load_fonts_manually() -> imgui.ImFont:
     this_dir = os.path.dirname(__file__)
     font_atlas = imgui.get_io().fonts
     # We need to take into account the global font scale!
-    font_size_pixel = 100.0 / imgui.get_io().font_global_scale
+    font_size_pixel = 40.0 / imgui.get_io().font_global_scale
     font_filename = this_dir + "/assets/fonts/Akronim-Regular.ttf"
     glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
     acronym_font = imgui.font_atlas_add_font_from_file_ttf(
