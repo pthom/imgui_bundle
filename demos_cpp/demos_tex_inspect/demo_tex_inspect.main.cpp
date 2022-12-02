@@ -1,3 +1,4 @@
+#include "hello_imgui/hello_imgui_assets.h"
 #include "imgui_bundle/imgui_bundle.h"
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
@@ -10,7 +11,32 @@ GuiFunction make_closure_demo_tex_inspect()
 {
     auto gui = [=]() mutable // mutable => this is a closure
     {
-        ImGuiTexInspect::ShowDemoWindow();
+        static ImTextureID textureId = 0;
+        static ImVec2 textureSize(512.f, 512.f);
+        if (textureId == 0)
+            textureId = HelloImGui::ImTextureIdFromAsset("images/bear_transparent.png");
+
+        static bool showDemoImGuiTexInspect = false;
+        ImGui::Checkbox("Show ImGuiTexInspect::ShowDemoWindow()", & showDemoImGuiTexInspect);
+        if (showDemoImGuiTexInspect)
+            ImGuiTexInspect::ShowDemoWindow();
+
+        ImGui::Separator();
+        // Simple demo
+        {
+            ImGui::Text("Simple Demo");
+            ImGuiTexInspect::InspectorFlags  flags = 0;
+            ImGuiTexInspect::SizeIncludingBorder inspectorSize(ImVec2(600.f, 600.f));
+
+            if (ImGuiTexInspect::BeginInspectorPanel(
+                "Texture inspector",
+                textureId,
+                textureSize, flags,
+                inspectorSize))
+            {
+                ImGuiTexInspect::EndInspectorPanel();
+            }
+        }
     };
     return gui;
 }
@@ -20,19 +46,9 @@ GuiFunction make_closure_demo_tex_inspect()
 int main()
 {
     auto gui = make_closure_demo_tex_inspect();
-
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1200, 1100}};
+    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1000, 1000}};
     ImGuiBundle::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;
     ImGuiBundle::Run(runnerParams, addOnsParams);
-
-//    HelloImGui::RunnerParams runnerParams;
-//    runnerParams.callbacks.ShowGui = gui;
-//    runnerParams.appWindowParams.windowGeometry.size = {1200, 1000};
-//    runnerParams.backendType = HelloImGui::BackendType::Sdl;
-//    ImGuiBundle::AddOnsParams addOnsParams;
-//    addOnsParams.withTexInspect = true;
-//    ImGuiBundle::Run(runnerParams, addOnsParams);
-
 }
 #endif
