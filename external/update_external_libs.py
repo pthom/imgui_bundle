@@ -219,6 +219,14 @@ def lib_imgui_md() -> ExternalLibrary:
     )
 
 
+def lib_imgui_tex_inspect() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_tex_inspect",
+        official_git_url="https://github.com/andyborrell/imgui_tex_inspect.git",
+        official_branch="main",
+    )
+
+
 def lib_md4c() -> ExternalLibrary:
     return ExternalLibrary(
         name="md4c",
@@ -240,6 +248,14 @@ def lib_imgui_color_text_edit() -> ExternalLibrary:
         official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
         official_branch="dev",
         fork_git_url="https://github.com/ImGuiColorTextEdit.git",
+    )
+
+
+def lib_imguizmo() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="ImGuizmo",
+        official_git_url="https://github.com/CedricGuillemet/ImGuizmo.git",
+        official_branch="master"
     )
 
 
