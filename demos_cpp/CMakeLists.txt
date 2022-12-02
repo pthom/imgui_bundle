@@ -11,3 +11,5 @@ add_subdirectory(demos_immvision)
 add_subdirectory(demo_composition_graph)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
+
+FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
