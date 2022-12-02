@@ -1,3 +1,4 @@
+from imgui_bundle.demos.api_demos import *
 from imgui_bundle import imgui, immvision
 import os
 
@@ -9,8 +10,7 @@ def main():
     from imgui_bundle import run
     import cv2
 
-    this_dir = os.path.dirname(__file__)
-    image = cv2.imread(this_dir + "/../assets/images/house.jpg")
+    image = cv2.imread(demos_assets_folder() + "/images/house.jpg")
     image_params = immvision.ImageParams()
     image_params.image_display_size = (600, 400)
 
