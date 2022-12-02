@@ -88,7 +88,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         imgui.same_line()
         imgui.push_id(18)
         changed, view_min.y, view_max.y = imguizmo.ImZoomSlider.im_zoom_slider_stl(
-            0.0, 1.0, view_min.y, view_max.y, 0.01, ImZoomSlider.ImGuiZoomSliderFlags_.vertical
+            0.0, 1.0, view_min.y, view_max.y, 0.1, ImZoomSlider.ImGuiZoomSliderFlags_.vertical
         )
         # Handle link zoom
         if changed and link_zooms:
@@ -100,7 +100,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
 
         # Draw the horizontal slider
         imgui.push_id(19)
-        changed, view_min.x, view_max.x = ImZoomSlider.im_zoom_slider_stl(0.0, 1.0, view_min.x, view_max.x)
+        changed, view_min.x, view_max.x = ImZoomSlider.im_zoom_slider_stl(0.0, 1.0, view_min.x, view_max.x, 0.1)
         # Handle link zoom
         if changed and link_zooms:
             avg = (view_min.y + view_max.y) / 2.0
@@ -114,7 +114,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
 
 def main():
     gui = make_closure_demo_guizmo_zoom_slider()
-    imgui_bundle.run(gui, window_size_auto=True)
+    imgui_bundle.run(gui, window_size=(400, 400))
 
 
 if __name__ == "__main__":
