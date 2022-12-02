@@ -258,7 +258,8 @@ def lib_imguizmo() -> ExternalLibrary:
     return ExternalLibrary(
         name="ImGuizmo",
         official_git_url="https://github.com/CedricGuillemet/ImGuizmo.git",
-        official_branch="master"
+        official_branch="master",
+        custom_path_in_external_libraries_dir="ImGuizmo/ImGuizmo"
     )
 
 
