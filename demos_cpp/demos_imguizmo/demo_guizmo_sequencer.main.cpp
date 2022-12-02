@@ -11,6 +11,8 @@
 #include "ImGuizmo/ImCurveEdit.h"
 
 #include <vector>
+#include <algorithm>
+
 
 static std::vector<std::string> SequencerItemTypeNames = { "Camera","Music", "ScreenEffect", "FadeIn", "Animation" };
 
