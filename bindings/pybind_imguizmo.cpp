@@ -71,9 +71,12 @@ namespace matrix_to_numpy
     {
         MatrixFixedSize<N> r;
 
+        if (a.itemsize() != sizeof(float))
+            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
+
         // Check input array type
         if (a.dtype().kind() != pybind11::format_descriptor<float>::c)
-            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type float are supported!");
+            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
 
         // Check input array total length
         if (a.size() != N)
