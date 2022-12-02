@@ -5,10 +5,16 @@ from imgui_bundle import imgui, hello_imgui, icons_fontawesome
 
 def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
     # hello_imgui can load font and merge them with font awesome automatically.
+
     # It will load them from the assets/ folder.
+    this_dir = os.path.dirname(__file__)
+    assets_folder = this_dir + "/assets"
+    hello_imgui.set_assets_folder(assets_folder)
 
     # First, we load the default fonts (the font that was loaded first is the default font)
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
+
+    # Then we load our custom font
     font_filename = "fonts/Akronim-Regular.ttf"
     acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 100.0)
     return acronym_font

@@ -10,7 +10,7 @@ def main():
     import cv2
 
     this_dir = os.path.dirname(__file__)
-    image = cv2.imread(this_dir + "/resources/house.jpg")
+    image = cv2.imread(this_dir + "/../assets/images/house.jpg")
     image_params = immvision.ImageParams()
     image_params.image_display_size = (600, 400)
 
