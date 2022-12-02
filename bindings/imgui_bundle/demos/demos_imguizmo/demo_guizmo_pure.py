@@ -18,7 +18,7 @@ Matrix6 = np.ndarray
 Matrix3 = np.ndarray
 
 
-gizmo = imguizmo.ImGuizmo
+gizmo = imguizmo.im_guizmo
 
 useWindow = True
 gizmoCount = 1

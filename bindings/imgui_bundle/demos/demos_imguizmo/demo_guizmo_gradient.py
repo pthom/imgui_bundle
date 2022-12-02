@@ -20,11 +20,11 @@ ImVec4.__add__ = add_imvec4  # monkey patching
 ImVec4.__mul__ = mul_scalar_imvec4
 
 
-class MyGradient(imguizmo.ImGradient.DelegateStl):
+class MyGradient(imguizmo.im_gradient.DelegateStl):
     points: List[ImVec4]
 
     def __init__(self) -> None:
-        imguizmo.ImGradient.DelegateStl.__init__(self)
+        imguizmo.im_gradient.DelegateStl.__init__(self)
         # The last value (ImVec4.w) stores the position on a line
         nb_elems = 4.0
         pos = 0.0
@@ -81,7 +81,7 @@ def make_closure_demo_guizmo_gradient() -> GuiFunction:
     def gui():
         result: bool
         selection: int
-        result, selection = imguizmo.ImGradient.edit_stl(my_gradient, size)
+        _result = imguizmo.im_gradient.edit_pure(my_gradient, size)
         imgui.text_wrapped(
             """
             I'm not sure about the purpose of this widget.
