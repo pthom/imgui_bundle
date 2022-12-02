@@ -3,7 +3,7 @@
 # Hum... I don't get the point of this widget
 
 from typing import List
-from imgui_bundle.demos.demos_interface import GuiFunction
+from imgui_bundle.demos.api_demos import GuiFunction
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo
 import imgui_bundle
 

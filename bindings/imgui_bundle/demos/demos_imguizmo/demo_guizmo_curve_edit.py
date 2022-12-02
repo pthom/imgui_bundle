@@ -5,7 +5,7 @@ from typing import List
 
 import imgui_bundle
 from imgui_bundle import imguizmo, ImVec2, imgui
-from imgui_bundle.demos.demos_interface import GuiFunction
+from imgui_bundle.demos.api_demos import GuiFunction
 
 
 im_curve_edit = imguizmo.im_curve_edit
