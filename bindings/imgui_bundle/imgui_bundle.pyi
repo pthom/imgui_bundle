@@ -1,4 +1,5 @@
-"""
+"""Main module
+https://github.com/pthom/imgui_bundle
 """
 
 from typing import Tuple, Optional, Callable

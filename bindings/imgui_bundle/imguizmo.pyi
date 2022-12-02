@@ -1,3 +1,7 @@
+"""ImGuizmo: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
+https://github.com/CedricGuillemet/ImGuizmo
+"""
+
 from typing import List, Optional, Tuple, Any
 from imgui_bundle.imgui import ImVec2, ImVec4
 from imgui_bundle.imgui.internal import ImRect

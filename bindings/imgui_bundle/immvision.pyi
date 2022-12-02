@@ -1,5 +1,5 @@
-"""Markdown for ImGui
-Python bindings for https://github.com/mekhontsev/imgui_md (with an additional custom wrapper)
+"""immvision: immediate image debugger and insights
+Python bindings for https://github.com/pthom/immvision.git
 """
 
 from typing import List

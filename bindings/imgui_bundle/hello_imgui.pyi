@@ -1,3 +1,7 @@
+"""Hello, Dear ImGui: cross-platform Gui apps for Windows / Mac / Linux / iOS / Android / Emscripten with the simplicity of a "Hello World" app
+https://github.com/pthom/hello_imgui
+"""
+
 from typing import List, Any, Callable, Tuple
 import numpy as np
 import enum

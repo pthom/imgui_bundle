@@ -173,6 +173,7 @@ def lib_hello_imgui() -> ExternalLibrary:
         name="hello_imgui", official_git_url="https://github.com/pthom/hello_imgui.git", official_branch="master"
     )
 
+# fmt: off
 
 def lib_im_file_dialog() -> ExternalLibrary:
     return ExternalLibrary(
@@ -219,14 +220,6 @@ def lib_imgui_md() -> ExternalLibrary:
     )
 
 
-def lib_imgui_tex_inspect() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="imgui_tex_inspect",
-        official_git_url="https://github.com/andyborrell/imgui_tex_inspect.git",
-        official_branch="main",
-    )
-
-
 def lib_md4c() -> ExternalLibrary:
     return ExternalLibrary(
         name="md4c",
@@ -236,9 +229,19 @@ def lib_md4c() -> ExternalLibrary:
     )
 
 
+def lib_imgui_tex_inspect() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_tex_inspect",
+        official_git_url="https://github.com/andyborrell/imgui_tex_inspect.git",
+        official_branch="main",
+    )
+
+
 def lib_imgui_toggle() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imgui_toggle", official_git_url="https://github.com/cmdwtf/imgui_toggle.git", official_branch="main"
+        name="imgui_toggle",
+        official_git_url="https://github.com/cmdwtf/imgui_toggle.git",
+        official_branch="main"
     )
 
 
@@ -278,15 +281,20 @@ def lib_cvnp() -> ExternalLibrary:
 
 def lib_implot() -> ExternalLibrary:
     return ExternalLibrary(
-        name="implot", official_git_url="https://github.com/epezent/implot.git", official_branch="master"
+        name="implot",
+        official_git_url="https://github.com/epezent/implot.git",
+        official_branch="master"
     )
 
 
 def lib_imspinner() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imspinner", official_git_url="https://github.com/dalerank/imspinner.git", official_branch="master"
+        name="imspinner",
+        official_git_url="https://github.com/dalerank/imspinner.git",
+        official_branch="master"
     )
 
+# fmt: on
 
 def play():
     pass
@@ -347,6 +355,13 @@ def play():
     # lib.run_add_remotes().run()
     # lib.run_update_official().run()
 
+    # imgui_tex_inspect
+    # --------
+    # lib = lib_imgui_tex_inspect()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    # lib.run_update_official().run()
+
     # lib_imgui_toggle
     # ----------------
     # lib = lib_imgui_toggle()
@@ -360,6 +375,13 @@ def play():
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
     # lib.run_rebase_fork_on_official_changes().run()
+
+    # ImGuizmo
+    # -------------------------
+    # lib = lib_imguizmo()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    # lib.run_update_official()
 
     # immvision
     # ---------

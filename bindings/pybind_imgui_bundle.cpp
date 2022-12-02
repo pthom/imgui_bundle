@@ -19,6 +19,7 @@ void py_init_module_imgui_md(py::module& m);
 void py_init_module_immvision(py::module& m);
 void py_init_module_imgui_backends(py::module& m);
 void py_init_module_imguizmo(py::module& m);
+void py_init_module_imgui_tex_inspect(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -63,6 +64,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_imguizmo = m.def_submodule("imguizmo");
     py_init_module_imguizmo(module_imguizmo);
+
+    auto module_imgui_tex_inspect = m.def_submodule("imgui_tex_inspect");
+    py_init_module_imgui_tex_inspect(module_imgui_tex_inspect);
 }
 
 

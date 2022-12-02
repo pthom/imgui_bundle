@@ -11,6 +11,7 @@ from . import imgui_md as imgui_md
 from . import immvision as immvision
 from . import imgui_backends as imgui_backends
 from . import imguizmo as imguizmo
+from . import imgui_tex_inspect as imgui_tex_inspect
 from . imgui_bundle import (
     run as run,
     current_node_editor_context as current_node_editor_context,
