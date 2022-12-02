@@ -7,8 +7,7 @@
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
-#include "hello_imgui/hello_imgui_include_opengl.h"
-#include "hello_imgui/internal/stb_image.h"
+#include "hello_imgui/hello_imgui.h"
 
 #include <chrono>
 
@@ -23,31 +22,11 @@ namespace ImGuiTexInspect
 {
     Texture LoadTexture(const char * path)
     {
-        const int channelCount = 4;
-        int imageFileChannelCount;
-        int width, height;
-        uint8_t *image = (uint8_t *)stbi_load(path, &width, &height, &imageFileChannelCount, channelCount);
-        if (image == NULL)
-        {
-            fprintf(stderr, "%s\nFailed to open %s\n", stbi_failure_reason(), path);
-
-            return {nullptr,{0,0}};
-        }
-
-        GLenum dataFormat = GL_RGBA;
-        GLuint textureHandle;
-        glGenTextures(1, &textureHandle);
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, image);
-
-        Texture t;
-        t.texture = (void*)(uintptr_t)(textureHandle);
-        t.size = ImVec2((float)width,(float)height);
-
-        stbi_image_free(image);
-        return t;
+        auto textureId = HelloImGui::ImTextureIdFromAsset(path);
+        Texture r;
+        r.size = ImVec2(512.f, 512.f); // This function is only by used the demo, which uses a 51x512 image
+        r.texture = textureId;
+        return r;
     }
 
 }
@@ -95,11 +74,15 @@ namespace ImGuiBundle
 
         if (addOnsParams.withTexInspect)
         {
+            ImGuiTexInspect::Context * ctxTexInspect = nullptr;
             // Modify post-init: call ImGuiTexInspect::ImplOpenGL3_Init
             {
                 auto oldPostInit = runnerParams.callbacks.PostInit;
-                auto newPostInit = [oldPostInit]() {
+                auto newPostInit = [oldPostInit, &ctxTexInspect]() {
                     ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
+                    ImGuiTexInspect::Init();
+                    ctxTexInspect = ImGuiTexInspect::CreateContext();
+
                     if (oldPostInit)
                         oldPostInit();
                 };
@@ -108,7 +91,10 @@ namespace ImGuiBundle
             // Modify before-exit: call ImGuiTexInspect::ImplOpenGL3_Init
             {
                 auto oldBeforeExit = runnerParams.callbacks.BeforeExit;
-                auto newBeforeExit = [oldBeforeExit]() {
+                auto newBeforeExit = [oldBeforeExit, &ctxTexInspect]() {
+                    ImGuiTexInspect::Shutdown();
+                    ImGuiTexInspect::DestroyContext(ctxTexInspect);
+
                     ImGuiTexInspect::ImplOpenGl3_Shutdown();
                     if (oldBeforeExit)
                         oldBeforeExit();
