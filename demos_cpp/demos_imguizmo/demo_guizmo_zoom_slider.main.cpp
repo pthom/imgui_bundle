@@ -141,7 +141,7 @@ int main()
 {
     auto gui = make_closure_demo_guizmo_zoom_slider();
 
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSizeAuto=true};
+    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={400, 400}};
     ImGuiBundle::Run(runnerParams);
 }
 #endif
