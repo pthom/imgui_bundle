@@ -5,8 +5,10 @@
 #include "ImFileDialogTextureHelper.h"
 
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
+#include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
-
+#include "hello_imgui/hello_imgui_include_opengl.h"
+#include "hello_imgui/internal/stb_image.h"
 
 #include <chrono>
 
@@ -14,6 +16,40 @@ namespace HelloImGui
 {
     // Private API, not mentioned in headers!
     std::string GlslVersion();
+}
+
+
+namespace ImGuiTexInspect
+{
+    Texture LoadTexture(const char * path)
+    {
+        const int channelCount = 4;
+        int imageFileChannelCount;
+        int width, height;
+        uint8_t *image = (uint8_t *)stbi_load(path, &width, &height, &imageFileChannelCount, channelCount);
+        if (image == NULL)
+        {
+            fprintf(stderr, "%s\nFailed to open %s\n", stbi_failure_reason(), path);
+
+            return {nullptr,{0,0}};
+        }
+
+        GLenum dataFormat = GL_RGBA;
+        GLuint textureHandle;
+        glGenTextures(1, &textureHandle);
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, image);
+
+        Texture t;
+        t.texture = (void*)(uintptr_t)(textureHandle);
+        t.size = ImVec2((float)width,(float)height);
+
+        stbi_image_free(image);
+        return t;
+    }
+
 }
 
 
