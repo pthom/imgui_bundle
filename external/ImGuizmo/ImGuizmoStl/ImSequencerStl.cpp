@@ -8,12 +8,11 @@ namespace ImSequencer
     {
         // Let's juggle with the heap memory, and hope for the best
 
-        SequenceGetInfo getInfo {
-            .start = start,
-            .end = end,
-            .type = type,
-            .color = color
-        };
+        SequenceGetInfo getInfo;
+        getInfo.start = start;
+        getInfo.end = end;
+        getInfo.type = type;
+        getInfo.color = color;
 
         Get_V2(index, &getInfo);
 
