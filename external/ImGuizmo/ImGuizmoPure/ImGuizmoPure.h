@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 #include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmoPure/Editable.h"
 
 #include <optional>
 #include <vector>
@@ -69,8 +70,9 @@ namespace IMGUIZMO_NAMESPACE
     IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices);
     IMGUI_API void DrawGrid(const Matrix16& view, const Matrix16& projection, const Matrix16& matrix, const float gridSize);
 
-    // Manipulate may change the gObjectMatrix parameter: if it was changed, it will return (true, newObjectMatrix)
-    [[nodiscard]] IMGUI_API  std::tuple<bool, Matrix16> Manipulate(
+    // Manipulate may change the objectMatrix parameter:
+    // if it was changed, it will return (true, newObjectMatrix)
+    [[nodiscard]] IMGUI_API  Editable<Matrix16> Manipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
@@ -88,7 +90,7 @@ namespace IMGUIZMO_NAMESPACE
     // other software are using the same mechanics. But just in case, you are now warned!
     //
     // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
-    [[nodiscard]] IMGUI_API std::tuple<bool, Matrix16> ViewManipulate(
+    [[nodiscard]] IMGUI_API Editable<Matrix16> ViewManipulate(
         const Matrix16& view, //
         float length,
         ImVec2 position,
@@ -97,7 +99,7 @@ namespace IMGUIZMO_NAMESPACE
 
     // use this version if you did not call Manipulate before and you are just using ViewManipulate
     // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
-    [[nodiscard]] IMGUI_API std::tuple<bool, Matrix16> ViewManipulate(
+    [[nodiscard]] IMGUI_API Editable<Matrix16> ViewManipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
@@ -107,6 +109,4 @@ namespace IMGUIZMO_NAMESPACE
         ImVec2 position,
         ImVec2 size,
         ImU32 backgroundColor);
-
-
 }

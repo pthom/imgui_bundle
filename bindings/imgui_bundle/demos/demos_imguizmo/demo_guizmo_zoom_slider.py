@@ -45,12 +45,13 @@ def draw_zoomable_grid(
 # This returns a closure function that will later be invoked to run the app
 def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
     # Values between 0. and 1. that represent the current viewed portion
-    view_min = ImVec2(0.1, 0.3)
-    view_max = ImVec2(0.6, 0.8)
+    view_horizontal = ImZoomSlider.Range(0.1, 0.6)
+    view_vertical = ImZoomSlider.Range(0.3, 0.8)
+
     link_zooms = True
 
     def gui():
-        nonlocal link_zooms, view_min, view_max
+        nonlocal link_zooms, view_horizontal, view_vertical
         _, link_zooms = imgui.checkbox("Link zooms", link_zooms)
 
         # Draw anything in the zoomable part,
@@ -68,8 +69,8 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
             or drag their extremities.
     
             Current zoom values:
-            {view_min.x=:.2f} {view_max.x=:.2f}
-            {view_min.y=:.2f} {view_max.y=:.2f} 
+            {view_horizontal.min=:.2f} {view_horizontal.max=:.2f}
+            {view_vertical.min=:.2f} {view_vertical.max=:.2f} 
     
             ...now do whatever you want with those values!"""
             )
@@ -82,31 +83,38 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         zoomZoneMax = imgui.get_item_rect_max()
 
         # And do some drawing depending on the zoom
-        draw_zoomable_grid(zoomZoneMin, zoomZoneMax, view_min, view_max)
+        draw_zoomable_grid(
+            zoomZoneMin, zoomZoneMax,
+            ImVec2(view_horizontal.min, view_vertical.min),
+            ImVec2(view_horizontal.max, view_vertical.max))
 
         # Draw the vertical slider
         imgui.same_line()
         imgui.push_id(18)
-        changed, view_min.y, view_max.y = imguizmo.ImZoomSlider.im_zoom_slider_stl(
-            0.0, 1.0, view_min.y, view_max.y, 0.1, ImZoomSlider.ImGuiZoomSliderFlags_.vertical
+        sliderResult = imguizmo.ImZoomSlider.im_zoom_slider_pure(
+            ImZoomSlider.Range(0.0, 1.0), view_vertical, 0.1, ImZoomSlider.ImGuiZoomSliderFlags_.vertical
         )
+        if sliderResult:
+            view_vertical = sliderResult.value
         # Handle link zoom
-        if changed and link_zooms:
-            avg = (view_min.x + view_max.x) / 2.0
-            length = view_max.y - view_min.y
-            view_min.x = avg - length / 2.0
-            view_max.x = avg + length / 2.0
+        if sliderResult and link_zooms:
+            avgH = view_horizontal.center()
+            lengthV = view_vertical.length()
+            view_horizontal = ImZoomSlider.Range(avgH - lengthV / 2., avgH + lengthV / 2.)
         imgui.pop_id()
 
         # Draw the horizontal slider
         imgui.push_id(19)
-        changed, view_min.x, view_max.x = ImZoomSlider.im_zoom_slider_stl(0.0, 1.0, view_min.x, view_max.x, 0.1)
+        sliderResult = ImZoomSlider.im_zoom_slider_pure(
+            ImZoomSlider.Range(0.0, 1.0), view_horizontal, 0.1)
+        if sliderResult:
+            view_horizontal = sliderResult.value
+
         # Handle link zoom
-        if changed and link_zooms:
-            avg = (view_min.y + view_max.y) / 2.0
-            length = view_max.x - view_min.x
-            view_min.y = avg - length / 2.0
-            view_max.y = avg + length / 2.0
+        if sliderResult and link_zooms:
+            avgV = view_vertical.center()
+            lengthH = view_horizontal.length()
+            view_horizontal = ImZoomSlider.Range(avgV - lengthH / 2., avgV + lengthH / 2.)
         imgui.pop_id()
 
     return gui

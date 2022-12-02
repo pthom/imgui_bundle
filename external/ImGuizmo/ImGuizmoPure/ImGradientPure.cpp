@@ -1,4 +1,4 @@
-#include "ImGuizmoStl/ImGradientStl.h"
+#include "ImGuizmoPure/ImGradientPure.h"
 
 #include <vector>
 
@@ -14,10 +14,10 @@ namespace ImGradient
         return GetPointsList().data();
     }
 
-    std::tuple<bool, int> EditStl(DelegateStl& delegate, const ImVec2& size)
+    Editable<int> EditPure(DelegateStl& delegate, const ImVec2& size)
    {
         int selection;
-        bool r = Edit(delegate, size, selection);
-        return std::make_tuple(r, selection);
+        bool edited = Edit(delegate, size, selection);
+        return Editable(selection, edited);
    }
 }

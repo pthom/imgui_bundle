@@ -8,7 +8,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 #include "imgui_bundle/imgui_bundle.h"
-#include "ImGuizmoStl/ImGradientStl.h"
+#include "ImGuizmoPure/ImGradientPure.h"
 
 #include <algorithm>
 
@@ -83,7 +83,7 @@ GuiFunction make_closure_demo_guizmo_gradient()
     ImVec2 size(400.f, 20.f);
 
     auto gui = [=]() mutable { // mutable => this is a closure
-        auto [/*bool*/result, /*int*/selection] = ImGradient::EditStl(myGradient, size);
+        ImGradient::EditPure(myGradient, size);
         ImGui::TextWrapped(R"(
             I'm not sure about the purpose of this widget.
             You can drag squares, and double click to add some more)");

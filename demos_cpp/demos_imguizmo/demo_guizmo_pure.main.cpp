@@ -1,5 +1,5 @@
 // Demo ImGuizmo (only the 3D gizmo)
-// See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_stl.py
+// See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_pure.py
 
 // https://github.com/CedricGuillemet/ImGuizmo
 // v 1.89 WIP
@@ -29,7 +29,7 @@
 
 #include "demos_interface.h"
 #include "imgui_bundle/imgui_bundle.h"
-#include "ImGuizmoStl/ImGuizmoStl.h"
+#include "ImGuizmoPure/ImGuizmoPure.h"
 
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -345,7 +345,7 @@ struct EditTransformResult
 
     ImGuizmo::DrawCubes(cameraView, cameraProjection, vec_n_first(gObjectMatrix, gizmoCount));
 
-    auto [changedMatrix, newObjectMatrix] = ImGuizmo::Manipulate(
+    auto manipResult = ImGuizmo::Manipulate(
         cameraView,
         cameraProjection,
         mCurrentGizmoOperation,
@@ -356,19 +356,19 @@ struct EditTransformResult
         ifFlag(boundSizing, bounds),
         ifFlag(boundSizingSnap, boundsSnap)
         );
-    if (changedMatrix) {
+    if (manipResult) {
         r.changed = true;
-        r.objectMatrix = newObjectMatrix;
+        r.objectMatrix = manipResult.Value;
     }
 
-    auto [changedView, newCameraView] = ImGuizmo::ViewManipulate(
+    auto viewManipResult = ImGuizmo::ViewManipulate(
         cameraView,
         camDistance,
         ImVec2(viewManipulateRight - 128, viewManipulateTop),
         ImVec2(128, 128),
         0x10101010);
-    if (changedView) {
-        r.cameraView = newCameraView;
+    if (viewManipResult) {
+        r.cameraView = viewManipResult.Value;
         r.changed = true;
     }
 
@@ -382,7 +382,7 @@ struct EditTransformResult
 }
 
 // This returns a closure function that will later be invoked to run the app
-GuiFunction make_closure_demo_guizmo()
+GuiFunction make_closure_demo_guizmo_pure()
 {
     int lastUsing = 0;
 
@@ -496,7 +496,7 @@ GuiFunction make_closure_demo_guizmo()
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
-    auto gui = make_closure_demo_guizmo();
+    auto gui = make_closure_demo_guizmo_pure();
 
     // Run app
     HelloImGui::RunnerParams runnerParams;

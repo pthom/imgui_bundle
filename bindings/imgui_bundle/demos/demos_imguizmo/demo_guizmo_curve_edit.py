@@ -11,14 +11,14 @@ from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
 ImCurveEdit = imguizmo.ImCurveEdit
 
 
-class RampEdit(ImCurveEdit.DelegateStl):
+class RampEdit(ImCurveEdit.DelegatePure):
     points: List[List[ImVec2]]
     visible: List[bool]
     min: ImVec2
     max: ImVec2
 
     def __init__(self):
-        ImCurveEdit.DelegateStl.__init__(self)
+        ImCurveEdit.DelegatePure.__init__(self)
 
         self.points = []
         self.points.append(
@@ -122,7 +122,7 @@ def make_closure_demo_guizmo_curve_edit() -> GuiFunction:
 
         ramp_edit_size = ImVec2(800.0, 400.0)
         ramp_edit_id = 1
-        ImCurveEdit.edit_stl(ramp_edit, ramp_edit_size, ramp_edit_id)
+        r = ImCurveEdit.edit_pure(ramp_edit, ramp_edit_size, ramp_edit_id)
 
     return gui
 

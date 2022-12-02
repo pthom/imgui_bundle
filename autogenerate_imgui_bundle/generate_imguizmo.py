@@ -11,7 +11,7 @@ BUNDLE_DIR = os.path.realpath(_THIS_DIR + "/..")
 CPP_GENERATED_PYBIND_DIR = BUNDLE_DIR + "/bindings"
 
 HEADER_PARENT_DIR = BUNDLE_DIR + "/external/ImGuizmo"
-STL_SUBDIR = "ImGuizmoStl"
+STL_SUBDIR = "ImGuizmoPure"
 OFFICIAL_SUBDIR = "ImGuizmo"
 
 
@@ -51,29 +51,41 @@ def autogenerate_imguizmo():
         amalgamation = make_amalgamated_header(header_file)
         process_one_file_backup_options(code=amalgamation, filename=header_file, options=options)
 
+    # Process Editable
+    options_pure = copy.deepcopy(options)
+    options_pure.class_template_options.add_specialization("Editable", ["SelectedPoints", "int", "Matrix16", "Range"])
+    header_file = f"{HEADER_PARENT_DIR}/ImGuizmoPure/Editable.h"
+    process_one_file_backup_options(None, header_file, options_pure)
+    options.srcmlcpp_options.ignored_warning_parts.append("struct Editable")
+    options.type_replacements.add_last_replacement("Editable<SelectedPoints>", "EditableSelectedPoints")
+    options.type_replacements.add_last_replacement("Editable<int>", "EditableInt")
+    options.type_replacements.add_last_replacement("Editable<Matrix16>", "EditableMatrix16")
+    options.type_replacements.add_last_replacement("Editable<Range>", "EditableRange")
+
     # Process ImCurveEditStl
     options_curve = copy.deepcopy(options)
-    options_curve.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
-    process_one_amalgamated_file("ImCurveEditStl.h", options_curve)
+    options_curve.fn_exclude_by_name__regex = "^Edit$|GetPointCount$|^GetPoints$"
+    options_curve.fn_exclude_by_param_type__regex = "^Delegate[ ]*&$"
+    process_one_amalgamated_file("ImCurveEditPure.h", options_curve)
 
     # Process ImGradientStl
     options_gradient = copy.deepcopy(options)
     options_gradient.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
-    process_one_amalgamated_file("ImGradientStl.h", options_gradient)
+    process_one_amalgamated_file("ImGradientPure.h", options_gradient)
 
     # Process ImZoomSlider
     options_slider = copy.deepcopy(options)
-    options_slider.srcmlcpp_options.ignored_warning_parts = ["Ignoring template function"]
+    options_slider.srcmlcpp_options.ignored_warning_parts.append("Ignoring template function")
     options_slider.var_names_replacements.add_last_replacement("im_gui_zoom_slider_flags_", "")
     options_slider.type_replacements.add_last_replacement("ImGuiPopupFlags_", "ImGuiZoomSliderFlags_")
-    process_one_amalgamated_file("ImZoomSliderStl.h", options_slider)
+    process_one_amalgamated_file("ImZoomSliderPure.h", options_slider)
 
     # Process ImSequencer:
     # abandoned due to double pointer in the public API
     # --------------
     # options_sequencer = copy.deepcopy(options)
     # options_sequencer.fn_exclude_by_name__regex = r"^Get$"
-    # process_one_amalgamated_file("ImSequencerStl.h", options_sequencer)
+    # process_one_amalgamated_file("ImSequencerPure.h", options_sequencer)
 
     # Process GraphEditor:
     # cowardly avoided because of double pointers in structs + pointer to enum in params
@@ -91,7 +103,7 @@ def autogenerate_imguizmo():
         return code
 
     options_guizmo.srcmlcpp_options.code_preprocess_function = preprocess_code
-    options_guizmo.srcmlcpp_options.ignored_warning_parts = [
+    options_guizmo.srcmlcpp_options.ignored_warning_parts += [
         "ImVec4 Colors[COLOR::COUNT]",
         "Ignoring template class",
         "float values[N]",
@@ -102,7 +114,7 @@ def autogenerate_imguizmo():
     options_guizmo.fn_force_overload__regex = (
         "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"
     )
-    process_one_amalgamated_file("ImGuizmoStl.h", options_guizmo)
+    process_one_amalgamated_file("ImGuizmoPure.h", options_guizmo)
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

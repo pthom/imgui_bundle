@@ -1,4 +1,5 @@
-#include "ImGuizmoStl/ImSequencerStl.h"
+#include "ImGuizmoPure/ImSequencerPure.h"
+#include "ImGuizmoPure/Editable.h"
 
 namespace ImSequencer
 {
@@ -6,27 +7,25 @@ namespace ImSequencer
     //                                           ^            ^
     //                                         ouch !       ouch ouch!
     {
-        // Let's juggle with the heap memory, and hope for the best
-
         SequenceGetInfo getInfo;
         getInfo.start = start;
         getInfo.end = end;
         getInfo.type = type;
         getInfo.color = color;
 
-        Get_V2(index, &getInfo);
+        GetPure(index, &getInfo);
 
         // ...
         // The new external API
-        //             void Get_V2(int index, SequenceGetInfo* v);
+        //             void GetPure(int index, SequenceGetInfo* v);
         // is still not usable by python
         // ...
 
-        throw("I give up.");
+        throw("abandon for now.");
     }
 
 
-    bool Sequencer_V2(SequenceInterfaceStl* sequence, SequencerInfo* sequencerInfo)
+    bool SequencerPure(SequenceInterfaceStl* sequence, SequencerInfo* sequencerInfo)
     {
         bool result = Sequencer(
             sequence,

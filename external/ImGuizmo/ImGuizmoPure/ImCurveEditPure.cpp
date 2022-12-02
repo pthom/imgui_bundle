@@ -1,20 +1,20 @@
-#include "ImCurveEditStl.h"
+#include "ImCurveEditPure.h"
 
 
 namespace ImCurveEdit
 {
-    size_t DelegateStl::GetPointCount(size_t curveIndex)
+    size_t DelegatePure::GetPointCount(size_t curveIndex)
     {
         return GetPointsList(curveIndex).size();
     }
 
-    ImVec2* DelegateStl::GetPoints(size_t curveIndex)
+    ImVec2* DelegatePure::GetPoints(size_t curveIndex)
     {
         return GetPointsList(curveIndex).data();
     }
 
-    std::tuple<int, std::vector<EditPoint>> EditStl(
-        DelegateStl& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect)
+    Editable<SelectedPoints> EditPure(
+        DelegatePure& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect)
     {
         ImVector<EditPoint> editedPoints;
         int r = Edit(delegate, size, id, clippingRect, &editedPoints);
@@ -23,7 +23,7 @@ namespace ImCurveEdit
         for (const auto& v: editedPoints)
             editedPointsStl.push_back(v);
 
-        return std::make_tuple(r, editedPointsStl);
+        return Editable(editedPointsStl, r > 0);
     }
 
 }

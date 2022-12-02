@@ -202,7 +202,7 @@ def EditTransform(
 
     gizmo.draw_cubes(cameraView, cameraProjection, gObjectMatrix[:gizmoCount])
 
-    changed, new_matrix = gizmo.manipulate(
+    manip_result = gizmo.manipulate(
         cameraView,
         cameraProjection,
         mCurrentGizmoOperation,
@@ -213,16 +213,16 @@ def EditTransform(
         statics.bounds if statics.boundSizing else None,
         statics.boundsSnap if statics.boundSizingSnap else None,
     )
-    if changed:
+    if manip_result:
         r.changed = True
-        r.objectMatrix = new_matrix
+        r.objectMatrix = manip_result.value
 
-    changed, new_camera_view = gizmo.view_manipulate(
+    view_manip_result = gizmo.view_manipulate(
         cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010
     )
-    if changed:
+    if view_manip_result:
         r.changed = True
-        r.cameraView = new_camera_view
+        r.cameraView = view_manip_result.value
 
     if useWindow:
         imgui.end()

@@ -30,7 +30,7 @@ Adapter code:
 
 namespace ImCurveEdit
 {
-   struct DelegateStl: public Delegate
+   struct DelegatePure: public Delegate
    {
        ...
       virtual std::vector<ImVec2>& GetPointsList() = 0; // Use a vector (more adapted to python bindings)

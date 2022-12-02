@@ -1,6 +1,7 @@
 #pragma once
 #include "imgui.h"
 #include "ImGuizmo/ImGradient.h"
+#include "ImGuizmoPure/Editable.h"
 
 #include <vector>
 #include <tuple>
@@ -17,5 +18,5 @@ namespace ImGradient
         virtual ~DelegateStl() = default;
     };
 
-    std::tuple<bool, int> EditStl(DelegateStl& delegate, const ImVec2& size);
+    Editable<int> EditPure(DelegateStl& delegate, const ImVec2& size);
 }

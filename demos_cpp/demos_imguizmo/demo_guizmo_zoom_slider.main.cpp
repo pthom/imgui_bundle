@@ -5,7 +5,7 @@
 
 #include "imgui.h"
 #include "imgui_bundle/imgui_bundle.h"
-#include "ImGuizmoStl/ImZoomSliderStl.h"
+#include "ImGuizmoPure/ImZoomSliderPure.h"
 
 
 std::vector<float> range_float(float min, float max, float dx)
@@ -59,7 +59,7 @@ void DrawZoomableGrid(
 GuiFunction make_closure_demo_guizmo_zoom_slider()
 {
     // Values between 0. and 1. that represent the current viewed portion
-    ImVec2 viewMin(0.1f, 0.3f), viewMax(0.6f, 0.8f);
+    ImZoomSlider::Range viewHorizontal{0.1f, 0.6f}, viewVertical{0.3f, 0.8f};
     bool linkZooms = true;
 
     auto gui = [=]() mutable // mutable => this is a closure
@@ -79,11 +79,13 @@ GuiFunction make_closure_demo_guizmo_zoom_slider()
                 or drag their extremities.
 
                 Current zoom values:
-                    viewMin.x=%.2f viewMax.x=%.2f
-                    viewMin.y=%.2f viewMax.y=%.2f
+                    viewHorizontal.Min=%.2f viewHorizontal.Max=%.2f
+                    viewVertical.Min=%.2f viewVertical.Max=%.2f
 
                 ...now do whatever you want with those values!
-            )", viewMin.x, viewMax.x, viewMin.y, viewMax.y);
+            )",
+                        viewHorizontal.Min, viewHorizontal.Max,
+                        viewVertical.Min, viewVertical.Max);
              ImGui::Dummy(ImVec2(zoneWidth, 80.f));
             ImGui::EndGroup();
         }
@@ -93,36 +95,39 @@ GuiFunction make_closure_demo_guizmo_zoom_slider()
         ImVec2 zoomZoneMax = ImGui::GetItemRectMax();
 
         // And do some drawing depending on the zoom
-        DrawZoomableGrid(zoomZoneMin, zoomZoneMax, viewMin, viewMax);
+        DrawZoomableGrid(zoomZoneMin, zoomZoneMax, {viewHorizontal.Min, viewVertical.Min}, {viewHorizontal.Max, viewVertical.Max});
 
         // Draw the vertical slider
         {
             ImGui::SameLine();
             ImGui::PushID(18);
-            bool changed = ImZoomSlider::ImZoomSlider(0.f, 1.f, viewMin.y, viewMax.y, 0.01f, ImZoomSlider::ImGuiZoomSliderFlags_Vertical);
+            auto sliderResult = ImZoomSlider::ImZoomSliderPure(
+                {0.f, 1.f}, {viewVertical.Min, viewVertical.Max}, 0.1f, ImZoomSlider::ImGuiZoomSliderFlags_Vertical);
+            if (sliderResult)
+                viewVertical = sliderResult.Value;
 
             // Handle link zoom
-            if (changed && linkZooms)
+            if (sliderResult && linkZooms)
             {
-                float avg = (viewMin.x + viewMax.x) / 2.f;
-                float length = (viewMax.y - viewMin.y);
-                viewMin.x = avg - length / 2.f;
-                viewMax.x = avg + length / 2.f;
+                float avgH = viewHorizontal.Center();
+                float lengthV = viewVertical.Length();
+                viewHorizontal = {avgH - lengthV / 2.f, avgH + lengthV / 2.f };
             }
             ImGui::PopID();
         }
         // Draw the horizontal slider
         {
             ImGui::PushID(19);
-            bool changed = ImZoomSlider::ImZoomSlider(0.f, 1.f, viewMin.x, viewMax.x);
+            auto sliderResult = ImZoomSlider::ImZoomSliderPure({0.f, 1.f}, viewHorizontal, 0.1f);
+            if (sliderResult)
+                viewHorizontal = sliderResult.Value;
 
             // Handle link zoom
-            if (changed && linkZooms)
+            if (sliderResult && linkZooms)
             {
-                float avg = (viewMin.y + viewMax.y) / 2.f;
-                float length = (viewMax.x - viewMin.x);
-                viewMin.y = avg - length / 2.f;
-                viewMax.y = avg + length / 2.f;
+                float avgV = viewVertical.Center();
+                float lengthH = viewHorizontal.Length();
+                viewVertical = {avgV - lengthH / 2.f, avgV + lengthH / 2.f };
             }
             ImGui::PopID();
         }

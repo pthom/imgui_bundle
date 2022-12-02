@@ -5,10 +5,10 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 
-#include "ImGuizmoStl/ImCurveEditStl.h"
-#include "ImGuizmoStl/ImGradientStl.h"
-#include "ImGuizmoStl/ImZoomSliderStl.h"
-#include "ImGuizmoStl/ImGuizmoStl.h"
+#include "ImGuizmoPure/ImCurveEditPure.h"
+#include "ImGuizmoPure/ImGradientPure.h"
+#include "ImGuizmoPure/ImZoomSliderPure.h"
+#include "ImGuizmoPure/ImGuizmoPure.h"
 
 #include <fplus/fplus.hpp>
 
@@ -275,16 +275,16 @@ public:
 
 namespace ImCurveEdit {
 // helper type to enable overriding virtual methods in python
-class DelegateStl_trampoline : public DelegateStl
+class DelegatePure_trampoline : public DelegatePure
 {
 public:
-    using DelegateStl::DelegateStl;
+    using DelegatePure::DelegatePure;
 
     size_t GetPointCount(size_t curveIndex) override
     {
         PYBIND11_OVERRIDE_NAME(
             size_t, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_point_count", // function name (python)
             GetPointCount, // function name (c++)
             curveIndex // params
@@ -294,7 +294,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             ImVec2 *, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_points", // function name (python)
             GetPoints, // function name (c++)
             curveIndex // params
@@ -304,7 +304,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             std::vector<ImVec2> &, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_points_list", // function name (python)
             GetPointsList, // function name (c++)
             curveIndex // params
@@ -314,7 +314,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             size_t, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_curve_count", // function name (python)
             GetCurveCount // function name (c++)
         );
@@ -323,7 +323,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             bool, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "is_visible", // function name (python)
             IsVisible, // function name (c++)
             param_0 // params
@@ -333,7 +333,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             ImCurveEdit::CurveType, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_curve_type", // function name (python)
             GetCurveType, // function name (c++)
             param_0 // params
@@ -343,7 +343,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             ImVec2 &, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_min", // function name (python)
             GetMin // function name (c++)
         );
@@ -352,7 +352,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             ImVec2 &, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_max", // function name (python)
             GetMax // function name (c++)
         );
@@ -361,7 +361,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             uint32_t, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_curve_color", // function name (python)
             GetCurveColor, // function name (c++)
             curveIndex // params
@@ -371,7 +371,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             int, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "edit_point", // function name (python)
             EditPoint, // function name (c++)
             curveIndex, pointIndex, value // params
@@ -381,7 +381,7 @@ public:
     {
         PYBIND11_OVERRIDE_PURE_NAME(
             void, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "add_point", // function name (python)
             AddPoint, // function name (c++)
             curveIndex, value // params
@@ -391,7 +391,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             unsigned int, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "get_background_color", // function name (python)
             GetBackgroundColor // function name (c++)
         );
@@ -400,7 +400,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             void, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "begin_edit", // function name (python)
             BeginEdit, // function name (c++)
             param_0 // params
@@ -410,7 +410,7 @@ public:
     {
         PYBIND11_OVERRIDE_NAME(
             void, // return type
-            ImCurveEdit::DelegateStl, // parent class
+            ImCurveEdit::DelegatePure, // parent class
             "end_edit", // function name (python)
             EndEdit // function name (c++)
         );
@@ -550,9 +550,56 @@ public:
 
 void py_init_module_imguizmo(py::module& m)
 {
+    using SelectedPoints = ImCurveEdit::SelectedPoints;
+    using Range = ImZoomSlider::Range;
+
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // <litgen_pydef> // Autogenerated code below! Do not edit!
-    ////////////////////    <generated_from:ImCurveEditStl.h>    ////////////////////
+    ////////////////////    <generated_from:Editable.h>    ////////////////////
+    auto pyClassEditable_SelectedPoints =
+        py::class_<Editable<SelectedPoints>>
+            (m, "EditableSelectedPoints", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+        .def(py::init<const SelectedPoints &, bool>(),
+            py::arg("value"), py::arg("edited") = false)
+        .def("__bool__",
+            &Editable<SelectedPoints>::operator bool, "Invoke this operator to check for user modification")
+        .def_readwrite("value", &Editable<SelectedPoints>::Value, "")
+        .def_readwrite("edited", &Editable<SelectedPoints>::Edited, "")
+        ;
+    auto pyClassEditable_int =
+        py::class_<Editable<int>>
+            (m, "EditableInt", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+        .def(py::init<const int &, bool>(),
+            py::arg("value"), py::arg("edited") = false)
+        .def("__bool__",
+            &Editable<int>::operator bool, "Invoke this operator to check for user modification")
+        .def_readwrite("value", &Editable<int>::Value, "")
+        .def_readwrite("edited", &Editable<int>::Edited, "")
+        ;
+    auto pyClassEditable_Matrix16 =
+        py::class_<Editable<Matrix16>>
+            (m, "EditableMatrix16", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+        .def(py::init<const Matrix16 &, bool>(),
+            py::arg("value"), py::arg("edited") = false)
+        .def("__bool__",
+            &Editable<Matrix16>::operator bool, "Invoke this operator to check for user modification")
+        .def_readwrite("value", &Editable<Matrix16>::Value, "")
+        .def_readwrite("edited", &Editable<Matrix16>::Edited, "")
+        ;
+    auto pyClassEditable_Range =
+        py::class_<Editable<Range>>
+            (m, "EditableRange", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+        .def(py::init<const Range &, bool>(),
+            py::arg("value"), py::arg("edited") = false)
+        .def("__bool__",
+            &Editable<Range>::operator bool, "Invoke this operator to check for user modification")
+        .def_readwrite("value", &Editable<Range>::Value, "")
+        .def_readwrite("edited", &Editable<Range>::Edited, "")
+        ;
+    ////////////////////    </generated_from:Editable.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:ImCurveEditPure.h>    ////////////////////
 
     { // <namespace ImCurveEdit>
         py::module_ pyNsImCurveEdit = m.def_submodule("ImCurveEdit", "");
@@ -603,22 +650,22 @@ void py_init_module_imguizmo(py::module& m)
             .def("end_edit",
                 &ImCurveEdit::Delegate::EndEdit)
             ;
-        auto pyNsImCurveEdit_ClassDelegateStl =
-            py::class_<ImCurveEdit::DelegateStl, ImCurveEdit::Delegate, ImCurveEdit::DelegateStl_trampoline>
-                (pyNsImCurveEdit, "DelegateStl", "")
+        auto pyNsImCurveEdit_ClassDelegatePure =
+            py::class_<ImCurveEdit::DelegatePure, ImCurveEdit::Delegate, ImCurveEdit::DelegatePure_trampoline>
+                (pyNsImCurveEdit, "DelegatePure", "")
             .def(py::init<>()) // implicit default constructor
             .def("get_points_list",
-                &ImCurveEdit::DelegateStl::GetPointsList, py::arg("curve_index"))
+                &ImCurveEdit::DelegatePure::GetPointsList, py::arg("curve_index"))
             ;
 
 
-        pyNsImCurveEdit.def("edit_stl",
-            ImCurveEdit::EditStl, py::arg("delegate"), py::arg("size"), py::arg("id"), py::arg("clipping_rect") = py::none());
+        pyNsImCurveEdit.def("edit_pure",
+            ImCurveEdit::EditPure, py::arg("delegate"), py::arg("size"), py::arg("id"), py::arg("clipping_rect") = py::none());
     } // </namespace ImCurveEdit>
-    ////////////////////    </generated_from:ImCurveEditStl.h>    ////////////////////
+    ////////////////////    </generated_from:ImCurveEditPure.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:ImGradientStl.h>    ////////////////////
+    ////////////////////    <generated_from:ImGradientPure.h>    ////////////////////
 
     { // <namespace ImGradient>
         py::module_ pyNsImGradient = m.def_submodule("ImGradient", "");
@@ -642,29 +689,43 @@ void py_init_module_imguizmo(py::module& m)
             ;
 
 
-        pyNsImGradient.def("edit_stl",
-            ImGradient::EditStl, py::arg("delegate"), py::arg("size"));
+        pyNsImGradient.def("edit_pure",
+            ImGradient::EditPure, py::arg("delegate"), py::arg("size"));
     } // </namespace ImGradient>
-    ////////////////////    </generated_from:ImGradientStl.h>    ////////////////////
+    ////////////////////    </generated_from:ImGradientPure.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:ImZoomSliderStl.h>    ////////////////////
+    ////////////////////    <generated_from:ImZoomSliderPure.h>    ////////////////////
 
     { // <namespace ImZoomSlider>
-        py::module_ pyNsImZoomSlider = m.def_submodule("ImZoomSlider", "");
+        py::module_ pyNsImZoomSlider = m.def_submodule("ImZoomSlider", "namespace");
         py::enum_<ImZoomSlider::ImGuiPopupFlags_>(pyNsImZoomSlider, "ImGuiZoomSliderFlags_", py::arithmetic(), "")
             .value("none", ImZoomSlider::ImGuiZoomSliderFlags_None, "")
             .value("vertical", ImZoomSlider::ImGuiZoomSliderFlags_Vertical, "")
             .value("no_anchors", ImZoomSlider::ImGuiZoomSliderFlags_NoAnchors, "")
             .value("no_middle_carets", ImZoomSlider::ImGuiZoomSliderFlags_NoMiddleCarets, "")
             .value("no_wheel", ImZoomSlider::ImGuiZoomSliderFlags_NoWheel, "");
-        pyNsImZoomSlider.def("im_zoom_slider_stl",
-            ImZoomSlider::ImZoomSliderStl, py::arg("lower"), py::arg("higher"), py::arg("view_lower"), py::arg("view_higher"), py::arg("wheel_ratio") = 0.01f, py::arg("flags") = ImZoomSlider::ImGuiZoomSliderFlags_None);
+        auto pyNsImZoomSlider_ClassRange =
+            py::class_<ImZoomSlider::Range>
+                (pyNsImZoomSlider, "Range", "")
+            .def_readwrite("min", &ImZoomSlider::Range::Min, "")
+            .def_readwrite("max", &ImZoomSlider::Range::Max, "")
+            .def(py::init<float, float>(),
+                py::arg("min"), py::arg("max"))
+            .def("center",
+                &ImZoomSlider::Range::Center)
+            .def("length",
+                &ImZoomSlider::Range::Length)
+            ;
+
+
+        pyNsImZoomSlider.def("im_zoom_slider_pure",
+            ImZoomSlider::ImZoomSliderPure, py::arg("full_range"), py::arg("current_range"), py::arg("wheel_ratio") = 0.01f, py::arg("flags") = ImZoomSlider::ImGuiZoomSliderFlags_None);
     } // </namespace ImZoomSlider>
-    ////////////////////    </generated_from:ImZoomSliderStl.h>    ////////////////////
+    ////////////////////    </generated_from:ImZoomSliderPure.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:ImGuizmoStl.h>    ////////////////////
+    ////////////////////    <generated_from:ImGuizmoPure.h>    ////////////////////
 
     { // <namespace ImGuizmo>
         py::module_ pyNsImGuizmo = m.def_submodule("ImGuizmo", "");
@@ -804,7 +865,7 @@ void py_init_module_imguizmo(py::module& m)
         pyNsImGuizmo.def("manipulate",
             py::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, const Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate),
             py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("object_matrix"), py::arg("delta_matrix") = py::none(), py::arg("snap") = py::none(), py::arg("local_bounds") = py::none(), py::arg("bounds_snap") = py::none(),
-            "Manipulate may change the gObjectMatrix parameter: if it was changed, it will return (True, newObjectMatrix)");
+            " Manipulate may change the objectMatrix parameter:\n if it was changed, it will return (True, newObjectMatrix)");
 
         pyNsImGuizmo.def("view_manipulate",
             py::overload_cast<const Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
@@ -816,7 +877,7 @@ void py_init_module_imguizmo(py::module& m)
             py::arg("view"), py::arg("projection"), py::arg("operation"), py::arg("mode"), py::arg("matrix"), py::arg("length"), py::arg("position"), py::arg("size"), py::arg("background_color"),
             " use this version if you did not call Manipulate before and you are just using ViewManipulate\n ViewManipulate may change the view parameter: if it was changed, it will return (True, newView)");
     } // </namespace ImGuizmo>
-    ////////////////////    </generated_from:ImGuizmoStl.h>    ////////////////////
+    ////////////////////    </generated_from:ImGuizmoPure.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

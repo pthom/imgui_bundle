@@ -4,6 +4,8 @@
 
 namespace ImSequencer
 {
+    // Effort to adapt ImSequencer to python. Abandoned for now
+
     struct SequenceGetInfo
     {
         int **start;
@@ -17,7 +19,7 @@ namespace ImSequencer
     {
         void Get(int index, int** start, int** end, int* type, unsigned int* color) override;
 
-        void Get_V2(int index, SequenceGetInfo* v);
+        void GetPure(int index, SequenceGetInfo* v);
     };
 
 
@@ -30,6 +32,6 @@ namespace ImSequencer
 
         int sequenceOptions = 0;
     };
-    bool Sequencer_V2(SequenceInterfaceStl* sequence, SequencerInfo* sequencerInfo);
+    bool SequencerPure(SequenceInterfaceStl* sequence, SequencerInfo* sequencerInfo);
 
 }

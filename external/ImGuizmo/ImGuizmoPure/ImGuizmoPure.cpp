@@ -1,6 +1,10 @@
 #include "imgui_internal.h"
-#include "ImGuizmoStl.h"
+#include "ImGuizmoPure/ImGuizmoPure.h"
 
+void truc()
+{
+
+}
 
 namespace IMGUIZMO_NAMESPACE
 {
@@ -37,7 +41,7 @@ namespace IMGUIZMO_NAMESPACE
         DrawGrid(view.values, projection.values, matrix.values, gridSize);
     }
 
-    std::tuple<bool, Matrix16> Manipulate(
+    Editable<Matrix16> Manipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
@@ -61,19 +65,19 @@ namespace IMGUIZMO_NAMESPACE
             localBounds ? localBounds->values : NULL,
             boundsSnap ? boundsSnap-> values : NULL
             );
-        return std::make_tuple(changed, newMatrix);
+        return Editable(newMatrix, changed);
     }
 
-    std::tuple<bool, Matrix16> ViewManipulate(const Matrix16& view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+    Editable<Matrix16> ViewManipulate(const Matrix16& view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
     {
         Matrix16 newView = view;
         ViewManipulate(newView.values, length, position, size, backgroundColor);
         bool changed = (newView != view);
-        return std::make_tuple(changed, newView);
+        return Editable(newView, changed);
     }
 
     // use this version if you did not call Manipulate before and you are just using ViewManipulate
-    std::tuple<bool, Matrix16> ViewManipulate(
+    Editable<Matrix16> ViewManipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
@@ -87,7 +91,7 @@ namespace IMGUIZMO_NAMESPACE
         Matrix16 newView = view;
         ViewManipulate(newView.values, projection.values, operation, mode, matrix.values, length, position, size, backgroundColor);
         bool changed = (newView != view);
-        return std::make_tuple(changed, newView);
+        return Editable(newView, changed);
     }
 
 

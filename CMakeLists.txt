@@ -133,8 +133,8 @@ if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
 endif()
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
-add_simple_external_library_with_sources(imguizmo_stl ImGuizmo/ImGuizmoStl)
-target_link_libraries(imguizmo_stl PUBLIC imguizmo)
+add_simple_external_library_with_sources(imguizmo_pure ImGuizmo/ImGuizmoPure)
+target_link_libraries(imguizmo_pure PUBLIC imguizmo)
 # Build imgui_tex_inspect
 add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
 target_sources(imgui_tex_inspect PRIVATE
