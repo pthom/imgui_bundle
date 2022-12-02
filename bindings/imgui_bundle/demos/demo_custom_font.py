@@ -3,7 +3,7 @@ import imgui_bundle
 from imgui_bundle import imgui, hello_imgui, icons_fontawesome
 
 
-def my_load_fonts_via_hello_imgui():
+def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
     # hello_imgui can load font and merge them with font awesome automatically.
     # It will load them from the assets/ folder.
 
@@ -14,10 +14,9 @@ def my_load_fonts_via_hello_imgui():
     return acronym_font
 
 
-def my_load_fonts_manually():
+def my_load_fonts_manually() -> imgui.ImFont:
     # Load font manually.
     # We need to use font_atlas_add_font_from_file_ttf instead of ImFont.add_font_from_file_ttf
-    global gAkronimFont
 
     # first, we load the default font (it will not include icons)
     imgui.get_io().fonts.add_font_default()
@@ -54,15 +53,15 @@ def my_load_fonts_manually():
     return acronym_font
 
 
-def main():
+def main() -> None:
     custom_font: imgui.ImFont
 
-    def gui():
+    def gui() -> None:
         imgui.push_font(custom_font)
         imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
         imgui.pop_font()
 
-    def callback_load_font():
+    def callback_load_font() -> None:
         nonlocal custom_font
         # Choose your own loading method below
         # custom_font = my_load_fonts_manually()

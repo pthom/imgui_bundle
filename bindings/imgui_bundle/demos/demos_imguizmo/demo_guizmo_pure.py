@@ -8,7 +8,7 @@ import munch  # type: ignore
 
 import imgui_bundle
 from imgui_bundle import imgui, imguizmo, hello_imgui, static, ImVec2, ImVec4
-from imgui_bundle.demos.demos_imguizmo.demos_interface import GuiFunction
+from imgui_bundle.demos.demos_interface import GuiFunction
 
 # pip install PyGLM
 import glm
