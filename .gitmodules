@@ -51,3 +51,5 @@
 [submodule "external/imgui_tex_inspect"]
 	path = external/imgui_tex_inspect
 	url = https://github.com/andyborrell/imgui_tex_inspect.git
+[submodule "imgui_tex_inspect"]
+	url = https://github.com/pthom/imgui_tex_inspect.git
