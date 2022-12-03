@@ -150,6 +150,5 @@ pypi_info_token.md
 MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
-_icons_test/
+/_icons_test/
 /*.json
-_imgui_bundle_opencv_packages/
