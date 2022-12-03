@@ -1,4 +1,4 @@
-name: "CppLib"
+name: "DebugCi"
 
 on:
   workflow_dispatch:
