@@ -17,9 +17,6 @@ jobs:
   build:
     name: Pip
     runs-on: ${{ matrix.platform }}
-    env:
-      if: ${{ matrix.platform == 'windows-latest' }}
-      IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17: ON
     strategy:
       fail-fast: false
       matrix:

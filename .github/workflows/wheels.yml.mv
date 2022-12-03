@@ -48,9 +48,6 @@ jobs:
   build_wheels:
     name: Wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    env:
-      if: ${{ matrix.platform == 'windows-latest' }}
-      IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17: ON
     strategy:
       fail-fast: false
       matrix:
