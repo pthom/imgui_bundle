@@ -31,9 +31,6 @@ jobs:
       with:
         submodules: true
 
-    - name: Install OpenCv
-      - run: sudo apt-get update && sudo apt-get install -y libopencv-dev
-
     - name: Build SDist
       run: pipx run build --sdist
 
@@ -57,6 +54,9 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+
+    - name: Install OpenCv via apt
+      run: sudo apt-get update && sudo apt-get install -y libopencv-dev
 
     - uses: pypa/cibuildwheel@v2.11.2
 
