@@ -144,7 +144,7 @@ dmypy.json
 cython_debug/
 
 _skbuild/
-
+_imgui_bundle_opencv_packages/
 imgui.ini
 pypi_info_token.md
 MANIFEST.in
