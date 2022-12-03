@@ -18,9 +18,6 @@ jobs:
       fail-fast: false
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
-    env:
-      if: ${{ matrix.platform == 'windows-latest' }}
-      HELLO: World
 
     steps:
 #      - name: set env win
