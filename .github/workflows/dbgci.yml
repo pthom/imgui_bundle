@@ -16,8 +16,8 @@ jobs:
   build:
     name: Cpp Lib
     runs-on: ${{ matrix.platform }}
-    env:
-      BLAH: ToiMeme
+#    env:
+#      BLAH: ToiMeme
     strategy:
       fail-fast: false
       matrix:
