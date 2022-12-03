@@ -31,3 +31,4 @@ jobs:
         run: |
           echo $HELLO
           echo RUNNER_OS=$RUNNER_OS
+          shell: bash
