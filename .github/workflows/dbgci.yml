@@ -28,10 +28,14 @@ jobs:
 #      with:
 #        submodules: true
 
-#    - name: set env
+#    - name: set env win
 #      if: ${{ matrix.platform == 'windows-2019' }}
 #      run: set BLAH="pas croyable"
-#
+
+      - name: set env win
+        if: ${{ matrix.platform == 'windows-2019' }}
+        run: Set-Variable -Name BLAH -Value hello
+
       - name: echo env ALL
         run: echo $BLAH
 
