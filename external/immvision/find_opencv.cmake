@@ -9,7 +9,7 @@ macro(immvision_download_opencv_static_package_win)
         FetchContent_Declare(
             opencv_static_package_win
             URL https://traineq.org/_imgui_bundle/opencv4.6.0_static_install_win_vc17.zip
-            URL_MD5 2c0eb32975cdc52b22a7a06d3b1b9270
+            URL_MD5 74ae2a722db94b4be367a17514513e5c
             DOWNLOAD_EXTRACT_TIMESTAMP ON
         )
         FetchContent_MakeAvailable(opencv_static_package_win)
