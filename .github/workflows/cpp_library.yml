@@ -49,9 +49,14 @@ jobs:
         conan profile new default --detect
         python3 -m pip install pybind11
 
+    - name: Download cmake
+      run: |
+        wget https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-windows-x86_64.zip
+        7z x cmake-3.25.1-windows-x86_64.zip
 
-#    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
+    - name: Setup interactive tmate session
+      if: ${{ matrix.platform == 'windows-2019' }}
+      uses: mxschmitt/action-tmate@v3
 
 
     - name: Build and install
