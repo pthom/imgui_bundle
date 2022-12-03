@@ -26,17 +26,27 @@ jobs:
 #      with:
 #        submodules: true
 
-    - name: set env
-      if: ${{ matrix.platform == 'windows-2019' }}
-      run: set BLAH="pas croyable"
+#    - name: set env
+#      if: ${{ matrix.platform == 'windows-2019' }}
+#      run: set BLAH="pas croyable"
+#
+#    - name: echo env macos and linux
+#      if: ${{ matrix.platform != 'windows-2019' }}
+#      run: echo $BLAH
+#
+#    - name: echo env window
+#      if: ${{ matrix.platform == 'windows-2019' }}
+#      run: echo %BLAH%
 
-    - name: echo env macos and linux
+    - name: play
       if: ${{ matrix.platform != 'windows-2019' }}
-      run: echo $BLAH
+      run: echo "Play win"
+      if: ${{ matrix.platform != 'ubuntu-latest' }}
+      run: echo "Play ubuntu"
+      if: ${{ matrix.platform != 'macos-latest' }}
+      run: echo "Play macos"
 
-    - name: echo env window
-      if: ${{ matrix.platform == 'windows-2019' }}
-      run: echo %BLAH%
+
 
 #    - name: Setup interactive tmate session
 #      uses: mxschmitt/action-tmate@v3
