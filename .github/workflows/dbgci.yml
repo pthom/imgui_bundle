@@ -28,7 +28,7 @@ jobs:
 #        run: Set-Variable -Name HELLO -Value World
 
       - name: echo env
+        shell: bash
         run: |
           echo $HELLO
           echo RUNNER_OS=$RUNNER_OS
-          shell: bash
