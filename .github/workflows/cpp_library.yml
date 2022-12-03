@@ -50,10 +50,10 @@ jobs:
         python3 -m pip install pybind11
 
 
-    - name: Setup interactive tmate session
-      uses: mxschmitt/action-tmate@v3
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
-  
+
     - name: Build and install
       shell: bash
       run: |
