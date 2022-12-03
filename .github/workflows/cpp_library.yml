@@ -40,15 +40,20 @@ jobs:
       if: ${{ matrix.platform != 'windows-2019' }}
       run:  ./ci_scripts/install_conan_pybind11.sh
 
-    - name: install conan and pybind11 on windows
-      if: ${{ matrix.platform == 'windows-2019' }}
-      run: |
-        python3 -m pip install conan
-        conan profile new default --detect
-        python3 -m pip install pybind11
+#    - name: install conan and pybind11 on windows
+#      if: ${{ matrix.platform == 'windows-2019' }}
+#      run: |
+#        python3 -m pip install conan
+#        conan profile new default --detect
+#        python3 -m pip install pybind11
 
     - name: Build and install
+      shell: bash
       run: |
+        echo RUNNER_OS=$RUNNER_OS
+        if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=ON; fi
+        echo IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=$IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17
+
         mkdir build
         cd build
         cmake .. -DIMGUI_BUNDLE_WITH_IMMVISION=ON -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
