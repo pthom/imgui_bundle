@@ -31,6 +31,9 @@ jobs:
       with:
         submodules: true
 
+    - name: Install OpenCv
+      - run: sudo apt-get update && sudo apt-get install -y libopencv-dev
+
     - name: Build SDist
       run: pipx run build --sdist
 
