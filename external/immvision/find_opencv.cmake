@@ -20,7 +20,7 @@ macro(try_install_opencv_with_conan)
             ---------------------------------------------------------------
         ")
 
-    set(conan_folder ${CMAKE_CURRENT_BINARY_DIR}/conan_third)
+    set(conan_folder ${CMAKE_BINARY_DIR})
     file(MAKE_DIRECTORY ${conan_folder})
 
     if(WIN32)
