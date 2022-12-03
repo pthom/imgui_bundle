@@ -9,8 +9,6 @@ on:
       - main
       - dev
 
-env:
-  MACOSX_DEPLOYMENT_TARGET: "10.15"
 
 jobs:
   build:
@@ -19,19 +17,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2019, macos-latest, ubuntu-latest]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
     env:
-      if: ${{ matrix.platform == 'windows-2019' }}
-      BLAH: ToiMeme
+      if: ${{ matrix.platform == 'windows-latest' }}
+      HELLO: World
 
     steps:
 #      - name: set env win
 #        if: ${{ matrix.platform == 'windows-2019' }}
-#        run: Set-Variable -Name BLAH -Value hello
+#        run: Set-Variable -Name HELLO -Value World
 
-      - name: echo env ALL
-        run: echo $BLAH
-
-      - name: echo env window
-        if: ${{ matrix.platform == 'windows-2019' }}
-        run: echo %BLAH%
+      - name: echo env
+        run: echo $HELLO
