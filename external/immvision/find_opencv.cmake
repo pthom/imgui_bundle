@@ -1,4 +1,26 @@
-macro(try_install_opencv_with_conan)
+###############################################################################
+# Get OpenCV package
+###############################################################################
+
+macro(immvision_download_opencv_static_package_win)
+    if ("$ENV{IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17}" OR IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17)
+        include(FetchContent)
+        Set(FETCHCONTENT_QUIET FALSE)
+        FetchContent_Declare(
+            opencv_static_package_win
+            URL https://traineq.org/_imgui_bundle/opencv4.6.0_static_install_win_vc17.zip
+            URL_MD5 2c0eb32975cdc52b22a7a06d3b1b9270
+            DOWNLOAD_EXTRACT_TIMESTAMP ON
+        )
+        FetchContent_MakeAvailable(opencv_static_package_win)
+        set(opencv_static_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_static_package_win-src)
+        message(WARNING "opencv_static_package_win_dir=${opencv_static_package_win_dir}")
+        set(OpenCV_DIR ${opencv_static_package_win_dir})
+    endif()
+endmacro()
+
+
+macro(immvision_try_install_opencv_with_conan)
 
     set(conan_help_message "
 
@@ -59,10 +81,11 @@ macro(try_install_opencv_with_conan)
 endmacro()
 
 
-macro(find_opencv)
+macro(immvision_find_opencv)
+    immvision_download_opencv_static_package_win()
     find_package(OpenCV)
     if (NOT OpenCV_FOUND)
-        try_install_opencv_with_conan()
+        immvision_try_install_opencv_with_conan()
         find_package(OpenCV)
     endif()
 endmacro()
