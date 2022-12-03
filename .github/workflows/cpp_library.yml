@@ -33,11 +33,19 @@ jobs:
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: ./ci_scripts/install_xorg_dev.sh
 
-    - name: install conan and pybind11
+    # Install OpenCV (ubuntu & macos)
+    - name: install OpenCV (ubuntu)
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      run: sudo apt-get install -y libopencv-dev
+    - name: install OpenCV (macos)
+      if: ${{ matrix.platform == 'macos-latest' }}
+      run: brew install opencv
+
+    # Install conan & pybind11
+    - name: install conan and pybind11 (linux and ubuntu)
       if: ${{ matrix.platform != 'windows-2019' }}
       run:  ./ci_scripts/install_conan_pybind11.sh
-
-    - name: install conan and pybind11 on windows
+    - name: install conan and pybind11 (windows)
       if: ${{ matrix.platform == 'windows-2019' }}
       run: |
         python3 -m pip install conan
@@ -47,6 +55,7 @@ jobs:
     - name: Build and install
       shell: bash
       run: |
+        # On Windows, we install OpenCV via cmake which download a prebuilt static library
         echo RUNNER_OS=$RUNNER_OS
         if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=ON; fi
         echo IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=$IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17
@@ -58,4 +67,3 @@ jobs:
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
 
         cmake --build . --config Release
-        
