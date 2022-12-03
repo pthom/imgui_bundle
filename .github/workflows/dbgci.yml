@@ -16,6 +16,8 @@ jobs:
   build:
     name: Cpp Lib
     runs-on: ${{ matrix.platform }}
+    env:
+      BLAH: ToiMeme
     strategy:
       fail-fast: false
       matrix:
@@ -30,21 +32,13 @@ jobs:
 #      if: ${{ matrix.platform == 'windows-2019' }}
 #      run: set BLAH="pas croyable"
 #
-#    - name: echo env macos and linux
-#      if: ${{ matrix.platform != 'windows-2019' }}
-#      run: echo $BLAH
-#
-#    - name: echo env window
-#      if: ${{ matrix.platform == 'windows-2019' }}
-#      run: echo %BLAH%
+      - name: echo env macos and linux
+        if: ${{ matrix.platform != 'windows-2019' }}
+        run: echo $BLAH
 
-    - name: play
-      if: ${{ matrix.platform != 'windows-2019' }}
-      run: echo "Play win"
-      if: ${{ matrix.platform != 'ubuntu-latest' }}
-      run: echo "Play ubuntu"
-      if: ${{ matrix.platform != 'macos-latest' }}
-      run: echo "Play macos"
+      - name: echo env window
+        if: ${{ matrix.platform == 'windows-2019' }}
+        run: echo %BLAH%
 
 
 
