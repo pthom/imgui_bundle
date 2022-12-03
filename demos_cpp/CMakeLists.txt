@@ -7,9 +7,12 @@ add_subdirectory(demo_widgets_docking)
 add_subdirectory(demo_imgui_node_editor)
 add_subdirectory(demo_powersave)
 
-add_subdirectory(demos_immvision)
 add_subdirectory(demo_composition_graph)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
+
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_subdirectory(demos_immvision)
+endif()
 
 FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
