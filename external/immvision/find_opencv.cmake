@@ -16,6 +16,7 @@ macro(immvision_download_opencv_static_package_win)
         set(opencv_static_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_static_package_win-src)
         message(WARNING "opencv_static_package_win_dir=${opencv_static_package_win_dir}")
         set(OpenCV_DIR ${opencv_static_package_win_dir})
+        set(OpenCV_STATIC ON)
     endif()
 endmacro()
 

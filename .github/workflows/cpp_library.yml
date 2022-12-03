@@ -22,21 +22,9 @@ jobs:
         platform: [windows-2019, macos-latest, ubuntu-latest]
 
     steps:
-
     - uses: actions/checkout@v3
       with:
         submodules: true
-
-    - name: Download cmake
-      run: |
-        mkdir AAAAA
-        cd AAAAA
-        Invoke-WebRequest -Uri https://github.com/Kitware/CMake/releases/download/v3.25.1/cmake-3.25.1-windows-x86_64.zip -OutFile cmake-3.25.1-windows-x86_64.zip
-        Expand-Archive -Path cmake-3.25.1-windows-x86_64.zip -DestinationPath cmake-3.25.1-windows-x86_64
-
-    - name: Setup interactive tmate session
-      if: ${{ matrix.platform == 'windows-2019' }}
-      uses: mxschmitt/action-tmate@v3
 
     - name: install xorg-dev on ubuntu
       if: ${{ matrix.platform == 'ubuntu-latest' }}
@@ -61,6 +49,8 @@ jobs:
         conan profile new default --detect
         python3 -m pip install pybind11
 
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
@@ -69,11 +59,8 @@ jobs:
         echo RUNNER_OS=$RUNNER_OS
         if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=ON; fi
         echo IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17=$IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17
-
         mkdir build
         cd build
-
         # cmake .. -DIMGUI_BUNDLE_WITH_IMMVISION=ON -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
-
         cmake --build . --config Release
