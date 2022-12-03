@@ -1,0 +1,50 @@
+name: "Pip"
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+      - dev
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "10.15"
+  DISPLAY: ":0"
+
+jobs:
+  build:
+    name: Pip
+    runs-on: ${{ matrix.platform }}
+    env:
+      if: ${{ matrix.platform == 'windows-latest' }}
+      IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17: ON
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-2019, macos-latest, ubuntu-latest]
+        # "pypy-3.9" was removed from python-version because numpy install fails
+        python-version: ["3.7", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: install xorg-dev on ubuntu
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      run: ./ci_scripts/install_xorg_dev.sh
+
+      #    - name: Setup interactive tmate session
+      #      uses: mxschmitt/action-tmate@v3
+
+    - name: Build and install
+      run: pip install --verbose .[test]
+
+    - name: Test
+      run: pytest
