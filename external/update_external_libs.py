@@ -173,6 +173,7 @@ def lib_hello_imgui() -> ExternalLibrary:
         name="hello_imgui", official_git_url="https://github.com/pthom/hello_imgui.git", official_branch="master"
     )
 
+
 # fmt: off
 
 def lib_im_file_dialog() -> ExternalLibrary:
@@ -297,6 +298,7 @@ def lib_imspinner() -> ExternalLibrary:
     )
 
 # fmt: on
+
 
 def play():
     pass

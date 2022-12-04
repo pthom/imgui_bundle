@@ -114,6 +114,7 @@ def main():
 
     def gui():
         from imgui_bundle import hello_imgui
+
         hello_imgui.get_runner_params().fps_idle = 0
         imgui.text(f"FPS: {imgui.get_io().framerate}")
         composition_graph.draw()

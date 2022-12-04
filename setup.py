@@ -8,7 +8,6 @@ ROOT_PACKAGE_FOLDER = "bindings/imgui_bundle"
 ROOT_PACKAGE_NAME = "imgui_bundle"
 
 
-
 def get_readme():
     with open("Readme.md") as f:
         r = f.read()
@@ -20,6 +19,7 @@ def _get_assets_dirs() -> List[str]:
 
     dir_name: str
     for dir_name, subdir_list, file_list in os.walk(ROOT_PACKAGE_FOLDER):
+
         def is_assets_dir_or_subdir():
             dir_parts = dir_name.replace("\\", "/").split("/")
             return "assets" in dir_parts
@@ -79,12 +79,12 @@ setup(
     long_description=get_readme(),
     long_description_content_type="text/markdown",
     url="https://github.com/pthom/imgui_bundle",
-    packages=( get_imgui_bundle_packages() ),
+    packages=(get_imgui_bundle_packages()),
     package_dir={"": "bindings"},
     cmake_install_dir="bindings/imgui_bundle",
     extras_require={"test": ["pytest"]},
     python_requires=">=3.6",
-    package_data={ "imgui_bundle": get_imgui_bundle_package_data() },
+    package_data={"imgui_bundle": get_imgui_bundle_package_data()},
     install_requires=[
         "numpy >= 1.15",
         "munch >= 2.0.0",

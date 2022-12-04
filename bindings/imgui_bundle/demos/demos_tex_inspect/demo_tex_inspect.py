@@ -30,10 +30,7 @@ def make_closure_demo_tex_inspect() -> GuiFunction:
         imgui.text("Simple Demo")
         flags = 0
         inspectorSize = imgui_tex_inspect.SizeIncludingBorder(ImVec2(600, 600))
-        if imgui_tex_inspect.begin_inspector_panel(
-                "Texture Inspector",
-                texture_id, texture_size,
-                flags, inspectorSize):
+        if imgui_tex_inspect.begin_inspector_panel("Texture Inspector", texture_id, texture_size, flags, inspectorSize):
             imgui_tex_inspect.end_inspector_panel()
 
     return gui
