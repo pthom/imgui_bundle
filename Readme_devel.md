@@ -72,6 +72,8 @@ cmake ..
 
 If you want immvision, install OpenCV prior to this, and under windows, set the environment variable OpenCV_DIR to the correct location.
 
+Note: if you are on windows ARM64 and want to build for x64 use:
+    cmake .. -A x64
 
 # Windows ARM64 specific instructions
 
