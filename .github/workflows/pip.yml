@@ -54,7 +54,7 @@ jobs:
         # On Windows, we install OpenCV via cmake which downloads a prebuilt static library
         echo RUNNER_OS=$RUNNER_OS
         if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON; fi
-        echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17
+        echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
         pip install --verbose .[test]
 
     - name: Test
