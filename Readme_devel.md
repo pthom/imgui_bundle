@@ -16,7 +16,32 @@ login = __token__
 password = ...api_token...
 
 
-# Build on Windows ARM:
+# Build pip package on Windows x64 with immvision (incl OpenCV)
+
+Download the latest windows package from https://opencv.org/releases/.
+You should download and extract opencv-4.6.0-vc14_vc15.exe
+
+F:\dvp\_opencv\opencv-4.6.0-vc14_vc15\opencv\build
+
+F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
+
+
+Set an env variable OpenCV_DIR: 3 different ways
+
+* with PowerShell
+	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build'
+* With bash:
+	export OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
+* With dos:
+	set OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
+
+
+# Build pip package on Windows ARM64 with immvision (incl OpenCV)
+
+You need an arm version of python. See https://www.python.org/downloads/windows/
+
+
+# Build CppLib on Windows ARM64
 
 
 ## Step 1: Compile OpenCV Manually:
