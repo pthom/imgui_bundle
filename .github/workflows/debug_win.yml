@@ -3,9 +3,9 @@ name: "debug_win"
 # A GH Action that provides a ssh access for CI debugging: you need to uncomment the desired branch to activate it.
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
+#  push:
+#    branches:
+#      - dev
 #      - main
 
 
