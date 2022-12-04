@@ -36,15 +36,12 @@ Set an env variable OpenCV_DIR: 3 different ways
 	set OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
 
 
-# Build pip package on Windows ARM64 with immvision (incl OpenCV)
+-------
 
-You need an arm version of python. See https://www.python.org/downloads/windows/
-
-
-# Build CppLib on Windows ARM64
+# Windows ARM64 instructions
 
 
-## Step 1: Compile OpenCV Manually:
+## Build and install a static version of OpenCV for ARM64
 
 Git clone and checkout v4.6.0
 ````
@@ -56,14 +53,13 @@ git checkout 4.6.0
 cd ..
 ````
 
-## Step 2: Build and install a static version of OpenCV for ARM64
+Build and install OpenCV with those settings:
 
 Note: end of line handling in shells is a joke: 
 Use 
 - " ^" for dos
 - " \" for bash 
 - " `" for powerhell
-
 
 ````
 mkdir build_ARM64
@@ -93,7 +89,9 @@ cd ..
 ````
 
 
-## Step 2: Specify cmake options
+# Build CppLib on Windows ARM64
+
+Specify cmake options
 
 ````
 cmake .. -DOpenCV_DIR=F:\dvp\_opencv\opencv4.6.0_static_install_win_vc17 -DOpenCV_STATIC=ON -DCMAKE_GENERATOR_PLATFORM=ARM64 -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
@@ -107,3 +105,9 @@ Explanations:
 * CMAKE_MSVC_RUNTIME_LIBRARY: tells MSVC to use static runtime (/MT)
 * BUILD_SHARED_LIBS=OFF: build static libs. Normally, this could be ignored
   
+
+
+# Build pip package on Windows ARM64 with immvision (incl OpenCV)
+
+You need an arm version of python. See https://www.python.org/downloads/windows/
+
