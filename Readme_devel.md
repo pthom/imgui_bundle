@@ -97,9 +97,14 @@ cd build_arm64_dll_world
 cmake ../opencv_git -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=ON -A ARM64 -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DCMAKE_INSTALL_PREFIX=F:/dvp/_OpenCV/opencv4.6.0_arm64_dll_world
 
 cmake --build . --config Release
-cmake --install .
+cmake --install . --config Release
+
+cmake --build . --config Debug
+cmake --install . --config Debug
+
 cd ..
 ````
+
 
 ### Build ImGui Bundle pip package on Windows ARM64 with "world" opencv
 
@@ -128,6 +133,19 @@ Not so funny note: there are at least 4 incompatible ways to set an env var in W
 
 Then, pip install:
     pip install -v .
+
+### Build CppLib on Windows ARM64 with world OpenCV
+
+Specify cmake options
+
+	cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64
+
+Explanations:
+
+* OpenCV_DIR: you opencv install path
+* CMAKE_GENERATOR_PLATFORM: tells openCV to look in  the ARM64 folder
+  
+
 
 ## Using a static version of OpenCV 
 
