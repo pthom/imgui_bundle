@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import os.path
-import imgui_bundle
+
 from imgui_bundle.demos.api_demos import *
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph.image_with_gui import *
+
+import imgui_bundle
 
 
 class GaussianBlurWithGui(FunctionWithGui):
@@ -111,6 +113,9 @@ def main():
     composition_graph.set_input(image)
 
     def gui():
+        from imgui_bundle import hello_imgui
+        hello_imgui.get_runner_params().fps_idle = 0
+        imgui.text(f"FPS: {imgui.get_io().framerate}")
         composition_graph.draw()
 
     config_node = imgui_node_editor.Config()
