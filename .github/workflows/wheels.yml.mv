@@ -20,7 +20,7 @@ env:
   # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
   # skip testing on python 3.11 (numpy not yet available on python 3.11)
   CIBW_TEST_SKIP: pp3* cp311*
-  MACOSX_DEPLOYMENT_TARGET: "10.15"
+  MACOSX_DEPLOYMENT_TARGET: "11.0"
 
 jobs:
   build_sdist:

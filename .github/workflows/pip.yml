@@ -10,7 +10,7 @@ on:
       - dev
 
 env:
-  MACOSX_DEPLOYMENT_TARGET: "10.15"
+  MACOSX_DEPLOYMENT_TARGET: "11.0"
   DISPLAY: ":0"
 
 jobs:
