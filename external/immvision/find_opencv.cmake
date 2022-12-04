@@ -24,19 +24,19 @@ endmacro()
 
 
 macro(immvision_download_opencv_static_package_win)
-    if ("$ENV{IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17}" OR IMGUIBUNDLE_OPENCV_USE_PREBUILT_STATIC_WIN_VC17)
+    if ("$ENV{IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460}" OR IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460)
 		message("FIND OPENCV use immvision_download_opencv_static_package_win")
 
         include(FetchContent)
         Set(FETCHCONTENT_QUIET FALSE)
         FetchContent_Declare(
             opencv_static_package_win
-            URL https://traineq.org/_imgui_bundle/opencv4.6.0_static_install_win_vc17.zip
-            URL_MD5 76d44d29b2f5aa5e61f7d621f37aa8c6
+            URL https://traineq.org/_imgui_bundle/opencv-4.6.0_official_win_x64_world.zip
+            URL_MD5 a9d92bdf8510d09c3bf3cb080731ea91
             DOWNLOAD_EXTRACT_TIMESTAMP ON
         )
         FetchContent_MakeAvailable(opencv_static_package_win)
-        set(opencv_static_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_static_package_win-src)
+        set(opencv_static_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_static_package_win-src/opencv/build)
         message(WARNING "opencv_static_package_win_dir=${opencv_static_package_win_dir}")
         set(OpenCV_DIR ${opencv_static_package_win_dir})
         set(OpenCV_STATIC ON)
