@@ -26,7 +26,11 @@ function (add_hello_imgui)
         #     lg_target_set_rpath(${python_native_module_name} ".")
         # (inside add_imgui_bundle_bindings)
         set(BUILD_SHARED_LIBS ON)
-        add_subdirectory(external/glfw)
+        set(GLFW_BUILD_EXAMPLES OFF)      # Add these lines
+        set(GLFW_BUILD_TESTS OFF)
+        set(GLFW_BUILD_DOCS OFF)
+        set(GLFW_INSTALL OFF)
+		add_subdirectory(external/glfw)
         # glfw dynamic lib will be in the same folder as imgui_bundle
          install(TARGETS glfw DESTINATION .)
         # copy glfw dynamic lib into bindings/imgui_bundle post build, for editable install mode
