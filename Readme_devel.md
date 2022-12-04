@@ -1,6 +1,7 @@
-# How to install OpenCV 
+# Requirement for immvision: OpenCV 
 
-OpenCV is required if you want to have immvision inside imgui_bundle.
+immvision is a powerful submodule that displays and analyses images.
+OpenCV is required if you want to have immvision inside imgui_bundle. Below are several alternative for an easy installation:
 
 ## Windows: get a prebuilt OpenCV library
 Download the latest windows package from https://opencv.org/releases/: you should download and extract opencv-4.6.0-vc14_vc15.exe
@@ -20,9 +21,23 @@ You can also install OpenCV with any other method (conan, vcpkg, etc.). Just mak
 
 When building from source, there are some caches in the folder _skbuild. Remove it to redo a full build from scratch.
 
-## Pip build on Windows 
+## How to have immmvision: Set OpenCV_DIR
+Under windows, if you want to have the immvision module, you will need to have a working OpenCV library, 
+and to set the environment variable OpenCV_DIR before invoking `pip install -v .`
+See [How to install OpenCV](#How_to_install_OpenCV)
 
-### Build without immvision support
+Under linux and Ubuntu, if you installed OpenCV via a system package manager, it should be found automatically.
+
+Not so funny note: there are at least 4 incompatible ways to set an env var in Windows:
+* the clicky way
+* with PowerShell
+	Set-Item -Path 'Env:OpenCV_DIR' -Value 'C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build'
+* With bash:
+	export OpenCV_DIR=C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build
+* With dos:
+	set OpenCV_DIR=C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build
+
+## Build ImGui Bundle pip package from sources
 
 ````
 cd path/to/your/project  # optional step, but recommended:
@@ -34,22 +49,6 @@ cd imgui_bundle
 pip install -v .          # install the library
 ````
 
-### Build with immvision support 
-
-### Set OpenCV path via environment variable OpenCV_DIR
-Under windows, you will need to have a working OpenCV library, and to set the environment variable OpenCV_DIR before invoking `pip install -v .`
-See [How to install OpenCV](#How_to_install_OpenCV)
-
-Under linux and Ubuntu, if you installed OpenCV via a system package manager, it should be found automatically.
-
-How to set an environment variable: 3 different ways
-
-* with PowerShell
-	Set-Item -Path 'Env:OpenCV_DIR' -Value 'C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build'
-* With bash:
-	export OpenCV_DIR=C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build
-* With dos:
-	set OpenCV_DIR=C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build
 
 
 ### Build and the library pip package from sources:
@@ -58,7 +57,8 @@ How to set an environment variable: 3 different ways
 
 ### Private note for this library author :  
  	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build'
-
+or
+ 	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_arm64_dll_world'
 
 # C++ build instructions
 
@@ -79,7 +79,9 @@ Note: if you are on windows ARM64 and want to build for x64 use:
 
 There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.
 
-## Build and install a DLL "world" version of OpenCV for ARM64
+## Using a "world" dll version of OpenCV 
+
+### Build and install a DLL "world" version of OpenCV for ARM64
 (world means you get only one dll for all OpenCV)
 
 The two important options are INSTALL_CREATE_DISTRIB (will create dll opencv_world), BUILD_SHARED_LIBS=ON (required for world build).
@@ -99,32 +101,39 @@ cmake --install .
 cd ..
 ````
 
-# Build pip package on Windows ARM64 with immvision (incl OpenCV)
+### Build ImGui Bundle pip package on Windows ARM64 with "world" opencv
+
+> Note / December 2022: at the time of writing, the pip package "opencv-python" refuses to build with python ARM64 on windows. imgui_bundle does work however but one cannot use opencv (aka cv2) from python.
 
 You need an arm version of python. See https://www.python.org/downloads/windows/
 (if you need pip, youd need the full setup, not the embeddable version)
 
+Set OpenCV env variables: 
+* OpenCV_DIR=/path/to/your/opencv_world_install
+* CMAKE_GENERATOR_PLATFORM=ARM64
 
-Set OpenCV env variables:
-* with PowerShell
+Not so funny note: there are at least 4 incompatible ways to set an env var in Windows. 
 
-	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_static_install_win_vc17'
-	Set-Item -Path 'Env:OpenCV_STATIC' -Value 'ON'
-
+* *The clicky way*
+* *with PowerShell*
+	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_arm64_dll_world'
 	Set-Item -Path 'Env:CMAKE_GENERATOR_PLATFORM' -Value 'ARM64'
-
-* With bash:
-	export OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
-* With dos:
-	set OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
-
-
-
+* *With bash*
+	export OpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world
+	export CMAKE_GENERATOR_PLATFORM=ARM64
+* *With dos*
+	set OpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world
+	set CMAKE_GENERATOR_PLATFORM=ARM64
 
 
-## Build with a static version of OpenCV for ARM64
+Then, pip install:
+    pip install -v .
 
-### Build OpenCV static
+## Using a static version of OpenCV 
+
+### Build and install a static version of OpenCV for ARM64
+
+
 Git clone and checkout v4.6.0
 ````
 mkdir _opencv
@@ -152,7 +161,30 @@ cmake --install .
 cd ..
 ````
 
-# Build CppLib on Windows ARM64 with static OpenCV
+
+### Build ImGui Bundle pip package on Windows ARM64 with *static* OpenCV
+
+You need an arm version of python. See https://www.python.org/downloads/windows/
+(if you need pip, youd need the full setup, not the embeddable version)
+
+
+Set OpenCV env variables:
+* with PowerShell
+
+	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_static_install_win_vc17'
+	Set-Item -Path 'Env:OpenCV_STATIC' -Value 'ON'
+
+	Set-Item -Path 'Env:CMAKE_GENERATOR_PLATFORM' -Value 'ARM64'
+
+* With bash:
+	export OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
+* With dos:
+	set OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build
+
+
+
+
+### Build CppLib on Windows ARM64 with static OpenCV
 
 Specify cmake options
 
