@@ -13,8 +13,6 @@
 [submodule "external/implot"]
 	path = external/implot
 	url = https://github.com/epezent/implot.git
-[submodule "implot"]
-	url = https://github.com/epezent/implot.git
 [submodule "external/ImGuiColorTextEdit"]
 	path = external/ImGuiColorTextEdit
 	url = https://github.com/pthom/ImGuiColorTextEdit
@@ -50,6 +48,4 @@
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
 [submodule "external/imgui_tex_inspect"]
 	path = external/imgui_tex_inspect
-	url = https://github.com/andyborrell/imgui_tex_inspect.git
-[submodule "imgui_tex_inspect"]
 	url = https://github.com/pthom/imgui_tex_inspect.git
