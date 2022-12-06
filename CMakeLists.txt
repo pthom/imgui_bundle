@@ -56,6 +56,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
+    add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
 endif()
 
 

@@ -1,24 +1,30 @@
 import imgui_bundle
-from imgui_bundle import imgui, hello_imgui, ImVec2
+from imgui_bundle import imgui, hello_imgui, ImVec2, ImVec4
 
 
 def make_gui_closure():
-    texture_id = None
+    color_text = None
 
     def gui():
-        nonlocal texture_id
-        if texture_id is None:
-            texture_id = hello_imgui.im_texture_id_from_asset("images/world.jpg")
 
-        imgui.get_foreground_draw_list().add_image_rounded(
-            texture_id,
-            p_min = ImVec2(50, 50),
-            p_max= ImVec2(300, 300),
-            uv_min = ImVec2(0, 0),
-            uv_max = ImVec2(1, 1),
-            col = 0xffffffff,
-            rounding = 50.0)
+        imgui.text("Hello world")
 
+        nonlocal color_text
+        if color_text is None:
+            color_text = imgui.get_style().get_color(imgui.Col_.text)
+
+        def edit_text_color():
+            nonlocal color_text
+            color_as_list = [color_text.x, color_text.y, color_text.z, color_text.w]
+            changed, new_color_list = imgui.color_edit4("Text color", color_as_list)
+            if changed:
+                color_text = ImVec4(
+                    new_color_list[0], new_color_list[1], new_color_list[2], new_color_list[3])
+                imgui.get_style().set_color(imgui.Col_.text, color_text)
+
+        edit_text_color()
+
+        # Show that get_io().mouse_clicked : bool[5] is bound
         click = imgui.get_io().mouse_clicked
         if click[0]:
             print("click")

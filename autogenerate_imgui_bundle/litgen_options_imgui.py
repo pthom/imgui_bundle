@@ -1,5 +1,6 @@
 from enum import Enum
 
+import codemanip.code_utils
 import litgen
 from codemanip.code_replacements import RegexReplacementList
 from codemanip.code_utils import join_string_by_pipe_char
@@ -99,6 +100,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
 
     options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_DISABLE$"
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_BUNDLE_PYTHON_API$"
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
 
@@ -254,9 +256,34 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
 def sandbox():
     code = """
-IMGUI_API const char*   SaveIniSettingsToMemory(size_t* out_ini_size = NULL);
+enum ImGuiCol_
+{
+    ImGuiCol_Text,
+    ImGuiCol_TextDisabled,
+    ImGuiCol_WindowBg,              // Background of normal windows
+
+    ImGuiCol_COUNT
+};    
+    
+struct ImGuiIO
+{
+    ImVec4      Colors[ImGuiCol_COUNT];
+    //bool        MouseClicked[5];
+    //ImVec2      MouseDragMaxDistanceAbs[5];
+
+    // [ADAPT_IMGUI_BUNDLE]
+#ifdef IMGUI_BUNDLE_PYTHON_API
+    inline IMGUI_API  ImVec4& GetColor(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }
+    inline IMGUI_API const ImVec4& GetColor(size_t idxColor) const { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }
+#endif
+    // [/ADAPT_IMGUI_BUNDLE]
+
+};
+
     """
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, True)
+    reg = options.srcmlcpp_options.header_filter_acceptable__regex
+    flag = codemanip.code_utils.does_match_regex(reg, "IMGUI_BUNDLE_PYTHON_API")
     generated_code = litgen.generate_code(options, code)
     print(generated_code.pydef_code)
 

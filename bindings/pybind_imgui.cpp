@@ -3069,14 +3069,18 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")    // imgui.h:1953
         .def_readwrite("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.")    // imgui.h:1954
         .def_readwrite("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError, "Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.")    // imgui.h:1955
-        .def(py::init<>())    // imgui.h:1958
-        .def("scale_all_sizes",    // imgui.h:1959
+        .def("get_color",    // imgui.h:1963
+            &ImGuiStyle::GetColor, py::arg("idx_color"))
+        .def("set_color",    // imgui.h:1964
+            &ImGuiStyle::SetColor, py::arg("idx_color"), py::arg("color"))
+        .def(py::init<>())    // imgui.h:1969
+        .def("scale_all_sizes",    // imgui.h:1970
             &ImGuiStyle::ScaleAllSizes, py::arg("scale_factor"))
         ;
 
 
     auto pyClassImGuiKeyData =
-        py::class_<ImGuiKeyData>    // imgui.h:1971
+        py::class_<ImGuiKeyData>    // imgui.h:1982
             (m, "KeyData", " [Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.\n If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and *NOT* io.KeysData[key]->DownDuration.")
         .def(py::init<>([](
         bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float())
@@ -3090,127 +3094,127 @@ void py_init_module_imgui_main(py::module& m)
         })
         , py::arg("down") = bool(), py::arg("down_duration") = float(), py::arg("down_duration_prev") = float(), py::arg("analog_value") = float()
         )
-        .def_readwrite("down", &ImGuiKeyData::Down, "True for if key is down")    // imgui.h:1973
-        .def_readwrite("down_duration", &ImGuiKeyData::DownDuration, "Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)")    // imgui.h:1974
-        .def_readwrite("down_duration_prev", &ImGuiKeyData::DownDurationPrev, "Last frame duration the key has been down")    // imgui.h:1975
-        .def_readwrite("analog_value", &ImGuiKeyData::AnalogValue, "0.0..1.0 for gamepad values")    // imgui.h:1976
+        .def_readwrite("down", &ImGuiKeyData::Down, "True for if key is down")    // imgui.h:1984
+        .def_readwrite("down_duration", &ImGuiKeyData::DownDuration, "Duration the key has been down (<0.0: not pressed, 0.0: just pressed, >0.0: time held)")    // imgui.h:1985
+        .def_readwrite("down_duration_prev", &ImGuiKeyData::DownDurationPrev, "Last frame duration the key has been down")    // imgui.h:1986
+        .def_readwrite("analog_value", &ImGuiKeyData::AnalogValue, "0.0..1.0 for gamepad values")    // imgui.h:1987
         ;
 
 
     auto pyClassImGuiIO =
-        py::class_<ImGuiIO>    // imgui.h:1979
+        py::class_<ImGuiIO>    // imgui.h:1990
             (m, "IO", "")
-        .def_readwrite("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation options, etc.")    // imgui.h:1985
-        .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")    // imgui.h:1986
-        .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")    // imgui.h:1987
-        .def_readwrite("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")    // imgui.h:1988
-        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")    // imgui.h:1989
-        .def_readonly("ini_filename", &ImGuiIO::IniFilename, "= \"imgui.ini\"    // Path to .ini file (important: default \"imgui.ini\" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.")    // imgui.h:1990
-        .def_readonly("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")    // imgui.h:1991
-        .def_readwrite("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")    // imgui.h:1992
-        .def_readwrite("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click, in pixels.")    // imgui.h:1993
-        .def_readwrite("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold, "= 6.0           // Distance threshold before considering we are dragging.")    // imgui.h:1994
-        .def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")    // imgui.h:1995
-        .def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")    // imgui.h:1996
-        .def_readwrite("hover_delay_normal", &ImGuiIO::HoverDelayNormal, "= 0.30 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayNormal) returns True.")    // imgui.h:1997
-        .def_readwrite("hover_delay_short", &ImGuiIO::HoverDelayShort, "= 0.10 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayShort) returns True.")    // imgui.h:1998
-        .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")    // imgui.h:1999
-        .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")    // imgui.h:2001
-        .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")    // imgui.h:2002
-        .def_readwrite("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // Allow user scaling text of individual window with CTRL+Wheel.")    // imgui.h:2003
-        .def_readwrite("font_default", &ImGuiIO::FontDefault, "= None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].")    // imgui.h:2004
-        .def_readwrite("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.")    // imgui.h:2005
-        .def_readwrite("config_docking_no_split", &ImGuiIO::ConfigDockingNoSplit, "= False          // Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.")    // imgui.h:2008
-        .def_readwrite("config_docking_with_shift", &ImGuiIO::ConfigDockingWithShift, "= False          // Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)")    // imgui.h:2009
-        .def_readwrite("config_docking_always_tab_bar", &ImGuiIO::ConfigDockingAlwaysTabBar, "= False          // [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.")    // imgui.h:2010
-        .def_readwrite("config_docking_transparent_payload", &ImGuiIO::ConfigDockingTransparentPayload, "= False          // [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.")    // imgui.h:2011
-        .def_readwrite("config_viewports_no_auto_merge", &ImGuiIO::ConfigViewportsNoAutoMerge, "= False;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.")    // imgui.h:2014
-        .def_readwrite("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")    // imgui.h:2015
-        .def_readwrite("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")    // imgui.h:2016
-        .def_readwrite("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")    // imgui.h:2017
-        .def_readwrite("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")    // imgui.h:2020
-        .def_readwrite("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")    // imgui.h:2021
-        .def_readwrite("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")    // imgui.h:2022
-        .def_readwrite("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink, "= True           // Enable blinking cursor (optional as some users consider it to be distracting).")    // imgui.h:2023
-        .def_readwrite("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).")    // imgui.h:2024
-        .def_readwrite("config_drag_click_to_input_text", &ImGuiIO::ConfigDragClickToInputText, "= False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.")    // imgui.h:2025
-        .def_readwrite("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")    // imgui.h:2026
-        .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False       // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")    // imgui.h:2027
-        .def_readwrite("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")    // imgui.h:2028
-        .def_readonly("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")    // imgui.h:2036
-        .def_readonly("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")    // imgui.h:2037
-        .def_readwrite("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")    // imgui.h:2038
-        .def_readwrite("backend_renderer_user_data", &ImGuiIO::BackendRendererUserData, "= None           // User data for renderer backend")    // imgui.h:2039
-        .def_readwrite("backend_language_user_data", &ImGuiIO::BackendLanguageUserData, "= None           // User data for non C++ programming language backend")    // imgui.h:2040
-        .def_readwrite("clipboard_user_data", &ImGuiIO::ClipboardUserData, "")    // imgui.h:2046
-        .def("add_key_event",    // imgui.h:2062
+        .def_readwrite("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation options, etc.")    // imgui.h:1996
+        .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")    // imgui.h:1997
+        .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")    // imgui.h:1998
+        .def_readwrite("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")    // imgui.h:1999
+        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")    // imgui.h:2000
+        .def_readonly("ini_filename", &ImGuiIO::IniFilename, "= \"imgui.ini\"    // Path to .ini file (important: default \"imgui.ini\" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.")    // imgui.h:2001
+        .def_readonly("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")    // imgui.h:2002
+        .def_readwrite("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")    // imgui.h:2003
+        .def_readwrite("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click, in pixels.")    // imgui.h:2004
+        .def_readwrite("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold, "= 6.0           // Distance threshold before considering we are dragging.")    // imgui.h:2005
+        .def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")    // imgui.h:2006
+        .def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")    // imgui.h:2007
+        .def_readwrite("hover_delay_normal", &ImGuiIO::HoverDelayNormal, "= 0.30 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayNormal) returns True.")    // imgui.h:2008
+        .def_readwrite("hover_delay_short", &ImGuiIO::HoverDelayShort, "= 0.10 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayShort) returns True.")    // imgui.h:2009
+        .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")    // imgui.h:2010
+        .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")    // imgui.h:2012
+        .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")    // imgui.h:2013
+        .def_readwrite("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // Allow user scaling text of individual window with CTRL+Wheel.")    // imgui.h:2014
+        .def_readwrite("font_default", &ImGuiIO::FontDefault, "= None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].")    // imgui.h:2015
+        .def_readwrite("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.")    // imgui.h:2016
+        .def_readwrite("config_docking_no_split", &ImGuiIO::ConfigDockingNoSplit, "= False          // Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.")    // imgui.h:2019
+        .def_readwrite("config_docking_with_shift", &ImGuiIO::ConfigDockingWithShift, "= False          // Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)")    // imgui.h:2020
+        .def_readwrite("config_docking_always_tab_bar", &ImGuiIO::ConfigDockingAlwaysTabBar, "= False          // [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.")    // imgui.h:2021
+        .def_readwrite("config_docking_transparent_payload", &ImGuiIO::ConfigDockingTransparentPayload, "= False          // [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.")    // imgui.h:2022
+        .def_readwrite("config_viewports_no_auto_merge", &ImGuiIO::ConfigViewportsNoAutoMerge, "= False;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.")    // imgui.h:2025
+        .def_readwrite("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")    // imgui.h:2026
+        .def_readwrite("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")    // imgui.h:2027
+        .def_readwrite("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")    // imgui.h:2028
+        .def_readwrite("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")    // imgui.h:2031
+        .def_readwrite("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")    // imgui.h:2032
+        .def_readwrite("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")    // imgui.h:2033
+        .def_readwrite("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink, "= True           // Enable blinking cursor (optional as some users consider it to be distracting).")    // imgui.h:2034
+        .def_readwrite("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).")    // imgui.h:2035
+        .def_readwrite("config_drag_click_to_input_text", &ImGuiIO::ConfigDragClickToInputText, "= False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.")    // imgui.h:2036
+        .def_readwrite("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")    // imgui.h:2037
+        .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False       // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")    // imgui.h:2038
+        .def_readwrite("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")    // imgui.h:2039
+        .def_readonly("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")    // imgui.h:2047
+        .def_readonly("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")    // imgui.h:2048
+        .def_readwrite("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")    // imgui.h:2049
+        .def_readwrite("backend_renderer_user_data", &ImGuiIO::BackendRendererUserData, "= None           // User data for renderer backend")    // imgui.h:2050
+        .def_readwrite("backend_language_user_data", &ImGuiIO::BackendLanguageUserData, "= None           // User data for non C++ programming language backend")    // imgui.h:2051
+        .def_readwrite("clipboard_user_data", &ImGuiIO::ClipboardUserData, "")    // imgui.h:2057
+        .def("add_key_event",    // imgui.h:2073
             &ImGuiIO::AddKeyEvent,
             py::arg("key"), py::arg("down"),
             "Queue a new key down/up event. Key should be \"translated\" (as in, generally ImGuiKey_A matches the key end-user would use to emit an 'A' character)")
-        .def("add_key_analog_event",    // imgui.h:2063
+        .def("add_key_analog_event",    // imgui.h:2074
             &ImGuiIO::AddKeyAnalogEvent,
             py::arg("key"), py::arg("down"), py::arg("v"),
             "Queue a new key down/up event for analog values (e.g. ImGuiKey_Gamepad_ values). Dead-zones should be handled by the backend.")
-        .def("add_mouse_pos_event",    // imgui.h:2064
+        .def("add_mouse_pos_event",    // imgui.h:2075
             &ImGuiIO::AddMousePosEvent,
             py::arg("x"), py::arg("y"),
             "Queue a mouse position update. Use -FLT_MAX,-FLT_MAX to signify no mouse (e.g. app not focused and not hovered)")
-        .def("add_mouse_button_event",    // imgui.h:2065
+        .def("add_mouse_button_event",    // imgui.h:2076
             &ImGuiIO::AddMouseButtonEvent,
             py::arg("button"), py::arg("down"),
             "Queue a mouse button change")
-        .def("add_mouse_wheel_event",    // imgui.h:2066
+        .def("add_mouse_wheel_event",    // imgui.h:2077
             &ImGuiIO::AddMouseWheelEvent,
             py::arg("wh_x"), py::arg("wh_y"),
             "Queue a mouse wheel update")
-        .def("add_mouse_viewport_event",    // imgui.h:2067
+        .def("add_mouse_viewport_event",    // imgui.h:2078
             &ImGuiIO::AddMouseViewportEvent,
             py::arg("id_"),
             "Queue a mouse hovered viewport. Requires backend to set ImGuiBackendFlags_HasMouseHoveredViewport to call this (for multi-viewport support).")
-        .def("add_focus_event",    // imgui.h:2068
+        .def("add_focus_event",    // imgui.h:2079
             &ImGuiIO::AddFocusEvent,
             py::arg("focused"),
             "Queue a gain/loss of focus for the application (generally based on OS/platform focus of your window)")
-        .def("add_input_character",    // imgui.h:2069
+        .def("add_input_character",    // imgui.h:2080
             &ImGuiIO::AddInputCharacter,
             py::arg("c"),
             "Queue a new character input")
-        .def("add_input_character_utf16",    // imgui.h:2070
+        .def("add_input_character_utf16",    // imgui.h:2081
             &ImGuiIO::AddInputCharacterUTF16,
             py::arg("c"),
             "Queue a new character input from a UTF-16 character, it can be a surrogate")
-        .def("add_input_characters_utf8",    // imgui.h:2071
+        .def("add_input_characters_utf8",    // imgui.h:2082
             &ImGuiIO::AddInputCharactersUTF8,
             py::arg("str"),
             "Queue a new characters input from a UTF-8 string")
-        .def("set_key_event_native_data",    // imgui.h:2073
+        .def("set_key_event_native_data",    // imgui.h:2084
             &ImGuiIO::SetKeyEventNativeData,
             py::arg("key"), py::arg("native_keycode"), py::arg("native_scancode"), py::arg("native_legacy_index") = -1,
             "[Optional] Specify index for legacy <1.87 IsKeyXXX() functions with native indices + specify native keycode, scancode.")
-        .def("set_app_accepting_events",    // imgui.h:2074
+        .def("set_app_accepting_events",    // imgui.h:2085
             &ImGuiIO::SetAppAcceptingEvents,
             py::arg("accepting_events"),
             "Set master flag for accepting key/mouse/text events (default to True). Useful if you have native dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.")
-        .def("clear_input_characters",    // imgui.h:2075
+        .def("clear_input_characters",    // imgui.h:2086
             &ImGuiIO::ClearInputCharacters, "[Internal] Clear the text input buffer manually")
-        .def("clear_input_keys",    // imgui.h:2076
+        .def("clear_input_keys",    // imgui.h:2087
             &ImGuiIO::ClearInputKeys, "[Internal] Release all keys")
-        .def_readwrite("want_capture_mouse", &ImGuiIO::WantCaptureMouse, "Set when Dear ImGui will use mouse inputs, in this case do not dispatch them to your main game/application (either way, always pass on mouse inputs to imgui). (e.g. unclicked mouse is hovering over an imgui window, widget is active, mouse was clicked over an imgui window, etc.).")    // imgui.h:2084
-        .def_readwrite("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard, "Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. InputText active, or an imgui window is focused and navigation is enabled, etc.).")    // imgui.h:2085
-        .def_readwrite("want_text_input", &ImGuiIO::WantTextInput, "Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a InputText widget is active).")    // imgui.h:2086
-        .def_readwrite("want_set_mouse_pos", &ImGuiIO::WantSetMousePos, "MousePos has been altered, backend should reposition mouse on next frame. Rarely used! Set only when ImGuiConfigFlags_NavEnableSetMousePos flag is enabled.")    // imgui.h:2087
-        .def_readwrite("want_save_ini_settings", &ImGuiIO::WantSaveIniSettings, "When manual .ini load/save is active (io.IniFilename == None), this will be set to notify your application that you can call SaveIniSettingsToMemory() and save yourself. Important: clear io.WantSaveIniSettings yourself after saving!")    // imgui.h:2088
-        .def_readwrite("nav_active", &ImGuiIO::NavActive, "Keyboard/Gamepad navigation is currently allowed (will handle ImGuiKey_NavXXX events) = a window is focused and it doesn't use the ImGuiWindowFlags_NoNavInputs flag.")    // imgui.h:2089
-        .def_readwrite("nav_visible", &ImGuiIO::NavVisible, "Keyboard/Gamepad navigation is visible and allowed (will handle ImGuiKey_NavXXX events).")    // imgui.h:2090
-        .def_readwrite("framerate", &ImGuiIO::Framerate, "Estimate of application framerate (rolling average over 60 frames, based on io.DeltaTime), in frame per second. Solely for convenience. Slow applications may not want to use a moving average or may want to reset underlying buffers occasionally.")    // imgui.h:2091
-        .def_readwrite("metrics_render_vertices", &ImGuiIO::MetricsRenderVertices, "Vertices output during last call to Render()")    // imgui.h:2092
-        .def_readwrite("metrics_render_indices", &ImGuiIO::MetricsRenderIndices, "Indices output during last call to Render() = number of triangles * 3")    // imgui.h:2093
-        .def_readwrite("metrics_render_windows", &ImGuiIO::MetricsRenderWindows, "Number of visible windows")    // imgui.h:2094
-        .def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows, "Number of active windows")    // imgui.h:2095
-        .def_readwrite("metrics_active_allocations", &ImGuiIO::MetricsActiveAllocations, "Number of active allocations, updated by MemAlloc/MemFree based on current context. May be off if you have multiple imgui contexts.")    // imgui.h:2096
-        .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "")    // imgui.h:2097
-        .def_readwrite("mouse_pos", &ImGuiIO::MousePos, "Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)")    // imgui.h:2115
-        .def_property("mouse_down",    // imgui.h:2116
+        .def_readwrite("want_capture_mouse", &ImGuiIO::WantCaptureMouse, "Set when Dear ImGui will use mouse inputs, in this case do not dispatch them to your main game/application (either way, always pass on mouse inputs to imgui). (e.g. unclicked mouse is hovering over an imgui window, widget is active, mouse was clicked over an imgui window, etc.).")    // imgui.h:2095
+        .def_readwrite("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard, "Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. InputText active, or an imgui window is focused and navigation is enabled, etc.).")    // imgui.h:2096
+        .def_readwrite("want_text_input", &ImGuiIO::WantTextInput, "Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a InputText widget is active).")    // imgui.h:2097
+        .def_readwrite("want_set_mouse_pos", &ImGuiIO::WantSetMousePos, "MousePos has been altered, backend should reposition mouse on next frame. Rarely used! Set only when ImGuiConfigFlags_NavEnableSetMousePos flag is enabled.")    // imgui.h:2098
+        .def_readwrite("want_save_ini_settings", &ImGuiIO::WantSaveIniSettings, "When manual .ini load/save is active (io.IniFilename == None), this will be set to notify your application that you can call SaveIniSettingsToMemory() and save yourself. Important: clear io.WantSaveIniSettings yourself after saving!")    // imgui.h:2099
+        .def_readwrite("nav_active", &ImGuiIO::NavActive, "Keyboard/Gamepad navigation is currently allowed (will handle ImGuiKey_NavXXX events) = a window is focused and it doesn't use the ImGuiWindowFlags_NoNavInputs flag.")    // imgui.h:2100
+        .def_readwrite("nav_visible", &ImGuiIO::NavVisible, "Keyboard/Gamepad navigation is visible and allowed (will handle ImGuiKey_NavXXX events).")    // imgui.h:2101
+        .def_readwrite("framerate", &ImGuiIO::Framerate, "Estimate of application framerate (rolling average over 60 frames, based on io.DeltaTime), in frame per second. Solely for convenience. Slow applications may not want to use a moving average or may want to reset underlying buffers occasionally.")    // imgui.h:2102
+        .def_readwrite("metrics_render_vertices", &ImGuiIO::MetricsRenderVertices, "Vertices output during last call to Render()")    // imgui.h:2103
+        .def_readwrite("metrics_render_indices", &ImGuiIO::MetricsRenderIndices, "Indices output during last call to Render() = number of triangles * 3")    // imgui.h:2104
+        .def_readwrite("metrics_render_windows", &ImGuiIO::MetricsRenderWindows, "Number of visible windows")    // imgui.h:2105
+        .def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows, "Number of active windows")    // imgui.h:2106
+        .def_readwrite("metrics_active_allocations", &ImGuiIO::MetricsActiveAllocations, "Number of active allocations, updated by MemAlloc/MemFree based on current context. May be off if you have multiple imgui contexts.")    // imgui.h:2107
+        .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "")    // imgui.h:2108
+        .def_readwrite("mouse_pos", &ImGuiIO::MousePos, "Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)")    // imgui.h:2126
+        .def_property("mouse_down",    // imgui.h:2127
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3218,17 +3222,17 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDown, base);
             }, [](ImGuiIO& self) {},
             "Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.")
-        .def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text.")    // imgui.h:2117
-        .def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")    // imgui.h:2118
-        .def_readwrite("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")    // imgui.h:2119
-        .def_readwrite("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Control")    // imgui.h:2120
-        .def_readwrite("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")    // imgui.h:2121
-        .def_readwrite("key_alt", &ImGuiIO::KeyAlt, "Keyboard modifier down: Alt")    // imgui.h:2122
-        .def_readwrite("key_super", &ImGuiIO::KeySuper, "Keyboard modifier down: Cmd/Super/Windows")    // imgui.h:2123
-        .def_readwrite("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. DOES NOT CONTAINS ImGuiMod_Shortcut which is pretranslated). Read-only, updated by NewFrame()")    // imgui.h:2126
-        .def_readwrite("want_capture_mouse_unless_popup_close", &ImGuiIO::WantCaptureMouseUnlessPopupClose, "Alternative to WantCaptureMouse: (WantCaptureMouse == True && WantCaptureMouseUnlessPopupClose == False) when a click over None is expected to close a popup.")    // imgui.h:2128
-        .def_readwrite("mouse_pos_prev", &ImGuiIO::MousePosPrev, "Previous mouse position (note that MouseDelta is not necessary == MousePos-MousePosPrev, in case either position is invalid)")    // imgui.h:2129
-        .def_property("mouse_clicked_time",    // imgui.h:2131
+        .def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text.")    // imgui.h:2128
+        .def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")    // imgui.h:2129
+        .def_readwrite("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")    // imgui.h:2130
+        .def_readwrite("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Control")    // imgui.h:2131
+        .def_readwrite("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")    // imgui.h:2132
+        .def_readwrite("key_alt", &ImGuiIO::KeyAlt, "Keyboard modifier down: Alt")    // imgui.h:2133
+        .def_readwrite("key_super", &ImGuiIO::KeySuper, "Keyboard modifier down: Cmd/Super/Windows")    // imgui.h:2134
+        .def_readwrite("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. DOES NOT CONTAINS ImGuiMod_Shortcut which is pretranslated). Read-only, updated by NewFrame()")    // imgui.h:2137
+        .def_readwrite("want_capture_mouse_unless_popup_close", &ImGuiIO::WantCaptureMouseUnlessPopupClose, "Alternative to WantCaptureMouse: (WantCaptureMouse == True && WantCaptureMouseUnlessPopupClose == False) when a click over None is expected to close a popup.")    // imgui.h:2139
+        .def_readwrite("mouse_pos_prev", &ImGuiIO::MousePosPrev, "Previous mouse position (note that MouseDelta is not necessary == MousePos-MousePosPrev, in case either position is invalid)")    // imgui.h:2140
+        .def_property("mouse_clicked_time",    // imgui.h:2142
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<double>::format());
@@ -3236,7 +3240,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(double)}, self.MouseClickedTime, base);
             }, [](ImGuiIO& self) {},
             "Time of last click (used to figure out double-click)")
-        .def_property("mouse_clicked",    // imgui.h:2132
+        .def_property("mouse_clicked",    // imgui.h:2143
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3244,7 +3248,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseClicked, base);
             }, [](ImGuiIO& self) {},
             "Mouse button went from !Down to Down (same as MouseClickedCount[x] != 0)")
-        .def_property("mouse_double_clicked",    // imgui.h:2133
+        .def_property("mouse_double_clicked",    // imgui.h:2144
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3252,7 +3256,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDoubleClicked, base);
             }, [](ImGuiIO& self) {},
             "Has mouse button been double-clicked? (same as MouseClickedCount[x] == 2)")
-        .def_property("mouse_clicked_count",    // imgui.h:2134
+        .def_property("mouse_clicked_count",    // imgui.h:2145
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<ImU16>::format());
@@ -3260,7 +3264,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(ImU16)}, self.MouseClickedCount, base);
             }, [](ImGuiIO& self) {},
             "== 0 (not clicked), == 1 (same as MouseClicked[]), == 2 (double-clicked), == 3 (triple-clicked) etc. when going from !Down to Down")
-        .def_property("mouse_clicked_last_count",    // imgui.h:2135
+        .def_property("mouse_clicked_last_count",    // imgui.h:2146
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<ImU16>::format());
@@ -3268,7 +3272,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(ImU16)}, self.MouseClickedLastCount, base);
             }, [](ImGuiIO& self) {},
             "Count successive number of clicks. Stays valid after mouse release. Reset after another click is done.")
-        .def_property("mouse_released",    // imgui.h:2136
+        .def_property("mouse_released",    // imgui.h:2147
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3276,7 +3280,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseReleased, base);
             }, [](ImGuiIO& self) {},
             "Mouse button went from Down to !Down")
-        .def_property("mouse_down_owned",    // imgui.h:2137
+        .def_property("mouse_down_owned",    // imgui.h:2148
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3284,7 +3288,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDownOwned, base);
             }, [](ImGuiIO& self) {},
             "Track if button was clicked inside a dear imgui window or over None blocked by a popup. We don't request mouse capture from the application if click started outside ImGui bounds.")
-        .def_property("mouse_down_owned_unless_popup_close",    // imgui.h:2138
+        .def_property("mouse_down_owned_unless_popup_close",    // imgui.h:2149
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<bool>::format());
@@ -3292,7 +3296,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDownOwnedUnlessPopupClose, base);
             }, [](ImGuiIO& self) {},
             "Track if button was clicked inside a dear imgui window.")
-        .def_property("mouse_down_duration",    // imgui.h:2139
+        .def_property("mouse_down_duration",    // imgui.h:2150
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
@@ -3300,7 +3304,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(float)}, self.MouseDownDuration, base);
             }, [](ImGuiIO& self) {},
             "Duration the mouse button has been down (0.0 == just clicked)")
-        .def_property("mouse_down_duration_prev",    // imgui.h:2140
+        .def_property("mouse_down_duration_prev",    // imgui.h:2151
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
@@ -3308,7 +3312,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(float)}, self.MouseDownDurationPrev, base);
             }, [](ImGuiIO& self) {},
             "Previous time the mouse button has been down")
-        .def_property("mouse_drag_max_distance_sqr",    // imgui.h:2142
+        .def_property("mouse_drag_max_distance_sqr",    // imgui.h:2153
             [](ImGuiIO &self) -> pybind11::array
             {
                 auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
@@ -3316,40 +3320,40 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(float)}, self.MouseDragMaxDistanceSqr, base);
             }, [](ImGuiIO& self) {},
             "Squared maximum distance of how much mouse has traveled from the clicking point (used for moving thresholds)")
-        .def_readwrite("pen_pressure", &ImGuiIO::PenPressure, "Touch/Pen pressure (0.0 to 1.0, should be >0.0 only when MouseDown[0] == True). Helper storage currently unused by Dear ImGui.")    // imgui.h:2143
-        .def_readwrite("app_focus_lost", &ImGuiIO::AppFocusLost, "Only modify via AddFocusEvent()")    // imgui.h:2144
-        .def_readwrite("app_accepting_events", &ImGuiIO::AppAcceptingEvents, "Only modify via SetAppAcceptingEvents()")    // imgui.h:2145
-        .def_readwrite("backend_using_legacy_key_arrays", &ImGuiIO::BackendUsingLegacyKeyArrays, "-1: unknown, 0: using AddKeyEvent(), 1: using legacy io.KeysDown[]")    // imgui.h:2146
-        .def_readwrite("backend_using_legacy_nav_input_array", &ImGuiIO::BackendUsingLegacyNavInputArray, "0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly")    // imgui.h:2147
-        .def_readwrite("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")    // imgui.h:2148
-        .def(py::init<>())    // imgui.h:2151
+        .def_readwrite("pen_pressure", &ImGuiIO::PenPressure, "Touch/Pen pressure (0.0 to 1.0, should be >0.0 only when MouseDown[0] == True). Helper storage currently unused by Dear ImGui.")    // imgui.h:2154
+        .def_readwrite("app_focus_lost", &ImGuiIO::AppFocusLost, "Only modify via AddFocusEvent()")    // imgui.h:2155
+        .def_readwrite("app_accepting_events", &ImGuiIO::AppAcceptingEvents, "Only modify via SetAppAcceptingEvents()")    // imgui.h:2156
+        .def_readwrite("backend_using_legacy_key_arrays", &ImGuiIO::BackendUsingLegacyKeyArrays, "-1: unknown, 0: using AddKeyEvent(), 1: using legacy io.KeysDown[]")    // imgui.h:2157
+        .def_readwrite("backend_using_legacy_nav_input_array", &ImGuiIO::BackendUsingLegacyNavInputArray, "0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly")    // imgui.h:2158
+        .def_readwrite("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")    // imgui.h:2159
+        .def(py::init<>())    // imgui.h:2162
         ;
 
 
     auto pyClassImGuiInputTextCallbackData =
-        py::class_<ImGuiInputTextCallbackData>    // imgui.h:2167
+        py::class_<ImGuiInputTextCallbackData>    // imgui.h:2178
             (m, "InputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
-        .def_readwrite("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")    // imgui.h:2169
-        .def_readwrite("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")    // imgui.h:2170
-        .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")    // imgui.h:2171
-        .def_readwrite("event_char", &ImGuiInputTextCallbackData::EventChar, "Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;")    // imgui.h:2176
-        .def_readwrite("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")    // imgui.h:2177
-        .def_readwrite("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")    // imgui.h:2179
-        .def_readwrite("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")    // imgui.h:2180
-        .def_readwrite("buf_dirty", &ImGuiInputTextCallbackData::BufDirty, "Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]")    // imgui.h:2181
-        .def_readwrite("cursor_pos", &ImGuiInputTextCallbackData::CursorPos, "// Read-write   // [Completion,History,Always]")    // imgui.h:2182
-        .def_readwrite("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always] == to SelectionEnd when no selection)")    // imgui.h:2183
-        .def_readwrite("selection_end", &ImGuiInputTextCallbackData::SelectionEnd, "// Read-write   // [Completion,History,Always]")    // imgui.h:2184
-        .def(py::init<>())    // imgui.h:2188
-        .def("delete_chars",    // imgui.h:2189
+        .def_readwrite("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")    // imgui.h:2180
+        .def_readwrite("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")    // imgui.h:2181
+        .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")    // imgui.h:2182
+        .def_readwrite("event_char", &ImGuiInputTextCallbackData::EventChar, "Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;")    // imgui.h:2187
+        .def_readwrite("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")    // imgui.h:2188
+        .def_readwrite("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")    // imgui.h:2190
+        .def_readwrite("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")    // imgui.h:2191
+        .def_readwrite("buf_dirty", &ImGuiInputTextCallbackData::BufDirty, "Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]")    // imgui.h:2192
+        .def_readwrite("cursor_pos", &ImGuiInputTextCallbackData::CursorPos, "// Read-write   // [Completion,History,Always]")    // imgui.h:2193
+        .def_readwrite("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always] == to SelectionEnd when no selection)")    // imgui.h:2194
+        .def_readwrite("selection_end", &ImGuiInputTextCallbackData::SelectionEnd, "// Read-write   // [Completion,History,Always]")    // imgui.h:2195
+        .def(py::init<>())    // imgui.h:2199
+        .def("delete_chars",    // imgui.h:2200
             &ImGuiInputTextCallbackData::DeleteChars, py::arg("pos"), py::arg("bytes_count"))
-        .def("insert_chars",    // imgui.h:2190
+        .def("insert_chars",    // imgui.h:2201
             &ImGuiInputTextCallbackData::InsertChars, py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none())
         ;
 
 
     auto pyClassImGuiSizeCallbackData =
-        py::class_<ImGuiSizeCallbackData>    // imgui.h:2198
+        py::class_<ImGuiSizeCallbackData>    // imgui.h:2209
             (m, "SizeCallbackData", " Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().\n NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.")
         .def(py::init<>([](
         ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2())
@@ -3362,110 +3366,110 @@ void py_init_module_imgui_main(py::module& m)
         })
         , py::arg("pos") = ImVec2(), py::arg("current_size") = ImVec2(), py::arg("desired_size") = ImVec2()
         )
-        .def_readwrite("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints(). Generally store an integer or float in here (need reinterpret_cast<>).")    // imgui.h:2200
-        .def_readwrite("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")    // imgui.h:2201
-        .def_readwrite("current_size", &ImGuiSizeCallbackData::CurrentSize, "Read-only.   Current window size.")    // imgui.h:2202
-        .def_readwrite("desired_size", &ImGuiSizeCallbackData::DesiredSize, "Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.")    // imgui.h:2203
+        .def_readwrite("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints(). Generally store an integer or float in here (need reinterpret_cast<>).")    // imgui.h:2211
+        .def_readwrite("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")    // imgui.h:2212
+        .def_readwrite("current_size", &ImGuiSizeCallbackData::CurrentSize, "Read-only.   Current window size.")    // imgui.h:2213
+        .def_readwrite("desired_size", &ImGuiSizeCallbackData::DesiredSize, "Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.")    // imgui.h:2214
         ;
 
 
     auto pyClassImGuiWindowClass =
-        py::class_<ImGuiWindowClass>    // imgui.h:2213
+        py::class_<ImGuiWindowClass>    // imgui.h:2224
             (m, "WindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
-        .def_readwrite("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")    // imgui.h:2215
-        .def_readwrite("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")    // imgui.h:2216
-        .def_readwrite("viewport_flags_override_set", &ImGuiWindowClass::ViewportFlagsOverrideSet, "Viewport flags to set when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2217
-        .def_readwrite("viewport_flags_override_clear", &ImGuiWindowClass::ViewportFlagsOverrideClear, "Viewport flags to clear when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2218
-        .def_readwrite("tab_item_flags_override_set", &ImGuiWindowClass::TabItemFlagsOverrideSet, "[EXPERIMENTAL] TabItem flags to set when a window of this class gets submitted into a dock node tab bar. May use with ImGuiTabItemFlags_Leading or ImGuiTabItemFlags_Trailing.")    // imgui.h:2219
-        .def_readwrite("dock_node_flags_override_set", &ImGuiWindowClass::DockNodeFlagsOverrideSet, "[EXPERIMENTAL] Dock node flags to set when a window of this class is hosted by a dock node (it doesn't have to be selected!)")    // imgui.h:2220
-        .def_readwrite("docking_always_tab_bar", &ImGuiWindowClass::DockingAlwaysTabBar, "Set to True to enforce single floating windows of this class always having their own docking node (equivalent of setting the global io.ConfigDockingAlwaysTabBar)")    // imgui.h:2221
-        .def_readwrite("docking_allow_unclassed", &ImGuiWindowClass::DockingAllowUnclassed, "Set to True to allow windows of this class to be docked/merged with an unclassed window. // FIXME-DOCK: Move to DockNodeFlags override?")    // imgui.h:2222
-        .def(py::init<>())    // imgui.h:2224
+        .def_readwrite("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")    // imgui.h:2226
+        .def_readwrite("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")    // imgui.h:2227
+        .def_readwrite("viewport_flags_override_set", &ImGuiWindowClass::ViewportFlagsOverrideSet, "Viewport flags to set when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2228
+        .def_readwrite("viewport_flags_override_clear", &ImGuiWindowClass::ViewportFlagsOverrideClear, "Viewport flags to clear when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")    // imgui.h:2229
+        .def_readwrite("tab_item_flags_override_set", &ImGuiWindowClass::TabItemFlagsOverrideSet, "[EXPERIMENTAL] TabItem flags to set when a window of this class gets submitted into a dock node tab bar. May use with ImGuiTabItemFlags_Leading or ImGuiTabItemFlags_Trailing.")    // imgui.h:2230
+        .def_readwrite("dock_node_flags_override_set", &ImGuiWindowClass::DockNodeFlagsOverrideSet, "[EXPERIMENTAL] Dock node flags to set when a window of this class is hosted by a dock node (it doesn't have to be selected!)")    // imgui.h:2231
+        .def_readwrite("docking_always_tab_bar", &ImGuiWindowClass::DockingAlwaysTabBar, "Set to True to enforce single floating windows of this class always having their own docking node (equivalent of setting the global io.ConfigDockingAlwaysTabBar)")    // imgui.h:2232
+        .def_readwrite("docking_allow_unclassed", &ImGuiWindowClass::DockingAllowUnclassed, "Set to True to allow windows of this class to be docked/merged with an unclassed window. // FIXME-DOCK: Move to DockNodeFlags override?")    // imgui.h:2233
+        .def(py::init<>())    // imgui.h:2235
         ;
 
 
     auto pyClassImGuiPayload =
-        py::class_<ImGuiPayload>    // imgui.h:2228
+        py::class_<ImGuiPayload>    // imgui.h:2239
             (m, "Payload", "Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()")
-        .def_readwrite("data", &ImGuiPayload::Data, "Data (copied and owned by dear imgui)")    // imgui.h:2231
-        .def_readwrite("data_size", &ImGuiPayload::DataSize, "Data size")    // imgui.h:2232
-        .def_readwrite("source_id", &ImGuiPayload::SourceId, "Source item id")    // imgui.h:2235
-        .def_readwrite("source_parent_id", &ImGuiPayload::SourceParentId, "Source parent id (if available)")    // imgui.h:2236
-        .def_readwrite("data_frame_count", &ImGuiPayload::DataFrameCount, "Data timestamp")    // imgui.h:2237
-        .def_readwrite("preview", &ImGuiPayload::Preview, "Set when AcceptDragDropPayload() was called and mouse has been hovering the target item (nb: handle overlapping drag targets)")    // imgui.h:2239
-        .def_readwrite("delivery", &ImGuiPayload::Delivery, "Set when AcceptDragDropPayload() was called and mouse button is released over the target item.")    // imgui.h:2240
-        .def(py::init<>())    // imgui.h:2242
+        .def_readwrite("data", &ImGuiPayload::Data, "Data (copied and owned by dear imgui)")    // imgui.h:2242
+        .def_readwrite("data_size", &ImGuiPayload::DataSize, "Data size")    // imgui.h:2243
+        .def_readwrite("source_id", &ImGuiPayload::SourceId, "Source item id")    // imgui.h:2246
+        .def_readwrite("source_parent_id", &ImGuiPayload::SourceParentId, "Source parent id (if available)")    // imgui.h:2247
+        .def_readwrite("data_frame_count", &ImGuiPayload::DataFrameCount, "Data timestamp")    // imgui.h:2248
+        .def_readwrite("preview", &ImGuiPayload::Preview, "Set when AcceptDragDropPayload() was called and mouse has been hovering the target item (nb: handle overlapping drag targets)")    // imgui.h:2250
+        .def_readwrite("delivery", &ImGuiPayload::Delivery, "Set when AcceptDragDropPayload() was called and mouse button is released over the target item.")    // imgui.h:2251
+        .def(py::init<>())    // imgui.h:2253
         ;
 
 
     auto pyClassImGuiTableColumnSortSpecs =
-        py::class_<ImGuiTableColumnSortSpecs>    // imgui.h:2250
+        py::class_<ImGuiTableColumnSortSpecs>    // imgui.h:2261
             (m, "TableColumnSortSpecs", "Sorting specification for one column of a table (sizeof == 12 bytes)")
-        .def_readwrite("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User id of the column (if specified by a TableSetupColumn() call)")    // imgui.h:2252
-        .def_readwrite("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")    // imgui.h:2253
-        .def_readwrite("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")    // imgui.h:2254
-        .def(py::init<>())    // imgui.h:2257
+        .def_readwrite("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User id of the column (if specified by a TableSetupColumn() call)")    // imgui.h:2263
+        .def_readwrite("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")    // imgui.h:2264
+        .def_readwrite("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")    // imgui.h:2265
+        .def(py::init<>())    // imgui.h:2268
         ;
 
 
     auto pyClassImGuiTableSortSpecs =
-        py::class_<ImGuiTableSortSpecs>    // imgui.h:2264
+        py::class_<ImGuiTableSortSpecs>    // imgui.h:2275
             (m, "TableSortSpecs", " Sorting specifications for a table (often handling sort specs for a single column, occasionally more)\n Obtained by calling TableGetSortSpecs().\n When 'SpecsDirty == True' you can sort your data. It will be True with sorting specs have changed since last call, or the first time.\n Make sure to set 'SpecsDirty = False' after sorting, else you may wastefully sort your data every frame!")
-        .def_readonly("specs", &ImGuiTableSortSpecs::Specs, "Pointer to sort spec array.")    // imgui.h:2266
-        .def_readwrite("specs_count", &ImGuiTableSortSpecs::SpecsCount, "Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.")    // imgui.h:2267
-        .def_readwrite("specs_dirty", &ImGuiTableSortSpecs::SpecsDirty, "Set to True when specs have changed since last time! Use this to sort again, then clear the flag.")    // imgui.h:2268
-        .def(py::init<>())    // imgui.h:2270
+        .def_readonly("specs", &ImGuiTableSortSpecs::Specs, "Pointer to sort spec array.")    // imgui.h:2277
+        .def_readwrite("specs_count", &ImGuiTableSortSpecs::SpecsCount, "Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.")    // imgui.h:2278
+        .def_readwrite("specs_dirty", &ImGuiTableSortSpecs::SpecsDirty, "Set to True when specs have changed since last time! Use this to sort again, then clear the flag.")    // imgui.h:2279
+        .def(py::init<>())    // imgui.h:2281
         ;
 
 
     auto pyClassImGuiOnceUponAFrame =
-        py::class_<ImGuiOnceUponAFrame>    // imgui.h:2287
+        py::class_<ImGuiOnceUponAFrame>    // imgui.h:2298
             (m, "OnceUponAFrame", " Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create a UI within deep-nested code that runs multiple times every frame.\n Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text(\"This will be called only once per frame\");")
-        .def(py::init<>())    // imgui.h:2289
-        .def_readwrite("ref_frame", &ImGuiOnceUponAFrame::RefFrame, "")    // imgui.h:2290
-        .def("__bool__",    // imgui.h:2291
+        .def(py::init<>())    // imgui.h:2300
+        .def_readwrite("ref_frame", &ImGuiOnceUponAFrame::RefFrame, "")    // imgui.h:2301
+        .def("__bool__",    // imgui.h:2302
             &ImGuiOnceUponAFrame::operator bool)
         ;
 
 
     auto pyClassImGuiTextFilter =
-        py::class_<ImGuiTextFilter>    // imgui.h:2295
+        py::class_<ImGuiTextFilter>    // imgui.h:2306
             (m, "TextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"");
 
     { // inner classes & enums of TextFilter
         auto pyClassImGuiTextFilter_ClassImGuiTextRange =
-            py::class_<ImGuiTextFilter::ImGuiTextRange>    // imgui.h:2305
+            py::class_<ImGuiTextFilter::ImGuiTextRange>    // imgui.h:2316
                 (pyClassImGuiTextFilter, "TextRange", "[Internal]")
-            .def_readonly("b", &ImGuiTextFilter::ImGuiTextRange::b, "")    // imgui.h:2307
-            .def_readonly("e", &ImGuiTextFilter::ImGuiTextRange::e, "")    // imgui.h:2308
-            .def(py::init<>())    // imgui.h:2310
-            .def(py::init<const char *, const char *>(),    // imgui.h:2311
+            .def_readonly("b", &ImGuiTextFilter::ImGuiTextRange::b, "")    // imgui.h:2318
+            .def_readonly("e", &ImGuiTextFilter::ImGuiTextRange::e, "")    // imgui.h:2319
+            .def(py::init<>())    // imgui.h:2321
+            .def(py::init<const char *, const char *>(),    // imgui.h:2322
                 py::arg("_b"), py::arg("_e"))
             ;
     } // end of inner classes & enums of TextFilter
 
     pyClassImGuiTextFilter
-        .def(py::init<const char *>(),    // imgui.h:2297
+        .def(py::init<const char *>(),    // imgui.h:2308
             py::arg("default_filter") = "")
-        .def("draw",    // imgui.h:2298
+        .def("draw",    // imgui.h:2309
             &ImGuiTextFilter::Draw,
             py::arg("label") = "Filter (inc,-exc)", py::arg("width") = 0.0f,
             "Helper calling InputText+Build")
-        .def("pass_filter",    // imgui.h:2299
+        .def("pass_filter",    // imgui.h:2310
             &ImGuiTextFilter::PassFilter, py::arg("text"), py::arg("text_end") = py::none())
-        .def("build",    // imgui.h:2300
+        .def("build",    // imgui.h:2311
             &ImGuiTextFilter::Build)
-        .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")    // imgui.h:2317
+        .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")    // imgui.h:2328
         ;
 
 
     auto pyClassImGuiTextBuffer =
-        py::class_<ImGuiTextBuffer>    // imgui.h:2322
+        py::class_<ImGuiTextBuffer>    // imgui.h:2333
             (m, "TextBuffer", " Helper: Growable text buffer for logging/accumulating text\n (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')")
-        .def(py::init<>())    // imgui.h:2327
-        .def("append",    // imgui.h:2336
+        .def(py::init<>())    // imgui.h:2338
+        .def("append",    // imgui.h:2347
             &ImGuiTextBuffer::append, py::arg("str"), py::arg("str_end") = py::none())
-        .def("appendf",    // imgui.h:2337
+        .def("appendf",    // imgui.h:2348
             [](ImGuiTextBuffer & self, const char * fmt)
             {
                 auto appendf_adapt_variadic_format = [&self](const char * fmt)
@@ -3479,83 +3483,83 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImGuiStorage =
-        py::class_<ImGuiStorage>    // imgui.h:2349
+        py::class_<ImGuiStorage>    // imgui.h:2360
             (m, "Storage", " Helper: Key->Value storage\n Typically you don't have to worry about this since a storage is held within each Window.\n We use it to e.g. store collapse state for a tree (Int 0/1)\n This is optimized for efficient lookup (dichotomy into a contiguous buffer) and rare insertion (typically tied to user interactions aka max once a frame)\n You can use it as custom user storage for temporary values. Declare your own storage if, for example:\n - You want to manipulate the open/close state of a particular sub-tree in your interface (tree node uses Int 0/1 to store their state).\n - You want to store custom debug data easily without adding or editing structures in your code (probably not efficient, but convenient)\n Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.");
 
     { // inner classes & enums of Storage
         auto pyClassImGuiStorage_ClassImGuiStoragePair =
-            py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2352
+            py::class_<ImGuiStorage::ImGuiStoragePair>    // imgui.h:2363
                 (pyClassImGuiStorage, "StoragePair", "[Internal]")
-            .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2354
-            .def(py::init<ImGuiID, int>(),    // imgui.h:2356
+            .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")    // imgui.h:2365
+            .def(py::init<ImGuiID, int>(),    // imgui.h:2367
                 py::arg("_key"), py::arg("_val_i"))
-            .def(py::init<ImGuiID, float>(),    // imgui.h:2357
+            .def(py::init<ImGuiID, float>(),    // imgui.h:2368
                 py::arg("_key"), py::arg("_val_f"))
-            .def(py::init<ImGuiID, void *>(),    // imgui.h:2358
+            .def(py::init<ImGuiID, void *>(),    // imgui.h:2369
                 py::arg("_key"), py::arg("_val_p"))
             ;
     } // end of inner classes & enums of Storage
 
     pyClassImGuiStorage
         .def(py::init<>()) // implicit default constructor
-        .def("get_int",    // imgui.h:2367
+        .def("get_int",    // imgui.h:2378
             &ImGuiStorage::GetInt, py::arg("key"), py::arg("default_val") = 0)
-        .def("set_int",    // imgui.h:2368
+        .def("set_int",    // imgui.h:2379
             &ImGuiStorage::SetInt, py::arg("key"), py::arg("val"))
-        .def("get_bool",    // imgui.h:2369
+        .def("get_bool",    // imgui.h:2380
             &ImGuiStorage::GetBool, py::arg("key"), py::arg("default_val") = false)
-        .def("set_bool",    // imgui.h:2370
+        .def("set_bool",    // imgui.h:2381
             &ImGuiStorage::SetBool, py::arg("key"), py::arg("val"))
-        .def("get_float",    // imgui.h:2371
+        .def("get_float",    // imgui.h:2382
             &ImGuiStorage::GetFloat, py::arg("key"), py::arg("default_val") = 0.0f)
-        .def("set_float",    // imgui.h:2372
+        .def("set_float",    // imgui.h:2383
             &ImGuiStorage::SetFloat, py::arg("key"), py::arg("val"))
-        .def("get_void_ptr",    // imgui.h:2373
+        .def("get_void_ptr",    // imgui.h:2384
             &ImGuiStorage::GetVoidPtr,
             py::arg("key"),
             "default_val is None",
             pybind11::return_value_policy::reference)
-        .def("set_void_ptr",    // imgui.h:2374
+        .def("set_void_ptr",    // imgui.h:2385
             &ImGuiStorage::SetVoidPtr, py::arg("key"), py::arg("val"))
-        .def("get_int_ref",    // imgui.h:2380
+        .def("get_int_ref",    // imgui.h:2391
             &ImGuiStorage::GetIntRef,
             py::arg("key"), py::arg("default_val") = 0,
             pybind11::return_value_policy::reference)
-        .def("get_bool_ref",    // imgui.h:2381
+        .def("get_bool_ref",    // imgui.h:2392
             &ImGuiStorage::GetBoolRef,
             py::arg("key"), py::arg("default_val") = false,
             pybind11::return_value_policy::reference)
-        .def("get_float_ref",    // imgui.h:2382
+        .def("get_float_ref",    // imgui.h:2393
             &ImGuiStorage::GetFloatRef,
             py::arg("key"), py::arg("default_val") = 0.0f,
             pybind11::return_value_policy::reference)
-        .def("set_all_int",    // imgui.h:2386
+        .def("set_all_int",    // imgui.h:2397
             &ImGuiStorage::SetAllInt,
             py::arg("val"),
             "Use on your own storage if you know only integer are being stored (open/close all tree nodes)")
-        .def("build_sort_by_key",    // imgui.h:2389
+        .def("build_sort_by_key",    // imgui.h:2400
             &ImGuiStorage::BuildSortByKey, "For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once.")
         ;
 
 
     auto pyClassImGuiListClipper =
-        py::class_<ImGuiListClipper>    // imgui.h:2412
+        py::class_<ImGuiListClipper>    // imgui.h:2423
             (m, "ListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
-        .def_readwrite("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")    // imgui.h:2414
-        .def_readwrite("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")    // imgui.h:2415
-        .def_readwrite("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")    // imgui.h:2416
-        .def_readwrite("items_height", &ImGuiListClipper::ItemsHeight, "[Internal] Height of item after a first step and item submission can calculate it")    // imgui.h:2417
-        .def_readwrite("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")    // imgui.h:2418
-        .def_readwrite("temp_data", &ImGuiListClipper::TempData, "[Internal] Internal data")    // imgui.h:2419
-        .def(py::init<>(),    // imgui.h:2423
+        .def_readwrite("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")    // imgui.h:2425
+        .def_readwrite("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")    // imgui.h:2426
+        .def_readwrite("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")    // imgui.h:2427
+        .def_readwrite("items_height", &ImGuiListClipper::ItemsHeight, "[Internal] Height of item after a first step and item submission can calculate it")    // imgui.h:2428
+        .def_readwrite("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")    // imgui.h:2429
+        .def_readwrite("temp_data", &ImGuiListClipper::TempData, "[Internal] Internal data")    // imgui.h:2430
+        .def(py::init<>(),    // imgui.h:2434
             " items_count: Use INT_MAX if you don't know how many items you have (in which case the cursor won't be advanced in the final step)\n items_height: Use -1.0 to be calculated automatically on first step. Otherwise pass in the distance between your items, typically GetTextLineHeightWithSpacing() or GetFrameHeightWithSpacing().")
-        .def("begin",    // imgui.h:2425
+        .def("begin",    // imgui.h:2436
             &ImGuiListClipper::Begin, py::arg("items_count"), py::arg("items_height") = -1.0f)
-        .def("end",    // imgui.h:2426
+        .def("end",    // imgui.h:2437
             &ImGuiListClipper::End, "Automatically called on the last call of Step() that returns False.")
-        .def("step",    // imgui.h:2427
+        .def("step",    // imgui.h:2438
             &ImGuiListClipper::Step, "Call until it returns False. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.")
-        .def("force_display_range_by_indices",    // imgui.h:2430
+        .def("force_display_range_by_indices",    // imgui.h:2441
             &ImGuiListClipper::ForceDisplayRangeByIndices,
             py::arg("item_min"), py::arg("item_max"),
             "Call ForceDisplayRangeByIndices() before first call to Step() if you need a range of items to be displayed regardless of visibility.")
@@ -3563,37 +3567,37 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImColor =
-        py::class_<ImColor>    // imgui.h:2463
+        py::class_<ImColor>    // imgui.h:2474
             (m, "ImColor", " Helper: ImColor() implicitly converts colors to either ImU32 (packed 4x1 byte) or ImVec4 (4x1 float)\n Prefer using IM_COL32() macros if you want a guaranteed compile-time ImU32 for usage with ImDrawList API.\n **Avoid storing ImColor! Store either u32 of ImVec4. This is not a full-featured color class. MAY OBSOLETE.\n **None of the ImGui API are using ImColor directly but you can use it as a convenience to pass colors in either ImU32 or ImVec4 formats. Explicitly cast to ImU32 or ImVec4 if needed.")
-        .def_readwrite("value", &ImColor::Value, "")    // imgui.h:2465
-        .def(py::init<>())    // imgui.h:2467
-        .def(py::init<float, float, float, float>(),    // imgui.h:2468
+        .def_readwrite("value", &ImColor::Value, "")    // imgui.h:2476
+        .def(py::init<>())    // imgui.h:2478
+        .def(py::init<float, float, float, float>(),    // imgui.h:2479
             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a") = 1.0f)
-        .def(py::init<const ImVec4 &>(),    // imgui.h:2469
+        .def(py::init<const ImVec4 &>(),    // imgui.h:2480
             py::arg("col"))
-        .def(py::init<int, int, int, int>(),    // imgui.h:2470
+        .def(py::init<int, int, int, int>(),    // imgui.h:2481
             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a") = 255)
-        .def(py::init<ImU32>(),    // imgui.h:2471
+        .def(py::init<ImU32>(),    // imgui.h:2482
             py::arg("rgba"))
         ;
 
 
     auto pyClassImDrawCmd =
-        py::class_<ImDrawCmd>    // imgui.h:2512
+        py::class_<ImDrawCmd>    // imgui.h:2523
             (m, "ImDrawCmd", " Typically, 1 command = 1 GPU draw call (unless command is a callback)\n - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,\n   this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.\n   Backends made for <1.71. will typically ignore the VtxOffset fields.\n - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).")
-        .def_readwrite("clip_rect", &ImDrawCmd::ClipRect, "4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in \"viewport\" coordinates")    // imgui.h:2514
-        .def_readwrite("texture_id", &ImDrawCmd::TextureId, "4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.")    // imgui.h:2515
-        .def_readwrite("vtx_offset", &ImDrawCmd::VtxOffset, "4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.")    // imgui.h:2516
-        .def_readwrite("idx_offset", &ImDrawCmd::IdxOffset, "4    // Start offset in index buffer.")    // imgui.h:2517
-        .def_readwrite("elem_count", &ImDrawCmd::ElemCount, "4    // Number of indices (multiple of 3) to be rendered as triangles. Vertices are stored in the callee ImDrawList's vtx_buffer[] array, indices in idx_buffer[].")    // imgui.h:2518
-        .def_readwrite("user_callback_data", &ImDrawCmd::UserCallbackData, "4-8  // The draw callback code can access this.")    // imgui.h:2520
-        .def(py::init<>(),    // imgui.h:2522
+        .def_readwrite("clip_rect", &ImDrawCmd::ClipRect, "4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in \"viewport\" coordinates")    // imgui.h:2525
+        .def_readwrite("texture_id", &ImDrawCmd::TextureId, "4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.")    // imgui.h:2526
+        .def_readwrite("vtx_offset", &ImDrawCmd::VtxOffset, "4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.")    // imgui.h:2527
+        .def_readwrite("idx_offset", &ImDrawCmd::IdxOffset, "4    // Start offset in index buffer.")    // imgui.h:2528
+        .def_readwrite("elem_count", &ImDrawCmd::ElemCount, "4    // Number of indices (multiple of 3) to be rendered as triangles. Vertices are stored in the callee ImDrawList's vtx_buffer[] array, indices in idx_buffer[].")    // imgui.h:2529
+        .def_readwrite("user_callback_data", &ImDrawCmd::UserCallbackData, "4-8  // The draw callback code can access this.")    // imgui.h:2531
+        .def(py::init<>(),    // imgui.h:2533
             "Also ensure our padding fields are zeroed")
         ;
 
 
     auto pyClassImDrawCmdHeader =
-        py::class_<ImDrawCmdHeader>    // imgui.h:2545
+        py::class_<ImDrawCmdHeader>    // imgui.h:2556
             (m, "ImDrawCmdHeader", "[Internal] For use by ImDrawList")
         .def(py::init<>([](
         ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID())
@@ -3605,37 +3609,37 @@ void py_init_module_imgui_main(py::module& m)
         })
         , py::arg("clip_rect") = ImVec4(), py::arg("texture_id") = ImTextureID()
         )
-        .def_readwrite("clip_rect", &ImDrawCmdHeader::ClipRect, "")    // imgui.h:2547
-        .def_readwrite("texture_id", &ImDrawCmdHeader::TextureId, "")    // imgui.h:2548
-        .def_readwrite("vtx_offset", &ImDrawCmdHeader::VtxOffset, "")    // imgui.h:2549
+        .def_readwrite("clip_rect", &ImDrawCmdHeader::ClipRect, "")    // imgui.h:2558
+        .def_readwrite("texture_id", &ImDrawCmdHeader::TextureId, "")    // imgui.h:2559
+        .def_readwrite("vtx_offset", &ImDrawCmdHeader::VtxOffset, "")    // imgui.h:2560
         ;
 
 
     auto pyClassImDrawChannel =
-        py::class_<ImDrawChannel>    // imgui.h:2553
+        py::class_<ImDrawChannel>    // imgui.h:2564
             (m, "ImDrawChannel", "[Internal] For use by ImDrawListSplitter")
         .def(py::init<>()) // implicit default constructor
         ;
 
 
     auto pyClassImDrawListSplitter =
-        py::class_<ImDrawListSplitter>    // imgui.h:2562
+        py::class_<ImDrawListSplitter>    // imgui.h:2573
             (m, "ImDrawListSplitter", " Split/Merge functions are used to split the draw list into different layers which can be drawn into out of order.\n This is used by the Columns/Tables API, so items of each column can be batched together in a same draw call.")
-        .def_readwrite("_current", &ImDrawListSplitter::_Current, "Current channel number (0)")    // imgui.h:2564
-        .def_readwrite("_count", &ImDrawListSplitter::_Count, "Number of active channels (1+)")    // imgui.h:2565
-        .def(py::init<>())    // imgui.h:2568
-        .def("clear_free_memory",    // imgui.h:2571
+        .def_readwrite("_current", &ImDrawListSplitter::_Current, "Current channel number (0)")    // imgui.h:2575
+        .def_readwrite("_count", &ImDrawListSplitter::_Count, "Number of active channels (1+)")    // imgui.h:2576
+        .def(py::init<>())    // imgui.h:2579
+        .def("clear_free_memory",    // imgui.h:2582
             &ImDrawListSplitter::ClearFreeMemory)
-        .def("split",    // imgui.h:2572
+        .def("split",    // imgui.h:2583
             &ImDrawListSplitter::Split, py::arg("draw_list"), py::arg("count"))
-        .def("merge",    // imgui.h:2573
+        .def("merge",    // imgui.h:2584
             &ImDrawListSplitter::Merge, py::arg("draw_list"))
-        .def("set_current_channel",    // imgui.h:2574
+        .def("set_current_channel",    // imgui.h:2585
             &ImDrawListSplitter::SetCurrentChannel, py::arg("draw_list"), py::arg("channel_idx"))
         ;
 
 
-    py::enum_<ImDrawFlags_>(m, "ImDrawFlags_", py::arithmetic(), " Flags for ImDrawList functions\n (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)")    // imgui.h:2579
+    py::enum_<ImDrawFlags_>(m, "ImDrawFlags_", py::arithmetic(), " Flags for ImDrawList functions\n (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)")    // imgui.h:2590
         .value("none", ImDrawFlags_None, "")
         .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)")
         .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.")
@@ -3652,7 +3656,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("round_corners_mask_", ImDrawFlags_RoundCornersMask_, "");
 
 
-    py::enum_<ImDrawListFlags_>(m, "ImDrawListFlags_", py::arithmetic(), " Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.\n It is however possible to temporarily alter flags between calls to ImDrawList:: functions.")    // imgui.h:2599
+    py::enum_<ImDrawListFlags_>(m, "ImDrawListFlags_", py::arithmetic(), " Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.\n It is however possible to temporarily alter flags between calls to ImDrawList:: functions.")    // imgui.h:2610
         .value("none", ImDrawListFlags_None, "")
         .value("anti_aliased_lines", ImDrawListFlags_AntiAliasedLines, "Enable anti-aliased lines/borders (*2 the number of triangles for 1.0 wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)")
         .value("anti_aliased_lines_use_tex", ImDrawListFlags_AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering (NOT point/nearest filtering).")
@@ -3661,159 +3665,159 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImDrawList =
-        py::class_<ImDrawList>    // imgui.h:2617
+        py::class_<ImDrawList>    // imgui.h:2628
             (m, "ImDrawList", " Draw command list\n This is the low-level list of polygons that ImGui:: functions are filling. At the end of the frame,\n all command lists are passed to your ImGuiIO::RenderDrawListFn function for rendering.\n Each dear imgui window contains its own ImDrawList. You can use ImGui::GetWindowDrawList() to\n access the current window draw list and draw custom primitives.\n You can interleave normal ImGui:: calls and adding primitives to the current draw list.\n In single viewport mode, top-left is == GetMainViewport()->Pos (generally 0,0), bottom-right is == GetMainViewport()->Pos+Size (generally io.DisplaySize).\n You are totally free to apply whatever transformation matrix to want to the data (depending on the use of the transformation you may want to apply it to ClipRect as well!)\n Important: Primitives are always added to the list and not culled (culling is done at higher-level by ImGui:: functions), if you use this API a lot consider coarse culling your drawn objects.")
-        .def_readwrite("flags", &ImDrawList::Flags, "Flags, you may poke into these to adjust anti-aliasing settings per-primitive.")    // imgui.h:2623
-        .def_readwrite("_vtx_current_idx", &ImDrawList::_VtxCurrentIdx, "[Internal] generally == VtxBuffer.Size unless we are past 64K vertices, in which case this gets reset to 0.")    // imgui.h:2626
-        .def_readwrite("_data", &ImDrawList::_Data, "Pointer to shared draw data (you can use ImGui::GetDrawListSharedData() to get the one from current ImGui context)")    // imgui.h:2627
-        .def_readonly("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")    // imgui.h:2628
-        .def_readwrite("_vtx_write_ptr", &ImDrawList::_VtxWritePtr, "[Internal] point within VtxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")    // imgui.h:2629
-        .def_readwrite("_idx_write_ptr", &ImDrawList::_IdxWritePtr, "[Internal] point within IdxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")    // imgui.h:2630
-        .def_readwrite("_cmd_header", &ImDrawList::_CmdHeader, "[Internal] template of active commands. Fields should match those of CmdBuffer.back().")    // imgui.h:2634
-        .def_readwrite("_splitter", &ImDrawList::_Splitter, "[Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)")    // imgui.h:2635
-        .def_readwrite("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")    // imgui.h:2636
-        .def(py::init<ImDrawListSharedData *>(),    // imgui.h:2639
+        .def_readwrite("flags", &ImDrawList::Flags, "Flags, you may poke into these to adjust anti-aliasing settings per-primitive.")    // imgui.h:2634
+        .def_readwrite("_vtx_current_idx", &ImDrawList::_VtxCurrentIdx, "[Internal] generally == VtxBuffer.Size unless we are past 64K vertices, in which case this gets reset to 0.")    // imgui.h:2637
+        .def_readwrite("_data", &ImDrawList::_Data, "Pointer to shared draw data (you can use ImGui::GetDrawListSharedData() to get the one from current ImGui context)")    // imgui.h:2638
+        .def_readonly("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")    // imgui.h:2639
+        .def_readwrite("_vtx_write_ptr", &ImDrawList::_VtxWritePtr, "[Internal] point within VtxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")    // imgui.h:2640
+        .def_readwrite("_idx_write_ptr", &ImDrawList::_IdxWritePtr, "[Internal] point within IdxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")    // imgui.h:2641
+        .def_readwrite("_cmd_header", &ImDrawList::_CmdHeader, "[Internal] template of active commands. Fields should match those of CmdBuffer.back().")    // imgui.h:2645
+        .def_readwrite("_splitter", &ImDrawList::_Splitter, "[Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)")    // imgui.h:2646
+        .def_readwrite("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")    // imgui.h:2647
+        .def(py::init<ImDrawListSharedData *>(),    // imgui.h:2650
             py::arg("shared_data"),
             "If you want to create ImDrawList instances, pass them ImGui::GetDrawListSharedData() or create and use your own ImDrawListSharedData (so you can use ImDrawList without ImGui)")
-        .def("push_clip_rect",    // imgui.h:2642
+        .def("push_clip_rect",    // imgui.h:2653
             &ImDrawList::PushClipRect,
             py::arg("clip_rect_min"), py::arg("clip_rect_max"), py::arg("intersect_with_current_clip_rect") = false,
             "Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::PushClipRect() to affect logic (hit-testing and widget culling)")
-        .def("push_clip_rect_full_screen",    // imgui.h:2643
+        .def("push_clip_rect_full_screen",    // imgui.h:2654
             &ImDrawList::PushClipRectFullScreen)
-        .def("pop_clip_rect",    // imgui.h:2644
+        .def("pop_clip_rect",    // imgui.h:2655
             &ImDrawList::PopClipRect)
-        .def("push_texture_id",    // imgui.h:2645
+        .def("push_texture_id",    // imgui.h:2656
             &ImDrawList::PushTextureID, py::arg("texture_id"))
-        .def("pop_texture_id",    // imgui.h:2646
+        .def("pop_texture_id",    // imgui.h:2657
             &ImDrawList::PopTextureID)
-        .def("add_line",    // imgui.h:2657
+        .def("add_line",    // imgui.h:2668
             &ImDrawList::AddLine, py::arg("p1"), py::arg("p2"), py::arg("col"), py::arg("thickness") = 1.0f)
-        .def("add_rect",    // imgui.h:2658
+        .def("add_rect",    // imgui.h:2669
             &ImDrawList::AddRect,
             py::arg("p_min"), py::arg("p_max"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("flags") = 0, py::arg("thickness") = 1.0f,
             "a: upper-left, b: lower-right (== upper-left + size)")
-        .def("add_rect_filled",    // imgui.h:2659
+        .def("add_rect_filled",    // imgui.h:2670
             &ImDrawList::AddRectFilled,
             py::arg("p_min"), py::arg("p_max"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("flags") = 0,
             "a: upper-left, b: lower-right (== upper-left + size)")
-        .def("add_rect_filled_multi_color",    // imgui.h:2660
+        .def("add_rect_filled_multi_color",    // imgui.h:2671
             &ImDrawList::AddRectFilledMultiColor, py::arg("p_min"), py::arg("p_max"), py::arg("col_upr_left"), py::arg("col_upr_right"), py::arg("col_bot_right"), py::arg("col_bot_left"))
-        .def("add_quad",    // imgui.h:2661
+        .def("add_quad",    // imgui.h:2672
             &ImDrawList::AddQuad, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness") = 1.0f)
-        .def("add_quad_filled",    // imgui.h:2662
+        .def("add_quad_filled",    // imgui.h:2673
             &ImDrawList::AddQuadFilled, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"))
-        .def("add_triangle",    // imgui.h:2663
+        .def("add_triangle",    // imgui.h:2674
             &ImDrawList::AddTriangle, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("col"), py::arg("thickness") = 1.0f)
-        .def("add_triangle_filled",    // imgui.h:2664
+        .def("add_triangle_filled",    // imgui.h:2675
             &ImDrawList::AddTriangleFilled, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("col"))
-        .def("add_circle",    // imgui.h:2665
+        .def("add_circle",    // imgui.h:2676
             &ImDrawList::AddCircle, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 0, py::arg("thickness") = 1.0f)
-        .def("add_circle_filled",    // imgui.h:2666
+        .def("add_circle_filled",    // imgui.h:2677
             &ImDrawList::AddCircleFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 0)
-        .def("add_ngon",    // imgui.h:2667
+        .def("add_ngon",    // imgui.h:2678
             &ImDrawList::AddNgon, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments"), py::arg("thickness") = 1.0f)
-        .def("add_ngon_filled",    // imgui.h:2668
+        .def("add_ngon_filled",    // imgui.h:2679
             &ImDrawList::AddNgonFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments"))
-        .def("add_text",    // imgui.h:2669
+        .def("add_text",    // imgui.h:2680
             py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
-        .def("add_text",    // imgui.h:2670
+        .def("add_text",    // imgui.h:2681
             py::overload_cast<const ImFont *, float, const ImVec2 &, ImU32, const char *, const char *, float, const ImVec4 *>(&ImDrawList::AddText), py::arg("font"), py::arg("font_size"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip_rect") = py::none())
-        .def("add_polyline",    // imgui.h:2671
+        .def("add_polyline",    // imgui.h:2682
             &ImDrawList::AddPolyline, py::arg("points"), py::arg("num_points"), py::arg("col"), py::arg("flags"), py::arg("thickness"))
-        .def("add_convex_poly_filled",    // imgui.h:2672
+        .def("add_convex_poly_filled",    // imgui.h:2683
             &ImDrawList::AddConvexPolyFilled, py::arg("points"), py::arg("num_points"), py::arg("col"))
-        .def("add_bezier_cubic",    // imgui.h:2673
+        .def("add_bezier_cubic",    // imgui.h:2684
             &ImDrawList::AddBezierCubic,
             py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
             "Cubic Bezier (4 control points)")
-        .def("add_bezier_quadratic",    // imgui.h:2674
+        .def("add_bezier_quadratic",    // imgui.h:2685
             &ImDrawList::AddBezierQuadratic,
             py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
             "Quadratic Bezier (3 control points)")
-        .def("add_image",    // imgui.h:2680
+        .def("add_image",    // imgui.h:2691
             &ImDrawList::AddImage, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min") = ImVec2(0, 0), py::arg("uv_max") = ImVec2(1, 1), py::arg("col") = IM_COL32_WHITE)
-        .def("add_image_quad",    // imgui.h:2681
+        .def("add_image_quad",    // imgui.h:2692
             &ImDrawList::AddImageQuad, py::arg("user_texture_id"), py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("uv1") = ImVec2(0, 0), py::arg("uv2") = ImVec2(1, 0), py::arg("uv3") = ImVec2(1, 1), py::arg("uv4") = ImVec2(0, 1), py::arg("col") = IM_COL32_WHITE)
-        .def("add_image_rounded",    // imgui.h:2682
+        .def("add_image_rounded",    // imgui.h:2693
             &ImDrawList::AddImageRounded, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min"), py::arg("uv_max"), py::arg("col"), py::arg("rounding"), py::arg("flags") = 0)
-        .def("path_arc_to",    // imgui.h:2691
+        .def("path_arc_to",    // imgui.h:2702
             &ImDrawList::PathArcTo, py::arg("center"), py::arg("radius"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0)
-        .def("path_arc_to_fast",    // imgui.h:2692
+        .def("path_arc_to_fast",    // imgui.h:2703
             &ImDrawList::PathArcToFast,
             py::arg("center"), py::arg("radius"), py::arg("a_min_of_12"), py::arg("a_max_of_12"),
             "Use precomputed angles for a 12 steps circle")
-        .def("path_bezier_cubic_curve_to",    // imgui.h:2693
+        .def("path_bezier_cubic_curve_to",    // imgui.h:2704
             &ImDrawList::PathBezierCubicCurveTo,
             py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("num_segments") = 0,
             "Cubic Bezier (4 control points)")
-        .def("path_bezier_quadratic_curve_to",    // imgui.h:2694
+        .def("path_bezier_quadratic_curve_to",    // imgui.h:2705
             &ImDrawList::PathBezierQuadraticCurveTo,
             py::arg("p2"), py::arg("p3"), py::arg("num_segments") = 0,
             "Quadratic Bezier (3 control points)")
-        .def("path_rect",    // imgui.h:2695
+        .def("path_rect",    // imgui.h:2706
             &ImDrawList::PathRect, py::arg("rect_min"), py::arg("rect_max"), py::arg("rounding") = 0.0f, py::arg("flags") = 0)
-        .def("add_callback",    // imgui.h:2698
+        .def("add_callback",    // imgui.h:2709
             &ImDrawList::AddCallback,
             py::arg("callback"), py::arg("callback_data"),
             "Your rendering function must check for 'UserCallback' in ImDrawCmd and call the function instead of rendering triangles.")
-        .def("add_draw_cmd",    // imgui.h:2699
+        .def("add_draw_cmd",    // imgui.h:2710
             &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible")
-        .def("clone_output",    // imgui.h:2700
+        .def("clone_output",    // imgui.h:2711
             &ImDrawList::CloneOutput,
             "Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.",
             pybind11::return_value_policy::reference)
-        .def("prim_reserve",    // imgui.h:2715
+        .def("prim_reserve",    // imgui.h:2726
             &ImDrawList::PrimReserve, py::arg("idx_count"), py::arg("vtx_count"))
-        .def("prim_unreserve",    // imgui.h:2716
+        .def("prim_unreserve",    // imgui.h:2727
             &ImDrawList::PrimUnreserve, py::arg("idx_count"), py::arg("vtx_count"))
-        .def("prim_rect",    // imgui.h:2717
+        .def("prim_rect",    // imgui.h:2728
             &ImDrawList::PrimRect,
             py::arg("a"), py::arg("b"), py::arg("col"),
             "Axis aligned rectangle (composed of two triangles)")
-        .def("prim_rect_uv",    // imgui.h:2718
+        .def("prim_rect_uv",    // imgui.h:2729
             &ImDrawList::PrimRectUV, py::arg("a"), py::arg("b"), py::arg("uv_a"), py::arg("uv_b"), py::arg("col"))
-        .def("prim_quad_uv",    // imgui.h:2719
+        .def("prim_quad_uv",    // imgui.h:2730
             &ImDrawList::PrimQuadUV, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("uv_a"), py::arg("uv_b"), py::arg("uv_c"), py::arg("uv_d"), py::arg("col"))
-        .def("_reset_for_new_frame",    // imgui.h:2730
+        .def("_reset_for_new_frame",    // imgui.h:2741
             &ImDrawList::_ResetForNewFrame)
-        .def("_clear_free_memory",    // imgui.h:2731
+        .def("_clear_free_memory",    // imgui.h:2742
             &ImDrawList::_ClearFreeMemory)
-        .def("_pop_unused_draw_cmd",    // imgui.h:2732
+        .def("_pop_unused_draw_cmd",    // imgui.h:2743
             &ImDrawList::_PopUnusedDrawCmd)
-        .def("_try_merge_draw_cmds",    // imgui.h:2733
+        .def("_try_merge_draw_cmds",    // imgui.h:2744
             &ImDrawList::_TryMergeDrawCmds)
-        .def("_on_changed_clip_rect",    // imgui.h:2734
+        .def("_on_changed_clip_rect",    // imgui.h:2745
             &ImDrawList::_OnChangedClipRect)
-        .def("_on_changed_texture_id",    // imgui.h:2735
+        .def("_on_changed_texture_id",    // imgui.h:2746
             &ImDrawList::_OnChangedTextureID)
-        .def("_on_changed_vtx_offset",    // imgui.h:2736
+        .def("_on_changed_vtx_offset",    // imgui.h:2747
             &ImDrawList::_OnChangedVtxOffset)
-        .def("_calc_circle_auto_segment_count",    // imgui.h:2737
+        .def("_calc_circle_auto_segment_count",    // imgui.h:2748
             &ImDrawList::_CalcCircleAutoSegmentCount, py::arg("radius"))
-        .def("_path_arc_to_fast_ex",    // imgui.h:2738
+        .def("_path_arc_to_fast_ex",    // imgui.h:2749
             &ImDrawList::_PathArcToFastEx, py::arg("center"), py::arg("radius"), py::arg("a_min_sample"), py::arg("a_max_sample"), py::arg("a_step"))
-        .def("_path_arc_to_n",    // imgui.h:2739
+        .def("_path_arc_to_n",    // imgui.h:2750
             &ImDrawList::_PathArcToN, py::arg("center"), py::arg("radius"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments"))
         ;
 
 
     auto pyClassImDrawData =
-        py::class_<ImDrawData>    // imgui.h:2745
+        py::class_<ImDrawData>    // imgui.h:2756
             (m, "ImDrawData", " All draw data to render a Dear ImGui frame\n (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,\n as this is one of the oldest structure exposed by the library! Basically, ImDrawList == CmdList)")
-        .def_readwrite("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")    // imgui.h:2747
-        .def_readwrite("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render")    // imgui.h:2748
-        .def_readwrite("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")    // imgui.h:2749
-        .def_readwrite("total_vtx_count", &ImDrawData::TotalVtxCount, "For convenience, sum of all ImDrawList's VtxBuffer.Size")    // imgui.h:2750
-        .def_readwrite("display_pos", &ImDrawData::DisplayPos, "Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== GetMainViewport()->Pos for the main viewport, == (0.0) in most single-viewport applications)")    // imgui.h:2752
-        .def_readwrite("display_size", &ImDrawData::DisplaySize, "Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)")    // imgui.h:2753
-        .def_readwrite("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.")    // imgui.h:2754
-        .def_readwrite("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")    // imgui.h:2755
-        .def(py::init<>(),    // imgui.h:2758
+        .def_readwrite("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")    // imgui.h:2758
+        .def_readwrite("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render")    // imgui.h:2759
+        .def_readwrite("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")    // imgui.h:2760
+        .def_readwrite("total_vtx_count", &ImDrawData::TotalVtxCount, "For convenience, sum of all ImDrawList's VtxBuffer.Size")    // imgui.h:2761
+        .def_readwrite("display_pos", &ImDrawData::DisplayPos, "Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== GetMainViewport()->Pos for the main viewport, == (0.0) in most single-viewport applications)")    // imgui.h:2763
+        .def_readwrite("display_size", &ImDrawData::DisplaySize, "Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)")    // imgui.h:2764
+        .def_readwrite("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.")    // imgui.h:2765
+        .def_readwrite("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")    // imgui.h:2766
+        .def(py::init<>(),    // imgui.h:2769
             "Functions")
-        .def("de_index_all_buffers",    // imgui.h:2760
+        .def("de_index_all_buffers",    // imgui.h:2771
             &ImDrawData::DeIndexAllBuffers, "Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!")
-        .def("scale_clip_rects",    // imgui.h:2761
+        .def("scale_clip_rects",    // imgui.h:2772
             &ImDrawData::ScaleClipRects,
             py::arg("fb_scale"),
             "Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.")
@@ -3821,31 +3825,31 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImFontConfig =
-        py::class_<ImFontConfig>    // imgui.h:2768
+        py::class_<ImFontConfig>    // imgui.h:2779
             (m, "ImFontConfig", "")
-        .def_readwrite("font_data", &ImFontConfig::FontData, "// TTF/OTF data")    // imgui.h:2770
-        .def_readwrite("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")    // imgui.h:2771
-        .def_readwrite("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")    // imgui.h:2772
-        .def_readwrite("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")    // imgui.h:2773
-        .def_readwrite("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")    // imgui.h:2774
-        .def_readwrite("oversample_h", &ImFontConfig::OversampleH, "3        // Rasterize at higher quality for sub-pixel positioning. Note the difference between 2 and 3 is minimal so you can reduce this to 2 to save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")    // imgui.h:2775
-        .def_readwrite("oversample_v", &ImFontConfig::OversampleV, "1        // Rasterize at higher quality for sub-pixel positioning. This is not really useful as we don't use sub-pixel positions on the Y axis.")    // imgui.h:2776
-        .def_readwrite("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph to pixel boundary. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")    // imgui.h:2777
-        .def_readwrite("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing, "0, 0     // Extra spacing (in pixels) between glyphs. Only X axis is supported for now.")    // imgui.h:2778
-        .def_readwrite("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset all glyphs from this font input.")    // imgui.h:2779
-        .def_readwrite("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font")    // imgui.h:2781
-        .def_readwrite("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")    // imgui.h:2782
-        .def_readwrite("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")    // imgui.h:2783
-        .def_readwrite("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")    // imgui.h:2784
-        .def_readwrite("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable.")    // imgui.h:2785
-        .def_readwrite("ellipsis_char", &ImFontConfig::EllipsisChar, "-1       // Explicitly specify unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")    // imgui.h:2786
-        .def_readwrite("dst_font", &ImFontConfig::DstFont, "")    // imgui.h:2790
-        .def(py::init<>())    // imgui.h:2792
+        .def_readwrite("font_data", &ImFontConfig::FontData, "// TTF/OTF data")    // imgui.h:2781
+        .def_readwrite("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")    // imgui.h:2782
+        .def_readwrite("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")    // imgui.h:2783
+        .def_readwrite("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")    // imgui.h:2784
+        .def_readwrite("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")    // imgui.h:2785
+        .def_readwrite("oversample_h", &ImFontConfig::OversampleH, "3        // Rasterize at higher quality for sub-pixel positioning. Note the difference between 2 and 3 is minimal so you can reduce this to 2 to save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")    // imgui.h:2786
+        .def_readwrite("oversample_v", &ImFontConfig::OversampleV, "1        // Rasterize at higher quality for sub-pixel positioning. This is not really useful as we don't use sub-pixel positions on the Y axis.")    // imgui.h:2787
+        .def_readwrite("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph to pixel boundary. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")    // imgui.h:2788
+        .def_readwrite("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing, "0, 0     // Extra spacing (in pixels) between glyphs. Only X axis is supported for now.")    // imgui.h:2789
+        .def_readwrite("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset all glyphs from this font input.")    // imgui.h:2790
+        .def_readwrite("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font")    // imgui.h:2792
+        .def_readwrite("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")    // imgui.h:2793
+        .def_readwrite("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")    // imgui.h:2794
+        .def_readwrite("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")    // imgui.h:2795
+        .def_readwrite("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable.")    // imgui.h:2796
+        .def_readwrite("ellipsis_char", &ImFontConfig::EllipsisChar, "-1       // Explicitly specify unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")    // imgui.h:2797
+        .def_readwrite("dst_font", &ImFontConfig::DstFont, "")    // imgui.h:2801
+        .def(py::init<>())    // imgui.h:2803
         ;
 
 
     auto pyClassImFontGlyph =
-        py::class_<ImFontGlyph>    // imgui.h:2797
+        py::class_<ImFontGlyph>    // imgui.h:2808
             (m, "ImFontGlyph", " Hold rendering data for one glyph.\n (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)")
         .def(py::init<>([](
         float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float())
@@ -3864,31 +3868,31 @@ void py_init_module_imgui_main(py::module& m)
         })
         , py::arg("advance_x") = float(), py::arg("x0") = float(), py::arg("y0") = float(), py::arg("x1") = float(), py::arg("y1") = float(), py::arg("u0") = float(), py::arg("v0") = float(), py::arg("u1") = float(), py::arg("v1") = float()
         )
-        .def_readwrite("advance_x", &ImFontGlyph::AdvanceX, "Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)")    // imgui.h:2802
-        .def_readwrite("x0", &ImFontGlyph::X0, "Glyph corners")    // imgui.h:2803
-        .def_readwrite("y0", &ImFontGlyph::Y0, "Glyph corners")    // imgui.h:2803
-        .def_readwrite("x1", &ImFontGlyph::X1, "Glyph corners")    // imgui.h:2803
-        .def_readwrite("y1", &ImFontGlyph::Y1, "Glyph corners")    // imgui.h:2803
-        .def_readwrite("u0", &ImFontGlyph::U0, "Texture coordinates")    // imgui.h:2804
-        .def_readwrite("v0", &ImFontGlyph::V0, "Texture coordinates")    // imgui.h:2804
-        .def_readwrite("u1", &ImFontGlyph::U1, "Texture coordinates")    // imgui.h:2804
-        .def_readwrite("v1", &ImFontGlyph::V1, "Texture coordinates")    // imgui.h:2804
+        .def_readwrite("advance_x", &ImFontGlyph::AdvanceX, "Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)")    // imgui.h:2813
+        .def_readwrite("x0", &ImFontGlyph::X0, "Glyph corners")    // imgui.h:2814
+        .def_readwrite("y0", &ImFontGlyph::Y0, "Glyph corners")    // imgui.h:2814
+        .def_readwrite("x1", &ImFontGlyph::X1, "Glyph corners")    // imgui.h:2814
+        .def_readwrite("y1", &ImFontGlyph::Y1, "Glyph corners")    // imgui.h:2814
+        .def_readwrite("u0", &ImFontGlyph::U0, "Texture coordinates")    // imgui.h:2815
+        .def_readwrite("v0", &ImFontGlyph::V0, "Texture coordinates")    // imgui.h:2815
+        .def_readwrite("u1", &ImFontGlyph::U1, "Texture coordinates")    // imgui.h:2815
+        .def_readwrite("v1", &ImFontGlyph::V1, "Texture coordinates")    // imgui.h:2815
         ;
 
 
     auto pyClassImFontGlyphRangesBuilder =
-        py::class_<ImFontGlyphRangesBuilder>    // imgui.h:2809
+        py::class_<ImFontGlyphRangesBuilder>    // imgui.h:2820
             (m, "ImFontGlyphRangesBuilder", " Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().\n This is essentially a tightly packed of vector of 64k booleans = 8KB storage.")
-        .def(py::init<>())    // imgui.h:2813
-        .def("add_text",    // imgui.h:2818
+        .def(py::init<>())    // imgui.h:2824
+        .def("add_text",    // imgui.h:2829
             &ImFontGlyphRangesBuilder::AddText,
             py::arg("text"), py::arg("text_end") = py::none(),
             "Add string (each character of the UTF-8 string are added)")
-        .def("add_ranges",    // imgui.h:2819
+        .def("add_ranges",    // imgui.h:2830
             &ImFontGlyphRangesBuilder::AddRanges,
             py::arg("ranges"),
             "Add ranges, e.g. builder.AddRanges(ImFontAtlas::GetGlyphRangesDefault()) to force add all of ASCII/Latin+Ext")
-        .def("build_ranges",    // imgui.h:2820
+        .def("build_ranges",    // imgui.h:2831
             &ImFontGlyphRangesBuilder::BuildRanges,
             py::arg("out_ranges"),
             "Output new ranges")
@@ -3896,21 +3900,21 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImFontAtlasCustomRect =
-        py::class_<ImFontAtlasCustomRect>    // imgui.h:2824
+        py::class_<ImFontAtlasCustomRect>    // imgui.h:2835
             (m, "ImFontAtlasCustomRect", "See ImFontAtlas::AddCustomRectXXX functions.")
-        .def_readwrite("width", &ImFontAtlasCustomRect::Width, "Input    // Desired rectangle dimension")    // imgui.h:2826
-        .def_readwrite("height", &ImFontAtlasCustomRect::Height, "Input    // Desired rectangle dimension")    // imgui.h:2826
-        .def_readwrite("x", &ImFontAtlasCustomRect::X, "Output   // Packed position in Atlas")    // imgui.h:2827
-        .def_readwrite("y", &ImFontAtlasCustomRect::Y, "Output   // Packed position in Atlas")    // imgui.h:2827
-        .def_readwrite("glyph_id", &ImFontAtlasCustomRect::GlyphID, "Input    // For custom font glyphs only (ID < 0x110000)")    // imgui.h:2828
-        .def_readwrite("glyph_advance_x", &ImFontAtlasCustomRect::GlyphAdvanceX, "Input    // For custom font glyphs only: glyph xadvance")    // imgui.h:2829
-        .def_readwrite("glyph_offset", &ImFontAtlasCustomRect::GlyphOffset, "Input    // For custom font glyphs only: glyph display offset")    // imgui.h:2830
-        .def_readwrite("font", &ImFontAtlasCustomRect::Font, "Input    // For custom font glyphs only: target font")    // imgui.h:2831
-        .def(py::init<>())    // imgui.h:2832
+        .def_readwrite("width", &ImFontAtlasCustomRect::Width, "Input    // Desired rectangle dimension")    // imgui.h:2837
+        .def_readwrite("height", &ImFontAtlasCustomRect::Height, "Input    // Desired rectangle dimension")    // imgui.h:2837
+        .def_readwrite("x", &ImFontAtlasCustomRect::X, "Output   // Packed position in Atlas")    // imgui.h:2838
+        .def_readwrite("y", &ImFontAtlasCustomRect::Y, "Output   // Packed position in Atlas")    // imgui.h:2838
+        .def_readwrite("glyph_id", &ImFontAtlasCustomRect::GlyphID, "Input    // For custom font glyphs only (ID < 0x110000)")    // imgui.h:2839
+        .def_readwrite("glyph_advance_x", &ImFontAtlasCustomRect::GlyphAdvanceX, "Input    // For custom font glyphs only: glyph xadvance")    // imgui.h:2840
+        .def_readwrite("glyph_offset", &ImFontAtlasCustomRect::GlyphOffset, "Input    // For custom font glyphs only: glyph display offset")    // imgui.h:2841
+        .def_readwrite("font", &ImFontAtlasCustomRect::Font, "Input    // For custom font glyphs only: target font")    // imgui.h:2842
+        .def(py::init<>())    // imgui.h:2843
         ;
 
 
-    py::enum_<ImFontAtlasFlags_>(m, "ImFontAtlasFlags_", py::arithmetic(), "Flags for ImFontAtlas build")    // imgui.h:2837
+    py::enum_<ImFontAtlasFlags_>(m, "ImFontAtlasFlags_", py::arithmetic(), "Flags for ImFontAtlas build")    // imgui.h:2848
         .value("none", ImFontAtlasFlags_None, "")
         .value("no_power_of_two_height", ImFontAtlasFlags_NoPowerOfTwoHeight, "Don't round the height to next power of two")
         .value("no_mouse_cursors", ImFontAtlasFlags_NoMouseCursors, "Don't build software mouse cursors into the atlas (save a little texture memory)")
@@ -3918,160 +3922,160 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImFontAtlas =
-        py::class_<ImFontAtlas>    // imgui.h:2862
+        py::class_<ImFontAtlas>    // imgui.h:2873
             (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n It is the user-code responsibility to setup/build the atlas, then upload the pixel data into a texture accessible by your graphics api.\n  - Optionally, call any of the AddFont*** functions. If you don't call any, the default font embedded in the code will be loaded for you.\n  - Call GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Upload the pixels data into a texture within your graphics system (see imgui_impl_xxxx.cpp examples)\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n    This value will be passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID for more details.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and various other reasons! We will address them in the future!")
-        .def(py::init<>())    // imgui.h:2864
-        .def("add_font",    // imgui.h:2866
+        .def(py::init<>())    // imgui.h:2875
+        .def("add_font",    // imgui.h:2877
             &ImFontAtlas::AddFont,
             py::arg("font_cfg"),
             pybind11::return_value_policy::reference)
-        .def("add_font_default",    // imgui.h:2867
+        .def("add_font_default",    // imgui.h:2878
             &ImFontAtlas::AddFontDefault,
             py::arg("font_cfg") = py::none(),
             pybind11::return_value_policy::reference)
-        .def("add_font_from_memory_ttf",    // imgui.h:2869
+        .def("add_font_from_memory_ttf",    // imgui.h:2880
             &ImFontAtlas::AddFontFromMemoryTTF,
             py::arg("font_data"), py::arg("font_size"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges") = py::none(),
             "Note: Transfer ownership of 'ttf_data' to ImFontAtlas! Will be deleted after destruction of the atlas. Set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed.",
             pybind11::return_value_policy::reference)
-        .def("add_font_from_memory_compressed_ttf",    // imgui.h:2870
+        .def("add_font_from_memory_compressed_ttf",    // imgui.h:2881
             &ImFontAtlas::AddFontFromMemoryCompressedTTF,
             py::arg("compressed_font_data"), py::arg("compressed_font_size"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges") = py::none(),
             "'compressed_font_data' still owned by caller. Compress with binary_to_compressed_c.cpp.",
             pybind11::return_value_policy::reference)
-        .def("add_font_from_memory_compressed_base85_ttf",    // imgui.h:2871
+        .def("add_font_from_memory_compressed_base85_ttf",    // imgui.h:2882
             &ImFontAtlas::AddFontFromMemoryCompressedBase85TTF,
             py::arg("compressed_font_data_base85"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges") = py::none(),
             "'compressed_font_data_base85' still owned by caller. Compress with binary_to_compressed_c.cpp with -base85 parameter.",
             pybind11::return_value_policy::reference)
-        .def("clear_input_data",    // imgui.h:2872
+        .def("clear_input_data",    // imgui.h:2883
             &ImFontAtlas::ClearInputData, "Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
-        .def("clear_tex_data",    // imgui.h:2873
+        .def("clear_tex_data",    // imgui.h:2884
             &ImFontAtlas::ClearTexData, "Clear output texture data (CPU side). Saves RAM once the texture has been copied to graphics memory.")
-        .def("clear_fonts",    // imgui.h:2874
+        .def("clear_fonts",    // imgui.h:2885
             &ImFontAtlas::ClearFonts, "Clear output font data (glyphs storage, UV coordinates).")
-        .def("clear",    // imgui.h:2875
+        .def("clear",    // imgui.h:2886
             &ImFontAtlas::Clear, "Clear all input and output.")
-        .def("build",    // imgui.h:2882
+        .def("build",    // imgui.h:2893
             &ImFontAtlas::Build, "Build pixels data. This is called automatically for you by the GetTexData*** functions.")
-        .def("get_glyph_ranges_default",    // imgui.h:2895
+        .def("get_glyph_ranges_default",    // imgui.h:2906
             &ImFontAtlas::GetGlyphRangesDefault,
             "Basic Latin, Extended Latin",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_greek",    // imgui.h:2896
+        .def("get_glyph_ranges_greek",    // imgui.h:2907
             &ImFontAtlas::GetGlyphRangesGreek,
             "Default + Greek and Coptic",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_korean",    // imgui.h:2897
+        .def("get_glyph_ranges_korean",    // imgui.h:2908
             &ImFontAtlas::GetGlyphRangesKorean,
             "Default + Korean characters",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_japanese",    // imgui.h:2898
+        .def("get_glyph_ranges_japanese",    // imgui.h:2909
             &ImFontAtlas::GetGlyphRangesJapanese,
             "Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_chinese_full",    // imgui.h:2899
+        .def("get_glyph_ranges_chinese_full",    // imgui.h:2910
             &ImFontAtlas::GetGlyphRangesChineseFull,
             "Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_chinese_simplified_common",    // imgui.h:2900
+        .def("get_glyph_ranges_chinese_simplified_common",    // imgui.h:2911
             &ImFontAtlas::GetGlyphRangesChineseSimplifiedCommon,
             "Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_cyrillic",    // imgui.h:2901
+        .def("get_glyph_ranges_cyrillic",    // imgui.h:2912
             &ImFontAtlas::GetGlyphRangesCyrillic,
             "Default + about 400 Cyrillic characters",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_thai",    // imgui.h:2902
+        .def("get_glyph_ranges_thai",    // imgui.h:2913
             &ImFontAtlas::GetGlyphRangesThai,
             "Default + Thai characters",
             pybind11::return_value_policy::reference)
-        .def("get_glyph_ranges_vietnamese",    // imgui.h:2903
+        .def("get_glyph_ranges_vietnamese",    // imgui.h:2914
             &ImFontAtlas::GetGlyphRangesVietnamese,
             "Default + Vietnamese characters",
             pybind11::return_value_policy::reference)
-        .def("add_custom_rect_regular",    // imgui.h:2916
+        .def("add_custom_rect_regular",    // imgui.h:2927
             &ImFontAtlas::AddCustomRectRegular, py::arg("width"), py::arg("height"))
-        .def("add_custom_rect_font_glyph",    // imgui.h:2917
+        .def("add_custom_rect_font_glyph",    // imgui.h:2928
             &ImFontAtlas::AddCustomRectFontGlyph, py::arg("font"), py::arg("id_"), py::arg("width"), py::arg("height"), py::arg("advance_x"), py::arg("offset") = ImVec2(0, 0))
-        .def("calc_custom_rect_uv",    // imgui.h:2921
+        .def("calc_custom_rect_uv",    // imgui.h:2932
             &ImFontAtlas::CalcCustomRectUV, py::arg("rect"), py::arg("out_uv_min"), py::arg("out_uv_max"))
-        .def("get_mouse_cursor_tex_data",    // imgui.h:2922
+        .def("get_mouse_cursor_tex_data",    // imgui.h:2933
             &ImFontAtlas::GetMouseCursorTexData, py::arg("cursor"), py::arg("out_offset"), py::arg("out_size"), py::arg("out_uv_border"), py::arg("out_uv_fill"))
-        .def_readwrite("flags", &ImFontAtlas::Flags, "Build flags (see ImFontAtlasFlags_)")    // imgui.h:2928
-        .def_readwrite("tex_id", &ImFontAtlas::TexID, "User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.")    // imgui.h:2929
-        .def_readwrite("tex_desired_width", &ImFontAtlas::TexDesiredWidth, "Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.")    // imgui.h:2930
-        .def_readwrite("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")    // imgui.h:2931
-        .def_readwrite("locked", &ImFontAtlas::Locked, "Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.")    // imgui.h:2932
-        .def_readwrite("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")    // imgui.h:2933
-        .def_readwrite("tex_ready", &ImFontAtlas::TexReady, "Set when texture was built matching current font input")    // imgui.h:2937
-        .def_readwrite("tex_pixels_use_colors", &ImFontAtlas::TexPixelsUseColors, "Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format.")    // imgui.h:2938
-        .def_readwrite("tex_width", &ImFontAtlas::TexWidth, "Texture width calculated during Build().")    // imgui.h:2941
-        .def_readwrite("tex_height", &ImFontAtlas::TexHeight, "Texture height calculated during Build().")    // imgui.h:2942
-        .def_readwrite("tex_uv_scale", &ImFontAtlas::TexUvScale, "= (1.0/TexWidth, 1.0/TexHeight)")    // imgui.h:2943
-        .def_readwrite("tex_uv_white_pixel", &ImFontAtlas::TexUvWhitePixel, "Texture coordinates to a white pixel")    // imgui.h:2944
-        .def_readonly("font_builder_io", &ImFontAtlas::FontBuilderIO, "Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE).")    // imgui.h:2951
-        .def_readwrite("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.")    // imgui.h:2952
-        .def_readwrite("pack_id_mouse_cursors", &ImFontAtlas::PackIdMouseCursors, "Custom texture rectangle ID for white pixel and mouse cursors")    // imgui.h:2955
-        .def_readwrite("pack_id_lines", &ImFontAtlas::PackIdLines, "Custom texture rectangle ID for baked anti-aliased lines")    // imgui.h:2956
+        .def_readwrite("flags", &ImFontAtlas::Flags, "Build flags (see ImFontAtlasFlags_)")    // imgui.h:2939
+        .def_readwrite("tex_id", &ImFontAtlas::TexID, "User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.")    // imgui.h:2940
+        .def_readwrite("tex_desired_width", &ImFontAtlas::TexDesiredWidth, "Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.")    // imgui.h:2941
+        .def_readwrite("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")    // imgui.h:2942
+        .def_readwrite("locked", &ImFontAtlas::Locked, "Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.")    // imgui.h:2943
+        .def_readwrite("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")    // imgui.h:2944
+        .def_readwrite("tex_ready", &ImFontAtlas::TexReady, "Set when texture was built matching current font input")    // imgui.h:2948
+        .def_readwrite("tex_pixels_use_colors", &ImFontAtlas::TexPixelsUseColors, "Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format.")    // imgui.h:2949
+        .def_readwrite("tex_width", &ImFontAtlas::TexWidth, "Texture width calculated during Build().")    // imgui.h:2952
+        .def_readwrite("tex_height", &ImFontAtlas::TexHeight, "Texture height calculated during Build().")    // imgui.h:2953
+        .def_readwrite("tex_uv_scale", &ImFontAtlas::TexUvScale, "= (1.0/TexWidth, 1.0/TexHeight)")    // imgui.h:2954
+        .def_readwrite("tex_uv_white_pixel", &ImFontAtlas::TexUvWhitePixel, "Texture coordinates to a white pixel")    // imgui.h:2955
+        .def_readonly("font_builder_io", &ImFontAtlas::FontBuilderIO, "Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE).")    // imgui.h:2962
+        .def_readwrite("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.")    // imgui.h:2963
+        .def_readwrite("pack_id_mouse_cursors", &ImFontAtlas::PackIdMouseCursors, "Custom texture rectangle ID for white pixel and mouse cursors")    // imgui.h:2966
+        .def_readwrite("pack_id_lines", &ImFontAtlas::PackIdLines, "Custom texture rectangle ID for baked anti-aliased lines")    // imgui.h:2967
         ;
 
 
     auto pyClassImFont =
-        py::class_<ImFont>    // imgui.h:2965
+        py::class_<ImFont>    // imgui.h:2976
             (m, "ImFont", " Font runtime data and rendering\n ImFontAtlas automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().")
-        .def_readwrite("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")    // imgui.h:2969
-        .def_readwrite("font_size", &ImFont::FontSize, "4     // in  //            // Height of characters/line, set during loading (don't change after loading)")    // imgui.h:2970
-        .def_readonly("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")    // imgui.h:2975
-        .def_readwrite("container_atlas", &ImFont::ContainerAtlas, "4-8   // out //            // What we has been loaded into")    // imgui.h:2978
-        .def_readonly("config_data", &ImFont::ConfigData, "4-8   // in  //            // Pointer within ContainerAtlas->ConfigData")    // imgui.h:2979
-        .def_readwrite("config_data_count", &ImFont::ConfigDataCount, "2     // in  // ~ 1        // Number of ImFontConfig involved in creating this font. Bigger than 1 when merging multiple font sources into one ImFont.")    // imgui.h:2980
-        .def_readwrite("fallback_char", &ImFont::FallbackChar, "2     // out // = FFFD/'?' // Character used if a glyph isn't found.")    // imgui.h:2981
-        .def_readwrite("ellipsis_char", &ImFont::EllipsisChar, "2     // out // = '...'    // Character used for ellipsis rendering.")    // imgui.h:2982
-        .def_readwrite("dot_char", &ImFont::DotChar, "2     // out // = '.'      // Character used for ellipsis rendering (if a single '...' character isn't found)")    // imgui.h:2983
-        .def_readwrite("dirty_lookup_tables", &ImFont::DirtyLookupTables, "1     // out //")    // imgui.h:2984
-        .def_readwrite("scale", &ImFont::Scale, "4     // in  // = 1.      // Base font scale, multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")    // imgui.h:2985
-        .def_readwrite("ascent", &ImFont::Ascent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize]")    // imgui.h:2986
-        .def_readwrite("descent", &ImFont::Descent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize]")    // imgui.h:2986
-        .def_readwrite("metrics_total_surface", &ImFont::MetricsTotalSurface, "4     // out //            // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)")    // imgui.h:2987
-        .def(py::init<>(),    // imgui.h:2991
+        .def_readwrite("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")    // imgui.h:2980
+        .def_readwrite("font_size", &ImFont::FontSize, "4     // in  //            // Height of characters/line, set during loading (don't change after loading)")    // imgui.h:2981
+        .def_readonly("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")    // imgui.h:2986
+        .def_readwrite("container_atlas", &ImFont::ContainerAtlas, "4-8   // out //            // What we has been loaded into")    // imgui.h:2989
+        .def_readonly("config_data", &ImFont::ConfigData, "4-8   // in  //            // Pointer within ContainerAtlas->ConfigData")    // imgui.h:2990
+        .def_readwrite("config_data_count", &ImFont::ConfigDataCount, "2     // in  // ~ 1        // Number of ImFontConfig involved in creating this font. Bigger than 1 when merging multiple font sources into one ImFont.")    // imgui.h:2991
+        .def_readwrite("fallback_char", &ImFont::FallbackChar, "2     // out // = FFFD/'?' // Character used if a glyph isn't found.")    // imgui.h:2992
+        .def_readwrite("ellipsis_char", &ImFont::EllipsisChar, "2     // out // = '...'    // Character used for ellipsis rendering.")    // imgui.h:2993
+        .def_readwrite("dot_char", &ImFont::DotChar, "2     // out // = '.'      // Character used for ellipsis rendering (if a single '...' character isn't found)")    // imgui.h:2994
+        .def_readwrite("dirty_lookup_tables", &ImFont::DirtyLookupTables, "1     // out //")    // imgui.h:2995
+        .def_readwrite("scale", &ImFont::Scale, "4     // in  // = 1.      // Base font scale, multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")    // imgui.h:2996
+        .def_readwrite("ascent", &ImFont::Ascent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize]")    // imgui.h:2997
+        .def_readwrite("descent", &ImFont::Descent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize]")    // imgui.h:2997
+        .def_readwrite("metrics_total_surface", &ImFont::MetricsTotalSurface, "4     // out //            // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)")    // imgui.h:2998
+        .def(py::init<>(),    // imgui.h:3002
             "Methods")
-        .def("find_glyph",    // imgui.h:2993
+        .def("find_glyph",    // imgui.h:3004
             &ImFont::FindGlyph,
             py::arg("c"),
             pybind11::return_value_policy::reference)
-        .def("find_glyph_no_fallback",    // imgui.h:2994
+        .def("find_glyph_no_fallback",    // imgui.h:3005
             &ImFont::FindGlyphNoFallback,
             py::arg("c"),
             pybind11::return_value_policy::reference)
-        .def("calc_word_wrap_position_a",    // imgui.h:3002
+        .def("calc_word_wrap_position_a",    // imgui.h:3013
             &ImFont::CalcWordWrapPositionA,
             py::arg("scale"), py::arg("text"), py::arg("text_end"), py::arg("wrap_width"),
             pybind11::return_value_policy::reference)
-        .def("render_char",    // imgui.h:3003
+        .def("render_char",    // imgui.h:3014
             &ImFont::RenderChar, py::arg("draw_list"), py::arg("size"), py::arg("pos"), py::arg("col"), py::arg("c"))
-        .def("render_text",    // imgui.h:3004
+        .def("render_text",    // imgui.h:3015
             &ImFont::RenderText, py::arg("draw_list"), py::arg("size"), py::arg("pos"), py::arg("col"), py::arg("clip_rect"), py::arg("text_begin"), py::arg("text_end"), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip") = false)
-        .def("build_lookup_table",    // imgui.h:3007
+        .def("build_lookup_table",    // imgui.h:3018
             &ImFont::BuildLookupTable)
-        .def("clear_output_data",    // imgui.h:3008
+        .def("clear_output_data",    // imgui.h:3019
             &ImFont::ClearOutputData)
-        .def("grow_index",    // imgui.h:3009
+        .def("grow_index",    // imgui.h:3020
             &ImFont::GrowIndex, py::arg("new_size"))
-        .def("add_glyph",    // imgui.h:3010
+        .def("add_glyph",    // imgui.h:3021
             &ImFont::AddGlyph, py::arg("src_cfg"), py::arg("c"), py::arg("x0"), py::arg("y0"), py::arg("x1"), py::arg("y1"), py::arg("u0"), py::arg("v0"), py::arg("u1"), py::arg("v1"), py::arg("advance_x"))
-        .def("add_remap_char",    // imgui.h:3011
+        .def("add_remap_char",    // imgui.h:3022
             &ImFont::AddRemapChar,
             py::arg("dst"), py::arg("src"), py::arg("overwrite_dst") = true,
             "Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built.")
-        .def("set_glyph_visible",    // imgui.h:3012
+        .def("set_glyph_visible",    // imgui.h:3023
             &ImFont::SetGlyphVisible, py::arg("c"), py::arg("visible"))
-        .def("is_glyph_range_unused",    // imgui.h:3013
+        .def("is_glyph_range_unused",    // imgui.h:3024
             &ImFont::IsGlyphRangeUnused, py::arg("c_begin"), py::arg("c_last"))
         ;
 
 
-    py::enum_<ImGuiViewportFlags_>(m, "ViewportFlags_", py::arithmetic(), "Flags stored in ImGuiViewport::Flags, giving indications to the platform backends.")    // imgui.h:3021
+    py::enum_<ImGuiViewportFlags_>(m, "ViewportFlags_", py::arithmetic(), "Flags stored in ImGuiViewport::Flags, giving indications to the platform backends.")    // imgui.h:3032
         .value("none", ImGuiViewportFlags_None, "")
         .value("is_platform_window", ImGuiViewportFlags_IsPlatformWindow, "Represent a Platform Window")
         .value("is_platform_monitor", ImGuiViewportFlags_IsPlatformMonitor, "Represent a Platform Monitor (unused yet)")
@@ -4089,56 +4093,56 @@ void py_init_module_imgui_main(py::module& m)
 
 
     auto pyClassImGuiViewport =
-        py::class_<ImGuiViewport>    // imgui.h:3046
+        py::class_<ImGuiViewport>    // imgui.h:3057
             (m, "Viewport", " - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.\n - With multi-viewport enabled, we extend this concept to have multiple active viewports.\n - In the future we will extend this concept further to also represent Platform Monitor and support a \"no main platform window\" operation mode.\n - About Main Area vs Work Area:\n   - Main Area = entire viewport.\n   - Work Area = entire viewport minus sections used by main menu bars (for platform windows), or by task bar (for platform monitor).\n   - Windows are generally trying to stay within the Work Area of their host viewport.")
-        .def_readwrite("id_", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3048
-        .def_readwrite("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")    // imgui.h:3049
-        .def_readwrite("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")    // imgui.h:3050
-        .def_readwrite("size", &ImGuiViewport::Size, "Main Area: Size of the viewport.")    // imgui.h:3051
-        .def_readwrite("work_pos", &ImGuiViewport::WorkPos, "Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)")    // imgui.h:3052
-        .def_readwrite("work_size", &ImGuiViewport::WorkSize, "Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)")    // imgui.h:3053
-        .def_readwrite("dpi_scale", &ImGuiViewport::DpiScale, "1.0 = 96 DPI = No extra scale.")    // imgui.h:3054
-        .def_readwrite("parent_viewport_id", &ImGuiViewport::ParentViewportId, "(Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows.")    // imgui.h:3055
-        .def_readwrite("draw_data", &ImGuiViewport::DrawData, "The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().")    // imgui.h:3056
-        .def_readwrite("renderer_user_data", &ImGuiViewport::RendererUserData, "None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.")    // imgui.h:3063
-        .def_readwrite("platform_user_data", &ImGuiViewport::PlatformUserData, "None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.")    // imgui.h:3064
-        .def_readwrite("platform_handle", &ImGuiViewport::PlatformHandle, "None* for FindViewportByPlatformHandle(). (e.g. suggested to use natural platform handle such as HWND, GLFWWindow*, SDL_Window*)")    // imgui.h:3065
-        .def_readwrite("platform_handle_raw", &ImGuiViewport::PlatformHandleRaw, "None* to hold lower-level, platform-native window handle (under Win32 this is expected to be a HWND, unused for other platforms), when using an abstraction layer like GLFW or SDL (where PlatformHandle would be a SDL_Window*)")    // imgui.h:3066
-        .def_readwrite("platform_window_created", &ImGuiViewport::PlatformWindowCreated, "Platform window has been created (Platform_CreateWindow() has been called). This is False during the first frame where a viewport is being created.")    // imgui.h:3067
-        .def_readwrite("platform_request_move", &ImGuiViewport::PlatformRequestMove, "Platform window requested move (e.g. window was moved by the OS / host window manager, authoritative position will be OS window position)")    // imgui.h:3068
-        .def_readwrite("platform_request_resize", &ImGuiViewport::PlatformRequestResize, "Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)")    // imgui.h:3069
-        .def_readwrite("platform_request_close", &ImGuiViewport::PlatformRequestClose, "Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)")    // imgui.h:3070
-        .def(py::init<>())    // imgui.h:3072
+        .def_readwrite("id_", &ImGuiViewport::ID, "Unique identifier for the viewport")    // imgui.h:3059
+        .def_readwrite("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")    // imgui.h:3060
+        .def_readwrite("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")    // imgui.h:3061
+        .def_readwrite("size", &ImGuiViewport::Size, "Main Area: Size of the viewport.")    // imgui.h:3062
+        .def_readwrite("work_pos", &ImGuiViewport::WorkPos, "Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)")    // imgui.h:3063
+        .def_readwrite("work_size", &ImGuiViewport::WorkSize, "Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)")    // imgui.h:3064
+        .def_readwrite("dpi_scale", &ImGuiViewport::DpiScale, "1.0 = 96 DPI = No extra scale.")    // imgui.h:3065
+        .def_readwrite("parent_viewport_id", &ImGuiViewport::ParentViewportId, "(Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows.")    // imgui.h:3066
+        .def_readwrite("draw_data", &ImGuiViewport::DrawData, "The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().")    // imgui.h:3067
+        .def_readwrite("renderer_user_data", &ImGuiViewport::RendererUserData, "None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.")    // imgui.h:3074
+        .def_readwrite("platform_user_data", &ImGuiViewport::PlatformUserData, "None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.")    // imgui.h:3075
+        .def_readwrite("platform_handle", &ImGuiViewport::PlatformHandle, "None* for FindViewportByPlatformHandle(). (e.g. suggested to use natural platform handle such as HWND, GLFWWindow*, SDL_Window*)")    // imgui.h:3076
+        .def_readwrite("platform_handle_raw", &ImGuiViewport::PlatformHandleRaw, "None* to hold lower-level, platform-native window handle (under Win32 this is expected to be a HWND, unused for other platforms), when using an abstraction layer like GLFW or SDL (where PlatformHandle would be a SDL_Window*)")    // imgui.h:3077
+        .def_readwrite("platform_window_created", &ImGuiViewport::PlatformWindowCreated, "Platform window has been created (Platform_CreateWindow() has been called). This is False during the first frame where a viewport is being created.")    // imgui.h:3078
+        .def_readwrite("platform_request_move", &ImGuiViewport::PlatformRequestMove, "Platform window requested move (e.g. window was moved by the OS / host window manager, authoritative position will be OS window position)")    // imgui.h:3079
+        .def_readwrite("platform_request_resize", &ImGuiViewport::PlatformRequestResize, "Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)")    // imgui.h:3080
+        .def_readwrite("platform_request_close", &ImGuiViewport::PlatformRequestClose, "Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)")    // imgui.h:3081
+        .def(py::init<>())    // imgui.h:3083
         ;
 
 
     auto pyClassImGuiPlatformIO =
-        py::class_<ImGuiPlatformIO>    // imgui.h:3130
+        py::class_<ImGuiPlatformIO>    // imgui.h:3141
             (m, "PlatformIO", "(Optional) Access via ImGui::GetPlatformIO()")
-        .def(py::init<>(),    // imgui.h:3188
+        .def(py::init<>(),    // imgui.h:3199
             "Zero clear")
         ;
 
 
     auto pyClassImGuiPlatformMonitor =
-        py::class_<ImGuiPlatformMonitor>    // imgui.h:3193
+        py::class_<ImGuiPlatformMonitor>    // imgui.h:3204
             (m, "PlatformMonitor", " (Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.\n We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.")
-        .def_readwrite("main_pos", &ImGuiPlatformMonitor::MainPos, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3195
-        .def_readwrite("main_size", &ImGuiPlatformMonitor::MainSize, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3195
-        .def_readwrite("work_pos", &ImGuiPlatformMonitor::WorkPos, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3196
-        .def_readwrite("work_size", &ImGuiPlatformMonitor::WorkSize, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3196
-        .def_readwrite("dpi_scale", &ImGuiPlatformMonitor::DpiScale, "1.0 = 96 DPI")    // imgui.h:3197
-        .def(py::init<>())    // imgui.h:3198
+        .def_readwrite("main_pos", &ImGuiPlatformMonitor::MainPos, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3206
+        .def_readwrite("main_size", &ImGuiPlatformMonitor::MainSize, "Coordinates of the area displayed on this monitor (Min = upper left, Max = bottom right)")    // imgui.h:3206
+        .def_readwrite("work_pos", &ImGuiPlatformMonitor::WorkPos, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3207
+        .def_readwrite("work_size", &ImGuiPlatformMonitor::WorkSize, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")    // imgui.h:3207
+        .def_readwrite("dpi_scale", &ImGuiPlatformMonitor::DpiScale, "1.0 = 96 DPI")    // imgui.h:3208
+        .def(py::init<>())    // imgui.h:3209
         ;
 
 
     auto pyClassImGuiPlatformImeData =
-        py::class_<ImGuiPlatformImeData>    // imgui.h:3202
+        py::class_<ImGuiPlatformImeData>    // imgui.h:3213
             (m, "PlatformImeData", "(Optional) Support for IME (Input Method Editor) via the io.SetPlatformImeDataFn() function.")
-        .def_readwrite("want_visible", &ImGuiPlatformImeData::WantVisible, "A widget wants the IME to be visible")    // imgui.h:3204
-        .def_readwrite("input_pos", &ImGuiPlatformImeData::InputPos, "Position of the input cursor")    // imgui.h:3205
-        .def_readwrite("input_line_height", &ImGuiPlatformImeData::InputLineHeight, "Line height")    // imgui.h:3206
-        .def(py::init<>())    // imgui.h:3208
+        .def_readwrite("want_visible", &ImGuiPlatformImeData::WantVisible, "A widget wants the IME to be visible")    // imgui.h:3215
+        .def_readwrite("input_pos", &ImGuiPlatformImeData::InputPos, "Position of the input cursor")    // imgui.h:3216
+        .def_readwrite("input_line_height", &ImGuiPlatformImeData::InputLineHeight, "Line height")    // imgui.h:3217
+        .def(py::init<>())    // imgui.h:3219
         ;
     ////////////////////    </generated_from:imgui.h>    ////////////////////
 
