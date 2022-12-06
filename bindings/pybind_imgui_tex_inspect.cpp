@@ -225,13 +225,14 @@ void py_init_module_imgui_tex_inspect(py::module& m)
         py::class_<ImGuiTexInspect::Texture>
             (m, "Texture", "")
         .def(py::init<>([](
-        ImVec2 size = ImVec2())
+        ImTextureID texture = ImTextureID(), ImVec2 size = ImVec2())
         {
             auto r = std::make_unique<Texture>();
+            r->texture = texture;
             r->size = size;
             return r;
         })
-        , py::arg("size") = ImVec2()
+        , py::arg("texture") = ImTextureID(), py::arg("size") = ImVec2()
         )
         .def_readwrite("texture", &Texture::texture, "")
         .def_readwrite("size", &Texture::size, "")

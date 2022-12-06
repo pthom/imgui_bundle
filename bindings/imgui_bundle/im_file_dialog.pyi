@@ -75,7 +75,7 @@ class FileDialog:
         date_modified: int
 
         has_icon_preview: bool
-        icon_preview: Any
+        icon_preview: ImTextureID
         icon_preview_data: int
         icon_preview_width: int
         icon_preview_height: int

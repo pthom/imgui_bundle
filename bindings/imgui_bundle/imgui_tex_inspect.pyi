@@ -331,9 +331,13 @@ class Transform2D:
 
 """namespace ImGuiTexInspect"""
 class Texture:
-    texture: Any
+    texture: ImTextureID
     size: ImVec2
-    def __init__(self, size: ImVec2 = ImVec2()) -> None:
+    def __init__(
+        self,
+        texture: ImTextureID = ImTextureID(),
+        size: ImVec2 = ImVec2()
+        ) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
