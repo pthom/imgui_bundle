@@ -112,11 +112,8 @@ namespace pybind11
              */
             bool load(handle src, bool)
             {
-//                auto a = reinterpret_borrow<array>(src);
-//                auto new_mat = cv::Mat(cvnp::nparray_to_mat(a));
-//                value.Value = new_mat;
-//                return true;
-
+                if (!isinstance<array>(src))
+                    return false;
                 auto a = reinterpret_borrow<array>(src);
                 value =  matrix_to_numpy::nparray_to_matrix<N>(a);
                 return true;
