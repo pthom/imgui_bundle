@@ -2333,8 +2333,16 @@ void py_init_module_imgui_main(py::module& m)
         "this is automatically called (if io.IniFilename is not empty) a few seconds after any modification that should be reflected in the .ini file (and also by DestroyContext).");
 
     m.def("save_ini_settings_to_memory",    // imgui.h:962
-        ImGui::SaveIniSettingsToMemory,
-        py::arg("out_ini_size") = py::none(),
+        []() -> const char *
+        {
+            auto SaveIniSettingsToMemory_adapt_exclude_params = []() -> const char *
+            {
+                auto r = ImGui::SaveIniSettingsToMemory(NULL);
+                return r;
+            };
+
+            return SaveIniSettingsToMemory_adapt_exclude_params();
+        },
         "return a zero-terminated string with the .ini data which you can save by your own mean. call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings.",
         pybind11::return_value_policy::reference);
 

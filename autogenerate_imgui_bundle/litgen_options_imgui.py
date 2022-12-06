@@ -1,5 +1,6 @@
 from enum import Enum
 
+import litgen
 from codemanip.code_replacements import RegexReplacementList
 from codemanip.code_utils import join_string_by_pipe_char
 from srcmlcpp.srcmlcpp_options import WarningType
@@ -228,7 +229,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
-    options.fn_params_exclude_types__regex = r"Callback$"
+    options.fn_params_exclude_types__regex = r"Callback$|size_t[ ]*\*"
     options.fn_exclude_by_param_type__regex = "^char$"
 
     # Version where we use Boxed types everywhere
@@ -249,3 +250,16 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
         pass
 
     return options
+
+
+def sandbox():
+    code = """
+IMGUI_API const char*   SaveIniSettingsToMemory(size_t* out_ini_size = NULL);
+    """
+    options = litgen_options_imgui(ImguiOptionsType.imgui_h, True)
+    generated_code = litgen.generate_code(options, code)
+    print(generated_code.pydef_code)
+
+
+if __name__ == "__main__":
+    sandbox()

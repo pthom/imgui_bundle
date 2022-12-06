@@ -1,20 +1,12 @@
 import imgui_bundle
-from imgui_bundle import imgui, immvision
-import numpy as np
+from imgui_bundle import imgui
 
 
 def make_gui_closure():
-    font_texture: np.ndarray = None
-    params = immvision.ImageParams()
-
     def gui():
-        nonlocal font_texture, params
         imgui.text("Hello")
         if imgui.button("text"):
-            font_texture = imgui.font_atlas_get_tex_data_as_rgba32(imgui.get_io().fonts)
-
-        if font_texture is not None:
-            immvision.image("font texture", font_texture, params)
+            settings, size = imgui.save_ini_settings_to_memory()
 
     return gui
 

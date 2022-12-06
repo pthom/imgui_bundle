@@ -2859,9 +2859,7 @@ def save_ini_settings_to_disk(ini_filename: str) -> None:  # imgui.h:961
     pass
 
 # IMGUI_API const char*   SaveIniSettingsToMemory(size_t* out_ini_size = NULL);                   /* original C++ signature */
-def save_ini_settings_to_memory(
-    out_ini_size: Optional[int] = None,
-) -> str:  # imgui.h:962
+def save_ini_settings_to_memory() -> str:  # imgui.h:962
     """return a zero-terminated string with the .ini data which you can save by your own mean. call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings."""
     pass
 
