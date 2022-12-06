@@ -1,7 +1,6 @@
 import os
 
 import litgen
-from litgen.options_customized.litgen_options_implot import litgen_options_implot
 from codemanip.code_utils import join_string_by_pipe_char
 
 _THIS_DIR = os.path.dirname(__file__)

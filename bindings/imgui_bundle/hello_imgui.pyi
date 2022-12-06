@@ -1115,7 +1115,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1201,12 +1201,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
