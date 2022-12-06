@@ -190,6 +190,7 @@ def lib_imgui() -> ExternalLibrary:
         name="imgui",
         official_git_url="https://github.com/ocornut/imgui.git",
         official_branch="docking",
+        fork_git_url="https://github.com/pthom/imgui.git"
     )
 
 
@@ -329,7 +330,7 @@ def play():
     # lib = lib_imgui()
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
-    # lib.run_update_official().run()
+    # lib.run_rebase_fork_on_official_changes().run()
 
     # imgui-knobs
     # -----------
