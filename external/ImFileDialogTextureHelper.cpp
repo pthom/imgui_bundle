@@ -4,7 +4,7 @@
 void ImFileDialogSetupTextureLoader()
 {
     // ImFileDialog requires you to set the CreateTexture and DeleteTexture
-    ifd::FileDialog::Instance().CreateTexture = [](uint8_t* data, int w, int h, char fmt) -> void*
+    ifd::FileDialog::Instance().CreateTexture = [](uint8_t* data, int w, int h, char fmt) -> ImTextureID
     {
         GLuint tex;
 
@@ -18,10 +18,10 @@ void ImFileDialogSetupTextureLoader()
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        return (void*)(size_t)tex;
+        return (ImTextureID)(size_t)tex;
     };
 
-    ifd::FileDialog::Instance().DeleteTexture = [](void* tex)
+    ifd::FileDialog::Instance().DeleteTexture = [](ImTextureID tex)
     {
         GLuint texID = (GLuint)((uintptr_t)tex);
         glDeleteTextures(1, &texID);

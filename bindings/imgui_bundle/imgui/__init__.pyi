@@ -217,7 +217,7 @@ ToggleFlags = int       # -> enum ToggleFlags_
 typedef void* ImTextureID;          // Default: store a pointer or an integer fitting in a pointer (most renderer backends are ok with that)
 #endif
 """
-ImTextureID = VoidPtr
+ImTextureID = int
 
 """
 // ImDrawIdx: vertex index. [Compile-time configurable type]

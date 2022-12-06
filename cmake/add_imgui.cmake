@@ -26,6 +26,10 @@ function(add_imgui imgui_dir)
         lg_disable_warning_exception_in_destructor(imgui)
         install(TARGETS imgui DESTINATION ./lib/)
 
+        if(IMGUI_BUNDLE_BUILD_PYTHON)
+            target_compile_definitions(imgui PUBLIC ImTextureID=int)
+        endif()
+
         if (UNIX)
             target_compile_options(imgui PUBLIC -fPIC)
         endif()

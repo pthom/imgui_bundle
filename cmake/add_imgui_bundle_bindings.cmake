@@ -12,8 +12,9 @@ function(add_imgui_bundle_bindings)
         bindings/litgen_glue_code.h
         bindings/imgui_docking_internal_types.h
 
+        bindings/pybind_imgui.cpp  # Those bindings need to be compiled first, as they declare type casters used by the next ones
+
         bindings/pybind_hello_imgui.cpp
-        bindings/pybind_imgui.cpp
         bindings/pybind_imgui_internal.cpp
         bindings/pybind_implot.cpp
         bindings/pybind_imgui_bundle.cpp
