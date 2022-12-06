@@ -8,7 +8,6 @@ from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
 from imgui_bundle._imgui_bundle import imspinner as imspinner
 from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import immvision as immvision
-from imgui_bundle._imgui_bundle import imgui_backends as imgui_backends
 from imgui_bundle._imgui_bundle import imguizmo as imguizmo
 from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
 

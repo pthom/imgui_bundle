@@ -1,3 +1,7 @@
+"""
+Disabled!
+backend code is manual!!!
+"""
 import os
 
 import litgen
@@ -13,7 +17,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 def autogenerate_imgui_backends():
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_backends.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_backends.pyi"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui/backends.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()
@@ -26,7 +30,7 @@ def autogenerate_imgui_backends():
 
     generator.write_generated_code(
         output_cpp_pydef_file=CPP_GENERATED_PYBIND_DIR + "/pybind_imgui_backends.cpp",
-        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imgui_backends.pyi",
+        output_stub_pyi_file=CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/backends.pyi",
     )
 
 

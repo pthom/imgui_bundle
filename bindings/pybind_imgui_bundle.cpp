@@ -26,11 +26,15 @@ void py_init_module_imgui_bundle(py::module& m)
 {
     py_init_module_imgui_bundle_inner(m);
 
+    // imgui and its submodules
     auto module_imgui =  m.def_submodule("imgui");
     py_init_module_imgui_main(module_imgui);
-
+    // Submodule imgui.internal
     auto module_imgui_internal =  module_imgui.def_submodule("internal");
     py_init_module_imgui_internal(module_imgui_internal);
+    // Submodule imgui.backends
+    auto module_imgui_backends =  module_imgui.def_submodule("backends");
+    py_init_module_imgui_backends(module_imgui_backends);
 
     auto module_himgui =  m.def_submodule("hello_imgui");
     py_init_module_hello_imgui(module_himgui);
@@ -58,9 +62,6 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_immvision =  m.def_submodule("immvision");
     py_init_module_immvision(module_immvision);
-
-    auto module_imgui_backends =  m.def_submodule("imgui_backends");
-    py_init_module_imgui_backends(module_imgui_backends);
 
     auto module_imguizmo = m.def_submodule("imguizmo");
     py_init_module_imguizmo(module_imguizmo);
