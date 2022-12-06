@@ -13,19 +13,30 @@
 namespace py = pybind11;
 
 
-//pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)   // Broken
-//{
-//    unsigned char *pixels;
-//    int width, height, bytes_per_pixel;
-//    self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
-//    std::vector<std::size_t> shape = {(size_t) height * (size_t) width * (size_t) bytes_per_pixel};
-//    auto r = pybind11::array(
-//        pybind11::format_descriptor<uint8_t>::format(),
-//        shape,
-//        pixels
-//    );
-//    return r;
-//};
+pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)   // Broken
+{
+    unsigned char *pixels;
+    int width, height, bytes_per_pixel;
+    self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
+    std::vector<py::ssize_t> shape = {(py::ssize_t) height, (py::ssize_t) width, 4};
+
+    std::vector<py::ssize_t> strides = {
+        (py::ssize_t)(4 * width * sizeof(uint8_t)),
+        4 * sizeof(uint8_t),
+        sizeof(uint8_t)
+    };
+
+    static std::string uint8_numpy_str = pybind11::format_descriptor<uint8_t>::format();
+    static auto dtype_uint8 = pybind11::dtype(uint8_numpy_str);
+
+    auto r = py::array(
+        dtype_uint8,
+        shape,
+        strides,
+        pixels
+    );
+    return r;
+};
 
 
 void py_init_module_imgui_main(py::module& m)
@@ -42,7 +53,7 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("set_io_ini_filename", PatchImGui::set_imgui_io_filename);
     m.def("set_io_log_filename", PatchImGui::set_imgui_log_filename);
-    // m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
+    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
     m.def("font_atlas_add_font_from_file_ttf", PatchImGui::font_atlas_add_font_from_file_ttf,
           py::arg("font_atlas"),
@@ -53,6 +64,7 @@ void py_init_module_imgui_main(py::module& m)
           py::return_value_policy::reference
           );
 
+    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
     m.def("font_atlas_glyph_ranges_default", PatchImGui::font_atlas_glyph_ranges_default, py::arg("font_atlas"));
     m.def("font_atlas_glyph_ranges_greek", PatchImGui::font_atlas_glyph_ranges_greek, py::arg("font_atlas"));
     m.def("font_atlas_glyph_ranges_korean", PatchImGui::font_atlas_glyph_ranges_korean, py::arg("font_atlas"));
