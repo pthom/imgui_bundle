@@ -2095,7 +2095,7 @@ struct RunnerParams
 /**
  @@md#SimpleRunnerParams
 
-**RunnerParams** is a struct that contains simpler params adapted for simple uses
+**SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.
 
  Members:
 * `guiFunction`: _VoidFunction_.
@@ -2110,6 +2110,22 @@ struct RunnerParams
    Size of the window
 * `fpsIdle`: _float, default=10_.
    FPS of the application when idle (set to 0 for full speed).
+
+For example, this is sufficient to run an application:
+
+````cpp
+void MyGui() {
+    ImGui::Text("Hello, world");
+    if (ImGui::Button("Exit"))
+        HelloImGui::GetRunnerParams()->appShallExit = true;
+}
+
+int main(){
+    auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = true, .windowTitle = "Example"};
+    HelloImGui::Run(params);
+}
+````
+
 @@md
  */
 struct SimpleRunnerParams

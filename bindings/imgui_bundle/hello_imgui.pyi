@@ -1404,7 +1404,7 @@ class SimpleRunnerParams:
     """*
      @@md#SimpleRunnerParams
 
-    **RunnerParams** is a struct that contains simpler params adapted for simple uses
+    **SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.
 
      Members:
     * `guiFunction`: _VoidFunction_.
@@ -1419,6 +1419,22 @@ class SimpleRunnerParams:
        Size of the window
     * `fpsIdle`: _float, default=10_.
        FPS of the application when idle (set to 0 for full speed).
+
+    For example, this is sufficient to run an application:
+
+    ````cpp
+    None MyGui() {
+        ImGui::Text("Hello, world");
+        if (ImGui::Button("Exit"))
+            HelloImGui::GetRunnerParams()->appShallExit = True;
+    }
+
+    int main(){
+        auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = "Example"};
+        HelloImGui::Run(params);
+    }
+    ````
+
     @@md
 
     """
