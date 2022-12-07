@@ -18,9 +18,12 @@ def make_gui_closure():
             color_as_list = [color_text.x, color_text.y, color_text.z, color_text.w]
             changed, new_color_list = imgui.color_edit4("Text color", color_as_list)
             if changed:
-                color_text = ImVec4(
-                    new_color_list[0], new_color_list[1], new_color_list[2], new_color_list[3])
-                imgui.get_style().set_color(imgui.Col_.text, color_text)
+                # color_text = ImVec4(new_color_list[0], new_color_list[1], new_color_list[2], new_color_list[3])
+                # imgui.get_style().set_color(imgui.Col_.text, color_text)
+                color_text.x = new_color_list[0]
+                color_text.y = new_color_list[1]
+                color_text.z = new_color_list[2]
+                color_text.w = new_color_list[3]
 
         edit_text_color()
 
