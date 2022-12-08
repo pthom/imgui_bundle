@@ -1,5 +1,6 @@
 #include "ImFileDialog/ImFileDialog.h"
 #include "hello_imgui/hello_imgui_include_opengl.h"
+#include "imgui.h"
 
 void ImFileDialogSetupTextureLoader()
 {
