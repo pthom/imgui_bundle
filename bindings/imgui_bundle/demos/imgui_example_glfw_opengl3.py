@@ -7,7 +7,7 @@ import os.path
 import sys
 import platform
 import OpenGL.GL as GL  # type: ignore
-from imgui_bundle import imgui, imgui_backends
+from imgui_bundle import imgui
 
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for
@@ -77,12 +77,12 @@ def main():
     # Setup Platform/Renderer backends
     import ctypes
 
-    # You need to transfer the window address to imgui_backends.glfw_init_for_open_gl
+    # You need to transfer the window address to imgui.backends.glfw_init_for_open_gl
     # proceed as shown below to get it.
     window_address = ctypes.cast(window, ctypes.c_void_p).value
-    imgui_backends.glfw_init_for_open_gl(window_address, True)
+    imgui.backends.glfw_init_for_open_gl(window_address, True)
 
-    imgui_backends.opengl3_init(glsl_version)
+    imgui.backends.opengl3_init(glsl_version)
 
     # // Load Fonts
     # // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use imgui.PushFont()/PopFont() to select them.
@@ -148,8 +148,8 @@ def main():
         glfw.poll_events()
 
         # Start the Dear ImGui frame
-        imgui_backends.opengl3_new_frame()
-        imgui_backends.glfw_new_frame()
+        imgui.backends.opengl3_new_frame()
+        imgui.backends.glfw_new_frame()
         imgui.new_frame()
 
         # 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -218,7 +218,7 @@ def main():
             clear_color[3],
         )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-        imgui_backends.opengl3_render_draw_data(imgui.get_draw_data())
+        imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())
 
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -232,8 +232,8 @@ def main():
         glfw.swap_buffers(window)
 
     # Cleanup
-    imgui_backends.opengl3_shutdown()
-    imgui_backends.glfw_shutdown()
+    imgui.backends.opengl3_shutdown()
+    imgui.backends.glfw_shutdown()
     imgui.destroy_context()
 
     glfw.destroy_window(window)
