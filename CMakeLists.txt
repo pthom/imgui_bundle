@@ -47,7 +47,7 @@ endif()
 
 
 ########################################################
-
+include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
