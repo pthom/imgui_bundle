@@ -1,6 +1,6 @@
 #include "imgui_bundle/imgui_bundle.h"
 #include "immvision/immvision.h"
-#include <opencv2/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 int main()
 {
