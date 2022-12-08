@@ -44,6 +44,56 @@ macro(immvision_download_opencv_static_package_win)
 endmacro()
 
 
+macro(immvision_fetch_opencv_from_source)
+    # Failed / ongoing attempt to download,configure and install OpenCV at configure time
+    if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
+        message("FIND OPENCV use immvision_fetch_opencv_from_source")
+        include(FetchContent)
+        Set(FETCHCONTENT_QUIET FALSE)
+        FetchContent_Declare(
+            OpenCV_Fetch
+            GIT_REPOSITORY https://github.com/opencv/opencv.git
+            GIT_TAG 4.6.0
+        )
+        # It is not possible to build opencv completely via FetchContent_MakeAvailable,
+        # since the opencv include folder is populated only at opencv install
+        FetchContent_Populate(OpenCV_Fetch)
+
+        # So we resort to building OpenCV manually
+        set(opencv_src_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-src")
+        set(opencv_build_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-build")
+        set(opencv_install_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-install")
+        set(opencv_cmake_args -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF)
+
+        add_custom_target(
+            opencv_cmake
+            COMMAND
+            ${CMAKE_COMMAND} ${opencv_src_dir} -DCMAKE_INSTALL_PREFIX=${opencv_install_dir} ${opencv_cmake_args}
+            WORKING_DIRECTORY ${opencv_build_dir}
+            USES_TERMINAL
+        )
+        add_custom_target(
+            opencv_build
+            COMMAND
+            /usr/bin/make -j
+            WORKING_DIRECTORY ${opencv_build_dir}
+            USES_TERMINAL
+        )
+        add_dependencies(opencv_build opencv_cmake)
+        add_custom_target(
+            opencv_install
+            COMMAND
+            ${CMAKE_COMMAND} --install .
+            WORKING_DIRECTORY ${opencv_build_dir}
+            USES_TERMINAL
+        )
+        add_dependencies(opencv_install opencv_build)
+
+        set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
+    endif()
+endmacro()
+
+
 macro(immvision_try_install_opencv_with_conan)
     if ("$ENV{IMGUIBUNDLE_OPENCV_USE_CONAN}" OR IMGUIBUNDLE_OPENCV_USE_CONAN)
 		message("FIND OPENCV use CONAN")
@@ -108,26 +158,31 @@ set(immvision_conan_help_message "
 
 
 macro(immvision_find_opencv)
-	immvision_forward_opencv_env_variables()
+
+    immvision_fetch_opencv_from_source()  # Will fetch and build OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+
+    immvision_forward_opencv_env_variables()
     immvision_download_opencv_static_package_win()
 
-	message("FIND OPENCV 1")
+    message(WARNING "------ immvision_find_opencv 1. (Enter) OpenCV_FOUND=${OpenCV_FOUND}")
+
     find_package(OpenCV)
+    message(WARNING "------ immvision_find_opencv 1. (First find package) OpenCV_FOUND=${OpenCV_FOUND}")
     if (NOT OpenCV_FOUND)
         immvision_try_install_opencv_with_conan()
     endif()
 
-	message("FIND OPENCV 2")
     find_package(OpenCV)
+    message(WARNING "------ immvision_find_opencv 1. (After conan) OpenCV_FOUND=${OpenCV_FOUND}")
     if (NOT OpenCV_FOUND)
         message(${immvision_conan_help_message})
     endif()
 
     if (OpenCV_FOUND)
-        message(STATUS "------ immvision found OpenCV_LIB_PATH=${OpenCV_LIB_PATH}")
+        message(FATAL_ERROR "------ immvision found OpenCV_LIB_PATH=${OpenCV_LIB_PATH}")
     endif()
 
-	# Under windows install dll opencv_worldxxx.dll to package
+    # Under windows install dll opencv_worldxxx.dll to package
     if (WIN32)
         set(immvision_OpenCV_DLL_PATH "${OpenCV_LIB_PATH}/../bin")
         message("immvision_OpenCV_DLL_PATH=${immvision_OpenCV_DLL_PATH}")
