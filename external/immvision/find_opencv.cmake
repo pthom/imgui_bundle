@@ -107,7 +107,11 @@ macro(immvision_fetch_opencv_from_source)
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/liblibprotobuf.a "dummy")
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/libquirc.a "dummy")
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/libade.a "dummy")
-
+        if (WIN32)
+            file(WRITE ${opencv_install_dir}/x64/vc17/staticlib/libprotobuf.lib "dummy")
+            file(WRITE ${opencv_install_dir}/x64/vc17/staticlib/quirc.lib "dummy")
+            file(WRITE ${opencv_install_dir}/x64/vc17/staticlib/ade.lib "dummy")
+        endif()
     endif()
 endmacro()
 
