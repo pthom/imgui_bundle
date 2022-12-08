@@ -77,7 +77,7 @@ macro(immvision_fetch_opencv_from_source)
         endif()
 
         execute_process(
-            COMMAND ${CMAKE_COMMAND} --build . --config Release  -j
+            COMMAND ${CMAKE_COMMAND} --build . --config Release  -j 3
             WORKING_DIRECTORY ${opencv_build_dir}
             RESULT_VARIABLE result
         )
