@@ -45,7 +45,9 @@ endmacro()
 
 
 macro(immvision_fetch_opencv_from_source)
-    # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+    # Will fetch, build and install a very-minimalist OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+    # This builds only opencv_core opencv_imgproc and opencv_imgcodecs
+    # It is so minimalist that it is only usable within the python bindings!!!
 
     if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
         message("FIND OPENCV use immvision_fetch_opencv_from_source")
@@ -64,7 +66,7 @@ macro(immvision_fetch_opencv_from_source)
         set(opencv_src_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-src")
         set(opencv_build_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-build")
         set(opencv_install_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-install")
-        set(opencv_cmake_args -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF)
+        set(opencv_cmake_args -DCMAKE_BUILD_TYPE=Release -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_opencv_features2d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_dnn=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_gapi=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_objc=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_python=OFF -DBUILD_opencv_stiching=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_videoio=OFF)
 
         execute_process(
             COMMAND ${CMAKE_COMMAND} ${opencv_src_dir} -DCMAKE_INSTALL_PREFIX=${opencv_install_dir} ${opencv_cmake_args}
@@ -93,7 +95,11 @@ macro(immvision_fetch_opencv_from_source)
             message(FATAL_ERROR "my_checked_execute_process_check failed during install")
         endif()
 
-        set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
+        if (WIN32)
+            set(OpenCV_DIR ${opencv_install_dir})
+        else()
+            set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
+        endif()
     endif()
 endmacro()
 
