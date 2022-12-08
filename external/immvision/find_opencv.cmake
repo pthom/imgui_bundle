@@ -45,7 +45,8 @@ endmacro()
 
 
 macro(immvision_fetch_opencv_from_source)
-    # Failed / ongoing attempt to download,configure and install OpenCV at configure time
+    # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+
     if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
         message("FIND OPENCV use immvision_fetch_opencv_from_source")
         include(FetchContent)
@@ -65,29 +66,32 @@ macro(immvision_fetch_opencv_from_source)
         set(opencv_install_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-install")
         set(opencv_cmake_args -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF)
 
-        add_custom_target(
-            opencv_cmake
-            COMMAND
-            ${CMAKE_COMMAND} ${opencv_src_dir} -DCMAKE_INSTALL_PREFIX=${opencv_install_dir} ${opencv_cmake_args}
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} ${opencv_src_dir} -DCMAKE_INSTALL_PREFIX=${opencv_install_dir} ${opencv_cmake_args}
             WORKING_DIRECTORY ${opencv_build_dir}
-            USES_TERMINAL
+            RESULT_VARIABLE result
         )
-        add_custom_target(
-            opencv_build
-            COMMAND
-            /usr/bin/make -j
+        if (NOT ${result} EQUAL "0")
+            message(FATAL_ERROR "my_checked_execute_process_check failed during cmake")
+        endif()
+
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --build . --config Release  -j
             WORKING_DIRECTORY ${opencv_build_dir}
-            USES_TERMINAL
+            RESULT_VARIABLE result
         )
-        add_dependencies(opencv_build opencv_cmake)
-        add_custom_target(
-            opencv_install
-            COMMAND
-            ${CMAKE_COMMAND} --install .
+        if (NOT ${result} EQUAL "0")
+            message(FATAL_ERROR "my_checked_execute_process_check failed during build")
+        endif()
+
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} --install .
             WORKING_DIRECTORY ${opencv_build_dir}
-            USES_TERMINAL
+            RESULT_VARIABLE result
         )
-        add_dependencies(opencv_install opencv_build)
+        if (NOT ${result} EQUAL "0")
+            message(FATAL_ERROR "my_checked_execute_process_check failed during install")
+        endif()
 
         set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
     endif()
@@ -158,28 +162,21 @@ set(immvision_conan_help_message "
 
 
 macro(immvision_find_opencv)
-
-    immvision_fetch_opencv_from_source()  # Will fetch and build OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
-
-    immvision_forward_opencv_env_variables()
-    immvision_download_opencv_static_package_win()
-
-    message(WARNING "------ immvision_find_opencv 1. (Enter) OpenCV_FOUND=${OpenCV_FOUND}")
+    immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+    immvision_forward_opencv_env_variables() # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
+    immvision_download_opencv_static_package_win() # will download prebuilt package if IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
 
     find_package(OpenCV)
-    message(WARNING "------ immvision_find_opencv 1. (First find package) OpenCV_FOUND=${OpenCV_FOUND}")
     if (NOT OpenCV_FOUND)
         immvision_try_install_opencv_with_conan()
     endif()
 
     find_package(OpenCV)
-    message(WARNING "------ immvision_find_opencv 1. (After conan) OpenCV_FOUND=${OpenCV_FOUND}")
     if (NOT OpenCV_FOUND)
         message(${immvision_conan_help_message})
-    endif()
-
-    if (OpenCV_FOUND)
-        message(FATAL_ERROR "------ immvision found OpenCV_LIB_PATH=${OpenCV_LIB_PATH}")
+    else()
+        dump_cmake_variables(OpenCV)
+        message("found OpenCV OpenCV_DIR=${OpenCV_DIR} ")
     endif()
 
     # Under windows install dll opencv_worldxxx.dll to package
