@@ -81,6 +81,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"""
             RGBtoHSV -> RgbToHsv
             HSVtoRGB -> HsvToRgb
+            AddFontFromFileTTF_ -> AddFontFromFileTTF
             """
         )
     )
@@ -148,7 +149,6 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^TempInput",
             r"^ErrorCheckEnd",
             r"ImFileLoadToMemory",
-            r"AddFontFromFileTTF",
         ]
     )
 
@@ -232,7 +232,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
     options.fn_params_exclude_types__regex = r"Callback$|size_t[ ]*\*"
-    options.fn_exclude_by_param_type__regex = "^char$"
+    options.fn_exclude_by_param_type__regex = "^char$|^const ImWchar \*$"
 
     # Version where we use Boxed types everywhere
     # options.fn_params_replace_modifiable_immutable_by_boxed__regex = r".*"

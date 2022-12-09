@@ -10,14 +10,7 @@
 
 namespace PatchImGui
 {
-    ImFont* font_atlas_add_font_from_file_ttf(
-        ImFontAtlas* self,
-        const char* filename,
-        float size_pixels,
-        const ImFontConfig* font_cfg = NULL,
-        std::optional<std::vector<ImWchar>> glyph_ranges_as_int_list = std::nullopt);
-
-
+    
     std::vector<ImWchar>    font_atlas_glyph_ranges_default(ImFontAtlas* self);                // Basic Latin, Extended Latin
     std::vector<ImWchar>    font_atlas_glyph_ranges_greek(ImFontAtlas* self);                  // Default + Greek and Coptic
     std::vector<ImWchar>    font_atlas_glyph_ranges_korean(ImFontAtlas* self);                 // Default + Korean characters
