@@ -5358,6 +5358,10 @@ class TableSortSpecs:
     # ImGuiTableSortSpecs()       { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # [ADAPT_IMGUI_BUNDLE]
+    # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t specIdx) { IM_ASSERT((specIdx >=0) && (specIdx < SpecsCount)); return Specs[specIdx];}    /* original C++ signature */
+    def get_specs(self, spec_idx: int) -> TableColumnSortSpecs:
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, ImColor)
