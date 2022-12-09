@@ -10,7 +10,6 @@
 #include "ImGuizmoPure/ImZoomSliderPure.h"
 #include "ImGuizmoPure/ImGuizmoPure.h"
 
-#include <fplus/fplus.hpp>
 
 namespace py = pybind11;
 using namespace ImGuizmo;
@@ -62,7 +61,6 @@ namespace matrix_to_numpy
         static std::string float_numpy_str = pybind11::format_descriptor<float>::format();
         static auto dtype_float = pybind11::dtype(float_numpy_str);
 
-        // std::cout << "matrix_to_nparray shape = " + fplus::show(shape) + "\n";
         return pybind11::array(dtype_float, shape, strides, m.values);
     }
 
