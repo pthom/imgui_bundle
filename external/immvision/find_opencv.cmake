@@ -105,18 +105,18 @@ macro(immvision_fetch_opencv_from_source)
             CMAKE_OSX_DEPLOYMENT_TARGET
             CMAKE_OSX_ARCHITECTURES
             )
+
+        # Note: we cannot compile universal2 wheels at this time, because CMake confuses itself
+        # The incoming CMAKE_OSX_ARCHITECTURES is "x86_64;arm64"
+        # However, it is difficult to pass it as is to the cmake args for OpenCV,
+        # since CMake happily splits it in two...
+
         foreach(compile_arch_flag ${compile_arch_flags_to_pass})
             if (DEFINED ${compile_arch_flag})
-                list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})
+                list(APPEND opencv_cmake_args -D${compile_arch_flag}="${${compile_arch_flag}}")
                 # message(WARNING "list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})")
             endif()
         endforeach()
-#        if (CMAKE_OSX_ARCHITECTURES STREQUAL "x86_64")
-#            # modules/core/include/opencv2/core/cvdef.h:923:26: error: always_inline function '_mm_cvtph_ps' requires target feature 'f16c',
-#            # but would be inlined into function 'operator float' that is compiled without support for 'f16c'
-#            #_mm_store_ss(&f, _mm_cvtph_ps(_mm_cvtsi32_si128(w)));
-#            list(APPEND opencv_cmake_args -DCMAKE_CXX_FLAGS="-mf16c")
-#        endif()
 
         message("
         -----------------------------------------------------------------------
