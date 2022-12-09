@@ -18,23 +18,38 @@ profile = "black"
 
 
 [tool.cibuildwheel]
+build-verbosity = 1
 # Target python versions:
 # Skip CPython 3.6, CPython 3.7, PyPy 3.7
 # (we start at 3.8, otherwise the build is too long on Github's CI and may be cancelled)
-skip = ["cp36-*", "cp37-*", "pp37-*"]
+build = ["cp38-*"]
+#skip = ["cp36-*", "cp37-*", "pp37-*"]
 
 # Tests
 test-requires = "pytest"
 test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
 # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
 # skip testing on python 3.11 (numpy not yet available on python 3.11)
-test-skip = ["pp3*", "cp311*"]
+#
+# Skip trying to test arm64 builds on Intel Macs
+# "*-macosx_arm64 *-macosx_universal2:arm64"
+#
+# Skip trying to test arm64 builds on Intel Macs
+# "*-macosx_x86_64 *-macosx_universal2:x86_64"
+test-skip = [
+    "pp3*",
+    "cp311*",
+    "*-macosx_x86_64 *-macosx_universal2:x86_64"
+]
 # Will cause the wheel to be installed with `pip install <wheel_file>[test]`
 #test-extras = ["test"]
 
 # Environment variables
 [tool.cibuildwheel.macos]
-environment = { MACOSX_DEPLOYMENT_TARGET="11.0" }
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
+environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+# archs = ["x86_64", "universal2", "arm64"]
+archs = ["x86_64"]
 
 
 # Install glfw dev packages on manylinux:

@@ -89,12 +89,49 @@ macro(immvision_fetch_opencv_from_source)
 
     if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
         message("FIND OPENCV use immvision_fetch_opencv_from_source")
+
+        # Build opencv with only opencv_core, opencv_imgproc and opencv_imgcodecs
+        set(opencv_cmake_args -DCMAKE_BUILD_TYPE=Release -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_opencv_features2d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_dnn=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_gapi=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_objc=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_python=OFF -DBUILD_opencv_stiching=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_js=OFF)
+
+        # Pass current compilation flags to OpenCV compilation
+        # For example, when compiling x86_64 on a Mac M1 (arm64), we have the following variable set
+        #    CMAKE_HOST_SYSTEM_PROCESSOR=x86_64  # Host compiler architecture
+        #    CMAKE_SYSTEM_PROCESSOR=x86_64       # Target architecture (but not always)
+        #    CMAKE_OSX_DEPLOYMENT_TARGET=10.16   # MacOS specific
+        #    CMAKE_OSX_ARCHITECTURES=x86_64      # This is the target architecture (Mac Only)
+        set(compile_arch_flags_to_pass
+            CMAKE_HOST_SYSTEM_PROCESSOR
+            CMAKE_SYSTEM_PROCESSOR
+            CMAKE_OSX_DEPLOYMENT_TARGET
+            CMAKE_OSX_ARCHITECTURES
+            )
+        foreach(compile_arch_flag ${compile_arch_flags_to_pass})
+            if (DEFINED ${compile_arch_flag})
+                list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})
+                # message(WARNING "list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})")
+            endif()
+        endforeach()
+#        if (CMAKE_OSX_ARCHITECTURES STREQUAL "x86_64")
+#            # modules/core/include/opencv2/core/cvdef.h:923:26: error: always_inline function '_mm_cvtph_ps' requires target feature 'f16c',
+#            # but would be inlined into function 'operator float' that is compiled without support for 'f16c'
+#            #_mm_store_ss(&f, _mm_cvtph_ps(_mm_cvtsi32_si128(w)));
+#            list(APPEND opencv_cmake_args -DCMAKE_CXX_FLAGS="-mf16c")
+#        endif()
+
+        message("
+        -----------------------------------------------------------------------
+        immvision_fetch_opencv_from_source: opencv_cmake_args=
+            ${opencv_cmake_args}
+        -----------------------------------------------------------------------
+        ")
+
         include(FetchContent)
         Set(FETCHCONTENT_QUIET FALSE)
         FetchContent_Declare(
             OpenCV_Fetch
             GIT_REPOSITORY https://github.com/opencv/opencv.git
             GIT_TAG 4.6.0
+            # GIT_REMOTE_UPDATE_STRATEGY REBASE
         )
         # It is not possible to build opencv completely via FetchContent_MakeAvailable,
         # since the opencv include folder is populated only at opencv install!
@@ -106,8 +143,6 @@ macro(immvision_fetch_opencv_from_source)
         set(opencv_src_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-src")
         set(opencv_build_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-build")
         set(opencv_install_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-install")
-        # Build opencv with only opencv_core, opencv_imgproc and opencv_imgcodecs
-        set(opencv_cmake_args -DCMAKE_BUILD_TYPE=Release -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_opencv_features2d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_dnn=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_gapi=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_objc=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_python=OFF -DBUILD_opencv_stiching=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_js=OFF)
 
         # cmake
         execute_process(
