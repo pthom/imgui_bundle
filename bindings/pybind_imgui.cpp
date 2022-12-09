@@ -3405,7 +3405,7 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def("get_specs",
             &ImGuiTableSortSpecs::GetSpecs,
-            py::arg("spec_idx"),
+            py::arg("idx"),
             pybind11::return_value_policy::reference)
         ;
 

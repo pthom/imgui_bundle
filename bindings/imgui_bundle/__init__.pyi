@@ -11,14 +11,7 @@ from . import imgui_md as imgui_md
 from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
-from . imgui_bundle import (
-    run as run,
-    current_node_editor_context as current_node_editor_context,
-    clock_seconds as clock_seconds,
-    AddOnsParams as AddOnsParams,
-    visible_font_size as visible_font_size,
-    em_size as em_size
-)
+from . import immapp as immapp
 from .imgui_bundle_utils import (
     static as static,
     run_anon_block as run_anon_block,

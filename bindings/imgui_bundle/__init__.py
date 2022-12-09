@@ -10,6 +10,7 @@ from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import immvision as immvision
 from imgui_bundle._imgui_bundle import imguizmo as imguizmo
 from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
+from imgui_bundle._imgui_bundle import immapp as immapp
 
 from imgui_bundle._imgui_bundle import (
     run as run,
@@ -48,12 +49,12 @@ hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 __all__ = [
     # submodules
     "imgui",
+    "immapp",
     "hello_imgui",
     "implot",
     "immvision",
     "imgui_bundle",
     "imspinner",
-    "imgui_backends",
     "imgui_md",
     "imgui_knobs",
     "imgui_color_text_edit",

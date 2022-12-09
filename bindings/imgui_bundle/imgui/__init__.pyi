@@ -5359,8 +5359,8 @@ class TableSortSpecs:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
-    # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t specIdx) { IM_ASSERT((specIdx >=0) && (specIdx < SpecsCount)); return Specs[specIdx];}    /* original C++ signature */
-    def get_specs(self, spec_idx: int) -> TableColumnSortSpecs:
+    # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) { IM_ASSERT((idx >= 0) && (idx < SpecsCount)); return Specs[idx];}    /* original C++ signature */
+    def get_specs(self, idx: int) -> TableColumnSortSpecs:
         pass
 
 # -----------------------------------------------------------------------------
