@@ -31,12 +31,12 @@ jobs:
       run: ./ci_scripts/install_xorg_dev.sh
 
     # Install OpenCV (ubuntu & macos)
-#    - name: install OpenCV (ubuntu)
-#      if: ${{ matrix.platform == 'ubuntu-latest' }}
-#      run: sudo apt-get install -y libopencv-dev
-#    - name: install OpenCV (macos)
-#      if: ${{ matrix.platform == 'macos-latest' }}
-#      run: brew install opencv
+    - name: install OpenCV (ubuntu)
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      run: sudo apt-get install -y libopencv-dev
+    - name: install OpenCV (macos)
+      if: ${{ matrix.platform == 'macos-latest' }}
+      run: brew install opencv
 
     # Install conan & pybind11
     - name: install conan and pybind11 (linux and ubuntu)
@@ -56,12 +56,20 @@ jobs:
       shell: bash
       run: |
         # On Windows, we install OpenCV via cmake which downloads a prebuilt static library
-        # echo RUNNER_OS=$RUNNER_OS
-        # if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON; fi
-        # echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
-        export IMGUIBUNDLE_OPENCV_FETCH_SOURCE=ON
+        # =================================================================================
+        echo RUNNER_OS=$RUNNER_OS
+        if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON; fi
+        echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
+        #
+        # On Linux and MacOS, we installed OpenCV packages (see previous steps)
+        # We could also build and use a static minimal version of OpenCV by using IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+        # (and uncommenting the line below)
+        # export IMGUIBUNDLE_OPENCV_FETCH_SOURCE=ON
+        # =================================================================================
+        #
+        # cmake and build
+        # =================================================================================
         mkdir build
         cd build
-        # cmake .. -DIMGUI_BUNDLE_WITH_IMMVISION=ON -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
-        cmake --build . --config Release
+        cmake --build . --config Release -j 3
