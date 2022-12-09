@@ -7,7 +7,6 @@
 #include "imgui_toggle/imgui_toggle.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "imgui_docking_internal_types.h"
-#include "imgui_bundle/patch_imgui.h"
 #include "litgen_glue_code.h"
 
 namespace py = pybind11;
