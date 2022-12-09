@@ -120,8 +120,8 @@ from imgui_bundle.imgui import (
     Cond_,
 )
 
-ImGuiCond_None = Cond_.none
-ImGuiCond_Always = Cond_.always
+Cond_None = Cond_.none
+Cond_Always = Cond_.always
 Cond_Once = imgui.Cond_.once
 
 Bin_Sturges = Bin_.sturges
