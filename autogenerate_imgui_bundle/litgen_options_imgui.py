@@ -93,7 +93,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
     options.python_max_line_length = -1  # in ImGui, the function decls are on *one* line
     options.python_convert_to_snake_case = True
-    options.original_location_flag_show = True
+    options.original_location_flag_show = False
     options.original_signature_flag_show = True
 
     options.python_run_black_formatter = True
