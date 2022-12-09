@@ -15,75 +15,8 @@ FLT_MIN: float # value defined by this module as the minimum acceptable C(++) fl
 FLT_MAX: float # value defined by this module as the maximum acceptable C(++) float
 
 
-def set_io_ini_filename(filename: str) -> None:
-    """set imgui.get_io().ini_filename"""
-    pass
-
-
-def set_io_log_filename(filename: str) -> None:
-    """set imgui.get_io().log_filename"""
-    pass
-
-
 def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
     """Manual binding for ImFontAtlas.get_tex_data_as_rgba32"""
-    pass
-
-
-def font_atlas_add_font_from_file_ttf(
-        font_atlas: ImFontAtlas,
-        filename: str,
-        size_pixels: float,
-        font_cfg: Optional[ImFontConfig] = None,
-        glyph_ranges_as_int_list: Optional[List[int]] = None
-    ) -> ImFont:
-    """A version of ImFontAtlas.add_font_from_file_ttf that allows to pass glyph range as a parameter,
-       since the member function does not allow glyph ranges.
-
-        glyph_ranges_as_int_list should be organized in pairs, and should end with a final zero.
-        As an example, below is the C++ code for the Korean glyph range:
-
-        const ImWchar*  ImFontAtlas::GetGlyphRangesKorean()
-        {
-            static const ImWchar ranges[] =
-            {
-                0x0020, 0x00FF, // Basic Latin + Latin Supplement
-                0x3131, 0x3163, // Korean alphabets
-                0xAC00, 0xD7A3, // Korean characters
-                0xFFFD, 0xFFFD, // Invalid
-                0,
-            };
-            return &ranges[0];
-        }
-    """
-    pass
-
-def font_atlas_glyph_ranges_default(font_atlas: ImFontAtlas):
-    """Basic Latin, Extended Latin"""
-    pass
-def font_atlas_glyph_ranges_greek(font_atlas: ImFontAtlas):
-    """Default + Greek and Coptic"""
-    pass
-def font_atlas_glyph_ranges_korean(font_atlas: ImFontAtlas):
-    """Default + Korean characters"""
-    pass
-def font_atlas_glyph_ranges_japanese(font_atlas: ImFontAtlas):
-    """Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
-    pass
-def font_atlas_glyph_ranges_chinese_full(font_atlas: ImFontAtlas):
-    """Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
-    pass
-def font_atlas_glyph_ranges_chinese_simplified_common(font_atlas: ImFontAtlas):
-    """Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
-    pass
-def font_atlas_glyph_ranges_cyrillic(font_atlas: ImFontAtlas):
-    """Default + about 400 Cyrillic characters"""
-    pass
-def font_atlas_glyph_ranges_thai(font_atlas: ImFontAtlas):
-    """Default + Thai characters"""
-    pass
-def font_atlas_glyph_ranges_vietnamese(font_atlas: ImFontAtlas):
-    """Default + Vietnamese characters"""
     pass
 
 

@@ -13,7 +13,7 @@
 namespace py = pybind11;
 
 
-pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)   // Broken
+pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)
 {
     unsigned char *pixels;
     int width, height, bytes_per_pixel;
