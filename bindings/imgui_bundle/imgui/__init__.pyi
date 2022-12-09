@@ -141,6 +141,7 @@ TreeNodeFlags = int     # -> enum TreeNodeFlags_   # Flags: for TreeNode(), Tree
 ViewportFlags = int     # -> enum ViewportFlags_   # Flags: for ImGuiViewport
 WindowFlags = int       # -> enum WindowFlags_     # Flags: for Begin(), BeginChild()
 ToggleFlags = int       # -> enum ToggleFlags_
+KeyChord = ModFlags     # == int. We generally use ImGuiKeyChord to mean "a ImGuiKey or-ed with any number of ImGuiMod_XXX value", but you may store only mods in there.
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
