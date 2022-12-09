@@ -81,7 +81,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"""
             RGBtoHSV -> RgbToHsv
             HSVtoRGB -> HsvToRgb
-            AddFontFromFileTTF_ -> AddFontFromFileTTF
+            _AddFontFromFileTTF -> AddFontFromFileTTF
             _GetGlyphRanges -> GetGlyphRanges
             """
         )

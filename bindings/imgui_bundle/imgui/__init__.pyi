@@ -6476,7 +6476,7 @@ class ImFontAtlas:
     # -------------------------------------------
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
-    # IMGUI_API ImFont* AddFontFromFileTTF_(    /* original C++ signature */
+    # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
     #         const ImFontConfig* font_cfg = NULL,

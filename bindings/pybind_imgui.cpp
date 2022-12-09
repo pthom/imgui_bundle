@@ -3924,7 +3924,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("build",
             &ImFontAtlas::Build, "Build pixels data. This is called automatically for you by the GetTexData*** functions.")
         .def("add_font_from_file_ttf",
-            &ImFontAtlas::AddFontFromFileTTF_,
+            &ImFontAtlas::_AddFontFromFileTTF,
             py::arg("filename"), py::arg("size_pixels"), py::arg("font_cfg") = py::none(), py::arg("glyph_ranges_as_int_list") = py::none(),
             pybind11::return_value_policy::reference)
         .def("get_glyph_ranges_default",
