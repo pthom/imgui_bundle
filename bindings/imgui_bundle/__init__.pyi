@@ -12,11 +12,12 @@ from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
 from . import immapp as immapp
-from .imgui_bundle_utils import (
-    static as static,
-    run_anon_block as run_anon_block,
-    run_nb as run_nb,
-)
+
+# Faire un package immapp python
+#   dedans import * from immapp_cpp
+#   + ajouts python
+
+from . import immapp as immapp
 
 from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui  # type: ignore
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)

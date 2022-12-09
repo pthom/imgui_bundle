@@ -1,5 +1,5 @@
 import imgui_bundle
-from imgui_bundle import imgui, hello_imgui, ImVec2, ImVec4
+from imgui_bundle import imgui, immapp
 
 
 def make_gui_closure():
@@ -37,7 +37,7 @@ def make_gui_closure():
 
 def main():
     gui = make_gui_closure()
-    imgui_bundle.run(gui, window_size=(1000, 800))
+    immapp.run(gui, window_size=(1000, 800))
 
 
 if __name__ == "__main__":

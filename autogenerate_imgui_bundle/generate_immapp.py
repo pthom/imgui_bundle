@@ -13,8 +13,8 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 def autogenerate_immapp():
     print("autogenerate_immapp")
-    output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_immapp.cpp"
-    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/immapp.pyi"
+    output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_immapp_cpp.cpp"
+    output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/immapp/immapp_cpp.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()
