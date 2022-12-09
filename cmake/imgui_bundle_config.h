@@ -51,3 +51,4 @@ inline std::string _file_short_name(const std::string& filename)
 #define IMPLOT_API __declspec( dllexport )
 #endif
 
+#define IMGUI_USE_WCHAR32
