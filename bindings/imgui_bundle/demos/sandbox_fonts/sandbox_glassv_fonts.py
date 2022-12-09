@@ -105,35 +105,35 @@ class GlassValidatorFontLoader:
         with NoneContext():
             font_atlas = imgui.get_io().fonts
 
-            font_atlas.add_font_from_file_ttf(font_atlas,str(karla_path), size_18, glyph_ranges_as_int_list=karla_range)
+            font_atlas.add_font_from_file_ttf(str(karla_path), size_18, glyph_ranges_as_int_list=karla_range)
             # load mdi => font won't render
-            font_atlas.add_font_from_file_ttf(font_atlas,str(mdi_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
+            font_atlas.add_font_from_file_ttf(str(mdi_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
             # load noto range: ?
-            font_atlas.add_font_from_file_ttf(font_atlas,str(noto_path),  size_18, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
+            font_atlas.add_font_from_file_ttf(str(noto_path),  size_18, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
             # load fontawesome => OK
-            font_atlas.add_font_from_file_ttf(font_atlas,str(fontawesome_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
+            font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
 
             # Big font + more glyphs
             self.big_font = \
-                font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(karla_path), size_28,                       glyph_ranges_as_int_list=karla_range)
-            font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(noto_path),  size_28, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
-            font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(mdi_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
+                font_atlas.add_font_from_file_ttf(str(karla_path), size_28,                       glyph_ranges_as_int_list=karla_range)
+            font_atlas.add_font_from_file_ttf(str(noto_path),  size_28, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
+            font_atlas.add_font_from_file_ttf(str(mdi_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
             # added font awesome
-            font_atlas.add_font_from_file_ttf(font_atlas,str(fontawesome_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
+            font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
 
             # MsgBox type icons
             # This line alone leads to IM_ASSERT( font && font->IsLoaded() )   ---   imgui.cpp:7795
             # self.icon_font = \
-            #     font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(mdi_path),   size_69,                       glyph_ranges_as_int_list=msgbox_range)
+            #     font_atlas.add_font_from_file_ttf(str(mdi_path),   size_69,                       glyph_ranges_as_int_list=msgbox_range)
 
             # However, if you load before karla, then merge mdi, the error message disappears
             # it seems you cannot have a font without basic character set
             # self.icon_font = \
-            #     font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(karla_path), size_69, glyph_ranges_as_int_list=karla_range)
+            #     font_atlas.add_font_from_file_ttf(str(karla_path), size_69, glyph_ranges_as_int_list=karla_range)
             self.icon_font = \
-                font_atlas.add_font_from_file_ttf(imgui.get_io().fonts,str(mdi_path), size_69, glyph_ranges_as_int_list=msgbox_range)
+                font_atlas.add_font_from_file_ttf(str(mdi_path), size_69, glyph_ranges_as_int_list=msgbox_range)
             # # # added font awesome
-            # self.icon_font = font_atlas.add_font_from_file_ttf(font_atlas,str(fontawesome_path),   size_69, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
+            # self.icon_font = font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_69, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
 
 
 
