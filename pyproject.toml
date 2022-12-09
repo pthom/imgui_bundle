@@ -19,38 +19,41 @@ profile = "black"
 
 [tool.cibuildwheel]
 build-verbosity = 1
-# Target python versions:
-# Skip CPython 3.6, CPython 3.7, PyPy 3.7
-# (we start at 3.8, otherwise the build is too long on Github's CI and may be cancelled)
-build = ["cp38-*"]
-#skip = ["cp36-*", "cp37-*", "pp37-*"]
 
 # Tests
 test-requires = "pytest"
 test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
-# skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
-# skip testing on python 3.11 (numpy not yet available on python 3.11)
-#
+
+
+#####################################
+# macos wheels options
+#####################################
+[tool.cibuildwheel.macos]
+# Target python versions:
+build = ["cp311-*"]
 # Skip trying to test arm64 builds on Intel Macs
-# "*-macosx_arm64 *-macosx_universal2:arm64"
+# test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 #
-# Skip trying to test arm64 builds on Intel Macs
-# "*-macosx_x86_64 *-macosx_universal2:x86_64"
-test-skip = [
-    "pp3*",
-    "cp311*",
-    "*-macosx_x86_64 *-macosx_universal2:x86_64"
-]
-# Will cause the wheel to be installed with `pip install <wheel_file>[test]`
-#test-extras = ["test"]
+# Skip trying to test x86_64 builds on Mac M1
+# test-skip = ["*-macosx_x86_64 *-macosx_universal2:x86_64"]
+test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 
 # Environment variables
-[tool.cibuildwheel.macos]
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
-# archs = ["x86_64", "universal2", "arm64"]
-archs = ["x86_64"]
+# archs = ["universal2"] # building universal2 fails miserably at this time: see comment in external/immvision/find_opencv.cmake
+# So, we build separately for x86_64 and arm64
+archs = ["x86_64", "arm64"]
 
+
+#####################################
+# linux wheels options
+#####################################
+[tool.cibuildwheel.linux]
+build = []
+# Environment variables
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
+environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
 
 # Install glfw dev packages on manylinux:
 # --------------------------------------
@@ -66,8 +69,16 @@ archs = ["x86_64"]
 # * manylinux_2_24 (Debian 8) uses apt (and is stuck on GCC 6),
 #     => apt install xorg-dev
 # * musllinux_1_1 MUSL based distributions of Linux (like Alpine). uses apk
-[tool.cibuildwheel.linux]
 before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
 before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+
+#####################################
+# windows wheels options
+#####################################
+[tool.cibuildwheel.windows]
+build = ["cp311-*"]
+# Environment variables
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
+environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
