@@ -4,6 +4,7 @@
 
 macro(immvision_forward_opencv_env_variables)
     # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
+    # This is useful when building the pip package for which only env variables are available
     if(DEFINED ENV{OpenCV_DIR})
         set(OpenCV_STATIC "$ENV{OpenCV_DIR}")
         message("immvision_forward_opencv_env_variables: Forwarding env OpenCV_DIR=${OpenCV_DIR}")
@@ -24,6 +25,10 @@ endmacro()
 
 
 macro(immvision_download_opencv_static_package_win)
+    # Download a precompiled version of opencv4.6.0
+    # This is the official release from OpenCV for windows, under the form of a "opencv_world.dll"
+    # The zip package we download is just a transcription of the exe provided by OpenCV, with the advantage that
+    # it does not require any user click.
     if ("$ENV{IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460}" OR IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460)
         message("FIND OPENCV use immvision_download_opencv_static_package_win")
 
@@ -117,6 +122,7 @@ endmacro()
 
 
 macro(immvision_try_install_opencv_with_conan)
+    # Tries to install OpenCV via conan
     if ("$ENV{IMGUIBUNDLE_OPENCV_USE_CONAN}" OR IMGUIBUNDLE_OPENCV_USE_CONAN)
 		message("FIND OPENCV use CONAN")
 
@@ -186,7 +192,7 @@ macro(immvision_find_opencv)
 
     find_package(OpenCV)
     if (NOT OpenCV_FOUND)
-        immvision_try_install_opencv_with_conan()
+        immvision_try_install_opencv_with_conan() # Will try to install OpenCV with Conan
     endif()
 
     find_package(OpenCV)
