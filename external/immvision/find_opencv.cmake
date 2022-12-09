@@ -113,8 +113,10 @@ macro(immvision_fetch_opencv_from_source)
 
         foreach(compile_arch_flag ${compile_arch_flags_to_pass})
             if (DEFINED ${compile_arch_flag})
-                list(APPEND opencv_cmake_args -D${compile_arch_flag}="${${compile_arch_flag}}")
-                # message(WARNING "list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})")
+                if (NOT ${compile_arch_flag} STREQUAL "")
+                    list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})
+                    # message(WARNING "list(APPEND opencv_cmake_args -D${compile_arch_flag}=${${compile_arch_flag}})")
+                endif()
             endif()
         endforeach()
 
