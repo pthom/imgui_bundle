@@ -22,6 +22,14 @@
 #   This dll is deployed into imgui_bundle package (under windows)
 #   No warning about doubly defined function was (yet?) observed, although a static link
 #   might be needed in the future.
+#   "Funny" note on how to set this env var under windows: choose your poison
+#     * with PowerShell
+#	      Set-Item -Path 'Env:IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460' -Value 'ON'
+#     * With bash:
+#	      export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON
+#      * With dos:
+#         set IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON
+# 
 ###############################################################################
 
 
