@@ -47,7 +47,7 @@ endif()
 
 
 ########################################################
-
+include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -56,6 +56,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
+    add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
 endif()
 
 
@@ -132,8 +133,19 @@ if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
     endif()
 endif()
 # Build ImGuizmo
-add_simple_external_library_with_sources(imguizmo ImGuizmo)
-
+add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
+add_simple_external_library_with_sources(imguizmo_pure ImGuizmo/ImGuizmoPure)
+target_link_libraries(imguizmo_pure PUBLIC imguizmo)
+# Build imgui_tex_inspect
+add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
+target_sources(imgui_tex_inspect PRIVATE
+    external/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
+    external/imgui_tex_inspect/backends/tex_inspect_opengl.h
+    )
+target_include_directories(imgui_tex_inspect PRIVATE external/imgui_tex_inspect)
+target_include_directories(imgui_tex_inspect PRIVATE external/imgui/backends)
+target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
+target_include_directories(imgui_tex_inspect PRIVATE external/hello_imgui/external/OpenGL_Loaders/glad/include)
 
 #########################################################################
 # Build python bindings

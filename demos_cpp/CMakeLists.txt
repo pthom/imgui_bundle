@@ -1,12 +1,17 @@
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-
+include_directories(${CMAKE_CURRENT_LIST_DIR})
 add_subdirectory(demo_haiku_implot_heart)
 add_subdirectory(demo_texteditor)
 add_subdirectory(demo_widgets_docking)
 add_subdirectory(demo_imgui_node_editor)
 add_subdirectory(demo_powersave)
-
-add_subdirectory(demos_immvision)
 add_subdirectory(demo_composition_graph)
 add_subdirectory(demos_imguizmo)
+add_subdirectory(demos_tex_inspect)
+
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    add_subdirectory(demos_immvision)
+endif()
+
+FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

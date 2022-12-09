@@ -32,6 +32,9 @@ namespace ImGuiBundle
         // (alternatively, you can set withNodeEditorConfig)
         bool withNodeEditor = false;
 
+        // Set withTexInspect=true if you need to use imgui_tex_inspect
+        bool withTexInspect = false;
+
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
 
@@ -80,6 +83,7 @@ namespace ImGuiBundle
         bool withImplot = false,
         bool withMarkdown = false,
         bool withNodeEditor = false,
+        bool withTexInspect = false,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );

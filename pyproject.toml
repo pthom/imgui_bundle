@@ -16,9 +16,48 @@ build-backend = "setuptools.build_meta"
 profile = "black"
 
 
-#
-# Install glfw dev packages on manylinux: https://www.glfw.org/docs/3.3/compile.html#compile_deps
 
+[tool.cibuildwheel]
+build-verbosity = 1
+
+# Tests
+test-requires = "pytest"
+test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
+
+
+#####################################
+# macos wheels options
+#####################################
+[tool.cibuildwheel.macos]
+# Target python versions:
+build = ["cp311-*"]
+# Skip trying to test arm64 builds on Intel Macs
+# test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
+#
+# Skip trying to test x86_64 builds on Mac M1
+# test-skip = ["*-macosx_x86_64 *-macosx_universal2:x86_64"]
+test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
+
+# Environment variables
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
+environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+# archs = ["universal2"] # building universal2 fails miserably at this time: see comment in external/immvision/find_opencv.cmake
+# So, we build separately for x86_64 and arm64
+archs = ["x86_64", "arm64"]
+
+
+#####################################
+# linux wheels options
+#####################################
+[tool.cibuildwheel.linux]
+build = ["cp311-*"]
+# Environment variables
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
+environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+
+# Install glfw dev packages on manylinux:
+# --------------------------------------
+# https://www.glfw.org/docs/3.3/compile.html#compile_deps
 # https://iscinumpy.dev/post/cibuildwheel-2-2-0/
 # cibuildwheel has added a new platform: musllinux
 # Remember, the manylinux1 image has been in maintenance mode, has no support for Python 3.10,
@@ -30,8 +69,16 @@ profile = "black"
 # * manylinux_2_24 (Debian 8) uses apt (and is stuck on GCC 6),
 #     => apt install xorg-dev
 # * musllinux_1_1 MUSL based distributions of Linux (like Alpine). uses apk
-[tool.cibuildwheel.linux]
 before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
 before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+
+#####################################
+# windows wheels options
+#####################################
+[tool.cibuildwheel.windows]
+build = ["cp311-*"]
+# Environment variables
+# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
+environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }

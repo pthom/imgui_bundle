@@ -46,7 +46,7 @@ def my_load_fonts_via_hello_imgui():
     global gAkronimFont
 
     # First, we load the default fonts (the font that was loaded first is the default font)
-    hello_imgui.ImGuiDefaultSettings.load_default_font_with_font_awesome_icons()
+    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
     font_filename = "fonts/Akronim-Regular.ttf"
     gAkronimFont = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
 

@@ -1,3 +1,7 @@
+"""Hello, Dear ImGui: cross-platform Gui apps for Windows / Mac / Linux / iOS / Android / Emscripten with the simplicity of a "Hello World" app
+https://github.com/pthom/hello_imgui
+"""
+
 from typing import List, Any, Callable, Tuple
 import numpy as np
 import enum
@@ -143,7 +147,7 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
 # void overrideAssetsFolder(const char* folder);    /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
     pass
-# void setAssetsFolder(const char* folder);    /* original C++ signature */
+# void SetAssetsFolder(const char* folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
     pass
 
@@ -325,8 +329,8 @@ class ScreenBounds:
     #         }
     def ensure_window_fits_this_monitor(
         self,
-        window_bounds_original: ScreenBounds
-        ) -> ScreenBounds:
+        window_bounds_original: HelloImGui.ScreenBounds
+        ) -> HelloImGui.ScreenBounds:
         pass
 
     # bool operator==(const ScreenBounds& other) const    /* original C++ signature */
@@ -341,7 +345,7 @@ class ScreenBounds:
     #             }
     #             return true;
     #         }
-    def __eq__(self, other: ScreenBounds) -> bool:
+    def __eq__(self, other: HelloImGui.ScreenBounds) -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(
@@ -1400,7 +1404,7 @@ class SimpleRunnerParams:
     """*
      @@md#SimpleRunnerParams
 
-    **RunnerParams** is a struct that contains simpler params adapted for simple uses
+    **SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.
 
      Members:
     * `guiFunction`: _VoidFunction_.
@@ -1415,6 +1419,22 @@ class SimpleRunnerParams:
        Size of the window
     * `fpsIdle`: _float, default=10_.
        FPS of the application when idle (set to 0 for full speed).
+
+    For example, this is sufficient to run an application:
+
+    ````cpp
+    None MyGui() {
+        ImGui::Text("Hello, world");
+        if (ImGui::Button("Exit"))
+            HelloImGui::GetRunnerParams()->appShallExit = True;
+    }
+
+    int main(){
+        auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = "Example"};
+        HelloImGui::Run(params);
+    }
+    ````
+
     @@md
 
     """
@@ -1562,22 +1582,25 @@ def get_runner_params() -> RunnerParams:
 #@@md
 #
 
-# <submodule ImGuiDefaultSettings>
-class ImGuiDefaultSettings:  # Proxy class that introduces typings for the *submodule* ImGuiDefaultSettings
+# <submodule imgui_default_settings>
+class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
     # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
+    @staticmethod
     def load_default_font_with_font_awesome_icons() -> VoidFunction:
         pass
     # VoidFunction SetupDefaultImGuiConfig();    /* original C++ signature */
+    @staticmethod
     def setup_default_imgui_config() -> VoidFunction:
         pass
     # VoidFunction SetupDefaultImGuiStyle();    /* original C++ signature */
     # }
+    @staticmethod
     def setup_default_imgui_style() -> VoidFunction:
         pass
 
-# </submodule ImGuiDefaultSettings>
+# </submodule imgui_default_settings>
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

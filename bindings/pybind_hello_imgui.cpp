@@ -86,7 +86,7 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::overrideAssetsFolder, py::arg("folder"));
 
     m.def("set_assets_folder",
-        HelloImGui::setAssetsFolder, py::arg("folder"));
+        HelloImGui::SetAssetsFolder, py::arg("folder"));
 
 
     m.def("image_from_asset",
@@ -523,7 +523,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassSimpleRunnerParams =
         py::class_<HelloImGui::SimpleRunnerParams>
-            (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**RunnerParams** is a struct that contains simpler params adapted for simple uses\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n@@md\n")
+            (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n\nFor example, this is sufficient to run an application:\n\n````cpp\nNone MyGui() {\n    ImGui::Text(\"Hello, world\");\n    if (ImGui::Button(\"Exit\"))\n        HelloImGui::GetRunnerParams()->appShallExit = True;\n}\n\nint main(){\n    auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"};\n    HelloImGui::Run(params);\n}\n````\n\n@@md\n")
         .def(py::init<>([](
         VoidFunction guiFunction = HelloImGui::EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 10.f)
         {
@@ -587,7 +587,7 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
 
     { // <namespace ImGuiDefaultSettings>
-        py::module_ pyNsImGuiDefaultSettings = m.def_submodule("ImGuiDefaultSettings", "namespace ImGuiDefaultSettings");
+        py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");
         pyNsImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",
             HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
 

@@ -12,6 +12,7 @@
 #include <map>
 #include <memory>
 #include <iostream>
+#include <cassert>
 
 // [sub section]  BrowseToUrl()
 // A platform specific utility to open an url in a browser

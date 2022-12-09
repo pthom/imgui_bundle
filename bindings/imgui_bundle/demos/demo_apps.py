@@ -100,9 +100,11 @@ def demo_apps():
     imgui.end_child()
 
     if len(EDITOR.get_text()) > 1:
-        imgui.separator()
+        imgui.set_next_window_size(ImVec2(800, 600), imgui.Cond_.appearing)
+        imgui.begin("App code")
         imgui.text("Code for this demo")
         EDITOR.render("Code")
+        imgui.end()
 
 
 if __name__ == "__main__":

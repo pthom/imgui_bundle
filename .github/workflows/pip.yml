@@ -10,7 +10,7 @@ on:
       - dev
 
 env:
-  MACOSX_DEPLOYMENT_TARGET: "10.15"
+  MACOSX_DEPLOYMENT_TARGET: "11.0"
   DISPLAY: ":0"
 
 jobs:
@@ -37,11 +37,35 @@ jobs:
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: ./ci_scripts/install_xorg_dev.sh
 
-      #    - name: Setup interactive tmate session
-      #      uses: mxschmitt/action-tmate@v3
+    # Install OpenCV (ubuntu & macos)
+    #- name: install OpenCV (ubuntu)
+    #  if: ${{ matrix.platform == 'ubuntu-latest' }}
+    #  run: sudo apt-get install -y libopencv-dev
+    #- name: install OpenCV (macos)
+    #  if: ${{ matrix.platform == 'macos-latest' }}
+    #  run: brew install opencv
+
+    #    - name: Setup interactive tmate session
+    #      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
-      run: pip install --verbose .[test]
+      shell: bash
+      run: |
+        # On Windows, we install OpenCV via cmake which downloads a prebuilt static library
+        # =================================================================================
+        echo RUNNER_OS=$RUNNER_OS
+        if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON; fi
+        echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
+        #
+        # On Linux and MacOS, we do not installed OpenCV packages
+        # and we build and use a static minimal version of OpenCV by using IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+        # =================================================================================
+        if [ $RUNNER_OS != "Windows" ]; then export IMGUIBUNDLE_OPENCV_FETCH_SOURCE=ON; fi
+        echo IMGUIBUNDLE_OPENCV_FETCH_SOURCE=$IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+        #
+        # Build pip
+        # =================================================================================
+        pip install --verbose .[test]
 
     - name: Test
       run: pytest

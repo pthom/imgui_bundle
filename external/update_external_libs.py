@@ -174,6 +174,8 @@ def lib_hello_imgui() -> ExternalLibrary:
     )
 
 
+# fmt: off
+
 def lib_im_file_dialog() -> ExternalLibrary:
     return ExternalLibrary(
         name="ImFileDialog",
@@ -188,6 +190,7 @@ def lib_imgui() -> ExternalLibrary:
         name="imgui",
         official_git_url="https://github.com/ocornut/imgui.git",
         official_branch="docking",
+        fork_git_url="https://github.com/pthom/imgui.git"
     )
 
 
@@ -228,9 +231,20 @@ def lib_md4c() -> ExternalLibrary:
     )
 
 
+def lib_imgui_tex_inspect() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_tex_inspect",
+        official_git_url="https://github.com/andyborrell/imgui_tex_inspect.git",
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui_tex_inspect.git",
+    )
+
+
 def lib_imgui_toggle() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imgui_toggle", official_git_url="https://github.com/cmdwtf/imgui_toggle.git", official_branch="main"
+        name="imgui_toggle",
+        official_git_url="https://github.com/cmdwtf/imgui_toggle.git",
+        official_branch="main"
     )
 
 
@@ -240,6 +254,15 @@ def lib_imgui_color_text_edit() -> ExternalLibrary:
         official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
         official_branch="dev",
         fork_git_url="https://github.com/ImGuiColorTextEdit.git",
+    )
+
+
+def lib_imguizmo() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="ImGuizmo",
+        official_git_url="https://github.com/CedricGuillemet/ImGuizmo.git",
+        official_branch="master",
+        custom_path_in_external_libraries_dir="ImGuizmo/ImGuizmo"
     )
 
 
@@ -262,14 +285,20 @@ def lib_cvnp() -> ExternalLibrary:
 
 def lib_implot() -> ExternalLibrary:
     return ExternalLibrary(
-        name="implot", official_git_url="https://github.com/epezent/implot.git", official_branch="master"
+        name="implot",
+        official_git_url="https://github.com/epezent/implot.git",
+        official_branch="master"
     )
 
 
 def lib_imspinner() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imspinner", official_git_url="https://github.com/dalerank/imspinner.git", official_branch="master"
+        name="imspinner",
+        official_git_url="https://github.com/dalerank/imspinner.git",
+        official_branch="master"
     )
+
+# fmt: on
 
 
 def play():
@@ -301,7 +330,7 @@ def play():
     # lib = lib_imgui()
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
-    # lib.run_update_official().run()
+    # lib.run_rebase_fork_on_official_changes().run()
 
     # imgui-knobs
     # -----------
@@ -331,6 +360,13 @@ def play():
     # lib.run_add_remotes().run()
     # lib.run_update_official().run()
 
+    # imgui_tex_inspect
+    # --------
+    # lib = lib_imgui_tex_inspect()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    # lib.run_rebase_fork_on_official_changes().run()
+
     # lib_imgui_toggle
     # ----------------
     # lib = lib_imgui_toggle()
@@ -344,6 +380,13 @@ def play():
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
     # lib.run_rebase_fork_on_official_changes().run()
+
+    # ImGuizmo
+    # -------------------------
+    # lib = lib_imguizmo()
+    # lib.run_rm_remotes().run()
+    # lib.run_add_remotes().run()
+    # lib.run_update_official()
 
     # immvision
     # ---------

@@ -1,0 +1,40 @@
+name: "debug_win"
+
+# A GH Action that provides a ssh access for CI debugging: you need to uncomment the desired branch to activate it.
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - dev
+#      - main
+
+
+jobs:
+  build:
+    name: debug_win
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+        # platform: [windows-2019, macos-latest, ubuntu-latest]
+        # "pypy-3.9" was removed from python-version because numpy install fails
+        # python-version: ["3.7", "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Setup interactive tmate session
+      uses: mxschmitt/action-tmate@v3
+
+#    - name: Build and install
+#      run: pip install --verbose .[test]
+#
+#    - name: Test
+#      run: pytest

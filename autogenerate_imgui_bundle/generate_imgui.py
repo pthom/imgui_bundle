@@ -1,7 +1,7 @@
 import os
 
 import litgen
-from litgen.options_customized.litgen_options_imgui import (
+from litgen_options_imgui import (
     litgen_options_imgui,
     ImguiOptionsType,
 )

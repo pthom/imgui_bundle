@@ -11,6 +11,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+/build*
+/cmake-build*
 develop-eggs/
 dist/
 downloads/
@@ -111,7 +113,7 @@ celerybeat.pid
 .venv
 env/
 venv/
-venv2/
+/venv*/
 ENV/
 env.bak/
 venv.bak/
@@ -142,11 +144,13 @@ dmypy.json
 cython_debug/
 
 _skbuild/
-
+_imgui_bundle_opencv_packages/
 imgui.ini
 pypi_info_token.md
 MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
-BasicInteraction.json
-demo_compose_image_debug.json
+/_icons_test/
+/*.json
+poub/
+/wheelhouse/

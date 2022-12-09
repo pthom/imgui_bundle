@@ -1,5 +1,5 @@
 include(${CMAKE_CURRENT_LIST_DIR}/find_opencv.cmake)
-find_opencv()
+immvision_find_opencv()
 if (NOT OpenCV_FOUND)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         message(FATAL_ERROR "OpenCV was not found!")

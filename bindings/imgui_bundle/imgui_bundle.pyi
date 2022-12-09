@@ -1,4 +1,5 @@
-"""
+"""Main module
+https://github.com/pthom/imgui_bundle
 """
 
 from typing import Tuple, Optional, Callable
@@ -38,6 +39,9 @@ class AddOnsParams:
     # (alternatively, you can set withNodeEditorConfig)
     with_node_editor: bool = False
 
+    # Set withTexInspect=True if you need to use imgui_tex_inspect
+    with_tex_inspect: bool = False
+
     # You can tweak NodeEditorConfig (but this is optional)
     with_node_editor_config: Optional[NodeEditorConfig] = None
 
@@ -48,6 +52,7 @@ class AddOnsParams:
         with_implot: bool = False,
         with_markdown: bool = False,
         with_node_editor: bool = False,
+        with_tex_inspect: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     ) -> None:
@@ -82,6 +87,7 @@ def run(
     with_implot: bool = False,
     with_markdown: bool = False,
     with_node_editor: bool = False,
+    with_tex_inspect: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:

@@ -10,6 +10,8 @@ from generate_imgui_knobs import autogenerate_imgui_knobs
 from generate_imgui_node_editor import autogenerate_imgui_node_editor
 from generate_implot import autogenerate_implot
 from generate_immvision import autogenerate_immvision
+from generate_imguizmo import autogenerate_imguizmo
+from generate_imgui_tex_inspect import autogenerate_imgui_tex_inspect
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -53,6 +55,8 @@ def main():
     autogenerate_im_file_dialog()
     autogenerate_imgui_color_text_edit()
     autogenerate_imgui_knobs()
+    autogenerate_imguizmo()
+    autogenerate_imgui_tex_inspect()
 
 
 if __name__ == "__main__":

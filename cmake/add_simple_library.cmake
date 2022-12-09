@@ -1,3 +1,4 @@
+set(this_dir ${CMAKE_CURRENT_LIST_DIR})
 
 ####################################################
 # add_simple_external_library : will add a target
@@ -8,6 +9,7 @@ function(add_simple_external_library target_name target_subdir)
     target_link_libraries(${target_name} PUBLIC imgui)
     set(target_source_dir ${CMAKE_CURRENT_LIST_DIR}/external/${target_subdir})
     target_include_directories(${target_name} PUBLIC ${target_source_dir}/..)
+    target_include_directories(${target_name} PUBLIC ${this_dir}/../external)
 
     target_link_libraries(imgui_bundle PUBLIC ${target_name})
 endfunction()

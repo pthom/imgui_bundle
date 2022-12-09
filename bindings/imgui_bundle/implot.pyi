@@ -120,8 +120,8 @@ from imgui_bundle.imgui import (
     Cond_,
 )
 
-ImGuiCond_None = Cond_.none
-ImGuiCond_Always = Cond_.always
+Cond_None = Cond_.none
+Cond_Always = Cond_.always
 Cond_Once = imgui.Cond_.once
 
 Bin_Sturges = Bin_.sturges
@@ -193,7 +193,7 @@ Bin_Sturges = Bin_.sturges
 
 # Enums/Flags
 
-class ImAxis_(enum.Enum):  # implot.h:116
+class ImAxis_(enum.Enum):
     """Axis indices. The values assigned may change; NEVER hardcode these."""
 
     # horizontal axes
@@ -215,7 +215,7 @@ class ImAxis_(enum.Enum):  # implot.h:116
     # bookeeping
     count = enum.auto()  # (= 6)
 
-class Flags_(enum.Enum):  # implot.h:130
+class Flags_(enum.Enum):
     """Options for plots (see BeginPlot)."""
 
     # ImPlotFlags_None          = 0,           /* original C++ signature */
@@ -260,7 +260,7 @@ class Flags_(enum.Enum):  # implot.h:130
         enum.auto()
     )  # (= Flags_NoTitle | Flags_NoLegend | Flags_NoMenus | Flags_NoBoxSelect | Flags_NoMouseText)
 
-class AxisFlags_(enum.Enum):  # implot.h:146
+class AxisFlags_(enum.Enum):
     """Options for plot axes (see SetupAxis)."""
 
     # ImPlotAxisFlags_None          = 0,           /* original C++ signature */
@@ -329,7 +329,7 @@ class AxisFlags_(enum.Enum):  # implot.h:146
     # }
     aux_default = enum.auto()  # (= AxisFlags_NoGridLines | AxisFlags_Opposite)
 
-class SubplotFlags_(enum.Enum):  # implot.h:170
+class SubplotFlags_(enum.Enum):
     """Options for subplots (see BeginSubplot)"""
 
     # ImPlotSubplotFlags_None        = 0,           /* original C++ signature */
@@ -379,7 +379,7 @@ class SubplotFlags_(enum.Enum):  # implot.h:170
         enum.auto()
     )  # (= 1 << 10)  # subplots are added in column major order instead of the default row major order
 
-class LegendFlags_(enum.Enum):  # implot.h:186
+class LegendFlags_(enum.Enum):
     """Options for legends (see SetupLegend)"""
 
     # ImPlotLegendFlags_None            = 0,          /* original C++ signature */
@@ -413,7 +413,7 @@ class LegendFlags_(enum.Enum):  # implot.h:186
         enum.auto()
     )  # (= 1 << 6)  # legend entries will be displayed in alphabetical order
 
-class MouseTextFlags_(enum.Enum):  # implot.h:198
+class MouseTextFlags_(enum.Enum):
     """Options for mouse hover text (see SetupMouseText)"""
 
     # ImPlotMouseTextFlags_None        = 0,          /* original C++ signature */
@@ -431,7 +431,7 @@ class MouseTextFlags_(enum.Enum):  # implot.h:198
         enum.auto()
     )  # (= 1 << 2)  # always display mouse position even if plot not hovered
 
-class DragToolFlags_(enum.Enum):  # implot.h:206
+class DragToolFlags_(enum.Enum):
     """Options for DragPoint, DragLine, DragRect"""
 
     # ImPlotDragToolFlags_None      = 0,          /* original C++ signature */
@@ -451,7 +451,7 @@ class DragToolFlags_(enum.Enum):  # implot.h:206
         enum.auto()
     )  # (= 1 << 3)  # tool rendering will be delayed one frame; useful when applying position-constraints
 
-class ColormapScaleFlags_(enum.Enum):  # implot.h:215
+class ColormapScaleFlags_(enum.Enum):
     """Flags for ColormapScale"""
 
     # ImPlotColormapScaleFlags_None     = 0,          /* original C++ signature */
@@ -469,7 +469,7 @@ class ColormapScaleFlags_(enum.Enum):  # implot.h:215
         enum.auto()
     )  # (= 1 << 2)  # invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
 
-class ItemFlags_(enum.Enum):  # implot.h:223
+class ItemFlags_(enum.Enum):
     """Flags for ANY PlotX function"""
 
     # ImPlotItemFlags_None     = 0,    /* original C++ signature */
@@ -481,7 +481,7 @@ class ItemFlags_(enum.Enum):  # implot.h:223
     # ImPlotItemFlags_NoFit    = 1 << 1,     /* original C++ signature */
     no_fit = enum.auto()  # (= 1 << 1)  # the item won't be considered for plot fits
 
-class LineFlags_(enum.Enum):  # implot.h:230
+class LineFlags_(enum.Enum):
     """Flags for PlotLine"""
 
     # ImPlotLineFlags_None        = 0,           /* original C++ signature */
@@ -507,7 +507,7 @@ class LineFlags_(enum.Enum):  # implot.h:230
         enum.auto()
     )  # (= 1 << 14)  # a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ScatterFlags_(enum.Enum):  # implot.h:240
+class ScatterFlags_(enum.Enum):
     """Flags for PlotScatter"""
 
     # ImPlotScatterFlags_None   = 0,           /* original C++ signature */
@@ -517,7 +517,7 @@ class ScatterFlags_(enum.Enum):  # implot.h:240
         enum.auto()
     )  # (= 1 << 10)  # markers on the edge of a plot will not be clipped
 
-class StairsFlags_(enum.Enum):  # implot.h:246
+class StairsFlags_(enum.Enum):
     """Flags for PlotStairs"""
 
     # ImPlotStairsFlags_None     = 0,           /* original C++ signature */
@@ -531,13 +531,13 @@ class StairsFlags_(enum.Enum):  # implot.h:246
         enum.auto()
     )  # (= 1 << 11)  # a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ShadedFlags_(enum.Enum):  # implot.h:253
+class ShadedFlags_(enum.Enum):
     """Flags for PlotShaded (placeholder)"""
 
     # ImPlotShadedFlags_None  = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class BarsFlags_(enum.Enum):  # implot.h:258
+class BarsFlags_(enum.Enum):
     """Flags for PlotBars"""
 
     # ImPlotBarsFlags_None         = 0,           /* original C++ signature */
@@ -547,7 +547,7 @@ class BarsFlags_(enum.Enum):  # implot.h:258
         enum.auto()
     )  # (= 1 << 10)  # bars will be rendered horizontally on the current y-axis
 
-class BarGroupsFlags_(enum.Enum):  # implot.h:264
+class BarGroupsFlags_(enum.Enum):
     """Flags for PlotBarGroups"""
 
     # ImPlotBarGroupsFlags_None        = 0,           /* original C++ signature */
@@ -561,7 +561,7 @@ class BarGroupsFlags_(enum.Enum):  # implot.h:264
         enum.auto()
     )  # (= 1 << 11)  # items in a group will be stacked on top of each other
 
-class ErrorBarsFlags_(enum.Enum):  # implot.h:271
+class ErrorBarsFlags_(enum.Enum):
     """Flags for PlotErrorBars"""
 
     # ImPlotErrorBarsFlags_None       = 0,           /* original C++ signature */
@@ -571,7 +571,7 @@ class ErrorBarsFlags_(enum.Enum):  # implot.h:271
         enum.auto()
     )  # (= 1 << 10)  # error bars will be rendered horizontally on the current y-axis
 
-class StemsFlags_(enum.Enum):  # implot.h:277
+class StemsFlags_(enum.Enum):
     """Flags for PlotStems"""
 
     # ImPlotStemsFlags_None       = 0,           /* original C++ signature */
@@ -581,7 +581,7 @@ class StemsFlags_(enum.Enum):  # implot.h:277
         enum.auto()
     )  # (= 1 << 10)  # stems will be rendered horizontally on the current y-axis
 
-class InfLinesFlags_(enum.Enum):  # implot.h:283
+class InfLinesFlags_(enum.Enum):
     """Flags for PlotInfLines"""
 
     # ImPlotInfLinesFlags_None       = 0,          /* original C++ signature */
@@ -591,7 +591,7 @@ class InfLinesFlags_(enum.Enum):  # implot.h:283
         enum.auto()
     )  # (= 1 << 10)  # lines will be rendered horizontally on the current y-axis
 
-class PieChartFlags_(enum.Enum):  # implot.h:289
+class PieChartFlags_(enum.Enum):
     """Flags for PlotPieChart"""
 
     # ImPlotPieChartFlags_None      = 0,          /* original C++ signature */
@@ -601,7 +601,7 @@ class PieChartFlags_(enum.Enum):  # implot.h:289
         enum.auto()
     )  # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
 
-class HeatmapFlags_(enum.Enum):  # implot.h:295
+class HeatmapFlags_(enum.Enum):
     """Flags for PlotHeatmap"""
 
     # ImPlotHeatmapFlags_None     = 0,           /* original C++ signature */
@@ -609,7 +609,7 @@ class HeatmapFlags_(enum.Enum):  # implot.h:295
     # ImPlotHeatmapFlags_ColMajor = 1 << 10,     /* original C++ signature */
     col_major = enum.auto()  # (= 1 << 10)  # data will be read in column major order
 
-class HistogramFlags_(enum.Enum):  # implot.h:301
+class HistogramFlags_(enum.Enum):
     """Flags for PlotHistogram and PlotHistogram2D"""
 
     # ImPlotHistogramFlags_None       = 0,           /* original C++ signature */
@@ -635,19 +635,19 @@ class HistogramFlags_(enum.Enum):  # implot.h:301
         enum.auto()
     )  # (= 1 << 14)  # data will be read in column major order (not supported by PlotHistogram)
 
-class DigitalFlags_(enum.Enum):  # implot.h:311
+class DigitalFlags_(enum.Enum):
     """Flags for PlotDigital (placeholder)"""
 
     # ImPlotDigitalFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class ImageFlags_(enum.Enum):  # implot.h:316
+class ImageFlags_(enum.Enum):
     """Flags for PlotImage (placeholder)"""
 
     # ImPlotImageFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class TextFlags_(enum.Enum):  # implot.h:321
+class TextFlags_(enum.Enum):
     """Flags for PlotText"""
 
     # ImPlotTextFlags_None     = 0,           /* original C++ signature */
@@ -655,13 +655,13 @@ class TextFlags_(enum.Enum):  # implot.h:321
     # ImPlotTextFlags_Vertical = 1 << 10      /* original C++ signature */
     vertical = enum.auto()  # (= 1 << 10)  # text will be rendered vertically
 
-class DummyFlags_(enum.Enum):  # implot.h:327
+class DummyFlags_(enum.Enum):
     """Flags for PlotDummy (placeholder)"""
 
     # ImPlotDummyFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class Cond_(enum.Enum):  # implot.h:332
+class Cond_(enum.Enum):
     """Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
 
     # ImPlotCond_None   = ImGuiCond_None,        /* original C++ signature */
@@ -675,7 +675,7 @@ class Cond_(enum.Enum):  # implot.h:332
         enum.auto()
     )  # (= Cond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
-class Col_(enum.Enum):  # implot.h:340
+class Col_(enum.Enum):
     """Plot styling colors."""
 
     # item styling colors
@@ -762,7 +762,7 @@ class Col_(enum.Enum):  # implot.h:340
     # }
     count = enum.auto()  # (= 21)
 
-class StyleVar_(enum.Enum):  # implot.h:368
+class StyleVar_(enum.Enum):
     """Plot styling variables."""
 
     # item styling variables
@@ -865,7 +865,7 @@ class StyleVar_(enum.Enum):  # implot.h:368
     # }
     count = enum.auto()  # (= 27)
 
-class Scale_(enum.Enum):  # implot.h:402
+class Scale_(enum.Enum):
     """Axis scale"""
 
     # ImPlotScale_Linear = 0,     /* original C++ signature */
@@ -877,7 +877,7 @@ class Scale_(enum.Enum):  # implot.h:402
     # ImPlotScale_SymLog,         /* original C++ signature */
     sym_log = enum.auto()  # (= 3)  # symmetric log scale
 
-class Marker_(enum.Enum):  # implot.h:410
+class Marker_(enum.Enum):
     """Marker specifications."""
 
     # ImPlotMarker_None = -1,     /* original C++ signature */
@@ -906,7 +906,7 @@ class Marker_(enum.Enum):  # implot.h:410
     # }
     count = enum.auto()  # (= 10)
 
-class Colormap_(enum.Enum):  # implot.h:426
+class Colormap_(enum.Enum):
     """Built-in colormaps"""
 
     # ImPlotColormap_Deep     = 0,       /* original C++ signature */
@@ -948,7 +948,7 @@ class Colormap_(enum.Enum):  # implot.h:426
     # ImPlotColormap_Greys    = 15,      /* original C++ signature */
     greys = enum.auto()  # (= 15)  # white/black                     (qual=False, n=2 )
 
-class Location_(enum.Enum):  # implot.h:446
+class Location_(enum.Enum):
     """Used to position items on a plot (e.g. legends, labels, etc.)"""
 
     # ImPlotLocation_Center    = 0,                                              /* original C++ signature */
@@ -970,7 +970,7 @@ class Location_(enum.Enum):  # implot.h:446
     # ImPlotLocation_SouthEast = ImPlotLocation_South | ImPlotLocation_East      /* original C++ signature */
     south_east = enum.auto()  # (= Location_South | Location_East)  # bottom-right
 
-class Bin_(enum.Enum):  # implot.h:459
+class Bin_(enum.Enum):
     """Enums for different automatic histogram binning methods (k = bin count or w = bin width)"""
 
     # ImPlotBin_Sqrt    = -1,     /* original C++ signature */
@@ -982,158 +982,156 @@ class Bin_(enum.Enum):  # implot.h:459
     # ImPlotBin_Scott   = -4,     /* original C++ signature */
     scott = enum.auto()  # (= -4)  # w = 3.49 * sigma / cbrt(n)
 
-class Point:  # implot.h:467
+class Point:
     """Double precision version of ImVec2 used by ImPlot. Extensible by end users."""
 
     # double x,     /* original C++ signature */
-    x: float  # implot.h:468
+    x: float
     # y;    /* original C++ signature */
-    y: float  # implot.h:468
+    y: float
     # ImPlotPoint()                         { x = y = 0.0;      }    /* original C++ signature */
-    def __init__(self) -> None:  # implot.h:469
+    def __init__(self) -> None:
         pass
     # ImPlotPoint(double _x, double _y)     { x = _x; y = _y;   }    /* original C++ signature */
-    def __init__(self, _x: float, _y: float) -> None:  # implot.h:470
+    def __init__(self, _x: float, _y: float) -> None:
         pass
     # ImPlotPoint(const ImVec2& p)          { x = p.x; y = p.y; }    /* original C++ signature */
-    def __init__(self, p: ImVec2) -> None:  # implot.h:471
+    def __init__(self, p: ImVec2) -> None:
         pass
 
-class Range:  # implot.h:481
+class Range:
     """Range defined by a min/max value."""
 
     # double Min,     /* original C++ signature */
-    min: float  # implot.h:482
+    min: float
     # Max;    /* original C++ signature */
-    max: float  # implot.h:482
+    max: float
     # ImPlotRange()                         { Min = 0; Max = 0;                                         }    /* original C++ signature */
-    def __init__(self) -> None:  # implot.h:483
+    def __init__(self) -> None:
         pass
     # ImPlotRange(double _min, double _max) { Min = _min; Max = _max;                                   }    /* original C++ signature */
-    def __init__(self, _min: float, _max: float) -> None:  # implot.h:484
+    def __init__(self, _min: float, _max: float) -> None:
         pass
 
-class Rect:  # implot.h:491
+class Rect:
     """Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max()."""
 
     # ImPlotRange X,     /* original C++ signature */
-    x: Range  # implot.h:492
+    x: Range
     # Y;    /* original C++ signature */
-    y: Range  # implot.h:492
+    y: Range
     # ImPlotRect()                                                       {                                                               }    /* original C++ signature */
-    def __init__(self) -> None:  # implot.h:493
+    def __init__(self) -> None:
         pass
     # ImPlotRect(double x_min, double x_max, double y_min, double y_max) { X.Min = x_min; X.Max = x_max; Y.Min = y_min; Y.Max = y_max;   }    /* original C++ signature */
-    def __init__(
-        self, x_min: float, x_max: float, y_min: float, y_max: float
-    ) -> None:  # implot.h:494
+    def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float) -> None:
         pass
 
-class Style:  # implot.h:505
+class Style:
     """Plot style structure"""
 
     # item styling variables
     # float   LineWeight;    /* original C++ signature */
-    line_weight: float  # = 1,      item line weight in pixels    # implot.h:507
+    line_weight: float  # = 1,      item line weight in pixels
     # int     Marker;    /* original C++ signature */
-    marker: int  # = ImPlotMarker_None, marker specification    # implot.h:508
+    marker: int  # = ImPlotMarker_None, marker specification
     # float   MarkerSize;    /* original C++ signature */
-    marker_size: float  # = 4,      marker size in pixels (roughly the marker's "radius")    # implot.h:509
+    marker_size: float  # = 4,      marker size in pixels (roughly the marker's "radius")
     # float   MarkerWeight;    /* original C++ signature */
-    marker_weight: float  # = 1,      outline weight of markers in pixels    # implot.h:510
+    marker_weight: float  # = 1,      outline weight of markers in pixels
     # float   FillAlpha;    /* original C++ signature */
-    fill_alpha: float  # = 1,      alpha modifier applied to plot fills    # implot.h:511
+    fill_alpha: float  # = 1,      alpha modifier applied to plot fills
     # float   ErrorBarSize;    /* original C++ signature */
-    error_bar_size: float  # = 5,      error bar whisker width in pixels    # implot.h:512
+    error_bar_size: float  # = 5,      error bar whisker width in pixels
     # float   ErrorBarWeight;    /* original C++ signature */
-    error_bar_weight: float  # = 1.5,    error bar whisker weight in pixels    # implot.h:513
+    error_bar_weight: float  # = 1.5,    error bar whisker weight in pixels
     # float   DigitalBitHeight;    /* original C++ signature */
-    digital_bit_height: float  # = 8,      digital channels bit height (at y = 1.0) in pixels    # implot.h:514
+    digital_bit_height: float  # = 8,      digital channels bit height (at y = 1.0) in pixels
     # float   DigitalBitGap;    /* original C++ signature */
-    digital_bit_gap: float  # = 4,      digital channels bit padding gap in pixels    # implot.h:515
+    digital_bit_gap: float  # = 4,      digital channels bit padding gap in pixels
     # plot styling variables
     # float   PlotBorderSize;    /* original C++ signature */
-    plot_border_size: float  # = 1,      line thickness of border around plot area    # implot.h:517
+    plot_border_size: float  # = 1,      line thickness of border around plot area
     # float   MinorAlpha;    /* original C++ signature */
-    minor_alpha: float  # = 0.25    alpha multiplier applied to minor axis grid lines    # implot.h:518
+    minor_alpha: float  # = 0.25    alpha multiplier applied to minor axis grid lines
     # ImVec2  MajorTickLen;    /* original C++ signature */
-    major_tick_len: ImVec2  # = 10,10   major tick lengths for X and Y axes    # implot.h:519
+    major_tick_len: ImVec2  # = 10,10   major tick lengths for X and Y axes
     # ImVec2  MinorTickLen;    /* original C++ signature */
-    minor_tick_len: ImVec2  # = 5,5     minor tick lengths for X and Y axes    # implot.h:520
+    minor_tick_len: ImVec2  # = 5,5     minor tick lengths for X and Y axes
     # ImVec2  MajorTickSize;    /* original C++ signature */
-    major_tick_size: ImVec2  # = 1,1     line thickness of major ticks    # implot.h:521
+    major_tick_size: ImVec2  # = 1,1     line thickness of major ticks
     # ImVec2  MinorTickSize;    /* original C++ signature */
-    minor_tick_size: ImVec2  # = 1,1     line thickness of minor ticks    # implot.h:522
+    minor_tick_size: ImVec2  # = 1,1     line thickness of minor ticks
     # ImVec2  MajorGridSize;    /* original C++ signature */
-    major_grid_size: ImVec2  # = 1,1     line thickness of major grid lines    # implot.h:523
+    major_grid_size: ImVec2  # = 1,1     line thickness of major grid lines
     # ImVec2  MinorGridSize;    /* original C++ signature */
-    minor_grid_size: ImVec2  # = 1,1     line thickness of minor grid lines    # implot.h:524
+    minor_grid_size: ImVec2  # = 1,1     line thickness of minor grid lines
     # ImVec2  PlotPadding;    /* original C++ signature */
-    plot_padding: ImVec2  # = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)    # implot.h:525
+    plot_padding: ImVec2  # = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
     # ImVec2  LabelPadding;    /* original C++ signature */
-    label_padding: ImVec2  # = 5,5     padding between axes labels, tick labels, and plot edge    # implot.h:526
+    label_padding: ImVec2  # = 5,5     padding between axes labels, tick labels, and plot edge
     # ImVec2  LegendPadding;    /* original C++ signature */
-    legend_padding: ImVec2  # = 10,10   legend padding from plot edges    # implot.h:527
+    legend_padding: ImVec2  # = 10,10   legend padding from plot edges
     # ImVec2  LegendInnerPadding;    /* original C++ signature */
-    legend_inner_padding: ImVec2  # = 5,5     legend inner padding from legend edges    # implot.h:528
+    legend_inner_padding: ImVec2  # = 5,5     legend inner padding from legend edges
     # ImVec2  LegendSpacing;    /* original C++ signature */
-    legend_spacing: ImVec2  # = 5,0     spacing between legend entries    # implot.h:529
+    legend_spacing: ImVec2  # = 5,0     spacing between legend entries
     # ImVec2  MousePosPadding;    /* original C++ signature */
-    mouse_pos_padding: ImVec2  # = 10,10   padding between plot edge and interior mouse location text    # implot.h:530
+    mouse_pos_padding: ImVec2  # = 10,10   padding between plot edge and interior mouse location text
     # ImVec2  AnnotationPadding;    /* original C++ signature */
-    annotation_padding: ImVec2  # = 2,2     text padding around annotation labels    # implot.h:531
+    annotation_padding: ImVec2  # = 2,2     text padding around annotation labels
     # ImVec2  FitPadding;    /* original C++ signature */
-    fit_padding: ImVec2  # = 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)    # implot.h:532
+    fit_padding: ImVec2  # = 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
     # ImVec2  PlotDefaultSize;    /* original C++ signature */
-    plot_default_size: ImVec2  # = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot    # implot.h:533
+    plot_default_size: ImVec2  # = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot
     # ImVec2  PlotMinSize;    /* original C++ signature */
-    plot_min_size: ImVec2  # = 200,150 minimum size plot frame can be when shrunk    # implot.h:534
+    plot_min_size: ImVec2  # = 200,150 minimum size plot frame can be when shrunk
     # style colors
     # colormap
     # ImPlotColormap Colormap;    /* original C++ signature */
-    colormap: Colormap  # The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.    # implot.h:538
+    colormap: Colormap  # The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.
     # settings/flags
     # bool    UseLocalTime;    /* original C++ signature */
-    use_local_time: bool  # = False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled    # implot.h:540
+    use_local_time: bool  # = False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled
     # bool    UseISO8601;    /* original C++ signature */
-    use_iso8601: bool  # = False,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)    # implot.h:541
+    use_iso8601: bool  # = False,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)
     # bool    Use24HourClock;    /* original C++ signature */
-    use24_hour_clock: bool  # = False,  times will be formatted using a 24 hour clock    # implot.h:542
+    use24_hour_clock: bool  # = False,  times will be formatted using a 24 hour clock
     # IMPLOT_API ImPlotStyle();    /* original C++ signature */
-    def __init__(self) -> None:  # implot.h:543
+    def __init__(self) -> None:
         pass
 
 # Support for legacy versions
 
-class InputMap:  # implot.h:562
+class InputMap:
     """Input mapping structure. Default values listed. See also MapInputDefault, MapInputReverse."""
 
     # ImGuiMouseButton Pan;    /* original C++ signature */
-    pan: MouseButton  # LMB    enables panning when held,    # implot.h:563
+    pan: MouseButton  # LMB    enables panning when held,
     # int              PanMod;    /* original C++ signature */
-    pan_mod: int  # none   optional modifier that must be held for panning/fitting    # implot.h:564
+    pan_mod: int  # none   optional modifier that must be held for panning/fitting
     # ImGuiMouseButton Fit;    /* original C++ signature */
-    fit: MouseButton  # LMB    initiates fit when double clicked    # implot.h:565
+    fit: MouseButton  # LMB    initiates fit when double clicked
     # ImGuiMouseButton Select;    /* original C++ signature */
-    select: MouseButton  # RMB    begins box selection when pressed and confirms selection when released    # implot.h:566
+    select: MouseButton  # RMB    begins box selection when pressed and confirms selection when released
     # ImGuiMouseButton SelectCancel;    /* original C++ signature */
-    select_cancel: MouseButton  # LMB    cancels active box selection when pressed; cannot be same as Select    # implot.h:567
+    select_cancel: MouseButton  # LMB    cancels active box selection when pressed; cannot be same as Select
     # int              SelectMod;    /* original C++ signature */
-    select_mod: int  # none   optional modifier that must be held for box selection    # implot.h:568
+    select_mod: int  # none   optional modifier that must be held for box selection
     # int              SelectHorzMod;    /* original C++ signature */
-    select_horz_mod: int  # Alt    expands active box selection horizontally to plot edge when held    # implot.h:569
+    select_horz_mod: int  # Alt    expands active box selection horizontally to plot edge when held
     # int              SelectVertMod;    /* original C++ signature */
-    select_vert_mod: int  # Shift  expands active box selection vertically to plot edge when held    # implot.h:570
+    select_vert_mod: int  # Shift  expands active box selection vertically to plot edge when held
     # ImGuiMouseButton Menu;    /* original C++ signature */
-    menu: MouseButton  # RMB    opens context menus (if enabled) when clicked    # implot.h:571
+    menu: MouseButton  # RMB    opens context menus (if enabled) when clicked
     # int              OverrideMod;    /* original C++ signature */
-    override_mod: int  # Ctrl   when held, all input is ignored; used to enable axis/plots as DND sources    # implot.h:572
+    override_mod: int  # Ctrl   when held, all input is ignored; used to enable axis/plots as DND sources
     # int              ZoomMod;    /* original C++ signature */
-    zoom_mod: int  # none   optional modifier that must be held for scroll wheel zooming    # implot.h:573
+    zoom_mod: int  # none   optional modifier that must be held for scroll wheel zooming
     # float            ZoomRate;    /* original C++ signature */
-    zoom_rate: float  # 0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert    # implot.h:574
+    zoom_rate: float  # 0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert
     # IMPLOT_API ImPlotInputMap();    /* original C++ signature */
-    def __init__(self) -> None:  # implot.h:575
+    def __init__(self) -> None:
         pass
 
 # -----------------------------------------------------------------------------
@@ -1145,27 +1143,27 @@ class InputMap:  # implot.h:562
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API ImPlotContext* CreateContext();    /* original C++ signature */
-def create_context() -> Context:  # implot.h:598
+def create_context() -> Context:
     """Creates a new ImPlot context. Call this after ImGui::CreateContext."""
     pass
 
 # IMPLOT_API void DestroyContext(ImPlotContext* ctx = NULL);    /* original C++ signature */
-def destroy_context(ctx: Optional[Context] = None) -> None:  # implot.h:600
+def destroy_context(ctx: Optional[Context] = None) -> None:
     """Destroys an ImPlot context. Call this before ImGui::DestroyContext. None = destroy current context."""
     pass
 
 # IMPLOT_API ImPlotContext* GetCurrentContext();    /* original C++ signature */
-def get_current_context() -> Context:  # implot.h:602
+def get_current_context() -> Context:
     """Returns the current ImPlot context. None if no context has ben set."""
     pass
 
 # IMPLOT_API void SetCurrentContext(ImPlotContext* ctx);    /* original C++ signature */
-def set_current_context(ctx: Context) -> None:  # implot.h:604
+def set_current_context(ctx: Context) -> None:
     """Sets the current ImPlot context."""
     pass
 
 # IMPLOT_API void SetImGuiContext(ImGuiContext* ctx);    /* original C++ signature */
-def set_imgui_context(ctx: ImGui_Context) -> None:  # implot.h:610
+def set_imgui_context(ctx: ImGui_Context) -> None:
     """Sets the current **ImGui** context. This is ONLY necessary if you are compiling
     ImPlot as a DLL (not recommended) separate from your ImGui compilation. It
     sets the global variable GImGui, which is not shared across DLL boundaries.
@@ -1178,9 +1176,7 @@ def set_imgui_context(ctx: ImGui_Context) -> None:  # implot.h:610
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API bool BeginPlot(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
-def begin_plot(
-    title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: Flags = 0
-) -> bool:  # implot.h:632
+def begin_plot(title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: Flags = 0) -> bool:
     """Starts a 2D plotting context. If this function returns True, EndPlot() MUST
     be called! You are encouraged to use the following convention:
 
@@ -1201,7 +1197,7 @@ def begin_plot(
     pass
 
 # IMPLOT_API void EndPlot();    /* original C++ signature */
-def end_plot() -> None:  # implot.h:636
+def end_plot() -> None:
     """Only call EndPlot() if BeginPlot() returns True! Typically called at the end
     of an if statement conditioned on BeginPlot(). See example above.
     """
@@ -1272,11 +1268,11 @@ def begin_subplots(
     flags: SubplotFlags = 0,
     row_ratios: Optional[float] = None,
     col_ratios: Optional[float] = None,
-) -> Tuple[bool, Optional[float], Optional[float]]:  # implot.h:688
+) -> Tuple[bool, Optional[float], Optional[float]]:
     pass
 
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
-def end_subplots() -> None:  # implot.h:698
+def end_subplots() -> None:
     """Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end
     of an if statement conditioned on BeginSublots(). See example above.
     """
@@ -1312,78 +1308,70 @@ def end_subplots() -> None:  # implot.h:698
 #   call it for you.
 
 # IMPLOT_API void SetupAxis(ImAxis axis, const char* label=NULL, ImPlotAxisFlags flags=0);    /* original C++ signature */
-def setup_axis(
-    axis: ImAxis, label: Optional[str] = None, flags: AxisFlags = 0
-) -> None:  # implot.h:730
+def setup_axis(axis: ImAxis, label: Optional[str] = None, flags: AxisFlags = 0) -> None:
     """Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label."""
     pass
 
 # IMPLOT_API void SetupAxisLimits(ImAxis axis, double v_min, double v_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
 def setup_axis_limits(
     axis: ImAxis, v_min: float, v_max: float, cond: Cond = Cond_Once
-) -> None:  # implot.h:732
+) -> None:
     """Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked."""
     pass
 
 # IMPLOT_API void SetupAxisLinks(ImAxis axis, double* link_min, double* link_max);    /* original C++ signature */
 def setup_axis_links(
     axis: ImAxis, link_min: float, link_max: float
-) -> Tuple[float, float]:  # implot.h:734
+) -> Tuple[float, float]:
     """Links an axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot."""
     pass
 
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
-def setup_axis_format(axis: ImAxis, fmt: str) -> None:  # implot.h:736
+def setup_axis_format(axis: ImAxis, fmt: str) -> None:
     """Sets the format of numeric axis labels via formater specifier (default="%g"). Formated values will be double (i.e. use %f)."""
     pass
 
 # IMPLOT_API void SetupAxisScale(ImAxis axis, ImPlotScale scale);    /* original C++ signature */
-def setup_axis_scale(axis: ImAxis, scale: Scale) -> None:  # implot.h:744
+def setup_axis_scale(axis: ImAxis, scale: Scale) -> None:
     """Sets an axis' scale using built-in options."""
     pass
 
 # IMPLOT_API void SetupAxisLimitsConstraints(ImAxis axis, double v_min, double v_max);    /* original C++ signature */
-def setup_axis_limits_constraints(
-    axis: ImAxis, v_min: float, v_max: float
-) -> None:  # implot.h:748
+def setup_axis_limits_constraints(axis: ImAxis, v_min: float, v_max: float) -> None:
     """Sets an axis' limits constraints."""
     pass
 
 # IMPLOT_API void SetupAxisZoomConstraints(ImAxis axis, double z_min, double z_max);    /* original C++ signature */
-def setup_axis_zoom_constraints(
-    axis: ImAxis, z_min: float, z_max: float
-) -> None:  # implot.h:750
+def setup_axis_zoom_constraints(axis: ImAxis, z_min: float, z_max: float) -> None:
     """Sets an axis' zoom constraints."""
     pass
 
 # IMPLOT_API void SetupAxes(const char* x_label, const char* y_label, ImPlotAxisFlags x_flags=0, ImPlotAxisFlags y_flags=0);    /* original C++ signature */
 def setup_axes(
     x_label: str, y_label: str, x_flags: AxisFlags = 0, y_flags: AxisFlags = 0
-) -> None:  # implot.h:753
+) -> None:
     """Sets the label and/or flags for primary X and Y axes (shorthand for two calls to SetupAxis)."""
     pass
 
 # IMPLOT_API void SetupAxesLimits(double x_min, double x_max, double y_min, double y_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
 def setup_axes_limits(
     x_min: float, x_max: float, y_min: float, y_max: float, cond: Cond = Cond_Once
-) -> None:  # implot.h:755
+) -> None:
     """Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)."""
     pass
 
 # IMPLOT_API void SetupLegend(ImPlotLocation location, ImPlotLegendFlags flags=0);    /* original C++ signature */
-def setup_legend(location: Location, flags: LegendFlags = 0) -> None:  # implot.h:758
+def setup_legend(location: Location, flags: LegendFlags = 0) -> None:
     """Sets up the plot legend."""
     pass
 
 # IMPLOT_API void SetupMouseText(ImPlotLocation location, ImPlotMouseTextFlags flags=0);    /* original C++ signature */
-def setup_mouse_text(
-    location: Location, flags: MouseTextFlags = 0
-) -> None:  # implot.h:760
+def setup_mouse_text(location: Location, flags: MouseTextFlags = 0) -> None:
     """Set the location of the current plot's mouse position text (default = South|East)."""
     pass
 
 # IMPLOT_API void SetupFinish();    /* original C++ signature */
-def setup_finish() -> None:  # implot.h:764
+def setup_finish() -> None:
     """Explicitly finalize plot setup. Once you call this, you cannot make anymore Setup calls for the current plot!
     Note that calling this function is OPTIONAL; it will be called by the first subsequent setup-locking API call.
     """
@@ -1415,31 +1403,31 @@ def setup_finish() -> None:  # implot.h:764
 # IMPLOT_API void SetNextAxisLimits(ImAxis axis, double v_min, double v_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
 def set_next_axis_limits(
     axis: ImAxis, v_min: float, v_max: float, cond: Cond = Cond_Once
-) -> None:  # implot.h:790
+) -> None:
     """Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked."""
     pass
 
 # IMPLOT_API void SetNextAxisLinks(ImAxis axis, double* link_min, double* link_max);    /* original C++ signature */
 def set_next_axis_links(
     axis: ImAxis, link_min: float, link_max: float
-) -> Tuple[float, float]:  # implot.h:792
+) -> Tuple[float, float]:
     """Links an upcoming axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot!"""
     pass
 
 # IMPLOT_API void SetNextAxisToFit(ImAxis axis);    /* original C++ signature */
-def set_next_axis_to_fit(axis: ImAxis) -> None:  # implot.h:794
+def set_next_axis_to_fit(axis: ImAxis) -> None:
     """Set an upcoming axis to auto fit to its data."""
     pass
 
 # IMPLOT_API void SetNextAxesLimits(double x_min, double x_max, double y_min, double y_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
 def set_next_axes_limits(
     x_min: float, x_max: float, y_min: float, y_max: float, cond: Cond = Cond_Once
-) -> None:  # implot.h:797
+) -> None:
     """Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)."""
     pass
 
 # IMPLOT_API void SetNextAxesToFit();    /* original C++ signature */
-def set_next_axes_to_fit() -> None:  # implot.h:799
+def set_next_axes_to_fit() -> None:
     """Sets all upcoming axes to auto fit to their data."""
     pass
 
@@ -1505,7 +1493,7 @@ def plot_line(
     flags: LineFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:854
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1516,7 +1504,7 @@ def plot_line(
     flags: LineFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:855
+) -> None:
     pass
 
 # Plots a standard 2D scatter plot. Default marker is ImPlotMarker_Circle.
@@ -1529,7 +1517,7 @@ def plot_scatter(
     flags: ScatterFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:859
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1540,7 +1528,7 @@ def plot_scatter(
     flags: ScatterFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:860
+) -> None:
     pass
 
 # Plots a a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval [x[i], x[i+1]) has the value y[i]
@@ -1553,7 +1541,7 @@ def plot_stairs(
     flags: StairsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:864
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1564,7 +1552,7 @@ def plot_stairs(
     flags: StairsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:865
+) -> None:
     pass
 
 # Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set yref to +/-INFINITY for infinite fill extents.
@@ -1578,7 +1566,7 @@ def plot_shaded(
     flags: ShadedFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:869
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1590,7 +1578,7 @@ def plot_shaded(
     flags: ShadedFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:870
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1602,7 +1590,7 @@ def plot_shaded(
     flags: ShadedFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:871
+) -> None:
     pass
 
 # Plots a bar graph. Vertical by default. #bar_size and #shift are in plot units.
@@ -1615,7 +1603,7 @@ def plot_bars(
     flags: BarsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:875
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1627,7 +1615,7 @@ def plot_bars(
     flags: BarsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:876
+) -> None:
     pass
 
 # Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
@@ -1640,7 +1628,7 @@ def plot_error_bars(
     flags: ErrorBarsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:883
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* neg, const T* pos, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1653,7 +1641,7 @@ def plot_error_bars(
     flags: ErrorBarsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:884
+) -> None:
     pass
 
 # Plots stems. Vertical by default.
@@ -1667,7 +1655,7 @@ def plot_stems(
     flags: StemsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:887
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1679,7 +1667,7 @@ def plot_stems(
     flags: StemsFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:888
+) -> None:
     pass
 
 # IMPLOT_TMP void PlotInfLines(const char* label_id, const T* values, int count, ImPlotInfLinesFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
@@ -1689,7 +1677,7 @@ def plot_inf_lines(
     flags: InfLinesFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:891
+) -> None:
     """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
     pass
 
@@ -1701,7 +1689,7 @@ def plot_histogram(
     bar_scale: float = 1.0,
     range: Range = Range(),
     flags: HistogramFlags = 0,
-) -> float:  # implot.h:901
+) -> float:
     """Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.
     Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
     """
@@ -1716,7 +1704,7 @@ def plot_histogram2_d(
     y_bins: int = Bin_Sturges,
     range: Rect = Rect(),
     flags: HistogramFlags = 0,
-) -> float:  # implot.h:905
+) -> float:
     """Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
     #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
     """
@@ -1731,7 +1719,7 @@ def plot_digital(
     flags: DigitalFlags = 0,
     offset: int = 0,
     stride: int = -1,
-) -> None:  # implot.h:908
+) -> None:
     pass
 
 # IMPLOT_API void PlotImage(const char* label_id, ImTextureID user_texture_id, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0=ImVec2(0,0), const ImVec2& uv1=ImVec2(1,1), const ImVec4& tint_col=ImVec4(1,1,1,1), ImPlotImageFlags flags=0);    /* original C++ signature */
@@ -1744,7 +1732,7 @@ def plot_image(
     uv1: ImVec2 = ImVec2(1, 1),
     tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
     flags: ImageFlags = 0,
-) -> None:  # implot.h:912
+) -> None:
     """Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down)."""
     pass
 
@@ -1755,12 +1743,12 @@ def plot_text(
     y: float,
     pix_offset: ImVec2 = ImVec2(0, 0),
     flags: TextFlags = 0,
-) -> None:  # implot.h:915
+) -> None:
     """Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...)."""
     pass
 
 # IMPLOT_API void PlotDummy(const char* label_id, ImPlotDummyFlags flags=0);    /* original C++ signature */
-def plot_dummy(label_id: str, flags: DummyFlags = 0) -> None:  # implot.h:918
+def plot_dummy(label_id: str, flags: DummyFlags = 0) -> None:
     """Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)"""
     pass
 
@@ -1775,21 +1763,21 @@ def plot_dummy(label_id: str, flags: DummyFlags = 0) -> None:  # implot.h:918
 # IMPLOT_API bool DragPoint(int id, double* x, double* y, const ImVec4& col, float size = 4, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_point(
     id_: int, x: float, y: float, col: ImVec4, size: float = 4, flags: DragToolFlags = 0
-) -> Tuple[bool, float, float]:  # implot.h:929
+) -> Tuple[bool, float, float]:
     """Shows a draggable point at x,y. #col defaults to ImGuiCol_Text."""
     pass
 
 # IMPLOT_API bool DragLineX(int id, double* x, const ImVec4& col, float thickness = 1, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_line_x(
     id_: int, x: float, col: ImVec4, thickness: float = 1, flags: DragToolFlags = 0
-) -> Tuple[bool, float]:  # implot.h:931
+) -> Tuple[bool, float]:
     """Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text."""
     pass
 
 # IMPLOT_API bool DragLineY(int id, double* y, const ImVec4& col, float thickness = 1, ImPlotDragToolFlags flags=0);    /* original C++ signature */
 def drag_line_y(
     id_: int, y: float, col: ImVec4, thickness: float = 1, flags: DragToolFlags = 0
-) -> Tuple[bool, float]:  # implot.h:933
+) -> Tuple[bool, float]:
     """Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text."""
     pass
 
@@ -1802,7 +1790,7 @@ def drag_rect(
     y2: float,
     col: ImVec4,
     flags: DragToolFlags = 0,
-) -> Tuple[bool, float, float, float, float]:  # implot.h:935
+) -> Tuple[bool, float, float, float, float]:
     """Shows a draggable and resizeable rectangle."""
     pass
 
@@ -1815,31 +1803,31 @@ def annotation(
     pix_offset: ImVec2,
     clamp: bool,
     round: bool = False,
-) -> None:  # implot.h:938
+) -> None:
     pass
 
 # IMPLOT_API void Annotation(double x, double y, const ImVec4& col, const ImVec2& pix_offset, bool clamp, const char* fmt, ...)           ;    /* original C++ signature */
 def annotation(
     x: float, y: float, col: ImVec4, pix_offset: ImVec2, clamp: bool, fmt: str
-) -> None:  # implot.h:939
+) -> None:
     pass
 
 # Shows a x-axis tag at the specified coordinate value.
 # IMPLOT_API void TagX(double x, const ImVec4& col, bool round = false);    /* original C++ signature */
-def tag_x(x: float, col: ImVec4, round: bool = False) -> None:  # implot.h:943
+def tag_x(x: float, col: ImVec4, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagX(double x, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
-def tag_x(x: float, col: ImVec4, fmt: str) -> None:  # implot.h:944
+def tag_x(x: float, col: ImVec4, fmt: str) -> None:
     pass
 
 # Shows a y-axis tag at the specified coordinate value.
 # IMPLOT_API void TagY(double y, const ImVec4& col, bool round = false);    /* original C++ signature */
-def tag_y(y: float, col: ImVec4, round: bool = False) -> None:  # implot.h:948
+def tag_y(y: float, col: ImVec4, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagY(double y, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
-def tag_y(y: float, col: ImVec4, fmt: str) -> None:  # implot.h:949
+def tag_y(y: float, col: ImVec4, fmt: str) -> None:
     pass
 
 # -----------------------------------------------------------------------------
@@ -1848,97 +1836,95 @@ def tag_y(y: float, col: ImVec4, fmt: str) -> None:  # implot.h:949
 
 # Select which axis/axes will be used for subsequent plot elements.
 # IMPLOT_API void SetAxis(ImAxis axis);    /* original C++ signature */
-def set_axis(axis: ImAxis) -> None:  # implot.h:957
+def set_axis(axis: ImAxis) -> None:
     pass
 
 # IMPLOT_API void SetAxes(ImAxis x_axis, ImAxis y_axis);    /* original C++ signature */
-def set_axes(x_axis: ImAxis, y_axis: ImAxis) -> None:  # implot.h:958
+def set_axes(x_axis: ImAxis, y_axis: ImAxis) -> None:
     pass
 
 # Convert pixels to a position in the current plot's coordinate system. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def pixels_to_plot(
     pix: ImVec2, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> Point:  # implot.h:961
+) -> Point:
     pass
 
 # IMPLOT_API ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def pixels_to_plot(
     x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> Point:  # implot.h:962
+) -> Point:
     pass
 
 # Convert a position in the current plot's coordinate system to pixels. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImVec2 PlotToPixels(const ImPlotPoint& plt, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def plot_to_pixels(
     plt: Point, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> ImVec2:  # implot.h:965
+) -> ImVec2:
     pass
 
 # IMPLOT_API ImVec2 PlotToPixels(double x, double y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def plot_to_pixels(
     x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> ImVec2:  # implot.h:966
+) -> ImVec2:
     pass
 
 # IMPLOT_API ImVec2 GetPlotPos();    /* original C++ signature */
-def get_plot_pos() -> ImVec2:  # implot.h:969
+def get_plot_pos() -> ImVec2:
     """Get the current Plot position (top-left) in pixels."""
     pass
 
 # IMPLOT_API ImVec2 GetPlotSize();    /* original C++ signature */
-def get_plot_size() -> ImVec2:  # implot.h:971
+def get_plot_size() -> ImVec2:
     """Get the curent Plot size in pixels."""
     pass
 
 # IMPLOT_API ImPlotPoint GetPlotMousePos(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def get_plot_mouse_pos(
     x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> Point:  # implot.h:974
+) -> Point:
     """Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes."""
     pass
 
 # IMPLOT_API ImPlotRect GetPlotLimits(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
-def get_plot_limits(
-    x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> Rect:  # implot.h:976
+def get_plot_limits(x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Rect:
     """Returns the current plot axis range."""
     pass
 
 # IMPLOT_API bool IsPlotHovered();    /* original C++ signature */
-def is_plot_hovered() -> bool:  # implot.h:979
+def is_plot_hovered() -> bool:
     """Returns True if the plot area in the current plot is hovered."""
     pass
 
 # IMPLOT_API bool IsAxisHovered(ImAxis axis);    /* original C++ signature */
-def is_axis_hovered(axis: ImAxis) -> bool:  # implot.h:981
+def is_axis_hovered(axis: ImAxis) -> bool:
     """Returns True if the axis label area in the current plot is hovered."""
     pass
 
 # IMPLOT_API bool IsSubplotsHovered();    /* original C++ signature */
-def is_subplots_hovered() -> bool:  # implot.h:983
+def is_subplots_hovered() -> bool:
     """Returns True if the bounding frame of a subplot is hovered."""
     pass
 
 # IMPLOT_API bool IsPlotSelected();    /* original C++ signature */
-def is_plot_selected() -> bool:  # implot.h:986
+def is_plot_selected() -> bool:
     """Returns True if the current plot is being box selected."""
     pass
 
 # IMPLOT_API ImPlotRect GetPlotSelection(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 def get_plot_selection(
     x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
-) -> Rect:  # implot.h:988
+) -> Rect:
     """Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes."""
     pass
 
 # IMPLOT_API void CancelPlotSelection();    /* original C++ signature */
-def cancel_plot_selection() -> None:  # implot.h:990
+def cancel_plot_selection() -> None:
     """Cancels a the current plot box selection."""
     pass
 
 # IMPLOT_API void HideNextItem(bool hidden = true, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def hide_next_item(hidden: bool = True, cond: Cond = Cond_Once) -> None:  # implot.h:994
+def hide_next_item(hidden: bool = True, cond: Cond = Cond_Once) -> None:
     """Hides or shows the next plot item (i.e. as if it were toggled from the legend).
     Use ImPlotCond_Always if you need to forcefully set this every frame.
     """
@@ -1950,14 +1936,14 @@ def hide_next_item(hidden: bool = True, cond: Cond = Cond_Once) -> None:  # impl
 # level control of plot alignment.
 
 # IMPLOT_API bool BeginAlignedPlots(const char* group_id, bool vertical = true);    /* original C++ signature */
-def begin_aligned_plots(group_id: str, vertical: bool = True) -> bool:  # implot.h:1003
+def begin_aligned_plots(group_id: str, vertical: bool = True) -> bool:
     """Align axis padding over multiple plots in a single row or column. #group_id must
     be unique. If this function returns True, EndAlignedPlots() must be called.
     """
     pass
 
 # IMPLOT_API void EndAlignedPlots();    /* original C++ signature */
-def end_aligned_plots() -> None:  # implot.h:1005
+def end_aligned_plots() -> None:
     """Only call EndAlignedPlots() if BeginAlignedPlots() returns True!"""
     pass
 
@@ -1966,19 +1952,17 @@ def end_aligned_plots() -> None:  # implot.h:1005
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API bool BeginLegendPopup(const char* label_id, ImGuiMouseButton mouse_button=1);    /* original C++ signature */
-def begin_legend_popup(
-    label_id: str, mouse_button: MouseButton = 1
-) -> bool:  # implot.h:1012
+def begin_legend_popup(label_id: str, mouse_button: MouseButton = 1) -> bool:
     """Begin a popup for a legend entry."""
     pass
 
 # IMPLOT_API void EndLegendPopup();    /* original C++ signature */
-def end_legend_popup() -> None:  # implot.h:1014
+def end_legend_popup() -> None:
     """End a popup for a legend entry."""
     pass
 
 # IMPLOT_API bool IsLegendEntryHovered(const char* label_id);    /* original C++ signature */
-def is_legend_entry_hovered(label_id: str) -> bool:  # implot.h:1016
+def is_legend_entry_hovered(label_id: str) -> bool:
     """Returns True if a plot item legend entry is hovered."""
     pass
 
@@ -1987,22 +1971,22 @@ def is_legend_entry_hovered(label_id: str) -> bool:  # implot.h:1016
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API bool BeginDragDropTargetPlot();    /* original C++ signature */
-def begin_drag_drop_target_plot() -> bool:  # implot.h:1023
+def begin_drag_drop_target_plot() -> bool:
     """Turns the current plot's plotting area into a drag and drop target. Don't forget to call EndDragDropTarget!"""
     pass
 
 # IMPLOT_API bool BeginDragDropTargetAxis(ImAxis axis);    /* original C++ signature */
-def begin_drag_drop_target_axis(axis: ImAxis) -> bool:  # implot.h:1025
+def begin_drag_drop_target_axis(axis: ImAxis) -> bool:
     """Turns the current plot's X-axis into a drag and drop target. Don't forget to call EndDragDropTarget!"""
     pass
 
 # IMPLOT_API bool BeginDragDropTargetLegend();    /* original C++ signature */
-def begin_drag_drop_target_legend() -> bool:  # implot.h:1027
+def begin_drag_drop_target_legend() -> bool:
     """Turns the current plot's legend into a drag and drop target. Don't forget to call EndDragDropTarget!"""
     pass
 
 # IMPLOT_API void EndDragDropTarget();    /* original C++ signature */
-def end_drag_drop_target() -> None:  # implot.h:1029
+def end_drag_drop_target() -> None:
     """Ends a drag and drop target (currently just an alias for ImGui::EndDragDropTarget)."""
     pass
 
@@ -2010,26 +1994,22 @@ def end_drag_drop_target() -> None:  # implot.h:1029
 # You can change the modifier if desired. If ImGuiMod_None is provided, the axes will be locked from panning.
 
 # IMPLOT_API bool BeginDragDropSourcePlot(ImGuiDragDropFlags flags=0);    /* original C++ signature */
-def begin_drag_drop_source_plot(flags: DragDropFlags = 0) -> bool:  # implot.h:1035
+def begin_drag_drop_source_plot(flags: DragDropFlags = 0) -> bool:
     """Turns the current plot's plotting area into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!"""
     pass
 
 # IMPLOT_API bool BeginDragDropSourceAxis(ImAxis axis, ImGuiDragDropFlags flags=0);    /* original C++ signature */
-def begin_drag_drop_source_axis(
-    axis: ImAxis, flags: DragDropFlags = 0
-) -> bool:  # implot.h:1037
+def begin_drag_drop_source_axis(axis: ImAxis, flags: DragDropFlags = 0) -> bool:
     """Turns the current plot's X-axis into a drag and drop source. You must hold Ctrl. Don't forget to call EndDragDropSource!"""
     pass
 
 # IMPLOT_API bool BeginDragDropSourceItem(const char* label_id, ImGuiDragDropFlags flags=0);    /* original C++ signature */
-def begin_drag_drop_source_item(
-    label_id: str, flags: DragDropFlags = 0
-) -> bool:  # implot.h:1039
+def begin_drag_drop_source_item(label_id: str, flags: DragDropFlags = 0) -> bool:
     """Turns an item in the current plot's legend into drag and drop source. Don't forget to call EndDragDropSource!"""
     pass
 
 # IMPLOT_API void EndDragDropSource();    /* original C++ signature */
-def end_drag_drop_source() -> None:  # implot.h:1041
+def end_drag_drop_source() -> None:
     """Ends a drag and drop source (currently just an alias for ImGui::EndDragDropSource)."""
     pass
 
@@ -2067,27 +2047,27 @@ def end_drag_drop_source() -> None:  # implot.h:1041
 #        them around individual plots for plot-specific styling (e.g. coloring axes).
 
 # IMPLOT_API ImPlotStyle& GetStyle();    /* original C++ signature */
-def get_style() -> Style:  # implot.h:1077
+def get_style() -> Style:
     """Provides access to plot style structure for permanant modifications to colors, sizes, etc."""
     pass
 
 # IMPLOT_API void StyleColorsAuto(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_auto(dst: Optional[Style] = None) -> None:  # implot.h:1080
+def style_colors_auto(dst: Optional[Style] = None) -> None:
     """Style plot colors for current ImGui style (default)."""
     pass
 
 # IMPLOT_API void StyleColorsClassic(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_classic(dst: Optional[Style] = None) -> None:  # implot.h:1082
+def style_colors_classic(dst: Optional[Style] = None) -> None:
     """Style plot colors for ImGui "Classic"."""
     pass
 
 # IMPLOT_API void StyleColorsDark(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_dark(dst: Optional[Style] = None) -> None:  # implot.h:1084
+def style_colors_dark(dst: Optional[Style] = None) -> None:
     """Style plot colors for ImGui "Dark"."""
     pass
 
 # IMPLOT_API void StyleColorsLight(ImPlotStyle* dst = NULL);    /* original C++ signature */
-def style_colors_light(dst: Optional[Style] = None) -> None:  # implot.h:1086
+def style_colors_light(dst: Optional[Style] = None) -> None:
     """Style plot colors for ImGui "Light"."""
     pass
 
@@ -2097,35 +2077,35 @@ def style_colors_light(dst: Optional[Style] = None) -> None:  # implot.h:1086
 
 # Temporarily modify a style color. Don't forget to call PopStyleColor!
 # IMPLOT_API void PushStyleColor(ImPlotCol idx, ImU32 col);    /* original C++ signature */
-def push_style_color(idx: Col, col: ImU32) -> None:  # implot.h:1093
+def push_style_color(idx: Col, col: ImU32) -> None:
     pass
 
 # IMPLOT_API void PushStyleColor(ImPlotCol idx, const ImVec4& col);    /* original C++ signature */
-def push_style_color(idx: Col, col: ImVec4) -> None:  # implot.h:1094
+def push_style_color(idx: Col, col: ImVec4) -> None:
     pass
 
 # IMPLOT_API void PopStyleColor(int count = 1);    /* original C++ signature */
-def pop_style_color(count: int = 1) -> None:  # implot.h:1096
+def pop_style_color(count: int = 1) -> None:
     """Undo temporary style color modification(s). Undo multiple pushes at once by increasing count."""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, float val);    /* original C++ signature */
-def push_style_var(idx: StyleVar, val: float) -> None:  # implot.h:1099
+def push_style_var(idx: StyleVar, val: float) -> None:
     """Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, int val);    /* original C++ signature */
-def push_style_var(idx: StyleVar, val: int) -> None:  # implot.h:1101
+def push_style_var(idx: StyleVar, val: int) -> None:
     """Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, const ImVec2& val);    /* original C++ signature */
-def push_style_var(idx: StyleVar, val: ImVec2) -> None:  # implot.h:1103
+def push_style_var(idx: StyleVar, val: ImVec2) -> None:
     """Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PopStyleVar(int count = 1);    /* original C++ signature */
-def pop_style_var(count: int = 1) -> None:  # implot.h:1105
+def pop_style_var(count: int = 1) -> None:
     """Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count."""
     pass
 
@@ -2137,14 +2117,14 @@ def pop_style_var(count: int = 1) -> None:  # implot.h:1105
 # IMPLOT_API void SetNextLineStyle(const ImVec4& col = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO);    /* original C++ signature */
 def set_next_line_style(
     col: ImVec4 = IMPLOT_AUTO_COL, weight: float = IMPLOT_AUTO
-) -> None:  # implot.h:1113
+) -> None:
     """Set the line color and weight for the next item only."""
     pass
 
 # IMPLOT_API void SetNextFillStyle(const ImVec4& col = IMPLOT_AUTO_COL, float alpha_mod = IMPLOT_AUTO);    /* original C++ signature */
 def set_next_fill_style(
     col: ImVec4 = IMPLOT_AUTO_COL, alpha_mod: float = IMPLOT_AUTO
-) -> None:  # implot.h:1115
+) -> None:
     """Set the fill color for the next item only."""
     pass
 
@@ -2155,7 +2135,7 @@ def set_next_marker_style(
     fill: ImVec4 = IMPLOT_AUTO_COL,
     weight: float = IMPLOT_AUTO,
     outline: ImVec4 = IMPLOT_AUTO_COL,
-) -> None:  # implot.h:1117
+) -> None:
     """Set the marker style for the next item only."""
     pass
 
@@ -2164,22 +2144,22 @@ def set_next_error_bar_style(
     col: ImVec4 = IMPLOT_AUTO_COL,
     size: float = IMPLOT_AUTO,
     weight: float = IMPLOT_AUTO,
-) -> None:  # implot.h:1119
+) -> None:
     """Set the error bar style for the next item only."""
     pass
 
 # IMPLOT_API ImVec4 GetLastItemColor();    /* original C++ signature */
-def get_last_item_color() -> ImVec4:  # implot.h:1122
+def get_last_item_color() -> ImVec4:
     """Gets the last item primary color (i.e. its legend icon color)"""
     pass
 
 # IMPLOT_API const char* GetStyleColorName(ImPlotCol idx);    /* original C++ signature */
-def get_style_color_name(idx: Col) -> str:  # implot.h:1125
+def get_style_color_name(idx: Col) -> str:
     """Returns the null terminated string name for an ImPlotCol."""
     pass
 
 # IMPLOT_API const char* GetMarkerName(ImPlotMarker idx);    /* original C++ signature */
-def get_marker_name(idx: Marker) -> str:  # implot.h:1127
+def get_marker_name(idx: Marker) -> str:
     """Returns the null terminated string name for an ImPlotMarker."""
     pass
 
@@ -2203,49 +2183,45 @@ def get_marker_name(idx: Marker) -> str:  # implot.h:1127
 # continuous colormap, set #qual=False. This will treat the colors you provide as keys, and ImPlot will build a linearly
 # interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
 # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImVec4* cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(
-    name: str, cols: ImVec4, size: int, qual: bool = True
-) -> Colormap:  # implot.h:1148
+def add_colormap(name: str, cols: ImVec4, size: int, qual: bool = True) -> Colormap:
     pass
 
 # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(
-    name: str, cols: ImU32, size: int, qual: bool = True
-) -> Colormap:  # implot.h:1149
+def add_colormap(name: str, cols: ImU32, size: int, qual: bool = True) -> Colormap:
     pass
 
 # IMPLOT_API int GetColormapCount();    /* original C++ signature */
-def get_colormap_count() -> int:  # implot.h:1152
+def get_colormap_count() -> int:
     """Returns the number of available colormaps (i.e. the built-in + user-added count)."""
     pass
 
 # IMPLOT_API const char* GetColormapName(ImPlotColormap cmap);    /* original C++ signature */
-def get_colormap_name(cmap: Colormap) -> str:  # implot.h:1154
+def get_colormap_name(cmap: Colormap) -> str:
     """Returns a null terminated string name for a colormap given an index. Returns None if index is invalid."""
     pass
 
 # IMPLOT_API ImPlotColormap GetColormapIndex(const char* name);    /* original C++ signature */
-def get_colormap_index(name: str) -> Colormap:  # implot.h:1156
+def get_colormap_index(name: str) -> Colormap:
     """Returns an index number for a colormap given a valid string name. Returns -1 if name is invalid."""
     pass
 
 # IMPLOT_API void PushColormap(ImPlotColormap cmap);    /* original C++ signature */
-def push_colormap(cmap: Colormap) -> None:  # implot.h:1159
+def push_colormap(cmap: Colormap) -> None:
     """Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to call PopColormap!"""
     pass
 
 # IMPLOT_API void PushColormap(const char* name);    /* original C++ signature */
-def push_colormap(name: str) -> None:  # implot.h:1161
+def push_colormap(name: str) -> None:
     """Push a colormap by string name. Use built-in names such as "Default", "Deep", "Jet", etc. or a string you provided to AddColormap. Don't forget to call PopColormap!"""
     pass
 
 # IMPLOT_API void PopColormap(int count = 1);    /* original C++ signature */
-def pop_colormap(count: int = 1) -> None:  # implot.h:1163
+def pop_colormap(count: int = 1) -> None:
     """Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count."""
     pass
 
 # IMPLOT_API ImVec4 NextColormapColor();    /* original C++ signature */
-def next_colormap_color() -> ImVec4:  # implot.h:1167
+def next_colormap_color() -> ImVec4:
     """Returns the next color from the current colormap and advances the colormap for the current plot.
     Can also be used with no return value to skip colors if desired. You need to call this between Begin/EndPlot!
     """
@@ -2255,19 +2231,17 @@ def next_colormap_color() -> ImVec4:  # implot.h:1167
 # Pass an explicit colormap index (built-in or user-added) to specify otherwise.
 
 # IMPLOT_API int GetColormapSize(ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def get_colormap_size(cmap: Colormap = IMPLOT_AUTO) -> int:  # implot.h:1173
+def get_colormap_size(cmap: Colormap = IMPLOT_AUTO) -> int:
     """Returns the size of a colormap."""
     pass
 
 # IMPLOT_API ImVec4 GetColormapColor(int idx, ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def get_colormap_color(
-    idx: int, cmap: Colormap = IMPLOT_AUTO
-) -> ImVec4:  # implot.h:1175
+def get_colormap_color(idx: int, cmap: Colormap = IMPLOT_AUTO) -> ImVec4:
     """Returns a color from a colormap given an index >= 0 (modulo will be performed)."""
     pass
 
 # IMPLOT_API ImVec4 SampleColormap(float t, ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def sample_colormap(t: float, cmap: Colormap = IMPLOT_AUTO) -> ImVec4:  # implot.h:1177
+def sample_colormap(t: float, cmap: Colormap = IMPLOT_AUTO) -> ImVec4:
     """Sample a color from the current colormap given t between 0 and 1."""
     pass
 
@@ -2280,7 +2254,7 @@ def colormap_scale(
     format: str = "%g",
     flags: ColormapScaleFlags = 0,
     cmap: Colormap = IMPLOT_AUTO,
-) -> None:  # implot.h:1180
+) -> None:
     """Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. "##NoLabel"). If scale_min > scale_max, the scale to color mapping will be reversed."""
     pass
 
@@ -2291,19 +2265,19 @@ def colormap_slider(
     out: Optional[ImVec4] = None,
     format: str = "",
     cmap: Colormap = IMPLOT_AUTO,
-) -> Tuple[bool, float]:  # implot.h:1182
+) -> Tuple[bool, float]:
     """Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1]."""
     pass
 
 # IMPLOT_API bool ColormapButton(const char* label, const ImVec2& size = ImVec2(0,0), ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
 def colormap_button(
     label: str, size: ImVec2 = ImVec2(0, 0), cmap: Colormap = IMPLOT_AUTO
-) -> bool:  # implot.h:1184
+) -> bool:
     """Shows a button with a colormap gradient brackground."""
     pass
 
 # IMPLOT_API void BustColorCache(const char* plot_title_id = NULL);    /* original C++ signature */
-def bust_color_cache(plot_title_id: Optional[str] = None) -> None:  # implot.h:1193
+def bust_color_cache(plot_title_id: Optional[str] = None) -> None:
     """When items in a plot sample their color from a colormap, the color is cached and does not change
     unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,
     item colors will NOT update. If you need item colors to resample the new colormap, then use this
@@ -2319,17 +2293,17 @@ def bust_color_cache(plot_title_id: Optional[str] = None) -> None:  # implot.h:1
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API ImPlotInputMap& GetInputMap();    /* original C++ signature */
-def get_input_map() -> InputMap:  # implot.h:1200
+def get_input_map() -> InputMap:
     """Provides access to input mapping structure for permanant modifications to controls for pan, select, etc."""
     pass
 
 # IMPLOT_API void MapInputDefault(ImPlotInputMap* dst = NULL);    /* original C++ signature */
-def map_input_default(dst: Optional[InputMap] = None) -> None:  # implot.h:1203
+def map_input_default(dst: Optional[InputMap] = None) -> None:
     """Default input mapping: pan = LMB drag, box select = RMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll."""
     pass
 
 # IMPLOT_API void MapInputReverse(ImPlotInputMap* dst = NULL);    /* original C++ signature */
-def map_input_reverse(dst: Optional[InputMap] = None) -> None:  # implot.h:1205
+def map_input_reverse(dst: Optional[InputMap] = None) -> None:
     """Reverse input mapping: pan = RMB drag, box select = LMB drag, fit = LMB double click, context menu = RMB click, zoom = scroll."""
     pass
 
@@ -2339,61 +2313,59 @@ def map_input_reverse(dst: Optional[InputMap] = None) -> None:  # implot.h:1205
 
 # Render icons similar to those that appear in legends (nifty for data lists).
 # IMPLOT_API void ItemIcon(const ImVec4& col);    /* original C++ signature */
-def item_icon(col: ImVec4) -> None:  # implot.h:1212
+def item_icon(col: ImVec4) -> None:
     pass
 
 # IMPLOT_API void ItemIcon(ImU32 col);    /* original C++ signature */
-def item_icon(col: ImU32) -> None:  # implot.h:1213
+def item_icon(col: ImU32) -> None:
     pass
 
 # IMPLOT_API void ColormapIcon(ImPlotColormap cmap);    /* original C++ signature */
-def colormap_icon(cmap: Colormap) -> None:  # implot.h:1214
+def colormap_icon(cmap: Colormap) -> None:
     pass
 
 # IMPLOT_API ImDrawList* GetPlotDrawList();    /* original C++ signature */
-def get_plot_draw_list() -> ImDrawList:  # implot.h:1217
+def get_plot_draw_list() -> ImDrawList:
     """Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot."""
     pass
 
 # IMPLOT_API void PushPlotClipRect(float expand=0);    /* original C++ signature */
-def push_plot_clip_rect(expand: float = 0) -> None:  # implot.h:1219
+def push_plot_clip_rect(expand: float = 0) -> None:
     """Push clip rect for rendering to current plot area. The rect can be expanded or contracted by #expand pixels. Call between Begin/EndPlot."""
     pass
 
 # IMPLOT_API void PopPlotClipRect();    /* original C++ signature */
-def pop_plot_clip_rect() -> None:  # implot.h:1221
+def pop_plot_clip_rect() -> None:
     """Pop plot clip rect. Call between Begin/EndPlot."""
     pass
 
 # IMPLOT_API bool ShowStyleSelector(const char* label);    /* original C++ signature */
-def show_style_selector(label: str) -> bool:  # implot.h:1224
+def show_style_selector(label: str) -> bool:
     """Shows ImPlot style selector dropdown menu."""
     pass
 
 # IMPLOT_API bool ShowColormapSelector(const char* label);    /* original C++ signature */
-def show_colormap_selector(label: str) -> bool:  # implot.h:1226
+def show_colormap_selector(label: str) -> bool:
     """Shows ImPlot colormap selector dropdown menu."""
     pass
 
 # IMPLOT_API bool ShowInputMapSelector(const char* label);    /* original C++ signature */
-def show_input_map_selector(label: str) -> bool:  # implot.h:1228
+def show_input_map_selector(label: str) -> bool:
     """Shows ImPlot input map selector dropdown menu."""
     pass
 
 # IMPLOT_API void ShowStyleEditor(ImPlotStyle* ref = NULL);    /* original C++ signature */
-def show_style_editor(ref: Optional[Style] = None) -> None:  # implot.h:1230
+def show_style_editor(ref: Optional[Style] = None) -> None:
     """Shows ImPlot style editor block (not a window)."""
     pass
 
 # IMPLOT_API void ShowUserGuide();    /* original C++ signature */
-def show_user_guide() -> None:  # implot.h:1232
+def show_user_guide() -> None:
     """Add basic help/info block for end users (not a window)."""
     pass
 
 # IMPLOT_API void ShowMetricsWindow(bool* p_popen = NULL);    /* original C++ signature */
-def show_metrics_window(
-    p_popen: Optional[bool] = None,
-) -> Optional[bool]:  # implot.h:1234
+def show_metrics_window(p_popen: Optional[bool] = None) -> Optional[bool]:
     """Shows ImPlot metrics/debug information window."""
     pass
 
@@ -2402,7 +2374,7 @@ def show_metrics_window(
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API void ShowDemoWindow(bool* p_open = NULL);    /* original C++ signature */
-def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:  # implot.h:1241
+def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot demo window (add implot_demo.cpp to your sources!)"""
     pass
 

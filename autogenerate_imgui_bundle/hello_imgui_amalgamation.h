@@ -86,7 +86,8 @@ extern std::string gAssetsSubfolderFolderName;  // "assets" by default
 // Advanced: forces the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
 void overrideAssetsFolder(const char* folder);
-void setAssetsFolder(const char* folder);
+void SetAssetsFolder(const char* folder);
+inline void setAssetsFolder(const char* folder) { SetAssetsFolder(folder);} // backward compatibility
 
 } // namespace HelloImGui
 
@@ -2094,7 +2095,7 @@ struct RunnerParams
 /**
  @@md#SimpleRunnerParams
 
-**RunnerParams** is a struct that contains simpler params adapted for simple uses
+**SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.
 
  Members:
 * `guiFunction`: _VoidFunction_.
@@ -2109,6 +2110,22 @@ struct RunnerParams
    Size of the window
 * `fpsIdle`: _float, default=10_.
    FPS of the application when idle (set to 0 for full speed).
+
+For example, this is sufficient to run an application:
+
+````cpp
+void MyGui() {
+    ImGui::Text("Hello, world");
+    if (ImGui::Button("Exit"))
+        HelloImGui::GetRunnerParams()->appShallExit = true;
+}
+
+int main(){
+    auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = true, .windowTitle = "Example"};
+    HelloImGui::Run(params);
+}
+````
+
 @@md
  */
 struct SimpleRunnerParams

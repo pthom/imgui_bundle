@@ -26,15 +26,19 @@ function (add_hello_imgui)
         #     lg_target_set_rpath(${python_native_module_name} ".")
         # (inside add_imgui_bundle_bindings)
         set(BUILD_SHARED_LIBS ON)
+        set(GLFW_BUILD_EXAMPLES OFF)
+        set(GLFW_BUILD_TESTS OFF)
+        set(GLFW_BUILD_DOCS OFF)
+        set(GLFW_INSTALL OFF)
         add_subdirectory(external/glfw)
         # glfw dynamic lib will be in the same folder as imgui_bundle
-         install(TARGETS glfw DESTINATION .)
+        install(TARGETS glfw DESTINATION .)
         # copy glfw dynamic lib into bindings/imgui_bundle post build, for editable install mode
-         lg_copy_target_output_to_python_wrapper_folder(imgui_bundle glfw)
+        lg_copy_target_output_to_python_wrapper_folder(imgui_bundle glfw)
         # glfw usually relies on the presence of symlinks: for example libglfw.3.dylib points to libglfw.3.4.dylib
         #    below, we emulate those symlinks by creating copies of the dynamic library
-         lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.dylib)
-         lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.so)
+        lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.dylib)
+        lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.so)
         set(BUILD_SHARED_LIBS OFF)
     else()
         add_subdirectory(external/glfw)

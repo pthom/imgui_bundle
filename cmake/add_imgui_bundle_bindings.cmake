@@ -12,8 +12,9 @@ function(add_imgui_bundle_bindings)
         bindings/litgen_glue_code.h
         bindings/imgui_docking_internal_types.h
 
+        bindings/pybind_imgui.cpp  # Those bindings need to be compiled first, as they declare type casters used by the next ones
+
         bindings/pybind_hello_imgui.cpp
-        bindings/pybind_imgui.cpp
         bindings/pybind_imgui_internal.cpp
         bindings/pybind_implot.cpp
         bindings/pybind_imgui_bundle.cpp
@@ -24,7 +25,9 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imspinner.cpp
         bindings/pybind_imgui_md.cpp
         bindings/pybind_immvision.cpp
+        bindings/pybind_imguizmo.cpp
         bindings/pybind_imgui_backends.cpp
+        bindings/pybind_imgui_tex_inspect.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
@@ -39,6 +42,7 @@ function(add_imgui_bundle_bindings)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         add_subdirectory(external/immvision/cvnp)
         target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+        target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 
     if(IMGUI_BUNDLE_BUILD_PYTHON)

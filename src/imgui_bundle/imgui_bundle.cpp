@@ -4,7 +4,32 @@
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "ImFileDialogTextureHelper.h"
 
+#include "imgui_tex_inspect/imgui_tex_inspect.h"
+#include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
+#include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
+#include "hello_imgui/hello_imgui.h"
+
 #include <chrono>
+
+namespace HelloImGui
+{
+    // Private API, not mentioned in headers!
+    std::string GlslVersion();
+}
+
+
+namespace ImGuiTexInspect
+{
+    Texture LoadTexture(const char * path)
+    {
+        auto textureId = HelloImGui::ImTextureIdFromAsset(path);
+        Texture r;
+        r.size = ImVec2(512.f, 512.f); // This function is only by used the demo, which uses a 51x512 image
+        r.texture = textureId;
+        return r;
+    }
+
+}
 
 
 namespace ImGuiBundle
@@ -47,6 +72,37 @@ namespace ImGuiBundle
 
         ImFileDialogSetupTextureLoader();
 
+        if (addOnsParams.withTexInspect)
+        {
+            ImGuiTexInspect::Context * ctxTexInspect = nullptr;
+            // Modify post-init: call ImGuiTexInspect::ImplOpenGL3_Init
+            {
+                auto oldPostInit = runnerParams.callbacks.PostInit;
+                auto newPostInit = [oldPostInit, &ctxTexInspect]() {
+                    ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
+                    ImGuiTexInspect::Init();
+                    ctxTexInspect = ImGuiTexInspect::CreateContext();
+
+                    if (oldPostInit)
+                        oldPostInit();
+                };
+                runnerParams.callbacks.PostInit = newPostInit;
+            }
+            // Modify before-exit: call ImGuiTexInspect::ImplOpenGL3_Init
+            {
+                auto oldBeforeExit = runnerParams.callbacks.BeforeExit;
+                auto newBeforeExit = [oldBeforeExit, &ctxTexInspect]() {
+                    ImGuiTexInspect::Shutdown();
+                    ImGuiTexInspect::DestroyContext(ctxTexInspect);
+
+                    ImGuiTexInspect::ImplOpenGl3_Shutdown();
+                    if (oldBeforeExit)
+                        oldBeforeExit();
+                };
+                runnerParams.callbacks.BeforeExit = newBeforeExit;
+            }
+        }
+
         HelloImGui::Run(runnerParams);
 
         if (addOnsParams.withImplot)
@@ -80,6 +136,7 @@ namespace ImGuiBundle
         bool withImplot,
         bool withMarkdown,
         bool withNodeEditor,
+        bool withTexInspect,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
@@ -96,6 +153,7 @@ namespace ImGuiBundle
         addOnsParams.withImplot = withImplot;
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
+        addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
         addOnsParams.withMarkdownOptions = withMarkdownOptions;
 
