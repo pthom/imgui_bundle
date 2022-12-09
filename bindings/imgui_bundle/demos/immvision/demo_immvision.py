@@ -7,7 +7,7 @@ ImVec4 = imgui.ImVec4
 
 
 def main():
-    from imgui_bundle import run
+    from imgui_bundle import immapp
     import cv2
 
     image = cv2.imread(demos_assets_folder() + "/images/house.jpg")
@@ -17,7 +17,7 @@ def main():
     def gui():
         immvision.image("House", image, image_params)
 
-    run(gui, with_implot=True, with_markdown=True)
+    immapp.run(gui, with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":

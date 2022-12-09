@@ -1,4 +1,4 @@
-from imgui_bundle import run, imgui, imgui_node_editor as ed, ImVec4, ImVec2
+from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4, ImVec2
 
 
 class Lover:
@@ -72,4 +72,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore
+    immapp.run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore

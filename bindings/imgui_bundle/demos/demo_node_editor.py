@@ -7,10 +7,8 @@ from imgui_bundle import (
     imgui,
     imgui_md,
     imgui_node_editor as ed,
-    static,  # Helper to get static variables
-    run_anon_block,  # helper to indent the code with anonymous blocks
-    ImVec2,
 )
+from imgui_bundle.immapp import static, run_anon_block
 
 
 class IdProvider:
@@ -231,9 +229,9 @@ Use the mouse wheel to zoom-unzoom.
 def main():
     config = ed.Config()
     config.settings_file = "BasicInteraction.json"
-    import imgui_bundle
+    from imgui_bundle import immapp
 
-    imgui_bundle.run(demo_node_editor, with_node_editor_config=config, with_markdown=True, window_size=(800, 600))
+    immapp.run(demo_node_editor, with_node_editor_config=config, with_markdown=True, window_size=(800, 600))
 
 
 if __name__ == "__main__":

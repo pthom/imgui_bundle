@@ -108,9 +108,9 @@ def main():
     font_size_pixel = 48.0
     # i. Load another font...
     font_filename = this_dir + "/assets/fonts/Akronim-Regular.ttf"
-    glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
-    custom_font = imgui.font_atlas_add_font_from_file_ttf(
-        font_atlas=imgui.get_io().fonts,
+    font_atlas = imgui.get_io().fonts
+    glyph_range = font_atlas.get_glyph_ranges_default()
+    custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
         glyph_ranges_as_int_list=glyph_range,
@@ -122,8 +122,7 @@ def main():
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
-    custom_font = imgui.font_atlas_add_font_from_file_ttf(
-        font_atlas,
+    custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
         glyph_ranges_as_int_list=icons_range,

@@ -7,3 +7,8 @@ from imgui_bundle.immapp.immapp_utils import (
     run_anon_block as run_anon_block,
     run_nb as run_nb,
 )
+
+from imgui_bundle._imgui_bundle.hello_imgui import (
+    RunnerParams as RunnerParams,
+    SimpleRunnerParams as SimpleRunnerParams,
+)

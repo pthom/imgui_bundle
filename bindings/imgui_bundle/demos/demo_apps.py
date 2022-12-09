@@ -3,7 +3,7 @@ import sys
 import os
 
 from imgui_bundle import imgui_color_text_edit as text_edit, imgui_md
-from imgui_bundle import imgui, ImVec2
+from imgui_bundle import imgui, ImVec2, immapp
 
 
 EDITOR = text_edit.TextEditor()
@@ -108,6 +108,4 @@ def demo_apps():
 
 
 if __name__ == "__main__":
-    from imgui_bundle import run
-
-    run(demo_apps, with_markdown=True, window_size=(800, 800))  # type: ignore
+    immapp.run(demo_apps, with_markdown=True, window_size=(800, 800))  # type: ignore

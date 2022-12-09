@@ -7,7 +7,7 @@ import math
 import munch  # type: ignore
 
 import imgui_bundle
-from imgui_bundle import imgui, imguizmo, hello_imgui, static, ImVec2, ImVec4
+from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos.api_demos import GuiFunction
 
 # pip install PyGLM
@@ -98,7 +98,7 @@ class EditTransformResult:
     cameraView: Matrix16
 
 
-@static(statics=None)
+@immapp.static(statics=None)
 def EditTransform(
     cameraView: Matrix16, cameraProjection: Matrix16, objectMatrix: Matrix16, editTransformDecomposition: bool
 ) -> EditTransformResult:
@@ -340,7 +340,7 @@ def make_closure_demo_guizmo() -> GuiFunction:
 def main():
     gui = make_closure_demo_guizmo()
 
-    runner_params = imgui_bundle.RunnerParams()
+    runner_params = immapp.RunnerParams()
     runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     )
@@ -360,7 +360,7 @@ def main():
         hello_imgui.DockableWindow(label_="Gizmo", dock_space_name_="MainDockSpace"),
     ]
 
-    imgui_bundle.run(runner_params)
+    immapp.run(runner_params)
 
 
 if __name__ == "__main__":

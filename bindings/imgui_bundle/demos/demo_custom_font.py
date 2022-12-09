@@ -1,6 +1,5 @@
 import os
-import imgui_bundle
-from imgui_bundle import imgui, hello_imgui, icons_fontawesome
+from imgui_bundle import imgui, hello_imgui, immapp, icons_fontawesome
 
 
 def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
@@ -73,11 +72,11 @@ def main() -> None:
         # custom_font = my_load_fonts_manually()
         custom_font = my_load_fonts_via_hello_imgui()
 
-    runner_params = imgui_bundle.RunnerParams()
+    runner_params = immapp.RunnerParams()
     runner_params.callbacks.load_additional_fonts = callback_load_font
     runner_params.callbacks.show_gui = gui
 
-    imgui_bundle.run(runner_params)
+    immapp.run(runner_params)
 
 
 if __name__ == "__main__":

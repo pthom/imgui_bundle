@@ -2,7 +2,7 @@ import os
 
 
 def main():
-    from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, run, AddOnsParams
+    from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, immapp
 
     def show_gui():
         """This is the code of the Gui displayed by this app"""
@@ -23,7 +23,7 @@ def main():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     hello_imgui.set_assets_folder(this_dir + "/../assets")
 
-    run(
+    immapp.run(
         gui_function=show_gui,
         window_title="Hello, globe!",
         window_size_auto=True,

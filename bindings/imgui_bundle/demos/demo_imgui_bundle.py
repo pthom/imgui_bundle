@@ -1,7 +1,7 @@
 from typing import Dict
-import imgui_bundle
-from imgui_bundle import imgui, imgui_md, static, ImVec2, hello_imgui, imgui_color_text_edit
+from imgui_bundle import imgui, imgui_md, ImVec2, hello_imgui, imgui_color_text_edit, immapp
 from imgui_bundle.demos import code_str_utils
+from imgui_bundle.immapp import static
 import inspect
 
 
@@ -35,7 +35,7 @@ def show_code_editor(code: str, is_cpp: bool):
         else:
             editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
 
-    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
+    editor_size = ImVec2(immapp.em_size() * 17.0, immapp.em_size() * 6.0)
     editors[code].set_text(code)
     editor_title = "cpp" if is_cpp else "python"
     editors[code].render(f"##{editor_title}", editor_size)
@@ -50,7 +50,7 @@ def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
 
     imgui.push_id(str(id(python_gui_function)))
 
-    editor_size = ImVec2(imgui_bundle.em_size() * 17.0, imgui_bundle.em_size() * 6.0)
+    editor_size = ImVec2(immapp.em_size() * 17.0, immapp.em_size() * 6.0)
 
     imgui.begin_group()
     imgui.text("C++ code")
@@ -307,10 +307,6 @@ def demo_imgui_bundle() -> None:
 
 
 if __name__ == "__main__":
-    import imgui_bundle
-
-    from imgui_bundle import RunnerParams
-
-    params = RunnerParams()
-
-    imgui_bundle.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    from imgui_bundle import immapp
+    params = immapp.RunnerParams()
+    immapp.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore

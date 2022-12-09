@@ -3,8 +3,8 @@ import sys
 from typing import List, Callable
 from types import ModuleType
 
-from imgui_bundle import imgui, hello_imgui, ImVec2, imgui_color_text_edit as ed, static
-
+from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed
+from imgui_bundle.immapp import static
 from imgui_bundle.demos import demo_imgui
 from imgui_bundle.demos import demo_imgui_bundle
 from imgui_bundle.demos import demo_apps
@@ -120,14 +120,12 @@ def main() -> None:
     ################################################################################################
     # Part 3: Run the app
     ################################################################################################
-    import imgui_bundle
-
-    addons = imgui_bundle.AddOnsParams()
+    addons = immapp.AddOnsParams()
     addons.with_markdown = True
     addons.with_node_editor = True
     addons.with_markdown = True
     addons.with_implot = True
-    imgui_bundle.run(runner_params=runner_params, add_ons_params=addons)
+    immapp.run(runner_params=runner_params, add_ons_params=addons)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,8 @@ import math
 from munch import Munch  # type: ignore
 
 import numpy as np
-from imgui_bundle import imgui, implot, static, imgui_md
+from imgui_bundle import imgui, implot, imgui_md
+from imgui_bundle.immapp import static
 
 
 ImVec2 = imgui.ImVec2
@@ -99,9 +100,8 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 
 def main():
-    from imgui_bundle import run
-
-    run(demo_implot, with_implot=True, with_markdown=True)
+    from imgui_bundle import immapp
+    immapp.run(demo_implot, with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":

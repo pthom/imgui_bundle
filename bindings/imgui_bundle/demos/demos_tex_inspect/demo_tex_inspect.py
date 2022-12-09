@@ -1,7 +1,6 @@
 # Demo imgui_tex_inspect
 # See equivalent C++ program: demos_cpp/demos_tex_inspect/demo_tex_inspect.main.cpp
-import imgui_bundle
-from imgui_bundle import imgui_tex_inspect, hello_imgui, imgui, ImVec2
+from imgui_bundle import imgui_tex_inspect, hello_imgui, imgui, immapp, ImVec2
 from imgui_bundle.demos.api_demos import *
 
 
@@ -38,7 +37,7 @@ def make_closure_demo_tex_inspect() -> GuiFunction:
 
 def main():
     gui = make_closure_demo_tex_inspect()
-    imgui_bundle.run(gui, with_tex_inspect=True, window_size=(1000, 1000))
+    immapp.run(gui, with_tex_inspect=True, window_size=(1000, 1000))
 
 
 if __name__ == "__main__":

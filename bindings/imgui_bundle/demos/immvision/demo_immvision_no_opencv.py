@@ -8,7 +8,7 @@ ImVec4 = imgui.ImVec4
 
 
 def main():
-    from imgui_bundle import run
+    from imgui_bundle import immapp
 
     image = np.zeros((1000, 800, 3), np.uint8)
     h = image.shape[0]
@@ -28,7 +28,7 @@ def main():
         imgui.text(f"FPS:{imgui.get_io().framerate:.1f}")
         immvision.image("House", image, image_params)
 
-    run(gui, with_implot=True, with_markdown=True, fps_idle=0)
+    immapp.run(gui, with_implot=True, with_markdown=True, fps_idle=0)
 
 
 if __name__ == "__main__":

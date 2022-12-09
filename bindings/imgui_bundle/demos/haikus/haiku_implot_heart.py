@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from imgui_bundle import implot, imgui_knobs, imgui, run
+from imgui_bundle import implot, imgui_knobs, imgui, immapp
 
 
 vals = np.arange(0, np.pi * 2, 0.01)
@@ -26,4 +26,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore
+    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore

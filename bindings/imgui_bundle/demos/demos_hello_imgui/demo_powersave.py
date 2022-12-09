@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, ImVec2, run, hello_imgui
+from imgui_bundle import imgui, hello_imgui, immapp
 
 
 def gui():
@@ -30,7 +30,7 @@ the FPS will rise and the animation will be smooth again.
 
 
 def main():
-    run(gui_function=gui, window_title="Power save", window_size=(400, 500), with_markdown=True, fps_idle=4)
+    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), with_markdown=True, fps_idle=4)
 
 
 if __name__ == "__main__":

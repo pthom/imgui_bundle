@@ -4,8 +4,7 @@
 
 from typing import List
 from imgui_bundle.demos.api_demos import GuiFunction
-from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo
-import imgui_bundle
+from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, immapp
 
 
 def add_imvec4(a: ImVec4, b: ImVec4) -> ImVec4:
@@ -96,7 +95,7 @@ def main():
     gui = make_closure_demo_guizmo_gradient()
 
     # Run app
-    imgui_bundle.run(gui, window_size=(400, 100))
+    immapp.run(gui, window_size=(400, 100))
 
 
 if __name__ == "__main__":

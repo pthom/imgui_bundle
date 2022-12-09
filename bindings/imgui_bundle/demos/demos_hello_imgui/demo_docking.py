@@ -12,7 +12,7 @@ It demonstrates:
 import os
 from enum import Enum
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2, immapp
 
 
 # Struct that holds the application's state
@@ -66,9 +66,9 @@ def my_load_fonts_manually():
     # We need to take into account the global font scale!
     font_size_pixel = 40 / imgui.get_io().font_global_scale
     font_filename = this_dir + "/../assets/fonts/Akronim-Regular.ttf"
-    glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
-    gAkronimFont = imgui.font_atlas_add_font_from_file_ttf(
-        font_atlas=imgui.get_io().fonts,
+    font_atlas = imgui.get_io().fonts
+    glyph_range = font_atlas.get_glyph_ranges_default()
+    gAkronimFont = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
         glyph_ranges_as_int_list=glyph_range,
@@ -80,8 +80,7 @@ def my_load_fonts_manually():
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
-    gAkronimFont = imgui.font_atlas_add_font_from_file_ttf(
-        font_atlas,
+    gAkronimFont = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
         glyph_ranges_as_int_list=icons_range,
@@ -315,9 +314,9 @@ def main():
     ################################################################################################
     import imgui_bundle
 
-    addons_params = imgui_bundle.AddOnsParams()
+    addons_params = immapp.AddOnsParams()
     addons_params.with_markdown = True
-    imgui_bundle.run(runner_params, addons_params)
+    immapp.run(runner_params, addons_params)
 
 
 if __name__ == "__main__":

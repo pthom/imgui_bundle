@@ -1,5 +1,5 @@
-from imgui_bundle import static, imgui, imgui_color_text_edit as ed, imgui_md
-
+from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md
+from imgui_bundle.immapp import static
 
 TextEditor = ed.TextEditor
 
@@ -55,9 +55,8 @@ def demo_imgui_color_text_edit():
 
 
 def main():
-    from imgui_bundle import run
-
-    run(demo_imgui_color_text_edit, with_markdown=True)
+    from imgui_bundle import immapp
+    immapp.run(demo_imgui_color_text_edit, with_markdown=True)
 
 
 if __name__ == "__main__":

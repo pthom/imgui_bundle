@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Any, Dict, Callable
 
-import imgui_bundle
+from imgui_bundle import immapp
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import AnyDataWithGui, FunctionWithGui
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph.cv_color_type import *
 from imgui_bundle import immvision, imgui, ImVec2
@@ -277,7 +277,7 @@ class LutImage:
 
     @staticmethod
     def _lut_graph_size() -> float:
-        graph_size = int(imgui_bundle.em_size() * 2.0)
+        graph_size = int(immapp.em_size() * 2.0)
         return graph_size
 
     def _show_lut_graph(self, channel_name: str) -> Point2d:

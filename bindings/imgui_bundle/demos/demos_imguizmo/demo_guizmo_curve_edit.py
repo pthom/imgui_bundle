@@ -3,8 +3,7 @@ See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_curve_edit.main
 """
 from typing import List
 
-import imgui_bundle
-from imgui_bundle import imguizmo, ImVec2, imgui
+from imgui_bundle import imguizmo, ImVec2, imgui, immapp
 from imgui_bundle.demos.api_demos import GuiFunction
 
 
@@ -131,7 +130,7 @@ def main():
     gui = make_closure_demo_guizmo_curve_edit()
 
     # Run app
-    imgui_bundle.run(gui, with_markdown=True, window_size=(850, 600))
+    immapp.run(gui, with_markdown=True, window_size=(850, 600))
 
 
 if __name__ == "__main__":

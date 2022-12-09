@@ -5,8 +5,7 @@ import os.path
 from imgui_bundle.demos.api_demos import *
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph import *
 from imgui_bundle.demos.demo_composition_graph.functions_composition_graph.image_with_gui import *
-
-import imgui_bundle
+from imgui_bundle import immapp
 
 
 class GaussianBlurWithGui(FunctionWithGui):
@@ -121,7 +120,7 @@ def main():
 
     config_node = imgui_node_editor.Config()
     config_node.settings_file = "demo_compose_image.json"
-    imgui_bundle.run(gui, with_node_editor_config=config_node, window_size=(1600, 1000), fps_idle=0)
+    immapp.run(gui, with_node_editor_config=config_node, window_size=(1600, 1000), fps_idle=0)
 
     # functions = [GaussianBlurWithGui(), CannyWithGui()]
     # functions = [GaussianBlurWithGui(), CannyWithGui()]

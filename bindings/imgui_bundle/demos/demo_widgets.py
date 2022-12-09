@@ -1,4 +1,5 @@
-from imgui_bundle import static, imgui, hello_imgui, imgui_md, ImVec2
+from imgui_bundle import imgui, hello_imgui, imgui_md, ImVec2
+from imgui_bundle.immapp import static
 
 
 @static(knob_value=0, knob_int_value=0)
@@ -207,6 +208,5 @@ def demo_widgets():
 
 
 if __name__ == "__main__":
-    from imgui_bundle import run
-
-    run(demo_widgets, with_markdown=True)  # type: ignore
+    from imgui_bundle import immapp
+    immapp.run(demo_widgets, with_markdown=True)  # type: ignore

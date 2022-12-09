@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, imgui_md as imgui_md, IM_COL32
+from imgui_bundle import imgui_md as imgui_md
 
 
 def example_markdown_string() -> str:
@@ -45,9 +45,9 @@ def demo_imgui_md():
 
 
 def demo_imgui_md_main():
-    from imgui_bundle import hello_imgui
+    from imgui_bundle import immapp
 
-    runner_params = hello_imgui.RunnerParams()
+    runner_params = immapp.RunnerParams()
     runner_params.callbacks.show_gui = demo_imgui_md
 
     # Initialize markdown and ask HelloImGui to load the required fonts
@@ -57,7 +57,7 @@ def demo_imgui_md_main():
     imgui_md.initialize_markdown(markdown_options)
     runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
 
-    hello_imgui.run(runner_params)
+    immapp.run(runner_params)
 
 
 if __name__ == "__main__":

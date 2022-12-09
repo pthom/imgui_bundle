@@ -12,15 +12,10 @@ from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
 from . import immapp as immapp
-
-# Faire un package immapp python
-#   dedans import * from immapp_cpp
-#   + ajouts python
+from .immapp import icons_fontawesome as icons_fontawesome
 
 from . import immapp as immapp
 
 from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui  # type: ignore
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)
 from . im_col32 import IM_COL32 as IM_COL32
-
-from . hello_imgui import RunnerParams as RunnerParams, SimpleRunnerParams as SimpleRunnerParams

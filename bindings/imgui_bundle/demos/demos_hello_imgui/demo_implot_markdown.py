@@ -1,6 +1,5 @@
 import numpy as np
-from imgui_bundle import implot, imgui_md, ImVec2
-import imgui_bundle
+from imgui_bundle import implot, imgui_md, immapp
 
 
 def main():
@@ -15,7 +14,7 @@ def main():
         implot.plot_line("y2", x, y2)
         implot.end_plot()
 
-    imgui_bundle.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
+    immapp.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
 
 
 if __name__ == "__main__":
