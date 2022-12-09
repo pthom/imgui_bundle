@@ -137,6 +137,6 @@ int main()
 
     // Run app
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize = {850, 600}};
-    ImGuiBundle::Run(runnerParams);
+    ImmApp::Run(runnerParams);
 }
 #endif

@@ -18,7 +18,7 @@ namespace HelloImGui
 }
 
 
-namespace ImGuiBundle
+namespace ImmApp
 {
 
     std::optional<ax::NodeEditor::EditorContext *> _NODE_EDITOR_CONTEXT;
@@ -151,7 +151,7 @@ namespace ImGuiBundle
     {
         if (!_NODE_EDITOR_CONTEXT.has_value())
             throw std::runtime_error("No current node editor context\n"
-                                     "    Did you set with_node_editor_config when calling ImGuiBundle::Run()?");
+                                     "    Did you set with_node_editor_config when calling ImmApp::Run()?");
         return *_NODE_EDITOR_CONTEXT;
     }
 
@@ -193,4 +193,4 @@ namespace ImGuiBundle
     }
 
 
-}
+} // namespace ImmApp

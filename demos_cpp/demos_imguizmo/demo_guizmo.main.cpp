@@ -448,6 +448,6 @@ int main()
     winGuizmo.dockSpaceName = "MainDockSpace";
     runnerParams.dockingParams.dockableWindows = { winEditor, winGuizmo};
 
-    ImGuiBundle::Run(runnerParams);
+    ImmApp::Run(runnerParams);
 }
 #endif

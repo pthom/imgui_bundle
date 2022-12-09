@@ -77,7 +77,7 @@ class CppElement(SrcmlWrapper):
         editor.Render("Editor");
     };
 
-    ImGuiBundle::Run(HelloImGui::SimpleRunnerParams{.guiFunction=gui, .windowTitle="Text Editor", .windowSize={800, 500}});
+    ImmApp::Run(HelloImGui::SimpleRunnerParams{.guiFunction=gui, .windowTitle="Text Editor", .windowSize={800, 500}});
 
     return 0;
 }

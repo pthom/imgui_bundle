@@ -5,7 +5,7 @@
 
 #include <optional>
 
-namespace ImGuiBundle
+namespace ImmApp
 {
     using NodeEditorConfig = ax::NodeEditor::Config;
     using NodeEditorContext = ax::NodeEditor::EditorContext;
@@ -64,7 +64,7 @@ namespace ImGuiBundle
     //     - `windowSize`: size of the window
     //     - `fpsIdle`: fps of the application when idle
     //
-    // (ImGuiBundle::AddOnsParams)
+    // (ImmApp::AddOnsParams)
     //     - `with_implot`: if True, then a context for implot will be created/destroyed automatically
     //     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
     //       (i.e. required fonts will be loaded)
@@ -103,4 +103,4 @@ namespace ImGuiBundle
     // (EmSize is an alias for VisibleFontSize)
     float EmSize();
 
-}
+} // namespace ImmApp

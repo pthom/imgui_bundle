@@ -51,10 +51,10 @@ And below is a graph created with ImPlot:
     runnnerParams.guiFunction = gui;
     runnnerParams.windowSize = {600, 800};
 
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withMarkdown = true;
     addOnsParams.withImplot = true;
 
-    ImGuiBundle::Run(runnnerParams, addOnsParams);
+    ImmApp::Run(runnnerParams, addOnsParams);
     return 0;
 }

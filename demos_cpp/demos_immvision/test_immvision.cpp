@@ -15,5 +15,5 @@ int main()
         ImGui::PopID();
     };
 
-    ImGuiBundle::Run(gui);
+    ImmApp::Run(gui);
 }

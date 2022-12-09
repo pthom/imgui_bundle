@@ -50,8 +50,8 @@ int main()
 {
     auto gui = make_closure_demo_tex_inspect();
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1000, 1000}};
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;
-    ImGuiBundle::Run(runnerParams, addOnsParams);
+    ImmApp::Run(runnerParams, addOnsParams);
 }
 #endif

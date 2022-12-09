@@ -30,7 +30,7 @@ the FPS will rise and the animation will be smooth again.
 
     };
 
-    ImGuiBundle::Run(
+    ImmApp::Run(
         HelloImGui::SimpleRunnerParams{
             .guiFunction=gui,
             .windowTitle="demo_powersave",

@@ -30,7 +30,7 @@ int main(int, char**)
         compositionGraph.Draw();
     };
 
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
     ax::NodeEditor::Config nodeEditorConfig;
     nodeEditorConfig.SettingsFile = "demo_compose_image.json";
 
@@ -38,7 +38,7 @@ int main(int, char**)
     HelloImGui::SimpleRunnerParams params;
     params.guiFunction = gui;
     params.windowSize = {1600, 1000};
-    ImGuiBundle::Run(params, addOnsParams);
+    ImmApp::Run(params, addOnsParams);
 
     return 0;
 }

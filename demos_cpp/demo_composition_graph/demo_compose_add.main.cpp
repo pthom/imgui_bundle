@@ -75,7 +75,7 @@ int main(int, char**)
         functions_graph.Draw();
     };
 
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
 
     ax::NodeEditor::Config config;
     config.SettingsFile = "add.json";
@@ -86,7 +86,7 @@ int main(int, char**)
     params.guiFunction = gui;
     params.windowSize = {1200, 600};
 
-    ImGuiBundle::Run(params, addOnsParams);
+    ImmApp::Run(params, addOnsParams);
 
     return 0;
 }
