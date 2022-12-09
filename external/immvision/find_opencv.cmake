@@ -179,8 +179,18 @@ macro(immvision_fetch_opencv_from_source)
             # Under windows, OpenCV will not use the static lib unless we set this variable
             set(OpenCV_STATIC ON CACHE BOOL "" FORCE)
         else()
-            set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
+            if (IS_DIRECTORY ${opencv_install_dir}/lib/cmake/opencv4)
+                set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
+            elseif(IS_DIRECTORY ${opencv_install_dir}/lib64/cmake/opencv4)
+                set(OpenCV_DIR ${opencv_install_dir}/lib64/cmake/opencv4)
+            endif()            
         endif()
+        if (NOT EXISTS ${OpenCV_DIR}/OpenCVConfig.cmake)
+            message(FATAL_ERROR "
+            immvision_fetch_opencv_from_source: can't find OpenCvConfig.cmake
+            ")
+        endif()
+
 
         # Since we build a minimalist version of OpenCV,
         # find_package(OpenCV) may fail because these files do not exist
@@ -188,6 +198,9 @@ macro(immvision_fetch_opencv_from_source)
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/liblibprotobuf.a "dummy")
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/libquirc.a "dummy")
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/libade.a "dummy")
+        file(WRITE ${opencv_install_dir}/lib64/opencv4/3rdparty/liblibprotobuf.a "dummy")
+        file(WRITE ${opencv_install_dir}/lib64/opencv4/3rdparty/libquirc.a "dummy")
+        file(WRITE ${opencv_install_dir}/lib64/opencv4/3rdparty/libade.a "dummy")
         if (WIN32)
             file(WRITE ${opencv_install_dir}/x64/vc17/staticlib/libprotobuf.lib "dummy")
             file(WRITE ${opencv_install_dir}/x64/vc17/staticlib/quirc.lib "dummy")
