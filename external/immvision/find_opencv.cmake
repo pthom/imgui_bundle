@@ -2,6 +2,29 @@
 # Get OpenCV package
 ###############################################################################
 
+###############################################################################
+# Note about pip and wheel builds:
+#
+# - opencv-python is the pip package for opencv: when installed it comes with a dll,
+#   or a .so file (cv2.abi3.so)
+#
+# - when building wheels for macos and linux, the env variable
+#  IMGUIBUNDLE_OPENCV_FETCH_SOURCE is set before running pip.
+#  This way, a static minimal version of opencv will be linked into _imgui_bundle.so.
+#  Thus there is no risk of doubly defined functions:
+#     imgui_bundle will search into the linked functions inside _imgui_bundle.so,
+#     and opencv-python will search inside cv2.abi3.so.
+#
+# - when building wheels for windows, the env variable
+#   IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460 is set before running pip.
+#   This way, an official release from OpenCV 4.6.0 for windows will be downloaded.
+#   It includes an "opencv_world.dll" (a dll that groups all the code for all OpenCV modules).
+#   This dll is deployed into imgui_bundle package (under windows)
+#   No warning about doubly defined function was (yet?) observed, although a static link
+#   might be needed in the future.
+###############################################################################
+
+
 macro(immvision_forward_opencv_env_variables)
     # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
     # This is useful when building the pip package for which only env variables are available
@@ -29,6 +52,7 @@ macro(immvision_download_opencv_static_package_win)
     # This is the official release from OpenCV for windows, under the form of a "opencv_world.dll"
     # The zip package we download is just a transcription of the exe provided by OpenCV, with the advantage that
     # it does not require any user click.
+    # Mainly used for wheel builds, but can be used by windows users for their pip build from source
     if ("$ENV{IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460}" OR IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460)
         message("FIND OPENCV use immvision_download_opencv_static_package_win")
 
@@ -52,6 +76,8 @@ endmacro()
 macro(immvision_fetch_opencv_from_source)
     # Will fetch, build and install a very-minimalist OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
     # It is so minimalist that it is only usable within the python bindings!!!
+    # It will contain only opencv_core (core), opencv_imgcodecs (load/save), and opencv_imgproc (affine transforms, etc)
+    # Mainly used for wheel builds.
 
     if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
         message("FIND OPENCV use immvision_fetch_opencv_from_source")
@@ -63,15 +89,19 @@ macro(immvision_fetch_opencv_from_source)
             GIT_TAG 4.6.0
         )
         # It is not possible to build opencv completely via FetchContent_MakeAvailable,
-        # since the opencv include folder is populated only at opencv install
+        # since the opencv include folder is populated only at opencv install!
         FetchContent_Populate(OpenCV_Fetch)
 
-        # So we resort to building OpenCV manually
+        # Neither FetchContent, nor ExternalProject permit to install OpenCV before the generation step.
+        # So we have to build and install OpenCV manually
+        # (Note: it is likely that cmake arch options may need to be transferred to this sub-build)
         set(opencv_src_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-src")
         set(opencv_build_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-build")
         set(opencv_install_dir "${CMAKE_BINARY_DIR}/_deps/opencv_fetch-install")
+        # Build opencv with only opencv_core, opencv_imgproc and opencv_imgcodecs
         set(opencv_cmake_args -DCMAKE_BUILD_TYPE=Release -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_opencv_features2d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_dnn=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_gapi=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_objc=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_python=OFF -DBUILD_opencv_stiching=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_js=OFF)
 
+        # cmake
         execute_process(
             COMMAND ${CMAKE_COMMAND} ${opencv_src_dir} -DCMAKE_INSTALL_PREFIX=${opencv_install_dir} ${opencv_cmake_args}
             WORKING_DIRECTORY ${opencv_build_dir}
@@ -80,7 +110,7 @@ macro(immvision_fetch_opencv_from_source)
         if (NOT ${result} EQUAL "0")
             message(FATAL_ERROR "my_checked_execute_process_check failed during cmake")
         endif()
-
+        # build
         execute_process(
             COMMAND ${CMAKE_COMMAND} --build . --config Release  -j 3
             WORKING_DIRECTORY ${opencv_build_dir}
@@ -89,7 +119,7 @@ macro(immvision_fetch_opencv_from_source)
         if (NOT ${result} EQUAL "0")
             message(FATAL_ERROR "my_checked_execute_process_check failed during build")
         endif()
-
+        # install
         execute_process(
             COMMAND ${CMAKE_COMMAND} --install .
             WORKING_DIRECTORY ${opencv_build_dir}
@@ -101,12 +131,13 @@ macro(immvision_fetch_opencv_from_source)
 
         if (WIN32)
             set(OpenCV_DIR ${opencv_install_dir})
+            # Under windows, OpenCV will not use the static lib unless we set this variable
             set(OpenCV_STATIC ON CACHE BOOL "" FORCE)
         else()
             set(OpenCV_DIR ${opencv_install_dir}/lib/cmake/opencv4)
         endif()
 
-        # Since we build a minimalist version of OpenCV, find_package(OpenCV)),
+        # Since we build a minimalist version of OpenCV,
         # find_package(OpenCV) may fail because these files do not exist
         # We create dummy versions, since we do not use them
         file(WRITE ${opencv_install_dir}/lib/opencv4/3rdparty/liblibprotobuf.a "dummy")
