@@ -39,17 +39,17 @@ class GlassValidatorFontLoader:
     def demo_font(self):
         imgui.text("With default font")
         imgui.text("Here is a font awesome icon " + IconsFontAwesome4.ICON_APPLE)
-        imgui.text("Here is a material design icon " + IconsMaterialDesign.ICON_4K)
+        imgui.text("Here is a material design icon " + IconsMaterialDesign.ICON_ADD_ROAD)
 
         imgui.push_font(self.big_font)
         imgui.text("With big font")
         imgui.text("Here is a font awesome icon " + IconsFontAwesome4.ICON_APPLE)
-        imgui.text("Here is a material design icon " + IconsMaterialDesign.ICON_4K)
+        imgui.text("Here is a material design icon " + IconsMaterialDesign.ICON_3D_ROTATION)
         imgui.pop_font()
 
         imgui.text("With icon font")
         imgui.push_font(self.icon_font)
-        imgui.text(IconsMaterialDesign.ICON_3D_ROTATION)
+        imgui.text(IconsMaterialDesign.ICON_DOUBLE_ARROW)
         imgui.pop_font()
 
 
@@ -89,8 +89,8 @@ class GlassValidatorFontLoader:
         mdi_config.glyph_offset.y=1*self.size_mult
         karla_range = [0x1, 0x131, 0]
         noto_range = [0x1, 0x10663, 0]
-        mdi_range = [0xf0000, 0xf2000, 0]
-        # mdi_range = [IconsMaterialDesign.ICON_MIN, IconsMaterialDesign.ICON_MAX, 0]
+        mdi_range0 = [0xf0000, 0xf2000, 0]
+        mdi_range = [IconsMaterialDesign.ICON_MIN, IconsMaterialDesign.ICON_MAX, 0]
         msgbox_range = [0xf02d7, 0xf02d7, 0xf02fc, 0xf02fc, 0xf11ce, 0xf11ce, 0xf0029, 0xf0029, 0]
         size_18 = 18 * font_scaling_factor * self.size_mult
         size_28 = 28 * font_scaling_factor * self.size_mult
