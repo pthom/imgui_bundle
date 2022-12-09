@@ -6471,41 +6471,6 @@ class ImFontAtlas:
     # Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)
     # NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create UTF-8 string literal using the u8"Hello world" syntax. See FAQ for details.
     # NB: Consider using ImFontGlyphRangesBuilder to build glyph ranges from textual data.
-    # IMGUI_API const ImWchar*    GetGlyphRangesDefault();                    /* original C++ signature */
-    def get_glyph_ranges_default(self) -> ImWchar:
-        """Basic Latin, Extended Latin"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesGreek();                      /* original C++ signature */
-    def get_glyph_ranges_greek(self) -> ImWchar:
-        """Default + Greek and Coptic"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesKorean();                     /* original C++ signature */
-    def get_glyph_ranges_korean(self) -> ImWchar:
-        """Default + Korean characters"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesJapanese();                   /* original C++ signature */
-    def get_glyph_ranges_japanese(self) -> ImWchar:
-        """Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesChineseFull();                /* original C++ signature */
-    def get_glyph_ranges_chinese_full(self) -> ImWchar:
-        """Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesChineseSimplifiedCommon();    /* original C++ signature */
-    def get_glyph_ranges_chinese_simplified_common(self) -> ImWchar:
-        """Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesCyrillic();                   /* original C++ signature */
-    def get_glyph_ranges_cyrillic(self) -> ImWchar:
-        """Default + about 400 Cyrillic characters"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesThai();                       /* original C++ signature */
-    def get_glyph_ranges_thai(self) -> ImWchar:
-        """Default + Thai characters"""
-        pass
-    # IMGUI_API const ImWchar*    GetGlyphRangesVietnamese();                 /* original C++ signature */
-    def get_glyph_ranges_vietnamese(self) -> ImWchar:
-        pass
     # Default + Vietnamese characters
 
     # -------------------------------------------
@@ -6523,6 +6488,51 @@ class ImFontAtlas:
         font_cfg: Optional[ImFontConfig] = None,
         glyph_ranges_as_int_list: Optional[List[ImWchar]] = None,
     ) -> ImFont:
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesDefault()                // Basic Latin, Extended Latin    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesDefault()); }
+    def get_glyph_ranges_default(self) -> List[ImWchar]:
+        """// Basic Latin, Extended Latin"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesGreek()                  // Default + Greek and Coptic    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesGreek()); }
+    def get_glyph_ranges_greek(self) -> List[ImWchar]:
+        """// Default + Greek and Coptic"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesKorean()                 // Default + Korean characters    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesKorean()); }
+    def get_glyph_ranges_korean(self) -> List[ImWchar]:
+        """// Default + Korean characters"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesJapanese()               // Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesJapanese()); }
+    def get_glyph_ranges_japanese(self) -> List[ImWchar]:
+        """// Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseFull()            // Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseFull()); }
+    def get_glyph_ranges_chinese_full(self) -> List[ImWchar]:
+        """// Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseSimplifiedCommon()// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseSimplifiedCommon()); }
+    def get_glyph_ranges_chinese_simplified_common(self) -> List[ImWchar]:
+        """// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesCyrillic()               // Default + about 400 Cyrillic characters    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesCyrillic()); }
+    def get_glyph_ranges_cyrillic(self) -> List[ImWchar]:
+        """// Default + about 400 Cyrillic characters"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesThai()                   // Default + Thai characters    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesThai()); }
+    def get_glyph_ranges_thai(self) -> List[ImWchar]:
+        """// Default + Thai characters"""
+        pass
+    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
+    #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
+    def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
+        """// Default + Vietnamese characters"""
         pass
     # -------------------------------------------
     # [BETA] Custom Rectangles/Glyphs API
