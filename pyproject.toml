@@ -50,7 +50,7 @@ archs = ["x86_64", "arm64"]
 # linux wheels options
 #####################################
 [tool.cibuildwheel.linux]
-build = []
+build = ["cp311-*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
