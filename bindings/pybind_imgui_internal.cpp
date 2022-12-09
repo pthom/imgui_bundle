@@ -240,15 +240,15 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiSelectableFlagsPrivate_>(m, "SelectableFlagsPrivate_", py::arithmetic(), "Extend ImGuiSelectableFlags_")
-        .value("im_gui_selectable_flags_no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
-        .value("im_gui_selectable_flags_select_on_nav", ImGuiSelectableFlags_SelectOnNav, "(WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.")
-        .value("im_gui_selectable_flags_select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
-        .value("im_gui_selectable_flags_select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
-        .value("im_gui_selectable_flags_span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
-        .value("im_gui_selectable_flags_draw_hovered_when_held", ImGuiSelectableFlags_DrawHoveredWhenHeld, "Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.")
-        .value("im_gui_selectable_flags_set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
-        .value("im_gui_selectable_flags_no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5")
-        .value("im_gui_selectable_flags_no_set_key_owner", ImGuiSelectableFlags_NoSetKeyOwner, "Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)");
+        .value("no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
+        .value("select_on_nav", ImGuiSelectableFlags_SelectOnNav, "(WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.")
+        .value("select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
+        .value("select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
+        .value("span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
+        .value("draw_hovered_when_held", ImGuiSelectableFlags_DrawHoveredWhenHeld, "Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.")
+        .value("set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
+        .value("no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5")
+        .value("no_set_key_owner", ImGuiSelectableFlags_NoSetKeyOwner, "Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)");
 
 
     py::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", py::arithmetic(), "Extend ImGuiTreeNodeFlags_")

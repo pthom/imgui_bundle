@@ -641,37 +641,37 @@ class SelectableFlagsPrivate_(enum.Enum):
 
     # NB: need to be in sync with last value of ImGuiSelectableFlags_
     # ImGuiSelectableFlags_NoHoldingActiveID      = 1 << 20,    /* original C++ signature */
-    im_gui_selectable_flags_no_holding_active_id = enum.auto()  # (= 1 << 20)
+    no_holding_active_id = enum.auto()  # (= 1 << 20)
     # ImGuiSelectableFlags_SelectOnNav            = 1 << 21,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_nav = (
+    select_on_nav = (
         enum.auto()
     )  # (= 1 << 21)  # (WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.
     # ImGuiSelectableFlags_SelectOnClick          = 1 << 22,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_click = (
+    select_on_click = (
         enum.auto()
     )  # (= 1 << 22)  # Override button behavior to react on Click (default is Click+Release)
     # ImGuiSelectableFlags_SelectOnRelease        = 1 << 23,      /* original C++ signature */
-    im_gui_selectable_flags_select_on_release = (
+    select_on_release = (
         enum.auto()
     )  # (= 1 << 23)  # Override button behavior to react on Release (default is Click+Release)
     # ImGuiSelectableFlags_SpanAvailWidth         = 1 << 24,      /* original C++ signature */
-    im_gui_selectable_flags_span_avail_width = (
+    span_avail_width = (
         enum.auto()
     )  # (= 1 << 24)  # Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)
     # ImGuiSelectableFlags_DrawHoveredWhenHeld    = 1 << 25,      /* original C++ signature */
-    im_gui_selectable_flags_draw_hovered_when_held = (
+    draw_hovered_when_held = (
         enum.auto()
     )  # (= 1 << 25)  # Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.
     # ImGuiSelectableFlags_SetNavIdOnHover        = 1 << 26,      /* original C++ signature */
-    im_gui_selectable_flags_set_nav_id_on_hover = (
+    set_nav_id_on_hover = (
         enum.auto()
     )  # (= 1 << 26)  # Set Nav/Focus ID on mouse hover (used by MenuItem)
     # ImGuiSelectableFlags_NoPadWithHalfSpacing   = 1 << 27,      /* original C++ signature */
-    im_gui_selectable_flags_no_pad_with_half_spacing = (
+    no_pad_with_half_spacing = (
         enum.auto()
     )  # (= 1 << 27)  # Disable padding each side with ItemSpacing * 0.5
     # ImGuiSelectableFlags_NoSetKeyOwner          = 1 << 28,      /* original C++ signature */
-    im_gui_selectable_flags_no_set_key_owner = (
+    no_set_key_owner = (
         enum.auto()
     )  # (= 1 << 28)  # Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
 
