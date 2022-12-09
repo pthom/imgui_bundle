@@ -153,3 +153,4 @@ MANIFEST.in
 /_icons_test/
 /*.json
 poub/
+/wheelhouse/
