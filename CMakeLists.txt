@@ -75,6 +75,7 @@ file(GLOB imgui_bundle_sources src/imgui_bundle/*.cpp src/imgui_bundle/*.h)
 add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
 
+
 #########################################################################
 # Build external libraries
 #########################################################################
@@ -84,6 +85,22 @@ include(cmake/add_hello_imgui.cmake)
 add_hello_imgui()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     target_compile_definitions(imgui PUBLIC IMGUI_BUNDLE_BUILD_PYTHON)
+endif()
+# Build immvision
+if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
+    add_subdirectory(external/immvision)
+    if (IMGUI_BUNDLE_WITH_IMMVISION)
+        target_link_libraries(imgui_bundle PUBLIC immvision)
+    endif()
+endif()
+# Build immapp (Immediate App lib, internal to ImGui Bundle)
+add_simple_external_library_with_sources(immapp immapp)
+target_link_libraries(immapp PUBLIC hello_imgui)
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    target_compile_definitions(immapp PRIVATE IMGUI_BUNDLE_BUILD_PYTHON)
+endif()
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    target_compile_definitions(immapp PRIVATE IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 # Build implot
 add_simple_external_library_with_sources(implot implot)
@@ -125,13 +142,6 @@ target_sources(imgui_md PRIVATE
     )
 target_include_directories(imgui_md PUBLIC external/imgui_md/md4c/src)
 target_link_libraries(imgui_md PUBLIC hello_imgui)
-# Build immvision
-if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
-    add_subdirectory(external/immvision)
-    if (IMGUI_BUNDLE_WITH_IMMVISION)
-        target_link_libraries(imgui_bundle PUBLIC immvision)
-    endif()
-endif()
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
 add_simple_external_library_with_sources(imguizmo_pure ImGuizmo/ImGuizmoPure)

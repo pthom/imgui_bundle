@@ -1,5 +1,5 @@
 #include "functions_composition_graph/functions_composition_graph.h"
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 
 

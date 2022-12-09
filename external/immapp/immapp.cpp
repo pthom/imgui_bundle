@@ -1,34 +1,20 @@
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp.h"
 
 #include "implot/implot.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "ImFileDialogTextureHelper.h"
 
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
-#include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
 #include "hello_imgui/hello_imgui.h"
 
 #include <chrono>
 
+
 namespace HelloImGui
 {
     // Private API, not mentioned in headers!
     std::string GlslVersion();
-}
-
-
-namespace ImGuiTexInspect
-{
-    Texture LoadTexture(const char * path)
-    {
-        auto textureId = HelloImGui::ImTextureIdFromAsset(path);
-        Texture r;
-        r.size = ImVec2(512.f, 512.f); // This function is only by used the demo, which uses a 51x512 image
-        r.texture = textureId;
-        return r;
-    }
-
 }
 
 

@@ -2,7 +2,7 @@
 // See equivalent python program: bindings/imgui_bundle/demos/demos_tex_inspect/demo_tex_inspect.py
 
 #include "hello_imgui/hello_imgui_assets.h"
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 

@@ -42,6 +42,7 @@ void use_venv_python()
     std::cout << "pybind_native_debug: THIS_DIR=" << THIS_DIR << "\n";
     std::cout << "    using python: " << python_program << "\n";
 
+
     std::wstring python_program_wstring(python_program.begin(), python_program.end());
     Py_SetProgramName(python_program_wstring.c_str());
 }

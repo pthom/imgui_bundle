@@ -79,7 +79,7 @@ void py_init_module_imgui_bundle(py::module& m)
 
 
 #include "hello_imgui/hello_imgui.h"
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 
 
