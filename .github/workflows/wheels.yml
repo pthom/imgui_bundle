@@ -1,5 +1,7 @@
 name: Wheels
 
+# Note: the cibuildwheel options are inside pyproject.toml
+
 on:
   workflow_dispatch:
   pull_request:
@@ -10,17 +12,6 @@ on:
     branches:
       - master
       - main
-
-env:
-  CIBW_TEST_COMMAND: pytest {project}/tests
-  CIBW_TEST_EXTRAS: test
-  CIBW_TEST_REQUIRES: pytest
-  # Skip CPython 3.6, CPython 3.7, PyPy 3.7 (we start at 3.8, otherwise the build is too long on Github's CI and may be cancelled)
-  CIBW_SKIP: cp36-* cp37-* pp37-*
-  # skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
-  # skip testing on python 3.11 (numpy not yet available on python 3.11)
-  CIBW_TEST_SKIP: pp3* cp311*
-  MACOSX_DEPLOYMENT_TARGET: "11.0"
 
 jobs:
   build_sdist:

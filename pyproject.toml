@@ -16,9 +16,30 @@ build-backend = "setuptools.build_meta"
 profile = "black"
 
 
-#
-# Install glfw dev packages on manylinux: https://www.glfw.org/docs/3.3/compile.html#compile_deps
 
+[tool.cibuildwheel]
+# Target python versions:
+# Skip CPython 3.6, CPython 3.7, PyPy 3.7
+# (we start at 3.8, otherwise the build is too long on Github's CI and may be cancelled)
+skip = ["cp36-*", "cp37-*", "pp37-*"]
+
+# Tests
+test-requires = "pytest"
+test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
+# skip testing pypy wheels on github CI (it works locally, but fails on github CI for a yet unknown reason)
+# skip testing on python 3.11 (numpy not yet available on python 3.11)
+test-skip = ["pp3*", "cp311*"]
+# Will cause the wheel to be installed with `pip install <wheel_file>[test]`
+#test-extras = ["test"]
+
+# Environment variables
+[tool.cibuildwheel.macos]
+environment = { MACOSX_DEPLOYMENT_TARGET="11.0" }
+
+
+# Install glfw dev packages on manylinux:
+# --------------------------------------
+# https://www.glfw.org/docs/3.3/compile.html#compile_deps
 # https://iscinumpy.dev/post/cibuildwheel-2-2-0/
 # cibuildwheel has added a new platform: musllinux
 # Remember, the manylinux1 image has been in maintenance mode, has no support for Python 3.10,
@@ -31,7 +52,7 @@ profile = "black"
 #     => apt install xorg-dev
 # * musllinux_1_1 MUSL based distributions of Linux (like Alpine). uses apk
 [tool.cibuildwheel.linux]
-before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel opencv opencv-devel"
+before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
-before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev opencv"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
