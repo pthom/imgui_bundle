@@ -51,10 +51,7 @@ void py_init_module_imgui_main(py::module& m)
     m.attr("FLT_MIN") = (float)FLT_MIN;
     m.attr("FLT_MAX") = (float)FLT_MAX;
 
-    m.def("set_io_ini_filename", PatchImGui::set_imgui_io_filename);
-    m.def("set_io_log_filename", PatchImGui::set_imgui_log_filename);
     m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
-
     m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
 
@@ -3311,6 +3308,10 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("backend_using_legacy_nav_input_array", &ImGuiIO::BackendUsingLegacyNavInputArray, "0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly")
         .def_readwrite("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")
         .def(py::init<>())
+        .def("set_ini_filename",
+            &ImGuiIO::SetIniFilename, py::arg("filename"))
+        .def("set_log_filename",
+            &ImGuiIO::SetLogFilename, py::arg("filename"))
         ;
 
 

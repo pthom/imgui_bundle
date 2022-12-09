@@ -5251,6 +5251,13 @@ class IO:
     # IMGUI_API   ImGuiIO();    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # [ADAPT_IMGUI_BUNDLE]
+    # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
+    def set_ini_filename(self, filename: str) -> None:
+        pass
+    # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
+    def set_log_filename(self, filename: str) -> None:
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures

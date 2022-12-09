@@ -10,6 +10,4 @@
 
 namespace PatchImGui
 {
-    void set_imgui_io_filename(const std::string& filename);
-    void set_imgui_log_filename(const std::string& filename);
 }
