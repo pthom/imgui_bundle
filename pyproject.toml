@@ -20,6 +20,9 @@ profile = "black"
 [tool.cibuildwheel]
 build-verbosity = 1
 
+# Target python versions:
+build = ["cp37-*", "cp38-*", "cp39-*", "cp310-*", "cp311-*"]
+
 # Tests
 test-requires = "pytest"
 test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
@@ -29,8 +32,6 @@ test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package
 # macos wheels options
 #####################################
 [tool.cibuildwheel.macos]
-# Target python versions:
-build = ["cp310-*", "cp311-*"]
 # Skip trying to test arm64 builds on Intel Macs
 # test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 #
@@ -50,7 +51,6 @@ archs = ["x86_64", "arm64"]
 # linux wheels options
 #####################################
 [tool.cibuildwheel.linux]
-build = ["cp310-*", "cp311-*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
@@ -78,7 +78,6 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 # windows wheels options
 #####################################
 [tool.cibuildwheel.windows]
-build = ["cp310-*", "cp311-*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
 environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
