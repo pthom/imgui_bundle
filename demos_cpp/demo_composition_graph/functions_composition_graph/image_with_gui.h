@@ -1,8 +1,8 @@
 #pragma once
 #include "functions_composition_graph.h"
 #include "immvision/immvision.h"
+#include "immapp/utils.h"
 #include "ImFileDialog/ImFileDialog.h"
-#include <fplus/fplus.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -13,18 +13,6 @@
 #include "cv_color_type.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
-inline void SuspendNodeEditorCanvas()
-{
-    auto context  = ax::NodeEditor::GetCurrentEditor();
-    auto context_cast = (ax::NodeEditor::Detail::EditorContext *)context;
-    context_cast->Suspend();
-}
-inline void ResumeNodeEditorCanvas()
-{
-    auto context  = ax::NodeEditor::GetCurrentEditor();
-    auto context_cast = (ax::NodeEditor::Detail::EditorContext *)context;
-    context_cast->Resume();
-}
 
 
 namespace VisualProg
@@ -90,7 +78,7 @@ namespace VisualProg
                 );
             }
 
-            SuspendNodeEditorCanvas();
+            ImmApp::SuspendNodeEditorCanvas();
             if (ifd::FileDialog::Instance().IsDone("ImageOpenDialog"))
             {
                 if (ifd::FileDialog::Instance().HasResult())
@@ -102,7 +90,7 @@ namespace VisualProg
                 }
                 ifd::FileDialog::Instance().Close();
             }
-            ResumeNodeEditorCanvas();
+            ImmApp::ResumeNodeEditorCanvas();
 
             return result;
         }

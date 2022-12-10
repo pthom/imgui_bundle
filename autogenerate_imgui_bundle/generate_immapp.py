@@ -23,7 +23,8 @@ def autogenerate_immapp():
     options.srcmlcpp_options.ignored_warnings.append("Block elements of type decl_stmt are not supported in python conversion")
 
     generator = litgen.LitgenGenerator(options)
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/utils.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
