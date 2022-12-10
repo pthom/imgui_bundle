@@ -184,3 +184,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
 else()
     message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: OFF")
 endif()
+
+if (MSVC)
+    hello_imgui_msvc_sort_targets_by_folder(${CMAKE_CURRENT_LIST_DIR})
+endif()

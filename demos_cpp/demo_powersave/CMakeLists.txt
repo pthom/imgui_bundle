@@ -1,1 +1,1 @@
-imgui_bundle_add_app(demo_powersave demo_powersave.main.cpp)
+add_demo_cpp(demo_powersave demo_powersave.main.cpp)

@@ -1,1 +1,1 @@
-imgui_bundle_add_app(demo_texteditor demo_texteditor.main.cpp)
+add_demo_cpp(demo_texteditor demo_texteditor.main.cpp)
