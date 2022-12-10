@@ -9,17 +9,9 @@ endif()
 add_library(immapp STATIC ${sources})
 
 target_include_directories(immapp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
-target_link_libraries(immapp
-    PUBLIC
-    hello_imgui
-    immvision
-)
+target_link_libraries(immapp PUBLIC hello_imgui)
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    target_link_libraries(immapp PUBLIC immvision)
+endif()
 target_link_libraries(imgui_bundle PUBLIC immapp)
 hello_imgui_msvc_target_group_sources(immapp)
-
-#if (IMGUI_BUNDLE_BUILD_PYTHON)
-#    target_compile_definitions(immapp PRIVATE IMGUI_BUNDLE_BUILD_PYTHON)
-#endif()
-#if (IMGUI_BUNDLE_WITH_IMMVISION)
-#    target_compile_definitions(immapp PRIVATE IMGUI_BUNDLE_WITH_IMMVISION)
-#endif()
