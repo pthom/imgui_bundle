@@ -305,6 +305,7 @@ StoragePair = Any
 # Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
 #
 # [ADAPT_IMGUI_BUNDLE]
+# [/ADAPT_IMGUI_BUNDLE]
 
 #
 #
@@ -5337,6 +5338,14 @@ class TableColumnSortSpecs:
 
     # ImGuiTableColumnSortSpecs() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # [ADAPT_IMGUI_BUNDLE]
+    # inline IMGUI_API ImGuiSortDirection GetSortDirection() { return SortDirection; }    /* original C++ signature */
+    def get_sort_direction(self) -> SortDirection:
+        pass
+    # inline IMGUI_API void SetSortDirection(ImGuiSortDirection direction) { SortDirection = direction; }    /* original C++ signature */
+    def set_sort_direction(self, direction: SortDirection) -> None:
+        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
 
 class TableSortSpecs:

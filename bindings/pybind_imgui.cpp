@@ -3399,6 +3399,12 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")
         .def_readwrite("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")
         .def(py::init<>())
+        .def("get_sort_direction",
+            &ImGuiTableColumnSortSpecs::GetSortDirection)
+        .def("set_sort_direction",
+            &ImGuiTableColumnSortSpecs::SetSortDirection,
+            py::arg("direction"),
+            "[/ADAPT_IMGUI_BUNDLE]")
         ;
 
 
