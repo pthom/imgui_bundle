@@ -144,16 +144,16 @@ namespace VisualProg
             if (conversion_code && conversion_code_inv)
             {
                 ColorConversion conversionDirect {
-                    .Name = ColorTypeName(colorType) + "=>" + ColorTypeName(otherColorType),
-                    .SrcColor = colorType,
-                    .DstColor = otherColorType,
-                    .ConversionCode = conversion_code.value()
+                    /* .Name = */ ColorTypeName(colorType) + "=>" + ColorTypeName(otherColorType),
+                    /* .SrcColor = */ colorType,
+                    /* .DstColor = */ otherColorType,
+                    /* .ConversionCode = */ conversion_code.value()
                 };
                 ColorConversion conversionInv {
-                    .Name = ColorTypeName(otherColorType) + "=>" + ColorTypeName(colorType),
-                    .SrcColor = otherColorType,
-                    .DstColor = colorType,
-                    .ConversionCode = conversion_code_inv.value()
+                    /* .Name = */ ColorTypeName(otherColorType) + "=>" + ColorTypeName(colorType),
+                    /* .SrcColor = */ otherColorType,
+                    /* .DstColor = */ colorType,
+                    /* .ConversionCode = */ conversion_code_inv.value()
                 };
 
                 ColorConversionPair pair {

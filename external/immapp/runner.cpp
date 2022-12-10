@@ -8,6 +8,7 @@
 #include "hello_imgui/hello_imgui.h"
 
 #include <chrono>
+#include <cassert>
 
 
 // Private API used by ImGuiTexInspect (not mentioned in headers!)
