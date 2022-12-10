@@ -74,6 +74,7 @@ endif()
 file(GLOB imgui_bundle_sources src/imgui_bundle/*.cpp src/imgui_bundle/*.h)
 add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
+hello_imgui_msvc_target_group_sources(imgui_bundle)
 
 
 #########################################################################

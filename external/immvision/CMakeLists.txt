@@ -15,7 +15,4 @@ endif()
 
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_subdirectory(immvision)
-    if (MSVC)
-        hello_imgui_msvc_target_group_sources(immvision)
-    endif()
 endif()

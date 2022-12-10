@@ -11,6 +11,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION OR IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         target_link_libraries(imgui_bundle PUBLIC immvision)
+        hello_imgui_msvc_target_group_sources(immvision)
     endif()
 endif()
 # Build immapp (Immediate App lib, internal to ImGui Bundle)
@@ -46,6 +47,7 @@ target_sources(im_file_dialog  PRIVATE
     )
 target_include_directories(im_file_dialog PRIVATE hello_imgui/src/hello_imgui/internal)
 target_link_libraries(im_file_dialog PRIVATE hello_imgui)
+hello_imgui_msvc_target_group_sources(im_file_dialog)
 # Build imspinner
 add_simple_external_library_with_sources(imspinner imspinner)
 # Build imgui_toggle
@@ -62,6 +64,7 @@ target_sources(imgui_md PRIVATE
     )
 target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
 target_link_libraries(imgui_md PUBLIC hello_imgui)
+hello_imgui_msvc_target_group_sources(imgui_md)
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
 add_simple_external_library_with_sources(imguizmo_pure ImGuizmo/ImGuizmoPure)
