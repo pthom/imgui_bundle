@@ -115,9 +115,6 @@ def em_size() -> float:
     EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).
     """
     pass
-
-def current_node_editor_context() -> NodeEditorContext:
-    pass
 ####################    </generated_from:runner.h>    ####################
 
 
@@ -126,6 +123,15 @@ def current_node_editor_context() -> NodeEditorContext:
 
 def clock_seconds() -> float:
     """Chronometer in seconds"""
+    pass
+
+def current_node_editor_context() -> NodeEditorContext:
+    pass
+
+def suspend_node_editor_canvas() -> None:
+    pass
+
+def resume_node_editor_canvas() -> None:
     pass
 ####################    </generated_from:utils.h>    ####################
 
