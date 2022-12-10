@@ -1522,14 +1522,23 @@ void py_init_module_imgui_main(py::module& m)
         "when 'p_visible != None': if '*p_visible==True' display an additional small close button on upper right of the header which will set the bool to False when clicked, if '*p_visible==False' don't display the header.");
 
     m.def("set_next_item_open",
-        ImGui::SetNextItemOpen,
-        py::arg("is_open"), py::arg("cond") = 0,
-        "set next TreeNode/CollapsingHeader open state.");
+        ImGui::SetNextItemOpen, py::arg("is_open"), py::arg("cond") = 0);
 
     m.def("selectable",
-        ImGui::Selectable,
-        py::arg("label"), py::arg("selected") = false, py::arg("flags") = 0, py::arg("size") = ImVec2(0, 0),
-        " Widgets: Selectables\n - A selectable highlights when hovered, and can display another color when selected.\n - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.");
+        [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const ImVec2 & size = ImVec2(0, 0)) -> std::tuple<bool, bool>
+        {
+            auto Selectable_adapt_modifiable_immutable_to_return = [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const ImVec2 & size = ImVec2(0, 0)) -> std::tuple<bool, bool>
+            {
+                bool * p_selected_adapt_modifiable = & p_selected;
+
+                bool r = ImGui::Selectable(label, p_selected_adapt_modifiable, flags, size);
+                return std::make_tuple(r, p_selected);
+            };
+
+            return Selectable_adapt_modifiable_immutable_to_return(label, p_selected, flags, size);
+        },
+        py::arg("label"), py::arg("p_selected"), py::arg("flags") = 0, py::arg("size") = ImVec2(0, 0),
+        "\"bool* p_selected\" point to the selection state (read-write), as a convenient helper.");
 
     m.def("begin_list_box",
         ImGui::BeginListBox,

@@ -1780,23 +1780,23 @@ def collapsing_header(
 
 # IMGUI_API void          SetNextItemOpen(bool is_open, ImGuiCond cond = 0);                      /* original C++ signature */
 def set_next_item_open(is_open: bool, cond: Cond = 0) -> None:
-    """set next TreeNode/CollapsingHeader open state."""
     pass
 
-# IMGUI_API bool          Selectable(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
+# set next TreeNode/CollapsingHeader open state.
+
+# [ADAPT_IMGUI_BUNDLE]
+# Widgets: Selectables
+# - A selectable highlights when hovered, and can display another color when selected.
+# - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
+# IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
 def selectable(
     label: str,
-    selected: bool = False,
+    p_selected: bool,
     flags: SelectableFlags = 0,
     size: ImVec2 = ImVec2(0, 0),
-) -> bool:
-    """Widgets: Selectables
-    - A selectable highlights when hovered, and can display another color when selected.
-    - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
-    """
+) -> Tuple[bool, bool]:
+    """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
     pass
-
-# "bool selected" carry the selection state (read-only). Selectable() is clicked is returns True so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height
 
 # Widgets: List Boxes
 # - This is essentially a thin wrapper to using BeginChild/EndChild with some stylistic changes.
