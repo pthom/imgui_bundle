@@ -1798,6 +1798,8 @@ def selectable(
     """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
     pass
 
+# [/ADAPT_IMGUI_BUNDLE]
+
 # Widgets: List Boxes
 # - This is essentially a thin wrapper to using BeginChild/EndChild with some stylistic changes.
 # - The BeginListBox()/EndListBox() api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() or any items.
@@ -1909,6 +1911,8 @@ def menu_item(
 ) -> Tuple[bool, bool]:
     """return True when activated + toggle (*p_selected) if p_selected != None"""
     pass
+
+# [/ADAPT_IMGUI_BUNDLE]
 
 # Tooltips
 # - Tooltip are windows following the mouse. They do not take focus away.
@@ -5178,11 +5182,13 @@ class IO:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
+
     # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
     def set_ini_filename(self, filename: str) -> None:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
+        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
 
 # -----------------------------------------------------------------------------
@@ -5351,8 +5357,10 @@ class TableSortSpecs:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
+
     # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) { IM_ASSERT((idx >= 0) && (idx < SpecsCount)); return Specs[idx];}    /* original C++ signature */
     def get_specs(self, idx: int) -> TableColumnSortSpecs:
+        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
 
 # -----------------------------------------------------------------------------
@@ -6413,6 +6421,7 @@ class ImFontAtlas:
     # -------------------------------------------
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
+
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
@@ -6469,7 +6478,7 @@ class ImFontAtlas:
     # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
     #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
     def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
-        """// Default + Vietnamese characters"""
+        """[/ADAPT_IMGUI_BUNDLE] - // Default + Vietnamese characters"""
         pass
     # -------------------------------------------
     # [BETA] Custom Rectangles/Glyphs API
@@ -6788,6 +6797,8 @@ class Viewport:
     # ImGuiViewport()     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # Helpers
 
 # -----------------------------------------------------------------------------

@@ -3314,7 +3314,9 @@ void py_init_module_imgui_main(py::module& m)
         .def("set_ini_filename",
             &ImGuiIO::SetIniFilename, py::arg("filename"))
         .def("set_log_filename",
-            &ImGuiIO::SetLogFilename, py::arg("filename"))
+            &ImGuiIO::SetLogFilename,
+            py::arg("filename"),
+            "[/ADAPT_IMGUI_BUNDLE]")
         ;
 
 
@@ -3410,6 +3412,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("get_specs",
             &ImGuiTableSortSpecs::GetSpecs,
             py::arg("idx"),
+            "[/ADAPT_IMGUI_BUNDLE]",
             pybind11::return_value_policy::reference)
         ;
 
@@ -3952,7 +3955,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("get_glyph_ranges_thai",
             &ImFontAtlas::_GetGlyphRangesThai, "// Default + Thai characters")
         .def("get_glyph_ranges_vietnamese",
-            &ImFontAtlas::_GetGlyphRangesVietnamese, "// Default + Vietnamese characters")
+            &ImFontAtlas::_GetGlyphRangesVietnamese, "[/ADAPT_IMGUI_BUNDLE] - // Default + Vietnamese characters")
         .def("add_custom_rect_regular",
             &ImFontAtlas::AddCustomRectRegular, py::arg("width"), py::arg("height"))
         .def("add_custom_rect_font_glyph",
