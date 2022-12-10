@@ -32,13 +32,15 @@ test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package
 # macos wheels options
 #####################################
 [tool.cibuildwheel.macos]
+# identify whether this is a M1 or intel
+before-build = "uname -a"
 # Skip trying to test arm64 builds on Intel Macs
 # test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 #
 # Skip trying to test x86_64 builds on Mac M1
 # test-skip = ["*-macosx_x86_64 *-macosx_universal2:x86_64"]
-test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
-
+# test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
+test-skip = ["*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
