@@ -1,9 +1,8 @@
-#include "functions_composition_graph/functions_composition_graph.h"
-#include "functions_composition_graph/image_with_gui.h"
+#include "immapp/visual_prog/computer_vision/image_with_gui.h"
 #include "immapp/immapp.h"
-#include "imgui-node-editor/imgui_node_editor.h"
 
 #include <opencv2/imgcodecs.hpp>
+
 
 int main(int, char**)
 {

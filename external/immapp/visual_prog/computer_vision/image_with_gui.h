@@ -1,5 +1,5 @@
 #pragma once
-#include "functions_composition_graph.h"
+#include "immapp/visual_prog/functions_composition.h"
 #include "immvision/immvision.h"
 #include "immapp/utils.h"
 #include "ImFileDialog/ImFileDialog.h"

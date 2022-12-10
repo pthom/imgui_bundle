@@ -1,6 +1,5 @@
-#include "functions_composition_graph/functions_composition_graph.h"
+#include "immapp/visual_prog/functions_composition.h"
 #include "immapp/immapp.h"
-#include "imgui-node-editor/imgui_node_editor.h"
 
 
 using namespace VisualProg;
