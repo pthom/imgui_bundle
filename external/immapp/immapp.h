@@ -92,15 +92,9 @@ namespace ImmApp
 
     NodeEditorContext* CurrentNodeEditorContext();
 
-    // Visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
-    // In order to scale your widgets properly on all platforms, use multiples of this size.
-    // (on MacOS with retina FontGlobalScale can be equal to 2)
-    float VisibleFontSize();
-
-    // EmSize returns the visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
-    // In order to scale your widgets properly on all platforms, use multiples of this size.
-    // (on MacOS with retina FontGlobalScale can be equal to 2)
-    // (EmSize is an alias for VisibleFontSize)
+    // __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+    // widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    // EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).
     float EmSize();
 
 } // namespace ImmApp

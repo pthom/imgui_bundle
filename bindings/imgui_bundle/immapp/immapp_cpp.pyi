@@ -118,18 +118,10 @@ def clock_seconds() -> float:
 def current_node_editor_context() -> NodeEditorContext:
     pass
 
-def visible_font_size() -> float:
-    """Visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
-    In order to scale your widgets properly on all platforms, use multiples of this size.
-    (on MacOS with retina FontGlobalScale can be equal to 2)
-    """
-    pass
-
 def em_size() -> float:
-    """EmSize returns the visible font size, i.e ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale
-    In order to scale your widgets properly on all platforms, use multiples of this size.
-    (on MacOS with retina FontGlobalScale can be equal to 2)
-    (EmSize is an alias for VisibleFontSize)
+    """__HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+    widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).
     """
     pass
 ####################    </generated_from:immapp.h>    ####################

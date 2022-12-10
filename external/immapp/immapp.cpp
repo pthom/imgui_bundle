@@ -194,16 +194,9 @@ namespace ImmApp
         return watch.elapsed();
     }
 
-    float VisibleFontSize()
-    {
-        IM_ASSERT(GImGui != NULL); // Can only be called after ImGui context was created!
-        float r = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale;
-        return r;
-    }
-
     float EmSize()
     {
-        return VisibleFontSize();
+        return HelloImGui::EmSize();
     }
 
 

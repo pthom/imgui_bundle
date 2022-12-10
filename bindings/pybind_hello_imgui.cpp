@@ -586,6 +586,9 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
 
+    m.def("em_size",
+        HelloImGui::EmSize, " __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).");
+
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");
         pyNsImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",
