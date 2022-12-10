@@ -1896,19 +1896,11 @@ def begin_menu(label: str, enabled: bool = True) -> bool:
     """create a sub-menu entry. only call EndMenu() if this returns True!"""
     pass
 
-# IMGUI_API void          EndMenu();                                                              /* original C++ signature */
+# [ADAPT_IMGUI_BUNDLE]
+
+# IMGUI_API void          EndMenu();    /* original C++ signature */
 def end_menu() -> None:
     """only call EndMenu() if BeginMenu() returns True!"""
-    pass
-
-# IMGUI_API bool          MenuItem(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true);      /* original C++ signature */
-def menu_item(
-    label: str,
-    shortcut: Optional[str] = None,
-    selected: bool = False,
-    enabled: bool = True,
-) -> bool:
-    """return True when activated."""
     pass
 
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */

@@ -1663,11 +1663,6 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::EndMenu, "only call EndMenu() if BeginMenu() returns True!");
 
     m.def("menu_item",
-        py::overload_cast<const char *, const char *, bool, bool>(ImGui::MenuItem),
-        py::arg("label"), py::arg("shortcut") = py::none(), py::arg("selected") = false, py::arg("enabled") = true,
-        "return True when activated.");
-
-    m.def("menu_item",
         [](const char * label, const char * shortcut, bool p_selected, bool enabled = true) -> std::tuple<bool, bool>
         {
             auto MenuItem_adapt_modifiable_immutable_to_return = [](const char * label, const char * shortcut, bool p_selected, bool enabled = true) -> std::tuple<bool, bool>
