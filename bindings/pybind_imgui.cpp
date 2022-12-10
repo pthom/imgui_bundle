@@ -37,6 +37,22 @@ pybind11::array font_atlas_get_tex_data_as_rgba32(ImFontAtlas* self)
     return r;
 };
 
+// these are internal functions that should only be called with a tuple, list or array argument
+ImVec2 cast_to_imvec2(py::handle obj)
+{
+    if (len(obj) != 2)
+        throw std::invalid_argument("Python tuple/list/array to imgui.ImVec2: size should be 2!");
+    auto floats = obj.cast<std::vector<float>>();
+    return ImVec2(floats[0], floats[1]);
+}
+ImVec4 cast_to_imvec4(py::handle obj)
+{
+    if (len(obj) != 4)
+        throw std::invalid_argument("Python tuple/list/array to imgui.ImVec4: size should be 4!");
+    auto floats = obj.cast<std::vector<float>>();
+    return ImVec4(floats[0], floats[1], floats[2], floats[3]);
+}
+
 
 void py_init_module_imgui_main(py::module& m)
 {
@@ -4271,6 +4287,25 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "(%f, %f)", self.x, self.y);
         return r;
     });
+    pyClassImVec2.def(py::init([](py::tuple t) {
+        return cast_to_imvec2(t);
+    }), py::arg("tuple"));
+    pyClassImVec2.def(py::init([](py::list l) {
+	return cast_to_imvec2(l);
+    }), py::arg("list"));
+    pyClassImVec2.def(py::init([](py::array a) {
+	return cast_to_imvec2(a);
+    }), py::arg("array"));
+ 
+    py::implicitly_convertible<py::tuple, ImVec2>();
+    py::implicitly_convertible<py::list, ImVec2>();
+    py::implicitly_convertible<py::array, ImVec2>();
+ 
+    pyClassImVec2.def(py::init([](ImVec2 imv) {
+        return ImVec2(imv.x, imv.y);
+    }), py::arg("imvec2"));
+
+
     pyClassImVec4.def("__str__", [](const ImVec4& self) -> std::string {
         char r[100];
         snprintf(r, 100, "(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
@@ -4281,4 +4316,21 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
         return r;
     });
+    pyClassImVec4.def(py::init([](py::tuple t) {
+        return cast_to_imvec4(t);
+    }), py::arg("tuple"));
+    pyClassImVec4.def(py::init([](py::list l) {
+	return cast_to_imvec4(l);
+    }), py::arg("list"));
+    pyClassImVec4.def(py::init([](py::array a) {
+	return cast_to_imvec4(a);
+    }), py::arg("array"));
+ 
+    py::implicitly_convertible<py::tuple, ImVec4>();
+    py::implicitly_convertible<py::list, ImVec4>();
+    py::implicitly_convertible<py::array, ImVec4>();
+ 
+    pyClassImVec4.def(py::init([](ImVec4 imv) {
+        return ImVec4(imv.x, imv.y, imv.z, imv.w);
+    }), py::arg("imvec4"));
 }
