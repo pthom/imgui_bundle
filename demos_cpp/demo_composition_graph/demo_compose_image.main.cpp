@@ -1,7 +1,9 @@
 #include "immapp/visual_prog/computer_vision/image_with_gui.h"
+#include "immapp/visual_prog/computer_vision/lut.h"
 #include "immapp/immapp.h"
 
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 
 int main(int, char**)
