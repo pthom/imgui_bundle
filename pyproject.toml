@@ -53,6 +53,7 @@ archs = ["x86_64", "arm64"]
 # linux wheels options
 #####################################
 [tool.cibuildwheel.linux]
+skip = ["*i686"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
@@ -80,6 +81,8 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 # windows wheels options
 #####################################
 [tool.cibuildwheel.windows]
+skip = ["*win32"]
+
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
 environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
