@@ -89,6 +89,12 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float>(),
             py::arg("_x"), py::arg("_y"))
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("as_array",
+            &ImVec2::as_array, "Returns a copy of this ImVec2 as an array")
+        // #endif
+        //
         ;
 
 
@@ -102,6 +108,12 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float, float, float>(),
             py::arg("_x"), py::arg("_y"), py::arg("_z"), py::arg("_w"))
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("as_array",
+            &ImVec4::as_array, "Returns a copy of this ImVec4 as an array")
+        // #endif
+        //
         ;
 
 
@@ -3452,7 +3464,6 @@ void py_init_module_imgui_main(py::module& m)
         .def("get_specs",
             &ImGuiTableSortSpecs::GetSpecs,
             py::arg("idx"),
-            "[/ADAPT_IMGUI_BUNDLE]",
             pybind11::return_value_policy::reference)
         // #endif
         //

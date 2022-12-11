@@ -402,6 +402,17 @@ class ImVec2:
         pass
     # We very rarely use this [] operator, the assert overhead is fine.
 
+    # [ADAPT_IMGUI_BUNDLE]
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API inline std::array<float, 2> as_array() { return {x, y}; }    /* original C++ signature */
+    def as_array(self) -> List[float]:
+        """Returns a copy of this ImVec2 as an array"""
+        pass
+    # #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
 class ImVec4:
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
@@ -419,6 +430,16 @@ class ImVec4:
     # constexpr ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
+    # [ADAPT_IMGUI_BUNDLE]
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API inline std::array<float, 4> as_array() { return {x, y, z, w}; }    /* original C++ signature */
+    def as_array(self) -> List[float]:
+        """Returns a copy of this ImVec4 as an array"""
+        pass
+    # #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Dear ImGui end-user API functions
@@ -5362,7 +5383,6 @@ class TableColumnSortSpecs:
         pass
     # inline IMGUI_API void SetSortDirection(ImGuiSortDirection direction) { SortDirection = direction; }    /* original C++ signature */
     def set_sort_direction(self, direction: SortDirection) -> None:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
     #                    #endif
     #
