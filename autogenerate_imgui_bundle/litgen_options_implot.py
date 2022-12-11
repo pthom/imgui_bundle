@@ -10,6 +10,8 @@ def litgen_options_implot() -> LitgenOptions:
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT_API|IMPLOT_TMP"
 
     options.fn_force_overload__regex = "BeginPlot"
+    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
+
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")

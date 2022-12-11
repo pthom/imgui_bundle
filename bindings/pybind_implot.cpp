@@ -345,6 +345,12 @@ void py_init_module_implot(py::module& m)
             py::arg("_x"), py::arg("_y"))
         .def(py::init<const ImVec2 &>(),
             py::arg("p"))
+        .def("__getitem__",
+            py::overload_cast<size_t>(&ImPlotPoint::operator[]), py::arg("idx"))
+        .def("__getitem__",
+            py::overload_cast<size_t>(&ImPlotPoint::operator[]),
+            py::arg("idx"),
+            pybind11::return_value_policy::reference)
         ;
 
 
@@ -356,6 +362,21 @@ void py_init_module_implot(py::module& m)
         .def(py::init<>())
         .def(py::init<double, double>(),
             py::arg("_min"), py::arg("_max"))
+        .def("contains",
+            [](const ImPlotRange & self, double value) -> bool
+            {
+                auto Contains_adapt_force_lambda = [&self](double value) -> bool
+                {
+                    auto lambda_result = self.Contains(value);
+                    return lambda_result;
+                };
+
+                return Contains_adapt_force_lambda(value);
+            },     py::arg("value"))
+        .def("size",
+            &ImPlotRange::Size)
+        .def("clamp",
+            &ImPlotRange::Clamp, py::arg("value"))
         ;
 
 
@@ -367,6 +388,38 @@ void py_init_module_implot(py::module& m)
         .def(py::init<>())
         .def(py::init<double, double, double, double>(),
             py::arg("x_min"), py::arg("x_max"), py::arg("y_min"), py::arg("y_max"))
+        .def("contains",
+            [](const ImPlotRect & self, const ImPlotPoint & p) -> bool
+            {
+                auto Contains_adapt_force_lambda = [&self](const ImPlotPoint & p) -> bool
+                {
+                    auto lambda_result = self.Contains(p);
+                    return lambda_result;
+                };
+
+                return Contains_adapt_force_lambda(p);
+            },     py::arg("p"))
+        .def("contains",
+            [](const ImPlotRect & self, double x, double y) -> bool
+            {
+                auto Contains_adapt_force_lambda = [&self](double x, double y) -> bool
+                {
+                    auto lambda_result = self.Contains(x, y);
+                    return lambda_result;
+                };
+
+                return Contains_adapt_force_lambda(x, y);
+            },     py::arg("x"), py::arg("y"))
+        .def("size",
+            &ImPlotRect::Size)
+        .def("clamp",
+            py::overload_cast<const ImPlotPoint &>(&ImPlotRect::Clamp), py::arg("p"))
+        .def("clamp",
+            py::overload_cast<double, double>(&ImPlotRect::Clamp), py::arg("x"), py::arg("y"))
+        .def("min",
+            &ImPlotRect::Min)
+        .def("max",
+            &ImPlotRect::Max)
         ;
 
 

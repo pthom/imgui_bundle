@@ -89,12 +89,14 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float>(),
             py::arg("_x"), py::arg("_y"))
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("as_array",
-            &ImVec2::as_array, "Returns a copy of this ImVec2 as an array")
-        // #endif
-        //
+        .def("__getitem__",
+            py::overload_cast<size_t>(&ImVec2::operator[]),
+            py::arg("idx"),
+            "We very rarely use this [] operator, the assert overhead is fine.")
+        .def("__getitem__",
+            py::overload_cast<size_t>(&ImVec2::operator[]),
+            py::arg("idx"),
+            pybind11::return_value_policy::reference)
         ;
 
 
@@ -108,12 +110,6 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float, float, float>(),
             py::arg("_x"), py::arg("_y"), py::arg("_z"), py::arg("_w"))
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("as_array",
-            &ImVec4::as_array, "Returns a copy of this ImVec4 as an array")
-        // #endif
-        //
         ;
 
 
@@ -924,8 +920,8 @@ void py_init_module_imgui_main(py::module& m)
                     items_ptrs.push_back(v.c_str());
                 int items_count = static_cast<int>(items.size());
 
-                auto r = Combo_adapt_modifiable_immutable_to_return(label, current_item, items_ptrs.data(), items_count, popup_max_height_in_items);
-                return r;
+                auto lambda_result = Combo_adapt_modifiable_immutable_to_return(label, current_item, items_ptrs.data(), items_count, popup_max_height_in_items);
+                return lambda_result;
             };
 
             return Combo_adapt_c_string_list(label, current_item, items, popup_max_height_in_items);
@@ -1496,8 +1492,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto TreeNode_adapt_variadic_format = [](const char * str_id, const char * fmt) -> bool
             {
-                auto r = ImGui::TreeNode(str_id, "%s", fmt);
-                return r;
+                auto lambda_result = ImGui::TreeNode(str_id, "%s", fmt);
+                return lambda_result;
             };
 
             return TreeNode_adapt_variadic_format(str_id, fmt);
@@ -1510,8 +1506,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto TreeNode_adapt_variadic_format = [](const void * ptr_id, const char * fmt) -> bool
             {
-                auto r = ImGui::TreeNode(ptr_id, "%s", fmt);
-                return r;
+                auto lambda_result = ImGui::TreeNode(ptr_id, "%s", fmt);
+                return lambda_result;
             };
 
             return TreeNode_adapt_variadic_format(ptr_id, fmt);
@@ -1527,8 +1523,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto TreeNodeEx_adapt_variadic_format = [](const char * str_id, ImGuiTreeNodeFlags flags, const char * fmt) -> bool
             {
-                auto r = ImGui::TreeNodeEx(str_id, flags, "%s", fmt);
-                return r;
+                auto lambda_result = ImGui::TreeNodeEx(str_id, flags, "%s", fmt);
+                return lambda_result;
             };
 
             return TreeNodeEx_adapt_variadic_format(str_id, flags, fmt);
@@ -1539,8 +1535,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto TreeNodeEx_adapt_variadic_format = [](const void * ptr_id, ImGuiTreeNodeFlags flags, const char * fmt) -> bool
             {
-                auto r = ImGui::TreeNodeEx(ptr_id, flags, "%s", fmt);
-                return r;
+                auto lambda_result = ImGui::TreeNodeEx(ptr_id, flags, "%s", fmt);
+                return lambda_result;
             };
 
             return TreeNodeEx_adapt_variadic_format(ptr_id, flags, fmt);
@@ -1627,8 +1623,8 @@ void py_init_module_imgui_main(py::module& m)
                     items_ptrs.push_back(v.c_str());
                 int items_count = static_cast<int>(items.size());
 
-                auto r = ListBox_adapt_modifiable_immutable_to_return(label, current_item, items_ptrs.data(), items_count, height_in_items);
-                return r;
+                auto lambda_result = ListBox_adapt_modifiable_immutable_to_return(label, current_item, items_ptrs.data(), items_count, height_in_items);
+                return lambda_result;
             };
 
             return ListBox_adapt_c_string_list(label, current_item, items, height_in_items);
@@ -2365,8 +2361,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto SaveIniSettingsToMemory_adapt_exclude_params = []() -> const char *
             {
-                auto r = ImGui::SaveIniSettingsToMemory(NULL);
-                return r;
+                auto lambda_result = ImGui::SaveIniSettingsToMemory(NULL);
+                return lambda_result;
             };
 
             return SaveIniSettingsToMemory_adapt_exclude_params();
@@ -3407,6 +3403,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiInputTextCallbackData::DeleteChars, py::arg("pos"), py::arg("bytes_count"))
         .def("insert_chars",
             &ImGuiInputTextCallbackData::InsertChars, py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none())
+        .def("select_all",
+            &ImGuiInputTextCallbackData::SelectAll)
+        .def("clear_selection",
+            &ImGuiInputTextCallbackData::ClearSelection)
+        .def("has_selection",
+            &ImGuiInputTextCallbackData::HasSelection)
         ;
 
 
@@ -3457,6 +3459,14 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("preview", &ImGuiPayload::Preview, "Set when AcceptDragDropPayload() was called and mouse has been hovering the target item (nb: handle overlapping drag targets)")
         .def_readwrite("delivery", &ImGuiPayload::Delivery, "Set when AcceptDragDropPayload() was called and mouse button is released over the target item.")
         .def(py::init<>())
+        .def("clear",
+            &ImGuiPayload::Clear)
+        .def("is_data_type",
+            &ImGuiPayload::IsDataType, py::arg("type"))
+        .def("is_preview",
+            &ImGuiPayload::IsPreview)
+        .def("is_delivery",
+            &ImGuiPayload::IsDelivery)
         ;
 
 
@@ -3519,6 +3529,8 @@ void py_init_module_imgui_main(py::module& m)
             .def(py::init<>())
             .def(py::init<const char *, const char *>(),
                 py::arg("_b"), py::arg("_e"))
+            .def("empty",
+                &ImGuiTextFilter::ImGuiTextRange::empty)
             ;
     } // end of inner classes & enums of TextFilter
 
@@ -3533,6 +3545,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiTextFilter::PassFilter, py::arg("text"), py::arg("text_end") = py::none())
         .def("build",
             &ImGuiTextFilter::Build)
+        .def("clear",
+            &ImGuiTextFilter::Clear)
+        .def("is_active",
+            &ImGuiTextFilter::IsActive)
         .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")
         ;
 
@@ -3541,6 +3557,24 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImGuiTextBuffer>
             (m, "TextBuffer", " Helper: Growable text buffer for logging/accumulating text\n (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')")
         .def(py::init<>())
+        .def("__getitem__",
+            &ImGuiTextBuffer::operator[], py::arg("i"))
+        .def("begin",
+            &ImGuiTextBuffer::begin, pybind11::return_value_policy::reference)
+        .def("end",
+            &ImGuiTextBuffer::end,
+            "Buf is zero-terminated, so end() will point on the zero-terminator",
+            pybind11::return_value_policy::reference)
+        .def("size",
+            &ImGuiTextBuffer::size)
+        .def("empty",
+            &ImGuiTextBuffer::empty)
+        .def("clear",
+            &ImGuiTextBuffer::clear)
+        .def("reserve",
+            &ImGuiTextBuffer::reserve, py::arg("capacity"))
+        .def("c_str",
+            &ImGuiTextBuffer::c_str, pybind11::return_value_policy::reference)
         .def("append",
             &ImGuiTextBuffer::append, py::arg("str"), py::arg("str_end") = py::none())
         .def("appendf",
@@ -3576,6 +3610,8 @@ void py_init_module_imgui_main(py::module& m)
 
     pyClassImGuiStorage
         .def(py::init<>()) // implicit default constructor
+        .def("clear",
+            &ImGuiStorage::Clear, " - Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)\n - Set***() functions find pair, insertion on demand if missing.\n - Sorted insertion is costly, paid once. A typical frame shouldn't need to insert any new pair.")
         .def("get_int",
             &ImGuiStorage::GetInt, py::arg("key"), py::arg("default_val") = 0)
         .def("set_int",
@@ -3653,6 +3689,10 @@ void py_init_module_imgui_main(py::module& m)
             py::arg("r"), py::arg("g"), py::arg("b"), py::arg("a") = 255)
         .def(py::init<ImU32>(),
             py::arg("rgba"))
+        .def("set_hsv",
+            &ImColor::SetHSV, py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f)
+        .def_static("hsv",
+            &ImColor::HSV, py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f)
         ;
 
 
@@ -3667,6 +3707,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("user_callback_data", &ImDrawCmd::UserCallbackData, "4-8  // The draw callback code can access this.")
         .def(py::init<>(),
             "Also ensure our padding fields are zeroed")
+        .def("get_tex_id",
+            &ImDrawCmd::GetTexID, "Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)")
         ;
 
 
@@ -3702,6 +3744,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("_current", &ImDrawListSplitter::_Current, "Current channel number (0)")
         .def_readwrite("_count", &ImDrawListSplitter::_Count, "Number of active channels (1+)")
         .def(py::init<>())
+        .def("clear",
+            &ImDrawListSplitter::Clear, "Do not clear Channels[] so our allocations are reused next frame")
         .def("clear_free_memory",
             &ImDrawListSplitter::ClearFreeMemory)
         .def("split",
@@ -3765,6 +3809,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::PushTextureID, py::arg("texture_id"))
         .def("pop_texture_id",
             &ImDrawList::PopTextureID)
+        .def("get_clip_rect_min",
+            &ImDrawList::GetClipRectMin)
+        .def("get_clip_rect_max",
+            &ImDrawList::GetClipRectMax)
         .def("add_line",
             &ImDrawList::AddLine, py::arg("p1"), py::arg("p2"), py::arg("col"), py::arg("thickness") = 1.0f)
         .def("add_rect",
@@ -3815,6 +3863,16 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::AddImageQuad, py::arg("user_texture_id"), py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("uv1") = ImVec2(0, 0), py::arg("uv2") = ImVec2(1, 0), py::arg("uv3") = ImVec2(1, 1), py::arg("uv4") = ImVec2(0, 1), py::arg("col") = IM_COL32_WHITE)
         .def("add_image_rounded",
             &ImDrawList::AddImageRounded, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min"), py::arg("uv_max"), py::arg("col"), py::arg("rounding"), py::arg("flags") = 0)
+        .def("path_clear",
+            &ImDrawList::PathClear)
+        .def("path_line_to",
+            &ImDrawList::PathLineTo, py::arg("pos"))
+        .def("path_line_to_merge_duplicate",
+            &ImDrawList::PathLineToMergeDuplicate, py::arg("pos"))
+        .def("path_fill_convex",
+            &ImDrawList::PathFillConvex, py::arg("col"))
+        .def("path_stroke",
+            &ImDrawList::PathStroke, py::arg("col"), py::arg("flags") = 0, py::arg("thickness") = 1.0f)
         .def("path_arc_to",
             &ImDrawList::PathArcTo, py::arg("center"), py::arg("radius"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0)
         .def("path_arc_to_fast",
@@ -3841,6 +3899,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::CloneOutput,
             "Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.",
             pybind11::return_value_policy::reference)
+        .def("channels_split",
+            &ImDrawList::ChannelsSplit, py::arg("count"))
+        .def("channels_merge",
+            &ImDrawList::ChannelsMerge)
+        .def("channels_set_current",
+            &ImDrawList::ChannelsSetCurrent, py::arg("n"))
         .def("prim_reserve",
             &ImDrawList::PrimReserve, py::arg("idx_count"), py::arg("vtx_count"))
         .def("prim_unreserve",
@@ -3853,6 +3917,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::PrimRectUV, py::arg("a"), py::arg("b"), py::arg("uv_a"), py::arg("uv_b"), py::arg("col"))
         .def("prim_quad_uv",
             &ImDrawList::PrimQuadUV, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("uv_a"), py::arg("uv_b"), py::arg("uv_c"), py::arg("uv_d"), py::arg("col"))
+        .def("prim_write_vtx",
+            &ImDrawList::PrimWriteVtx, py::arg("pos"), py::arg("uv"), py::arg("col"))
+        .def("prim_write_idx",
+            &ImDrawList::PrimWriteIdx, py::arg("idx"))
+        .def("prim_vtx",
+            &ImDrawList::PrimVtx, py::arg("pos"), py::arg("uv"), py::arg("col"))
         .def("_reset_for_new_frame",
             &ImDrawList::_ResetForNewFrame)
         .def("_clear_free_memory",
@@ -3889,6 +3959,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")
         .def(py::init<>(),
             "Functions")
+        .def("clear",
+            &ImDrawData::Clear, "The ImDrawList are owned by ImGuiContext!")
         .def("de_index_all_buffers",
             &ImDrawData::DeIndexAllBuffers, "Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!")
         .def("scale_clip_rects",
@@ -3958,6 +4030,20 @@ void py_init_module_imgui_main(py::module& m)
         py::class_<ImFontGlyphRangesBuilder>
             (m, "ImFontGlyphRangesBuilder", " Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().\n This is essentially a tightly packed of vector of 64k booleans = 8KB storage.")
         .def(py::init<>())
+        .def("clear",
+            &ImFontGlyphRangesBuilder::Clear)
+        .def("get_bit",
+            &ImFontGlyphRangesBuilder::GetBit,
+            py::arg("n"),
+            "Get bit n in the array")
+        .def("set_bit",
+            &ImFontGlyphRangesBuilder::SetBit,
+            py::arg("n"),
+            "Set bit n in the array")
+        .def("add_char",
+            &ImFontGlyphRangesBuilder::AddChar,
+            py::arg("c"),
+            "Add character")
         .def("add_text",
             &ImFontGlyphRangesBuilder::AddText,
             py::arg("text"), py::arg("text_end") = py::none(),
@@ -3981,6 +4067,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("glyph_offset", &ImFontAtlasCustomRect::GlyphOffset, "Input    // For custom font glyphs only: glyph display offset")
         .def_readwrite("font", &ImFontAtlasCustomRect::Font, "Input    // For custom font glyphs only: target font")
         .def(py::init<>())
+        .def("is_packed",
+            &ImFontAtlasCustomRect::IsPacked)
         ;
 
 
@@ -4013,6 +4101,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImFontAtlas::Clear, "Clear all input and output.")
         .def("build",
             &ImFontAtlas::Build, "Build pixels data. This is called automatically for you by the GetTexData*** functions.")
+        .def("is_built",
+            &ImFontAtlas::IsBuilt, "Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...")
+        .def("set_tex_id",
+            &ImFontAtlas::SetTexID, py::arg("id_"))
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_font_from_file_ttf",
@@ -4043,6 +4135,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImFontAtlas::AddCustomRectRegular, py::arg("width"), py::arg("height"))
         .def("add_custom_rect_font_glyph",
             &ImFontAtlas::AddCustomRectFontGlyph, py::arg("font"), py::arg("id_"), py::arg("width"), py::arg("height"), py::arg("advance_x"), py::arg("offset") = ImVec2(0, 0))
+        .def("get_custom_rect_by_index",
+            &ImFontAtlas::GetCustomRectByIndex,
+            py::arg("index"),
+            pybind11::return_value_policy::reference)
         .def("calc_custom_rect_uv",
             &ImFontAtlas::CalcCustomRectUV, py::arg("rect"), py::arg("out_uv_min"), py::arg("out_uv_max"))
         .def("get_mouse_cursor_tex_data",
@@ -4093,6 +4189,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImFont::FindGlyphNoFallback,
             py::arg("c"),
             pybind11::return_value_policy::reference)
+        .def("get_char_advance",
+            &ImFont::GetCharAdvance, py::arg("c"))
+        .def("is_loaded",
+            &ImFont::IsLoaded)
+        .def("get_debug_name",
+            &ImFont::GetDebugName, pybind11::return_value_policy::reference)
         .def("calc_word_wrap_position_a",
             &ImFont::CalcWordWrapPositionA,
             py::arg("scale"), py::arg("text"), py::arg("text_end"), py::arg("wrap_width"),
@@ -4158,6 +4260,10 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("platform_request_resize", &ImGuiViewport::PlatformRequestResize, "Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)")
         .def_readwrite("platform_request_close", &ImGuiViewport::PlatformRequestClose, "Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)")
         .def(py::init<>())
+        .def("get_center",
+            &ImGuiViewport::GetCenter)
+        .def("get_work_center",
+            &ImGuiViewport::GetWorkCenter)
         ;
 
 
@@ -4286,8 +4392,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto InputText_adapt_exclude_params = [](const char * label, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
             {
-                auto r = ImGui::InputText(label, str, flags, NULL, user_data);
-                return r;
+                auto lambda_result = ImGui::InputText(label, str, flags, NULL, user_data);
+                return lambda_result;
             };
             auto InputText_adapt_modifiable_immutable_to_return = [&InputText_adapt_exclude_params](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
             {
@@ -4305,8 +4411,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto InputTextMultiline_adapt_exclude_params = [](const char * label, std::string * str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
             {
-                auto r = ImGui::InputTextMultiline(label, str, size, flags, NULL, user_data);
-                return r;
+                auto lambda_result = ImGui::InputTextMultiline(label, str, size, flags, NULL, user_data);
+                return lambda_result;
             };
             auto InputTextMultiline_adapt_modifiable_immutable_to_return = [&InputTextMultiline_adapt_exclude_params](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
             {
@@ -4324,8 +4430,8 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto InputTextWithHint_adapt_exclude_params = [](const char * label, const char * hint, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
             {
-                auto r = ImGui::InputTextWithHint(label, hint, str, flags, NULL, user_data);
-                return r;
+                auto lambda_result = ImGui::InputTextWithHint(label, hint, str, flags, NULL, user_data);
+                return lambda_result;
             };
             auto InputTextWithHint_adapt_modifiable_immutable_to_return = [&InputTextWithHint_adapt_exclude_params](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
             {

@@ -400,18 +400,14 @@ class ImVec2:
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float) -> None:
         pass
-    # We very rarely use this [] operator, the assert overhead is fine.
-
-    # [ADAPT_IMGUI_BUNDLE]
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API inline std::array<float, 2> as_array() { return {x, y}; }    /* original C++ signature */
-    def as_array(self) -> List[float]:
-        """Returns a copy of this ImVec2 as an array"""
+    # float  operator[] (size_t idx) const    { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """We very rarely use this [] operator, the assert overhead is fine."""
         pass
-    # #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
+    # float& operator[] (size_t idx)          { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        pass
+    # We very rarely use this [] operator, the assert overhead is fine.
 
 class ImVec4:
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
@@ -430,16 +426,6 @@ class ImVec4:
     # constexpr ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
-    # [ADAPT_IMGUI_BUNDLE]
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API inline std::array<float, 4> as_array() { return {x, y, z, w}; }    /* original C++ signature */
-    def as_array(self) -> List[float]:
-        """Returns a copy of this ImVec4 as an array"""
-        pass
-    # #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Dear ImGui end-user API functions
@@ -5334,6 +5320,15 @@ class InputTextCallbackData:
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
     def insert_chars(self, pos: int, text: str, text_end: Optional[str] = None) -> None:
         pass
+    # void                SelectAll()             { SelectionStart = 0; SelectionEnd = BufTextLen; }    /* original C++ signature */
+    def select_all(self) -> None:
+        pass
+    # void                ClearSelection()        { SelectionStart = SelectionEnd = BufTextLen; }    /* original C++ signature */
+    def clear_selection(self) -> None:
+        pass
+    # bool                HasSelection() const    { return SelectionStart != SelectionEnd; }    /* original C++ signature */
+    def has_selection(self) -> bool:
+        pass
 
 class SizeCallbackData:
     """Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().
@@ -5412,6 +5407,18 @@ class Payload:
 
     # ImGuiPayload()  { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # void Clear()    { SourceId = SourceParentId = 0; Data = NULL; DataSize = 0; memset(DataType, 0, sizeof(DataType)); DataFrameCount = -1; Preview = Delivery = false; }    /* original C++ signature */
+    def clear(self) -> None:
+        pass
+    # bool IsDataType(const char* type) const { return DataFrameCount != -1 && strcmp(type, DataType) == 0; }    /* original C++ signature */
+    def is_data_type(self, type: str) -> bool:
+        pass
+    # bool IsPreview() const                  { return Preview; }    /* original C++ signature */
+    def is_preview(self) -> bool:
+        pass
+    # bool IsDelivery() const                 { return Delivery; }    /* original C++ signature */
+    def is_delivery(self) -> bool:
         pass
 
 class TableColumnSortSpecs:
@@ -5504,6 +5511,12 @@ class TextFilter:
     # IMGUI_API void      Build();    /* original C++ signature */
     def build(self) -> None:
         pass
+    # void                Clear()          { InputBuf[0] = 0; Build(); }    /* original C++ signature */
+    def clear(self) -> None:
+        pass
+    # bool                IsActive() const { return !Filters.empty(); }    /* original C++ signature */
+    def is_active(self) -> bool:
+        pass
 
     class TextRange:
         """[Internal]"""
@@ -5519,6 +5532,9 @@ class TextFilter:
         # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
         def __init__(self, _b: str, _e: str) -> None:
             pass
+        # bool            empty() const                   { return b == e; }    /* original C++ signature */
+        def empty(self) -> bool:
+            pass
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int
 
@@ -5529,6 +5545,31 @@ class TextBuffer:
 
     # ImGuiTextBuffer()   { }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # inline char         operator[](int i) const { IM_ASSERT(Buf.Data != NULL); return Buf.Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> int:
+        pass
+    # const char*         begin() const           { return Buf.Data ? &Buf.front() : EmptyString; }    /* original C++ signature */
+    def begin(self) -> str:
+        pass
+    # const char*         end() const             { return Buf.Data ? &Buf.back() : EmptyString; }       /* original C++ signature */
+    def end(self) -> str:
+        """Buf is zero-terminated, so end() will point on the zero-terminator"""
+        pass
+    # int                 size() const            { return Buf.Size ? Buf.Size - 1 : 0; }    /* original C++ signature */
+    def size(self) -> int:
+        pass
+    # bool                empty() const           { return Buf.Size <= 1; }    /* original C++ signature */
+    def empty(self) -> bool:
+        pass
+    # void                clear()                 { Buf.clear(); }    /* original C++ signature */
+    def clear(self) -> None:
+        pass
+    # void                reserve(int capacity)   { Buf.reserve(capacity); }    /* original C++ signature */
+    def reserve(self, capacity: int) -> None:
+        pass
+    # const char*         c_str() const           { return Buf.Data ? Buf.Data : EmptyString; }    /* original C++ signature */
+    def c_str(self) -> str:
         pass
     # IMGUI_API void      append(const char* str, const char* str_end = NULL);    /* original C++ signature */
     def append(self, str: str, str_end: Optional[str] = None) -> None:
@@ -5562,6 +5603,13 @@ class Storage:
         # ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }    /* original C++ signature */
         def __init__(self, _key: ID, _val_p: Any) -> None:
             pass
+    # void                Clear() { Data.clear(); }    /* original C++ signature */
+    def clear(self) -> None:
+        """- Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)
+        - Set***() functions find pair, insertion on demand if missing.
+        - Sorted insertion is costly, paid once. A typical frame shouldn't need to insert any new pair.
+        """
+        pass
     # IMGUI_API int       GetInt(ImGuiID key, int default_val = 0) const;    /* original C++ signature */
     def get_int(self, key: ID, default_val: int = 0) -> int:
         pass
@@ -5701,6 +5749,13 @@ class ImColor:
     def __init__(self, rgba: ImU32) -> None:
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
+    # inline void    SetHSV(float h, float s, float v, float a = 1.0f){ ImGui::ColorConvertHSVtoRGB(h, s, v, Value.x, Value.y, Value.z); Value.w = a; }    /* original C++ signature */
+    def set_hsv(self, h: float, s: float, v: float, a: float = 1.0) -> None:
+        pass
+    @staticmethod
+    # static ImColor HSV(float h, float s, float v, float a = 1.0f)   { float r, g, b; ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b); return ImColor(r, g, b, a); }    /* original C++ signature */
+    def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
@@ -5742,6 +5797,10 @@ class ImDrawCmd:
     def __init__(self) -> None:
         """Also ensure our padding fields are zeroed"""
         pass
+    # inline ImTextureID GetTexID() const { return TextureId; }    /* original C++ signature */
+    def get_tex_id(self) -> ImTextureID:
+        """Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)"""
+        pass
 
 # Vertex layout
 
@@ -5781,6 +5840,10 @@ class ImDrawListSplitter:
 
     # inline ImDrawListSplitter()  { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # inline void                 Clear() { _Current = 0; _Count = 1; }     /* original C++ signature */
+    def clear(self) -> None:
+        """Do not clear Channels[] so our allocations are reused next frame"""
         pass
     # IMGUI_API void              ClearFreeMemory();    /* original C++ signature */
     def clear_free_memory(self) -> None:
@@ -5938,6 +6001,12 @@ class ImDrawList:
         pass
     # IMGUI_API void  PopTextureID();    /* original C++ signature */
     def pop_texture_id(self) -> None:
+        pass
+    # inline ImVec2   GetClipRectMin() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.x, cr.y); }    /* original C++ signature */
+    def get_clip_rect_min(self) -> ImVec2:
+        pass
+    # inline ImVec2   GetClipRectMax() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.z, cr.w); }    /* original C++ signature */
+    def get_clip_rect_max(self) -> ImVec2:
         pass
     # Primitives
     # - Filled shapes must always use clockwise winding order. The anti-aliasing fringe depends on it. Counter-clockwise shapes will have "inward" anti-aliasing.
@@ -6144,6 +6213,23 @@ class ImDrawList:
         pass
     # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
     # - Filled shapes must always use clockwise winding order. The anti-aliasing fringe depends on it. Counter-clockwise shapes will have "inward" anti-aliasing.
+    # inline    void  PathClear()                                                 { _Path.Size = 0; }    /* original C++ signature */
+    def path_clear(self) -> None:
+        pass
+    # inline    void  PathLineTo(const ImVec2& pos)                               { _Path.push_back(pos); }    /* original C++ signature */
+    def path_line_to(self, pos: ImVec2) -> None:
+        pass
+    # inline    void  PathLineToMergeDuplicate(const ImVec2& pos)                 { if (_Path.Size == 0 || memcmp(&_Path.Data[_Path.Size - 1], &pos, 8) != 0) _Path.push_back(pos); }    /* original C++ signature */
+    def path_line_to_merge_duplicate(self, pos: ImVec2) -> None:
+        pass
+    # inline    void  PathFillConvex(ImU32 col)                                   { AddConvexPolyFilled(_Path.Data, _Path.Size, col); _Path.Size = 0; }    /* original C++ signature */
+    def path_fill_convex(self, col: ImU32) -> None:
+        pass
+    # inline    void  PathStroke(ImU32 col, ImDrawFlags flags = 0, float thickness = 1.0f) { AddPolyline(_Path.Data, _Path.Size, col, flags, thickness); _Path.Size = 0; }    /* original C++ signature */
+    def path_stroke(
+        self, col: ImU32, flags: ImDrawFlags = 0, thickness: float = 1.0
+    ) -> None:
+        pass
     # IMGUI_API void  PathArcTo(const ImVec2& center, float radius, float a_min, float a_max, int num_segments = 0);    /* original C++ signature */
     def path_arc_to(
         self,
@@ -6200,7 +6286,15 @@ class ImDrawList:
     # - FIXME-OBSOLETE: This API shouldn't have been in ImDrawList in the first place!
     #   Prefer using your own persistent instance of ImDrawListSplitter as you can stack them.
     #   Using the ImDrawList::ChannelsXXXX you cannot stack a split over another.
-
+    # inline void     ChannelsSplit(int count)    { _Splitter.Split(this, count); }    /* original C++ signature */
+    def channels_split(self, count: int) -> None:
+        pass
+    # inline void     ChannelsMerge()             { _Splitter.Merge(this); }    /* original C++ signature */
+    def channels_merge(self) -> None:
+        pass
+    # inline void     ChannelsSetCurrent(int n)   { _Splitter.SetCurrentChannel(this, n); }    /* original C++ signature */
+    def channels_set_current(self, n: int) -> None:
+        pass
     # Advanced: Primitives allocations
     # - We render triangles (three vertices)
     # - All primitives needs to be reserved via PrimReserve() beforehand.
@@ -6232,6 +6326,15 @@ class ImDrawList:
         uv_d: ImVec2,
         col: ImU32,
     ) -> None:
+        pass
+    # inline    void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)    { _VtxWritePtr->pos = pos; _VtxWritePtr->uv = uv; _VtxWritePtr->col = col; _VtxWritePtr++; _VtxCurrentIdx++; }    /* original C++ signature */
+    def prim_write_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
+        pass
+    # inline    void  PrimWriteIdx(ImDrawIdx idx)                                     { *_IdxWritePtr = idx; _IdxWritePtr++; }    /* original C++ signature */
+    def prim_write_idx(self, idx: ImDrawIdx) -> None:
+        pass
+    # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)         { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }     /* original C++ signature */
+    def prim_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
         pass
     # Write vertex with unique index
 
@@ -6307,6 +6410,10 @@ class ImDrawData:
     # ImDrawData()    { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         """Functions"""
+        pass
+    # void Clear()    { memset(this, 0, sizeof(*this)); }         /* original C++ signature */
+    def clear(self) -> None:
+        """The ImDrawList are owned by ImGuiContext!"""
         pass
     # IMGUI_API void  DeIndexAllBuffers();                        /* original C++ signature */
     def de_index_all_buffers(self) -> None:
@@ -6410,6 +6517,21 @@ class ImFontGlyphRangesBuilder:
     # ImFontGlyphRangesBuilder()              { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # inline void     Clear()                 { int size_in_bytes = (IM_UNICODE_CODEPOINT_MAX + 1) / 8; UsedChars.resize(size_in_bytes / (int)sizeof(ImU32)); memset(UsedChars.Data, 0, (size_t)size_in_bytes); }    /* original C++ signature */
+    def clear(self) -> None:
+        pass
+    # inline bool     GetBit(size_t n) const  { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); return (UsedChars[off] & mask) != 0; }      /* original C++ signature */
+    def get_bit(self, n: int) -> bool:
+        """Get bit n in the array"""
+        pass
+    # inline void     SetBit(size_t n)        { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); UsedChars[off] |= mask; }                   /* original C++ signature */
+    def set_bit(self, n: int) -> None:
+        """Set bit n in the array"""
+        pass
+    # inline void     AddChar(ImWchar c)      { SetBit(c); }                          /* original C++ signature */
+    def add_char(self, c: ImWchar) -> None:
+        """Add character"""
+        pass
     # IMGUI_API void  AddText(const char* text, const char* text_end = NULL);         /* original C++ signature */
     def add_text(self, text: str, text_end: Optional[str] = None) -> None:
         """Add string (each character of the UTF-8 string are added)"""
@@ -6440,6 +6562,9 @@ class ImFontAtlasCustomRect:
     font: ImFont  # Input    // For custom font glyphs only: target font
     # ImFontAtlasCustomRect()         { Width = Height = 0; X = Y = 0xFFFF; GlyphID = 0; GlyphAdvanceX = 0.0f; GlyphOffset = ImVec2(0, 0); Font = NULL; }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # bool IsPacked() const           { return X != 0xFFFF; }    /* original C++ signature */
+    def is_packed(self) -> bool:
         pass
 
 class ImFontAtlasFlags_(enum.Enum):
@@ -6513,6 +6638,13 @@ class ImFontAtlas:
     # IMGUI_API bool              Build();                        /* original C++ signature */
     def build(self) -> bool:
         """Build pixels data. This is called automatically for you by the GetTexData*** functions."""
+        pass
+    # bool                        IsBuilt() const             { return Fonts.Size > 0 && TexReady; }     /* original C++ signature */
+    def is_built(self) -> bool:
+        """Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent..."""
+        pass
+    # void                        SetTexID(ImTextureID id)    { TexID = id; }    /* original C++ signature */
+    def set_tex_id(self, id_: ImTextureID) -> None:
         pass
     # -------------------------------------------
     # Glyph Ranges
@@ -6615,6 +6747,9 @@ class ImFontAtlas:
         advance_x: float,
         offset: ImVec2 = ImVec2(0, 0),
     ) -> int:
+        pass
+    # ImFontAtlasCustomRect*      GetCustomRectByIndex(int index) { IM_ASSERT(index >= 0); return &CustomRects[index]; }    /* original C++ signature */
+    def get_custom_rect_by_index(self, index: int) -> ImFontAtlasCustomRect:
         pass
     # [Internal]
     # IMGUI_API void              CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;    /* original C++ signature */
@@ -6728,6 +6863,15 @@ class ImFont:
         pass
     # IMGUI_API const ImFontGlyph*FindGlyphNoFallback(ImWchar c) const;    /* original C++ signature */
     def find_glyph_no_fallback(self, c: ImWchar) -> ImFontGlyph:
+        pass
+    # float                       GetCharAdvance(ImWchar c) const     { return ((int)c < IndexAdvanceX.Size) ? IndexAdvanceX[(int)c] : FallbackAdvanceX; }    /* original C++ signature */
+    def get_char_advance(self, c: ImWchar) -> float:
+        pass
+    # bool                        IsLoaded() const                    { return ContainerAtlas != NULL; }    /* original C++ signature */
+    def is_loaded(self) -> bool:
+        pass
+    # const char*                 GetDebugName() const                { return ConfigData ? ConfigData->Name : "<unknown>"; }    /* original C++ signature */
+    def get_debug_name(self) -> str:
         pass
     # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
     # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
@@ -6911,6 +7055,12 @@ class Viewport:
     # [/ADAPT_IMGUI_BUNDLE]
 
     # Helpers
+    # ImVec2              GetCenter() const       { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }    /* original C++ signature */
+    def get_center(self) -> ImVec2:
+        pass
+    # ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }    /* original C++ signature */
+    def get_work_center(self) -> ImVec2:
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Platform Dependent Interfaces (for e.g. multi-viewport support)
