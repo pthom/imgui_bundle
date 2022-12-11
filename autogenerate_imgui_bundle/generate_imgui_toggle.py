@@ -28,7 +28,7 @@ def autogenerate_imgui_toggle():
     options.function_names_replacements.add_last_replacement("iOS", "ios")
     options.srcmlcpp_options.ignored_warning_parts = [
         "operators are supported only when implemented as a member functions",
-        "decl_stmt are not supported in python conversion"
+        "decl_stmt are not supported in python conversion",
     ]
 
     generator = litgen.LitgenGenerator(options)
