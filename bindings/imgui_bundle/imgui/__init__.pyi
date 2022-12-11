@@ -1735,6 +1735,37 @@ def color_picker4(
 ) -> Tuple[bool, List[float]]:
     pass
 
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+#
+# These versions of ColorEdit and ColorPicker will **change** the io_col:ImVec4 parameter, and return True when it was modified
+#
+# IMGUI_API inline bool          ColorEdit3(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorEdit3(label, &io_col->x, flags); }    /* original C++ signature */
+def color_edit3(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorEdit4(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorEdit4(label, &io_col->x, flags); }    /* original C++ signature */
+def color_edit4(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorPicker3(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorPicker3(label, &io_col.x, flags); }    /* original C++ signature */
+def color_picker3(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorPicker4(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0, const ImVec4* ref_col = NULL) { return ColorPicker4(label, &io_col.x, flags); }    /* original C++ signature */
+def color_picker4(
+    label: str,
+    io_col: ImVec4,
+    flags: ColorEditFlags = 0,
+    ref_col: Optional[ImVec4] = None,
+) -> bool:
+    pass
+
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
+
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
 def color_button(
     desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: ImVec2 = ImVec2(0, 0)

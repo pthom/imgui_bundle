@@ -1451,6 +1451,22 @@ void py_init_module_imgui_main(py::module& m)
 
             return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
         },     py::arg("label"), py::arg("col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("color_edit3",
+        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorEdit3), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
+
+    m.def("color_edit4",
+        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorEdit4), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
+
+    m.def("color_picker3",
+        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorPicker3), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
+
+    m.def("color_picker4",
+        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags, const ImVec4 *>(ImGui::ColorPicker4), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
+    // #endif
+    //
 
     m.def("color_button",
         ImGui::ColorButton,
