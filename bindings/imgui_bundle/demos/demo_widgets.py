@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, hello_imgui, imgui_md, ImVec2
+from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2
 from imgui_bundle.immapp import static
 
 
@@ -94,8 +94,8 @@ def demo_toggle():
   [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
     )
 
-    changed, static.toggle_a = imgui.toggle("Default Toggle", static.toggle_a)
-    changed, static.toggle_b = imgui.toggle("Animated Toggle", static.toggle_b, imgui.ToggleFlags_.animated)
+    changed, static.toggle_a = imgui_toggle.toggle("Default Toggle", static.toggle_a)
+    changed, static.toggle_b = imgui_toggle.toggle("Animated Toggle", static.toggle_b, imgui_toggle.ToggleFlags_.animated)
 
 
 @static(selected_filename="")

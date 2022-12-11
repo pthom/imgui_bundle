@@ -19,6 +19,7 @@ void py_init_module_imgui_backends(py::module& m);
 void py_init_module_imguizmo(py::module& m);
 void py_init_module_imgui_tex_inspect(py::module& m);
 void py_init_module_immapp_cpp(py::module& m);
+void py_init_module_imgui_toggle(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -74,6 +75,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_immapp_cpp = m.def_submodule("immapp_cpp");
     py_init_module_immapp_cpp(module_immapp_cpp);
+
+    auto module_imgui_toggle = m.def_submodule("imgui_toggle");
+    py_init_module_imgui_toggle(module_imgui_toggle);
 }
 
 

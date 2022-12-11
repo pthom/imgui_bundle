@@ -30,10 +30,6 @@ def autogenerate_imgui() -> None:
     print("Processing imgui.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
-    print("Processing imgui_toggle.h")
-    options_imgui.srcmlcpp_options.flag_show_progress = False
-    generator.process_cpp_file(REPO_DIR + "/external/imgui_toggle/imgui_toggle.h")
-
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
     options_imgui.srcmlcpp_options.flag_quiet = True

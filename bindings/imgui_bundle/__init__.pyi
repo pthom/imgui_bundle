@@ -12,6 +12,7 @@ from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
 from . import immapp as immapp
+from . import imgui_toggle as imgui_toggle
 from .immapp import icons_fontawesome as icons_fontawesome
 
 from . import immapp as immapp

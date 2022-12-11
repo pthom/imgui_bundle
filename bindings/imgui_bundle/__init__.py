@@ -10,6 +10,7 @@ from imgui_bundle._imgui_bundle import imgui_md as imgui_md
 from imgui_bundle._imgui_bundle import immvision as immvision
 from imgui_bundle._imgui_bundle import imguizmo as imguizmo
 from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
+from imgui_bundle._imgui_bundle import imgui_toggle as imgui_toggle
 from imgui_bundle import immapp as immapp
 from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
 
@@ -44,6 +45,7 @@ __all__ = [
     "imgui_knobs",
     "imgui_color_text_edit",
     "imgui_node_editor",
+    "imgui_toggle",
     # Utilities related to ImGui
     "glfw_window_hello_imgui",
     "icons_fontawesome",
@@ -54,9 +56,6 @@ __all__ = [
     "ImColor",
     "FLT_MIN",
     "FLT_MAX",
-    # HelloImGui and ImGuiBundle runners
-    "RunnerParams",
-    "SimpleRunnerParams",
     # Base utilities
     "__version__",
 ]
