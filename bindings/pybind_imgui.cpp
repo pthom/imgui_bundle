@@ -4440,6 +4440,21 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "ImVec4(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
         return r;
     });
+    pyClassImVec4.def("__getitem__", [](const ImVec4& self, size_t idx) -> float {
+        if (idx >= 4)
+            throw py::index_error();
+        switch (idx)
+        {
+        case 0:
+            return self.x;
+        case 1:
+            return self.y;
+        case 2:
+            return self.z;
+        case 3:
+            return self.w;
+        }
+    });
     pyClassImVec4.def(py::init([](py::tuple t) {
         return cast_to_imvec4(t);
     }), py::arg("tuple"));
