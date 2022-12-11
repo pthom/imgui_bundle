@@ -1,5 +1,5 @@
 import imgui_bundle
-from imgui_bundle import imgui, immapp, ImVec4
+from imgui_bundle import imgui, immapp, ImVec4, ImVec2
 
 
 def make_gui_closure():
@@ -8,8 +8,7 @@ def make_gui_closure():
 
     def gui():
         imgui.text("Hello world")
-        size = [300, 300]
-        imgui.button("Hello", size)
+        imgui.button("Hello", (100, 100))
 
         nonlocal color_text
         if color_text is None:

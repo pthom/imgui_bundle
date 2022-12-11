@@ -4345,12 +4345,12 @@ void py_init_module_imgui_main(py::module& m)
 
     pyClassImVec2.def("__str__", [](const ImVec2& self) -> std::string {
        char r[100];
-       snprintf(r, 100, "(%f, %f)", self.x, self.y);
+       snprintf(r, 100, "ImVec2(%f, %f)", self.x, self.y);
        return r;
     });
     pyClassImVec2.def("__repr__", [](const ImVec2& self) -> std::string {
         char r[100];
-        snprintf(r, 100, "(%f, %f)", self.x, self.y);
+        snprintf(r, 100, "ImVec2(%f, %f)", self.x, self.y);
         return r;
     });
     pyClassImVec2.def(py::init([](py::tuple t) {
@@ -4374,12 +4374,12 @@ void py_init_module_imgui_main(py::module& m)
 
     pyClassImVec4.def("__str__", [](const ImVec4& self) -> std::string {
         char r[100];
-        snprintf(r, 100, "(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
+        snprintf(r, 100, "ImVec4(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
         return r;
     });
     pyClassImVec4.def("__repr__", [](const ImVec4& self) -> std::string {
         char r[100];
-        snprintf(r, 100, "(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
+        snprintf(r, 100, "ImVec4(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
         return r;
     });
     pyClassImVec4.def(py::init([](py::tuple t) {
