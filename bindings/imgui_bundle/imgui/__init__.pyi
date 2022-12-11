@@ -305,6 +305,10 @@ StoragePair = Any
 # Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
 #
 # [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 #
@@ -329,6 +333,9 @@ StoragePair = Any
 
 # Configuration file with compile-time options
 # (edit imconfig.h or '#define IMGUI_USER_CONFIG "myfilename.h" from your build system')
+
+# #ifndef IMGUI_DISABLE
+#
 
 # -----------------------------------------------------------------------------
 # [SECTION] Header mess
@@ -4847,6 +4854,8 @@ class Style:
     circle_tessellation_max_error: float  # Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
 
     # [ADAPT_IMGUI_BUNDLE]
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # python adapter for ImGuiStyle::Colors[ImGuiCol_COUNT]
     # You can query and modify those values (0 <= idxColor < Col_.count)
     # inline IMGUI_API  ImVec4& GetColor(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
@@ -4855,6 +4864,8 @@ class Style:
     # inline IMGUI_API  void SetColor(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
     def set_color(self, idx_color: int, color: ImVec4) -> None:
         pass
+    #                                      #endif
+    #
     # [/ADAPT_IMGUI_BUNDLE]
 
     # IMGUI_API ImGuiStyle();    /* original C++ signature */
@@ -5184,13 +5195,17 @@ class IO:
         pass
     # [ADAPT_IMGUI_BUNDLE]
 
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
     def set_ini_filename(self, filename: str) -> None:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                                                #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures
@@ -5340,6 +5355,8 @@ class TableColumnSortSpecs:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
+    #                    #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # inline IMGUI_API ImGuiSortDirection GetSortDirection() { return SortDirection; }    /* original C++ signature */
     def get_sort_direction(self) -> SortDirection:
         pass
@@ -5347,6 +5364,9 @@ class TableColumnSortSpecs:
     def set_sort_direction(self, direction: SortDirection) -> None:
         """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                    #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 class TableSortSpecs:
     """Sorting specifications for a table (often handling sort specs for a single column, occasionally more)
@@ -5367,10 +5387,14 @@ class TableSortSpecs:
         pass
     # [ADAPT_IMGUI_BUNDLE]
 
+    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) { IM_ASSERT((idx >= 0) && (idx < SpecsCount)); return Specs[idx];}    /* original C++ signature */
     def get_specs(self, idx: int) -> TableColumnSortSpecs:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                            #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, ImColor)
@@ -6431,6 +6455,8 @@ class ImFontAtlas:
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
 
+    #                                 #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
@@ -6487,8 +6513,12 @@ class ImFontAtlas:
     # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
     #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
     def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
-        """[/ADAPT_IMGUI_BUNDLE] - // Default + Vietnamese characters"""
+        """// Default + Vietnamese characters"""
         pass
+    #                                 #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # -------------------------------------------
     # [BETA] Custom Rectangles/Glyphs API
     # -------------------------------------------
@@ -6938,6 +6968,12 @@ class PlatformImeData:
 # -----------------------------------------------------------------------------
 
 # Include imgui_user.h at the end of imgui.h (convenient for user to only explicitly include vanilla imgui.h)
+# #ifdef IMGUI_INCLUDE_IMGUI_USER_H
+#
+# #endif
+#
+
+# #endif
 ####################    </generated_from:imgui.h>    ####################
 
 

@@ -20,7 +20,9 @@ def autogenerate_immapp():
     options = litgen.LitgenOptions()
     options.namespace_root__regex = "ImmApp"
     options.python_run_black_formatter = True
-    options.srcmlcpp_options.ignored_warnings.append("Block elements of type decl_stmt are not supported in python conversion")
+    options.srcmlcpp_options.ignored_warnings.append(
+        "Block elements of type decl_stmt are not supported in python conversion"
+    )
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")

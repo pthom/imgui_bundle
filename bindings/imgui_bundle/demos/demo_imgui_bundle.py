@@ -308,5 +308,6 @@ def demo_imgui_bundle() -> None:
 
 if __name__ == "__main__":
     from imgui_bundle import immapp
+
     params = immapp.RunnerParams()
     immapp.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore

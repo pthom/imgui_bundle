@@ -101,6 +101,7 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 def main():
     from imgui_bundle import immapp
+
     immapp.run(demo_implot, with_implot=True, with_markdown=True)
 
 

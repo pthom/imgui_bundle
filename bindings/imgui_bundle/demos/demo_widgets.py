@@ -209,4 +209,5 @@ def demo_widgets():
 
 if __name__ == "__main__":
     from imgui_bundle import immapp
+
     immapp.run(demo_widgets, with_markdown=True)  # type: ignore
