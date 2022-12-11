@@ -1000,9 +1000,11 @@ class Point:
         pass
     # double  operator[] (size_t idx) const { return (&x)[idx]; }    /* original C++ signature */
     def __getitem__(self, idx: int) -> float:
+        """(private API)"""
         pass
     # double& operator[] (size_t idx)       { return (&x)[idx]; }    /* original C++ signature */
     def __getitem__(self, idx: int) -> float:
+        """(private API)"""
         pass
 
 class Range:
@@ -1020,12 +1022,15 @@ class Range:
         pass
     # bool Contains(double value) const     { return value >= Min && value <= Max;                      }    /* original C++ signature */
     def contains(self, value: float) -> bool:
+        """(private API)"""
         pass
     # double Size() const                   { return Max - Min;                                         }    /* original C++ signature */
     def size(self) -> float:
+        """(private API)"""
         pass
     # double Clamp(double value) const      { return (value < Min) ? Min : (value > Max) ? Max : value; }    /* original C++ signature */
     def clamp(self, value: float) -> float:
+        """(private API)"""
         pass
 
 class Rect:
@@ -1043,24 +1048,31 @@ class Rect:
         pass
     # bool Contains(const ImPlotPoint& p) const                          { return Contains(p.x, p.y);                                    }    /* original C++ signature */
     def contains(self, p: Point) -> bool:
+        """(private API)"""
         pass
     # bool Contains(double x, double y) const                            { return X.Contains(x) && Y.Contains(y);                        }    /* original C++ signature */
     def contains(self, x: float, y: float) -> bool:
+        """(private API)"""
         pass
     # ImPlotPoint Size() const                                           { return ImPlotPoint(X.Size(), Y.Size());                       }    /* original C++ signature */
     def size(self) -> Point:
+        """(private API)"""
         pass
     # ImPlotPoint Clamp(const ImPlotPoint& p)                            { return Clamp(p.x, p.y);                                       }    /* original C++ signature */
     def clamp(self, p: Point) -> Point:
+        """(private API)"""
         pass
     # ImPlotPoint Clamp(double x, double y)                              { return ImPlotPoint(X.Clamp(x),Y.Clamp(y));                    }    /* original C++ signature */
     def clamp(self, x: float, y: float) -> Point:
+        """(private API)"""
         pass
     # ImPlotPoint Min() const                                            { return ImPlotPoint(X.Min, Y.Min);                             }    /* original C++ signature */
     def min(self) -> Point:
+        """(private API)"""
         pass
     # ImPlotPoint Max() const                                            { return ImPlotPoint(X.Max, Y.Max);                             }    /* original C++ signature */
     def max(self) -> Point:
+        """(private API)"""
         pass
 
 class Style:

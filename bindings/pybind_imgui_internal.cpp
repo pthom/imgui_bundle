@@ -39,16 +39,24 @@ void py_init_module_imgui_internal(py::module& m)
         "Helpers: Color Blending");
 
     m.def("im_is_power_of_two",
-        py::overload_cast<int>(ImIsPowerOfTwo), py::arg("v"));
+        py::overload_cast<int>(ImIsPowerOfTwo),
+        py::arg("v"),
+        "(private API)");
 
     m.def("im_is_power_of_two",
-        py::overload_cast<ImU64>(ImIsPowerOfTwo), py::arg("v"));
+        py::overload_cast<ImU64>(ImIsPowerOfTwo),
+        py::arg("v"),
+        "(private API)");
 
     m.def("im_upper_power_of_two",
-        ImUpperPowerOfTwo, py::arg("v"));
+        ImUpperPowerOfTwo,
+        py::arg("v"),
+        "(private API)");
 
     m.def("im_char_is_blank_w",
-        ImCharIsBlankW, py::arg("c"));
+        ImCharIsBlankW,
+        py::arg("c"),
+        "(private API)");
 
     m.def("im_min",
         [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
@@ -60,7 +68,9 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImMin_adapt_force_lambda(lhs, rhs);
-        },     py::arg("lhs"), py::arg("rhs"));
+        },
+        py::arg("lhs"), py::arg("rhs"),
+        "(private API)");
 
     m.def("im_max",
         [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
@@ -72,7 +82,9 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImMax_adapt_force_lambda(lhs, rhs);
-        },     py::arg("lhs"), py::arg("rhs"));
+        },
+        py::arg("lhs"), py::arg("rhs"),
+        "(private API)");
 
     m.def("im_clamp",
         [](const ImVec2 & v, const ImVec2 & mn, ImVec2 mx) -> ImVec2
@@ -84,7 +96,9 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImClamp_adapt_force_lambda(v, mn, mx);
-        },     py::arg("v"), py::arg("mn"), py::arg("mx"));
+        },
+        py::arg("v"), py::arg("mn"), py::arg("mx"),
+        "(private API)");
 
     m.def("im_lerp",
         [](const ImVec2 & a, const ImVec2 & b, float t) -> ImVec2
@@ -96,7 +110,9 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImLerp_adapt_force_lambda(a, b, t);
-        },     py::arg("a"), py::arg("b"), py::arg("t"));
+        },
+        py::arg("a"), py::arg("b"), py::arg("t"),
+        "(private API)");
 
     m.def("im_lerp",
         [](const ImVec2 & a, const ImVec2 & b, const ImVec2 & t) -> ImVec2
@@ -108,7 +124,9 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImLerp_adapt_force_lambda(a, b, t);
-        },     py::arg("a"), py::arg("b"), py::arg("t"));
+        },
+        py::arg("a"), py::arg("b"), py::arg("t"),
+        "(private API)");
 
     m.def("im_lerp",
         [](const ImVec4 & a, const ImVec4 & b, float t) -> ImVec4
@@ -120,54 +138,84 @@ void py_init_module_imgui_internal(py::module& m)
             };
 
             return ImLerp_adapt_force_lambda(a, b, t);
-        },     py::arg("a"), py::arg("b"), py::arg("t"));
+        },
+        py::arg("a"), py::arg("b"), py::arg("t"),
+        "(private API)");
 
     m.def("im_saturate",
-        ImSaturate, py::arg("f"));
+        ImSaturate,
+        py::arg("f"),
+        "(private API)");
 
     m.def("im_length_sqr",
-        py::overload_cast<const ImVec2 &>(ImLengthSqr), py::arg("lhs"));
+        py::overload_cast<const ImVec2 &>(ImLengthSqr),
+        py::arg("lhs"),
+        "(private API)");
 
     m.def("im_length_sqr",
-        py::overload_cast<const ImVec4 &>(ImLengthSqr), py::arg("lhs"));
+        py::overload_cast<const ImVec4 &>(ImLengthSqr),
+        py::arg("lhs"),
+        "(private API)");
 
     m.def("im_inv_length",
-        ImInvLength, py::arg("lhs"), py::arg("fail_value"));
+        ImInvLength,
+        py::arg("lhs"), py::arg("fail_value"),
+        "(private API)");
 
     m.def("im_floor",
-        py::overload_cast<float>(ImFloor), py::arg("f"));
+        py::overload_cast<float>(ImFloor),
+        py::arg("f"),
+        "(private API)");
 
     m.def("im_floor_signed",
         py::overload_cast<float>(ImFloorSigned),
         py::arg("f"),
-        "Decent replacement for floorf()");
+        "(private API)\n\n Decent replacement for floorf()");
 
     m.def("im_floor",
-        py::overload_cast<const ImVec2 &>(ImFloor), py::arg("v"));
+        py::overload_cast<const ImVec2 &>(ImFloor),
+        py::arg("v"),
+        "(private API)");
 
     m.def("im_floor_signed",
-        py::overload_cast<const ImVec2 &>(ImFloorSigned), py::arg("v"));
+        py::overload_cast<const ImVec2 &>(ImFloorSigned),
+        py::arg("v"),
+        "(private API)");
 
     m.def("im_mod_positive",
-        ImModPositive, py::arg("a"), py::arg("b"));
+        ImModPositive,
+        py::arg("a"), py::arg("b"),
+        "(private API)");
 
     m.def("im_dot",
-        ImDot, py::arg("a"), py::arg("b"));
+        ImDot,
+        py::arg("a"), py::arg("b"),
+        "(private API)");
 
     m.def("im_rotate",
-        ImRotate, py::arg("v"), py::arg("cos_a"), py::arg("sin_a"));
+        ImRotate,
+        py::arg("v"), py::arg("cos_a"), py::arg("sin_a"),
+        "(private API)");
 
     m.def("im_linear_sweep",
-        ImLinearSweep, py::arg("current"), py::arg("target"), py::arg("speed"));
+        ImLinearSweep,
+        py::arg("current"), py::arg("target"), py::arg("speed"),
+        "(private API)");
 
     m.def("im_mul",
-        ImMul, py::arg("lhs"), py::arg("rhs"));
+        ImMul,
+        py::arg("lhs"), py::arg("rhs"),
+        "(private API)");
 
     m.def("im_is_float_above_guaranteed_integer_precision",
-        ImIsFloatAboveGuaranteedIntegerPrecision, py::arg("f"));
+        ImIsFloatAboveGuaranteedIntegerPrecision,
+        py::arg("f"),
+        "(private API)");
 
     m.def("im_exponential_moving_average",
-        ImExponentialMovingAverage, py::arg("avg"), py::arg("sample"), py::arg("n"));
+        ImExponentialMovingAverage,
+        py::arg("avg"), py::arg("sample"), py::arg("n"),
+        "(private API)");
 
     m.def("im_bezier_cubic_calc",
         ImBezierCubicCalc, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("t"));
@@ -211,7 +259,9 @@ void py_init_module_imgui_internal(py::module& m)
         },     py::arg("a"), py::arg("b"), py::arg("c"), py::arg("p"), py::arg("out_u"), py::arg("out_v"), py::arg("out_w"));
 
     m.def("im_triangle_area",
-        ImTriangleArea, py::arg("a"), py::arg("b"), py::arg("c"));
+        ImTriangleArea,
+        py::arg("a"), py::arg("b"), py::arg("c"),
+        "(private API)");
 
     m.def("im_get_dir_quadrant_from_delta",
         ImGetDirQuadrantFromDelta, py::arg("dx"), py::arg("dy"));
@@ -253,23 +303,23 @@ void py_init_module_imgui_internal(py::module& m)
         .def(py::init<float, float, float, float>(),
             py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"))
         .def("get_center",
-            &ImRect::GetCenter)
+            &ImRect::GetCenter, "(private API)")
         .def("get_size",
-            &ImRect::GetSize)
+            &ImRect::GetSize, "(private API)")
         .def("get_width",
-            &ImRect::GetWidth)
+            &ImRect::GetWidth, "(private API)")
         .def("get_height",
-            &ImRect::GetHeight)
+            &ImRect::GetHeight, "(private API)")
         .def("get_area",
-            &ImRect::GetArea)
+            &ImRect::GetArea, "(private API)")
         .def("get_tl",
-            &ImRect::GetTL, "Top-left")
+            &ImRect::GetTL, "(private API)\n\n Top-left")
         .def("get_tr",
-            &ImRect::GetTR, "Top-right")
+            &ImRect::GetTR, "(private API)\n\n Top-right")
         .def("get_bl",
-            &ImRect::GetBL, "Bottom-left")
+            &ImRect::GetBL, "(private API)\n\n Bottom-left")
         .def("get_br",
-            &ImRect::GetBR, "Bottom-right")
+            &ImRect::GetBR, "(private API)\n\n Bottom-right")
         .def("contains",
             [](const ImRect & self, const ImVec2 & p) -> bool
             {
@@ -280,7 +330,9 @@ void py_init_module_imgui_internal(py::module& m)
                 };
 
                 return Contains_adapt_force_lambda(p);
-            },     py::arg("p"))
+            },
+            py::arg("p"),
+            "(private API)")
         .def("contains",
             [](const ImRect & self, const ImRect & r) -> bool
             {
@@ -291,53 +343,77 @@ void py_init_module_imgui_internal(py::module& m)
                 };
 
                 return Contains_adapt_force_lambda(r);
-            },     py::arg("r"))
+            },
+            py::arg("r"),
+            "(private API)")
         .def("overlaps",
-            &ImRect::Overlaps, py::arg("r"))
+            &ImRect::Overlaps,
+            py::arg("r"),
+            "(private API)")
         .def("add",
-            py::overload_cast<const ImVec2 &>(&ImRect::Add), py::arg("p"))
+            py::overload_cast<const ImVec2 &>(&ImRect::Add),
+            py::arg("p"),
+            "(private API)")
         .def("add",
-            py::overload_cast<const ImRect &>(&ImRect::Add), py::arg("r"))
+            py::overload_cast<const ImRect &>(&ImRect::Add),
+            py::arg("r"),
+            "(private API)")
         .def("expand",
-            py::overload_cast<const float>(&ImRect::Expand), py::arg("amount"))
+            py::overload_cast<const float>(&ImRect::Expand),
+            py::arg("amount"),
+            "(private API)")
         .def("expand",
-            py::overload_cast<const ImVec2 &>(&ImRect::Expand), py::arg("amount"))
+            py::overload_cast<const ImVec2 &>(&ImRect::Expand),
+            py::arg("amount"),
+            "(private API)")
         .def("translate",
-            &ImRect::Translate, py::arg("d"))
+            &ImRect::Translate,
+            py::arg("d"),
+            "(private API)")
         .def("translate_x",
-            &ImRect::TranslateX, py::arg("dx"))
+            &ImRect::TranslateX,
+            py::arg("dx"),
+            "(private API)")
         .def("translate_y",
-            &ImRect::TranslateY, py::arg("dy"))
+            &ImRect::TranslateY,
+            py::arg("dy"),
+            "(private API)")
         .def("clip_with",
             &ImRect::ClipWith,
             py::arg("r"),
-            "Simple version, may lead to an inverted rectangle, which is fine for Contains/Overlaps test but not for display.")
+            "(private API)\n\n Simple version, may lead to an inverted rectangle, which is fine for Contains/Overlaps test but not for display.")
         .def("clip_with_full",
             &ImRect::ClipWithFull,
             py::arg("r"),
-            "Full version, ensure both points are fully clipped.")
+            "(private API)\n\n Full version, ensure both points are fully clipped.")
         .def("floor",
-            &ImRect::Floor)
+            &ImRect::Floor, "(private API)")
         .def("is_inverted",
-            &ImRect::IsInverted)
+            &ImRect::IsInverted, "(private API)")
         .def("to_vec4",
-            &ImRect::ToVec4)
+            &ImRect::ToVec4, "(private API)")
         ;
 
 
     m.def("im_bit_array_test_bit",
-        ImBitArrayTestBit, py::arg("arr"), py::arg("n"));
+        ImBitArrayTestBit,
+        py::arg("arr"), py::arg("n"),
+        "(private API)");
 
     m.def("im_bit_array_clear_bit",
-        ImBitArrayClearBit, py::arg("arr"), py::arg("n"));
+        ImBitArrayClearBit,
+        py::arg("arr"), py::arg("n"),
+        "(private API)");
 
     m.def("im_bit_array_set_bit",
-        ImBitArraySetBit, py::arg("arr"), py::arg("n"));
+        ImBitArraySetBit,
+        py::arg("arr"), py::arg("n"),
+        "(private API)");
 
     m.def("im_bit_array_set_bit_range",
         ImBitArraySetBitRange,
         py::arg("arr"), py::arg("n"), py::arg("n2"),
-        "// Works on range [n..n2)");
+        "(private API)\n\n// Works on range [n..n2)");
 
 
     auto pyClassImBitVector =
@@ -345,15 +421,23 @@ void py_init_module_imgui_internal(py::module& m)
             (m, "ImBitVector", " Helper: ImBitVector\n Store 1-bit per value.")
         .def(py::init<>()) // implicit default constructor
         .def("create",
-            &ImBitVector::Create, py::arg("sz"))
+            &ImBitVector::Create,
+            py::arg("sz"),
+            "(private API)")
         .def("clear",
-            &ImBitVector::Clear)
+            &ImBitVector::Clear, "(private API)")
         .def("test_bit",
-            &ImBitVector::TestBit, py::arg("n"))
+            &ImBitVector::TestBit,
+            py::arg("n"),
+            "(private API)")
         .def("set_bit",
-            &ImBitVector::SetBit, py::arg("n"))
+            &ImBitVector::SetBit,
+            py::arg("n"),
+            "(private API)")
         .def("clear_bit",
-            &ImBitVector::ClearBit, py::arg("n"))
+            &ImBitVector::ClearBit,
+            py::arg("n"),
+            "(private API)")
         ;
 
 
@@ -371,19 +455,23 @@ void py_init_module_imgui_internal(py::module& m)
         )
         .def_readwrite("end_offset", &ImGuiTextIndex::EndOffset, "Because we don't own text buffer we need to maintain EndOffset (may bake in LineOffsets?)")
         .def("clear",
-            &ImGuiTextIndex::clear)
+            &ImGuiTextIndex::clear, "(private API)")
         .def("size",
-            &ImGuiTextIndex::size)
+            &ImGuiTextIndex::size, "(private API)")
         .def("get_line_begin",
             &ImGuiTextIndex::get_line_begin,
             py::arg("base"), py::arg("n"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         .def("get_line_end",
             &ImGuiTextIndex::get_line_end,
             py::arg("base"), py::arg("n"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         .def("append",
-            &ImGuiTextIndex::append, py::arg("base"), py::arg("old_size"), py::arg("new_size"))
+            &ImGuiTextIndex::append,
+            py::arg("base"), py::arg("old_size"), py::arg("new_size"),
+            "(private API)")
         ;
 
 
@@ -409,7 +497,9 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readonly("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas")
         .def(py::init<>())
         .def("set_circle_tessellation_max_error",
-            &ImDrawListSharedData::SetCircleTessellationMaxError, py::arg("max_error"))
+            &ImDrawListSharedData::SetCircleTessellationMaxError,
+            py::arg("max_error"),
+            "(private API)")
         ;
 
 
@@ -418,11 +508,11 @@ void py_init_module_imgui_internal(py::module& m)
             (m, "ImDrawDataBuilder", "")
         .def(py::init<>()) // implicit default constructor
         .def("clear",
-            &ImDrawDataBuilder::Clear)
+            &ImDrawDataBuilder::Clear, "(private API)")
         .def("clear_free_memory",
-            &ImDrawDataBuilder::ClearFreeMemory)
+            &ImDrawDataBuilder::ClearFreeMemory, "(private API)")
         .def("get_draw_list_count",
-            [](ImDrawDataBuilder & self) { return self.GetDrawListCount(); })
+            [](ImDrawDataBuilder & self) { return self.GetDrawListCount(); }, "(private API)")
         .def("flatten_into_single_layer",
             &ImDrawDataBuilder::FlattenIntoSingleLayer)
         ;
@@ -696,11 +786,17 @@ void py_init_module_imgui_internal(py::module& m)
             "Width of:   Icon, Label, Shortcut, Mark  (accumulators for current frame)")
         .def(py::init<>())
         .def("update",
-            &ImGuiMenuColumns::Update, py::arg("spacing"), py::arg("window_reappearing"))
+            &ImGuiMenuColumns::Update,
+            py::arg("spacing"), py::arg("window_reappearing"),
+            "(private API)")
         .def("decl_columns",
-            &ImGuiMenuColumns::DeclColumns, py::arg("w_icon"), py::arg("w_label"), py::arg("w_shortcut"), py::arg("w_mark"))
+            &ImGuiMenuColumns::DeclColumns,
+            py::arg("w_icon"), py::arg("w_label"), py::arg("w_shortcut"), py::arg("w_mark"),
+            "(private API)")
         .def("calc_next_total_width",
-            &ImGuiMenuColumns::CalcNextTotalWidth, py::arg("update_offsets"))
+            &ImGuiMenuColumns::CalcNextTotalWidth,
+            py::arg("update_offsets"),
+            "(private API)")
         ;
 
 
@@ -722,33 +818,33 @@ void py_init_module_imgui_internal(py::module& m)
         .def(py::init<ImGuiContext *>(),
             py::arg("ctx"))
         .def("clear_text",
-            &ImGuiInputTextState::ClearText)
+            &ImGuiInputTextState::ClearText, "(private API)")
         .def("clear_free_memory",
-            &ImGuiInputTextState::ClearFreeMemory)
+            &ImGuiInputTextState::ClearFreeMemory, "(private API)")
         .def("get_undo_avail_count",
-            &ImGuiInputTextState::GetUndoAvailCount)
+            &ImGuiInputTextState::GetUndoAvailCount, "(private API)")
         .def("get_redo_avail_count",
-            &ImGuiInputTextState::GetRedoAvailCount)
+            &ImGuiInputTextState::GetRedoAvailCount, "(private API)")
         .def("on_key_pressed",
             &ImGuiInputTextState::OnKeyPressed,
             py::arg("key"),
-            "Cannot be inline because we call in code in stb_textedit.h implementation")
+            "(private API)\n\n Cannot be inline because we call in code in stb_textedit.h implementation")
         .def("cursor_anim_reset",
-            &ImGuiInputTextState::CursorAnimReset, "After a user-input the cursor stays on for a while without blinking")
+            &ImGuiInputTextState::CursorAnimReset, "(private API)\n\n After a user-input the cursor stays on for a while without blinking")
         .def("cursor_clamp",
-            &ImGuiInputTextState::CursorClamp)
+            &ImGuiInputTextState::CursorClamp, "(private API)")
         .def("has_selection",
-            &ImGuiInputTextState::HasSelection)
+            &ImGuiInputTextState::HasSelection, "(private API)")
         .def("clear_selection",
-            &ImGuiInputTextState::ClearSelection)
+            &ImGuiInputTextState::ClearSelection, "(private API)")
         .def("get_cursor_pos",
-            &ImGuiInputTextState::GetCursorPos)
+            &ImGuiInputTextState::GetCursorPos, "(private API)")
         .def("get_selection_start",
-            &ImGuiInputTextState::GetSelectionStart)
+            &ImGuiInputTextState::GetSelectionStart, "(private API)")
         .def("get_selection_end",
-            &ImGuiInputTextState::GetSelectionEnd)
+            &ImGuiInputTextState::GetSelectionEnd, "(private API)")
         .def("select_all",
-            &ImGuiInputTextState::SelectAll)
+            &ImGuiInputTextState::SelectAll, "(private API)")
         ;
 
 
@@ -806,7 +902,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("menu_bar_offset_min_val", &ImGuiNextWindowData::MenuBarOffsetMinVal, "(Always on) This is not exposed publicly, so we don't clear it and it doesn't have a corresponding flag (could we? for consistency?)")
         .def(py::init<>())
         .def("clear_flags",
-            &ImGuiNextWindowData::ClearFlags)
+            &ImGuiNextWindowData::ClearFlags, "(private API)")
         ;
 
 
@@ -826,7 +922,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("open_val", &ImGuiNextItemData::OpenVal, "Set by SetNextItemOpen()")
         .def(py::init<>())
         .def("clear_flags",
-            &ImGuiNextItemData::ClearFlags, "Also cleared manually by ItemAdd()!")
+            &ImGuiNextItemData::ClearFlags, "(private API)\n\n Also cleared manually by ItemAdd()!")
         ;
 
 
@@ -857,9 +953,9 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("size_of_disabled_stack", &ImGuiStackSizes::SizeOfDisabledStack, "")
         .def(py::init<>())
         .def("set_to_current_state",
-            &ImGuiStackSizes::SetToCurrentState)
+            &ImGuiStackSizes::SetToCurrentState, "(private API)")
         .def("compare_with_current_state",
-            &ImGuiStackSizes::CompareWithCurrentState)
+            &ImGuiStackSizes::CompareWithCurrentState, "(private API)")
         ;
 
 
@@ -1077,7 +1173,7 @@ void py_init_module_imgui_internal(py::module& m)
             (m, "KeyRoutingTable", " Routing table: maintain a desired owner for each possible key-chord (key + mods), and setup owner in NewFrame() when mods are matching.\n Stored in main context (1 instance)")
         .def(py::init<>())
         .def("clear",
-            &ImGuiKeyRoutingTable::Clear)
+            &ImGuiKeyRoutingTable::Clear, "(private API)")
         ;
 
 
@@ -1141,9 +1237,13 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("pos_to_index_offset_min", &ImGuiListClipperRange::PosToIndexOffsetMin, "Add to Min after converting to indices")
         .def_readwrite("pos_to_index_offset_max", &ImGuiListClipperRange::PosToIndexOffsetMax, "Add to Min after converting to indices")
         .def_static("from_indices",
-            &ImGuiListClipperRange::FromIndices, py::arg("min"), py::arg("max"))
+            &ImGuiListClipperRange::FromIndices,
+            py::arg("min"), py::arg("max"),
+            "(private API)")
         .def_static("from_positions",
-            &ImGuiListClipperRange::FromPositions, py::arg("y1"), py::arg("y2"), py::arg("off_min"), py::arg("off_max"))
+            &ImGuiListClipperRange::FromPositions,
+            py::arg("y1"), py::arg("y2"), py::arg("off_min"), py::arg("off_max"),
+            "(private API)")
         ;
 
 
@@ -1156,7 +1256,9 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("items_frozen", &ImGuiListClipperData::ItemsFrozen, "")
         .def(py::init<>())
         .def("reset",
-            &ImGuiListClipperData::Reset, py::arg("clipper"))
+            &ImGuiListClipperData::Reset,
+            py::arg("clipper"),
+            "(private API)")
         ;
 
 
@@ -1224,7 +1326,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("dist_axial", &ImGuiNavItemData::DistAxial, "Move    // Best candidate axial distance to current NavId")
         .def(py::init<>())
         .def("clear",
-            &ImGuiNavItemData::Clear)
+            &ImGuiNavItemData::Clear, "(private API)")
         ;
 
 
@@ -1339,29 +1441,31 @@ void py_init_module_imgui_internal(py::module& m)
         .def(py::init<ImGuiID>(),
             py::arg("id_"))
         .def("is_root_node",
-            &ImGuiDockNode::IsRootNode)
+            &ImGuiDockNode::IsRootNode, "(private API)")
         .def("is_dock_space",
-            &ImGuiDockNode::IsDockSpace)
+            &ImGuiDockNode::IsDockSpace, "(private API)")
         .def("is_floating_node",
-            &ImGuiDockNode::IsFloatingNode)
+            &ImGuiDockNode::IsFloatingNode, "(private API)")
         .def("is_central_node",
-            &ImGuiDockNode::IsCentralNode)
+            &ImGuiDockNode::IsCentralNode, "(private API)")
         .def("is_hidden_tab_bar",
-            &ImGuiDockNode::IsHiddenTabBar, "Hidden tab bar can be shown back by clicking the small triangle")
+            &ImGuiDockNode::IsHiddenTabBar, "(private API)\n\n Hidden tab bar can be shown back by clicking the small triangle")
         .def("is_no_tab_bar",
-            &ImGuiDockNode::IsNoTabBar, "Never show a tab bar")
+            &ImGuiDockNode::IsNoTabBar, "(private API)\n\n Never show a tab bar")
         .def("is_split_node",
-            &ImGuiDockNode::IsSplitNode)
+            &ImGuiDockNode::IsSplitNode, "(private API)")
         .def("is_leaf_node",
-            &ImGuiDockNode::IsLeafNode)
+            &ImGuiDockNode::IsLeafNode, "(private API)")
         .def("is_empty",
-            &ImGuiDockNode::IsEmpty)
+            &ImGuiDockNode::IsEmpty, "(private API)")
         .def("rect",
-            &ImGuiDockNode::Rect)
+            &ImGuiDockNode::Rect, "(private API)")
         .def("set_local_flags",
-            &ImGuiDockNode::SetLocalFlags, py::arg("flags"))
+            &ImGuiDockNode::SetLocalFlags,
+            py::arg("flags"),
+            "(private API)")
         .def("update_merged_flags",
-            &ImGuiDockNode::UpdateMergedFlags)
+            &ImGuiDockNode::UpdateMergedFlags, "(private API)")
         ;
 
 
@@ -1423,19 +1527,23 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("build_work_offset_max", &ImGuiViewportP::BuildWorkOffsetMax, "Work Area: Offset being built during current frame. Generally <= 0.0.")
         .def(py::init<>())
         .def("clear_request_flags",
-            &ImGuiViewportP::ClearRequestFlags)
+            &ImGuiViewportP::ClearRequestFlags, "(private API)")
         .def("calc_work_rect_pos",
-            &ImGuiViewportP::CalcWorkRectPos, py::arg("off_min"))
+            &ImGuiViewportP::CalcWorkRectPos,
+            py::arg("off_min"),
+            "(private API)")
         .def("calc_work_rect_size",
-            &ImGuiViewportP::CalcWorkRectSize, py::arg("off_min"), py::arg("off_max"))
+            &ImGuiViewportP::CalcWorkRectSize,
+            py::arg("off_min"), py::arg("off_max"),
+            "(private API)")
         .def("update_work_rect",
-            &ImGuiViewportP::UpdateWorkRect, "Update public fields")
+            &ImGuiViewportP::UpdateWorkRect, "(private API)\n\n Update public fields")
         .def("get_main_rect",
-            &ImGuiViewportP::GetMainRect)
+            &ImGuiViewportP::GetMainRect, "(private API)")
         .def("get_work_rect",
-            &ImGuiViewportP::GetWorkRect)
+            &ImGuiViewportP::GetWorkRect, "(private API)")
         .def("get_build_work_rect",
-            &ImGuiViewportP::GetBuildWorkRect)
+            &ImGuiViewportP::GetBuildWorkRect, "(private API)")
         ;
 
 
@@ -1454,7 +1562,9 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("want_apply", &ImGuiWindowSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
         .def(py::init<>())
         .def("get_name",
-            &ImGuiWindowSettings::GetName, pybind11::return_value_policy::reference)
+            &ImGuiWindowSettings::GetName,
+            "(private API)",
+            pybind11::return_value_policy::reference)
         ;
 
 
@@ -1979,25 +2089,33 @@ void py_init_module_imgui_internal(py::module& m)
         .def(py::init<ImGuiContext *, const char *>(),
             py::arg("context"), py::arg("name"))
         .def("get_id",
-            py::overload_cast<const char *, const char *>(&ImGuiWindow::GetID), py::arg("str"), py::arg("str_end") = py::none())
+            py::overload_cast<const char *, const char *>(&ImGuiWindow::GetID),
+            py::arg("str"), py::arg("str_end") = py::none(),
+            "(private API)")
         .def("get_id",
-            py::overload_cast<const void *>(&ImGuiWindow::GetID), py::arg("ptr"))
+            py::overload_cast<const void *>(&ImGuiWindow::GetID),
+            py::arg("ptr"),
+            "(private API)")
         .def("get_id",
-            py::overload_cast<int>(&ImGuiWindow::GetID), py::arg("n"))
+            py::overload_cast<int>(&ImGuiWindow::GetID),
+            py::arg("n"),
+            "(private API)")
         .def("get_id_from_rectangle",
-            &ImGuiWindow::GetIDFromRectangle, py::arg("r_abs"))
+            &ImGuiWindow::GetIDFromRectangle,
+            py::arg("r_abs"),
+            "(private API)")
         .def("rect",
-            &ImGuiWindow::Rect)
+            &ImGuiWindow::Rect, "(private API)")
         .def("calc_font_size",
-            &ImGuiWindow::CalcFontSize)
+            &ImGuiWindow::CalcFontSize, "(private API)")
         .def("title_bar_height",
-            &ImGuiWindow::TitleBarHeight)
+            &ImGuiWindow::TitleBarHeight, "(private API)")
         .def("title_bar_rect",
-            &ImGuiWindow::TitleBarRect)
+            &ImGuiWindow::TitleBarRect, "(private API)")
         .def("menu_bar_height",
-            &ImGuiWindow::MenuBarHeight)
+            &ImGuiWindow::MenuBarHeight, "(private API)")
         .def("menu_bar_rect",
-            &ImGuiWindow::MenuBarRect)
+            &ImGuiWindow::MenuBarRect, "(private API)")
         ;
 
 
@@ -2070,10 +2188,13 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("tabs_names", &ImGuiTabBar::TabsNames, "For non-docking tab bar we re-append names in a contiguous buffer.")
         .def(py::init<>())
         .def("get_tab_order",
-            &ImGuiTabBar::GetTabOrder, py::arg("tab"))
+            &ImGuiTabBar::GetTabOrder,
+            py::arg("tab"),
+            "(private API)")
         .def("get_tab_name",
             &ImGuiTabBar::GetTabName,
             py::arg("tab"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         ;
 
@@ -2303,12 +2424,16 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("want_apply", &ImGuiTableSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
         .def(py::init<>())
         .def("get_column_settings",
-            &ImGuiTableSettings::GetColumnSettings, pybind11::return_value_policy::reference)
+            &ImGuiTableSettings::GetColumnSettings,
+            "(private API)",
+            pybind11::return_value_policy::reference)
         ;
 
 
     m.def("get_current_window_read",
-        ImGui::GetCurrentWindowRead, pybind11::return_value_policy::reference);
+        ImGui::GetCurrentWindowRead,
+        "(private API)",
+        pybind11::return_value_policy::reference);
 
     m.def("get_current_window",
         ImGui::GetCurrentWindow, pybind11::return_value_policy::reference);
@@ -2354,10 +2479,14 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::SetWindowHitTestHole, py::arg("window"), py::arg("pos"), py::arg("size"));
 
     m.def("window_rect_abs_to_rel",
-        ImGui::WindowRectAbsToRel, py::arg("window"), py::arg("r"));
+        ImGui::WindowRectAbsToRel,
+        py::arg("window"), py::arg("r"),
+        "(private API)");
 
     m.def("window_rect_rel_to_abs",
-        ImGui::WindowRectRelToAbs, py::arg("window"), py::arg("r"));
+        ImGui::WindowRectRelToAbs,
+        py::arg("window"), py::arg("r"),
+        "(private API)");
 
     m.def("focus_window",
         ImGui::FocusWindow, py::arg("window"));
@@ -2391,11 +2520,14 @@ void py_init_module_imgui_internal(py::module& m)
         "Fonts, drawing");
 
     m.def("get_default_font",
-        ImGui::GetDefaultFont, pybind11::return_value_policy::reference);
+        ImGui::GetDefaultFont,
+        "(private API)",
+        pybind11::return_value_policy::reference);
 
     m.def("get_foreground_draw_list",
         py::overload_cast<ImGuiWindow *>(ImGui::GetForegroundDrawList),
         py::arg("window"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("initialize",
@@ -2499,6 +2631,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("localize_get_msg",
         ImGui::LocalizeGetMsg,
         py::arg("key"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("set_scroll_x",
@@ -2525,22 +2658,22 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("scroll_to_bring_rect_into_view",
         ImGui::ScrollToBringRectIntoView,
         py::arg("window"), py::arg("rect"),
-        "#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS");
+        "#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS\n(private API)");
 
     m.def("get_item_id",
-        ImGui::GetItemID, "Get ID of last item (~~ often same ImGui::GetID(label) beforehand)");
+        ImGui::GetItemID, "(private API)\n\n Get ID of last item (~~ often same ImGui::GetID(label) beforehand)");
 
     m.def("get_item_status_flags",
-        ImGui::GetItemStatusFlags);
+        ImGui::GetItemStatusFlags, "(private API)");
 
     m.def("get_item_flags",
-        ImGui::GetItemFlags);
+        ImGui::GetItemFlags, "(private API)");
 
     m.def("get_active_id",
-        ImGui::GetActiveID);
+        ImGui::GetActiveID, "(private API)");
 
     m.def("get_focus_id",
-        ImGui::GetFocusID);
+        ImGui::GetFocusID, "(private API)");
 
     m.def("set_active_id",
         ImGui::SetActiveID, py::arg("id_"), py::arg("window"));
@@ -2581,7 +2714,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("item_size",
         py::overload_cast<const ImRect &, float>(ImGui::ItemSize),
         py::arg("bb"), py::arg("text_baseline_y") = -1.0f,
-        "FIXME: This is a misleading API since we expect CursorPos to be bb.Min.");
+        "(private API)\n\n FIXME: This is a misleading API since we expect CursorPos to be bb.Min.");
 
     m.def("item_add",
         ImGui::ItemAdd, py::arg("bb"), py::arg("id_"), py::arg("nav_bb") = py::none(), py::arg("extra_flags") = 0);
@@ -2731,31 +2864,49 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::SetNavID, py::arg("id_"), py::arg("nav_layer"), py::arg("focus_scope_id"), py::arg("rect_rel"));
 
     m.def("is_named_key",
-        ImGui::IsNamedKey, py::arg("key"));
+        ImGui::IsNamedKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_named_key_or_mod_key",
-        ImGui::IsNamedKeyOrModKey, py::arg("key"));
+        ImGui::IsNamedKeyOrModKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_legacy_key",
-        ImGui::IsLegacyKey, py::arg("key"));
+        ImGui::IsLegacyKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_keyboard_key",
-        py::overload_cast<ImGuiKey>(ImGui::IsKeyboardKey), py::arg("key"));
+        py::overload_cast<ImGuiKey>(ImGui::IsKeyboardKey),
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_gamepad_key",
-        ImGui::IsGamepadKey, py::arg("key"));
+        ImGui::IsGamepadKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_mouse_key",
-        py::overload_cast<ImGuiKey>(ImGui::IsMouseKey), py::arg("key"));
+        py::overload_cast<ImGuiKey>(ImGui::IsMouseKey),
+        py::arg("key"),
+        "(private API)");
 
     m.def("is_alias_key",
-        ImGui::IsAliasKey, py::arg("key"));
+        ImGui::IsAliasKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("convert_shortcut_mod",
-        ImGui::ConvertShortcutMod, py::arg("key_chord"));
+        ImGui::ConvertShortcutMod,
+        py::arg("key_chord"),
+        "(private API)");
 
     m.def("convert_single_mod_flag_to_key",
-        ImGui::ConvertSingleModFlagToKey, py::arg("key"));
+        ImGui::ConvertSingleModFlagToKey,
+        py::arg("key"),
+        "(private API)");
 
     m.def("get_key_data",
         ImGui::GetKeyData,
@@ -2766,7 +2917,9 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::GetKeyChordName, py::arg("key_chord"), py::arg("out_buf"), py::arg("out_buf_size"));
 
     m.def("mouse_button_to_key",
-        ImGui::MouseButtonToKey, py::arg("button"));
+        ImGui::MouseButtonToKey,
+        py::arg("button"),
+        "(private API)");
 
     m.def("is_mouse_drag_past_threshold",
         py::overload_cast<ImGuiMouseButton, float>(ImGui::IsMouseDragPastThreshold), py::arg("button"), py::arg("lock_threshold") = -1.0f);
@@ -2799,7 +2952,9 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::SetActiveIdUsingAllKeyboardKeys);
 
     m.def("is_active_id_using_nav_dir",
-        ImGui::IsActiveIdUsingNavDir, py::arg("dir"));
+        ImGui::IsActiveIdUsingNavDir,
+        py::arg("dir"),
+        "(private API)");
 
     m.def("get_key_owner",
         ImGui::GetKeyOwner, py::arg("key"));
@@ -2820,6 +2975,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("get_key_owner_data",
         ImGui::GetKeyOwnerData,
         py::arg("key"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("is_key_down",
@@ -2908,19 +3064,28 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("dock_node_get_root_node",
         ImGui::DockNodeGetRootNode,
         py::arg("node"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("dock_node_is_in_hierarchy_of",
-        ImGui::DockNodeIsInHierarchyOf, py::arg("node"), py::arg("parent"));
+        ImGui::DockNodeIsInHierarchyOf,
+        py::arg("node"), py::arg("parent"),
+        "(private API)");
 
     m.def("dock_node_get_depth",
-        ImGui::DockNodeGetDepth, py::arg("node"));
+        ImGui::DockNodeGetDepth,
+        py::arg("node"),
+        "(private API)");
 
     m.def("dock_node_get_window_menu_button_id",
-        ImGui::DockNodeGetWindowMenuButtonId, py::arg("node"));
+        ImGui::DockNodeGetWindowMenuButtonId,
+        py::arg("node"),
+        "(private API)");
 
     m.def("get_window_dock_node",
-        ImGui::GetWindowDockNode, pybind11::return_value_policy::reference);
+        ImGui::GetWindowDockNode,
+        "(private API)",
+        pybind11::return_value_policy::reference);
 
     m.def("get_window_always_want_own_tab_bar",
         ImGui::GetWindowAlwaysWantOwnTabBar, py::arg("window"));
@@ -2959,6 +3124,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("dock_builder_get_central_node",
         ImGui::DockBuilderGetCentralNode,
         py::arg("node_id"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("dock_builder_add_node",
@@ -3007,7 +3173,7 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::PopFocusScope);
 
     m.def("get_current_focus_scope",
-        ImGui::GetCurrentFocusScope, "Focus scope we are outputting into, set by PushFocusScope()");
+        ImGui::GetCurrentFocusScope, "(private API)\n\n Focus scope we are outputting into, set by PushFocusScope()");
 
     m.def("is_drag_drop_active",
         ImGui::IsDragDropActive);
@@ -3081,7 +3247,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("get_current_table",
         ImGui::GetCurrentTable,
-        "Tables: Internals",
+        " Tables: Internals\n(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("table_find_by_id",
@@ -3125,6 +3291,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("table_get_instance_data",
         py::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceData),
         py::arg("table"), py::arg("instance_no"),
+        "(private API)",
         pybind11::return_value_policy::reference);
 
     m.def("table_sort_specs_sanitize",
@@ -3467,7 +3634,7 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("get_input_text_state",
         ImGui::GetInputTextState,
         py::arg("id_"),
-        "Get input text state if active",
+        "(private API)\n\n Get input text state if active",
         pybind11::return_value_policy::reference);
 
     m.def("color_tooltip",
@@ -3522,10 +3689,12 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::DebugLocateItemResolveWithLastItem);
 
     m.def("debug_draw_item_rect",
-        ImGui::DebugDrawItemRect, py::arg("col") = IM_COL32(255,0,0,255));
+        ImGui::DebugDrawItemRect,
+        py::arg("col") = IM_COL32(255,0,0,255),
+        "(private API)");
 
     m.def("debug_start_item_picker",
-        ImGui::DebugStartItemPicker);
+        ImGui::DebugStartItemPicker, "(private API)");
 
     m.def("show_font_atlas",
         ImGui::ShowFontAtlas, py::arg("atlas"));

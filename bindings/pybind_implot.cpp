@@ -346,10 +346,13 @@ void py_init_module_implot(py::module& m)
         .def(py::init<const ImVec2 &>(),
             py::arg("p"))
         .def("__getitem__",
-            py::overload_cast<size_t>(&ImPlotPoint::operator[]), py::arg("idx"))
+            py::overload_cast<size_t>(&ImPlotPoint::operator[]),
+            py::arg("idx"),
+            "(private API)")
         .def("__getitem__",
             py::overload_cast<size_t>(&ImPlotPoint::operator[]),
             py::arg("idx"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         ;
 
@@ -372,11 +375,15 @@ void py_init_module_implot(py::module& m)
                 };
 
                 return Contains_adapt_force_lambda(value);
-            },     py::arg("value"))
+            },
+            py::arg("value"),
+            "(private API)")
         .def("size",
-            &ImPlotRange::Size)
+            &ImPlotRange::Size, "(private API)")
         .def("clamp",
-            &ImPlotRange::Clamp, py::arg("value"))
+            &ImPlotRange::Clamp,
+            py::arg("value"),
+            "(private API)")
         ;
 
 
@@ -398,7 +405,9 @@ void py_init_module_implot(py::module& m)
                 };
 
                 return Contains_adapt_force_lambda(p);
-            },     py::arg("p"))
+            },
+            py::arg("p"),
+            "(private API)")
         .def("contains",
             [](const ImPlotRect & self, double x, double y) -> bool
             {
@@ -409,17 +418,23 @@ void py_init_module_implot(py::module& m)
                 };
 
                 return Contains_adapt_force_lambda(x, y);
-            },     py::arg("x"), py::arg("y"))
+            },
+            py::arg("x"), py::arg("y"),
+            "(private API)")
         .def("size",
-            &ImPlotRect::Size)
+            &ImPlotRect::Size, "(private API)")
         .def("clamp",
-            py::overload_cast<const ImPlotPoint &>(&ImPlotRect::Clamp), py::arg("p"))
+            py::overload_cast<const ImPlotPoint &>(&ImPlotRect::Clamp),
+            py::arg("p"),
+            "(private API)")
         .def("clamp",
-            py::overload_cast<double, double>(&ImPlotRect::Clamp), py::arg("x"), py::arg("y"))
+            py::overload_cast<double, double>(&ImPlotRect::Clamp),
+            py::arg("x"), py::arg("y"),
+            "(private API)")
         .def("min",
-            &ImPlotRect::Min)
+            &ImPlotRect::Min, "(private API)")
         .def("max",
-            &ImPlotRect::Max)
+            &ImPlotRect::Max, "(private API)")
         ;
 
 

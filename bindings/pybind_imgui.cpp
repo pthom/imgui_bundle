@@ -92,10 +92,11 @@ void py_init_module_imgui_main(py::module& m)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
-            "We very rarely use this [] operator, the assert overhead is fine.")
+            "(private API)\n\n We very rarely use this [] operator, the assert overhead is fine.")
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         ;
 
@@ -3404,11 +3405,11 @@ void py_init_module_imgui_main(py::module& m)
         .def("insert_chars",
             &ImGuiInputTextCallbackData::InsertChars, py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none())
         .def("select_all",
-            &ImGuiInputTextCallbackData::SelectAll)
+            &ImGuiInputTextCallbackData::SelectAll, "(private API)")
         .def("clear_selection",
-            &ImGuiInputTextCallbackData::ClearSelection)
+            &ImGuiInputTextCallbackData::ClearSelection, "(private API)")
         .def("has_selection",
-            &ImGuiInputTextCallbackData::HasSelection)
+            &ImGuiInputTextCallbackData::HasSelection, "(private API)")
         ;
 
 
@@ -3460,13 +3461,15 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("delivery", &ImGuiPayload::Delivery, "Set when AcceptDragDropPayload() was called and mouse button is released over the target item.")
         .def(py::init<>())
         .def("clear",
-            &ImGuiPayload::Clear)
+            &ImGuiPayload::Clear, "(private API)")
         .def("is_data_type",
-            &ImGuiPayload::IsDataType, py::arg("type"))
+            &ImGuiPayload::IsDataType,
+            py::arg("type"),
+            "(private API)")
         .def("is_preview",
-            &ImGuiPayload::IsPreview)
+            &ImGuiPayload::IsPreview, "(private API)")
         .def("is_delivery",
-            &ImGuiPayload::IsDelivery)
+            &ImGuiPayload::IsDelivery, "(private API)")
         ;
 
 
@@ -3530,7 +3533,7 @@ void py_init_module_imgui_main(py::module& m)
             .def(py::init<const char *, const char *>(),
                 py::arg("_b"), py::arg("_e"))
             .def("empty",
-                &ImGuiTextFilter::ImGuiTextRange::empty)
+                &ImGuiTextFilter::ImGuiTextRange::empty, "(private API)")
             ;
     } // end of inner classes & enums of TextFilter
 
@@ -3546,9 +3549,9 @@ void py_init_module_imgui_main(py::module& m)
         .def("build",
             &ImGuiTextFilter::Build)
         .def("clear",
-            &ImGuiTextFilter::Clear)
+            &ImGuiTextFilter::Clear, "(private API)")
         .def("is_active",
-            &ImGuiTextFilter::IsActive)
+            &ImGuiTextFilter::IsActive, "(private API)")
         .def_readwrite("count_grep", &ImGuiTextFilter::CountGrep, "")
         ;
 
@@ -3558,23 +3561,31 @@ void py_init_module_imgui_main(py::module& m)
             (m, "TextBuffer", " Helper: Growable text buffer for logging/accumulating text\n (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')")
         .def(py::init<>())
         .def("__getitem__",
-            &ImGuiTextBuffer::operator[], py::arg("i"))
+            &ImGuiTextBuffer::operator[],
+            py::arg("i"),
+            "(private API)")
         .def("begin",
-            &ImGuiTextBuffer::begin, pybind11::return_value_policy::reference)
+            &ImGuiTextBuffer::begin,
+            "(private API)",
+            pybind11::return_value_policy::reference)
         .def("end",
             &ImGuiTextBuffer::end,
-            "Buf is zero-terminated, so end() will point on the zero-terminator",
+            "(private API)\n\n Buf is zero-terminated, so end() will point on the zero-terminator",
             pybind11::return_value_policy::reference)
         .def("size",
-            &ImGuiTextBuffer::size)
+            &ImGuiTextBuffer::size, "(private API)")
         .def("empty",
-            &ImGuiTextBuffer::empty)
+            &ImGuiTextBuffer::empty, "(private API)")
         .def("clear",
-            &ImGuiTextBuffer::clear)
+            &ImGuiTextBuffer::clear, "(private API)")
         .def("reserve",
-            &ImGuiTextBuffer::reserve, py::arg("capacity"))
+            &ImGuiTextBuffer::reserve,
+            py::arg("capacity"),
+            "(private API)")
         .def("c_str",
-            &ImGuiTextBuffer::c_str, pybind11::return_value_policy::reference)
+            &ImGuiTextBuffer::c_str,
+            "(private API)",
+            pybind11::return_value_policy::reference)
         .def("append",
             &ImGuiTextBuffer::append, py::arg("str"), py::arg("str_end") = py::none())
         .def("appendf",
@@ -3611,7 +3622,7 @@ void py_init_module_imgui_main(py::module& m)
     pyClassImGuiStorage
         .def(py::init<>()) // implicit default constructor
         .def("clear",
-            &ImGuiStorage::Clear, " - Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)\n - Set***() functions find pair, insertion on demand if missing.\n - Sorted insertion is costly, paid once. A typical frame shouldn't need to insert any new pair.")
+            &ImGuiStorage::Clear, " - Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)\n - Set***() functions find pair, insertion on demand if missing.\n - Sorted insertion is costly, paid once. A typical frame shouldn't need to insert any new pair.\n(private API)")
         .def("get_int",
             &ImGuiStorage::GetInt, py::arg("key"), py::arg("default_val") = 0)
         .def("set_int",
@@ -3690,9 +3701,13 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<ImU32>(),
             py::arg("rgba"))
         .def("set_hsv",
-            &ImColor::SetHSV, py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f)
+            &ImColor::SetHSV,
+            py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f,
+            "(private API)")
         .def_static("hsv",
-            &ImColor::HSV, py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f)
+            &ImColor::HSV,
+            py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f,
+            "(private API)")
         ;
 
 
@@ -3708,7 +3723,7 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>(),
             "Also ensure our padding fields are zeroed")
         .def("get_tex_id",
-            &ImDrawCmd::GetTexID, "Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)")
+            &ImDrawCmd::GetTexID, " Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)\n(private API)")
         ;
 
 
@@ -3745,7 +3760,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("_count", &ImDrawListSplitter::_Count, "Number of active channels (1+)")
         .def(py::init<>())
         .def("clear",
-            &ImDrawListSplitter::Clear, "Do not clear Channels[] so our allocations are reused next frame")
+            &ImDrawListSplitter::Clear, "(private API)\n\n Do not clear Channels[] so our allocations are reused next frame")
         .def("clear_free_memory",
             &ImDrawListSplitter::ClearFreeMemory)
         .def("split",
@@ -3810,9 +3825,9 @@ void py_init_module_imgui_main(py::module& m)
         .def("pop_texture_id",
             &ImDrawList::PopTextureID)
         .def("get_clip_rect_min",
-            &ImDrawList::GetClipRectMin)
+            &ImDrawList::GetClipRectMin, "(private API)")
         .def("get_clip_rect_max",
-            &ImDrawList::GetClipRectMax)
+            &ImDrawList::GetClipRectMax, "(private API)")
         .def("add_line",
             &ImDrawList::AddLine, py::arg("p1"), py::arg("p2"), py::arg("col"), py::arg("thickness") = 1.0f)
         .def("add_rect",
@@ -3864,15 +3879,23 @@ void py_init_module_imgui_main(py::module& m)
         .def("add_image_rounded",
             &ImDrawList::AddImageRounded, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min"), py::arg("uv_max"), py::arg("col"), py::arg("rounding"), py::arg("flags") = 0)
         .def("path_clear",
-            &ImDrawList::PathClear)
+            &ImDrawList::PathClear, "(private API)")
         .def("path_line_to",
-            &ImDrawList::PathLineTo, py::arg("pos"))
+            &ImDrawList::PathLineTo,
+            py::arg("pos"),
+            "(private API)")
         .def("path_line_to_merge_duplicate",
-            &ImDrawList::PathLineToMergeDuplicate, py::arg("pos"))
+            &ImDrawList::PathLineToMergeDuplicate,
+            py::arg("pos"),
+            "(private API)")
         .def("path_fill_convex",
-            &ImDrawList::PathFillConvex, py::arg("col"))
+            &ImDrawList::PathFillConvex,
+            py::arg("col"),
+            "(private API)")
         .def("path_stroke",
-            &ImDrawList::PathStroke, py::arg("col"), py::arg("flags") = 0, py::arg("thickness") = 1.0f)
+            &ImDrawList::PathStroke,
+            py::arg("col"), py::arg("flags") = 0, py::arg("thickness") = 1.0f,
+            "(private API)")
         .def("path_arc_to",
             &ImDrawList::PathArcTo, py::arg("center"), py::arg("radius"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0)
         .def("path_arc_to_fast",
@@ -3900,11 +3923,15 @@ void py_init_module_imgui_main(py::module& m)
             "Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.",
             pybind11::return_value_policy::reference)
         .def("channels_split",
-            &ImDrawList::ChannelsSplit, py::arg("count"))
+            &ImDrawList::ChannelsSplit,
+            py::arg("count"),
+            "(private API)")
         .def("channels_merge",
-            &ImDrawList::ChannelsMerge)
+            &ImDrawList::ChannelsMerge, "(private API)")
         .def("channels_set_current",
-            &ImDrawList::ChannelsSetCurrent, py::arg("n"))
+            &ImDrawList::ChannelsSetCurrent,
+            py::arg("n"),
+            "(private API)")
         .def("prim_reserve",
             &ImDrawList::PrimReserve, py::arg("idx_count"), py::arg("vtx_count"))
         .def("prim_unreserve",
@@ -3918,11 +3945,17 @@ void py_init_module_imgui_main(py::module& m)
         .def("prim_quad_uv",
             &ImDrawList::PrimQuadUV, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("uv_a"), py::arg("uv_b"), py::arg("uv_c"), py::arg("uv_d"), py::arg("col"))
         .def("prim_write_vtx",
-            &ImDrawList::PrimWriteVtx, py::arg("pos"), py::arg("uv"), py::arg("col"))
+            &ImDrawList::PrimWriteVtx,
+            py::arg("pos"), py::arg("uv"), py::arg("col"),
+            "(private API)")
         .def("prim_write_idx",
-            &ImDrawList::PrimWriteIdx, py::arg("idx"))
+            &ImDrawList::PrimWriteIdx,
+            py::arg("idx"),
+            "(private API)")
         .def("prim_vtx",
-            &ImDrawList::PrimVtx, py::arg("pos"), py::arg("uv"), py::arg("col"))
+            &ImDrawList::PrimVtx,
+            py::arg("pos"), py::arg("uv"), py::arg("col"),
+            "(private API)")
         .def("_reset_for_new_frame",
             &ImDrawList::_ResetForNewFrame)
         .def("_clear_free_memory",
@@ -3960,7 +3993,7 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>(),
             "Functions")
         .def("clear",
-            &ImDrawData::Clear, "The ImDrawList are owned by ImGuiContext!")
+            &ImDrawData::Clear, "(private API)\n\n The ImDrawList are owned by ImGuiContext!")
         .def("de_index_all_buffers",
             &ImDrawData::DeIndexAllBuffers, "Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!")
         .def("scale_clip_rects",
@@ -4031,19 +4064,19 @@ void py_init_module_imgui_main(py::module& m)
             (m, "ImFontGlyphRangesBuilder", " Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().\n This is essentially a tightly packed of vector of 64k booleans = 8KB storage.")
         .def(py::init<>())
         .def("clear",
-            &ImFontGlyphRangesBuilder::Clear)
+            &ImFontGlyphRangesBuilder::Clear, "(private API)")
         .def("get_bit",
             &ImFontGlyphRangesBuilder::GetBit,
             py::arg("n"),
-            "Get bit n in the array")
+            "(private API)\n\n Get bit n in the array")
         .def("set_bit",
             &ImFontGlyphRangesBuilder::SetBit,
             py::arg("n"),
-            "Set bit n in the array")
+            "(private API)\n\n Set bit n in the array")
         .def("add_char",
             &ImFontGlyphRangesBuilder::AddChar,
             py::arg("c"),
-            "Add character")
+            "(private API)\n\n Add character")
         .def("add_text",
             &ImFontGlyphRangesBuilder::AddText,
             py::arg("text"), py::arg("text_end") = py::none(),
@@ -4068,7 +4101,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("font", &ImFontAtlasCustomRect::Font, "Input    // For custom font glyphs only: target font")
         .def(py::init<>())
         .def("is_packed",
-            &ImFontAtlasCustomRect::IsPacked)
+            &ImFontAtlasCustomRect::IsPacked, "(private API)")
         ;
 
 
@@ -4102,9 +4135,11 @@ void py_init_module_imgui_main(py::module& m)
         .def("build",
             &ImFontAtlas::Build, "Build pixels data. This is called automatically for you by the GetTexData*** functions.")
         .def("is_built",
-            &ImFontAtlas::IsBuilt, "Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...")
+            &ImFontAtlas::IsBuilt, "(private API)\n\n Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...")
         .def("set_tex_id",
-            &ImFontAtlas::SetTexID, py::arg("id_"))
+            &ImFontAtlas::SetTexID,
+            py::arg("id_"),
+            "(private API)")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_font_from_file_ttf",
@@ -4138,6 +4173,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("get_custom_rect_by_index",
             &ImFontAtlas::GetCustomRectByIndex,
             py::arg("index"),
+            "(private API)",
             pybind11::return_value_policy::reference)
         .def("calc_custom_rect_uv",
             &ImFontAtlas::CalcCustomRectUV, py::arg("rect"), py::arg("out_uv_min"), py::arg("out_uv_max"))
@@ -4190,11 +4226,15 @@ void py_init_module_imgui_main(py::module& m)
             py::arg("c"),
             pybind11::return_value_policy::reference)
         .def("get_char_advance",
-            &ImFont::GetCharAdvance, py::arg("c"))
+            &ImFont::GetCharAdvance,
+            py::arg("c"),
+            "(private API)")
         .def("is_loaded",
-            &ImFont::IsLoaded)
+            &ImFont::IsLoaded, "(private API)")
         .def("get_debug_name",
-            &ImFont::GetDebugName, pybind11::return_value_policy::reference)
+            &ImFont::GetDebugName,
+            "(private API)",
+            pybind11::return_value_policy::reference)
         .def("calc_word_wrap_position_a",
             &ImFont::CalcWordWrapPositionA,
             py::arg("scale"), py::arg("text"), py::arg("text_end"), py::arg("wrap_width"),
@@ -4261,9 +4301,9 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("platform_request_close", &ImGuiViewport::PlatformRequestClose, "Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)")
         .def(py::init<>())
         .def("get_center",
-            &ImGuiViewport::GetCenter)
+            &ImGuiViewport::GetCenter, "(private API)")
         .def("get_work_center",
-            &ImGuiViewport::GetWorkCenter)
+            &ImGuiViewport::GetWorkCenter, "(private API)")
         ;
 
 
