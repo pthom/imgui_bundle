@@ -6,7 +6,18 @@ def make_gui_closure():
     color_text = None
     vec = ImVec4(0.1, 0.2, 0.3, 0.4)
 
+    inited = False
+
     def gui():
+        nonlocal inited
+        if not inited:
+            col_text = imgui.get_style().colors[imgui.Col_.text]
+            col_text.x = 42
+            print(col_text)
+            col_text2 = imgui.get_style().colors[imgui.Col_.text]
+            print(col_text2)
+            inited = True
+
         imgui.text("Hello world")
         imgui.button("Hello", (100, 100))
 

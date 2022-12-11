@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 ##########################################################
 # Prepare imgui_bundle during configure time
 ##########################################################
-# Download hello_imgui
+# Download imgui_bundle
 include(FetchContent)
 Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
