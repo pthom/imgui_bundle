@@ -19,7 +19,7 @@ from icons_material_design import IconsMaterialDesign
 from IconsFontAwesome4 import IconsFontAwesome4
 
 this_dir = os.path.dirname(__file__)
-font_path =  this_dir + "/fonts"
+font_path = this_dir + "/fonts"
 
 
 class NoneContext:
@@ -32,7 +32,7 @@ class NoneContext:
 
 
 class GlassValidatorFontLoader:
-    size_mult: float = 1.
+    size_mult: float = 1.0
     big_font: imgui.ImFont
     icon_font: imgui.ImFont
 
@@ -52,14 +52,13 @@ class GlassValidatorFontLoader:
         imgui.text(IconsMaterialDesign.ICON_DOUBLE_ARROW)
         imgui.pop_font()
 
-
     def refresh_fonts(self):
         # KQ: imgui.get_io() does not exist! Replaced by imgui.get_io()
         import OpenGL.GL as gl
 
         imgui.get_io().fonts.clear()
-        #max_tex_size = gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)   ## KQ unused
-        #imgui.get_io().fonts.tex_desired_width = max_tex_size
+        # max_tex_size = gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)   ## KQ unused
+        # imgui.get_io().fonts.tex_desired_width = max_tex_size
 
         # KQ: commented this out
         # win_w, win_h = glfw.get_window_size(self.window)
@@ -75,7 +74,7 @@ class GlassValidatorFontLoader:
 
         karla_path = f"{font_path}/Karla-Regular.ttf"
         noto_path = f"{font_path}/NotoSans-Regular.ttf"
-        #mdi_path = f"{font_path}/materialdesignicons-webfont.7.0.96.ttf"
+        # mdi_path = f"{font_path}/materialdesignicons-webfont.7.0.96.ttf"
         mdi_path = font_path + "/materialdesignicons-webfont.ttf"
 
         # KQ: added this
@@ -83,15 +82,15 @@ class GlassValidatorFontLoader:
         fontawesome_range = [IconsFontAwesome4.ICON_MIN, IconsFontAwesome4.ICON_MAX, 0]
 
         noto_config = imgui.ImFontConfig()
-        noto_config.merge_mode=True
+        noto_config.merge_mode = True
         mdi_config = imgui.ImFontConfig()
-        mdi_config.merge_mode=True
-        mdi_config.glyph_offset.y=1*self.size_mult
+        mdi_config.merge_mode = True
+        mdi_config.glyph_offset.y = 1 * self.size_mult
         karla_range = [0x1, 0x131, 0]
         noto_range = [0x1, 0x10663, 0]
-        mdi_range0 = [0xf0000, 0xf2000, 0]
+        mdi_range0 = [0xF0000, 0xF2000, 0]
         mdi_range = [IconsMaterialDesign.ICON_MIN, IconsMaterialDesign.ICON_MAX, 0]
-        msgbox_range = [0xf02d7, 0xf02d7, 0xf02fc, 0xf02fc, 0xf11ce, 0xf11ce, 0xf0029, 0xf0029, 0]
+        msgbox_range = [0xF02D7, 0xF02D7, 0xF02FC, 0xF02FC, 0xF11CE, 0xF11CE, 0xF0029, 0xF0029, 0]
         size_18 = 18 * font_scaling_factor * self.size_mult
         size_28 = 28 * font_scaling_factor * self.size_mult
         size_69 = 69 * font_scaling_factor * self.size_mult
@@ -107,19 +106,32 @@ class GlassValidatorFontLoader:
 
             font_atlas.add_font_from_file_ttf(str(karla_path), size_18, glyph_ranges_as_int_list=karla_range)
             # load mdi => font won't render
-            font_atlas.add_font_from_file_ttf(str(mdi_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
+            font_atlas.add_font_from_file_ttf(
+                str(mdi_path), size_18, font_cfg=mdi_config, glyph_ranges_as_int_list=mdi_range
+            )
             # load noto range: ?
-            font_atlas.add_font_from_file_ttf(str(noto_path),  size_18, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
+            font_atlas.add_font_from_file_ttf(
+                str(noto_path), size_18, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range
+            )
             # load fontawesome => OK
-            font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_18, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
+            font_atlas.add_font_from_file_ttf(
+                str(fontawesome_path), size_18, font_cfg=mdi_config, glyph_ranges_as_int_list=fontawesome_range
+            )
 
             # Big font + more glyphs
-            self.big_font = \
-                font_atlas.add_font_from_file_ttf(str(karla_path), size_28,                       glyph_ranges_as_int_list=karla_range)
-            font_atlas.add_font_from_file_ttf(str(noto_path),  size_28, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range)
-            font_atlas.add_font_from_file_ttf(str(mdi_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=mdi_range)
+            self.big_font = font_atlas.add_font_from_file_ttf(
+                str(karla_path), size_28, glyph_ranges_as_int_list=karla_range
+            )
+            font_atlas.add_font_from_file_ttf(
+                str(noto_path), size_28, font_cfg=noto_config, glyph_ranges_as_int_list=noto_range
+            )
+            font_atlas.add_font_from_file_ttf(
+                str(mdi_path), size_28, font_cfg=mdi_config, glyph_ranges_as_int_list=mdi_range
+            )
             # added font awesome
-            font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_28, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
+            font_atlas.add_font_from_file_ttf(
+                str(fontawesome_path), size_28, font_cfg=mdi_config, glyph_ranges_as_int_list=fontawesome_range
+            )
 
             # MsgBox type icons
             # This line alone leads to IM_ASSERT( font && font->IsLoaded() )   ---   imgui.cpp:7795
@@ -130,11 +142,11 @@ class GlassValidatorFontLoader:
             # it seems you cannot have a font without basic character set
             # self.icon_font = \
             #     font_atlas.add_font_from_file_ttf(str(karla_path), size_69, glyph_ranges_as_int_list=karla_range)
-            self.icon_font = \
-                font_atlas.add_font_from_file_ttf(str(mdi_path), size_69, glyph_ranges_as_int_list=msgbox_range)
+            self.icon_font = font_atlas.add_font_from_file_ttf(
+                str(mdi_path), size_69, glyph_ranges_as_int_list=msgbox_range
+            )
             # # # added font awesome
             # self.icon_font = font_atlas.add_font_from_file_ttf(str(fontawesome_path),   size_69, font_cfg=mdi_config,  glyph_ranges_as_int_list=fontawesome_range)
-
 
 
 def glfw_error_callback(error: int, description: str):
@@ -263,7 +275,6 @@ def main():
             # imgui.push_font(dummy_font_loader.icon_font)
             # imgui.text("And those are icons???")
             # imgui.pop_font()
-
 
             imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
             _, show_demo_window = imgui.checkbox(
