@@ -12,7 +12,7 @@ def make_gui_closure():
 
         nonlocal color_text
         if color_text is None:
-            color_text = imgui.get_style().get_color(imgui.Col_.text)
+            color_text = imgui.get_style().colors[imgui.Col_.text]
 
         _ = imgui.color_edit4("Text color", color_text)
 
