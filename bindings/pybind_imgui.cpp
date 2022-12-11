@@ -4415,10 +4415,10 @@ void py_init_module_imgui_main(py::module& m)
         return cast_to_imvec2(t);
     }), py::arg("tuple"));
     pyClassImVec2.def(py::init([](py::list l) {
-	return cast_to_imvec2(l);
+        return cast_to_imvec2(l);
     }), py::arg("list"));
     pyClassImVec2.def(py::init([](py::array a) {
-	return cast_to_imvec2(a);
+        return cast_to_imvec2(a);
     }), py::arg("array"));
  
     py::implicitly_convertible<py::tuple, ImVec2>();
@@ -4444,10 +4444,10 @@ void py_init_module_imgui_main(py::module& m)
         return cast_to_imvec4(t);
     }), py::arg("tuple"));
     pyClassImVec4.def(py::init([](py::list l) {
-	return cast_to_imvec4(l);
+        return cast_to_imvec4(l);
     }), py::arg("list"));
     pyClassImVec4.def(py::init([](py::array a) {
-	return cast_to_imvec4(a);
+        return cast_to_imvec4(a);
     }), py::arg("array"));
  
     py::implicitly_convertible<py::tuple, ImVec4>();
