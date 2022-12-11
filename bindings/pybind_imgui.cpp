@@ -4411,6 +4411,14 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "ImVec2(%f, %f)", self.x, self.y);
         return r;
     });
+    pyClassImVec2.def("__len__", [](const ImVec2& self) -> size_t {
+        return 2;
+    });
+    pyClassImVec2.def("__iter__", [](const ImVec2& self) {
+            return py::make_iterator(&self.x, &self.x+2);
+        },
+        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+    );
     pyClassImVec2.def(py::init([](py::tuple t) {
         return cast_to_imvec2(t);
     }), py::arg("tuple"));
@@ -4455,6 +4463,14 @@ void py_init_module_imgui_main(py::module& m)
             return self.w;
         }
     });
+    pyClassImVec4.def("__len__", [](const ImVec4& self) -> size_t {
+        return 4;
+    });
+    pyClassImVec4.def("__iter__", [](const ImVec4& self) {
+            return py::make_iterator(&self.x, &self.x + 4);
+        },
+        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+    );
     pyClassImVec4.def(py::init([](py::tuple t) {
         return cast_to_imvec4(t);
     }), py::arg("tuple"));
