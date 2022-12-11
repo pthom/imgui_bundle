@@ -4,6 +4,7 @@ from imgui_bundle import imgui, immapp, ImVec4
 
 def make_gui_closure():
     color_text = None
+    vec = ImVec4(0.1, 0.2, 0.3, 0.4)
 
     def gui():
         imgui.text("Hello world")
@@ -16,10 +17,7 @@ def make_gui_closure():
 
         _ = imgui.color_edit4("Text color", color_text)
 
-        # Show that get_io().mouse_clicked : bool[5] is bound
-        click = imgui.get_io().mouse_clicked
-        if click[0]:
-            print("click")
+        imgui.input_float4("Vec", vec)
 
     return gui
 

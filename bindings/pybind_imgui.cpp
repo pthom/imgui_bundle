@@ -1319,6 +1319,16 @@ void py_init_module_imgui_main(py::module& m)
 
             return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     py::arg("label"), py::arg("v"), py::arg("format") = "%.3f", py::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_float2",
+        py::overload_cast<const char *, ImVec2 *, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), py::arg("label"), py::arg("io_vec"), py::arg("format") = "%.3f", py::arg("flags") = 0);
+
+    m.def("input_float4",
+        py::overload_cast<const char *, ImVec4 *, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), py::arg("label"), py::arg("io_vec"), py::arg("format") = "%.3f", py::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("input_int",
         [](const char * label, int v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0) -> std::tuple<bool, int>
