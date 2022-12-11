@@ -1,36 +1,22 @@
 import imgui_bundle
-from imgui_bundle import imgui, immapp
+from imgui_bundle import imgui, immapp, ImVec4, ImVec2
 
 
 def make_gui_closure():
     color_text = None
+    vec = ImVec4(0.1, 0.2, 0.3, 0.4)
 
     def gui():
-
         imgui.text("Hello world")
+        imgui.button("Hello", (100, 100))
 
         nonlocal color_text
         if color_text is None:
             color_text = imgui.get_style().get_color(imgui.Col_.text)
 
-        def edit_text_color():
-            nonlocal color_text
-            color_as_list = [color_text.x, color_text.y, color_text.z, color_text.w]
-            changed, new_color_list = imgui.color_edit4("Text color", color_as_list)
-            if changed:
-                # color_text = ImVec4(new_color_list[0], new_color_list[1], new_color_list[2], new_color_list[3])
-                # imgui.get_style().set_color(imgui.Col_.text, color_text)
-                color_text.x = new_color_list[0]
-                color_text.y = new_color_list[1]
-                color_text.z = new_color_list[2]
-                color_text.w = new_color_list[3]
+        _ = imgui.color_edit4("Text color", color_text)
 
-        edit_text_color()
-
-        # Show that get_io().mouse_clicked : bool[5] is bound
-        click = imgui.get_io().mouse_clicked
-        if click[0]:
-            print("click")
+        imgui.input_float4("Vec", vec)
 
     return gui
 

@@ -1,7 +1,5 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/functional.h>
-
+#include <string>
 
 namespace py = pybind11;
 
@@ -25,6 +23,10 @@ void py_init_module_immapp_cpp(py::module& m);
 
 void py_init_module_imgui_bundle(py::module& m)
 {
+    m.def("compilation_time", []() {
+        return std::string("imgui_bundle, compiled on ") + __DATE__ + " at " + __TIME__;
+    });
+
     py_init_module_imgui_bundle_inner(m);
 
     // imgui and its submodules

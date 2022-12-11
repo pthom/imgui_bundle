@@ -13,7 +13,7 @@ from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
 from imgui_bundle import immapp as immapp
 from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
 
-from imgui_bundle._imgui_bundle import __version__
+from imgui_bundle._imgui_bundle import __version__, compilation_time
 
 from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
 from imgui_bundle.im_col32 import IM_COL32

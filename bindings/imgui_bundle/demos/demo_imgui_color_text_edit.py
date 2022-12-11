@@ -56,6 +56,7 @@ def demo_imgui_color_text_edit():
 
 def main():
     from imgui_bundle import immapp
+
     immapp.run(demo_imgui_color_text_edit, with_markdown=True)
 
 

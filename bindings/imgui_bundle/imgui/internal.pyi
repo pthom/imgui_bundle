@@ -111,6 +111,9 @@ NavHighlightFlags_TypeDefault = NavHighlightFlags_.type_default
 #
 #
 
+# #ifndef IMGUI_DISABLE
+#
+
 # -----------------------------------------------------------------------------
 # [SECTION] Header mess
 # -----------------------------------------------------------------------------
@@ -1729,6 +1732,9 @@ class OldColumns:
 # [SECTION] Docking support
 # -----------------------------------------------------------------------------
 
+# #ifdef IMGUI_HAS_DOCK
+#
+
 class DockNodeFlagsPrivate_(enum.Enum):
     """Extend ImGuiDockNodeFlags_"""
 
@@ -1923,6 +1929,8 @@ class DockContext:
     # ImGuiDockContext()              { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+
+# #endif
 
 # -----------------------------------------------------------------------------
 # [SECTION] Viewport support
@@ -5452,6 +5460,8 @@ class ImFontBuilderIO:
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
+
+# #endif
 
 # <submodule im_stb>
 class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb

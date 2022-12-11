@@ -305,6 +305,10 @@ StoragePair = Any
 # Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
 #
 # [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 #
@@ -329,6 +333,9 @@ StoragePair = Any
 
 # Configuration file with compile-time options
 # (edit imconfig.h or '#define IMGUI_USER_CONFIG "myfilename.h" from your build system')
+
+# #ifndef IMGUI_DISABLE
+#
 
 # -----------------------------------------------------------------------------
 # [SECTION] Header mess
@@ -395,6 +402,17 @@ class ImVec2:
         pass
     # We very rarely use this [] operator, the assert overhead is fine.
 
+    # [ADAPT_IMGUI_BUNDLE]
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API inline std::array<float, 2> as_array() { return {x, y}; }    /* original C++ signature */
+    def as_array(self) -> List[float]:
+        """Returns a copy of this ImVec2 as an array"""
+        pass
+    # #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
 class ImVec4:
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
@@ -412,6 +430,16 @@ class ImVec4:
     # constexpr ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
+    # [ADAPT_IMGUI_BUNDLE]
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API inline std::array<float, 4> as_array() { return {x, y, z, w}; }    /* original C++ signature */
+    def as_array(self) -> List[float]:
+        """Returns a copy of this ImVec4 as an array"""
+        pass
+    # #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Dear ImGui end-user API functions
@@ -1617,6 +1645,27 @@ def input_float4(
 ) -> Tuple[bool, List[float]]:
     pass
 
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+#
+# These versions of InputFloat2 and InputFloat4 will **change** the io_vec:ImVec parameter, and return True when it was modified
+#
+# IMGUI_API inline bool          InputFloat2(const char* label, ImVec2* io_vec, const char* format = "%.3f", ImGuiInputTextFlags flags = 0) { return InputFloat2(label, &io_vec->x, format, flags); }    /* original C++ signature */
+def input_float2(
+    label: str, io_vec: ImVec2, format: str = "%.3", flags: InputTextFlags = 0
+) -> bool:
+    pass
+
+# IMGUI_API inline bool          InputFloat4(const char* label, ImVec4* io_vec, const char* format = "%.3f", ImGuiInputTextFlags flags = 0) { return InputFloat4(label, &io_vec->x, format, flags); }    /* original C++ signature */
+def input_float4(
+    label: str, io_vec: ImVec4, format: str = "%.3", flags: InputTextFlags = 0
+) -> bool:
+    pass
+
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
 # IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_int(
     label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = 0
@@ -1706,6 +1755,37 @@ def color_picker4(
     ref_col: Optional[float] = None,
 ) -> Tuple[bool, List[float]]:
     pass
+
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+#
+# These versions of ColorEdit and ColorPicker will **change** the io_col:ImVec4 parameter, and return True when it was modified
+#
+# IMGUI_API inline bool          ColorEdit3(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorEdit3(label, &io_col->x, flags); }    /* original C++ signature */
+def color_edit3(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorEdit4(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorEdit4(label, &io_col->x, flags); }    /* original C++ signature */
+def color_edit4(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorPicker3(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0) { return ColorPicker3(label, &io_col->x, flags); }    /* original C++ signature */
+def color_picker3(label: str, io_col: ImVec4, flags: ColorEditFlags = 0) -> bool:
+    pass
+
+# IMGUI_API inline bool          ColorPicker4(const char* label, ImVec4* io_col, ImGuiColorEditFlags flags = 0, const ImVec4* ref_col = NULL) { return ColorPicker4(label, &io_col->x, flags); }    /* original C++ signature */
+def color_picker4(
+    label: str,
+    io_col: ImVec4,
+    flags: ColorEditFlags = 0,
+    ref_col: Optional[ImVec4] = None,
+) -> bool:
+    pass
+
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
 
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
 def color_button(
@@ -4847,6 +4927,8 @@ class Style:
     circle_tessellation_max_error: float  # Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
 
     # [ADAPT_IMGUI_BUNDLE]
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # python adapter for ImGuiStyle::Colors[ImGuiCol_COUNT]
     # You can query and modify those values (0 <= idxColor < Col_.count)
     # inline IMGUI_API  ImVec4& GetColor(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
@@ -4855,6 +4937,8 @@ class Style:
     # inline IMGUI_API  void SetColor(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
     def set_color(self, idx_color: int, color: ImVec4) -> None:
         pass
+    #                                      #endif
+    #
     # [/ADAPT_IMGUI_BUNDLE]
 
     # IMGUI_API ImGuiStyle();    /* original C++ signature */
@@ -5184,13 +5268,17 @@ class IO:
         pass
     # [ADAPT_IMGUI_BUNDLE]
 
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
     def set_ini_filename(self, filename: str) -> None:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                                                #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures
@@ -5340,13 +5428,17 @@ class TableColumnSortSpecs:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
+    #                    #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # inline IMGUI_API ImGuiSortDirection GetSortDirection() { return SortDirection; }    /* original C++ signature */
     def get_sort_direction(self) -> SortDirection:
         pass
     # inline IMGUI_API void SetSortDirection(ImGuiSortDirection direction) { SortDirection = direction; }    /* original C++ signature */
     def set_sort_direction(self, direction: SortDirection) -> None:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                    #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 class TableSortSpecs:
     """Sorting specifications for a table (often handling sort specs for a single column, occasionally more)
@@ -5367,10 +5459,14 @@ class TableSortSpecs:
         pass
     # [ADAPT_IMGUI_BUNDLE]
 
+    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) { IM_ASSERT((idx >= 0) && (idx < SpecsCount)); return Specs[idx];}    /* original C++ signature */
     def get_specs(self, idx: int) -> TableColumnSortSpecs:
-        """[/ADAPT_IMGUI_BUNDLE]"""
         pass
+    #                            #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, ImColor)
@@ -6431,6 +6527,8 @@ class ImFontAtlas:
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
 
+    #                                 #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
@@ -6487,8 +6585,12 @@ class ImFontAtlas:
     # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
     #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
     def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
-        """[/ADAPT_IMGUI_BUNDLE] - // Default + Vietnamese characters"""
+        """// Default + Vietnamese characters"""
         pass
+    #                                 #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # -------------------------------------------
     # [BETA] Custom Rectangles/Glyphs API
     # -------------------------------------------
@@ -6938,6 +7040,12 @@ class PlatformImeData:
 # -----------------------------------------------------------------------------
 
 # Include imgui_user.h at the end of imgui.h (convenient for user to only explicitly include vanilla imgui.h)
+# #ifdef IMGUI_INCLUDE_IMGUI_USER_H
+#
+# #endif
+#
+
+# #endif
 ####################    </generated_from:imgui.h>    ####################
 
 

@@ -19,3 +19,8 @@ from . import immapp as immapp
 from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui  # type: ignore
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)
 from . im_col32 import IM_COL32 as IM_COL32
+
+
+def compilation_time() -> str:
+    """Return date and time when imgui_bundle was compiled"""
+    pass
