@@ -25,6 +25,7 @@ def autogenerate_immapp():
     )
 
     generator = litgen.LitgenGenerator(options)
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/utils.h")
 
