@@ -1,8 +1,7 @@
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2
-from imgui_bundle.immapp import static
+from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp
 
 
-@static(knob_value=0, knob_int_value=0)
+@immapp.static(knob_value=0, knob_int_value=0)
 def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
@@ -56,13 +55,20 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
+    knobs_size_small = immapp.em_size() * 4.
+    knobs_size_big = knobs_size_small * 1.3
+
+    imgui.begin_group()
     imgui.text("Some small knobs")
-    knobs_size_small = imgui.get_font_size() / imgui.get_io().font_global_scale * 2.5
-    knobs_size_big = knobs_size_small * 1.5
     show_float_knobs(knobs_size_small)
+    imgui.end_group()
+
+    imgui.same_line()
+
+    imgui.begin_group()
     imgui.text("Some big knobs (int values)")
     show_int_knobs(knobs_size_big)
-
+    imgui.end_group()
 
 def demo_spinner():
     from imgui_bundle import imspinner
@@ -74,18 +80,21 @@ def demo_spinner():
     )
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
+    imgui.text("spinner_moving_dots"); imgui.same_line()
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
     imgui.same_line()
 
-    radius = imgui.get_font_size() / 2.0
+    radius = imgui.get_font_size() / 1.8
+    imgui.text("spinner_arc_rotation"); imgui.same_line()
     imspinner.spinner_arc_rotation("spinner_arc_rotation", radius, 4.0, color)
     imgui.same_line()
 
     radius1 = imgui.get_font_size() / 2.5
-    imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
+    imgui.text("spinner_ang_triple"); imgui.same_line()
+    imspinner.spinner_ang_triple("spinner_ang_triple", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
 
 
-@static(toggle_a=True, toggle_b=True)
+@immapp.static(flag=True)
 def demo_toggle():
     static = demo_toggle
     imgui_md.render(
@@ -94,13 +103,26 @@ def demo_toggle():
   [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
     )
 
-    changed, static.toggle_a = imgui_toggle.toggle("Default Toggle", static.toggle_a)
-    changed, static.toggle_b = imgui_toggle.toggle(
-        "Animated Toggle", static.toggle_b, imgui_toggle.ToggleFlags_.animated
+    _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
+    imgui.same_line()
+
+    _changed, static.flag = imgui_toggle.toggle(
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
     )
+    imgui.same_line()
+
+    toggle_config = imgui_toggle.material_style()
+    toggle_config.animation_duration = 0.4
+    _changed, static.flag = imgui_toggle.toggle("Material Style (with slowed anim)", static.flag, config=toggle_config)
+
+    imgui.same_line()
+    _changed, static.flag = imgui_toggle.toggle("iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2))
+
+    imgui.same_line()
+    _changed, static.flag = imgui_toggle.toggle("iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True))
 
 
-@static(selected_filename="")
+@immapp.static(selected_filename="")
 def demo_file_dialog():
     static = demo_file_dialog  # Acces to static variable via static
     from imgui_bundle import im_file_dialog as ifd
