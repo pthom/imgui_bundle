@@ -21,7 +21,7 @@ def demo_imgui_color_text_edit():
     imgui_md.render(
         """
 # ImGuiColorTextEdit: 
-    [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
+[ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
     """
     )
 
