@@ -55,7 +55,7 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
-    knobs_size_small = immapp.em_size() * 4.
+    knobs_size_small = immapp.em_size() * 5.
     knobs_size_big = knobs_size_small * 1.3
 
     imgui.begin_group()
@@ -234,4 +234,4 @@ def demo_widgets():
 if __name__ == "__main__":
     from imgui_bundle import immapp
 
-    immapp.run(demo_widgets, with_markdown=True)  # type: ignore
+    immapp.run(demo_widgets, with_markdown=True, window_size=(1000, 800))  # type: ignore
