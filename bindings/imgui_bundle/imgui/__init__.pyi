@@ -4916,20 +4916,19 @@ class Style:
     # float       CurveTessellationTol;    /* original C++ signature */
     curve_tessellation_tol: float  # Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
     # float       CircleTessellationMaxError;    /* original C++ signature */
-    circle_tessellation_max_error: float
-    # Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
+    circle_tessellation_max_error: float  # Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
 
     # [ADAPT_IMGUI_BUNDLE]
-    #                                      #ifndef IMGUI_BUNDLE_PYTHON_API
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
     #
-    #                                      #else
-    #
-    # By using an array, this member becomes modifiable by python
-    # std::array guarantees that the element remains on the stack, *not on the heap*, so it remains fast.
-    # (in the future, one could use a smaller in-house alternative to std::array, to save compilation time)
-
-    # std::array<ImVec4, ImGuiCol_COUNT>  Colors;    /* original C++ signature */
-    colors: List[ImVec4]
+    # python adapter for ImGuiStyle::Colors[ImGuiCol_COUNT]
+    # You can query and modify those values (0 <= idxColor < Col_.count)
+    # inline IMGUI_API  ImVec4& Color_(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
+    def color_(self, idx_color: int) -> ImVec4:
+        pass
+    # inline IMGUI_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
+    def set_color_(self, idx_color: int, color: ImVec4) -> None:
+        pass
     #                                      #endif
     #
     # [/ADAPT_IMGUI_BUNDLE]
