@@ -48,7 +48,7 @@ def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
 
     python_code = inspect.getsource(python_gui_function)
 
-    imgui.push_id(str(id(python_gui_function)))
+    imgui.push_id(id(python_gui_function))
 
     editor_size = ImVec2(immapp.em_size() * 17.0, immapp.em_size() * 6.0)
 
