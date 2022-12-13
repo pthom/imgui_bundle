@@ -5,10 +5,9 @@ from types import ModuleType
 
 from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed
 from imgui_bundle.immapp import static
-from imgui_bundle.demos import demo_imgui
-from imgui_bundle.demos import demo_imgui_bundle
-from imgui_bundle.demos import demo_apps
-from imgui_bundle.demos import demo_imgui_color_text_edit
+from imgui_bundle.demos.demos_imgui import demo_imgui_show_demo_window
+from imgui_bundle.demos.demos_immapp import demo_apps
+from imgui_bundle.demos import demo_imgui_color_text_edit, demo_imgui_bundle
 from imgui_bundle.demos import demo_widgets
 from imgui_bundle.demos import demo_implot
 from imgui_bundle.demos import demo_node_editor
@@ -94,7 +93,7 @@ def main() -> None:
         dockable_windows.append(window)
 
     add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
-    add_dockable_window("Dear ImGui Demo", demo_imgui, demo_imgui.demo_imgui)
+    add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window, demo_imgui_show_demo_window.show_demo_window)
     add_dockable_window("Demo apps", demo_apps, demo_apps.demo_apps)
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor_separate_app)

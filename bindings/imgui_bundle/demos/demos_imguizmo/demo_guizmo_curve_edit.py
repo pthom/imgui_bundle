@@ -4,7 +4,7 @@ See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_curve_edit.main
 from typing import List
 
 from imgui_bundle import imguizmo, ImVec2, imgui, immapp
-from imgui_bundle.demos.api_demos import GuiFunction
+from imgui_bundle.demos.utils.api_demos import GuiFunction
 
 
 im_curve_edit = imguizmo.im_curve_edit

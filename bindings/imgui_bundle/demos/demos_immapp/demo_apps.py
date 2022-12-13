@@ -36,7 +36,7 @@ imgui_example_glfw_opengl3.py is a direct adaptation of an example from Dear ImG
 You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example.
 """
     )
-    show_one_feature("imgui_example_glfw_opengl3.py")
+    show_one_feature("../demos_imgui/imgui_example_glfw_opengl3.py")
 
 
 def demo_custom_font():
@@ -87,7 +87,7 @@ How to customize the theme."""
     show_one_feature("demos_hello_imgui/demo_powersave.py")
 
     imgui.text("Animated heart")
-    show_one_feature("haikus/haiku_implot_heart.py")
+    show_one_feature("../haikus/haiku_implot_heart.py")
 
     imgui.end_group()
 

@@ -1,6 +1,5 @@
-from imgui_bundle.demos.api_demos import *
+from imgui_bundle.demos.utils.api_demos import *
 from imgui_bundle import imgui, immvision
-import os
 
 ImVec2 = imgui.ImVec2
 ImVec4 = imgui.ImVec4

@@ -2,9 +2,7 @@
 # See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_zoom_slider.main.cpp
 
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, immapp
-from imgui_bundle.demos.api_demos import GuiFunction
-import imgui_bundle
-
+from imgui_bundle.demos.utils.api_demos import GuiFunction
 
 im_zoom_slider = imguizmo.im_zoom_slider
 

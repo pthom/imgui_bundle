@@ -1,6 +1,6 @@
 from typing import Dict
 from imgui_bundle import imgui, imgui_md, ImVec2, hello_imgui, imgui_color_text_edit, immapp
-from imgui_bundle.demos import code_str_utils
+from imgui_bundle.demos.utils import code_str_utils
 from imgui_bundle.immapp import static
 import inspect
 
@@ -78,7 +78,7 @@ def demo_radio_button():
 
 def show_code_advices() -> None:
     cpp_code = (
-        code_str_utils.unindent_code(
+            code_str_utils.unindent_code(
             """
         void DemoRadioButton()
         {
@@ -90,7 +90,7 @@ def show_code_advices() -> None:
     """,
             flag_strip_empty_lines=True,
         )
-        + "\n"
+            + "\n"
     )
 
     md_render_unindent(
@@ -129,7 +129,7 @@ def demo_input_text_decimal() -> None:
 
 def show_text_input_advice():
     cpp_code = (
-        code_str_utils.unindent_code(
+            code_str_utils.unindent_code(
             """
         void DemoInputTextDecimal()
         {
@@ -145,7 +145,7 @@ def show_text_input_advice():
         """,
             flag_strip_empty_lines=True,
         )
-        + "\n"
+            + "\n"
     )
 
     md_render_unindent(

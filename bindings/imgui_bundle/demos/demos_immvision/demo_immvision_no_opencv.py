@@ -1,4 +1,3 @@
-from imgui_bundle.demos.api_demos import *
 from imgui_bundle import imgui, immvision
 import numpy as np
 import math

@@ -1,6 +1,6 @@
-from imgui_bundle import imgui, imgui_md, ImVec2
+from imgui_bundle import imgui, imgui_md
 from imgui_bundle.immapp import static
-from imgui_bundle.demos import code_str_utils
+from imgui_bundle.demos.utils import code_str_utils
 
 
 def md_render_unindent(md: str):
@@ -9,8 +9,8 @@ def md_render_unindent(md: str):
 
 
 @static(is_initialized=False)
-def demo_imgui():
-    static = demo_imgui
+def show_demo_window():
+    static = show_demo_window
 
     md_render_unindent(
         """
@@ -26,4 +26,4 @@ def demo_imgui():
 if __name__ == "__main__":
     from imgui_bundle import immapp
 
-    immapp.run(gui_function=demo_imgui, with_markdown=True, window_size=(800, 600))  # type: ignore
+    immapp.run(gui_function=show_demo_window, with_markdown=True, window_size=(800, 600))  # type: ignore

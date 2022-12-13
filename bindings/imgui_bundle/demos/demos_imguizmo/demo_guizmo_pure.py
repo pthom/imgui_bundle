@@ -6,9 +6,8 @@ import numpy as np
 import math
 import munch  # type: ignore
 
-import imgui_bundle
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
-from imgui_bundle.demos.api_demos import GuiFunction
+from imgui_bundle.demos.utils.api_demos import GuiFunction
 
 # pip install PyGLM
 import glm
