@@ -222,14 +222,14 @@ Explanations:
 - Cpp: use ARM64 build
 
 ````
-cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64
+cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DHELLOIMGUI_BUILD_DEMOS=ON
 ````
 
 - Python: prefer python x64 (because numpy does not work on python arm64)
 
 ````
 F:\Utils\Python311-amd64\python.exe -m venv venv_arm
-.\venv_arm\Scripts\activate
+.\venv_amd\Scripts\activate
 Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:\dvp\_opencv\opencv-4.6.0_official_win_x64_world\opencv\build'
 pip install -v .
 ````
