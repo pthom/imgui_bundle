@@ -1,22 +1,22 @@
-import imgui_bundle
-from imgui_bundle import imgui, immapp, ImVec4, ImVec2
+from __future__ import annotations
+from imgui_bundle.demos.api_demos import GuiFunction
+from imgui_bundle import imgui, immapp, ImVec4
 
 
-def make_gui_closure():
+def make_gui_closure() -> GuiFunction:
     color_text = None
     vec = ImVec4(0.1, 0.2, 0.3, 0.4)
 
     def gui():
-        nonlocal color_text
+        nonlocal color_text, vec
         if color_text is None:
             color_text = imgui.get_style().color_(imgui.Col_.text)
-            imgui.get_style().set_color_(imgui.Col_.text, ImVec4(1, 0, 1, 1))
 
-        changed = imgui.color_edit4("Text color", color_text)
+        changed, color_text = imgui.color_edit4("Text color", color_text)
         if changed:
             imgui.get_style().set_color_(imgui.Col_.text, color_text)
 
-        imgui.input_float4("Vec", vec)
+        _, vec = imgui.input_float4("Vec", vec)
 
     return gui
 

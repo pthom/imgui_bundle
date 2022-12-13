@@ -1313,16 +1313,6 @@ void py_init_module_imgui_main(py::module& m)
 
             return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     py::arg("label"), py::arg("v"), py::arg("format") = "%.3f", py::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("input_float2",
-        py::overload_cast<const char *, ImVec2 *, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), py::arg("label"), py::arg("io_vec"), py::arg("format") = "%.3f", py::arg("flags") = 0);
-
-    m.def("input_float4",
-        py::overload_cast<const char *, ImVec4 *, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), py::arg("label"), py::arg("io_vec"), py::arg("format") = "%.3f", py::arg("flags") = 0);
-    // #endif
-    //
 
     m.def("input_int",
         [](const char * label, int v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0) -> std::tuple<bool, int>
@@ -1455,22 +1445,6 @@ void py_init_module_imgui_main(py::module& m)
 
             return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
         },     py::arg("label"), py::arg("col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("color_edit3",
-        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorEdit3), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
-
-    m.def("color_edit4",
-        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorEdit4), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
-
-    m.def("color_picker3",
-        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags>(ImGui::ColorPicker3), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0);
-
-    m.def("color_picker4",
-        py::overload_cast<const char *, ImVec4 *, ImGuiColorEditFlags, const ImVec4 *>(ImGui::ColorPicker4), py::arg("label"), py::arg("io_col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
-    // #endif
-    //
 
     m.def("color_button",
         ImGui::ColorButton,
@@ -4491,9 +4465,9 @@ void py_init_module_imgui_main(py::module& m)
     py::implicitly_convertible<py::list, ImVec4>();
     py::implicitly_convertible<py::array, ImVec4>();
  
-    pyClassImVec4.def(py::init([](ImVec4 imv) {
-        return ImVec4(imv.x, imv.y, imv.z, imv.w);
-    }), py::arg("imvec4"));
+//    pyClassImVec4.def(py::init([](ImVec4 imv) {
+//        return ImVec4(imv.x, imv.y, imv.z, imv.w);
+//    }), py::arg("imvec4"));
 
     // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
     // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
