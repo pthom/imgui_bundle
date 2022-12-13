@@ -4465,9 +4465,9 @@ void py_init_module_imgui_main(py::module& m)
     py::implicitly_convertible<py::list, ImVec4>();
     py::implicitly_convertible<py::array, ImVec4>();
  
-//    pyClassImVec4.def(py::init([](ImVec4 imv) {
-//        return ImVec4(imv.x, imv.y, imv.z, imv.w);
-//    }), py::arg("imvec4"));
+    pyClassImVec4.def(py::init([](ImVec4 imv) {
+        return ImVec4(imv.x, imv.y, imv.z, imv.w);
+    }), py::arg("imvec4"));
 
     // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
     // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
