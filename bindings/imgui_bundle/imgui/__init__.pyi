@@ -7309,3 +7309,8 @@ def input_text_with_hint(
 # </litgen_stub>
 
 # fmt: on
+
+##################################################
+#    Manually inserted code (additional methods, etc.)
+##################################################
+ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
