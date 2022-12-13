@@ -2,7 +2,7 @@ from typing import Callable, Any, Tuple, Optional
 import imgui_bundle
 
 
-def static(**kwargs):
+def static(**kwargs: Any) -> Any:
     """A decorator that adds static variables to a function
     :param kwargs: list of static variables to add
     :return: decorated function
