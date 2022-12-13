@@ -2,8 +2,7 @@ import math
 from munch import Munch  # type: ignore
 
 import numpy as np
-from imgui_bundle import imgui, implot, imgui_md
-from imgui_bundle.immapp import static
+from imgui_bundle import imgui, implot, imgui_md, immapp
 
 
 ImVec2 = imgui.ImVec2
@@ -27,7 +26,7 @@ def _demo_drag_rects_statics() -> Munch:
     return r
 
 
-@static(statics=_demo_drag_rects_statics())
+@immapp.static(statics=_demo_drag_rects_statics())
 def demo_drag_rects():
     statics = demo_drag_rects.statics
 
@@ -38,7 +37,8 @@ def demo_drag_rects():
     imgui.same_line()
     _, statics.flags = imgui.checkbox_flags("NoInput", statics.flags, implot.DragToolFlags_.no_inputs)
 
-    if implot.begin_plot("##Main", ImVec2(-1, 200)):
+    plot_height = immapp.em_size() * 15
+    if implot.begin_plot("##Main", ImVec2(-1, plot_height)):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_tick_labels, implot.ImPlotAxisFlags_.no_tick_labels)
         implot.setup_axes_limits(0, 0.01, -1, 1)
         implot.plot_line("Signal 1", statics.x_data, statics.y_data1)
@@ -54,7 +54,7 @@ def demo_drag_rects():
             statics.flags,
         )
         implot.end_plot()
-    if implot.begin_plot("##rect", ImVec2(-1, 200), implot.Flags_.canvas_only):
+    if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
             statics.rect.x.min, statics.rect.x.max, statics.rect.y.min, statics.rect.y.max, imgui.Cond_.always
@@ -67,7 +67,8 @@ def demo_drag_rects():
 
 def demo_mixed_plot():
     implot.push_colormap(implot.Colormap_.deep)
-    if implot.begin_plot("Mixed plot"):
+    plot_height = immapp.em_size() * 30
+    if implot.begin_plot("Mixed plot", ImVec2(-1, plot_height)):
         implot.setup_axes("x-axis", "y-axis")
         implot.setup_axes_limits(-0.5, 9.5, 0, 10)
         lin = np.array([8, 8, 9, 7, 8, 8, 8, 9, 7, 8])
@@ -100,9 +101,7 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 
 def main():
-    from imgui_bundle import immapp
-
-    immapp.run(demo_implot, with_implot=True, with_markdown=True)
+    immapp.run(demo_implot, with_implot=True, with_markdown=True, window_size=(1000, 800))
 
 
 if __name__ == "__main__":
