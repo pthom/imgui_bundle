@@ -200,16 +200,18 @@ def show_glfw_callback_advice():
         static.text_editor = TextEditor()
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
-    md_render_unindent("For more complex applications, you can set various callbacks, using glfw.")
+    imgui.text("Code for this demo")
+    static.text_editor.render("Code", immapp.em_vec2(50., 16.5))
+
+    md_render_unindent("""For more complex applications, you can set various callbacks, using glfw.
+    *Click the button below to add a callback*""")
+
     if imgui.button("Add glfw callback"):
         demo_add_window_size_callback()
         hello_imgui.log(
             hello_imgui.LogLevel.warning,
             "A callback was handed to watch the window size. Change this window size and look at the logs",
         )
-
-    imgui.text("Code for this demo")
-    static.text_editor.render("Code", ImVec2(500, 150))
 
     hello_imgui.log_gui()
 
