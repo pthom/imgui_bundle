@@ -96,7 +96,7 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
     if imgui.collapsing_header("Drag Rects"):
         demo_drag_rects()
-    if imgui.collapsing_header("Mixed plot"):
+    if imgui.collapsing_header("Mixed plot", imgui.TreeNodeFlags_.default_open):
         demo_mixed_plot()
 
 

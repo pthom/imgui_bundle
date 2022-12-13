@@ -302,7 +302,7 @@ def demo_imgui_bundle() -> None:
     if imgui.collapsing_header("TextInput and enums"):
         show_text_input_advice()
 
-    if imgui.collapsing_header("Advanced callbacks"):
+    if imgui.collapsing_header("Advanced glfw callbacks"):
         show_glfw_callback_advice()
 
 

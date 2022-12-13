@@ -1,4 +1,3 @@
-# type: ignore
 from imgui_bundle import imgui, immapp
 
 

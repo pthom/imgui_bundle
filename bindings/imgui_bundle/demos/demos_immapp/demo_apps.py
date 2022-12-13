@@ -1,111 +1,56 @@
-import subprocess
-import sys
 import os
 
-from imgui_bundle import imgui_color_text_edit as text_edit, imgui_md
-from imgui_bundle import imgui, ImVec2, immapp
+from imgui_bundle import imgui_md
+from imgui_bundle import immapp
+from imgui_bundle.demos.utils.api_demos import GuiFunction
+from imgui_bundle.demos.utils.demo_app_table import DemoAppTable, DemoApp
 
 
-EDITOR = text_edit.TextEditor()
-EDITOR.set_text("")
+DOC = """
+# HelloImGui and ImmApp
 
+* [HelloImGui](https://github.com/pthom/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
+  Link to the [API documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md). Docking layout [documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#docking)
+* [ImApp](https://github.com/pthom/imgui_bundle/blob/dev/bindings/imgui_bundle/immapp/immapp_cpp.pyi) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup. 
 
-def python_path():
-    executable = os.path.realpath(sys.executable)
-    return executable
-
-
-def show_one_feature(demo_file):
-    if imgui.button(demo_file):
-        this_dir = os.path.dirname(__file__)
-        demo_file_path = this_dir + "/" + demo_file
-
-        with open(demo_file_path) as f:
-            code = f.read()
-        EDITOR.set_text(code)
-        subprocess.Popen([sys.executable, demo_file_path])
-
-
-def demo_imgui():
-    imgui_md.render(
-        """
-# ImGui example application
-imgui_example_glfw_opengl3.py is a direct adaptation of an example from Dear ImGui: 
-[imgui/examples/example_glfw_opengl3/main.cpp](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
-
-You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example.
-"""
-    )
-    show_one_feature("../demos_imgui/imgui_example_glfw_opengl3.py")
-
-
-def demo_custom_font():
-    imgui_md.render(
-        """
-### How to load custom fonts (with icons)
-You can load custom font and merge icons into them.
+## Demo applications
     """
-    )
-    show_one_feature("demo_custom_font.py")
 
 
-def demo_hello_imgui():
-    from imgui_bundle import imgui
+# This returns a closure function that will later be invoked to run the app
+def make_closure_demo_apps() -> GuiFunction:
+    demo_apps = [
+        DemoApp("imgui_example_glfw_opengl3.py", """
+                    How to run a *bare ImGui application*<br>
+                    imgui_example_glfw_opengl3.py is a direct adaptation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.<br>
+                    You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example"""),
+        DemoApp("demo_hello_world.py",
+                "Hello world demo: how to start an app with ImmApp in as few lines as possible"),
+        DemoApp("demo_assets.py", "How to load assets with HelloImGui"),
+        DemoApp("demo_docking.py","""How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme."""
+                ),
+        DemoApp("demo_implot_markdown.py", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
+        DemoApp("demo_powersave.py", "How to have smooth animations, and how to let the application save CPU when idle"),
+        DemoApp("demo_custom_font.py", "How to load custom fonts"),
+        DemoApp("../haikus/haiku_implot_heart.py", "Animated heart"),
+    ]
 
-    imgui_md.render(
-        """
-# HelloImGui
-[HelloImGui](https://github.com/pthom/hello_imgui) is a wrapper around ImGui that enables to easily create applications with ImGui.
-* Hello ImGui [API Doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
-* Docking layout [specific documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#docking)
-    """
-    )
+    idx_initial_app = 2
+    this_dir = os.path.dirname(__file__)
+    demo_app_table = DemoAppTable(demo_apps, this_dir, idx_initial_app)
 
-    imgui.begin_group()
+    def gui():
+        nonlocal demo_apps
+        imgui_md.render(DOC)
+        demo_app_table.gui()
 
-    imgui.text("Hello world demo: how to start an app in as few lines as possible")
-    show_one_feature("demos_hello_imgui/demo_hello_world.py")
-
-    imgui.text("How to load assets")
-    show_one_feature("demos_hello_imgui/demo_assets.py")
-
-    imgui.text_wrapped(
-        """How to build complex applications layouts, with dockable panels, 
-that can even become independent windows. 
-How to customize the theme."""
-    )
-    show_one_feature("demos_hello_imgui/demo_docking.py")
-
-    imgui.end_group()
-    imgui.same_line(0, 30)
-    imgui.begin_group()
-
-    imgui.text("How to quickly run an app that uses implot and/or markdown")
-    show_one_feature("demos_hello_imgui/demo_implot_markdown.py")
-
-    imgui.text("How to have smooth animations")
-    show_one_feature("demos_hello_imgui/demo_powersave.py")
-
-    imgui.text("Animated heart")
-    show_one_feature("../haikus/haiku_implot_heart.py")
-
-    imgui.end_group()
+    return gui
 
 
-def demo_apps():
-    imgui.begin_child("##Doc", ImVec2(0, imgui.get_window_height() - 300))
-    demo_imgui()
-    demo_custom_font()
-    demo_hello_imgui()
-    imgui.end_child()
-
-    if len(EDITOR.get_text()) > 1:
-        imgui.set_next_window_size(ImVec2(800, 600), imgui.Cond_.appearing)
-        imgui.begin("App code")
-        imgui.text("Code for this demo")
-        EDITOR.render("Code")
-        imgui.end()
+def main():
+    gui = make_closure_demo_apps()
+    immapp.run(gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
 
 
 if __name__ == "__main__":
-    immapp.run(demo_apps, with_markdown=True, window_size=(800, 800))  # type: ignore
+    main()

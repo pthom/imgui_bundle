@@ -3,11 +3,10 @@ import sys
 from typing import List, Callable
 from types import ModuleType
 
-from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed
+from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
 from imgui_bundle.immapp import static
-from imgui_bundle.demos.demos_imgui import demo_imgui_show_demo_window
 from imgui_bundle.demos.demos_immapp import demo_apps
-from imgui_bundle.demos import demo_imgui_color_text_edit, demo_imgui_bundle
+from imgui_bundle.demos import demo_imgui_color_text_edit, demo_imgui_bundle, demo_imgui_show_demo_window
 from imgui_bundle.demos import demo_widgets
 from imgui_bundle.demos import demo_implot
 from imgui_bundle.demos import demo_node_editor
@@ -37,11 +36,25 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
 
 
 def demo_node_editor_separate_app():
-    if imgui.button("Run demo"):
-        import subprocess
+    from imgui_bundle.demos.demo_node_editor import demo_node_editor
 
-        this_dir = os.path.dirname(__file__)
-        subprocess.Popen([sys.executable, this_dir + "/demo_node_editor.py"])
+    imgui_md.render(
+        """
+# imgui-node-editor
+[imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
+    """
+    )
+    if imgui.collapsing_header("Screenshot - BluePrint", imgui.TreeNodeFlags_.default_open):
+        hello_imgui.image_from_asset("images/node_editor_screenshot.jpg", immapp.em_vec2(40, 0))
+    if imgui.collapsing_header("Demo"):
+        imgui.text("Use the mouse wheel to zoom-unzoom. Right-click and drag to pan the view.")
+        demo_node_editor()
+
+    # if imgui.button("Run demo"):
+    #     import subprocess
+    #
+    #     this_dir = os.path.dirname(__file__)
+    #     subprocess.Popen([sys.executable, this_dir + "/demo_node_editor.py"])
 
 
 def main() -> None:
@@ -94,12 +107,12 @@ def main() -> None:
 
     add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
     add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window, demo_imgui_show_demo_window.show_demo_window)
-    add_dockable_window("Demo apps", demo_apps, demo_apps.demo_apps)
+    add_dockable_window("Immediate Apps", demo_apps, demo_apps.make_closure_demo_apps())
     add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
     add_dockable_window("Node Editor", demo_node_editor, demo_node_editor_separate_app)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
     add_dockable_window(
-        "Editor demo", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
+        "Text Editor", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
     )
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
 

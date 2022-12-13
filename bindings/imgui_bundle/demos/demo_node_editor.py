@@ -211,19 +211,10 @@ class DemoNodeEditor:
 
 @static(demo_node_editor=None)
 def demo_node_editor():
-    static = demo_node_editor
-    if static.demo_node_editor is None:
-        static.demo_node_editor = DemoNodeEditor()
-
-    imgui_md.render(
-        """
-# imgui-node-editor
-[imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
-Use the mouse wheel to zoom-unzoom.
-    """
-    )
-
-    static.demo_node_editor.on_frame()
+    statics = demo_node_editor
+    if statics.demo_node_editor is None:
+        statics.demo_node_editor = DemoNodeEditor()
+    statics.demo_node_editor.on_frame()
 
 
 def main():
