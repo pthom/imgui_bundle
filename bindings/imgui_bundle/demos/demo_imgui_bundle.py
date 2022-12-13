@@ -76,7 +76,7 @@ def demo_radio_button():
     clicked, static.value = imgui.radio_button("radio c", static.value, 2)
 
 
-def show_basic_code_advices() -> None:
+def show_code_advices() -> None:
     cpp_code = (
         code_str_utils.unindent_code(
             """
@@ -294,8 +294,8 @@ def demo_imgui_bundle() -> None:
 
             webbrowser.open("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html")
 
-    if imgui.collapsing_header("Basic code advices"):
-        show_basic_code_advices()
+    if imgui.collapsing_header("Advices"):
+        show_code_advices()
 
     if imgui.collapsing_header("TextInput and enums"):
         show_text_input_advice()
