@@ -17,7 +17,7 @@ FLT_MAX: float # value defined by this module as the maximum acceptable C(++) fl
 
 def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
     """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
-    This is also available as a method of ImFont: ImFont.get_tex_data_as_rgba32()
+    This is also available as a method of ImFont: ImFontAtlas.get_tex_data_as_rgba32()
     """
     pass
 
