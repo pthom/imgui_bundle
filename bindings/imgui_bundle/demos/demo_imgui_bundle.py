@@ -35,7 +35,7 @@ def show_code_editor(code: str, is_cpp: bool):
         else:
             editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
 
-    editor_size = ImVec2(immapp.em_size() * 17.0, immapp.em_size() * 6.0)
+    editor_size = ImVec2(imgui.get_window_width() / 2. - 15., immapp.em_size() * 12.0)
     editors[code].set_text(code)
     editor_title = "cpp" if is_cpp else "python"
     editors[code].render(f"##{editor_title}", editor_size)
@@ -48,9 +48,7 @@ def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
 
     python_code = inspect.getsource(python_gui_function)
 
-    imgui.push_id(id(python_gui_function))
-
-    editor_size = ImVec2(immapp.em_size() * 17.0, immapp.em_size() * 6.0)
+    imgui.push_id(str(id(python_gui_function)))
 
     imgui.begin_group()
     imgui.text("C++ code")
