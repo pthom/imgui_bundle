@@ -19,7 +19,7 @@ def gui():
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
     imgui.text("Bloat free code")
-    implot.begin_plot("Heart")
+    implot.begin_plot("Heart", immapp.em_vec2(21, 21))
     implot.plot_line("", x * k, y * k)
     implot.end_plot()
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)

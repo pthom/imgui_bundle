@@ -4,7 +4,7 @@
 from typing import Tuple, Optional, Callable
 import numpy as np
 
-from imgui_bundle import imgui_md, hello_imgui
+from imgui_bundle import imgui_md, hello_imgui, ImVec2
 from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig, EditorContext as NodeEditorContext
 
 
