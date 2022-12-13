@@ -4410,14 +4410,22 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "ImVec2(%f, %f)", self.x, self.y);
         return r;
     });
+    pyClassImVec2.def("__len__", [](const ImVec2& self) -> size_t {
+        return 2;
+    });
+    pyClassImVec2.def("__iter__", [](const ImVec2& self) {
+            return py::make_iterator(&self.x, &self.x+2);
+        },
+        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+    );
     pyClassImVec2.def(py::init([](py::tuple t) {
         return cast_to_imvec2(t);
     }), py::arg("tuple"));
     pyClassImVec2.def(py::init([](py::list l) {
-	return cast_to_imvec2(l);
+        return cast_to_imvec2(l);
     }), py::arg("list"));
     pyClassImVec2.def(py::init([](py::array a) {
-	return cast_to_imvec2(a);
+        return cast_to_imvec2(a);
     }), py::arg("array"));
  
     py::implicitly_convertible<py::tuple, ImVec2>();
@@ -4439,14 +4447,37 @@ void py_init_module_imgui_main(py::module& m)
         snprintf(r, 100, "ImVec4(%f, %f, %f, %f)", self.x, self.y, self.z, self.w);
         return r;
     });
+    pyClassImVec4.def("__getitem__", [](const ImVec4& self, size_t idx) -> float {
+        if (idx >= 4)
+            throw py::index_error();
+        switch (idx)
+        {
+        case 0:
+            return self.x;
+        case 1:
+            return self.y;
+        case 2:
+            return self.z;
+        case 3:
+            return self.w;
+        }
+    });
+    pyClassImVec4.def("__len__", [](const ImVec4& self) -> size_t {
+        return 4;
+    });
+    pyClassImVec4.def("__iter__", [](const ImVec4& self) {
+            return py::make_iterator(&self.x, &self.x + 4);
+        },
+        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+    );
     pyClassImVec4.def(py::init([](py::tuple t) {
         return cast_to_imvec4(t);
     }), py::arg("tuple"));
     pyClassImVec4.def(py::init([](py::list l) {
-	    return cast_to_imvec4(l);
+        return cast_to_imvec4(l);
     }), py::arg("list"));
     pyClassImVec4.def(py::init([](py::array a) {
-	    return cast_to_imvec4(a);
+        return cast_to_imvec4(a);
     }), py::arg("array"));
  
     py::implicitly_convertible<py::tuple, ImVec4>();
