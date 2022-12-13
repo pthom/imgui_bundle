@@ -4460,6 +4460,10 @@ void py_init_module_imgui_main(py::module& m)
             return self.z;
         case 3:
             return self.w;
+        default:
+            // unreachable, but makes clang happy
+            // (warning: non-void lambda does not return a value in all control paths [-Wreturn-type])
+            return 0.f;
         }
     });
     pyClassImVec4.def("__len__", [](const ImVec4& self) -> size_t {
