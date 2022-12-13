@@ -55,10 +55,6 @@ pip install -v .          # install the library
 
     pip install -v .
 
-### Private note for this library author :  
- 	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build'
-or
- 	Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_arm64_dll_world'
 
 # C++ build instructions
 
@@ -78,6 +74,7 @@ Note: if you are on windows ARM64 and want to build for x64 use:
 # Windows ARM64 specific instructions
 
 There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.
+
 
 ## Using a "world" dll version of OpenCV 
 
@@ -218,6 +215,25 @@ Explanations:
 * CMAKE_MSVC_RUNTIME_LIBRARY: tells MSVC to use static runtime (/MT)
 * BUILD_SHARED_LIBS=OFF: build static libs. Normally, this could be ignored
   
+
+
+# Private note for this library author :  
+
+- Cpp: use ARM64 build
+
+````
+cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64
+````
+
+- Python: prefer python x64 (because numpy does not work on python arm64)
+
+````
+F:\Utils\Python311-amd64\python.exe -m venv venv_arm
+.\venv_arm\Scripts\activate
+Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:\dvp\_opencv\opencv-4.6.0_official_win_x64_world\opencv\build'
+pip install -v .
+````
+
 
 
 # imgui bundle package distribution
