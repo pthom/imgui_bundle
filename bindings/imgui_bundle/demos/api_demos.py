@@ -4,7 +4,7 @@ from typing import Callable
 GuiFunction = Callable[[], None]
 
 
-def demos_assets_folder():
+def demos_assets_folder() -> str:
     import os
 
     this_dir = os.path.dirname(__file__)
