@@ -114,10 +114,18 @@ def run(
     pass
 
 def em_size() -> float:
-    """__HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
-    widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-    EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).
+    """EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+    widgets and windows relatively to this size.
+    It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    EmSize() = ImGui::GetFontSize()
     """
+    pass
+
+# EmVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+def em_vec2(x: float, y: float) -> ImVec2:
+    pass
+
+def em_vec2(v: ImVec2) -> ImVec2:
     pass
 ####################    </generated_from:runner.h>    ####################
 

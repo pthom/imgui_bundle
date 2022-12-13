@@ -149,6 +149,14 @@ namespace ImmApp
     {
         return HelloImGui::EmSize();
     }
+    ImVec2 EmVec2(float x, float y)
+    {
+        return HelloImGui::EmVec2(x, y);
+    }
+    ImVec2 EmVec2(ImVec2 v)
+    {
+        return HelloImGui::EmVec2(v);
+    }
 
 
     ax::NodeEditor::EditorContext* CurrentNodeEditorContext_Impl()

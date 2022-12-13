@@ -2223,9 +2223,14 @@ namespace HelloImGui
     RunnerParams* GetRunnerParams();
 
     // __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
-    // widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-    // EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).
+    // widgets and windows relatively to this size.
+    // It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    // EmSize() = ImGui::GetFontSize()
     float EmSize();
+
+    // __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+    ImVec2 EmVec2(float x, float y);
+    ImVec2 EmVec2(ImVec2 v);
 }
 
 /**

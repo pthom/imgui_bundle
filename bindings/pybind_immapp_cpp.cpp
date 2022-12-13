@@ -175,7 +175,13 @@ void py_init_module_immapp_cpp(py::module& m)
         " Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.");
 
     m.def("em_size",
-        ImmApp::EmSize, " __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size. It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale (on MacOS FontGlobalScale can be = 2.0).");
+        ImmApp::EmSize, " EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
+
+    m.def("em_vec2",
+        py::overload_cast<float, float>(ImmApp::EmVec2), py::arg("x"), py::arg("y"));
+
+    m.def("em_vec2",
+        py::overload_cast<ImVec2>(ImmApp::EmVec2), py::arg("v"));
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
