@@ -20,7 +20,7 @@ def make_gui() -> demo_utils.GuiFunction:
             if imgui.button("Run gizmo demo"):
                 this_dir = os.path.dirname(__file__)
                 subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_gizmo.py"])
-            demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_gizmo", nb_lines=60)
+            demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_gizmo", nb_lines=30)
         if imgui.collapsing_header("Curve Edit"):
             demos_imguizmo.demo_guizmo_curve_edit.demo_launch()
             demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_guizmo_curve_edit", nb_lines=30)
@@ -34,8 +34,8 @@ def make_gui() -> demo_utils.GuiFunction:
 
 
 @immapp.static(gui=None)
-def demo_immvision_launch():
-    statics = demo_immvision_launch
+def demo_launch():
+    statics = demo_launch
     if statics.gui is None:
         statics.gui = make_gui()
     statics.gui()

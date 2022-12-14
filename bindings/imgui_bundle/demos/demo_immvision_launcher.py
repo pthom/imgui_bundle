@@ -19,22 +19,22 @@ def make_gui() -> demo_utils.GuiFunction:
 
         if imgui.collapsing_header("Display images"):
             demos_immvision.demo_immvision_display.gui()
-            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_display", nb_lines=20)
+            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_display")
         if imgui.collapsing_header("Link images zoom"):
             demos_immvision.demo_immvision_link.gui()
-            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_link", nb_lines=20)
+            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_link")
         if imgui.collapsing_header("Image inspector"):
             demos_immvision.demo_immvision_inspector.gui()
-            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_inspector", nb_lines=20)
+            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_inspector")
         if imgui.collapsing_header("Example with image processing"):
             gui_process()
-            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_process", nb_lines=20)
+            demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_process", nb_lines=40)
     return gui
 
 
 @immapp.static(gui=None)
-def demo_immvision_launch():
-    statics = demo_immvision_launch
+def demo_launch():
+    statics = demo_launch
     if statics.gui is None:
         statics.gui = make_gui()
     statics.gui()

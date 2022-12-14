@@ -13,6 +13,7 @@ from imgui_bundle.demos import demo_node_editor
 from imgui_bundle.demos import demo_imgui_md
 from imgui_bundle.demos import demo_immvision_launcher
 from imgui_bundle.demos import demo_imguizmo_launcher
+from imgui_bundle.demos import demo_tex_inspect_launcher
 
 
 @static(was_initialized=None)
@@ -68,7 +69,7 @@ def main() -> None:
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
     runner_params.app_window_params.window_title = "ImGui Bundle"
-    runner_params.app_window_params.window_geometry.size = (1000, 900)
+    runner_params.app_window_params.window_geometry.size = (1200, 900)
 
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
@@ -115,8 +116,9 @@ def main() -> None:
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
     add_dockable_window("Text Editor", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit)
     add_dockable_window("Widgets", demo_widgets, demo_widgets.demo_widgets)
-    add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_immvision_launch)
-    add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_immvision_launch)
+    add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_launch)
+    add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_launch)
+    add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_launch)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
@@ -139,6 +141,7 @@ def main() -> None:
     addons.with_node_editor = True
     addons.with_markdown = True
     addons.with_implot = True
+    addons.with_tex_inspect = True
     immapp.run(runner_params=runner_params, add_ons_params=addons)
 
 

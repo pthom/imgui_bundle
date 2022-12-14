@@ -18,7 +18,7 @@ def demos_assets_folder() -> str:
 
 
 @immapp.static(editors={})
-def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 12):
+def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 0):
     static = show_code_editor
     editors: Dict[str, TextEditor] = static.editors
 
@@ -30,12 +30,14 @@ def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 12):
             editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
         editors[code].set_text(code)
 
+    if nb_lines == 0:
+        nb_lines = len(editors[code].get_text().split("\n"))
     editor_size = ImVec2(imgui.get_window_width() / 2. - 20., immapp.em_size() * nb_lines)
     editor_title = "cpp" if is_cpp else "python"
     editors[code].render(f"##{editor_title}", editor_size)
 
 
-def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 12):
+def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.push_id(python_code)
 
     imgui.begin_group()
@@ -53,14 +55,14 @@ def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 12)
     imgui.pop_id()
 
 
-def show_python_vs_cpp_and_run(python_gui_function, cpp_code:str, nb_lines:int = 12) -> None:
+def show_python_vs_cpp_and_run(python_gui_function, cpp_code:str, nb_lines:int = 0) -> None:
     import inspect
     python_code = inspect.getsource(python_gui_function)
     show_python_vs_cpp_code(python_code, cpp_code, nb_lines)
     python_gui_function()
 
 
-def show_python_vs_cpp_file(demo_file_path: str, nb_lines:int = 12) -> None:
+def show_python_vs_cpp_file(demo_file_path: str, nb_lines:int = 0) -> None:
     cpp_code = read_cpp_code(demo_file_path)
     python_code = read_python_code(demo_file_path)
     show_python_vs_cpp_code(python_code, cpp_code, nb_lines)
