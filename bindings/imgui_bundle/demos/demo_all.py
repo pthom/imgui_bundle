@@ -14,6 +14,7 @@ from imgui_bundle.demos import demo_imgui_md
 from imgui_bundle.demos import demo_immvision_launcher
 from imgui_bundle.demos import demo_imguizmo_launcher
 from imgui_bundle.demos import demo_tex_inspect_launcher
+from imgui_bundle.demos import demo_themes
 
 
 @static(was_initialized=None)
@@ -119,6 +120,7 @@ def main() -> None:
     add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_launch)
     add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_launch)
     add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_launch)
+    add_dockable_window("Themes", demo_themes, demo_themes.demo_launch)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
