@@ -1,11 +1,19 @@
 from imgui_bundle import imgui, immvision, immapp
-from imgui_bundle.demos import demo_utils, demos_immvision
+HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
+from imgui_bundle.demos import demo_utils
+if HAS_IMMVISION:
+    from imgui_bundle.demos import demos_immvision
 
 
 def make_gui() -> demo_utils.GuiFunction:
-    gui_process = demos_immvision.demo_immvision_process.make_gui()
+    if HAS_IMMVISION:
+        gui_process = demos_immvision.demo_immvision_process.make_gui()
 
     def gui():
+        if not HAS_IMMVISION:
+            imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
+            return
+
         nonlocal gui_process
 
         demo_utils.render_md_unindented("""
