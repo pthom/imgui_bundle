@@ -1,6 +1,6 @@
 from typing import Dict
 from imgui_bundle import imgui, imgui_md, ImVec2, hello_imgui, imgui_color_text_edit, immapp
-from imgui_bundle.demos.utils import code_str_utils
+from imgui_bundle.demos.demo_utils import code_str_utils
 from imgui_bundle.immapp import static
 import inspect
 

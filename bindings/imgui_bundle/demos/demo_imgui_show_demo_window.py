@@ -1,6 +1,6 @@
 from imgui_bundle import imgui, imgui_md
 from imgui_bundle.immapp import static
-from imgui_bundle.demos.utils import code_str_utils
+from imgui_bundle.demos.demo_utils import code_str_utils
 
 
 def md_render_unindent(md: str):

@@ -7,7 +7,7 @@ import math
 import munch  # type: ignore
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
-from imgui_bundle.demos.utils.api_demos import GuiFunction
+from imgui_bundle.demos.demo_utils.api_demos import GuiFunction
 
 # pip install PyGLM
 import glm

@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md
-from imgui_bundle.demos.utils.code_str_utils import unindent_code
+from imgui_bundle.demos.demo_utils.code_str_utils import unindent_code
 
 
 class DemoApp:

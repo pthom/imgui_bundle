@@ -7,7 +7,7 @@ from enum import Enum
 import cv2
 import math
 
-from imgui_bundle.demos.utils.api_demos import *
+from imgui_bundle.demos.demo_utils.api_demos import *
 from imgui_bundle import imgui, immvision, immapp
 
 

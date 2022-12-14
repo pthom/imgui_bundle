@@ -1,7 +1,7 @@
 # Demo imgui_tex_inspect
 # See equivalent C++ program: demos_cpp/demos_tex_inspect/demo_tex_inspect.main.cpp
 from imgui_bundle import imgui_tex_inspect, hello_imgui, imgui, immapp, ImVec2
-from imgui_bundle.demos.utils.api_demos import *
+from imgui_bundle.demos.demo_utils.api_demos import *
 
 
 hello_imgui.set_assets_folder(demos_assets_folder())
