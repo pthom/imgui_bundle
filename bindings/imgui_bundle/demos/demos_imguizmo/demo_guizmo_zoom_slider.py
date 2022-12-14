@@ -119,6 +119,14 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
     return gui
 
 
+@immapp.static(gui=None)
+def demo_launch():
+    statics = demo_launch
+    if statics.gui is None:
+        statics.gui = make_closure_demo_guizmo_zoom_slider()
+    statics.gui()
+
+
 def main():
     gui = make_closure_demo_guizmo_zoom_slider()
     immapp.run(gui, window_size=(400, 400))

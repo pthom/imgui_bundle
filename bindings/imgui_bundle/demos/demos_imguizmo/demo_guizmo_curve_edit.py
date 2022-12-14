@@ -126,6 +126,14 @@ def make_closure_demo_guizmo_curve_edit() -> GuiFunction:
     return gui
 
 
+@immapp.static(gui=None)
+def demo_launch():
+    statics = demo_launch
+    if statics.gui is None:
+        statics.gui = make_closure_demo_guizmo_curve_edit()
+    statics.gui()
+
+
 def main():
     gui = make_closure_demo_guizmo_curve_edit()
 
