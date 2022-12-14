@@ -157,6 +157,10 @@ namespace ImmApp
     {
         return HelloImGui::EmVec2(v);
     }
+    float EmSize(float nbLines)
+    {
+        return HelloImGui::EmSize(nbLines);
+    }
 
 
     ax::NodeEditor::EditorContext* CurrentNodeEditorContext_Impl()

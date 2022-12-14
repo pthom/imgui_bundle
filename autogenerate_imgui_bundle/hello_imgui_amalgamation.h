@@ -2072,6 +2072,8 @@ enum class BackendType
   This is ok most of the time but if you are displaying animated widgets (for example a live video),
   you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
   (you can change this value during the execution depending on your application refresh needs)
+* `isIdling`: bool (dynamically updated during execution)
+  This bool will be updated during the application execution, and will be set to true when it is idling.
 * `emscripten_fps`: _int, default = 0_.
   Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
 @@md
@@ -2087,6 +2089,7 @@ struct RunnerParams
     bool appShallExit = false;
 
     float fpsIdle = 10.f;
+    bool  isIdling = false;
 
     int emscripten_fps = 0;
 };
@@ -2203,6 +2206,8 @@ __HelloImGui::EmSize()__ returns the visible font size on the screen. For reprod
  [em CSS Unit](https://lyty.dev/css/css-unit.html).
 _EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale_ (on MacOS FontGlobalScale can be = 2.0).
 
+__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
+
 @@md
 */
 namespace HelloImGui
@@ -2227,6 +2232,9 @@ namespace HelloImGui
     // It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
     // EmSize() = ImGui::GetFontSize()
     float EmSize();
+
+    // __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
+    float EmSize(float nbLines);
 
     // __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
     ImVec2 EmVec2(float x, float y);

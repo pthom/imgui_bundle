@@ -90,6 +90,9 @@ namespace ImmApp
     // EmSize() = ImGui::GetFontSize()
     float EmSize();
 
+    // EmSize(nbLines) returns a size corresponding to nbLines text lines
+    float EmSize(float nbLines);
+
     // EmVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
     ImVec2 EmVec2(float x, float y);
     ImVec2 EmVec2(ImVec2 v);

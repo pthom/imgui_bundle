@@ -121,6 +121,10 @@ def em_size() -> float:
     """
     pass
 
+def em_size(nb_lines: float) -> float:
+    """EmSize(nbLines) returns a size corresponding to nbLines text lines"""
+    pass
+
 # EmVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
 def em_vec2(x: float, y: float) -> ImVec2:
     pass

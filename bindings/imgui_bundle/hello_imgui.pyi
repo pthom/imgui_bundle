@@ -1358,6 +1358,8 @@ class RunnerParams:
       This is ok most of the time but if you are displaying animated widgets (for example a live video),
       you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
       (you can change this value during the execution depending on your application refresh needs)
+    * `isIdling`: bool (dynamically updated during execution)
+      This bool will be updated during the application execution, and will be set to True when it is idling.
     * `emscripten_fps`: _int, default = 0_.
       Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
     @@md
@@ -1380,10 +1382,12 @@ class RunnerParams:
 
     # float fpsIdle = 10.f;    /* original C++ signature */
     fps_idle: float = 10.
+    # bool  isIdling = false;    /* original C++ signature */
+    is_idling: bool = False
 
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, bool isIdling = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1394,6 +1398,7 @@ class RunnerParams:
         backend_type: BackendType = BackendType.first_available,
         app_shall_exit: bool = False,
         fps_idle: float = 10.,
+        is_idling: bool = False,
         emscripten_fps: int = 0
         ) -> None:
         """Auto-generated default constructor with named params"""
@@ -1537,6 +1542,8 @@ __HelloImGui::EmSize()__ returns the visible font size on the screen. For reprod
  [em CSS Unit](https://lyty.dev/css/css-unit.html).
 _EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale_ (on MacOS FontGlobalScale can be = 2.0).
 
+__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
+
 @@md
 
 """
@@ -1577,6 +1584,11 @@ def em_size() -> float:
      It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
      EmSize() = ImGui::GetFontSize()
     """
+    pass
+
+# float EmSize(float nbLines);    /* original C++ signature */
+def em_size(nb_lines: float) -> float:
+    """ __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
     pass
 
 # __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
