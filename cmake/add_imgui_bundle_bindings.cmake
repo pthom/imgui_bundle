@@ -28,6 +28,8 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imguizmo.cpp
         bindings/pybind_imgui_backends.cpp
         bindings/pybind_imgui_tex_inspect.cpp
+        bindings/pybind_immapp_cpp.cpp
+        bindings/pybind_imgui_toggle.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})

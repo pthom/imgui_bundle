@@ -11,22 +11,17 @@ from . import imgui_md as imgui_md
 from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
-from . imgui_bundle import (
-    run as run,
-    current_node_editor_context as current_node_editor_context,
-    clock_seconds as clock_seconds,
-    AddOnsParams as AddOnsParams,
-    visible_font_size as visible_font_size,
-    em_size as em_size
-)
-from .imgui_bundle_utils import (
-    static as static,
-    run_anon_block as run_anon_block,
-    run_nb as run_nb,
-)
+from . import immapp as immapp
+from . import imgui_toggle as imgui_toggle
+from .immapp import icons_fontawesome as icons_fontawesome
+
+from . import immapp as immapp
 
 from .imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui  # type: ignore
 from . imgui import (ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor)
 from . im_col32 import IM_COL32 as IM_COL32
 
-from . hello_imgui import RunnerParams as RunnerParams, SimpleRunnerParams as SimpleRunnerParams
+
+def compilation_time() -> str:
+    """Return date and time when imgui_bundle was compiled"""
+    pass

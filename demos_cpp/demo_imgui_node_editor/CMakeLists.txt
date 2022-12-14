@@ -1,1 +1,1 @@
-imgui_bundle_add_app(demo_imgui_node_editor demo_imgui_node_editor.main.cpp)
+add_demo_cpp(demo_imgui_node_editor demo_imgui_node_editor.main.cpp)

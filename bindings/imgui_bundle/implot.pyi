@@ -998,6 +998,14 @@ class Point:
     # ImPlotPoint(const ImVec2& p)          { x = p.x; y = p.y; }    /* original C++ signature */
     def __init__(self, p: ImVec2) -> None:
         pass
+    # double  operator[] (size_t idx) const { return (&x)[idx]; }    /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)"""
+        pass
+    # double& operator[] (size_t idx)       { return (&x)[idx]; }    /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)"""
+        pass
 
 class Range:
     """Range defined by a min/max value."""
@@ -1012,6 +1020,18 @@ class Range:
     # ImPlotRange(double _min, double _max) { Min = _min; Max = _max;                                   }    /* original C++ signature */
     def __init__(self, _min: float, _max: float) -> None:
         pass
+    # bool Contains(double value) const     { return value >= Min && value <= Max;                      }    /* original C++ signature */
+    def contains(self, value: float) -> bool:
+        """(private API)"""
+        pass
+    # double Size() const                   { return Max - Min;                                         }    /* original C++ signature */
+    def size(self) -> float:
+        """(private API)"""
+        pass
+    # double Clamp(double value) const      { return (value < Min) ? Min : (value > Max) ? Max : value; }    /* original C++ signature */
+    def clamp(self, value: float) -> float:
+        """(private API)"""
+        pass
 
 class Rect:
     """Combination of two range limits for X and Y axes. Also an AABB defined by Min()/Max()."""
@@ -1025,6 +1045,34 @@ class Rect:
         pass
     # ImPlotRect(double x_min, double x_max, double y_min, double y_max) { X.Min = x_min; X.Max = x_max; Y.Min = y_min; Y.Max = y_max;   }    /* original C++ signature */
     def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float) -> None:
+        pass
+    # bool Contains(const ImPlotPoint& p) const                          { return Contains(p.x, p.y);                                    }    /* original C++ signature */
+    def contains(self, p: Point) -> bool:
+        """(private API)"""
+        pass
+    # bool Contains(double x, double y) const                            { return X.Contains(x) && Y.Contains(y);                        }    /* original C++ signature */
+    def contains(self, x: float, y: float) -> bool:
+        """(private API)"""
+        pass
+    # ImPlotPoint Size() const                                           { return ImPlotPoint(X.Size(), Y.Size());                       }    /* original C++ signature */
+    def size(self) -> Point:
+        """(private API)"""
+        pass
+    # ImPlotPoint Clamp(const ImPlotPoint& p)                            { return Clamp(p.x, p.y);                                       }    /* original C++ signature */
+    def clamp(self, p: Point) -> Point:
+        """(private API)"""
+        pass
+    # ImPlotPoint Clamp(double x, double y)                              { return ImPlotPoint(X.Clamp(x),Y.Clamp(y));                    }    /* original C++ signature */
+    def clamp(self, x: float, y: float) -> Point:
+        """(private API)"""
+        pass
+    # ImPlotPoint Min() const                                            { return ImPlotPoint(X.Min, Y.Min);                             }    /* original C++ signature */
+    def min(self) -> Point:
+        """(private API)"""
+        pass
+    # ImPlotPoint Max() const                                            { return ImPlotPoint(X.Max, Y.Max);                             }    /* original C++ signature */
+    def max(self) -> Point:
+        """(private API)"""
         pass
 
 class Style:

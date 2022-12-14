@@ -1,10 +1,8 @@
 # Demo gradient with ImGuizmo
 # See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_zoom_slider.main.cpp
 
-from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, run_anon_block
-from imgui_bundle.demos.api_demos import GuiFunction
-import imgui_bundle
-
+from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, immapp
+from imgui_bundle.demos.demo_utils.api_demos import GuiFunction
 
 im_zoom_slider = imguizmo.im_zoom_slider
 
@@ -56,7 +54,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
 
         # Draw anything in the zoomable part,
         # or reserve some space (for example with imgui.Dummy)
-        @run_anon_block
+        @immapp.run_anon_block
         def _():
             zone_width = 380.0
             imgui.begin_group()
@@ -121,9 +119,17 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
     return gui
 
 
+@immapp.static(gui=None)
+def demo_launch():
+    statics = demo_launch
+    if statics.gui is None:
+        statics.gui = make_closure_demo_guizmo_zoom_slider()
+    statics.gui()
+
+
 def main():
     gui = make_closure_demo_guizmo_zoom_slider()
-    imgui_bundle.run(gui, window_size=(400, 400))
+    immapp.run(gui, window_size=(400, 400))
 
 
 if __name__ == "__main__":

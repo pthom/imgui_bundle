@@ -10,7 +10,7 @@ function (add_hello_imgui)
     #   i. Build static libraries
     set(BUILD_SHARED_LIBS OFF)
     # 1. Build imgui (lib used by hello_imgui)
-    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
+    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui)
     add_imgui(${imgui_dir})
 
     if (APPLE)
@@ -30,7 +30,7 @@ function (add_hello_imgui)
         set(GLFW_BUILD_TESTS OFF)
         set(GLFW_BUILD_DOCS OFF)
         set(GLFW_INSTALL OFF)
-        add_subdirectory(external/glfw)
+        add_subdirectory(glfw)
         # glfw dynamic lib will be in the same folder as imgui_bundle
         install(TARGETS glfw DESTINATION .)
         # copy glfw dynamic lib into bindings/imgui_bundle post build, for editable install mode
@@ -41,7 +41,7 @@ function (add_hello_imgui)
         lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.so)
         set(BUILD_SHARED_LIBS OFF)
     else()
-        add_subdirectory(external/glfw)
+        add_subdirectory(glfw)
     endif()
     if (UNIX AND NOT APPLE)
         # Those are only needed for wheels build using cibuildwheel (cp36-manylinux_x86_64 wheel)
@@ -53,7 +53,7 @@ function (add_hello_imgui)
 
     # 2.2 Build sdl
     if (IMGUI_BUNDLE_WITH_SDL)
-        add_subdirectory(external/SDL)
+        add_subdirectory(SDL)
     endif()
 
     # 3. Configure hello-imgui with the following options:
@@ -64,12 +64,12 @@ function (add_hello_imgui)
         set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
     endif()
     #     ii. use provided imgui version
-    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/external/imgui)
+    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
 
     # 4. Finally, add hello_imgui
-    add_subdirectory(external/hello_imgui)
+    add_subdirectory(hello_imgui)
     target_link_libraries(imgui_bundle PUBLIC hello_imgui)
 
     if (WIN32 AND IMGUI_BUNDLE_WITH_SDL)

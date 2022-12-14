@@ -1,6 +1,6 @@
 import time
 import numpy as np
-from imgui_bundle import implot, imgui_knobs, imgui, run
+from imgui_bundle import implot, imgui_knobs, imgui, immapp
 
 
 vals = np.arange(0, np.pi * 2, 0.01)
@@ -19,11 +19,11 @@ def gui():
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
     imgui.text("Bloat free code")
-    implot.begin_plot("Heart")
+    implot.begin_plot("Heart", immapp.em_vec2(21, 21))
     implot.plot_line("", x * k, y * k)
     implot.end_plot()
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
 
 
 if __name__ == "__main__":
-    run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore
+    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore

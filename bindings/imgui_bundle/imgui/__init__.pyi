@@ -16,7 +16,9 @@ FLT_MAX: float # value defined by this module as the maximum acceptable C(++) fl
 
 
 def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
-    """Manual binding for ImFontAtlas.get_tex_data_as_rgba32"""
+    """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
+    This is also available as a method of ImFont: ImFontAtlas.get_tex_data_as_rgba32()
+    """
     pass
 
 
@@ -305,6 +307,11 @@ StoragePair = Any
 # Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
 #
 # [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
 
 #
 #
@@ -328,6 +335,9 @@ StoragePair = Any
 
 # Configuration file with compile-time options
 # (edit imconfig.h or '#define IMGUI_USER_CONFIG "myfilename.h" from your build system')
+
+# #ifndef IMGUI_DISABLE
+#
 
 # -----------------------------------------------------------------------------
 # [SECTION] Header mess
@@ -391,6 +401,17 @@ class ImVec2:
         pass
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float) -> None:
+        pass
+    # float  operator[] (size_t idx) const    { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)
+
+        We very rarely use this [] operator, the assert overhead is fine.
+        """
+        pass
+    # float& operator[] (size_t idx)          { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)"""
         pass
     # We very rarely use this [] operator, the assert overhead is fine.
 
@@ -1780,23 +1801,25 @@ def collapsing_header(
 
 # IMGUI_API void          SetNextItemOpen(bool is_open, ImGuiCond cond = 0);                      /* original C++ signature */
 def set_next_item_open(is_open: bool, cond: Cond = 0) -> None:
-    """set next TreeNode/CollapsingHeader open state."""
     pass
 
-# IMGUI_API bool          Selectable(const char* label, bool selected = false, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
+# set next TreeNode/CollapsingHeader open state.
+
+# [ADAPT_IMGUI_BUNDLE]
+# Widgets: Selectables
+# - A selectable highlights when hovered, and can display another color when selected.
+# - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
+# IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
 def selectable(
     label: str,
-    selected: bool = False,
+    p_selected: bool,
     flags: SelectableFlags = 0,
     size: ImVec2 = ImVec2(0, 0),
-) -> bool:
-    """Widgets: Selectables
-    - A selectable highlights when hovered, and can display another color when selected.
-    - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
-    """
+) -> Tuple[bool, bool]:
+    """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
     pass
 
-# "bool selected" carry the selection state (read-only). Selectable() is clicked is returns True so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height
+# [/ADAPT_IMGUI_BUNDLE]
 
 # Widgets: List Boxes
 # - This is essentially a thin wrapper to using BeginChild/EndChild with some stylistic changes.
@@ -1896,19 +1919,11 @@ def begin_menu(label: str, enabled: bool = True) -> bool:
     """create a sub-menu entry. only call EndMenu() if this returns True!"""
     pass
 
-# IMGUI_API void          EndMenu();                                                              /* original C++ signature */
+# [ADAPT_IMGUI_BUNDLE]
+
+# IMGUI_API void          EndMenu();    /* original C++ signature */
 def end_menu() -> None:
     """only call EndMenu() if BeginMenu() returns True!"""
-    pass
-
-# IMGUI_API bool          MenuItem(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true);      /* original C++ signature */
-def menu_item(
-    label: str,
-    shortcut: Optional[str] = None,
-    selected: bool = False,
-    enabled: bool = True,
-) -> bool:
-    """return True when activated."""
     pass
 
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */
@@ -1917,6 +1932,8 @@ def menu_item(
 ) -> Tuple[bool, bool]:
     """return True when activated + toggle (*p_selected) if p_selected != None"""
     pass
+
+# [/ADAPT_IMGUI_BUNDLE]
 
 # Tooltips
 # - Tooltip are windows following the mouse. They do not take focus away.
@@ -4850,14 +4867,18 @@ class Style:
     circle_tessellation_max_error: float  # Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
 
     # [ADAPT_IMGUI_BUNDLE]
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # python adapter for ImGuiStyle::Colors[ImGuiCol_COUNT]
     # You can query and modify those values (0 <= idxColor < Col_.count)
-    # inline IMGUI_API  ImVec4& GetColor(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
-    def get_color(self, idx_color: int) -> ImVec4:
+    # inline IMGUI_API  ImVec4& Color_(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
+    def color_(self, idx_color: int) -> ImVec4:
         pass
-    # inline IMGUI_API  void SetColor(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color(self, idx_color: int, color: ImVec4) -> None:
+    # inline IMGUI_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
+    def set_color_(self, idx_color: int, color: ImVec4) -> None:
         pass
+    #                                      #endif
+    #
     # [/ADAPT_IMGUI_BUNDLE]
 
     # IMGUI_API ImGuiStyle();    /* original C++ signature */
@@ -5186,12 +5207,18 @@ class IO:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
+
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
     def set_ini_filename(self, filename: str) -> None:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
         pass
+    #                                                #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures
@@ -5246,6 +5273,18 @@ class InputTextCallbackData:
         pass
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
     def insert_chars(self, pos: int, text: str, text_end: Optional[str] = None) -> None:
+        pass
+    # void                SelectAll()             { SelectionStart = 0; SelectionEnd = BufTextLen; }    /* original C++ signature */
+    def select_all(self) -> None:
+        """(private API)"""
+        pass
+    # void                ClearSelection()        { SelectionStart = SelectionEnd = BufTextLen; }    /* original C++ signature */
+    def clear_selection(self) -> None:
+        """(private API)"""
+        pass
+    # bool                HasSelection() const    { return SelectionStart != SelectionEnd; }    /* original C++ signature */
+    def has_selection(self) -> bool:
+        """(private API)"""
         pass
 
 class SizeCallbackData:
@@ -5326,6 +5365,22 @@ class Payload:
     # ImGuiPayload()  { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # void Clear()    { SourceId = SourceParentId = 0; Data = NULL; DataSize = 0; memset(DataType, 0, sizeof(DataType)); DataFrameCount = -1; Preview = Delivery = false; }    /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)"""
+        pass
+    # bool IsDataType(const char* type) const { return DataFrameCount != -1 && strcmp(type, DataType) == 0; }    /* original C++ signature */
+    def is_data_type(self, type: str) -> bool:
+        """(private API)"""
+        pass
+    # bool IsPreview() const                  { return Preview; }    /* original C++ signature */
+    def is_preview(self) -> bool:
+        """(private API)"""
+        pass
+    # bool IsDelivery() const                 { return Delivery; }    /* original C++ signature */
+    def is_delivery(self) -> bool:
+        """(private API)"""
+        pass
 
 class TableColumnSortSpecs:
     """Sorting specification for one column of a table (sizeof == 12 bytes)"""
@@ -5340,6 +5395,18 @@ class TableColumnSortSpecs:
     # ImGuiTableColumnSortSpecs() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # [ADAPT_IMGUI_BUNDLE]
+    #                    #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # inline IMGUI_API ImGuiSortDirection GetSortDirection() { return SortDirection; }    /* original C++ signature */
+    def get_sort_direction(self) -> SortDirection:
+        pass
+    # inline IMGUI_API void SetSortDirection(ImGuiSortDirection direction) { SortDirection = direction; }    /* original C++ signature */
+    def set_sort_direction(self, direction: SortDirection) -> None:
+        pass
+    #                    #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 class TableSortSpecs:
     """Sorting specifications for a table (often handling sort specs for a single column, occasionally more)
@@ -5359,9 +5426,15 @@ class TableSortSpecs:
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
-    # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t specIdx) { IM_ASSERT((specIdx >=0) && (specIdx < SpecsCount)); return Specs[specIdx];}    /* original C++ signature */
-    def get_specs(self, spec_idx: int) -> TableColumnSortSpecs:
+
+    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # inline IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) { IM_ASSERT((idx >= 0) && (idx < SpecsCount)); return Specs[idx];}    /* original C++ signature */
+    def get_specs(self, idx: int) -> TableColumnSortSpecs:
         pass
+    #                            #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, ImColor)
@@ -5399,6 +5472,14 @@ class TextFilter:
     # IMGUI_API void      Build();    /* original C++ signature */
     def build(self) -> None:
         pass
+    # void                Clear()          { InputBuf[0] = 0; Build(); }    /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)"""
+        pass
+    # bool                IsActive() const { return !Filters.empty(); }    /* original C++ signature */
+    def is_active(self) -> bool:
+        """(private API)"""
+        pass
 
     class TextRange:
         """[Internal]"""
@@ -5414,6 +5495,10 @@ class TextFilter:
         # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
         def __init__(self, _b: str, _e: str) -> None:
             pass
+        # bool            empty() const                   { return b == e; }    /* original C++ signature */
+        def empty(self) -> bool:
+            """(private API)"""
+            pass
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int
 
@@ -5424,6 +5509,41 @@ class TextBuffer:
 
     # ImGuiTextBuffer()   { }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # inline char         operator[](int i) const { IM_ASSERT(Buf.Data != NULL); return Buf.Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> int:
+        """(private API)"""
+        pass
+    # const char*         begin() const           { return Buf.Data ? &Buf.front() : EmptyString; }    /* original C++ signature */
+    def begin(self) -> str:
+        """(private API)"""
+        pass
+    # const char*         end() const             { return Buf.Data ? &Buf.back() : EmptyString; }       /* original C++ signature */
+    def end(self) -> str:
+        """(private API)
+
+        Buf is zero-terminated, so end() will point on the zero-terminator
+        """
+        pass
+    # int                 size() const            { return Buf.Size ? Buf.Size - 1 : 0; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # bool                empty() const           { return Buf.Size <= 1; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # void                clear()                 { Buf.clear(); }    /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)"""
+        pass
+    # void                reserve(int capacity)   { Buf.reserve(capacity); }    /* original C++ signature */
+    def reserve(self, capacity: int) -> None:
+        """(private API)"""
+        pass
+    # const char*         c_str() const           { return Buf.Data ? Buf.Data : EmptyString; }    /* original C++ signature */
+    def c_str(self) -> str:
+        """(private API)"""
         pass
     # IMGUI_API void      append(const char* str, const char* str_end = NULL);    /* original C++ signature */
     def append(self, str: str, str_end: Optional[str] = None) -> None:
@@ -5457,6 +5577,14 @@ class Storage:
         # ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }    /* original C++ signature */
         def __init__(self, _key: ID, _val_p: Any) -> None:
             pass
+    # void                Clear() { Data.clear(); }    /* original C++ signature */
+    def clear(self) -> None:
+        """- Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)
+         - Set***() functions find pair, insertion on demand if missing.
+         - Sorted insertion is costly, paid once. A typical frame shouldn't need to insert any new pair.
+        (private API)
+        """
+        pass
     # IMGUI_API int       GetInt(ImGuiID key, int default_val = 0) const;    /* original C++ signature */
     def get_int(self, key: ID, default_val: int = 0) -> int:
         pass
@@ -5596,6 +5724,15 @@ class ImColor:
     def __init__(self, rgba: ImU32) -> None:
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
+    # inline void    SetHSV(float h, float s, float v, float a = 1.0f){ ImGui::ColorConvertHSVtoRGB(h, s, v, Value.x, Value.y, Value.z); Value.w = a; }    /* original C++ signature */
+    def set_hsv(self, h: float, s: float, v: float, a: float = 1.0) -> None:
+        """(private API)"""
+        pass
+    @staticmethod
+    # static ImColor HSV(float h, float s, float v, float a = 1.0f)   { float r, g, b; ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b); return ImColor(r, g, b, a); }    /* original C++ signature */
+    def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
+        """(private API)"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
@@ -5637,6 +5774,12 @@ class ImDrawCmd:
     def __init__(self) -> None:
         """Also ensure our padding fields are zeroed"""
         pass
+    # inline ImTextureID GetTexID() const { return TextureId; }    /* original C++ signature */
+    def get_tex_id(self) -> ImTextureID:
+        """Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)
+        (private API)
+        """
+        pass
 
 # Vertex layout
 
@@ -5676,6 +5819,13 @@ class ImDrawListSplitter:
 
     # inline ImDrawListSplitter()  { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # inline void                 Clear() { _Current = 0; _Count = 1; }     /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)
+
+        Do not clear Channels[] so our allocations are reused next frame
+        """
         pass
     # IMGUI_API void              ClearFreeMemory();    /* original C++ signature */
     def clear_free_memory(self) -> None:
@@ -5833,6 +5983,14 @@ class ImDrawList:
         pass
     # IMGUI_API void  PopTextureID();    /* original C++ signature */
     def pop_texture_id(self) -> None:
+        pass
+    # inline ImVec2   GetClipRectMin() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.x, cr.y); }    /* original C++ signature */
+    def get_clip_rect_min(self) -> ImVec2:
+        """(private API)"""
+        pass
+    # inline ImVec2   GetClipRectMax() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.z, cr.w); }    /* original C++ signature */
+    def get_clip_rect_max(self) -> ImVec2:
+        """(private API)"""
         pass
     # Primitives
     # - Filled shapes must always use clockwise winding order. The anti-aliasing fringe depends on it. Counter-clockwise shapes will have "inward" anti-aliasing.
@@ -6039,6 +6197,28 @@ class ImDrawList:
         pass
     # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
     # - Filled shapes must always use clockwise winding order. The anti-aliasing fringe depends on it. Counter-clockwise shapes will have "inward" anti-aliasing.
+    # inline    void  PathClear()                                                 { _Path.Size = 0; }    /* original C++ signature */
+    def path_clear(self) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PathLineTo(const ImVec2& pos)                               { _Path.push_back(pos); }    /* original C++ signature */
+    def path_line_to(self, pos: ImVec2) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PathLineToMergeDuplicate(const ImVec2& pos)                 { if (_Path.Size == 0 || memcmp(&_Path.Data[_Path.Size - 1], &pos, 8) != 0) _Path.push_back(pos); }    /* original C++ signature */
+    def path_line_to_merge_duplicate(self, pos: ImVec2) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PathFillConvex(ImU32 col)                                   { AddConvexPolyFilled(_Path.Data, _Path.Size, col); _Path.Size = 0; }    /* original C++ signature */
+    def path_fill_convex(self, col: ImU32) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PathStroke(ImU32 col, ImDrawFlags flags = 0, float thickness = 1.0f) { AddPolyline(_Path.Data, _Path.Size, col, flags, thickness); _Path.Size = 0; }    /* original C++ signature */
+    def path_stroke(
+        self, col: ImU32, flags: ImDrawFlags = 0, thickness: float = 1.0
+    ) -> None:
+        """(private API)"""
+        pass
     # IMGUI_API void  PathArcTo(const ImVec2& center, float radius, float a_min, float a_max, int num_segments = 0);    /* original C++ signature */
     def path_arc_to(
         self,
@@ -6095,7 +6275,18 @@ class ImDrawList:
     # - FIXME-OBSOLETE: This API shouldn't have been in ImDrawList in the first place!
     #   Prefer using your own persistent instance of ImDrawListSplitter as you can stack them.
     #   Using the ImDrawList::ChannelsXXXX you cannot stack a split over another.
-
+    # inline void     ChannelsSplit(int count)    { _Splitter.Split(this, count); }    /* original C++ signature */
+    def channels_split(self, count: int) -> None:
+        """(private API)"""
+        pass
+    # inline void     ChannelsMerge()             { _Splitter.Merge(this); }    /* original C++ signature */
+    def channels_merge(self) -> None:
+        """(private API)"""
+        pass
+    # inline void     ChannelsSetCurrent(int n)   { _Splitter.SetCurrentChannel(this, n); }    /* original C++ signature */
+    def channels_set_current(self, n: int) -> None:
+        """(private API)"""
+        pass
     # Advanced: Primitives allocations
     # - We render triangles (three vertices)
     # - All primitives needs to be reserved via PrimReserve() beforehand.
@@ -6127,6 +6318,18 @@ class ImDrawList:
         uv_d: ImVec2,
         col: ImU32,
     ) -> None:
+        pass
+    # inline    void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)    { _VtxWritePtr->pos = pos; _VtxWritePtr->uv = uv; _VtxWritePtr->col = col; _VtxWritePtr++; _VtxCurrentIdx++; }    /* original C++ signature */
+    def prim_write_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PrimWriteIdx(ImDrawIdx idx)                                     { *_IdxWritePtr = idx; _IdxWritePtr++; }    /* original C++ signature */
+    def prim_write_idx(self, idx: ImDrawIdx) -> None:
+        """(private API)"""
+        pass
+    # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)         { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }     /* original C++ signature */
+    def prim_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
+        """(private API)"""
         pass
     # Write vertex with unique index
 
@@ -6202,6 +6405,13 @@ class ImDrawData:
     # ImDrawData()    { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         """Functions"""
+        pass
+    # void Clear()    { memset(this, 0, sizeof(*this)); }         /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)
+
+        The ImDrawList are owned by ImGuiContext!
+        """
         pass
     # IMGUI_API void  DeIndexAllBuffers();                        /* original C++ signature */
     def de_index_all_buffers(self) -> None:
@@ -6305,6 +6515,31 @@ class ImFontGlyphRangesBuilder:
     # ImFontGlyphRangesBuilder()              { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # inline void     Clear()                 { int size_in_bytes = (IM_UNICODE_CODEPOINT_MAX + 1) / 8; UsedChars.resize(size_in_bytes / (int)sizeof(ImU32)); memset(UsedChars.Data, 0, (size_t)size_in_bytes); }    /* original C++ signature */
+    def clear(self) -> None:
+        """(private API)"""
+        pass
+    # inline bool     GetBit(size_t n) const  { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); return (UsedChars[off] & mask) != 0; }      /* original C++ signature */
+    def get_bit(self, n: int) -> bool:
+        """(private API)
+
+        Get bit n in the array
+        """
+        pass
+    # inline void     SetBit(size_t n)        { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); UsedChars[off] |= mask; }                   /* original C++ signature */
+    def set_bit(self, n: int) -> None:
+        """(private API)
+
+        Set bit n in the array
+        """
+        pass
+    # inline void     AddChar(ImWchar c)      { SetBit(c); }                          /* original C++ signature */
+    def add_char(self, c: ImWchar) -> None:
+        """(private API)
+
+        Add character
+        """
+        pass
     # IMGUI_API void  AddText(const char* text, const char* text_end = NULL);         /* original C++ signature */
     def add_text(self, text: str, text_end: Optional[str] = None) -> None:
         """Add string (each character of the UTF-8 string are added)"""
@@ -6335,6 +6570,10 @@ class ImFontAtlasCustomRect:
     font: ImFont  # Input    // For custom font glyphs only: target font
     # ImFontAtlasCustomRect()         { Width = Height = 0; X = Y = 0xFFFF; GlyphID = 0; GlyphAdvanceX = 0.0f; GlyphOffset = ImVec2(0, 0); Font = NULL; }    /* original C++ signature */
     def __init__(self) -> None:
+        pass
+    # bool IsPacked() const           { return X != 0xFFFF; }    /* original C++ signature */
+    def is_packed(self) -> bool:
+        """(private API)"""
         pass
 
 class ImFontAtlasFlags_(enum.Enum):
@@ -6409,6 +6648,17 @@ class ImFontAtlas:
     def build(self) -> bool:
         """Build pixels data. This is called automatically for you by the GetTexData*** functions."""
         pass
+    # bool                        IsBuilt() const             { return Fonts.Size > 0 && TexReady; }     /* original C++ signature */
+    def is_built(self) -> bool:
+        """(private API)
+
+        Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...
+        """
+        pass
+    # void                        SetTexID(ImTextureID id)    { TexID = id; }    /* original C++ signature */
+    def set_tex_id(self, id_: ImTextureID) -> None:
+        """(private API)"""
+        pass
     # -------------------------------------------
     # Glyph Ranges
     # -------------------------------------------
@@ -6421,6 +6671,9 @@ class ImFontAtlas:
     # -------------------------------------------
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
+
+    #                                 #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
@@ -6479,6 +6732,10 @@ class ImFontAtlas:
     def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
         """// Default + Vietnamese characters"""
         pass
+    #                                 #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # -------------------------------------------
     # [BETA] Custom Rectangles/Glyphs API
     # -------------------------------------------
@@ -6503,6 +6760,10 @@ class ImFontAtlas:
         advance_x: float,
         offset: ImVec2 = ImVec2(0, 0),
     ) -> int:
+        pass
+    # ImFontAtlasCustomRect*      GetCustomRectByIndex(int index) { IM_ASSERT(index >= 0); return &CustomRects[index]; }    /* original C++ signature */
+    def get_custom_rect_by_index(self, index: int) -> ImFontAtlasCustomRect:
+        """(private API)"""
         pass
     # [Internal]
     # IMGUI_API void              CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;    /* original C++ signature */
@@ -6616,6 +6877,18 @@ class ImFont:
         pass
     # IMGUI_API const ImFontGlyph*FindGlyphNoFallback(ImWchar c) const;    /* original C++ signature */
     def find_glyph_no_fallback(self, c: ImWchar) -> ImFontGlyph:
+        pass
+    # float                       GetCharAdvance(ImWchar c) const     { return ((int)c < IndexAdvanceX.Size) ? IndexAdvanceX[(int)c] : FallbackAdvanceX; }    /* original C++ signature */
+    def get_char_advance(self, c: ImWchar) -> float:
+        """(private API)"""
+        pass
+    # bool                        IsLoaded() const                    { return ContainerAtlas != NULL; }    /* original C++ signature */
+    def is_loaded(self) -> bool:
+        """(private API)"""
+        pass
+    # const char*                 GetDebugName() const                { return ConfigData ? ConfigData->Name : "<unknown>"; }    /* original C++ signature */
+    def get_debug_name(self) -> str:
+        """(private API)"""
         pass
     # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
     # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
@@ -6796,7 +7069,17 @@ class Viewport:
     # ImGuiViewport()     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # Helpers
+    # ImVec2              GetCenter() const       { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }    /* original C++ signature */
+    def get_center(self) -> ImVec2:
+        """(private API)"""
+        pass
+    # ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }    /* original C++ signature */
+    def get_work_center(self) -> ImVec2:
+        """(private API)"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Platform Dependent Interfaces (for e.g. multi-viewport support)
@@ -6926,77 +7209,13 @@ class PlatformImeData:
 # -----------------------------------------------------------------------------
 
 # Include imgui_user.h at the end of imgui.h (convenient for user to only explicitly include vanilla imgui.h)
+# #ifdef IMGUI_INCLUDE_IMGUI_USER_H
+#
+# #endif
+#
+
+# #endif
 ####################    </generated_from:imgui.h>    ####################
-
-
-####################    <generated_from:imgui_toggle.h>    ####################
-class ToggleFlags_(enum.Enum):
-    # ImGuiToggleFlags_None                   = 0,    /* original C++ signature */
-    none = enum.auto()  # (= 0)
-    # ImGuiToggleFlags_Animated               = 1 << 0,     /* original C++ signature */
-    animated = (
-        enum.auto()
-    )  # (= 1 << 0)  # The toggle should be animated. Mutually exclusive with ImGuiToggleFlags_Static.
-    # ImGuiToggleFlags_Static                 = 1 << 1,     /* original C++ signature */
-    static = (
-        enum.auto()
-    )  # (= 1 << 1)  # The toggle should not animate. Mutually exclusive with ImGuiToggleFlags_Animated.
-    # ImGuiToggleFlags_BorderedFrame          = 1 << 2,     /* original C++ signature */
-    bordered_frame = (
-        enum.auto()
-    )  # (= 1 << 2)  # The toggle should have a border drawn on the frame.
-    # ImGuiToggleFlags_BorderedKnob           = 1 << 3,     /* original C++ signature */
-    bordered_knob = (
-        enum.auto()
-    )  # (= 1 << 3)  # The toggle should have a border drawn on the knob.
-    # ImGuiToggleFlags_Bordered               = ImGuiToggleFlags_BorderedFrame | ImGuiToggleFlags_BorderedKnob,     /* original C++ signature */
-    bordered = (
-        enum.auto()
-    )  # (= ToggleFlags_BorderedFrame | ToggleFlags_BorderedKnob)  # Shorthand for bordered frame and knob.
-    # ImGuiToggleFlags_Default                = ImGuiToggleFlags_Static,     /* original C++ signature */
-    default = (
-        enum.auto()
-    )  # (= ToggleFlags_Static)  # The default flags used when no ImGuiToggleFlags_ are specified.
-
-""" namespace ImGui"""
-# Widgets: Toggle Switches
-# - Toggles behave similarly to ImGui::Checkbox()
-# - Sometimes called a toggle switch, see also: https://en.wikipedia.org/wiki/Toggle_switch_(widget)
-# - They represent two mutually exclusive states, with an optional animation on the UI when toggled.
-# Optional parameters:
-# - flags: Values from the ImGuiToggleFlags_ enumeration to set toggle modes.
-# - speed: Animation speed scalar. (0,...] default: 1.0 (Overloads with this parameter imply ImGuiToggleFlags_Animated)
-# - frame_rounding: A scalar that controls how rounded the toggle frame is. 0 is square, 1 is round. (0, 1) default 1.0
-# - knob_rounding: A scalar that controls how rounded the toggle knob is. 0 is square, 1 is round. (0, 1) default 1.0
-# IMGUI_API bool Toggle(const char* label, bool* v);    /* original C++ signature */
-def toggle(label: str, v: bool) -> Tuple[bool, bool]:
-    pass
-
-# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags);    /* original C++ signature */
-def toggle(label: str, v: bool, flags: ToggleFlags) -> Tuple[bool, bool]:
-    pass
-
-# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed);    /* original C++ signature */
-def toggle(label: str, v: bool, flags: ToggleFlags, speed: float) -> Tuple[bool, bool]:
-    pass
-
-# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding);    /* original C++ signature */
-def toggle(
-    label: str, v: bool, flags: ToggleFlags, frame_rounding: float, knob_rounding: float
-) -> Tuple[bool, bool]:
-    pass
-
-# IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float speed, float frame_rounding, float knob_rounding);    /* original C++ signature */
-def toggle(
-    label: str,
-    v: bool,
-    flags: ToggleFlags,
-    speed: float,
-    frame_rounding: float,
-    knob_rounding: float,
-) -> Tuple[bool, bool]:
-    pass
-####################    </generated_from:imgui_toggle.h>    ####################
 
 
 ####################    <generated_from:imgui_stdlib.h>    ####################
@@ -7039,3 +7258,8 @@ def input_text_with_hint(
 # </litgen_stub>
 
 # fmt: on
+
+##################################################
+#    Manually inserted code (additional methods, etc.)
+##################################################
+ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32

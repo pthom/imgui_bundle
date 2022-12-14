@@ -1,5 +1,5 @@
-from imgui_bundle import static, imgui, imgui_color_text_edit as ed, imgui_md
-
+from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md
+from imgui_bundle.immapp import static
 
 TextEditor = ed.TextEditor
 
@@ -21,7 +21,7 @@ def demo_imgui_color_text_edit():
     imgui_md.render(
         """
 # ImGuiColorTextEdit: 
-    [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
+[ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
     """
     )
 
@@ -35,29 +35,14 @@ def demo_imgui_color_text_edit():
         if imgui.small_button("Retro blue palette"):
             editor.set_palette(TextEditor.get_retro_blue_palette())
 
-    if imgui.button("Test glfw link"):
-        import imgui_bundle
-        import glfw  # type: ignore
-
-        window = imgui_bundle.glfw_window_hello_imgui()
-        glfw.set_window_pos(window, 10, 10)
-
-        # from imgui_bundle import hello_imgui
-        #
-        # import glfw
-        # import ctypes
-        # window_address = hello_imgui.get_glfw_window_address()
-        # window_pointer = ctypes.cast(window_address, ctypes.POINTER(glfw._GLFWwindow))
-        # glfw.set_window_pos(window_pointer, 10, 10)
-
     show_palette_buttons()
     editor.render("Code")
 
 
 def main():
-    from imgui_bundle import run
+    from imgui_bundle import immapp
 
-    run(demo_imgui_color_text_edit, with_markdown=True)
+    immapp.run(demo_imgui_color_text_edit, with_markdown=True)
 
 
 if __name__ == "__main__":

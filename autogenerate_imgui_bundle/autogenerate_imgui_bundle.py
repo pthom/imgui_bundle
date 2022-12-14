@@ -12,6 +12,8 @@ from generate_implot import autogenerate_implot
 from generate_immvision import autogenerate_immvision
 from generate_imguizmo import autogenerate_imguizmo
 from generate_imgui_tex_inspect import autogenerate_imgui_tex_inspect
+from generate_immapp import autogenerate_immapp
+from generate_imgui_toggle import autogenerate_imgui_toggle
 
 
 _THIS_DIR = os.path.dirname(__file__)
@@ -57,6 +59,8 @@ def main():
     autogenerate_imgui_knobs()
     autogenerate_imguizmo()
     autogenerate_imgui_tex_inspect()
+    autogenerate_immapp()
+    autogenerate_imgui_toggle()
 
 
 if __name__ == "__main__":

@@ -37,8 +37,8 @@ def get_imgui_bundle_package_data() -> List[str]:
         "LICENSE",
         "py.typed",
         "*.pyi",
-        "imgui/*.pyi",
-        "imgui/py.typed",
+        "*/*.pyi",
+        "*/py.typed",
         "demos/notebooks/*.ipynb",
     ]
     for asset_dir in _get_assets_dirs():
@@ -90,6 +90,7 @@ setup(
         "munch >= 2.0.0",
         "glfw > 2.5",
         "PyOpenGL >= 3.0",
+        "PyGLM>=2.5.0",
         # "opencv-python >= 4.5",
     ],
     entry_points={

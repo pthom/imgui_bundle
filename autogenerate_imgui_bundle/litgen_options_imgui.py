@@ -91,9 +91,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.var_names_replacements.add_last_replacement(r"^id$", "id_")  # id() is a built-in function in python
 
     # fix https://github.com/pthom/imgui_bundle/issues/40
-    options.var_names_replacements.add_last_replacement(
-        r"im_gui_selectable_flags_",
-        "")
+    options.var_names_replacements.add_last_replacement(r"im_gui_selectable_flags_", "")
 
     # options.names_replacements.add_last_replacement(r"(^ImGui)([A-Z])", r"\2")
 
@@ -105,6 +103,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.python_run_black_formatter = True
 
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
+    options.fn_exclude_non_api = False
 
     options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_DISABLE$"
     options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_BUNDLE_PYTHON_API$"
@@ -155,7 +154,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^TempInput",
             r"^ErrorCheckEnd",
             r"ImFileLoadToMemory",
-            r"^GetGlyphRange"
+            r"^GetGlyphRange",
         ]
     )
 
@@ -230,6 +229,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^IsMouse",
         ]
     )
+    options.fn_force_lambda__regex = join_string_by_pipe_char(
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$"]
+    )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_return_force_policy_reference_for_references__regex = r".*"
@@ -263,34 +265,17 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
 def sandbox():
     code = """
-enum ImGuiCol_
-{
-    ImGuiCol_Text,
-    ImGuiCol_TextDisabled,
-    ImGuiCol_WindowBg,              // Background of normal windows
 
-    ImGuiCol_COUNT
-};    
-    
-struct ImGuiIO
-{
-    ImVec4      Colors[ImGuiCol_COUNT];
-    //bool        MouseClicked[5];
-    //ImVec2      MouseDragMaxDistanceAbs[5];
-
-    // [ADAPT_IMGUI_BUNDLE]
-#ifdef IMGUI_BUNDLE_PYTHON_API
-    inline IMGUI_API  ImVec4& GetColor(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }
-    inline IMGUI_API const ImVec4& GetColor(size_t idxColor) const { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }
-#endif
-    // [/ADAPT_IMGUI_BUNDLE]
-
+struct ImPlotRect {
+    bool Contains(const ImPlotPoint& p) const                          { return Contains(p.x, p.y);                                    }
+    bool Contains(double x, double y) const                            { return X.Contains(x) && Y.Contains(y);                        }
 };
-
     """
+
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, True)
-    reg = options.srcmlcpp_options.header_filter_acceptable__regex
-    flag = codemanip.code_utils.does_match_regex(reg, "IMGUI_BUNDLE_PYTHON_API")
+    options.fn_force_overload__regex = "BeginPlot"
+    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
+
     generated_code = litgen.generate_code(options, code)
     print(generated_code.pydef_code)
 

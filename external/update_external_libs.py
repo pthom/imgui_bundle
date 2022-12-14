@@ -244,7 +244,8 @@ def lib_imgui_toggle() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui_toggle",
         official_git_url="https://github.com/cmdwtf/imgui_toggle.git",
-        official_branch="main"
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui_toggle.git"
     )
 
 
@@ -369,10 +370,10 @@ def play():
 
     # lib_imgui_toggle
     # ----------------
-    # lib = lib_imgui_toggle()
-    # lib.run_rm_remotes().run()
-    # lib.run_add_remotes().run()
-    # lib.run_update_official().run()
+    lib = lib_imgui_toggle()
+    lib.run_rm_remotes().run()
+    lib.run_add_remotes().run()
+    lib.run_rebase_fork_on_official_changes().run()
 
     # lib_imgui_color_text_edit
     # -------------------------

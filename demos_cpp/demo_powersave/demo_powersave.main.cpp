@@ -1,13 +1,20 @@
-#include "imgui_bundle/imgui_bundle.h"
-#include "hello_imgui/hello_imgui.h"
+#include "immapp/immapp.h"
 #include "imgui.h"
 #include "imspinner/imspinner.h"
-
+#include "imgui_md/imgui_md_wrapper.h"
 
 int main(int, char **)
 {
     auto gui = [&]()
     {
+        ImGui::BeginGroup();
+        ImGui::Text("ImGui::Text");
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        ImGuiMd::Render("ImGuiMd::Render");
+        ImGui::EndGroup();
+
         ImGui::Text("Current FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::TextWrapped(R"(
 
@@ -30,12 +37,15 @@ the FPS will rise and the animation will be smooth again.
 
     };
 
-    ImGuiBundle::Run(
+    ImmApp::Run(
         HelloImGui::SimpleRunnerParams{
             .guiFunction=gui,
             .windowTitle="demo_powersave",
             .windowSize={640, 400},
             .fpsIdle = 4.f
+        },
+        ImmApp::AddOnsParams{
+            .withMarkdown = true
         }
     );
     return 0;

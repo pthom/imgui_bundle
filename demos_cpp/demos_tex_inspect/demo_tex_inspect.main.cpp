@@ -2,11 +2,11 @@
 // See equivalent python program: bindings/imgui_bundle/demos/demos_tex_inspect/demo_tex_inspect.py
 
 #include "hello_imgui/hello_imgui_assets.h"
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 
 
 // This returns a closure function that will later be invoked to run the app
@@ -50,8 +50,8 @@ int main()
 {
     auto gui = make_closure_demo_tex_inspect();
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1000, 1000}};
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;
-    ImGuiBundle::Run(runnerParams, addOnsParams);
+    ImmApp::Run(runnerParams, addOnsParams);
 }
 #endif

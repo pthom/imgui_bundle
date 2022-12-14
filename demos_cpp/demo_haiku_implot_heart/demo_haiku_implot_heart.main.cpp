@@ -1,7 +1,7 @@
 #include <imgui.h>
 #include "implot/implot.h"
 #include "imgui-knobs/imgui-knobs.h"
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 
 #include <cmath>
 
@@ -17,7 +17,7 @@ int main(int , char *[])
 {
     std::vector<double> interval, x, y;
     constexpr double pi =  3.1415926535;
-    double phase = 0., t0 = ImGuiBundle::ClockSeconds() + 0.2;
+    double phase = 0., t0 = ImmApp::ClockSeconds() + 0.2;
     float heart_pulse_rate = 80.;
     for (double t = 0.; t < pi * 2.; t += 0.01)
     {
@@ -31,19 +31,21 @@ int main(int , char *[])
         // By setting fpsIdle = 0, we make sure that the animation is smooth
         HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
 
-        double t = ImGuiBundle::ClockSeconds();
+        double t = ImmApp::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
         t0 = t;
 
         ImGui::Text("Bloat free code");
         auto xk = VectorTimesK(x, k);
         auto yk = VectorTimesK(y, k);
-        ImPlot::BeginPlot("Heart"); ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size()); ImPlot::EndPlot();
+        ImPlot::BeginPlot("Heart", ImmApp::EmVec2(21, 21));
+        ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
+        ImPlot::EndPlot();
 
         ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
     };
 
-    ImGuiBundle::Run(
+    ImmApp::Run(
         gui, "Hello!",
         /*windowSizeAuto=*/false , /*windowRestorePreviousGeometry==*/false, /*windowSize=*/{300, 450},
         /*fpsIdle=*/ 25.f, /*withImplot=*/true);

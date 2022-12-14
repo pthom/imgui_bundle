@@ -143,6 +143,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# msvc cmake settings
+/.vs/
+
+
 _skbuild/
 _imgui_bundle_opencv_packages/
 imgui.ini

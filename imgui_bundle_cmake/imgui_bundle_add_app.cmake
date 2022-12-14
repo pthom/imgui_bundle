@@ -1,5 +1,6 @@
 set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui_cmake)
 include(${himgui_cmake_path}/hello_imgui_add_app.cmake)
+include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 
 #
 # imgui_bundle_add_app is a helper function, similar to cmake's "add_executable"
@@ -20,7 +21,9 @@ function(imgui_bundle_add_app)
 		foreach(dll_file ${IMMVISION_OPENCV_WORLD_DLL})
 			file(COPY ${dll_file} DESTINATION ${real_output_directory})
 		endforeach()
-		 
 	endif()
 
+	# if (MSVC)
+	# 	hello_imgui_msvc_target_group_sources(${app_name})
+	# endif()
 endfunction()

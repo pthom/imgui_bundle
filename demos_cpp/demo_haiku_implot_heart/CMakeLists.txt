@@ -1,1 +1,1 @@
-imgui_bundle_add_app(demo_haiku_implot_heart demo_haiku_implot_heart.main.cpp)
+add_demo_cpp(demo_haiku_implot_heart demo_haiku_implot_heart.main.cpp)

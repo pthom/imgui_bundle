@@ -1,7 +1,7 @@
 """
             ======= Glossary ====
 """
-from imgui_bundle import run, imgui, imgui_node_editor as ed, ImVec4, ImVec2
+from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4
 
 conundrum = ed.PinId.create
 soul = ed.NodeId.create
@@ -38,4 +38,4 @@ def start_intrigue(_):
 
 
 def begin_the(gui):
-    run(gui, with_node_editor=True, window_size=(600, 600))
+    immapp.run(gui, with_node_editor=True, window_size=(600, 600))

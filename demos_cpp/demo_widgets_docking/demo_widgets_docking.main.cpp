@@ -1,4 +1,4 @@
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 #include "implot/implot.h"
@@ -216,7 +216,7 @@ int main(int, char **)
     //
     //    Define the add-on params
     //
-    ImGuiBundle::AddOnsParams addOnsParams;
+    ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withImplot = true;
     addOnsParams.withMarkdown = true;
     addOnsParams.withNodeEditor = true;
@@ -290,6 +290,6 @@ int main(int, char **)
     runnerParams.dockingParams.dockableWindows = { implot_window, logsWindow, demoWindow, widgetsWindow };
 
 
-    ImGuiBundle::Run(runnerParams, addOnsParams);
+    ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }
