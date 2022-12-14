@@ -2,7 +2,7 @@
 // See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/Wrapper/demo_guizmo_gradient.py
 // Hum... I don't get the point of this widget
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS

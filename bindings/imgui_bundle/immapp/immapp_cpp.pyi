@@ -113,6 +113,22 @@ def run(
     """
     pass
 
+def run_with_markdown(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = False,
+    window_restore_previous_geometry: bool = False,
+    window_size: ScreenSize = DefaultScreenSize,
+    fps_idle: float = 10.0,
+    with_implot: bool = False,
+    with_node_editor: bool = False,
+    with_tex_inspect: bool = False,
+    with_node_editor_config: Optional[NodeEditorConfig] = None,
+    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+) -> None:
+    """Helper for C++ to run an app with markdown (Python can use Run() with named params)"""
+    pass
+
 def em_size() -> float:
     """EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
     widgets and windows relatively to this size.

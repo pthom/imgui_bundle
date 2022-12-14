@@ -84,6 +84,25 @@ namespace ImmApp
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
 
+
+    // Helper for C++ to run an app with markdown (Python can use Run() with named params)
+    void RunWithMarkdown(
+        // HelloImGui::SimpleRunnerParams below:
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle = "",
+        bool windowSizeAuto = false,
+        bool windowRestorePreviousGeometry = false,
+        const ScreenSize& windowSize = DefaultScreenSize,
+        float fpsIdle = 10.f,
+
+        // AddOnsParams below:
+        bool withImplot = false,
+        bool withNodeEditor = false,
+        bool withTexInspect = false,
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+    );
+
     // EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
     // widgets and windows relatively to this size.
     // It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).

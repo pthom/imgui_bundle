@@ -145,6 +145,42 @@ namespace ImmApp
     }
 
 
+    void RunWithMarkdown(
+        // HelloImGui::SimpleRunnerParams below:
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle,
+        bool windowSizeAuto,
+        bool windowRestorePreviousGeometry,
+        const ScreenSize& windowSize,
+        float fpsIdle,
+
+        // ImGuiBundle_AddOnsParams below:
+        bool withImplot,
+        bool withNodeEditor,
+        bool withTexInspect,
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig,
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
+    )
+    {
+        HelloImGui::SimpleRunnerParams simpleRunnerParams;
+        simpleRunnerParams.guiFunction = guiFunction;
+        simpleRunnerParams.windowTitle = windowTitle;
+        simpleRunnerParams.windowSizeAuto = windowSizeAuto;
+        simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
+        simpleRunnerParams.windowSize = windowSize;
+        simpleRunnerParams.fpsIdle = fpsIdle;
+
+        AddOnsParams addOnsParams;
+        addOnsParams.withImplot = withImplot;
+        addOnsParams.withMarkdown = true;
+        addOnsParams.withNodeEditor = withNodeEditor;
+        addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
+        addOnsParams.withMarkdownOptions = withMarkdownOptions;
+
+        Run(simpleRunnerParams, addOnsParams);
+    }
+
     float EmSize()
     {
         return HelloImGui::EmSize();

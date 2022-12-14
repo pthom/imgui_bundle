@@ -1,7 +1,7 @@
 // Demo zoom slider with ImGuizmo
 // See equivalent python program: demos/litgen/imgui_bundle/bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_zoom_slider.py
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 
 #include "imgui.h"
 #include "immapp/immapp.h"

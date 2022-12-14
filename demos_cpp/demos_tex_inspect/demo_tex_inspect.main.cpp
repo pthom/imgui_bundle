@@ -6,7 +6,7 @@
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 
 
 // This returns a closure function that will later be invoked to run the app

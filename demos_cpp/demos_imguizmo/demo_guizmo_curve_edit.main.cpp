@@ -1,7 +1,7 @@
 // Demo curve editing with ImGuizmo
 // See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_curve_edit.py
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 
 #include "imgui.h"
 #include "immapp/immapp.h"

@@ -9,6 +9,7 @@ import math
 
 from imgui_bundle.demos.demo_utils.api_demos import *
 from imgui_bundle import imgui, immvision, immapp
+from imgui_bundle.demos import demo_utils
 
 
 ImageRgb = NDArray[np.uint8]
@@ -103,13 +104,13 @@ class AppState:
         self.immvision_params_sobel.show_options_panel = True
 
 
-def make_demo_closure() -> GuiFunction:
+def make_gui() -> GuiFunction:
     this_dir = os.path.dirname(__file__)
     app_state = AppState(this_dir + "/../assets/images/house.jpg")
 
     def gui():
         nonlocal app_state
-
+        demo_utils.render_md_unindented("This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab.")
         changed = gui_sobel_params(app_state.sobel_params)
         if changed:
             app_state.image_sobel = compute_sobel(app_state.image, app_state.sobel_params)
@@ -122,6 +123,6 @@ def make_demo_closure() -> GuiFunction:
 
 
 if __name__ == "__main__":
-    gui = make_demo_closure()
+    gui = make_gui()
     immapp.run(gui, window_size=(1000, 1000))
 

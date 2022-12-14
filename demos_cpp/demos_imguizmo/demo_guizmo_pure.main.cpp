@@ -27,7 +27,7 @@
 // SOFTWARE.
 //
 
-#include "demos_interface.h"
+#include "demo_utils/api_demos.h"
 #include "immapp/immapp.h"
 #include "ImGuizmoPure/ImGuizmoPure.h"
 

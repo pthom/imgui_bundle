@@ -1,11 +1,8 @@
-from typing import Dict
-from imgui_bundle import imgui, imgui_md, ImVec2, hello_imgui, imgui_color_text_edit, immapp
-from imgui_bundle.demos.demo_utils import code_str_utils
-from imgui_bundle.immapp import static
+from imgui_bundle import imgui, imgui_md, hello_imgui
+from imgui_bundle.demos.demo_utils import code_str_utils, show_code_editor, show_python_vs_cpp_and_run
+from imgui_bundle import immapp
+from imgui_bundle import imgui_color_text_edit as text_edit
 import inspect
-
-
-TextEditor = imgui_color_text_edit.TextEditor
 
 
 def unindent(s: str):
@@ -23,50 +20,7 @@ class AppState:
     name = ""
 
 
-@static(editors={})
-def show_code_editor(code: str, is_cpp: bool):
-    static = show_code_editor
-    editors: Dict[str, TextEditor] = static.editors
-
-    if code not in editors.keys():
-        editors[code] = TextEditor()
-        if is_cpp:
-            editors[code].set_language_definition(TextEditor.LanguageDefinition.c_plus_plus())
-        else:
-            editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
-
-    editor_size = ImVec2(imgui.get_window_width() / 2. - 15., immapp.em_size() * 12.0)
-    editors[code].set_text(code)
-    editor_title = "cpp" if is_cpp else "python"
-    editors[code].render(f"##{editor_title}", editor_size)
-
-
-def show_python_vs_cpp_code_advice(python_gui_function, cpp_code: str):
-    static = show_python_vs_cpp_code_advice
-
-    import inspect
-
-    python_code = inspect.getsource(python_gui_function)
-
-    imgui.push_id(str(id(python_gui_function)))
-
-    imgui.begin_group()
-    imgui.text("C++ code")
-    show_code_editor(cpp_code, True)
-    imgui.end_group()
-
-    imgui.same_line()
-
-    imgui.begin_group()
-    imgui.text("Python code")
-    show_code_editor(python_code, False)
-    imgui.end_group()
-
-    python_gui_function()
-    imgui.pop_id()
-
-
-@static(value=0)
+@immapp.static(value=0)
 def demo_radio_button():
     static = demo_radio_button
     clicked, static.value = imgui.radio_button("radio a", static.value, 0)
@@ -110,12 +64,12 @@ def show_code_advices() -> None:
     """
     )
     imgui.new_line()
-    show_python_vs_cpp_code_advice(demo_radio_button, cpp_code)
+    show_python_vs_cpp_and_run(demo_radio_button, cpp_code)
 
 
 # fmt: off
 
-@static(text="")
+@immapp.static(text="")
 def demo_input_text_decimal() -> None:
     static = demo_input_text_decimal
     flags:imgui.InputTextFlags = (
@@ -170,7 +124,7 @@ def show_text_input_advice():
     """
     )
     imgui.new_line()
-    show_python_vs_cpp_code_advice(demo_input_text_decimal, cpp_code)
+    show_python_vs_cpp_and_run(demo_input_text_decimal, cpp_code)
 
 
 def demo_add_window_size_callback():
@@ -191,13 +145,13 @@ def demo_add_window_size_callback():
     glfw.set_window_size_callback(window, my_window_size_callback)
 
 
-@static(text_editor=None)
+@immapp.static(text_editor=None)
 def show_glfw_callback_advice():
     static = show_glfw_callback_advice
     if static.text_editor is None:
         import inspect
 
-        static.text_editor = TextEditor()
+        static.text_editor = text_edit.TextEditor()
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     imgui.text("Code for this demo")
@@ -216,7 +170,7 @@ def show_glfw_callback_advice():
     hello_imgui.log_gui()
 
 
-@static(is_initialized=False)
+@immapp.static(is_initialized=False)
 def demo_imgui_bundle() -> None:
     static = demo_imgui_bundle
 

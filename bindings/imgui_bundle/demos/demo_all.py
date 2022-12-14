@@ -11,6 +11,7 @@ from imgui_bundle.demos import demo_widgets
 from imgui_bundle.demos import demo_implot
 from imgui_bundle.demos import demo_node_editor
 from imgui_bundle.demos import demo_imgui_md
+from imgui_bundle.demos import demo_immvision_launcher
 
 
 @static(was_initialized=None)
@@ -115,6 +116,7 @@ def main() -> None:
         "Text Editor", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
     )
     add_dockable_window("Additional Widgets", demo_widgets, demo_widgets.demo_widgets)
+    add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_immvision_launch)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
