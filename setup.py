@@ -90,6 +90,7 @@ setup(
         "munch >= 2.0.0",
         "glfw > 2.5",
         "PyOpenGL >= 3.0",
+        "PyGLM>=2.5.0",
         # "opencv-python >= 4.5",
     ],
     entry_points={
