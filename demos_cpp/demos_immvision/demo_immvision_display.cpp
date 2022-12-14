@@ -4,8 +4,8 @@
 
 int main()
 {
-    cv::Mat house = cv::imread("resources/house.jpg");
-    cv::Mat tennis = cv::imread("resources/tennis.jpg");
+    cv::Mat house = cv::imread("assets/images/house.jpg");
+    cv::Mat tennis = cv::imread("assets/images/tennis.jpg");
 
     auto gui = [&](){
         int w = 200;

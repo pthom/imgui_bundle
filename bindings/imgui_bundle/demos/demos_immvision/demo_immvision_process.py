@@ -20,6 +20,7 @@ class Orientation(Enum):
     Vertical = 1
 
 
+
 class SobelParams:
     blur_size = 1.25
     deriv_order = 1 # order of the derivative
