@@ -77,25 +77,20 @@ void imcolor_check_size(py::handle obj)
         throw std::invalid_argument("python tuple/list/array to imgui.imcolor: size should be 3 or 4!");
 }
 
-ImColor cast_to_imcolor(py::tuple tup)
+template<class T>
+typename std::enable_if_t<std::is_same_v<T,py::tuple>||std::is_same_v<T,py::list>,ImColor>
+  cast_to_imcolor(T obj)
 {
-    imcolor_check_size(tup);
-    if (py::isinstance<py::float_>(tup[0]))
-        return cast_to_imcolor_impl<float>(tup);
+    imcolor_check_size(obj);
+    if (py::isinstance<py::float_>(obj[0]))
+        return cast_to_imcolor_impl<float>(obj);
     else
         // NB: internal cast will assert if not float or int, so we don't need to check 
-        return cast_to_imcolor_impl<int>(tup);
+        return cast_to_imcolor_impl<int>(obj);
 }
-ImColor cast_to_imcolor(py::list li)
-{
-    imcolor_check_size(li);
-    if (py::isinstance<py::float_>(li[0]))
-        return cast_to_imcolor_impl<float>(li);
-    else
-        // NB: internal cast will assert if not float or int, so we don't need to check 
-        return cast_to_imcolor_impl<int>(li);
-}
-ImColor cast_to_imcolor(py::array ar)
+template<class T>
+typename std::enable_if_t<std::is_same_v<T,py::array>,ImColor>
+  cast_to_imcolor(T ar)
 {
     imcolor_check_size(ar);
     if (ar.dtype().kind()=='f')
