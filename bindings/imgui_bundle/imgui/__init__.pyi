@@ -391,6 +391,48 @@ StoragePair = Any
 
 # Callback and functions types
 
+""" [ADAPT_IMGUI_BUNDLE] added EmSize and EmVec2"""
+# IMGUI_API float GetFontSize();    /* original C++ signature */
+def get_font_size() -> float:
+    pass
+
+# IMGUI_API inline float EmSize() { return ImGui::GetFontSize(); }    /* original C++ signature */
+# }
+def em_size() -> float:
+    """EnSize represents a size on the screen relative to the font size.
+    For good results on HighDPI screens, prefer scale your widgets and windows relatively to this size.
+    It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    """
+    pass
+
+class EmVec2:
+    # float                                   x,     /* original C++ signature */
+    x: float
+    # y;    /* original C++ signature */
+    y: float
+    # constexpr EmVec2()                      : x(0.0f), y(0.0f) { }    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
+    # constexpr EmVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
+    def __init__(self, _x: float, _y: float) -> None:
+        pass
+    # float  operator[] (size_t idx) const    { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)
+
+        We very rarely use this [] operator, the assert overhead is fine.
+        """
+        pass
+    # float& operator[] (size_t idx)          { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
+    def __getitem__(self, idx: int) -> float:
+        """(private API)
+
+        We very rarely use this [] operator, the assert overhead is fine.
+        """
+        pass
+
+# [/ADAPT_IMGUI_BUNDLE]
+
 class ImVec2:
     # float                                   x,     /* original C++ signature */
     x: float
@@ -402,6 +444,7 @@ class ImVec2:
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float) -> None:
         pass
+    # [/ADAPT_IMGUI_BUNDLE]
     # float  operator[] (size_t idx) const    { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
     def __getitem__(self, idx: int) -> float:
         """(private API)

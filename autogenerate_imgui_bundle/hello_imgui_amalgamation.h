@@ -2208,6 +2208,8 @@ _EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale_ (on MacOS Fon
 
 __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
 
+__HelloImGui::EmToVec2(x, y)__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+
 @@md
 */
 namespace HelloImGui
@@ -2236,7 +2238,7 @@ namespace HelloImGui
     // __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
     float EmSize(float nbLines);
 
-    // __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+    // __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
     ImVec2 EmToVec2(float x, float y);
     ImVec2 EmToVec2(ImVec2 v);
 }
