@@ -1,4 +1,4 @@
-litgen @ git+https://github.com/pthom/litgen
+srcmlcpp @ git+https://github.com/pthom/srcmlcpp
 black
 mypy
 pytest
