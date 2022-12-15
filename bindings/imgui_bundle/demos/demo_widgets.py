@@ -55,7 +55,7 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
-    knobs_size_small = immapp.em_size() * 5.
+    knobs_size_small = immapp.em_size() * 5.0
     knobs_size_big = knobs_size_small * 1.3
 
     imgui.begin_group()
@@ -70,6 +70,7 @@ def demo_knobs():
     show_int_knobs(knobs_size_big)
     imgui.end_group()
 
+
 def demo_spinner():
     from imgui_bundle import imspinner
 
@@ -80,17 +81,20 @@ def demo_spinner():
     )
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
-    imgui.text("spinner_moving_dots"); imgui.same_line()
+    imgui.text("spinner_moving_dots")
+    imgui.same_line()
     imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
     imgui.same_line()
 
     radius = imgui.get_font_size() / 1.8
-    imgui.text("spinner_arc_rotation"); imgui.same_line()
+    imgui.text("spinner_arc_rotation")
+    imgui.same_line()
     imspinner.spinner_arc_rotation("spinner_arc_rotation", radius, 4.0, color)
     imgui.same_line()
 
     radius1 = imgui.get_font_size() / 2.5
-    imgui.text("spinner_ang_triple"); imgui.same_line()
+    imgui.text("spinner_ang_triple")
+    imgui.same_line()
     imspinner.spinner_ang_triple("spinner_ang_triple", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
 
 
@@ -106,9 +110,7 @@ def demo_toggle():
     _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
     imgui.same_line()
 
-    _changed, static.flag = imgui_toggle.toggle(
-        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
-    )
+    _changed, static.flag = imgui_toggle.toggle("Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated)
     imgui.same_line()
 
     toggle_config = imgui_toggle.material_style()
@@ -119,7 +121,9 @@ def demo_toggle():
     _changed, static.flag = imgui_toggle.toggle("iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2))
 
     imgui.same_line()
-    _changed, static.flag = imgui_toggle.toggle("iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True))
+    _changed, static.flag = imgui_toggle.toggle(
+        "iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True)
+    )
 
 
 @immapp.static(selected_filename="")

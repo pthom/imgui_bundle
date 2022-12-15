@@ -21,10 +21,7 @@ class DemoAppTable:
     current_app: DemoApp
     demo_folder: str
 
-    def __init__(self,
-                 demo_apps: List[DemoApp],
-                 demo_folder: str,
-                 idx_initial_app: int = 0):
+    def __init__(self, demo_apps: List[DemoApp], demo_folder: str, idx_initial_app: int = 0):
         self.editor = text_edit.TextEditor()
         self.editor.set_language_definition(text_edit.TextEditor.LanguageDefinition.python())
         self.demo_apps = demo_apps

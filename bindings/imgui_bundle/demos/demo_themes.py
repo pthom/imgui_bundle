@@ -3,13 +3,14 @@ from imgui_bundle.demos import demo_utils
 
 
 def make_gui():
-
     def gui():
-        demo_utils.render_md_unindented("""
+        demo_utils.render_md_unindented(
+            """
         HelloImGui adds support for advanced theming to ImGui.
         
         Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
-        """)
+        """
+        )
 
         themes = [
             hello_imgui.ImGuiTheme_.imgui_colors_classic,
@@ -28,11 +29,12 @@ def make_gui():
             hello_imgui.ImGuiTheme_.so_dark_accent_yellow,
             hello_imgui.ImGuiTheme_.so_dark_accent_red,
             hello_imgui.ImGuiTheme_.black_is_black,
-            hello_imgui.ImGuiTheme_.white_is_white
+            hello_imgui.ImGuiTheme_.white_is_white,
         ]
         for theme in themes:
             if imgui.button(theme.name):
                 hello_imgui.apply_theme(theme)
+
     return gui
 
 

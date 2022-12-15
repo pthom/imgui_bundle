@@ -32,7 +32,7 @@ def demo_radio_button():
 
 def show_code_advices() -> None:
     cpp_code = (
-            code_str_utils.unindent_code(
+        code_str_utils.unindent_code(
             """
         void DemoRadioButton()
         {
@@ -44,7 +44,7 @@ def show_code_advices() -> None:
     """,
             flag_strip_empty_lines=True,
         )
-            + "\n"
+        + "\n"
     )
 
     md_render_unindent(
@@ -83,7 +83,7 @@ def demo_input_text_decimal() -> None:
 
 def show_text_input_advice():
     cpp_code = (
-            code_str_utils.unindent_code(
+        code_str_utils.unindent_code(
             """
         void DemoInputTextDecimal()
         {
@@ -99,7 +99,7 @@ def show_text_input_advice():
         """,
             flag_strip_empty_lines=True,
         )
-            + "\n"
+        + "\n"
     )
 
     md_render_unindent(
@@ -155,10 +155,12 @@ def show_glfw_callback_advice():
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     imgui.text("Code for this demo")
-    static.text_editor.render("Code", immapp.em_to_vec2(50., 16.5))
+    static.text_editor.render("Code", immapp.em_to_vec2(50.0, 16.5))
 
-    md_render_unindent("""For more complex applications, you can set various callbacks, using glfw.
-    *Click the button below to add a callback*""")
+    md_render_unindent(
+        """For more complex applications, you can set various callbacks, using glfw.
+    *Click the button below to add a callback*"""
+    )
 
     if imgui.button("Add glfw callback"):
         demo_add_window_size_callback()

@@ -14,7 +14,7 @@ def lerp(a, b, x):
 
 # @njit(cache=True, nogil=True, parallel=True)
 def mandelbrot(
-        width: int, height: int, x_center: PreciseFloat, y_center: PreciseFloat, zoom: PreciseFloat, max_iterations: int
+    width: int, height: int, x_center: PreciseFloat, y_center: PreciseFloat, zoom: PreciseFloat, max_iterations: int
 ) -> np.ndarray:
     result = np.zeros((height, width), ColorType)
 
@@ -26,7 +26,7 @@ def mandelbrot(
     y_from = y_center - y_height / zoom
     y_to = y_center + y_height / zoom
 
-    #for iy in numba.prange(height):  # parallel loop! (speedup by a factor of 7 on an 8 cores machines)
+    # for iy in numba.prange(height):  # parallel loop! (speedup by a factor of 7 on an 8 cores machines)
     for iy in range(height):
         ky: PreciseFloat = iy / height
         y0 = lerp(y_from, y_to, ky)
@@ -64,22 +64,10 @@ def mandelbrot(
 
 
 locations = [
-        {
-            "coords": [-0.5, 0.0],
-            "name": "Mandelbrot full",
-            "zoom": 1.0
-        },
-        {
-            "coords": [0.27668094779430163, 0.008101875630718678],
-            "name": "Aliens",
-            "zoom": 140210.64691527165
-        },
-        {
-            "coords": [-0.7961073900746515,-0.18324251614029363],
-            "name": "Flowers",
-            "zoom": 12297024368713.648
-        },
-    ]
+    {"coords": [-0.5, 0.0], "name": "Mandelbrot full", "zoom": 1.0},
+    {"coords": [0.27668094779430163, 0.008101875630718678], "name": "Aliens", "zoom": 140210.64691527165},
+    {"coords": [-0.7961073900746515, -0.18324251614029363], "name": "Flowers", "zoom": 12297024368713.648},
+]
 
 
 def fill_inspector():

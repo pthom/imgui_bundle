@@ -23,7 +23,7 @@ def main():
         gui_function=show_gui,
         window_title="Hello, globe!",
         window_size_auto=True,
-        with_markdown=True, # this will initialize markdown and load the required fonts
+        with_markdown=True,  # this will initialize markdown and load the required fonts
         # Uncomment the next line to restore the window position and size from previous run
         # window_restore_previous_geometry=True
     )

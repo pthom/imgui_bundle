@@ -18,7 +18,9 @@ params_channels.zoom_key = "some_common_zoom_key"
 
 
 def gui():
-    demo_utils.render_md_unindented("If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel");
+    demo_utils.render_md_unindented(
+        "If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel"
+    )
 
     immvision.image("RGB", image, params_rgb)
     for i, channel in enumerate(channels):

@@ -21,11 +21,10 @@ class Orientation(Enum):
     Vertical = 1
 
 
-
 class SobelParams:
     blur_size = 1.25
-    deriv_order = 1 # order of the derivative
-    k_size = 7 # size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
+    deriv_order = 1  # order of the derivative
+    k_size = 7  # size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
     orientation: Orientation = Orientation.Vertical
 
 
@@ -54,10 +53,13 @@ def gui_sobel_params(params: SobelParams) -> bool:
     c, params.blur_size = imgui.slider_float("Blur size", params.blur_size, 0.5, 10)
     if c:
         changed = True
-    imgui.same_line(); imgui.text(" | "); imgui.same_line()
+    imgui.same_line()
+    imgui.text(" | ")
+    imgui.same_line()
 
     # Deriv order
-    imgui.text("Deriv order"); imgui.same_line()
+    imgui.text("Deriv order")
+    imgui.same_line()
     for deriv_order in (1, 2, 3, 4):
         c, params.deriv_order = imgui.radio_button(str(deriv_order), params.deriv_order, deriv_order)
         if c:
@@ -67,9 +69,12 @@ def gui_sobel_params(params: SobelParams) -> bool:
     # imgui.same_line(); imgui.text(" | "); imgui.same_line()
     imgui.new_line()
 
-    imgui.same_line(); imgui.text(" | "); imgui.same_line()
+    imgui.same_line()
+    imgui.text(" | ")
+    imgui.same_line()
 
-    imgui.text("Orientation"); imgui.same_line()
+    imgui.text("Orientation")
+    imgui.same_line()
     if imgui.radio_button("Horizontal", params.orientation == Orientation.Horizontal):
         changed = True
         params.orientation = Orientation.Horizontal
@@ -86,8 +91,8 @@ class AppState:
     image_sobel: ImageFloat
     sobel_params: SobelParams
 
-    immvision_params : immvision.ImageParams
-    immvision_params_sobel : immvision.ImageParams
+    immvision_params: immvision.ImageParams
+    immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
         self.image = cv2.imread(image_file)
@@ -110,7 +115,9 @@ def make_gui() -> GuiFunction:
 
     def gui():
         nonlocal app_state
-        demo_utils.render_md_unindented("This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab.")
+        demo_utils.render_md_unindented(
+            "This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab."
+        )
         changed = gui_sobel_params(app_state.sobel_params)
         if changed:
             app_state.image_sobel = compute_sobel(app_state.image, app_state.sobel_params)
@@ -125,4 +132,3 @@ def make_gui() -> GuiFunction:
 if __name__ == "__main__":
     gui = make_gui()
     immapp.run(gui, window_size=(1000, 1000))
-

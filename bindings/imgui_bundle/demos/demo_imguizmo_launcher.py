@@ -7,13 +7,15 @@ from imgui_bundle.demos import demo_utils, demos_imguizmo
 
 def make_gui() -> demo_utils.GuiFunction:
     def gui():
-        demo_utils.render_md_unindented("""
+        demo_utils.render_md_unindented(
+            """
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui 
 
         What started with the gizmo is now a collection of dear imgui widgets and more advanced controls. 
 
         Open the demos below by clicking on their title.
-        """)
+        """
+        )
 
         if imgui.collapsing_header("Gizmo"):
             imgui.text("Click the button below to launch the demo")
@@ -30,6 +32,7 @@ def make_gui() -> demo_utils.GuiFunction:
                 this_dir = os.path.dirname(__file__)
                 subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_guizmo_zoom_slider.py"])
             demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_guizmo_zoom_slider", nb_lines=30)
+
     return gui
 
 
@@ -39,7 +42,7 @@ def demo_launch():
     if statics.gui is None:
         statics.gui = make_gui()
     statics.gui()
-    
+
 
 def main():
     gui = make_gui()

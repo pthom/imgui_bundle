@@ -20,17 +20,23 @@ DOC = """
 # This returns a closure function that will later be invoked to run the app
 def make_closure_demo_apps() -> GuiFunction:
     demo_apps = [
-        DemoApp("imgui_example_glfw_opengl3.py", """
+        DemoApp(
+            "imgui_example_glfw_opengl3.py",
+            """
                     How to run a *bare ImGui application*<br>
                     imgui_example_glfw_opengl3.py is a direct adaptation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.<br>
-                    You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example"""),
-        DemoApp("demo_hello_world.py",
-                "Hello world demo: how to start an app with ImmApp in as few lines as possible"),
+                    You can configure and run imgui, opengl and glfw (or sdl, etc.) manually as show in this example""",
+        ),
+        DemoApp("demo_hello_world.py", "Hello world demo: how to start an app with ImmApp in as few lines as possible"),
         DemoApp("demo_assets.py", "How to load assets with HelloImGui"),
-        DemoApp("demo_docking.py","""How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme."""
-                ),
+        DemoApp(
+            "demo_docking.py",
+            """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
+        ),
         DemoApp("demo_implot_markdown.py", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
-        DemoApp("demo_powersave.py", "How to have smooth animations, and how to let the application save CPU when idle"),
+        DemoApp(
+            "demo_powersave.py", "How to have smooth animations, and how to let the application save CPU when idle"
+        ),
         DemoApp("demo_custom_font.py", "How to load custom fonts"),
         DemoApp("../haikus/haiku_implot_heart.py", "Animated heart"),
     ]
