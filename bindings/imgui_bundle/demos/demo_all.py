@@ -49,7 +49,7 @@ def demo_node_editor_separate_app():
     """
     )
     if imgui.collapsing_header("Screenshot - BluePrint", imgui.TreeNodeFlags_.default_open):
-        hello_imgui.image_from_asset("images/node_editor_screenshot.jpg", immapp.em_vec2(40, 0))
+        hello_imgui.image_from_asset("images/node_editor_screenshot.jpg", immapp.em_to_vec2(40, 0))
     if imgui.collapsing_header("Demo"):
         imgui.text("Use the mouse wheel to zoom-unzoom. Right-click and drag to pan the view.")
         demo_node_editor()

@@ -142,10 +142,10 @@ def em_size(nb_lines: float) -> float:
     pass
 
 # EmVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-def em_vec2(x: float, y: float) -> ImVec2:
+def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 
-def em_vec2(v: ImVec2) -> ImVec2:
+def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 ####################    </generated_from:runner.h>    ####################
 

@@ -38,7 +38,7 @@ int main(int , char *[])
         ImGui::Text("Bloat free code");
         auto xk = VectorTimesK(x, k);
         auto yk = VectorTimesK(y, k);
-        ImPlot::BeginPlot("Heart", ImmApp::EmVec2(21, 21));
+        ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21));
         ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
         ImPlot::EndPlot();
 

@@ -155,7 +155,7 @@ def show_glfw_callback_advice():
         static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
 
     imgui.text("Code for this demo")
-    static.text_editor.render("Code", immapp.em_vec2(50., 16.5))
+    static.text_editor.render("Code", immapp.em_to_vec2(50., 16.5))
 
     md_render_unindent("""For more complex applications, you can set various callbacks, using glfw.
     *Click the button below to add a callback*""")

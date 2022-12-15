@@ -14,7 +14,7 @@ def make_gui() -> GuiFunction:
             texture_id = hello_imgui.im_texture_id_from_asset("images/bear_transparent.png")
 
         flags = 0
-        inspector_size = imgui_tex_inspect.SizeIncludingBorder(immapp.em_vec2(30, 30))
+        inspector_size = imgui_tex_inspect.SizeIncludingBorder(immapp.em_to_vec2(30, 30))
         if imgui_tex_inspect.begin_inspector_panel("Texture Inspector", texture_id, texture_size, flags, inspector_size):
             imgui_tex_inspect.end_inspector_panel()
 

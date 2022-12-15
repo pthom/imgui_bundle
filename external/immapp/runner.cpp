@@ -185,13 +185,13 @@ namespace ImmApp
     {
         return HelloImGui::EmSize();
     }
-    ImVec2 EmVec2(float x, float y)
+    ImVec2 EmToVec2(float x, float y)
     {
-        return HelloImGui::EmVec2(x, y);
+        return HelloImGui::EmToVec2(x, y);
     }
-    ImVec2 EmVec2(ImVec2 v)
+    ImVec2 EmToVec2(ImVec2 v)
     {
-        return HelloImGui::EmVec2(v);
+        return HelloImGui::EmToVec2(v);
     }
     float EmSize(float nbLines)
     {

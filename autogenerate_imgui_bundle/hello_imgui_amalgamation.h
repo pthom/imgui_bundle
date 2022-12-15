@@ -2237,8 +2237,8 @@ namespace HelloImGui
     float EmSize(float nbLines);
 
     // __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-    ImVec2 EmVec2(float x, float y);
-    ImVec2 EmVec2(ImVec2 v);
+    ImVec2 EmToVec2(float x, float y);
+    ImVec2 EmToVec2(ImVec2 v);
 }
 
 /**

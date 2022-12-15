@@ -1592,12 +1592,12 @@ def em_size(nb_lines: float) -> float:
     pass
 
 # __HelloImGui::EmVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-# ImVec2 EmVec2(float x, float y);    /* original C++ signature */
-def em_vec2(x: float, y: float) -> ImVec2:
+# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
+def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
-# ImVec2 EmVec2(ImVec2 v);    /* original C++ signature */
+# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
 # }
-def em_vec2(v: ImVec2) -> ImVec2:
+def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
 

@@ -596,11 +596,11 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("nb_lines"),
         "__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines");
 
-    m.def("em_vec2",
-        py::overload_cast<float, float>(HelloImGui::EmVec2), py::arg("x"), py::arg("y"));
+    m.def("em_to_vec2",
+        py::overload_cast<float, float>(HelloImGui::EmToVec2), py::arg("x"), py::arg("y"));
 
-    m.def("em_vec2",
-        py::overload_cast<ImVec2>(HelloImGui::EmVec2), py::arg("v"));
+    m.def("em_to_vec2",
+        py::overload_cast<ImVec2>(HelloImGui::EmToVec2), py::arg("v"));
 
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");

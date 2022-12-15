@@ -187,11 +187,11 @@ void py_init_module_immapp_cpp(py::module& m)
         py::arg("nb_lines"),
         "EmSize(nbLines) returns a size corresponding to nbLines text lines");
 
-    m.def("em_vec2",
-        py::overload_cast<float, float>(ImmApp::EmVec2), py::arg("x"), py::arg("y"));
+    m.def("em_to_vec2",
+        py::overload_cast<float, float>(ImmApp::EmToVec2), py::arg("x"), py::arg("y"));
 
-    m.def("em_vec2",
-        py::overload_cast<ImVec2>(ImmApp::EmVec2), py::arg("v"));
+    m.def("em_to_vec2",
+        py::overload_cast<ImVec2>(ImmApp::EmToVec2), py::arg("v"));
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
