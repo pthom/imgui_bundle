@@ -4411,7 +4411,7 @@ void py_init_module_imgui_main(py::module& m)
  
     pyClassImVec2.def(py::init([](ImVec2 imv) {
         return ImVec2(imv.x, imv.y);
-    }), py::arg("imvec2"));
+    }), py::arg("xy"));
 
 
     pyClassImVec4.def("__str__", [](const ImVec4& self) -> std::string {
@@ -4467,7 +4467,7 @@ void py_init_module_imgui_main(py::module& m)
  
     pyClassImVec4.def(py::init([](ImVec4 imv) {
         return ImVec4(imv.x, imv.y, imv.z, imv.w);
-    }), py::arg("imvec4"));
+    }), py::arg("xyzw"));
 
     // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
     // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
