@@ -60,6 +60,7 @@ archs = ["x86_64"]
 #####################################
 [tool.cibuildwheel.linux]
 skip = ["*i686"]
+test-skip = ["cp311-musllinux_x86_64"] #  opencv-python not yet available there
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 # environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
