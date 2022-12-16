@@ -21,6 +21,8 @@ add_subdirectory(demo_powersave)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
 
+add_demo_cpp(demo_imgui_md demo_imgui_md.cpp)
+
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_subdirectory(demos_immvision)
 endif()
