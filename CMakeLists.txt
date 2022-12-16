@@ -18,8 +18,7 @@ include(imgui_bundle_add_app)
 ###############################################################################
 # IMGUI_BUNDLE_WITH_IMMVISION
 #     immvision is an image viewer / debugger. It requires OpenCV which can be installed automatically via conan
-option(IMGUI_BUNDLE_WITH_IMMVISION "Add immvision support. Fail il OpenCV not found" OFF)
-option(IMGUI_BUNDLE_WITH_IMMVISION_IF_OPENCV_FOUND "Add immvision support if opencv is found" ON)
+option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
 
 # IMGUI_BUNDLE_WITH_SDL
@@ -51,9 +50,6 @@ include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_IMMVISION)
-endif()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
