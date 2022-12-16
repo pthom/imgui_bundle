@@ -51,20 +51,13 @@ jobs:
     - name: Build and install
       shell: bash
       run: |
-        # On Windows, we install OpenCV via cmake which downloads a prebuilt static library
-        # =================================================================================
-        echo RUNNER_OS=$RUNNER_OS
-        if [ $RUNNER_OS = "Windows" ]; then export IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=ON; fi
-        echo IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460=$IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
-        #
-        # On Linux and MacOS, we do not installed OpenCV packages
-        # and we build and use a static minimal version of OpenCV by using IMGUIBUNDLE_OPENCV_FETCH_SOURCE
-        # =================================================================================
-        if [ $RUNNER_OS != "Windows" ]; then export IMGUIBUNDLE_OPENCV_FETCH_SOURCE=ON; fi
-        echo IMGUIBUNDLE_OPENCV_FETCH_SOURCE=$IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+        # Optional: set IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV to OFF to disable OpenCV/Immvision
+        # ------------------------------------------------------------------------------------
+        # export IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV=OFF
+
         #
         # Build pip
-        # =================================================================================
+        # ------------------------------------------------------------------------------------
         pip install --verbose .[test]
 
     - name: Test

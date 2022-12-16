@@ -43,7 +43,7 @@ before-build = "uname -a"
 test-skip = ["*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
-environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+environment = { MACOSX_DEPLOYMENT_TARGET="11.0" }
 
 # Architectures
 # -------------
@@ -62,7 +62,7 @@ archs = ["x86_64"]
 skip = ["*i686"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
-environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+# environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
 
 # Install glfw dev packages on manylinux:
 # --------------------------------------
@@ -91,4 +91,4 @@ skip = ["*win32"]
 
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
-environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
+# environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
