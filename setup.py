@@ -39,7 +39,8 @@ def get_imgui_bundle_package_data() -> List[str]:
         "*.pyi",
         "*/*.pyi",
         "*/py.typed",
-        "demos/notebooks/*.ipynb",
+        "demos_python/notebooks/*.ipynb",
+        "demos_python/demos_node_editor/demo_node_editor_basic.json",
     ]
     for asset_dir in _get_assets_and_demos_cpp_dirs():
         data.append(asset_dir + "/*.*")
