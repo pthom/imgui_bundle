@@ -94,6 +94,6 @@ setup(
         # "opencv-python >= 4.5",
     ],
     entry_points={
-        "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos.demo_all:main"],
+        "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos_python.demo_all:main"],
     },
 )
