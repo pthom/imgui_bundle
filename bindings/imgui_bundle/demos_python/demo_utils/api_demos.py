@@ -74,7 +74,7 @@ def render_md_unindented(md_str: str, flag_strip_empty_lines: bool = True) -> No
     imgui_md.render(s)
 
 
-def main_repo_folder() -> str:
+def main_python_package_folder() -> str:
     this_dir = os.path.dirname(__file__)
     this_dir = this_dir.replace("\\", "/")
 
@@ -82,18 +82,18 @@ def main_repo_folder() -> str:
 
     for n in reversed(range(len(items))):
         parent_folder = "/".join(items[:n])
-        if os.path.isfile(parent_folder + "/CHANGELOG.md"):
+        if os.path.isfile(parent_folder + "/hello_imgui.pyi"):
             return parent_folder
 
-    raise Exception("Cannot find main repo folder!")
+    raise Exception("Cannot find main python package!")
 
 
 def demos_cpp_folder() -> str:
-    return main_repo_folder() + "/demos_cpp"
+    return main_python_package_folder() + "/demos_cpp"
 
 
 def demos_python_folder() -> str:
-    return main_repo_folder() + "/bindings/imgui_bundle/demos"
+    return main_python_package_folder() + "/demos_python"
 
 
 def read_code(filename: str):
