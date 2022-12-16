@@ -96,7 +96,7 @@ endif()
 ####################################################
 if (IMGUI_BUNDLE_BUILD_CPP)
     if(IMGUI_BUNDLE_BUILD_DEMOS)
-        add_subdirectory(demos_cpp)
+        add_subdirectory(bindings/imgui_bundle/demos_cpp)
     endif()
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_subdirectory(pybind_native_debug)
