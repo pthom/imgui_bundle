@@ -44,10 +44,16 @@ test-skip = ["*"]
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { MACOSX_DEPLOYMENT_TARGET="11.0", IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
+
+# Architectures
+# -------------
 # archs = ["universal2"] # building universal2 fails miserably at this time: see comment in external/immvision/find_opencv.cmake
 # So, we build separately for x86_64 and arm64
-archs = ["x86_64", "arm64"]
-
+# archs = ["x86_64", "arm64"]
+# Actually, we (temporarily) do not build for arm64 on github's CI, since it succeeds to build a wheel,
+# however the resulting wheel wants to link to intel IPP, which is not available on arm.
+# => mac arm61 will need to be built and uploaded from an M1 mac
+archs = ["x86_64"]
 
 #####################################
 # linux wheels options
