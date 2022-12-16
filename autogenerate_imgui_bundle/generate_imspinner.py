@@ -12,6 +12,7 @@ assert os.path.isdir(CPP_GENERATED_PYBIND_DIR)
 
 
 def autogenerate_imspinner():
+    print("autogenerate_imspinner")
     input_cpp_header = CPP_HEADERS_DIR + "/imspinner.h"
     output_cpp_pydef_file = CPP_GENERATED_PYBIND_DIR + "/pybind_imspinner.cpp"
     output_stub_pyi_file = CPP_GENERATED_PYBIND_DIR + "/imgui_bundle/imspinner.pyi"
@@ -33,5 +34,4 @@ def autogenerate_imspinner():
 
 
 if __name__ == "__main__":
-    print("autogenerate_imspinner")
     autogenerate_imspinner()
