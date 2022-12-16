@@ -1,9 +1,4 @@
 include(${CMAKE_CURRENT_LIST_DIR}/find_opencv.cmake)
-
-#if (IMGUI_BUNDLE_BUILD_PYTHON)
-#
-#endif()
-
 immvision_find_opencv()
 if (NOT OpenCV_FOUND)
     if (IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE)

@@ -16,8 +16,32 @@ include(imgui_bundle_add_app)
 ###############################################################################
 # Build Options
 ###############################################################################
-# IMGUI_BUNDLE_WITH_IMMVISION
-#     immvision is an image viewer / debugger. It requires OpenCV which can be installed automatically via conan
+# IMGUI_BUNDLE_BUILD_PYTHON:
+#    on by default when using pip install, off when building the cpp library
+#    (SKBUILD is set to on by pip install / setup.py)
+if(SKBUILD)
+    set(IMGUI_BUNDLE_BUILD_PYTHON ON)
+    set(IMGUI_BUNDLE_BUILD_CPP OFF)
+else()
+    option(IMGUI_BUNDLE_BUILD_PYTHON "build python bindings" OFF)
+    set(IMGUI_BUNDLE_BUILD_CPP ON)
+endif()
+
+# IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV
+#     immvision is an image viewer / debugger. It requires OpenCV which can be fetched automatically during configure
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    # For the python package, we automatically fetch OpenCV
+    # (under windows, we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources)
+    option(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "fetch OpenCV" ON)
+else()
+    option(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
+endif()
+# When building the pip package, you can disable OpenCV (and immvision) by setting the env variable
+# IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV=OFF
+if(DEFINED ENV{IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV})
+    set(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "$ENV{IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV}")
+endif()
+
 option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
 
@@ -31,17 +55,6 @@ if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
 else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
-endif()
-
-# IMGUI_BUNDLE_BUILD_PYTHON:
-#    on by default when using pip install, off when building the cpp library
-#    (SKBUILD is set to on by pip install / setup.py)
-if(SKBUILD)
-    set(IMGUI_BUNDLE_BUILD_PYTHON ON)
-    set(IMGUI_BUNDLE_BUILD_CPP OFF)
-else()
-    option(IMGUI_BUNDLE_BUILD_PYTHON OFF)
-    set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
 

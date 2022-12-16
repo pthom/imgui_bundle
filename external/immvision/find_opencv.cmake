@@ -86,7 +86,6 @@ macro(immvision_fetch_opencv_from_source)
     # It is so minimalist that it is only usable within the python bindings!!!
     # It will contain only opencv_core (core), opencv_imgcodecs (load/save), and opencv_imgproc (affine transforms, etc)
     # Mainly used for wheel builds.
-
     if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
         message("FIND OPENCV use immvision_fetch_opencv_from_source")
 
@@ -275,6 +274,14 @@ set(immvision_conan_help_message "
 
 
 macro(immvision_find_opencv)
+    if (IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV)
+        if (WIN32)
+            set(IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460 ON)
+        else()
+            set(IMGUIBUNDLE_OPENCV_FETCH_SOURCE ON)
+        endif()
+    endif()
+
     immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
     immvision_forward_opencv_env_variables() # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
     immvision_download_opencv_static_package_win() # will download prebuilt package if IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
