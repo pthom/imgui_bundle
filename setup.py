@@ -14,7 +14,7 @@ def get_readme():
     return r
 
 
-def _get_assets_dirs() -> List[str]:
+def _get_assets_and_demos_cpp_dirs() -> List[str]:
     r = []
 
     dir_name: str
@@ -22,7 +22,7 @@ def _get_assets_dirs() -> List[str]:
 
         def is_assets_dir_or_subdir():
             dir_parts = dir_name.replace("\\", "/").split("/")
-            return "assets" in dir_parts
+            return "assets" in dir_parts or "demos_cpp" in dir_parts
 
         if is_assets_dir_or_subdir():
             relative_dir = os.path.relpath(dir_name, ROOT_PACKAGE_FOLDER)
@@ -41,7 +41,7 @@ def get_imgui_bundle_package_data() -> List[str]:
         "*/py.typed",
         "demos/notebooks/*.ipynb",
     ]
-    for asset_dir in _get_assets_dirs():
+    for asset_dir in _get_assets_and_demos_cpp_dirs():
         data.append(asset_dir + "/*.*")
     return data
 
