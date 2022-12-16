@@ -51,6 +51,55 @@ ImVec4 cast_to_imvec4(py::handle obj)
     return ImVec4(floats[0], floats[1], floats[2], floats[3]);
 }
 
+template <typename T>
+ImColor cast_to_imcolor_impl(py::handle obj);
+template <>
+ImColor cast_to_imcolor_impl<float>(py::handle obj)
+{
+    auto values = obj.cast<std::vector<float>>();
+    if (values.size()==3)
+        return ImColor(values[0], values[1], values[2]);
+    else
+        return ImColor(values[0], values[1], values[2], values[3]);
+}
+template <>
+ImColor cast_to_imcolor_impl<int>(py::handle obj)
+{
+    auto values = obj.cast<std::vector<int>>();
+    if (values.size()==3)
+        return ImColor(values[0], values[1], values[2]);
+    else
+        return ImColor(values[0], values[1], values[2], values[3]);
+}
+void imcolor_check_size(py::handle obj)
+{
+    if (len(obj)!=3 && len(obj)!=4)
+        throw std::invalid_argument("python tuple/list/array to imgui.imcolor: size should be 3 or 4!");
+}
+
+template<class T>
+typename std::enable_if_t<std::is_same_v<T,py::tuple>||std::is_same_v<T,py::list>,ImColor>
+  cast_to_imcolor(T obj)
+{
+    imcolor_check_size(obj);
+    if (py::isinstance<py::float_>(obj[0]))
+        return cast_to_imcolor_impl<float>(obj);
+    else
+        // NB: internal cast will assert if not float or int, so we don't need to check 
+        return cast_to_imcolor_impl<int>(obj);
+}
+template<class T>
+typename std::enable_if_t<std::is_same_v<T,py::array>,ImColor>
+  cast_to_imcolor(T ar)
+{
+    imcolor_check_size(ar);
+    if (ar.dtype().kind()=='f')
+        return cast_to_imcolor_impl<float>(ar);
+    else
+        // NB: internal cast will assert if not float or int, so we don't need to check 
+        return cast_to_imcolor_impl<int>(ar);
+}
+
 
 void py_init_module_imgui_main(py::module& m)
 {
@@ -4438,7 +4487,7 @@ void py_init_module_imgui_main(py::module& m)
  
     pyClassImVec2.def(py::init([](ImVec2 imv) {
         return ImVec2(imv.x, imv.y);
-    }), py::arg("imvec2"));
+    }), py::arg("xy"));
 
 
     pyClassImVec4.def("__str__", [](const ImVec4& self) -> std::string {
@@ -4494,7 +4543,69 @@ void py_init_module_imgui_main(py::module& m)
  
     pyClassImVec4.def(py::init([](ImVec4 imv) {
         return ImVec4(imv.x, imv.y, imv.z, imv.w);
-    }), py::arg("imvec4"));
+    }), py::arg("xyzw"));
+
+
+    pyClassImColor.def("__str__", [](const ImColor& self) -> std::string {
+        char r[100];
+        snprintf(r, 100, "ImColor(%f, %f, %f, %f)", self.Value.x, self.Value.y, self.Value.z, self.Value.w);
+        return r;
+    });
+    pyClassImColor.def("__repr__", [](const ImColor& self) -> std::string {
+        char r[100];
+        snprintf(r, 100, "ImColor(%f, %f, %f, %f)", self.Value.x, self.Value.y, self.Value.z, self.Value.w);
+        return r;
+    });
+    pyClassImColor.def("__getitem__", [](const ImColor& self, size_t idx) -> float {
+        if (idx >= 4)
+            throw py::index_error();
+        switch (idx)
+        {
+        case 0:
+            return self.Value.x;
+        case 1:
+            return self.Value.y;
+        case 2:
+            return self.Value.z;
+        case 3:
+            return self.Value.w;
+        default:
+            // unreachable, but makes clang happy
+            // (warning: non-void lambda does not return a value in all control paths [-Wreturn-type])
+            return 0.f;
+        }
+    });
+    pyClassImColor.def("__len__", [](const ImColor& self) -> size_t {
+        return 4;
+    });
+    pyClassImColor.def("__iter__", [](const ImColor& self) {
+            return py::make_iterator(&self.Value.x, &self.Value.x + 4);
+        },
+        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+    );
+    pyClassImColor.def(py::init([](py::tuple t) {
+        return cast_to_imcolor(t);
+    }), py::arg("tuple"));
+    pyClassImColor.def(py::init([](py::list l) {
+        return cast_to_imcolor(l);
+    }), py::arg("list"));
+    pyClassImColor.def(py::init([](py::array a) {
+        return cast_to_imcolor(a);
+    }), py::arg("array"));
+
+    py::implicitly_convertible<py::tuple, ImColor>();
+    py::implicitly_convertible<py::list, ImColor>();
+    py::implicitly_convertible<py::array, ImColor>();
+    py::implicitly_convertible<ImVec4, ImColor>();
+    py::implicitly_convertible<ImColor, ImVec4>();
+    // below two are not possible, even if sorely needed for our API, with current pybind11
+    //py::implicitly_convertible<ImU32, ImColor>();
+    //py::implicitly_convertible<ImColor, ImU32>();
+
+    pyClassImColor.def(py::init([](ImColor imc) {
+        return ImColor(imc.Value.x, imc.Value.y, imc.Value.z, imc.Value.w);
+    }), py::arg("rgba"));
+
 
     // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
     // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
