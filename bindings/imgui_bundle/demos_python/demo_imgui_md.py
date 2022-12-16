@@ -28,13 +28,46 @@ imgui_md currently supports the following markdown functionality:
 * ~~Strikethrough~~
 * HTML elements: \<br> \<hr> \<u> \<div> \&nbsp;
 * Backslash Escapes
+* Inline `code element` (using \`code element\`)
+* Tables
+* Block code like this (using \`\`\`\`)
+````
+int main() {
+    return 42;
+}
+````
+* Separator (see below)
 
-Most format tags can be mixed!
+----
 
-### Known limitations
+*Warning about tables layout*: the first row will impose the columns widths.
+Use nbsp\; to increase the columns sizes on the first row if required.
 
-1. table rendering: text might overflow the borders
-2. div: needs to be corrected
+As an example, the table below:
+
+| Continent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Population&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Number of Countries |
+|-----------|------------|---------------------|
+| Africa    | 1.3 billion | 54                  |
+| Antarctica | 0 | 0          |
+| Asia      | 4.5 billion | 48                  |
+| Europe    | 743 million | 44                  |
+| North America | 579 million | 23              |
+| Oceania   | 41 million  | 14                  |
+| South America | 422 million | 12              |
+
+Can be created with this code (where lots of nbsp\; were added to enforce the column widths on the first row):<br><br>
+
+````
+| Continent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Population&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Number of Countries |
+|-----------|------------|---------------------|
+| Africa    | 1.3 billion | 54                  |
+| Antarctica | 0 | 0          |
+| Asia      | 4.5 billion | 48                  |
+| Europe    | 743 million | 44                  |
+| North America | 579 million | 23              |
+| Oceania   | 41 million  | 14                  |
+| South America | 422 million | 12              |
+````
     """
     return markdown
 
