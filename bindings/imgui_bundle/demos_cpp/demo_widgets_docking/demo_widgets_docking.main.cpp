@@ -4,6 +4,9 @@
 #include "implot/implot.h"
 #include "imspinner/imspinner.h"
 #include "imgui_toggle/imgui_toggle.h"
+#include "imgui_toggle/imgui_toggle_presets.h"
+#include "imgui_toggle/imgui_toggle_palette.h"
+#include "imgui_toggle/imgui_toggle_renderer.h"
 #include "imgui-knobs/imgui-knobs.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "ImFileDialog/ImFileDialog.h"
@@ -106,12 +109,20 @@ This is an example of markdown widget, with an included image:
     // Toggles
     ImGui::SameLine();
     {
+        static bool toggled = true;
         ImGui::BeginGroup();
         ImGuiMd::Render("### Toggle"); ImGui::NewLine();
-        static bool toggled1 = true;
-        ImGui::Toggle("Animated Toggle", &toggled1, ImGuiToggleFlags_Animated, 0.5f);
-        static bool toggled2 = false;
-        ImGui::Toggle("Toggle", &toggled2);
+        ImGui::Toggle("Animated Toggle", &toggled, ImGuiToggleFlags_Animated, 0.5f);
+        ImGui::Toggle("Toggle", &toggled);
+
+        auto toggle_config = ImGuiTogglePresets::MaterialStyle();
+        toggle_config.AnimationDuration = 0.4;
+        ImGui::Toggle("Material Style (with slowed anim)", &toggled, toggle_config);
+
+        ImGui::Toggle("iOS style", &toggled, ImGuiTogglePresets::iOSStyle(0.2f));
+
+        ImGui::Toggle("iOS style", &toggled, ImGuiTogglePresets::iOSStyle(0.2f, true));
+
         ImGui::EndGroup();
     }
 
