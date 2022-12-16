@@ -238,7 +238,7 @@ def demo_imgui_bundle() -> None:
 
         python_code = unindent(inspect.getsource(immediate_gui_example))
         # imgui.input_text_multiline("##immediate_gui_example", python_code, ImVec2(500, 150))
-        show_code_editor(python_code, False)
+        show_code_editor(python_code, False, flag_half_width=False)
         imgui.text("Displays this:")
         immediate_gui_example()
         imgui.separator()

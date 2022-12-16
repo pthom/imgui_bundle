@@ -18,7 +18,7 @@ def demos_assets_folder() -> str:
 
 
 @immapp.static(editors={})
-def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 0):
+def show_code_editor(code: str, is_cpp: bool, flag_half_width: bool, nb_lines: int = 0):
     static = show_code_editor
     editors: Dict[str, TextEditor] = static.editors
 
@@ -32,7 +32,10 @@ def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 0):
 
     if nb_lines == 0:
         nb_lines = len(editors[code].get_text().split("\n"))
-    editor_size = ImVec2(imgui.get_window_width() / 2.0 - 20.0, immapp.em_size() * nb_lines)
+    if flag_half_width:
+        editor_size = ImVec2(imgui.get_window_width() / 2.0 - 20.0, immapp.em_size() * nb_lines)
+    else:
+        editor_size = ImVec2(imgui.get_window_width() - 20.0, immapp.em_size() * nb_lines)
     editor_title = "cpp" if is_cpp else "python"
     editors[code].render(f"##{editor_title}", editor_size)
 
@@ -40,17 +43,22 @@ def show_code_editor(code: str, is_cpp: bool, nb_lines: int = 0):
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.push_id(python_code)
 
-    imgui.begin_group()
-    imgui.text("C++ code")
-    show_code_editor(cpp_code, True, nb_lines)
-    imgui.end_group()
+    flag_half_width = len(python_code) > 0 and len(cpp_code) > 0
 
-    imgui.same_line()
+    if len(cpp_code) > 0:
+        imgui.begin_group()
+        imgui.text("C++ code")
+        show_code_editor(cpp_code, is_cpp=True, flag_half_width=flag_half_width, nb_lines=nb_lines)
+        imgui.end_group()
 
-    imgui.begin_group()
-    imgui.text("Python code")
-    show_code_editor(python_code, False, nb_lines)
-    imgui.end_group()
+        if len(python_code) > 0:
+            imgui.same_line()
+
+    if len(python_code) > 0:
+        imgui.begin_group()
+        imgui.text("Python code")
+        show_code_editor(python_code, is_cpp=False, flag_half_width=flag_half_width, nb_lines=nb_lines)
+        imgui.end_group()
 
     imgui.pop_id()
 
