@@ -1,19 +1,34 @@
-from imgui_bundle import imgui, immvision, immapp
+from imgui_bundle import imgui, immvision, immapp, imgui_md
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
 from imgui_bundle.demos_python import demo_utils
 
-if HAS_IMMVISION:
+has_opencv = False
+try:
+    import cv2
+    has_opencv = True
+except ImportError:
+    pass
+
+if HAS_IMMVISION and has_opencv:
     from imgui_bundle.demos_python import demos_immvision
 
 
 def make_gui() -> demo_utils.GuiFunction:
-    if HAS_IMMVISION:
+    if HAS_IMMVISION and has_opencv:
         gui_process = demos_immvision.demo_immvision_process.make_gui()
 
     def gui():
         if not HAS_IMMVISION:
             imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
+            return
+        elif not has_opencv:
+            imgui_md.render(
+        """
+ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
+`cv2` was not found or could not be imported, so no demos are available here."""
+    )
+    
             return
 
         nonlocal gui_process
