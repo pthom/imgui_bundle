@@ -55,7 +55,7 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
-    knobs_size_small = immapp.em_size() * 5.0
+    knobs_size_small = immapp.em_size() * 2.5
     knobs_size_big = knobs_size_small * 1.3
 
     imgui.begin_group()
