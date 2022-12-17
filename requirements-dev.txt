@@ -2,5 +2,4 @@ srcmlcpp @ git+https://github.com/pthom/srcmlcpp
 black
 mypy
 pytest
-opencv-python
 opencv-contrib-python
