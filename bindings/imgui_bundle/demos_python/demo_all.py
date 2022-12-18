@@ -32,7 +32,9 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
         static.last_module = demo_module
 
     if imgui.collapsing_header("Code for this demo"):
+        imgui.push_font(imgui_md.get_code_font())
         static.editor.render("Code")
+        imgui.pop_font()
 
     demo_function()
 

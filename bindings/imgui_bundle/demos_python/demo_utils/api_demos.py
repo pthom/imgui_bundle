@@ -33,11 +33,14 @@ def show_code_editor(code: str, is_cpp: bool, flag_half_width: bool, nb_lines: i
     if nb_lines == 0:
         nb_lines = len(editors[code].get_text().split("\n"))
     if flag_half_width:
-        editor_size = ImVec2(imgui.get_window_width() / 2.0 - 20.0, immapp.em_size() * nb_lines)
+        editor_size = ImVec2(imgui.get_window_width() / 2.0 - 20.0, immapp.em_size() * 1.025 * nb_lines)
     else:
-        editor_size = ImVec2(imgui.get_window_width() - 20.0, immapp.em_size() * nb_lines)
+        editor_size = ImVec2(imgui.get_window_width() - 20.0, immapp.em_size() * 1.025 * nb_lines)
     editor_title = "cpp" if is_cpp else "python"
+
+    imgui.push_font(imgui_md.get_code_font())
     editors[code].render(f"##{editor_title}", editor_size)
+    imgui.pop_font()
 
 
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):

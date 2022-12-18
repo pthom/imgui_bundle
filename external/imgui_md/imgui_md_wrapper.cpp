@@ -255,6 +255,10 @@ assets/
             this->print(start, end);
         }
 
+        ImFont* get_font_code()
+        {
+            return mMarkdownCollection.mFontCollection.GetFontCode();
+        }
 
     private:
         ImFont* get_font() const override
@@ -404,6 +408,11 @@ assets/
         r.col_tint = { 1,1,1,1 };
         r.col_border = { 0,0,0,0 };
         return r;
+    }
+
+    ImFont* GetCodeFont()
+    {
+        return gMarkdownRenderer->get_font_code();
     }
 
 }

@@ -93,4 +93,5 @@ namespace ImGuiMd
 
     void Render(const std::string& markdownString);
 
+    ImFont* GetCodeFont();
 }
