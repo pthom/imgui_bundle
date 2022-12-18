@@ -13,7 +13,7 @@ function(add_demo_cpp)
 endfunction()
 
 add_subdirectory(demo_utils)
-add_subdirectory(demo_haiku_implot_heart)
+add_subdirectory(haikus)
 add_subdirectory(demo_texteditor)
 add_subdirectory(demo_widgets_docking)
 add_subdirectory(demo_imgui_node_editor)

@@ -10,7 +10,7 @@
 
 
 // This returns a closure function that will later be invoked to run the app
-GuiFunction make_closure_demo_tex_inspect()
+GuiFunction make_gui()
 {
     auto gui = [=]() mutable // mutable => this is a closure
     {
@@ -19,13 +19,6 @@ GuiFunction make_closure_demo_tex_inspect()
         if (textureId == 0)
             textureId = HelloImGui::ImTextureIdFromAsset("images/bear_transparent.png");
 
-        static bool showDemoImGuiTexInspect = false;
-        ImGui::Checkbox("Show ImGuiTexInspect::ShowDemoWindow()", & showDemoImGuiTexInspect);
-        if (showDemoImGuiTexInspect)
-            ImGuiTexInspect::ShowDemoWindow();
-
-        ImGui::Separator();
-        // Simple demo
         {
             ImGui::Text("Simple Demo");
             ImGuiTexInspect::InspectorFlags  flags = 0;
@@ -48,7 +41,7 @@ GuiFunction make_closure_demo_tex_inspect()
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
-    auto gui = make_closure_demo_tex_inspect();
+    auto gui = make_gui();
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1000, 1000}};
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;
