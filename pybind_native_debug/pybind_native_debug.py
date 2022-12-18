@@ -6,16 +6,11 @@ THIS_DIR = os.path.dirname(__file__)
 
 
 def main() -> None:
-    path_demos = os.path.realpath(f"{THIS_DIR}/../bindings/imgui_bundle/demos")
-    print(path_demos)
-    sys.path.append(path_demos)
+    path_bindings = os.path.realpath(f"{THIS_DIR}/../bindings/")
+    sys.path = [path_bindings] + sys.path
 
-    path_demos_immvision = path_demos + "/demos_immvision"
-    sys.path.append(path_demos_immvision)
-
-    import demo_inspector  # type: ignore
-
-    demo_inspector.main()
+    from imgui_bundle.demos_python import demo_all  # type: ignore
+    demo_all.main()
 
 
 main()
