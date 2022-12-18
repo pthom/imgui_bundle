@@ -1270,13 +1270,16 @@ namespace HelloImGui
             ScreenBounds windowBoundsNew = windowBoundsOriginal;
             ForDim2(dim)
             {
-                // if window is to the left or to the top, move it
+                // 1. if window is to the left or to the top, move it
                 if (windowBoundsNew.position[dim] < self.position[dim])
                     windowBoundsNew.position[dim] = self.position[dim];
-                // if the window is too big and does not fit the bottom right corner, try to move it
+                // 2.1 if the window is too big and does not fit the bottom right corner, try to move it
                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
                     windowBoundsNew.position[dim] = self.BottomRightCorner()[dim] - 1 - windowBoundsNew.size[dim];
-                // if it was not enough, resize it
+                // Redo 1. if window is to the left or to the top, move it (since we may have moved)
+                if (windowBoundsNew.position[dim] < self.position[dim])
+                    windowBoundsNew.position[dim] = self.position[dim];
+                // 3. if it was not enough, resize it
                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
                     windowBoundsNew.size[dim] = self.size[dim];
             }
@@ -1595,7 +1598,7 @@ In order to change the application window settings, change the _AppWindowsParams
   * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
     If true, you can drag windows outside out the main window in order to put their content into new native windows.
 
-  * `tweakedTheme`: _string, default="ImGuiColorsDark"_.
+  * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
     Change the ImGui theme. Several themes are available, you can query the list by calling
     HelloImGui::AvailableThemes()
 @@md
