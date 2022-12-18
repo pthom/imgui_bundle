@@ -3,7 +3,7 @@ requires = [
     "setuptools>=42",
     "wheel",
     "pybind11>=2.9.2",
-    "cmake>=3.22",
+    "cmake>=3.22, !=3.25.0",  # cmake 3.25.0 is buggy and fails with OpenCV (see https://github.com/opencv/opencv/issues/22784)
     "scikit-build>=0.14.1",
     "ninja; platform_system!='Windows'",
     "patch>=1.16",
