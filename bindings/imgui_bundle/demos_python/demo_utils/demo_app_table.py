@@ -54,9 +54,6 @@ class DemoAppTable:
                 imgui.text(demo_app.python_file)
                 imgui.table_next_column()
 
-                cursor_pos = imgui.get_cursor_pos()
-                cursor_pos.y -= imgui.get_font_size()
-                imgui.set_cursor_pos(cursor_pos)
                 imgui_md.render(demo_app.explanation)
 
                 if len(demo_app.python_file) > 0:
