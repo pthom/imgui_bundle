@@ -9,11 +9,11 @@ image = cv2.imread(this_dir + "/../assets/images/tennis.jpg")
 channels = cv2.split(image)
 
 params_rgb = immvision.ImageParams()
-params_rgb.image_display_size = (200, 0)
+params_rgb.image_display_size = (300, 0)
 params_rgb.zoom_key = "some_common_zoom_key"
 
 params_channels = immvision.ImageParams()
-params_channels.image_display_size = (200, 0)
+params_channels.image_display_size = (300, 0)
 params_channels.zoom_key = "some_common_zoom_key"
 
 

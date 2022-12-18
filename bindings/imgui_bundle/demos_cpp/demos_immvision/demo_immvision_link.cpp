@@ -16,10 +16,10 @@ void gui()
         image = cv::imread("assets/images/tennis.jpg");
         cv::split(image, channels);
 
-        params_rgb.ImageDisplaySize = {200, 0};
+        params_rgb.ImageDisplaySize = {300, 0};
         params_rgb.ZoomKey = "some_common_zoom_key";
 
-        params_channels.ImageDisplaySize = {200, 0};
+        params_channels.ImageDisplaySize = {300, 0};
         params_channels.ZoomKey = "some_common_zoom_key";
     }
 
