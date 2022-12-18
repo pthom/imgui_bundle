@@ -22,7 +22,7 @@ GuiFunction make_gui()
         {
             ImGui::Text("Simple Demo");
             ImGuiTexInspect::InspectorFlags  flags = 0;
-            ImGuiTexInspect::SizeIncludingBorder inspectorSize(ImVec2(600.f, 600.f));
+            ImGuiTexInspect::SizeIncludingBorder inspectorSize(ImmApp::EmToVec2(40.f, 40.f));
 
             if (ImGuiTexInspect::BeginInspectorPanel(
                 "Texture inspector",
