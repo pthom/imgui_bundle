@@ -53,5 +53,6 @@ int main()
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;
     ImmApp::Run(runnerParams, addOnsParams);
+    return 0;
 }
 #endif

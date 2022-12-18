@@ -449,5 +449,6 @@ int main()
     runnerParams.dockingParams.dockableWindows = { winEditor, winGuizmo};
 
     ImmApp::Run(runnerParams);
+    return 0;
 }
 #endif

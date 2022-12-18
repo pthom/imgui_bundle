@@ -143,5 +143,6 @@ int main()
 
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={400, 400}};
     ImmApp::Run(runnerParams);
+    return 0;
 }
 #endif

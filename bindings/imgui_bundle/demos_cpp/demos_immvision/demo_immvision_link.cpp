@@ -41,4 +41,6 @@ int main()
     ImmApp::AddOnsParams addOnsParams; addOnsParams.withMarkdown = true;
 
     ImmApp::Run(runnerParams, addOnsParams);
+
+    return 0;
 }

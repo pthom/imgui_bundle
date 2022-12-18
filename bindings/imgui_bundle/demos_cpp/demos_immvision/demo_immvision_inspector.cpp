@@ -33,4 +33,5 @@ void gui()
 int main()
 {
     ImmApp::RunWithMarkdown(gui, "inspector", false, false, {1000, 800});
+    return 0;
 }
