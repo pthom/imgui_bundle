@@ -36,7 +36,9 @@ def demo_imgui_color_text_edit():
             editor.set_palette(TextEditor.get_retro_blue_palette())
 
     show_palette_buttons()
+    imgui.push_font(imgui_md.get_code_font())
     editor.render("Code")
+    imgui.pop_font()
 
 
 def main():
