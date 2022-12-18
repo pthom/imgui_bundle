@@ -221,9 +221,9 @@ def main():
 
     def show_menu_gui():
         if imgui.begin_menu("My Menu"):
-            if imgui.menu_item("Test me"):
-                print("It works")
-                # logger.warning("It works")
+            clicked, _ = imgui.menu_item("Test me", "", False)
+            if clicked:
+                hello_imgui.log(hello_imgui.LogLevel.warning, "It works")
             imgui.end_menu()
 
     runner_params.callbacks.show_menus = show_menu_gui
