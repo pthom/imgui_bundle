@@ -52,14 +52,13 @@ def show_code_advices() -> None:
     ImGui is a C++ library that was ported to Python. In order to work with it you will often refer to its [demo](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html), which shows example code in C++.
 
     In order to translate from C++ to Python:
-     1. change the function names and parameters' names from `CamelCase` to `snake_case`
-     2. change the way the output are handled
-        a. in C++ `ImGui::RadioButton` modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button
-        b. In python, the (possibly modified) value is transmitted via the return: ìmgui.radio_button` returns a `Tuple[bool, str]` which contains (user_clicked, new_value)
-    3. if porting some code that uses static variables, use the @static decorator
-       In this case, this decorator simply adds a variable "value" at the function scope. It is is preserved between calls.
-       Normally, this variable should be accessed via "demo_radio_button.value", however the first line of the function
-       adds a synonym named static for more clarity.
+    1. Change the function names and parameters' names from `CamelCase` to `snake_case`
+    2. Change the way the output are handled.
+        a. in C++ `ImGui::RadioButton` modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.
+        b. In python, the (possibly modified) value is transmitted via the return: `imgui.radio_button` returns a `Tuple[bool, str]` which contains `(user_clicked, new_value)`.
+    3. if porting some code that uses static variables, use the `@static` decorator.
+       In this case, this decorator simply adds a variable `value` at the function scope. It is is preserved between calls.
+       Normally, this variable should be accessed via `demo_radio_button.value`, however the first line of the function adds a synonym named static for more clarity.
        Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.
     """
     )
