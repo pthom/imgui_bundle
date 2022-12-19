@@ -1,34 +1,48 @@
-from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle import imgui, immvision, immapp, imgui_md, imgui_color_text_edit as text_edit
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
 from imgui_bundle.demos_python import demo_utils
 
-has_opencv = False
+HAS_OPENCV = False
 try:
     import cv2
-    has_opencv = True
+    HAS_OPENCV = True
 except ImportError:
     pass
 
-if HAS_IMMVISION and has_opencv:
+if HAS_IMMVISION and HAS_OPENCV:
     from imgui_bundle.demos_python import demos_immvision
 
 
+@immapp.static(opencv_help=None)
 def make_gui() -> demo_utils.GuiFunction:
-    if HAS_IMMVISION and has_opencv:
+    if HAS_IMMVISION and HAS_OPENCV:
         gui_process = demos_immvision.demo_immvision_process.make_gui()
 
     def gui():
         if not HAS_IMMVISION:
             imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
             return
-        elif not has_opencv:
-            imgui_md.render(
+        elif not HAS_OPENCV:
+            if make_gui.opencv_help is None:
+                make_gui.opencv_help = text_edit.TextEditor()
+                make_gui.opencv_help.set_text("""
+# OpenCv standard package
+pip install opencv-python
+
+# OpenCv package with contrib modules
+pip install opencv-contrib-python
+
+# OpenCv package headless (no cv.imshow, etc.); for server installations
+pip install opencv-python-headless
+""")
+            demo_utils.render_md_unindented(
         """
-ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
-`cv2` was not found or could not be imported, so no demos are available here."""
-    )
-    
+        ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
+        
+        Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal)
+        """)
+            make_gui.opencv_help.render("Install opencv-python", immapp.em_to_vec2(60, 10))
             return
 
         nonlocal gui_process
