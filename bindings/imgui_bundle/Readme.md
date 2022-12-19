@@ -74,6 +74,8 @@ pip install imgui-bundle
 pip install opencv-contrib-python
 ````
 
+Note: under windows, you might need to install the [msvc redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022) package.
+
 ### or install from source:
 ````
 git clone https://github.com/pthom/imgui_bundle.git
