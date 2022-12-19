@@ -1,5 +1,6 @@
 from typing import Callable, Any, Tuple, Optional
 import imgui_bundle
+from imgui_bundle import immapp
 
 
 def static(**kwargs: Any) -> Any:
@@ -95,7 +96,7 @@ def run_nb(
         if window_size[0] > 0 and window_size[1] > 0:
             window_size_auto = False
 
-        imgui_bundle.run(
+        immapp.run(
             gui_function=gui_function,
             window_title=window_title,
             window_size_auto=window_size_auto,
