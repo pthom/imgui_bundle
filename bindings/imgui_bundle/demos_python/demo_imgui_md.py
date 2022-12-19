@@ -3,18 +3,16 @@ from imgui_bundle import imgui_md, immapp
 
 def example_markdown_string() -> str:
     markdown = r"""
-# Markdown example
-
-Hello World! <br>
-![World](images/world.jpg)
-
-## Acknowledgments
-This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+# Markdown with imgui_md
+[imgui_md](https://github.com/mekhontsev/imgui_md) is a markdown renderer for Dear ImGui using MD4C parser.
 
 ### Supported features
 
 imgui_md currently supports the following markdown functionality:
 
+* Images
+
+![World](images/world.jpg)
 * Wrapped text
 * Headers
 * *Emphasis* (\*Emphasis\*)
@@ -30,7 +28,7 @@ imgui_md currently supports the following markdown functionality:
 * Backslash Escapes
 * Inline `code element` (using \`code element\`)
 * Tables
-* Block code like this (using \`\`\`\`)
+* Block code (using \`\`\`\`)
 ````
 int main() {
     return 42;
