@@ -19,6 +19,10 @@ def make_gui() -> demo_utils.GuiFunction:
         if imgui.collapsing_header("Screenshot - BluePrint"):
             demo_utils.render_md_unindented("This is a screenshot showing the possibilities of the node editor")
             hello_imgui.image_from_asset("images/node_editor_screenshot.jpg", immapp.em_to_vec2(40, 0))
+        if imgui.collapsing_header("Screenshot - Image editing"):
+            demo_utils.render_md_unindented(
+                "This is another screenshot showing the possibilities of the node editor, when combined with immvision")
+            hello_imgui.image_from_asset("images/node_editor_fiat.jpg", immapp.em_to_vec2(60, 0))
         if imgui.collapsing_header("demo basic interaction"):
             demos_node_editor.demo_node_editor_basic.demo_launch()
             demo_utils.show_python_vs_cpp_file("demos_node_editor/demo_node_editor_basic", nb_lines=30)
