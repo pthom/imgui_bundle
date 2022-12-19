@@ -6,6 +6,7 @@ def make_gui():
     def gui():
         demo_utils.render_md_unindented(
             """
+        # Theming
         HelloImGui adds support for advanced theming to ImGui.
         
         Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.

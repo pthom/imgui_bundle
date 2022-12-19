@@ -49,6 +49,7 @@ pip install opencv-python-headless
 
         demo_utils.render_md_unindented(
             """
+        # ImmVision
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger. 
         It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels. 
 

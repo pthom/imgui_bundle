@@ -1,6 +1,6 @@
 from typing import Callable, Any, Tuple, Optional
 import imgui_bundle
-from imgui_bundle import immapp
+from imgui_bundle import immapp, hello_imgui
 
 
 def static(**kwargs: Any) -> Any:
@@ -96,8 +96,16 @@ def run_nb(
         if window_size[0] > 0 and window_size[1] > 0:
             window_size_auto = False
 
+        @static(was_theme_set=False)
+        def gui_with_light_theme():
+            static = gui_with_light_theme
+            if not static.was_theme_set:
+                hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.white_is_white)
+                static.was_theme_set = True
+            gui_function()
+
         immapp.run(
-            gui_function=gui_function,
+            gui_function=gui_with_light_theme,
             window_title=window_title,
             window_size_auto=window_size_auto,
             window_restore_previous_geometry=window_restore_previous_geometry,

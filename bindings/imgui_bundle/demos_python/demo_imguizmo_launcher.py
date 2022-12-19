@@ -1,7 +1,7 @@
 import os.path
 import subprocess
 import sys
-from imgui_bundle import imgui, immvision, immapp
+from imgui_bundle import imgui, immapp, hello_imgui
 from imgui_bundle.demos_python import demo_utils, demos_imguizmo
 
 
@@ -9,6 +9,7 @@ def make_gui() -> demo_utils.GuiFunction:
     def gui():
         demo_utils.render_md_unindented(
             """
+        # ImGuizmo
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui 
 
         What started with the gizmo is now a collection of dear imgui widgets and more advanced controls. 
@@ -18,10 +19,12 @@ def make_gui() -> demo_utils.GuiFunction:
         )
 
         if imgui.collapsing_header("Gizmo"):
-            imgui.text("Click the button below to launch the demo")
+            imgui.text(
+                "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)")
             if imgui.button("Run gizmo demo"):
                 this_dir = os.path.dirname(__file__)
                 subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_gizmo.py"])
+            hello_imgui.image_from_asset("images/gizmo_screenshot.jpg", size=(0, immapp.em_size(15.0)))
             demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_gizmo", nb_lines=30)
         if imgui.collapsing_header("Curve Edit"):
             demos_imguizmo.demo_guizmo_curve_edit.demo_launch()

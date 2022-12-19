@@ -12,6 +12,7 @@ from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
 from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
+from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
 
 
@@ -48,7 +49,7 @@ def main() -> None:
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
     runner_params.app_window_params.window_title = "ImGui Bundle"
-    runner_params.app_window_params.window_geometry.size = (1200, 900)
+    runner_params.app_window_params.window_geometry.size = (1400, 900)
 
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
@@ -102,6 +103,7 @@ def main() -> None:
     add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_launch)
     add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_launch)
     add_dockable_window("Themes", demo_themes, demo_themes.demo_launch)
+    add_dockable_window("Notebook", demo_immapp_notebook, demo_immapp_notebook.demo_launch)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
