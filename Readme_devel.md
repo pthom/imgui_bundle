@@ -237,7 +237,18 @@ pip install -v .
 
 
 # imgui bundle package distribution
-## Build and deploy to pypi:
+## Build / Mac arm64 via cibuildwheel
+
+Edit pyproject, change os arch
+````
+pipx run cibuildwheel --platform macos && say "wheel build finished"
+````
+
+````
+twine upload wheelhouse/*
+````
+
+## Build and deploy to pypi via twine
 
 ````
 python3 -m build --wheel  --sdist . 
