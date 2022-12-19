@@ -92,7 +92,6 @@ setup(
         "glfw > 2.5",
         "PyOpenGL >= 3.0",
         "PyGLM>=2.5.0",
-        "opencv-python >= 4.5",
     ],
     entry_points={
         "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos_python.demo_all:main"],

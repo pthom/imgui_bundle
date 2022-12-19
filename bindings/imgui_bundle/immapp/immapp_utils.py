@@ -85,7 +85,7 @@ def run_nb(
 
     If window_size is left as its default value (0, 0), then the window will autosize
     """
-    import cv2  # pip install opencv-python
+    import cv2  # pip install opencv-python or pip install opencv-contrib-python
     import PIL.Image  # pip install pillow
     from IPython.display import display  # type: ignore
     from IPython.core.display import HTML  # type: ignore

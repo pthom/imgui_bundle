@@ -79,6 +79,10 @@ imgui_bundle_demo
 
 The source for the demos can be found inside [bindings/imgui_bundle/demos](bindings/imgui_bundle/demos).
 
+Note that using the immvision demos require to have opencv installed (as provided by the pip package
+opencv-python (or one of its companions opencv-contrib-python, opencv-python-headless and
+opencv-contrib-python-headless). The user has to install one of these packages manually.
+
 # Usage with C++
 
 ````

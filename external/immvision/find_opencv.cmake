@@ -5,15 +5,16 @@
 ###############################################################################
 # Note about pip and wheel builds:
 #
-# - opencv-python is the pip package for opencv: when installed it comes with a dll,
-#   or a .so file (cv2.abi3.so)
+# - opencv-python (or its companions opencv-contrib-python, opencv-python-headless
+#   and opencv-contrib-python-headless) is the pip package providing opencv:
+#   when installed it comes with a dll, or an .so file (cv2.abi3.so)
 #
 # - when building wheels for macos and linux, the env variable
 #  IMGUIBUNDLE_OPENCV_FETCH_SOURCE is set before running pip.
 #  This way, a static minimal version of opencv will be linked into _imgui_bundle.so.
 #  Thus there is no risk of doubly defined functions:
 #     imgui_bundle will search into the linked functions inside _imgui_bundle.so,
-#     and opencv-python will search inside cv2.abi3.so.
+#     and opencv-python and co will search inside cv2.abi3.so.
 #
 # - when building wheels for windows, the env variable
 #   IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460 is set before running pip.
