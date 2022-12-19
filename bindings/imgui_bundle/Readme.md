@@ -34,6 +34,7 @@ ImGui Bundle includes:
 * [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): Node Editor built using Dear ImGui 
 * [imgui-knobs](https://github.com/altschuler/imgui-knobs): Knobs widgets for ImGui
 * [ImFileDialog](https://github.com/pthom/ImFileDialog.git): A file dialog library for Dear ImGui  
+* [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)  Portable GUI dialogs library (C++11, single-header)
 * [imgui_md](https://github.com/mekhontsev/imgui_md.git): Markdown renderer for Dear ImGui using MD4C parser
 * [imspinner](https://github.com/dalerank/imspinner): Set of nice spinners for imgui 
 * [imgui_toggle](https://github.com/cmdwtf/imgui_toggle): A toggle switch widget for Dear ImGui. [Homepage](https://cmd.wtf/projects#imgui-toggle)

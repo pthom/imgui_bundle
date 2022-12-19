@@ -190,14 +190,14 @@ def demo_portable_file_dialogs():
 
 @immapp.static(selected_filename="")
 def demo_imfile_dialog():
-    static = demo_imfile_dialog  # Acces to static variable via static
+    static = demo_imfile_dialog  # Access to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
     imgui_md.render(
         """
 # ImFileDialog
  [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
- Not (yet) adapted for High DPI resolution under windows.  
+ *Not (yet) adapted for High DPI resolution under windows*
     """
     )
     if imgui.button("Open file"):
