@@ -263,7 +263,8 @@ def lib_imguizmo() -> ExternalLibrary:
         name="ImGuizmo",
         official_git_url="https://github.com/CedricGuillemet/ImGuizmo.git",
         official_branch="master",
-        custom_path_in_external_libraries_dir="ImGuizmo/ImGuizmo"
+        custom_path_in_external_libraries_dir="ImGuizmo/ImGuizmo",
+        fork_git_url="https://github.com/pthom/ImGuizmo.git",
     )
 
 
@@ -387,7 +388,7 @@ def play():
     # lib = lib_imguizmo()
     # lib.run_rm_remotes().run()
     # lib.run_add_remotes().run()
-    # lib.run_update_official()
+    # lib.run_rebase_fork_on_official_changes()
 
     # immvision
     # ---------

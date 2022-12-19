@@ -18,6 +18,11 @@
 static std::vector<std::string> SequencerItemTypeNames = { "Camera","Music", "ScreenEffect", "FadeIn", "Animation" };
 
 
+float kDpi()
+{
+    return ImGui::GetFontSize() / 14.5f;
+}
+
 // This is an extract from ImGuizmo example:
 // https://github.com/CedricGuillemet/ImGuizmo/blob/master/vcpkg-example/main.cpp
 struct RampEdit : public ImCurveEdit::DelegatePure
@@ -178,8 +183,8 @@ struct MySequence : public ImSequencer::SequenceInterface
         draw_list->PushClipRect(legendClippingRect.Min, legendClippingRect.Max, true);
         for (int i = 0; i < 3; i++)
         {
-            ImVec2 pta(legendRect.Min.x + 30, legendRect.Min.y + i * 14.f);
-            ImVec2 ptb(legendRect.Max.x, legendRect.Min.y + (i + 1) * 14.f);
+            ImVec2 pta(legendRect.Min.x + 30 * kDpi(), legendRect.Min.y + i * 14.f  * kDpi());
+            ImVec2 ptb(legendRect.Max.x, legendRect.Min.y + (i + 1) * 14.f * kDpi());
             draw_list->AddText(pta, rampEdit.mbVisible[i] ? 0xFFFFFFFF : 0x80FFFFFF, labels[i]);
             if (ImRect(pta, ptb).Contains(ImGui::GetMousePos()) && ImGui::IsMouseClicked(0))
                 rampEdit.mbVisible[i] = !rampEdit.mbVisible[i];
@@ -187,7 +192,7 @@ struct MySequence : public ImSequencer::SequenceInterface
         draw_list->PopClipRect();
 
         ImGui::SetCursorScreenPos(rc.Min);
-        ImCurveEdit::Edit(rampEdit, rc.Max - rc.Min, 137 + index, &clippingRect);
+        ImCurveEdit::Edit(rampEdit, rc.Max - rc.Min, 137  + index, &clippingRect);
     }
 
     virtual void CustomDrawCompact(int index, ImDrawList* draw_list, const ImRect& rc, const ImRect& clippingRect)
@@ -204,7 +209,7 @@ struct MySequence : public ImSequencer::SequenceInterface
                     continue;
                 float r = (p - mFrameMin) / float(mFrameMax - mFrameMin);
                 float x = ImLerp(rc.Min.x, rc.Max.x, r);
-                draw_list->AddLine(ImVec2(x, rc.Min.y + 6), ImVec2(x, rc.Max.y - 4), 0xAA000000, 4.f);
+                draw_list->AddLine(ImVec2(x, rc.Min.y + 6  * kDpi()), ImVec2(x, rc.Max.y - 4 * kDpi()), 0xAA000000, 4.f * kDpi());
             }
         }
         draw_list->PopClipRect();
@@ -235,7 +240,7 @@ GuiFunction make_closure_demo_guizmo_sequencer()
 
     auto gui = [mySequence]() mutable // mutable => this is a closure
     {
-        ImGui::PushItemWidth(130);
+        ImGui::PushItemWidth(130 * kDpi());
         ImGui::InputInt("Frame Min", &mySequence.mFrameMin);
         ImGui::SameLine();
         ImGui::InputInt("Frame ", &currentFrame);
