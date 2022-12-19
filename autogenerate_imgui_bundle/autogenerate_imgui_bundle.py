@@ -16,6 +16,7 @@ from generate_immapp import autogenerate_immapp
 from generate_imgui_toggle import autogenerate_imgui_toggle
 from generate_imspinner import autogenerate_imspinner
 from generate_imgui_md import autogenerate_imgui_md
+from generate_portable_file_dialogs import autogenerate_portable_file_dialogs
 
 _THIS_DIR = os.path.dirname(__file__)
 BUNDLE_DIR = os.path.realpath(_THIS_DIR + "/..")
@@ -64,6 +65,7 @@ def main():
     autogenerate_imgui_toggle()
     autogenerate_imspinner()
     autogenerate_imgui_md()
+    autogenerate_portable_file_dialogs()
 
 
 if __name__ == "__main__":

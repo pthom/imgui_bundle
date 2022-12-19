@@ -30,6 +30,7 @@ function(add_imgui_bundle_bindings)
         bindings/pybind_imgui_tex_inspect.cpp
         bindings/pybind_immapp_cpp.cpp
         bindings/pybind_imgui_toggle.cpp
+        bindings/pybind_portable_file_dialogs.cpp
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})

@@ -13,6 +13,7 @@ from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
 from . import immapp as immapp
 from . import imgui_toggle as imgui_toggle
+from . import portable_file_dialogs as portable_file_dialogs
 from .immapp import icons_fontawesome as icons_fontawesome
 
 from . import immapp as immapp

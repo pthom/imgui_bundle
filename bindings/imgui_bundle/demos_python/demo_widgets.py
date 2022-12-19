@@ -1,3 +1,4 @@
+from typing import List
 from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp
 
 
@@ -126,15 +127,77 @@ def demo_toggle():
     )
 
 
+@immapp.static(
+    open_file_dialog=None,
+    open_file_multiselect=None,
+    save_file_dialog=None,
+    select_folder_dialog=None,
+)
+def demo_portable_file_dialogs():
+    static = demo_portable_file_dialogs
+
+    from imgui_bundle import portable_file_dialogs as pfd
+
+    imgui.push_id("pfd")
+
+    imgui_md.render(
+        """
+# Portable File Dialogs
+ [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
+    """
+    )
+
+    def log_result(what: str):
+        hello_imgui.log(hello_imgui.LogLevel.info, what)
+
+    def log_result_list(whats: List[str]):
+        for what in whats:
+            hello_imgui.log(hello_imgui.LogLevel.info, what)
+
+
+    if imgui.button("Open file"):
+        static.open_file_dialog = pfd.open_file("Select file")
+    if static.open_file_dialog is not None and static.open_file_dialog.ready():
+        log_result_list(static.open_file_dialog.result())
+        static.open_file_dialog = None
+
+    imgui.same_line()
+
+    if imgui.button("Open file (multiselect)"):
+        static.open_file_multiselect = pfd.open_file("Select file", options=pfd.opt.multiselect)
+    if static.open_file_multiselect is not None and static.open_file_multiselect.ready():
+        log_result_list(static.open_file_multiselect.result())
+        static.open_file_multiselect = None
+
+    imgui.same_line()
+
+    if imgui.button("Save file"):
+        static.save_file_dialog = pfd.save_file("Select file")
+    if static.save_file_dialog is not None and static.save_file_dialog.ready():
+        log_result(static.save_file_dialog.result())
+        static.save_file_dialog = None
+
+    imgui.same_line()
+
+    if imgui.button("Select folder"):
+        static.select_folder_dialog = pfd.select_folder("Select folder")
+    if static.select_folder_dialog is not None and static.select_folder_dialog.ready():
+        log_result(static.select_folder_dialog.result())
+        static.select_folder_dialog = None
+
+    imgui.pop_id()
+
+
 @immapp.static(selected_filename="")
-def demo_file_dialog():
-    static = demo_file_dialog  # Acces to static variable via static
+def demo_imfile_dialog():
+    static = demo_imfile_dialog  # Acces to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
     imgui_md.render(
         """
 # ImFileDialog
- [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.    
+ [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
+ Not (yet) adapted for High DPI resolution under windows.  
     """
     )
     if imgui.button("Open file"):
@@ -225,7 +288,8 @@ A simple Log viewer from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
 
 
 def demo_widgets():
-    demo_file_dialog()
+    demo_portable_file_dialogs()
+    demo_imfile_dialog()
     imgui.separator()
     demo_knobs()
     demo_toggle()

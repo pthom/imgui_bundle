@@ -20,6 +20,7 @@ void py_init_module_imguizmo(py::module& m);
 void py_init_module_imgui_tex_inspect(py::module& m);
 void py_init_module_immapp_cpp(py::module& m);
 void py_init_module_imgui_toggle(py::module& m);
+void py_init_module_portable_file_dialogs(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -78,6 +79,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_imgui_toggle = m.def_submodule("imgui_toggle");
     py_init_module_imgui_toggle(module_imgui_toggle);
+
+    auto module_portable_file_dialogs = m.def_submodule("portable_file_dialogs");
+    py_init_module_portable_file_dialogs(module_portable_file_dialogs);
 }
 
 
