@@ -72,4 +72,7 @@ class DemoAppTable:
 
         imgui.new_line()
         imgui.text(f"Code for {self.current_app.python_file}")
+        imgui.push_font(imgui_md.get_code_font())
         self.editor.render("Code")
+        imgui.pop_font()
+
