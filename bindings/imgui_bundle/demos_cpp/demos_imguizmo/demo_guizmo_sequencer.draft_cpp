@@ -7,7 +7,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 #include "immapp/immapp.h"
-#include "ImGuizmo/ImSequencer.h"
+#include "ImGuizmoPure/ImSequencerPure.Draft_h"
 #include "ImGuizmoPure/ImCurveEditPure.h"
 
 #include <vector>
@@ -112,7 +112,7 @@ private:
 };
 
 
-struct MySequence : public ImSequencer::SequenceInterface
+struct MySequence : public ImSequencer::SequenceInterfacePure
 {
     // interface with sequencer
 
@@ -133,18 +133,30 @@ struct MySequence : public ImSequencer::SequenceInterface
         return tmps;
     }
 
-    virtual void Get(int index, int** start, int** end, int* type, unsigned int* color)
+//    virtual void Get(int index, int** start, int** end, int* type, unsigned int* color)
+//    {
+//        MySequenceItem& item = myItems[index];
+//        if (color)
+//            *color = 0xFFAA8080; // same color for everyone, return color based on type
+//        if (start)
+//            *start = &item.mFrameStart;
+//        if (end)
+//            *end = &item.mFrameEnd;
+//        if (type)
+//            *type = item.mType;
+//    }
+
+    ImSequencer::SequenceInterfaceInfo GetPure(int index) override
     {
         MySequenceItem& item = myItems[index];
-        if (color)
-            *color = 0xFFAA8080; // same color for everyone, return color based on type
-        if (start)
-            *start = &item.mFrameStart;
-        if (end)
-            *end = &item.mFrameEnd;
-        if (type)
-            *type = item.mType;
+
+        ImSequencer::SequenceInterfaceInfo r;
+        r.color = 0xFFAA8080; // same color for everyone, return color based on type
+        r.values = { item.mFrameStart,  item.mFrameEnd };
+        r.type = item.mType;
+        return r;
     }
+
     virtual void Add(int type) { myItems.push_back(MySequenceItem{ type, 0, 10, false }); };
     virtual void Del(int index) { myItems.erase(myItems.begin() + index); }
     virtual void Duplicate(int index) { myItems.push_back(myItems[index]); }
@@ -233,7 +245,7 @@ GuiFunction make_closure_demo_guizmo_sequencer()
     }
 
     // let's create the sequencer
-    static int selectedEntry = -1;
+//    static int selectedEntry = -1;
     static int firstFrame = 0;
     static bool expanded = true;
     static int currentFrame = 100;
@@ -247,13 +259,17 @@ GuiFunction make_closure_demo_guizmo_sequencer()
         ImGui::SameLine();
         ImGui::InputInt("Frame Max", &mySequence.mFrameMax);
         ImGui::PopItemWidth();
-        Sequencer(
-            &mySequence,
-            &currentFrame, &expanded, &selectedEntry, &firstFrame, ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME);
+//        Sequencer(
+//            &mySequence,
+//            &currentFrame, &expanded, &selectedEntry, &firstFrame, ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME);
+
+        auto sequencerResult = ImSequencer::SequencerPure(&mySequence);
+
         // add a UI to edit that particular item
-        if (selectedEntry != -1)
+        //if (selectedEntry != -1)
+        if (sequencerResult.selectedEntry != -1)
         {
-            const MySequence::MySequenceItem &item = mySequence.myItems[selectedEntry];
+            const MySequence::MySequenceItem &item = mySequence.myItems[sequencerResult.selectedEntry];
             ImGui::Text("I am a %s, please edit me", SequencerItemTypeNames[item.mType].c_str());
             // switch (type) ....
         }

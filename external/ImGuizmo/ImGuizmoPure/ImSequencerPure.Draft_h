@@ -1,0 +1,41 @@
+#pragma once
+
+#include <vector>
+#include "ImGuizmo/ImSequencer.h"
+
+namespace ImSequencer
+{
+    // Effort to adapt ImSequencer to python. Abandoned for now
+
+    struct SequenceInterfaceInfo
+    {
+        std::vector<int> values;
+        int type;
+        unsigned int color;
+    };
+
+
+    struct SequenceInterfacePure: public SequenceInterface
+    {
+        void Get(int index, int** start, int** end, int* type, unsigned int* color) override;
+
+        virtual SequenceInterfaceInfo GetPure(int index) = 0;
+    };
+
+
+    struct SequencerResult
+    {
+        bool wasSelectionMade = false;
+        int currentFrame = 0;
+        bool expanded = true;
+        int selectedEntry = 0;
+        int firstFrame = 0;
+
+        int sequenceOptions = 0;
+    };
+
+    // return true if selection is made
+    // bool Sequencer(SequenceInterface* sequence, int* currentFrame, bool* expanded, int* selectedEntry, int* firstFrame, int sequenceOptions);
+    SequencerResult SequencerPure(SequenceInterfacePure* sequence);
+
+}

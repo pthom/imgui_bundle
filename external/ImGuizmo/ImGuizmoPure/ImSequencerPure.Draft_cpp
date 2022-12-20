@@ -1,0 +1,34 @@
+#include "ImGuizmoPure/ImSequencerPure.Draft_h"
+#include "ImGuizmoPure/Editable.h"
+
+namespace ImSequencer
+{
+    void SequenceInterfacePure::Get(int index, int** start, int** end, int* type, unsigned int* color)
+    //                                           ^            ^
+    //                                         ouch !       ouch ouch!
+    {
+        SequenceInterfaceInfo info = GetPure(index);
+        *start = info.values.data();
+        *end = info.values.data() + info.values.size();
+        *type = info.type;
+        *color = info.color;
+    }
+
+
+    // bool Sequencer(SequenceInterface* sequence, int* currentFrame, bool* expanded, int* selectedEntry, int* firstFrame, int sequenceOptions);
+    SequencerResult SequencerPure(SequenceInterfacePure* sequence)
+    {
+        SequencerResult r;
+        bool wasSelectionMade = Sequencer(
+            sequence,
+            &r.currentFrame,
+            &r.expanded,
+            &r.selectedEntry,
+            &r.firstFrame,
+            r.sequenceOptions
+        );
+        r.wasSelectionMade = wasSelectionMade;
+        return r;
+    }
+
+}
