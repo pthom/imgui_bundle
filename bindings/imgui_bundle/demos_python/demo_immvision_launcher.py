@@ -14,7 +14,6 @@ if HAS_IMMVISION and HAS_OPENCV:
     from imgui_bundle.demos_python import demos_immvision
 
 
-@immapp.static(opencv_help=None)
 def make_gui() -> demo_utils.GuiFunction:
     if HAS_IMMVISION and HAS_OPENCV:
         gui_process = demos_immvision.demo_immvision_process.make_gui()
@@ -24,25 +23,28 @@ def make_gui() -> demo_utils.GuiFunction:
             imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
             return
         elif not HAS_OPENCV:
-            if make_gui.opencv_help is None:
-                make_gui.opencv_help = text_edit.TextEditor()
-                make_gui.opencv_help.set_text("""
-# OpenCv standard package
-pip install opencv-python
-
-# OpenCv package with contrib modules
-pip install opencv-contrib-python
-
-# OpenCv package headless (no cv.imshow, etc.); for server installations
-pip install opencv-python-headless
-""")
             demo_utils.render_md_unindented(
         """
         ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
         
-        Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal)
+        Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
+        
+        * To install OpenCv standard package:
+        ```bash
+        pip install opencv-python
+        ````
+
+        * To install OpenCv package with contrib modules
+        ```bash
+        pip install opencv-contrib-python
+        ```
+        
+        To install OpenCv package headless (no cv.imshow, etc., for server installations)
+        ````bash
+        pip install opencv-python-headless
+        ````
+
         """)
-            make_gui.opencv_help.render("Install opencv-python", immapp.em_to_vec2(60, 10))
             return
 
         nonlocal gui_process

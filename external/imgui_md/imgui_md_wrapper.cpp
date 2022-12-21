@@ -1,11 +1,12 @@
 #include "imgui_md_wrapper.h"
 
 #include "hello_imgui/hello_imgui.h"
-#include "hello_imgui/image_gl.h"
+#include "ImGuiColorTextEdit/TextEditor.h"
 
-# include <imgui.h>
+#include <imgui.h>
 #include "imgui_md/imgui_md.h"
 
+#include <fplus/fplus.hpp>
 #include <string>
 #include <vector>
 #include <utility>
@@ -236,6 +237,7 @@ assets/
     private:
         MarkdownOptions mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
+        std::map<std::string, TextEditor> mCodeBlockEditors;
     public:
         MarkdownRenderer(MarkdownOptions markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -312,6 +314,66 @@ assets/
 
             mMarkdownOptions.callbacks.OnHtmlDiv(divClass, openingDiv);
         }
+
+        void render_code_block() override
+        {
+            auto code_without_last_empty_lines = [](const std::string code_)
+            {
+                // remove last line if empty
+                std::string code = code_;
+                {
+                    auto lines = fplus::split_lines(true, code);
+                    if (lines.size() > 0)
+                    {
+                        if (fplus::trim_whitespace(lines.back()).size() == 0)
+                            lines.pop_back();
+                        code = fplus::join(std::string("\n"), lines);
+                    }
+                }
+                return code;
+            };
+
+            ImGui::PushID(m_code_block.c_str());
+            if (mCodeBlockEditors.find(m_code_block) == mCodeBlockEditors.end())
+            {
+                mCodeBlockEditors[m_code_block] = TextEditor();
+                auto& editor = mCodeBlockEditors[m_code_block];
+                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+
+                editor.SetText(code_without_last_empty_lines(m_code_block));
+
+                // set language
+                if (fplus::to_lower_case(m_code_block_language) == "cpp")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+                else if (fplus::to_lower_case(m_code_block_language) == "c")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::C());
+                else if (fplus::to_lower_case(m_code_block_language) == "python")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
+                else if (fplus::to_lower_case(m_code_block_language) == "glsl")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
+                else if (fplus::to_lower_case(m_code_block_language) == "sql")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::SQL());
+                else if (fplus::to_lower_case(m_code_block_language) == "lua")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                else if (fplus::to_lower_case(m_code_block_language) == "angelscript")
+                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::AngelScript());
+            }
+
+            auto & editor = mCodeBlockEditors[m_code_block];
+
+            int nbLines = 0; for (auto c: editor.GetText()) if (c == '\n') ++ nbLines;
+            ImVec2 editor_size(ImGui::GetWindowWidth() - ImGui::GetFontSize() * 5.f, ImGui::GetFontSize() * (nbLines + 1));
+
+            editor.SetText(code_without_last_empty_lines(m_code_block));
+            editor.Render("editor", editor_size);
+
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FA_COPY))
+                ImGui::SetClipboardText(m_code_block.c_str());
+
+            ImGui::PopID();
+        }
+
     };
 
 

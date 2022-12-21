@@ -55,7 +55,7 @@ target_sources(imgui_md PRIVATE
     imgui_md/imgui_md_wrapper.h
     )
 target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
-target_link_libraries(imgui_md PUBLIC hello_imgui)
+target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit)
 hello_imgui_msvc_target_group_sources(imgui_md)
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo/ImGuizmo)
