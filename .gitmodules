@@ -1,51 +1,71 @@
-[submodule "external/imgui"]
-	path = external/imgui
-	url = https://github.com/pthom/imgui.git
-[submodule "external/hello_imgui"]
-	path = external/hello_imgui
-	url = https://github.com/pthom/hello_imgui.git
-[submodule "external/glfw"]
-	path = external/glfw
-	url = https://github.com/glfw/glfw.git
 [submodule "lg_cmake_utils"]
 	path = lg_cmake_utils
 	url = https://github.com/pthom/lg_cmake_utils.git
-[submodule "external/implot"]
-	path = external/implot
-	url = https://github.com/epezent/implot.git
-[submodule "external/ImGuiColorTextEdit"]
-	path = external/ImGuiColorTextEdit
-	url = https://github.com/pthom/ImGuiColorTextEdit
-[submodule "external/imgui-knobs"]
-	path = external/imgui-knobs
-	url = https://github.com/pthom/imgui-knobs.git
-[submodule "external/ImFileDialog"]
-	path = external/ImFileDialog
+[submodule "external/imgui/imgui"]
+	path = external/imgui/imgui
+	url = https://github.com/pthom/imgui.git
+	branch = imgui_bundle
+[submodule "external/glfw/glfw"]
+	path = external/glfw/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = 3.3-stable
+[submodule "external/hello_imgui/hello_imgui"]
+	path = external/hello_imgui/hello_imgui
+	url = https://github.com/pthom/hello_imgui.git
+	branch = master
+[submodule "external/ImFileDialog/ImFileDialog"]
+	path = external/ImFileDialog/ImFileDialog
 	url = https://github.com/pthom/ImFileDialog.git
+	branch = imgui_bundle
+[submodule "external/imgui-knobs/imgui-knobs"]
+	path = external/imgui-knobs/imgui-knobs
+	url = https://github.com/pthom/imgui-knobs.git
+	branch = imgui_bundle
+[submodule "external/imgui-node-editor/imgui-node-editor"]
+	path = external/imgui-node-editor/imgui-node-editor
+	url = https://github.com/pthom/imgui-node-editor.git
+	branch = imgui_bundle
 [submodule "external/imgui_md/imgui_md"]
 	path = external/imgui_md/imgui_md
 	url = https://github.com/pthom/imgui_md.git
+	branch = imgui_bundle
+[submodule "external/md4c/md4c"]
+	path = external/md4c/md4c
+	url = https://github.com/mity/md4c
+	branch = master
+[submodule "external/imgui_tex_inspect/imgui_tex_inspect"]
+	path = external/imgui_tex_inspect/imgui_tex_inspect
+	url = https://github.com/pthom/imgui_tex_inspect.git
+	branch = imgui_bundle
+[submodule "external/imgui_toggle/imgui_toggle"]
+	path = external/imgui_toggle/imgui_toggle
+	url = https://github.com/pthom/imgui_toggle.git
+	branch = imgui_bundle
 [submodule "external/imgui_md/md4c"]
 	path = external/imgui_md/md4c
 	url = https://github.com/mity/md4c
-[submodule "external/imgui-node-editor"]
-	path = external/imgui-node-editor
-	url = https://github.com/pthom/imgui-node-editor.git
-[submodule "external/SDL"]
-	path = external/SDL
-	url = https://github.com/libsdl-org/SDL.git
-[submodule "external/imgui_toggle"]
-	path = external/imgui_toggle
-	url = https://github.com/pthom/imgui_toggle.git
-[submodule "external/immvision/cvnp"]
-	path = external/immvision/cvnp
-	url = https://github.com/pthom/cvnp.git
-[submodule "external/immvision/immvision"]
-	path = external/immvision/immvision
-	url = https://github.com/pthom/immvision.git
-[submodule "external/imgui_tex_inspect"]
-	path = external/imgui_tex_inspect
-	url = https://github.com/pthom/imgui_tex_inspect.git
+	branch = master
+[submodule "external/ImGuiColorTextEdit/ImGuiColorTextEdit"]
+	path = external/ImGuiColorTextEdit/ImGuiColorTextEdit
+	url = https://github.com/pthom/ImGuiColorTextEdit.git
+	branch = imgui_bundle
 [submodule "external/ImGuizmo/ImGuizmo"]
 	path = external/ImGuizmo/ImGuizmo
 	url = https://github.com/pthom/ImGuizmo.git
+	branch = imgui_bundle
+[submodule "external/immvision/immvision"]
+	path = external/immvision/immvision
+	url = https://github.com/pthom/immvision.git
+	branch = imgui_bundle
+[submodule "external/immvision/cvnp"]
+	path = external/immvision/cvnp
+	url = https://github.com/pthom/cvnp.git
+	branch = master
+[submodule "external/implot/implot"]
+	path = external/implot/implot
+	url = https://github.com/epezent/implot.git
+	branch = master
+[submodule "external/SDL/SDL"]
+	path = external/SDL/SDL
+	url = https://github.com/libsdl-org/SDL.git
+	branch = release-2.26.x

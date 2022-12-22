@@ -1,0 +1,1 @@
+../../../bindings/imgui_bundle/imgui_node_editor.pyi
