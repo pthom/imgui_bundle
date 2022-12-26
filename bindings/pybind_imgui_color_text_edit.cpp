@@ -148,7 +148,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
     } // end of inner classes & enums of TextEditor
 
     pyClassTextEditor
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>())
         .def("set_language_definition",
             &TextEditor::SetLanguageDefinition, py::arg("a_language_def"))
         .def("get_language_definition",

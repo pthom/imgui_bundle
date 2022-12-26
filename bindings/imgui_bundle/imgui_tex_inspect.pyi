@@ -267,7 +267,7 @@ class Arrow:
     vector_index_x: int
     vector_index_y: int
     line_scale: ImVec2
-    zero_point: ImVec2 = {0, 0}
+    zero_point: ImVec2 = ImVec2(0, 0)
 
     class Preset(enum.Enum):
         normal_map = enum.auto()       # (= 0)  # For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point
