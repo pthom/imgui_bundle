@@ -10,6 +10,7 @@ def main() -> None:
     sys.path = [path_bindings] + sys.path
 
     from imgui_bundle.demos_python import demo_all  # type: ignore
+
     demo_all.main()
 
 

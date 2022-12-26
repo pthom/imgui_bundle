@@ -154,7 +154,6 @@ def demo_portable_file_dialogs():
         for what in whats:
             hello_imgui.log(hello_imgui.LogLevel.info, what)
 
-
     if imgui.button("Open file"):
         static.open_file_dialog = pfd.open_file("Select file")
     if static.open_file_dialog is not None and static.open_file_dialog.ready():

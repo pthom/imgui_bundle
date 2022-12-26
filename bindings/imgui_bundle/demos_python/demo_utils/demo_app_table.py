@@ -75,4 +75,3 @@ class DemoAppTable:
         imgui.push_font(imgui_md.get_code_font())
         self.editor.render("Code")
         imgui.pop_font()
-

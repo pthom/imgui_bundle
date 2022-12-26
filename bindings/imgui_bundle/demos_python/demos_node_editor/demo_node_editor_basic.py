@@ -219,6 +219,7 @@ def demo_launch():
 
 def main():
     import os
+
     this_dir = os.path.dirname(__file__)
     config = ed.Config()
     config.settings_file = this_dir + "/demo_node_editor_basic.json"

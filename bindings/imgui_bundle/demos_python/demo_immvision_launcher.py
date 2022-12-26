@@ -6,6 +6,7 @@ from imgui_bundle.demos_python import demo_utils
 HAS_OPENCV = False
 try:
     import cv2
+
     HAS_OPENCV = True
 except ImportError:
     pass
@@ -24,7 +25,7 @@ def make_gui() -> demo_utils.GuiFunction:
             return
         elif not HAS_OPENCV:
             demo_utils.render_md_unindented(
-        """
+                """
         ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
         
         Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
@@ -44,7 +45,8 @@ def make_gui() -> demo_utils.GuiFunction:
         pip install opencv-python-headless
         ````
 
-        """)
+        """
+            )
             return
 
         nonlocal gui_process

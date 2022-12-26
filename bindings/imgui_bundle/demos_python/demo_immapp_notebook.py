@@ -17,6 +17,7 @@ def make_gui():
         )
 
         hello_imgui.image_from_asset("images/immapp_notebook_screenshot.jpg", (0, immapp.em_size(30)))
+
     return gui
 
 

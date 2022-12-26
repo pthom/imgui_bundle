@@ -20,7 +20,8 @@ def make_gui() -> demo_utils.GuiFunction:
 
         if imgui.collapsing_header("Gizmo"):
             imgui.text(
-                "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)")
+                "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)"
+            )
             if imgui.button("Run gizmo demo"):
                 this_dir = os.path.dirname(__file__)
                 subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_gizmo.py"])
