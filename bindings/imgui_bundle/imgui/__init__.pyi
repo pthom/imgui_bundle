@@ -444,6 +444,13 @@ class ImVec2:
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     def __init__(self, _x: float, _y: float) -> None:
         pass
+    # ImVec2(EmVec2 v)  /* implicit ctor! */  : x(ImGui::EmSize() * v.x), y(ImGui::EmSize() * v.y) {}    /* original C++ signature */
+    def __init__(self, v: EmVec2) -> None:
+        """[ADAPT_IMGUI_BUNDLE] added an *implicit* conversion from EmVec2 to ImVec2
+
+        /* implicit ctor! */
+        """
+        pass
     # [/ADAPT_IMGUI_BUNDLE]
     # float  operator[] (size_t idx) const    { IM_ASSERT(idx <= 1); return (&x)[idx]; }        /* original C++ signature */
     def __getitem__(self, idx: int) -> float:

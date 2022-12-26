@@ -162,6 +162,9 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float>(),
             py::arg("_x"), py::arg("_y"))
+        .def(py::init<EmVec2>(),
+            py::arg("v"),
+            " [ADAPT_IMGUI_BUNDLE] added an *implicit* conversion from EmVec2 to ImVec2\n\n /* implicit ctor! */")
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),

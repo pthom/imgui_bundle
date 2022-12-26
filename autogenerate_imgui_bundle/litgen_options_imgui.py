@@ -59,6 +59,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
         'Unsupported zero param "operator bool"',
         "ImGuiDataType_Pointer",
         "ImGuiDataType_ID",
+        "operators are supported only when implemented as a member functions",
+        "Unsupported zero param \"operator",
+        "Ignoring template function"
     ]
 
     options.cpp_indent_size = 4
