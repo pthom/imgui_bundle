@@ -22,10 +22,7 @@ def autogenerate_imspinner():
     options.namespace_root__regex = "ImSpinner"
     options.srcmlcpp_options.header_filter_acceptable__regex = "_H_$"
     options.fn_exclude_by_name__regex = "min_patched"
-    options.srcmlcpp_options.ignored_warning_parts = [
-        "Ignoring template function",
-        "unhandled tag template"
-    ]
+    options.srcmlcpp_options.ignored_warning_parts = ["Ignoring template function", "unhandled tag template"]
     # options.python_run_black_formatter = True
 
     litgen.write_generated_code_for_file(
