@@ -1510,9 +1510,9 @@ def log(level: LogLevel, format: str) -> None:
 # void LogClear();    /* original C++ signature */
 def log_clear() -> None:
     pass
-# void LogGui();    /* original C++ signature */
+# void LogGui(ImVec2 size=ImVec2(0.f, 0.f));    /* original C++ signature */
 # }
-def log_gui() -> None:
+def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
     pass
 
 

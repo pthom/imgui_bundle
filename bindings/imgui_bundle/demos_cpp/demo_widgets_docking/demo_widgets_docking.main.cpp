@@ -285,7 +285,7 @@ int main(int, char **)
     HelloImGui::DockableWindow logsWindow;
     logsWindow.label = "Logs";
     logsWindow.dockSpaceName = "BottomSpace";
-    logsWindow.GuiFunction = HelloImGui::LogGui;
+    logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
     // ImGui::ShowDemoWindow
     HelloImGui::DockableWindow demoWindow;
     demoWindow.label = "Dear ImGui Demo";

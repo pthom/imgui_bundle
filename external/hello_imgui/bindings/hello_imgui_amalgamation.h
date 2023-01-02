@@ -2175,7 +2175,7 @@ namespace HelloImGui
 
     void Log(LogLevel level, char const* const format, ...);
     void LogClear();
-    void LogGui();
+    void LogGui(ImVec2 size=ImVec2(0.f, 0.f));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -573,7 +573,7 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::LogClear);
 
     m.def("log_gui",
-        HelloImGui::LogGui);
+        HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
 
 
     m.def("run",
