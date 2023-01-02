@@ -71,6 +71,8 @@ imgui_md/                              # Base library folder
 
 This is an example, based on the lib imgui-command-palette, which will be added as a python module `imgui_command_palette`
 
+See commit 1e52b3c9
+
 ### Optional: fork the library and add a branch imgui_bundle
 
 ### Register your library inside `all_external_libraries.py` 
