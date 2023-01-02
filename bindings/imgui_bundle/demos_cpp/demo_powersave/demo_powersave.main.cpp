@@ -1,7 +1,7 @@
 #include "immapp/immapp.h"
 #include "imgui.h"
 #include "imspinner/imspinner.h"
-#include "imgui_md/imgui_md_wrapper.h"
+#include "imgui_md_wrapper.h"
 
 int main(int, char **)
 {

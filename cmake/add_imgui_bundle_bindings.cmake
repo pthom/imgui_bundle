@@ -1,4 +1,7 @@
 function(add_imgui_bundle_bindings)
+    set(bindings_main_folder ${IMGUIBUNDLE_PATH}/external/bindings_generation/cpp/)
+    include(${bindings_main_folder}/all_pybind_files.cmake)
+
     #########################################################################
     # Build python module that provides bindings to the library hello_imgui
     #########################################################################
@@ -6,31 +9,9 @@ function(add_imgui_bundle_bindings)
     set(python_native_module_name _imgui_bundle)    # This is the native python module name
     set(python_wrapper_module_name imgui_bundle)    # This is the python wrapper around the native module
     set(python_module_sources
-
-        bindings/module.cpp
-
-        bindings/litgen_glue_code.h
-        bindings/imgui_docking_internal_types.h
-
-        bindings/pybind_imgui.cpp  # Those bindings need to be compiled first, as they declare type casters used by the next ones
-
-        bindings/pybind_hello_imgui.cpp
-        bindings/pybind_imgui_internal.cpp
-        bindings/pybind_implot.cpp
-        bindings/pybind_imgui_bundle.cpp
-        bindings/pybind_imgui_color_text_edit.cpp
-        bindings/pybind_imgui_node_editor.cpp
-        bindings/pybind_imgui_knobs.cpp
-        bindings/pybind_im_file_dialog.cpp
-        bindings/pybind_imspinner.cpp
-        bindings/pybind_imgui_md.cpp
-        bindings/pybind_immvision.cpp
-        bindings/pybind_imguizmo.cpp
-        bindings/pybind_imgui_backends.cpp
-        bindings/pybind_imgui_tex_inspect.cpp
-        bindings/pybind_immapp_cpp.cpp
-        bindings/pybind_imgui_toggle.cpp
-        bindings/pybind_portable_file_dialogs.cpp
+        ${bindings_main_folder}/module.cpp
+        ${bindings_main_folder}/pybind_imgui_bundle.cpp
+        ${all_pybind_files}
         )
 
     pybind11_add_module(${python_native_module_name} ${python_module_sources})

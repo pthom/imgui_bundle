@@ -1,7 +1,7 @@
 // Acknowledgments
 // This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
 
-#include "imgui_md/imgui_md_wrapper.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 
 std::string exampleMardownString()

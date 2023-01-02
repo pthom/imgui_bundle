@@ -1,4 +1,4 @@
-set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui_cmake)
+set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
 include(${himgui_cmake_path}/hello_imgui_add_app.cmake)
 include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 

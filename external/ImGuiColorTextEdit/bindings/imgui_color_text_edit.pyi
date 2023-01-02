@@ -1,0 +1,1 @@
+../../../bindings/imgui_bundle/imgui_color_text_edit.pyi

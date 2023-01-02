@@ -12,6 +12,7 @@ from imgui_bundle._imgui_bundle import imguizmo as imguizmo
 from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
 from imgui_bundle._imgui_bundle import imgui_toggle as imgui_toggle
 from imgui_bundle._imgui_bundle import portable_file_dialogs as portable_file_dialogs
+from imgui_bundle._imgui_bundle import imgui_command_palette as imgui_command_palette
 from imgui_bundle import immapp as immapp
 from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
 

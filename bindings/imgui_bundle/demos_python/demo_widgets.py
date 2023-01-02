@@ -1,5 +1,6 @@
 from typing import List
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp
+from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome
+from imgui_bundle import imgui_command_palette as imcmd
 
 
 @immapp.static(knob_value=0, knob_int_value=0)
@@ -286,15 +287,69 @@ A simple Log viewer from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
     imgui.end_child()
 
 
+@immapp.static(was_inited=False, show_command_palette=False, counter=0)
+def demo_command_palette():
+    static = demo_command_palette
+
+    def init_command_palette():
+        static.command_palette_context = imcmd.ContextWrapper()
+        highlight_font_color = ImVec4(1.0, 0.0, 0.0, 1.0)
+        imcmd.set_style_color(imcmd.ImCmdTextType.highlight, imgui.color_convert_float4_to_u32(highlight_font_color))
+        # Add theme command: a two steps command, with initial callback + SubsequentCallback
+        select_theme_cmd = imcmd.Command()
+        select_theme_cmd.name = "Select theme"
+        def select_theme_cmd_initial_cb():
+            imcmd.prompt(["Classic", "Dark", "Light"])
+        def select_theme_cmd_subsequent_cb(selected_option: int):
+            if selected_option == 0:
+                imgui.style_colors_classic()
+            elif selected_option == 1:
+                imgui.style_colors_dark()
+            elif selected_option == 2:
+                imgui.style_colors_light()
+        select_theme_cmd.initial_callback = select_theme_cmd_initial_cb
+        select_theme_cmd.subsequent_callback = select_theme_cmd_subsequent_cb
+        imcmd.add_command(select_theme_cmd)
+
+        # Simple command that increments a counter
+        inc_cmd = imcmd.Command()
+        inc_cmd.name = "increment counter";
+        def inc_counter():
+            static.counter += 1
+        inc_cmd.initial_callback = inc_counter
+        imcmd.add_command(inc_cmd)
+
+    if not static.was_inited:
+        init_command_palette()
+        static.was_inited = True
+
+    imgui_md.render(
+        """
+# Command Palette
+[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui"""
+    )
+
+    io = imgui.get_io()
+
+    if io.key_ctrl and io.key_shift and imgui.is_key_pressed(imgui.Key.p):
+        static.show_command_palette = not static.show_command_palette
+
+    if static.show_command_palette:
+        static.show_command_palette = imcmd.command_palette_window("CommandPalette", True)
+
+    imgui.new_line()
+    imgui.text("Press Ctrl+Shift+P to bring up the command palette")
+    imgui.new_line()
+    imgui.text(f"{static.counter=}")
+
+
 def demo_widgets():
-    demo_portable_file_dialogs()
-    demo_imfile_dialog()
-    imgui.separator()
+    demo_portable_file_dialogs(); imgui.new_line()
+    demo_imfile_dialog(); imgui.new_line()
     demo_knobs()
-    demo_toggle()
-    imgui.separator()
+    demo_toggle(); imgui.new_line()
     demo_spinner()
-    imgui.separator()
+    demo_command_palette(); imgui.new_line()
     demo_logger()
 
 
