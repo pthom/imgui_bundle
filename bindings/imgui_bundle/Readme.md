@@ -52,6 +52,8 @@ ImGui Bundle includes:
 * [imgui_toggle](https://github.com/cmdwtf/imgui_toggle): A toggle switch widget for Dear ImGui. [Homepage](https://cmd.wtf/projects#imgui-toggle)
 * [ImmVision](https://github.com/pthom/immvision.git): immediate image debugger and insights 
 * [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): A texture inspector tool for Dear ImGui 
+* [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git): a Sublime Text or VSCode style command palette in ImGui
+
 
 ## Philosophy
 * Closely mirrors the original API of ImGui and other libraries

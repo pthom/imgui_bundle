@@ -39,6 +39,15 @@ def lib_imgui() -> ExternalLibrary:
     )
 
 
+def lib_imgui_command_palette() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui-command-palette",
+        official_git_url="https://github.com/hnOsmium0001/imgui-command-palette.git",
+        official_branch="master",
+        fork_git_url="https://github.com/pthom/imgui-command-palette.git"
+    )
+
+
 def lib_imgui_knobs() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui-knobs",
@@ -177,7 +186,7 @@ def lib_sdl() -> ExternalLibrary:
 
 ALL_LIBS = [
     lib_imgui(), # must be first as it declare bindings used by the next ones
-    lib_glfw(), lib_hello_imgui(), lib_im_file_dialog(), lib_imgui_knobs(),
+    lib_glfw(), lib_hello_imgui(), lib_im_file_dialog(), lib_imgui_command_palette(), lib_imgui_knobs(),
     lib_imgui_node_editor(), lib_imgui_md(), lib_md4c(), lib_imgui_tex_inspect(),
     lib_imgui_toggle(), lib_imgui_color_text_edit(), lib_imguizmo(), lib_immapp(), lib_immvision(),
     lib_cvnp(), lib_implot(), lib_imspinner(), lib_portable_file_dialogs(), lib_sdl()]

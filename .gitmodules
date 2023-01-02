@@ -69,3 +69,7 @@
 	path = external/SDL/SDL
 	url = https://github.com/libsdl-org/SDL.git
 	branch = release-2.26.x
+[submodule "external/imgui-command-palette/imgui-command-palette"]
+	path = external/imgui-command-palette/imgui-command-palette
+	url = https://github.com/pthom/imgui-command-palette.git
+	branch = imgui_bundle

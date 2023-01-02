@@ -11,6 +11,7 @@ from . import imgui_md as imgui_md
 from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect
+from . import imgui_command_palette as imgui_command_palette
 from . import immapp as immapp
 from . import imgui_toggle as imgui_toggle
 from . import portable_file_dialogs as portable_file_dialogs

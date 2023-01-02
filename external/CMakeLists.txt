@@ -48,6 +48,8 @@ target_link_libraries(im_file_dialog PRIVATE hello_imgui)
 add_simple_external_library_with_sources(imspinner imspinner)
 # Build imgui_toggle
 add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
+# Build imgui_command_palette
+add_simple_external_library_with_sources(imgui_command_palette imgui-command-palette)
 # Build imgui_md
 add_simple_external_library(imgui_md imgui_md)
 target_sources(imgui_md PRIVATE

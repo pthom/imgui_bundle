@@ -38,6 +38,7 @@ def make_closure_demo_apps() -> GuiFunction:
             "demo_powersave.py", "How to have smooth animations, and how to let the application save CPU when idle"
         ),
         DemoApp("demo_custom_font.py", "How to load custom fonts"),
+        DemoApp("demo_command_palette.py", "a Sublime Text or VSCode style command palette in ImGui"),
         DemoApp("../haikus/haiku_implot_heart.py", "Animated heart"),
     ]
 

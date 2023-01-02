@@ -10,6 +10,7 @@ set(all_pybind_files
     ${external_dir}/imgui/bindings/pybind_imgui_internal.cpp
     ${external_dir}/hello_imgui/bindings/pybind_hello_imgui.cpp
     ${external_dir}/ImFileDialog/bindings/pybind_im_file_dialog.cpp
+    ${external_dir}/imgui-command-palette/bindings/pybind_imgui_command_palette.cpp
     ${external_dir}/imgui-knobs/bindings/pybind_imgui_knobs.cpp
     ${external_dir}/imgui-node-editor/bindings/pybind_imgui_node_editor.cpp
     ${external_dir}/imgui_md/bindings/pybind_imgui_md.cpp
