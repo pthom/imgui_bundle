@@ -1,10 +1,9 @@
-from imgui_bundle import immapp, hello_imgui, imgui
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import immapp, hello_imgui, imgui, imgui_md
 
 
 def make_gui():
     def gui():
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             """
         # Theming
         HelloImGui adds support for advanced theming to ImGui.

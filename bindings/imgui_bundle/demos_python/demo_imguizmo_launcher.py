@@ -1,13 +1,13 @@
 import os.path
 import subprocess
 import sys
-from imgui_bundle import imgui, immapp, hello_imgui
+from imgui_bundle import imgui, immapp, hello_imgui, imgui_md
 from imgui_bundle.demos_python import demo_utils, demos_imguizmo
 
 
 def make_gui() -> demo_utils.GuiFunction:
     def gui():
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             """
         # ImGuizmo
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui 

@@ -5,6 +5,7 @@
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
+#include "immapp/code_utils.h"
 
 #include <fplus/fplus.hpp>
 #include <string>
@@ -27,6 +28,7 @@
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
 #endif
+
 
 namespace ImGuiMdBrowser
 {
@@ -477,4 +479,10 @@ assets/
         return gMarkdownRenderer->get_font_code();
     }
 
-}
+    // Renders a markdown string (after having unindented its main indentation)
+    void RenderUnindented(const std::string& markdownString)
+    {
+        Render(CodeUtils::UnindentMarkdown(markdownString));
+    }
+
+} // namespace ImGuiMdBrowser

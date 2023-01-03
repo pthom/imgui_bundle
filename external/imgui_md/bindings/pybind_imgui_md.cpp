@@ -79,7 +79,14 @@ void py_init_module_imgui_md(py::module& m)
         ImGuiMd::GetFontLoaderFunction, "GetFontLoaderFunction() will return a function that you should call during ImGui initialization.");
 
     m.def("render",
-        ImGuiMd::Render, py::arg("markdown_string"));
+        ImGuiMd::Render,
+        py::arg("markdown_string"),
+        "Renders a markdown string");
+
+    m.def("render_unindented",
+        ImGuiMd::RenderUnindented,
+        py::arg("markdown_string"),
+        "Renders a markdown string (after having unindented its main indentation)");
 
     m.def("get_code_font",
         ImGuiMd::GetCodeFont, pybind11::return_value_policy::reference);

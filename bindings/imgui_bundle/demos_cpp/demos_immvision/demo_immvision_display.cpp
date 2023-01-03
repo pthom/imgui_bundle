@@ -1,7 +1,6 @@
 #include "immapp/immapp.h"
 #include "immvision/immvision.h"
 #include <opencv2/imgcodecs.hpp>
-#include "demo_utils/demo_utils.h"
 
 
 void gui()
@@ -21,10 +20,10 @@ void gui()
         inited = true;
     }
 
-    RenderMdUnindented("ImmVision::ImageDisplay() will simply display an image");
+    ImGuiMd::RenderUnindented("ImmVision::ImageDisplay() will simply display an image");
     ImmVision::ImageDisplay("Tennis", tennis, imageDisplaySize);
 
-    RenderMdUnindented(R"(
+    ImGuiMd::RenderUnindented(R"(
         immvision.image() will display an image, while providing lots of visualization options.<br>
         Open the options panel by clicking on the settings button at the bottom right corner of the image)");
     ImmVision::Image("Bear", bear, &params);

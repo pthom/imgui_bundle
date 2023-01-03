@@ -27,6 +27,7 @@ def main():
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/utils.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/code_utils.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

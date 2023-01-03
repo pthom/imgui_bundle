@@ -1,18 +1,12 @@
-from imgui_bundle import imgui, imgui_md
+from imgui_bundle import imgui, imgui_md, immapp
 from imgui_bundle.immapp import static
-from imgui_bundle.demos_python.demo_utils import code_str_utils
-
-
-def md_render_unindent(md: str):
-    u = code_str_utils.unindent_code(md, flag_strip_empty_lines=True, is_markdown=True)
-    imgui_md.render(u)
 
 
 @static(is_initialized=False)
 def show_demo_window():
     static = show_demo_window
 
-    md_render_unindent(
+    imgui_md.render_unindented(
         """
         # Dear ImGui demo
          [Dear ImGui](https://github.com/ocornut/imgui.git) is one possible implementation of an idea generally described as the IMGUI (Immediate Mode GUI) paradigm. 

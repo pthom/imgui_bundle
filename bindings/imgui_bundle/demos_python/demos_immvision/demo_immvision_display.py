@@ -1,8 +1,7 @@
 import os.path
 import cv2
 
-from imgui_bundle import immvision, immapp
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import immvision, immapp, imgui_md
 
 
 @immapp.static(inited=False)
@@ -20,10 +19,10 @@ def gui() -> None:
 
         statics.inited = True
 
-    demo_utils.render_md_unindented("immvision.image_display() will simply display an image")
+    imgui_md.render_unindented("immvision.image_display() will simply display an image")
     immvision.image_display("Tennis", statics.tennis, image_display_size=image_display_size)
 
-    demo_utils.render_md_unindented(
+    imgui_md.render_unindented(
         """
         immvision.image() will display an image, while providing lots of visualization options.<br>
         Open the options panel by clicking on the settings button at the bottom right corner of the image"""

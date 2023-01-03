@@ -1,7 +1,6 @@
 import os.path
 import cv2
-from imgui_bundle import immvision, immapp, imgui
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import immvision, immapp, imgui, imgui_md
 
 
 this_dir = os.path.dirname(__file__)
@@ -18,7 +17,7 @@ params_channels.zoom_key = "some_common_zoom_key"
 
 
 def gui():
-    demo_utils.render_md_unindented(
+    imgui_md.render_unindented(
         "If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel"
     )
 

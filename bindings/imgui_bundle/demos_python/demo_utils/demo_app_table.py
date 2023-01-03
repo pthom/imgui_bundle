@@ -2,8 +2,7 @@ from typing import List
 import subprocess
 import sys
 
-from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md
-from imgui_bundle.demos_python.demo_utils.code_str_utils import unindent_code
+from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, immapp
 
 
 class DemoApp:
@@ -12,7 +11,7 @@ class DemoApp:
 
     def __init__(self, python_file: str, explanation: str):
         self.python_file = python_file
-        self.explanation = unindent_code(explanation, flag_strip_empty_lines=True)
+        self.explanation = immapp.code_utils.unindent_code(explanation)
 
 
 class DemoAppTable:

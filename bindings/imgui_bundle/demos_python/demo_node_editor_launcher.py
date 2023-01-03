@@ -1,13 +1,13 @@
 import os.path
 import subprocess
 import sys
-from imgui_bundle import imgui, hello_imgui, immapp
+from imgui_bundle import imgui, hello_imgui, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils, demos_node_editor
 
 
 def make_gui() -> demo_utils.GuiFunction:
     def gui():
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             """
         # imgui-node-editor
         [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
@@ -17,10 +17,10 @@ def make_gui() -> demo_utils.GuiFunction:
         )
 
         if imgui.collapsing_header("Screenshot - BluePrint"):
-            demo_utils.render_md_unindented("This is a screenshot showing the possibilities of the node editor")
+            imgui_md.render_unindented("This is a screenshot showing the possibilities of the node editor")
             hello_imgui.image_from_asset("images/node_editor_screenshot.jpg", immapp.em_to_vec2(40, 0))
         if imgui.collapsing_header("Screenshot - Image editing"):
-            demo_utils.render_md_unindented(
+            imgui_md.render_unindented(
                 "This is another screenshot showing the possibilities of the node editor, when combined with immvision"
             )
             hello_imgui.image_from_asset("images/node_editor_fiat.jpg", immapp.em_to_vec2(60, 0))

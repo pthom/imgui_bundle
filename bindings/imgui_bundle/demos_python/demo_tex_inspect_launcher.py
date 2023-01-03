@@ -1,13 +1,13 @@
 import os.path
 import subprocess
 import sys
-from imgui_bundle import immapp, imgui
+from imgui_bundle import immapp, imgui, imgui_md
 from imgui_bundle.demos_python import demo_utils, demos_tex_inspect
 
 
 def make_gui() -> demo_utils.GuiFunction:
     def gui():
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             """
         # imgui_tex_inspect
         [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui

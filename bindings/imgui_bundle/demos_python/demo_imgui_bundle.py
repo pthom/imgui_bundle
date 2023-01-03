@@ -1,18 +1,8 @@
 from imgui_bundle import imgui, imgui_md, hello_imgui
-from imgui_bundle.demos_python.demo_utils import code_str_utils, show_code_editor, show_python_vs_cpp_and_run
+from imgui_bundle.demos_python.demo_utils import show_code_editor, show_python_vs_cpp_and_run
 from imgui_bundle import immapp
 from imgui_bundle import imgui_color_text_edit as text_edit
 import inspect
-
-
-def unindent(s: str):
-    r = code_str_utils.unindent_code(s, flag_strip_empty_lines=True)
-    return r
-
-
-def md_render_unindent(md: str):
-    u = code_str_utils.unindent_code(md, flag_strip_empty_lines=True, is_markdown=True)
-    imgui_md.render(u)
 
 
 class AppState:
@@ -31,9 +21,7 @@ def demo_radio_button():
 
 
 def show_code_advices() -> None:
-    cpp_code = (
-        code_str_utils.unindent_code(
-            """
+    cpp_code = """
         void DemoRadioButton()
         {
             static int value = 0;
@@ -41,13 +29,9 @@ def show_code_advices() -> None:
             ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
             ImGui::RadioButton("radio c", &value, 2);
         }
-    """,
-            flag_strip_empty_lines=True,
-        )
-        + "\n"
-    )
+    """
 
-    md_render_unindent(
+    imgui_md.render_unindented(
         """
     ImGui is a C++ library that was ported to Python. In order to work with it you will often refer to its [demo](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html), which shows example code in C++.
 
@@ -81,9 +65,7 @@ def demo_input_text_decimal() -> None:
 
 
 def show_text_input_advice():
-    cpp_code = (
-        code_str_utils.unindent_code(
-            """
+    cpp_code = """
         void DemoInputTextDecimal()
         {
             static char text[64] = "";
@@ -95,13 +77,9 @@ def show_text_input_advice():
                                     "decimal", text, 64, 
                                     ImGuiInputTextFlags_CharsDecimal);
         }
-        """,
-            flag_strip_empty_lines=True,
-        )
-        + "\n"
-    )
+        """
 
-    md_render_unindent(
+    imgui_md.render_unindented(
         """
         In the example below, two differences are important:
         
@@ -158,7 +136,7 @@ def show_glfw_callback_advice():
     static.text_editor.render("Code", immapp.em_to_vec2(50.0, 16.5))
     imgui.pop_font()
 
-    md_render_unindent(
+    imgui_md.render_unindented(
         """For more complex applications, you can set various callbacks, using glfw.
     *Click the button below to add a callback*"""
     )
@@ -183,7 +161,7 @@ def demo_imgui_bundle() -> None:
 
     app_state: AppState = static.app_state
 
-    md_render_unindent(
+    imgui_md.render_unindented(
         """
         # ImGui Bundle
         [ImGui Bundle](https://github.com/pthom/imgui_bundle) is a collection of python bindings for [Dear ImGui](https://github.com/ocornut/imgui.git), and various libraries from its ecosystem.
@@ -193,7 +171,7 @@ def demo_imgui_bundle() -> None:
     imgui.separator()
 
     if imgui.collapsing_header("About"):
-        md_render_unindent(
+        imgui_md.render_unindented(
             """
             ### Batteries included
             ImGui Bundle includes:
@@ -227,7 +205,7 @@ def demo_imgui_bundle() -> None:
         )
 
     if imgui.collapsing_header("Immediate mode gui"):
-        md_render_unindent("""An example is often worth a thousand words. The following code:""")
+        imgui_md.render_unindented("""An example is often worth a thousand words. The following code:""")
 
         def immediate_gui_example():
             # Display a text
@@ -239,7 +217,7 @@ def demo_imgui_bundle() -> None:
                 # And returns true if it was clicked: you can *immediately* handle the click
                 app_state.counter += 1
 
-        python_code = unindent(inspect.getsource(immediate_gui_example))
+        python_code = inspect.getsource(immediate_gui_example)
         # imgui.input_text_multiline("##immediate_gui_example", python_code, ImVec2(500, 150))
         show_code_editor(python_code, False, flag_half_width=False)
         imgui.text("Displays this:")
@@ -247,7 +225,7 @@ def demo_imgui_bundle() -> None:
         imgui.separator()
 
     if imgui.collapsing_header("Consult the ImGui interactive manual!"):
-        md_render_unindent(
+        imgui_md.render_unindented(
             """
         Dear ImGui comes with a complete demo. It demonstrates all of the widgets, together with an example code on how to use them.
 

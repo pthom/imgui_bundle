@@ -1,7 +1,6 @@
 import os
 from typing import Callable, Dict
 from imgui_bundle import immapp, imgui, imgui_color_text_edit, ImVec2, imgui_md
-from imgui_bundle.demos_python.demo_utils import code_str_utils
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
 
 
@@ -28,7 +27,7 @@ def show_code_editor(code: str, is_cpp: bool, flag_half_width: bool, nb_lines: i
             editors[code].set_language_definition(TextEditor.LanguageDefinition.c_plus_plus())
         else:
             editors[code].set_language_definition(TextEditor.LanguageDefinition.python())
-        editors[code].set_text(code)
+        editors[code].set_text(immapp.code_utils.unindent_code(code))
 
     if nb_lines == 0:
         nb_lines = len(editors[code].get_text().split("\n"))
@@ -78,11 +77,6 @@ def show_python_vs_cpp_file(demo_file_path: str, nb_lines: int = 0) -> None:
     cpp_code = read_cpp_code(demo_file_path)
     python_code = read_python_code(demo_file_path)
     show_python_vs_cpp_code(python_code, cpp_code, nb_lines)
-
-
-def render_md_unindented(md_str: str, flag_strip_empty_lines: bool = True) -> None:
-    s = code_str_utils.unindent_code(md_str, flag_strip_empty_lines=flag_strip_empty_lines)
-    imgui_md.render(s)
 
 
 def main_python_package_folder() -> str:

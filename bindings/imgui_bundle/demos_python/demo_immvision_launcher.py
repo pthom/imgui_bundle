@@ -24,7 +24,7 @@ def make_gui() -> demo_utils.GuiFunction:
             imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
             return
         elif not HAS_OPENCV:
-            demo_utils.render_md_unindented(
+            imgui_md.render_unindented(
                 """
         ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
         
@@ -51,7 +51,7 @@ def make_gui() -> demo_utils.GuiFunction:
 
         nonlocal gui_process
 
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             """
         # ImmVision
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger. 

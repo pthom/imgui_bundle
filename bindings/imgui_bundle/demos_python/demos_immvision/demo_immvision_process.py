@@ -8,8 +8,7 @@ import cv2
 import math
 
 from imgui_bundle.demos_python.demo_utils.api_demos import *
-from imgui_bundle import imgui, immvision, immapp
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import imgui, immvision, immapp, imgui_md
 
 
 ImageRgb = NDArray[np.uint8]
@@ -115,7 +114,7 @@ def make_gui() -> GuiFunction:
 
     def gui():
         nonlocal app_state
-        demo_utils.render_md_unindented(
+        imgui_md.render_unindented(
             "This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab."
         )
         changed = gui_sobel_params(app_state.sobel_params)

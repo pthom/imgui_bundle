@@ -91,7 +91,11 @@ namespace ImGuiMd
     // GetFontLoaderFunction() will return a function that you should call during ImGui initialization.
     VoidFunction GetFontLoaderFunction();
 
+    // Renders a markdown string
     void Render(const std::string& markdownString);
+
+    // Renders a markdown string (after having unindented its main indentation)
+    void RenderUnindented(const std::string& markdownString);
 
     ImFont* GetCodeFont();
 }

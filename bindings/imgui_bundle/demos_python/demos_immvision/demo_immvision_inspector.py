@@ -1,6 +1,6 @@
 import os.path
 
-from imgui_bundle import immvision, immapp
+from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 import cv2
 
@@ -19,7 +19,7 @@ def gui():
         fill_inspector()
         gui.inited = True
 
-    demo_utils.render_md_unindented(
+    imgui_md.render_unindented(
         """Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images."""
     )
     immvision.inspector_show()
