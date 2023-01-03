@@ -7,8 +7,9 @@
 
 int main()
 {
+    constexpr double pi = 3.1415926535897932384626433;
     std::vector<double> x, y1, y2;
-    for (double _x = 0; _x < 4 * M_PI; _x += 0.01)
+    for (double _x = 0; _x < 4 * pi; _x += 0.01)
     {
         x.push_back(_x);
         y1.push_back(std::cos(_x));
