@@ -1,4 +1,5 @@
-"""A more complex app demo,
+/*
+"A more complex app demo,
 
 It demonstrates:
 - How to use a specific application state (instead of using static variables)
@@ -7,91 +8,134 @@ It demonstrates:
     - status bar
 - A default menu, with default
 - log window
-- How to load assets and fonts
-"""
-import os
-from enum import Enum
+- How to load assets and fonts"
+*/
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2, immapp
+#include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome.h"
+#include "imgui.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "immapp/immapp.h"
 
+struct AppState {
+    float f = 0.0f;
+    int counter = 0;
+    float rocket_progress = 0.0f;
 
-# Struct that holds the application's state
-class AppState:
-    f: float = 0.0
-    counter: int = 0
-    rocket_progress: float = 0.0
-
-    class RocketState(Enum):
-        Init = 0
-        Preparing = 1
-        Launched = 2
-
-    rocket_state: RocketState = RocketState.Init
-
-
-"""
-Font loading:
-
-We have two options: either we use hello imgui, or we load manually 
-(see my_load_fonts_via_hello_imgui() and my_load_fonts_manually() below).
-"""
-
-gAkronimFont: imgui.ImFont  # This is just a demo, you should store this somewhere in the app state
+    enum class RocketState {
+        Init,
+        Preparing,
+        Launched
+    };
+    RocketState rocket_state = RocketState::Init;
+};
 
 
-def my_load_fonts_via_hello_imgui():
-    # hello_imgui can load font and merge them with font awesome automatically.
-    # It will load them from the assets/ folder.
+// Font loading:
+//
+// We have two options: either we use hello imgui, or we load manually
+// (see MyLoadFontsViaHelloImGui() and MyLoadFontsManually() below).
 
-    global gAkronimFont
+ImFont* gAkronimFont; // This is just a demo, you should store this somewhere in the app state
 
-    # First, we load the default fonts (the font that was loaded first is the default font)
-    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
-    font_filename = "fonts/Akronim-Regular.ttf"
-    gAkronimFont = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
+void MyLoadFontsViaHelloImGui()
+{
+    // hello_imgui can load font and merge them with font awesome automatically.
+    // It will load them from the assets/ folder.
 
+    // First, we load the default fonts (the font that was loaded first is the default font)
+    // LoadDefaultFont_WithFontAwesomeIcons returns a lambda which we need to call, hence the double ()()
+    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons()();
 
-def my_load_fonts_manually():
-    # Load font manually.
-    # We need to use font_atlas_add_font_from_file_ttf instead of ImFont.add_font_from_file_ttf
-    global gAkronimFont
-
-    # first, we load the default font (it will not include icons)
-    imgui.get_io().fonts.add_font_default()
-
-    # Load a font and merge icons into it
-    # i. load the font...
-    this_dir = os.path.dirname(__file__)
-    font_atlas = imgui.get_io().fonts
-    # We need to take into account the global font scale!
-    font_size_pixel = 40 / imgui.get_io().font_global_scale
-    font_filename = this_dir + "/../assets/fonts/Akronim-Regular.ttf"
-    font_atlas = imgui.get_io().fonts
-    glyph_range = font_atlas.get_glyph_ranges_default()
-    gAkronimFont = font_atlas.add_font_from_file_ttf(
-        filename=font_filename,
-        size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=glyph_range,
-    )
-    # ii. ... Aad merge icons into the previous font
-    from imgui_bundle import icons_fontawesome
-
-    font_filename = this_dir + "/../assets/fonts/fontawesome-webfont.ttf"
-    font_config = imgui.ImFontConfig()
-    font_config.merge_mode = True
-    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
-    gAkronimFont = font_atlas.add_font_from_file_ttf(
-        filename=font_filename,
-        size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=icons_range,
-        font_cfg=font_config,
-    )
+    // Then we load our custom font
+    const std::string fontFilename = "fonts/Akronim-Regular.ttf";
+    gAkronimFont = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFilename.c_str(), 40.f);
+}
 
 
-def my_load_fonts():
-    # Uncomment here your preferred method
-    my_load_fonts_manually()
-    # my_load_fonts_via_hello_imgui()
+void MyLoadFontsManually()
+{
+    // first, we load the default font (it will not include icons)
+    ImGui::GetIO().Fonts->AddFontDefault();
+
+    // Load a font and merge icons into it
+    // i. load the font...
+    ImFontAtlas* fontAtlas = ImGui::GetIO().Fonts;
+    // We need to take into account the global font scale! This is required for macOS retina screens
+    const float fontSizePixel = 40.0f / ImGui::GetIO().FontGlobalScale;
+    const std::string fontFilename = "assets/fonts/Akronim-Regular.ttf";
+    auto glyphRange = fontAtlas->GetGlyphRangesDefault();
+    gAkronimFont = fontAtlas->AddFontFromFileTTF(fontFilename.c_str(), fontSizePixel, NULL, glyphRange);
+
+    // ii. ... Aad merge icons into the previous font
+    ImFontConfig fontConfig;
+    fontConfig.MergeMode = true;
+
+    // See warning inside imgui.h:
+    //     If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the
+    //     atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.
+    // We need to make sure that iconRanges is not destroyed when exiting this function! In this case, we can make it
+    // either static or constexpr.
+    constexpr ImWchar iconRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    gAkronimFont = fontAtlas->AddFontFromFileTTF("assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
+}
+
+
+void MyLoadFonts()
+{
+    // Uncomment here your preferred method
+    MyLoadFontsViaHelloImGui();
+    MyLoadFontsManually();
+}
+
+
+void CommandGui(AppState& state)
+{
+    ImGui::Begin("Commands");
+
+    // Set custom font
+    ImGui::PushFont(gAkronimFont);
+
+    if (ImGui::Button("Increment counter")) {
+        state.counter++;
+    }
+    ImGui::SameLine();
+    ImGui::Text("Counter: %d", state.counter);
+
+    if (ImGui::Button("Increment floating point value")) {
+        state.f += 0.1f;
+    }
+    ImGui::SameLine();
+    ImGui::Text("f: %.2f", state.f);
+
+    ImGui::Separator();
+
+    if (ImGui::Button("Launch rocket")) {
+        state.rocket_state = AppState::RocketState::Preparing;
+        state.rocket_progress = 0.0f;
+    }
+    ImGui::SameLine();
+    ImGui::Text(ICON_FA_ROCKET " Rocket status: ");
+    ImGui::SameLine();
+    switch (state.rocket_state) {
+        case AppState::RocketState::Init:
+            ImGui::Text("Initializing");
+            break;
+        case AppState::RocketState::Preparing:
+            ImGui::Text("Preparing");
+            break;
+        case AppState::RocketState::Launched:
+            ImGui::Text("Launched!");
+            break;
+    }
+    ImGui::ProgressBar(state.rocket_progress);
+
+    ImGui::PopFont();
+    ImGui::End();
+}
+
+
+/*
 
 
 # CommandGui: the widgets on the left panel
@@ -306,3 +350,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+*/
+
+int main()
+{
+
+}
