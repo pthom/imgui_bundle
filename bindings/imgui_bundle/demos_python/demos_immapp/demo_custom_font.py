@@ -30,7 +30,7 @@ def my_load_fonts_manually() -> imgui.ImFont:
     # i. load the font...
     this_dir = os.path.dirname(__file__)
     font_atlas = imgui.get_io().fonts
-    # We need to take into account the global font scale!
+    # We need to take into account the global font scale! This is required for macOS retina screens
     font_size_pixel = 40.0 / imgui.get_io().font_global_scale
     font_filename = this_dir + "/../assets/fonts/Akronim-Regular.ttf"
     glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)

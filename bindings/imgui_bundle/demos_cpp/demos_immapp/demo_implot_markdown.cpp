@@ -1,0 +1,32 @@
+#include "immapp/immapp.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "implot/implot.h"
+#include <vector>
+#include <cmath>
+
+
+int main()
+{
+    std::vector<double> x, y1, y2;
+    for (double _x = 0; _x < 4 * M_PI; _x += 0.01)
+    {
+        x.push_back(_x);
+        y1.push_back(std::cos(_x));
+        y2.push_back(std::sin(_x));
+    }
+
+    auto gui = [x,y1,y2]()
+    {
+        ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
+        ImPlot::BeginPlot("Plot");
+        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
+        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+        ImPlot::EndPlot();
+    };
+
+    HelloImGui::SimpleRunnerParams runnerParams { .guiFunction = gui, .windowSize = {600, 400} };
+    ImmApp::AddOnsParams addons { .withImplot = true, .withMarkdown = true };
+    ImmApp::Run(runnerParams, addons);
+
+    return 0;
+}
