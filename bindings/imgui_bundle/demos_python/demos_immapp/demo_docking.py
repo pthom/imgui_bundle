@@ -88,26 +88,16 @@ def my_load_fonts_manually():
     )
 
 
-def my_load_fonts():
-    # Uncomment here your preferred method
-    my_load_fonts_manually()
-    # my_load_fonts_via_hello_imgui()
-
-
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
     # Note, you can also show the tweak theme widgets via:
     # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
-    imgui_md.render(
-        """
-# Tweak the theme!
-
-Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
-You can even easily tweak their colors.
-    """[
-            1:
-        ]
-    )
+    imgui_md.render_unindented("""
+        # Tweak the theme!
+        
+        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
+        You can even easily tweak their colors.
+    """)
 
     imgui.separator()
 
@@ -148,8 +138,7 @@ You can even easily tweak their colors.
         state.rocket_progress += 0.003
         if state.rocket_progress >= 1.0:
             state.rocket_state = AppState.RocketState.Launched
-            print("Rocket was launched!")
-            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocker was launched")
+            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
     elif state.rocket_state == AppState.RocketState.Launched:
         imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
         if imgui.button("Reset Rocket"):
@@ -213,8 +202,9 @@ def main():
 
     runner_params.callbacks.show_menus = show_menu_gui
 
-    # Custom load fonts
-    runner_params.callbacks.load_additional_fonts = my_load_fonts
+    # Choose here your preferred method for loading fonts:
+    # runner_params.callbacks.load_additional_fonts = my_load_fonts_via_hello_imgui
+    runner_params.callbacks.load_additional_fonts = my_load_fonts_manually
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...

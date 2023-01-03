@@ -91,268 +91,222 @@ void MyLoadFonts()
 
 void CommandGui(AppState& state)
 {
-    ImGui::Begin("Commands");
+    // Note, you can also show the tweak theme widgets via:
+    // hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
+    ImGuiMd::RenderUnindented(R"(
+        # Tweak the theme!
 
-    // Set custom font
-    ImGui::PushFont(gAkronimFont);
-
-    if (ImGui::Button("Increment counter")) {
-        state.counter++;
-    }
-    ImGui::SameLine();
-    ImGui::Text("Counter: %d", state.counter);
-
-    if (ImGui::Button("Increment floating point value")) {
-        state.f += 0.1f;
-    }
-    ImGui::SameLine();
-    ImGui::Text("f: %.2f", state.f);
+        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15).
+        You can even easily tweak their colors.
+    )");
 
     ImGui::Separator();
 
-    if (ImGui::Button("Launch rocket")) {
-        state.rocket_state = AppState::RocketState::Preparing;
-        state.rocket_progress = 0.0f;
-    }
-    ImGui::SameLine();
-    ImGui::Text(ICON_FA_ROCKET " Rocket status: ");
-    ImGui::SameLine();
-    switch (state.rocket_state) {
-        case AppState::RocketState::Init:
-            ImGui::Text("Initializing");
-            break;
-        case AppState::RocketState::Preparing:
-            ImGui::Text("Preparing");
-            break;
-        case AppState::RocketState::Launched:
-            ImGui::Text("Launched!");
-            break;
-    }
-    ImGui::ProgressBar(state.rocket_progress);
-
+    ImGui::PushFont(gAkronimFont);
+    ImGui::Text("Hello  %s", ICON_FA_SMILE);
+    HelloImGui::ImageFromAsset("world.jpg", ImVec2(100, 100));
     ImGui::PopFont();
-    ImGui::End();
-}
-
-
-/*
-
-
-# CommandGui: the widgets on the left panel
-def command_gui(state: AppState):
-    # Note, you can also show the tweak theme widgets via:
-    # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
-    imgui_md.render(
-        """
-# Tweak the theme!
-
-Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
-You can even easily tweak their colors.
-    """[
-            1:
-        ]
-    )
-
-    imgui.separator()
-
-    imgui.push_font(gAkronimFont)
-    imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))  # type: ignore
-    imgui.pop_font()
-    if imgui.is_item_hovered():
-        imgui.set_tooltip(
-            """
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::SetTooltip(R"(
         The custom font and the globe image below were loaded
         from the application assets folder
         (those files are embedded automatically).
-        """
-        )
+        )");
+    }
 
-    imgui.separator()
+    ImGui::Separator();
 
-    # Edit 1 float using a slider from 0.0f to 1.0f
-    changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
-    if changed:
-        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {state.f}")
+    // Edit 1 float using a slider from 0.0f to 1.0f
+    bool changed = ImGui::SliderFloat("float", &state.f, 0.0f, 1.0f);
+    if (changed)
+    {
+        HelloImGui::Log(HelloImGui::LogLevel::Warning, "state.f was changed to %f", state.f);
+    }
 
-    # Buttons return true when clicked (most widgets return true when edited/activated)
-    if imgui.button("Button"):
-        state.counter += 1
-        hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
+    // Buttons return true when clicked (most widgets return true when edited/activated)
+    if (ImGui::Button("Button"))
+    {
+        state.counter++;
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Button was pressed");
+    }
 
-    imgui.same_line()
-    imgui.text(f"counter = {state.counter}")
+    ImGui::SameLine();
+    ImGui::Text("counter = %d", state.counter);
 
-    if state.rocket_state == AppState.RocketState.Init:
-        if imgui.button(icons_fontawesome.ICON_FA_ROCKET + " Launch rocket"):
-            state.rocket_state = AppState.RocketState.Preparing
-            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
-    elif state.rocket_state == AppState.RocketState.Preparing:
-        imgui.text("Please Wait")
-        state.rocket_progress += 0.003
-        if state.rocket_progress >= 1.0:
-            state.rocket_state = AppState.RocketState.Launched
-            print("Rocket was launched!")
-            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocker was launched")
-    elif state.rocket_state == AppState.RocketState.Launched:
-        imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
-        if imgui.button("Reset Rocket"):
-            state.rocket_state = AppState.RocketState.Init
-            state.rocket_progress = 0.0
-
-
-# Our Gui in the status bar
-def status_bar_gui(app_state: AppState):
-    if app_state.rocket_state == AppState.RocketState.Preparing:
-        imgui.text("Rocket completion: ")
-        imgui.same_line()
-        imgui.progress_bar(app_state.rocket_progress, imgui.ImVec2(100.0, 15.0))  # type: ignore
-
-
-def main():
-
-    # Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
-    #
-    # By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
-    # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
-    # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
-    this_dir = os.path.dirname(os.path.realpath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/../assets")
-
-    ################################################################################################
-    # Part 1: Define the application state, fill the status and menu bars, and load additional font
-    ################################################################################################
-
-    # Our application state
-    app_state = AppState()
-
-    # Hello ImGui params (they hold the settings as well as the Gui callbacks)
-    runner_params = hello_imgui.RunnerParams()
-
-    runner_params.app_window_params.window_title = "Docking demo"
-    runner_params.app_window_params.window_geometry.size = (1000, 800)
-    runner_params.app_window_params.restore_previous_geometry = True
-
-    #
-    # Status bar
-    #
-    # We use the default status bar of Hello ImGui
-    runner_params.imgui_window_params.show_status_bar = True
-    # uncomment next line in order to hide the FPS in the status bar
-    # runner_params.im_gui_window_params.show_status_fps = False
-    runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
-
-    #
-    # Menu bar
-    #
-    # We use the default menu of Hello ImGui, to which we add some more items
-    runner_params.imgui_window_params.show_menu_bar = True
-
-    def show_menu_gui():
-        if imgui.begin_menu("My Menu"):
-            clicked, _ = imgui.menu_item("Test me", "", False)
-            if clicked:
-                hello_imgui.log(hello_imgui.LogLevel.warning, "It works")
-            imgui.end_menu()
-
-    runner_params.callbacks.show_menus = show_menu_gui
-
-    # Custom load fonts
-    runner_params.callbacks.load_additional_fonts = my_load_fonts
-
-    # optional native events handling
-    # runner_params.callbacks.any_backend_event_callback = ...
-
-    ################################################################################################
-    # Part 2: Define the application layout and windows
-    ################################################################################################
-
-    #
-    #    2.1 Define the docking splits,
-    #    i.e. the way the screen space is split in different target zones for the dockable windows
-    #     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
-    #
-    #    ___________________________________________
-    #    |        |                                |
-    #    | Left   |                                |
-    #    | Space  |    MainDockSpace               |
-    #    |        |                                |
-    #    |        |                                |
-    #    |        |                                |
-    #    -------------------------------------------
-    #    |     BottomSpace                         |
-    #    -------------------------------------------
-    #
-
-    # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.imgui_window_params.default_imgui_window_type = (
-        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-    )
-    # In this demo, we also demonstrate multiple viewports.
-    # you can drag windows outside out the main window in order to put their content into new native windows
-    runner_params.imgui_window_params.enable_viewports = True
-
-    # Then, add a space named "BottomSpace" whose height is 25% of the app height.
-    # This will split the preexisting default dockspace "MainDockSpace" in two parts.
-    split_main_bottom = hello_imgui.DockingSplit()
-    split_main_bottom.initial_dock = "MainDockSpace"
-    split_main_bottom.new_dock = "BottomSpace"
-    split_main_bottom.direction = imgui.Dir_.down
-    split_main_bottom.ratio = 0.25
-
-    # Then, add a space to the left which occupies a column whose width is 25% of the app width
-    split_main_left = hello_imgui.DockingSplit()
-    split_main_left.initial_dock = "MainDockSpace"
-    split_main_left.new_dock = "LeftSpace"
-    split_main_left.direction = imgui.Dir_.left
-    split_main_left.ratio = 0.25
-
-    # Finally, transmit these splits to HelloImGui
-    runner_params.docking_params.docking_splits = [split_main_bottom, split_main_left]
-
-    #
-    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
-    #     in a docking split.
-    #
-
-    # A Command panel named "Commands" will be placed in "LeftSpace". Its Gui is provided calls "CommandGui"
-    commands_window = hello_imgui.DockableWindow()
-    commands_window.label = "Commands"
-    commands_window.dock_space_name = "LeftSpace"
-    commands_window.gui_function = lambda: command_gui(app_state)
-    # A Log  window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
-    logs_window = hello_imgui.DockableWindow()
-    logs_window.label = "Logs"
-    logs_window.dock_space_name = "BottomSpace"
-    logs_window.gui_function = hello_imgui.log_gui
-    # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
-    dear_imgui_demo_window = hello_imgui.DockableWindow()
-    dear_imgui_demo_window.label = "Dear ImGui Demo"
-    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
-
-    # Finally, transmit these windows to HelloImGui
-    runner_params.docking_params.dockable_windows = [
-        commands_window,
-        logs_window,
-        dear_imgui_demo_window,
-    ]
-
-    ################################################################################################
-    # Part 3: Run the app
-    ################################################################################################
-    import imgui_bundle
-
-    addons_params = immapp.AddOnsParams()
-    addons_params.with_markdown = True
-    immapp.run(runner_params, addons_params)
+    if (state.rocket_state == AppState::RocketState::Init)
+    {
+        if (ImGui::Button(ICON_FA_ROCKET" Launch rocket"))
+        {
+            state.rocket_state = AppState::RocketState::Preparing;
+            HelloImGui::Log(HelloImGui::LogLevel::Warning, "Rocket is being prepared");
+        }
+    }
+    else if (state.rocket_state == AppState::RocketState::Preparing)
+    {
+        ImGui::Text("Please Wait");
+        state.rocket_progress += 0.003f;
+        if (state.rocket_progress >= 1.0f)
+        {
+            state.rocket_state = AppState::RocketState::Launched;
+            HelloImGui::Log(HelloImGui::LogLevel::Warning, "Rocket was launched");
+        }
+    }
+    else if (state.rocket_state == AppState::RocketState::Launched)
+    {
+        ImGui::Text(ICON_FA_ROCKET " Rocket launched");
+        if (ImGui::Button("Reset Rocket"))
+        {
+            state.rocket_state = AppState::RocketState::Init;
+            state.rocket_progress = 0.f;
+        }
+    }
+}
 
 
-if __name__ == "__main__":
-    main()
-*/
+void StatusBarGui(AppState& app_state)
+{
+    if (app_state.rocket_state == AppState::RocketState::Preparing)
+    {
+        ImGui::Text("Rocket completion: ");
+        ImGui::SameLine();
+        ImGui::ProgressBar(app_state.rocket_progress, ImVec2(100.0f, 15.0f));
+    }
+}
+
 
 int main()
 {
+    // Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
+    HelloImGui::SetAssetsFolder("assets");
 
+    //###############################################################################################
+    // Part 1: Define the application state, fill the status and menu bars, and load additional font
+    //###############################################################################################
+
+    // Our application state
+    AppState appState;
+
+    // Hello ImGui params (they hold the settings as well as the Gui callbacks)
+    HelloImGui::RunnerParams runnerParams;
+
+    runnerParams.appWindowParams.windowTitle = "Docking demo";
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
+    runnerParams.appWindowParams.restorePreviousGeometry = true;
+
+    //
+    // Status bar
+    //
+    // We use the default status bar of Hello ImGui
+    runnerParams.imGuiWindowParams.showStatusBar = true;
+    // uncomment next line in order to hide the FPS in the status bar
+    // runnerParams.imGuiWindowParams.showStatusFps = false;
+    runnerParams.callbacks.ShowStatus = [&appState]() { StatusBarGui(appState); };
+
+    //
+    // Menu bar
+    //
+    // We use the default menu of Hello ImGui, to which we add some more items
+    runnerParams.imGuiWindowParams.showMenuBar = true;
+    auto ShowMenuGui = []()
+    {
+        if (ImGui::BeginMenu("My Menu"))
+        {
+            bool clicked = ImGui::MenuItem("Test me", "", false);
+            if (clicked)
+            {
+                HelloImGui::Log(HelloImGui::LogLevel::Warning, "It works");
+            }
+            ImGui::EndMenu();
+        }
+    };
+    runnerParams.callbacks.ShowMenus = ShowMenuGui;
+
+    // Choose here your preferred method for loading fonts:
+    // runnerParams.callbacks.LoadAdditionalFonts = MyLoadFontsViaHelloImGui;
+    runnerParams.callbacks.LoadAdditionalFonts = MyLoadFontsManually;
+
+    // optional native events handling
+    // runnerParams.callbacks.AnyBackendEventCallback = ...
+
+
+    //###############################################################################################
+    // Part 2: Define the application layout and windows
+    //###############################################################################################
+
+    //
+    //    2.1 Define the docking splits,
+    //    i.e. the way the screen space is split in different target zones for the dockable windows
+    //     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+    //
+    //    ___________________________________________
+    //    |        |                                |
+    //    | Left   |                                |
+    //    | Space  |    MainDockSpace               |
+    //    |        |                                |
+    //    |        |                                |
+    //    |        |                                |
+    //    -------------------------------------------
+    //    |     BottomSpace                         |
+    //    -------------------------------------------
+    //
+
+    // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
+    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
+    // In this demo, we also demonstrate multiple viewports.
+    // you can drag windows outside out the main window in order to put their content into new native windows
+    runnerParams.imGuiWindowParams.enableViewports = true;
+
+    // Then, add a space named "BottomSpace" whose height is 25% of the app height.
+    // This will split the preexisting default dockspace "MainDockSpace" in two parts.
+    HelloImGui::DockingSplit splitMainBottom;
+    splitMainBottom.initialDock = "MainDockSpace";
+    splitMainBottom.newDock = "BottomSpace";
+    splitMainBottom.direction = ImGuiDir_Down;
+    splitMainBottom.ratio = 0.25f;
+
+    // Then, add a space to the left which occupies a column whose width is 25% of the app width
+    HelloImGui::DockingSplit splitMainLeft;
+    splitMainLeft.initialDock = "MainDockSpace";
+    splitMainLeft.newDock = "LeftSpace";
+    splitMainLeft.direction = ImGuiDir_Left;
+    splitMainLeft.ratio = 0.25f;
+
+    // Finally, transmit these splits to HelloImGui
+    runnerParams.dockingParams.dockingSplits = {splitMainBottom, splitMainLeft};
+
+    //
+    // 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
+    //     in a docking split.
+    //
+    HelloImGui::DockableWindow commandsWindow;
+    commandsWindow.label = "Commands";
+    commandsWindow.dockSpaceName = "LeftSpace";
+    commandsWindow.GuiFunction = [&]{ CommandGui(appState); };
+
+
+    // A Log window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
+    HelloImGui::DockableWindow logsWindow;
+    logsWindow.label = "Logs";
+    logsWindow.dockSpaceName = "BottomSpace";
+    logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
+    // A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
+    HelloImGui::DockableWindow dearImGuiDemoWindow;
+    dearImGuiDemoWindow.label = "Dear ImGui Demo";
+    dearImGuiDemoWindow.dockSpaceName = "MainDockSpace";
+    dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
+
+    // Finally, transmit these windows to HelloImGui
+    runnerParams.dockingParams.dockableWindows = {
+        commandsWindow,
+        logsWindow,
+        dearImGuiDemoWindow,
+    };
+
+    //###############################################################################################
+    // Part 3: Run the app
+    //###############################################################################################
+    ImmApp::AddOnsParams addonsParams;
+    addonsParams.withMarkdown = true;
+    ImmApp::Run(runnerParams, addonsParams);
 }
