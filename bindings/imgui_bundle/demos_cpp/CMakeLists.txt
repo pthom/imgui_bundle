@@ -16,7 +16,7 @@ add_subdirectory(demo_utils)
 add_subdirectory(demos_immapp)
 add_subdirectory(demo_texteditor)
 add_subdirectory(demo_widgets_docking)
-add_subdirectory(demo_imgui_node_editor)
+add_subdirectory(demos_node_editor)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
 
