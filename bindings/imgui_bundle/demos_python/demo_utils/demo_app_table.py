@@ -30,7 +30,7 @@ class DemoAppTable:
     demo_python_folder: str
     demo_cpp_folder: str
 
-    def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str, idx_initial_app: int = 0):
+    def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str):
         self.editor_python = text_edit.TextEditor()
         self.editor_python.set_language_definition(text_edit.TextEditor.LanguageDefinition.python())
         self.editor_cpp = text_edit.TextEditor()
@@ -38,7 +38,7 @@ class DemoAppTable:
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
         self.demo_cpp_folder = demo_cpp_folder
-        self._set_demo_app(self.demo_apps[idx_initial_app])
+        self._set_demo_app(self.demo_apps[0])
 
     def _demo_python_file_path(self, demo_app: DemoApp) -> str:
         return self.demo_python_folder + "/" + demo_app.demo_file + ".py"
