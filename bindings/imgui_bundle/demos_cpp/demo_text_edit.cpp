@@ -1,77 +1,42 @@
 #include "imgui.h"
 #include "immapp/immapp.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
+#include <fplus/fplus.hpp>
+
+TextEditor _PrepareTextEditor()
+{
+    TextEditor editor;
+    std::string filename = __FILE__;
+    std::string this_file_code = fplus::read_text_file(filename)();
+    editor.SetText(this_file_code);
+    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+    return editor;
+}
+
 
 void DemoGui()
 {
-    static std::string code = R"(
-from __future__ import annotations
-import copy
-from enum import Enum
-from typing import TYPE_CHECKING, Callable, List, Optional
+    static TextEditor editor = _PrepareTextEditor();
 
-from srcmlcpp.cpp_types.scope.cpp_scope import CppScope, CppScopePart, CppScopeType
-from srcmlcpp.srcml_wrapper import SrcmlWrapper
+    ImGuiMd::Render(R"(
+# ImGuiColorTextEdit:
+[ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
+    )");
 
+    auto ShowPaletteButtons = []()
+    {
+        if (ImGui::SmallButton("Dark palette"))
+            editor.SetPalette(TextEditor::GetDarkPalette());
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Light palette"))
+            editor.SetPalette(TextEditor::GetLightPalette());
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Retro blue palette"))
+            editor.SetPalette(TextEditor::GetRetroBluePalette());
+    };
 
-if TYPE_CHECKING:
-    from srcmlcpp.cpp_types.blocks.cpp_unit import CppUnit
-
-
-__all__ = ["CppElement", "CppElementsVisitorFunction", "CppElementsVisitorEvent"]
-
-
-class CppElement(SrcmlWrapper):
-    """
-    Base class of all the cpp types"""
-
-    # the parent of this element (will be None for the root, which is a CppUnit)
-    # at construction time, this field is absent (hasattr return False)!
-    # It will be filled later by CppBlock.fill_parents() (with a tree traversal)
-    parent: Optional[CppElement]
-
-    # members that are always copied as shallow members (this is intentionally a static list)
-    CppElement__deep_copy_force_shallow_ = ["parent"]
-
-    def __init__(self, element: SrcmlWrapper) -> None:
-        super().__init__(element.options, element.srcml_xml, element.filename)
-        # self.parent is intentionally not filled!
-
-    def __deepcopy__(self, memo=None):
-        """CppElement.__deepcopy__: force shallow copy of the parent
-        This improves the performance a lot.
-        Reason: when we deepcopy, we only intend to modify children.
-        """
-
-        # __deepcopy___ "manual":
-        #   See https://stackoverflow.com/questions/1500718/how-to-override-the-copy-deepcopy-operations-for-a-python-object
-        #   (Antony Hatchkins's answer here)
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            if k not in CppElement.CppElement__deep_copy_force_shallow_:
-                setattr(result, k, copy.deepcopy(v, memo))
-            else:
-                setattr(result, k, v)
-        return result
-
-    def str_code(self) -> str:
-        """Returns a C++ textual representation of the contained code element.
-        By default, it returns an exact copy of the original code.
-
-        Derived classes override this implementation and str_code will return a string that differs
-         a little from the original code, because it is based on information stored in these derived classes.
-        """
-        return self.str_code_verbatim()
-
-)";
-
-    static TextEditor editor;
-    editor.SetText(code);
-    editor.SetPalette(TextEditor::GetLightPalette());
-    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
-
-    editor.Render("Editor");
+    ShowPaletteButtons();
+    ImGui::PushFont(ImGuiMd::GetCodeFont());
+    editor.Render("Code");
+    ImGui::PopFont();
 }
