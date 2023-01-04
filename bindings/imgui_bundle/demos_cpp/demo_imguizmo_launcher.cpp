@@ -4,7 +4,7 @@
 #include "demo_utils/api_demos.h"
 
 
-void DemoGui()
+void demo_imguizmo_launcher()
 {
     ImGuiMd::RenderUnindented(R"(
         # ImGuizmo
@@ -21,7 +21,7 @@ void DemoGui()
             "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)"
         );
         if (ImGui::Button("Run gizmo demo"))
-            SpawnDemo("demos_imguizmo/demo_gizmo");
+            SpawnDemo("demo_gizmo");
         HelloImGui::ImageFromAsset("images/gizmo_screenshot.jpg", ImVec2(0, HelloImGui::EmSize(15.0f)));
         ShowPythonVsCppFile("demos_imguizmo/demo_gizmo", 30);
     }
@@ -35,7 +35,7 @@ void DemoGui()
         ImGui::Text("Click the button below to launch the demo");
         if (ImGui::Button("Run demo"))
         {
-            SpawnDemo("demos_imguizmo/demo_guizmo_zoom_slider");
+            SpawnDemo("demo_guizmo_zoom_slider");
         }
         ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_zoom_slider", 30);
     }

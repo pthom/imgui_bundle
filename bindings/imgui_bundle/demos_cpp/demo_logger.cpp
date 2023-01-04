@@ -7,7 +7,7 @@
 #include <string>
 
 
-void DemoGui()
+void demo_logger()
 {
     static std::vector<std::string> fortunes {
         "If at first you don't succeed, skydiving is not for you.",

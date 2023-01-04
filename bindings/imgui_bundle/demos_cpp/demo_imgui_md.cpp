@@ -77,7 +77,7 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 }
 
 
-void DemoGui()
+void demo_imgui_md()
 {
     ImGuiMd::Render(exampleMardownString());
 }

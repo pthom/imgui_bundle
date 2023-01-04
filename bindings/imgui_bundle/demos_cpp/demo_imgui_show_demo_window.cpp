@@ -2,7 +2,7 @@
 #include "imgui.h"
 
 
-void DemoGui()
+void demo_imgui_show_demo_window()
 {
     ImGuiMd::RenderUnindented(R"(
         # Dear ImGui demo

@@ -14,7 +14,7 @@ TextEditor _PrepareTextEditor()
 }
 
 
-void DemoGui()
+void demo_text_edit()
 {
     static TextEditor editor = _PrepareTextEditor();
 

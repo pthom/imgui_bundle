@@ -4,11 +4,11 @@
 #include "demo_utils/api_demos.h"
 
 
-void DemoGui();
+void ${demo_name}();
 
 
 int main()
 {
     HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    ImmApp::RunWithMarkdown(DemoGui, "Demo", false, false, {1000, 800});
+    ImmApp::RunWithMarkdown(${demo_name}, "${demo_name}", false, false, {1000, 800});
 }

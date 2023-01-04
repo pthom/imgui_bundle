@@ -161,7 +161,7 @@ void ShowTextInputAdvice()
 
 
 
-void DemoGui()
+void demo_imgui_bundle()
 {
     static AppState app_state;
 
