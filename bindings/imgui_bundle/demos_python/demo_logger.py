@@ -2,7 +2,7 @@ import random
 from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
 
 
-@immapp.static(idx_fortune=0, was_populated=False)
+@immapp.static(idx_fortune=0)
 def demo_gui():
     static = demo_gui
     fortunes = [
@@ -31,19 +31,15 @@ def demo_gui():
         if static.idx_fortune >= len(fortunes):
             static.idx_fortune = 0
 
-    if not static.was_populated:
-        for _ in range(50):
-            add_log()
-        static.was_populated = True
-
     imgui_md.render_unindented(
         """
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
         """
     )
-    if imgui.button("Add log"):
-        add_log()
+    if imgui.button("Add logs"):
+        for i in range(10):
+            add_log()
 
     imgui.separator()
     hello_imgui.log_gui()

@@ -37,21 +37,14 @@ void DemoGui()
         if (idxFortune >= fortunes.size())
             idxFortune = 0;
     };
-
-    static bool wasPopulated = false;
-    if (!wasPopulated)
-    {
-        for (int i = 0; i < 50; ++i)
-            addLog();
-        wasPopulated = true;
-    }
-
+    
     ImGuiMd::RenderUnindented(R"(
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
     )");
     if (ImGui::Button("Add log"))
-        addLog();
+        for (int i = 0; i < 10; ++i)
+            addLog();
 
     ImGui::Separator();
     HelloImGui::LogGui();
