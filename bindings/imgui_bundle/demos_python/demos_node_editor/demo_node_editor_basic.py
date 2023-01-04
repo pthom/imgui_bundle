@@ -210,8 +210,8 @@ class DemoNodeEditor:
 
 
 @static(demo_node_editor=None)
-def demo_launch():
-    statics = demo_launch
+def demo_gui():
+    statics = demo_gui
     if statics.demo_node_editor is None:
         statics.demo_node_editor = DemoNodeEditor()
     statics.demo_node_editor.on_frame()
@@ -225,7 +225,7 @@ def main():
     config.settings_file = this_dir + "/demo_node_editor_basic.json"
     from imgui_bundle import immapp
 
-    immapp.run(demo_launch, with_node_editor_config=config, with_markdown=True, window_size=(800, 600))
+    immapp.run(demo_gui, with_node_editor_config=config, with_markdown=True, window_size=(800, 600))
 
 
 if __name__ == "__main__":

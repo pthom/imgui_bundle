@@ -20,7 +20,7 @@ def make_gui() -> demo_utils.GuiFunction:
         )
 
         if imgui.collapsing_header("Simple Demo"):
-            demos_tex_inspect.demo_tex_inspect_simple.demo_launch()
+            demos_tex_inspect.demo_tex_inspect_simple.demo_gui()
             demo_utils.show_python_vs_cpp_file("demos_tex_inspect/demo_tex_inspect_simple")
         if imgui.collapsing_header("Full Demo"):
             imgui.text("Click the button below to launch the demo")

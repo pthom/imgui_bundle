@@ -62,7 +62,7 @@ links = [
 ]
 
 
-def gui():
+def demo_gui():
     ed.begin("Love ed.PinId.create")
     for lover in lovers:
         lover.draw()
@@ -72,4 +72,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore
+    immapp.run(demo_gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore

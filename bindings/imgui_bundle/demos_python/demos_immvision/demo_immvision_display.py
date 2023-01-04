@@ -4,9 +4,10 @@ import cv2
 from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
+
 @immapp.static(inited=False)
-def gui() -> None:
-    statics = gui
+def demo_gui() -> None:
+    statics = demo_gui
     image_display_size = (0, int(immapp.em_size(15)))
     if not statics.inited:
         assets_dir = demo_utils.demo_assets_folder() + "/images/"
@@ -31,7 +32,7 @@ def gui() -> None:
 
 def main():
     demo_utils.set_demo_assets_folder()
-    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

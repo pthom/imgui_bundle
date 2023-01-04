@@ -14,10 +14,10 @@ def fill_inspector():
 
 
 @immapp.static(inited=False)
-def gui():
-    if not gui.inited:
+def demo_gui():
+    if not demo_gui.inited:
         fill_inspector()
-        gui.inited = True
+        demo_gui.inited = True
 
     imgui_md.render_unindented(
         """Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images."""
@@ -27,7 +27,7 @@ def gui():
 
 def main():
     demo_utils.set_demo_assets_folder()
-    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

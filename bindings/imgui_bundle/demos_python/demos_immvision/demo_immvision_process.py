@@ -108,26 +108,25 @@ class AppState:
         self.immvision_params_sobel.show_options_panel = True
 
 
-def make_gui() -> GuiFunction:
-    this_dir = os.path.dirname(__file__)
-    app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
+@immapp.static(app_state=None)
+def demo_gui():
+    static = demo_gui
 
-    def gui():
-        nonlocal app_state
-        imgui_md.render_unindented(
-            "This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab."
-        )
-        changed = gui_sobel_params(app_state.sobel_params)
-        if changed:
-            app_state.image_sobel = compute_sobel(app_state.image, app_state.sobel_params)
-        app_state.immvision_params_sobel.refresh_image = changed
+    if static.app_state is None:
+        this_dir = os.path.dirname(__file__)
+        static.app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
 
-        immvision.image("Original", app_state.image, app_state.immvision_params)
-        immvision.image("Deriv", app_state.image_sobel, app_state.immvision_params_sobel)
+    imgui_md.render_unindented(
+        "This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab."
+    )
+    changed = gui_sobel_params(static.app_state.sobel_params)
+    if changed:
+        static.app_state.image_sobel = compute_sobel(static.app_state.image, static.app_state.sobel_params)
+    static.app_state.immvision_params_sobel.refresh_image = changed
 
-    return gui
+    immvision.image("Original", static.app_state.image, static.app_state.immvision_params)
+    immvision.image("Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel)
 
 
 if __name__ == "__main__":
-    gui = make_gui()
-    immapp.run(gui, window_size=(1000, 1000))
+    immapp.run(demo_gui, window_size=(1000, 1000))

@@ -21,7 +21,7 @@ def demo_gui():
         )
         hello_imgui.image_from_asset("images/node_editor_fiat.jpg", immapp.em_to_vec2(60, 0))
     if imgui.collapsing_header("demo basic interaction"):
-        demos_node_editor.demo_node_editor_basic.demo_launch()
+        demos_node_editor.demo_node_editor_basic.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_node_editor/demo_node_editor_basic", nb_lines=30)
 
 

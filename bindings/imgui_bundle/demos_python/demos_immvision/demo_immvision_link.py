@@ -17,7 +17,7 @@ params_channels.image_display_size = (300, 0)
 params_channels.zoom_key = "some_common_zoom_key"
 
 
-def gui():
+def demo_gui():
     imgui_md.render_unindented(
         "If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel"
     )
@@ -30,4 +30,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
