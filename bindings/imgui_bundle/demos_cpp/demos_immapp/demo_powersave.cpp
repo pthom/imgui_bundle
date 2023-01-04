@@ -46,7 +46,6 @@ the FPS will rise and the animation will be smooth again.
             .fpsIdle = 4.f
         },
         ImmApp::AddOnsParams{
-            .withMarkdown = true
         }
     );
     return 0;

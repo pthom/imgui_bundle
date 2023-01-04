@@ -1,5 +1,6 @@
 #include "immapp/immapp.h"
 #include "../demo_utils/demo_app_table.h"
+#include "../demo_utils/api_demos.h"
 #include <filesystem>
 
 
@@ -55,6 +56,7 @@ std::function<void()> makeClosureDemoApps()
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     auto gui = makeClosureDemoApps();
 
     ImmApp::RunWithMarkdown(gui, "Immediate Apps", false, false, {1000, 800});

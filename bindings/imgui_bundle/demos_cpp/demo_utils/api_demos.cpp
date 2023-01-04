@@ -13,9 +13,10 @@
 #include <functional>
 
 
-std::string DemosAssetsFolder()
+const char* DemosAssetsFolder()
 {
-    return "assets/";
+    static std::string r = wai_getExecutableFolder_string() + "/demos_assets/";
+    return r.c_str();
 }
 
 std::string MainPythonPackageFolder()

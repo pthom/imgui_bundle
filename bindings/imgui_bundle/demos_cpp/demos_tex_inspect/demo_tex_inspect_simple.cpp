@@ -41,6 +41,7 @@ GuiFunction make_gui()
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     auto gui = make_gui();
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={1000, 1000}};
     ImmApp::AddOnsParams addOnsParams;

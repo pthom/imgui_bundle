@@ -1,12 +1,14 @@
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "implot/implot.h"
+#include "demo_utils/api_demos.h"
 #include <vector>
 #include <cmath>
 
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     constexpr double pi = 3.1415926535897932384626433;
     std::vector<double> x, y1, y2;
     for (double _x = 0; _x < 4 * pi; _x += 0.01)

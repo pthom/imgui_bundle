@@ -1,5 +1,6 @@
 #include "immapp/immapp.h"
 #include "immvision/immvision.h"
+#include "demo_utils/api_demos.h"
 #include <opencv2/imgcodecs.hpp>
 
 
@@ -13,7 +14,7 @@ void gui()
 
     if (!inited)
     {
-        std::string assetsDir = "assets/images/";
+        std::string assetsDir = "demos_assets/images/";
         bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
         params.ImageDisplaySize = imageDisplaySize;
         tennis = cv::imread(assetsDir + "tennis.jpg");
@@ -32,6 +33,7 @@ void gui()
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     HelloImGui::SimpleRunnerParams runnerParams;
     runnerParams.guiFunction = gui; runnerParams.windowSize = {1000, 800};
 

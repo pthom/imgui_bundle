@@ -1,6 +1,7 @@
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"
+#include "demo_utils/api_demos.h"
 
 
 void show_gui()
@@ -20,6 +21,7 @@ void show_gui()
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     ImmApp::RunWithMarkdown(
         show_gui,
         "Hello, globe!",

@@ -11,6 +11,7 @@
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "ImFileDialog/ImFileDialog.h"
 #include "imgui_md_wrapper.h"
+#include "demo_utils/api_demos.h"
 
 #include <vector>
 #include <cmath>
@@ -217,6 +218,7 @@ Selected file names will be shown in the log panel at the bottom.
 
 int main(int, char **)
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     HelloImGui::RunnerParams runnerParams;
 
     //

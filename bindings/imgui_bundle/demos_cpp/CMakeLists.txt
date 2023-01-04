@@ -70,4 +70,4 @@ endif()
 
 add_this_folder_auto_demos()
 
-FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

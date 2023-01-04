@@ -4,7 +4,7 @@
 #include "imgui-command-palette-py-wrapper/imgui-command-palette-py-wrapper.h"
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome.h"
-
+#include "demo_utils/api_demos.h"
 
 struct AppState
 {
@@ -52,6 +52,7 @@ void InitCommandPalette()
 
 int main(int , char *[])
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     AppState appState;
 
     auto gui = [&appState]()

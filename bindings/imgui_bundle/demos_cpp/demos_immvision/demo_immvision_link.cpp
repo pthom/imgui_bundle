@@ -1,5 +1,6 @@
 #include "immapp/immapp.h"
 #include "immvision/immvision.h"
+#include "demo_utils/api_demos.h"
 #include <opencv2/imgcodecs.hpp>
 
 
@@ -12,7 +13,7 @@ void gui()
 
     if (!inited)
     {
-        image = cv::imread("assets/images/tennis.jpg");
+        image = cv::imread("demos_assets/images/tennis.jpg");
         cv::split(image, channels);
 
         params_rgb.ImageDisplaySize = {300, 0};
@@ -34,6 +35,7 @@ void gui()
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     HelloImGui::SimpleRunnerParams runnerParams;
     runnerParams.guiFunction = gui; runnerParams.windowSize = {1000, 800};
 

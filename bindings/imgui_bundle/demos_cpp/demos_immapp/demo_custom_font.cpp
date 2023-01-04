@@ -2,6 +2,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 #include "hello_imgui/icons_font_awesome.h"
+#include "demo_utils/api_demos.h"
 
 
 // Returns the custom font loaded by hello_imgui
@@ -30,7 +31,7 @@ ImFont* MyLoadFontsManually()
     ImFontAtlas* fontAtlas = ImGui::GetIO().Fonts;
     // We need to take into account the global font scale! This is required for macOS retina screens
     const float fontSizePixel = 40.0f / ImGui::GetIO().FontGlobalScale;
-    const std::string fontFilename = "assets/fonts/Akronim-Regular.ttf";
+    const std::string fontFilename = "demos_assets/fonts/Akronim-Regular.ttf";
     auto glyphRange = fontAtlas->GetGlyphRangesDefault();
     ImFont* acronymFont = fontAtlas->AddFontFromFileTTF(fontFilename.c_str(), fontSizePixel, NULL, glyphRange);
 
@@ -44,13 +45,15 @@ ImFont* MyLoadFontsManually()
     // We need to make sure that iconRanges is not destroyed when exiting this function! In this case, we can make it
     // either static or constexpr.
     constexpr ImWchar iconRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-    acronymFont = fontAtlas->AddFontFromFileTTF("assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
+    acronymFont = fontAtlas->AddFontFromFileTTF("demos_assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
     return acronymFont;
 }
 
 
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+
     ImFont *customFont;
 
     auto gui = [&customFont]() {

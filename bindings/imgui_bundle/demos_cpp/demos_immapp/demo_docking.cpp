@@ -16,6 +16,7 @@ It demonstrates:
 #include "imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
+#include "demo_utils/api_demos.h"
 
 struct AppState {
     float f = 0.0f;
@@ -63,7 +64,7 @@ void MyLoadFontsManually()
     ImFontAtlas* fontAtlas = ImGui::GetIO().Fonts;
     // We need to take into account the global font scale! This is required for macOS retina screens
     const float fontSizePixel = 40.0f / ImGui::GetIO().FontGlobalScale;
-    const std::string fontFilename = "assets/fonts/Akronim-Regular.ttf";
+    const std::string fontFilename = "demos_assets/fonts/Akronim-Regular.ttf";
     auto glyphRange = fontAtlas->GetGlyphRangesDefault();
     gAkronimFont = fontAtlas->AddFontFromFileTTF(fontFilename.c_str(), fontSizePixel, NULL, glyphRange);
 
@@ -77,7 +78,7 @@ void MyLoadFontsManually()
     // We need to make sure that iconRanges is not destroyed when exiting this function! In this case, we can make it
     // either static or constexpr.
     constexpr ImWchar iconRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-    gAkronimFont = fontAtlas->AddFontFromFileTTF("assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
+    gAkronimFont = fontAtlas->AddFontFromFileTTF("demos_assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
 }
 
 
@@ -178,7 +179,7 @@ void StatusBarGui(AppState& app_state)
 int main()
 {
     // Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
-    HelloImGui::SetAssetsFolder("assets");
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
 
     //###############################################################################################
     // Part 1: Define the application state, fill the status and menu bars, and load additional font
