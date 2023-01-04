@@ -4,7 +4,9 @@ from types import ModuleType
 from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
 from imgui_bundle.immapp import static
 from imgui_bundle.demos_python.demos_immapp import demo_apps
-from imgui_bundle.demos_python import demo_imgui_color_text_edit, demo_imgui_bundle, demo_imgui_show_demo_window
+from imgui_bundle.demos_python import demo_text_edit
+from imgui_bundle.demos_python import demo_imgui_bundle
+from imgui_bundle.demos_python import demo_imgui_show_demo_window
 from imgui_bundle.demos_python import demo_widgets
 from imgui_bundle.demos_python import demo_implot
 from imgui_bundle.demos_python import demo_imgui_md
@@ -95,9 +97,7 @@ def main() -> None:
     add_dockable_window("Implot", demo_implot, demo_implot.demo_gui)
     add_dockable_window("Node Editor", demo_node_editor_launcher, demo_node_editor_launcher.demo_gui)
     add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_gui)
-    add_dockable_window(
-        "Text Editor", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_gui
-    )
+    add_dockable_window("Text Editor", demo_text_edit, demo_text_edit.demo_gui)
     add_dockable_window("Widgets", demo_widgets, demo_widgets.demo_gui)
     add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_gui)
     add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_gui)
