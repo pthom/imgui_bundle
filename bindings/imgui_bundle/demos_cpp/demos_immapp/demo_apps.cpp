@@ -34,9 +34,9 @@ std::function<void()> makeClosureDemoApps()
         DemoApp{
             "imgui_example_glfw_opengl3",
             R"(
-            How to run a *bare ImGui application*<br>
-            imgui_example_glfw_opengl3.py is a direct adaptation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.<br>
-            You can configure and run imgui, opengl and glfw)"}
+            How to port an existing ImGui application to python<br>
+            imgui_example_glfw_opengl3.py is an almost line by line translation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.
+            )"}
     };
 
     std::string thisDir = std::filesystem::path(__FILE__).parent_path().string();

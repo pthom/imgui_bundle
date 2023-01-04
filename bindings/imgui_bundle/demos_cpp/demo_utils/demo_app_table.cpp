@@ -2,8 +2,10 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 #include "demo_utils/subprocess.h"
+
 #include <fplus/fplus.hpp>
-#include <cstdlib>
+#include <filesystem>
+
 
 std::string _ReadCode(const std::string& filePath)
 {
@@ -68,18 +70,19 @@ void DemoAppTable::Gui()
 
                 ImGui::SameLine();
 
-                if (ImGui::Button("Run"))
+                // Run button
                 {
                     std::string exeFolder = wai_getExecutableFolder_string();
                     std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
 #ifdef _WIN32
                     exeFile += ".exe";
 #endif
-                    const char *command_line[2] = {exeFile.c_str(), NULL};
-                    struct subprocess_s subprocess;
-                    int result = subprocess_create(command_line, subprocess_option_no_window, &subprocess);
-                    if (0 != result)
-                        fprintf(stderr, "Error launching %s\n", exeFile.c_str());
+                    if (std::filesystem::exists(exeFile) && ImGui::Button("Run"))
+                    {
+                        const char *command_line[2] = {exeFile.c_str(), NULL};
+                        struct subprocess_s subprocess;
+                        subprocess_create(command_line, subprocess_option_no_window, &subprocess);
+                    }
                 }
             }
 

@@ -1,8 +1,9 @@
-"""This is a direct adaptation of imgui example: imgui/examples/example_glfw_opengl3/main.cpp
+# imgui_bundle can be used to run imgui with an almost line by line translation from C++ to python
+#
+# This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl3/main.cpp)
+# (see https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
 
-imgui_bundle can be used without hello imgui, and you can configure and run imgui, opengl and glfw (or sdl, etc.) manually,
-as shown here.
-"""
+
 import os.path
 import sys
 import platform
