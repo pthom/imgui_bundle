@@ -1,5 +1,6 @@
 #include "immapp/immapp.h"
 #include "imgui.h"
+#include "hello_imgui/hello_imgui.h"
 #include "imspinner/imspinner.h"
 #include "imgui_md_wrapper.h"
 
@@ -15,7 +16,7 @@ int main(int, char **)
         ImGuiMd::Render("ImGuiMd::Render");
         ImGui::EndGroup();
 
-        ImGui::Text("Current FPS: %.1f", ImGui::GetIO().Framerate);
+        ImGui::Text("Current FPS: %.1f", HelloImGui::FrameRate());
         ImGui::TextWrapped(R"(
 
 In order to reduce the CPU usage, the FPS is reduced automatically when no user interaction is detected.
