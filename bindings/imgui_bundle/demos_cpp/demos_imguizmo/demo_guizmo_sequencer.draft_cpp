@@ -245,7 +245,7 @@ GuiFunction make_closure_demo_guizmo_sequencer()
     }
 
     // let's create the sequencer
-//    static int selectedEntry = -1;
+    //    static int selectedEntry = -1;
     static int firstFrame = 0;
     static bool expanded = true;
     static int currentFrame = 100;

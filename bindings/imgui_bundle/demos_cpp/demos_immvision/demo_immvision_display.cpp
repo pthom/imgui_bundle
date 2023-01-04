@@ -4,7 +4,7 @@
 #include <opencv2/imgcodecs.hpp>
 
 
-void gui()
+void demo_immvision_display()
 {
     static bool inited = false;
     static cv::Mat bear, tennis;
@@ -28,17 +28,4 @@ void gui()
         immvision.image() will display an image, while providing lots of visualization options.<br>
         Open the options panel by clicking on the settings button at the bottom right corner of the image)");
     ImmVision::Image("Bear", bear, &params);
-}
-
-
-int main()
-{
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    HelloImGui::SimpleRunnerParams runnerParams;
-    runnerParams.guiFunction = gui; runnerParams.windowSize = {1000, 800};
-
-    ImmApp::AddOnsParams addOnsParams; addOnsParams.withMarkdown = true;
-
-    ImmApp::Run(runnerParams, addOnsParams);
-    return 0;
 }

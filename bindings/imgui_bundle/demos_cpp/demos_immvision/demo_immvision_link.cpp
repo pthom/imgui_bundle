@@ -4,7 +4,7 @@
 #include <opencv2/imgcodecs.hpp>
 
 
-void gui()
+void demo_immvision_link()
 {
     static bool inited = false;
     static cv::Mat image;
@@ -30,18 +30,4 @@ void gui()
         ImGui::SameLine();
     }
     ImGui::NewLine();
-}
-
-
-int main()
-{
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    HelloImGui::SimpleRunnerParams runnerParams;
-    runnerParams.guiFunction = gui; runnerParams.windowSize = {1000, 800};
-
-    ImmApp::AddOnsParams addOnsParams; addOnsParams.withMarkdown = true;
-
-    ImmApp::Run(runnerParams, addOnsParams);
-
-    return 0;
 }

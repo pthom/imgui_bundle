@@ -105,39 +105,28 @@ private:
 
 
 // This returns a closure function that will later be invoked to run the app
-GuiFunction make_closure_demo_guizmo_curve_edit()
+void demo_guizmo_curve_edit()
 {
+    static bool wasInited = false;
+
     // rampEdit will be encapsulated in the closure
-    RampEdit rampEdit;
+    static RampEdit rampEdit;
 
-    rampEdit.mMin = ImVec2(-100.f, 0.f);
-    rampEdit.mMax = ImVec2(300.f, 1.f);
+    if (not wasInited)
+    {
+        rampEdit.mMin = ImVec2(-100.f, 0.f);
+        rampEdit.mMax = ImVec2(300.f, 1.f);
+        wasInited = true;
+    }
 
-    auto gui = [rampEdit]() mutable { // mutable => this is a closure
-        for (int i = 0; i < 3; i++)
-        {
-            std::string label = std::string("Visible " + std::to_string(i));
-            ImGui::Checkbox(label.c_str(), & rampEdit.mbVisible[i]);
-            ImGui::SameLine();
-        }
-        ImGui::NewLine();
-        ImVec2 rampEditSize(800.f, 400.f);
-        unsigned int rampEditId = 1;
-        ImCurveEdit::Edit(rampEdit, rampEditSize, rampEditId);
-    };
-
-    return gui;
+    for (int i = 0; i < 3; i++)
+    {
+        std::string label = std::string("Visible " + std::to_string(i));
+        ImGui::Checkbox(label.c_str(), & rampEdit.mbVisible[i]);
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
+    ImVec2 rampEditSize(800.f, 400.f);
+    unsigned int rampEditId = 1;
+    ImCurveEdit::Edit(rampEdit, rampEditSize, rampEditId);
 }
-
-
-#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
-{
-    auto gui = make_closure_demo_guizmo_curve_edit();
-
-    // Run app
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize = {850, 600}};
-    ImmApp::Run(runnerParams);
-    return 0;
-}
-#endif

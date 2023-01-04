@@ -10,5 +10,17 @@ void ${demo_name}();
 int main()
 {
     HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    ImmApp::RunWithMarkdown(${demo_name}, "${demo_name}", false, false, {1000, 800});
+
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.callbacks.ShowGui = ${demo_name};
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
+    runnerParams.appWindowParams.windowTitle = "${demo_name}";
+
+    ImmApp::AddOnsParams addons;
+    addons.withMarkdown = true;
+    addons.withNodeEditor = true;
+    addons.withImplot = true;
+    addons.withTexInspect = true;
+
+    ImmApp::Run(runnerParams, addons);
 }

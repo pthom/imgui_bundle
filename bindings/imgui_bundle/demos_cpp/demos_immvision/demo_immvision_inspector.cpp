@@ -17,7 +17,7 @@ void FillInspector()
 }
 
 
-void gui()
+void demo_immvision_inspector()
 {
     static bool inited = false;
     if (!inited)
@@ -27,12 +27,4 @@ void gui()
     }
     ImGuiMd::RenderUnindented("Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images.");
     ImmVision::Inspector_Show();
-}
-
-
-int main()
-{
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    ImmApp::RunWithMarkdown(gui, "inspector", false, false, {1000, 800});
-    return 0;
 }

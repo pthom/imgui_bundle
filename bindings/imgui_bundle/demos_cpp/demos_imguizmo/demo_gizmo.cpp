@@ -418,7 +418,6 @@ GuiFunction make_closure_demo_guizmo()
     return gui;
 }
 
-
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {

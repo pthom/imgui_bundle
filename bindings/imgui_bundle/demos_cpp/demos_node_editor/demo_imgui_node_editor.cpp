@@ -209,16 +209,8 @@ struct Example
     int                  m_NextLinkId = 100;     // Counter to help generate link ids. In real application this will probably based on pointer to user data structure.
 };
 
-//int Main(int argc, char** argv)
-//{
-//    Example exampe("Basic Interaction", argc, argv);
-//
-//    if (exampe.Create())
-//        return exampe.Run();
-//
-//    return 0;
-//}
 
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main(int , char *[])
 {
     Example example;
@@ -231,3 +223,4 @@ int main(int , char *[])
     HelloImGui::Run(runnerParams);
     return 0;
 }
+#endif

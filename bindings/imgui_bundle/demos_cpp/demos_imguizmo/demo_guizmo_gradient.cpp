@@ -76,30 +76,12 @@ struct MyGradient: public ImGradient::DelegateStl
 };
 
 
-// This returns a closure function that will later be invoked to run the app
-GuiFunction make_closure_demo_guizmo_gradient()
+ void demo_guizmo_gradient()
 {
-    MyGradient myGradient;
+    static MyGradient myGradient;
     ImVec2 size(400.f, 20.f);
-
-    auto gui = [=]() mutable { // mutable => this is a closure
-        ImGradient::EditPure(myGradient, size);
-        ImGui::TextWrapped(R"(
-            I'm not sure about the purpose of this widget.
-            You can drag squares, and double click to add some more)");
-    };
-    return gui;
+    ImGradient::EditPure(myGradient, size);
+    ImGui::TextWrapped(R"(
+        I'm not sure about the purpose of this widget.
+        You can drag squares, and double click to add some more)");
 }
-
-
-#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
-{
-    auto gui = make_closure_demo_guizmo_gradient();
-
-    // Run app
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize = {400, 100}};
-    ImmApp::Run(runnerParams);
-    return 0;
-}
-#endif

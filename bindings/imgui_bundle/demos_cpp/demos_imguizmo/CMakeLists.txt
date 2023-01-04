@@ -1,1 +1,1 @@
-add_this_folder_demos()
+add_this_folder_auto_demos()
