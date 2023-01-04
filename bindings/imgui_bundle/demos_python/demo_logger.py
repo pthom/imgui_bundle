@@ -22,7 +22,6 @@ def demo_gui():
         "You will have a great day...tomorrow.",
         "The only thing constant in life is change, except for death and taxes, those are pretty constant too.",
     ]
-    static.idx_fortune = 0
 
     def add_log():
         log_level = random.choice([

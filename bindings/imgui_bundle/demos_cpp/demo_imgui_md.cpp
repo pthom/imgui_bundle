@@ -36,7 +36,8 @@ imgui_md currently supports the following markdown functionality:
 * Tables
 * Block code like this (using \`\`\`\`)
 ````
-int main() {
+int answer()
+{
     return 42;
 }
 ````
@@ -76,13 +77,7 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 }
 
 
-void DemoImGuiMd()
+void DemoGui()
 {
     ImGuiMd::Render(exampleMardownString());
-}
-
-
-int main()
-{
-    ImmApp::RunWithMarkdown(DemoImGuiMd, "Markdown", false, false, {800, 800});
 }

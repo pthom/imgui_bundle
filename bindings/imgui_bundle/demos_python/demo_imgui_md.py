@@ -30,7 +30,8 @@ imgui_md currently supports the following markdown functionality:
 * Tables
 * Block code (using \`\`\`\`)
 ````
-int main() {
+int answer() 
+{
     return 42;
 }
 ````

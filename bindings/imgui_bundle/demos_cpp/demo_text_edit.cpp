@@ -2,9 +2,9 @@
 #include "immapp/immapp.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
-int main(int , char *[])
+void DemoGui()
 {
-    std::string code = R"(
+    static std::string code = R"(
 from __future__ import annotations
 import copy
 from enum import Enum
@@ -68,16 +68,10 @@ class CppElement(SrcmlWrapper):
 
 )";
 
-    TextEditor editor;
+    static TextEditor editor;
     editor.SetText(code);
     editor.SetPalette(TextEditor::GetLightPalette());
     editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
 
-    auto gui = [&](){
-        editor.Render("Editor");
-    };
-
-    ImmApp::Run(HelloImGui::SimpleRunnerParams{.guiFunction=gui, .windowTitle="Text Editor", .windowSize={800, 500}});
-
-    return 0;
+    editor.Render("Editor");
 }

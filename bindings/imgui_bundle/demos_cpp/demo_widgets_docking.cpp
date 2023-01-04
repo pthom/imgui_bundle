@@ -15,8 +15,6 @@
 #include <vector>
 #include <cmath>
 
-void demo_imgui_basic_widgets(); // see imgui_basic_widgets.cpp
-
 
 std::string gSampleCode = R"(
 // This code is the spinner demo code (to the left)
@@ -214,9 +212,6 @@ Selected file names will be shown in the log panel at the bottom.
 
         ImGui::EndGroup();
     }
-
-    demo_imgui_basic_widgets();
-
 }
 
 

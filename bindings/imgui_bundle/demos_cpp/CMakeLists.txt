@@ -3,6 +3,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 include_directories(.)
 
 function(add_demo_cpp)
+    # Creates an app using imgui_bundle_add_app, and link it with demo_utils
+    # Usage:
+    #     add_demo_cpp(demo_app_name demo_file_1.cpp demo_file_2.cpp)
     set(args ${ARGN})
     list(GET args 0 app_name)
     imgui_bundle_add_app(${args})
@@ -12,24 +15,52 @@ function(add_demo_cpp)
     target_link_libraries(${app_name} PUBLIC demo_utils)
 endfunction()
 
-
 function(add_single_file_demo_cpp demo_cpp_file)
+    # Creates a demo app
+    # Usage:
+    #     add_single_file_demo_cpp(demo_file.cpp)
     get_filename_component(app_name "${demo_cpp_file}" NAME_WE)
     add_demo_cpp(${app_name} ${demo_cpp_file})
 endfunction()
 
+function(add_auto_demo demo_cpp_file)
+    # Creates a demo app, and provides main() automatically
+    # Usage:
+    #     add_auto_demo(demo_file.cpp)
+    # (demo_file.cpp should provide `void DemoGui()`)
+    get_filename_component(app_name "${demo_cpp_file}" NAME_WE)
+    add_demo_cpp(${app_name} ${demo_cpp_file})
+
+    # Read the contents of the cpp file
+    file(READ "${demo_cpp_file}" demo_cpp_file_content)
+
+    # If the cpp file does not contain a main function, provide it
+    if (NOT "${demo_cpp_file_content}" MATCHES "int main")
+        message(STATUS "${demo_cpp_file} does not contain a main function, adding it!")
+        target_sources(${app_name} PRIVATE _auto_main/_auto_main.cpp)
+    endif()
+
+endfunction()
 
 function(add_this_folder_demos)
+    # Creates demo apps for all cpp files in the current folder
     FILE(GLOB demo_cpp_files *.cpp)
     FOREACH(demo_cpp_file ${demo_cpp_files})
         add_single_file_demo_cpp(${demo_cpp_file})
     ENDFOREACH()
 endfunction()
 
+function(add_this_folder_auto_demos)
+    # Creates demo apps for all cpp files in the current folder, and provide a main for them
+    FILE(GLOB demo_cpp_files *.cpp)
+    FOREACH(demo_cpp_file ${demo_cpp_files})
+        add_auto_demo(${demo_cpp_file})
+    ENDFOREACH()
+endfunction()
+
 
 add_subdirectory(demo_utils)
 add_subdirectory(demos_immapp)
-add_subdirectory(demo_widgets_docking)
 add_subdirectory(demos_node_editor)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
@@ -37,7 +68,6 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_subdirectory(demos_immvision)
 endif()
 
-add_this_folder_demos()
-
+add_this_folder_auto_demos()
 
 FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

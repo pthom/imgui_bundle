@@ -56,9 +56,3 @@ void DemoGui()
     ImGui::Separator();
     HelloImGui::LogGui();
 }
-
-
-int main()
-{
-    ImmApp::RunWithMarkdown(DemoGui, "Logs", false, false, {800, 600});
-}
