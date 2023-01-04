@@ -1,7 +1,7 @@
 #include "demo_app_table.h"
+#include "demo_utils/api_demos.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
-#include "demo_utils/subprocess.h"
 
 #include <fplus/fplus.hpp>
 #include <filesystem>
@@ -78,11 +78,7 @@ void DemoAppTable::Gui()
                     exeFile += ".exe";
 #endif
                     if (std::filesystem::exists(exeFile) && ImGui::Button("Run"))
-                    {
-                        const char *command_line[2] = {exeFile.c_str(), NULL};
-                        struct subprocess_s subprocess;
-                        subprocess_create(command_line, subprocess_option_no_window, &subprocess);
-                    }
+                        SpawnDemo(demoApp.DemoFile);
                 }
             }
 

@@ -3,6 +3,8 @@
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
+#include "demo_utils/subprocess.h"
+#include "hello_imgui/internal/whereami/whereami_cpp.h"
 
 #include <map>
 #include <fplus/fplus.hpp>
@@ -126,4 +128,23 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines)
     std::string cpp_code = ReadCppCode(demo_file_path);
     std::string python_code = ReadPythonCode(demo_file_path);
     ShowPythonVsCppCode(python_code.c_str(), cpp_code.c_str(), nb_lines);
+}
+
+
+bool SpawnDemo(const std::string& demoName)
+{
+    std::string exeFolder = wai_getExecutableFolder_string();
+    std::string exeFile = exeFolder + "/" + demoName;
+#ifdef _WIN32
+    exeFile += ".exe";
+#endif
+    if (std::filesystem::exists(exeFile))
+    {
+        const char *command_line[2] = {exeFile.c_str(), NULL};
+        struct subprocess_s subprocess;
+        subprocess_create(command_line, subprocess_option_no_window, &subprocess);
+        return true;
+    }
+    else
+        return false;
 }
