@@ -65,10 +65,6 @@ def gui_sobel_params(params: SobelParams) -> bool:
             changed = True
         imgui.same_line()
 
-    # imgui.same_line(); imgui.text(" | "); imgui.same_line()
-    imgui.new_line()
-
-    imgui.same_line()
     imgui.text(" | ")
     imgui.same_line()
 
@@ -116,9 +112,14 @@ def demo_gui():
         this_dir = os.path.dirname(__file__)
         static.app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
 
-    imgui_md.render_unindented(
-        "This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. Apply Colormaps to the filtered image in the options tab."
+    imgui_md.render_unindented("""
+        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. 
+        
+        Apply Colormaps to the filtered image in the options tab.
+        """
     )
+    imgui.separator()
+
     changed = gui_sobel_params(static.app_state.sobel_params)
     if changed:
         static.app_state.image_sobel = compute_sobel(static.app_state.image, static.app_state.sobel_params)
