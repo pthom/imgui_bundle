@@ -32,6 +32,7 @@ def demo_launch():
 
 
 def main():
+    hello_imgui.set_assets_folder(demo_assets_folder())
     gui = make_gui()
     immapp.run(gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000))
 

@@ -1,5 +1,6 @@
 import numpy as np
 from imgui_bundle import immvision, immapp, imgui
+from imgui_bundle.demos_python import demo_utils
 
 PreciseFloat = float  # np.float64
 ColorType = np.float32
@@ -90,9 +91,13 @@ def fill_inspector():
 def gui():
     if imgui.button("Fill inspector"):
         fill_inspector()
-
     immvision.inspector_show()
 
 
-if __name__ == "__main__":
+def main():
+    demo_utils.set_demo_assets_folder()
     immapp.run(gui, window_size=(1000, 800))
+
+
+if __name__ == "__main__":
+    main()

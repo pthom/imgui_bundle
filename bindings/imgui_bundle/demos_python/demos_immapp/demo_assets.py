@@ -1,5 +1,6 @@
 import os
 from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, immapp
+from imgui_bundle.demos_python import demo_utils
 
 
 def show_gui():
@@ -16,8 +17,7 @@ def show_gui():
 
 def main():
     # Set the assets folder path
-    this_dir = os.path.dirname(os.path.abspath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/../assets")
+    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
 
     immapp.run(
         gui_function=show_gui,

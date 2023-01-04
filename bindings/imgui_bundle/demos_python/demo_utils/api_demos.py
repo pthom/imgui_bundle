@@ -126,3 +126,9 @@ def set_demo_assets_folder():
     this_dir = os.path.dirname(__file__)
     assets_dir = os.path.abspath(this_dir + "/../../demos_assets")
     hello_imgui.set_assets_folder(assets_dir)
+
+
+def demo_assets_folder():
+    this_dir = os.path.dirname(__file__)
+    assets_dir = os.path.abspath(this_dir + "/../../demos_assets")
+    return assets_dir

@@ -9,7 +9,7 @@ def fill_inspector():
     this_dir = os.path.dirname(__file__)
     image_files = ["dmla.jpg", "house.jpg", "tennis.jpg", "world.jpg"]
     for image_file in image_files:
-        img = cv2.imread(f"{this_dir}/../assets/images/{image_file}")
+        img = cv2.imread(f"{demo_utils.demo_assets_folder()}/images/{image_file}")
         immvision.inspector_add_image(img, legend=image_file)
 
 
@@ -26,6 +26,7 @@ def gui():
 
 
 def main():
+    demo_utils.set_demo_assets_folder()
     immapp.run(gui, window_size=(1000, 800), with_markdown=True)
 
 
