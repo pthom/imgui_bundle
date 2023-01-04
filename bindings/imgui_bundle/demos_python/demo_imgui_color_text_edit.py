@@ -14,8 +14,8 @@ def _prepare_text_editor():
 
 
 @static(editor=_prepare_text_editor())
-def demo_imgui_color_text_edit():
-    static = demo_imgui_color_text_edit
+def demo_gui():
+    static = demo_gui
     editor = static.editor
 
     imgui_md.render(
@@ -44,7 +44,7 @@ def demo_imgui_color_text_edit():
 def main():
     from imgui_bundle import immapp
 
-    immapp.run(demo_imgui_color_text_edit, with_markdown=True)
+    immapp.run(demo_gui, with_markdown=True)
 
 
 if __name__ == "__main__":

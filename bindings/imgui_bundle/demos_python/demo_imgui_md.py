@@ -70,13 +70,13 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
     return markdown
 
 
-def demo_imgui_md():
+def demo_gui():
     s = example_markdown_string()
     imgui_md.render(s)
 
 
 def demo_imgui_md_main():
-    immapp.run(demo_imgui_md, with_markdown=True, window_size=(800, 800))
+    immapp.run(demo_gui, with_markdown=True, window_size=(800, 800))
 
 
 if __name__ == "__main__":

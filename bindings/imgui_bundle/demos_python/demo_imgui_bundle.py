@@ -152,8 +152,8 @@ def show_glfw_callback_advice():
 
 
 @immapp.static(is_initialized=False)
-def demo_imgui_bundle() -> None:
-    static = demo_imgui_bundle
+def demo_gui() -> None:
+    static = demo_gui
 
     if not static.is_initialized:
         static.app_state = AppState()
@@ -251,4 +251,4 @@ if __name__ == "__main__":
     from imgui_bundle import immapp
 
     params = immapp.RunnerParams()
-    immapp.run(demo_imgui_bundle, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore

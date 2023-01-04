@@ -21,12 +21,12 @@ def make_gui():
 
 
 @immapp.static(gui=None)
-def demo_launch():
-    statics = demo_launch
+def demo_gui():
+    statics = demo_gui
     if statics.gui is None:
         statics.gui = make_gui()
     statics.gui()
 
 
 if __name__ == "__main__":
-    immapp.run(demo_launch, window_size=(1000, 800), with_markdown=True)
+    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)

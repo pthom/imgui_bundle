@@ -41,8 +41,8 @@ def make_gui() -> demo_utils.GuiFunction:
 
 
 @immapp.static(gui=None)
-def demo_launch():
-    statics = demo_launch
+def demo_gui():
+    statics = demo_gui
     if statics.gui is None:
         statics.gui = make_gui()
     statics.gui()

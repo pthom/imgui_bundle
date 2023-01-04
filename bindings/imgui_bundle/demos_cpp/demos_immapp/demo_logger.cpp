@@ -50,7 +50,7 @@ int main()
             addLog();
 
         ImGui::Separator();
-        HelloImGui::LogGui(HelloImGui::EmToVec2(0.f, 20.f));
+        HelloImGui::LogGui();
     };
 
     ImmApp::RunWithMarkdown(gui, "Logs", false, false, {800, 600});

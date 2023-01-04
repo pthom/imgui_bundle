@@ -81,7 +81,7 @@ def demo_mixed_plot():
         implot.end_plot()
 
 
-def demo_implot():
+def demo_gui():
     imgui_md.render(
         """
 # ImPlot
@@ -101,7 +101,7 @@ You can see lots of demos together with their code [online](https://traineq.org/
 
 
 def main():
-    immapp.run(demo_implot, with_implot=True, with_markdown=True, window_size=(1000, 800))
+    immapp.run(demo_gui, with_implot=True, with_markdown=True, window_size=(1000, 800))
 
 
 if __name__ == "__main__":

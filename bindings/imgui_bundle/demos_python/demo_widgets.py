@@ -343,7 +343,7 @@ def demo_command_palette():
     imgui.text(f"{static.counter=}")
 
 
-def demo_widgets():
+def demo_gui():
     demo_portable_file_dialogs(); imgui.new_line()
     demo_imfile_dialog(); imgui.new_line()
     demo_knobs()
@@ -356,4 +356,4 @@ def demo_widgets():
 if __name__ == "__main__":
     from imgui_bundle import immapp
 
-    immapp.run(demo_widgets, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore

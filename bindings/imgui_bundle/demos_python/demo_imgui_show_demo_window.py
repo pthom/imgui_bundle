@@ -3,8 +3,8 @@ from imgui_bundle.immapp import static
 
 
 @static(is_initialized=False)
-def show_demo_window():
-    static = show_demo_window
+def demo_gui():
+    static = demo_gui
 
     imgui_md.render_unindented(
         """
@@ -20,4 +20,4 @@ def show_demo_window():
 if __name__ == "__main__":
     from imgui_bundle import immapp
 
-    immapp.run(gui_function=show_demo_window, with_markdown=True, window_size=(800, 600))  # type: ignore
+    immapp.run(gui_function=demo_gui, with_markdown=True, window_size=(800, 600))  # type: ignore
