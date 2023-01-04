@@ -143,7 +143,11 @@ You can also use any backend, by providing your own integration code (see ImGui 
 │
 ├── bindings/                                               # root for the python bindings
 │         └── imgui_bundle/
-│                  ├── assets/
+│                  │
+│                  ├── assets/                              # assets/ folder: you need to copy this folder
+│                  │                                        # into your app folder if you intend to use markdown
+│                  │
+│                  ├── demos_assets/                        # assets used by demos
 │                  ├── demos_cpp/                           # lots of C++ demos
 │                  ├── demos_python/                        # lots of python demos
 │                  ├── imgui/                               # imgui stubs
