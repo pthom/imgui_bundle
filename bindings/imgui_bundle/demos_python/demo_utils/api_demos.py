@@ -101,25 +101,22 @@ def demos_python_folder() -> str:
     return main_python_package_folder() + "/demos_python"
 
 
+@memoize
 def read_code(filename: str):
+    if not os.path.isfile(filename):
+        return ""
     with open(filename) as f:
         r = f.read()
         return r
 
 
-@memoize
 def read_cpp_code(demo_file_path: str):
     file_abs = demos_cpp_folder() + "/" + demo_file_path + ".cpp"
-    if not os.path.isfile(file_abs):
-        return ""
     code = read_code(file_abs)
     return code
 
 
-@memoize
 def read_python_code(demo_file_path: str):
     file_abs = demos_python_folder() + "/" + demo_file_path + ".py"
-    if not os.path.isfile(file_abs):
-        return ""
     code = read_code(file_abs)
     return code

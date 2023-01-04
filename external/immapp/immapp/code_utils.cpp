@@ -89,6 +89,7 @@ namespace CodeUtils
         }
 
         String r = fplus::join(std::string("\n"), processedLines);
+        r = StripEmptyLines(r);
         return r;
     }
 
