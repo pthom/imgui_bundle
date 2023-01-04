@@ -1,6 +1,4 @@
 import math
-from munch import Munch  # type: ignore
-
 import numpy as np
 from imgui_bundle import imgui, implot, imgui_md, immapp
 
@@ -9,59 +7,65 @@ ImVec2 = imgui.ImVec2
 ImVec4 = imgui.ImVec4
 
 
-def _demo_drag_rects_statics() -> Munch:
-    nb_data = 512
-    sampling_freq = 44100
-    freq = 500.0
-    r = Munch()
-    i = np.arange(-nb_data, 2 * nb_data, 1)
-    t = i / sampling_freq
-    r.x_data = t
-    arg = 2 * math.pi * freq * t
-    r.y_data1 = np.sin(arg)
-    r.y_data2 = r.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
-    r.y_data3 = r.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-    r.rect = implot.Rect(0.0025, 0.0045, 0, 0.5)  # type: ignore
-    r.flags = implot.DragToolFlags_.none
-    return r
+class DemoDragRectState:
+    x_data: np.ndarray
+    y_data1: np.ndarray
+    y_data2: np.ndarray
+    y_data3: np.ndarray
+    rect: implot.Rect
+    flags: int
+
+    def __init__(self):
+        nb_data = 512
+        sampling_freq = 44100
+        freq = 500.0
+        i = np.arange(-nb_data, 2 * nb_data, 1)
+        t = i / sampling_freq
+        self.x_data = t
+        arg = 2 * math.pi * freq * t
+        self.y_data1 = np.sin(arg)
+        self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
+        self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
+        self.rect = implot.Rect(0.0025, 0.0045, 0, 0.5)  # type: ignore
+        self.flags = implot.DragToolFlags_.none
 
 
-@immapp.static(statics=_demo_drag_rects_statics())
+@immapp.static(state=DemoDragRectState())
 def demo_drag_rects():
-    statics = demo_drag_rects.statics
+    state = demo_drag_rects.state
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
-    _, statics.flags = imgui.checkbox_flags("NoCursors", statics.flags, implot.DragToolFlags_.no_cursors)
+    _, state.flags = imgui.checkbox_flags("NoCursors", state.flags, implot.DragToolFlags_.no_cursors)
     imgui.same_line()
-    _, statics.flags = imgui.checkbox_flags("NoFit", statics.flags, implot.DragToolFlags_.no_fit)
+    _, state.flags = imgui.checkbox_flags("NoFit", state.flags, implot.DragToolFlags_.no_fit)
     imgui.same_line()
-    _, statics.flags = imgui.checkbox_flags("NoInput", statics.flags, implot.DragToolFlags_.no_inputs)
+    _, state.flags = imgui.checkbox_flags("NoInput", state.flags, implot.DragToolFlags_.no_inputs)
 
     plot_height = immapp.em_size() * 15
     if implot.begin_plot("##Main", ImVec2(-1, plot_height)):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_tick_labels, implot.ImPlotAxisFlags_.no_tick_labels)
         implot.setup_axes_limits(0, 0.01, -1, 1)
-        implot.plot_line("Signal 1", statics.x_data, statics.y_data1)
-        implot.plot_line("Signal 2", statics.x_data, statics.y_data2)
-        implot.plot_line("Signal 3", statics.x_data, statics.y_data3)
-        _, statics.rect.x.min, statics.rect.y.min, statics.rect.x.max, statics.rect.y.max = implot.drag_rect(
+        implot.plot_line("Signal 1", state.x_data, state.y_data1)
+        implot.plot_line("Signal 2", state.x_data, state.y_data2)
+        implot.plot_line("Signal 3", state.x_data, state.y_data3)
+        _, state.rect.x.min, state.rect.y.min, state.rect.x.max, state.rect.y.max = implot.drag_rect(
             0,
-            statics.rect.x.min,
-            statics.rect.y.min,
-            statics.rect.x.max,
-            statics.rect.y.max,
+            state.rect.x.min,
+            state.rect.y.min,
+            state.rect.x.max,
+            state.rect.y.max,
             ImVec4(1, 0, 1, 1),
-            statics.flags,
+            state.flags,
         )
         implot.end_plot()
     if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
-            statics.rect.x.min, statics.rect.x.max, statics.rect.y.min, statics.rect.y.max, imgui.Cond_.always
+            state.rect.x.min, state.rect.x.max, state.rect.y.min, state.rect.y.max, imgui.Cond_.always
         )
-        implot.plot_line("Signal 1", statics.x_data, statics.y_data1)
-        implot.plot_line("Signal 2", statics.x_data, statics.y_data2)
-        implot.plot_line("Signal 3", statics.x_data, statics.y_data3)
+        implot.plot_line("Signal 1", state.x_data, state.y_data1)
+        implot.plot_line("Signal 2", state.x_data, state.y_data2)
+        implot.plot_line("Signal 3", state.x_data, state.y_data3)
         implot.end_plot()
 
 
