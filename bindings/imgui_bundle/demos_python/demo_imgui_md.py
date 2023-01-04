@@ -76,9 +76,9 @@ def demo_gui():
     imgui_md.render(s)
 
 
-def demo_imgui_md_main():
+def main():
     immapp.run(demo_gui, with_markdown=True, window_size=(800, 800))
 
 
 if __name__ == "__main__":
-    demo_imgui_md_main()
+    main()

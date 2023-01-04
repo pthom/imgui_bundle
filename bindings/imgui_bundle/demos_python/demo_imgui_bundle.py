@@ -53,8 +53,8 @@ def show_code_advices() -> None:
 # fmt: off
 
 @immapp.static(text="")
-def demo_input_text_decimal() -> None:
-    static = demo_input_text_decimal
+def demo_input_text_upper_case() -> None:
+    static = demo_input_text_upper_case
     flags:imgui.InputTextFlags = (
             imgui.InputTextFlags_.chars_uppercase.value
           | imgui.InputTextFlags_.chars_no_blank.value
@@ -66,16 +66,14 @@ def demo_input_text_decimal() -> None:
 
 def show_text_input_advice():
     cpp_code = """
-        void DemoInputTextDecimal()
+        void DemoInputTextUpperCase()
         {
             static char text[64] = "";
             ImGuiInputTextFlags flags = (
-                  ImGuiInputTextFlags_CharsUppercase
+                ImGuiInputTextFlags_CharsUppercase
                 | ImGuiInputTextFlags_CharsNoBlank
             );
-            bool changed = ImGui::InputText(
-                                    "decimal", text, 64, 
-                                    ImGuiInputTextFlags_CharsDecimal);
+            /*bool changed = */ ImGui::InputText("Upper case, no spaces", text, 64, flags);
         }
         """
 
@@ -101,7 +99,26 @@ def show_text_input_advice():
     """
     )
     imgui.new_line()
-    show_python_vs_cpp_and_run(demo_input_text_decimal, cpp_code)
+    show_python_vs_cpp_and_run(demo_input_text_upper_case, cpp_code)
+
+    imgui_md.render_unindented("""
+        ---
+        Note: by using imgui_stdlib.h, it is also possible to write:
+    
+        ```cpp
+        #include "imgui/misc/cpp/imgui_stdlib.h"
+    
+        void DemoInputTextUpperCase_StdString()
+        {
+            static std::string text;
+        ImGuiInputTextFlags flags = (
+                ImGuiInputTextFlags_CharsUppercase
+                | ImGuiInputTextFlags_CharsNoBlank
+        );
+        /*bool changed = */ ImGui::InputText("Upper case, no spaces", &text, flags);
+        }
+        ```
+    """)
 
 
 def demo_add_window_size_callback():
