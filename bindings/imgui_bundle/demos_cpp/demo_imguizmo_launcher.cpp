@@ -3,6 +3,8 @@
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
+void demo_guizmo_curve_edit();
+
 
 void demo_imguizmo_launcher()
 {
@@ -27,7 +29,7 @@ void demo_imguizmo_launcher()
     }
     if (ImGui::CollapsingHeader("Curve Edit"))
     {
-        //DemosImGuiZmo::DemoGuizmoCurveEdit::DemoLaunch();
+        demo_guizmo_curve_edit();
         ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_curve_edit", 30);
     }
     if (ImGui::CollapsingHeader("Zoom Slider"))

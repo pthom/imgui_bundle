@@ -64,6 +64,16 @@ function(add_this_folder_auto_demos)
 endfunction()
 
 
+function(add_this_folder_as_demos_library)
+    file(GLOB sources *.cpp)
+    get_filename_component(folder_name "${CMAKE_CURRENT_LIST_DIR}" NAME_WE)
+    set(demos_library_name ${folder_name})
+    add_library(${demos_library_name} ${sources})
+    target_link_libraries(${demos_library_name} imgui_bundle)
+    target_compile_definitions(${demos_library_name} PRIVATE IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY)
+endfunction()
+
+
 add_subdirectory(demo_utils)
 add_subdirectory(demos_immapp)
 add_subdirectory(demos_node_editor)
@@ -74,5 +84,6 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 
 add_this_folder_auto_demos()
+target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
