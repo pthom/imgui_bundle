@@ -1,14 +1,15 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
+#include "demo_utils/api_demos.h"
 
 #include <vector>
 #include <string>
 
 
-int main()
+void DemoGui()
 {
-    std::vector<std::string> fortunes {
+    static std::vector<std::string> fortunes {
         "If at first you don't succeed, skydiving is not for you.",
         "You will be a winner today. Pick a fight.",
         "The world may be your oyster, but it doesn't mean you'll get its pearl.",
@@ -26,9 +27,9 @@ int main()
         "The only thing constant in life is change, except for death and taxes, those are pretty constant too."
     };
 
-    size_t idxFortune = 0;
+    static size_t idxFortune = 0;
 
-    auto addLog = [fortunes, &idxFortune]()
+    auto addLog = []()
     {
         HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
         HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
@@ -37,23 +38,27 @@ int main()
             idxFortune = 0;
     };
 
-    for (int i = 0; i < 50; ++i)
+    static bool wasPopulated = false;
+    if (!wasPopulated)
+    {
+        for (int i = 0; i < 50; ++i)
+            addLog();
+        wasPopulated = true;
+    }
+
+    ImGuiMd::RenderUnindented(R"(
+        # Graphical logger for ImGui
+        This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+    )");
+    if (ImGui::Button("Add log"))
         addLog();
 
-    auto gui = [addLog]
-    {
-        ImGuiMd::RenderUnindented(R"(
-            # Graphical logger for ImGui
-            This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
-        )");
-        if (ImGui::Button("Add log"))
-            addLog();
+    ImGui::Separator();
+    HelloImGui::LogGui();
+}
 
-        ImGui::Separator();
-        HelloImGui::LogGui();
-    };
 
-    ImmApp::RunWithMarkdown(gui, "Logs", false, false, {800, 600});
-
-    return 0;
+int main()
+{
+    ImmApp::RunWithMarkdown(DemoGui, "Logs", false, false, {800, 600});
 }

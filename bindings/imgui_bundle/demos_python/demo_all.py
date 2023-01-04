@@ -16,6 +16,7 @@ from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
+from imgui_bundle.demos_python import demo_logger
 
 
 @static(was_initialized=None)
@@ -103,6 +104,7 @@ def main() -> None:
     add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_gui)
     add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_gui)
     add_dockable_window("Themes", demo_themes, demo_themes.demo_gui)
+    add_dockable_window("Logger", demo_logger, demo_logger.demo_gui)
     add_dockable_window("Notebook", demo_immapp_notebook, demo_immapp_notebook.demo_gui)
 
     runner_params.docking_params.dockable_windows = dockable_windows

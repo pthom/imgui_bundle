@@ -133,6 +133,7 @@ def demo_toggle():
     open_file_multiselect=None,
     save_file_dialog=None,
     select_folder_dialog=None,
+    last_file_selection=""
 )
 def demo_portable_file_dialogs():
     static = demo_portable_file_dialogs
@@ -149,11 +150,10 @@ def demo_portable_file_dialogs():
     )
 
     def log_result(what: str):
-        hello_imgui.log(hello_imgui.LogLevel.info, what)
+        static.last_file_selection = what
 
     def log_result_list(whats: List[str]):
-        for what in whats:
-            hello_imgui.log(hello_imgui.LogLevel.info, what)
+        static.last_file_selection = "\n".join(whats)
 
     if imgui.button("Open file"):
         static.open_file_dialog = pfd.open_file("Select file")
@@ -184,6 +184,9 @@ def demo_portable_file_dialogs():
     if static.select_folder_dialog is not None and static.select_folder_dialog.ready():
         log_result(static.select_folder_dialog.result())
         static.select_folder_dialog = None
+
+    if len(static.last_file_selection) > 0:
+        imgui.text(static.last_file_selection)
 
     imgui.pop_id()
 
@@ -238,53 +241,6 @@ def demo_imfile_dialog():
             static.selected_filename = ifd.FileDialog.instance().get_result().path()
 
         ifd.FileDialog.instance().close()
-
-
-def _fake_log_provider() -> str:
-    try:
-        from fortune import fortune  # type: ignore
-
-        message_provider = fortune
-    except ImportError:
-
-        def message_provider() -> str:
-            import random
-
-            return random.choice(
-                [
-                    """pip install fortune-python if you want real fortunes""",
-                    """There's such a thing as too much point on a pencil.
-               -- H. Allen Smith, "Let the Crabgrass Grow" """,
-                    """Santa Claus is watching!""",
-                    """I'll meet you... on the dark side of the moon...
-                    -- Pink Floyd""",
-                    """Money can't buy love, but it improves your bargaining position.
-                                    -- Christopher Marlowe""",
-                    """Those who in quarrels interpose, must often wipe a bloody nose.""",
-                    """Everybody is somebody else's weirdo.
-                                    -- Dykstra""",
-                ]
-            )
-
-    return message_provider()
-
-
-def demo_logger():
-    imgui_md.render(
-        """# Log Viewer
-A simple Log viewer from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
-        """
-    )
-    if imgui.button("Log some messages"):
-        hello_imgui.log(hello_imgui.LogLevel.debug, _fake_log_provider())
-        hello_imgui.log(hello_imgui.LogLevel.info, _fake_log_provider())
-        hello_imgui.log(hello_imgui.LogLevel.warning, _fake_log_provider())
-        hello_imgui.log(hello_imgui.LogLevel.error, _fake_log_provider())
-
-    # hello_imgui.log_gui will display the logs
-    imgui.begin_child("Logs", ImVec2(0, 150))
-    hello_imgui.log_gui()
-    imgui.end_child()
 
 
 @immapp.static(was_inited=False, show_command_palette=False, counter=0)
@@ -349,8 +305,7 @@ def demo_gui():
     demo_knobs()
     demo_toggle(); imgui.new_line()
     demo_spinner()
-    demo_command_palette(); imgui.new_line()
-    demo_logger()
+    demo_command_palette()
 
 
 if __name__ == "__main__":

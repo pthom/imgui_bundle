@@ -1,1 +1,0 @@
-add_single_file_demo_cpp(demo_texteditor.main.cpp)

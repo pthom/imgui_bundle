@@ -29,16 +29,15 @@ endfunction()
 
 add_subdirectory(demo_utils)
 add_subdirectory(demos_immapp)
-add_subdirectory(demo_texteditor)
 add_subdirectory(demo_widgets_docking)
 add_subdirectory(demos_node_editor)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
-
-add_demo_cpp(demo_imgui_md demo_imgui_md.cpp)
-
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     add_subdirectory(demos_immvision)
 endif()
+
+add_this_folder_demos()
+
 
 FILE(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
