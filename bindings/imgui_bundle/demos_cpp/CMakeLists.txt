@@ -12,6 +12,21 @@ function(add_demo_cpp)
     target_link_libraries(${app_name} PUBLIC demo_utils)
 endfunction()
 
+
+function(add_single_file_demo_cpp demo_cpp_file)
+    get_filename_component(app_name "${demo_cpp_file}" NAME_WE)
+    add_demo_cpp(${app_name} ${demo_cpp_file})
+endfunction()
+
+
+function(add_this_folder_demos)
+    FILE(GLOB demo_cpp_files *.cpp)
+    FOREACH(demo_cpp_file ${demo_cpp_files})
+        add_single_file_demo_cpp(${demo_cpp_file})
+    ENDFOREACH()
+endfunction()
+
+
 add_subdirectory(demo_utils)
 add_subdirectory(demos_immapp)
 add_subdirectory(demo_texteditor)

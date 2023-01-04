@@ -1,6 +1,1 @@
-add_demo_cpp(demo_guizmo_curve_edit demo_guizmo_curve_edit.cpp)
-add_demo_cpp(demo_guizmo_gradient demo_guizmo_gradient.cpp)
-add_demo_cpp(demo_guizmo_zoom_slider demo_guizmo_zoom_slider.cpp)
-# add_demo_cpp(demo_guizmo_sequencer demo_guizmo_sequencer.draft_cpp)
-add_demo_cpp(demo_gizmo demo_gizmo.cpp)
-add_demo_cpp(demo_guizmo_pure demo_guizmo_pure.cpp)
+add_this_folder_demos()

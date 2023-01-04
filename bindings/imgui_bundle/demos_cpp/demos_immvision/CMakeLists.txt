@@ -1,3 +1,1 @@
-add_demo_cpp(demo_immvision_display demo_immvision_display.cpp)
-add_demo_cpp(demo_immvision_link demo_immvision_link.cpp)
-add_demo_cpp(demo_immvision_inspector demo_immvision_inspector.cpp)
+add_this_folder_demos()

@@ -1,2 +1,1 @@
-add_demo_cpp(demo_tex_inspect_demo_window demo_tex_inspect_demo_window.cpp)
-add_demo_cpp(demo_tex_inspect_simple demo_tex_inspect_simple.cpp)
+add_this_folder_demos()
