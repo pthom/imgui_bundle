@@ -1,7 +1,7 @@
 #include "demo_app_table.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
-
+#include "demo_utils/subprocess.h"
 #include <fplus/fplus.hpp>
 #include <cstdlib>
 
@@ -75,7 +75,11 @@ void DemoAppTable::Gui()
 #ifdef _WIN32
                     exeFile += ".exe";
 #endif
-                    std::system(exeFile.c_str());
+                    const char *command_line[2] = {exeFile.c_str(), NULL};
+                    struct subprocess_s subprocess;
+                    int result = subprocess_create(command_line, subprocess_option_no_window, &subprocess);
+                    if (0 != result)
+                        fprintf(stderr, "Error launching %s\n", exeFile.c_str());
                 }
             }
 
