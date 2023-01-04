@@ -110,7 +110,7 @@ class AppState:
 
 def make_gui() -> GuiFunction:
     this_dir = os.path.dirname(__file__)
-    app_state = AppState(this_dir + "/../assets/images/house.jpg")
+    app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
 
     def gui():
         nonlocal app_state

@@ -1,6 +1,6 @@
 import os
 from typing import Callable, Dict
-from imgui_bundle import immapp, imgui, imgui_color_text_edit, ImVec2, imgui_md
+from imgui_bundle import immapp, imgui, imgui_color_text_edit, ImVec2, imgui_md, hello_imgui
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
 
 
@@ -120,3 +120,9 @@ def read_python_code(demo_file_path: str):
     file_abs = demos_python_folder() + "/" + demo_file_path + ".py"
     code = read_code(file_abs)
     return code
+
+
+def set_demo_assets_folder():
+    this_dir = os.path.dirname(__file__)
+    assets_dir = os.path.abspath(this_dir + "/../../demos_assets")
+    hello_imgui.set_assets_folder(assets_dir)

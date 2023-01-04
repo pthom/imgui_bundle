@@ -37,7 +37,7 @@ void DemoGui()
         if (idxFortune >= fortunes.size())
             idxFortune = 0;
     };
-    
+
     ImGuiMd::RenderUnindented(R"(
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)

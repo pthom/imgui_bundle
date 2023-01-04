@@ -1,3 +1,4 @@
+import os.path
 from typing import List, Callable
 from types import ModuleType
 
@@ -17,7 +18,7 @@ from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
-
+from imgui_bundle.demos_python import demo_utils
 
 @static(was_initialized=None)
 def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None]) -> None:
@@ -133,4 +134,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    demo_utils.set_demo_assets_folder()
     main()
