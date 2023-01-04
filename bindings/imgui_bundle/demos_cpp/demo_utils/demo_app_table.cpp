@@ -1,7 +1,9 @@
 #include "demo_app_table.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "hello_imgui/internal/whereami/whereami_cpp.h"
 
 #include <fplus/fplus.hpp>
+#include <cstdlib>
 
 std::string _ReadCode(const std::string& filePath)
 {
@@ -68,7 +70,12 @@ void DemoAppTable::Gui()
 
                 if (ImGui::Button("Run"))
                 {
-                    // ... auto command = std::string
+                    std::string exeFolder = wai_getExecutableFolder_string();
+                    std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
+#ifdef _WIN32
+                    exeFile += ".exe";
+#endif
+                    std::system(exeFile.c_str());
                 }
             }
 
