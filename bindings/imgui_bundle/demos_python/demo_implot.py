@@ -1,10 +1,6 @@
 import math
 import numpy as np
-from imgui_bundle import imgui, implot, imgui_md, immapp
-
-
-ImVec2 = imgui.ImVec2
-ImVec4 = imgui.ImVec4
+from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
 
 
 class DemoDragRectState:
@@ -86,12 +82,12 @@ def demo_mixed_plot():
 
 
 def demo_gui():
-    imgui_md.render(
+    imgui_md.render_unindented(
         """
-# ImPlot
-[Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
-You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)"""
-    )
+        # ImPlot
+        [Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
+        You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)
+        """)
     if imgui.button("View the full demo"):
         import webbrowser
 
