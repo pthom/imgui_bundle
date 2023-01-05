@@ -16,7 +16,11 @@
 
 const char* DemosAssetsFolder()
 {
+#ifndef __EMSCRIPTEN__
     return "demos_assets/";
+#else
+    return "/";
+#endif
 }
 
 std::string MainPythonPackageFolder()
@@ -158,7 +162,20 @@ bool SpawnDemo(const std::string& demoName)
     else
         return false;
 #else
-    return false;
+    // This is for emscripten
+    std::string jsCommandTemplate = R"(
+        window.open("{demoName}.html", "hello", "width=900,height=600");
+    )";
+    std::string jsCommand = fplus::replace_tokens<std::string>("{demoName}", demoName, jsCommandTemplate);
+    printf("%s\n", jsCommand.c_str());
+    emscripten_run_script(jsCommand.c_str());
+//    EM_ASM({
+//      console.log('I received: ' + $0);
+//    }, 100);
+//    EM_ASM({
+//        window.open($0, "hello", "width=900,height=600");
+//        );}
+    return true;
 #endif
 }
 
