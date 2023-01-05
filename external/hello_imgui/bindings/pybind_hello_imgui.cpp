@@ -86,7 +86,10 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::overrideAssetsFolder, py::arg("folder"));
 
     m.def("set_assets_folder",
-        HelloImGui::SetAssetsFolder, py::arg("folder"));
+        py::overload_cast<const char *>(HelloImGui::SetAssetsFolder), py::arg("folder"));
+
+    m.def("set_assets_folder",
+        py::overload_cast<const std::string &>(HelloImGui::SetAssetsFolder), py::arg("folder"));
 
 
     m.def("image_from_asset",

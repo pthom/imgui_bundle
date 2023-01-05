@@ -11,7 +11,7 @@ void FillInspector()
     std::vector<std::string> imagefiles = { "dmla.jpg", "house.jpg", "tennis.jpg", "world.jpg"};
     for (auto imageFile: imagefiles)
     {
-        cv::Mat img = cv::imread(std::string("demos_assets/images/") + imageFile);
+        cv::Mat img = cv::imread(DemosAssetsFolder() + "/images/" + imageFile);
         ImmVision::Inspector_AddImage(img, imageFile);
     }
 }

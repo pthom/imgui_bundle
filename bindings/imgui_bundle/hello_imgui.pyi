@@ -150,6 +150,9 @@ def override_assets_folder(folder: str) -> None:
 # void SetAssetsFolder(const char* folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
     pass
+# void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
+def set_assets_folder(folder: str) -> None:
+    pass
 
 
 # namespace HelloImGui

@@ -14,7 +14,7 @@ void demo_immvision_display()
 
     if (!inited)
     {
-        std::string assetsDir = "demos_assets/images/";
+        std::string assetsDir = DemosAssetsFolder() + "/images/";
         bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
         params.ImageDisplaySize = imageDisplaySize;
         tennis = cv::imread(assetsDir + "tennis.jpg");

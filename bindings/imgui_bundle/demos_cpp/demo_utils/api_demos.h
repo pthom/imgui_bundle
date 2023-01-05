@@ -6,7 +6,7 @@
 using GuiFunction = std::function<void(void)>;
 
 
-const char* DemosAssetsFolder();
+std::string DemosAssetsFolder();
 
 std::string MainPythonPackageFolder();
 std::string DemoCppFolder();

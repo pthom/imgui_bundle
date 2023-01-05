@@ -14,7 +14,7 @@
 #include <filesystem>
 
 
-const char* DemosAssetsFolder()
+std::string DemosAssetsFolder()
 {
 #ifndef __EMSCRIPTEN__
     return "demos_assets/";
@@ -22,6 +22,7 @@ const char* DemosAssetsFolder()
     return "/";
 #endif
 }
+
 
 std::string MainPythonPackageFolder()
 {

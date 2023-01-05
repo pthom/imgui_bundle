@@ -13,7 +13,7 @@ void demo_immvision_link()
 
     if (!inited)
     {
-        image = cv::imread("demos_assets/images/tennis.jpg");
+        image = cv::imread(DemosAssetsFolder() + "/images/tennis.jpg");
         cv::split(image, channels);
 
         params_rgb.ImageDisplaySize = {300, 0};

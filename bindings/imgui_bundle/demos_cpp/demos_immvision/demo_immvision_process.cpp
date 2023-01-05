@@ -125,7 +125,7 @@ struct AppState {
 
 void demo_immvision_process()
 {
-    static AppState appState("demos_assets/images/house.jpg");
+    static AppState appState(DemosAssetsFolder() + "/images/house.jpg");
 
     ImGuiMd::RenderUnindented(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
