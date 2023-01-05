@@ -40,11 +40,7 @@ std::function<void()> makeGui()
             )"}
     };
 
-    std::string thisDir = std::filesystem::path(__FILE__).parent_path().string();
-    std::string demoCppFolder = thisDir + "/demos_immapp";
-    std::string demoPythonFolder = demoCppFolder + "/../../demos_python/demos_immapp";
-    DemoAppTable demoAppTable(demoApps, demoPythonFolder, demoCppFolder);
-
+    DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");
     auto gui = [demoAppTable]() mutable
     {
         ImGuiMd::RenderUnindented(DOC);
