@@ -37,8 +37,8 @@ int disabled_main()
     ImmApp::Run(
         HelloImGui::SimpleRunnerParams {
             .guiFunction=demo_tex_inspect_simple,
-            .windowSize = {1000, 800},
-            .windowTitle = "demo_tex_inspect_simple"
+            .windowTitle = "demo_tex_inspect_simple",
+            .windowSize = {1000, 800}
         },
         ImmApp::AddOnsParams {
             .withTexInspect = true
