@@ -18,7 +18,7 @@ DOC = """
 
 
 # This returns a closure function that will later be invoked to run the app
-def make_closure_demo_apps() -> GuiFunction:
+def make_gui() -> GuiFunction:
     demo_apps = [
         DemoApp("demo_hello_world", "Hello world demo: how to start an app with ImmApp in as few lines as possible"),
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
@@ -43,7 +43,7 @@ def make_closure_demo_apps() -> GuiFunction:
     ]
 
     this_dir = os.path.dirname(__file__)
-    demo_python_folder = this_dir
+    demo_python_folder = this_dir + "/demos_immapp"
     demo_cpp_folder = os.path.abspath(demo_python_folder + "/../../demos_cpp/demos_immapp")
     demo_app_table = DemoAppTable(demo_apps, demo_python_folder, demo_cpp_folder)
 
@@ -55,9 +55,16 @@ def make_closure_demo_apps() -> GuiFunction:
     return gui
 
 
+@immapp.static(gui=None)
+def demo_gui():
+    static = demo_gui
+    if static.gui is None:
+        static.gui = make_gui()
+    static.gui()
+
+
 def main():
-    gui = make_closure_demo_apps()
-    immapp.run(gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
 
 
 if __name__ == "__main__":

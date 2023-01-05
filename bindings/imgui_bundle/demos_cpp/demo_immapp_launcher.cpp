@@ -1,6 +1,6 @@
 #include "immapp/immapp.h"
-#include "../demo_utils/demo_app_table.h"
-#include "../demo_utils/api_demos.h"
+#include "demo_utils/demo_app_table.h"
+#include "demo_utils/api_demos.h"
 #include <filesystem>
 
 
@@ -16,7 +16,7 @@ const std::string DOC = R"(
 
 
 // This returns a closure function that will later be invoked to run the app
-std::function<void()> makeClosureDemoApps()
+std::function<void()> makeGui()
 {
     std::vector<DemoApp> demoApps = {
         DemoApp{"demo_hello_world", "Hello world demo: how to start an app with ImmApp in as few lines as possible"},
@@ -41,7 +41,7 @@ std::function<void()> makeClosureDemoApps()
     };
 
     std::string thisDir = std::filesystem::path(__FILE__).parent_path().string();
-    std::string demoCppFolder = thisDir;
+    std::string demoCppFolder = thisDir + "/demos_immapp";
     std::string demoPythonFolder = demoCppFolder + "/../../demos_python/demos_immapp";
     DemoAppTable demoAppTable(demoApps, demoPythonFolder, demoCppFolder);
 
@@ -54,10 +54,8 @@ std::function<void()> makeClosureDemoApps()
 }
 
 
-int main()
+void demo_immapp_launcher()
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    auto gui = makeClosureDemoApps();
-
-    ImmApp::RunWithMarkdown(gui, "Immediate Apps", false, false, {1000, 800});
+    static std::function<void()> gui = makeGui();
+    gui();
 }

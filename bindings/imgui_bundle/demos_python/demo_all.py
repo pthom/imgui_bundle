@@ -1,11 +1,9 @@
-import os.path
 from typing import List, Callable
 from types import ModuleType
 
 from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
 from imgui_bundle.immapp import static
-from imgui_bundle.demos_python.demos_immapp import demo_apps
-from imgui_bundle.demos_python import demo_text_edit
+from imgui_bundle.demos_python import demo_text_edit, demo_apps
 from imgui_bundle.demos_python import demo_imgui_bundle
 from imgui_bundle.demos_python import demo_imgui_show_demo_window
 from imgui_bundle.demos_python import demo_widgets
@@ -20,12 +18,14 @@ from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_utils
 
+
 @static(was_initialized=None)
 def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None]) -> None:
     static = show_module_demo
 
     if not static.was_initialized:
         static.editor = ed.TextEditor()
+        static.editor.set_language_definition(ed.TextEditor.LanguageDefinition.python())
         static.last_module = None
         static.was_initialized = True
 
@@ -45,6 +45,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
 
 
 def main() -> None:
+    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
     ################################################################################################
     # Part 1: Define the runner params
     ################################################################################################
@@ -72,8 +73,8 @@ def main() -> None:
     runner_params.imgui_window_params.enable_viewports = True
 
     #
-    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
-    #     in a docking split.
+    # Define our dockable windows : each window provide a Gui callback, and will be displayed
+    # in a docking split.
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
@@ -110,7 +111,7 @@ def main() -> None:
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
-    # Main gui only responsibility is to give focus to ImGui Bundle dockable window
+    # the main gui is only responsible to give focus to ImGui Bundle dockable window
     @static(nb_frames=0)
     def show_gui():
         if show_gui.nb_frames == 1:
@@ -134,5 +135,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    demo_utils.set_demo_assets_folder()
     main()
