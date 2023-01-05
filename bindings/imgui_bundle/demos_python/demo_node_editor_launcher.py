@@ -23,6 +23,9 @@ def demo_gui():
     if imgui.collapsing_header("demo basic interaction"):
         demos_node_editor.demo_node_editor_basic.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_node_editor/demo_node_editor_basic", nb_lines=30)
+    if imgui.collapsing_header("haiku - Romeo and Juliet"):
+        demos_node_editor.demo_romeo_and_juliet.demo_gui()
+        demo_utils.show_python_vs_cpp_file("demos_node_editor/demo_romeo_and_juliet", nb_lines=30)
 
 
 def main():

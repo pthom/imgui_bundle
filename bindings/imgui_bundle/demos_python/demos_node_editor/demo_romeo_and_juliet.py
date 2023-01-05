@@ -1,4 +1,6 @@
-from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4, ImVec2
+import os.path
+
+from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4
 
 
 class Lover:
@@ -55,14 +57,18 @@ CountParis = Lover("Count Paris")
 lovers = [Romeo, Juliet, CountParis]
 links = [
     Tie(Romeo, "loves", Juliet),
-    Tie(Juliet, "loves", CountParis),
+    Tie(Juliet, "loves", Romeo),
+
     Tie(CountParis, "loves", Juliet),
+
     Tie(CountParis, "hates", Romeo),
-    Tie(Juliet, "hates", CountParis),
+    Tie(Romeo, "hates", CountParis),
 ]
 
 
 def demo_gui():
+    this_dir = os.path.dirname(__file__)
+    ed.get_config().settings_file = this_dir + "/romeo_and_juliet.json"
     ed.begin("Love ed.PinId.create")
     for lover in lovers:
         lover.draw()
@@ -72,4 +78,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, with_node_editor=True, window_size=(450, 450), window_title="It will not end well...")  # type: ignore
+    immapp.run(demo_gui, with_node_editor=True, window_size=(1000, 800), window_title="It will not end well...")  # type: ignore
