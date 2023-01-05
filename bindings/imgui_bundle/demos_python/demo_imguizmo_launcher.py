@@ -28,12 +28,12 @@ def demo_gui():
     if imgui.collapsing_header("Curve Edit"):
         demos_imguizmo.demo_guizmo_curve_edit.demo_launch()
         demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_guizmo_curve_edit", nb_lines=30)
-    if imgui.collapsing_header("Zoom Slider"):
-        imgui.text("Click the button below to launch the demo")
-        if imgui.button("Run demo"):
-            this_dir = os.path.dirname(__file__)
-            subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_guizmo_zoom_slider.py"])
-        demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_guizmo_zoom_slider", nb_lines=30)
+    # if imgui.collapsing_header("Zoom Slider"):   # Disabled, because of missing high DPI support
+    #     imgui.text("Click the button below to launch the demo")
+    #     if imgui.button("Run demo"):
+    #         this_dir = os.path.dirname(__file__)
+    #         subprocess.Popen([sys.executable, this_dir + "/demos_imguizmo/demo_guizmo_zoom_slider.py"])
+    #     demo_utils.show_python_vs_cpp_file("demos_imguizmo/demo_guizmo_zoom_slider", nb_lines=30)
 
 
 def main():

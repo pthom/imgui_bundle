@@ -32,15 +32,15 @@ void demo_imguizmo_launcher()
         demo_guizmo_curve_edit();
         ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_curve_edit", 30);
     }
-    if (ImGui::CollapsingHeader("Zoom Slider"))
-    {
-        ImGui::Text("Click the button below to launch the demo");
-        if (ImGui::Button("Run demo"))
-        {
-            SpawnDemo("demo_guizmo_zoom_slider");
-        }
-        ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_zoom_slider", 30);
-    }
+    //if (ImGui::CollapsingHeader("Zoom Slider")) // Disabled, because of missing high DPI support
+    //{
+    //    ImGui::Text("Click the button below to launch the demo");
+    //    if (ImGui::Button("Run demo"))
+    //    {
+    //        SpawnDemo("demo_guizmo_zoom_slider");
+    //    }
+    //    ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_zoom_slider", 30);
+    //}
 
 
 }

@@ -1,6 +1,11 @@
 // Demo zoom slider with ImGuizmo
 // See equivalent python program: demos/litgen/imgui_bundle/bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_zoom_slider.py
 
+// ###############################################################################
+// # Warning! This component does not render well on high DPI
+// # (especially under windows) => this demo is hidden by default
+// ###############################################################################
+
 #include "demo_utils/api_demos.h"
 
 #include "imgui.h"
