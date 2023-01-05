@@ -23,6 +23,9 @@ ImFont* MyLoadFontsViaHelloImGui()
 
 ImFont* MyLoadFontsManually()
 {
+    // Fixme: this version triggers an exception in debug mode under msvc, far later, and deep inside FontAtlas callstack.
+    // (although it seems to work fine in release mode. Probable memory overflow somewhere)
+
     // first, we load the default font (it will not include icons)
     ImGui::GetIO().Fonts->AddFontDefault();
 

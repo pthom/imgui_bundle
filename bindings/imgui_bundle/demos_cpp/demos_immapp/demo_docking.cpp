@@ -56,6 +56,9 @@ void MyLoadFontsViaHelloImGui()
 
 void MyLoadFontsManually()
 {
+    // Fixme: this version triggers an exception in debug mode under msvc, far later, and deep inside FontAtlas callstack.
+    // (although it seems to work fine in release mode. Probable memory overflow somewhere)
+
     // first, we load the default font (it will not include icons)
     ImGui::GetIO().Fonts->AddFontDefault();
 
@@ -65,19 +68,20 @@ void MyLoadFontsManually()
     // We need to take into account the global font scale! This is required for macOS retina screens
     const float fontSizePixel = 40.0f / ImGui::GetIO().FontGlobalScale;
     const std::string fontFilename = "demos_assets/fonts/Akronim-Regular.ttf";
-    auto glyphRange = fontAtlas->GetGlyphRangesDefault();
+    // static is important here (see laius below)
+    static const ImWchar* glyphRange = fontAtlas->GetGlyphRangesDefault();
     gAkronimFont = fontAtlas->AddFontFromFileTTF(fontFilename.c_str(), fontSizePixel, NULL, glyphRange);
 
-    // ii. ... Aad merge icons into the previous font
-    ImFontConfig fontConfig;
-    fontConfig.MergeMode = true;
-
+    // ii. ... And merge icons into the previous font
     // See warning inside imgui.h:
     //     If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the
     //     atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.
-    // We need to make sure that iconRanges is not destroyed when exiting this function! In this case, we can make it
-    // either static or constexpr.
+    // 
+    // => We need to make sure that iconRanges is not destroyed when exiting this function! In this case, we can make it either static or constexpr.
     constexpr ImWchar iconRanges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    // Similar warning for fontConfig which is passed by address
+    static ImFontConfig fontConfig;
+    fontConfig.MergeMode = true;
     gAkronimFont = fontAtlas->AddFontFromFileTTF("demos_assets/fonts/fontawesome-webfont.ttf", fontSizePixel, &fontConfig, iconRanges);
 }
 
@@ -86,7 +90,7 @@ void MyLoadFonts()
 {
     // Uncomment here your preferred method
     MyLoadFontsViaHelloImGui();
-    MyLoadFontsManually();
+    //MyLoadFontsManually();
 }
 
 
