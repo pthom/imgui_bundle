@@ -88,16 +88,18 @@ add_this_folder_auto_demos()
 add_this_folder_as_demos_library()
 
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
-target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)
 target_link_libraries(demo_tex_inspect_launcher PRIVATE demos_tex_inspect)
 target_link_libraries(demo_all PRIVATE
     demos_cpp
     demos_imguizmo
-    demos_immvision
     demos_tex_inspect
     demos_node_editor
 )
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
+    target_link_libraries(demo_all PRIVATE demos_immvision)
+endif()
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
