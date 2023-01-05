@@ -78,6 +78,11 @@ target_sources(imgui_tex_inspect PRIVATE
     imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
     imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.h
     )
+# Add portable_file_dialogs
+add_library(portable_file_dialogs INTERFACE)
+target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
+target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+
 target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
 target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
 target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
