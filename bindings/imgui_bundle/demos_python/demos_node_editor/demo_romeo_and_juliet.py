@@ -35,12 +35,13 @@ class Tie:
     lover: Lover
     loved: Lover
     kind: str
+    id: ed.LinkId
 
     def __init__(self, lover: Lover, kind: str, loved: Lover) -> None:
+        self.id = ed.LinkId.create()
         self.lover = lover
         self.loved = loved
         self.kind = kind
-        self.id = ed.LinkId.create()
 
     def draw(self) -> None:
         red = ImVec4(1.0, 0.3, 0.2, 1.0)  # type: ignore
@@ -69,7 +70,7 @@ links = [
 def demo_gui():
     this_dir = os.path.dirname(__file__)
     ed.get_config().settings_file = this_dir + "/romeo_and_juliet.json"
-    ed.begin("Love ed.PinId.create")
+    ed.begin("Romeo and Juliet")
     for lover in lovers:
         lover.draw()
     for link in links:

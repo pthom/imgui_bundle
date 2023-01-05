@@ -4,6 +4,8 @@
 #include "demo_utils/api_demos.h"
 #include "immapp/immapp.h"
 
+void demo_romeo_and_juliet();
+
 
 void demo_node_editor_launcher()
 {
@@ -33,5 +35,10 @@ void demo_node_editor_launcher()
         if (ImGui::Button("Launch demo"))
             SpawnDemo("demo_imgui_node_editor");
         ShowPythonVsCppFile("demos_node_editor/demo_node_editor_basic", 30);
+    }
+    if (ImGui::CollapsingHeader("Haiku - Romeo and Juliet"))
+    {
+        demo_romeo_and_juliet();
+        ShowPythonVsCppFile("demos_node_editor/demo_romeo_and_juliet", 30);
     }
 }
