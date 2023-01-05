@@ -15,6 +15,7 @@
 #include "demo_utils/api_demos.h"
 
 #include <fplus/fplus.hpp>
+#include <memory>
 
 
 void DemoKnobs()
@@ -165,47 +166,49 @@ void DemoPortableFileDialogs()
         lastFileSelection = fplus::join(std::string("\n"), whats);
     };
 
-    static std::optional<pfd::open_file> openFileDialog;
+    static std::unique_ptr<pfd::open_file> openFileDialog;
     if (ImGui::Button("Open File"))
-        openFileDialog = pfd::open_file("Select file");
-    if (openFileDialog.has_value() && openFileDialog->ready())
+        openFileDialog = std::make_unique<pfd::open_file>("Select file");
+    if (openFileDialog.get() && openFileDialog->ready())
     {
         logResultList(openFileDialog->result());
-        openFileDialog = std::nullopt;
+        openFileDialog.reset();
     }
 
     ImGui::SameLine();
 
-    static std::optional<pfd::open_file> openFileMultiselect;
+    
+    static std::unique_ptr<pfd::open_file> openFileMultiselect;
     if (ImGui::Button("Open File (multiselect)"))
-        openFileMultiselect = pfd::open_file("Select file", "", {}, pfd::opt::multiselect);
-    if (openFileMultiselect.has_value() && openFileMultiselect->ready())
+        openFileMultiselect.reset(new pfd::open_file("Select file", "", {}, pfd::opt::multiselect));
+    if (openFileMultiselect.get() && openFileMultiselect->ready())
     {
         logResultList(openFileMultiselect->result());
-        openFileMultiselect = std::nullopt;
+        openFileMultiselect.reset();
     }
 
     ImGui::SameLine();
 
-    static std::optional<pfd::save_file> saveFileDialog;
+    static std::unique_ptr<pfd::save_file> saveFileDialog;
     if (ImGui::Button("Save File"))
-        saveFileDialog = pfd::save_file("Save file");
-    if (saveFileDialog.has_value() && saveFileDialog->ready())
+        saveFileDialog = std::make_unique<pfd::save_file>("Save file");
+    if (saveFileDialog.get() && saveFileDialog->ready())
     {
         logResult(saveFileDialog->result());
-        saveFileDialog = std::nullopt;
+        saveFileDialog.reset();
     }
 
     ImGui::SameLine();
 
-    static std::optional<pfd::select_folder> selectFolderDialog;
+    static std::unique_ptr<pfd::select_folder> selectFolderDialog;
     if (ImGui::Button("Select Folder"))
-        selectFolderDialog = pfd::select_folder("Select folder");
-    if (selectFolderDialog.has_value() && selectFolderDialog->ready())
+        selectFolderDialog = std::make_unique<pfd::select_folder>("Select folder");
+    if (selectFolderDialog.get() && selectFolderDialog->ready())
     {
         logResult(selectFolderDialog->result());
-        selectFolderDialog = std::nullopt;
+        selectFolderDialog.reset();
     }
+    
 
     if (lastFileSelection.size() > 0)
         ImGui::Text("%s", lastFileSelection.c_str());
