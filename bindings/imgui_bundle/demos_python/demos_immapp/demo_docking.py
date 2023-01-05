@@ -1,14 +1,14 @@
-"""A more complex app demo,
+# A more complex app demo,
+#
+# It demonstrates:
+# - How to use a specific application state (instead of using static variables)
+# - How to set up a complex layout:
+#     - dockable windows that can be moved, and even be detached from the main window
+#     - status bar
+# - A default menu, with default
+# - log window
+# - How to load assets and fonts
 
-It demonstrates:
-- How to use a specific application state (instead of using static variables)
-- How to set up a complex layout:
-    - dockable windows that can be moved, and even be detached from the main window
-    - status bar
-- A default menu, with default
-- log window
-- How to load assets and fonts
-"""
 import os
 from enum import Enum
 
