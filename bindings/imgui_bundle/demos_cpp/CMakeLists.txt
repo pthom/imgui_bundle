@@ -17,7 +17,12 @@ function(add_demo_cpp)
     endif()
     target_link_libraries(${demo_name} PUBLIC demo_utils)
     if (EMSCRIPTEN)
+        # Bundle demos_assets
         hello_imgui_bundle_assets_from_folder(${demo_name} ${demos_cpp_folder}/../demos_assets)
+        # Bundle demos_cpp and demos_python sources
+        set(demos_python_folder ${demos_cpp_folder}/../demos_python)
+        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
+        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
     endif()
 endfunction()
 

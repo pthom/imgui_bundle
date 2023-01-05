@@ -21,9 +21,13 @@ const char* DemosAssetsFolder()
 
 std::string MainPythonPackageFolder()
 {
+#ifdef EMSCRIPTEN
+    return "/";
+#else
     auto thisDir = std::filesystem::path(__FILE__).parent_path();
     auto grandParentDir = thisDir.parent_path().parent_path();
     return grandParentDir.string();
+#endif
 }
 
 std::string DemoCppFolder()  { return MainPythonPackageFolder() + "/demos_cpp"; }
