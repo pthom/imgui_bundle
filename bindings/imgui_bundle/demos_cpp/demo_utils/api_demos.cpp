@@ -21,7 +21,7 @@ const char* DemosAssetsFolder()
 
 std::string MainPythonPackageFolder()
 {
-#ifdef EMSCRIPTEN
+#ifdef __EMSCRIPTEN__
     return "/";
 #else
     auto thisDir = std::filesystem::path(__FILE__).parent_path();
@@ -136,9 +136,13 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines)
 }
 
 
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#endif
+
 bool SpawnDemo(const std::string& demoName)
 {
-#ifndef EMSCRIPTEN
+#ifndef __EMSCRIPTEN__
     std::string exeFolder = wai_getExecutableFolder_string();
     std::string exeFile = exeFolder + "/" + demoName;
 #ifdef _WIN32

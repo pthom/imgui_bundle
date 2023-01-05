@@ -72,17 +72,23 @@ void DemoAppTable::Gui()
 
                 // Run button
                 {
-                    std::string exeFolder;
-#ifndef EMSCRIPTEN
-                    exeFolder = wai_getExecutableFolder_string();
-#else
-                    exeFolder = "./";
-#endif
+                    #ifndef __EMSCRIPTEN__
+                        std::string exeFolder = wai_getExecutableFolder_string();
+                    #else
+                        std::string exeFolder = "./";
+                    #endif
+
                     std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
-#ifdef _WIN32
-                    exeFile += ".exe";
-#endif
-                    if (std::filesystem::exists(exeFile) && ImGui::Button("Run"))
+                    #ifdef _WIN32
+                        exeFile += ".exe";
+                    #endif
+
+                    bool exeFound = std::filesystem::exists(exeFile);
+                    #ifdef __EMSCRIPTEN__
+                        exeFound = true;
+                    #endif
+
+                    if (exeFound && ImGui::Button("Run"))
                         SpawnDemo(demoApp.DemoFile);
                 }
             }

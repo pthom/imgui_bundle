@@ -7,7 +7,7 @@ TextEditor _PrepareTextEditor()
 {
     TextEditor editor;
     std::string filename = __FILE__;
-#ifndef EMSCRIPTEN
+#ifndef __EMSCRIPTEN__
     std::string this_file_code = fplus::read_text_file(filename)();
 #else
     std::string this_file_code = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
