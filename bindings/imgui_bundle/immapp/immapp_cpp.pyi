@@ -147,6 +147,10 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
 
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
+
+def default_node_editor_context() -> NodeEditorContext:
+    """Utilities for node editor"""
+    pass
 ####################    </generated_from:runner.h>    ####################
 
 

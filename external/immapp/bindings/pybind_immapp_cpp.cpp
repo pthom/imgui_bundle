@@ -193,6 +193,9 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("em_to_vec2",
         py::overload_cast<ImVec2>(ImmApp::EmToVec2), py::arg("v"));
+
+    m.def("default_node_editor_context",
+        ImmApp::DefaultNodeEditorContext, "Utilities for node editor");
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
