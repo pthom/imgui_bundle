@@ -53,6 +53,7 @@ def main():
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
+    generator.process_cpp_file(THIS_DIR + "/../imgui_node_editor_immapp/node_editor_default_context.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

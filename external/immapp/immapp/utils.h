@@ -9,11 +9,4 @@ namespace ImmApp
 {
     // Chronometer in seconds
     double ClockSeconds();
-
-    // Utilities for node editor
-    using NodeEditorContext = ax::NodeEditor::EditorContext;
-    NodeEditorContext* CurrentNodeEditorContext();
-    void SuspendNodeEditorCanvas();
-    void ResumeNodeEditorCanvas();
-
 } // namespace ImmApp

@@ -32,6 +32,11 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
 endif()
 # Build imgui-node-editor
 add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
+target_sources(imgui_node_editor PRIVATE
+    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
+    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
+    )
+target_link_libraries(imgui_node_editor PUBLIC immapp)
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build ImFileDialog

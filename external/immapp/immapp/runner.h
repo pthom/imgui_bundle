@@ -116,4 +116,7 @@ namespace ImmApp
     ImVec2 EmToVec2(float x, float y);
     ImVec2 EmToVec2(ImVec2 v);
 
+
+    // Utilities for node editor
+    NodeEditorContext* DefaultNodeEditorContext();
 } // namespace ImmApp

@@ -199,15 +199,6 @@ void py_init_module_immapp_cpp(py::module& m)
     ////////////////////    <generated_from:utils.h>    ////////////////////
     m.def("clock_seconds",
         ImmApp::ClockSeconds, "Chronometer in seconds");
-
-    m.def("current_node_editor_context",
-        ImmApp::CurrentNodeEditorContext);
-
-    m.def("suspend_node_editor_canvas",
-        ImmApp::SuspendNodeEditorCanvas);
-
-    m.def("resume_node_editor_canvas",
-        ImmApp::ResumeNodeEditorCanvas);
     ////////////////////    </generated_from:utils.h>    ////////////////////
 
 

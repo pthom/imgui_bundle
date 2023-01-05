@@ -156,15 +156,6 @@ def em_to_vec2(v: ImVec2) -> ImVec2:
 def clock_seconds() -> float:
     """Chronometer in seconds"""
     pass
-
-def current_node_editor_context() -> NodeEditorContext:
-    pass
-
-def suspend_node_editor_canvas() -> None:
-    pass
-
-def resume_node_editor_canvas() -> None:
-    pass
 ####################    </generated_from:utils.h>    ####################
 
 

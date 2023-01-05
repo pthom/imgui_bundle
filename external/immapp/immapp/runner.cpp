@@ -199,7 +199,7 @@ namespace ImmApp
     }
 
 
-    ax::NodeEditor::EditorContext* CurrentNodeEditorContext_Impl()
+    ax::NodeEditor::EditorContext* DefaultNodeEditorContext()
     {
         if (!_NODE_EDITOR_CONTEXT.has_value())
             throw std::runtime_error("No current node editor context\n"
