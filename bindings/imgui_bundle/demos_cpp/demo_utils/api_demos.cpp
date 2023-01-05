@@ -11,12 +11,12 @@
 #include <unordered_map>
 #include <string>
 #include <functional>
+#include <filesystem>
 
 
 const char* DemosAssetsFolder()
 {
-    static std::string r = wai_getExecutableFolder_string() + "/demos_assets/";
-    return r.c_str();
+    return "demos_assets/";
 }
 
 std::string MainPythonPackageFolder()
