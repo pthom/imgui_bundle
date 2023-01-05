@@ -134,6 +134,7 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines)
 
 bool SpawnDemo(const std::string& demoName)
 {
+#ifndef EMSCRIPTEN
     std::string exeFolder = wai_getExecutableFolder_string();
     std::string exeFile = exeFolder + "/" + demoName;
 #ifdef _WIN32
@@ -148,6 +149,9 @@ bool SpawnDemo(const std::string& demoName)
     }
     else
         return false;
+#else
+    return false;
+#endif
 }
 
 

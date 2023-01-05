@@ -72,7 +72,12 @@ void DemoAppTable::Gui()
 
                 // Run button
                 {
-                    std::string exeFolder = wai_getExecutableFolder_string();
+                    std::string exeFolder;
+#ifndef EMSCRIPTEN
+                    exeFolder = wai_getExecutableFolder_string();
+#else
+                    exeFolder = "./";
+#endif
                     std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
 #ifdef _WIN32
                     exeFile += ".exe";

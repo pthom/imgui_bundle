@@ -41,9 +41,11 @@ function (add_hello_imgui)
         lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.so)
         set(BUILD_SHARED_LIBS OFF)
     else()
-        add_subdirectory(glfw/glfw)
+        if (IMGUI_BUNDLE_WITH_GLFW)
+            add_subdirectory(glfw/glfw)
+        endif()
     endif()
-    if (UNIX AND NOT APPLE)
+    if (IMGUI_BUNDLE_WITH_GLFW AND (UNIX AND NOT APPLE))
         # Those are only needed for wheels build using cibuildwheel (cp36-manylinux_x86_64 wheel)
         # See https://bytemeta.vip/repo/glfw/glfw/issues/2139
         target_compile_definitions(glfw PRIVATE POSIX_REQUIRED_STANDARD=199309L)
@@ -52,13 +54,15 @@ function (add_hello_imgui)
     endif()
 
     # 2.2 Build sdl
-    if (IMGUI_BUNDLE_WITH_SDL)
+    if (IMGUI_BUNDLE_WITH_SDL AND NOT EMSCRIPTEN)
         add_subdirectory(SDL/SDL)
     endif()
 
     # 3. Configure hello-imgui with the following options:
     #     i. use glfw
-    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
+    if (NOT EMSCRIPTEN)
+        set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
+    endif()
     #     i. use sdl
     if (IMGUI_BUNDLE_WITH_SDL)
         set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
