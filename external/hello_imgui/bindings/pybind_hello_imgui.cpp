@@ -602,6 +602,11 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("em_to_vec2",
         py::overload_cast<ImVec2>(HelloImGui::EmToVec2), py::arg("v"));
 
+    m.def("frame_rate",
+        HelloImGui::FrameRate,
+        py::arg("duration_for_mean") = 0.5f,
+        " Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,\n since one can choose the duration for the calculation of the mean value of the fps\n (Will only lead to accurate values if you call it at each frame)");
+
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");
         pyNsImGuiDefaultSettings.def("load_default_font_with_font_awesome_icons",

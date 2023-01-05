@@ -1601,8 +1601,16 @@ def em_size(nb_lines: float) -> float:
 def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 # ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
-# }
 def em_to_vec2(v: ImVec2) -> ImVec2:
+    pass
+
+# float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
+# }
+def frame_rate(duration_for_mean: float = 0.5) -> float:
+    """ Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
+     since one can choose the duration for the calculation of the mean value of the fps
+     (Will only lead to accurate values if you call it at each frame)
+    """
     pass
 
 
