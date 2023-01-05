@@ -3,7 +3,7 @@ from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, imm
 from imgui_bundle import imgui_command_palette as imcmd
 
 
-@immapp.static(knob_value=0, knob_int_value=0)
+@immapp.static(knob_float_value=0, knob_int_value=0)
 def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
@@ -26,15 +26,17 @@ def demo_knobs():
     def show_float_knobs(knob_size: float):
         imgui.push_id(f"{knob_size}_float")
         for knob_typename, knob_type in knob_types.items():
-            changed, static.knob_value = imgui_knobs.knob(
+            changed, static.knob_float_value = imgui_knobs.knob(
                 knob_typename,
-                p_value=static.knob_value,
+                p_value=static.knob_float_value,
                 v_min=0.0,
                 v_max=1.0,
                 speed=0,
+                format="%.2f",
                 variant=knob_type,
-                steps=10,
                 size=knob_size,
+                flags=0,
+                steps=100,
             )
             imgui.same_line()
         imgui.new_line()
@@ -47,8 +49,9 @@ def demo_knobs():
                 knob_typename,
                 p_value=static.knob_int_value,
                 v_min=0,
-                v_max=10,
+                v_max=15,
                 speed=0,
+                format="%02i",
                 variant=knob_type,
                 steps=10,
                 size=knob_size,
@@ -103,11 +106,10 @@ def demo_spinner():
 @immapp.static(flag=True)
 def demo_toggle():
     static = demo_toggle
-    imgui_md.render(
+    imgui_md.render_unindented(
         """
-# Toggle Switch
-  [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
-    )
+        # Toggle Switch
+          [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui.""")
 
     _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
     imgui.same_line()
@@ -141,11 +143,9 @@ def demo_portable_file_dialogs():
     from imgui_bundle import portable_file_dialogs as pfd
 
     imgui.push_id("pfd")
-
-    imgui_md.render(
-        """
-# Portable File Dialogs
- [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
+    imgui_md.render_unindented("""
+        # Portable File Dialogs
+         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
     """
     )
 
@@ -172,7 +172,7 @@ def demo_portable_file_dialogs():
     imgui.same_line()
 
     if imgui.button("Save file"):
-        static.save_file_dialog = pfd.save_file("Select file")
+        static.save_file_dialog = pfd.save_file("Save file")
     if static.save_file_dialog is not None and static.save_file_dialog.ready():
         log_result(static.save_file_dialog.result())
         static.save_file_dialog = None
@@ -196,13 +196,14 @@ def demo_imfile_dialog():
     static = demo_imfile_dialog  # Access to static variable via static
     from imgui_bundle import im_file_dialog as ifd
 
-    imgui_md.render(
+    imgui_md.render_unindented(
         """
-# ImFileDialog
- [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
- *Not (yet) adapted for High DPI resolution under windows*
-    """
+        # ImFileDialog
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
+         *Not (yet) adapted for High DPI resolution under windows*
+        """
     )
+
     if imgui.button("Open file"):
         ifd.FileDialog.instance().open(
             "ShaderOpenDialog",
@@ -243,7 +244,7 @@ def demo_imfile_dialog():
         ifd.FileDialog.instance().close()
 
 
-@immapp.static(was_inited=False, show_command_palette=False, counter=0)
+@immapp.static(was_inited=False, show_command_palette=False, counter=0, command_palette_context=None)
 def demo_command_palette():
     static = demo_command_palette
 
@@ -279,14 +280,13 @@ def demo_command_palette():
         init_command_palette()
         static.was_inited = True
 
-    imgui_md.render(
+    imgui_md.render_unindented(
         """
-# Command Palette
-[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui"""
-    )
+        # Command Palette
+        [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
+        """)
 
     io = imgui.get_io()
-
     if io.key_ctrl and io.key_shift and imgui.is_key_pressed(imgui.Key.p):
         static.show_command_palette = not static.show_command_palette
 

@@ -31,31 +31,7 @@ ImGui::SameLine();
 }
 )";
 
-void demo_implot()
-{
-    static std::vector<double> x, y1, y2;
-    if (x.empty())
-    {
-        double pi = 3.1415;
-        for (int i = 0; i < 1000; ++i)
-        {
-            double x_ = pi * 4. * (double)i / 1000.;
-            x.push_back(x_);
-            y1.push_back(cos(x_));
-            y2.push_back(sin(x_));
-        }
-    }
-
-    ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");
-    if (ImPlot::BeginPlot("Plot"))
-    {
-        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
-        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
-        ImPlot::EndPlot();
-    }
-}
-
-void demo_widgets()
+void demo_widgets_old()
 {
     ImGuiMd::Render(R"(
 # ImGui Bundle
@@ -213,91 +189,4 @@ Selected file names will be shown in the log panel at the bottom.
 
         ImGui::EndGroup();
     }
-}
-
-
-int main(int, char **)
-{
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
-    HelloImGui::RunnerParams runnerParams;
-
-    //
-    //    Define the add-on params
-    //
-    ImmApp::AddOnsParams addOnsParams;
-    addOnsParams.withImplot = true;
-    addOnsParams.withMarkdown = true;
-    addOnsParams.withNodeEditor = true;
-
-    //
-    //    Define the app window params
-    //
-    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
-    runnerParams.appWindowParams.windowTitle = "ImGui bundle demo";
-
-    runnerParams.imGuiWindowParams.showMenuBar = true;
-    runnerParams.imGuiWindowParams.showMenu_View = true;
-
-
-    //
-    //    Define the docking splits,
-    //    i.e. the way the screen space is split in different target zones for the dockable windows
-    //     We want to split "MainDockSpace" (which is provided automatically) into two zones, like this:
-    //
-    //    ___________________________________
-    //    |                                 |
-    //    |                                 |
-    //    |     MainDockSpace               |
-    //    |                                 |
-    //    -----------------------------------
-    //    |     BottomSpace                 |
-    //    -----------------------------------
-    //
-
-    // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
-    // In this demo, we also demonstrate multiple viewports.
-    // you can drag windows outside out the main window in order to put their content into new native windows
-    runnerParams.imGuiWindowParams.enableViewports = true;
-
-    // Then, add a space named "BottomSpace" whose height is 25% of the app height.
-    // This will split the preexisting default dockspace "MainDockSpace" in two parts.
-    HelloImGui::DockingSplit splitMainBottom;
-    splitMainBottom.initialDock = "MainDockSpace";
-    splitMainBottom.newDock = "BottomSpace";
-    splitMainBottom.direction = ImGuiDir_Down;
-    splitMainBottom.ratio = 0.25f;
-    // Finally, transmit these splits to HelloImGui
-    runnerParams.dockingParams.dockingSplits = { splitMainBottom };
-
-    //
-    //    Define the dockable windows
-    //
-    // implot_window
-    HelloImGui::DockableWindow implot_window;
-    implot_window.label = "ImPlot";
-    implot_window.dockSpaceName = "MainDockSpace";
-    implot_window.GuiFunction = demo_implot;
-    // logsWindow
-    HelloImGui::DockableWindow logsWindow;
-    logsWindow.label = "Logs";
-    logsWindow.dockSpaceName = "BottomSpace";
-    logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
-    // ImGui::ShowDemoWindow
-    HelloImGui::DockableWindow demoWindow;
-    demoWindow.label = "Dear ImGui Demo";
-    demoWindow.dockSpaceName = "MainDockSpace";
-    demoWindow.GuiFunction = []() { ImGui::ShowDemoWindow(); };
-    // demo_widgets
-    HelloImGui::DockableWindow widgetsWindow;
-    widgetsWindow.label = "Widgets demo";
-    widgetsWindow.dockSpaceName = "MainDockSpace";
-    widgetsWindow.GuiFunction = demo_widgets;
-
-    // Finally, transmit these windows to HelloImGui
-    runnerParams.dockingParams.dockableWindows = { implot_window, logsWindow, demoWindow, widgetsWindow };
-
-
-    ImmApp::Run(runnerParams, addOnsParams);
-    return 0;
 }
