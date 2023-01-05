@@ -82,7 +82,6 @@ def main() -> None:
     def add_dockable_window(
         label: str,
         demo_module: ModuleType,
-        demo_function: Callable[[], None],
         dock_space_name: str = "MainDockSpace",
     ):
         window = hello_imgui.DockableWindow()
@@ -90,25 +89,25 @@ def main() -> None:
         window.dock_space_name = dock_space_name
 
         def win_fn() -> None:
-            show_module_demo(demo_module, demo_function)
+            show_module_demo(demo_module, demo_module.demo_gui)
 
         window.gui_function = win_fn
         dockable_windows.append(window)
 
-    add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_gui)
-    add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window, demo_imgui_show_demo_window.demo_gui)
-    add_dockable_window("Immediate Apps", demo_immapp_launcher, demo_immapp_launcher.demo_gui)
-    add_dockable_window("Implot", demo_implot, demo_implot.demo_gui)
-    add_dockable_window("Node Editor", demo_node_editor_launcher, demo_node_editor_launcher.demo_gui)
-    add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_gui)
-    add_dockable_window("Text Editor", demo_text_edit, demo_text_edit.demo_gui)
-    add_dockable_window("Widgets", demo_widgets, demo_widgets.demo_gui)
-    add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_gui)
-    add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_gui)
-    add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_gui)
-    add_dockable_window("Themes", demo_themes, demo_themes.demo_gui)
-    add_dockable_window("Logger", demo_logger, demo_logger.demo_gui)
-    add_dockable_window("Notebook", demo_immapp_notebook, demo_immapp_notebook.demo_gui)
+    add_dockable_window("ImGui Bundle", demo_imgui_bundle)
+    add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window)
+    add_dockable_window("Immediate Apps", demo_immapp_launcher)
+    add_dockable_window("Implot", demo_implot)
+    add_dockable_window("Node Editor", demo_node_editor_launcher)
+    add_dockable_window("Markdown", demo_imgui_md)
+    add_dockable_window("Text Editor", demo_text_edit)
+    add_dockable_window("Widgets", demo_widgets)
+    add_dockable_window("ImmVision", demo_immvision_launcher)
+    add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher)
+    add_dockable_window("ImGuizmo", demo_imguizmo_launcher)
+    add_dockable_window("Themes", demo_themes)
+    add_dockable_window("Logger", demo_logger)
+    add_dockable_window("Notebook", demo_immapp_notebook)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
