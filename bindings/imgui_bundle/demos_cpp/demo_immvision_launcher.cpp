@@ -1,5 +1,4 @@
 #include "imgui.h"
-#include "immvision/immvision.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_utils/api_demos.h"
 
@@ -10,6 +9,7 @@ void demo_immvision_launcher()
 }
 
 #else
+#include "immvision/immvision.h"
 
 void demo_immvision_display();
 void demo_immvision_link();
