@@ -165,18 +165,10 @@ assets/
 ├── fonts/
 │     ├── Roboto/
 │     │     ├── LICENSE.txt
-│     │     ├── Roboto-Black.ttf
-│     │     ├── Roboto-BlackItalic.ttf
 │     │     ├── Roboto-Bold.ttf
 │     │     ├── Roboto-BoldItalic.ttf
-│     │     ├── Roboto-Italic.ttf
-│     │     ├── Roboto-Light.ttf
-│     │     ├── Roboto-LightItalic.ttf
-│     │     ├── Roboto-Medium.ttf
-│     │     ├── Roboto-MediumItalic.ttf
 │     │     ├── Roboto-Regular.ttf
-│     │     ├── Roboto-Thin.ttf
-│     │     └── Roboto-ThinItalic.ttf
+│     │     ├── Roboto-RegularItalic.ttf
 │     ├── SourceCodePro-Regular
 │     └── fontawesome-webfont.ttf
 └── images/
@@ -361,8 +353,9 @@ assets/
 
                 snippet.ShowCursorPosition = false;
             }
-            auto& snippet = mSnippets[m_code_block];
 
+            ImGui::SetCursorPosX(0.f);
+            auto& snippet = mSnippets[m_code_block];
             TextEditorBundle::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
