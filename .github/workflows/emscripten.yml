@@ -31,4 +31,4 @@ jobs:
           cd build_ems
           source ~/emsdk/emsdk_env.sh
           emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
-          make -j
+          make -j 4
