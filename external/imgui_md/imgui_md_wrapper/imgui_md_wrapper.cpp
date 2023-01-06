@@ -106,7 +106,7 @@ namespace ImGuiMd
             if (style.bold)
                 r += "Bold";
             else
-                r += "Medium";
+                r += "Regular";
             if (style.italic)
                 r += "Italic";
             r += ".ttf";
