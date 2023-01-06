@@ -54,12 +54,14 @@ namespace TextEditorBundle
         static std::map<ImGuiID, double> timeClickCopyButton;
 
         if (! fplus::map_contains(gEditors, id))
+        {
             gEditors.insert({id, TextEditor()});
+            auto& editor = gEditors.at(id);
+            _SetLanguage(editor, snippetData.Language);
+            _SetPalette(editor, snippetData.Palette);
+        }
 
         auto& editor = gEditors.at(id);
-        _SetLanguage(editor, snippetData.Language);
-        _SetPalette(editor, snippetData.Palette);
-
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
             std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;
