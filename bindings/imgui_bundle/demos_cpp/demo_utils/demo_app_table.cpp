@@ -16,8 +16,12 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
                            const std::string &demoCppFolder)
     : _demoApps(demoApps), _demoPythonFolder(demoPythonFolder), _demoCppFolder(demoCppFolder)
 {
-    _editorPython.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
-    _editorCpp.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+    _snippetCpp.DisplayedFilename = "Cpp Code";
+    _snippetCpp.Language = TextEditorBundle::SnippetLanguage::Cpp;
+
+    _snippetPython.DisplayedFilename = "Python Code";
+    _snippetPython.Language = TextEditorBundle::SnippetLanguage::Python;
+
     _SetDemoApp(_demoApps[0]);
 }
 
@@ -34,8 +38,8 @@ std::string DemoAppTable::_DemoCppFilePath(const DemoApp &demoApp)
 void DemoAppTable::_SetDemoApp(const DemoApp &demo_app)
 {
     _currentApp = demo_app;
-    _editorPython.SetText(_ReadCode(_DemoPythonFilePath(demo_app)));
-    _editorCpp.SetText(_ReadCode(_DemoCppFilePath(demo_app)));
+    _snippetCpp.Code = _ReadCode(_DemoCppFilePath(demo_app));
+    _snippetPython.Code = _ReadCode(_DemoPythonFilePath(demo_app));
 }
 
 void DemoAppTable::Gui()
@@ -99,31 +103,7 @@ void DemoAppTable::Gui()
 
         ImGui::NewLine();
         ImGui::Text("%s", (std::string("Code for ") + _currentApp.DemoFile).c_str());
-        ImGui::PushFont(ImGuiMd::GetCodeFont());
 
-        bool hasBothLanguages = _editorPython.GetText().size() > 0 && _editorCpp.GetText().size() > 0;
-        ImVec2 editorSize;
-        if (hasBothLanguages)
-            editorSize = ImVec2(ImGui::GetWindowWidth() / 2.03, 0.);
-        else
-            editorSize = ImVec2(ImGui::GetWindowWidth(), 0.);
-
-        if (_editorPython.GetText().size() > 0)
-        {
-            ImGui::BeginGroup();
-            ImGui::Text("Python code");
-            _editorPython.Render("Python code", editorSize);
-            ImGui::EndGroup();
-        }
-        if (hasBothLanguages)
-            ImGui::SameLine();
-        if (_editorCpp.GetText().size() > 0)
-        {
-            ImGui::BeginGroup();
-            ImGui::Text("C++ code");
-            _editorCpp.Render("C++ code", editorSize);
-            ImGui::EndGroup();
-        }
-        ImGui::PopFont();
+        TextEditorBundle::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
     }
 }

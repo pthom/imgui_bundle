@@ -2,11 +2,10 @@
 #include "imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include "TextEditorBundle/TextEditorBundle.h"
 #include "demo_utils/subprocess.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 
-#include <map>
 #include <fplus/fplus.hpp>
 #include <unordered_map>
 #include <string>
@@ -65,79 +64,34 @@ std::string ReadPythonCode(const std::string& demo_file_path)
 }
 
 
-void ShowCodeEditor(std::string code, bool is_cpp, bool flag_half_width, int nb_lines)
-{
-    static std::map<std::string, TextEditor> editors;
-
-    if (editors.count(code) == 0)
-    {
-        editors[code] = TextEditor();
-        if (is_cpp)
-        {
-            editors[code].SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
-        }
-        else
-        {
-            editors[code].SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
-        }
-        editors[code].SetText(CodeUtils::UnindentCode(code));
-    }
-
-    if (nb_lines == 0)
-        nb_lines = fplus::count('\n', editors[code].GetText()) + 1;
-    ImVec2 editor_size;
-    if (flag_half_width)
-    {
-        editor_size = ImVec2(ImGui::GetWindowWidth() / 2.0f - 20.0f, ImmApp::EmSize() * 1.025f * nb_lines);
-    }
-    else
-    {
-        editor_size = ImVec2(ImGui::GetWindowWidth() - 20.0f, ImmApp::EmSize() * 1.025f * nb_lines);
-    }
-    std::string editor_title = is_cpp ? "cpp" : "python";
-
-    ImGui::PushFont(ImGuiMd::GetCodeFont());
-    editors[code].Render(("##" + editor_title).c_str(), editor_size);
-    ImGui::PopFont();
-}
-
-
 void ShowPythonVsCppCode(const std::string& pythonCode, const std::string& cppCode, int nbLines)
 {
     ImGui::PushID(pythonCode.c_str());
 
     const bool flagHalfWidth = !pythonCode.empty() && !cppCode.empty();
 
-    if (!cppCode.empty())
-    {
-        ImGui::BeginGroup();
-        ImGui::Text("C++ code");
-        ShowCodeEditor(cppCode, true, flagHalfWidth, nbLines);
-        ImGui::EndGroup();
+    TextEditorBundle::SnippetData snippetCpp, snippetPython;
 
-        if (!pythonCode.empty())
-        {
-            ImGui::SameLine();
-        }
-    }
+    snippetCpp.Code = cppCode;
+    snippetCpp.DisplayedFilename = "C++ code";
+    snippetCpp.Language = TextEditorBundle::SnippetLanguage::Cpp;
+    snippetCpp.HeightInLines = nbLines;
 
-    if (!pythonCode.empty())
-    {
-        ImGui::BeginGroup();
-        ImGui::Text("Python code");
-        ShowCodeEditor(pythonCode, false, flagHalfWidth, nbLines);
-        ImGui::EndGroup();
-    }
+    snippetPython.Code = pythonCode;
+    snippetPython.DisplayedFilename = "Python code";
+    snippetPython.Language = TextEditorBundle::SnippetLanguage::Python;
+    snippetPython.HeightInLines = nbLines;
 
+    TextEditorBundle::ShowSideBySideSnippets(snippetCpp, snippetPython);
     ImGui::PopID();
 }
 
 
-void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines)
+void ShowPythonVsCppFile(const char* demo_file_path, int nbLines)
 {
     std::string cpp_code = ReadCppCode(demo_file_path);
     std::string python_code = ReadPythonCode(demo_file_path);
-    ShowPythonVsCppCode(python_code.c_str(), cpp_code.c_str(), nb_lines);
+    ShowPythonVsCppCode(python_code.c_str(), cpp_code.c_str(), nbLines);
 }
 
 

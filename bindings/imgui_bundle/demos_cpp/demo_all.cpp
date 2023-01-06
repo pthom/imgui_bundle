@@ -1,10 +1,11 @@
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include "TextEditorBundle/TextEditorBundle.h"
 #include "demo_utils/api_demos.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 
 #include <functional>
+#include <fplus/fplus.hpp>
 
 void demo_immapp_launcher();
 void demo_text_edit();
@@ -28,28 +29,24 @@ using VoidFunction = std::function<void(void)>;
 
 void ShowModuleDemo(const std::string& demoModule, VoidFunction demoFunction)
 {
-    static TextEditor editor;
+    static TextEditorBundle::SnippetData snippet;
     static bool wasInitialized;
     static std::string lastModule;
 
     if (!wasInitialized)
     {
-        editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+        snippet.Language = TextEditorBundle::SnippetLanguage::Cpp;
         wasInitialized = true;
     }
 
     if (demoModule != lastModule)
     {
         std::string code = ReadCppCode(demoModule);
-        editor.SetText(code);
+        snippet.Code = code;
     }
 
     if (ImGui::CollapsingHeader("Code for this demo"))
-    {
-        ImGui::PushFont(ImGuiMd::GetCodeFont());
-        editor.Render("Code");
-        ImGui::PopFont();
-    }
+        TextEditorBundle::ShowCodeSnippet(snippet);
 
     demoFunction();
 }

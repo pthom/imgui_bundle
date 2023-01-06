@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include "TextEditorBundle/TextEditorBundle.h"
 
 
 struct DemoApp
@@ -25,8 +25,7 @@ private:
     void _SetDemoApp(const DemoApp &demo_app);
 
     // members
-    TextEditor _editorPython;
-    TextEditor _editorCpp;
+    TextEditorBundle::SnippetData _snippetCpp, _snippetPython;
     std::vector<DemoApp> _demoApps;
     DemoApp _currentApp;
     std::string _demoPythonFolder;
