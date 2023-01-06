@@ -23,18 +23,22 @@ class DemoApp:
 
 
 class DemoAppTable:
-    editor_python: text_edit.TextEditor
-    editor_cpp: text_edit.TextEditor
+    snippet_python: text_edit.text_editor_bundle.SnippetData
+    snippet_cpp: text_edit.text_editor_bundle.SnippetData
     demo_apps: List[DemoApp]
     current_app: DemoApp
     demo_python_folder: str
     demo_cpp_folder: str
 
     def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str):
-        self.editor_python = text_edit.TextEditor()
-        self.editor_python.set_language_definition(text_edit.TextEditor.LanguageDefinition.python())
-        self.editor_cpp = text_edit.TextEditor()
-        self.editor_cpp.set_language_definition(text_edit.TextEditor.LanguageDefinition.c_plus_plus())
+        self.snippet_cpp = text_edit.text_editor_bundle.SnippetData()
+        self.snippet_cpp.displayed_filename = "C++ code"
+        self.snippet_cpp.language = text_edit.text_editor_bundle.SnippetLanguage.cpp
+
+        self.snippet_python = text_edit.text_editor_bundle.SnippetData()
+        self.snippet_python.displayed_filename = "Python code"
+        self.snippet_python.language = text_edit.text_editor_bundle.SnippetLanguage.python
+
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
         self.demo_cpp_folder = demo_cpp_folder
@@ -48,8 +52,8 @@ class DemoAppTable:
 
     def _set_demo_app(self, demo_app: DemoApp):
         self.current_app = demo_app
-        self.editor_python.set_text(_read_code(self._demo_python_file_path(demo_app)))
-        self.editor_cpp.set_text(_read_code(self._demo_cpp_file_path(demo_app)))
+        self.snippet_cpp.code = _read_code(self._demo_cpp_file_path(demo_app))
+        self.snippet_python.code = _read_code(self._demo_python_file_path(demo_app))
 
     def gui(self):
         table_flags = imgui.TableFlags_.row_bg | imgui.TableFlags_.borders | imgui.TableFlags_.resizable
@@ -86,24 +90,5 @@ class DemoAppTable:
 
         imgui.new_line()
         imgui.text(f"Code for {self.current_app.demo_file}")
-        imgui.push_font(imgui_md.get_code_font())
 
-        has_both_languages = len(self.editor_python.get_text()) > 0 and len(self.editor_cpp.get_text()) > 0
-        if has_both_languages:
-            editor_size = ImVec2(imgui.get_window_width() / 2.03, 0.)
-        else:
-            editor_size = ImVec2(imgui.get_window_width(), 0.)
-
-        if len(self.editor_python.get_text()) > 0:
-            imgui.begin_group()
-            imgui.text("Python code")
-            self.editor_python.render("Python code", editor_size)
-            imgui.end_group()
-        if has_both_languages:
-            imgui.same_line()
-        if len(self.editor_cpp.get_text()) > 0:
-            imgui.begin_group()
-            imgui.text("C++ code")
-            self.editor_cpp.render("C++ code", editor_size)
-            imgui.end_group()
-        imgui.pop_font()
+        text_edit.text_editor_bundle.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)

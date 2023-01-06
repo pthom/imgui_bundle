@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "imgui/misc/cpp/imgui_stdlib.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
@@ -208,22 +209,58 @@ void demo_imgui_bundle()
 
     if (ImGui::CollapsingHeader("Immediate mode gui"))
     {
+        auto immediate_gui_example = []() {
+            // Display a text
+            ImGui::Text("Counter = %i", app_state.counter);
+            ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+            // The following line displays a button
+            if (ImGui::Button("increment counter"))
+                // And returns true if it was clicked: you can *immediately* handle the click
+                app_state.counter += 1;
+
+            // Input a text: in python, input_text returns a tuple(modified, new_value)
+            bool changed = ImGui::InputText("Your name?", &app_state.name);
+            ImGui::Text("Hello %s!", app_state.name.c_str());
+        };
         ImGuiMd::RenderUnindented(R"(
             An example is often worth a thousand words. The following code:
 
+            C++
             ```cpp
-            if (ImGui::Button("increment counter"))
-                app_state.counter++;
+            // Display a text
             ImGui::Text("Counter = %i", app_state.counter);
+            ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+            // The following line displays a button
+            if (ImGui::Button("increment counter"))
+                // And returns true if it was clicked: you can *immediately* handle the click
+                app_state.counter += 1;
+
+            // Input a text: in C++, InputText returns a bool and modifies the text directly
+            bool changed = ImGui::InputText("Your name?", &app_state.name);
+            ImGui::Text("Hello %s!", app_state.name.c_str());
+            ```
+
+            Python
+            ```python
+            # Display a text
+            imgui.text(f"Counter = {app_state.counter}")
+            imgui.same_line()  # by default ImGui starts a new line at each widget
+
+            # The following line displays a button
+            if imgui.button("increment counter"):
+                # And returns true if it was clicked: you can *immediately* handle the click
+                app_state.counter += 1
+
+            # Input a text: in python, input_text returns a tuple(modified, new_value)
+            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+            imgui.text(f"Hello {app_state.name}!")
             ```
 
             Displays this:
         )");
-
-        if (ImGui::Button("increment counter"))
-            app_state.counter++;
-        ImGui::Text("Counter = %i", app_state.counter);
-
+        immediate_gui_example();
         ImGui::Separator();
     }
 

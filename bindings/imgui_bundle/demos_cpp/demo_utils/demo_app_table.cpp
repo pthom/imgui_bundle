@@ -16,7 +16,7 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
                            const std::string &demoCppFolder)
     : _demoApps(demoApps), _demoPythonFolder(demoPythonFolder), _demoCppFolder(demoCppFolder)
 {
-    _snippetCpp.DisplayedFilename = "Cpp Code";
+    _snippetCpp.DisplayedFilename = "C++ Code";
     _snippetCpp.Language = TextEditorBundle::SnippetLanguage::Cpp;
 
     _snippetPython.DisplayedFilename = "Python Code";

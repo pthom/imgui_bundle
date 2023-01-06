@@ -25,8 +25,8 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
     static = show_module_demo
 
     if not static.was_initialized:
-        static.editor = ed.TextEditor()
-        static.editor.set_language_definition(ed.TextEditor.LanguageDefinition.python())
+        static.snippet = ed.text_editor_bundle.SnippetData()
+        static.snippet.language = ed.text_editor_bundle.SnippetLanguage.python
         static.last_module = None
         static.was_initialized = True
 
@@ -34,13 +34,11 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
         import inspect
 
         code = inspect.getsource(demo_module)
-        static.editor.set_text(code)
+        static.snippet.code = code
         static.last_module = demo_module
 
     if imgui.collapsing_header("Code for this demo"):
-        imgui.push_font(imgui_md.get_code_font())
-        static.editor.render("Code")
-        imgui.pop_font()
+        ed.text_editor_bundle.show_code_snippet(static.snippet)
 
     demo_function()
 

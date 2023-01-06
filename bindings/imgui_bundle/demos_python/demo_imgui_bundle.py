@@ -1,5 +1,5 @@
 from imgui_bundle import imgui, imgui_md, hello_imgui
-from imgui_bundle.demos_python.demo_utils import show_code_editor, show_python_vs_cpp_and_run
+from imgui_bundle.demos_python.demo_utils import show_python_vs_cpp_and_run
 from imgui_bundle import immapp
 from imgui_bundle import imgui_color_text_edit as text_edit
 import inspect
@@ -139,19 +139,17 @@ def demo_add_window_size_callback():
     glfw.set_window_size_callback(window, my_window_size_callback)
 
 
-@immapp.static(text_editor=None)
+@immapp.static(snippet=None)
 def show_glfw_callback_advice():
     static = show_glfw_callback_advice
-    if static.text_editor is None:
+    if static.snippet is None:
         import inspect
 
-        static.text_editor = text_edit.TextEditor()
-        static.text_editor.set_text(inspect.getsource(demo_add_window_size_callback))
+        static.snippet = text_edit.text_editor_bundle.SnippetData()
+        static.snippet.code = inspect.getsource(demo_add_window_size_callback)
 
     imgui.text("Code for this demo")
-    imgui.push_font(imgui_md.get_code_font())
-    static.text_editor.render("Code", immapp.em_to_vec2(50.0, 16.5))
-    imgui.pop_font()
+    text_edit.text_editor_bundle.show_code_snippet(static.snippet)
 
     imgui_md.render_unindented(
         """For more complex applications, you can set various callbacks, using glfw.
@@ -222,8 +220,6 @@ def demo_gui() -> None:
         )
 
     if imgui.collapsing_header("Immediate mode gui"):
-        imgui_md.render_unindented("""An example is often worth a thousand words. The following code:""")
-
         def immediate_gui_example():
             # Display a text
             imgui.text(f"Counter = {app_state.counter}")
@@ -234,10 +230,47 @@ def demo_gui() -> None:
                 # And returns true if it was clicked: you can *immediately* handle the click
                 app_state.counter += 1
 
-        python_code = inspect.getsource(immediate_gui_example)
-        # imgui.input_text_multiline("##immediate_gui_example", python_code, ImVec2(500, 150))
-        show_code_editor(python_code, False, flag_half_width=False)
-        imgui.text("Displays this:")
+            # Input a text: in python, input_text returns a tuple(modified, new_value)
+            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+            imgui.text(f"Hello {app_state.name}!")
+
+        imgui_md.render_unindented("""
+            An example is often worth a thousand words. The following code:
+
+            C++
+            ```cpp
+            // Display a text
+            ImGui::Text("Counter = %i", app_state.counter);
+            ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+            // The following line displays a button
+            if (ImGui::Button("increment counter"))
+                // And returns true if it was clicked: you can *immediately* handle the click
+                app_state.counter += 1;
+
+            // Input a text: in C++, InputText returns a bool and modifies the text directly
+            bool changed = ImGui::InputText("Your name?", &app_state.name);
+            ImGui::Text("Hello %s!", app_state.name.c_str());
+            ```
+
+            Python
+            ```python
+            # Display a text
+            imgui.text(f"Counter = {app_state.counter}")
+            imgui.same_line()  # by default ImGui starts a new line at each widget
+
+            # The following line displays a button
+            if imgui.button("increment counter"):
+                # And returns true if it was clicked: you can *immediately* handle the click
+                app_state.counter += 1
+
+            # Input a text: in python, input_text returns a tuple(modified, new_value)
+            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+            imgui.text(f"Hello {app_state.name}!")
+            ```
+
+            Displays this:
+        """);
         immediate_gui_example()
         imgui.separator()
 
