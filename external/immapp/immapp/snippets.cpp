@@ -1,4 +1,4 @@
-#include "TextEditorBundle/TextEditorBundle.h"
+#include "snippets.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui.h"
 #include "hello_imgui/icons_font_awesome.h"
@@ -8,18 +8,18 @@
 
 
 #include <map>
-#include <fplus/fplus.hpp>
+#include "fplus/fplus.hpp"
 
 
-namespace TextEditorBundle
+namespace Snippets
 {
-    void _SetPalette(TextEditor& editor, EditorPalette palette)
+    void _SetTheme(TextEditor& editor, SnippetTheme palette)
     {
-        if (palette == EditorPalette::Dark)
+        if (palette == SnippetTheme::Dark)
             editor.SetPalette(TextEditor::GetDarkPalette());
-        else if (palette == EditorPalette::Light)
+        else if (palette == SnippetTheme::Light)
             editor.SetPalette(TextEditor::GetLightPalette());
-        else if (palette == EditorPalette::RetroBlue)
+        else if (palette == SnippetTheme::RetroBlue)
             editor.SetPalette(TextEditor::GetRetroBluePalette());
     }
 
@@ -58,7 +58,7 @@ namespace TextEditorBundle
             gEditors.insert({id, TextEditor()});
             auto& editor = gEditors.at(id);
             _SetLanguage(editor, snippetData.Language);
-            _SetPalette(editor, snippetData.Palette);
+            _SetTheme(editor, snippetData.Palette);
         }
 
         auto& editor = gEditors.at(id);

@@ -22,9 +22,7 @@ def main():
     options.member_exclude_by_type__regex = "Callback$|^char$"
 
     generator = litgen.LitgenGenerator(options)
-
     generator.process_cpp_file(MAIN_DIR + "/ImGuiColorTextEdit/TextEditor.h")
-    generator.process_cpp_file(MAIN_DIR + "/bundle_integration/TextEditorBundle/TextEditorBundle.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

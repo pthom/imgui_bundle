@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "TextEditorBundle/TextEditorBundle.h"
+#include "immapp/snippets.h"
 
 
 struct DemoApp

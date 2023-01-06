@@ -100,7 +100,7 @@ void demo_romeo_and_juliet()
         };
     }
 
-    ed::Config().SettingsFile = "romeo_and_juliet.json";
+    // ed::GetConfig().SettingsFile = "romeo_and_juliet.json"; // GetConfig() is const!
     ed::Begin("Romeo and Juliet");
     for (auto &lover: lovers)
         lover->Draw();

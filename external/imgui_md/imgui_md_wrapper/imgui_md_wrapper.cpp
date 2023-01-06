@@ -1,7 +1,7 @@
 #include "imgui_md_wrapper.h"
 
 #include "hello_imgui/hello_imgui.h"
-#include "TextEditorBundle/TextEditorBundle.h"
+#include "immapp/snippets.h"
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
@@ -231,7 +231,7 @@ assets/
     private:
         MarkdownOptions mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
-        std::map<std::string, TextEditorBundle::SnippetData> mSnippets;
+        std::map<std::string, Snippets::SnippetData> mSnippets;
     public:
         MarkdownRenderer(MarkdownOptions markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -330,33 +330,33 @@ assets/
             ImGui::PushID(m_code_block.c_str());
             if (mSnippets.find(m_code_block) == mSnippets.end())
             {
-                mSnippets[m_code_block] = TextEditorBundle::SnippetData();
+                mSnippets[m_code_block] = Snippets::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
-                snippet.Palette = TextEditorBundle::EditorPalette::Dark;
+                snippet.Palette = Snippets::SnippetTheme::Dark;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
                 if (fplus::to_lower_case(m_code_block_language) == "cpp")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::Cpp;
+                    snippet.Language = Snippets::SnippetLanguage::Cpp;
                 else if (fplus::to_lower_case(m_code_block_language) == "c")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::C;
+                    snippet.Language = Snippets::SnippetLanguage::C;
                 else if (fplus::to_lower_case(m_code_block_language) == "python")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::Python;
+                    snippet.Language = Snippets::SnippetLanguage::Python;
                 else if (fplus::to_lower_case(m_code_block_language) == "glsl")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::Glsl;
+                    snippet.Language = Snippets::SnippetLanguage::Glsl;
                 else if (fplus::to_lower_case(m_code_block_language) == "sql")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::Sql;
+                    snippet.Language = Snippets::SnippetLanguage::Sql;
                 else if (fplus::to_lower_case(m_code_block_language) == "lua")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::Lua;
+                    snippet.Language = Snippets::SnippetLanguage::Lua;
                 else if (fplus::to_lower_case(m_code_block_language) == "angelscript")
-                    snippet.Language = TextEditorBundle::SnippetLanguage::AngelScript;
+                    snippet.Language = Snippets::SnippetLanguage::AngelScript;
 
                 snippet.ShowCursorPosition = false;
             }
 
             ImGui::SetCursorPosX(0.f);
             auto& snippet = mSnippets[m_code_block];
-            TextEditorBundle::ShowCodeSnippet(snippet);
+            Snippets::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
         }

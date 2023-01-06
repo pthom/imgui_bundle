@@ -2,7 +2,7 @@
 #include "imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
-#include "TextEditorBundle/TextEditorBundle.h"
+#include "immapp/snippets.h"
 #include "demo_utils/subprocess.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 

@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace TextEditorBundle
+namespace Snippets
 {
     //
     // TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
@@ -21,7 +21,7 @@ namespace TextEditorBundle
         Python
     };
 
-    enum class EditorPalette
+    enum class SnippetTheme
     {
         Dark,
         Light,
@@ -30,7 +30,7 @@ namespace TextEditorBundle
 
 
     // DefaultSnippetLanguage will be Cpp or Python if using python bindings.
-    inline constexpr SnippetLanguage DefaultSnippetLanguage()
+    inline SnippetLanguage DefaultSnippetLanguage()
     {
 #ifdef IMGUI_BUNDLE_BUILD_PYTHON
         return SnippetLanguage::Python;
@@ -44,7 +44,7 @@ namespace TextEditorBundle
     {
         std::string Code = "";
         SnippetLanguage Language = DefaultSnippetLanguage();
-        EditorPalette Palette = EditorPalette::Light;
+        SnippetTheme Palette = SnippetTheme::Light;
 
         bool ShowCopyButton = true;         // Displayed on top of the editor (Top Right corner)
         bool ShowCursorPosition = true;     // Show line and column number
