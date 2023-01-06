@@ -145,11 +145,11 @@ def show_glfw_callback_advice():
     if static.snippet is None:
         import inspect
 
-        static.snippet = text_edit.text_editor_bundle.SnippetData()
+        static.snippet = immapp.snippets.SnippetData()
         static.snippet.code = inspect.getsource(demo_add_window_size_callback)
 
     imgui.text("Code for this demo")
-    text_edit.text_editor_bundle.show_code_snippet(static.snippet)
+    immapp.snippets.show_code_snippet(static.snippet)
 
     imgui_md.render_unindented(
         """For more complex applications, you can set various callbacks, using glfw.

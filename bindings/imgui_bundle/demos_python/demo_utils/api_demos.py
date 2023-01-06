@@ -19,17 +19,17 @@ def demos_assets_folder() -> str:
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.push_id(python_code)
 
-    snippet_cpp: text_edit.SnippetData = text_edit.text_editor_bundle.SnippetData()
+    snippet_cpp: text_edit.SnippetData = immapp.snippets.SnippetData()
     snippet_cpp.code = cpp_code
     snippet_cpp.displayed_filename = "C++ code"
     snippet_cpp.height_in_lines = nb_lines
 
-    snippet_python: text_edit.SnippetData = text_edit.text_editor_bundle.SnippetData()
+    snippet_python: text_edit.SnippetData = immapp.snippets.SnippetData()
     snippet_python.code = python_code
     snippet_python.displayed_filename = "Python code"
     snippet_python.height_in_lines = nb_lines
 
-    text_edit.text_editor_bundle.show_side_by_side_snippets(snippet_python, snippet_cpp)
+    immapp.snippets.show_side_by_side_snippets(snippet_python, snippet_cpp)
 
     imgui.pop_id()
 

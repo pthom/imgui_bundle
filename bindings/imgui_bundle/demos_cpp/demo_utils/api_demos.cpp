@@ -70,19 +70,19 @@ void ShowPythonVsCppCode(const std::string& pythonCode, const std::string& cppCo
 
     const bool flagHalfWidth = !pythonCode.empty() && !cppCode.empty();
 
-    TextEditorBundle::SnippetData snippetCpp, snippetPython;
+    Snippets::SnippetData snippetCpp, snippetPython;
 
     snippetCpp.Code = cppCode;
     snippetCpp.DisplayedFilename = "C++ code";
-    snippetCpp.Language = TextEditorBundle::SnippetLanguage::Cpp;
+    snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
     snippetCpp.HeightInLines = nbLines;
 
     snippetPython.Code = pythonCode;
     snippetPython.DisplayedFilename = "Python code";
-    snippetPython.Language = TextEditorBundle::SnippetLanguage::Python;
+    snippetPython.Language = Snippets::SnippetLanguage::Python;
     snippetPython.HeightInLines = nbLines;
 
-    TextEditorBundle::ShowSideBySideSnippets(snippetCpp, snippetPython);
+    Snippets::ShowSideBySideSnippets(snippetCpp, snippetPython);
     ImGui::PopID();
 }
 

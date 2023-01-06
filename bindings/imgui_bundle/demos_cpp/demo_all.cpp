@@ -29,13 +29,13 @@ using VoidFunction = std::function<void(void)>;
 
 void ShowModuleDemo(const std::string& demoModule, VoidFunction demoFunction)
 {
-    static TextEditorBundle::SnippetData snippet;
+    static Snippets::SnippetData snippet;
     static bool wasInitialized;
     static std::string lastModule;
 
     if (!wasInitialized)
     {
-        snippet.Language = TextEditorBundle::SnippetLanguage::Cpp;
+        snippet.Language = Snippets::SnippetLanguage::Cpp;
         wasInitialized = true;
     }
 
@@ -46,7 +46,7 @@ void ShowModuleDemo(const std::string& demoModule, VoidFunction demoFunction)
     }
 
     if (ImGui::CollapsingHeader("Code for this demo"))
-        TextEditorBundle::ShowCodeSnippet(snippet);
+        Snippets::ShowCodeSnippet(snippet);
 
     demoFunction();
 }

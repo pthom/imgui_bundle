@@ -17,10 +17,10 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
     : _demoApps(demoApps), _demoPythonFolder(demoPythonFolder), _demoCppFolder(demoCppFolder)
 {
     _snippetCpp.DisplayedFilename = "C++ Code";
-    _snippetCpp.Language = TextEditorBundle::SnippetLanguage::Cpp;
+    _snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
 
     _snippetPython.DisplayedFilename = "Python Code";
-    _snippetPython.Language = TextEditorBundle::SnippetLanguage::Python;
+    _snippetPython.Language = Snippets::SnippetLanguage::Python;
 
     _SetDemoApp(_demoApps[0]);
 }
@@ -104,6 +104,6 @@ void DemoAppTable::Gui()
         ImGui::NewLine();
         ImGui::Text("%s", (std::string("Code for ") + _currentApp.DemoFile).c_str());
 
-        TextEditorBundle::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
+        Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
     }
 }

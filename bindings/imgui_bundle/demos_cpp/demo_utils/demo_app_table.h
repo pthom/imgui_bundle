@@ -25,7 +25,7 @@ private:
     void _SetDemoApp(const DemoApp &demo_app);
 
     // members
-    TextEditorBundle::SnippetData _snippetCpp, _snippetPython;
+    Snippets::SnippetData _snippetCpp, _snippetPython;
     std::vector<DemoApp> _demoApps;
     DemoApp _currentApp;
     std::string _demoPythonFolder;

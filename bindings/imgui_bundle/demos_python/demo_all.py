@@ -25,8 +25,8 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
     static = show_module_demo
 
     if not static.was_initialized:
-        static.snippet = ed.text_editor_bundle.SnippetData()
-        static.snippet.language = ed.text_editor_bundle.SnippetLanguage.python
+        static.snippet = immapp.snippets.SnippetData()
+        static.snippet.language = immapp.snippets.SnippetLanguage.python
         static.last_module = None
         static.was_initialized = True
 
@@ -38,7 +38,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
         static.last_module = demo_module
 
     if imgui.collapsing_header("Code for this demo"):
-        ed.text_editor_bundle.show_code_snippet(static.snippet)
+        immapp.snippets.show_code_snippet(static.snippet)
 
     demo_function()
 

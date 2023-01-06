@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 
-from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2
+from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2, immapp
 
 
 def _read_code(filepath: str) -> str:
@@ -23,21 +23,21 @@ class DemoApp:
 
 
 class DemoAppTable:
-    snippet_python: text_edit.text_editor_bundle.SnippetData
-    snippet_cpp: text_edit.text_editor_bundle.SnippetData
+    snippet_python: immapp.snippets.SnippetData
+    snippet_cpp: immapp.snippets.SnippetData
     demo_apps: List[DemoApp]
     current_app: DemoApp
     demo_python_folder: str
     demo_cpp_folder: str
 
     def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str):
-        self.snippet_cpp = text_edit.text_editor_bundle.SnippetData()
+        self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
-        self.snippet_cpp.language = text_edit.text_editor_bundle.SnippetLanguage.cpp
+        self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
 
-        self.snippet_python = text_edit.text_editor_bundle.SnippetData()
+        self.snippet_python = immapp.snippets.SnippetData()
         self.snippet_python.displayed_filename = "Python code"
-        self.snippet_python.language = text_edit.text_editor_bundle.SnippetLanguage.python
+        self.snippet_python.language = immapp.snippets.SnippetLanguage.python
 
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
@@ -91,4 +91,4 @@ class DemoAppTable:
         imgui.new_line()
         imgui.text(f"Code for {self.current_app.demo_file}")
 
-        text_edit.text_editor_bundle.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)
+        immapp.snippets.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)
