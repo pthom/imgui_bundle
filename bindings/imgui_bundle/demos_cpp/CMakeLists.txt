@@ -103,6 +103,7 @@ target_link_libraries(demo_all PRIVATE
     demos_imguizmo
     demos_tex_inspect
     demos_node_editor
+    demo_utils
 )
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
