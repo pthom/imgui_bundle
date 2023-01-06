@@ -1,7 +1,7 @@
 #include "imgui_md_wrapper.h"
 
 #include "hello_imgui/hello_imgui.h"
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include "TextEditorBundle/TextEditorBundle.h"
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
@@ -239,7 +239,7 @@ assets/
     private:
         MarkdownOptions mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
-        std::map<std::string, TextEditor> mCodeBlockEditors;
+        std::map<std::string, TextEditorBundle::SnippetData> mSnippets;
     public:
         MarkdownRenderer(MarkdownOptions markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -336,42 +336,33 @@ assets/
             };
 
             ImGui::PushID(m_code_block.c_str());
-            if (mCodeBlockEditors.find(m_code_block) == mCodeBlockEditors.end())
+            if (mSnippets.find(m_code_block) == mSnippets.end())
             {
-                mCodeBlockEditors[m_code_block] = TextEditor();
-                auto& editor = mCodeBlockEditors[m_code_block];
-                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
-
-                editor.SetText(code_without_last_empty_lines(m_code_block));
+                mSnippets[m_code_block] = TextEditorBundle::SnippetData();
+                auto& snippet = mSnippets[m_code_block];
+                snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
                 if (fplus::to_lower_case(m_code_block_language) == "cpp")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::Cpp;
                 else if (fplus::to_lower_case(m_code_block_language) == "c")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::C());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::C;
                 else if (fplus::to_lower_case(m_code_block_language) == "python")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::Python;
                 else if (fplus::to_lower_case(m_code_block_language) == "glsl")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::Glsl;
                 else if (fplus::to_lower_case(m_code_block_language) == "sql")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::SQL());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::Sql;
                 else if (fplus::to_lower_case(m_code_block_language) == "lua")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::Lua;
                 else if (fplus::to_lower_case(m_code_block_language) == "angelscript")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::AngelScript());
+                    snippet.Language = TextEditorBundle::SnippetLanguage::AngelScript;
+
+                snippet.ShowCursorPosition = false;
             }
+            auto& snippet = mSnippets[m_code_block];
 
-            auto & editor = mCodeBlockEditors[m_code_block];
-
-            int nbLines = 0; for (auto c: editor.GetText()) if (c == '\n') ++ nbLines;
-            ImVec2 editor_size(ImGui::GetWindowWidth() - ImGui::GetFontSize() * 5.f, ImGui::GetFontSize() * (nbLines + 1));
-
-            editor.SetText(code_without_last_empty_lines(m_code_block));
-            editor.Render("editor", editor_size);
-
-            ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_COPY))
-                ImGui::SetClipboardText(m_code_block.c_str());
+            TextEditorBundle::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
         }

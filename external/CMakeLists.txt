@@ -26,10 +26,7 @@ target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed c
 lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
-add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    target_compile_definitions(imgui_color_text_edit PRIVATE IMGUI_BUNDLE_BUILD_PYTHON)
-endif()
+add_subdirectory(ImGuiColorTextEdit)
 # Build imgui-node-editor
 add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 target_sources(imgui_node_editor PRIVATE
