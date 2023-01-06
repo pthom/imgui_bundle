@@ -118,7 +118,14 @@ def main() -> None:
             runner_params.docking_params.focus_dockable_window("ImGui Bundle")
         show_gui.nb_frames += 1
 
+    def gui_fps_status():
+        idle_active = (runner_params.fps_idle > 0)
+        imgui.set_cursor_pos_x(imgui.get_window_content_region_max().x - immapp.em_size() * 12.)
+        _, idle_active = imgui.checkbox("Auto Idle", idle_active)
+        runner_params.fps_idle = 10 if idle_active else 0
+
     runner_params.callbacks.show_gui = show_gui
+    runner_params.callbacks.show_status = gui_fps_status
 
     ################################################################################################
     # Part 3: Run the app
