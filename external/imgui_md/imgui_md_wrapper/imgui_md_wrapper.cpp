@@ -340,6 +340,7 @@ assets/
             {
                 mSnippets[m_code_block] = TextEditorBundle::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
+                snippet.Palette = TextEditorBundle::EditorPalette::Dark;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language

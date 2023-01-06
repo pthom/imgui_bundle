@@ -181,8 +181,10 @@ namespace TextEditorBundle
         {
             bool show = !hideIfEmpty || !snippet.Code.empty();
             if (show)
+            {
                 ShowCodeSnippet(snippet, editorWidth, overrideHeightInLines);
-            ImGui::SameLine();
+                ImGui::SameLine();
+            }
         }
         ImGui::NewLine();
     }
