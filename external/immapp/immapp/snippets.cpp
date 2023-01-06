@@ -5,7 +5,9 @@
 #include "immapp/code_utils.h"
 #include "immapp/utils.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
-
+#ifdef __EMSCRIPTEN__
+#include "immapp/js_clipboard_tricks.h"
+#endif
 
 #include <map>
 #include "fplus/fplus.hpp"
@@ -43,6 +45,34 @@ namespace Snippets
             editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
     }
 
+#ifdef __EMSCRIPTEN__
+    void _ProcessClipboard_Emscripten(TextEditor& editor)
+    {
+      if (!ImGui::IsItemHovered())
+          return;
+
+      ImGuiIO& io = ImGui::GetIO();
+      auto shift = io.KeyShift;
+      //auto ctrl = io.ConfigMacOSXBehaviors ? io.KeySuper : io.KeyCtrl;
+      // auto alt = io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
+
+      auto ctrl = io.KeySuper || io.KeyCtrl;
+
+      bool shallFillBrowserClipboard = false;
+      if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Insert)))
+          shallFillBrowserClipboard = true;
+      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
+          shallFillBrowserClipboard = true;
+      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_X)))
+          shallFillBrowserClipboard = true;
+      else if (!ctrl && shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+          shallFillBrowserClipboard = true;
+
+      if (shallFillBrowserClipboard)
+          JsClipboard_SetClipboardText(editor.GetSelectedText().c_str());
+    }
+#endif // #ifdef __EMSCRIPTEN__
+
 
     void ShowCodeSnippet(const SnippetData& snippetData, float width, int overrideHeightInLines)
     {
@@ -50,6 +80,7 @@ namespace Snippets
             width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
 
         auto id = ImGui::GetID(snippetData.Code.c_str());
+        ImGui::PushID(id);
         static std::map<ImGuiID, TextEditor> gEditors;
         static std::map<ImGuiID, double> timeClickCopyButton;
 
@@ -120,6 +151,9 @@ namespace Snippets
                 {
                     timeClickCopyButton[id] = ImmApp::ClockSeconds();
                     ImGui::SetClipboardText(snippetData.Code.c_str());
+                    #ifdef __EMSCRIPTEN__
+                    JsClipboard_SetClipboardText(snippetData.Code.c_str());
+                    #endif
                 }
 
                 bool wasCopiedRecently = false;
@@ -142,8 +176,13 @@ namespace Snippets
 
         ImGui::PushFont(ImGuiMd::GetCodeFont());
         editor.Render(std::to_string(id).c_str(), editorSize, snippetData.Border);
+#ifdef __EMSCRIPTEN__
+        _ProcessClipboard_Emscripten(editor);
+#endif
+
         ImGui::PopFont();
         ImGui::EndGroup();
+        ImGui::PopID();
     }
 
 
