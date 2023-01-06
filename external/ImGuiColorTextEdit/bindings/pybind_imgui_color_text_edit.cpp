@@ -309,7 +309,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             py::class_<TextEditorBundle::SnippetData>
                 (pyNsTextEditorBundle, "SnippetData", "")
             .def(py::init<>([](
-            std::string Code = "", TextEditorBundle::SnippetLanguage Language = TextEditorBundle::DefaultSnippetLanguage(), TextEditorBundle::EditorPalette Palette = TextEditorBundle::EditorPalette::Dark, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = true, bool Border = false, bool DeIndentCode = true)
+            std::string Code = "", TextEditorBundle::SnippetLanguage Language = TextEditorBundle::DefaultSnippetLanguage(), TextEditorBundle::EditorPalette Palette = TextEditorBundle::EditorPalette::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = true, bool Border = false, bool DeIndentCode = true)
             {
                 auto r = std::make_unique<TextEditorBundle::SnippetData>();
                 r->Code = Code;
@@ -325,7 +325,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
                 r->DeIndentCode = DeIndentCode;
                 return r;
             })
-            , py::arg("code") = "", py::arg("language") = TextEditorBundle::DefaultSnippetLanguage(), py::arg("palette") = TextEditorBundle::EditorPalette::Dark, py::arg("show_copy_button") = true, py::arg("show_cursor_position") = true, py::arg("displayed_filename") = std::string{}, py::arg("height_in_lines") = 0, py::arg("max_height_in_lines") = 40, py::arg("read_only") = true, py::arg("border") = false, py::arg("de_indent_code") = true
+            , py::arg("code") = "", py::arg("language") = TextEditorBundle::DefaultSnippetLanguage(), py::arg("palette") = TextEditorBundle::EditorPalette::Light, py::arg("show_copy_button") = true, py::arg("show_cursor_position") = true, py::arg("displayed_filename") = std::string{}, py::arg("height_in_lines") = 0, py::arg("max_height_in_lines") = 40, py::arg("read_only") = true, py::arg("border") = false, py::arg("de_indent_code") = true
             )
             .def_readwrite("code", &TextEditorBundle::SnippetData::Code, "")
             .def_readwrite("language", &TextEditorBundle::SnippetData::Language, "")

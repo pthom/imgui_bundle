@@ -44,7 +44,7 @@ namespace TextEditorBundle
     {
         std::string Code = "";
         SnippetLanguage Language = DefaultSnippetLanguage();
-        EditorPalette Palette = EditorPalette::Dark;
+        EditorPalette Palette = EditorPalette::Light;
 
         bool ShowCopyButton = true;         // Displayed on top of the editor (Top Right corner)
         bool ShowCursorPosition = true;     // Show line and column number

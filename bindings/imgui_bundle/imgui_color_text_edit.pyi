@@ -418,7 +418,7 @@ class text_editor_bundle:  # Proxy class that introduces typings for the *submod
     class SnippetData:
         code: str = ""
         language: SnippetLanguage = DefaultSnippetLanguage()
-        palette: EditorPalette = EditorPalette.dark
+        palette: EditorPalette = EditorPalette.light
 
         show_copy_button: bool = True      # Displayed on top of the editor (Top Right corner)
         show_cursor_position: bool = True  # Show line and column number
@@ -437,7 +437,7 @@ class text_editor_bundle:  # Proxy class that introduces typings for the *submod
             self,
             code: str = "",
             language: SnippetLanguage = DefaultSnippetLanguage(),
-            palette: EditorPalette = EditorPalette.dark,
+            palette: EditorPalette = EditorPalette.light,
             show_copy_button: bool = True,
             show_cursor_position: bool = True,
             displayed_filename: str = "",
