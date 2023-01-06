@@ -47,7 +47,7 @@ namespace Snippets
     void ShowCodeSnippet(const SnippetData& snippetData, float width, int overrideHeightInLines)
     {
         if (width == 0.f)
-            width = ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x;
+            width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
 
         auto id = ImGui::GetID(snippetData.Code.c_str());
         static std::map<ImGuiID, TextEditor> gEditors;
@@ -149,7 +149,7 @@ namespace Snippets
 
     float _EditorWidth(int nbSideBySideEditors)
     {
-        float margins_x = nbSideBySideEditors * ImGui::GetStyle().ItemSpacing.x;
+        float margins_x = (nbSideBySideEditors + 1) * ImGui::GetStyle().ItemSpacing.x;
         float windowContentWidth = ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x;
         float editorWidth= (windowContentWidth - margins_x) / nbSideBySideEditors;
         return editorWidth;
