@@ -197,10 +197,10 @@ void demo_imgui_bundle()
             ### Philosophy
             * Mirror the original API of ImGui and other libraries
             * Original code documentation is consciously kept inside the python stubs. See for example the documentation for:
-                * [imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui.pyi)
+                * [imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi)
                 * [implot](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi)
                 * [hello imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
-            * Fully typed bindings, so that code completion works like a (Py) charm
+            * Fully typed bindings, so that code completion works like a charm
 
             ### About Dear ImGui
             [Dear ImGui](https://github.com/ocornut/imgui.git) is one possible implementation of an idea generally described as the IMGUI (Immediate Mode GUI) paradigm.
