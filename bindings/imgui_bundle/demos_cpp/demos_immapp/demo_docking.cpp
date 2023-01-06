@@ -70,7 +70,7 @@ void CommandGui(AppState& state)
 
     ImGui::PushFont(gAkronimFont);
     ImGui::Text("Hello  %s", ICON_FA_SMILE);
-    HelloImGui::ImageFromAsset("world.jpg", ImVec2(100, 100));
+    HelloImGui::ImageFromAsset("images/world.jpg", ImVec2(100, 100));
     ImGui::PopFont();
     if (ImGui::IsItemHovered())
     {

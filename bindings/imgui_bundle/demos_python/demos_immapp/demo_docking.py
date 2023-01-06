@@ -104,7 +104,7 @@ def command_gui(state: AppState):
 
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))  # type: ignore
+    hello_imgui.image_from_asset("images/world.jpg", ImVec2(100, 100))  # type: ignore
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip(
