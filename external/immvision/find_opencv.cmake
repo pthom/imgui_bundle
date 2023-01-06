@@ -82,6 +82,27 @@ macro(immvision_download_opencv_static_package_win)
 endmacro()
 
 
+macro(immvision_download_emscripten_precompiled_opencv_4_7_0)
+    # Download a precompiled version of opencv4.7.0 for emscripten
+    # (see Readme_devel.md for info on how it was built)
+    if (EMSCRIPTEN)
+        message("Download a precompiled version of opencv4.7.0 for emscripten")
+
+        include(FetchContent)
+        Set(FETCHCONTENT_QUIET FALSE)
+        FetchContent_Declare(
+            opencv_package_emscripten
+            URL https://github.com/pthom/imgui_bundle/releases/download/v0.7.2/opencv_4.7.0_emscripten_install.tgz
+            URL_MD5 3e109af66b4938959f1d7a1db0ea13da
+            DOWNLOAD_EXTRACT_TIMESTAMP ON
+        )
+        FetchContent_MakeAvailable(opencv_package_emscripten)
+        set(OpenCV_DIR  ${CMAKE_BINARY_DIR}/_deps/opencv_package_emscripten-src/lib/cmake/opencv4)
+    endif()
+endmacro()
+
+
+
 macro(immvision_fetch_opencv_from_source)
     # Will fetch, build and install a very-minimalist OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
     # It is so minimalist that it is only usable within the python bindings!!!
@@ -283,9 +304,13 @@ macro(immvision_find_opencv)
         endif()
     endif()
 
-    immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
-    immvision_forward_opencv_env_variables() # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
-    immvision_download_opencv_static_package_win() # will download prebuilt package if IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
+    if (NOT EMSCRIPTEN)
+        immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUIBUNDLE_OPENCV_FETCH_SOURCE
+        immvision_forward_opencv_env_variables() # Forward environment variable to standard variables that are used by OpenCVConfig.cmake
+        immvision_download_opencv_static_package_win() # will download prebuilt package if IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460
+    else()
+        immvision_download_emscripten_precompiled_opencv_4_7_0()
+    endif()
 
     find_package(OpenCV)
     if (NOT OpenCV_FOUND)

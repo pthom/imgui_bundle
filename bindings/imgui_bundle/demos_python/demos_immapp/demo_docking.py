@@ -1,18 +1,19 @@
-"""A more complex app demo,
+# A more complex app demo,
+#
+# It demonstrates:
+# - How to use a specific application state (instead of using static variables)
+# - How to set up a complex layout:
+#     - dockable windows that can be moved, and even be detached from the main window
+#     - status bar
+# - A default menu, with default
+# - log window
+# - How to load assets and fonts
 
-It demonstrates:
-- How to use a specific application state (instead of using static variables)
-- How to set up a complex layout:
-    - dockable windows that can be moved, and even be detached from the main window
-    - status bar
-- A default menu, with default
-- log window
-- How to load assets and fonts
-"""
 import os
 from enum import Enum
 
 from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2, immapp
+from imgui_bundle.demos_python import demo_utils
 
 
 # Struct that holds the application's state
@@ -36,7 +37,7 @@ We have two options: either we use hello imgui, or we load manually
 (see my_load_fonts_via_hello_imgui() and my_load_fonts_manually() below).
 """
 
-gAkronimFont: imgui.ImFont
+gAkronimFont: imgui.ImFont  # This is just a demo, you should store this somewhere in the app state
 
 
 def my_load_fonts_via_hello_imgui():
@@ -65,7 +66,7 @@ def my_load_fonts_manually():
     font_atlas = imgui.get_io().fonts
     # We need to take into account the global font scale!
     font_size_pixel = 40 / imgui.get_io().font_global_scale
-    font_filename = this_dir + "/../assets/fonts/Akronim-Regular.ttf"
+    font_filename = demo_utils.demo_assets_folder() + "/fonts/Akronim-Regular.ttf"
     font_atlas = imgui.get_io().fonts
     glyph_range = font_atlas.get_glyph_ranges_default()
     gAkronimFont = font_atlas.add_font_from_file_ttf(
@@ -76,7 +77,7 @@ def my_load_fonts_manually():
     # ii. ... Aad merge icons into the previous font
     from imgui_bundle import icons_fontawesome
 
-    font_filename = this_dir + "/../assets/fonts/fontawesome-webfont.ttf"
+    font_filename = demo_utils.demo_assets_folder() + "/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
@@ -88,31 +89,22 @@ def my_load_fonts_manually():
     )
 
 
-def my_load_fonts():
-    my_load_fonts_manually()
-    # my_load_fonts_via_hello_imgui()
-
-
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
     # Note, you can also show the tweak theme widgets via:
     # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
-    imgui_md.render(
-        """
-# Tweak the theme!
-
-Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
-You can even easily tweak their colors.
-    """[
-            1:
-        ]
-    )
+    imgui_md.render_unindented("""
+        # Tweak the theme!
+        
+        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
+        You can even easily tweak their colors.
+    """)
 
     imgui.separator()
 
     imgui.push_font(gAkronimFont)
     imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("world.jpg", ImVec2(100, 100))  # type: ignore
+    hello_imgui.image_from_asset("images/world.jpg", ImVec2(100, 100))  # type: ignore
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip(
@@ -147,29 +139,12 @@ You can even easily tweak their colors.
         state.rocket_progress += 0.003
         if state.rocket_progress >= 1.0:
             state.rocket_state = AppState.RocketState.Launched
-            print("Rocket was launched!")
-            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocker was launched")
+            hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
     elif state.rocket_state == AppState.RocketState.Launched:
         imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
         if imgui.button("Reset Rocket"):
             state.rocket_state = AppState.RocketState.Init
             state.rocket_progress = 0.0
-
-    imgui_md.render(
-        """
-    --- 
-# Markdown Test
-
-## Title Level 2
-
-### Title level 3
-
-* _underline_
-* *italic*
-* **bold**
----
-    """
-    )
 
 
 # Our Gui in the status bar
@@ -187,8 +162,7 @@ def main():
     # By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
     # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
-    this_dir = os.path.dirname(os.path.realpath(__file__))
-    hello_imgui.set_assets_folder(this_dir + "/../assets")
+    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
 
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
@@ -228,8 +202,9 @@ def main():
 
     runner_params.callbacks.show_menus = show_menu_gui
 
-    # Custom load fonts
-    runner_params.callbacks.load_additional_fonts = my_load_fonts
+    # Choose here your preferred method for loading fonts:
+    # runner_params.callbacks.load_additional_fonts = my_load_fonts_via_hello_imgui
+    runner_params.callbacks.load_additional_fonts = my_load_fonts_manually
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...

@@ -1,2 +1,5 @@
-add_demo_cpp(demo_tex_inspect_demo_window demo_tex_inspect_demo_window.cpp)
-add_demo_cpp(demo_tex_inspect_simple demo_tex_inspect_simple.cpp)
+# Add one demo application per file
+add_this_folder_auto_demos()
+
+# Also add these demos as a library (where IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY will disable existing main() functions)
+add_this_folder_as_demos_library()

@@ -86,7 +86,10 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::overrideAssetsFolder, py::arg("folder"));
 
     m.def("set_assets_folder",
-        HelloImGui::SetAssetsFolder, py::arg("folder"));
+        py::overload_cast<const char *>(HelloImGui::SetAssetsFolder), py::arg("folder"));
+
+    m.def("set_assets_folder",
+        py::overload_cast<const std::string &>(HelloImGui::SetAssetsFolder), py::arg("folder"));
 
 
     m.def("image_from_asset",
@@ -573,7 +576,7 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::LogClear);
 
     m.def("log_gui",
-        HelloImGui::LogGui);
+        HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
 
 
     m.def("run",
@@ -601,6 +604,11 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("em_to_vec2",
         py::overload_cast<ImVec2>(HelloImGui::EmToVec2), py::arg("v"));
+
+    m.def("frame_rate",
+        HelloImGui::FrameRate,
+        py::arg("duration_for_mean") = 0.5f,
+        " Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,\n since one can choose the duration for the calculation of the mean value of the fps\n (Will only lead to accurate values if you call it at each frame)");
 
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");

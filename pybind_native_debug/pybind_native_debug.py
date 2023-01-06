@@ -9,9 +9,9 @@ def main() -> None:
     path_bindings = os.path.realpath(f"{THIS_DIR}/../bindings/")
     sys.path = [path_bindings] + sys.path
 
-    from imgui_bundle.demos_python.demos_immapp import demo_command_palette
+    from imgui_bundle.demos_python import demo_node_editor_launcher
 
-    demo_command_palette.main()
+    demo_node_editor_launcher.main()
 
 
 main()

@@ -1,10 +1,11 @@
 #include "imgui_md_wrapper.h"
 
 #include "hello_imgui/hello_imgui.h"
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include "immapp/snippets.h"
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
+#include "immapp/code_utils.h"
 
 #include <fplus/fplus.hpp>
 #include <string>
@@ -27,6 +28,7 @@
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
 #endif
+
 
 namespace ImGuiMdBrowser
 {
@@ -104,7 +106,7 @@ namespace ImGuiMd
             if (style.bold)
                 r += "Bold";
             else
-                r += "Medium";
+                r += "Regular";
             if (style.italic)
                 r += "Italic";
             r += ".ttf";
@@ -163,18 +165,10 @@ assets/
 ├── fonts/
 │     ├── Roboto/
 │     │     ├── LICENSE.txt
-│     │     ├── Roboto-Black.ttf
-│     │     ├── Roboto-BlackItalic.ttf
 │     │     ├── Roboto-Bold.ttf
 │     │     ├── Roboto-BoldItalic.ttf
-│     │     ├── Roboto-Italic.ttf
-│     │     ├── Roboto-Light.ttf
-│     │     ├── Roboto-LightItalic.ttf
-│     │     ├── Roboto-Medium.ttf
-│     │     ├── Roboto-MediumItalic.ttf
 │     │     ├── Roboto-Regular.ttf
-│     │     ├── Roboto-Thin.ttf
-│     │     └── Roboto-ThinItalic.ttf
+│     │     ├── Roboto-RegularItalic.ttf
 │     ├── SourceCodePro-Regular
 │     └── fontawesome-webfont.ttf
 └── images/
@@ -237,7 +231,7 @@ assets/
     private:
         MarkdownOptions mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
-        std::map<std::string, TextEditor> mCodeBlockEditors;
+        std::map<std::string, Snippets::SnippetData> mSnippets;
     public:
         MarkdownRenderer(MarkdownOptions markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -334,42 +328,35 @@ assets/
             };
 
             ImGui::PushID(m_code_block.c_str());
-            if (mCodeBlockEditors.find(m_code_block) == mCodeBlockEditors.end())
+            if (mSnippets.find(m_code_block) == mSnippets.end())
             {
-                mCodeBlockEditors[m_code_block] = TextEditor();
-                auto& editor = mCodeBlockEditors[m_code_block];
-                editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
-
-                editor.SetText(code_without_last_empty_lines(m_code_block));
+                mSnippets[m_code_block] = Snippets::SnippetData();
+                auto& snippet = mSnippets[m_code_block];
+                snippet.Palette = Snippets::SnippetTheme::Dark;
+                snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
                 if (fplus::to_lower_case(m_code_block_language) == "cpp")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+                    snippet.Language = Snippets::SnippetLanguage::Cpp;
                 else if (fplus::to_lower_case(m_code_block_language) == "c")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::C());
+                    snippet.Language = Snippets::SnippetLanguage::C;
                 else if (fplus::to_lower_case(m_code_block_language) == "python")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
+                    snippet.Language = Snippets::SnippetLanguage::Python;
                 else if (fplus::to_lower_case(m_code_block_language) == "glsl")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
+                    snippet.Language = Snippets::SnippetLanguage::Glsl;
                 else if (fplus::to_lower_case(m_code_block_language) == "sql")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::SQL());
+                    snippet.Language = Snippets::SnippetLanguage::Sql;
                 else if (fplus::to_lower_case(m_code_block_language) == "lua")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+                    snippet.Language = Snippets::SnippetLanguage::Lua;
                 else if (fplus::to_lower_case(m_code_block_language) == "angelscript")
-                    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::AngelScript());
+                    snippet.Language = Snippets::SnippetLanguage::AngelScript;
+
+                snippet.ShowCursorPosition = false;
             }
 
-            auto & editor = mCodeBlockEditors[m_code_block];
-
-            int nbLines = 0; for (auto c: editor.GetText()) if (c == '\n') ++ nbLines;
-            ImVec2 editor_size(ImGui::GetWindowWidth() - ImGui::GetFontSize() * 5.f, ImGui::GetFontSize() * (nbLines + 1));
-
-            editor.SetText(code_without_last_empty_lines(m_code_block));
-            editor.Render("editor", editor_size);
-
-            ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_COPY))
-                ImGui::SetClipboardText(m_code_block.c_str());
+            ImGui::SetCursorPosX(0.f);
+            auto& snippet = mSnippets[m_code_block];
+            Snippets::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
         }
@@ -477,4 +464,10 @@ assets/
         return gMarkdownRenderer->get_font_code();
     }
 
-}
+    // Renders a markdown string (after having unindented its main indentation)
+    void RenderUnindented(const std::string& markdownString)
+    {
+        Render(CodeUtils::UnindentMarkdown(markdownString));
+    }
+
+} // namespace ImGuiMdBrowser

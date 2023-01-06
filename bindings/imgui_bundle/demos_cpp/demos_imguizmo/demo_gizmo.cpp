@@ -39,9 +39,9 @@
 #include <string>
 
 
-bool useWindow = true;
-int gizmoCount = 1;
-float camDistance = 8.f;
+static bool useWindow = true;
+static int gizmoCount = 1;
+static float camDistance = 8.f;
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 
 float gObjectMatrix[4][16] = {
@@ -417,7 +417,6 @@ GuiFunction make_closure_demo_guizmo()
     };
     return gui;
 }
-
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()

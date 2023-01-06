@@ -3,8 +3,9 @@ from types import ModuleType
 
 from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
 from imgui_bundle.immapp import static
-from imgui_bundle.demos_python.demos_immapp import demo_apps
-from imgui_bundle.demos_python import demo_imgui_color_text_edit, demo_imgui_bundle, demo_imgui_show_demo_window
+from imgui_bundle.demos_python import demo_text_edit
+from imgui_bundle.demos_python import demo_imgui_bundle
+from imgui_bundle.demos_python import demo_imgui_show_demo_window
 from imgui_bundle.demos_python import demo_widgets
 from imgui_bundle.demos_python import demo_implot
 from imgui_bundle.demos_python import demo_imgui_md
@@ -12,8 +13,11 @@ from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
 from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
+from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
+from imgui_bundle.demos_python import demo_logger
+from imgui_bundle.demos_python import demo_utils
 
 
 @static(was_initialized=None)
@@ -21,7 +25,8 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
     static = show_module_demo
 
     if not static.was_initialized:
-        static.editor = ed.TextEditor()
+        static.snippet = immapp.snippets.SnippetData()
+        static.snippet.language = immapp.snippets.SnippetLanguage.python
         static.last_module = None
         static.was_initialized = True
 
@@ -29,18 +34,17 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
         import inspect
 
         code = inspect.getsource(demo_module)
-        static.editor.set_text(code)
+        static.snippet.code = code
         static.last_module = demo_module
 
     if imgui.collapsing_header("Code for this demo"):
-        imgui.push_font(imgui_md.get_code_font())
-        static.editor.render("Code")
-        imgui.pop_font()
+        immapp.snippets.show_code_snippet(static.snippet)
 
     demo_function()
 
 
 def main() -> None:
+    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
     ################################################################################################
     # Part 1: Define the runner params
     ################################################################################################
@@ -68,15 +72,14 @@ def main() -> None:
     runner_params.imgui_window_params.enable_viewports = True
 
     #
-    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
-    #     in a docking split.
+    # Define our dockable windows : each window provide a Gui callback, and will be displayed
+    # in a docking split.
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
     def add_dockable_window(
         label: str,
         demo_module: ModuleType,
-        demo_function: Callable[[], None],
         dock_space_name: str = "MainDockSpace",
     ):
         window = hello_imgui.DockableWindow()
@@ -84,30 +87,29 @@ def main() -> None:
         window.dock_space_name = dock_space_name
 
         def win_fn() -> None:
-            show_module_demo(demo_module, demo_function)
+            show_module_demo(demo_module, demo_module.demo_gui)
 
         window.gui_function = win_fn
         dockable_windows.append(window)
 
-    add_dockable_window("ImGui Bundle", demo_imgui_bundle, demo_imgui_bundle.demo_imgui_bundle)
-    add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window, demo_imgui_show_demo_window.show_demo_window)
-    add_dockable_window("Immediate Apps", demo_apps, demo_apps.make_closure_demo_apps())
-    add_dockable_window("Implot", demo_implot, demo_implot.demo_implot)
-    add_dockable_window("Node Editor", demo_node_editor_launcher, demo_node_editor_launcher.demo_launch)
-    add_dockable_window("Markdown", demo_imgui_md, demo_imgui_md.demo_imgui_md)
-    add_dockable_window(
-        "Text Editor", demo_imgui_color_text_edit, demo_imgui_color_text_edit.demo_imgui_color_text_edit
-    )
-    add_dockable_window("Widgets", demo_widgets, demo_widgets.demo_widgets)
-    add_dockable_window("ImmVision", demo_immvision_launcher, demo_immvision_launcher.demo_launch)
-    add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher, demo_tex_inspect_launcher.demo_launch)
-    add_dockable_window("ImGuizmo", demo_imguizmo_launcher, demo_imguizmo_launcher.demo_launch)
-    add_dockable_window("Themes", demo_themes, demo_themes.demo_launch)
-    add_dockable_window("Notebook", demo_immapp_notebook, demo_immapp_notebook.demo_launch)
+    add_dockable_window("ImGui Bundle", demo_imgui_bundle)
+    add_dockable_window("Dear ImGui Demo", demo_imgui_show_demo_window)
+    add_dockable_window("Immediate Apps", demo_immapp_launcher)
+    add_dockable_window("Implot", demo_implot)
+    add_dockable_window("Node Editor", demo_node_editor_launcher)
+    add_dockable_window("Markdown", demo_imgui_md)
+    add_dockable_window("Text Editor", demo_text_edit)
+    add_dockable_window("Widgets", demo_widgets)
+    add_dockable_window("ImmVision", demo_immvision_launcher)
+    add_dockable_window("imgui_tex_inspect", demo_tex_inspect_launcher)
+    add_dockable_window("ImGuizmo", demo_imguizmo_launcher)
+    add_dockable_window("Themes", demo_themes)
+    add_dockable_window("Logger", demo_logger)
+    add_dockable_window("Notebook", demo_immapp_notebook)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
-    # Main gui only responsibility is to give focus to ImGui Bundle dockable window
+    # the main gui is only responsible to give focus to ImGui Bundle dockable window
     @static(nb_frames=0)
     def show_gui():
         if show_gui.nb_frames == 1:
@@ -116,7 +118,14 @@ def main() -> None:
             runner_params.docking_params.focus_dockable_window("ImGui Bundle")
         show_gui.nb_frames += 1
 
+    def gui_fps_status():
+        idle_active = (runner_params.fps_idle > 0)
+        imgui.set_cursor_pos_x(imgui.get_window_content_region_max().x - immapp.em_size() * 12.)
+        _, idle_active = imgui.checkbox("Auto Idle", idle_active)
+        runner_params.fps_idle = 10 if idle_active else 0
+
     runner_params.callbacks.show_gui = show_gui
+    runner_params.callbacks.show_status = gui_fps_status
 
     ################################################################################################
     # Part 3: Run the app

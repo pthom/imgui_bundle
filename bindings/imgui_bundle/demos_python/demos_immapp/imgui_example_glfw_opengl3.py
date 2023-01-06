@@ -1,8 +1,9 @@
-"""This is a direct adaptation of imgui example: imgui/examples/example_glfw_opengl3/main.cpp
+# imgui_bundle can be used to run imgui with an almost line by line translation from C++ to python
+#
+# This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl3/main.cpp)
+# (see https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
 
-imgui_bundle can be used without hello imgui, and you can configure and run imgui, opengl and glfw (or sdl, etc.) manually,
-as shown here.
-"""
+
 import os.path
 import sys
 import platform
@@ -107,7 +108,7 @@ def main():
     this_dir = os.path.dirname(__file__)
     font_size_pixel = 48.0
     # i. Load another font...
-    font_filename = this_dir + "/../assets/fonts/Akronim-Regular.ttf"
+    font_filename = this_dir + "/../../demos_assets/fonts/Akronim-Regular.ttf"
     font_atlas = imgui.get_io().fonts
     glyph_range = font_atlas.get_glyph_ranges_default()
     custom_font = font_atlas.add_font_from_file_ttf(
@@ -118,7 +119,7 @@ def main():
     # ii. ... And merge icons into the previous font
     from imgui_bundle import icons_fontawesome
 
-    font_filename = this_dir + "/../assets/fonts/fontawesome-webfont.ttf"
+    font_filename = this_dir + "/../../demos_assets/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]

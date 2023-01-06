@@ -101,6 +101,11 @@ def get_font_loader_function() -> VoidFunction:
     pass
 
 def render(markdown_string: str) -> None:
+    """Renders a markdown string"""
+    pass
+
+def render_unindented(markdown_string: str) -> None:
+    """Renders a markdown string (after having unindented its main indentation)"""
     pass
 
 def get_code_font() -> ImFont:

@@ -1,1 +1,0 @@
-add_demo_cpp(demo_command_palette demo_command_palette.cpp)

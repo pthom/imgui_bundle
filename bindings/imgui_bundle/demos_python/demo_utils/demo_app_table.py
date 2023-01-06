@@ -1,41 +1,59 @@
-from typing import List
+from dataclasses import dataclass
+from typing import List, Optional
 import subprocess
 import sys
+import os
 
-from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md
-from imgui_bundle.demos_python.demo_utils.code_str_utils import unindent_code
+from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2, immapp
 
 
+def _read_code(filepath: str) -> str:
+    if os.path.isfile(filepath):
+        with open(filepath) as f:
+            code = f.read()
+            return code
+    else:
+        return ""
+
+
+@dataclass
 class DemoApp:
-    python_file: str
+    demo_file: str
     explanation: str
-
-    def __init__(self, python_file: str, explanation: str):
-        self.python_file = python_file
-        self.explanation = unindent_code(explanation, flag_strip_empty_lines=True)
 
 
 class DemoAppTable:
-    editor: text_edit.TextEditor
+    snippet_python: immapp.snippets.SnippetData
+    snippet_cpp: immapp.snippets.SnippetData
     demo_apps: List[DemoApp]
     current_app: DemoApp
-    demo_folder: str
+    demo_python_folder: str
+    demo_cpp_folder: str
 
-    def __init__(self, demo_apps: List[DemoApp], demo_folder: str, idx_initial_app: int = 0):
-        self.editor = text_edit.TextEditor()
-        self.editor.set_language_definition(text_edit.TextEditor.LanguageDefinition.python())
+    def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str):
+        self.snippet_cpp = immapp.snippets.SnippetData()
+        self.snippet_cpp.displayed_filename = "C++ code"
+        self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
+
+        self.snippet_python = immapp.snippets.SnippetData()
+        self.snippet_python.displayed_filename = "Python code"
+        self.snippet_python.language = immapp.snippets.SnippetLanguage.python
+
         self.demo_apps = demo_apps
-        self.demo_folder = demo_folder
-        self._set_demo_app(self.demo_apps[idx_initial_app])
+        self.demo_python_folder = demo_python_folder
+        self.demo_cpp_folder = demo_cpp_folder
+        self._set_demo_app(self.demo_apps[0])
 
-    def _demo_file_path(self, demo_file: str) -> str:
-        return self.demo_folder + "/" + demo_file
+    def _demo_python_file_path(self, demo_app: DemoApp) -> str:
+        return self.demo_python_folder + "/" + demo_app.demo_file + ".py"
+
+    def _demo_cpp_file_path(self, demo_app: DemoApp) -> str:
+        return self.demo_cpp_folder + "/" + demo_app.demo_file + ".cpp"
 
     def _set_demo_app(self, demo_app: DemoApp):
         self.current_app = demo_app
-        with open(self._demo_file_path(demo_app.python_file)) as f:
-            code = f.read()
-        self.editor.set_text(code)
+        self.snippet_cpp.code = _read_code(self._demo_cpp_file_path(demo_app))
+        self.snippet_python.code = _read_code(self._demo_python_file_path(demo_app))
 
     def gui(self):
         table_flags = imgui.TableFlags_.row_bg | imgui.TableFlags_.borders | imgui.TableFlags_.resizable
@@ -47,16 +65,16 @@ class DemoAppTable:
             # imgui.table_headers_row()
 
             for demo_app in self.demo_apps:
-                imgui.push_id(demo_app.python_file)
+                imgui.push_id(demo_app.demo_file)
                 imgui.table_next_row()
 
                 imgui.table_next_column()
-                imgui.text(demo_app.python_file)
+                imgui.text(demo_app.demo_file + ".py")
                 imgui.table_next_column()
 
-                imgui_md.render(demo_app.explanation)
+                imgui_md.render_unindented(demo_app.explanation)
 
-                if len(demo_app.python_file) > 0:
+                if len(demo_app.demo_file) > 0:
                     imgui.table_next_column()
                     if imgui.button("View code"):
                         self._set_demo_app(demo_app)
@@ -64,14 +82,13 @@ class DemoAppTable:
                     imgui.same_line()
 
                     if imgui.button("Run"):
-                        subprocess.Popen([sys.executable, self._demo_file_path(demo_app.python_file)])
+                        subprocess.Popen([sys.executable, self._demo_python_file_path(demo_app)])
 
                 imgui.pop_id()
 
             imgui.end_table()
 
         imgui.new_line()
-        imgui.text(f"Code for {self.current_app.python_file}")
-        imgui.push_font(imgui_md.get_code_font())
-        self.editor.render("Code")
-        imgui.pop_font()
+        imgui.text(f"Code for {self.current_app.demo_file}")
+
+        immapp.snippets.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)

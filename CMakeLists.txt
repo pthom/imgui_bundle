@@ -50,7 +50,13 @@ option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable
 
 # IMGUI_BUNDLE_WITH_SDL
 #     HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option.
-option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
+if (NOT EMSCRIPTEN)
+    option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
+    option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
+else()
+    set(IMGUI_BUNDLE_WITH_SDL ON)
+    set(IMGUI_BUNDLE_WITH_GLFW OFF)
+endif()
 
 # IMGUI_BUNDLE_BUILD_DEMOS
 #     Build demos (on by default if this is the main project)
@@ -69,6 +75,9 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
+endif()
+if (EMSCRIPTEN)
+    add_compile_definitions(EMSCRIPTEN)
 endif()
 
 

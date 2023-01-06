@@ -3,10 +3,12 @@
 
 #include "immapp/immapp.h"
 #include "imgui_tex_inspect/imgui_tex_inspect_demo.h"
+#include "demo_utils/api_demos.h"
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = ImGuiTexInspect::ShowDemoWindow, .windowSize={1000, 1000}};
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withTexInspect = true;

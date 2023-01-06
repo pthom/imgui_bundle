@@ -1,17 +1,16 @@
 import os.path
 import cv2
 
-from imgui_bundle import immvision, immapp
+from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
 
 @immapp.static(inited=False)
-def gui() -> None:
-    statics = gui
+def demo_gui() -> None:
+    statics = demo_gui
     image_display_size = (0, int(immapp.em_size(15)))
     if not statics.inited:
-        this_dir = os.path.dirname(__file__)
-        assets_dir = this_dir + "/../assets/images/"
+        assets_dir = demo_utils.demo_assets_folder() + "/images/"
         statics.bear = cv2.imread(assets_dir + "bear_transparent.png", cv2.IMREAD_UNCHANGED)
         statics.params = immvision.ImageParams()
         statics.params.image_display_size = image_display_size
@@ -20,10 +19,10 @@ def gui() -> None:
 
         statics.inited = True
 
-    demo_utils.render_md_unindented("immvision.image_display() will simply display an image")
+    imgui_md.render_unindented("immvision.image_display() will simply display an image")
     immvision.image_display("Tennis", statics.tennis, image_display_size=image_display_size)
 
-    demo_utils.render_md_unindented(
+    imgui_md.render_unindented(
         """
         immvision.image() will display an image, while providing lots of visualization options.<br>
         Open the options panel by clicking on the settings button at the bottom right corner of the image"""
@@ -32,7 +31,8 @@ def gui() -> None:
 
 
 def main():
-    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
+    demo_utils.set_demo_assets_folder()
+    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

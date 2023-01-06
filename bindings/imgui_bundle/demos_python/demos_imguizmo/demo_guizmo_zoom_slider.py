@@ -1,6 +1,12 @@
 # Demo gradient with ImGuizmo
 # See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_zoom_slider.main.cpp
 
+###############################################################################
+# Warning! This component does not render well on high DPI
+# (especially under windows) => this demo is hidden by default
+###############################################################################
+
+
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 

@@ -4,36 +4,25 @@ from imgui_bundle import imgui_tex_inspect, hello_imgui
 from imgui_bundle.demos_python.demo_utils.api_demos import *
 
 
-def make_gui() -> GuiFunction:
-    texture_id = None
+@immapp.static(texture_id=None)
+def demo_gui():
+    static = demo_gui
+
+    if static.texture_id is None:
+        static.texture_id = hello_imgui.im_texture_id_from_asset("images/bear_transparent.png")
+
     texture_size = ImVec2(512.0, 512.0)
 
-    def gui():
-        nonlocal texture_id
-        if texture_id is None:
-            texture_id = hello_imgui.im_texture_id_from_asset("images/bear_transparent.png")
-
-        flags = 0
-        inspector_size = imgui_tex_inspect.SizeIncludingBorder(immapp.em_to_vec2(30, 30))
-        if imgui_tex_inspect.begin_inspector_panel(
-            "Texture Inspector", texture_id, texture_size, flags, inspector_size
-        ):
-            imgui_tex_inspect.end_inspector_panel()
-
-    return gui
-
-
-@immapp.static(gui=None)
-def demo_launch():
-    statics = demo_launch
-    if statics.gui is None:
-        statics.gui = make_gui()
-    statics.gui()
+    flags = 0
+    inspector_size = imgui_tex_inspect.SizeIncludingBorder(immapp.em_to_vec2(30, 30))
+    if imgui_tex_inspect.begin_inspector_panel("Texture Inspector",
+            static.texture_id, texture_size, flags, inspector_size):
+        imgui_tex_inspect.end_inspector_panel()
 
 
 def main():
-    gui = make_gui()
-    immapp.run(gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000))
+    hello_imgui.set_assets_folder(demo_assets_folder())
+    immapp.run(demo_gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000))
 
 
 if __name__ == "__main__":

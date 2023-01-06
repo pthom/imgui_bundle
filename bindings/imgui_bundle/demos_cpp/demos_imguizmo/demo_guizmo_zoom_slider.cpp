@@ -1,6 +1,11 @@
 // Demo zoom slider with ImGuizmo
 // See equivalent python program: demos/litgen/imgui_bundle/bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_zoom_slider.py
 
+// ###############################################################################
+// # Warning! This component does not render well on high DPI
+// # (especially under windows) => this demo is hidden by default
+// ###############################################################################
+
 #include "demo_utils/api_demos.h"
 
 #include "imgui.h"
@@ -55,94 +60,81 @@ void DrawZoomableGrid(
 }
 
 
-// This returns a closure function that will later be invoked to run the app
-GuiFunction make_closure_demo_guizmo_zoom_slider()
+void demo_guizmo_zoom_slider()
 {
     // Values between 0. and 1. that represent the current viewed portion
-    ImZoomSlider::Range viewHorizontal{0.1f, 0.6f}, viewVertical{0.3f, 0.8f};
-    bool linkZooms = true;
+    static ImZoomSlider::Range viewHorizontal{0.1f, 0.6f}, viewVertical{0.3f, 0.8f};
+    static bool linkZooms = true;
 
-    auto gui = [=]() mutable // mutable => this is a closure
+    ImGui::Checkbox("Link zooms", &linkZooms);
+
+    ImGui::BeginChild("SliderChild", ImVec2(400.f, 400.f));
+
+    // Draw anything in the zoomable part,
+    // or reserve some space (for example with ImGui::Dummy)
     {
-        ImGui::Checkbox("Link zooms", &linkZooms);
+        float zoneWidth = 380.f;
+        ImGui::BeginGroup();
+        // If needed, just use ImGui::Dummy to reserve some space
+        ImGui::Dummy(ImVec2(zoneWidth, 80.f));
+        ImGui::Text(R"(
+            You are looking at a zoomable part:
+            use the mouse wheel on the sliders,
+            or drag their extremities.
 
-        // Draw anything in the zoomable part,
-        // or reserve some space (for example with ImGui::Dummy)
+            Current zoom values:
+                viewHorizontal.Min=%.2f viewHorizontal.Max=%.2f
+                viewVertical.Min=%.2f viewVertical.Max=%.2f
+
+            ...now do whatever you want with those values!
+        )",
+                    viewHorizontal.Min, viewHorizontal.Max,
+                    viewVertical.Min, viewVertical.Max);
+         ImGui::Dummy(ImVec2(zoneWidth, 80.f));
+        ImGui::EndGroup();
+    }
+
+    // Get the zoomable part size (which may have been reserved by ImGui:Dummy)
+    ImVec2 zoomZoneMin = ImGui::GetItemRectMin();
+    ImVec2 zoomZoneMax = ImGui::GetItemRectMax();
+
+    // And do some drawing depending on the zoom
+    DrawZoomableGrid(zoomZoneMin, zoomZoneMax, {viewHorizontal.Min, viewVertical.Min}, {viewHorizontal.Max, viewVertical.Max});
+
+    // Draw the vertical slider
+    {
+        ImGui::SameLine();
+        ImGui::PushID(18);
+        auto sliderResult = ImZoomSlider::ImZoomSliderPure(
+            {0.f, 1.f}, {viewVertical.Min, viewVertical.Max}, 0.1f, ImZoomSlider::ImGuiZoomSliderFlags_Vertical);
+        if (sliderResult)
+            viewVertical = sliderResult.Value;
+
+        // Handle link zoom
+        if (sliderResult && linkZooms)
         {
-            float zoneWidth = 380.f;
-            ImGui::BeginGroup();
-            // If needed, just use ImGui::Dummy to reserve some space
-            ImGui::Dummy(ImVec2(zoneWidth, 80.f));
-            ImGui::Text(R"(
-                You are looking at a zoomable part:
-                use the mouse wheel on the sliders,
-                or drag their extremities.
-
-                Current zoom values:
-                    viewHorizontal.Min=%.2f viewHorizontal.Max=%.2f
-                    viewVertical.Min=%.2f viewVertical.Max=%.2f
-
-                ...now do whatever you want with those values!
-            )",
-                        viewHorizontal.Min, viewHorizontal.Max,
-                        viewVertical.Min, viewVertical.Max);
-             ImGui::Dummy(ImVec2(zoneWidth, 80.f));
-            ImGui::EndGroup();
+            float avgH = viewHorizontal.Center();
+            float lengthV = viewVertical.Length();
+            viewHorizontal = {avgH - lengthV / 2.f, avgH + lengthV / 2.f };
         }
+        ImGui::PopID();
+    }
+    // Draw the horizontal slider
+    {
+        ImGui::PushID(19);
+        auto sliderResult = ImZoomSlider::ImZoomSliderPure({0.f, 1.f}, viewHorizontal, 0.1f);
+        if (sliderResult)
+            viewHorizontal = sliderResult.Value;
 
-        // Get the zoomable part size (which may have been reserved by ImGui:Dummy)
-        ImVec2 zoomZoneMin = ImGui::GetItemRectMin();
-        ImVec2 zoomZoneMax = ImGui::GetItemRectMax();
-
-        // And do some drawing depending on the zoom
-        DrawZoomableGrid(zoomZoneMin, zoomZoneMax, {viewHorizontal.Min, viewVertical.Min}, {viewHorizontal.Max, viewVertical.Max});
-
-        // Draw the vertical slider
+        // Handle link zoom
+        if (sliderResult && linkZooms)
         {
-            ImGui::SameLine();
-            ImGui::PushID(18);
-            auto sliderResult = ImZoomSlider::ImZoomSliderPure(
-                {0.f, 1.f}, {viewVertical.Min, viewVertical.Max}, 0.1f, ImZoomSlider::ImGuiZoomSliderFlags_Vertical);
-            if (sliderResult)
-                viewVertical = sliderResult.Value;
-
-            // Handle link zoom
-            if (sliderResult && linkZooms)
-            {
-                float avgH = viewHorizontal.Center();
-                float lengthV = viewVertical.Length();
-                viewHorizontal = {avgH - lengthV / 2.f, avgH + lengthV / 2.f };
-            }
-            ImGui::PopID();
+            float avgV = viewVertical.Center();
+            float lengthH = viewHorizontal.Length();
+            viewVertical = {avgV - lengthH / 2.f, avgV + lengthH / 2.f };
         }
-        // Draw the horizontal slider
-        {
-            ImGui::PushID(19);
-            auto sliderResult = ImZoomSlider::ImZoomSliderPure({0.f, 1.f}, viewHorizontal, 0.1f);
-            if (sliderResult)
-                viewHorizontal = sliderResult.Value;
+        ImGui::PopID();
+    }
 
-            // Handle link zoom
-            if (sliderResult && linkZooms)
-            {
-                float avgV = viewVertical.Center();
-                float lengthH = viewHorizontal.Length();
-                viewVertical = {avgV - lengthH / 2.f, avgV + lengthH / 2.f };
-            }
-            ImGui::PopID();
-        }
-    };
-    return gui;
+    ImGui::EndChild();
 }
-
-
-#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
-{
-    auto gui = make_closure_demo_guizmo_zoom_slider();
-
-    HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = gui, .windowSize={400, 400}};
-    ImmApp::Run(runnerParams);
-    return 0;
-}
-#endif

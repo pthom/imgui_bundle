@@ -1,0 +1,20 @@
+When building with msvc, the build folder will look like this.
+
+your_build_directory/
+        ├───bin/
+            ├───Debug/
+            │   │   └───demo_all.exe
+            │   │   └───...
+            ├───Release/
+            │   │   └───demo_all.exe
+            │   │   └───...
+            ├───demos_assets/
+            │   ├───fonts/
+            │   │   └───...
+            │   └───images//
+            └───opencv_world460.dll
+            └───opencv_world460d.dll
+
+The executables inside Debug/ and Release/ depend on the presence of opencv_world460*.dll, opencv_world460d.dll, and demos_assets/
+
+If you want to run then from the Release/ or Debug/ folder, you will need to manually copy those files.

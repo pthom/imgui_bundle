@@ -1,0 +1,26 @@
+// This file is automatically compiled into demos that are reference via cmake function add_auto_demo()
+
+#include "immapp/immapp.h"
+#include "demo_utils/api_demos.h"
+
+
+void ${demo_name}();
+
+
+int main()
+{
+    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.callbacks.ShowGui = ${demo_name};
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
+    runnerParams.appWindowParams.windowTitle = "${demo_name}";
+
+    ImmApp::AddOnsParams addons;
+    addons.withMarkdown = true;
+    addons.withNodeEditor = true;
+    addons.withImplot = true;
+    addons.withTexInspect = true;
+
+    ImmApp::Run(runnerParams, addons);
+}

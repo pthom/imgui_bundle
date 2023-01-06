@@ -26,12 +26,14 @@ target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed c
 lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
-add_simple_external_library_with_sources(imgui_color_text_edit ImGuiColorTextEdit)
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    target_compile_definitions(imgui_color_text_edit PRIVATE IMGUI_BUNDLE_BUILD_PYTHON)
-endif()
+add_subdirectory(ImGuiColorTextEdit)
 # Build imgui-node-editor
 add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
+target_sources(imgui_node_editor PRIVATE
+    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
+    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
+    )
+target_link_libraries(imgui_node_editor PUBLIC immapp)
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build ImFileDialog
@@ -62,7 +64,7 @@ target_sources(imgui_md PRIVATE
     )
 target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
 target_include_directories(imgui_md PUBLIC imgui_md/imgui_md_wrapper)
-target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus)
+target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
 hello_imgui_msvc_target_group_sources(imgui_md)
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo)
@@ -73,6 +75,11 @@ target_sources(imgui_tex_inspect PRIVATE
     imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
     imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.h
     )
+# Add portable_file_dialogs
+add_library(portable_file_dialogs INTERFACE)
+target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
+target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+
 target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
 target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
 target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)

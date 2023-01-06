@@ -87,7 +87,7 @@ extern std::string gAssetsSubfolderFolderName;  // "assets" by default
 // (when using this, automatic assets installation on mobile platforms may not work)
 void overrideAssetsFolder(const char* folder);
 void SetAssetsFolder(const char* folder);
-inline void setAssetsFolder(const char* folder) { SetAssetsFolder(folder);} // backward compatibility
+void SetAssetsFolder(const std::string& folder);
 
 } // namespace HelloImGui
 
@@ -2175,7 +2175,7 @@ namespace HelloImGui
 
     void Log(LogLevel level, char const* const format, ...);
     void LogClear();
-    void LogGui();
+    void LogGui(ImVec2 size=ImVec2(0.f, 0.f));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2244,6 +2244,11 @@ namespace HelloImGui
     // __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
     ImVec2 EmToVec2(float x, float y);
     ImVec2 EmToVec2(ImVec2 v);
+
+    // Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
+    // since one can choose the duration for the calculation of the mean value of the fps
+    // (Will only lead to accurate values if you call it at each frame)
+    float FrameRate(float durationForMean = 0.5f);
 }
 
 /**
