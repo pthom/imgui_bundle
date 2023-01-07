@@ -77,6 +77,8 @@ std::string MainPythonPackageFolder()
 
 std::string DemoCppFolder()  { return MainPythonPackageFolder() + "/demos_cpp"; }
 std::string DemoPythonFolder() { return MainPythonPackageFolder() + "/demos_python"; }
+std::string DocFolder() { return MainPythonPackageFolder() + "/doc"; }
+
 
 // memoized function
 std::string ReadCode(const std::string& filename)

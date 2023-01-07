@@ -22,7 +22,7 @@ def _get_assets_and_demos_cpp_dirs() -> List[str]:
 
         def is_assets_dir_or_subdir():
             dir_parts = dir_name.replace("\\", "/").split("/")
-            return "assets" in dir_parts or "demos_cpp" in dir_parts or "demos_assets" in dir_parts
+            return "assets" in dir_parts or "demos_cpp" in dir_parts or "demos_assets" or "doc" in dir_parts
 
         if is_assets_dir_or_subdir():
             relative_dir = os.path.relpath(dir_name, ROOT_PACKAGE_FOLDER)

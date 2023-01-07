@@ -35,6 +35,10 @@ def demos_python_folder() -> str:
     return main_python_package_folder() + "/demos_python"
 
 
+def doc_folder() -> str:
+    return main_python_package_folder() + "/doc"
+
+
 def set_hello_imgui_demo_assets_folder():
     hello_imgui.set_assets_folder(demos_assets_folder())
 
