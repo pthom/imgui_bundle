@@ -66,7 +66,7 @@ def my_load_fonts_manually():
     font_atlas = imgui.get_io().fonts
     # We need to take into account the global font scale!
     font_size_pixel = 40 / imgui.get_io().font_global_scale
-    font_filename = demo_utils.demo_assets_folder() + "/fonts/Akronim-Regular.ttf"
+    font_filename = demo_utils.demos_assets_folder() + "/fonts/Akronim-Regular.ttf"
     font_atlas = imgui.get_io().fonts
     glyph_range = font_atlas.get_glyph_ranges_default()
     gAkronimFont = font_atlas.add_font_from_file_ttf(
@@ -77,7 +77,7 @@ def my_load_fonts_manually():
     # ii. ... Aad merge icons into the previous font
     from imgui_bundle import icons_fontawesome
 
-    font_filename = demo_utils.demo_assets_folder() + "/fonts/fontawesome-webfont.ttf"
+    font_filename = demo_utils.demos_assets_folder() + "/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
@@ -162,7 +162,7 @@ def main():
     # By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
     # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
-    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
+    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
 
     ################################################################################################
     # Part 1: Define the application state, fill the status and menu bars, and load additional font

@@ -7,7 +7,7 @@ def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
     # hello_imgui can load font and merge them with font awesome automatically.
 
     # It will load them from the assets/ folder.
-    assets_folder = demo_utils.demo_assets_folder()
+    assets_folder = demo_utils.demos_assets_folder()
     hello_imgui.set_assets_folder(assets_folder)
 
     # First, we load the default fonts (the font that was loaded first is the default font)
@@ -32,7 +32,7 @@ def my_load_fonts_manually() -> imgui.ImFont:
     font_atlas = imgui.get_io().fonts
     # We need to take into account the global font scale! This is required for macOS retina screens
     font_size_pixel = 40.0 / imgui.get_io().font_global_scale
-    font_filename = demo_utils.demo_assets_folder() + "/fonts/Akronim-Regular.ttf"
+    font_filename = demo_utils.demos_assets_folder() + "/fonts/Akronim-Regular.ttf"
     glyph_range = imgui.font_atlas_glyph_ranges_default(font_atlas)
     acronym_font = imgui.font_atlas_add_font_from_file_ttf(
         font_atlas=imgui.get_io().fonts,
@@ -43,7 +43,7 @@ def my_load_fonts_manually() -> imgui.ImFont:
     # ii. ... Aad merge icons into the previous font
     from imgui_bundle import icons_fontawesome
 
-    font_filename = demo_utils.demo_assets_folder() + "/fonts/fontawesome-webfont.ttf"
+    font_filename = demo_utils.demos_assets_folder() + "/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
     icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]

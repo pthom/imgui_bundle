@@ -10,7 +10,7 @@ def demo_gui() -> None:
     statics = demo_gui
     image_display_size = (0, int(immapp.em_size(15)))
     if not statics.inited:
-        assets_dir = demo_utils.demo_assets_folder() + "/images/"
+        assets_dir = demo_utils.demos_assets_folder() + "/images/"
         statics.bear = cv2.imread(assets_dir + "bear_transparent.png", cv2.IMREAD_UNCHANGED)
         statics.params = immvision.ImageParams()
         statics.params.image_display_size = image_display_size
@@ -31,7 +31,7 @@ def demo_gui() -> None:
 
 
 def main():
-    demo_utils.set_demo_assets_folder()
+    demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 

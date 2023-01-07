@@ -19,5 +19,5 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
+    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
     immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)

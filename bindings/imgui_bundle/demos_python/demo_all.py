@@ -44,7 +44,7 @@ def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None])
 
 
 def main() -> None:
-    hello_imgui.set_assets_folder(demo_utils.demo_assets_folder())
+    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
     ################################################################################################
     # Part 1: Define the runner params
     ################################################################################################

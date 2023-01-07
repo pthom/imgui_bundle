@@ -5,7 +5,7 @@ from imgui_bundle.demos_python import demo_utils
 
 
 this_dir = os.path.dirname(__file__)
-image = cv2.imread(demo_utils.demo_assets_folder() + "/images/tennis.jpg")
+image = cv2.imread(demo_utils.demos_assets_folder() + "/images/tennis.jpg")
 channels = cv2.split(image)
 
 params_rgb = immvision.ImageParams()
