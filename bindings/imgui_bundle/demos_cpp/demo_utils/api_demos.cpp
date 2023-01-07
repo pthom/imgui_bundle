@@ -48,14 +48,16 @@ void ChdirBesideAssetsFolder()
     if (findDemoAssets(currentPath.parent_path()))
         return;
 
+#ifndef __EMSCRIPTEN__
     // 3. Try to find demo assets in exe folder
     std::filesystem::path exeFolder(wai_getExecutableFolder_string());
     if (findDemoAssets(exeFolder))
         return;
 
-    // 3. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
+    // 4. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
     if (findDemoAssets(exeFolder.parent_path()))
         return;
+#endif
 
     std::cerr << "Could not find " << DemosAssetsFolder() << " folder!\n";
 }
