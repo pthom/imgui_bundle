@@ -22,13 +22,14 @@ std::string DemosAssetsFolder()
 #endif
 }
 
+
 void ChdirBesideAssetsFolder()
 {
     auto findDemoAssets = [](const std::filesystem::path& path) -> bool
     {
         if (std::filesystem::is_directory(path / DemosAssetsFolder()))
         {
-            std::filesystem::current_path() = path;
+            std::filesystem::current_path(path);
             if (! std::filesystem::is_directory(DemosAssetsFolder()))
                 throw std::runtime_error("ChdirBesideAssetsFolder => fail setting path");
             HelloImGui::SetAssetsFolder(DemosAssetsFolder());
