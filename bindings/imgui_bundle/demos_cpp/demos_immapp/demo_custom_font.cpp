@@ -55,7 +55,7 @@ ImFont* MyLoadFontsManually()
 
 int main()
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
 
     ImFont *customFont;
 

@@ -7,6 +7,7 @@ using GuiFunction = std::function<void(void)>;
 
 
 std::string DemosAssetsFolder();
+void ChdirBesideAssetsFolder();
 
 std::string MainPythonPackageFolder();
 std::string DemoCppFolder();

@@ -8,7 +8,7 @@
 
 int main()
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
     constexpr double pi = 3.1415926535897932384626433;
     std::vector<double> x, y1, y2;
     for (double _x = 0; _x < 4 * pi; _x += 0.01)

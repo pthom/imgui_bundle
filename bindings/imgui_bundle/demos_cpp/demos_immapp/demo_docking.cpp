@@ -143,8 +143,7 @@ void StatusBarGui(AppState& app_state)
 
 int main()
 {
-    // Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
 
     //###############################################################################################
     // Part 1: Define the application state, fill the status and menu bars, and load additional font

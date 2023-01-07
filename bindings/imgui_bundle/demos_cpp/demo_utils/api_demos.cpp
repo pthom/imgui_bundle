@@ -22,6 +22,44 @@ std::string DemosAssetsFolder()
 #endif
 }
 
+void ChdirBesideAssetsFolder()
+{
+    auto findDemoAssets = [](const std::filesystem::path& path) -> bool
+    {
+        if (std::filesystem::is_directory(path / DemosAssetsFolder()))
+        {
+            std::filesystem::current_path() = path;
+            if (! std::filesystem::is_directory(DemosAssetsFolder()))
+                throw std::runtime_error("ChdirBesideAssetsFolder => fail setting path");
+            HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+            return true;
+        }
+        else
+            return false;
+    };
+
+    // 1. Try to find demo assets in current folder
+    const auto& currentPath = std::filesystem::current_path();
+    if ( findDemoAssets(currentPath) )
+        return;
+
+    // 2. Try to find demo assets in current folder parent
+    if (findDemoAssets(currentPath.parent_path()))
+        return;
+
+    // 3. Try to find demo assets in exe folder
+    std::filesystem::path exeFolder(wai_getExecutableFolder_string());
+    if (findDemoAssets(exeFolder))
+        return;
+
+    // 3. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
+    if (findDemoAssets(exeFolder.parent_path()))
+        return;
+
+    std::cerr << "Could not find " << DemosAssetsFolder() << " folder!\n";
+}
+
+
 
 std::string MainPythonPackageFolder()
 {

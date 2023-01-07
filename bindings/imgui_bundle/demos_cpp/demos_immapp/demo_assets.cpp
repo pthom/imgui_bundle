@@ -21,7 +21,7 @@ void show_gui()
 
 int main()
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
     ImmApp::RunWithMarkdown(
         show_gui,
         "Hello, globe!",
