@@ -52,7 +52,7 @@ void ShowModuleDemo(const std::string& demoModule, VoidFunction demoFunction)
 }
 
 
-int main()
+int main(int, char **)
 {
     HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     //###############################################################################################
@@ -156,4 +156,6 @@ int main()
     addons.withImplot = true;
     addons.withTexInspect = true;
     ImmApp::Run(runnerParams, addons);
+
+    return 0;
 }

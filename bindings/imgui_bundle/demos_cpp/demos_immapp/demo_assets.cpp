@@ -23,7 +23,7 @@ void show_gui()
     }
 }
 
-int main()
+int main(int, char**)
 {
     ChdirBesideAssetsFolder();
     ImmApp::RunWithMarkdown(

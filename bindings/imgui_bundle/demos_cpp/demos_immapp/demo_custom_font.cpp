@@ -53,7 +53,7 @@ ImFont* MyLoadFontsManually()
 }
 
 
-int main()
+int main(int, char**)
 {
     ChdirBesideAssetsFolder();
 
@@ -76,4 +76,5 @@ int main()
     runnerParams.callbacks.ShowGui = gui;
 
     ImmApp::Run(runnerParams);
+    return 0;
 }

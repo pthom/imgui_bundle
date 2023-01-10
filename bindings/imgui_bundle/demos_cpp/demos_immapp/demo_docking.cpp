@@ -18,6 +18,7 @@ It demonstrates:
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
 
+
 struct AppState {
     float f = 0.0f;
     int counter = 0;
@@ -141,7 +142,7 @@ void StatusBarGui(AppState& app_state)
 }
 
 
-int main()
+int main(int, char**)
 {
     ChdirBesideAssetsFolder();
 
@@ -273,4 +274,6 @@ int main()
     ImmApp::AddOnsParams addonsParams;
     addonsParams.withMarkdown = true;
     ImmApp::Run(runnerParams, addonsParams);
+
+    return 0;
 }

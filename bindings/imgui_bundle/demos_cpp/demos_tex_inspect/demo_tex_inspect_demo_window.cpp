@@ -6,7 +6,7 @@
 #include "demo_utils/api_demos.h"
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
+int main(int, char **)
 {
     HelloImGui::SetAssetsFolder(DemosAssetsFolder());
     HelloImGui::SimpleRunnerParams runnerParams{.guiFunction = ImGuiTexInspect::ShowDemoWindow, .windowSize={1000, 1000}};

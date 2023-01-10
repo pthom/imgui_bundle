@@ -9,7 +9,7 @@
 void ${demo_name}();
 
 
-int main()
+int main(int, char **)
 {
     ChdirBesideAssetsFolder();
 
@@ -25,4 +25,6 @@ int main()
     addons.withTexInspect = true;
 
     ImmApp::Run(runnerParams, addons);
+
+    return 0;
 }
