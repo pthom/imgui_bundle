@@ -26,14 +26,23 @@ ImFont* MyLoadFontsManually()
     // Fixme: this version triggers an exception in debug mode under msvc, far later, and deep inside FontAtlas callstack.
     // (although it seems to work fine in release mode. Probable memory overflow somewhere)
 
-    // first, we load the default font (it will not include icons)
-    ImGui::GetIO().Fonts->AddFontDefault();
+    // First, we load the default font
+    // Note: 
+    // on high dpi screen, this font might look very small if you do not take into account the font scaling factor, such as show below.
+    // HelloImGui provides HelloImGui::DpiFontLoadingFactor() which corresponds to:
+    //      `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
+    //          where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch() / 96` 
+    static ImFontConfig defaultFontConfig;
+    defaultFontConfig.SizePixels = 14.f * HelloImGui::DpiFontLoadingFactor();
+    ImGui::GetIO().Fonts->AddFontDefault(&defaultFontConfig);
 
     // Load a font and merge icons into it
     // i. load the font...
     ImFontAtlas* fontAtlas = ImGui::GetIO().Fonts;
+
     // We need to take into account the global font scale! This is required for macOS retina screens
-    const float fontSizePixel = 40.0f / ImGui::GetIO().FontGlobalScale;
+    // If you are using 
+    const float fontSizePixel = 40.0f * HelloImGui::DpiFontLoadingFactor();
     const std::string fontFilename = "demos_assets/fonts/Akronim-Regular.ttf";
     auto glyphRange = fontAtlas->GetGlyphRangesDefault();
     ImFont* acronymFont = fontAtlas->AddFontFromFileTTF(fontFilename.c_str(), fontSizePixel, NULL, glyphRange);
@@ -63,6 +72,7 @@ int main(int, char**)
         ImGui::PushFont(customFont);
         ImGui::Text("Hello " ICON_FA_SMILE);
         ImGui::PopFont();
+        ImGui::Text("Text with standard font");
     };
 
     auto callbackLoadFont = [&customFont] {

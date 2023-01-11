@@ -33,11 +33,6 @@ struct AppState {
 };
 
 
-// Font loading:
-//
-// We have two options: either we use hello imgui, or we load manually
-// (see MyLoadFontsViaHelloImGui() and MyLoadFontsManually() below).
-
 ImFont* gAkronimFont; // This is just a demo, you should store this somewhere in the app state
 
 
@@ -158,7 +153,7 @@ int main(int, char**)
 
     runnerParams.appWindowParams.windowTitle = "Docking demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
-    runnerParams.appWindowParams.restorePreviousGeometry = true;
+    //runnerParams.appWindowParams.restorePreviousGeometry = true;
 
     //
     // Status bar
