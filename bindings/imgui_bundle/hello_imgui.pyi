@@ -1023,14 +1023,14 @@ class RunnerCallbacks:
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
-    # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
-    load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons()
-    # VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig();    /* original C++ signature */
-    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig()
-    # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle();    /* original C++ signature */
-    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
+    # VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);    /* original C++ signature */
+    load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons)
+    # VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);    /* original C++ signature */
+    setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig)
+    # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
+    setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig(), VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1039,9 +1039,9 @@ class RunnerCallbacks:
         post_init: VoidFunction = EmptyVoidFunction(),
         before_exit: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
-        load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons(),
-        setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig(),
-        setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
+        load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons),
+        setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig),
+        setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1686,18 +1686,18 @@ def frame_rate(duration_for_mean: float = 0.5) -> float:
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
-    # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
+    # void LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     @staticmethod
-    def load_default_font_with_font_awesome_icons() -> VoidFunction:
+    def load_default_font_with_font_awesome_icons() -> None:
         pass
-    # VoidFunction SetupDefaultImGuiConfig();    /* original C++ signature */
+    # void SetupDefaultImGuiConfig();    /* original C++ signature */
     @staticmethod
-    def setup_default_imgui_config() -> VoidFunction:
+    def setup_default_imgui_config() -> None:
         pass
-    # VoidFunction SetupDefaultImGuiStyle();    /* original C++ signature */
+    # void SetupDefaultImGuiStyle();    /* original C++ signature */
     # }
     @staticmethod
-    def setup_default_imgui_style() -> VoidFunction:
+    def setup_default_imgui_style() -> None:
         pass
 
 # </submodule imgui_default_settings>

@@ -11,8 +11,7 @@ ImFont* MyLoadFontsViaHelloImGui()
     // hello_imgui can load font and merge them with font awesome automatically.
 
     // First, we load the default fonts (the font that was loaded first is the default font)
-    // LoadDefaultFont_WithFontAwesomeIcons returns a lambda which we need to call, hence the double ()()
-    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons()();
+    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Then we load our custom font
     const std::string fontFilename = "fonts/Akronim-Regular.ttf";

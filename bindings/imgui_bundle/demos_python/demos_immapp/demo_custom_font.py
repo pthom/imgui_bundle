@@ -11,8 +11,7 @@ def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
     hello_imgui.set_assets_folder(assets_folder)
 
     # First, we load the default fonts (the font that was loaded first is the default font)
-    # load_default_font_with_font_awesome_icons returns a lambda which we need to call, hence the double ()()
-    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()()
+    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Then we load our custom font
     font_filename = "fonts/Akronim-Regular.ttf"
@@ -25,8 +24,8 @@ def my_load_fonts_manually() -> imgui.ImFont:
     # We need to use font_atlas_add_font_from_file_ttf instead of ImFont.add_font_from_file_ttf
 
     # first, we load the default font (it will not include icons)
-    # Note:
-    # on high dpi screen, this font might look very small if you do not take into account the font scaling factor, such as show below.
+    # Note: on high dpi screen, this font might look very small if you do not take into account
+    # the font scaling factor, as shown below.
     # HelloImGui provides hello_imgui::dpi_font_loading_factor() which corresponds to:
     #      `dpi_window_factor() * 1.f / imgui.get_io().font_global_scale`
     #          where dpi_window_factor() is equal to `current_screen_pixel_per_inch / 96`
