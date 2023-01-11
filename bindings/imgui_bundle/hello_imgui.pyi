@@ -1548,6 +1548,28 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#*
+#@@md#HelloImGui::Dpi
+#
+# ### Note about DPI handling, i.e. how to handle screen with high pixel density
+#
+# - under windows and linux, with GLFW:
+#
+#@@md
+#
+
+# float DpiWindowFactor();    /* original C++ signature */
+def dpi_window_factor() -> float:
+    pass
+# float DpiFontLoadingFactor();    /* original C++ signature */
+# }
+def dpi_font_loading_factor() -> float:
+    pass
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

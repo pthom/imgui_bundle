@@ -584,6 +584,13 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
 
 
+    m.def("dpi_window_factor",
+        HelloImGui::DpiWindowFactor);
+
+    m.def("dpi_font_loading_factor",
+        HelloImGui::DpiFontLoadingFactor);
+
+
     m.def("run",
         py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run), py::arg("runner_params"));
 
