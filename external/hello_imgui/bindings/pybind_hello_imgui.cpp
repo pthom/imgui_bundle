@@ -584,11 +584,11 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
 
 
-    m.def("dpi_window_factor",
-        HelloImGui::DpiWindowFactor);
-
     m.def("dpi_font_loading_factor",
-        HelloImGui::DpiFontLoadingFactor);
+        HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
+
+    m.def("dpi_window_factor",
+        HelloImGui::DpiWindowFactor, " DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.\n Under macOS, it will return 1.");
 
 
     m.def("run",
