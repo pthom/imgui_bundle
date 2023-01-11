@@ -11,7 +11,10 @@ namespace ImmApp
     using NodeEditorContext = ax::NodeEditor::EditorContext;
 
     using VoidFunction = std::function<void(void)>;
-    using ScreenSize = std::array<int, 2>;
+
+    using ScreenSize = HelloImGui::ScreenSize;
+    using HelloImGui::DefaultWindowSize;
+
 
     // AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)
     // to be initialized at startup.
@@ -48,7 +51,6 @@ namespace ImmApp
     //
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    constexpr ScreenSize DefaultScreenSize = {800, 600};
 
     // Helper to run an app inside imgui_bundle, using HelloImGui:
     //
@@ -72,7 +74,7 @@ namespace ImmApp
         const std::string& windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = DefaultScreenSize,
+        const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
 
         // AddOnsParams below:
@@ -92,7 +94,7 @@ namespace ImmApp
         const std::string& windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = DefaultScreenSize,
+        const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
 
         // AddOnsParams below:
