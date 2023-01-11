@@ -69,8 +69,8 @@ def get_glfw_window():
 #my_app/
 #├── CMakeLists.txt        # Your app's CMakeLists
 #├── assets/               # Its assets: for mobile devices and emscripten
-#│   └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
-#│       └── my_font.ttf
+#│         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
+#│             └── my_font.ttf
 #├── my_app.main.cpp       # Its source code
 #````
 #
@@ -255,6 +255,12 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 
 """ namespace BackendApi"""
 
+# Note: note related to DPI and high resolution screens:
+# ScreenPosition and ScreenSize are in "Screen Coordinates":
+# Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+# - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
+# - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
+
 
 
 class ScreenBounds:
@@ -401,6 +407,25 @@ class WindowPositionMode(enum.Enum):
     from_coords = enum.auto()    # (= 2)
 
 
+class WindowSizeMeasureMode(enum.Enum):
+    # ScreenCoords,    /* original C++ signature */
+    # ScreenCoords: measure window size in screen coords.
+    #     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    #         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen
+    #           coordinates
+    #         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,
+    #           even on high density screens
+    screen_coords = enum.auto()     # (= 0)
+
+    # RelativeTo96Ppi    /* original C++ signature */
+    # }
+    # RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+    # For example, a window size expressed as 800x600 will correspond to a size
+    #    800x600 (in screen coords) if the monitor dpi is 96
+    #    1600x120 (in screen coords) if the monitor dpi is 192
+    relative_to96_ppi = enum.auto() # (= 1)
+
+
 class WindowGeometry:
     """*
     @@md#WindowGeometry
@@ -436,11 +461,20 @@ class WindowGeometry:
             Minimized,
             Maximized
         ````
+    * `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
+      how the window size is specified:
+      * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+         For example, a window size expressed as 800x600 will correspond to a size
+            - 800x600 (in screen coords) if the monitor dpi is 96
+            - 1600x120 (in screen coords) if the monitor dpi is 192
+          (this works with Glfw. With SDL, it only works under windows)
+      * ScreenCoords: measure window size in screen coords
+        (Note: screen coordinates might differ from real pixels on high dpi screen)
     @@md
     *
     """
     # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
-    # used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)
+    # used if fullScreenMode==NoFullScreen and sizeAuto==False. Value=(800, 600)
     size: ScreenSize = DefaultWindowSize
 
     # bool sizeAuto = false;    /* original C++ signature */
@@ -463,7 +497,10 @@ class WindowGeometry:
 
     # WindowSizeState windowSizeState = WindowSizeState::Standard;    /* original C++ signature */
     window_size_state: WindowSizeState = WindowSizeState.standard
-    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard);    /* original C++ signature */
+
+    # WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;    /* original C++ signature */
+    window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
+    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi);    /* original C++ signature */
     def __init__(
         self,
         size: ScreenSize = DefaultWindowSize,
@@ -472,7 +509,8 @@ class WindowGeometry:
         position_mode: WindowPositionMode = WindowPositionMode.os_default,
         position: ScreenPosition = DefaultScreenPosition,
         monitor_idx: int = 0,
-        window_size_state: WindowSizeState = WindowSizeState.standard
+        window_size_state: WindowSizeState = WindowSizeState.standard,
+        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -495,12 +533,6 @@ class AppWindowParams:
       If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
     * `borderless`: _bool, default = false_.
     * `resizable`: _bool, default = false_.
-
-    Output Member:
-    * `outWindowDpiFactor`: _float, default = 1_.
-       This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1
-       on high resolution monitors (on MacOS, the scaling is handled by the system).
-       When loading fonts, their size should be multiplied by this factor.
     @@md
     *
     """
@@ -518,18 +550,14 @@ class AppWindowParams:
     borderless: bool = False
     # bool resizable = true;    /* original C++ signature */
     resizable: bool = True
-
-    # float outWindowDpiFactor = 1.;    /* original C++ signature */
-    out_window_dpi_factor: float = 1.
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, float outWindowDpiFactor = 1.);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
         window_geometry: WindowGeometry = WindowGeometry(),
         restore_previous_geometry: bool = False,
         borderless: bool = False,
-        resizable: bool = True,
-        out_window_dpi_factor: float = 1.
+        resizable: bool = True
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1121,7 +1149,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1207,12 +1235,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False

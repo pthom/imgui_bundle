@@ -21,8 +21,8 @@ For example, you can have the following project structure:
 my_app/
 ├── CMakeLists.txt        # Your app's CMakeLists
 ├── assets/               # Its assets: for mobile devices and emscripten
-│   └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
-│       └── my_font.ttf
+│         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
+│             └── my_font.ttf
 ├── my_app.main.cpp       # Its source code
 ````
 
@@ -1217,8 +1217,14 @@ namespace HelloImGui
     using ScreenPosition = std::array<int, 2>;
     using ScreenSize = std::array<int, 2>;
 
+    // Note: note related to DPI and high resolution screens:
+    // ScreenPosition and ScreenSize are in "Screen Coordinates":
+    // Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    // - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
+    // - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
     constexpr ScreenPosition DefaultScreenPosition = {0, 0};
     constexpr ScreenSize DefaultWindowSize = {800, 600};
+
 
 #define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
 
@@ -1335,6 +1341,24 @@ enum class WindowPositionMode
 };
 
 
+enum class WindowSizeMeasureMode
+{
+    // ScreenCoords: measure window size in screen coords.
+    //     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    //         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen
+    //           coordinates
+    //         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,
+    //           even on high density screens
+    ScreenCoords,
+
+    // RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+    // For example, a window size expressed as 800x600 will correspond to a size
+    //    800x600 (in screen coords) if the monitor dpi is 96
+    //    1600x120 (in screen coords) if the monitor dpi is 192
+    RelativeTo96Ppi
+};
+
+
 /**
 @@md#WindowGeometry
 
@@ -1369,11 +1393,20 @@ Members:
         Minimized,
         Maximized
     ````
+* `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
+  how the window size is specified:
+  * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+     For example, a window size expressed as 800x600 will correspond to a size
+        - 800x600 (in screen coords) if the monitor dpi is 96
+        - 1600x120 (in screen coords) if the monitor dpi is 192
+      (this works with Glfw. With SDL, it only works under windows)
+  * ScreenCoords: measure window size in screen coords
+    (Note: screen coordinates might differ from real pixels on high dpi screen)
 @@md
 **/
 struct WindowGeometry
 {
-    // used if fullScreenMode==NoFullScreen and sizeAuto==false, default=(800, 600)
+    // used if fullScreenMode==NoFullScreen and sizeAuto==false. Value=(800, 600)
     ScreenSize size = DefaultWindowSize;
 
     // If true, adapt the app window size to the presented widgets
@@ -1390,6 +1423,8 @@ struct WindowGeometry
     int monitorIdx = 0;
 
     WindowSizeState windowSizeState = WindowSizeState::Standard;
+
+    WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;
 };
 
 
@@ -1409,12 +1444,6 @@ Members:
   If true, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
 * `borderless`: _bool, default = false_.
 * `resizable`: _bool, default = false_.
-
-Output Member:
-* `outWindowDpiFactor`: _float, default = 1_.
-   This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1
-   on high resolution monitors (on MacOS, the scaling is handled by the system).
-   When loading fonts, their size should be multiplied by this factor.
 @@md
 **/
 struct AppWindowParams
@@ -1428,8 +1457,6 @@ struct AppWindowParams
 
     bool borderless = false;
     bool resizable = true;
-
-    float outWindowDpiFactor = 1.;
 };
 
 }  // namespace HelloImGui
