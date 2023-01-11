@@ -31,7 +31,7 @@ ImFont* MyLoadFontsManually()
     // on high dpi screen, this font might look very small if you do not take into account the font scaling factor, such as show below.
     // HelloImGui provides HelloImGui::DpiFontLoadingFactor() which corresponds to:
     //      `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
-    //          where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch() / 96` 
+    //          where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
     static ImFontConfig defaultFontConfig;
     defaultFontConfig.SizePixels = 14.f * HelloImGui::DpiFontLoadingFactor();
     ImGui::GetIO().Fonts->AddFontDefault(&defaultFontConfig);
@@ -39,9 +39,6 @@ ImFont* MyLoadFontsManually()
     // Load a font and merge icons into it
     // i. load the font...
     ImFontAtlas* fontAtlas = ImGui::GetIO().Fonts;
-
-    // We need to take into account the global font scale! This is required for macOS retina screens
-    // If you are using 
     const float fontSizePixel = 40.0f * HelloImGui::DpiFontLoadingFactor();
     const std::string fontFilename = "demos_assets/fonts/Akronim-Regular.ttf";
     auto glyphRange = fontAtlas->GetGlyphRangesDefault();
