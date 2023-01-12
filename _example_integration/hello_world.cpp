@@ -5,7 +5,7 @@
 #include <cmath>
 
 
-void demo_implot()
+void DemoImplot()
 {
     static std::vector<double> x, y1, y2;
     if (x.empty())
@@ -44,7 +44,7 @@ void Gui()
             And below is a graph created with ImPlot:
         )");
 
-    demo_implot();
+    DemoImplot();
 }
 
 
