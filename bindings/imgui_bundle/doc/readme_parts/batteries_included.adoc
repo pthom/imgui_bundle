@@ -2,10 +2,10 @@
 
 ImGui Bundle includes:
 
-* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies
+* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for C++ with minimal dependencies
 * https://github.com/epezent/implot[implot]: Immediate Mode Plotting
 * https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
-* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
+* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
 * https://github.com/BalazsJako/ImGuiColorTextEdit[ImGuiColorTextEdit]: Colorizing text editor for ImGui
 * https://github.com/thedmd/imgui-node-editor[imgui-node-editor]: Node Editor built using Dear ImGui
 * https://github.com/altschuler/imgui-knobs[imgui-knobs]: Knobs widgets for ImGui

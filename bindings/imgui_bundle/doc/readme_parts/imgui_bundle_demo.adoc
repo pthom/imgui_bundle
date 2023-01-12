@@ -1,9 +1,9 @@
-=== Interactive demo: test it in one click!
+=== Interactive manual: a demo in one click!
 
-Click on the animated demonstration below to launch the fully interactive demo.
+Click on the animated demonstration below to launch the fully interactive demonstration.
 
 .ImGui Bundle interactive demo
-[#truc,link=https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html]
+[#truc,link=https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html]
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 TIP: This demonstration is also an interactive manual, similar to the online https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual]
