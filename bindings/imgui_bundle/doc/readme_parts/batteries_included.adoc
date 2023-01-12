@@ -1,0 +1,20 @@
+=== Batteries included
+
+ImGui Bundle includes:
+
+* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies
+* https://github.com/epezent/implot[implot]: Immediate Mode Plotting
+* https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
+* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
+* https://github.com/BalazsJako/ImGuiColorTextEdit[ImGuiColorTextEdit]: Colorizing text editor for ImGui
+* https://github.com/thedmd/imgui-node-editor[imgui-node-editor]: Node Editor built using Dear ImGui
+* https://github.com/altschuler/imgui-knobs[imgui-knobs]: Knobs widgets for ImGui
+* https://github.com/pthom/ImFileDialog.git[ImFileDialog]: A file dialog library for Dear ImGui
+* https://github.com/samhocevar/portable-file-dialogs[portable-file-dialogs]  Portable GUI dialogs library (C++11, single-header)
+* https://github.com/mekhontsev/imgui_md.git[imgui_md]: Markdown renderer for Dear ImGui using MD4C parser
+* https://github.com/dalerank/imspinner[imspinner]: Set of nice spinners for imgui
+* https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui.
+* https://github.com/pthom/immvision.git[ImmVision]: immediate image debugger and insights
+* https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
+* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: a Sublime Text or VSCode style command palette in ImGui
+

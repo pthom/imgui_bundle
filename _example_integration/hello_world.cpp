@@ -30,25 +30,28 @@ void demo_implot()
 }
 
 
+void Gui()
+{
+    ImGuiMd::RenderUnindented(R"(
+            # ImGui Bundle
+            [ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui.git), including various useful libraries from its ecosystem.
+            It enables to easily create ImGui applications in C++, as well as in Python.
+            This is an example of markdown widget, with an included image:
+
+            ![world.jpg](world.jpg)
+
+            ---
+            And below is a graph created with ImPlot:
+        )");
+
+    demo_implot();
+}
+
+
 int main(int , char *[])
 {
-    auto gui = []() {
-        ImGuiMd::Render(R"(
-# ImGui Bundle
-[ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui.git), including various useful libraries from its ecosystem.
-It enables to easily create ImGui applications in C++, as well as in Python.
-This is an example of markdown widget, with an included image:
-
-![world.jpg](world.jpg)
-
----
-And below is a graph created with ImPlot:
-)");
-
-        demo_implot();
-    };
     HelloImGui::SimpleRunnerParams runnnerParams;
-    runnnerParams.guiFunction = gui;
+    runnnerParams.guiFunction = Gui;
     runnnerParams.windowSize = {600, 800};
 
     ImmApp::AddOnsParams addOnsParams;

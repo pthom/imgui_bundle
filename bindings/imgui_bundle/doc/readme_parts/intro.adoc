@@ -1,3 +1,5 @@
+== Introduction
+
 include::readme_variables.adoc[]
 
 {url-bundle}[ImGui Bundle] is a bundle for {url-imgui}[Dear ImGui], including various powerful libraries from its ecosystem.
@@ -5,3 +7,4 @@ include::readme_variables.adoc[]
 It is aimed at application developers, researchers, and beginners who want to quickly get started.
 
 It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux.
+

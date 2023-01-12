@@ -13,31 +13,30 @@ std::vector<double> VectorTimesK(const std::vector<double>& values, double k)
     return r;
 }
 
-int main(int , char *[])
-{
-    std::vector<double> interval, x, y;
-    constexpr double pi =  3.1415926535;
+int main(int , char *[]) {
+    // Fill x and y whose plot is a heart
+    double pi = 3.1415926535;
+    std::vector<double>  x, y; {
+        for (double t = 0.; t < pi * 2.; t += 0.01) {
+            x.push_back(pow(sin(t), 3.) * 16.);
+            y.push_back(13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t));
+        }
+    }
+    // Heart pulse rate and time tracking
     double phase = 0., t0 = ImmApp::ClockSeconds() + 0.2;
     float heart_pulse_rate = 80.;
-    for (double t = 0.; t < pi * 2.; t += 0.01)
-    {
-        interval.push_back(t);
-        double x_ = pow(sin(t), 3.) * 16.; x.push_back(x_);
-        double y_ = 13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t); y.push_back(y_);
-    }
 
-    auto gui = [&]()
-    {
+    auto gui = [&]() {
         // By setting fpsIdle = 0, we make sure that the animation is smooth
         HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
 
         double t = ImmApp::ClockSeconds();
-        phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.); double k = 0.8 + 0.1 * cos(phase);
+        phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.);
+        double k = 0.8 + 0.1 * cos(phase);
         t0 = t;
 
         ImGui::Text("Bloat free code");
-        auto xk = VectorTimesK(x, k);
-        auto yk = VectorTimesK(y, k);
+        auto xk = VectorTimesK(x, k), yk = VectorTimesK(y, k);
         ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21));
         ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
         ImPlot::EndPlot();

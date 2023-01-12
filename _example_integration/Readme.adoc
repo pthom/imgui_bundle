@@ -1,0 +1,36 @@
+=== How to use integrate ImGuiBundle into your application
+
+This directory is a **standalone** demonstration on how to easily integrate ImGuiBundle to your own project. This means that you can copy-paste this folder in your project, and it will build, with no extra step!
+
+TIP: you do *not* need to clone or download `ImGui Bundle`. It will be done by cmake automatically.
+
+
+==== Cmake: downloads and build ImGui Bundle
+
+The link:CMakeLists.txt[CMakeLists.txt] file will
+
+* download imgui_bundle at configure time
+* make the `imgui_bundle_add_app` cmake function available
+* use `imgui_bundle_add_app` to build your app and link it with ImGuiBundle
+
+.Click to see CMakeLists.txt content
+[%collapsible]
+====
+[source, cmake]
+----
+include::CMakeLists.txt[]
+----
+====
+
+==== hello_world.cpp: uses ImGui Bundle
+
+See link:hello_world.cpp[hello_world.cpp]
+
+.Click to see hello_world.cpp content
+[%collapsible]
+====
+[source, cpp]
+----
+include::hello_world.cpp[]
+----
+====
