@@ -1,0 +1,11 @@
+= ImGui Bundle
+Pascal Thomet <pthomet@gmail.com>
+:description: Main readme for ImGui Bundle
+
+include::readme_parts/readme_variables.adoc[]
+include::readme_parts/badges.adoc[]
+include::readme_parts/intro.adoc[]
+
+include::readme_parts/bundle_gif_video.adoc[]
+
+

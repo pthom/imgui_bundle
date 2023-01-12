@@ -15,7 +15,7 @@ It enables to easily create ImGui applications in C++ and Python, under Windows,
 `````bash
 pip install imgui-bundle
 pip install opencv-python
-imgui_bundle_demo
+demo_imgui_bundle
 `````
 
 <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html">
@@ -140,8 +140,6 @@ You can also use any backend, by providing your own integration code (see ImGui 
 │
 ├── imgui_bundle_cmake/                                     # imgui_bundle_add_app() : a cmake function 
 │         └── imgui_bundle_add_app.cmake                    # to create an app in one line
-│
-├── doc/
 │
 ├── bindings/                                               # root for the python bindings
 │         └── imgui_bundle/

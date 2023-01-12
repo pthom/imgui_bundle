@@ -1,0 +1,5 @@
+include::readme_variables.adoc[]
+
+image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[]
+
+Try the https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html[interactive demo]

@@ -1,0 +1,29 @@
+= ImGui Bundle
+Pascal Thomet <pthomet@gmail.com>
+:description: Main readme for ImGui Bundle
+
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-imgui: https://github.com/ocornut/imgui/
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-imgui: https://github.com/ocornut/imgui/
+
+image:{url-bundle}/workflows/CppLib/badge.svg[]
+image:{url-bundle}/workflows/Pip/badge.svg[]
+image:{url-bundle}/workflows/Wheels/badge.svg[]
+image:{url-bundle}/workflows/Emscripten/badge.svg[]
+
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-imgui: https://github.com/ocornut/imgui/
+
+{url-bundle}[ImGui Bundle] is a bundle for {url-imgui}[Dear ImGui], including various powerful libraries from its ecosystem.
+
+It is aimed at application developers, researchers, and beginners who want to quickly get started.
+
+It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux.
+
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-imgui: https://github.com/ocornut/imgui/
+
+image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[]
+
+Try the https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html[interactive demo]

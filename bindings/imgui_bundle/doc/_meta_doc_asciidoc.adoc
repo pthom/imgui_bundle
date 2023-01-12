@@ -1,0 +1,8 @@
+
+```
+brew install asciidoctor
+gem install asciidoctor-reducer
+
+asciidoctor-reducer Readme_source.adoc -o Readme.adoc
+```
+
