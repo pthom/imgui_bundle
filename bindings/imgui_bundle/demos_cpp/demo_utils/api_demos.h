@@ -7,10 +7,12 @@ using GuiFunction = std::function<void(void)>;
 
 
 std::string DemosAssetsFolder();
+void ChdirBesideAssetsFolder();
 
 std::string MainPythonPackageFolder();
 std::string DemoCppFolder();
 std::string DemoPythonFolder();
+std::string DocFolder();
 
 // memoized functions
 std::string ReadCode(const std::string& filename);

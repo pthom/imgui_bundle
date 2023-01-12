@@ -296,7 +296,7 @@ set(immvision_conan_help_message "
 
 
 macro(immvision_find_opencv)
-    if (IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV)
+    if (IMGUI_BUNDLE_FETCH_OPENCV)
         if (WIN32)
             set(IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460 ON)
         else()

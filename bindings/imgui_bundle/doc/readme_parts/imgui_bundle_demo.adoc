@@ -1,0 +1,11 @@
+=== Interactive manual: a demo in one click!
+
+include::readme_variables.adoc[]
+
+Click on the animated demonstration below to launch the fully interactive demonstration.
+
+.ImGui Bundle interactive demo
+[#truc,link={url-demo-imgui-bundle}]
+image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
+
+TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]

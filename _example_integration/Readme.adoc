@@ -1,0 +1,24 @@
+=== How to use integrate ImGuiBundle into your C++ application
+
+This directory is a *standalone* demonstration on how to easily integrate ImGuiBundle to your own project. This means that you can copy-paste the content folder in your project, and it will build, with no extra step!
+
+link:https://github.com/pthom/imgui_bundle/releases/download/v0.7.2/_example_integration.zip[Download this folder as a zip file]
+
+NOTE: With this simple mode, you do not need to add `ImGui Bundle` as a submodule, or to install it. CMake will automatically fetch it and link your app with it!
+
+
+==== CMakeLists.txt
+
+The link:CMakeLists.txt[CMakeLists.txt] file
+
+* Downloads imgui_bundle at configure time
+* Makes the `imgui_bundle_add_app` cmake function available
+* Uses `imgui_bundle_add_app` to build your app and link it with ImGuiBundle
+
+
+==== Main cpp file
+
+The link:hello_world.cpp[hello_world.cpp] file
+
+* Provides a Gui function which is executed at each frame
+* Provides a main function that set the ImmApp ("Immediate App") params, and mentions the addons we intend to use (here we are using markdown and implot).

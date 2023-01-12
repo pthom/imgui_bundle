@@ -18,6 +18,7 @@ It demonstrates:
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
 
+
 struct AppState {
     float f = 0.0f;
     int counter = 0;
@@ -32,11 +33,6 @@ struct AppState {
 };
 
 
-// Font loading:
-//
-// We have two options: either we use hello imgui, or we load manually
-// (see MyLoadFontsViaHelloImGui() and MyLoadFontsManually() below).
-
 ImFont* gAkronimFont; // This is just a demo, you should store this somewhere in the app state
 
 
@@ -47,7 +43,7 @@ void MyLoadFontsViaHelloImGui()
 
     // First, we load the default fonts (the font that was loaded first is the default font)
     // LoadDefaultFont_WithFontAwesomeIcons returns a lambda which we need to call, hence the double ()()
-    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons()();
+    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Then we load our custom font
     const std::string fontFilename = "fonts/Akronim-Regular.ttf";
@@ -141,10 +137,9 @@ void StatusBarGui(AppState& app_state)
 }
 
 
-int main()
+int main(int, char**)
 {
-    // Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
 
     //###############################################################################################
     // Part 1: Define the application state, fill the status and menu bars, and load additional font
@@ -158,7 +153,7 @@ int main()
 
     runnerParams.appWindowParams.windowTitle = "Docking demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
-    runnerParams.appWindowParams.restorePreviousGeometry = true;
+    //runnerParams.appWindowParams.restorePreviousGeometry = true;
 
     //
     // Status bar
@@ -274,4 +269,6 @@ int main()
     ImmApp::AddOnsParams addonsParams;
     addonsParams.withMarkdown = true;
     ImmApp::Run(runnerParams, addonsParams);
+
+    return 0;
 }

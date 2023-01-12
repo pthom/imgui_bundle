@@ -19,10 +19,12 @@ function(add_demo_cpp)
     if (EMSCRIPTEN)
         # Bundle demos_assets
         hello_imgui_bundle_assets_from_folder(${demo_name} ${demos_cpp_folder}/../demos_assets)
-        # Bundle demos_cpp and demos_python sources
+        # Bundle doc, demos_cpp and demos_python sources
         set(demos_python_folder ${demos_cpp_folder}/../demos_python)
+        set(doc_folder ${demos_cpp_folder}/../doc)
         target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
         target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
+        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${doc_folder}@/doc")
     endif()
 endfunction()
 
@@ -98,7 +100,7 @@ add_this_folder_as_demos_library()
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)
 target_link_libraries(demo_tex_inspect_launcher PRIVATE demos_tex_inspect)
-target_link_libraries(demo_all PRIVATE
+target_link_libraries(demo_imgui_bundle PRIVATE
     demos_cpp
     demos_imguizmo
     demos_tex_inspect
@@ -107,7 +109,7 @@ target_link_libraries(demo_all PRIVATE
 )
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
-    target_link_libraries(demo_all PRIVATE demos_immvision)
+    target_link_libraries(demo_imgui_bundle PRIVATE demos_immvision)
 endif()
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

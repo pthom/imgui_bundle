@@ -1,304 +1,153 @@
-from imgui_bundle import imgui, imgui_md, hello_imgui
-from imgui_bundle.demos_python.demo_utils import show_python_vs_cpp_and_run
-from imgui_bundle import immapp
-from imgui_bundle import imgui_color_text_edit as text_edit
-import inspect
+from typing import List, Callable
+from types import ModuleType
+from dataclasses import dataclass
+
+from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
+from imgui_bundle.immapp import static
+from imgui_bundle.demos_python import demo_text_edit
+from imgui_bundle.demos_python import demo_imgui_bundle_intro
+from imgui_bundle.demos_python import demo_imgui_show_demo_window
+from imgui_bundle.demos_python import demo_widgets
+from imgui_bundle.demos_python import demo_implot
+from imgui_bundle.demos_python import demo_imgui_md
+from imgui_bundle.demos_python import demo_immvision_launcher
+from imgui_bundle.demos_python import demo_imguizmo_launcher
+from imgui_bundle.demos_python import demo_tex_inspect_launcher
+from imgui_bundle.demos_python import demo_node_editor_launcher
+from imgui_bundle.demos_python import demo_immapp_launcher
+from imgui_bundle.demos_python import demo_immapp_notebook
+from imgui_bundle.demos_python import demo_themes
+from imgui_bundle.demos_python import demo_logger
+from imgui_bundle.demos_python import demo_utils
 
 
-class AppState:
-    counter = 0
-    name = ""
+@static(was_initialized=None)
+def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None]) -> None:
+    static = show_module_demo
 
+    if not static.was_initialized:
+        static.snippet = immapp.snippets.SnippetData()
+        static.snippet.language = immapp.snippets.SnippetLanguage.python
+        static.last_module = None
+        static.was_initialized = True
 
-@immapp.static(value=0)
-def demo_radio_button():
-    static = demo_radio_button
-    clicked, static.value = imgui.radio_button("radio a", static.value, 0)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio b", static.value, 1)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio c", static.value, 2)
-
-
-def show_code_advices() -> None:
-    cpp_code = """
-        void DemoRadioButton()
-        {
-            static int value = 0;
-            ImGui::RadioButton("radio a", &value, 0); ImGui::SameLine();
-            ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
-            ImGui::RadioButton("radio c", &value, 2);
-        }
-    """
-
-    imgui_md.render_unindented(
-        """
-    ImGui is a C++ library that was ported to Python. In order to work with it you will often refer to its [demo](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html), which shows example code in C++.
-
-    In order to translate from C++ to Python:
-    1. Change the function names and parameters' names from `CamelCase` to `snake_case`
-    2. Change the way the output are handled.
-        a. in C++ `ImGui::RadioButton` modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.
-        b. In python, the (possibly modified) value is transmitted via the return: `imgui.radio_button` returns a `Tuple[bool, str]` which contains `(user_clicked, new_value)`.
-    3. if porting some code that uses static variables, use the `@static` decorator.
-       In this case, this decorator simply adds a variable `value` at the function scope. It is is preserved between calls.
-       Normally, this variable should be accessed via `demo_radio_button.value`, however the first line of the function adds a synonym named static for more clarity.
-       Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.
-    """
-    )
-    imgui.new_line()
-    show_python_vs_cpp_and_run(demo_radio_button, cpp_code)
-
-
-# fmt: off
-
-@immapp.static(text="")
-def demo_input_text_upper_case() -> None:
-    static = demo_input_text_upper_case
-    flags:imgui.InputTextFlags = (
-            imgui.InputTextFlags_.chars_uppercase.value
-          | imgui.InputTextFlags_.chars_no_blank.value
-        )
-    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
-
-# fmt: on
-
-
-def show_text_input_advice():
-    cpp_code = """
-        void DemoInputTextUpperCase()
-        {
-            static char text[64] = "";
-            ImGuiInputTextFlags flags = (
-                ImGuiInputTextFlags_CharsUppercase
-                | ImGuiInputTextFlags_CharsNoBlank
-            );
-            /*bool changed = */ ImGui::InputText("Upper case, no spaces", text, 64, flags);
-        }
-        """
-
-    imgui_md.render_unindented(
-        """
-        In the example below, two differences are important:
-        
-        ## InputText functions:
-        imgui.input_text (Python) is equivalent to ImGui::InputText (C++) 
-        
-        * In C++, it uses two parameters for the text: the text pointer, and its length.
-        * In python, you can simply pass a string, and get back its modified value in the returned tuple.
-        
-        ## Enums handling:
-
-        * `ImGuiInputTextFlags_` (C++) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore). 
-        * `ImGuiInputTextFlags` (C++) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
-        
-        You will find many similar enums. 
-        
-        The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).
-        
-    """
-    )
-    imgui.new_line()
-    show_python_vs_cpp_and_run(demo_input_text_upper_case, cpp_code)
-
-    imgui_md.render_unindented("""
-        ---
-        Note: by using imgui_stdlib.h, it is also possible to write:
-    
-        ```cpp
-        #include "imgui/misc/cpp/imgui_stdlib.h"
-    
-        void DemoInputTextUpperCase_StdString()
-        {
-            static std::string text;
-        ImGuiInputTextFlags flags = (
-                ImGuiInputTextFlags_CharsUppercase
-                | ImGuiInputTextFlags_CharsNoBlank
-        );
-        /*bool changed = */ ImGui::InputText("Upper case, no spaces", &text, flags);
-        }
-        ```
-    """)
-
-
-def demo_add_window_size_callback():
-    import imgui_bundle
-
-    # always import glfw *after* imgui_bundle!!!
-    import glfw  # type: ignore
-
-    # Get the glfw window used by hello imgui
-    window = imgui_bundle.glfw_window_hello_imgui()
-
-    # define a callback
-    def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
-        from imgui_bundle import hello_imgui
-
-        hello_imgui.log(hello_imgui.LogLevel.info, f"Window size changed to {w}x{h}")
-
-    glfw.set_window_size_callback(window, my_window_size_callback)
-
-
-@immapp.static(snippet=None)
-def show_glfw_callback_advice():
-    static = show_glfw_callback_advice
-    if static.snippet is None:
+    if demo_module != static.last_module:
         import inspect
 
-        static.snippet = immapp.snippets.SnippetData()
-        static.snippet.code = inspect.getsource(demo_add_window_size_callback)
+        code = inspect.getsource(demo_module)
+        static.snippet.code = code
+        static.last_module = demo_module
 
-    imgui.text("Code for this demo")
-    immapp.snippets.show_code_snippet(static.snippet)
+    if imgui.collapsing_header("Code for this demo"):
+        immapp.snippets.show_code_snippet(static.snippet)
 
-    imgui_md.render_unindented(
-        """For more complex applications, you can set various callbacks, using glfw.
-    *Click the button below to add a callback*"""
+    demo_function()
+
+
+def main() -> None:
+    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
+    ################################################################################################
+    # Part 1: Define the runner params
+    ################################################################################################
+
+    # Hello ImGui params (they hold the settings as well as the Gui callbacks)
+    runner_params = hello_imgui.RunnerParams()
+    # Window size and title
+    runner_params.app_window_params.window_title = "ImGui Bundle"
+    runner_params.app_window_params.window_geometry.size = (1400, 900)
+
+    # Menu bar
+    runner_params.imgui_window_params.show_menu_bar = True
+    runner_params.imgui_window_params.show_status_bar = True
+
+    ################################################################################################
+    # Part 2: Define the application layout and windows
+    ################################################################################################
+
+    # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
+    runner_params.imgui_window_params.default_imgui_window_type = (
+        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     )
+    # In this demo, we also demonstrate multiple viewports.
+    # you can drag windows outside out the main window in order to put their content into new native windows
+    runner_params.imgui_window_params.enable_viewports = True
 
-    if imgui.button("Add glfw callback"):
-        demo_add_window_size_callback()
-        hello_imgui.log(
-            hello_imgui.LogLevel.warning,
-            "A callback was handed to watch the window size. Change this window size and look at the logs",
-        )
+    #
+    # Define our dockable windows : each window provide a Gui callback, and will be displayed
+    # in a docking split.
+    #
+    dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    hello_imgui.log_gui()
+    def add_demo_dockable_window(
+        label: str,
+        demo_module: ModuleType
+    ):
+        window = hello_imgui.DockableWindow()
+        window.label = label
+        window.dock_space_name = "MainDockSpace"
 
+        def win_fn() -> None:
+            show_module_demo(demo_module, demo_module.demo_gui)
 
-@immapp.static(is_initialized=False)
-def demo_gui() -> None:
-    static = demo_gui
+        window.gui_function = win_fn
+        dockable_windows.append(window)
 
-    if not static.is_initialized:
-        static.app_state = AppState()
-        static.is_initialized = True
+    @dataclass
+    class DemoDetails:
+        label: str
+        demo_module: ModuleType
 
-    app_state: AppState = static.app_state
+    demos = [
+        DemoDetails("ImGui Bundle", demo_imgui_bundle_intro),
+        DemoDetails("Dear ImGui Demo", demo_imgui_show_demo_window),
+        DemoDetails("Immediate Apps", demo_immapp_launcher),
+        DemoDetails("Implot", demo_implot),
+        DemoDetails("Node Editor", demo_node_editor_launcher),
+        DemoDetails("Markdown", demo_imgui_md),
+        DemoDetails("Text Editor", demo_text_edit),
+        DemoDetails("Widgets", demo_widgets),
+        DemoDetails("ImmVision", demo_immvision_launcher),
+        DemoDetails("imgui_tex_inspect", demo_tex_inspect_launcher),
+        DemoDetails("ImGuizmo", demo_imguizmo_launcher),
+        DemoDetails("Themes", demo_themes),
+        DemoDetails("Logger", demo_logger),
+        DemoDetails("Notebook", demo_immapp_notebook),
+    ]
 
-    imgui_md.render_unindented(
-        """
-        # ImGui Bundle
-        [ImGui Bundle](https://github.com/pthom/imgui_bundle) is a collection of python bindings for [Dear ImGui](https://github.com/ocornut/imgui.git), and various libraries from its ecosystem.
-        The bindings were autogenerated from the original C++ code, so that they are easier to keep up to date, and the python API closely matches the C++ api.
-        """
-    )
-    imgui.separator()
+    for demo in demos:
+        add_demo_dockable_window(demo.label, demo.demo_module)
 
-    if imgui.collapsing_header("About"):
-        imgui_md.render_unindented(
-            """
-            ### Batteries included
-            ImGui Bundle includes:
-            * [imgui](https://github.com/ocornut/imgui.git) : Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies 
-            * [implot](https://github.com/epezent/implot): Immediate Mode Plotting
-            * [Hello ImGui](https://github.com/pthom/hello_imgui.git): cross-platform Gui apps with the simplicity of a "Hello World" app 
-            * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo.git): Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui 
-            * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit): Colorizing text editor for ImGui
-            * [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): Node Editor built using Dear ImGui 
-            * [imgui-knobs](https://github.com/altschuler/imgui-knobs): Knobs widgets for ImGui
-            * [ImFileDialog](https://github.com/pthom/ImFileDialog.git): A file dialog library for Dear ImGui  
-            * [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)  Portable GUI dialogs library (C++11, single-header)
-            * [imgui_md](https://github.com/mekhontsev/imgui_md.git): Markdown renderer for Dear ImGui using MD4C parser
-            * [imspinner](https://github.com/dalerank/imspinner): Set of nice spinners for imgui 
-            * [imgui_toggle](https://github.com/cmdwtf/imgui_toggle): A toggle switch widget for Dear ImGui. [Homepage](https://cmd.wtf/projects#imgui-toggle)
-            * [ImmVision](https://github.com/pthom/immvision.git): immediate image debugger and insights 
-            * [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): A texture inspector tool for Dear ImGui 
-            * [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git): a Sublime Text or VSCode style command palette in ImGui
-            
-            ### Philosophy
-            * Mirror the original API of ImGui and other libraries
-            * Original code documentation is consciously kept inside the python stubs. See for example the documentation for:
-                * [imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi)
-                * [implot](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi)
-                * [hello imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
-            * Fully typed bindings, so that code completion works like a charm.
-            
-            ### About Dear ImGui
-            [Dear ImGui](https://github.com/ocornut/imgui.git) is one possible implementation of an idea generally described as the IMGUI (Immediate Mode GUI) paradigm.
-         """
-        )
+    runner_params.docking_params.dockable_windows = dockable_windows
 
-    if imgui.collapsing_header("Immediate mode gui"):
-        def immediate_gui_example():
-            # Display a text
-            imgui.text(f"Counter = {app_state.counter}")
-            imgui.same_line()  # by default ImGui starts a new line at each widget
+    # the main gui is only responsible to give focus to ImGui Bundle dockable window
+    @static(nb_frames=0)
+    def show_gui():
+        if show_gui.nb_frames == 1:
+            # Focus cannot be given at frame 0, since some additional windows will
+            # be created after (and will steal the focus)
+            runner_params.docking_params.focus_dockable_window("ImGui Bundle")
+        show_gui.nb_frames += 1
 
-            # The following line displays a button
-            if imgui.button("increment counter"):
-                # And returns true if it was clicked: you can *immediately* handle the click
-                app_state.counter += 1
+    def gui_fps_status():
+        idle_active = (runner_params.fps_idle > 0)
+        imgui.set_cursor_pos_x(imgui.get_window_content_region_max().x - immapp.em_size() * 12.)
+        _, idle_active = imgui.checkbox("Auto Idle", idle_active)
+        runner_params.fps_idle = 10 if idle_active else 0
 
-            # Input a text: in python, input_text returns a tuple(modified, new_value)
-            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
-            imgui.text(f"Hello {app_state.name}!")
+    runner_params.callbacks.show_gui = show_gui
+    runner_params.callbacks.show_status = gui_fps_status
 
-        imgui_md.render_unindented("""
-            An example is often worth a thousand words. The following code:
-
-            C++
-            ```cpp
-            // Display a text
-            ImGui::Text("Counter = %i", app_state.counter);
-            ImGui::SameLine(); // by default ImGui starts a new line at each widget
-
-            // The following line displays a button
-            if (ImGui::Button("increment counter"))
-                // And returns true if it was clicked: you can *immediately* handle the click
-                app_state.counter += 1;
-
-            // Input a text: in C++, InputText returns a bool and modifies the text directly
-            bool changed = ImGui::InputText("Your name?", &app_state.name);
-            ImGui::Text("Hello %s!", app_state.name.c_str());
-            ```
-
-            Python
-            ```python
-            # Display a text
-            imgui.text(f"Counter = {app_state.counter}")
-            imgui.same_line()  # by default ImGui starts a new line at each widget
-
-            # The following line displays a button
-            if imgui.button("increment counter"):
-                # And returns true if it was clicked: you can *immediately* handle the click
-                app_state.counter += 1
-
-            # Input a text: in python, input_text returns a tuple(modified, new_value)
-            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
-            imgui.text(f"Hello {app_state.name}!")
-            ```
-
-            Displays this:
-        """);
-        immediate_gui_example()
-        imgui.separator()
-
-    if imgui.collapsing_header("Consult the ImGui interactive manual!"):
-        imgui_md.render_unindented(
-            """
-        Dear ImGui comes with a complete demo. It demonstrates all of the widgets, together with an example code on how to use them.
-
-        [ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html) is an easy way to consult this demo, and to see the corresponding code. The demo code is in C++, but read the part "Code advices" below for advices on how to translate from C++ to python.
-        """
-        )
-        if imgui.button("Open imgui manual"):
-            import webbrowser
-
-            webbrowser.open("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html")
-
-    if imgui.collapsing_header("Advices"):
-        show_code_advices()
-
-    if imgui.collapsing_header("TextInput and enums"):
-        show_text_input_advice()
-
-    if imgui.collapsing_header("Advanced glfw callbacks"):
-        show_glfw_callback_advice()
+    ################################################################################################
+    # Part 3: Run the app
+    ################################################################################################
+    addons = immapp.AddOnsParams()
+    addons.with_markdown = True
+    addons.with_node_editor = True
+    addons.with_markdown = True
+    addons.with_implot = True
+    addons.with_tex_inspect = True
+    immapp.run(runner_params=runner_params, add_ons_params=addons)
 
 
 if __name__ == "__main__":
-    from imgui_bundle import immapp
-
-    params = immapp.RunnerParams()
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    main()

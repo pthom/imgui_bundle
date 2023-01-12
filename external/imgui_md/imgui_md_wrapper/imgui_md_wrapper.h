@@ -14,7 +14,7 @@ namespace ImGuiMd
     struct MarkdownFontOptions
     {
         std::string fontBasePath = "fonts/Roboto/Roboto";
-        int maxHeaderLevel = 3;
+        int maxHeaderLevel = 2;
         float sizeDiffBetweenLevels = 1.5f;
         float regularSize = 14.5f;
     };

@@ -1,0 +1,16 @@
+== Features
+
+include::readme_variables.adoc[]
+
+
+ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui], which provides:
+
+* DPI aware applications (window size, font loading and scaling, etc)
+* Power Save mode: reduce FPS when application is idle
+* https://www.youtube.com/watch?v=Hhartw0cUjg[Theme tweaking]
+* Window geometry utilities (autosize, restore window position)
+* Assets embedding on all platforms
+* Auto initialization of third parties modules (implot, imgui-node-editor, markdown, etc)
+* Switch between Glfw or Sdl backend
+
+NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])

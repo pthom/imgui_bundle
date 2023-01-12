@@ -1,0 +1,23 @@
+= ImGui Bundle
+:toc: left
+
+include::readme_parts/readme_variables.adoc[]
+include::readme_parts/badges.adoc[]
+
+include::readme_parts/intro.adoc[]
+
+include::readme_parts/imgui_bundle_demo.adoc[]
+
+include::readme_parts/batteries_included.adoc[]
+
+include::readme_parts/port_cpp_python.adoc[]
+
+ifndef::env_pypi[]
+include::readme_parts/repository_folders_structure.adoc[]
+endif::[]
+
+include::readme_parts/python_doc.adoc[]
+
+include::readme_parts/cpp_doc.adoc[]
+
+include::readme_parts/features.adoc[]

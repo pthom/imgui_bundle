@@ -23,6 +23,47 @@ std::string DemosAssetsFolder()
 }
 
 
+void ChdirBesideAssetsFolder()
+{
+    auto findDemoAssets = [](const std::filesystem::path& path) -> bool
+    {
+        if (std::filesystem::is_directory(path / DemosAssetsFolder()))
+        {
+            std::filesystem::current_path(path);
+            if (! std::filesystem::is_directory(DemosAssetsFolder()))
+                throw std::runtime_error("ChdirBesideAssetsFolder => fail setting path");
+            HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+            return true;
+        }
+        else
+            return false;
+    };
+
+    // 1. Try to find demo assets in current folder
+    const auto& currentPath = std::filesystem::current_path();
+    if ( findDemoAssets(currentPath) )
+        return;
+
+    // 2. Try to find demo assets in current folder parent
+    if (findDemoAssets(currentPath.parent_path()))
+        return;
+
+#ifndef __EMSCRIPTEN__
+    // 3. Try to find demo assets in exe folder
+    std::filesystem::path exeFolder(wai_getExecutableFolder_string());
+    if (findDemoAssets(exeFolder))
+        return;
+
+    // 4. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
+    if (findDemoAssets(exeFolder.parent_path()))
+        return;
+#endif
+
+    std::cerr << "Could not find " << DemosAssetsFolder() << " folder!\n";
+}
+
+
+
 std::string MainPythonPackageFolder()
 {
 #ifdef __EMSCRIPTEN__
@@ -36,6 +77,8 @@ std::string MainPythonPackageFolder()
 
 std::string DemoCppFolder()  { return MainPythonPackageFolder() + "/demos_cpp"; }
 std::string DemoPythonFolder() { return MainPythonPackageFolder() + "/demos_python"; }
+std::string DocFolder() { return MainPythonPackageFolder() + "/doc"; }
+
 
 // memoized function
 std::string ReadCode(const std::string& filename)

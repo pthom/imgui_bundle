@@ -9,7 +9,7 @@ ROOT_PACKAGE_NAME = "imgui_bundle"
 
 
 def get_readme():
-    with open("Readme.md") as f:
+    with open(ROOT_PACKAGE_FOLDER + "/Readme_pypi.md") as f:
         r = f.read()
     return r
 
@@ -22,7 +22,7 @@ def _get_assets_and_demos_cpp_dirs() -> List[str]:
 
         def is_assets_dir_or_subdir():
             dir_parts = dir_name.replace("\\", "/").split("/")
-            return "assets" in dir_parts or "demos_cpp" in dir_parts or "demos_assets" in dir_parts
+            return "assets" in dir_parts or "demos_cpp" in dir_parts or "demos_assets" or "doc" in dir_parts
 
         if is_assets_dir_or_subdir():
             relative_dir = os.path.relpath(dir_name, ROOT_PACKAGE_FOLDER)
@@ -94,6 +94,9 @@ setup(
         "PyGLM>=2.5.0",
     ],
     entry_points={
-        "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos_python.demo_all:main"],
+        "console_scripts": [
+            "demo_imgui_bundle=imgui_bundle.demos_python.demo_imgui_bundle:main",
+            "imgui_bundle_demo=imgui_bundle.demos_python.demo_imgui_bundle:main"
+        ],
     },
 )

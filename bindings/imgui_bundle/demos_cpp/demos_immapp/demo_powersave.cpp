@@ -8,14 +8,6 @@ int main(int, char **)
 {
     auto gui = [&]()
     {
-        ImGui::BeginGroup();
-        ImGui::Text("ImGui::Text");
-        ImGui::EndGroup();
-        ImGui::SameLine();
-        ImGui::BeginGroup();
-        ImGuiMd::Render("ImGuiMd::Render");
-        ImGui::EndGroup();
-
         ImGui::Text("Current FPS: %.1f", HelloImGui::FrameRate());
         ImGui::TextWrapped(R"(
 

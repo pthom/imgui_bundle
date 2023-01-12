@@ -52,7 +52,7 @@ void InitCommandPalette()
 
 int main(int , char *[])
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
     AppState appState;
 
     auto gui = [&appState]()

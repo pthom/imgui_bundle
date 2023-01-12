@@ -1,0 +1,36 @@
+== Usage with Python
+
+include::readme_variables.adoc[]
+
+=== Install from pypi
+
+[source, bash]
+----
+pip install imgui-bundle
+pip install opencv-contrib-python # <1>
+----
+<1> in order to run the immvision module, install opencv-python or opencv-contrib-python
+
+Note: under windows, you might need to install https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022[msvc redist].
+
+=== Install from source:
+[source, bash]
+----
+git clone https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+git submodule update --init --recursive # <1>
+pip install -v . # <2>
+pip install opencv-contrib-python
+----
+<1> Since there are lots of submodules, this might take a few minutes
+<2> The build process might take up to 5 minutes
+
+=== Run the python demo
+
+Simply run `imgui_bundle_demo`.
+
+The source for the demos can be found inside link:{url-bindings-bundle}/demos_python[bindings/imgui_bundle/demos_python].
+
+
+TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
+

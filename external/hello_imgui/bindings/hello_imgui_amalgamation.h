@@ -21,8 +21,8 @@ For example, you can have the following project structure:
 my_app/
 ├── CMakeLists.txt        # Your app's CMakeLists
 ├── assets/               # Its assets: for mobile devices and emscripten
-│   └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
-│       └── my_font.ttf
+│         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
+│             └── my_font.ttf
 ├── my_app.main.cpp       # Its source code
 ````
 
@@ -1217,8 +1217,14 @@ namespace HelloImGui
     using ScreenPosition = std::array<int, 2>;
     using ScreenSize = std::array<int, 2>;
 
+    // Note: note related to DPI and high resolution screens:
+    // ScreenPosition and ScreenSize are in "Screen Coordinates":
+    // Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    // - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
+    // - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
     constexpr ScreenPosition DefaultScreenPosition = {0, 0};
     constexpr ScreenSize DefaultWindowSize = {800, 600};
+
 
 #define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
 
@@ -1335,6 +1341,24 @@ enum class WindowPositionMode
 };
 
 
+enum class WindowSizeMeasureMode
+{
+    // ScreenCoords: measure window size in screen coords.
+    //     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    //         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen
+    //           coordinates
+    //         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,
+    //           even on high density screens
+    ScreenCoords,
+
+    // RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+    // For example, a window size expressed as 800x600 will correspond to a size
+    //    800x600 (in screen coords) if the monitor dpi is 96
+    //    1600x120 (in screen coords) if the monitor dpi is 192
+    RelativeTo96Ppi
+};
+
+
 /**
 @@md#WindowGeometry
 
@@ -1369,11 +1393,20 @@ Members:
         Minimized,
         Maximized
     ````
+* `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
+  how the window size is specified:
+  * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+     For example, a window size expressed as 800x600 will correspond to a size
+        - 800x600 (in screen coords) if the monitor dpi is 96
+        - 1600x120 (in screen coords) if the monitor dpi is 192
+      (this works with Glfw. With SDL, it only works under windows)
+  * ScreenCoords: measure window size in screen coords
+    (Note: screen coordinates might differ from real pixels on high dpi screen)
 @@md
 **/
 struct WindowGeometry
 {
-    // used if fullScreenMode==NoFullScreen and sizeAuto==false, default=(800, 600)
+    // used if fullScreenMode==NoFullScreen and sizeAuto==false. Value=(800, 600)
     ScreenSize size = DefaultWindowSize;
 
     // If true, adapt the app window size to the presented widgets
@@ -1390,6 +1423,8 @@ struct WindowGeometry
     int monitorIdx = 0;
 
     WindowSizeState windowSizeState = WindowSizeState::Standard;
+
+    WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;
 };
 
 
@@ -1409,12 +1444,6 @@ Members:
   If true, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
 * `borderless`: _bool, default = false_.
 * `resizable`: _bool, default = false_.
-
-Output Member:
-* `outWindowDpiFactor`: _float, default = 1_.
-   This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1
-   on high resolution monitors (on MacOS, the scaling is handled by the system).
-   When loading fonts, their size should be multiplied by this factor.
 @@md
 **/
 struct AppWindowParams
@@ -1428,8 +1457,6 @@ struct AppWindowParams
 
     bool borderless = false;
     bool resizable = true;
-
-    float outWindowDpiFactor = 1.;
 };
 
 }  // namespace HelloImGui
@@ -1667,9 +1694,9 @@ ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontC
 
 namespace ImGuiDefaultSettings
 {
-VoidFunction LoadDefaultFont_WithFontAwesomeIcons();
-VoidFunction SetupDefaultImGuiConfig();
-VoidFunction SetupDefaultImGuiStyle();
+void LoadDefaultFont_WithFontAwesomeIcons();
+void SetupDefaultImGuiConfig();
+void SetupDefaultImGuiStyle();
 }  // namespace ImGuiDefaultSettings
 }  // namespace HelloImGui
 
@@ -1775,9 +1802,9 @@ struct RunnerCallbacks
 
     AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();
 
-    VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
-    VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig();
-    VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle();
+    VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
+    VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);
+    VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);
 
 #ifdef HELLOIMGUI_MOBILEDEVICE
     MobileCallbacks mobileCallbacks;
@@ -2178,6 +2205,60 @@ namespace HelloImGui
     void LogGui(ImVec2 size=ImVec2(0.f, 0.f));
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+@@md#HelloImGui::Dpi
+
+# Handling screen with high DPI: font loading and items positioning:
+--------------------------------------------------------------------
+
+Special care must be taken in order to correctly handle screen with high DPI (e.g. almost all recent laptops screens).
+
+For example, let's consider screen whose physical pixel resolution is 3600x2000
+but which will displayed with a scaling factor of 200%, so that widgets do not look too small on it.
+The way it is handled depends on the OS.
+
+    - On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself
+    - On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000
+    - On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
+
+By default, if using the glfw backend, applications will be Dpi aware under windows.
+Sdl applications are normally *not* Dpi aware. However when HelloImGui uses the SDL backend, it will still be Dpi aware.
+
+
+## How to load fonts for a crisp font rendering and a correct size:
+
+HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
+    `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
+              where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
+
+==> When loading fonts, multiply their size by this factor!
+
+
+## How to position widgets on a window in a Dpi independent way
+
+Using ImVec2 with fixed values is almost always a bad idea if you intend your application to be used on high DPI screens.
+
+* Either multiply those values by ImGui::GetFontSize()
+* Or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
+   as used in CSS: 1em simply correspond to the current font height.
+
+@@md
+*/
+
+namespace HelloImGui
+{
+    // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
+    // (HelloImGui::LoadFontTTF does this by default)
+    float DpiFontLoadingFactor();
+
+    // DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.
+    // Under macOS, it will return 1.
+    float DpiWindowFactor();
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

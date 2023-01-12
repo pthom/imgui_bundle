@@ -1,0 +1,33 @@
+== Usage with C++
+
+include::readme_variables.adoc[]
+
+=== Integrate ImGui Bundle in your own project in 5 minutes
+
+The folder link:{url-bundle-main-tree}/_example_integration[example_integration] includes everything you need to set up your own project with ImGui Bundle.
+
+=== Build ImGui Bundle from source
+
+[source, bash]
+----
+git clone https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+git submodule update --init --recursive # <1>
+mkdir build
+cd build
+cmake ..
+make -j # <2>
+----
+
+<1> Since there are lots of submodules, this might take a few minutes
+<2> The build process might take up to 5 minutes
+
+=== Run the C++ demo
+
+Simply run `./bin/demo_imgui_bundle`.
+
+
+The source for the demos can be found inside link:{url-bindings-bundle}/demos_cpp/[bindings/imgui_bundle/demos_cpp].
+
+
+TIP: Consider `demo_imgui_bundle` as a manual for ImGui Bundle with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]

@@ -69,8 +69,8 @@ def get_glfw_window():
 #my_app/
 #├── CMakeLists.txt        # Your app's CMakeLists
 #├── assets/               # Its assets: for mobile devices and emscripten
-#│   └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
-#│       └── my_font.ttf
+#│         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
+#│             └── my_font.ttf
 #├── my_app.main.cpp       # Its source code
 #````
 #
@@ -255,6 +255,12 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 
 """ namespace BackendApi"""
 
+# Note: note related to DPI and high resolution screens:
+# ScreenPosition and ScreenSize are in "Screen Coordinates":
+# Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+# - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
+# - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
+
 
 
 class ScreenBounds:
@@ -401,6 +407,25 @@ class WindowPositionMode(enum.Enum):
     from_coords = enum.auto()    # (= 2)
 
 
+class WindowSizeMeasureMode(enum.Enum):
+    # ScreenCoords,    /* original C++ signature */
+    # ScreenCoords: measure window size in screen coords.
+    #     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
+    #         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen
+    #           coordinates
+    #         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,
+    #           even on high density screens
+    screen_coords = enum.auto()     # (= 0)
+
+    # RelativeTo96Ppi    /* original C++ signature */
+    # }
+    # RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+    # For example, a window size expressed as 800x600 will correspond to a size
+    #    800x600 (in screen coords) if the monitor dpi is 96
+    #    1600x120 (in screen coords) if the monitor dpi is 192
+    relative_to96_ppi = enum.auto() # (= 1)
+
+
 class WindowGeometry:
     """*
     @@md#WindowGeometry
@@ -436,11 +461,20 @@ class WindowGeometry:
             Minimized,
             Maximized
         ````
+    * `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
+      how the window size is specified:
+      * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
+         For example, a window size expressed as 800x600 will correspond to a size
+            - 800x600 (in screen coords) if the monitor dpi is 96
+            - 1600x120 (in screen coords) if the monitor dpi is 192
+          (this works with Glfw. With SDL, it only works under windows)
+      * ScreenCoords: measure window size in screen coords
+        (Note: screen coordinates might differ from real pixels on high dpi screen)
     @@md
     *
     """
     # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
-    # used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)
+    # used if fullScreenMode==NoFullScreen and sizeAuto==False. Value=(800, 600)
     size: ScreenSize = DefaultWindowSize
 
     # bool sizeAuto = false;    /* original C++ signature */
@@ -463,7 +497,10 @@ class WindowGeometry:
 
     # WindowSizeState windowSizeState = WindowSizeState::Standard;    /* original C++ signature */
     window_size_state: WindowSizeState = WindowSizeState.standard
-    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard);    /* original C++ signature */
+
+    # WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;    /* original C++ signature */
+    window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
+    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi);    /* original C++ signature */
     def __init__(
         self,
         size: ScreenSize = DefaultWindowSize,
@@ -472,7 +509,8 @@ class WindowGeometry:
         position_mode: WindowPositionMode = WindowPositionMode.os_default,
         position: ScreenPosition = DefaultScreenPosition,
         monitor_idx: int = 0,
-        window_size_state: WindowSizeState = WindowSizeState.standard
+        window_size_state: WindowSizeState = WindowSizeState.standard,
+        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -495,12 +533,6 @@ class AppWindowParams:
       If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
     * `borderless`: _bool, default = false_.
     * `resizable`: _bool, default = false_.
-
-    Output Member:
-    * `outWindowDpiFactor`: _float, default = 1_.
-       This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1
-       on high resolution monitors (on MacOS, the scaling is handled by the system).
-       When loading fonts, their size should be multiplied by this factor.
     @@md
     *
     """
@@ -518,18 +550,14 @@ class AppWindowParams:
     borderless: bool = False
     # bool resizable = true;    /* original C++ signature */
     resizable: bool = True
-
-    # float outWindowDpiFactor = 1.;    /* original C++ signature */
-    out_window_dpi_factor: float = 1.
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, float outWindowDpiFactor = 1.);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
         window_geometry: WindowGeometry = WindowGeometry(),
         restore_previous_geometry: bool = False,
         borderless: bool = False,
-        resizable: bool = True,
-        out_window_dpi_factor: float = 1.
+        resizable: bool = True
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -995,14 +1023,14 @@ class RunnerCallbacks:
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
-    # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
-    load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons()
-    # VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig();    /* original C++ signature */
-    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig()
-    # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle();    /* original C++ signature */
-    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
+    # VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);    /* original C++ signature */
+    load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons)
+    # VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);    /* original C++ signature */
+    setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig)
+    # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
+    setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig(), VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1011,9 +1039,9 @@ class RunnerCallbacks:
         post_init: VoidFunction = EmptyVoidFunction(),
         before_exit: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
-        load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons(),
-        setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig(),
-        setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle()
+        load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons),
+        setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig),
+        setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1121,7 +1149,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1207,12 +1235,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
@@ -1520,6 +1548,65 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#*
+#@@md#HelloImGui::Dpi
+#
+## Handling screen with high DPI: font loading and items positioning:
+#--------------------------------------------------------------------
+#
+#Special care must be taken in order to correctly handle screen with high DPI (e.g. almost all recent laptops screens).
+#
+#For example, let's consider screen whose physical pixel resolution is 3600x2000
+#but which will displayed with a scaling factor of 200%, so that widgets do not look too small on it.
+#The way it is handled depends on the OS.
+#
+#    - On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself
+#    - On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000
+#    - On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
+#
+#By default, if using the glfw backend, applications will be Dpi aware under windows.
+#Sdl applications are normally *not* Dpi aware. However when HelloImGui uses the SDL backend, it will still be Dpi aware.
+#
+#
+### How to load fonts for a crisp font rendering and a correct size:
+#
+#HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
+#    `DpiWindowFactor() * 1. / ImGui::GetIO().FontGlobalScale`
+#              where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
+#
+#==> When loading fonts, multiply their size by this factor!
+#
+#
+### How to position widgets on a window in a Dpi independent way
+#
+#Using ImVec2 with fixed values is almost always a bad idea if you intend your application to be used on high DPI screens.
+#
+#* Either multiply those values by ImGui::GetFontSize()
+#* Or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
+#   as used in CSS: 1em simply correspond to the current font height.
+#
+#@@md
+#
+
+# float DpiFontLoadingFactor();    /* original C++ signature */
+def dpi_font_loading_factor() -> float:
+    """ Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
+     (HelloImGui::LoadFontTTF does this by default)
+    """
+    pass
+
+# float DpiWindowFactor();    /* original C++ signature */
+# }
+def dpi_window_factor() -> float:
+    """ DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.
+     Under macOS, it will return 1.
+    """
+    pass
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1636,18 +1723,18 @@ def frame_rate(duration_for_mean: float = 0.5) -> float:
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace ImGuiDefaultSettings"""
-    # VoidFunction LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
+    # void LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     @staticmethod
-    def load_default_font_with_font_awesome_icons() -> VoidFunction:
+    def load_default_font_with_font_awesome_icons() -> None:
         pass
-    # VoidFunction SetupDefaultImGuiConfig();    /* original C++ signature */
+    # void SetupDefaultImGuiConfig();    /* original C++ signature */
     @staticmethod
-    def setup_default_imgui_config() -> VoidFunction:
+    def setup_default_imgui_config() -> None:
         pass
-    # VoidFunction SetupDefaultImGuiStyle();    /* original C++ signature */
+    # void SetupDefaultImGuiStyle();    /* original C++ signature */
     # }
     @staticmethod
-    def setup_default_imgui_style() -> VoidFunction:
+    def setup_default_imgui_style() -> None:
         pass
 
 # </submodule imgui_default_settings>

@@ -2,11 +2,11 @@ from imgui_bundle import imgui, hello_imgui, immapp
 
 
 def gui():
-    from imgui_bundle import imspinner, imgui_md
+    from imgui_bundle import imspinner
 
-    imgui_md.render(
+    imgui.text_wrapped(
         f"""
-### Current FPS:  {imgui.get_io().framerate:.1f}
+Current FPS:  {hello_imgui.frame_rate():.1f}
 
 In order to reduce the CPU usage, the FPS is reduced automatically when no user interaction is detected.
 
@@ -19,7 +19,7 @@ the FPS will rise and the animation will be smooth again.
     radius1 = imgui.get_font_size()
     imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
 
-    imgui_md.render(
+    imgui.text_wrapped(
         f"""You can adjust hello_imgui.get_runner_params().fps_idle if you need smoother animations 
     when the app is idle. A value of 0 means that the refresh will be as fast as possible"""
     )
@@ -30,7 +30,7 @@ the FPS will rise and the animation will be smooth again.
 
 
 def main():
-    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), with_markdown=True, fps_idle=4)
+    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), fps_idle=4)
 
 
 if __name__ == "__main__":

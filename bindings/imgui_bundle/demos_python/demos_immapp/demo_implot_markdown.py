@@ -4,7 +4,7 @@ from imgui_bundle.demos_python import demo_utils
 
 
 def main():
-    demo_utils.set_demo_assets_folder()
+    demo_utils.set_hello_imgui_demo_assets_folder()
     x = np.arange(0, np.pi * 4, 0.01)
     y1 = np.cos(x)
     y2 = np.sin(x)

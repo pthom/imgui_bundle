@@ -419,7 +419,7 @@ GuiFunction make_closure_demo_guizmo()
 }
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
+int main(int, char**)
 {
     auto gui = make_closure_demo_guizmo();
 

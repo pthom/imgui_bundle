@@ -6,7 +6,7 @@ void Gui()
     ImGui::Text("Hello, world!");
 }
 
-int main()
+int main(int, char **)
 {
     ImmApp::Run(
         Gui,

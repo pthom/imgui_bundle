@@ -155,11 +155,16 @@ void py_init_module_hello_imgui(py::module& m)
         .value("from_coords", HelloImGui::WindowPositionMode::FromCoords, "");
 
 
+    py::enum_<HelloImGui::WindowSizeMeasureMode>(m, "WindowSizeMeasureMode", py::arithmetic(), "")
+        .value("screen_coords", HelloImGui::WindowSizeMeasureMode::ScreenCoords, " ScreenCoords: measure window size in screen coords.\n     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.\n         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen\n           coordinates\n         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,\n           even on high density screens")
+        .value("relative_to96_ppi", HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, " RelativeTo96Ppi enables to give screen size that are independant from the screen density.\n For example, a window size expressed as 800x600 will correspond to a size\n    800x600 (in screen coords) if the monitor dpi is 96\n    1600x120 (in screen coords) if the monitor dpi is 192");
+
+
     auto pyClassWindowGeometry =
         py::class_<HelloImGui::WindowGeometry>
-            (m, "WindowGeometry", "*\n@@md#WindowGeometry\n\n__WindowGeometry__ is a struct that defines the window geometry.\n\nMembers:\n* `size`: _int[2], default=\"{800, 600}\"_. Size of the application window\n  used if fullScreenMode==NoFullScreen and sizeAuto==False\n* `sizeAuto`: _bool, default=false_\n  If True, adapt the app window size to the presented widgets\n* `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.\n   You can choose between several full screen modes:\n   ````cpp\n        NoFullScreen,\n        FullScreen,                    // Full screen with specified resolution\n        FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution\n        FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor\n    ````\n* `positionMode`: _WindowPositionMode, default = OsDefault_.\n   You can choose between several window position modes:\n   ````cpp\n        OsDefault,\n        MonitorCenter,\n        FromCoords,\n    ````\n* `monitorIdx`: _int, default = 0_.\n  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen\n* `windowSizeState`: _WindowSizeState, default=Standard_\n   You can choose between several window size states:\n   ````cpp\n        Standard,\n        Minimized,\n        Maximized\n    ````\n@@md\n*")
+            (m, "WindowGeometry", "*\n@@md#WindowGeometry\n\n__WindowGeometry__ is a struct that defines the window geometry.\n\nMembers:\n* `size`: _int[2], default=\"{800, 600}\"_. Size of the application window\n  used if fullScreenMode==NoFullScreen and sizeAuto==False\n* `sizeAuto`: _bool, default=false_\n  If True, adapt the app window size to the presented widgets\n* `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.\n   You can choose between several full screen modes:\n   ````cpp\n        NoFullScreen,\n        FullScreen,                    // Full screen with specified resolution\n        FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution\n        FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor\n    ````\n* `positionMode`: _WindowPositionMode, default = OsDefault_.\n   You can choose between several window position modes:\n   ````cpp\n        OsDefault,\n        MonitorCenter,\n        FromCoords,\n    ````\n* `monitorIdx`: _int, default = 0_.\n  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen\n* `windowSizeState`: _WindowSizeState, default=Standard_\n   You can choose between several window size states:\n   ````cpp\n        Standard,\n        Minimized,\n        Maximized\n    ````\n* `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi\n  how the window size is specified:\n  * RelativeTo96Ppi enables to give screen size that are independant from the screen density.\n     For example, a window size expressed as 800x600 will correspond to a size\n        - 800x600 (in screen coords) if the monitor dpi is 96\n        - 1600x120 (in screen coords) if the monitor dpi is 192\n      (this works with Glfw. With SDL, it only works under windows)\n  * ScreenCoords: measure window size in screen coords\n    (Note: screen coordinates might differ from real pixels on high dpi screen)\n@@md\n*")
         .def(py::init<>([](
-        ScreenSize size = HelloImGui::DefaultWindowSize, bool sizeAuto = false, HelloImGui::FullScreenMode fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen, HelloImGui::WindowPositionMode positionMode = HelloImGui::WindowPositionMode::OsDefault, ScreenPosition position = HelloImGui::DefaultScreenPosition, int monitorIdx = 0, HelloImGui::WindowSizeState windowSizeState = HelloImGui::WindowSizeState::Standard)
+        ScreenSize size = HelloImGui::DefaultWindowSize, bool sizeAuto = false, HelloImGui::FullScreenMode fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen, HelloImGui::WindowPositionMode positionMode = HelloImGui::WindowPositionMode::OsDefault, ScreenPosition position = HelloImGui::DefaultScreenPosition, int monitorIdx = 0, HelloImGui::WindowSizeState windowSizeState = HelloImGui::WindowSizeState::Standard, HelloImGui::WindowSizeMeasureMode windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi)
         {
             auto r = std::make_unique<WindowGeometry>();
             r->size = size;
@@ -169,25 +174,27 @@ void py_init_module_hello_imgui(py::module& m)
             r->position = position;
             r->monitorIdx = monitorIdx;
             r->windowSizeState = windowSizeState;
+            r->windowSizeMeasureMode = windowSizeMeasureMode;
             return r;
         })
-        , py::arg("size") = HelloImGui::DefaultWindowSize, py::arg("size_auto") = false, py::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, py::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, py::arg("position") = HelloImGui::DefaultScreenPosition, py::arg("monitor_idx") = 0, py::arg("window_size_state") = HelloImGui::WindowSizeState::Standard
+        , py::arg("size") = HelloImGui::DefaultWindowSize, py::arg("size_auto") = false, py::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, py::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, py::arg("position") = HelloImGui::DefaultScreenPosition, py::arg("monitor_idx") = 0, py::arg("window_size_state") = HelloImGui::WindowSizeState::Standard, py::arg("window_size_measure_mode") = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi
         )
-        .def_readwrite("size", &WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False, default=(800, 600)")
+        .def_readwrite("size", &WindowGeometry::size, "used if fullScreenMode==NoFullScreen and sizeAuto==False. Value=(800, 600)")
         .def_readwrite("size_auto", &WindowGeometry::sizeAuto, "If True, adapt the app window size to the presented widgets")
         .def_readwrite("full_screen_mode", &WindowGeometry::fullScreenMode, "")
         .def_readwrite("position_mode", &WindowGeometry::positionMode, "")
         .def_readwrite("position", &WindowGeometry::position, "used if windowPositionMode==FromCoords, default=(40, 40)")
         .def_readwrite("monitor_idx", &WindowGeometry::monitorIdx, "used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen")
         .def_readwrite("window_size_state", &WindowGeometry::windowSizeState, "")
+        .def_readwrite("window_size_measure_mode", &WindowGeometry::windowSizeMeasureMode, "")
         ;
 
 
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_.\n* `resizable`: _bool, default = false_.\n\nOutput Member:\n* `outWindowDpiFactor`: _float, default = 1_.\n   This value is filled by HelloImGui during the window initialisation. On Windows and Linux, it can be > 1\n   on high resolution monitors (on MacOS, the scaling is handled by the system).\n   When loading fonts, their size should be multiplied by this factor.\n@@md\n*")
+            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_.\n* `resizable`: _bool, default = false_.\n@@md\n*")
         .def(py::init<>([](
-        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, float outWindowDpiFactor = 1.)
+        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true)
         {
             auto r = std::make_unique<AppWindowParams>();
             r->windowTitle = windowTitle;
@@ -195,17 +202,15 @@ void py_init_module_hello_imgui(py::module& m)
             r->restorePreviousGeometry = restorePreviousGeometry;
             r->borderless = borderless;
             r->resizable = resizable;
-            r->outWindowDpiFactor = outWindowDpiFactor;
             return r;
         })
-        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("out_window_dpi_factor") = 1.
+        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true
         )
         .def_readwrite("window_title", &AppWindowParams::windowTitle, "")
         .def_readwrite("window_geometry", &AppWindowParams::windowGeometry, "")
         .def_readwrite("restore_previous_geometry", &AppWindowParams::restorePreviousGeometry, "if True, then save & restore from last run")
         .def_readwrite("borderless", &AppWindowParams::borderless, "")
         .def_readwrite("resizable", &AppWindowParams::resizable, "")
-        .def_readwrite("out_window_dpi_factor", &AppWindowParams::outWindowDpiFactor, "")
         ;
 
 
@@ -386,7 +391,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", "*\n @@md#RunnerCallbacks\n\n **RunnerCallbacks** is a struct that contains the callbacks that are called by the application\n\n _Members_\n\n* `ShowGui`: *VoidFunction, default=empty*.\n  Fill it with a function that will add your widgets.\n\n* `ShowMenus`: *VoidFunction, default=empty*.\n    A function that will render your menus. Fill it with a function that will add ImGui menus by calling:\n    _ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()_\n\n    _Notes:_\n    * you do not need to call _ImGui::BeginMenuBar_ and _ImGui::EndMenuBar_\n    * Some default menus can be provided: see _ImGuiWindowParams_ options\n      (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)\n\n* `ShowStatus`: *VoidFunction, default=empty*.\n  A function that will add items to the status bar. Use small items (ImGui::Text for example),\n  since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.\n\n* `PostInit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once after OpenGL and ImGui are inited\n\n* `BeforeExit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once before exiting (when OpenGL and ImGui are\n    still inited)\n\n* `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.\n  Callbacks for events from a specific backend. _Only implemented for SDL, where the event\n  will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled and shall not be processed further.\n\n* `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.\n   A function that is called when fonts are ready to be loaded.\n   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.\n\n* `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)\n\n* `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, setup your own style by providing your own SetupImGuiStyle callback\n\n\n* `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application\n    when running under \"Android, iOS and WinRT\".\nNotes:\n  * 'mobileCallbacks' is present only if the target device is a mobile device (iOS, Android).\n     Use `#ifdef HELLOIMGUI_MOBILEDEVICE` to detect this.\n  * These events are currently handled only with SDL backend.\n\n@@md\n")
         .def(py::init<>([](
-        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback(), VoidFunction LoadAdditionalFonts = HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), VoidFunction SetupImGuiConfig = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(), VoidFunction SetupImGuiStyle = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle())
+        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle))
         {
             auto r = std::make_unique<RunnerCallbacks>();
             r->ShowGui = ShowGui;
@@ -400,7 +405,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->SetupImGuiStyle = SetupImGuiStyle;
             return r;
         })
-        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback(), py::arg("load_additional_fonts") = HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons(), py::arg("setup_imgui_config") = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig(), py::arg("setup_imgui_style") = HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle()
+        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback(), py::arg("load_additional_fonts") = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), py::arg("setup_imgui_config") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), py::arg("setup_imgui_style") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle)
         )
         .def_readwrite("show_gui", &RunnerCallbacks::ShowGui, "")
         .def_readwrite("show_menus", &RunnerCallbacks::ShowMenus, "")
@@ -577,6 +582,13 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("log_gui",
         HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
+
+
+    m.def("dpi_font_loading_factor",
+        HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
+
+    m.def("dpi_window_factor",
+        HelloImGui::DpiWindowFactor, " DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.\n Under macOS, it will return 1.");
 
 
     m.def("run",
