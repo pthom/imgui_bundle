@@ -5,12 +5,15 @@ include::readme_variables.adoc[]
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui], which provides:
 
-* DPI aware applications (window size, font loading and scaling, etc)
-* Power Save mode: reduce FPS when application is idle
-* https://www.youtube.com/watch?v=Hhartw0cUjg[Theme tweaking]
-* Window geometry utilities (autosize, restore window position)
-* Assets embedding on all platforms
-* Auto initialization of third parties modules (implot, imgui-node-editor, markdown, etc)
-* Switch between Glfw or Sdl backend
+
+* {url-himgui-main-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
+* Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
+* Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
+* Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
+* Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
+* Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-main-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
+* Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
+
+TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]

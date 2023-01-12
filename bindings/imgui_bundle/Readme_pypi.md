@@ -177,21 +177,37 @@ online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 ImGui Bundle is build on top of
 [HelloImGui](https://github.com/pthom/hello_imgui), which provides:
 
--   DPI aware applications (window size, font loading and scaling, etc)
+-   [DPI
+    aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
+    applications (widget placement, window size, font loading and
+    scaling)
 
--   Power Save mode: reduce FPS when application is idle
+-   Power Save mode: reduce FPS when application is idle (see
+    [RunnerParams.fpsIdle](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
--   [Theme tweaking](https://www.youtube.com/watch?v=Hhartw0cUjg)
+-   Theme tweaking (see [demo
+    video](https://www.youtube.com/watch?v=4f_-3DDcAZk), and
+    [API](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h)
+    )
 
--   Window geometry utilities (autosize, restore window position)
+-   Window geometry utilities: autosize, restore window position, full
+    screen, etc. (see
+    [WindowGeometry](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h))
 
--   Assets embedding on all platforms
+-   Multiplatform [assets
+    embedding](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h)
 
--   Auto initialization of third parties modules (implot,
-    imgui-node-editor, markdown, etc)
+-   Auto initialization of third parties modules, implot,
+    imgui-node-editor, markdown, etc. (see
+    [ImmApp::AddOnParams](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h))
 
--   Switch between Glfw or Sdl backend
+-   Switch between Glfw or Sdl backend (see
+    [RunnerParams.backendType](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
 The usage of `Hello ImGui` is optional. You can also build an imgui
 application from scratch, in C++ or in python (see [python
 example](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
+
+HelloImGui is fully configurable by POD (plain old data) structures. See
+[their
+description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
