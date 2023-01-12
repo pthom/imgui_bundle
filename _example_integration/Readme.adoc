@@ -4,31 +4,29 @@ This directory is a **standalone** demonstration on how to easily integrate ImGu
 
 TIP: you do *not* need to clone or download `ImGui Bundle`. It will be done by cmake automatically.
 
-
-==== Cmake: downloads and build ImGui Bundle
-
+.Click to see CMakeLists.txt content
+[%collapsible]
+====
 The link:CMakeLists.txt[CMakeLists.txt] file will
 
 * download imgui_bundle at configure time
 * make the `imgui_bundle_add_app` cmake function available
 * use `imgui_bundle_add_app` to build your app and link it with ImGuiBundle
 
-.Click to see CMakeLists.txt content
-[%collapsible]
-====
 [source, cmake]
 ----
 include::CMakeLists.txt[]
 ----
 ====
 
-==== hello_world.cpp: uses ImGui Bundle
-
-See link:hello_world.cpp[hello_world.cpp]
-
 .Click to see hello_world.cpp content
 [%collapsible]
 ====
+The link:hello_world.cpp[hello_world.cpp] file
+
+* Provides a Gui function which is executed at each frame
+* Provides a main function that set the ImmApp ("Immediate App") params, and mentions the addons we intend to use (here we are using markdown and implot).
+
 [source, cpp]
 ----
 include::hello_world.cpp[]

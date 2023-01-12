@@ -1,5 +1,7 @@
 == Usage with Python
 
+include::readme_variables.adoc[]
+
 === Install from pypi
 
 [source, bash]
@@ -27,7 +29,7 @@ pip install opencv-contrib-python
 
 Simply run `imgui_bundle_demo`.
 
-The source for the demos can be found inside link:../../demos_python[bindings/imgui_bundle/demos_python].
+The source for the demos can be found inside link:{url-bindings-bundle}/demos_python[bindings/imgui_bundle/demos_python].
 
 
 TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.

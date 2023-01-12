@@ -1,2 +1,7 @@
+:current_branch: dev
 :url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/

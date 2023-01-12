@@ -1,12 +1,10 @@
 == Introduction
 
+include::readme_variables.adoc[]
+
 === About ImGui Bundle
 
-https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem.
-
-It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux.
-
-It is aimed at application developers, researchers, and beginners who want to quickly get started.
+https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginners who want to quickly get started.
 
 
 ifndef::env_pypi[]
@@ -17,7 +15,7 @@ ifndef::env_pypi[]
 
 **In C++**
 
-link:../../demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]
+link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]
 [source,cpp]
 ----
 include::../../demos_cpp/demos_immapp/demo_hello_world.cpp[]
@@ -31,7 +29,7 @@ imgui_bundle_add_app(demo_hello_world demo_hello_world.cpp)
 
 **In Python**
 
-link:../../demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
 
 [source,python]
 ----

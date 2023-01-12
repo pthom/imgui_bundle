@@ -1,9 +1,19 @@
 = ImGui Bundle
 :toc: left
 
+:current_branch: dev
 :url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:current_branch: dev
 :url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 image:{url-bundle}/workflows/CppLib/badge.svg[]
@@ -14,13 +24,17 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
 == Introduction
 
+:current_branch: dev
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+
 === About ImGui Bundle
 
-https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem.
-
-It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux.
-
-It is aimed at application developers, researchers, and beginners who want to quickly get started.
+https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginners who want to quickly get started.
 
 
 
@@ -30,7 +44,7 @@ It is aimed at application developers, researchers, and beginners who want to qu
 
 **In C++**
 
-link:../../demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]
+link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]
 [source,cpp]
 ----
 #include "immapp/immapp.h"
@@ -63,7 +77,7 @@ imgui_bundle_add_app(demo_hello_world demo_hello_world.cpp)
 
 **In Python**
 
-link:../../demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
 
 [source,python]
 ----
@@ -90,13 +104,21 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 
 === Interactive manual: a demo in one click!
 
+:current_branch: dev
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+
 Click on the animated demonstration below to launch the fully interactive demonstration.
 
 .ImGui Bundle interactive demo
-[#truc,link=https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html]
+[#truc,link={url-demo-imgui-bundle}]
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
-TIP: This demonstration is also an interactive manual, similar to the online https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual]
+TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
 
 === Batteries included
 
@@ -341,6 +363,14 @@ int main(int , char *[]) {
 
 == Usage with Python
 
+:current_branch: dev
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+
 === Install from pypi
 
 [source, bash]
@@ -368,7 +398,7 @@ pip install opencv-contrib-python
 
 Simply run `imgui_bundle_demo`.
 
-The source for the demos can be found inside link:../../demos_python[bindings/imgui_bundle/demos_python].
+The source for the demos can be found inside link:{url-bindings-bundle}/demos_python[bindings/imgui_bundle/demos_python].
 
 
 TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
@@ -376,9 +406,17 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 
 == Usage with C++
 
+:current_branch: dev
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+
 === Integrate ImGui Bundle in your own project in 5 minutes
 
-The folder link:../../../../_example_integration[example_integration] includes everything you need to set up your own project with ImGui Bundle.
+The folder link:{url-bundle-main-tree}/_example_integration[example_integration] includes everything you need to set up your own project with ImGui Bundle.
 
 === Build ImGui Bundle from source
 
@@ -398,16 +436,23 @@ make -j # <2>
 
 === Run the C++ demo
 
-Simply run `./bin/imgui_bundle_demo`.
+Simply run `./bin/demo_imgui_bundle`.
 
 
-The source for the demos can be found inside link:../../demos_cpp/[bindings/imgui_bundle/demos_cpp].
+The source for the demos can be found inside link:{url-bindings-bundle}/demos_cpp/[bindings/imgui_bundle/demos_cpp].
 
 
-TIP: Consider `imgui_bundle_demo` as a manual for ImGui Bundle with lots of examples and related code source. It is always https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html[available online]
-
+TIP: Consider `demo_imgui_bundle` as a manual for ImGui Bundle with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
 
 == Features
+
+:current_branch: dev
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
 
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui], which provides:
@@ -420,4 +465,4 @@ ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui]
 * Auto initialization of third parties modules (implot, imgui-node-editor, markdown, etc)
 * Switch between Glfw or Sdl backend
 
-NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:../../demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
+NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])

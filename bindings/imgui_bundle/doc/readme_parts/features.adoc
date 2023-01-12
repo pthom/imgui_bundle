@@ -1,5 +1,7 @@
 == Features
 
+include::readme_variables.adoc[]
+
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui], which provides:
 
@@ -11,4 +13,4 @@ ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui]
 * Auto initialization of third parties modules (implot, imgui-node-editor, markdown, etc)
 * Switch between Glfw or Sdl backend
 
-NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:../../demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
+NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
