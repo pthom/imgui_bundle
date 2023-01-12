@@ -6,6 +6,9 @@
 //     bindings/imgui_bundle/doc/Readme_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
+TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
+
+
 include::readme_parts/readme_variables.adoc[]
 include::readme_parts/badges.adoc[]
 

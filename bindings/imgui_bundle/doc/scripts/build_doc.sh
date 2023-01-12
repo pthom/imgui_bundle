@@ -21,5 +21,5 @@ asciidoctor -b docbook --attribute env_pypi=1 Readme_source.adoc
 pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
 
 # Generate html doc
-echo "Generating $gh_pages_dir/Readme.html (for github pages)"
-asciidoctor Readme_source.adoc -o $gh_pages_dir/Readme.html
+echo "Generating $gh_pages_dir/index.html (for github pages)"
+asciidoctor Readme_source.adoc -o $gh_pages_dir/index.html

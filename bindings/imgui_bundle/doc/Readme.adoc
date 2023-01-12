@@ -6,6 +6,9 @@
 //     bindings/imgui_bundle/doc/Readme_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
+TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
+
+
 :current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}

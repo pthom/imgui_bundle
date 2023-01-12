@@ -1,3 +1,7 @@
+Navigate to [imgui bundle docs
+homepage](https://pthom.github.io/imgui_bundle) for a more readable
+version of this document.
+
 ![badge](https://github.com/pthom/imgui_bundle//workflows/CppLib/badge.svg)
 ![badge](https://github.com/pthom/imgui_bundle//workflows/Pip/badge.svg)
 ![badge](https://github.com/pthom/imgui_bundle//workflows/Wheels/badge.svg)
