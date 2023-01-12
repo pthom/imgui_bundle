@@ -72,6 +72,11 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
+# IMGUI_BUNDLE_BUILD_DOC: Build doc
+# ---------------------------------
+# (reserved for this library authors)
+option(IMGUI_BUNDLE_BUILD_DOC OFF)
+
 
 ########################################################
 include(cmake/dump_cmake_variables.cmake)
@@ -131,12 +136,26 @@ if (IMGUI_BUNDLE_BUILD_CPP)
     endif()
 endif()
 
+####################################################
+# Help msvc tidy up its room
+####################################################
+if (MSVC)
+    hello_imgui_msvc_sort_targets_by_folder(${CMAKE_CURRENT_LIST_DIR})
+endif()
+
+####################################################
+# Help msvc tidy up its room
+####################################################
+if (IMGUI_BUNDLE_BUILD_DOC)
+    add_subdirectory(bindings/imgui_bundle/doc)
+endif()
+
+####################################################
+# Log Immvision status at the end
+####################################################
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: ON")
 else()
     message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: OFF")
 endif()
 
-if (MSVC)
-    hello_imgui_msvc_sort_targets_by_folder(${CMAKE_CURRENT_LIST_DIR})
-endif()

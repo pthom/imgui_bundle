@@ -12,25 +12,88 @@ image:{url-bundle}/workflows/Wheels/badge.svg[]
 image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
 
-
 == Introduction
 
-:url-bundle: https://github.com/pthom/imgui_bundle/
-:url-imgui: https://github.com/ocornut/imgui/
+=== About ImGui Bundle
 
-{url-bundle}[ImGui Bundle] is a bundle for {url-imgui}[Dear ImGui], including various powerful libraries from its ecosystem.
-
-It is aimed at application developers, researchers, and beginners who want to quickly get started.
+https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem.
 
 It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux.
 
+It is aimed at application developers, researchers, and beginners who want to quickly get started.
 
-=== Interactive demo: test it in one click!
 
-Click on the animated demonstration below to launch the fully interactive demo.
+
+.Click here to see how easy a hello world can be:
+[%collapsible]
+====
+
+**In C++**
+
+link:../../demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]
+[source,cpp]
+----
+#include "immapp/immapp.h"
+#include "imgui.h"
+
+void Gui()
+{
+    ImGui::Text("Hello, world!");
+}
+
+int main(int, char **)
+{
+    ImmApp::Run(
+        Gui,
+        "Hello!",
+        true // window_size_auto
+        // Uncomment the next line to restore window position and size from previous run
+        // window_restore_previous_geometry==true
+    );
+
+    return 0;
+}
+----
+
+CMakeLists.txt:
+[source,cmake]
+----
+imgui_bundle_add_app(demo_hello_world demo_hello_world.cpp)
+----
+
+**In Python**
+
+link:../../demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+
+[source,python]
+----
+from imgui_bundle import imgui, immapp
+
+
+def gui():
+    imgui.text("Hello, world!")
+
+
+immapp.run(
+    gui_function=gui,  # The Gui function to run
+    window_title="Hello!",  # the window title
+    window_size_auto=True,  # Auto size the application window given its widgets
+    # Uncomment the next line to restore window position and size from previous run
+    # window_restore_previous_geometry==True
+)
+----
+
+TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual] provides lots of examples together with their source.
+
+====
+
+
+=== Interactive manual: a demo in one click!
+
+Click on the animated demonstration below to launch the fully interactive demonstration.
 
 .ImGui Bundle interactive demo
-[#truc,link=https://traineq.org/ImGuiBundle/emscripten/bin/demo_all.html]
+[#truc,link=https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html]
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 TIP: This demonstration is also an interactive manual, similar to the online https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual]
@@ -39,10 +102,10 @@ TIP: This demonstration is also an interactive manual, similar to the online htt
 
 ImGui Bundle includes:
 
-* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui: Bloat-free Graphical User interface for C++ with minimal dependencies
+* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for C++ with minimal dependencies
 * https://github.com/epezent/implot[implot]: Immediate Mode Plotting
 * https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
-* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
+* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
 * https://github.com/BalazsJako/ImGuiColorTextEdit[ImGuiColorTextEdit]: Colorizing text editor for ImGui
 * https://github.com/thedmd/imgui-node-editor[imgui-node-editor]: Node Editor built using Dear ImGui
 * https://github.com/altschuler/imgui-knobs[imgui-knobs]: Knobs widgets for ImGui
@@ -65,6 +128,7 @@ The original code documentation is meticulously kept inside the python stubs. Se
 
 Thanks to this, porting code between Python and C++ becomes easy.
 
+
 .Click to see an example
 [%collapsible]
 ====
@@ -76,8 +140,7 @@ Python
 import time
 import numpy as np
 
-import hello_imgui.bindings.hello_imgui
-from imgui_bundle import implot, imgui_knobs, imgui, immapp
+from imgui_bundle import implot, imgui_knobs, imgui, immapp, hello_imgui
 
 # Fill x and y whose plot is a heart
 vals = np.arange(0, np.pi * 2, 0.01)
@@ -92,7 +155,7 @@ heart_pulse_rate = 80
 def gui():
     global heart_pulse_rate, phase, t0, x, y
     # By setting fpsIdle = 0, we make sure that the animation is smooth
-    hello_imgui.bindings.hello_imgui.get_runner_params().fps_idle = 0
+    hello_imgui.get_runner_params().fps_idle = 0
 
     t = time.time()
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
@@ -168,6 +231,7 @@ int main(int , char *[]) {
 }
 ----
 ====
+
 
 == Repository folders structure
 
