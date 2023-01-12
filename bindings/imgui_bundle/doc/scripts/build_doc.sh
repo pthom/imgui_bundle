@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# brew install asciidoctor
-# gem install asciidoctor-reducer
-# brew install pandoc
+# You will need to install asciidoctor, asciidoctor-reducer and pandoc:
+#     brew install asciidoctor
+#     gem install asciidoctor-reducer
+#     brew install pandoc
 
 this_dir=$(dirname -- "$0")
 doc_dir=$this_dir/..
@@ -12,7 +13,7 @@ cd $doc_dir
 echo "Running asciidoctor-reducer (generate Readme.adoc for github)"
 asciidoctor-reducer Readme_source.adoc -o Readme.adoc
 
-
+# Generate a markdown doc for pypi
 echo "Generating Readme_pypi.md (generate Readme_pypi.md)"
 asciidoctor -b docbook --attribute env_pypi=1 Readme_source.adoc
 pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
