@@ -6,8 +6,9 @@
 //     bindings/imgui_bundle/doc/Readme_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
+ifndef::env_gh_pages[]
 TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
-
+endif::[]
 
 include::readme_parts/readme_variables.adoc[]
 include::readme_parts/badges.adoc[]

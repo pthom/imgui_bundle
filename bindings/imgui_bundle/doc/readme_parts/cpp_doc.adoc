@@ -4,9 +4,12 @@ include::readme_variables.adoc[]
 
 === Integrate ImGui Bundle in your own project in 5 minutes
 
-The folder link:{url-bundle-main-tree}/_example_integration[example_integration] includes everything you need to set up your own project with ImGui Bundle.
+The easiest way to use ImGui Bundle is to use the example provided in link:{url-bundle-main-tree}/_example_integration[example_integration].
+This folder  includes everything you need to set up your own project with ImGui Bundle.
 
 === Build ImGui Bundle from source
+
+If you choose to clone this repo, follow these instructions:
 
 [source, bash]
 ----
@@ -24,10 +27,10 @@ make -j # <2>
 
 === Run the C++ demo
 
-Simply run `./bin/demo_imgui_bundle`.
+If you built ImGui Bundle from source, Simply run `build/bin/demo_imgui_bundle`.
 
 
 The source for the demos can be found inside link:{url-bindings-bundle}/demos_cpp/[bindings/imgui_bundle/demos_cpp].
 
 
-TIP: Consider `demo_imgui_bundle` as a manual for ImGui Bundle with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
+TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]

@@ -139,12 +139,14 @@ Bundle with lots of examples and related code source.
 
 ## Integrate ImGui Bundle in your own project in 5 minutes
 
-The folder
-[example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration)
-includes everything you need to set up your own project with ImGui
-Bundle.
+The easiest way to use ImGui Bundle is to use the example provided in
+[example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
+This folder includes everything you need to set up your own project with
+ImGui Bundle.
 
 ## Build ImGui Bundle from source
+
+If you choose to clone this repo, follow these instructions:
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
@@ -160,13 +162,14 @@ Bundle.
 
 ## Run the C++ demo
 
-Simply run `./bin/demo_imgui_bundle`.
+If you built ImGui Bundle from source, Simply run
+`build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside
 [bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/).
 
-Consider `demo_imgui_bundle` as a manual for ImGui Bundle with lots of
-examples and related code source. It is always [available
+Consider `demo_imgui_bundle` as a manual with lots of examples and
+related code source. It is always [available
 online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 # Features
