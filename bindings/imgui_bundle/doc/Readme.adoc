@@ -1,8 +1,10 @@
 = ImGui Bundle
 :toc: left
 
+/////////////////////////////////////////////////////////////////////////////
 // IMPORTANT: do not *edit* Readme.adoc. It is generated automatically from
 //     bindings/imgui_bundle/doc/Readme_source.adoc
+/////////////////////////////////////////////////////////////////////////////
 
 :current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/

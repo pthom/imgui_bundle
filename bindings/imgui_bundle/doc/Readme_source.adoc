@@ -1,8 +1,10 @@
 = ImGui Bundle
 :toc: left
 
+/////////////////////////////////////////////////////////////////////////////
 // IMPORTANT: do not *edit* Readme.adoc. It is generated automatically from
 //     bindings/imgui_bundle/doc/Readme_source.adoc
+/////////////////////////////////////////////////////////////////////////////
 
 include::readme_parts/readme_variables.adoc[]
 include::readme_parts/badges.adoc[]
