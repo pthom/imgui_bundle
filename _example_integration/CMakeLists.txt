@@ -26,7 +26,7 @@ include(imgui_bundle_add_app)
 # Build your app
 ##########################################################
 # Call imgui_bundle_add_app
-imgui_bundle_add_app(hello_world hello_world.main.cpp)
+imgui_bundle_add_app(hello_world hello_world.cpp)
 
 # Now you can build your app with
 #     mkdir build && cd build && cmake .. && cmake --build .
