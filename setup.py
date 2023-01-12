@@ -94,6 +94,9 @@ setup(
         "PyGLM>=2.5.0",
     ],
     entry_points={
-        "console_scripts": ["imgui_bundle_demo=imgui_bundle.demos_python.demo_all:main"],
+        "console_scripts": [
+            "demo_imgui_bundle=imgui_bundle.demos_python.demo_imgui_bundle:main",
+            "imgui_bundle_demo=imgui_bundle.demos_python.demo_imgui_bundle:main"
+        ],
     },
 )
