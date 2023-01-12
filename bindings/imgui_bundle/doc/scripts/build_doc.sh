@@ -7,6 +7,8 @@
 
 this_dir=$(dirname -- "$0")
 doc_dir=$this_dir/..
+repo_dir=$doc_dir/../../../
+gh_pages_dir=$repo_dir/docs
 cd $doc_dir
 
 # asciidoctor-reducer will preprocess the includes, so that github display the readme nicely
@@ -19,5 +21,5 @@ asciidoctor -b docbook --attribute env_pypi=1 Readme_source.adoc
 pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
 
 # Generate html doc
-echo "Generating html/Readme.html (for github pages)"
-asciidoctor Readme_source.adoc -o html/Readme.html
+echo "Generating $gh_pages_dir/Readme.html (for github pages)"
+asciidoctor Readme_source.adoc -o $gh_pages_dir/Readme.html

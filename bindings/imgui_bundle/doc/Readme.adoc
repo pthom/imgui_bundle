@@ -1,14 +1,17 @@
 = ImGui Bundle
 :toc: left
 
-:current_branch: dev
+// IMPORTANT: do not *edit* Readme.adoc. It is generated automatically from
+//     bindings/imgui_bundle/doc/Readme_source.adoc
+
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
@@ -24,7 +27,7 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
 == Introduction
 
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
@@ -104,7 +107,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 
 === Interactive manual: a demo in one click!
 
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
@@ -363,7 +366,7 @@ int main(int , char *[]) {
 
 == Usage with Python
 
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
@@ -406,7 +409,7 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 
 == Usage with C++
 
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
@@ -446,7 +449,7 @@ TIP: Consider `demo_imgui_bundle` as a manual for ImGui Bundle with lots of exam
 
 == Features
 
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
