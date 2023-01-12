@@ -17,9 +17,13 @@ FetchContent_Declare(
     GIT_TAG main
 )
 FetchContent_MakeAvailable(imgui_bundle)
+
 # Make cmake function `imgui_bundle_add_app` available
 list(APPEND CMAKE_MODULE_PATH ${IMGUIBUNDLE_CMAKE_PATH})
 include(imgui_bundle_add_app)
+
+# Uncomment the next line if you which to also automatically fetch and compile OpenCV for immvision support
+# set(IMGUI_BUNDLE_FETCH_OPENCV ON)
 
 
 ##########################################################

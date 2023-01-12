@@ -19,9 +19,30 @@ set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
 ###############################################################################
 # Build Options
 ###############################################################################
-# IMGUI_BUNDLE_BUILD_PYTHON:
-#    on by default when using pip install, off when building the cpp library
-#    (SKBUILD is set to on by pip install / setup.py)
+
+# IMGUI_BUNDLE_FETCH_OPENCV: fetch OpenCV automatically during configure
+# ----------------------------------------------------------------------
+# (OpenCV is required by the optional module immvision.
+#  If IMGUI_BUNDLE_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
+#  Feel free to use your own version of OpenCV in C++)
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    # For the python package, we automatically fetch OpenCV
+    # (under windows, we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources)
+    option(IMGUI_BUNDLE_FETCH_OPENCV "fetch OpenCV" ON)
+else()
+    option(IMGUI_BUNDLE_FETCH_OPENCV "fetch OpenCV" OFF)
+endif()
+# When building the pip package, you can disable OpenCV (and immvision) by setting the env variable
+# IMGUI_BUNDLE_FETCH_OPENCV=OFF
+if(DEFINED ENV{IMGUI_BUNDLE_FETCH_OPENCV})
+    set(IMGUI_BUNDLE_FETCH_OPENCV "$ENV{IMGUI_BUNDLE_FETCH_OPENCV}")
+endif()
+option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
+
+# IMGUI_BUNDLE_BUILD_PYTHON: include python support
+# --------------------------------------------------
+# (OFF when building the cpp library; ON by default when using pip install.
+#  note: SKBUILD is set to on by pip install / setup.py)
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
     set(IMGUI_BUNDLE_BUILD_CPP OFF)
@@ -30,26 +51,10 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
-# IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV
-#     immvision is an image viewer / debugger. It requires OpenCV which can be fetched automatically during configure
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    # For the python package, we automatically fetch OpenCV
-    # (under windows, we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources)
-    option(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "fetch OpenCV" ON)
-else()
-    option(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
-endif()
-# When building the pip package, you can disable OpenCV (and immvision) by setting the env variable
-# IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV=OFF
-if(DEFINED ENV{IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV})
-    set(IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV "$ENV{IMGUI_BUNDLE_IMMVISION_FETCH_OPENCV}")
-endif()
 
-option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
-
-
-# IMGUI_BUNDLE_WITH_SDL
-#     HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option.
+# IMGUI_BUNDLE_WITH_SDL: Add SDL backend
+# --------------------------------------
+# (HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option)
 if (NOT EMSCRIPTEN)
     option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
     option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
@@ -58,8 +63,9 @@ else()
     set(IMGUI_BUNDLE_WITH_GLFW OFF)
 endif()
 
-# IMGUI_BUNDLE_BUILD_DEMOS
-#     Build demos (on by default if this is the main project)
+# IMGUI_BUNDLE_BUILD_DEMOS: Build demos
+# -------------------------------------
+# (ON by default if this is the main project)
 if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
 else()
