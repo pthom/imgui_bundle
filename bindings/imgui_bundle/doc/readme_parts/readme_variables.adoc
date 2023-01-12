@@ -1,4 +1,4 @@
-:current_branch: dev
+:current_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-main-tree: https://github.com/pthom/imgui_bundle/tree/{current_branch}
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
