@@ -29,4 +29,10 @@ include::readme_parts/python_doc.adoc[]
 
 include::readme_parts/cpp_doc.adoc[]
 
-include::readme_parts/features.adoc[]
+include::readme_parts/himgui.adoc[]
+
+include::readme_parts/immapp.adoc[]
+
+include::readme_parts/immediate_mode_gui.adoc[]
+
+

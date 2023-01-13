@@ -465,7 +465,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_run_the_c_demo">Run the C++ demo</a></li>
 </ul>
 </li>
-<li><a href="#_features">Features</a></li>
+<li><a href="#_hello_imgui">Hello ImGui</a>
+<ul class="sectlevel2">
+<li><a href="#_hello_imgui_features">Hello ImGui Features</a></li>
+<li><a href="#_hello_imgui_api">Hello ImGui API</a></li>
+</ul>
+</li>
+<li><a href="#_immapp_immediate_app">ImmApp (Immediate App)</a>
+<ul class="sectlevel2">
+<li><a href="#_api">API</a></li>
+<li><a href="#_how_to_start_an_application_with_addons">How to start an application with addons</a></li>
+</ul>
+</li>
+<li><a href="#_immediate_gui_paradigm">Immediate GUI paradigm</a>
+<ul class="sectlevel2">
+<li><a href="#_example">Example</a></li>
+<li><a href="#_consult_the_imgui_manual">Consult the ImGui Manual</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -1009,11 +1026,13 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </div>
 </div>
 <div class="sect1">
-<h2 id="_features">Features</h2>
+<h2 id="_hello_imgui">Hello ImGui</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>ImGui Bundle is build on top of <a href="https://github.com/pthom/hello_imgui">HelloImGui</a>, which provides:</p>
+<p>ImGui Bundle is build on top of <a href="https://github.com/pthom/hello_imgui">HelloImGui</a>.</p>
 </div>
+<div class="sect2">
+<h3 id="_hello_imgui_features">Hello ImGui Features</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1036,6 +1055,9 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </li>
 <li>
 <p>Switch between Glfw or Sdl backend (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.backendType</a>)</p>
+</li>
+<li>
+<p>Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo <a href="https://traineq.org/HelloImGui_6_Platforms.mp4">video</a></p>
 </li>
 </ul>
 </div>
@@ -1064,11 +1086,187 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_hello_imgui_api">Hello ImGui API</h3>
+<div class="paragraph">
+<p>See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello ImGui API doc</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_immapp_immediate_app">ImmApp (Immediate App)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
+</div>
+<div class="sect2">
+<h3 id="_api">API</h3>
+<div class="paragraph">
+<p><a href="https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h">C++ API</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi">Python bindings</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_to_start_an_application_with_addons">How to start an application with addons</h3>
+<details>
+<summary class="title">Click to see an example application with addons</summary>
+<div class="content">
+<div class="paragraph">
+<p>Some libraries included by ImGui Bundle require an initialization at startup. ImmApp makes this easy via AddOnParams.</p>
+</div>
+<div class="paragraph">
+<p>The example program below demonstrates how to run an application which will use implot (which requires a context to be created at startup), and imgui_md (which requires additional fonts to be loaded at startup).</p>
+</div>
+<div class="paragraph">
+<p>C++</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-cpp" data-lang="cpp">#include "immapp/immapp.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "implot/implot.h"
+#include "demo_utils/api_demos.h"
+#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+
+int main(int, char**)
+{
+    ChdirBesideAssetsFolder();
+    constexpr double pi = 3.1415926535897932384626433;
+    std::vector&lt;double&gt; x, y1, y2;
+    for (double _x = 0; _x &lt; 4 * pi; _x += 0.01)
+    {
+        x.push_back(_x);
+        y1.push_back(std::cos(_x));
+        y2.push_back(std::sin(_x));
+    }
+
+    auto gui = [x,y1,y2]()
+    {
+        ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
+        ImPlot::BeginPlot("Plot");
+        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
+        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+        ImPlot::EndPlot();
+    };
+
+    HelloImGui::SimpleRunnerParams runnerParams { .guiFunction = gui, .windowSize = {600, 400} };
+    ImmApp::AddOnsParams addons { .withImplot = true, .withMarkdown = true };
+    ImmApp::Run(runnerParams, addons);
+
+    return 0;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Python:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">import numpy as np
+from imgui_bundle import implot, imgui_md, immapp
+from imgui_bundle.demos_python import demo_utils
+
+
+def main():
+    demo_utils.set_hello_imgui_demo_assets_folder()
+    x = np.arange(0, np.pi * 4, 0.01)
+    y1 = np.cos(x)
+    y2 = np.sin(x)
+
+    def gui():
+        imgui_md.render("# This is the plot of _cosinus_ and *sinus*")  # Markdown
+        implot.begin_plot("Plot")
+        implot.plot_line("y1", x, y1)
+        implot.plot_line("y2", x, y2)
+        implot.end_plot()
+
+    immapp.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_immediate_gui_paradigm">Immediate GUI paradigm</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_example">Example</h3>
+<div class="paragraph">
+<p>An example is often worth a thousand words. The following code:</p>
+</div>
+<div class="paragraph">
+<p>C++</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-cpp" data-lang="cpp">// Display a text
+ImGui::Text("Counter = %i", app_state.counter);
+ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+// The following line displays a button
+if (ImGui::Button("increment counter"))
+    // And returns true if it was clicked: you can *immediately* handle the click
+    app_state.counter += 1;
+
+// Input a text: in C++, InputText returns a bool and modifies the text directly
+bool changed = ImGui::InputText("Your name?", &amp;app_state.name);
+ImGui::Text("Hello %s!", app_state.name.c_str());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Python</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python"># Display a text
+imgui.text(f"Counter = {app_state.counter}")
+imgui.same_line()  # by default ImGui starts a new line at each widget
+
+# The following line displays a button
+if imgui.button("increment counter"):
+    # And returns true if it was clicked: you can *immediately* handle the click
+    app_state.counter += 1
+
+# Input a text: in python, input_text returns a tuple(modified, new_value)
+changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+imgui.text(f"Hello {app_state.name}!")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Displays this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/immediate_gui_example.png" alt="immediate gui example">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_consult_the_imgui_manual">Consult the ImGui Manual</h3>
+<div class="paragraph">
+<p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-12 21:46:53 +0100
+Last updated 2023-01-13 01:14:10 +0100
 </div>
 </div>
 </body>

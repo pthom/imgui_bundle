@@ -1,10 +1,11 @@
-== Features
+== Hello ImGui
 
 include::readme_variables.adoc[]
 
 
-ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui], which provides:
+ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui].
 
+=== Hello ImGui Features
 
 * {url-himgui-main-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
 * Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
@@ -13,7 +14,12 @@ ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui]
 * Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
 * Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-main-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
 * Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
+* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
 TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]
+
+=== Hello ImGui API
+
+See https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello ImGui API doc]

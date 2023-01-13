@@ -172,10 +172,12 @@ Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available
 online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-# Features
+# Hello ImGui
 
 ImGui Bundle is build on top of
-[HelloImGui](https://github.com/pthom/hello_imgui), which provides:
+[HelloImGui](https://github.com/pthom/hello_imgui).
+
+## Hello ImGui Features
 
 -   [DPI
     aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
@@ -204,6 +206,10 @@ ImGui Bundle is build on top of
 -   Switch between Glfw or Sdl backend (see
     [RunnerParams.backendType](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
+-   Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten,
+    Android (poorly supported). See demo
+    [video](https://traineq.org/HelloImGui_6_Platforms.mp4)
+
 The usage of `Hello ImGui` is optional. You can also build an imgui
 application from scratch, in C++ or in python (see [python
 example](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
@@ -211,3 +217,147 @@ example](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/d
 HelloImGui is fully configurable by POD (plain old data) structures. See
 [their
 description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
+
+## Hello ImGui API
+
+See [Hello ImGui API
+doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
+
+# ImmApp (Immediate App)
+
+ImGui Bundle include a sub library named ImmApp (which stand for
+Immediate App). ImmApp is a thin extension of HelloImGui that enables to
+easily initialize the ImGuiBundle addons that require additional setup
+at startup.
+
+## API
+
+[C++
+API](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h)
+
+[Python
+bindings](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
+
+## How to start an application with addons
+
+Some libraries included by ImGui Bundle require an initialization at
+startup. ImmApp makes this easy via AddOnParams.
+
+The example program below demonstrates how to run an application which
+will use implot (which requires a context to be created at startup), and
+imgui\_md (which requires additional fonts to be loaded at startup).
+
+C++
+
+    #include "immapp/immapp.h"
+    #include "imgui_md_wrapper/imgui_md_wrapper.h"
+    #include "implot/implot.h"
+    #include "demo_utils/api_demos.h"
+    #include <vector>
+    #include <cmath>
+
+
+    int main(int, char**)
+    {
+        ChdirBesideAssetsFolder();
+        constexpr double pi = 3.1415926535897932384626433;
+        std::vector<double> x, y1, y2;
+        for (double _x = 0; _x < 4 * pi; _x += 0.01)
+        {
+            x.push_back(_x);
+            y1.push_back(std::cos(_x));
+            y2.push_back(std::sin(_x));
+        }
+
+        auto gui = [x,y1,y2]()
+        {
+            ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
+            ImPlot::BeginPlot("Plot");
+            ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
+            ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+            ImPlot::EndPlot();
+        };
+
+        HelloImGui::SimpleRunnerParams runnerParams { .guiFunction = gui, .windowSize = {600, 400} };
+        ImmApp::AddOnsParams addons { .withImplot = true, .withMarkdown = true };
+        ImmApp::Run(runnerParams, addons);
+
+        return 0;
+    }
+
+Python:
+
+    import numpy as np
+    from imgui_bundle import implot, imgui_md, immapp
+    from imgui_bundle.demos_python import demo_utils
+
+
+    def main():
+        demo_utils.set_hello_imgui_demo_assets_folder()
+        x = np.arange(0, np.pi * 4, 0.01)
+        y1 = np.cos(x)
+        y2 = np.sin(x)
+
+        def gui():
+            imgui_md.render("# This is the plot of _cosinus_ and *sinus*")  # Markdown
+            implot.begin_plot("Plot")
+            implot.plot_line("y1", x, y1)
+            implot.plot_line("y2", x, y2)
+            implot.end_plot()
+
+        immapp.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
+
+
+    if __name__ == "__main__":
+        main()
+
+# Immediate GUI paradigm
+
+## Example
+
+An example is often worth a thousand words. The following code:
+
+C++
+
+    // Display a text
+    ImGui::Text("Counter = %i", app_state.counter);
+    ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+    // The following line displays a button
+    if (ImGui::Button("increment counter"))
+        // And returns true if it was clicked: you can *immediately* handle the click
+        app_state.counter += 1;
+
+    // Input a text: in C++, InputText returns a bool and modifies the text directly
+    bool changed = ImGui::InputText("Your name?", &app_state.name);
+    ImGui::Text("Hello %s!", app_state.name.c_str());
+
+Python
+
+    # Display a text
+    imgui.text(f"Counter = {app_state.counter}")
+    imgui.same_line()  # by default ImGui starts a new line at each widget
+
+    # The following line displays a button
+    if imgui.button("increment counter"):
+        # And returns true if it was clicked: you can *immediately* handle the click
+        app_state.counter += 1
+
+    # Input a text: in python, input_text returns a tuple(modified, new_value)
+    changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+    imgui.text(f"Hello {app_state.name}!")
+
+Displays this:
+
+![immediate gui example](images/immediate_gui_example.png)
+
+## Consult the ImGui Manual
+
+Dear ImGui comes with a complete demo. It demonstrates all the widgets,
+together with an example code on how to use them.
+
+[ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
+is an easy way to consult this demo, and to see the corresponding code.
+The demo code is in C++, but read on for "Code advices" on how to
+translate from C++ to python.
