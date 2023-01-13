@@ -1,0 +1,4 @@
+// The order of these 3 lines is important
+include::../doc_parts/_utils.adoc[]
+:url-doc-images: images
+include::../doc_parts/_badges.adoc[]

@@ -1,4 +1,4 @@
-=== ImmApp (Immediate App)
+=== ImmApp - Immediate App
 
 include::_utils.adoc[]
 

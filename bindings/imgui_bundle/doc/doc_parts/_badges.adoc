@@ -1,0 +1,7 @@
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_docs.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+
+:btn-sources: link:{url-bundle}[image:{_badge-sources}[alt=sources,width=100]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[alt=doc,width=81]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[alt=manual,width=137]]

@@ -1,12 +1,10 @@
-include::_utils.adoc[]
+// voluntarily not included, we might override some parts
+// include::_utils.adoc[]
 
 
-ifndef::env_gh_pages[]
+ifdef::env_gh_readme[]
 TIP: For a more readable version of this document, click on {btn-doc}
-endif::[]
-
-ifdef::env_gh_pages[]
-include::badges.adoc[]
+include::ci_badges.adoc[]
 endif::[]
 
 

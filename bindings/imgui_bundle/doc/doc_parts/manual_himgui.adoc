@@ -1,13 +1,12 @@
-=== Hello ImGui
+=== Hello ImGui - Starter pack
 
 include::_utils.adoc[]
 
-
-ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui].
+ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
 ==== API
 
-See https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello ImGui API doc]
+See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]
 
 ==== Features
 

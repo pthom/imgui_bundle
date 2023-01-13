@@ -286,7 +286,7 @@ assets/
             if (! mMarkdownOptions.callbacks.OnImage)
                 return false;
 
-            std::optional<MarkdownImage> mdImage = mMarkdownOptions.callbacks.OnImage(m_href);
+            std::optional<MarkdownImage> mdImage = mMarkdownOptions.callbacks.OnImage(m_img_src);
 
             if (! mdImage.has_value())
                 return false;
@@ -393,7 +393,6 @@ assets/
             std::cerr << "ImGuiMd::Render : Markdown was not initialized!\n";
             return;
         }
-
         gMarkdownRenderer->Render(markdownString);
     }
 

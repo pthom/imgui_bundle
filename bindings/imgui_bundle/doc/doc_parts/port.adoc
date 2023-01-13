@@ -1,0 +1,7 @@
+== {cpp} / Python porting advices
+
+include::port_general_advices.adoc[]
+
+include::port_enums.adoc[]
+
+include::port_glfw_callbacks.adoc[]

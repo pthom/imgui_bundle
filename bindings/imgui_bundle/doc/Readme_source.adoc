@@ -8,6 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 include::doc_parts/_utils.adoc[]
+include::doc_parts/_badges.adoc[]
 
 include::doc_parts/front_matter.adoc[]
 
@@ -20,4 +21,6 @@ endif::[]
 include::doc_parts/install.adoc[]
 
 include::doc_parts/manual.adoc[]
+
+include::doc_parts/port.adoc[]
 

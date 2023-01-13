@@ -530,9 +530,16 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="#_usage_instructions">Usage instructions</a>
 <ul class="sectlevel2">
-<li><a href="#_immediate_gui">Immediate GUI</a></li>
-<li><a href="#_hello_imgui">Hello ImGui</a></li>
-<li><a href="#_immapp_immediate_app">ImmApp (Immediate App)</a></li>
+<li><a href="#_dear_imgui_immediate_gui">Dear ImGui - Immediate GUI</a></li>
+<li><a href="#_hello_imgui_starter_pack">Hello ImGui - Starter pack</a></li>
+<li><a href="#_immapp_immediate_app">ImmApp - Immediate App</a></li>
+</ul>
+</li>
+<li><a href="#_c_python_porting_advices">C&#43;&#43; / Python porting advices</a>
+<ul class="sectlevel2">
+<li><a href="#_general_advices">General advices</a></li>
+<li><a href="#_enums_and_textinput">Enums and TextInput</a></li>
+<li><a href="#_advanced_glfw_callbacks">Advanced glfw callbacks</a></li>
 </ul>
 </li>
 </ul>
@@ -541,19 +548,13 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<div class="paragraph">
-<p><span class="image"><img src="https://github.com/pthom/imgui_bundle//workflows/CppLib/badge.svg" alt="badge"></span>
-<span class="image"><img src="https://github.com/pthom/imgui_bundle//workflows/Pip/badge.svg" alt="badge"></span>
-<span class="image"><img src="https://github.com/pthom/imgui_bundle//workflows/Wheels/badge.svg" alt="badge"></span>
-<span class="image"><img src="https://github.com/pthom/imgui_bundle//workflows/Emscripten/badge.svg" alt="badge"></span></p>
-</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
 <p>ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!</p>
 </div>
 <div class="paragraph">
-<p><a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png" alt="sources" width="100"></span></a> <a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" alt="doc" width="81"></span></a> <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" alt="manual" width="137"></span></a></p>
+<p><a href="https://github.com/pthom/imgui_bundle/"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png" alt="sources" width="100"></span></a> <a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" alt="doc" width="81"></span></a> <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" alt="manual" width="137"></span></a></p>
 </div>
 </div>
 </div>
@@ -1107,11 +1108,23 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <h2 id="_usage_instructions">Usage instructions</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_immediate_gui">Immediate GUI</h3>
+<h3 id="_dear_imgui_immediate_gui">Dear ImGui - Immediate GUI</h3>
+<div class="paragraph">
+<p>Dear ImGui is an implementation of the Immediate Gui paradigm.</p>
+</div>
+<div class="sect3">
+<h4 id="_consult_the_imgui_manual">Consult the ImGui Manual</h4>
+<div class="paragraph">
+<p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_example">Example</h4>
 <div class="paragraph">
-<p>Dear ImGui is an implementation of the Immediate Gui paradigm. As an example is often worth a thousand words, the following code:</p>
+<p>An example is often worth a thousand words, the following code:</p>
 </div>
 <div class="paragraph">
 <p>C++</p>
@@ -1160,25 +1173,16 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_consult_the_imgui_manual">Consult the ImGui Manual</h4>
-<div class="paragraph">
-<p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
-</div>
-</div>
 </div>
 <div class="sect2">
-<h3 id="_hello_imgui">Hello ImGui</h3>
+<h3 id="_hello_imgui_starter_pack">Hello ImGui - Starter pack</h3>
 <div class="paragraph">
-<p>ImGui Bundle is build on top of <a href="https://github.com/pthom/hello_imgui">HelloImGui</a>.</p>
+<p>ImGui Bundle includes <a href="https://github.com/pthom/hello_imgui">Hello ImGui</a>, which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and <a href="https://en.wikipedia.org/wiki/Emscripten">emscripten</a>.</p>
 </div>
 <div class="sect3">
 <h4 id="_api">API</h4>
 <div class="paragraph">
-<p>See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello ImGui API doc</a></p>
+<p>See the "Hello ImGui" <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">API doc</a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1238,7 +1242,7 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 </div>
 <div class="sect2">
-<h3 id="_immapp_immediate_app">ImmApp (Immediate App)</h3>
+<h3 id="_immapp_immediate_app">ImmApp - Immediate App</h3>
 <div class="paragraph">
 <p>ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
 </div>
@@ -1340,10 +1344,216 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_c_python_porting_advices">C&#43;&#43; / Python porting advices</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_general_advices">General advices</h3>
+<div class="paragraph">
+<p>ImGui is a C&#43;&#43; library that was ported to Python. In order to work with it, you will often refer to its <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">manual</a>, which shows example code in C&#43;&#43;.</p>
+</div>
+<div class="paragraph">
+<p>In order to translate from C&#43;&#43; to Python:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Change the function names and parameters' names from <code>CamelCase</code> to <code>snake_case</code></p>
+</li>
+<li>
+<p>Change the way the output are handled.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>in C&#43;&#43; <code>ImGui::RadioButton</code> modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.</p>
+</li>
+<li>
+<p>In python, the (possibly modified) value is transmitted via the return: <code>imgui.radio_button</code> returns a <code>Tuple[bool, str]</code> which contains <code>(user_clicked, new_value)</code>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>if porting some code that uses static variables, use the <code>@immapp.static</code> decorator.
+ In this case, this decorator simply adds a variable <code>value</code> at  the function scope. It is preserved between calls.
+Normally, this variable should be accessed via <code>demo_radio_button.value</code>, however the first line of the function adds a synonym named static for more clarity.
+Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_example_2">Example:</h4>
+<div class="paragraph">
+<p>C&#43;&#43;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoRadioButton</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">value</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio a&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio b&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio c&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">2</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Python</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>
+<span class="tok-k">def</span> <span class="tok-nf">demo_radio_button</span><span class="tok-p">():</span>
+    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_radio_button</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio a&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio b&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio c&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">2</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enums_and_textinput">Enums and TextInput</h3>
+<div class="paragraph">
+<p>In the example below, two differences are important:</p>
+</div>
+<div class="sect3">
+<h4 id="_inputtext_functions">InputText functions:</h4>
+<div class="paragraph">
+<p><code>imgui.input_text</code> (Python) is equivalent to <code>ImGui::InputText</code> (C++)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In C++, it uses two parameters for the text: the text pointer, and its length.</p>
+</li>
+<li>
+<p>In Python, you can simply pass a string, and get back its modified value in the returned tuple.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_enums_handling">Enums handling:</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ImGuiInputTextFlags_</code> (C++) corresponds to <code>imgui.InputTextFlags_</code> (python) and it is an <em>enum</em> (note the trailing underscore).</p>
+</li>
+<li>
+<p><code>ImGuiInputTextFlags</code> (C++) corresponds to <code>imgui.InputTextFlags</code> (python) and it is an <em>int</em>  (note: no trailing underscore)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You will find many similar enums.</p>
+</div>
+<div class="paragraph">
+<p>The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_example_3">Example</h4>
+<div class="paragraph">
+<p>C++</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">[</span><span class="tok-mi">64</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">64</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Python</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">text</span><span class="tok-o">=</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span>
+<span class="tok-k">def</span> <span class="tok-nf">demo_input_text_decimal</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
+    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_input_text_decimal</span>
+    <span class="tok-n">flags</span><span class="tok-p">:</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
+            <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_uppercase</span><span class="tok-o">.</span><span class="tok-n">value</span>
+          <span class="tok-o">|</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_no_blank</span><span class="tok-o">.</span><span class="tok-n">value</span>
+        <span class="tok-p">)</span>
+    <span class="tok-n">changed</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">,</span> <span class="tok-n">flags</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Note: in C&#43;&#43;, by using <code>imgui_stdlib.h</code>, it is also possible to write:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui/misc/cpp/imgui_stdlib.h&quot;</span><span class="tok-cp"></span>
+
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase_StdString</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_advanced_glfw_callbacks">Advanced glfw callbacks</h3>
+<div class="paragraph">
+<p>When using the glfw backend, you can set advanced callbacks on all glfw events.</p>
+</div>
+<div class="paragraph">
+<p>Below is an example that triggers a callback whenever the window size is changed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">imgui_bundle</span>
+<span class="tok-kn">import</span> <span class="tok-nn">glfw</span>   <span class="tok-c1"># always import glfw *after* imgui_bundle!!!</span>
+
+
+<span class="tok-c1"># define a callback</span>
+<span class="tok-k">def</span> <span class="tok-nf">my_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">:</span> <span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">_GLFWwindow</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">,</span> <span class="tok-n">h</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">):</span>
+    <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Window size changed to </span><span class="tok-si">{</span><span class="tok-n">w</span><span class="tok-si">}</span><span class="tok-s2">x</span><span class="tok-si">{</span><span class="tok-n">h</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
+
+
+<span class="tok-c1"># Get the glfw window used by hello imgui</span>
+<span class="tok-n">window</span> <span class="tok-o">=</span> <span class="tok-n">imgui_bundle</span><span class="tok-o">.</span><span class="tok-n">glfw_window_hello_imgui</span><span class="tok-p">()</span>
+<span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">set_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span> <span class="tok-n">my_window_size_callback</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+It is important to import glfw <em>after</em> imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-13 14:35:22 +0100
+Last updated 2023-01-13 17:01:28 +0100
 </div>
 </div>
 </body>

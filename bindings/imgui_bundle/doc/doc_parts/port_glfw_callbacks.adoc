@@ -1,0 +1,23 @@
+=== Advanced glfw callbacks
+
+When using the glfw backend, you can set advanced callbacks on all glfw events.
+
+Below is an example that triggers a callback whenever the window size is changed:
+
+[source,python]
+----
+import imgui_bundle
+import glfw   # always import glfw *after* imgui_bundle!!!
+
+
+# define a callback
+def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
+    print(f"Window size changed to {w}x{h}")
+
+
+# Get the glfw window used by hello imgui
+window = imgui_bundle.glfw_window_hello_imgui()
+glfw.set_window_size_callback(window, my_window_size_callback)
+----
+
+CAUTION: It is important to import glfw _after_ imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.

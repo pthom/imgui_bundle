@@ -1,11 +1,9 @@
-Navigate to [imgui bundle docs
-homepage](https://pthom.github.io/imgui_bundle) for a more readable
-version of this document.
+ImGui Bundle: easily create ImGui applications in Python and C++.
+Batteries included!
 
-![badge](https://github.com/pthom/imgui_bundle//workflows/CppLib/badge.svg)
-![badge](https://github.com/pthom/imgui_bundle//workflows/Pip/badge.svg)
-![badge](https://github.com/pthom/imgui_bundle//workflows/Wheels/badge.svg)
-![badge](https://github.com/pthom/imgui_bundle//workflows/Emscripten/badge.svg)
+[![sources](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
+[![doc](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png)](https://pthom.github.io/imgui_bundle)
+[![manual](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 # Introduction
 
@@ -33,7 +31,8 @@ demo</figcaption>
 This demonstration is also an interactive manual, similar to the online
 [ImGui
 Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-=== Batteries included
+
+## Batteries included
 
 ImGui Bundle includes:
 
@@ -131,7 +130,7 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 Simply run `imgui_bundle_demo`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python).
+[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python).
 
 Consider `imgui_bundle_demo` as an always available manual for ImGui
 Bundle with lots of examples and related code source.
@@ -142,7 +141,7 @@ Bundle with lots of examples and related code source.
 
 The easiest way to use ImGui Bundle in an external project is to use the
 example provided in
-[example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
+[example\_integration](https://github.com/pthom/imgui_bundle/tree/doc/_example_integration).
 This folder includes everything you need to set up your own project with
 ImGui Bundle.
 
@@ -155,12 +154,21 @@ If you choose to clone this repo, follow these instructions:
     git submodule update --init --recursive 
     mkdir build
     cd build
-    cmake ..
-    make -j 
+    cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV=ON 
+    make -j
 
 -   Since there are lots of submodules, this might take a few minutes
 
--   The build process might take up to 5 minutes
+-   The flag `-DIMGUI_BUNDLE_FETCH_OPENCV=ON` is optional. If set, a
+    minimal version of OpenCV will be downloaded a compiled at this
+    stage (this might require a few minutes)
+
+The `immvision` module will only be built if OpenCV can be found.
+Otherwise, it will be ignored, and no error will be emitted.
+
+If you have an existing OpenCV install, set its path via:
+
+    cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 
 ### Run the C++ demo
 
@@ -168,20 +176,32 @@ If you built ImGui Bundle from source, Simply run
 `build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/).
+[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_cpp/).
 
 Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available
 online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-# Development and usage instructions
+# Usage instructions
 
-## Immediate GUI
+## Dear ImGui - Immediate GUI
+
+Dear ImGui is an implementation of the Immediate Gui paradigm.
+
+### Consult the ImGui Manual
+
+Dear ImGui comes with a complete demo. It demonstrates all the widgets,
+together with an example code on how to use them.
+
+[ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
+is an easy way to consult this demo, and to see the corresponding code.
+The demo code is in C++, but read on for "Code advices" on how to
+translate from C++ to python.
 
 ### Example
 
-Dear ImGui is an implementation of the Immediate Gui paradigm. As an
-example is often worth a thousand words, the following code:
+An example is often worth a thousand words, the following code:
 
 C++
 
@@ -215,25 +235,23 @@ Python
 
 Displays this:
 
-![immediate gui example](doc_images/immediate_gui_example.png)
+![immediate gui
+example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immediate_gui_example.png)
 
-### Consult the ImGui Manual
+## Hello ImGui - Starter pack
 
-Dear ImGui comes with a complete demo. It demonstrates all the widgets,
-together with an example code on how to use them.
+ImGui Bundle includes [Hello
+ImGui](https://github.com/pthom/hello_imgui), which is itself based on
+ImGui. "Hello ImGui" can be compared to a starter pack that enables to
+easily write cross-platform Gui apps for Windows, macOS, Linux, iOS, and
+[emscripten](https://en.wikipedia.org/wiki/Emscripten).
 
-[ImGui
-Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-is an easy way to consult this demo, and to see the corresponding code.
-The demo code is in C++, but read on for "Code advices" on how to
-translate from C++ to python.
+### API
 
-## Hello ImGui
+See the "Hello ImGui" [API
+doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
 
-ImGui Bundle is build on top of
-[HelloImGui](https://github.com/pthom/hello_imgui).
-
-### Hello ImGui Features
+### Features
 
 -   [DPI
     aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
@@ -257,7 +275,7 @@ ImGui Bundle is build on top of
 
 -   Auto initialization of third parties modules, implot,
     imgui-node-editor, markdown, etc. (see
-    [ImmApp::AddOnParams](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h))
+    [ImmApp::AddOnParams](https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h))
 
 -   Switch between Glfw or Sdl backend (see
     [RunnerParams.backendType](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
@@ -268,18 +286,13 @@ ImGui Bundle is build on top of
 
 The usage of `Hello ImGui` is optional. You can also build an imgui
 application from scratch, in C++ or in python (see [python
-example](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
+example](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
 
 HelloImGui is fully configurable by POD (plain old data) structures. See
 [their
 description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
 
-### Hello ImGui API
-
-See [Hello ImGui API
-doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
-
-## ImmApp (Immediate App)
+## ImmApp - Immediate App
 
 ImGui Bundle include a sub library named ImmApp (which stand for
 Immediate App). ImmApp is a thin extension of HelloImGui that enables to
@@ -289,10 +302,10 @@ at startup.
 ### API
 
 [C++
-API](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h)
+API](https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h)
 
 [Python
-bindings](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
+bindings](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
 
 ### How to start an application with addons
 
@@ -366,3 +379,150 @@ Python:
 
     if __name__ == "__main__":
         main()
+
+# C++ / Python porting advices
+
+## General advices
+
+ImGui is a C++ library that was ported to Python. In order to work with
+it, you will often refer to its
+[manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html),
+which shows example code in C++.
+
+In order to translate from C++ to Python:
+
+1.  Change the function names and parameters' names from `CamelCase` to
+    `snake_case`
+
+2.  Change the way the output are handled.
+
+    1.  in C++ `ImGui::RadioButton` modifies its second parameter (which
+        is passed by address) and returns true if the user clicked the
+        radio button.
+
+    2.  In python, the (possibly modified) value is transmitted via the
+        return: `imgui.radio_button` returns a `Tuple[bool, str]` which
+        contains `(user_clicked, new_value)`.
+
+3.  if porting some code that uses static variables, use the
+    `@immapp.static` decorator. In this case, this decorator simply adds
+    a variable `value` at the function scope. It is preserved between
+    calls. Normally, this variable should be accessed via
+    `demo_radio_button.value`, however the first line of the function
+    adds a synonym named static for more clarity. Do not overuse them!
+    Static variable suffer from almost the same shortcomings as global
+    variables, so you should prefer to modify an application state.
+
+### Example:
+
+C++
+
+    void DemoRadioButton()
+    {
+        static int value = 0;
+        ImGui::RadioButton("radio a", &value, 0); ImGui::SameLine();
+        ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
+        ImGui::RadioButton("radio c", &value, 2);
+    }
+
+Python
+
+    @immapp.static(value=0)
+    def demo_radio_button():
+        static = demo_radio_button
+        clicked, static.value = imgui.radio_button("radio a", static.value, 0)
+        imgui.same_line()
+        clicked, static.value = imgui.radio_button("radio b", static.value, 1)
+        imgui.same_line()
+        clicked, static.value = imgui.radio_button("radio c", static.value, 2)
+
+## Enums and TextInput
+
+In the example below, two differences are important:
+
+### InputText functions:
+
+`imgui.input_text` (Python) is equivalent to `ImGui::InputText` (C++)
+
+-   In C++, it uses two parameters for the text: the text pointer, and
+    its length.
+
+-   In Python, you can simply pass a string, and get back its modified
+    value in the returned tuple.
+
+### Enums handling:
+
+-   `ImGuiInputTextFlags_` (C++) corresponds to `imgui.InputTextFlags_`
+    (python) and it is an *enum* (note the trailing underscore).
+
+-   `ImGuiInputTextFlags` (C++) corresponds to `imgui.InputTextFlags`
+    (python) and it is an *int* (note: no trailing underscore)
+
+You will find many similar enums.
+
+The dichotomy between int and enums, enables you to write flags that are
+a combinations of values from the enum (see example below).
+
+### Example
+
+C++
+
+    void DemoInputTextUpperCase()
+    {
+        static char text[64] = "";
+        ImGuiInputTextFlags flags = (
+            ImGuiInputTextFlags_CharsUppercase
+            | ImGuiInputTextFlags_CharsNoBlank
+        );
+        /*bool changed = */ ImGui::InputText("Upper case, no spaces", text, 64, flags);
+    }
+
+Python
+
+    @immapp.static(text="")
+    def demo_input_text_decimal() -> None:
+        static = demo_input_text_decimal
+        flags:imgui.InputTextFlags = (
+                imgui.InputTextFlags_.chars_uppercase.value
+              | imgui.InputTextFlags_.chars_no_blank.value
+            )
+        changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
+
+Note: in C++, by using `imgui_stdlib.h`, it is also possible to write:
+
+    #include "imgui/misc/cpp/imgui_stdlib.h"
+
+    void DemoInputTextUpperCase_StdString()
+    {
+        static std::string text;
+        ImGuiInputTextFlags flags = (
+            ImGuiInputTextFlags_CharsUppercase
+            | ImGuiInputTextFlags_CharsNoBlank
+        );
+        /*bool changed = */ ImGui::InputText("Upper case, no spaces", &text, flags);
+    }
+
+## Advanced glfw callbacks
+
+When using the glfw backend, you can set advanced callbacks on all glfw
+events.
+
+Below is an example that triggers a callback whenever the window size is
+changed:
+
+    import imgui_bundle
+    import glfw   # always import glfw *after* imgui_bundle!!!
+
+
+    # define a callback
+    def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
+        print(f"Window size changed to {w}x{h}")
+
+
+    # Get the glfw window used by hello imgui
+    window = imgui_bundle.glfw_window_hello_imgui()
+    glfw.set_window_size_callback(window, my_window_size_callback)
+
+It is important to import glfw *after* imgui\_bundle, since - upon
+import - imgui\_bundle informs glfw that it shall use its own version of
+the glfw dynamic library.

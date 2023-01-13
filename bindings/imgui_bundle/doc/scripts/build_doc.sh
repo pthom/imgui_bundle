@@ -18,9 +18,19 @@ asciidoctor-reducer --attribute env_gh_readme=1 Readme_source.adoc -o Readme.ado
 
 # Generate a markdown doc for pypi  (env_pypi)
 echo "Generating Readme_pypi.md (for pypi)"
-asciidoctor -b docbook --attribute exclude_collapsible_details=1 Readme_source.adoc
-pandoc --attribute env_pypi=1 -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
+asciidoctor -b docbook --attribute exclude_collapsible_details=1 --attribute env_pypi=1 Readme_source.adoc
+pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
 
 # Generate html doc for github pages (env_gh_pages)
 echo "Generating $gh_pages_dir/index.html (for github pages)"
 asciidoctor --attribute env_gh_pages=1 Readme_source.adoc -o $gh_pages_dir/index.html
+
+# Generate markdowns doc for demo_imgui_bundle
+echo "Generate markdowns doc for demo_imgui_bundle"
+for doc_file in imgui_bundle_demo_parts/*.adoc; do
+asciidoctor -b docbook $doc_file -o $doc_file.xml
+# Note: -t markdown-header_attributes means "output markdown, without the extension header_attributes"
+# (see extensions here: https://boisgera.github.io/pandoc/markdown/#extension-auto_identifiers
+#  and https://pandoc.org/MANUAL.html#general-options)
+pandoc -f docbook -t markdown-header_attributes+escaped_line_breaks --columns=2000 $doc_file.xml -o $doc_file.md
+done

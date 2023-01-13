@@ -1,22 +1,20 @@
-=== Dear ImGui - Immediate GUI
-
-include::_utils.adoc[]
+# Dear ImGui - Immediate GUI
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
 
-==== Consult the ImGui Manual
+## Consult the ImGui Manual
 
 Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.
 
-https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual] is an easy way to consult this demo, and to see the corresponding code. The demo code is in {cpp}, but read on for "Code advices" on how to translate from {cpp} to python.
+[ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html) is an easy way to consult this demo, and to see the corresponding code. The demo code is in C++, but read on for \"Code advices\" on how to translate from C++ to python.
 
-==== Example
+## Example
 
 An example is often worth a thousand words, the following code:
 
 C++
-[source, cpp]
-----
+
+``` cpp
 // Display a text
 ImGui::Text("Counter = %i", app_state.counter);
 ImGui::SameLine(); // by default ImGui starts a new line at each widget
@@ -29,11 +27,11 @@ if (ImGui::Button("increment counter"))
 // Input a text: in C++, InputText returns a bool and modifies the text directly
 bool changed = ImGui::InputText("Your name?", &app_state.name);
 ImGui::Text("Hello %s!", app_state.name.c_str());
-----
+```
 
 Python
-[source, python]
-----
+
+``` python
 # Display a text
 imgui.text(f"Counter = {app_state.counter}")
 imgui.same_line()  # by default ImGui starts a new line at each widget
@@ -46,11 +44,6 @@ if imgui.button("increment counter"):
 # Input a text: in python, input_text returns a tuple(modified, new_value)
 changed, app_state.name = imgui.input_text("Your name?", app_state.name)
 imgui.text(f"Hello {app_state.name}!")
-----
+```
 
 Displays this:
-
-ifndef::env_interactive_manual[]
-image::{url-doc-images}/immediate_gui_example.png[]
-endif::[]
-
