@@ -1281,7 +1281,11 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 
 <span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// This call is specific to the ImGui Bundle interactive manual</span>
+<span class="tok-w">    </span><span class="tok-c1">// In a standard application, you could write:</span>
+<span class="tok-w">    </span><span class="tok-c1">//         HelloImGui::SetAssetsFolder(&quot;my_assets&quot;); // By default, HelloImGui will search inside &quot;assets&quot;</span>
 <span class="tok-w">    </span><span class="tok-n">ChdirBesideAssetsFolder</span><span class="tok-p">();</span><span class="tok-w"></span>
+
 <span class="tok-w">    </span><span class="tok-k">constexpr</span><span class="tok-w"> </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">3.1415926535897932384626433</span><span class="tok-p">;</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y1</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y2</span><span class="tok-p">;</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-mf">0.01</span><span class="tok-p">)</span><span class="tok-w"></span>
@@ -1319,6 +1323,9 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 
 
 <span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+    <span class="tok-c1"># This call is specific to the ImGui Bundle interactive manual</span>
+    <span class="tok-c1"># In a standard application, you could write:</span>
+    <span class="tok-c1">#         hello_imgui.set_assets_folder(&quot;my_assets&quot;); // By default, HelloImGui will search inside &quot;assets&quot;</span>
     <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
     <span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">4</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
     <span class="tok-n">y1</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
@@ -1553,7 +1560,7 @@ It is important to import glfw <em>after</em> imgui_bundle, since - upon import 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-13 17:01:28 +0100
+Last updated 2023-01-13 18:30:08 +0100
 </div>
 </div>
 </body>

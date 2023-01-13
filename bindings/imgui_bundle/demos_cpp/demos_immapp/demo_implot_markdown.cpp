@@ -8,7 +8,11 @@
 
 int main(int, char**)
 {
+    // This call is specific to the ImGui Bundle interactive manual
+    // In a standard application, you could write:
+    //         HelloImGui::SetAssetsFolder("my_assets"); // By default, HelloImGui will search inside "assets"
     ChdirBesideAssetsFolder();
+
     constexpr double pi = 3.1415926535897932384626433;
     std::vector<double> x, y1, y2;
     for (double _x = 0; _x < 4 * pi; _x += 0.01)

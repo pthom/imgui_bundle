@@ -328,7 +328,11 @@ C++
 
     int main(int, char**)
     {
+        // This call is specific to the ImGui Bundle interactive manual
+        // In a standard application, you could write:
+        //         HelloImGui::SetAssetsFolder("my_assets"); // By default, HelloImGui will search inside "assets"
         ChdirBesideAssetsFolder();
+
         constexpr double pi = 3.1415926535897932384626433;
         std::vector<double> x, y1, y2;
         for (double _x = 0; _x < 4 * pi; _x += 0.01)
@@ -362,6 +366,9 @@ Python:
 
 
     def main():
+        # This call is specific to the ImGui Bundle interactive manual
+        # In a standard application, you could write:
+        #         hello_imgui.set_assets_folder("my_assets"); // By default, HelloImGui will search inside "assets"
         demo_utils.set_hello_imgui_demo_assets_folder()
         x = np.arange(0, np.pi * 4, 0.01)
         y1 = np.cos(x)
