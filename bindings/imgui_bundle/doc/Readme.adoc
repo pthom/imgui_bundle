@@ -149,6 +149,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 
 ====
 
+
 === Interactive manual & demo in one click!
 
 :doc_branch: doc
@@ -178,6 +179,8 @@ Click on the animated demonstration below to launch the fully interactive demons
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
+
+
 === Batteries included
 
 ImGui Bundle includes:

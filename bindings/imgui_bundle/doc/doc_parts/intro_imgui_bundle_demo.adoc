@@ -1,3 +1,5 @@
+ifndef::env_interactive_manual[]
+
 === Interactive manual & demo in one click!
 
 include::_utils.adoc[]
@@ -9,3 +11,6 @@ Click on the animated demonstration below to launch the fully interactive demons
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
+
+endif::[]
+
