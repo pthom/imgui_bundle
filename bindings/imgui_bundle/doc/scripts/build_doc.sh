@@ -3,6 +3,7 @@
 # You will need to install asciidoctor, asciidoctor-reducer and pandoc:
 #     brew install asciidoctor
 #     gem install asciidoctor-reducer
+#     gem install pygments.rb
 #     brew install pandoc
 
 this_dir=$(dirname -- "$0")

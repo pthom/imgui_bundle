@@ -18,7 +18,7 @@ applications in C++ and Python, under Windows, macOS, and Linux. It is
 aimed at application developers, researchers, and beginners who want to
 quickly get started.
 
-## Interactive manual: a demo in one click!
+## Interactive manual & demo in one click!
 
 Click on the animated demonstration below to launch the fully
 interactive demonstration.
@@ -100,9 +100,11 @@ imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hel
 
 Thanks to this, porting code between Python and C++ becomes easy.
 
-# Usage with Python
+# Build and install instructions
 
-## Install from pypi
+## Usage with Python
+
+### Install from pypi
 
     pip install imgui-bundle
     pip install opencv-contrib-python 
@@ -113,7 +115,7 @@ Thanks to this, porting code between Python and C++ becomes easy.
 Note: under windows, you might need to install [msvc
 redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
 
-## Install from source:
+### Install from source:
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
@@ -125,7 +127,7 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 
 -   The build process might take up to 5 minutes
 
-## Run the python demo
+### Run the python demo
 
 Simply run `imgui_bundle_demo`.
 
@@ -135,16 +137,17 @@ The source for the demos can be found inside
 Consider `imgui_bundle_demo` as an always available manual for ImGui
 Bundle with lots of examples and related code source.
 
-# Usage with C++
+## Usage with C++
 
-## Integrate ImGui Bundle in your own project in 5 minutes
+### Integrate ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use ImGui Bundle is to use the example provided in
+The easiest way to use ImGui Bundle in an external project is to use the
+example provided in
 [example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
 This folder includes everything you need to set up your own project with
 ImGui Bundle.
 
-## Build ImGui Bundle from source
+### Build ImGui Bundle from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -160,7 +163,7 @@ If you choose to clone this repo, follow these instructions:
 
 -   The build process might take up to 5 minutes
 
-## Run the C++ demo
+### Run the C++ demo
 
 If you built ImGui Bundle from source, Simply run
 `build/bin/demo_imgui_bundle`.
@@ -172,12 +175,66 @@ Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available
 online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-# Hello ImGui
+# Development and usage instructions
+
+## ImGui: Immediate GUI
+
+### Example
+
+Dear ImGui is an implementation of the Immediate Gui paradigm. As an
+example is often worth a thousand words, the following code:
+
+C++
+
+    // Display a text
+    ImGui::Text("Counter = %i", app_state.counter);
+    ImGui::SameLine(); // by default ImGui starts a new line at each widget
+
+    // The following line displays a button
+    if (ImGui::Button("increment counter"))
+        // And returns true if it was clicked: you can *immediately* handle the click
+        app_state.counter += 1;
+
+    // Input a text: in C++, InputText returns a bool and modifies the text directly
+    bool changed = ImGui::InputText("Your name?", &app_state.name);
+    ImGui::Text("Hello %s!", app_state.name.c_str());
+
+Python
+
+    # Display a text
+    imgui.text(f"Counter = {app_state.counter}")
+    imgui.same_line()  # by default ImGui starts a new line at each widget
+
+    # The following line displays a button
+    if imgui.button("increment counter"):
+        # And returns true if it was clicked: you can *immediately* handle the click
+        app_state.counter += 1
+
+    # Input a text: in python, input_text returns a tuple(modified, new_value)
+    changed, app_state.name = imgui.input_text("Your name?", app_state.name)
+    imgui.text(f"Hello {app_state.name}!")
+
+Displays this:
+
+![immediate gui example](images/immediate_gui_example.png)
+
+### Consult the ImGui Manual
+
+Dear ImGui comes with a complete demo. It demonstrates all the widgets,
+together with an example code on how to use them.
+
+[ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
+is an easy way to consult this demo, and to see the corresponding code.
+The demo code is in C++, but read on for "Code advices" on how to
+translate from C++ to python.
+
+## Hello ImGui
 
 ImGui Bundle is build on top of
 [HelloImGui](https://github.com/pthom/hello_imgui).
 
-## Hello ImGui Features
+### Hello ImGui Features
 
 -   [DPI
     aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
@@ -218,19 +275,19 @@ HelloImGui is fully configurable by POD (plain old data) structures. See
 [their
 description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
 
-## Hello ImGui API
+### Hello ImGui API
 
 See [Hello ImGui API
 doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
 
-# ImmApp (Immediate App)
+## ImmApp (Immediate App)
 
 ImGui Bundle include a sub library named ImmApp (which stand for
 Immediate App). ImmApp is a thin extension of HelloImGui that enables to
 easily initialize the ImGuiBundle addons that require additional setup
 at startup.
 
-## API
+### API
 
 [C++
 API](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h)
@@ -238,7 +295,7 @@ API](https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runn
 [Python
 bindings](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
 
-## How to start an application with addons
+### How to start an application with addons
 
 Some libraries included by ImGui Bundle require an initialization at
 startup. ImmApp makes this easy via AddOnParams.
@@ -310,54 +367,3 @@ Python:
 
     if __name__ == "__main__":
         main()
-
-# Immediate GUI paradigm
-
-## Example
-
-An example is often worth a thousand words. The following code:
-
-C++
-
-    // Display a text
-    ImGui::Text("Counter = %i", app_state.counter);
-    ImGui::SameLine(); // by default ImGui starts a new line at each widget
-
-    // The following line displays a button
-    if (ImGui::Button("increment counter"))
-        // And returns true if it was clicked: you can *immediately* handle the click
-        app_state.counter += 1;
-
-    // Input a text: in C++, InputText returns a bool and modifies the text directly
-    bool changed = ImGui::InputText("Your name?", &app_state.name);
-    ImGui::Text("Hello %s!", app_state.name.c_str());
-
-Python
-
-    # Display a text
-    imgui.text(f"Counter = {app_state.counter}")
-    imgui.same_line()  # by default ImGui starts a new line at each widget
-
-    # The following line displays a button
-    if imgui.button("increment counter"):
-        # And returns true if it was clicked: you can *immediately* handle the click
-        app_state.counter += 1
-
-    # Input a text: in python, input_text returns a tuple(modified, new_value)
-    changed, app_state.name = imgui.input_text("Your name?", app_state.name)
-    imgui.text(f"Hello {app_state.name}!")
-
-Displays this:
-
-![immediate gui example](images/immediate_gui_example.png)
-
-## Consult the ImGui Manual
-
-Dear ImGui comes with a complete demo. It demonstrates all the widgets,
-together with an example code on how to use them.
-
-[ImGui
-Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-is an easy way to consult this demo, and to see the corresponding code.
-The demo code is in C++, but read on for "Code advices" on how to
-translate from C++ to python.

@@ -435,6 +435,77 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<style>
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments { background: #f8f8f8; }
+pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -445,42 +516,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_introduction">Introduction</a>
 <ul class="sectlevel2">
 <li><a href="#_about_imgui_bundle">About ImGui Bundle</a></li>
-<li><a href="#_interactive_manual_a_demo_in_one_click">Interactive manual: a demo in one click!</a></li>
+<li><a href="#_interactive_manual_demo_in_one_click">Interactive manual &amp; demo in one click!</a></li>
 <li><a href="#_batteries_included">Batteries included</a></li>
 <li><a href="#_easily_port_your_code_between_python_and_c">Easily port your code between python and C++</a></li>
 </ul>
 </li>
 <li><a href="#_repository_folders_structure">Repository folders structure</a></li>
-<li><a href="#_usage_with_python">Usage with Python</a>
+<li><a href="#_build_and_install_instructions">Build and install instructions</a>
 <ul class="sectlevel2">
-<li><a href="#_install_from_pypi">Install from pypi</a></li>
-<li><a href="#_install_from_source">Install from source:</a></li>
-<li><a href="#_run_the_python_demo">Run the python demo</a></li>
+<li><a href="#_usage_with_python">Usage with Python</a></li>
+<li><a href="#_usage_with_c">Usage with C++</a></li>
 </ul>
 </li>
-<li><a href="#_usage_with_c">Usage with C++</a>
+<li><a href="#_development_and_usage_instructions">Development and usage instructions</a>
 <ul class="sectlevel2">
-<li><a href="#_integrate_imgui_bundle_in_your_own_project_in_5_minutes">Integrate ImGui Bundle in your own project in 5 minutes</a></li>
-<li><a href="#_build_imgui_bundle_from_source">Build ImGui Bundle from source</a></li>
-<li><a href="#_run_the_c_demo">Run the C++ demo</a></li>
-</ul>
-</li>
-<li><a href="#_hello_imgui">Hello ImGui</a>
-<ul class="sectlevel2">
-<li><a href="#_hello_imgui_features">Hello ImGui Features</a></li>
-<li><a href="#_hello_imgui_api">Hello ImGui API</a></li>
-</ul>
-</li>
-<li><a href="#_immapp_immediate_app">ImmApp (Immediate App)</a>
-<ul class="sectlevel2">
-<li><a href="#_api">API</a></li>
-<li><a href="#_how_to_start_an_application_with_addons">How to start an application with addons</a></li>
-</ul>
-</li>
-<li><a href="#_immediate_gui_paradigm">Immediate GUI paradigm</a>
-<ul class="sectlevel2">
-<li><a href="#_example">Example</a></li>
-<li><a href="#_consult_the_imgui_manual">Consult the ImGui Manual</a></li>
+<li><a href="#_imgui_immediate_gui">ImGui: Immediate GUI</a></li>
+<li><a href="#_hello_imgui">Hello ImGui</a></li>
+<li><a href="#_immapp_immediate_app">ImmApp (Immediate App)</a></li>
 </ul>
 </li>
 </ul>
@@ -516,26 +568,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">#include "immapp/immapp.h"
-#include "imgui.h"
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui.h&quot;</span><span class="tok-cp"></span>
 
-void Gui()
-{
-    ImGui::Text("Hello, world!");
-}
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">Gui</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello, world!&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
 
-int main(int, char **)
-{
-    ImmApp::Run(
-        Gui,
-        "Hello!",
-        true // window_size_auto
-        // Uncomment the next line to restore window position and size from previous run
-        // window_restore_previous_geometry==true
-    );
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">Gui</span><span class="tok-p">,</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-s">&quot;Hello!&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-nb">true</span><span class="tok-w"> </span><span class="tok-c1">// window_size_auto</span>
+<span class="tok-w">        </span><span class="tok-c1">// Uncomment the next line to restore window position and size from previous run</span>
+<span class="tok-w">        </span><span class="tok-c1">// window_restore_previous_geometry==true</span>
+<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
 
-    return 0;
-}</code></pre>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -543,7 +595,7 @@ int main(int, char **)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cmake" data-lang="cmake">imgui_bundle_add_app(demo_hello_world demo_hello_world.cpp)</code></pre>
+<pre class="pygments highlight"><code data-lang="cmake"><span></span><span class="tok-nb">imgui_bundle_add_app</span><span class="tok-p">(</span><span class="tok-s">demo_hello_world</span> <span class="tok-s">demo_hello_world.cpp</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -554,20 +606,20 @@ int main(int, char **)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">from imgui_bundle import imgui, immapp
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span>
 
 
-def gui():
-    imgui.text("Hello, world!")
+<span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Hello, world!&quot;</span><span class="tok-p">)</span>
 
 
-immapp.run(
-    gui_function=gui,  # The Gui function to run
-    window_title="Hello!",  # the window title
-    window_size_auto=True,  # Auto size the application window given its widgets
-    # Uncomment the next line to restore window position and size from previous run
-    # window_restore_previous_geometry==True
-)</code></pre>
+<span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span>
+    <span class="tok-n">gui_function</span><span class="tok-o">=</span><span class="tok-n">gui</span><span class="tok-p">,</span>  <span class="tok-c1"># The Gui function to run</span>
+    <span class="tok-n">window_title</span><span class="tok-o">=</span><span class="tok-s2">&quot;Hello!&quot;</span><span class="tok-p">,</span>  <span class="tok-c1"># the window title</span>
+    <span class="tok-n">window_size_auto</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span>  <span class="tok-c1"># Auto size the application window given its widgets</span>
+    <span class="tok-c1"># Uncomment the next line to restore window position and size from previous run</span>
+    <span class="tok-c1"># window_restore_previous_geometry==True</span>
+<span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -586,7 +638,7 @@ The <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.ht
 </details>
 </div>
 <div class="sect2">
-<h3 id="_interactive_manual_a_demo_in_one_click">Interactive manual: a demo in one click!</h3>
+<h3 id="_interactive_manual_demo_in_one_click">Interactive manual &amp; demo in one click!</h3>
 <div class="paragraph">
 <p>Click on the animated demonstration below to launch the fully interactive demonstration.</p>
 </div>
@@ -687,41 +739,41 @@ This demonstration is also an interactive manual, similar to the online <a href=
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">import time
-import numpy as np
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">time</span>
+<span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
 
-from imgui_bundle import implot, imgui_knobs, imgui, immapp, hello_imgui
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">implot</span><span class="tok-p">,</span> <span class="tok-n">imgui_knobs</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span>
 
-# Fill x and y whose plot is a heart
-vals = np.arange(0, np.pi * 2, 0.01)
-x = np.power(np.sin(vals), 3) * 16
-y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
-# Heart pulse rate and time tracking
-phase = 0
-t0 = time.time() + 0.2
-heart_pulse_rate = 80
-
-
-def gui():
-    global heart_pulse_rate, phase, t0, x, y
-    # By setting fpsIdle = 0, we make sure that the animation is smooth
-    hello_imgui.get_runner_params().fps_idle = 0
-
-    t = time.time()
-    phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
-    k = 0.8 + 0.1 * np.cos(phase)
-    t0 = t
-
-    imgui.text("Bloat free code")
-    implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    implot.plot_line("", x * k, y * k)
-    implot.end_plot()
-
-    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
+<span class="tok-c1"># Fill x and y whose plot is a heart</span>
+<span class="tok-n">vals</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">2</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
+<span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">power</span><span class="tok-p">(</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">vals</span><span class="tok-p">),</span> <span class="tok-mi">3</span><span class="tok-p">)</span> <span class="tok-o">*</span> <span class="tok-mi">16</span>
+<span class="tok-n">y</span> <span class="tok-o">=</span> <span class="tok-mi">13</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-mi">5</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">3</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">4</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span>
+<span class="tok-c1"># Heart pulse rate and time tracking</span>
+<span class="tok-n">phase</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+<span class="tok-n">t0</span> <span class="tok-o">=</span> <span class="tok-n">time</span><span class="tok-o">.</span><span class="tok-n">time</span><span class="tok-p">()</span> <span class="tok-o">+</span> <span class="tok-mf">0.2</span>
+<span class="tok-n">heart_pulse_rate</span> <span class="tok-o">=</span> <span class="tok-mi">80</span>
 
 
-if __name__ == "__main__":
-    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore</code></pre>
+<span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
+    <span class="tok-k">global</span> <span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span> <span class="tok-n">phase</span><span class="tok-p">,</span> <span class="tok-n">t0</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y</span>
+    <span class="tok-c1"># By setting fpsIdle = 0, we make sure that the animation is smooth</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">fps_idle</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+
+    <span class="tok-n">t</span> <span class="tok-o">=</span> <span class="tok-n">time</span><span class="tok-o">.</span><span class="tok-n">time</span><span class="tok-p">()</span>
+    <span class="tok-n">phase</span> <span class="tok-o">+=</span> <span class="tok-p">(</span><span class="tok-n">t</span> <span class="tok-o">-</span> <span class="tok-n">t0</span><span class="tok-p">)</span> <span class="tok-o">*</span> <span class="tok-n">heart_pulse_rate</span> <span class="tok-o">/</span> <span class="tok-p">(</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
+    <span class="tok-n">k</span> <span class="tok-o">=</span> <span class="tok-mf">0.8</span> <span class="tok-o">+</span> <span class="tok-mf">0.1</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">phase</span><span class="tok-p">)</span>
+    <span class="tok-n">t0</span> <span class="tok-o">=</span> <span class="tok-n">t</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Bloat free code&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Heart&quot;</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mi">21</span><span class="tok-p">,</span> <span class="tok-mi">21</span><span class="tok-p">))</span>
+    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span> <span class="tok-o">*</span> <span class="tok-n">k</span><span class="tok-p">,</span> <span class="tok-n">y</span> <span class="tok-o">*</span> <span class="tok-n">k</span><span class="tok-p">)</span>
+    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
+
+    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">heart_pulse_rate</span> <span class="tok-o">=</span> <span class="tok-n">imgui_knobs</span><span class="tok-o">.</span><span class="tok-n">knob</span><span class="tok-p">(</span><span class="tok-s2">&quot;Pulse&quot;</span><span class="tok-p">,</span> <span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span> <span class="tok-mi">30</span><span class="tok-p">,</span> <span class="tok-mi">180</span><span class="tok-p">)</span>
+
+
+<span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">300</span><span class="tok-p">,</span> <span class="tok-mi">450</span><span class="tok-p">),</span> <span class="tok-n">window_title</span><span class="tok-o">=</span><span class="tok-s2">&quot;Hello!&quot;</span><span class="tok-p">,</span> <span class="tok-n">with_implot</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">fps_idle</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>  <span class="tok-c1"># type: ignore</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -729,58 +781,58 @@ if __name__ == "__main__":
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">#include "imgui.h"
-#include "implot/implot.h"
-#include "imgui-knobs/imgui-knobs.h"
-#include "immapp/immapp.h"
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;implot/implot.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui-knobs/imgui-knobs.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span><span class="tok-cp"></span>
 
-#include &lt;cmath&gt;
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;cmath&gt;</span><span class="tok-cp"></span>
 
-std::vector&lt;double&gt; VectorTimesK(const std::vector&lt;double&gt;&amp; values, double k)
-{
-    std::vector&lt;double&gt; r(values.size(), 0.);
-    for (size_t i = 0; i &lt; values.size(); ++i)
-        r[i] = k * values[i];
-    return r;
-}
+<span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;&amp;</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-p">(</span><span class="tok-n">values</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">size_t</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-o">++</span><span class="tok-n">i</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">r</span><span class="tok-p">[</span><span class="tok-n">i</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">[</span><span class="tok-n">i</span><span class="tok-p">];</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
 
-int main(int , char *[]) {
-    // Fill x and y whose plot is a heart
-    double pi = 3.1415926535;
-    std::vector&lt;double&gt;  x, y; {
-        for (double t = 0.; t &lt; pi * 2.; t += 0.01) {
-            x.push_back(pow(sin(t), 3.) * 16.);
-            y.push_back(13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t));
-        }
-    }
-    // Heart pulse rate and time tracking
-    double phase = 0., t0 = ImmApp::ClockSeconds() + 0.2;
-    float heart_pulse_rate = 80.;
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-p">[])</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Fill x and y whose plot is a heart</span>
+<span class="tok-w">    </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">3.1415926535</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w">  </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">2.</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-mf">0.01</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-n">pow</span><span class="tok-p">(</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">3.</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">16.</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">y</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-mf">13.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-mi">5</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">2.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-mi">2</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">3.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">4.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Heart pulse rate and time tracking</span>
+<span class="tok-w">    </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">phase</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">t0</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">ClockSeconds</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-mf">0.2</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">80.</span><span class="tok-p">;</span><span class="tok-w"></span>
 
-    auto gui = [&amp;]() {
-        // By setting fpsIdle = 0, we make sure that the animation is smooth
-        HelloImGui::GetRunnerParams()-&gt;fpsIdle = 0.f;
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">gui</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-c1">// By setting fpsIdle = 0, we make sure that the animation is smooth</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">fpsIdle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.f</span><span class="tok-p">;</span><span class="tok-w"></span>
 
-        double t = ImmApp::ClockSeconds();
-        phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.);
-        double k = 0.8 + 0.1 * cos(phase);
-        t0 = t;
+<span class="tok-w">        </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">ClockSeconds</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">phase</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">t0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-p">)</span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">2.</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.8</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-mf">0.1</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">phase</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">t0</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">;</span><span class="tok-w"></span>
 
-        ImGui::Text("Bloat free code");
-        auto xk = VectorTimesK(x, k), yk = VectorTimesK(y, k);
-        ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21));
-        ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
-        ImPlot::EndPlot();
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Bloat free code&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">xk</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-n">yk</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-n">y</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">BeginPlot</span><span class="tok-p">(</span><span class="tok-s">&quot;Heart&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mi">21</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">21</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">PlotLine</span><span class="tok-p">(</span><span class="tok-s">&quot;&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">xk</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">yk</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">)</span><span class="tok-n">xk</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">EndPlot</span><span class="tok-p">();</span><span class="tok-w"></span>
 
-        ImGuiKnobs::Knob("Pulse", &amp;heart_pulse_rate, 30., 180.);
-    };
+<span class="tok-w">        </span><span class="tok-n">ImGuiKnobs</span><span class="tok-o">::</span><span class="tok-n">Knob</span><span class="tok-p">(</span><span class="tok-s">&quot;Pulse&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">30.</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">180.</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
 
-    ImmApp::Run(
-        gui, "Hello!",
-        /*windowSizeAuto=*/false , /*windowRestorePreviousGeometry==*/false, /*windowSize=*/{300, 450},
-        /*fpsIdle=*/ 25.f, /*withImplot=*/true);
-    return 0;
-}</code></pre>
+<span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">gui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Hello!&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-cm">/*windowSizeAuto=*/</span><span class="tok-nb">false</span><span class="tok-w"> </span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*windowRestorePreviousGeometry==*/</span><span class="tok-nb">false</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*windowSize=*/</span><span class="tok-p">{</span><span class="tok-mi">300</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">450</span><span class="tok-p">},</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-cm">/*fpsIdle=*/</span><span class="tok-w"> </span><span class="tok-mf">25.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*withImplot=*/</span><span class="tok-nb">true</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
@@ -796,90 +848,90 @@ int main(int , char *[]) {
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">./
-├── Readme.md -&gt; bindings/imgui_bundle/Readme.md           # doc
+<pre class="pygments highlight"><code data-lang="bash"><span></span>./
+├── Readme.md -&gt; bindings/imgui_bundle/Readme.md           <span class="tok-c1"># doc</span>
 ├── Readme_devel.md
 │
-├── _example_integration/                                   # Demonstrate how to easily use
-│         ├── CMakeLists.txt                                # imgui_bundle in a C++ app
+├── _example_integration/                                   <span class="tok-c1"># Demonstrate how to easily use</span>
+│         ├── CMakeLists.txt                                <span class="tok-c1"># imgui_bundle in a C++ app</span>
 │         ├── assets/
 │         └── hello_world.main.cpp
 │
-├── imgui_bundle_cmake/                                     # imgui_bundle_add_app() :
-│         │                                                 # a cmake function you can use
-│         └── imgui_bundle_add_app.cmake                    # to create an app in one line
+├── imgui_bundle_cmake/                                     <span class="tok-c1"># imgui_bundle_add_app() :</span>
+│         │                                                 <span class="tok-c1"># a cmake function you can use</span>
+│         └── imgui_bundle_add_app.cmake                    <span class="tok-c1"># to create an app in one line</span>
 │
-├── bindings/                                               # root for the python bindings
+├── bindings/                                               <span class="tok-c1"># root for the python bindings</span>
 │         └── imgui_bundle/
-│                  ├── assets/                              # assets/ folder: you need to
-│                  │                                        # copy this folder
-│                  │                                        # into your app folder if you
-│                  │                                        # intend to use markdown
+│                  ├── assets/                              <span class="tok-c1"># assets/ folder: you need to</span>
+│                  │                                        <span class="tok-c1"># copy this folder</span>
+│                  │                                        <span class="tok-c1"># into your app folder if you</span>
+│                  │                                        <span class="tok-c1"># intend to use markdown</span>
 │                  │
-│                  ├── demos_assets/                        # assets used by demos
-│                  ├── demos_cpp/                           # lots of C++ demos
-│                  ├── demos_python/                        # lots of python demos
-│                  ├── imgui/                               # imgui stubs
+│                  ├── demos_assets/                        <span class="tok-c1"># assets used by demos</span>
+│                  ├── demos_cpp/                           <span class="tok-c1"># lots of C++ demos</span>
+│                  ├── demos_python/                        <span class="tok-c1"># lots of python demos</span>
+│                  ├── imgui/                               <span class="tok-c1"># imgui stubs</span>
 │                  │     ├── __init__.pyi
 │                  │     ├── backends.pyi
 │                  │     ├── internal.pyi
 │                  │     └── py.typed
-│                  ├── implot.pyi                           # implot stubs
+│                  ├── implot.pyi                           <span class="tok-c1"># implot stubs</span>
 │                  ├── __init__.py
 │                  ├── __init__.pyi
 │                  ├── hello_imgui.pyi
-│                  ├── ...                                  # lots of other libs stubs
+│                  ├── ...                                  <span class="tok-c1"># lots of other libs stubs</span>
 │                  ├── ...
 │                  ├── ...
-│                  ├── immapp/                              # immapp: immediate app
-│                  │        │                               # utilities
+│                  ├── immapp/                              <span class="tok-c1"># immapp: immediate app</span>
+│                  │        │                               <span class="tok-c1"># utilities</span>
 │                  │        ├── __init__.py
 │                  │        ├── __init__.pyi
 │                  │        ├── icons_fontawesome.py
 │                  │        ├── immapp_cpp.pyi
 │                  │        ├── immapp_utils.py
 │                  │        └── py.typed
-│                  ├── _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
-│                  │                                       # dynamic library
+│                  ├── _imgui_bundle.cpython-38-darwin.so  <span class="tok-c1"># imGui_bundle python</span>
+│                  │                                       <span class="tok-c1"># dynamic library</span>
 │                  ├── glfw_utils.py
 │                  └── py.typed
 │
 │
-├── cmake/                                                 # Private cmake utilities
+├── cmake/                                                 <span class="tok-c1"># Private cmake utilities</span>
 │         ├── add_imgui.cmake
 │         └── ...
 │
-├── external/                                              # Root of all bound libraries
+├── external/                                              <span class="tok-c1"># Root of all bound libraries</span>
 │         ├── CMakeLists.txt
-│         ├── imgui/                                       # ImGui root
-│         │         ├── bindings/                          # ImGui bindings
-│         │         └── imgui/                             # ImGui submodule
+│         ├── imgui/                                       <span class="tok-c1"># ImGui root</span>
+│         │         ├── bindings/                          <span class="tok-c1"># ImGui bindings</span>
+│         │         └── imgui/                             <span class="tok-c1"># ImGui submodule</span>
 │         ├── ImGuizmo/
-│         │         ├── bindings/                          # ImGuizmo bindings
-│         │         ├── ImGuizmo/                          # ImGuizmo submodule
-│         │         └── ImGuizmoPure/                      # Manual wrappers to help
-│         │                                                # bindings generation
+│         │         ├── bindings/                          <span class="tok-c1"># ImGuizmo bindings</span>
+│         │         ├── ImGuizmo/                          <span class="tok-c1"># ImGuizmo submodule</span>
+│         │         └── ImGuizmoPure/                      <span class="tok-c1"># Manual wrappers to help</span>
+│         │                                                <span class="tok-c1"># bindings generation</span>
 │         │
-│         ├── ... lots of other bound libraries/           # Lots of other bound libraries
-│         │         ├── {lib_name}/
+│         ├── ... lots of other bound libraries/           <span class="tok-c1"># Lots of other bound libraries</span>
+│         │         ├── <span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
 │         │         └── bindings/
 │         │
 │         ├── _doc/
 │         │
-│         ├── bindings_generation/                         # Script to generate bindings
-│         │         │                                      # and to facilitate external
-│         │         ├── __init__.py                        # libraries update
+│         ├── bindings_generation/                         <span class="tok-c1"># Script to generate bindings</span>
+│         │         │                                      <span class="tok-c1"># and to facilitate external</span>
+│         │         ├── __init__.py                        <span class="tok-c1"># libraries update</span>
 │         │         ├── all_external_libraries.py
 │         │         ├── autogenerate_all.py
 │         │         └── ...
 │         │
-│         ├── SDL/SDL/                                     # Linked library (without
-│         │                                                # python bindings)
-│         ├── fplus/fplus/                                 # Library without bindings
-│         └── glfw/glfw                                    # Library without bindings
+│         ├── SDL/SDL/                                     <span class="tok-c1"># Linked library (without</span>
+│         │                                                <span class="tok-c1"># python bindings)</span>
+│         ├── fplus/fplus/                                 <span class="tok-c1"># Library without bindings</span>
+│         └── glfw/glfw                                    <span class="tok-c1"># Library without bindings</span>
 │
-├── lg_cmake_utils/                                        # Cmake utils for bindings
-│         │                                                # generation
+├── lg_cmake_utils/                                        <span class="tok-c1"># Cmake utils for bindings</span>
+│         │                                                <span class="tok-c1"># generation</span>
 │         ├── lg_cmake_utils.cmake
 │         ├── ...
 │
@@ -890,8 +942,8 @@ int main(int , char *[]) {
 │         └── pybind_native_debug.py
 │
 ├── src/
-│         └── imgui_bundle/                               # main cpp library: almost empty,
-                                                          # but linked to all external libraries</code></pre>
+│         └── imgui_bundle/                               <span class="tok-c1"># main cpp library: almost empty,</span>
+                                                          <span class="tok-c1"># but linked to all external libraries</span></code></pre>
 </div>
 </div>
 </div>
@@ -899,13 +951,15 @@ int main(int , char *[]) {
 </div>
 </div>
 <div class="sect1">
-<h2 id="_usage_with_python">Usage with Python</h2>
+<h2 id="_build_and_install_instructions">Build and install instructions</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_install_from_pypi">Install from pypi</h3>
+<h3 id="_usage_with_python">Usage with Python</h3>
+<div class="sect3">
+<h4 id="_install_from_pypi">Install from pypi</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">pip install imgui-bundle
+<pre class="pygments highlight"><code data-lang="bash"><span></span>pip install imgui-bundle
 pip install opencv-contrib-python # <b class="conum">(1)</b></code></pre>
 </div>
 </div>
@@ -920,12 +974,12 @@ pip install opencv-contrib-python # <b class="conum">(1)</b></code></pre>
 <p>Note: under windows, you might need to install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022">msvc redist</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_install_from_source">Install from source:</h3>
+<div class="sect3">
+<h4 id="_install_from_source">Install from source:</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">git clone https://github.com/pthom/imgui_bundle.git
-cd imgui_bundle
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
+<span class="tok-nb">cd</span> imgui_bundle
 git submodule update --init --recursive # <b class="conum">(1)</b>
 pip install -v . # <b class="conum">(2)</b>
 pip install opencv-contrib-python</code></pre>
@@ -942,8 +996,8 @@ pip install opencv-contrib-python</code></pre>
 </ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_run_the_python_demo">Run the python demo</h3>
+<div class="sect3">
+<h4 id="_run_the_python_demo">Run the python demo</h4>
 <div class="paragraph">
 <p>Simply run <code>imgui_bundle_demo</code>.</p>
 </div>
@@ -964,29 +1018,27 @@ Consider <code>imgui_bundle_demo</code> as an always available manual for ImGui 
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_usage_with_c">Usage with C++</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_integrate_imgui_bundle_in_your_own_project_in_5_minutes">Integrate ImGui Bundle in your own project in 5 minutes</h3>
+<h3 id="_usage_with_c">Usage with C++</h3>
+<div class="sect3">
+<h4 id="_integrate_imgui_bundle_in_your_own_project_in_5_minutes">Integrate ImGui Bundle in your own project in 5 minutes</h4>
 <div class="paragraph">
-<p>The easiest way to use ImGui Bundle is to use the example provided in <a href="https://github.com/pthom/imgui_bundle/tree/main/_example_integration">example_integration</a>.
+<p>The easiest way to use ImGui Bundle in an external project is to use the example provided in <a href="https://github.com/pthom/imgui_bundle/tree/main/_example_integration">example_integration</a>.
 This folder  includes everything you need to set up your own project with ImGui Bundle.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_build_imgui_bundle_from_source">Build ImGui Bundle from source</h3>
+<div class="sect3">
+<h4 id="_build_imgui_bundle_from_source">Build ImGui Bundle from source</h4>
 <div class="paragraph">
 <p>If you choose to clone this repo, follow these instructions:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">git clone https://github.com/pthom/imgui_bundle.git
-cd imgui_bundle
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
+<span class="tok-nb">cd</span> imgui_bundle
 git submodule update --init --recursive # <b class="conum">(1)</b>
 mkdir build
-cd build
+<span class="tok-nb">cd</span> build
 cmake ..
 make -j # <b class="conum">(2)</b></code></pre>
 </div>
@@ -1002,8 +1054,8 @@ make -j # <b class="conum">(2)</b></code></pre>
 </ol>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_run_the_c_demo">Run the C++ demo</h3>
+<div class="sect3">
+<h4 id="_run_the_c_demo">Run the C++ demo</h4>
 <div class="paragraph">
 <p>If you built ImGui Bundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
 </div>
@@ -1025,14 +1077,81 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </div>
 </div>
 </div>
+</div>
 <div class="sect1">
-<h2 id="_hello_imgui">Hello ImGui</h2>
+<h2 id="_development_and_usage_instructions">Development and usage instructions</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_imgui_immediate_gui">ImGui: Immediate GUI</h3>
+<div class="sect3">
+<h4 id="_example">Example</h4>
+<div class="paragraph">
+<p>Dear ImGui is an implementation of the Immediate Gui paradigm. As an example is often worth a thousand words, the following code:</p>
+</div>
+<div class="paragraph">
+<p>C++</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Display a text</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Counter = %i&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">counter</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-c1">// by default ImGui starts a new line at each widget</span>
+
+<span class="tok-c1">// The following line displays a button</span>
+<span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;increment counter&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// And returns true if it was clicked: you can *immediately* handle the click</span>
+<span class="tok-w">    </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">counter</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-c1">// Input a text: in C++, InputText returns a bool and modifies the text directly</span>
+<span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">changed</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Your name?&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">name</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello %s!&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">name</span><span class="tok-p">.</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Python</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-c1"># Display a text</span>
+<span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Counter = </span><span class="tok-si">{</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">counter</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
+<span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>  <span class="tok-c1"># by default ImGui starts a new line at each widget</span>
+
+<span class="tok-c1"># The following line displays a button</span>
+<span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;increment counter&quot;</span><span class="tok-p">):</span>
+    <span class="tok-c1"># And returns true if it was clicked: you can *immediately* handle the click</span>
+    <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">counter</span> <span class="tok-o">+=</span> <span class="tok-mi">1</span>
+
+<span class="tok-c1"># Input a text: in python, input_text returns a tuple(modified, new_value)</span>
+<span class="tok-n">changed</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">name</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Your name?&quot;</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">name</span><span class="tok-p">)</span>
+<span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Hello </span><span class="tok-si">{</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">name</span><span class="tok-si">}</span><span class="tok-s2">!&quot;</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Displays this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/immediate_gui_example.png" alt="immediate gui example">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_consult_the_imgui_manual">Consult the ImGui Manual</h4>
+<div class="paragraph">
+<p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_hello_imgui">Hello ImGui</h3>
 <div class="paragraph">
 <p>ImGui Bundle is build on top of <a href="https://github.com/pthom/hello_imgui">HelloImGui</a>.</p>
 </div>
-<div class="sect2">
-<h3 id="_hello_imgui_features">Hello ImGui Features</h3>
+<div class="sect3">
+<h4 id="_hello_imgui_features">Hello ImGui Features</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1086,22 +1205,20 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_hello_imgui_api">Hello ImGui API</h3>
+<div class="sect3">
+<h4 id="_hello_imgui_api">Hello ImGui API</h4>
 <div class="paragraph">
 <p>See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello ImGui API doc</a></p>
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_immapp_immediate_app">ImmApp (Immediate App)</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_immapp_immediate_app">ImmApp (Immediate App)</h3>
 <div class="paragraph">
 <p>ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
 </div>
-<div class="sect2">
-<h3 id="_api">API</h3>
+<div class="sect3">
+<h4 id="_api">API</h4>
 <div class="paragraph">
 <p><a href="https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h">C++ API</a></p>
 </div>
@@ -1109,8 +1226,8 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <p><a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi">Python bindings</a></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_how_to_start_an_application_with_addons">How to start an application with addons</h3>
+<div class="sect3">
+<h4 id="_how_to_start_an_application_with_addons">How to start an application with addons</h4>
 <details>
 <summary class="title">Click to see an example application with addons</summary>
 <div class="content">
@@ -1125,41 +1242,41 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">#include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
-#include "implot/implot.h"
-#include "demo_utils/api_demos.h"
-#include &lt;vector&gt;
-#include &lt;cmath&gt;
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_md_wrapper/imgui_md_wrapper.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;implot/implot.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;demo_utils/api_demos.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;vector&gt;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;cmath&gt;</span><span class="tok-cp"></span>
 
 
-int main(int, char**)
-{
-    ChdirBesideAssetsFolder();
-    constexpr double pi = 3.1415926535897932384626433;
-    std::vector&lt;double&gt; x, y1, y2;
-    for (double _x = 0; _x &lt; 4 * pi; _x += 0.01)
-    {
-        x.push_back(_x);
-        y1.push_back(std::cos(_x));
-        y2.push_back(std::sin(_x));
-    }
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ChdirBesideAssetsFolder</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">constexpr</span><span class="tok-w"> </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">3.1415926535897932384626433</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y1</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y2</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">_x</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-mf">0.01</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-n">_x</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">y1</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">_x</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">y2</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">_x</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
 
-    auto gui = [x,y1,y2]()
-    {
-        ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
-        ImPlot::BeginPlot("Plot");
-        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
-        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
-        ImPlot::EndPlot();
-    };
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">gui</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-n">y1</span><span class="tok-p">,</span><span class="tok-n">y2</span><span class="tok-p">]()</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">Render</span><span class="tok-p">(</span><span class="tok-s">&quot;# This is the plot of _cosinus_ and *sinus*&quot;</span><span class="tok-p">);</span><span class="tok-w">  </span><span class="tok-c1">// Markdown</span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">BeginPlot</span><span class="tok-p">(</span><span class="tok-s">&quot;Plot&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">PlotLine</span><span class="tok-p">(</span><span class="tok-s">&quot;y1&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">y1</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">PlotLine</span><span class="tok-p">(</span><span class="tok-s">&quot;y2&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">y2</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">EndPlot</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
 
-    HelloImGui::SimpleRunnerParams runnerParams { .guiFunction = gui, .windowSize = {600, 400} };
-    ImmApp::AddOnsParams addons { .withImplot = true, .withMarkdown = true };
-    ImmApp::Run(runnerParams, addons);
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">SimpleRunnerParams</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-p">.</span><span class="tok-n">guiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">gui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-p">.</span><span class="tok-n">windowSize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-mi">600</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">400</span><span class="tok-p">}</span><span class="tok-w"> </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">AddOnsParams</span><span class="tok-w"> </span><span class="tok-n">addons</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-p">.</span><span class="tok-n">withImplot</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-p">.</span><span class="tok-n">withMarkdown</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-w"> </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">addons</span><span class="tok-p">);</span><span class="tok-w"></span>
 
-    return 0;
-}</code></pre>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1167,29 +1284,29 @@ int main(int, char**)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">import numpy as np
-from imgui_bundle import implot, imgui_md, immapp
-from imgui_bundle.demos_python import demo_utils
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">implot</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span><span class="tok-p">,</span> <span class="tok-n">immapp</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
 
 
-def main():
-    demo_utils.set_hello_imgui_demo_assets_folder()
-    x = np.arange(0, np.pi * 4, 0.01)
-    y1 = np.cos(x)
-    y2 = np.sin(x)
+<span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+    <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
+    <span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">4</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
+    <span class="tok-n">y1</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
+    <span class="tok-n">y2</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
 
-    def gui():
-        imgui_md.render("# This is the plot of _cosinus_ and *sinus*")  # Markdown
-        implot.begin_plot("Plot")
-        implot.plot_line("y1", x, y1)
-        implot.plot_line("y2", x, y2)
-        implot.end_plot()
+    <span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
+        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-s2">&quot;# This is the plot of _cosinus_ and *sinus*&quot;</span><span class="tok-p">)</span>  <span class="tok-c1"># Markdown</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Plot&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;y1&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y1</span><span class="tok-p">)</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;y2&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y2</span><span class="tok-p">)</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
 
-    immapp.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui</span><span class="tok-p">,</span> <span class="tok-n">with_implot</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">600</span><span class="tok-p">,</span> <span class="tok-mi">400</span><span class="tok-p">))</span>
 
 
-if __name__ == "__main__":
-    main()</code></pre>
+<span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
+    <span class="tok-n">main</span><span class="tok-p">()</span></code></pre>
 </div>
 </div>
 </div>
@@ -1197,76 +1314,11 @@ if __name__ == "__main__":
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_immediate_gui_paradigm">Immediate GUI paradigm</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_example">Example</h3>
-<div class="paragraph">
-<p>An example is often worth a thousand words. The following code:</p>
-</div>
-<div class="paragraph">
-<p>C++</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">// Display a text
-ImGui::Text("Counter = %i", app_state.counter);
-ImGui::SameLine(); // by default ImGui starts a new line at each widget
-
-// The following line displays a button
-if (ImGui::Button("increment counter"))
-    // And returns true if it was clicked: you can *immediately* handle the click
-    app_state.counter += 1;
-
-// Input a text: in C++, InputText returns a bool and modifies the text directly
-bool changed = ImGui::InputText("Your name?", &amp;app_state.name);
-ImGui::Text("Hello %s!", app_state.name.c_str());</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Python</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python"># Display a text
-imgui.text(f"Counter = {app_state.counter}")
-imgui.same_line()  # by default ImGui starts a new line at each widget
-
-# The following line displays a button
-if imgui.button("increment counter"):
-    # And returns true if it was clicked: you can *immediately* handle the click
-    app_state.counter += 1
-
-# Input a text: in python, input_text returns a tuple(modified, new_value)
-changed, app_state.name = imgui.input_text("Your name?", app_state.name)
-imgui.text(f"Hello {app_state.name}!")</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Displays this:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/immediate_gui_example.png" alt="immediate gui example">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_consult_the_imgui_manual">Consult the ImGui Manual</h3>
-<div class="paragraph">
-<p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-13 01:14:10 +0100
+Last updated 2023-01-13 02:18:26 +0100
 </div>
 </div>
 </body>

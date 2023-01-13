@@ -1,13 +1,13 @@
-== Usage with C++
+=== Usage with C++
 
 include::readme_variables.adoc[]
 
-=== Integrate ImGui Bundle in your own project in 5 minutes
+==== Integrate ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use ImGui Bundle is to use the example provided in link:{url-bundle-main-tree}/_example_integration[example_integration].
+The easiest way to use ImGui Bundle in an external project is to use the example provided in link:{url-bundle-main-tree}/_example_integration[example_integration].
 This folder  includes everything you need to set up your own project with ImGui Bundle.
 
-=== Build ImGui Bundle from source
+==== Build ImGui Bundle from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -25,7 +25,7 @@ make -j # <2>
 <1> Since there are lots of submodules, this might take a few minutes
 <2> The build process might take up to 5 minutes
 
-=== Run the C++ demo
+==== Run the C++ demo
 
 If you built ImGui Bundle from source, Simply run `build/bin/demo_imgui_bundle`.
 

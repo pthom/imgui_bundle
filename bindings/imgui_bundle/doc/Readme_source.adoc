@@ -1,5 +1,6 @@
 = ImGui Bundle
 :toc: left
+:source-highlighter: pygments
 
 /////////////////////////////////////////////////////////////////////////////
 // IMPORTANT: do not *edit* Readme.adoc. It is generated automatically from
@@ -15,24 +16,29 @@ include::readme_parts/badges.adoc[]
 
 include::readme_parts/intro.adoc[]
 
-include::readme_parts/imgui_bundle_demo.adoc[]
+include::readme_parts/intro_imgui_bundle_demo.adoc[]
 
-include::readme_parts/batteries_included.adoc[]
+include::readme_parts/intro_batteries_included.adoc[]
 
-include::readme_parts/port_cpp_python.adoc[]
+include::readme_parts/intro_port_cpp_python.adoc[]
 
 ifndef::env_pypi[]
 include::readme_parts/repository_folders_structure.adoc[]
 endif::[]
 
-include::readme_parts/python_doc.adoc[]
+== Build and install instructions
 
-include::readme_parts/cpp_doc.adoc[]
+include::readme_parts/install_python_doc.adoc[]
 
-include::readme_parts/himgui.adoc[]
+include::readme_parts/install_cpp_doc.adoc[]
 
-include::readme_parts/immapp.adoc[]
+== Development and usage instructions
 
-include::readme_parts/immediate_mode_gui.adoc[]
+include::readme_parts/devel_imgui.adoc[]
+
+include::readme_parts/devel_himgui.adoc[]
+
+include::readme_parts/devel_immapp.adoc[]
+
 
 

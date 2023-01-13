@@ -1,7 +1,8 @@
-== Immediate GUI paradigm
+=== Immediate GUI
 
-=== Example
-An example is often worth a thousand words. The following code:
+==== Example
+
+Dear ImGui is an implementation of the Immediate Gui paradigm. As an example is often worth a thousand words, the following code:
 
 C++
 [source, cpp]
@@ -43,7 +44,7 @@ ifndef::env_demo[]
 image::images/immediate_gui_example.png[]
 endif::[]
 
-=== Consult the ImGui Manual
+==== Consult the ImGui Manual
 
 Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.
 
