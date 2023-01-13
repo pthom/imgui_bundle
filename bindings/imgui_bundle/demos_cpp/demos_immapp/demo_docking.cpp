@@ -33,52 +33,12 @@ struct AppState {
 };
 
 
-ImFont* gAkronimFont; // This is just a demo, you should store this somewhere in the app state
-
-
-void MyLoadFontsViaHelloImGui()
-{
-    // hello_imgui can load font and merge them with font awesome automatically.
-    // It will load them from the assets/ folder.
-
-    // First, we load the default fonts (the font that was loaded first is the default font)
-    // LoadDefaultFont_WithFontAwesomeIcons returns a lambda which we need to call, hence the double ()()
-    HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
-
-    // Then we load our custom font
-    const std::string fontFilename = "fonts/Akronim-Regular.ttf";
-    gAkronimFont = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFilename.c_str(), 25.f);
-}
-
-
 void CommandGui(AppState& state)
 {
-    // Note, you can also show the tweak theme widgets via:
-    // hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
     ImGuiMd::RenderUnindented(R"(
-        # Tweak the theme!
-
-        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15).
-        You can even easily tweak their colors.
+        # Basic widgets demo
+        The widgets below will interact with the log window and the status bar.
     )");
-
-    ImGui::Separator();
-
-    ImGui::PushFont(gAkronimFont);
-    ImGui::Text("Hello  %s", ICON_FA_SMILE);
-    HelloImGui::ImageFromAsset("images/world.jpg", ImVec2(100, 100));
-    ImGui::PopFont();
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::SetTooltip(R"(
-        The custom font and the globe image below were loaded
-        from the application assets folder
-        (those files are embedded automatically).
-        )");
-    }
-
-    ImGui::Separator();
-
     // Edit 1 float using a slider from 0.0f to 1.0f
     bool changed = ImGui::SliderFloat("float", &state.f, 0.0f, 1.0f);
     if (changed)
@@ -123,6 +83,17 @@ void CommandGui(AppState& state)
             state.rocket_progress = 0.f;
         }
     }
+
+    // Note, you can also show the tweak theme widgets via:
+    // hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImmApp::EmSize(3.f));
+    ImGuiMd::RenderUnindented(R"(
+        # Tweak the theme!
+
+        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15).
+        You can even easily tweak their colors.
+    )");
+
 }
 
 
@@ -182,9 +153,6 @@ int main(int, char**)
         }
     };
     runnerParams.callbacks.ShowMenus = ShowMenuGui;
-
-    // Choose here your preferred method for loading fonts:
-    runnerParams.callbacks.LoadAdditionalFonts = MyLoadFontsViaHelloImGui;
 
     // optional native events handling
     // runnerParams.callbacks.AnyBackendEventCallback = ...

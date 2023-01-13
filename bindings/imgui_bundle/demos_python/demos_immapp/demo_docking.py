@@ -30,93 +30,12 @@ class AppState:
     rocket_state: RocketState = RocketState.Init
 
 
-"""
-Font loading:
-
-We have two options: either we use hello imgui, or we load manually 
-(see my_load_fonts_via_hello_imgui() and my_load_fonts_manually() below).
-"""
-
-gAkronimFont: imgui.ImFont  # This is just a demo, you should store this somewhere in the app state
-
-
-def my_load_fonts_via_hello_imgui():
-    # hello_imgui can load font and merge them with font awesome automatically.
-    # It will load them from the assets/ folder.
-
-    global gAkronimFont
-
-    # First, we load the default fonts (the font that was loaded first is the default font)
-    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
-    font_filename = "fonts/Akronim-Regular.ttf"
-    gAkronimFont = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
-
-
-def my_load_fonts_manually():
-    # Load font manually.
-    # We need to use font_atlas_add_font_from_file_ttf instead of ImFont.add_font_from_file_ttf
-    global gAkronimFont
-
-    # first, we load the default font (it will not include icons)
-    imgui.get_io().fonts.add_font_default()
-
-    # Load a font and merge icons into it
-    # i. load the font...
-    this_dir = os.path.dirname(__file__)
-    font_atlas = imgui.get_io().fonts
-    # We need to take into account the global font scale!
-    font_size_pixel = 40 / imgui.get_io().font_global_scale
-    font_filename = demo_utils.demos_assets_folder() + "/fonts/Akronim-Regular.ttf"
-    font_atlas = imgui.get_io().fonts
-    glyph_range = font_atlas.get_glyph_ranges_default()
-    gAkronimFont = font_atlas.add_font_from_file_ttf(
-        filename=font_filename,
-        size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=glyph_range,
-    )
-    # ii. ... Aad merge icons into the previous font
-    from imgui_bundle import icons_fontawesome
-
-    font_filename = demo_utils.demos_assets_folder() + "/fonts/fontawesome-webfont.ttf"
-    font_config = imgui.ImFontConfig()
-    font_config.merge_mode = True
-    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
-    gAkronimFont = font_atlas.add_font_from_file_ttf(
-        filename=font_filename,
-        size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=icons_range,
-        font_cfg=font_config,
-    )
-
-
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
-    # Note, you can also show the tweak theme widgets via:
-    # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
     imgui_md.render_unindented("""
-        # Tweak the theme!
-        
-        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
-        You can even easily tweak their colors.
-    """)
-
-    imgui.separator()
-
-    imgui.push_font(gAkronimFont)
-    imgui.text("Hello  " + icons_fontawesome.ICON_FA_SMILE)
-    hello_imgui.image_from_asset("images/world.jpg", ImVec2(100, 100))  # type: ignore
-    imgui.pop_font()
-    if imgui.is_item_hovered():
-        imgui.set_tooltip(
-            """
-        The custom font and the globe image below were loaded
-        from the application assets folder
-        (those files are embedded automatically).
-        """
-        )
-
-    imgui.separator()
-
+        # Basic widgets demo
+        The widgets below will interact with the log window and the status bar.
+        """);
     # Edit 1 float using a slider from 0.0f to 1.0f
     changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
     if changed:
@@ -145,6 +64,16 @@ def command_gui(state: AppState):
         if imgui.button("Reset Rocket"):
             state.rocket_state = AppState.RocketState.Init
             state.rocket_progress = 0.0
+
+    # Note, you can also show the tweak theme widgets via:
+    # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
+    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + immapp.em_size(3.));
+    imgui_md.render_unindented("""
+        # Tweak the theme!
+        
+        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
+        You can even easily tweak their colors.
+    """)
 
 
 # Our Gui in the status bar
@@ -201,10 +130,6 @@ def main():
             imgui.end_menu()
 
     runner_params.callbacks.show_menus = show_menu_gui
-
-    # Choose here your preferred method for loading fonts:
-    # runner_params.callbacks.load_additional_fonts = my_load_fonts_via_hello_imgui
-    runner_params.callbacks.load_additional_fonts = my_load_fonts_manually
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...
