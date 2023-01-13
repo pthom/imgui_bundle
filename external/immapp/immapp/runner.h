@@ -15,9 +15,12 @@ namespace ImmApp
     using ScreenSize = HelloImGui::ScreenSize;
     using HelloImGui::DefaultWindowSize;
 
-
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //
     // AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)
     // to be initialized at startup.
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////
     struct AddOnsParams
     {
         // Set withImplot=true if you need to plot graphs
@@ -41,8 +44,32 @@ namespace ImmApp
         std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt;
     };
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Helpers to run an app from C++
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Run an application using HelloImGui params + some addons
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams = AddOnsParams());
+    // Run an application with markdown
+    void RunWithMarkdown(
+        // HelloImGui::SimpleRunnerParams below:
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle = "",
+        bool windowSizeAuto = false,
+        bool windowRestorePreviousGeometry = false,
+        const ScreenSize& windowSize = DefaultWindowSize,
+        float fpsIdle = 10.f,
+
+        // AddOnsParams below:
+        bool withImplot = false,
+        bool withNodeEditor = false,
+        bool withTexInspect = false,
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+    );
 
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +77,6 @@ namespace ImmApp
     // Helpers to run an app from Python (using named parameters)
     //
     /////////////////////////////////////////////////////////////////////////////////////////
-
-
     // Helper to run an app inside imgui_bundle, using HelloImGui:
     //
     // (HelloImGui::SimpleRunnerParams)
@@ -87,23 +112,11 @@ namespace ImmApp
     );
 
 
-    // Helper for C++ to run an app with markdown (Python can use Run() with named params)
-    void RunWithMarkdown(
-        // HelloImGui::SimpleRunnerParams below:
-        const VoidFunction& guiFunction,
-        const std::string& windowTitle = "",
-        bool windowSizeAuto = false,
-        bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = DefaultWindowSize,
-        float fpsIdle = 10.f,
-
-        // AddOnsParams below:
-        bool withImplot = false,
-        bool withNodeEditor = false,
-        bool withTexInspect = false,
-        const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
-    );
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Dpi aware utilities (which call the same utilities from HelloImGui)
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////
 
     // EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
     // widgets and windows relatively to this size.
@@ -119,6 +132,11 @@ namespace ImmApp
     ImVec2 EmToVec2(ImVec2 v);
 
 
-    // Utilities for node editor
+    /////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Utility for ImGui node editor
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////
     NodeEditorContext* DefaultNodeEditorContext();
+
 } // namespace ImmApp

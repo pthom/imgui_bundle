@@ -28,8 +28,12 @@ DefaultScreenSize = (800, 600)
 """ namespace ImmApp"""
 
 class AddOnsParams:
-    """AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)
-    to be initialized at startup.
+    """///////////////////////////////////////////////////////////////////////////////////////
+
+     AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)
+     to be initialized at startup.
+
+    /////////////////////////////////////////////////////////////////////////////////////
     """
 
     # Set withImplot=True if you need to plot graphs
@@ -63,6 +67,12 @@ class AddOnsParams:
         """Auto-generated default constructor with named params"""
         pass
 
+# ///////////////////////////////////////////////////////////////////////////////////////
+#
+# Helpers to run an app from C++
+#
+# /////////////////////////////////////////////////////////////////////////////////////
+# Run an application using HelloImGui params + some addons
 def run(
     runner_params: HelloImGui.RunnerParams,
     add_ons_params: AddOnsParams = AddOnsParams(),
@@ -73,45 +83,6 @@ def run(
     simple_params: HelloImGui.SimpleRunnerParams,
     add_ons_params: AddOnsParams = AddOnsParams(),
 ) -> None:
-    pass
-
-# ///////////////////////////////////////////////////////////////////////////////////////
-#
-# Helpers to run an app from Python (using named parameters)
-#
-# /////////////////////////////////////////////////////////////////////////////////////
-
-def run(
-    gui_function: VoidFunction,
-    window_title: str = "",
-    window_size_auto: bool = False,
-    window_restore_previous_geometry: bool = False,
-    window_size: ScreenSize = DefaultWindowSize,
-    fps_idle: float = 10.0,
-    with_implot: bool = False,
-    with_markdown: bool = False,
-    with_node_editor: bool = False,
-    with_tex_inspect: bool = False,
-    with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
-) -> None:
-    """Helper to run an app inside imgui_bundle, using HelloImGui:
-
-    (HelloImGui::SimpleRunnerParams)
-        - `guiFunction`: the function that will render the ImGui widgets
-        - `windowTitle`: title of the window
-        - `windowSizeAuto`: if True, autosize the window from its inner widgets
-        - `windowRestorePreviousGeometry`: if True, restore window size and position from last run
-        - `windowSize`: size of the window
-        - `fpsIdle`: fps of the application when idle
-
-    (ImmApp::AddOnsParams)
-        - `with_implot`: if True, then a context for implot will be created/destroyed automatically
-        - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
-          (i.e. required fonts will be loaded)
-        - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
-          will be created automatically.
-    """
     pass
 
 def run_with_markdown(
@@ -127,8 +98,52 @@ def run_with_markdown(
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
-    """Helper for C++ to run an app with markdown (Python can use Run() with named params)"""
+    """Run an application with markdown"""
     pass
+
+def run(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = False,
+    window_restore_previous_geometry: bool = False,
+    window_size: ScreenSize = DefaultWindowSize,
+    fps_idle: float = 10.0,
+    with_implot: bool = False,
+    with_markdown: bool = False,
+    with_node_editor: bool = False,
+    with_tex_inspect: bool = False,
+    with_node_editor_config: Optional[NodeEditorConfig] = None,
+    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+) -> None:
+    """///////////////////////////////////////////////////////////////////////////////////////
+
+     Helpers to run an app from Python (using named parameters)
+
+    /////////////////////////////////////////////////////////////////////////////////////
+     Helper to run an app inside imgui_bundle, using HelloImGui:
+
+     (HelloImGui::SimpleRunnerParams)
+         - `guiFunction`: the function that will render the ImGui widgets
+         - `windowTitle`: title of the window
+         - `windowSizeAuto`: if True, autosize the window from its inner widgets
+         - `windowRestorePreviousGeometry`: if True, restore window size and position from last run
+         - `windowSize`: size of the window
+         - `fpsIdle`: fps of the application when idle
+
+     (ImmApp::AddOnsParams)
+         - `with_implot`: if True, then a context for implot will be created/destroyed automatically
+         - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
+           (i.e. required fonts will be loaded)
+         - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
+           will be created automatically.
+    """
+    pass
+
+# ///////////////////////////////////////////////////////////////////////////////////////
+#
+# Dpi aware utilities (which call the same utilities from HelloImGui)
+#
+# /////////////////////////////////////////////////////////////////////////////////////
 
 def em_size() -> float:
     """EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
@@ -150,7 +165,12 @@ def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
 def default_node_editor_context() -> NodeEditorContext:
-    """Utilities for node editor"""
+    """///////////////////////////////////////////////////////////////////////////////////////
+
+     Utility for ImGui node editor
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    """
     pass
 ####################    </generated_from:runner.h>    ####################
 
