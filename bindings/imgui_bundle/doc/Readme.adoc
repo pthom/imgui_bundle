@@ -12,44 +12,51 @@
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
-
-:doc_branch: doc
-:url-bundle: https://github.com/pthom/imgui_bundle/
-:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
-:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
-:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
-:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
-:url-imgui: https://github.com/ocornut/imgui/
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+TIP: For a more readable version of this document, click on {btn-doc}
 
-image:{url-bundle}/workflows/CppLib/badge.svg[]
-image:{url-bundle}/workflows/Pip/badge.svg[]
-image:{url-bundle}/workflows/Wheels/badge.svg[]
-image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
+
+****
+ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!
+
+{btn-sources} {btn-doc} {btn-interactive-manual}
+****
 
 == Introduction
 
@@ -58,12 +65,20 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 === About ImGui Bundle
 
@@ -141,12 +156,20 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 Click on the animated demonstration below to launch the fully interactive demonstration.
 
@@ -404,12 +427,20 @@ int main(int , char *[]) {
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 ==== Install from pypi
 
@@ -451,12 +482,20 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 ==== Integrate ImGui Bundle in your own project in 5 minutes
 
@@ -500,12 +539,20 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 ==== Example
 
@@ -563,12 +610,20 @@ https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manua
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui].
@@ -599,12 +654,20 @@ See https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
 
 
 ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.

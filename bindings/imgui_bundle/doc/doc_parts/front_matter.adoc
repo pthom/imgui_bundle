@@ -1,7 +1,17 @@
 include::_utils.adoc[]
 
+
 ifndef::env_gh_pages[]
-TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
+TIP: For a more readable version of this document, click on {btn-doc}
 endif::[]
 
+ifdef::env_gh_pages[]
 include::badges.adoc[]
+endif::[]
+
+
+****
+ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!
+
+{btn-sources} {btn-doc} {btn-interactive-manual}
+****

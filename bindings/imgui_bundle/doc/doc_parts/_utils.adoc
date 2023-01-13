@@ -3,9 +3,17 @@
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
 :url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:_badge-sources: {url-doc-images}/badge_view_sources.png
+:_badge-doc: {url-doc-images}/badge_view_doc.png
+:_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
+:btn-sources: link:{url-bundle-pages}[image:{_badge-sources}[]]
+:btn-interactive-manual: link:{url-demo-imgui-bundle}[image:{_badge-interactive-manual}[]]
+:btn-doc: link:{url-bundle-pages}[image:{_badge-doc}[]]
