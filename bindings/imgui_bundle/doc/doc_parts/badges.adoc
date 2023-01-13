@@ -1,4 +1,4 @@
-include::readme_variables.adoc[]
+include::_utils.adoc[]
 
 image:{url-bundle}/workflows/CppLib/badge.svg[]
 image:{url-bundle}/workflows/Pip/badge.svg[]

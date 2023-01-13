@@ -1,0 +1,7 @@
+include::_utils.adoc[]
+
+ifndef::env_gh_pages[]
+TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
+endif::[]
+
+include::badges.adoc[]

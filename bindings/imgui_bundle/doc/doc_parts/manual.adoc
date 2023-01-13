@@ -1,0 +1,8 @@
+== Development and usage instructions
+
+include::manual_imgui.adoc[]
+
+include::manual_himgui.adoc[]
+
+include::manual_immapp.adoc[]
+

@@ -1,6 +1,6 @@
-=== Interactive manual: a demo in one click!
+=== Interactive manual & demo in one click!
 
-include::readme_variables.adoc[]
+include::_utils.adoc[]
 
 Click on the animated demonstration below to launch the fully interactive demonstration.
 

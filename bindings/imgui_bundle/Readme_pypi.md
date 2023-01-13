@@ -33,8 +33,7 @@ demo</figcaption>
 This demonstration is also an interactive manual, similar to the online
 [ImGui
 Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-
-## Batteries included
+=== Batteries included
 
 ImGui Bundle includes:
 
@@ -177,7 +176,7 @@ online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 # Development and usage instructions
 
-## ImGui: Immediate GUI
+## Immediate GUI
 
 ### Example
 
@@ -216,7 +215,7 @@ Python
 
 Displays this:
 
-![immediate gui example](images/immediate_gui_example.png)
+![immediate gui example](doc_images/immediate_gui_example.png)
 
 ### Consult the ImGui Manual
 

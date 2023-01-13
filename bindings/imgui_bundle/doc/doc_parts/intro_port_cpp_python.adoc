@@ -7,7 +7,7 @@ The original code documentation is meticulously kept inside the python stubs. Se
 
 Thanks to this, porting code between Python and C++ becomes easy.
 
-ifndef::env_pypi[]
+ifndef::exclude_collapsible_details[]
 
 .Click to see an example
 [%collapsible]

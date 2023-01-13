@@ -1,6 +1,6 @@
 === Hello ImGui
 
-include::readme_variables.adoc[]
+include::_utils.adoc[]
 
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui].

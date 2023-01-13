@@ -1,5 +1,7 @@
 === Immediate GUI
 
+include::_utils.adoc[]
+
 ==== Example
 
 Dear ImGui is an implementation of the Immediate Gui paradigm. As an example is often worth a thousand words, the following code:
@@ -41,7 +43,7 @@ imgui.text(f"Hello {app_state.name}!")
 Displays this:
 
 ifndef::env_demo[]
-image::images/immediate_gui_example.png[]
+image::{url-doc-images}/immediate_gui_example.png[]
 endif::[]
 
 ==== Consult the ImGui Manual

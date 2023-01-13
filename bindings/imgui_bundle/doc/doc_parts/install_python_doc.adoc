@@ -1,6 +1,6 @@
 === Usage with Python
 
-include::readme_variables.adoc[]
+include::_utils.adoc[]
 
 ==== Install from pypi
 

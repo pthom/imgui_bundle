@@ -7,38 +7,17 @@
 //     bindings/imgui_bundle/doc/Readme_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
-ifndef::env_gh_pages[]
-TIP: Navigate to https://pthom.github.io/imgui_bundle[imgui bundle docs homepage] for a more readable version of this document.
+include::doc_parts/_utils.adoc[]
+
+include::doc_parts/front_matter.adoc[]
+
+include::doc_parts/intro.adoc[]
+
+ifndef::exclude_collapsible_details[]
+include::doc_parts/folders_structure.adoc[]
 endif::[]
 
-include::readme_parts/readme_variables.adoc[]
-include::readme_parts/badges.adoc[]
+include::doc_parts/install.adoc[]
 
-include::readme_parts/intro.adoc[]
-
-include::readme_parts/intro_imgui_bundle_demo.adoc[]
-
-include::readme_parts/intro_batteries_included.adoc[]
-
-include::readme_parts/intro_port_cpp_python.adoc[]
-
-ifndef::env_pypi[]
-include::readme_parts/repository_folders_structure.adoc[]
-endif::[]
-
-== Build and install instructions
-
-include::readme_parts/install_python_doc.adoc[]
-
-include::readme_parts/install_cpp_doc.adoc[]
-
-== Development and usage instructions
-
-include::readme_parts/devel_imgui.adoc[]
-
-include::readme_parts/devel_himgui.adoc[]
-
-include::readme_parts/devel_immapp.adoc[]
-
-
+include::doc_parts/manual.adoc[]
 

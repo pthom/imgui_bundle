@@ -16,11 +16,11 @@ cd $doc_dir
 echo "generate Readme.adoc (for github)"
 asciidoctor-reducer Readme_source.adoc -o Readme.adoc
 
-# Generate a markdown doc for pypi
+# Generate a markdown doc for pypi  (env_pypi)
 echo "Generating Readme_pypi.md (for pypi)"
-asciidoctor -b docbook --attribute env_pypi=1 Readme_source.adoc
-pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
+asciidoctor -b docbook --attribute exclude_collapsible_details=1 Readme_source.adoc
+pandoc -f docbook -t markdown_strict --attribute env_pypi=1 Readme_source.xml -o ../Readme_pypi.md
 
-# Generate html doc for github pages
+# Generate html doc for github pages (env_gh_pages)
 echo "Generating $gh_pages_dir/index.html (for github pages)"
 asciidoctor --attribute env_gh_pages=1 Readme_source.adoc -o $gh_pages_dir/index.html

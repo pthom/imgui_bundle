@@ -1,6 +1,6 @@
 === Usage with C++
 
-include::readme_variables.adoc[]
+include::_utils.adoc[]
 
 ==== Integrate ImGui Bundle in your own project in 5 minutes
 
