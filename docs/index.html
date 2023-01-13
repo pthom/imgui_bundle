@@ -1046,8 +1046,8 @@ This folder  includes everything you need to set up your own project with ImGui 
 git submodule update --init --recursive # <b class="conum">(1)</b>
 mkdir build
 <span class="tok-nb">cd</span> build
-cmake ..
-make -j # <b class="conum">(2)</b></code></pre>
+cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
+make -j</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1056,9 +1056,24 @@ make -j # <b class="conum">(2)</b></code></pre>
 <p>Since there are lots of submodules, this might take a few minutes</p>
 </li>
 <li>
-<p>The build process might take up to 5 minutes</p>
+<p>The flag <code>-DIMGUI_BUNDLE_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
 </li>
 </ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>The <code>immvision</code> module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.</p>
+</div>
+<div class="paragraph">
+<p>If you have an existing OpenCV install, set its path via:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>cmake .. -DOpenCV_DIR<span class="tok-o">=</span>/.../path/to/OpenCVConfig.cmake</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">

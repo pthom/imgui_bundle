@@ -513,12 +513,22 @@ cd imgui_bundle
 git submodule update --init --recursive # <1>
 mkdir build
 cd build
-cmake ..
-make -j # <2>
+cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV=ON # <2>
+make -j
 ----
 
 <1> Since there are lots of submodules, this might take a few minutes
-<2> The build process might take up to 5 minutes
+<2> The flag `-DIMGUI_BUNDLE_FETCH_OPENCV=ON` is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)
+
+****
+The `immvision` module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.
+
+If you have an existing OpenCV install, set its path via:
+[source, bash]
+----
+cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
+----
+****
 
 ==== Run the C++ demo
 
