@@ -5,7 +5,11 @@ include::_utils.adoc[]
 
 ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui].
 
-==== Hello ImGui Features
+==== API
+
+See https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello ImGui API doc]
+
+==== Features
 
 * {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
 * Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
@@ -20,6 +24,3 @@ NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui applic
 
 TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]
 
-==== Hello ImGui API
-
-See https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello ImGui API doc]

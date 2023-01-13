@@ -1,4 +1,4 @@
-== Development and usage instructions
+== Usage instructions
 
 include::manual_imgui.adoc[]
 
