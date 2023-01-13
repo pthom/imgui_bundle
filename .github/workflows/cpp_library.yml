@@ -26,12 +26,12 @@ jobs:
       with:
         submodules: true
 
-    - name: Setup interactive tmate session
-      if: ${{ matrix.platform == 'ubuntu-latest' }}
-      uses: mxschmitt/action-tmate@v3
+    #- name: Setup interactive tmate session
+    #  if: ${{ matrix.platform == 'ubuntu-latest' }}
+    #  uses: mxschmitt/action-tmate@v3
 
-    #- name: install xorg-dev on ubuntu
-    #  run: ./ci_scripts/install_xorg_dev.sh
+    - name: install xorg-dev on ubuntu
+      run: ./ci_scripts/install_xorg_dev.sh
 
     # Install OpenCV (ubuntu & macos)
     #- name: install OpenCV (ubuntu)
