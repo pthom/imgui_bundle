@@ -26,6 +26,10 @@ jobs:
       with:
         submodules: true
 
+    - name: Setup interactive tmate session
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      uses: mxschmitt/action-tmate@v3
+
     - name: install xorg-dev on ubuntu
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: ./ci_scripts/install_xorg_dev.sh
@@ -48,9 +52,6 @@ jobs:
         python3 -m pip install conan
         conan profile new default --detect
         python3 -m pip install pybind11
-
-#    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
