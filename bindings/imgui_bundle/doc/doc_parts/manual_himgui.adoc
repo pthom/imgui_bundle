@@ -7,12 +7,12 @@ ImGui Bundle is build on top of https://github.com/pthom/hello_imgui[HelloImGui]
 
 ==== Hello ImGui Features
 
-* {url-himgui-main-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
+* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
 * Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
 * Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
 * Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
 * Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
-* Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-main-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
+* Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-doc-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
 * Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
 * Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 

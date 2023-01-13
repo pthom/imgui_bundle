@@ -7,7 +7,7 @@ ImGui Bundle include a sub library named ImmApp (which stand for Immediate App).
 
 ==== API
 
-{url-bundle-main-tree}/external/immapp/immapp/runner.h[C++ API]
+{url-bundle-doc-tree}/external/immapp/immapp/runner.h[C++ API]
 
 {url-bindings-bundle}/immapp/immapp_cpp.pyi[Python bindings]
 
