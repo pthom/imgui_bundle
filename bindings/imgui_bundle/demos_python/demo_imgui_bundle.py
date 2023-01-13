@@ -21,25 +21,9 @@ from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_utils
 
 
-@static(was_initialized=None)
-def show_module_demo(demo_module: ModuleType, demo_function: Callable[[], None]) -> None:
-    static = show_module_demo
-
-    if not static.was_initialized:
-        static.snippet = immapp.snippets.SnippetData()
-        static.snippet.language = immapp.snippets.SnippetLanguage.python
-        static.last_module = None
-        static.was_initialized = True
-
-    if demo_module != static.last_module:
-        import inspect
-
-        code = inspect.getsource(demo_module)
-        static.snippet.code = code
-        static.last_module = demo_module
-
+def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> None:
     if imgui.collapsing_header("Code for this demo"):
-        immapp.snippets.show_code_snippet(static.snippet)
+        demo_utils.show_python_vs_cpp_file(demo_filename)
 
     demo_function()
 
@@ -53,7 +37,7 @@ def main() -> None:
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
-    runner_params.app_window_params.window_title = "ImGui Bundle"
+    runner_params.app_window_params.window_title = "ImGui Bundle interactive manual"
     runner_params.app_window_params.window_geometry.size = (1400, 900)
 
     # Menu bar
@@ -85,9 +69,10 @@ def main() -> None:
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = "MainDockSpace"
+        demo_module_name = demo_module.__name__.split(".")[-1]
 
         def win_fn() -> None:
-            show_module_demo(demo_module, demo_module.demo_gui)
+            show_module_demo(demo_module_name, demo_module.demo_gui)
 
         window.gui_function = win_fn
         dockable_windows.append(window)

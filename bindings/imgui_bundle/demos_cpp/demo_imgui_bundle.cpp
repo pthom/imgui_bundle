@@ -5,7 +5,6 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 
 #include <functional>
-#include <fplus/fplus.hpp>
 
 void demo_immapp_launcher();
 void demo_text_edit();
@@ -27,27 +26,11 @@ void demo_utils();
 using VoidFunction = std::function<void(void)>;
 
 
-void ShowModuleDemo(const std::string& demoModuleName, VoidFunction demoFunction)
+void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction)
 {
-    static Snippets::SnippetData snippet;
-    static bool wasInitialized;
-    static std::string lastModule;
-
-    if (!wasInitialized)
-    {
-        snippet.Language = Snippets::SnippetLanguage::Cpp;
-        wasInitialized = true;
-    }
-
-    if (demoModuleName != lastModule)
-    {
-        std::string code = ReadCppCode(demoModuleName);
-        snippet.Code = code;
-    }
 
     if (ImGui::CollapsingHeader("Code for this demo"))
-        Snippets::ShowCodeSnippet(snippet);
-
+        ShowPythonVsCppFile(demoFilename.c_str());
     demoFunction();
 }
 
@@ -62,7 +45,7 @@ int main(int, char **)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
     // Window size and title
-    runnerParams.appWindowParams.windowTitle = "ImGui Bundle";
+    runnerParams.appWindowParams.windowTitle = "ImGui Bundle interactive manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
 
     // Menu bar
@@ -88,7 +71,7 @@ int main(int, char **)
     struct DemoDetails
     {
         std::string Label;
-        std::string ModuleName;
+        std::string DemoFilename;
         VoidFunction DemoFunction;
     };
 
@@ -99,12 +82,12 @@ int main(int, char **)
         window.dockSpaceName = "MainDockSpace";
         window.GuiFunction = [&demoDetails]()
         {
-            ShowModuleDemo(demoDetails.Label, demoDetails.DemoFunction);
+            ShowModuleDemo(demoDetails.DemoFilename, demoDetails.DemoFunction);
         };
         dockableWindows.push_back(window);
     };
 
-#define DEMO_DETAILS(label, module_name) DemoDetails{ label, #module_name, module_name }
+#define DEMO_DETAILS(label, function_name) DemoDetails{ label, #function_name, function_name }
 
     std::vector<DemoDetails> demos {
         DEMO_DETAILS("ImGui Bundle", demo_imgui_bundle_intro),
