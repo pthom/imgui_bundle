@@ -35,8 +35,8 @@ def demos_python_folder() -> str:
     return main_python_package_folder() + "/demos_python"
 
 
-def doc_folder() -> str:
-    return main_python_package_folder() + "/doc"
+def markdown_doc_folder() -> str:
+    return main_python_package_folder() + "/doc/imgui_bundle_demo_parts"
 
 
 def set_hello_imgui_demo_assets_folder():
@@ -75,8 +75,13 @@ def show_python_vs_cpp_file(demo_file_path: str, nb_lines: int = 0) -> None:
     show_python_vs_cpp_code(python_code, cpp_code, nb_lines)
 
 
+def show_markdown_file(doc_filename: str) -> None:
+    code = read_markdown_code(doc_filename)
+    imgui_md.render_unindented(code)
+
+
 @memoize
-def read_code(filename: str):
+def read_code(filename: str) -> str:
     if not os.path.isfile(filename):
         return ""
     with open(filename) as f:
@@ -84,13 +89,19 @@ def read_code(filename: str):
         return r
 
 
-def read_cpp_code(demo_file_path: str):
+def read_cpp_code(demo_file_path: str) -> str:
     file_abs = demos_cpp_folder() + "/" + demo_file_path + ".cpp"
     code = read_code(file_abs)
     return code
 
 
-def read_python_code(demo_file_path: str):
+def read_python_code(demo_file_path: str) -> str:
     file_abs = demos_python_folder() + "/" + demo_file_path + ".py"
     code = read_code(file_abs)
     return code
+
+
+def read_markdown_code(doc_filename: str) -> str:
+    doc_file = markdown_doc_folder() + "/" + doc_filename + ".adoc.md"
+    r = read_code(doc_file)
+    return r

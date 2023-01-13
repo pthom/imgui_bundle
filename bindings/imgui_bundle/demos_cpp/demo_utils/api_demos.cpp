@@ -3,6 +3,7 @@
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_utils/subprocess.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 
@@ -77,7 +78,7 @@ std::string MainPythonPackageFolder()
 
 std::string DemoCppFolder()  { return MainPythonPackageFolder() + "/demos_cpp"; }
 std::string DemoPythonFolder() { return MainPythonPackageFolder() + "/demos_python"; }
-std::string DocFolder() { return MainPythonPackageFolder() + "/doc"; }
+std::string MarkdownDocFolder() { return MainPythonPackageFolder() + "/doc/imgui_bundle_demo_parts"; }
 
 
 // memoized function
@@ -104,6 +105,12 @@ std::string ReadCppCode(const std::string& demo_file_path)
 std::string ReadPythonCode(const std::string& demo_file_path)
 {
     return ReadCode(DemoPythonFolder() + "/" + demo_file_path + ".py");
+}
+
+std::string ReadMarkdownDoc(const std::string& doc_file_name)
+{
+    std::string r = ReadCode(MarkdownDocFolder() + "/" + doc_file_name + ".adoc.md");
+    return r;
 }
 
 
@@ -175,6 +182,12 @@ bool SpawnDemo(const std::string& demoName)
 //        );}
     return true;
 #endif
+}
+
+void ShowMarkdownDocFile(const std::string& doc_file_name)
+{
+    auto code = ReadMarkdownDoc(doc_file_name);
+    ImGuiMd::RenderUnindented(code);
 }
 
 
