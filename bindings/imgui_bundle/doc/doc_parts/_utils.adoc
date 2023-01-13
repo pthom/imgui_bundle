@@ -8,4 +8,4 @@
 :url-imgui: https://github.com/ocornut/imgui/
 
 
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
