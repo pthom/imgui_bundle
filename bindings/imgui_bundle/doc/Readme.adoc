@@ -869,7 +869,7 @@ glfw.set_window_size_callback(window, my_window_size_callback)
 
 CAUTION: It is important to import glfw _after_ imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
 
-== Words from the author
+== Closing words
 
 === Who is this project for
 

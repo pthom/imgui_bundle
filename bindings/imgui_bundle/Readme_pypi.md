@@ -531,7 +531,7 @@ It is important to import glfw *after* imgui\_bundle, since - upon
 import - imgui\_bundle informs glfw that it shall use its own version of
 the glfw dynamic library.
 
-# Words from the author
+# Closing words
 
 ## Who is this project for
 
