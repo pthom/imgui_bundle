@@ -124,16 +124,7 @@ int main(int, char **)
         nbFrames += 1;
     };
 
-    auto guiFpsStatus = [&runnerParams]
-    {
-        bool idleActive = (runnerParams.fpsIdle > 0);
-        ImGui::SetCursorPosX(ImGui::GetWindowContentRegionMax().x - ImmApp::EmSize() * 12.f );
-        ImGui::Checkbox("Auto Idle", &idleActive);
-        runnerParams.fpsIdle = idleActive ? 10.f : 0.f;
-    };
-
     runnerParams.callbacks.ShowGui = showGui;
-    runnerParams.callbacks.ShowStatus = guiFpsStatus;
 
     // ################################################################################################
     // Part 3: Run the app

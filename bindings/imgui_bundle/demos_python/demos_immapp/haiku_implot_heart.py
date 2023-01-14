@@ -15,8 +15,8 @@ heart_pulse_rate = 80
 
 def gui():
     global heart_pulse_rate, phase, t0, x, y
-    # By setting fpsIdle = 0, we make sure that the animation is smooth
-    hello_imgui.get_runner_params().fps_idle = 0
+    # Make sure that the animation is smooth
+    hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
     t = time.time()
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)

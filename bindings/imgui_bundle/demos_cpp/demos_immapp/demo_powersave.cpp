@@ -21,13 +21,15 @@ the FPS will rise and the animation will be smooth again.
         float radius1 = ImGui::GetFontSize();
         ImSpinner::SpinnerAngTriple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2., 2.5, color, color, color);
 
-        ImGui::TextWrapped("You can adjust HelloImGui::GetRunnerParams()->fpsIdle if you need smoother animations when the app is idle. "
+        ImGui::TextWrapped("You can adjust HelloImGui::GetRunnerParams()->fpdIdling.fpsIdle if you need smoother animations when the app is idle. "
                            "A value of 0 means that the refresh will be as fast as possible");
 
         ImGui::NewLine();
         auto runnerParams = HelloImGui::GetRunnerParams();
-        ImGui::SliderFloat("runner_params.fpsIdle", &(runnerParams->fpsIdle), 0.f, 60.f);
+        ImGui::SliderFloat("runner_params.fpsIdle", &(runnerParams->fpsIdling.fpsIdle), 0.f, 60.f);
 
+        ImGui::Text("You can also set HelloImGui::GetRunnerParams()->fpdIdling.enableIdling.");
+        ImGui::Checkbox("Enable Idling", &runnerParams->fpsIdling.enableIdling);
     };
 
     ImmApp::Run(
@@ -35,7 +37,7 @@ the FPS will rise and the animation will be smooth again.
             .guiFunction=gui,
             .windowTitle="demo_powersave",
             .windowSize={640, 400},
-            .fpsIdle = 4.f
+            .fpsIdle = 3.f
         },
         ImmApp::AddOnsParams{
         }

@@ -27,8 +27,8 @@ int main(int , char *[]) {
     float heart_pulse_rate = 80.;
 
     auto gui = [&]() {
-        // By setting fpsIdle = 0, we make sure that the animation is smooth
-        HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
+        // Make sure that the animation is smooth
+        HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
 
         double t = ImmApp::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.);

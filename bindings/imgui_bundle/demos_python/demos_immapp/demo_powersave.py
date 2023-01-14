@@ -26,11 +26,14 @@ the FPS will rise and the animation will be smooth again.
 
     imgui.new_line()
     runner_params = hello_imgui.get_runner_params()
-    _, runner_params.fps_idle = imgui.slider_float("runner_params.fpsIdle", runner_params.fps_idle, 0, 60)
+    _, runner_params.fps_idling.fps_idle = imgui.slider_float("runner_params.fpsIdle", runner_params.fps_idling.fps_idle, 0, 60)
+
+    imgui.text("You can also set HelloImGui::GetRunnerParams()->fpdIdling.enableIdling.");
+    _, runner_params.fps_idling.enable_idling = imgui.checkbox("Enable Idling", runner_params.fps_idling.enable_idling)
 
 
 def main():
-    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), fps_idle=4)
+    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), fps_idle=3)
 
 
 if __name__ == "__main__":
