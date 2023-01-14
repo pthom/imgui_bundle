@@ -497,11 +497,31 @@ void py_init_module_hello_imgui(py::module& m)
         .value("qt", HelloImGui::BackendType::Qt, "");
 
 
+    auto pyClassFpsIdling =
+        py::class_<HelloImGui::FpsIdling>
+            (m, "FpsIdling", "*\n @@md#FpsIdling\n\n**FpsIdling** is a struct that contains Fps Idling parameters\n\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n@@md\n")
+        .def(py::init<>([](
+        float fpsIdle = 10.f, bool enableIdling = true, bool isIdling = false)
+        {
+            auto r = std::make_unique<FpsIdling>();
+            r->fpsIdle = fpsIdle;
+            r->enableIdling = enableIdling;
+            r->isIdling = isIdling;
+            return r;
+        })
+        , py::arg("fps_idle") = 10.f, py::arg("enable_idling") = true, py::arg("is_idling") = false
+        )
+        .def_readwrite("fps_idle", &FpsIdling::fpsIdle, "")
+        .def_readwrite("enable_idling", &FpsIdling::enableIdling, "")
+        .def_readwrite("is_idling", &FpsIdling::isIdling, "")
+        ;
+
+
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
+            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `fpsIdleDisable`: _bool, default=true_.\n  Set this to True to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
         .def(py::init<>([](
-        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, bool isIdling = false, int emscripten_fps = 0)
+        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), int emscripten_fps = 0)
         {
             auto r = std::make_unique<RunnerParams>();
             r->callbacks = callbacks;
@@ -511,12 +531,11 @@ void py_init_module_hello_imgui(py::module& m)
             r->backendPointers = backendPointers;
             r->backendType = backendType;
             r->appShallExit = appShallExit;
-            r->fpsIdle = fpsIdle;
-            r->isIdling = isIdling;
+            r->fpsIdling = fpsIdling;
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("app_shall_exit") = false, py::arg("fps_idle") = 10.f, py::arg("is_idling") = false, py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("app_shall_exit") = false, py::arg("fps_idling") = FpsIdling(), py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, "")
@@ -525,8 +544,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, "")
         .def_readwrite("backend_type", &RunnerParams::backendType, "")
         .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
-        .def_readwrite("fps_idle", &RunnerParams::fpsIdle, "")
-        .def_readwrite("is_idling", &RunnerParams::isIdling, "")
+        .def_readwrite("fps_idling", &RunnerParams::fpsIdling, "")
         .def_readwrite("emscripten_fps", &RunnerParams::emscripten_fps, "")
         ;
 
@@ -584,6 +602,20 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::LogGui, py::arg("size") = ImVec2(0.f, 0.f));
 
 
+    m.def("em_size",
+        py::overload_cast<>(HelloImGui::EmSize), " __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
+
+    m.def("em_size",
+        py::overload_cast<float>(HelloImGui::EmSize),
+        py::arg("nb_lines"),
+        "__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines");
+
+    m.def("em_to_vec2",
+        py::overload_cast<float, float>(HelloImGui::EmToVec2), py::arg("x"), py::arg("y"));
+
+    m.def("em_to_vec2",
+        py::overload_cast<ImVec2>(HelloImGui::EmToVec2), py::arg("v"));
+
     m.def("dpi_font_loading_factor",
         HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
 
@@ -602,20 +634,6 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams, pybind11::return_value_policy::reference);
-
-    m.def("em_size",
-        py::overload_cast<>(HelloImGui::EmSize), " __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
-
-    m.def("em_size",
-        py::overload_cast<float>(HelloImGui::EmSize),
-        py::arg("nb_lines"),
-        "__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines");
-
-    m.def("em_to_vec2",
-        py::overload_cast<float, float>(HelloImGui::EmToVec2), py::arg("x"), py::arg("y"));
-
-    m.def("em_to_vec2",
-        py::overload_cast<ImVec2>(HelloImGui::EmToVec2), py::arg("v"));
 
     m.def("frame_rate",
         HelloImGui::FrameRate,

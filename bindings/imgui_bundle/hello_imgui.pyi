@@ -1361,6 +1361,41 @@ class BackendType(enum.Enum):
     # }
     qt = enum.auto()              # (= 3)
 
+class FpsIdling:
+    """*
+     @@md#FpsIdling
+
+    **FpsIdling** is a struct that contains Fps Idling parameters
+
+    * `fpsIdle`: _float, default=10_.
+      ImGui applications can consume a lot of CPU, since they update the screen very frequently.
+      In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
+      This is ok most of the time but if you are displaying animated widgets (for example a live video),
+      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
+      (you can change this value during the execution depending on your application refresh needs)
+    * `enableIdling`: _bool, default=true_.
+      Set this to False to disable idling (this can be changed dynamically during execution)
+    * `isIdling`: bool (dynamically updated during execution)
+      This bool will be updated during the application execution, and will be set to True when it is idling.
+    @@md
+
+    """
+    # float fpsIdle = 10.f;    /* original C++ signature */
+    fps_idle: float = 10.
+    # bool  enableIdling = true;    /* original C++ signature */
+    enable_idling: bool = True
+    # bool  isIdling = false;    /* original C++ signature */
+    is_idling: bool = False
+    # FpsIdling(float fpsIdle = 10.f, bool enableIdling = true, bool isIdling = false);    /* original C++ signature */
+    def __init__(
+        self,
+        fps_idle: float = 10.,
+        enable_idling: bool = True,
+        is_idling: bool = False
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 class RunnerParams:
     """*
      @@md#RunnerParams
@@ -1392,6 +1427,8 @@ class RunnerParams:
       This is ok most of the time but if you are displaying animated widgets (for example a live video),
       you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
       (you can change this value during the execution depending on your application refresh needs)
+    * `fpsIdleDisable`: _bool, default=true_.
+      Set this to True to disable idling (this can be changed dynamically during execution)
     * `isIdling`: bool (dynamically updated during execution)
       This bool will be updated during the application execution, and will be set to True when it is idling.
     * `emscripten_fps`: _int, default = 0_.
@@ -1414,14 +1451,12 @@ class RunnerParams:
     # bool appShallExit = false;    /* original C++ signature */
     app_shall_exit: bool = False
 
-    # float fpsIdle = 10.f;    /* original C++ signature */
-    fps_idle: float = 10.
-    # bool  isIdling = false;    /* original C++ signature */
-    is_idling: bool = False
+    # FpsIdling fpsIdling;    /* original C++ signature */
+    fps_idling: FpsIdling
 
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, float fpsIdle = 10.f, bool isIdling = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1431,8 +1466,7 @@ class RunnerParams:
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
         app_shall_exit: bool = False,
-        fps_idle: float = 10.,
-        is_idling: bool = False,
+        fps_idling: FpsIdling = FpsIdling(),
         emscripten_fps: int = 0
         ) -> None:
         """Auto-generated default constructor with named params"""
@@ -1552,26 +1586,21 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #*
-#@@md#HelloImGui::Dpi
+#@@md#Dpi
 #
-## Handling screen with high DPI: font loading and items positioning:
-#--------------------------------------------------------------------
+#Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
+#Otherwise, widgets might be misplaced or too small, and font rendering might be blurry or too small.
 #
-#Special care must be taken in order to correctly handle screen with high DPI (e.g. almost all recent laptops screens).
+#### How to position widgets on a window in a Dpi independent way
 #
-#For example, let's consider screen whose physical pixel resolution is 3600x2000
-#but which will displayed with a scaling factor of 200%, so that widgets do not look too small on it.
-#The way it is handled depends on the OS.
-#
-#    - On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself
-#    - On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000
-#    - On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
-#
-#By default, if using the glfw backend, applications will be Dpi aware under windows.
-#Sdl applications are normally *not* Dpi aware. However when HelloImGui uses the SDL backend, it will still be Dpi aware.
+#Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens.
+#Instead you can:
+#* either multiply those values by ImGui::GetFontSize()
+#* or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
+#   as used in CSS: 1em simply correspond to the current font height.
 #
 #
-### How to load fonts for a crisp font rendering and a correct size:
+#### How to load fonts for a crisp font rendering and a correct size
 #
 #HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
 #    `DpiWindowFactor() * 1. / ImGui::GetIO().FontGlobalScale`
@@ -1579,17 +1608,60 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 #
 #==> When loading fonts, multiply their size by this factor!
 #
+#### More details on DPI handling with different OS and backends
 #
-### How to position widgets on a window in a Dpi independent way
+#Let's consider screen whose physical pixel resolution is 3600x2000, but which will displayed with a scaling factor of 200%,
+# so that widgets do not look too small on it.
 #
-#Using ImVec2 with fixed values is almost always a bad idea if you intend your application to be used on high DPI screens.
+#The way it is handled depends on the OS:
+#- On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself.
+#- On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000.
+#- On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
 #
-#* Either multiply those values by ImGui::GetFontSize()
-#* Or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
-#   as used in CSS: 1em simply correspond to the current font height.
+#By default, if using the glfw backend, applications will be Dpi aware under windows.
+#Sdl applications are normally not Dpi aware. However HelloImGui makes them Dpi aware when using the sdl backend.
 #
+#
+#### HelloImGui Dpi aware C++ API
+#
+#`HelloImGui::EmSize()` (C++) and `hello_imgui.em_size()` (Python) return the visible font size on the screen.
+#For reproducible results, even on HighDPI screens, always scale your widgets and windows relatively to this size.
+# It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+#
+#`HelloImGui::EmToVec2(x, y)` (C++) and `hello_imgui.em_to_vec2(x,y)` (Python) return an ImVec2 that you can use
+# to size or place your widgets in a DPI independent way.
+#
+#`HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
+#
+#
+#`HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
+# which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
+# HelloImGui::LoadFontTTF does this by default.
 #@@md
 #
+
+# float EmSize();    /* original C++ signature */
+def em_size() -> float:
+    """ __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+     widgets and windows relatively to this size.
+     It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+     EmSize() = ImGui::GetFontSize()
+    """
+    pass
+
+# float EmSize(float nbLines);    /* original C++ signature */
+def em_size(nb_lines: float) -> float:
+    """ __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
+    pass
+
+# __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
+def em_to_vec2(x: float, y: float) -> ImVec2:
+    pass
+# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
+def em_to_vec2(v: ImVec2) -> ImVec2:
+    pass
+
 
 # float DpiFontLoadingFactor();    /* original C++ signature */
 def dpi_font_loading_factor() -> float:
@@ -1630,15 +1702,6 @@ Three signatures are provided:
 
 __HelloImGui::GetRunnerParams()__ is a convenience function that will return the runnerParams of the current application.
 
-__HelloImGui::EmSize()__ returns the visible font size on the screen. For reproducible results, even on HighDPI screens,
- always scale your widgets and windows relatively to this size. It is somewhat comparable to the
- [em CSS Unit](https://lyty.dev/css/css-unit.html).
-_EmSize() = ImGui::GetFontSize() / ImGui::GetIO().FontGlobalScale_ (on MacOS FontGlobalScale can be = 2.0).
-
-__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
-
-__HelloImGui::EmToVec2(x, y)__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-
 @@md
 
 """
@@ -1670,28 +1733,6 @@ def run(
 
 # RunnerParams* GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
-    pass
-
-# float EmSize();    /* original C++ signature */
-def em_size() -> float:
-    """ __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
-     widgets and windows relatively to this size.
-     It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-     EmSize() = ImGui::GetFontSize()
-    """
-    pass
-
-# float EmSize(float nbLines);    /* original C++ signature */
-def em_size(nb_lines: float) -> float:
-    """ __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
-    pass
-
-# __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
-def em_to_vec2(x: float, y: float) -> ImVec2:
-    pass
-# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
-def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
