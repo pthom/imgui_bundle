@@ -24,3 +24,4 @@ include::doc_parts/manual.adoc[]
 
 include::doc_parts/port.adoc[]
 
+include::doc_parts/words_author.adoc[]
