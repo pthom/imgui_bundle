@@ -136,6 +136,9 @@ def demo_gui() -> None:
     if imgui.collapsing_header("Advanced glfw callbacks"):
         show_glfw_callback_advice()
 
+    if imgui.collapsing_header("Words from the author"):
+        show_markdown_file("ibd_words_author")
+
 
 if __name__ == "__main__":
     from imgui_bundle import immapp

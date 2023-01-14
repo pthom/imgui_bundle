@@ -2,7 +2,7 @@
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html

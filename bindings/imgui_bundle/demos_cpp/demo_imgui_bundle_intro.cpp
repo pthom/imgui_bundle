@@ -105,4 +105,7 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))
         ShowPortingAdvices();
 
+    if (ImGui::CollapsingHeader("Words from the author"))
+        ShowMarkdownDocFile("ibd_words_author");
+
 }

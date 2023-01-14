@@ -11,7 +11,7 @@
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -37,7 +37,7 @@ TIP: For a more readable version of this document, click on {btn-doc}
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -65,7 +65,7 @@ ImGui Bundle: easily create ImGui applications in Python and C++. Batteries incl
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -75,7 +75,9 @@ ImGui Bundle: easily create ImGui applications in Python and C++. Batteries incl
 
 === About ImGui Bundle
 
-https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginners who want to quickly get started.
+// tag::motto[]
+https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
+// end::motto[]
 
 
 
@@ -149,7 +151,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -168,7 +170,7 @@ TIP: This demonstration is also an interactive manual, similar to the online {ur
 
 === Batteries included
 
-ImGui Bundle includes:
+ImGui Bundle includes the following libraries:
 
 * https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for C++ with minimal dependencies
 * https://github.com/epezent/implot[implot]: Immediate Mode Plotting
@@ -182,18 +184,17 @@ ImGui Bundle includes:
 * https://github.com/mekhontsev/imgui_md.git[imgui_md]: Markdown renderer for Dear ImGui using MD4C parser
 * https://github.com/dalerank/imspinner[imspinner]: Set of nice spinners for imgui
 * https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui.
-* https://github.com/pthom/immvision.git[ImmVision]: immediate image debugger and insights
+* https://github.com/pthom/immvision.git[ImmVision]: Immediate image debugger and insights
 * https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
-* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: a Sublime Text or VSCode style command palette in ImGui
+* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
 
+A big thank you to their authors for their awesome work!
 === Easily port your code between python and C++
 
-The python bindings were autogenerated from the original C++ code and they closely mirror the original C++ API, with fully typed bindings, so that code completion works like a charm.
-
-The original code documentation is meticulously kept inside the python stubs. See for example the documentation for https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/$$__init__$$.pyi[imgui]
+The python bindings closely mirror the original {cpp} API, with fully typed bindings. The original code documentation is meticulously kept inside the python stubs. See for example the documentation for https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/$$__init__$$.pyi[imgui]
 , https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi[implot], and https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi[hello imgui]
 
-Thanks to this, porting code between Python and C++ becomes easy.
+Thanks to this, code completion in your favorite python IDE works like a charm, and porting code between Python and C++ becomes easy.
 
 
 .Click to see an example
@@ -298,6 +299,7 @@ int main(int , char *[]) {
 }
 ----
 ====
+
 
 
 == Repository folders structure
@@ -414,7 +416,7 @@ int main(int , char *[]) {
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -461,7 +463,7 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -512,6 +514,7 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_cp
 
 TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
 
+
 == Usage instructions
 
 === Dear ImGui - Immediate GUI
@@ -520,7 +523,7 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -585,7 +588,7 @@ image::{url-doc-images}/immediate_gui_example.png[]
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -597,18 +600,17 @@ ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which i
 
 ==== API
 
-See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]
+See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]. Also consult the doc on how to build {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications.
 
 ==== Features
 
-* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
+* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 * Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
+* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
 * Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
 * Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
 * Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
-* Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-doc-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
 * Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
-* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
@@ -621,7 +623,7 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -630,13 +632,14 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
 
-ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup
 
 ==== API
 
 {url-bundle-doc-tree}/external/immapp/immapp/runner.h[C++ API]
 
 {url-bindings-bundle}/immapp/immapp_cpp.pyi[Python bindings]
+
 
 ==== How to start an application with addons
 
@@ -865,3 +868,96 @@ glfw.set_window_size_callback(window, my_window_size_callback)
 ----
 
 CAUTION: It is important to import glfw _after_ imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
+
+== Words from the author
+
+=== Who is this project for
+
+As mentioned in the intro,
+****
+https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
+****
+
+ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.
+
+It is well adapted for
+
+* developers and researchers who want to switch easily between and research and development environment by facilitating the port of research artifacts
+* beginners and developers who want to quickly develop an application without learning a GUI framework
+
+==== Who is this project *not* for
+
+You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.
+
+Also, ImGui Bundle makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.
+
+=== Acknowledgments
+
+ImGui Bundle would not be possible without the work of the authors of "Dear ImGui", and especially https://www.miracleworld.net/[Omar Cornut].
+
+It also includes a lot of other projects, and I'd like to thank their authors for their awesome work!
+
+A particular mention for https://evanpezent.com/[Evan Pezent] (author of ImPlot), https://github.com/CedricGuillemet[Cédric Guillemet] (author of ImGuizmo), https://merlin3d.wordpress.com/about/[Balázs Jákó] (author of ImGuiColorTextEdit), and https://github.com/thedmd[Michał Cichoń] (author of imgui-node-editor), and https://github.com/mekhontsev[Dmitry Mekhontsev] (author of imgui-md), https://github.com/andyborrell[Andy Borrel] (author of imgui-tex-inspect, another image debugging tool, which I discovered long after having developed immvision).
+
+This doc was built using https://asciidoc.org/[Asciidoc].
+
+Immvision was inspired by https://billbaxter.com/projects/imdebug/[The Image Debugger], by Bill Baxter.
+
+=== License
+
+****
+The MIT License (MIT)
+
+Copyright (c) 2021-2023 Pascal Thomet
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+****
+
+
+=== Alternatives
+
+https://pyimgui.readthedocs.io/en/latest/[pyimgui] provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.
+
+
+https://dearpygui.readthedocs.io/en/latest/[Dear PyGui]  (https://github.com/hoffstadt/DearPyGui[repository]) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.
+
+=== About the author
+ImGui Bundle is developed by Pascal Thomet. I am reachable on my https://github.com/pthom[Github page]. I sometimes http://code-ballads.net/[blog]. There is a https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc[playlist] related to ImGui Bundle on YouTube.
+
+I have a past in computer vision, and a lot of experience in the trenches between development and research teams; and I found ImGui to be a nice way to reduce the delay between a research prototype and its use in production code.
+
+I also have an inclination for self documenting code, and the doc you are reading was a way to explore new ways to document projects.
+
+=== How is ImGui Bundle developed
+
+The development of the initial version of ImGui Bundle took about one year at full time.
+
+The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I'll give more information about the bindings generator a bit later in 2023.
+
+Please be tolerant if you find issues! ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).
+
+
+==== History
+Three of my past projects gave me the idea to develop this library.
+
+* https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual], an interactive manual for Dear ImGui, which I developed in June 2020
+* https://traineq.org/implot_demo/src/implot_demo.html[implot demo] which I developed in 2020.
+* https://github.com/pthom/imgui_datascience[imgui_datascience], a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.
+
+Developments for ImGui Bundle and its related automatic binding generator began in january 2022.

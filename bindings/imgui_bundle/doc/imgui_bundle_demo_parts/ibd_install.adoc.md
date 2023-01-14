@@ -31,7 +31,7 @@ pip install opencv-contrib-python
 
 Simply run `imgui_bundle_demo`.
 
-The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python).
+The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
 ::: tip
 Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
@@ -73,7 +73,7 @@ cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 
 If you built ImGui Bundle from source, Simply run `build/bin/demo_imgui_bundle`.
 
-The source for the demos can be found inside [bindings/imgui_bundle/demos_cpp](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_cpp/).
+The source for the demos can be found inside [bindings/imgui_bundle/demos_cpp](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/).
 
 ::: tip
 Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always [available online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)

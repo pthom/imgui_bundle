@@ -518,7 +518,6 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <li><a href="#_about_imgui_bundle">About ImGui Bundle</a></li>
 <li><a href="#_interactive_manual_demo_in_one_click">Interactive manual &amp; demo in one click!</a></li>
 <li><a href="#_batteries_included">Batteries included</a></li>
-<li><a href="#_easily_port_your_code_between_python_and_c">Easily port your code between python and C++</a></li>
 </ul>
 </li>
 <li><a href="#_repository_folders_structure">Repository folders structure</a></li>
@@ -540,6 +539,16 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <li><a href="#_general_advices">General advices</a></li>
 <li><a href="#_enums_and_textinput">Enums and TextInput</a></li>
 <li><a href="#_advanced_glfw_callbacks">Advanced glfw callbacks</a></li>
+</ul>
+</li>
+<li><a href="#_words_from_the_author">Words from the author</a>
+<ul class="sectlevel2">
+<li><a href="#_who_is_this_project_for">Who is this project for</a></li>
+<li><a href="#_acknowledgments">Acknowledgments</a></li>
+<li><a href="#_license">License</a></li>
+<li><a href="#_alternatives">Alternatives</a></li>
+<li><a href="#_about_the_author">About the author</a></li>
+<li><a href="#_how_is_imgui_bundle_developed">How is ImGui Bundle developed</a></li>
 </ul>
 </li>
 </ul>
@@ -566,7 +575,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <div class="sect2">
 <h3 id="_about_imgui_bundle">About ImGui Bundle</h3>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle">ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginners who want to quickly get started.</p>
+<p><a href="https://github.com/pthom/imgui_bundle">ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.</p>
 </div>
 <details>
 <summary class="title">Click here to see how easy a hello world can be:</summary>
@@ -575,7 +584,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <p><strong>In C++</strong></p>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp">demo_hello_world.cpp</a></p>
+<p><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp">demo_hello_world.cpp</a></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -613,7 +622,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <p><strong>In Python</strong></p>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py">demo_hello_world.py</a></p>
+<p><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py">demo_hello_world.py</a></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -675,7 +684,7 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <div class="sect2">
 <h3 id="_batteries_included">Batteries included</h3>
 <div class="paragraph">
-<p>ImGui Bundle includes:</p>
+<p>ImGui Bundle includes the following libraries:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -716,28 +725,26 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <p><a href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle switch widget for Dear ImGui.</p>
 </li>
 <li>
-<p><a href="https://github.com/pthom/immvision.git">ImmVision</a>: immediate image debugger and insights</p>
+<p><a href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate image debugger and insights</p>
 </li>
 <li>
 <p><a href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>: A texture inspector tool for Dear ImGui</p>
 </li>
 <li>
-<p><a href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>: a Sublime Text or VSCode style command palette in ImGui</p>
+<p><a href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>: A Sublime Text or VSCode style command palette in ImGui</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_easily_port_your_code_between_python_and_c">Easily port your code between python and C++</h3>
 <div class="paragraph">
-<p>The python bindings were autogenerated from the original C code and they closely mirror the original C API, with fully typed bindings, so that code completion works like a charm.</p>
+<p>A big thank you to their authors for their awesome work!
+=== Easily port your code between python and C++</p>
 </div>
 <div class="paragraph">
-<p>The original code documentation is meticulously kept inside the python stubs. See for example the documentation for <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi">imgui</a>
+<p>The python bindings closely mirror the original C&#43;&#43; API, with fully typed bindings. The original code documentation is meticulously kept inside the python stubs. See for example the documentation for <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi">imgui</a>
 , <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi">implot</a>, and <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi">hello imgui</a></p>
 </div>
 <div class="paragraph">
-<p>Thanks to this, porting code between Python and C++ becomes easy.</p>
+<p>Thanks to this, code completion in your favorite python IDE works like a charm, and porting code between Python and C++ becomes easy.</p>
 </div>
 <details>
 <summary class="title">Click to see an example</summary>
@@ -1013,7 +1020,7 @@ pip install opencv-contrib-python</code></pre>
 <p>Simply run <code>imgui_bundle_demo</code>.</p>
 </div>
 <div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
+<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1086,7 +1093,7 @@ make -j</code></pre>
 <p>If you built ImGui Bundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
 </div>
 <div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_cpp/">bindings/imgui_bundle/demos_cpp</a>.</p>
+<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/">bindings/imgui_bundle/demos_cpp</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1182,7 +1189,7 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <div class="sect3">
 <h4 id="_api">API</h4>
 <div class="paragraph">
-<p>See the "Hello ImGui" <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">API doc</a></p>
+<p>See the "Hello ImGui" <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">API doc</a>. Also consult the doc on how to build <a href="https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h">DPI aware</a> applications.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1190,10 +1197,13 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h">DPI aware</a> applications (widget placement, window size, font loading and scaling)</p>
+<p>Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo <a href="https://traineq.org/HelloImGui_6_Platforms.mp4">video</a></p>
 </li>
 <li>
 <p>Power Save mode: reduce FPS when application is idle (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.fpsIdle</a>)</p>
+</li>
+<li>
+<p><a href="https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h">DPI aware</a> applications (widget placement, window size, font loading and scaling)</p>
 </li>
 <li>
 <p>Theme tweaking (see <a href="https://www.youtube.com/watch?v=4f_-3DDcAZk">demo video</a>, and <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h">API</a> )</p>
@@ -1205,13 +1215,7 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <p>Multiplatform <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h">assets embedding</a></p>
 </li>
 <li>
-<p>Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see <a href="https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h">ImmApp::AddOnParams</a>)</p>
-</li>
-<li>
 <p>Switch between Glfw or Sdl backend (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.backendType</a>)</p>
-</li>
-<li>
-<p>Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo <a href="https://traineq.org/HelloImGui_6_Platforms.mp4">video</a></p>
 </li>
 </ul>
 </div>
@@ -1222,7 +1226,7 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <div class="title">Note</div>
 </td>
 <td class="content">
-The usage of <code>Hello ImGui</code> is optional. You can also build an imgui application from scratch, in C++ or in python (see <a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py">python example</a>)
+The usage of <code>Hello ImGui</code> is optional. You can also build an imgui application from scratch, in C++ or in python (see <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py">python example</a>)
 </td>
 </tr>
 </table>
@@ -1244,7 +1248,7 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <div class="sect2">
 <h3 id="_immapp_immediate_app">ImmApp - Immediate App</h3>
 <div class="paragraph">
-<p>ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
+<p>ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup</p>
 </div>
 <div class="sect3">
 <h4 id="_api_2">API</h4>
@@ -1252,7 +1256,7 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <p><a href="https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h">C++ API</a></p>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/immapp/immapp_cpp.pyi">Python bindings</a></p>
+<p><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/immapp/immapp_cpp.pyi">Python bindings</a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1556,10 +1560,160 @@ It is important to import glfw <em>after</em> imgui_bundle, since - upon import 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_words_from_the_author">Words from the author</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_who_is_this_project_for">Who is this project for</h3>
+<div class="paragraph">
+<p>As mentioned in the intro,</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p><a href="https://github.com/pthom/imgui_bundle">ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.</p>
+</div>
+<div class="paragraph">
+<p>It is well adapted for</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>developers and researchers who want to switch easily between and research and development environment by facilitating the port of research artifacts</p>
+</li>
+<li>
+<p>beginners and developers who want to quickly develop an application without learning a GUI framework</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_who_is_this_project_not_for">Who is this project <strong>not</strong> for</h4>
+<div class="paragraph">
+<p>You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.</p>
+</div>
+<div class="paragraph">
+<p>Also, ImGui Bundle makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acknowledgments">Acknowledgments</h3>
+<div class="paragraph">
+<p>ImGui Bundle would not be possible without the work of the authors of "Dear ImGui", and especially <a href="https://www.miracleworld.net/">Omar Cornut</a>.</p>
+</div>
+<div class="paragraph">
+<p>It also includes a lot of other projects, and I&#8217;d like to thank their authors for their awesome work!</p>
+</div>
+<div class="paragraph">
+<p>A particular mention for <a href="https://evanpezent.com/">Evan Pezent</a> (author of ImPlot), <a href="https://github.com/CedricGuillemet">Cédric Guillemet</a> (author of ImGuizmo), <a href="https://merlin3d.wordpress.com/about/">Balázs Jákó</a> (author of ImGuiColorTextEdit), and <a href="https://github.com/thedmd">Michał Cichoń</a> (author of imgui-node-editor), and <a href="https://github.com/mekhontsev">Dmitry Mekhontsev</a> (author of imgui-md), <a href="https://github.com/andyborrell">Andy Borrel</a> (author of imgui-tex-inspect, another image debugging tool, which I discovered long after having developed immvision).</p>
+</div>
+<div class="paragraph">
+<p>This doc was built using <a href="https://asciidoc.org/">Asciidoc</a>.</p>
+</div>
+<div class="paragraph">
+<p>Immvision was inspired by <a href="https://billbaxter.com/projects/imdebug/">The Image Debugger</a>, by Bill Baxter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_license">License</h3>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>The MIT License (MIT)</p>
+</div>
+<div class="paragraph">
+<p>Copyright (c) 2021-2023 Pascal Thomet</p>
+</div>
+<div class="paragraph">
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+</div>
+<div class="paragraph">
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+</div>
+<div class="paragraph">
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_alternatives">Alternatives</h3>
+<div class="paragraph">
+<p><a href="https://pyimgui.readthedocs.io/en/latest/">pyimgui</a> provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://dearpygui.readthedocs.io/en/latest/">Dear PyGui</a>  (<a href="https://github.com/hoffstadt/DearPyGui">repository</a>) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_about_the_author">About the author</h3>
+<div class="paragraph">
+<p>ImGui Bundle is developed by Pascal Thomet. I am reachable on my <a href="https://github.com/pthom">Github page</a>. I sometimes <a href="http://code-ballads.net/">blog</a>. There is a <a href="https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc">playlist</a> related to ImGui Bundle on YouTube.</p>
+</div>
+<div class="paragraph">
+<p>I have a past in computer vision, and a lot of experience in the trenches between development and research teams; and I found ImGui to be a nice way to reduce the delay between a research prototype and its use in production code.</p>
+</div>
+<div class="paragraph">
+<p>I also have an inclination for self documenting code, and the doc you are reading was a way to explore new ways to document projects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_is_imgui_bundle_developed">How is ImGui Bundle developed</h3>
+<div class="paragraph">
+<p>The development of the initial version of ImGui Bundle took about one year at full time.</p>
+</div>
+<div class="paragraph">
+<p>The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I&#8217;ll give more information about the bindings generator a bit later in 2023.</p>
+</div>
+<div class="paragraph">
+<p>Please be tolerant if you find issues! ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).</p>
+</div>
+<div class="sect3">
+<h4 id="_history">History</h4>
+<div class="paragraph">
+<p>Three of my past projects gave me the idea to develop this library.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>, an interactive manual for Dear ImGui, which I developed in June 2020</p>
+</li>
+<li>
+<p><a href="https://traineq.org/implot_demo/src/implot_demo.html">implot demo</a> which I developed in 2020.</p>
+</li>
+<li>
+<p><a href="https://github.com/pthom/imgui_datascience">imgui_datascience</a>, a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Developments for ImGui Bundle and its related automatic binding generator began in january 2022.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-01-13 18:30:08 +0100
+Last updated 2023-01-14 14:05:05 +0100
 </div>
 </div>
 </body>

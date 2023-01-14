@@ -1,6 +1,6 @@
 === Batteries included
 
-ImGui Bundle includes:
+ImGui Bundle includes the following libraries:
 
 * https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for C++ with minimal dependencies
 * https://github.com/epezent/implot[implot]: Immediate Mode Plotting
@@ -14,7 +14,8 @@ ImGui Bundle includes:
 * https://github.com/mekhontsev/imgui_md.git[imgui_md]: Markdown renderer for Dear ImGui using MD4C parser
 * https://github.com/dalerank/imspinner[imspinner]: Set of nice spinners for imgui
 * https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui.
-* https://github.com/pthom/immvision.git[ImmVision]: immediate image debugger and insights
+* https://github.com/pthom/immvision.git[ImmVision]: Immediate image debugger and insights
 * https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
-* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: a Sublime Text or VSCode style command palette in ImGui
+* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
 
+A big thank you to their authors for their awesome work!

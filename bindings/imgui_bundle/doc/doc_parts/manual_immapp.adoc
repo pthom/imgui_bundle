@@ -3,13 +3,14 @@
 include::_utils.adoc[]
 
 
-ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup
 
 ==== API
 
 {url-bundle-doc-tree}/external/immapp/immapp/runner.h[C++ API]
 
 {url-bindings-bundle}/immapp/immapp_cpp.pyi[Python bindings]
+
 
 ==== How to start an application with addons
 
