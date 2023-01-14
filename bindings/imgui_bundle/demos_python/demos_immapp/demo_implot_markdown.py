@@ -4,10 +4,10 @@ from imgui_bundle.demos_python import demo_utils
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual
-    # In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets"); // By default, HelloImGui will search inside "assets"
+    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    #         hello_imgui.set_assets_folder("my_assets"); # (By default, HelloImGui will search inside "assets")
     demo_utils.set_hello_imgui_demo_assets_folder()
+
     x = np.arange(0, np.pi * 4, 0.01)
     y1 = np.cos(x)
     y2 = np.sin(x)

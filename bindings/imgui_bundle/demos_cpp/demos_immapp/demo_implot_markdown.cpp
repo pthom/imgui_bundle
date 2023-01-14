@@ -8,9 +8,8 @@
 
 int main(int, char**)
 {
-    // This call is specific to the ImGui Bundle interactive manual
-    // In a standard application, you could write:
-    //         HelloImGui::SetAssetsFolder("my_assets"); // By default, HelloImGui will search inside "assets"
+    // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
     ChdirBesideAssetsFolder();
 
     constexpr double pi = 3.1415926535897932384626433;
