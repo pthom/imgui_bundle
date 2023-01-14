@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(imgui_bundle VERSION "0.7.2") # Remember to mirror changes to setup.py!
+project(imgui_bundle VERSION "0.8.0") # Remember to mirror changes to setup.py!
 
 
 ###############################################################################

@@ -73,7 +73,7 @@ except ImportError:
 
 setup(
     name="imgui-bundle",
-    version="0.7.2",  # Remember to mirror changes on line 2 of main CMakeLists!
+    version="0.8.0",  # Remember to mirror changes on line 2 of main CMakeLists!
     author="Pascal Thomet",
     author_email="pthomet@gmail.com",
     description="ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!",
