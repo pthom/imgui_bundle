@@ -248,17 +248,24 @@ easily write cross-platform Gui apps for Windows, macOS, Linux, iOS, and
 ### API
 
 See the "Hello ImGui" [API
-doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
+doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md).
+Also consult the doc on how to build [DPI
+aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
+applications.
 
 ### Features
+
+-   Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten,
+    Android (poorly supported). See demo
+    [video](https://traineq.org/HelloImGui_6_Platforms.mp4)
+
+-   Power Save mode: reduce FPS when application is idle (see
+    [RunnerParams.fpsIdle](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
 -   [DPI
     aware](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h)
     applications (widget placement, window size, font loading and
     scaling)
-
--   Power Save mode: reduce FPS when application is idle (see
-    [RunnerParams.fpsIdle](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
 -   Theme tweaking (see [demo
     video](https://www.youtube.com/watch?v=4f_-3DDcAZk), and
@@ -272,16 +279,8 @@ doc](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgu
 -   Multiplatform [assets
     embedding](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h)
 
--   Auto initialization of third parties modules, implot,
-    imgui-node-editor, markdown, etc. (see
-    [ImmApp::AddOnParams](https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h))
-
 -   Switch between Glfw or Sdl backend (see
     [RunnerParams.backendType](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
-
--   Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten,
-    Android (poorly supported). See demo
-    [video](https://traineq.org/HelloImGui_6_Platforms.mp4)
 
 The usage of `Hello ImGui` is optional. You can also build an imgui
 application from scratch, in C++ or in python (see [python
@@ -296,7 +295,7 @@ description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/he
 ImGui Bundle includes a library named ImmApp (which stand for Immediate
 App). ImmApp is a thin extension of HelloImGui that enables to easily
 initialize the ImGuiBundle addons that require additional setup at
-startup.
+startup
 
 ### API
 

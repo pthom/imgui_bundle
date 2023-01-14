@@ -600,18 +600,17 @@ ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which i
 
 ==== API
 
-See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]
+See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]. Also consult the doc on how to build {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications.
 
 ==== Features
 
-* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
+* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 * Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
+* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
 * Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
 * Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
 * Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
-* Auto initialization of third parties modules, implot, imgui-node-editor, markdown, etc. (see link:{url-bundle-doc-tree}/external/immapp/immapp/runner.h[ImmApp::AddOnParams])
 * Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
-* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
@@ -633,7 +632,7 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
 
-ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup
 
 ==== API
 
