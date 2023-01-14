@@ -11,7 +11,7 @@
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -37,7 +37,7 @@ TIP: For a more readable version of this document, click on {btn-doc}
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -65,7 +65,7 @@ ImGui Bundle: easily create ImGui applications in Python and C++. Batteries incl
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -151,7 +151,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -416,7 +416,7 @@ int main(int , char *[]) {
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -463,7 +463,7 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -523,7 +523,7 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -588,7 +588,7 @@ image::{url-doc-images}/immediate_gui_example.png[]
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -623,7 +623,7 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
 :url-bundle-pages: https://pthom.github.io/imgui_bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
@@ -639,6 +639,7 @@ ImGui Bundle includes a library named ImmApp (which stand for Immediate App). Im
 {url-bundle-doc-tree}/external/immapp/immapp/runner.h[C++ API]
 
 {url-bindings-bundle}/immapp/immapp_cpp.pyi[Python bindings]
+
 
 ==== How to start an application with addons
 
@@ -931,7 +932,7 @@ SOFTWARE.
 
 === Alternatives
 
-https://pyimgui.readthedocs.io/en/latest/[pyimgui] provides battle-tested comprehensive python bindings for ImGui. I used (and contributed to) this project a lot. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.
+https://pyimgui.readthedocs.io/en/latest/[pyimgui] provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.
 
 
 https://dearpygui.readthedocs.io/en/latest/[Dear PyGui]  (https://github.com/hoffstadt/DearPyGui[repository]) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.

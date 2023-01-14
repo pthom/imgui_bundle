@@ -129,7 +129,7 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 Simply run `imgui_bundle_demo`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python).
+[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
 Consider `imgui_bundle_demo` as an always available manual for ImGui
 Bundle with lots of examples and related code source.
@@ -175,7 +175,7 @@ If you built ImGui Bundle from source, Simply run
 `build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_cpp/).
+[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/).
 
 Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available
@@ -284,7 +284,7 @@ applications.
 
 The usage of `Hello ImGui` is optional. You can also build an imgui
 application from scratch, in C++ or in python (see [python
-example](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
+example](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
 
 HelloImGui is fully configurable by POD (plain old data) structures. See
 [their
@@ -303,7 +303,7 @@ startup
 API](https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h)
 
 [Python
-bindings](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
+bindings](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
 
 ### How to start an application with addons
 
@@ -620,10 +620,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ## Alternatives
 
 [pyimgui](https://pyimgui.readthedocs.io/en/latest/) provides
-battle-tested comprehensive python bindings for ImGui. I used (and
-contributed to) this project a lot. In the end, I had to develop a
-separate project, in order to be able to add auto-generated and
-auto-documented python modules.
+battle-tested comprehensive python bindings for ImGui. I worked with
+this project a lot, and contributed a bit to it. In the end, I had to
+develop a separate project, in order to be able to add auto-generated
+and auto-documented python modules.
 
 [Dear PyGui](https://dearpygui.readthedocs.io/en/latest/)
 ([repository](https://github.com/hoffstadt/DearPyGui)) provides python

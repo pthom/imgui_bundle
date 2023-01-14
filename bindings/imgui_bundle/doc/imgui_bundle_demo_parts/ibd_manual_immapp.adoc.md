@@ -6,7 +6,7 @@ ImGui Bundle includes a library named ImmApp (which stand for Immediate App). Im
 
 [C++ API](https://github.com/pthom/imgui_bundle/tree/doc/external/immapp/immapp/runner.h)
 
-[Python bindings](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
+[Python bindings](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/immapp/immapp_cpp.pyi)
 
 ## How to start an application with addons
 

@@ -23,7 +23,7 @@ See the \"Hello ImGui\" [API doc](https://github.com/pthom/hello_imgui/blob/mast
 -   Switch between Glfw or Sdl backend (see [RunnerParams.backendType](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
 ::: note
-The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see [python example](https://github.com/pthom/imgui_bundle/tree/{current_branch}/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
+The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see [python example](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/imgui_example_glfw_opengl3.py))
 :::
 
 ::: tip

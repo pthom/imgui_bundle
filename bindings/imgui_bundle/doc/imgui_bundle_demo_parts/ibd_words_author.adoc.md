@@ -46,7 +46,7 @@ THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMP
 
 ## Alternatives
 
-[pyimgui](https://pyimgui.readthedocs.io/en/latest/) provides battle-tested comprehensive python bindings for ImGui. I used (and contributed to) this project a lot. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.
+[pyimgui](https://pyimgui.readthedocs.io/en/latest/) provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.
 
 [Dear PyGui](https://dearpygui.readthedocs.io/en/latest/) ([repository](https://github.com/hoffstadt/DearPyGui)) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.
 
