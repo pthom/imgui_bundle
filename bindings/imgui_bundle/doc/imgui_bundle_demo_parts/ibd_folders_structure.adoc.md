@@ -1,10 +1,6 @@
-== Repository folders structure
+# Repository folders structure
 
-.Click to see a detailed explanation of this repository folder structure.
-[%collapsible]
-====
-[source,bash]
-----
+``` bash
 ./
 +-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
 +-- Readme_devel.md
@@ -101,5 +97,4 @@
 +-- src/
 |         +-- imgui_bundle/                               # main cpp library: almost empty,
                                                           # but linked to all external libraries
-----
-====
+```

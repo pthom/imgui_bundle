@@ -221,8 +221,8 @@ heart_pulse_rate = 80
 
 def gui():
     global heart_pulse_rate, phase, t0, x, y
-    # By setting fpsIdle = 0, we make sure that the animation is smooth
-    hello_imgui.get_runner_params().fps_idle = 0
+    # Make sure that the animation is smooth
+    hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
     t = time.time()
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
@@ -273,8 +273,8 @@ int main(int , char *[]) {
     float heart_pulse_rate = 80.;
 
     auto gui = [&]() {
-        // By setting fpsIdle = 0, we make sure that the animation is smooth
-        HelloImGui::GetRunnerParams()->fpsIdle = 0.f;
+        // Make sure that the animation is smooth
+        HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
 
         double t = ImmApp::ClockSeconds();
         phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.);
@@ -308,100 +308,100 @@ int main(int , char *[]) {
 [source,bash]
 ----
 ./
-├── Readme.md -> bindings/imgui_bundle/Readme.md           # doc
-├── Readme_devel.md
-│
-├── _example_integration/                                   # Demonstrate how to easily use
-│         ├── CMakeLists.txt                                # imgui_bundle in a C++ app
-│         ├── assets/
-│         └── hello_world.main.cpp
-│
-├── imgui_bundle_cmake/                                     # imgui_bundle_add_app() :
-│         │                                                 # a cmake function you can use
-│         └── imgui_bundle_add_app.cmake                    # to create an app in one line
-│
-├── bindings/                                               # root for the python bindings
-│         └── imgui_bundle/
-│                  ├── assets/                              # assets/ folder: you need to
-│                  │                                        # copy this folder
-│                  │                                        # into your app folder if you
-│                  │                                        # intend to use markdown
-│                  │
-│                  ├── demos_assets/                        # assets used by demos
-│                  ├── demos_cpp/                           # lots of C++ demos
-│                  ├── demos_python/                        # lots of python demos
-│                  ├── imgui/                               # imgui stubs
-│                  │     ├── __init__.pyi
-│                  │     ├── backends.pyi
-│                  │     ├── internal.pyi
-│                  │     └── py.typed
-│                  ├── implot.pyi                           # implot stubs
-│                  ├── __init__.py
-│                  ├── __init__.pyi
-│                  ├── hello_imgui.pyi
-│                  ├── ...                                  # lots of other libs stubs
-│                  ├── ...
-│                  ├── ...
-│                  ├── immapp/                              # immapp: immediate app
-│                  │        │                               # utilities
-│                  │        ├── __init__.py
-│                  │        ├── __init__.pyi
-│                  │        ├── icons_fontawesome.py
-│                  │        ├── immapp_cpp.pyi
-│                  │        ├── immapp_utils.py
-│                  │        └── py.typed
-│                  ├── _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
-│                  │                                       # dynamic library
-│                  ├── glfw_utils.py
-│                  └── py.typed
-│
-│
-├── cmake/                                                 # Private cmake utilities
-│         ├── add_imgui.cmake
-│         └── ...
-│
-├── external/                                              # Root of all bound libraries
-│         ├── CMakeLists.txt
-│         ├── imgui/                                       # ImGui root
-│         │         ├── bindings/                          # ImGui bindings
-│         │         └── imgui/                             # ImGui submodule
-│         ├── ImGuizmo/
-│         │         ├── bindings/                          # ImGuizmo bindings
-│         │         ├── ImGuizmo/                          # ImGuizmo submodule
-│         │         └── ImGuizmoPure/                      # Manual wrappers to help
-│         │                                                # bindings generation
-│         │
-│         ├── ... lots of other bound libraries/           # Lots of other bound libraries
-│         │         ├── {lib_name}/
-│         │         └── bindings/
-│         │
-│         ├── _doc/
-│         │
-│         ├── bindings_generation/                         # Script to generate bindings
-│         │         │                                      # and to facilitate external
-│         │         ├── __init__.py                        # libraries update
-│         │         ├── all_external_libraries.py
-│         │         ├── autogenerate_all.py
-│         │         └── ...
-│         │
-│         ├── SDL/SDL/                                     # Linked library (without
-│         │                                                # python bindings)
-│         ├── fplus/fplus/                                 # Library without bindings
-│         └── glfw/glfw                                    # Library without bindings
-│
-├── lg_cmake_utils/                                        # Cmake utils for bindings
-│         │                                                # generation
-│         ├── lg_cmake_utils.cmake
-│         ├── ...
-│
-├── pybind_native_debug/
-│         ├── CMakeLists.txt
-│         ├── Readme.md
-│         ├── pybind_native_debug.cpp
-│         └── pybind_native_debug.py
-│
-├── src/
-│         └── imgui_bundle/                               # main cpp library: almost empty,
++-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
++-- Readme_devel.md
+|
++-- _example_integration/                                   # Demonstrate how to easily use
+|         +-- CMakeLists.txt                                # imgui_bundle in a C++ app
+|         +-- assets/
+|         +-- hello_world.main.cpp
+|
++-- imgui_bundle_cmake/                                     # imgui_bundle_add_app() :
+|         |                                                 # a cmake function you can use
+|         +-- imgui_bundle_add_app.cmake                    # to create an app in one line
+|
++-- bindings/                                               # root for the python bindings
+|         +-- imgui_bundle/
+|                  +-- assets/                              # assets/ folder: you need to
+|                  |                                        # copy this folder
+|                  |                                        # into your app folder if you
+|                  |                                        # intend to use markdown
+|                  |
+|                  +-- demos_assets/                        # assets used by demos
+|                  +-- demos_cpp/                           # lots of C++ demos
+|                  +-- demos_python/                        # lots of python demos
+|                  +-- imgui/                               # imgui stubs
+|                  |     +-- __init__.pyi
+|                  |     +-- backends.pyi
+|                  |     +-- internal.pyi
+|                  |     +-- py.typed
+|                  +-- implot.pyi                           # implot stubs
+|                  +-- __init__.py
+|                  +-- __init__.pyi
+|                  +-- hello_imgui.pyi
+|                  +-- ...                                  # lots of other libs stubs
+|                  +-- ...
+|                  +-- ...
+|                  +-- immapp/                              # immapp: immediate app
+|                  |        |                               # utilities
+|                  |        +-- __init__.py
+|                  |        +-- __init__.pyi
+|                  |        +-- icons_fontawesome.py
+|                  |        +-- immapp_cpp.pyi
+|                  |        +-- immapp_utils.py
+|                  |        +-- py.typed
+|                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
+|                  |                                       # dynamic library
+|                  +-- glfw_utils.py
+|                  +-- py.typed
+|
+|
++-- cmake/                                                 # Private cmake utilities
+|         +-- add_imgui.cmake
+|         +-- ...
+|
++-- external/                                              # Root of all bound libraries
+|         +-- CMakeLists.txt
+|         +-- imgui/                                       # ImGui root
+|         |         +-- bindings/                          # ImGui bindings
+|         |         +-- imgui/                             # ImGui submodule
+|         +-- ImGuizmo/
+|         |         +-- bindings/                          # ImGuizmo bindings
+|         |         +-- ImGuizmo/                          # ImGuizmo submodule
+|         |         +-- ImGuizmoPure/                      # Manual wrappers to help
+|         |                                                # bindings generation
+|         |
+|         +-- ... lots of other bound libraries/           # Lots of other bound libraries
+|         |         +-- {lib_name}/
+|         |         +-- bindings/
+|         |
+|         +-- _doc/
+|         |
+|         +-- bindings_generation/                         # Script to generate bindings
+|         |         |                                      # and to facilitate external
+|         |         +-- __init__.py                        # libraries update
+|         |         +-- all_external_libraries.py
+|         |         +-- autogenerate_all.py
+|         |         +-- ...
+|         |
+|         +-- SDL/SDL/                                     # Linked library (without
+|         |                                                # python bindings)
+|         +-- fplus/fplus/                                 # Library without bindings
+|         +-- glfw/glfw                                    # Library without bindings
+|
++-- lg_cmake_utils/                                        # Cmake utils for bindings
+|         |                                                # generation
+|         +-- lg_cmake_utils.cmake
+|         +-- ...
+|
++-- pybind_native_debug/
+|         +-- CMakeLists.txt
+|         +-- Readme.md
+|         +-- pybind_native_debug.cpp
+|         +-- pybind_native_debug.py
+|
++-- src/
+|         +-- imgui_bundle/                               # main cpp library: almost empty,
                                                           # but linked to all external libraries
 ----
 ====
@@ -630,7 +630,7 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
 
-ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
 
 ==== API
 
@@ -662,9 +662,8 @@ C++
 
 int main(int, char**)
 {
-    // This call is specific to the ImGui Bundle interactive manual
-    // In a standard application, you could write:
-    //         HelloImGui::SetAssetsFolder("my_assets"); // By default, HelloImGui will search inside "assets"
+    // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
     ChdirBesideAssetsFolder();
 
     constexpr double pi = 3.1415926535897932384626433;
@@ -702,10 +701,10 @@ from imgui_bundle.demos_python import demo_utils
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual
-    # In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets"); // By default, HelloImGui will search inside "assets"
+    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    #         hello_imgui.set_assets_folder("my_assets"); # (By default, HelloImGui will search inside "assets")
     demo_utils.set_hello_imgui_demo_assets_folder()
+
     x = np.arange(0, np.pi * 4, 0.01)
     y1 = np.cos(x)
     y2 = np.sin(x)

@@ -99,8 +99,12 @@ def demo_gui() -> None:
 
     if imgui.collapsing_header("Introduction"):
         show_markdown_file("ibd_intro")
+    if imgui.collapsing_header("Repository folders structure"):
+        show_markdown_file("ibd_folders_structure")
+    if imgui.collapsing_header("Build and install instruction"):
+        show_markdown_file("ibd_install")
 
-    if imgui.collapsing_header("Immediate mode gui"):
+    if imgui.collapsing_header("Dear ImGui - Immediate gui"):
 
         def immediate_gui_example():
             # Display a text
@@ -119,6 +123,12 @@ def demo_gui() -> None:
         show_markdown_file("ibd_manual_imgui")
         immediate_gui_example()
         imgui.separator()
+
+    if imgui.collapsing_header("Hello ImGui - Starter pack"):
+        show_markdown_file("ibd_manual_himgui");
+
+    if imgui.collapsing_header("ImmApp - Immediate App"):
+        show_markdown_file("ibd_manual_immapp");
 
     if imgui.collapsing_header("C++ / Python porting advices"):
         show_porting_advices()

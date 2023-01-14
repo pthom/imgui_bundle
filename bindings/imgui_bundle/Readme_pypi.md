@@ -294,10 +294,10 @@ description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/he
 
 ## ImmApp - Immediate App
 
-ImGui Bundle include a sub library named ImmApp (which stand for
-Immediate App). ImmApp is a thin extension of HelloImGui that enables to
-easily initialize the ImGuiBundle addons that require additional setup
-at startup.
+ImGui Bundle includes a library named ImmApp (which stand for Immediate
+App). ImmApp is a thin extension of HelloImGui that enables to easily
+initialize the ImGuiBundle addons that require additional setup at
+startup.
 
 ### API
 
@@ -328,9 +328,8 @@ C++
 
     int main(int, char**)
     {
-        // This call is specific to the ImGui Bundle interactive manual
-        // In a standard application, you could write:
-        //         HelloImGui::SetAssetsFolder("my_assets"); // By default, HelloImGui will search inside "assets"
+        // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+        //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
         ChdirBesideAssetsFolder();
 
         constexpr double pi = 3.1415926535897932384626433;
@@ -366,10 +365,10 @@ Python:
 
 
     def main():
-        # This call is specific to the ImGui Bundle interactive manual
-        # In a standard application, you could write:
-        #         hello_imgui.set_assets_folder("my_assets"); // By default, HelloImGui will search inside "assets"
+        # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+        #         hello_imgui.set_assets_folder("my_assets"); # (By default, HelloImGui will search inside "assets")
         demo_utils.set_hello_imgui_demo_assets_folder()
+
         x = np.arange(0, np.pi * 4, 0.01)
         y1 = np.cos(x)
         y2 = np.sin(x)

@@ -767,8 +767,8 @@ This demonstration is also an interactive manual, similar to the online <a href=
 
 <span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
     <span class="tok-k">global</span> <span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span> <span class="tok-n">phase</span><span class="tok-p">,</span> <span class="tok-n">t0</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y</span>
-    <span class="tok-c1"># By setting fpsIdle = 0, we make sure that the animation is smooth</span>
-    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">fps_idle</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+    <span class="tok-c1"># Make sure that the animation is smooth</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">fps_idling</span><span class="tok-o">.</span><span class="tok-n">enable_idling</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
 
     <span class="tok-n">t</span> <span class="tok-o">=</span> <span class="tok-n">time</span><span class="tok-o">.</span><span class="tok-n">time</span><span class="tok-p">()</span>
     <span class="tok-n">phase</span> <span class="tok-o">+=</span> <span class="tok-p">(</span><span class="tok-n">t</span> <span class="tok-o">-</span> <span class="tok-n">t0</span><span class="tok-p">)</span> <span class="tok-o">*</span> <span class="tok-n">heart_pulse_rate</span> <span class="tok-o">/</span> <span class="tok-p">(</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
@@ -821,8 +821,8 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">80.</span><span class="tok-p">;</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">gui</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-c1">// By setting fpsIdle = 0, we make sure that the animation is smooth</span>
-<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">fpsIdle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.f</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-c1">// Make sure that the animation is smooth</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">fpsIdling</span><span class="tok-p">.</span><span class="tok-n">enableIdling</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
 
 <span class="tok-w">        </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">ClockSeconds</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">        </span><span class="tok-n">phase</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">t0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-p">)</span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">2.</span><span class="tok-p">);</span><span class="tok-w"></span>
@@ -860,100 +860,100 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>./
-├── Readme.md -&gt; bindings/imgui_bundle/Readme.md           <span class="tok-c1"># doc</span>
-├── Readme_devel.md
-│
-├── _example_integration/                                   <span class="tok-c1"># Demonstrate how to easily use</span>
-│         ├── CMakeLists.txt                                <span class="tok-c1"># imgui_bundle in a C++ app</span>
-│         ├── assets/
-│         └── hello_world.main.cpp
-│
-├── imgui_bundle_cmake/                                     <span class="tok-c1"># imgui_bundle_add_app() :</span>
-│         │                                                 <span class="tok-c1"># a cmake function you can use</span>
-│         └── imgui_bundle_add_app.cmake                    <span class="tok-c1"># to create an app in one line</span>
-│
-├── bindings/                                               <span class="tok-c1"># root for the python bindings</span>
-│         └── imgui_bundle/
-│                  ├── assets/                              <span class="tok-c1"># assets/ folder: you need to</span>
-│                  │                                        <span class="tok-c1"># copy this folder</span>
-│                  │                                        <span class="tok-c1"># into your app folder if you</span>
-│                  │                                        <span class="tok-c1"># intend to use markdown</span>
-│                  │
-│                  ├── demos_assets/                        <span class="tok-c1"># assets used by demos</span>
-│                  ├── demos_cpp/                           <span class="tok-c1"># lots of C++ demos</span>
-│                  ├── demos_python/                        <span class="tok-c1"># lots of python demos</span>
-│                  ├── imgui/                               <span class="tok-c1"># imgui stubs</span>
-│                  │     ├── __init__.pyi
-│                  │     ├── backends.pyi
-│                  │     ├── internal.pyi
-│                  │     └── py.typed
-│                  ├── implot.pyi                           <span class="tok-c1"># implot stubs</span>
-│                  ├── __init__.py
-│                  ├── __init__.pyi
-│                  ├── hello_imgui.pyi
-│                  ├── ...                                  <span class="tok-c1"># lots of other libs stubs</span>
-│                  ├── ...
-│                  ├── ...
-│                  ├── immapp/                              <span class="tok-c1"># immapp: immediate app</span>
-│                  │        │                               <span class="tok-c1"># utilities</span>
-│                  │        ├── __init__.py
-│                  │        ├── __init__.pyi
-│                  │        ├── icons_fontawesome.py
-│                  │        ├── immapp_cpp.pyi
-│                  │        ├── immapp_utils.py
-│                  │        └── py.typed
-│                  ├── _imgui_bundle.cpython-38-darwin.so  <span class="tok-c1"># imGui_bundle python</span>
-│                  │                                       <span class="tok-c1"># dynamic library</span>
-│                  ├── glfw_utils.py
-│                  └── py.typed
-│
-│
-├── cmake/                                                 <span class="tok-c1"># Private cmake utilities</span>
-│         ├── add_imgui.cmake
-│         └── ...
-│
-├── external/                                              <span class="tok-c1"># Root of all bound libraries</span>
-│         ├── CMakeLists.txt
-│         ├── imgui/                                       <span class="tok-c1"># ImGui root</span>
-│         │         ├── bindings/                          <span class="tok-c1"># ImGui bindings</span>
-│         │         └── imgui/                             <span class="tok-c1"># ImGui submodule</span>
-│         ├── ImGuizmo/
-│         │         ├── bindings/                          <span class="tok-c1"># ImGuizmo bindings</span>
-│         │         ├── ImGuizmo/                          <span class="tok-c1"># ImGuizmo submodule</span>
-│         │         └── ImGuizmoPure/                      <span class="tok-c1"># Manual wrappers to help</span>
-│         │                                                <span class="tok-c1"># bindings generation</span>
-│         │
-│         ├── ... lots of other bound libraries/           <span class="tok-c1"># Lots of other bound libraries</span>
-│         │         ├── <span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
-│         │         └── bindings/
-│         │
-│         ├── _doc/
-│         │
-│         ├── bindings_generation/                         <span class="tok-c1"># Script to generate bindings</span>
-│         │         │                                      <span class="tok-c1"># and to facilitate external</span>
-│         │         ├── __init__.py                        <span class="tok-c1"># libraries update</span>
-│         │         ├── all_external_libraries.py
-│         │         ├── autogenerate_all.py
-│         │         └── ...
-│         │
-│         ├── SDL/SDL/                                     <span class="tok-c1"># Linked library (without</span>
-│         │                                                <span class="tok-c1"># python bindings)</span>
-│         ├── fplus/fplus/                                 <span class="tok-c1"># Library without bindings</span>
-│         └── glfw/glfw                                    <span class="tok-c1"># Library without bindings</span>
-│
-├── lg_cmake_utils/                                        <span class="tok-c1"># Cmake utils for bindings</span>
-│         │                                                <span class="tok-c1"># generation</span>
-│         ├── lg_cmake_utils.cmake
-│         ├── ...
-│
-├── pybind_native_debug/
-│         ├── CMakeLists.txt
-│         ├── Readme.md
-│         ├── pybind_native_debug.cpp
-│         └── pybind_native_debug.py
-│
-├── src/
-│         └── imgui_bundle/                               <span class="tok-c1"># main cpp library: almost empty,</span>
++-- Readme.md -&gt; bindings/imgui_bundle/Readme.md           <span class="tok-c1"># doc</span>
++-- Readme_devel.md
+<span class="tok-p">|</span>
++-- _example_integration/                                   <span class="tok-c1"># Demonstrate how to easily use</span>
+<span class="tok-p">|</span>         +-- CMakeLists.txt                                <span class="tok-c1"># imgui_bundle in a C++ app</span>
+<span class="tok-p">|</span>         +-- assets/
+<span class="tok-p">|</span>         +-- hello_world.main.cpp
+<span class="tok-p">|</span>
++-- imgui_bundle_cmake/                                     <span class="tok-c1"># imgui_bundle_add_app() :</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                 <span class="tok-c1"># a cmake function you can use</span>
+<span class="tok-p">|</span>         +-- imgui_bundle_add_app.cmake                    <span class="tok-c1"># to create an app in one line</span>
+<span class="tok-p">|</span>
++-- bindings/                                               <span class="tok-c1"># root for the python bindings</span>
+<span class="tok-p">|</span>         +-- imgui_bundle/
+<span class="tok-p">|</span>                  +-- assets/                              <span class="tok-c1"># assets/ folder: you need to</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># copy this folder</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># into your app folder if you</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># intend to use markdown</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>
+<span class="tok-p">|</span>                  +-- demos_assets/                        <span class="tok-c1"># assets used by demos</span>
+<span class="tok-p">|</span>                  +-- demos_cpp/                           <span class="tok-c1"># lots of C++ demos</span>
+<span class="tok-p">|</span>                  +-- demos_python/                        <span class="tok-c1"># lots of python demos</span>
+<span class="tok-p">|</span>                  +-- imgui/                               <span class="tok-c1"># imgui stubs</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- __init__.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- backends.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- internal.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- py.typed
+<span class="tok-p">|</span>                  +-- implot.pyi                           <span class="tok-c1"># implot stubs</span>
+<span class="tok-p">|</span>                  +-- __init__.py
+<span class="tok-p">|</span>                  +-- __init__.pyi
+<span class="tok-p">|</span>                  +-- hello_imgui.pyi
+<span class="tok-p">|</span>                  +-- ...                                  <span class="tok-c1"># lots of other libs stubs</span>
+<span class="tok-p">|</span>                  +-- ...
+<span class="tok-p">|</span>                  +-- ...
+<span class="tok-p">|</span>                  +-- immapp/                              <span class="tok-c1"># immapp: immediate app</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        <span class="tok-p">|</span>                               <span class="tok-c1"># utilities</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- __init__.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- __init__.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- icons_fontawesome.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- immapp_cpp.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- immapp_utils.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- py.typed
+<span class="tok-p">|</span>                  +-- _imgui_bundle.cpython-38-darwin.so  <span class="tok-c1"># imGui_bundle python</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                       <span class="tok-c1"># dynamic library</span>
+<span class="tok-p">|</span>                  +-- glfw_utils.py
+<span class="tok-p">|</span>                  +-- py.typed
+<span class="tok-p">|</span>
+<span class="tok-p">|</span>
++-- cmake/                                                 <span class="tok-c1"># Private cmake utilities</span>
+<span class="tok-p">|</span>         +-- add_imgui.cmake
+<span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>
++-- external/                                              <span class="tok-c1"># Root of all bound libraries</span>
+<span class="tok-p">|</span>         +-- CMakeLists.txt
+<span class="tok-p">|</span>         +-- imgui/                                       <span class="tok-c1"># ImGui root</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/                          <span class="tok-c1"># ImGui bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- imgui/                             <span class="tok-c1"># ImGui submodule</span>
+<span class="tok-p">|</span>         +-- ImGuizmo/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/                          <span class="tok-c1"># ImGuizmo bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ImGuizmo/                          <span class="tok-c1"># ImGuizmo submodule</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ImGuizmoPure/                      <span class="tok-c1"># Manual wrappers to help</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># bindings generation</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- ... lots of other bound libraries/           <span class="tok-c1"># Lots of other bound libraries</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- <span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- _doc/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- bindings_generation/                         <span class="tok-c1"># Script to generate bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         <span class="tok-p">|</span>                                      <span class="tok-c1"># and to facilitate external</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- __init__.py                        <span class="tok-c1"># libraries update</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- all_external_libraries.py
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- autogenerate_all.py
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- SDL/SDL/                                     <span class="tok-c1"># Linked library (without</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># python bindings)</span>
+<span class="tok-p">|</span>         +-- fplus/fplus/                                 <span class="tok-c1"># Library without bindings</span>
+<span class="tok-p">|</span>         +-- glfw/glfw                                    <span class="tok-c1"># Library without bindings</span>
+<span class="tok-p">|</span>
++-- lg_cmake_utils/                                        <span class="tok-c1"># Cmake utils for bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># generation</span>
+<span class="tok-p">|</span>         +-- lg_cmake_utils.cmake
+<span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>
++-- pybind_native_debug/
+<span class="tok-p">|</span>         +-- CMakeLists.txt
+<span class="tok-p">|</span>         +-- Readme.md
+<span class="tok-p">|</span>         +-- pybind_native_debug.cpp
+<span class="tok-p">|</span>         +-- pybind_native_debug.py
+<span class="tok-p">|</span>
++-- src/
+<span class="tok-p">|</span>         +-- imgui_bundle/                               <span class="tok-c1"># main cpp library: almost empty,</span>
                                                           <span class="tok-c1"># but linked to all external libraries</span></code></pre>
 </div>
 </div>
@@ -1244,7 +1244,7 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <div class="sect2">
 <h3 id="_immapp_immediate_app">ImmApp - Immediate App</h3>
 <div class="paragraph">
-<p>ImGui Bundle include a sub library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
+<p>ImGui Bundle includes a library named ImmApp (which stand for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.</p>
 </div>
 <div class="sect3">
 <h4 id="_api_2">API</h4>
@@ -1281,9 +1281,8 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 
 <span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-c1">// This call is specific to the ImGui Bundle interactive manual</span>
-<span class="tok-w">    </span><span class="tok-c1">// In a standard application, you could write:</span>
-<span class="tok-w">    </span><span class="tok-c1">//         HelloImGui::SetAssetsFolder(&quot;my_assets&quot;); // By default, HelloImGui will search inside &quot;assets&quot;</span>
+<span class="tok-w">    </span><span class="tok-c1">// This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:</span>
+<span class="tok-w">    </span><span class="tok-c1">//         HelloImGui::SetAssetsFolder(&quot;my_assets&quot;); // (By default, HelloImGui will search inside &quot;assets&quot;)</span>
 <span class="tok-w">    </span><span class="tok-n">ChdirBesideAssetsFolder</span><span class="tok-p">();</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">constexpr</span><span class="tok-w"> </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">3.1415926535897932384626433</span><span class="tok-p">;</span><span class="tok-w"></span>
@@ -1323,10 +1322,10 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 
 
 <span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
-    <span class="tok-c1"># This call is specific to the ImGui Bundle interactive manual</span>
-    <span class="tok-c1"># In a standard application, you could write:</span>
-    <span class="tok-c1">#         hello_imgui.set_assets_folder(&quot;my_assets&quot;); // By default, HelloImGui will search inside &quot;assets&quot;</span>
+    <span class="tok-c1"># This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:</span>
+    <span class="tok-c1">#         hello_imgui.set_assets_folder(&quot;my_assets&quot;); # (By default, HelloImGui will search inside &quot;assets&quot;)</span>
     <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
+
     <span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">4</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
     <span class="tok-n">y1</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
     <span class="tok-n">y2</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>

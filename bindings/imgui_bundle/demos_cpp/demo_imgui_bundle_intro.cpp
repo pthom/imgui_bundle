@@ -69,8 +69,12 @@ void demo_imgui_bundle_intro()
 
     if (ImGui::CollapsingHeader("Introduction"))
         ShowMarkdownDocFile("ibd_intro");
+    if (ImGui::CollapsingHeader("Repository folders structure"))
+        ShowMarkdownDocFile("ibd_folders_structure");
+    if (ImGui::CollapsingHeader("Build and install instruction"))
+        ShowMarkdownDocFile("ibd_install");
 
-    if (ImGui::CollapsingHeader("Immediate mode gui"))
+    if (ImGui::CollapsingHeader("Dear ImGui - Immediate gui"))
     {
         auto immediate_gui_example = []() {
             // Display a text
@@ -91,6 +95,12 @@ void demo_imgui_bundle_intro()
         immediate_gui_example();
         ImGui::Separator();
     }
+
+    if (ImGui::CollapsingHeader("Hello ImGui - Starter pack"))
+        ShowMarkdownDocFile("ibd_manual_himgui");
+
+    if (ImGui::CollapsingHeader("ImmApp - Immediate App"))
+        ShowMarkdownDocFile("ibd_manual_immapp");
 
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))
         ShowPortingAdvices();
