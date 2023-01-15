@@ -108,9 +108,7 @@ macro(immvision_fetch_opencv_from_source)
     # It is so minimalist that it is only usable within the python bindings!!!
     # It will contain only opencv_core (core), opencv_imgcodecs (load/save), and opencv_imgproc (affine transforms, etc)
     # Mainly used for wheel builds.
-    if ("$ENV{IMGUIBUNDLE_OPENCV_FETCH_SOURCE}" OR IMGUIBUNDLE_OPENCV_FETCH_SOURCE)
-        message("FIND OPENCV use immvision_fetch_opencv_from_source")
-
+    if ("$ENV{IMGUI_BUNDLE_FETCH_OPENCV}" OR IMGUI_BUNDLE_FETCH_OPENCV)
         # Build opencv with only opencv_core, opencv_imgproc and opencv_imgcodecs
         set(opencv_cmake_args -DCMAKE_BUILD_TYPE=Release -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_1394=OFF -DWITH_AVFOUNDATION=OFF -DWITH_CAP_IOS=OFF -DWITH_VTK=OFF -DWITH_CUDA=OFF -DWITH_CUFFT=FALSE -DWITH_CUBLAS=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_HALIDE=OFF -DWITH_VULKAN=OFF -DWITH_OPENEXR=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_opencv_features2d=OFF -DBUILD_opencv_calib3d=OFF -DBUILD_opencv_dnn=OFF -DBUILD_opencv_flann=OFF -DBUILD_opencv_gapi=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_objc=OFF -DBUILD_opencv_objdetect=OFF -DBUILD_opencv_photo=OFF -DBUILD_opencv_python=OFF -DBUILD_opencv_stiching=OFF -DBUILD_opencv_video=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_js=OFF)
 
@@ -313,9 +311,9 @@ macro(immvision_find_opencv)
     endif()
 
     find_package(OpenCV)
-    if (NOT OpenCV_FOUND)
-        immvision_try_install_opencv_with_conan() # Will try to install OpenCV with Conan
-    endif()
+#    if (NOT OpenCV_FOUND)
+#        immvision_try_install_opencv_with_conan() # Will try to install OpenCV with Conan
+#    endif()
 
     find_package(OpenCV)
     if (NOT OpenCV_FOUND)
