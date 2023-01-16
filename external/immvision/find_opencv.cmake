@@ -56,29 +56,27 @@ macro(immvision_forward_opencv_env_variables)
 endmacro()
 
 
-macro(immvision_download_opencv_static_package_win)
+macro(immvision_download_opencv_official_package_win)
     # Download a precompiled version of opencv4.6.0
     # This is the official release from OpenCV for windows, under the form of a "opencv_world.dll"
     # The zip package we download is just a transcription of the exe provided by OpenCV, with the advantage that
     # it does not require any user click.
     # Mainly used for wheel builds, but can be used by windows users for their pip build from source
-    if ("$ENV{IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460}" OR IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460)
-        message("FIND OPENCV use immvision_download_opencv_static_package_win")
+    message("FIND OPENCV use immvision_download_opencv_official_package_win")
 
-        include(FetchContent)
-        Set(FETCHCONTENT_QUIET FALSE)
-        FetchContent_Declare(
-            opencv_static_package_win
-            URL https://github.com/pthom/imgui_bundle/releases/download/v0.6.6/opencv-4.6.0_official_win_x64_world.zip
-            URL_MD5 a9d92bdf8510d09c3bf3cb080731ea91
-            DOWNLOAD_EXTRACT_TIMESTAMP ON
-        )
-        FetchContent_MakeAvailable(opencv_static_package_win)
-        set(opencv_static_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_static_package_win-src/opencv/build)
-        message(WARNING "opencv_static_package_win_dir=${opencv_static_package_win_dir}")
-        set(OpenCV_DIR ${opencv_static_package_win_dir})
-        set(OpenCV_STATIC ON)
-    endif()
+    include(FetchContent)
+    Set(FETCHCONTENT_QUIET FALSE)
+    FetchContent_Declare(
+        opencv_official_package_win
+        URL https://github.com/pthom/imgui_bundle/releases/download/v0.6.6/opencv-4.6.0_official_win_x64_world.zip
+        URL_MD5 a9d92bdf8510d09c3bf3cb080731ea91
+        DOWNLOAD_EXTRACT_TIMESTAMP ON
+    )
+    FetchContent_MakeAvailable(opencv_official_package_win)
+    set(opencv_official_package_win_dir ${CMAKE_BINARY_DIR}/_deps/opencv_official_package_win-src/opencv/build)
+    message(WARNING "opencv_official_package_win_dir=${opencv_official_package_win_dir}")
+    set(OpenCV_DIR ${opencv_official_package_win_dir})
+    # set(OpenCV_STATIC ON)
 endmacro()
 
 
@@ -278,7 +276,7 @@ macro(immvision_find_opencv)
                 set(fetch_opencv ON)
             endif()
             if(WIN32 AND fetch_opencv)
-                immvision_download_opencv_static_package_win() # will download prebuilt package
+                immvision_download_opencv_official_package_win() # will download prebuilt package
                 # immvision_forward_opencv_env_variables()
             elseif(fetch_opencv)
                 immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUI_BUNDLE_FETCH_OPENCV
@@ -304,7 +302,7 @@ macro(immvision_find_opencv)
     endif()
 
     # Under windows install dll opencv_worldxxx.dll to package
-    if (WIN32)
+    if (WIN32 AND OpenCV_FOUND)
         set(immvision_OpenCV_DLL_PATH "${OpenCV_LIB_PATH}/../bin")
         message("immvision_OpenCV_DLL_PATH=${immvision_OpenCV_DLL_PATH}")
         file(GLOB immvision_opencv_world_dll ${immvision_OpenCV_DLL_PATH}/opencv_world*.dll)

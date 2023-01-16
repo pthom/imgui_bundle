@@ -91,7 +91,6 @@ cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERAT
 ````
 F:\Utils\Python311-amd64\python.exe -m venv venv_x64
 .\venv_x64\Scripts\activate
-Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:\dvp\_opencv\opencv-4.6.0_official_win_x64_world\opencv\build'
 pip install -v .
 pip install opencv-contrib-python
 demo_imgui_bundle
