@@ -1,9 +1,13 @@
 #include "imgui.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui_internal.h"
 #include "imgui/misc/cpp/imgui_stdlib.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
+#include "immapp/clock.h"
 #include "demo_utils/api_demos.h"
+#include "demo_utils/animate_logo.h"
 
 #include <string>
 
@@ -108,4 +112,5 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("Words from the author"))
         ShowMarkdownDocFile("ibd_words_author");
 
+    AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.45f);
 }

@@ -1,4 +1,5 @@
-from imgui_bundle import imgui, imgui_md, immapp
+from imgui_bundle import imgui, imgui_md, immapp, ImVec2
+from imgui_bundle.demos_python import demo_utils
 
 
 def demo_gui():
@@ -12,6 +13,7 @@ def demo_gui():
     )
     imgui.show_demo_window()
 
+    demo_utils.animate_logo("images/logo_imgui_600.png", 2., ImVec2(1., 4.8), 0.95)
 
 if __name__ == "__main__":
     immapp.run(gui_function=demo_gui, with_markdown=True, window_size=(800, 600))  # type: ignore
