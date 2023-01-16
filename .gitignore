@@ -155,6 +155,7 @@ MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
 /_icons_test/
+_logos_brainstorm/
 /*.json
 poub/
 /wheelhouse/
