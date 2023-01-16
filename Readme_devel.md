@@ -72,9 +72,31 @@ If you want immvision, install OpenCV prior to this, and under windows, set the 
 Note: if you are on windows ARM64 and want to build for x64 use:
     cmake .. -A x64
 
+=========================================================================================================================================
+
 # Windows ARM64 specific instructions
 
 There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.
+
+-------------------------------------------------------------------------------------------------
+Summary (private note for this library author):
+- Cpp: use ARM64 build
+
+````
+cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DIMGUI_BUNDLE_WITH_SDL=ON
+````
+
+- Python: prefer python x64 aka amd64 (because numpy does not work on python arm64)
+
+````
+F:\Utils\Python311-amd64\python.exe -m venv venv_x64
+.\venv_x64\Scripts\activate
+Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:\dvp\_opencv\opencv-4.6.0_official_win_x64_world\opencv\build'
+pip install -v .
+pip install opencv-contrib-python
+demo_imgui_bundle
+````
+-------------------------------------------------------------------------------------------------
 
 
 ## Using a "world" dll version of OpenCV 
@@ -217,25 +239,7 @@ Explanations:
 * BUILD_SHARED_LIBS=OFF: build static libs. Normally, this could be ignored
   
 
-
-# Private note for this library author :  
-
-- Cpp: use ARM64 build
-
-````
-cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DHELLOIMGUI_BUILD_DEMOS=ON
-````
-
-- Python: prefer python x64 (because numpy does not work on python arm64)
-
-````
-F:\Utils\Python311-amd64\python.exe -m venv venv_arm
-.\venv_amd\Scripts\activate
-Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:\dvp\_opencv\opencv-4.6.0_official_win_x64_world\opencv\build'
-pip install -v .
-````
-
-
+===================================================================================================================
 
 # imgui bundle package distribution
 ## Build / Mac arm64 via cibuildwheel
