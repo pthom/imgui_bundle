@@ -1,6 +1,6 @@
 from imgui_bundle import imgui, imgui_md, hello_imgui
 from imgui_bundle.demos_python.demo_utils.api_demos import show_markdown_file
-from imgui_bundle import immapp
+from imgui_bundle import immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils
 
 
@@ -138,6 +138,8 @@ def demo_gui() -> None:
 
     if imgui.collapsing_header("Words from the author"):
         show_markdown_file("ibd_words_author")
+
+    demo_utils.animate_logo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5, 3.), 0.45);
 
 
 if __name__ == "__main__":

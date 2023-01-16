@@ -25,10 +25,10 @@ pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
 echo "Generating $gh_pages_dir/index.html (for github pages)"
 asciidoctor --attribute env_gh_pages=1 Readme_source.adoc -o $gh_pages_dir/index.html
 
-# Generate markdowns doc for demo_imgui_bundle
+# Generate markdowns doc for demo_imgui_bundle (env_demo_markdown)
 echo "Generate markdowns doc for demo_imgui_bundle"
 for doc_file in imgui_bundle_demo_parts/*.adoc; do
-asciidoctor -b docbook $doc_file -o $doc_file.xml
+asciidoctor --attribute env_demo_markdown=1 -b docbook $doc_file -o $doc_file.xml
 # Note: -t markdown-header_attributes means "output markdown, without the extension header_attributes"
 # (see extensions here: https://boisgera.github.io/pandoc/markdown/#extension-auto_identifiers
 #  and https://pandoc.org/MANUAL.html#general-options)

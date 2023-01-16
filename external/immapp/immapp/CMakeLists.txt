@@ -1,11 +1,4 @@
-file(GLOB sources_root *.cpp *.h)
-file(GLOB sources_visual_prog visual_prog/*.cpp visual_prog/*.h)
-file(GLOB sources_computer_vision visual_prog/computer_vision/*.cpp visual_prog/computer_vision/*.h)
-set(sources ${sources_root} ${sources_visual_prog})
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    set(sources ${sources} ${sources_computer_vision})
-endif()
-
+file(GLOB_RECURSE sources *.cpp *.h)
 add_library(immapp STATIC ${sources})
 
 target_include_directories(immapp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)

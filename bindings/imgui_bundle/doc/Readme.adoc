@@ -16,6 +16,7 @@
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 :_badge-sources: {url-doc-images}/badge_view_sources.png
@@ -42,6 +43,7 @@ TIP: For a more readable version of this document, click on {btn-doc}
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -54,6 +56,10 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
 
 ****
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+
+image::{url-logo}["abc", 150]
+
 ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
@@ -70,6 +76,7 @@ ImGui Bundle: easily create ImGui applications in Python and C++. Batteries incl
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -156,6 +163,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -421,6 +429,7 @@ int main(int , char *[]) {
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -468,6 +477,7 @@ TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -528,6 +538,7 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -593,6 +604,7 @@ image::{url-doc-images}/immediate_gui_example.png[]
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -628,6 +640,7 @@ TIP: HelloImGui is fully configurable by POD (plain old data) structures. See li
 :url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
@@ -869,7 +882,7 @@ glfw.set_window_size_callback(window, my_window_size_callback)
 
 CAUTION: It is important to import glfw _after_ imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
 
-== Words from the author
+== Closing words
 
 === Who is this project for
 

@@ -1,3 +1,5 @@
+![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)
+
 ImGui Bundle: easily create ImGui applications in Python and C++.
 Batteries included!
 
@@ -531,7 +533,7 @@ It is important to import glfw *after* imgui\_bundle, since - upon
 import - imgui\_bundle informs glfw that it shall use its own version of
 the glfw dynamic library.
 
-# Words from the author
+# Closing words
 
 ## Who is this project for
 

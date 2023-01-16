@@ -4,7 +4,7 @@ from imgui_bundle.demos_python.demo_utils.api_demos import (
     show_python_vs_cpp_and_run,
     show_python_vs_cpp_file,
     set_hello_imgui_demo_assets_folder,
-    demos_assets_folder
+    demos_assets_folder,
 )
-
+from imgui_bundle.demos_python.demo_utils.animate_logo import animate_logo
 set_hello_imgui_demo_assets_folder()
