@@ -37,7 +37,7 @@ void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction)
 
 int main(int, char **)
 {
-    HelloImGui::SetAssetsFolder(DemosAssetsFolder());
+    ChdirBesideAssetsFolder();
     //###############################################################################################
     // Part 1: Define the runner params
     //###############################################################################################
