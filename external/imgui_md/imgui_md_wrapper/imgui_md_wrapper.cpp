@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
 #include "immapp/code_utils.h"
+#include "immapp/browse_to_url.h"
 
 #include <fplus/fplus.hpp>
 #include <string>
@@ -16,44 +17,6 @@
 #include <iostream>
 #include <cassert>
 
-// [sub section]  BrowseToUrl()
-// A platform specific utility to open an url in a browser
-// (especially useful with emscripten version)
-// Specific per platform includes for BrowseToUrl
-#if defined(__EMSCRIPTEN__)
-#include <emscripten.h>
-#elif defined(_WIN32)
-#include <windows.h>
-#include <Shellapi.h>
-#elif defined(__APPLE__)
-#include <TargetConditionals.h>
-#endif
-
-
-namespace ImGuiMdBrowser
-{
-    void BrowseToUrl(const char *url)
-    {
-#if defined(__EMSCRIPTEN__)
-        char js_command[1024];
-    snprintf(js_command, 1024, "window.open(\"%s\");", url);
-    emscripten_run_script(js_command);
-#elif defined(_WIN32)
-        ShellExecuteA( NULL, "open", url, NULL, NULL, SW_SHOWNORMAL );
-#elif TARGET_OS_IPHONE
-        // Nothing on iOS
-#elif TARGET_OS_OSX
-        char cmd[1024];
-        snprintf(cmd, 1024, "open %s", url);
-        system(cmd);
-#elif defined(__linux__)
-        char cmd[1024];
-    snprintf(cmd, 1024, "xdg-open %s", url);
-    int r = system(cmd);
-    (void) r;
-#endif
-    }
-}
 
 namespace ImGuiMd
 {
@@ -413,7 +376,7 @@ assets/
             std::cerr << "ImGuiMd::OnOpenLink_Default url \"" << url << "\" should start with http!\n";
             return;
         }
-        ImGuiMdBrowser::BrowseToUrl(url.c_str());
+        ImmApp::BrowseToUrl(url.c_str());
     }
 
 
