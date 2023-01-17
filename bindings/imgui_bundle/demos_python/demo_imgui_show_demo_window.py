@@ -12,8 +12,7 @@ def demo_gui():
     """
     )
     imgui.show_demo_window()
-
-    demo_utils.animate_logo("images/logo_imgui_600.png", 2., ImVec2(1., 4.8), 0.95)
+    demo_utils.animate_logo("images/logo_imgui_600.png", 2., ImVec2(1., 4.8), 0.45, "https://github.com/ocornut/imgui")
 
 if __name__ == "__main__":
     immapp.run(gui_function=demo_gui, with_markdown=True, window_size=(800, 600))  # type: ignore

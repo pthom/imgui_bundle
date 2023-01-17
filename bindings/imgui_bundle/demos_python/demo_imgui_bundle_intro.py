@@ -136,10 +136,10 @@ def demo_gui() -> None:
     if imgui.collapsing_header("Advanced glfw callbacks"):
         show_glfw_callback_advice()
 
-    if imgui.collapsing_header("Words from the author"):
+    if imgui.collapsing_header("Closing words"):
         show_markdown_file("ibd_words_author")
 
-    demo_utils.animate_logo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5, 3.), 0.45);
+    demo_utils.animate_logo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5, 3.), 0.30, "https://github.com/pthom/imgui_bundle");
 
 
 if __name__ == "__main__":
