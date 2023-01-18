@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 def _set_glfw_pip_search_path():
     """Sets os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip uses our glfw library.
 

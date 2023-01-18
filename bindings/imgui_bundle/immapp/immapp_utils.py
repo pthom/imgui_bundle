@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import Callable, Any, Tuple, Optional
 import imgui_bundle
 from imgui_bundle import immapp, hello_imgui

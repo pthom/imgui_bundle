@@ -1,12 +1,9 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import Dict
 copyright_str = "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle"
 
 import os
 from bindings_generation import paths, all_external_libraries
-
-
-for lib in all_external_libraries.ALL_LIBS:
-    print(lib.base_folder_abs_path())
 
 
 directories = """
@@ -77,8 +74,8 @@ directories = """
 extensions = set()
 
 extensionCommentMarkers: Dict[str, str] = {
-    "pyi": "#",
-    # "py": "#",
+    # "pyi": "#",
+    "py": "#",
     # "cpp": "//",
     # "h": "//",
     # "cmake": "#",
@@ -109,5 +106,3 @@ for directory in directories:
         full_file_path = full_dir_path + "/" + file
         if os.path.isfile(full_file_path):
             add_copyright(full_file_path)
-
-print(extensions)

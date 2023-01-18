@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import math
 import numpy as np
 from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
