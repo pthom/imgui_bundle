@@ -1,6 +1,6 @@
 #include "imgui_bundle/imgui_bundle.h"
 
-int SomeCompilersDoNotLikeEmptyFiles()
+int SomeCompilersDoNotLikeEmptyLibraries()
 {
-    return 42;
+    return 0;
 }
