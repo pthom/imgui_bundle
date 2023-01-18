@@ -1,3 +1,4 @@
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "imgui.h"
 #include "demo_utils/animate_logo.h"
