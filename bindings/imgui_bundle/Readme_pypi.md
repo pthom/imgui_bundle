@@ -294,7 +294,7 @@ description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/he
 
 ## ImmApp - Immediate App
 
-ImGui Bundle includes a library named ImmApp (which stand for Immediate
+ImGui Bundle includes a library named ImmApp (which stands for Immediate
 App). ImmApp is a thin extension of HelloImGui that enables to easily
 initialize the ImGuiBundle addons that require additional setup at
 startup
