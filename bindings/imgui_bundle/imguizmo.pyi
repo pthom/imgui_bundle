@@ -115,6 +115,7 @@ class EditableRange:
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/ImCurveEditPure.h                                                         //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmo/ImCurveEdit.h included by ImGuizmoPure/ImCurveEditPure.h                      //
@@ -150,6 +151,7 @@ class EditableRange:
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/Editable.h included by ImGuizmoPure/ImCurveEditPure.h                     //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #
 # Several utilities to help the use of the Immediate Gui paradigm in the context of pure functions
 # (i.e. one input, one output, no modifiable parameter)
@@ -261,6 +263,7 @@ class im_curve_edit:  # Proxy class that introduces typings for the *submodule* 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/Editable.h included by ImGuizmoPure/ImGradientPure.h                      //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #
 # Several utilities to help the use of the Immediate Gui paradigm in the context of pure functions
 # (i.e. one input, one output, no modifiable parameter)
@@ -347,6 +350,7 @@ class im_gradient:  # Proxy class that introduces typings for the *submodule* im
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/Editable.h included by ImGuizmoPure/ImZoomSliderPure.h                    //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #
 # Several utilities to help the use of the Immediate Gui paradigm in the context of pure functions
 # (i.e. one input, one output, no modifiable parameter)
@@ -403,6 +407,7 @@ class im_zoom_slider:  # Proxy class that introduces typings for the *submodule*
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/ImGuizmoPure.h                                                            //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -459,6 +464,7 @@ class im_zoom_slider:  # Proxy class that introduces typings for the *submodule*
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/Editable.h included by ImGuizmoPure/ImGuizmoPure.h                        //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #
 # Several utilities to help the use of the Immediate Gui paradigm in the context of pure functions
 # (i.e. one input, one output, no modifiable parameter)

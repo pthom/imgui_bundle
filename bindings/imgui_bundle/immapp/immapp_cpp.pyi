@@ -175,13 +175,13 @@ def default_node_editor_context() -> NodeEditorContext:
 ####################    </generated_from:runner.h>    ####################
 
 
-####################    <generated_from:utils.h>    ####################
+####################    <generated_from:clock.h>    ####################
 """ namespace ImmApp"""
 
 def clock_seconds() -> float:
     """Chronometer in seconds"""
     pass
-####################    </generated_from:utils.h>    ####################
+####################    </generated_from:clock.h>    ####################
 
 
 ####################    <generated_from:code_utils.h>    ####################

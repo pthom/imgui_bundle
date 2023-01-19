@@ -22,7 +22,7 @@ MarkdownImageFunction = Callable[[str], MarkdownImage]
 ####################    <generated_from:imgui_md_wrapper.h>    ####################
 class MarkdownFontOptions:
     font_base_path: str = "fonts/Roboto/Roboto"
-    max_header_level: int = 3
+    max_header_level: int = 2
     size_diff_between_levels: float = 1.5
     regular_size: float = 14.5
     def __init__(self) -> None:

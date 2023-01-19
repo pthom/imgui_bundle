@@ -1,4 +1,3 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // THIS FILE WAS GENERATED AUTOMATICALLY. DO NOT EDIT.
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1762,7 +1761,9 @@ struct MobileCallbacks
   since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.
 
 * `PostInit`: *VoidFunction, default=empty*.
-    You can here add a function that will be called once after OpenGL and ImGui are inited
+    You can here add a function that will be called once after OpenGL and ImGui are inited, but before
+    the backend callback are initialized. If you, for instance, want to add your own glfw callbacks,
+    you should use this function to do so."
 
 * `BeforeExit`: *VoidFunction, default=empty*.
     You can here add a function that will be called once before exiting (when OpenGL and ImGui are

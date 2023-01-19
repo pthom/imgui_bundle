@@ -601,13 +601,13 @@ void py_init_module_imgui_node_editor(py::module& m)
 
 
     ////////////////////    <generated_from:node_editor_default_context.h>    ////////////////////
-    m.def("default_node_editor_context_immapp",    // node_editor_default_context.h:8
+    m.def("default_node_editor_context_immapp",    // node_editor_default_context.h:9
         DefaultNodeEditorContext_Immapp, pybind11::return_value_policy::reference);
 
-    m.def("suspend_node_editor_canvas_immapp",    // node_editor_default_context.h:9
+    m.def("suspend_node_editor_canvas_immapp",    // node_editor_default_context.h:10
         SuspendNodeEditorCanvas_Immapp);
 
-    m.def("resume_node_editor_canvas_immapp",    // node_editor_default_context.h:10
+    m.def("resume_node_editor_canvas_immapp",    // node_editor_default_context.h:11
         ResumeNodeEditorCanvas_Immapp);
     ////////////////////    </generated_from:node_editor_default_context.h>    ////////////////////
 

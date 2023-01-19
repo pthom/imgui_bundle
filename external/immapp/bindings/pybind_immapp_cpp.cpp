@@ -109,10 +109,10 @@ void py_init_module_immapp_cpp(py::module& m)
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:utils.h>    ////////////////////
+    ////////////////////    <generated_from:clock.h>    ////////////////////
     m.def("clock_seconds",
         ImmApp::ClockSeconds, "Chronometer in seconds");
-    ////////////////////    </generated_from:utils.h>    ////////////////////
+    ////////////////////    </generated_from:clock.h>    ////////////////////
 
 
     ////////////////////    <generated_from:code_utils.h>    ////////////////////

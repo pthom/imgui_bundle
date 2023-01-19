@@ -934,15 +934,15 @@ def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.
 
 ####################    <generated_from:node_editor_default_context.h>    ####################
 # NodeEditorContext* DefaultNodeEditorContext_Immapp();    /* original C++ signature */
-def default_node_editor_context_immapp() -> NodeEditorContext:  # node_editor_default_context.h:8
+def default_node_editor_context_immapp() -> NodeEditorContext:  # node_editor_default_context.h:9
     pass
 
 # void SuspendNodeEditorCanvas_Immapp();    /* original C++ signature */
-def suspend_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:9
+def suspend_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:10
     pass
 
 # void ResumeNodeEditorCanvas_Immapp();    /* original C++ signature */
-def resume_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:10
+def resume_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:11
     pass
 ####################    </generated_from:node_editor_default_context.h>    ####################
 
