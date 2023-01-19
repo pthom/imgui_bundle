@@ -96,6 +96,7 @@ namespace Snippets
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
             std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;
+            displayedCode += "\n"; // add final empty line, so that the editor shows all
             if (editor.GetText() != displayedCode)
                 editor.SetText(displayedCode);
         }
