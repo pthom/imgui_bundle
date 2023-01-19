@@ -3,7 +3,7 @@ from typing import List
 import sys
 import os
 
-
+VERSION = "0.8.1"  # Remember to mirror changes on line 2 of main CMakeLists!
 THIS_DIR = os.path.dirname(__file__)
 ROOT_PACKAGE_FOLDER = "bindings/imgui_bundle"
 ROOT_PACKAGE_NAME = "imgui_bundle"
@@ -74,7 +74,7 @@ except ImportError:
 
 setup(
     name="imgui-bundle",
-    version="0.8.0",  # Remember to mirror changes on line 2 of main CMakeLists!
+    version=VERSION,
     author="Pascal Thomet",
     author_email="pthomet@gmail.com",
     description="ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!",
