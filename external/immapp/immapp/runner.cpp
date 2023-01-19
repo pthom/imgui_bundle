@@ -98,6 +98,9 @@ namespace ImmApp
             ax::NodeEditor::DestroyEditor(*_NODE_EDITOR_CONTEXT);
             _NODE_EDITOR_CONTEXT = std::nullopt;
         }
+
+        if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
+            ImGuiMd::DeInitializeMarkdown();
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)

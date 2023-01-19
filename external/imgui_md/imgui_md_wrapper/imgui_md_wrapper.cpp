@@ -339,6 +339,10 @@ assets/
     // Global options
     MarkdownOptions gMarkdownOptions;
 
+    void DeInitializeMarkdown()
+    {
+        gMarkdownRenderer.release();
+    }
 
     void InitializeMarkdown(const MarkdownOptions& options)
     {

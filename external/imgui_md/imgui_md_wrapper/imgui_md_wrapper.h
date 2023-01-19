@@ -88,6 +88,7 @@ namespace ImGuiMd
     //
     //        hello_imgui.run(runnerParams)
     void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
+    void DeInitializeMarkdown();
 
     // GetFontLoaderFunction() will return a function that you should call during ImGui initialization.
     VoidFunction GetFontLoaderFunction();
