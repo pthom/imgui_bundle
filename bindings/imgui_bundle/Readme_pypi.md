@@ -661,6 +661,10 @@ Please be tolerant if you find issues! ImGui Bundle is developed for
 free, under a very permissive license, by one main author (and most of
 its API comes from external libraries).
 
+If you need consulting about ImGui Bundle or about the bindings
+generator in the context of a commercial project, please contact me by
+email.
+
 ### History
 
 Three of my past projects gave me the idea to develop this library.
