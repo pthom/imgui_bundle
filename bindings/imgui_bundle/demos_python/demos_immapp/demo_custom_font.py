@@ -27,8 +27,8 @@ def my_load_fonts_manually() -> imgui.ImFont:
     # Note: on high dpi screen, this font might look very small if you do not take into account
     # the font scaling factor, as shown below.
     # HelloImGui provides hello_imgui::dpi_font_loading_factor() which corresponds to:
-    #      `dpi_window_factor() * 1.f / imgui.get_io().font_global_scale`
-    #          where dpi_window_factor() is equal to `current_screen_pixel_per_inch / 96`
+    #      `dpi_window_size_factor() * 1.f / imgui.get_io().font_global_scale`
+    #          where dpi_window_size_factor() is equal to `current_screen_pixel_per_inch / 96` under windows and linux, 1 under macOS
     default_font_config = imgui.ImFontConfig()
     default_font_config.size_pixels = 14. * hello_imgui.dpi_font_loading_factor()
     imgui.get_io().fonts.add_font_default(default_font_config)

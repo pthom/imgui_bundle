@@ -30,7 +30,7 @@ ImFont* MyLoadFontsManually()
     // on high dpi screen, this font might look very small if you do not take into account the font scaling factor, such as show below.
     // HelloImGui provides HelloImGui::DpiFontLoadingFactor() which corresponds to:
     //      `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
-    //          where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
+    //            where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
     static ImFontConfig defaultFontConfig;
     defaultFontConfig.SizePixels = 14.f * HelloImGui::DpiFontLoadingFactor();
     ImGui::GetIO().Fonts->AddFontDefault(&defaultFontConfig);
