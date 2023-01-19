@@ -34,7 +34,7 @@ void demo_node_editor_launcher()
     if (ImGui::CollapsingHeader("demo basic interaction"))
     {
         if (ImGui::Button("Launch demo"))
-            SpawnDemo("demo_imgui_node_editor");
+            SpawnDemo("demo_node_editor_basic");
         ShowPythonVsCppFile("demos_node_editor/demo_node_editor_basic", 30);
     }
     if (ImGui::CollapsingHeader("Haiku - Romeo and Juliet"))
