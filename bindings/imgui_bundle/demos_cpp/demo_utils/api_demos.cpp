@@ -145,28 +145,10 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nbLines)
 }
 
 
-#if defined(__EMSCRIPTEN__)
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-#endif
-
 bool SpawnDemo(const std::string& demoName)
 {
-#ifndef __EMSCRIPTEN__
-    std::string exeFolder = wai_getExecutableFolder_string();
-    std::string exeFile = exeFolder + "/" + demoName;
-#ifdef _WIN32
-    exeFile += ".exe";
-#endif
-    if (std::filesystem::exists(exeFile))
-    {
-        const char *command_line[2] = {exeFile.c_str(), NULL};
-        struct subprocess_s subprocess;
-        subprocess_create(command_line, subprocess_option_no_window, &subprocess);
-        return true;
-    }
-    else
-        return false;
-#else
     // This is for emscripten
     std::string jsCommandTemplate = R"(
         window.open("{demoName}.html", "hello", "width=900,height=600");
@@ -174,15 +156,35 @@ bool SpawnDemo(const std::string& demoName)
     std::string jsCommand = fplus::replace_tokens<std::string>("{demoName}", demoName, jsCommandTemplate);
     printf("%s\n", jsCommand.c_str());
     emscripten_run_script(jsCommand.c_str());
-//    EM_ASM({
-//      console.log('I received: ' + $0);
-//    }, 100);
-//    EM_ASM({
-//        window.open($0, "hello", "width=900,height=600");
-//        );}
     return true;
-#endif
 }
+
+#else
+
+bool SpawnDemo(const std::string& demoName)
+{
+    std::string exeFolder = wai_getExecutableFolder_string();
+    std::string exeFile = exeFolder + "/" + demoName;
+#ifdef _WIN32
+    exeFile += ".exe";
+#endif
+
+    if (std::filesystem::exists(exeFile))
+    {
+        const char *command_line[2] = {exeFile.c_str(), NULL};
+        struct subprocess_s subprocess;
+        printf("subprocess_create\n    %s\n", command_line[0]);
+        #ifdef __linux__
+            system(command_line[0]);
+        #else
+            subprocess_create(command_line, subprocess_option_no_window, &subprocess);
+        #endif
+        return true;
+    }
+    else
+        return false;
+}
+#endif // #ifdef __EMSCRIPTEN__
 
 void ShowMarkdownDocFile(const std::string& doc_file_name)
 {
