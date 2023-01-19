@@ -371,3 +371,22 @@ tar cvfz opencv_emscripten_install.tgz opencv_emscripten_install
 ```
 
 Then upload this to a release archives.
+
+
+# Author private notes
+
+Full build settings:
+
+```bash
+-DSRCMLCPP_BUILD_DEMOS=ON
+-DPYTHON_EXECUTABLE=/Users/pascal/dvp/OpenSource/ImGuiWork/litgen/demos/litgen/imgui_bundle/venv/bin/python
+-DHELLOIMGUI_BUILD_DEMOS=ON
+-DHELLOIMGUI_BUILD_DOCS=ON
+-DIMGUI_BUNDLE_BUILD_DEMOS=ON
+-DIMGUI_BUNDLE_BUILD_PYTHON=ON
+-DIMGUI_BUNDLE_BUILD_FIATLUX=ON
+-DIMGUI_BUNDLE_WITH_SDL=ON
+-DIMGUI_BUNDLE_BUILD_DOC=ON
+-DIMMVISION_ACTIVATE_ALL_WARNINGS=ON
+-DIMMVISION_BUILD_ALL_IN_ONE=ON
+```
