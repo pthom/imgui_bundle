@@ -7,6 +7,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "immapp/clock.h"
+#include "immapp/browse_to_url.h"
 #include "demo_utils/api_demos.h"
 #include "demo_utils/animate_logo.h"
 
@@ -65,12 +66,29 @@ void ShowPortingAdvices()
 }
 
 
+void GuiFrontMatter()
+{
+    ImGuiMd::RenderUnindented(R"(
+    # ImGui Bundle
+    Easily create ImGui applications in Python and C++. Batteries included!
+    )");
+    ImVec2 btnSize = HelloImGui::EmToVec2(0.f, 1.5f);
+    if (HelloImGui::ImageButtonFromAsset("images/badge_view_sources.png", btnSize))
+        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle");
+    ImGui::SameLine();
+    if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
+        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
+    ImGui::SameLine();
+    if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_manual.png", btnSize))
+        ImmApp::BrowseToUrl("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html");
+}
+
+
 void demo_imgui_bundle_intro()
 {
     static AppState app_state;
 
-    ShowMarkdownDocFile("ibd_front_matter");
-    ImGui::Separator();
+    GuiFrontMatter();
 
     if (ImGui::CollapsingHeader("Introduction"))
         ShowMarkdownDocFile("ibd_intro");

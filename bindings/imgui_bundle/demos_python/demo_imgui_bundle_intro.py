@@ -1,4 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+import webbrowser
+
 from imgui_bundle import imgui, imgui_md, hello_imgui
 from imgui_bundle.demos_python.demo_utils.api_demos import show_markdown_file
 from imgui_bundle import immapp, ImVec2
@@ -85,6 +87,22 @@ def show_porting_advices() -> None:
     demo_input_text_upper_case()
 
 
+def gui_front_matter():
+    imgui_md.render_unindented("""
+    # ImGui Bundle
+    Easily create ImGui applications in Python and C++. Batteries included!
+    """);
+    btnSize = hello_imgui.em_to_vec2(0., 1.5)
+    if hello_imgui.image_button_from_asset("images/badge_view_sources.png", btnSize):
+        webbrowser.open("https://github.com/pthom/imgui_bundle");
+    imgui.same_line()
+    if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btnSize):
+        webbrowser.open("https://pthom.github.io/imgui_bundle");
+    imgui.same_line()
+    if hello_imgui.image_button_from_asset("images/badge_interactive_manual.png", btnSize):
+        webbrowser.open("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html");
+
+
 @immapp.static(is_initialized=False)
 def demo_gui() -> None:
     static = demo_gui
@@ -95,8 +113,7 @@ def demo_gui() -> None:
 
     app_state: AppState = static.app_state
 
-    show_markdown_file("ibd_front_matter")
-    imgui.separator()
+    gui_front_matter()
 
     if imgui.collapsing_header("Introduction"):
         show_markdown_file("ibd_intro")
