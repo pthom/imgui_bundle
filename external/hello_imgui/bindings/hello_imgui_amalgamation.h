@@ -2077,7 +2077,7 @@ enum class BackendType
 
 **FpsIdling** is a struct that contains Fps Idling parameters
 
-* `fpsIdle`: _float, default=10_.
+* `fpsIdle`: _float, default=9_.
   ImGui applications can consume a lot of CPU, since they update the screen very frequently.
   In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
   This is ok most of the time but if you are displaying animated widgets (for example a live video),
@@ -2091,7 +2091,7 @@ enum class BackendType
 */
 struct FpsIdling
 {
-    float fpsIdle = 10.f;
+    float fpsIdle = 9.f;
     bool  enableIdling = true;
     bool  isIdling = false;
 };
@@ -2120,16 +2120,7 @@ struct FpsIdling
    Will be set to true by the app when exiting.
    _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
    shall not exit._
-* `fpsIdle`: _float, default=10_.
-  ImGui applications can consume a lot of CPU, since they update the screen very frequently.
-  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
-  This is ok most of the time but if you are displaying animated widgets (for example a live video),
-  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
-  (you can change this value during the execution depending on your application refresh needs)
-* `fpsIdleDisable`: _bool, default=true_.
-  Set this to true to disable idling (this can be changed dynamically during execution)
-* `isIdling`: bool (dynamically updated during execution)
-  This bool will be updated during the application execution, and will be set to true when it is idling.
+* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
 * `emscripten_fps`: _int, default = 0_.
   Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
 @@md
@@ -2142,10 +2133,9 @@ struct RunnerParams
     DockingParams dockingParams;
     BackendPointers backendPointers;
     BackendType backendType = BackendType::FirstAvailable;
-    bool appShallExit = false;
-
     FpsIdling fpsIdling;
 
+    bool appShallExit = false;
     int emscripten_fps = 0;
 };
 
@@ -2166,7 +2156,7 @@ struct RunnerParams
    If true, restore the size and position of the window between runs.
 * `windowSize`: _ScreenSize, default={800, 600}_.
    Size of the window
-* `fpsIdle`: _float, default=10_.
+* `fpsIdle`: _float, default=9_.
    FPS of the application when idle (set to 0 for full speed).
 
 For example, this is sufficient to run an application:
@@ -2195,7 +2185,8 @@ struct SimpleRunnerParams
     bool windowRestorePreviousGeometry = false;
     ScreenSize windowSize = DefaultWindowSize;
 
-    float fpsIdle = 10.f;
+    float fpsIdle = 9.f;
+    bool  enableIdling = true;
 
     RunnerParams ToRunnerParams() const;
 };
@@ -2252,8 +2243,8 @@ Instead you can:
 ### How to load fonts for a crisp font rendering and a correct size
 
 HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
-    `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
-              where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
+    `DpiWindowSizeFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
+              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
 
 ==> When loading fonts, multiply their size by this factor!
 
@@ -2304,14 +2295,13 @@ namespace HelloImGui
     ImVec2 EmToVec2(float x, float y);
     ImVec2 EmToVec2(ImVec2 v);
 
-
     // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
     // (HelloImGui::LoadFontTTF does this by default)
     float DpiFontLoadingFactor();
 
-    // DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.
-    // Under macOS, it will return 1.
-    float DpiWindowFactor();
+    // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+    // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    float DpiWindowSizeFactor();
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //

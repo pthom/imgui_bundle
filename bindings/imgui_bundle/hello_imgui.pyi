@@ -1367,7 +1367,7 @@ class FpsIdling:
 
     **FpsIdling** is a struct that contains Fps Idling parameters
 
-    * `fpsIdle`: _float, default=10_.
+    * `fpsIdle`: _float, default=9_.
       ImGui applications can consume a lot of CPU, since they update the screen very frequently.
       In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
       This is ok most of the time but if you are displaying animated widgets (for example a live video),
@@ -1380,16 +1380,16 @@ class FpsIdling:
     @@md
 
     """
-    # float fpsIdle = 10.f;    /* original C++ signature */
-    fps_idle: float = 10.
+    # float fpsIdle = 9.f;    /* original C++ signature */
+    fps_idle: float = 9.
     # bool  enableIdling = true;    /* original C++ signature */
     enable_idling: bool = True
     # bool  isIdling = false;    /* original C++ signature */
     is_idling: bool = False
-    # FpsIdling(float fpsIdle = 10.f, bool enableIdling = true, bool isIdling = false);    /* original C++ signature */
+    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false);    /* original C++ signature */
     def __init__(
         self,
-        fps_idle: float = 10.,
+        fps_idle: float = 9.,
         enable_idling: bool = True,
         is_idling: bool = False
         ) -> None:
@@ -1421,16 +1421,7 @@ class RunnerParams:
        Will be set to True by the app when exiting.
        _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
        shall not exit._
-    * `fpsIdle`: _float, default=10_.
-      ImGui applications can consume a lot of CPU, since they update the screen very frequently.
-      In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
-      This is ok most of the time but if you are displaying animated widgets (for example a live video),
-      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
-      (you can change this value during the execution depending on your application refresh needs)
-    * `fpsIdleDisable`: _bool, default=true_.
-      Set this to True to disable idling (this can be changed dynamically during execution)
-    * `isIdling`: bool (dynamically updated during execution)
-      This bool will be updated during the application execution, and will be set to True when it is idling.
+    * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
     * `emscripten_fps`: _int, default = 0_.
       Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
     @@md
@@ -1448,15 +1439,14 @@ class RunnerParams:
     backend_pointers: BackendPointers
     # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
     backend_type: BackendType = BackendType.first_available
-    # bool appShallExit = false;    /* original C++ signature */
-    app_shall_exit: bool = False
-
     # FpsIdling fpsIdling;    /* original C++ signature */
     fps_idling: FpsIdling
 
+    # bool appShallExit = false;    /* original C++ signature */
+    app_shall_exit: bool = False
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1465,8 +1455,8 @@ class RunnerParams:
         docking_params: DockingParams = DockingParams(),
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
-        app_shall_exit: bool = False,
         fps_idling: FpsIdling = FpsIdling(),
+        app_shall_exit: bool = False,
         emscripten_fps: int = 0
         ) -> None:
         """Auto-generated default constructor with named params"""
@@ -1490,7 +1480,7 @@ class SimpleRunnerParams:
        If True, restore the size and position of the window between runs.
     * `windowSize`: _ScreenSize, default={800, 600}_.
        Size of the window
-    * `fpsIdle`: _float, default=10_.
+    * `fpsIdle`: _float, default=9_.
        FPS of the application when idle (set to 0 for full speed).
 
     For example, this is sufficient to run an application:
@@ -1523,13 +1513,15 @@ class SimpleRunnerParams:
     # ScreenSize windowSize = DefaultWindowSize;    /* original C++ signature */
     window_size: ScreenSize = DefaultWindowSize
 
-    # float fpsIdle = 10.f;    /* original C++ signature */
-    fps_idle: float = 10.
+    # float fpsIdle = 9.f;    /* original C++ signature */
+    fps_idle: float = 9.
+    # bool  enableIdling = true;    /* original C++ signature */
+    enable_idling: bool = True
 
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
-    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 10.f);    /* original C++ signature */
+    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true);    /* original C++ signature */
     def __init__(
         self,
         gui_function: VoidFunction = EmptyVoidFunction(),
@@ -1537,7 +1529,8 @@ class SimpleRunnerParams:
         window_size_auto: bool = False,
         window_restore_previous_geometry: bool = False,
         window_size: ScreenSize = DefaultWindowSize,
-        fps_idle: float = 10.
+        fps_idle: float = 9.,
+        enable_idling: bool = True
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1603,8 +1596,8 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 #### How to load fonts for a crisp font rendering and a correct size
 #
 #HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
-#    `DpiWindowFactor() * 1. / ImGui::GetIO().FontGlobalScale`
-#              where DpiWindowFactor() is equal to `CurrentScreenPixelPerInch / 96`
+#    `DpiWindowSizeFactor() * 1. / ImGui::GetIO().FontGlobalScale`
+#              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
 #
 #==> When loading fonts, multiply their size by this factor!
 #
@@ -1662,7 +1655,6 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
-
 # float DpiFontLoadingFactor();    /* original C++ signature */
 def dpi_font_loading_factor() -> float:
     """ Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
@@ -1670,11 +1662,11 @@ def dpi_font_loading_factor() -> float:
     """
     pass
 
-# float DpiWindowFactor();    /* original C++ signature */
+# float DpiWindowSizeFactor();    /* original C++ signature */
 # }
-def dpi_window_factor() -> float:
-    """ DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.
-     Under macOS, it will return 1.
+def dpi_window_size_factor() -> float:
+    """ DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+     It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
     """
     pass
 

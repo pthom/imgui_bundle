@@ -499,9 +499,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassFpsIdling =
         py::class_<HelloImGui::FpsIdling>
-            (m, "FpsIdling", "*\n @@md#FpsIdling\n\n**FpsIdling** is a struct that contains Fps Idling parameters\n\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n@@md\n")
+            (m, "FpsIdling", "*\n @@md#FpsIdling\n\n**FpsIdling** is a struct that contains Fps Idling parameters\n\n* `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n@@md\n")
         .def(py::init<>([](
-        float fpsIdle = 10.f, bool enableIdling = true, bool isIdling = false)
+        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false)
         {
             auto r = std::make_unique<FpsIdling>();
             r->fpsIdle = fpsIdle;
@@ -509,7 +509,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->isIdling = isIdling;
             return r;
         })
-        , py::arg("fps_idle") = 10.f, py::arg("enable_idling") = true, py::arg("is_idling") = false
+        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false
         )
         .def_readwrite("fps_idle", &FpsIdling::fpsIdle, "")
         .def_readwrite("enable_idling", &FpsIdling::enableIdling, "")
@@ -519,9 +519,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdle`: _float, default=10_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `fpsIdleDisable`: _bool, default=true_.\n  Set this to True to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
+            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
         .def(py::init<>([](
-        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), int emscripten_fps = 0)
+        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool appShallExit = false, int emscripten_fps = 0)
         {
             auto r = std::make_unique<RunnerParams>();
             r->callbacks = callbacks;
@@ -530,12 +530,12 @@ void py_init_module_hello_imgui(py::module& m)
             r->dockingParams = dockingParams;
             r->backendPointers = backendPointers;
             r->backendType = backendType;
-            r->appShallExit = appShallExit;
             r->fpsIdling = fpsIdling;
+            r->appShallExit = appShallExit;
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("app_shall_exit") = false, py::arg("fps_idling") = FpsIdling(), py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("fps_idling") = FpsIdling(), py::arg("app_shall_exit") = false, py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, "")
@@ -543,17 +543,17 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("docking_params", &RunnerParams::dockingParams, "")
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, "")
         .def_readwrite("backend_type", &RunnerParams::backendType, "")
-        .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
         .def_readwrite("fps_idling", &RunnerParams::fpsIdling, "")
+        .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
         .def_readwrite("emscripten_fps", &RunnerParams::emscripten_fps, "")
         ;
 
 
     auto pyClassSimpleRunnerParams =
         py::class_<HelloImGui::SimpleRunnerParams>
-            (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=10_.\n   FPS of the application when idle (set to 0 for full speed).\n\nFor example, this is sufficient to run an application:\n\n````cpp\nNone MyGui() {\n    ImGui::Text(\"Hello, world\");\n    if (ImGui::Button(\"Exit\"))\n        HelloImGui::GetRunnerParams()->appShallExit = True;\n}\n\nint main(){\n    auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"};\n    HelloImGui::Run(params);\n}\n````\n\n@@md\n")
+            (m, "SimpleRunnerParams", "*\n @@md#SimpleRunnerParams\n\n**SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.\n\n Members:\n* `guiFunction`: _VoidFunction_.\n   Function that renders the Gui.\n* `windowTitle`: _string, default=\"\"_.\n   Title of the application window\n* `windowSizeAuto`: _bool, default=false_.\n   If True, the size of the window will be computed from its widgets.\n* `windowRestorePreviousGeometry`: _bool, default=true_.\n   If True, restore the size and position of the window between runs.\n* `windowSize`: _ScreenSize, default={800, 600}_.\n   Size of the window\n* `fpsIdle`: _float, default=9_.\n   FPS of the application when idle (set to 0 for full speed).\n\nFor example, this is sufficient to run an application:\n\n````cpp\nNone MyGui() {\n    ImGui::Text(\"Hello, world\");\n    if (ImGui::Button(\"Exit\"))\n        HelloImGui::GetRunnerParams()->appShallExit = True;\n}\n\nint main(){\n    auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"};\n    HelloImGui::Run(params);\n}\n````\n\n@@md\n")
         .def(py::init<>([](
-        VoidFunction guiFunction = HelloImGui::EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 10.f)
+        VoidFunction guiFunction = HelloImGui::EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true)
         {
             auto r = std::make_unique<SimpleRunnerParams>();
             r->guiFunction = guiFunction;
@@ -562,9 +562,10 @@ void py_init_module_hello_imgui(py::module& m)
             r->windowRestorePreviousGeometry = windowRestorePreviousGeometry;
             r->windowSize = windowSize;
             r->fpsIdle = fpsIdle;
+            r->enableIdling = enableIdling;
             return r;
         })
-        , py::arg("gui_function") = HelloImGui::EmptyVoidFunction(), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f
+        , py::arg("gui_function") = HelloImGui::EmptyVoidFunction(), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true
         )
         .def_readwrite("gui_function", &SimpleRunnerParams::guiFunction, "")
         .def_readwrite("window_title", &SimpleRunnerParams::windowTitle, "")
@@ -572,6 +573,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("window_restore_previous_geometry", &SimpleRunnerParams::windowRestorePreviousGeometry, "")
         .def_readwrite("window_size", &SimpleRunnerParams::windowSize, "")
         .def_readwrite("fps_idle", &SimpleRunnerParams::fpsIdle, "")
+        .def_readwrite("enable_idling", &SimpleRunnerParams::enableIdling, "")
         .def("to_runner_params",
             &SimpleRunnerParams::ToRunnerParams)
         ;
@@ -619,8 +621,8 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("dpi_font_loading_factor",
         HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
 
-    m.def("dpi_window_factor",
-        HelloImGui::DpiWindowFactor, " DpiWindowFactor() returns ApplicationScreenPixelPerInch / 96  under windows and linux.\n Under macOS, it will return 1.");
+    m.def("dpi_window_size_factor",
+        HelloImGui::DpiWindowSizeFactor, " DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.\n It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.");
 
 
     m.def("run",
