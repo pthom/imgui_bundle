@@ -972,7 +972,9 @@ class RunnerCallbacks:
       since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.
 
     * `PostInit`: *VoidFunction, default=empty*.
-        You can here add a function that will be called once after OpenGL and ImGui are inited
+        You can here add a function that will be called once after OpenGL and ImGui are inited, but before
+        the backend callback are initialized. If you, for instance, want to add your own glfw callbacks,
+        you should use this function to do so."
 
     * `BeforeExit`: *VoidFunction, default=empty*.
         You can here add a function that will be called once before exiting (when OpenGL and ImGui are
@@ -1144,7 +1146,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1230,12 +1232,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
