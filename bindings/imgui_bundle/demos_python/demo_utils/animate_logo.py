@@ -1,3 +1,5 @@
+import webbrowser
+
 from imgui_bundle import imgui, hello_imgui, immapp, ImVec4, ImVec2
 ImTextureID = int
 
@@ -13,7 +15,7 @@ def draw_transparent_image(texture: ImTextureID, rect: imgui.internal.ImRect, al
 
 
 @immapp.static(start_time = -1., was_idling_restored=False)
-def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin: ImVec2, final_alpha: float):
+def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin: ImVec2, final_alpha: float, url:str):
     static = animate_logo
     if static.start_time < 0:
         static.start_time = immapp.clock_seconds()
@@ -78,5 +80,7 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
     mouse_position = imgui.get_mouse_pos()
     if rect.contains(mouse_position):
         alpha = 1
+        if imgui.is_mouse_clicked(0):
+            webbrowser.open(url)
 
     draw_transparent_image(logo_texture, rect, alpha)

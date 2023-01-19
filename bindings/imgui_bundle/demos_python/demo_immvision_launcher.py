@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, immvision, immapp, imgui_md, imgui_color_text_edit as text_edit
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)

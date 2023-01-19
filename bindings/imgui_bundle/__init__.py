@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle._imgui_bundle import imgui as imgui
 from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui
 from imgui_bundle._imgui_bundle import implot as implot

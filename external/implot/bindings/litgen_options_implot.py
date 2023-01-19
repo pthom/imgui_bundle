@@ -1,3 +1,4 @@
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from codemanip.code_utils import join_string_by_pipe_char
 
 from litgen.options import LitgenOptions

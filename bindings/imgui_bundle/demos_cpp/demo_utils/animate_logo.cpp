@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/clock.h"
+#include "immapp/browse_to_url.h"
 
 
 void DrawTransparentImage(ImTextureID texture, ImRect rect, float alpha)
@@ -20,7 +21,7 @@ void DrawTransparentImage(ImTextureID texture, ImRect rect, float alpha)
 }
 
 
-void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, ImVec2 emTopRightMargin, float finalAlpha)
+void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, ImVec2 emTopRightMargin, float finalAlpha, const char* url)
 {
     static double startTime = -1.;
     if (startTime < 0.)
@@ -88,7 +89,11 @@ void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, ImVec2 emT
     {
         auto mousePosition = ImGui::GetMousePos();
         if (rect.Contains(mousePosition))
+        {
             alpha = 1.f;
+            if (ImGui::IsMouseClicked(0))
+                ImmApp::BrowseToUrl(url);
+        }
     }
 
     DrawTransparentImage(logoTexture, rect, alpha);

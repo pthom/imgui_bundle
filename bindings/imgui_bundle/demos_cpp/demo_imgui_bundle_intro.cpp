@@ -1,3 +1,4 @@
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
@@ -109,8 +110,8 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))
         ShowPortingAdvices();
 
-    if (ImGui::CollapsingHeader("Words from the author"))
+    if (ImGui::CollapsingHeader("Closing words"))
         ShowMarkdownDocFile("ibd_words_author");
 
-    AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.45f);
+    AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
 }
