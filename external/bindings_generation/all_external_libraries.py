@@ -134,7 +134,7 @@ def lib_immvision() -> ExternalLibrary:
     return ExternalLibrary(
         name="immvision",
         official_git_url="https://github.com/pthom/immvision.git",
-        official_branch="imgui_bundle"
+        official_branch="master"
     )
 
 

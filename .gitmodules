@@ -56,7 +56,7 @@
 [submodule "external/immvision/immvision"]
 	path = external/immvision/immvision
 	url = https://github.com/pthom/immvision.git
-	branch = imgui_bundle
+	branch = master
 [submodule "external/immvision/cvnp"]
 	path = external/immvision/cvnp
 	url = https://github.com/pthom/cvnp.git
