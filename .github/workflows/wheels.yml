@@ -46,7 +46,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.11.4
+    - uses: pypa/cibuildwheel@v2.12.0
 
     - name: Verify clean directory
       run: git diff --exit-code
