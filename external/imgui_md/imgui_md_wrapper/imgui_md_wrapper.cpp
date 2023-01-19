@@ -255,7 +255,12 @@ assets/
             if (! mdImage.has_value())
                 return false;
 
-            nfo.size = mdImage->size;
+            // Image size adaptive depending on the resolution scale
+            {
+                float k = HelloImGui::DpiFontLoadingFactor();
+                nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
+            }
+
             nfo.col_border = mdImage->col_border;
             nfo.col_tint = mdImage->col_tint;
             nfo.texture_id = mdImage->texture_id;
