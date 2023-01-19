@@ -1062,7 +1062,7 @@ This folder  includes everything you need to set up your own project with ImGui 
 git submodule update --init --recursive # <b class="conum">(1)</b>
 mkdir build
 <span class="tok-nb">cd</span> build
-cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
+cmake .. -DIMMVISION_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
 make -j</code></pre>
 </div>
 </div>
@@ -1072,7 +1072,7 @@ make -j</code></pre>
 <p>Since there are lots of submodules, this might take a few minutes</p>
 </li>
 <li>
-<p>The flag <code>-DIMGUI_BUNDLE_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
+<p>The flag <code>-DIMMVISION_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
 </li>
 </ol>
 </div>

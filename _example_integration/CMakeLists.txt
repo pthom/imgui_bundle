@@ -23,7 +23,7 @@ list(APPEND CMAKE_MODULE_PATH ${IMGUIBUNDLE_CMAKE_PATH})
 include(imgui_bundle_add_app)
 
 # Uncomment the next line if you which to also automatically fetch and compile OpenCV for immvision support
-# set(IMGUI_BUNDLE_FETCH_OPENCV ON)
+# set(IMMVISION_FETCH_OPENCV ON)
 
 
 ##########################################################

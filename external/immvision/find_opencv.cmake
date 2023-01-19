@@ -272,14 +272,14 @@ macro(immvision_find_opencv)
     else()
         find_package(OpenCV)
         if (NOT OpenCV_FOUND)
-            if ("$ENV{IMGUI_BUNDLE_FETCH_OPENCV}" OR IMGUI_BUNDLE_FETCH_OPENCV)
+            if ("$ENV{IMMVISION_FETCH_OPENCV}" OR IMMVISION_FETCH_OPENCV)
                 set(fetch_opencv ON)
             endif()
             if(WIN32 AND fetch_opencv)
                 immvision_download_opencv_official_package_win() # will download prebuilt package
                 # immvision_forward_opencv_env_variables()
             elseif(fetch_opencv)
-                immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMGUI_BUNDLE_FETCH_OPENCV
+                immvision_fetch_opencv_from_source()  # Will fetch, build and install OpenCV if IMMVISION_FETCH_OPENCV
             endif()
         endif()
     endif()
@@ -292,7 +292,7 @@ macro(immvision_find_opencv)
 
         If you want immvision to be built, install OpenCV before running cmake.
         Tip: you can run
-            cmake -DIMGUI_BUNDLE_FETCH_OPENCV=ON ..
+            cmake -DIMMVISION_FETCH_OPENCV=ON ..
         in order to automatically download and build a (very) minimal version of OpenCV.
         ----------------------------------------------------------------------------------
         ")

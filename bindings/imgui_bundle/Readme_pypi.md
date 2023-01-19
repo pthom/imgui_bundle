@@ -155,12 +155,12 @@ If you choose to clone this repo, follow these instructions:
     git submodule update --init --recursive 
     mkdir build
     cd build
-    cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV=ON 
+    cmake .. -DIMMVISION_FETCH_OPENCV=ON 
     make -j
 
 -   Since there are lots of submodules, this might take a few minutes
 
--   The flag `-DIMGUI_BUNDLE_FETCH_OPENCV=ON` is optional. If set, a
+-   The flag `-DIMMVISION_FETCH_OPENCV=ON` is optional. If set, a
     minimal version of OpenCV will be downloaded a compiled at this
     stage (this might require a few minutes)
 

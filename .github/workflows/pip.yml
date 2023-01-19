@@ -51,9 +51,9 @@ jobs:
     - name: Build and install
       shell: bash
       run: |
-        # Optional: set IMGUI_BUNDLE_FETCH_OPENCV to OFF to disable OpenCV/Immvision
+        # Optional: set IMMVISION_FETCH_OPENCV to OFF to disable OpenCV/Immvision
         # ------------------------------------------------------------------------------------
-        # export IMGUI_BUNDLE_FETCH_OPENCV=OFF
+        # export IMMVISION_FETCH_OPENCV=OFF
 
         #
         # Build pip

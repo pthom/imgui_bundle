@@ -53,13 +53,13 @@ cd imgui_bundle
 git submodule update --init --recursive 
 mkdir build
 cd build
-cmake .. -DIMGUI_BUNDLE_FETCH_OPENCV=ON 
+cmake .. -DIMMVISION_FETCH_OPENCV=ON 
 make -j
 ```
 
 -   Since there are lots of submodules, this might take a few minutes
 
--   The flag `-DIMGUI_BUNDLE_FETCH_OPENCV=ON` is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)
+-   The flag `-DIMMVISION_FETCH_OPENCV=ON` is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)
 
 The `immvision` module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.
 

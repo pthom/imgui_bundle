@@ -33,22 +33,22 @@ else()
 endif()
 
 
-# IMGUI_BUNDLE_FETCH_OPENCV: fetch OpenCV automatically during configure
+# IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
 # ----------------------------------------------------------------------
 # (OpenCV is required by the optional module immvision.
-#  If IMGUI_BUNDLE_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
+#  If IMMVISION_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
 #  Feel free to use your own version of OpenCV in C++)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     # For the python package, we automatically fetch OpenCV
     # (under windows, we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources)
-    set(IMGUI_BUNDLE_FETCH_OPENCV ON)
+    set(IMMVISION_FETCH_OPENCV ON)
 else()
-    option(IMGUI_BUNDLE_FETCH_OPENCV "fetch OpenCV" OFF)
+    option(IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
 endif()
 # When building the pip package, you can disable OpenCV (and immvision) by setting the env variable
-# IMGUI_BUNDLE_FETCH_OPENCV=OFF
-if(DEFINED ENV{IMGUI_BUNDLE_FETCH_OPENCV})
-    set(IMGUI_BUNDLE_FETCH_OPENCV "$ENV{IMGUI_BUNDLE_FETCH_OPENCV}")
+# IMMVISION_FETCH_OPENCV=OFF
+if(DEFINED ENV{IMMVISION_FETCH_OPENCV})
+    set(IMMVISION_FETCH_OPENCV "$ENV{IMMVISION_FETCH_OPENCV}")
 endif()
 option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
