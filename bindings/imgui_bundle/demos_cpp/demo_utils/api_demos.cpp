@@ -173,7 +173,6 @@ bool SpawnDemo(const std::string& demoName)
     {
         const char *command_line[2] = {exeFile.c_str(), NULL};
         struct subprocess_s subprocess;
-        printf("subprocess_create\n    %s\n", command_line[0]);
         #ifdef __linux__
             system(command_line[0]);
         #else
