@@ -28,9 +28,7 @@ def make_gui() -> GuiFunction:
             """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
         ),
         DemoApp("demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
-        DemoApp(
-            "demo_powersave", "How to have smooth animations, and how to let the application save CPU when idle"
-        ),
+        DemoApp("demo_powersave", "How to have smooth animations, and how to let the application save CPU when idle"),
         DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp("demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"),
         DemoApp("haiku_implot_heart", "Share some love for ImGui and ImPlot"),

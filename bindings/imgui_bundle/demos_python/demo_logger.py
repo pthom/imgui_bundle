@@ -25,8 +25,14 @@ def demo_gui():
     ]
 
     def add_log():
-        log_level = random.choice([
-            hello_imgui.LogLevel.debug, hello_imgui.LogLevel.info, hello_imgui.LogLevel.warning, hello_imgui.LogLevel.error])
+        log_level = random.choice(
+            [
+                hello_imgui.LogLevel.debug,
+                hello_imgui.LogLevel.info,
+                hello_imgui.LogLevel.warning,
+                hello_imgui.LogLevel.error,
+            ]
+        )
         hello_imgui.log(log_level, fortunes[static.idx_fortune])
         static.idx_fortune += 1
         if static.idx_fortune >= len(fortunes):

@@ -112,7 +112,8 @@ def demo_gui():
         this_dir = os.path.dirname(__file__)
         static.app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
 
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. 
         
         Apply Colormaps to the filtered image in the options tab.

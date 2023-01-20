@@ -24,10 +24,11 @@ ALL_THEMES = [
 ALL_THEMES_NAMES = [theme.name for theme in ALL_THEMES]
 
 
-@immapp.static(current_theme_idx = 0)
+@immapp.static(current_theme_idx=0)
 def demo_gui():
     static = demo_gui
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # Theming
         HelloImGui adds support for advanced theming to ImGui.
         
@@ -36,7 +37,9 @@ def demo_gui():
     )
 
     imgui.text("Theme")
-    changed, static.current_theme_idx = imgui.list_box("##Theme", static.current_theme_idx, ALL_THEMES_NAMES, len(ALL_THEMES_NAMES))
+    changed, static.current_theme_idx = imgui.list_box(
+        "##Theme", static.current_theme_idx, ALL_THEMES_NAMES, len(ALL_THEMES_NAMES)
+    )
     if changed:
         hello_imgui.apply_theme(ALL_THEMES[static.current_theme_idx])
 

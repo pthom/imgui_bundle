@@ -26,8 +26,7 @@ def main():
     generator.process_cpp_file(MAIN_DIR + "/ImGuiColorTextEdit/TextEditor.h")
 
     generator.write_generated_code(
-        output_cpp_pydef_file=output_cpp_pydef_file,
-        output_stub_pyi_file=output_stub_pyi_file
+        output_cpp_pydef_file=output_cpp_pydef_file, output_stub_pyi_file=output_stub_pyi_file
     )
 
 

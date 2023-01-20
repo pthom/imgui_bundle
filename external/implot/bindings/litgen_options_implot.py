@@ -5,6 +5,7 @@ from litgen.options import LitgenOptions
 
 import sys
 import os
+
 THIS_DIR = os.path.dirname(__file__)
 sys.path.append(THIS_DIR + "/../../imgui/bindings")
 from litgen_options_imgui import litgen_options_imgui, ImguiOptionsType

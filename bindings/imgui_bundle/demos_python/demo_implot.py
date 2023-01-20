@@ -88,7 +88,8 @@ def demo_gui():
         # ImPlot
         [Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
         You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)
-        """)
+        """
+    )
     if imgui.button("View the full demo"):
         import webbrowser
 

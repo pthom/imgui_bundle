@@ -60,6 +60,7 @@ class ExternalLibrary:
 
         def is_generator_module(filename: str):
             return filename.startswith("generate_") and filename.endswith(".py")
+
         generators_modules = list(filter(is_generator_module, files))
         assert len(generators_modules) == 1
         return generators_modules[0][:-3]  # remove extension ".py"

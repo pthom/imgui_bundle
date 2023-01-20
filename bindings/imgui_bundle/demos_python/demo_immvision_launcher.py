@@ -7,6 +7,7 @@ from imgui_bundle.demos_python import demo_utils
 HAS_OPENCV = False
 try:
     import cv2
+
     HAS_OPENCV = True
 except ImportError:
     pass

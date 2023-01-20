@@ -1,6 +1,9 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import Dict
-copyright_str = "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle"
+
+copyright_str = (
+    "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle"
+)
 
 import os
 from bindings_generation import paths, all_external_libraries
@@ -68,7 +71,9 @@ directories = """
 ./_example_integration
 ./src
 ./src/imgui_bundle
-""".splitlines(keepends=False)
+""".splitlines(
+    keepends=False
+)
 
 
 extensions = set()

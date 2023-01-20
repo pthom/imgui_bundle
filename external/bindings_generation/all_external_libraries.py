@@ -186,14 +186,29 @@ def lib_sdl() -> ExternalLibrary:
 
 
 ALL_LIBS = [
-    lib_imgui(), # must be first as it declare bindings used by the next ones
-    lib_glfw(), lib_hello_imgui(), lib_im_file_dialog(), lib_imgui_command_palette(), lib_imgui_knobs(),
-    lib_imgui_node_editor(), lib_imgui_md(), lib_md4c(), lib_imgui_tex_inspect(),
-    lib_imgui_toggle(), lib_imgui_color_text_edit(), lib_imguizmo(), lib_immapp(), lib_immvision(),
-    lib_cvnp(), lib_implot(), lib_imspinner(), lib_portable_file_dialogs(), lib_sdl()]
+    lib_imgui(),  # must be first as it declare bindings used by the next ones
+    lib_glfw(),
+    lib_hello_imgui(),
+    lib_im_file_dialog(),
+    lib_imgui_command_palette(),
+    lib_imgui_knobs(),
+    lib_imgui_node_editor(),
+    lib_imgui_md(),
+    lib_md4c(),
+    lib_imgui_tex_inspect(),
+    lib_imgui_toggle(),
+    lib_imgui_color_text_edit(),
+    lib_imguizmo(),
+    lib_immapp(),
+    lib_immvision(),
+    lib_cvnp(),
+    lib_implot(),
+    lib_imspinner(),
+    lib_portable_file_dialogs(),
+    lib_sdl(),
+]
 
 
 def published_libs() -> List[ExternalLibrary]:
     r = list(filter(lambda lib: lib.is_published_in_python, ALL_LIBS))
     return r
-

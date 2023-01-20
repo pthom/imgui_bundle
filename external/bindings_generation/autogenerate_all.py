@@ -2,6 +2,7 @@
 import importlib
 import sys
 import os
+
 sys.path.append(os.path.dirname(__file__) + "/..")
 from bindings_generation import all_external_libraries
 

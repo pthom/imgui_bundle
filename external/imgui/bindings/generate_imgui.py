@@ -45,8 +45,7 @@ def autogenerate_imgui() -> None:
     generator.process_cpp_file(CPP_HEADERS_DIR + "/misc/cpp/imgui_stdlib.h")
 
     generator.write_generated_code(
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp",
-        output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi"
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi"
     )
 
 

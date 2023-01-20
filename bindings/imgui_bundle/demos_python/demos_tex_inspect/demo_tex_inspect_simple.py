@@ -15,8 +15,9 @@ def demo_gui():
 
     flags = 0
     inspector_size = imgui_tex_inspect.SizeIncludingBorder(immapp.em_to_vec2(30, 30))
-    if imgui_tex_inspect.begin_inspector_panel("Texture Inspector",
-            static.texture_id, texture_size, flags, inspector_size):
+    if imgui_tex_inspect.begin_inspector_panel(
+        "Texture Inspector", static.texture_id, texture_size, flags, inspector_size
+    ):
         imgui_tex_inspect.end_inspector_panel()
 
 

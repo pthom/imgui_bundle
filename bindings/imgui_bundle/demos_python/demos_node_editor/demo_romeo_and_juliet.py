@@ -59,9 +59,7 @@ lovers = [Romeo, Juliet, CountParis]
 links = [
     Tie(Romeo, "loves", Juliet),
     Tie(Juliet, "loves", Romeo),
-
     Tie(CountParis, "loves", Juliet),
-
     Tie(CountParis, "hates", Romeo),
     Tie(Romeo, "hates", CountParis),
 ]

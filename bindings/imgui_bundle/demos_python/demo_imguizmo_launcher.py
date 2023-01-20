@@ -7,7 +7,8 @@ from imgui_bundle.demos_python import demo_utils, demos_imguizmo
 
 
 def demo_gui():
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # ImGuizmo
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui 
 

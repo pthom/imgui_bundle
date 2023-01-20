@@ -32,10 +32,12 @@ class AppState:
 
 # CommandGui: the widgets on the left panel
 def command_gui(state: AppState):
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # Basic widgets demo
         The widgets below will interact with the log window and the status bar.
-        """);
+        """
+    )
     # Edit 1 float using a slider from 0.0f to 1.0f
     changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
     if changed:
@@ -67,13 +69,15 @@ def command_gui(state: AppState):
 
     # Note, you can also show the tweak theme widgets via:
     # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
-    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + immapp.em_size(3.));
-    imgui_md.render_unindented("""
+    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + immapp.em_size(3.0))
+    imgui_md.render_unindented(
+        """
         # Tweak the theme!
         
         Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
         You can even easily tweak their colors.
-    """)
+    """
+    )
 
 
 # Our Gui in the status bar

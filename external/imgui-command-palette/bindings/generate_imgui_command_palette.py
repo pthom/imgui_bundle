@@ -9,7 +9,6 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-
 def main():
     print("autogenerate_imgui_command_palette")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_command_palette.cpp"
@@ -31,8 +30,7 @@ def main():
     generator.process_cpp_file(THIS_DIR + "/../imgui-command-palette-py-wrapper/imgui-command-palette-py-wrapper.h")
 
     generator.write_generated_code(
-        output_cpp_pydef_file=output_cpp_pydef_file,
-        output_stub_pyi_file=output_stub_pyi_file
+        output_cpp_pydef_file=output_cpp_pydef_file, output_stub_pyi_file=output_stub_pyi_file
     )
 
 

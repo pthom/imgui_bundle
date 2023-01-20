@@ -97,7 +97,7 @@ setup(
     entry_points={
         "console_scripts": [
             "demo_imgui_bundle=imgui_bundle.demos_python.demo_imgui_bundle:main",
-            "imgui_bundle_demo=imgui_bundle.demos_python.demo_imgui_bundle:main"
+            "imgui_bundle_demo=imgui_bundle.demos_python.demo_imgui_bundle:main",
         ],
     },
 )

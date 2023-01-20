@@ -8,7 +8,7 @@ class AppState:
     command_palette_context: imcmd.ContextWrapper
 
     def __init__(self):
-        self.command_palette_context = imcmd.ContextWrapper();
+        self.command_palette_context = imcmd.ContextWrapper()
 
 
 def init_command_palette():
@@ -18,8 +18,10 @@ def init_command_palette():
     # Add theme command: a two steps command, with initial callback + SubsequentCallback
     select_theme_cmd = imcmd.Command()
     select_theme_cmd.name = "Select theme"
+
     def select_theme_cmd_initial_cb():
         imcmd.prompt(["Classic", "Dark", "Light"])
+
     def select_theme_cmd_subsequent_cb(selected_option: int):
         if selected_option == 0:
             imgui.style_colors_classic()
@@ -27,15 +29,17 @@ def init_command_palette():
             imgui.style_colors_dark()
         elif selected_option == 2:
             imgui.style_colors_light()
+
     select_theme_cmd.initial_callback = select_theme_cmd_initial_cb
     select_theme_cmd.subsequent_callback = select_theme_cmd_subsequent_cb
     imcmd.add_command(select_theme_cmd)
 
     # Simple command that logs messages
     log_cmd = imcmd.Command()
-    log_cmd.name = "You say goodbye";
-    log_cmd.initial_callback = lambda: hello_imgui.log(hello_imgui.LogLevel.info, "... and I say hello..."
-                                                       + icons_fontawesome.ICON_FA_MUSIC)
+    log_cmd.name = "You say goodbye"
+    log_cmd.initial_callback = lambda: hello_imgui.log(
+        hello_imgui.LogLevel.info, "... and I say hello..." + icons_fontawesome.ICON_FA_MUSIC
+    )
     imcmd.add_command(log_cmd)
 
 
@@ -66,5 +70,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

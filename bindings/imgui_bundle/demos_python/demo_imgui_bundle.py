@@ -63,10 +63,7 @@ def main() -> None:
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    def add_demo_dockable_window(
-        label: str,
-        demo_module: ModuleType
-    ):
+    def add_demo_dockable_window(label: str, demo_module: ModuleType):
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = "MainDockSpace"

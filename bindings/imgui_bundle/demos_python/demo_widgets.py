@@ -110,7 +110,8 @@ def demo_toggle():
     imgui_md.render_unindented(
         """
         # Toggle Switch
-          [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui.""")
+          [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
+    )
 
     _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
     imgui.same_line()
@@ -136,7 +137,7 @@ def demo_toggle():
     open_file_multiselect=None,
     save_file_dialog=None,
     select_folder_dialog=None,
-    last_file_selection=""
+    last_file_selection="",
 )
 def demo_portable_file_dialogs():
     static = demo_portable_file_dialogs
@@ -144,7 +145,8 @@ def demo_portable_file_dialogs():
     from imgui_bundle import portable_file_dialogs as pfd
 
     imgui.push_id("pfd")
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # Portable File Dialogs
          [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
     """
@@ -256,8 +258,10 @@ def demo_command_palette():
         # Add theme command: a two steps command, with initial callback + SubsequentCallback
         select_theme_cmd = imcmd.Command()
         select_theme_cmd.name = "Select theme"
+
         def select_theme_cmd_initial_cb():
             imcmd.prompt(["Classic", "Dark", "Light"])
+
         def select_theme_cmd_subsequent_cb(selected_option: int):
             if selected_option == 0:
                 imgui.style_colors_classic()
@@ -265,15 +269,18 @@ def demo_command_palette():
                 imgui.style_colors_dark()
             elif selected_option == 2:
                 imgui.style_colors_light()
+
         select_theme_cmd.initial_callback = select_theme_cmd_initial_cb
         select_theme_cmd.subsequent_callback = select_theme_cmd_subsequent_cb
         imcmd.add_command(select_theme_cmd)
 
         # Simple command that increments a counter
         inc_cmd = imcmd.Command()
-        inc_cmd.name = "increment counter";
+        inc_cmd.name = "increment counter"
+
         def inc_counter():
             static.counter += 1
+
         inc_cmd.initial_callback = inc_counter
         imcmd.add_command(inc_cmd)
 
@@ -285,7 +292,8 @@ def demo_command_palette():
         """
         # Command Palette
         [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
-        """)
+        """
+    )
 
     io = imgui.get_io()
     if io.key_ctrl and io.key_shift and imgui.is_key_pressed(imgui.Key.p):
@@ -301,10 +309,13 @@ def demo_command_palette():
 
 
 def demo_gui():
-    demo_portable_file_dialogs(); imgui.new_line()
-    demo_imfile_dialog(); imgui.new_line()
+    demo_portable_file_dialogs()
+    imgui.new_line()
+    demo_imfile_dialog()
+    imgui.new_line()
     demo_knobs()
-    demo_toggle(); imgui.new_line()
+    demo_toggle()
+    imgui.new_line()
     demo_spinner()
     demo_command_palette()
 
