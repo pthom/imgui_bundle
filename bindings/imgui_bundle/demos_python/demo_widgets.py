@@ -2,6 +2,7 @@
 from typing import List
 from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome
 from imgui_bundle import imgui_command_palette as imcmd
+from imgui_bundle.demos_python import demo_utils # this will set the assets folder
 
 
 @immapp.static(knob_float_value=0, knob_int_value=0)

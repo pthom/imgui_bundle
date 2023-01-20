@@ -5,6 +5,7 @@ from imgui_bundle import imgui_md
 from imgui_bundle import immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, DemoApp
+from imgui_bundle.demos_python import demo_utils # this will set the assets folder
 
 
 DOC = """

@@ -2,7 +2,8 @@
 from imgui_bundle import imgui, immvision, immapp, imgui_md, imgui_color_text_edit as text_edit
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle.demos_python import demo_utils # this will set the assets folder
+
 
 HAS_OPENCV = False
 try:

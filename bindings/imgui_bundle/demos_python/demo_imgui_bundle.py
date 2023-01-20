@@ -19,7 +19,7 @@ from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle.demos_python import demo_utils # this will set the assets folder
 
 
 def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> None:

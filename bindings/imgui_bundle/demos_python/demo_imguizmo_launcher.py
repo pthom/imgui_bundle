@@ -3,7 +3,8 @@ import os.path
 import subprocess
 import sys
 from imgui_bundle import imgui, immapp, hello_imgui, imgui_md
-from imgui_bundle.demos_python import demo_utils, demos_imguizmo
+from imgui_bundle.demos_python import demos_imguizmo
+from imgui_bundle.demos_python import demo_utils # this will set the assets folder
 
 
 def demo_gui():

@@ -42,8 +42,12 @@ void demo_logger()
     ImGuiMd::RenderUnindented(R"(
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+
+        Its colors are computed automatically from the WindowBg color, in order to remain readable when the theme is changed.
     )");
-    if (ImGui::Button("Add log"))
+    ImGui::Separator();
+
+    if (ImGui::Button("Add logs"))
         for (int i = 0; i < 10; ++i)
             addLog();
 

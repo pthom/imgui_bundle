@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import random
 from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
-
+from imgui_bundle.demos_python.demo_utils import api_demos
 
 @immapp.static(idx_fortune=0)
 def demo_gui():
@@ -42,8 +42,12 @@ def demo_gui():
         """
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+
+        Its colors are computed automatically from the WindowBg color, in order to remain readable when the theme is changed.
         """
     )
+    imgui.separator()
+
     if imgui.button("Add logs"):
         for i in range(10):
             add_log()
@@ -53,7 +57,8 @@ def demo_gui():
 
 
 def main():
-    immapp.run(demo_gui, "Log")
+    api_demos.set_hello_imgui_demo_assets_folder()
+    immapp.run(demo_gui, "Log", with_markdown=True)
 
 
 if __name__ == "__main__":
