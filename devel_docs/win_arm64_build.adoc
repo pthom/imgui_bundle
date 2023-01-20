@@ -37,7 +37,7 @@ You can tweak the other options, which are here to reduce the build time.
 
  (**Change the last parameter of the cmake command to your desired installation path**)
 
-````
+```
 mkdir build_arm64_dll_world
 cd build_arm64_dll_world
 
@@ -50,7 +50,7 @@ cmake --build . --config Debug
 cmake --install . --config Debug
 
 cd ..
-````
+```
 
 
 === Build ImGui Bundle pip package on Windows ARM64 with "world" opencv

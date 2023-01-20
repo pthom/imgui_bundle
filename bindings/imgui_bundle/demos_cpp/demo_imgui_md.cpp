@@ -35,13 +35,13 @@ imgui_md currently supports the following markdown functionality:
 * Backslash Escapes
 * Inline `code element` (using \`code element\`)
 * Tables
-* Block code like this (using \`\`\`\`)
-````
+* Block code like this (using \`\`\`)
+```
 int answer()
 {
     return 42;
 }
-````
+```
 * Separator (see below)
 
 ----
@@ -63,7 +63,7 @@ As an example, the table below:
 
 Can be created with this code (where lots of nbsp\; were added to enforce the column widths on the first row):<br><br>
 
-````
+```
 | Continent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Population&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Number of Countries |
 |-----------|------------|---------------------|
 | Africa    | 1.3 billion | 54                  |
@@ -73,7 +73,7 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 | North America | 579 million | 23              |
 | Oceania   | 41 million  | 14                  |
 | South America | 422 million | 12              |
-````
+```
 )";
 }
 

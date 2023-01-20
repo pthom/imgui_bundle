@@ -5,7 +5,7 @@ Goal: provide usable interfaces for python bindings, for example using vectors i
 As an example, here is how [ImCurveEdit.h](../ImGuizmo/ImCurveEdit.h) can be adapted:
 
 Original code:
-````cpp
+```cpp
 namespace ImCurveEdit
 {
    struct Delegate
@@ -20,11 +20,11 @@ namespace ImCurveEdit
             ImVector<EditPoint>* selectedPoints = NULL // This is an output only
             );
 }
-````
+```
 
 
 Adapter code:
-````cpp
+```cpp
 #include <tuple>
 #include "ImGuizmo/ImCurveEdit.h"
 
@@ -39,11 +39,11 @@ namespace ImCurveEdit
 
    // Using a tuple makes it possible to easily capture the output in python
    //    e.g.
-   // ````python
+   // ```python
    // ret, selected_points = im_curve_edit.edit(delegate, size, id_, clipping_rect)
-   // ````
+   // ```
    std::tuple<int, std::vector<EditPoint>> Edit(
        DelegateCpp& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL, 
        * selectedPoints = NULL);
 }
-````
+```

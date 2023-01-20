@@ -30,7 +30,7 @@ def demo_gui():
     * To install OpenCv standard package:
     ```bash
     pip install opencv-python
-    ````
+    ```
 
     * To install OpenCv package with contrib modules
     ```bash
@@ -38,9 +38,9 @@ def demo_gui():
     ```
     
     To install OpenCv package headless (no cv.imshow, etc., for server installations)
-    ````bash
+    ```bash
     pip install opencv-python-headless
-    ````
+    ```
 
     """
         )

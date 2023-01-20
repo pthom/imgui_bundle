@@ -72,9 +72,10 @@ void py_init_module_imgui_md(py::module& m)
 
 
     m.def("initialize_markdown",
-        ImGuiMd::InitializeMarkdown,
-        py::arg("options") = ImGuiMd::MarkdownOptions(),
-        " InitializeMarkdown: Call this once at application startup\n Don't forget to later call GetFontLoaderFunction(): it will return a function that you should call\n during ImGui initialization (and before rendering the first frame, since it will load the fonts)\n\n If using HelloImGui, the code would look like:\n     Python:\n        runner_params = hello_imgui.RunnerParams()\n\n        ... // Fill runner_params callbacks\n\n        # Initialize markdown and ask HelloImGui to load the required fonts\n        imgui_md.initialize_markdown()\n        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()\n\n        hello_imgui.run(runnerParams)");
+        ImGuiMd::InitializeMarkdown, py::arg("options") = ImGuiMd::MarkdownOptions());
+
+    m.def("de_initialize_markdown",
+        ImGuiMd::DeInitializeMarkdown);
 
     m.def("get_font_loader_function",
         ImGuiMd::GetFontLoaderFunction, "GetFontLoaderFunction() will return a function that you should call during ImGui initialization.");

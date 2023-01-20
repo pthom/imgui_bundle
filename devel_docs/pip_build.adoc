@@ -27,7 +27,7 @@ There are at least 4 incompatible ways to set an env var in Windows:
 
 == Build ImGui Bundle pip package from sources
 
-````
+```
 cd path/to/your/project  # optional step, but recommended:
 python -m venv venv      # create and activate a virtual env
 .\venv\Script\activate
@@ -35,7 +35,7 @@ python -m venv venv      # create and activate a virtual env
 git clone https://github.com/pthom/imgui_bundle.git
 cd imgui_bundle
 pip install -v .          # install the library
-````
+```
 
 
 === Build and the library pip package from sources:

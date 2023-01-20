@@ -17,14 +17,14 @@ namespace HelloImGui
 Assets located beside the application CMakeLists are embedded automatically.
 
 For example, you can have the following project structure:
-````
+```
 my_app/
 ├── CMakeLists.txt        # Your app's CMakeLists
 ├── assets/               # Its assets: for mobile devices and emscripten
 │         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
 │             └── my_font.ttf
 ├── my_app.main.cpp       # Its source code
-````
+```
 
 Then you can load the asset "fonts/my_font.ttf", on all platforms.
 
@@ -37,13 +37,13 @@ Then you can load the asset "fonts/my_font.ttf", on all platforms.
 
 * `AssetFileData LoadAssetFileData(const char *assetPath)` will load an entire asset file into memory.
  This works on all platforms, including android.
- ````cpp
+ ```cpp
     struct AssetFileData
     {
         void * data = nullptr;
         size_t dataSize = 0;
     };
- ````
+ ```
 * `FreeAssetFileData(AssetFileData * assetFileData)` will free the memory.
 
   Note about ImGui: "ImGui::GetIO().Fonts->AddFontFromMemoryTTF" takes ownership of the data
@@ -1122,9 +1122,9 @@ void SetAssetsFolder(const std::string& folder);
      behavior as ImGui::Image (except that the size can be inferred from the loaded image size)
 
     _Note: Since ImageGl is not copiable, it has a private constructor; and you should use it via ImageGlPtr_
-    ````cpp
+    ```cpp
     using ImageGlPtr = std::unique_ptr<ImageGl>;
-    ````
+    ```
 
 @@md
 */
@@ -1166,18 +1166,18 @@ public:
 Images are loaded when first displayed, and then cached (they will be freed just before the application exits).
 
 For example, given this files structure:
-````
+```
 ├── CMakeLists.txt
 ├── assets/
 │   └── my_image.jpg
 └── my_app.main.cpp
-````
+```
 
 then, you can display "my_image.jpg", using:
 
-````cpp
+```cpp
 HelloImGui::ImageFromAsset("my_image.jpg");
-````
+```
 
 *Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
 
@@ -1371,28 +1371,28 @@ Members:
   If true, adapt the app window size to the presented widgets
 * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
    You can choose between several full screen modes:
-   ````cpp
+   ```cpp
         NoFullScreen,
         FullScreen,                    // Full screen with specified resolution
         FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution
         FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor
-    ````
+    ```
 * `positionMode`: _WindowPositionMode, default = OsDefault_.
    You can choose between several window position modes:
-   ````cpp
+   ```cpp
         OsDefault,
         MonitorCenter,
         FromCoords,
-    ````
+    ```
 * `monitorIdx`: _int, default = 0_.
   used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
 * `windowSizeState`: _WindowSizeState, default=Standard_
    You can choose between several window size states:
-   ````cpp
+   ```cpp
         Standard,
         Minimized,
         Maximized
-    ````
+    ```
 * `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
   how the window size is specified:
   * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
@@ -1661,15 +1661,15 @@ namespace HelloImGui
 @@md#VoidFunction_AnyEventCallback
 
 **VoidFunctionPointer** can hold any void(void) function.
-````cpp
+```cpp
 using VoidFunction = std::function<void(void)>
-````
+```
 
 **AnyEventCallback** can hold any bool(void *) function.
   It is designed to handle callbacks for a specific backend.
-````cpp
+```cpp
 using AnyEventCallback = std::function<bool(void * backendEvent)>
-````
+```
 
 @@md
 **/
@@ -1847,7 +1847,7 @@ and their code (given by lambdas). See doc below for more details.
 
 Docking params: Example usage
 
-````cpp
+```cpp
 HelloImGui::RunnerParams runnerParams;
 runnerParams.imGuiWindowParams.defaultImGuiWindowType =
     HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
@@ -1880,7 +1880,7 @@ runnerParams.imGuiWindowParams.showMenuBar = true;
 runnerParams.imGuiWindowParams.showStatusBar = true;
 
 HelloImGui::Run(runnerParams);
-````
+```
 
 @@md
 */
@@ -2163,7 +2163,7 @@ struct RunnerParams
 
 For example, this is sufficient to run an application:
 
-````cpp
+```cpp
 void MyGui() {
     ImGui::Text("Hello, world");
     if (ImGui::Button("Exit"))
@@ -2174,7 +2174,7 @@ int main(){
     auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = true, .windowTitle = "Example"};
     HelloImGui::Run(params);
 }
-````
+```
 
 @@md
  */

@@ -60,14 +60,14 @@ def EmptyEventCallback() -> AnyEventCallback:
 #Assets located beside the application CMakeLists are embedded automatically.
 #
 #For example, you can have the following project structure:
-#````
+#```
 #my_app/
 #├── CMakeLists.txt        # Your app's CMakeLists
 #├── assets/               # Its assets: for mobile devices and emscripten
 #│         └── fonts/            # they are embedded automatically by hello_imgui_add_app.cmake
 #│             └── my_font.ttf
 #├── my_app.main.cpp       # Its source code
-#````
+#```
 #
 #Then you can load the asset "fonts/my_font.ttf", on all platforms.
 #
@@ -81,13 +81,13 @@ class AssetFileData:
 
     * `AssetFileData LoadAssetFileData(const char *assetPath)` will load an entire asset file into memory.
      This works on all platforms, including android.
-     ````cpp
+     ```cpp
         struct AssetFileData
         {
             None * data = None;
             size_t dataSize = 0;
         };
-     ````
+     ```
     * `FreeAssetFileData(AssetFileData * assetFileData)` will free the memory.
 
       Note about ImGui: "ImGui::GetIO().Fonts->AddFontFromMemoryTTF" takes ownership of the data
@@ -189,18 +189,18 @@ def set_assets_folder(folder: str) -> None:
 #Images are loaded when first displayed, and then cached (they will be freed just before the application exits).
 #
 #For example, given this files structure:
-#````
+#```
 #├── CMakeLists.txt
 #├── assets/
 #│   └── my_image.jpg
 #└── my_app.main.cpp
-#````
+#```
 #
 #then, you can display "my_image.jpg", using:
 #
-#````cpp
+#```cpp
 #HelloImGui::ImageFromAsset("my_image.jpg");
-#````
+#```
 #
 #*Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
 #
@@ -434,28 +434,28 @@ class WindowGeometry:
       If True, adapt the app window size to the presented widgets
     * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
        You can choose between several full screen modes:
-       ````cpp
+       ```cpp
             NoFullScreen,
             FullScreen,                    // Full screen with specified resolution
             FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution
             FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor
-        ````
+        ```
     * `positionMode`: _WindowPositionMode, default = OsDefault_.
        You can choose between several window position modes:
-       ````cpp
+       ```cpp
             OsDefault,
             MonitorCenter,
             FromCoords,
-        ````
+        ```
     * `monitorIdx`: _int, default = 0_.
       used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
     * `windowSizeState`: _WindowSizeState, default=Standard_
        You can choose between several window size states:
-       ````cpp
+       ```cpp
             Standard,
             Minimized,
             Maximized
-        ````
+        ```
     * `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
       how the window size is specified:
       * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
@@ -844,15 +844,15 @@ class ImGuiWindowParams:
 #@@md#VoidFunction_AnyEventCallback
 #
 #**VoidFunctionPointer** can hold any None(None) function.
-#````cpp
+#```cpp
 #using VoidFunction = std::function<None(None)>
-#````
+#```
 #
 #**AnyEventCallback** can hold any bool(None *) function.
 #  It is designed to handle callbacks for a specific backend.
-#````cpp
+#```cpp
 #using AnyEventCallback = std::function<bool(None * backendEvent)>
-#````
+#```
 #
 #@@md
 #*
@@ -1074,7 +1074,7 @@ class RunnerCallbacks:
 #
 #Docking params: Example usage
 #
-#````cpp
+#```cpp
 #HelloImGui::RunnerParams runnerParams;
 #runnerParams.imGuiWindowParams.defaultImGuiWindowType =
 #    HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
@@ -1107,7 +1107,7 @@ class RunnerCallbacks:
 #runnerParams.imGuiWindowParams.showStatusBar = True;
 #
 #HelloImGui::Run(runnerParams);
-#````
+#```
 #
 #@@md
 #
@@ -1482,7 +1482,7 @@ class SimpleRunnerParams:
 
     For example, this is sufficient to run an application:
 
-    ````cpp
+    ```cpp
     None MyGui() {
         ImGui::Text("Hello, world");
         if (ImGui::Button("Exit"))
@@ -1493,7 +1493,7 @@ class SimpleRunnerParams:
         auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = "Example"};
         HelloImGui::Run(params);
     }
-    ````
+    ```
 
     @@md
 

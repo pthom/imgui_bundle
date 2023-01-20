@@ -24,7 +24,7 @@ python -m http.server
 
 Then open http://localhost:8000/bin/ in a browser
 
-= How to build the precompiled OpenCV package for emscripten
+== How to build the precompiled OpenCV package for emscripten
 
 Docs and tricks, cf:
 
@@ -52,25 +52,25 @@ Change the following values inside get_cmake_cmd():
 -DCMAKE_INSTALL_PREFIX=..../opencv_install // specify your desired location here
 
 Then run
-````bash
+```bash
 source ~/emsdk/emsdk_env.sh
 python ./opencv/platforms/js/build_js.py build_wasm --build_wasm --emscripten_dir /Users/pascal/emsdk/upstream/emscripten
-````
+```
 (This will build opencv lib, but will forget to build opencv_imgcodec.a)
 
 Then run
-````
+```
 cd build_wasm/
 make -j
 make install
-````
+```
 
 => then you can use the install folder (OpenCVConfig.cmake is inside opencv_install/lib/cmake/opencv4/OpenCVConfig.cmake)
 
 == Option2: With cmake command extracted from build_js.py:
 
 
-````
+```bash
 source ~/emsdk/emsdk_env.sh
 mkdir build
 cd build
@@ -94,7 +94,7 @@ cmake \
 
 make -j
 make install
-````
+```
 
 
 === Deploy to github
