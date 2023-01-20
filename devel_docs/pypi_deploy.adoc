@@ -1,0 +1,40 @@
+= imgui pypi bundle package distribution
+
+In order to create a new version,
+
+1. Modify the version number in link:../setup.py[setup.py] and link:../CMakeLists.txt[CMakeList.txt]
+2. Create a release on GitHub, and give it a new tag (e.g. `v0.8.3`)
+   Wheels will be uploaded to pypi
+3. Manually build and upload the macOS_arm64 wheel:
+
+NOTE: the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), this is why it shall be built on an M1 Mac.
+
+== Build / Mac arm64 via cibuildwheel
+
+* Edit pyproject, change os arch
+
+* Then run:
+
+```
+pipx run cibuildwheel --platform macos && say "wheel build finished"
+
+twine upload wheelhouse/*
+```
+
+== Build and deploy to pypi via twine
+
+```
+python3 -m build --wheel  --sdist .
+python3 -m build --sdist .
+
+# or
+python3 -m build  .
+
+# then
+
+twine upload dist/*
+```
+
+login = __token__
+password = ...api_token...
+
