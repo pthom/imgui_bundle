@@ -152,6 +152,7 @@ TIP: The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[i
 ====
 
 
+
 === Interactive manual & demo in one click!
 
 :doc_branch: doc
@@ -176,6 +177,7 @@ image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
 
 
+
 === Batteries included
 
 ImGui Bundle includes the following libraries:
@@ -197,6 +199,8 @@ ImGui Bundle includes the following libraries:
 * https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
 
 A big thank you to their authors for their awesome work!
+
+
 === Easily port your code between python and C++
 
 The python bindings closely mirror the original {cpp} API, with fully typed bindings. The original code documentation is meticulously kept inside the python stubs. See for example the documentation for https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/$$__init__$$.pyi[imgui]

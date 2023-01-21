@@ -19,3 +19,4 @@ ImGui Bundle includes the following libraries:
 * https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
 
 A big thank you to their authors for their awesome work!
+

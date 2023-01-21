@@ -38,7 +38,9 @@ ImGui Bundle includes the following libraries:
 
 -   [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git): A Sublime Text or VSCode style command palette in ImGui
 
-A big thank you to their authors for their awesome work! === Easily port your code between python and C++
+A big thank you to their authors for their awesome work!
+
+## Easily port your code between python and C++
 
 The python bindings closely mirror the original C++ API, with fully typed bindings. The original code documentation is meticulously kept inside the python stubs. See for example the documentation for [imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi) , [implot](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi), and [hello imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
 
