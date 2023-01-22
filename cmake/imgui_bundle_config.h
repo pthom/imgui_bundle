@@ -31,9 +31,12 @@ inline std::string _file_short_name(const std::string& filename)
     return filename;
 }
 
-//---- Define assertion handler. Defaults to calling assert().
-// If your macro uses multiple statements, make sure is enclosed in a 'do { .. } while (0)' block so it can be used as a single statement.
+//---- Define assertion handler IM_ASSERT: this is dependent on the target (C++, python, emscripten)
 #define STRINGIFY(s) #s
+
+#ifdef IMGUI_BUNDLE_BUILD_PYTHON
+// With Python, we throw an exception
+// Throwing an exception is important for python (in order keep the python interpreter alive)
 #define IM_ASSERT(_EXPR) \
     do \
     { \
@@ -42,6 +45,37 @@ inline std::string _file_short_name(const std::string& filename)
                 + "   ---   " +  _file_short_name(__FILE__) + ":" + std::to_string(__LINE__) ); \
     } \
     while(0)
+#else // #ifdef IMGUI_BUNDLE_BUILD_PYTHON
+    #ifdef __EMSCRIPTEN__
+    // With emscripten, IM_ASSERT terminates, since emscripten does not support exceptions by default
+    #define IM_ASSERT(_EXPR) \
+        do \
+        { \
+            if (!(_EXPR)) \
+            { \
+                fprintf(stderr, "%s\n", (std::string("IM_ASSERT( ") + STRINGIFY(_EXPR) + " )"      \
+                    + "   ---   " +  _file_short_name(__FILE__) + ":" + std::to_string(__LINE__) ).c_str() ) ; \
+                std::terminate(); \
+            } \
+        } \
+        while(0)
+    #else // __EMSCRIPTEN__
+        // For standard C++, this could be changed to assert. At this time, we also terminate()
+        #define IM_ASSERT(_EXPR) \
+            do \
+            { \
+                if (!(_EXPR)) \
+                { \
+                    fprintf(stderr, "%s\n", (std::string("IM_ASSERT( ") + STRINGIFY(_EXPR) + " )"      \
+                        + "   ---   " +  _file_short_name(__FILE__) + ":" + std::to_string(__LINE__) ).c_str() ) ; \
+                    /*assert(false);*/                                                                 \
+                    std::terminate(); \
+                } \
+            } \
+            while(0)
+    #endif // __EMSCRIPTEN__
+#endif // IMGUI_BUNDLE_BUILD_PYTHON
+
 
 //---- Define attributes of all API symbols declarations, e.g. for DLL under Windows
 // Using Dear ImGui via a shared library is not recommended, because of function call overhead and because we don't guarantee backward nor forward ABI compatibility.
