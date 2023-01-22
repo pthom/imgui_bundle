@@ -58,12 +58,8 @@ void gui_blur(BlurData& blur_data)
 };
 
 
-int main()
+void demo_contours()
 {
-    ChdirBesideAssetsFolder();
-    BlurData blur_data(DemosAssetsFolder() + "/images/house.jpg");
-
-    auto gui = [&blur_data]() { gui_blur(blur_data); };
-
-    ImmApp::Run(gui, "blur", true);
+    static BlurData blur_data(DemosAssetsFolder() + "/images/house.jpg");
+    gui_blur(blur_data);
 }
