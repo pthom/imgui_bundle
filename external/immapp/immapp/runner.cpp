@@ -18,8 +18,14 @@ namespace HelloImGui { std::string GlslVersion(); }
 namespace ImmApp
 {
 
-    std::optional<ax::NodeEditor::EditorContext *> _NODE_EDITOR_CONTEXT;
-    ax::NodeEditor::Config NODE_EDITOR_CONFIG;
+    struct ImmAppContext
+    {
+        std::optional<ax::NodeEditor::EditorContext *> _NodeEditorContext;
+        ax::NodeEditor::Config _NodeEditorConfig;
+        ImGuiTexInspect::Context * _ImGuiTextInspect_Context = nullptr;
+    };
+
+    ImmAppContext gImmAppContext;
 
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
@@ -35,9 +41,9 @@ namespace ImmApp
         {
             addOnsParams.withNodeEditor = true;
             if (addOnsParams.withNodeEditorConfig.has_value())
-                NODE_EDITOR_CONFIG = addOnsParams.withNodeEditorConfig.value();
-            _NODE_EDITOR_CONTEXT = ax::NodeEditor::CreateEditor(&NODE_EDITOR_CONFIG);
-            ax::NodeEditor::SetCurrentEditor(_NODE_EDITOR_CONTEXT.value());
+                gImmAppContext._NodeEditorConfig = addOnsParams.withNodeEditorConfig.value();
+            gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
+            ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
         }
 
         // load markdown fonts if needed
@@ -58,14 +64,13 @@ namespace ImmApp
 
         if (addOnsParams.withTexInspect)
         {
-            ImGuiTexInspect::Context * ctxTexInspect = nullptr;
             // Modify post-init: call ImGuiTexInspect::ImplOpenGL3_Init
             {
                 auto oldPostInit = runnerParams.callbacks.PostInit;
-                auto newPostInit = [oldPostInit, &ctxTexInspect]() {
+                auto newPostInit = [oldPostInit]() {
                     ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
                     ImGuiTexInspect::Init();
-                    ctxTexInspect = ImGuiTexInspect::CreateContext();
+                    gImmAppContext._ImGuiTextInspect_Context = ImGuiTexInspect::CreateContext();
 
                     if (oldPostInit)
                         oldPostInit();
@@ -75,9 +80,9 @@ namespace ImmApp
             // Modify before-exit: call ImGuiTexInspect::ImplOpenGL3_Init
             {
                 auto oldBeforeExit = runnerParams.callbacks.BeforeExit;
-                auto newBeforeExit = [oldBeforeExit, &ctxTexInspect]() {
+                auto newBeforeExit = [oldBeforeExit]() {
                     ImGuiTexInspect::Shutdown();
-                    ImGuiTexInspect::DestroyContext(ctxTexInspect);
+                    ImGuiTexInspect::DestroyContext(gImmAppContext._ImGuiTextInspect_Context);
 
                     ImGuiTexInspect::ImplOpenGl3_Shutdown();
                     if (oldBeforeExit)
@@ -94,9 +99,9 @@ namespace ImmApp
 
         if (addOnsParams.withNodeEditor)
         {
-            assert(_NODE_EDITOR_CONTEXT.has_value());
-            ax::NodeEditor::DestroyEditor(*_NODE_EDITOR_CONTEXT);
-            _NODE_EDITOR_CONTEXT = std::nullopt;
+            assert(gImmAppContext._NodeEditorContext.has_value());
+            ax::NodeEditor::DestroyEditor(*gImmAppContext._NodeEditorContext);
+            gImmAppContext._NodeEditorContext = std::nullopt;
         }
 
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
@@ -204,10 +209,10 @@ namespace ImmApp
 
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext()
     {
-        if (!_NODE_EDITOR_CONTEXT.has_value())
+        if (!gImmAppContext._NodeEditorContext.has_value())
             throw std::runtime_error("No current node editor context\n"
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
-        return *_NODE_EDITOR_CONTEXT;
+        return *gImmAppContext._NodeEditorContext;
     }
 
 } // namespace ImmApp
