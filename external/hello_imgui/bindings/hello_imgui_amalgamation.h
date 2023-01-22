@@ -97,14 +97,14 @@ void SetAssetsFolder(const std::string& folder);
 #include <stdexcept>
 #include <iostream>
 
-#define HIMG_THROW(msg) \
+#define HIMG_ERROR(msg) \
     { \
-        std::cerr << "throw runtime_error: " << msg << "\t\t at " << __FILE__ << ":" << __LINE__ << "\n"; \
+        std::cerr << "HIMG_ERROR: " << msg << "\t\t at " << __FILE__ << ":" << __LINE__ << "\n"; \
         throw std::runtime_error(msg); \
     }
 
 #define HIMG_THROW_STRING(...) \
-    HIMG_THROW((__VA_ARGS__));
+    HIMG_ERROR((__VA_ARGS__));
 
 #ifdef __EMSCRIPTEN__
 // Log utilities for emscripten, where the best debug tool is printf
