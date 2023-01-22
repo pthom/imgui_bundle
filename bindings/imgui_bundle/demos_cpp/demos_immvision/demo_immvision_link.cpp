@@ -21,6 +21,8 @@ void demo_immvision_link()
 
         params_channels.ImageDisplaySize = {300, 0};
         params_channels.ZoomKey = "some_common_zoom_key";
+
+        inited = true;
     }
 
     ImGuiMd::RenderUnindented(R"(If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel)");
