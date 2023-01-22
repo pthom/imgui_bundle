@@ -71,7 +71,7 @@ def run_nb(
     with_markdown: bool = True,
     with_node_editor: bool = True,
     thumbnail_height=150,
-    thumbnail_ratio=1.0,
+    thumbnail_ratio=0.0,
 ) -> None:
     """ImguiBundle app runner for jupyter notebook
 
@@ -119,7 +119,7 @@ def run_nb(
 
     def make_thumbnail(image):
         resize_ratio = 1
-        if thumbnail_ratio != 1.0:
+        if thumbnail_ratio != 0.0:
             resize_ratio = thumbnail_ratio
         elif thumbnail_height > 0:
             resize_ratio = thumbnail_height / image.shape[0]
