@@ -79,10 +79,14 @@ endif()
 option(IMGUI_BUNDLE_BUILD_DOC OFF)
 
 
-########################################################
+###############################################################################
+# Main
+###############################################################################
+
 include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
+
 
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
@@ -91,18 +95,32 @@ endif()
 if (EMSCRIPTEN)
     add_compile_definitions(EMSCRIPTEN)
 
-    # esmcripten may hang because an unindentified component throws (and exceptions are disabled by default)
+    # add_compile_options()
+    add_link_options(-sALLOW_MEMORY_GROWTH)
+
+    # esmcripten may hang because an unidentified component throws,
+    # and exceptions are disabled by default
     # fixme: track the origin of these exceptions and remove them
-    add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
-    add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
+    # (was not found during a session with -fsanitize=address and -fsanitize=undefined)
+#    add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
+#    add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
 
     # enable assertions in emscripten (IM_ASSERT will log)
     add_link_options(-sASSERTIONS)
-    #add_compile_options(-sASSERTIONS) # this seems to be a link-only flag
 
+    # This would enable exception to be handled by wasm (and thus may be faster)
+    # unfortunately, this breaks demo_imgui_bundle
     #add_compile_options(-fwasm-exceptions)
     #add_link_options(-fwasm-exceptions)
 endif()
+
+#------------------
+# Sanitizers
+#------------------
+#add_compile_options(-fsanitize=address)
+#add_link_options(-fsanitize=address)
+#add_compile_options(-fsanitize=undefined)
+#add_link_options(-fsanitize=undefined)
 
 
 #########################################################################
