@@ -6,6 +6,7 @@
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
 #include "hello_imgui/hello_imgui.h"
+#include "immvision/immvision.h"
 
 #include <chrono>
 #include <cassert>
@@ -106,6 +107,8 @@ namespace ImmApp
 
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
             ImGuiMd::DeInitializeMarkdown();
+
+        ImmVision::ClearTextureCache();
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
