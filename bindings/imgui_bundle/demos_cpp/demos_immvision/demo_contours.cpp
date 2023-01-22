@@ -63,3 +63,12 @@ void demo_contours()
     static BlurData blur_data(DemosAssetsFolder() + "/images/house.jpg");
     gui_blur(blur_data);
 }
+
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+int main()
+{
+    ImmApp::Run(demo_contours, "blur", true);
+    //ImmApp::Run(demo_contours, "blur", false, false, {800, 600});
+}
+#endif
