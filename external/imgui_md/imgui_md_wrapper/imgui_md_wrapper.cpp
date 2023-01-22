@@ -152,7 +152,7 @@ assets/
                         ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
                         if (font == nullptr)
                         {
-                            fprintf(stderr, error_message.c_str()); IM_ASSERT(false);
+                            fprintf(stderr, "%s", error_message.c_str()); IM_ASSERT(false);
                         }
                         mFonts.push_back(std::make_pair(markdownTextStyle, font) );
                     }
@@ -162,7 +162,7 @@ assets/
                 mFontCode = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(
                     "fonts/SourceCodePro-Regular.ttf", fontSize);
                 if (mFontCode == nullptr) {
-                    fprintf(stderr, error_message.c_str());
+                    fprintf(stderr, "%s", error_message.c_str());
                     IM_ASSERT(false);
                 }
             }
