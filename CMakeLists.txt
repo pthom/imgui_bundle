@@ -90,6 +90,18 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
 endif()
 if (EMSCRIPTEN)
     add_compile_definitions(EMSCRIPTEN)
+
+    # esmcripten may hang because an unindentified component throws (and exceptions are disabled by default)
+    # fixme: track the origin of these exceptions and remove them
+    add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
+    add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
+
+    # enable assertions in emscripten (IM_ASSERT will log)
+    add_link_options(-sASSERTIONS)
+    #add_compile_options(-sASSERTIONS) # this seems to be a link-only flag
+
+    #add_compile_options(-fwasm-exceptions)
+    #add_link_options(-fwasm-exceptions)
 endif()
 
 
