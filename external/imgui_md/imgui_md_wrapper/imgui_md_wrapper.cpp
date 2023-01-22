@@ -149,27 +149,21 @@ assets/
 
                         float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
                         std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-                        try
+                        ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
+                        if (font == nullptr)
                         {
-                            ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
-                            mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                            fprintf(stderr, error_message.c_str()); IM_ASSERT(false);
                         }
-                        catch (std::runtime_error)
-                        {
-                            throw std::runtime_error(error_message);
-                        }
+                        mFonts.push_back(std::make_pair(markdownTextStyle, font) );
                     }
                 }
 
-                try
-                {
-                    float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
-                    mFontCode = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(
-                        "fonts/SourceCodePro-Regular.ttf", fontSize);
-                }
-                catch (std::runtime_error)
-                {
-                    throw std::runtime_error(error_message);
+                float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
+                mFontCode = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(
+                    "fonts/SourceCodePro-Regular.ttf", fontSize);
+                if (mFontCode == nullptr) {
+                    fprintf(stderr, error_message.c_str());
+                    IM_ASSERT(false);
                 }
             }
 
@@ -401,21 +395,13 @@ assets/
         auto & imageCache = gMarkdownRenderer->ImageCache();
         if (imageCache.find(image_path) == imageCache.end())
         {
-            try
-            {
+            std::string errorImage = "images/markdown_broken_image.png";
+            if (HelloImGui::AssetExists(image_path))
                 imageCache[image_path] = HelloImGui::ImageGl::FactorImage(image_path.c_str());
-            }
-            catch (std::runtime_error)
-            {
-                try
-                {
-                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage("images/markdown_broken_image.png");
-                }
-                catch (std::runtime_error)
-                {
-                    return std::nullopt;
-                }
-            }
+            else if (HelloImGui::AssetExists(errorImage))
+                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage(errorImage.c_str());
+            else
+                return std::nullopt;
         }
 
         auto imageGl = imageCache.at(image_path).get();
