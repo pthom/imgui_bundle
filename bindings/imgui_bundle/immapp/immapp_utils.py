@@ -167,4 +167,4 @@ def run_nb(
         else:
             print(f"imgui_bundle: no JAVASCRIPT_RUN_ID")
 
-    display_run_link()
+    # display_run_link()
