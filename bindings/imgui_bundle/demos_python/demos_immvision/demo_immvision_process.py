@@ -9,6 +9,7 @@ import math
 
 from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle.demos_python import demo_utils
 
 
 ImageRgb = NDArray[np.uint8]
@@ -95,11 +96,11 @@ class AppState:
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
         self.immvision_params = immvision.ImageParams()
-        self.immvision_params.image_display_size = (300, 0)
+        self.immvision_params.image_display_size = (350, 0)
         self.immvision_params.zoom_key = "z"
 
         self.immvision_params_sobel = immvision.ImageParams()
-        self.immvision_params_sobel.image_display_size = (600, 0)
+        self.immvision_params_sobel.image_display_size = (350, 0)
         self.immvision_params_sobel.zoom_key = "z"
         self.immvision_params_sobel.show_options_panel = True
 
@@ -127,8 +128,10 @@ def demo_gui():
     static.app_state.immvision_params_sobel.refresh_image = changed
 
     immvision.image("Original", static.app_state.image, static.app_state.immvision_params)
+    imgui.same_line()
     immvision.image("Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel)
 
 
 if __name__ == "__main__":
+    demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, window_size=(1000, 1000))

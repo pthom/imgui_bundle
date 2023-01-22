@@ -112,11 +112,11 @@ struct AppState {
         imageSobel = ComputeSobel(image, sobelParams);
 
         immvisionParams = ImmVision::ImageParams();
-        immvisionParams.ImageDisplaySize = cv::Size(300, 0);
+        immvisionParams.ImageDisplaySize = cv::Size(350, 0);
         immvisionParams.ZoomKey = "z";
 
         immvisionParamsSobel = ImmVision::ImageParams();
-        immvisionParamsSobel.ImageDisplaySize = cv::Size(600, 0);
+        immvisionParamsSobel.ImageDisplaySize = cv::Size(350, 0);
         immvisionParamsSobel.ZoomKey = "z";
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
@@ -139,5 +139,6 @@ void demo_immvision_process()
         appState.immvisionParamsSobel.RefreshImage = true;
     }
     ImmVision::Image("Original", appState.image, &appState.immvisionParams);
+    ImGui::SameLine();
     ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
 }
