@@ -134,33 +134,6 @@ void py_init_module_imgui_main(py::module& m)
     //
 
 
-    m.def("get_font_size",
-        ImGui::GetFontSize);
-
-    m.def("em_size",
-        ImGui::EmSize, " EnSize represents a size on the screen relative to the font size.\n For good results on HighDPI screens, prefer scale your widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).");
-
-
-    auto pyClassEmVec2 =
-        py::class_<EmVec2>
-            (m, "EmVec2", "")
-        .def_readwrite("x", &EmVec2::x, "")
-        .def_readwrite("y", &EmVec2::y, "")
-        .def(py::init<>())
-        .def(py::init<float, float>(),
-            py::arg("_x"), py::arg("_y"))
-        .def("__getitem__",
-            py::overload_cast<size_t>(&EmVec2::operator[]),
-            py::arg("idx"),
-            "(private API)\n\n We very rarely use this [] operator, the assert overhead is fine.")
-        .def("__getitem__",
-            py::overload_cast<size_t>(&EmVec2::operator[]),
-            py::arg("idx"),
-            "(private API)\n\n We very rarely use this [] operator, the assert overhead is fine.",
-            pybind11::return_value_policy::reference)
-        ;
-
-
     auto pyClassImVec2 =
         py::class_<ImVec2>
             (m, "ImVec2", "")
@@ -169,9 +142,6 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float>(),
             py::arg("_x"), py::arg("_y"))
-        .def(py::init<EmVec2>(),
-            py::arg("v"),
-            " [ADAPT_IMGUI_BUNDLE] added an *implicit* conversion from EmVec2 to ImVec2\n\n /* implicit ctor! */")
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
