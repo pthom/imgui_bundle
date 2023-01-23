@@ -1,11 +1,5 @@
 = Windows ARM64 specific instructions
 
-There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.
-
-Note: if you are on windows ARM64 and want to build for x64 use:
-cmake .. -A x64
-
-
 ****
 Summary (private note for this library author):
 - Cpp: use ARM64 build
@@ -25,6 +19,12 @@ demo_imgui_bundle
 ```
 
 ****
+
+There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.
+
+Note: if you are on windows ARM64 and want to build for x64 use:
+cmake .. -A x64
+
 
 == Using a "world" dll version of OpenCV
 
