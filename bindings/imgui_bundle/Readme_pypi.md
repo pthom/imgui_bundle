@@ -102,7 +102,7 @@ charm, and porting code between Python and C++ becomes easy.
 
 # Build and install instructions
 
-## Usage with Python
+## Install for Python
 
 ### Install from pypi
 
@@ -137,7 +137,7 @@ The source for the demos can be found inside
 Consider `imgui_bundle_demo` as an always available manual for ImGui
 Bundle with lots of examples and related code source.
 
-## Usage with C++
+## Install for C++
 
 ### Integrate ImGui Bundle in your own project in 5 minutes
 
@@ -386,6 +386,27 @@ Python:
 
     if __name__ == "__main__":
         main()
+
+## Using ImGui Bundle with jupyter notebook
+
+ImmApp adds support for integration inside jupyter notebook: the
+application will be run in an external window, and a screenshot will be
+placed on the notebook after execution.
+
+This requires a window server, and will not run on google collab.
+
+Below is a screenshot, that you can test by running `jupyter notebook`
+inside `bindings/imgui_bundle/demos_python/notebooks`
+
+![immapp notebook
+example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
+
+[40 seconds demo video on
+Youtube](https://www.youtube.com/watch?v=3GK1KNXTCqQ)
+
+### API:
+
+[immapp/immapp\_notebook.py](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/immapp/immapp_notebook.py)
 
 # C++ / Python porting advices
 

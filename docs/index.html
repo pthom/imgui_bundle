@@ -524,8 +524,8 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <li><a href="#_repository_folders_structure">Repository folders structure</a></li>
 <li><a href="#_build_and_install_instructions">Build and install instructions</a>
 <ul class="sectlevel2">
-<li><a href="#_usage_with_python">Usage with Python</a></li>
-<li><a href="#_usage_with_c">Usage with C++</a></li>
+<li><a href="#_install_for_python">Install for Python</a></li>
+<li><a href="#_install_for_c">Install for C++</a></li>
 </ul>
 </li>
 <li><a href="#_usage_instructions">Usage instructions</a>
@@ -533,6 +533,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <li><a href="#_dear_imgui_immediate_gui">Dear ImGui - Immediate GUI</a></li>
 <li><a href="#_hello_imgui_starter_pack">Hello ImGui - Starter pack</a></li>
 <li><a href="#_immapp_immediate_app">ImmApp - Immediate App</a></li>
+<li><a href="#_using_imgui_bundle_with_jupyter_notebook">Using ImGui Bundle with jupyter notebook</a></li>
 </ul>
 </li>
 <li><a href="#_c_python_porting_advices">C&#43;&#43; / Python porting advices</a>
@@ -980,7 +981,7 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <h2 id="_build_and_install_instructions">Build and install instructions</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_usage_with_python">Usage with Python</h3>
+<h3 id="_install_for_python">Install for Python</h3>
 <div class="sect3">
 <h4 id="_install_from_pypi">Install from pypi</h4>
 <div class="listingblock">
@@ -1045,7 +1046,7 @@ Consider <code>imgui_bundle_demo</code> as an always available manual for ImGui 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_usage_with_c">Usage with C++</h3>
+<h3 id="_install_for_c">Install for C++</h3>
 <div class="sect3">
 <h4 id="_integrate_imgui_bundle_in_your_own_project_in_5_minutes">Integrate ImGui Bundle in your own project in 5 minutes</h4>
 <div class="paragraph">
@@ -1358,6 +1359,32 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 </div>
 </details>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_imgui_bundle_with_jupyter_notebook">Using ImGui Bundle with jupyter notebook</h3>
+<div class="paragraph">
+<p>ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.</p>
+</div>
+<div class="paragraph">
+<p>This requires a window server, and will not run on google collab.</p>
+</div>
+<div class="paragraph">
+<p>Below is a screenshot, that you can test by running <code>jupyter notebook</code> inside <code>bindings/imgui_bundle/demos_python/notebooks</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg" alt="immapp notebook example">
+</div>
+</div>
+<div class="paragraph">
+<p><a href="https://www.youtube.com/watch?v=3GK1KNXTCqQ">40 seconds demo video on Youtube</a></p>
+</div>
+<div class="sect3">
+<h4 id="_api_3">API:</h4>
+<div class="paragraph">
+<p><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/immapp/immapp_notebook.py">immapp/immapp_notebook.py</a></p>
+</div>
 </div>
 </div>
 </div>

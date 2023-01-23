@@ -1,6 +1,6 @@
 # Build and install instructions
 
-## Usage with Python
+## Install for Python
 
 ### Install from pypi
 
@@ -37,7 +37,7 @@ The source for the demos can be found inside [bindings/imgui_bundle/demos_python
 Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
 :::
 
-## Usage with C++
+## Install for C++
 
 ### Integrate ImGui Bundle in your own project in 5 minutes
 

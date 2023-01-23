@@ -422,7 +422,7 @@ int main(int , char *[]) {
 
 == Build and install instructions
 
-=== Usage with Python
+=== Install for Python
 
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -470,7 +470,7 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_py
 TIP: Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
 
 
-=== Usage with C++
+=== Install for C++
 
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -745,6 +745,37 @@ if __name__ == "__main__":
 
 ====
 
+
+=== Using ImGui Bundle with jupyter notebook
+
+:doc_branch: doc
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+:notebook-example-image: {url-doc-images}/immapp_notebook_example.jpg
+
+ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.
+
+This requires a window server, and will not run on google collab.
+
+Below is a screenshot, that you can test by running `jupyter notebook` inside `bindings/imgui_bundle/demos_python/notebooks`
+
+image::{notebook-example-image}[]
+
+
+link:https://www.youtube.com/watch?v=3GK1KNXTCqQ[40 seconds demo video on Youtube]
+
+==== API:
+
+link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 
 
 == {cpp} / Python porting advices
