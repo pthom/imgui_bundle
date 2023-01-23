@@ -98,7 +98,7 @@ bool GuiSobelParams(SobelParams& params)
 }
 
 
-struct AppState {
+struct AppStateProcess {
     cv::Mat image;
     cv::Mat imageSobel;
     SobelParams sobelParams;
@@ -106,7 +106,7 @@ struct AppState {
     ImmVision::ImageParams immvisionParams;
     ImmVision::ImageParams immvisionParamsSobel;
 
-    AppState(const std::string& image_file) {
+    AppStateProcess(const std::string& image_file) {
         image = cv::imread(image_file);
         sobelParams = SobelParams();
         imageSobel = ComputeSobel(image, sobelParams);
@@ -125,7 +125,7 @@ struct AppState {
 
 void demo_immvision_process()
 {
-    static AppState appState(DemosAssetsFolder() + "/images/house.jpg");
+    static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
     ImGuiMd::RenderUnindented(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
