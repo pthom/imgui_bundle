@@ -395,6 +395,16 @@ void py_init_module_imgui_internal(py::module& m)
         ;
 
 
+    m.def("im_bit_array_get_storage_size_in_bytes",
+        ImBitArrayGetStorageSizeInBytes,
+        py::arg("bitcount"),
+        "(private API)");
+
+    m.def("im_bit_array_clear_all_bits",
+        ImBitArrayClearAllBits,
+        py::arg("arr"), py::arg("bitcount"),
+        "(private API)");
+
     m.def("im_bit_array_test_bit",
         ImBitArrayTestBit,
         py::arg("arr"), py::arg("n"),
@@ -589,7 +599,6 @@ void py_init_module_imgui_internal(py::module& m)
         .value("select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
         .value("select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
         .value("span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
-        .value("draw_hovered_when_held", ImGuiSelectableFlags_DrawHoveredWhenHeld, "Always show active when held, even is not hovered. This concept could probably be renamed/formalized somehow.")
         .value("set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
         .value("no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5")
         .value("no_set_key_owner", ImGuiSelectableFlags_NoSetKeyOwner, "Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)");
@@ -2005,6 +2014,12 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("window_padding", &ImGuiWindow::WindowPadding, "Window padding at the time of Begin().")
         .def_readwrite("window_rounding", &ImGuiWindow::WindowRounding, "Window rounding at the time of Begin(). May be clamped lower to avoid rendering artifacts with title bar, menu bar etc.")
         .def_readwrite("window_border_size", &ImGuiWindow::WindowBorderSize, "Window border size at the time of Begin().")
+        .def_readwrite("deco_outer_size_x1", &ImGuiWindow::DecoOuterSizeX1, "Left/Up offsets. Sum of non-scrolling outer decorations (X1 generally == 0.0. Y1 generally = TitleBarHeight + MenuBarHeight). Locked during Begin().")
+        .def_readwrite("deco_outer_size_y1", &ImGuiWindow::DecoOuterSizeY1, "Left/Up offsets. Sum of non-scrolling outer decorations (X1 generally == 0.0. Y1 generally = TitleBarHeight + MenuBarHeight). Locked during Begin().")
+        .def_readwrite("deco_outer_size_x2", &ImGuiWindow::DecoOuterSizeX2, "Right/Down offsets (X2 generally == ScrollbarSize.x, Y2 == ScrollbarSizes.y).")
+        .def_readwrite("deco_outer_size_y2", &ImGuiWindow::DecoOuterSizeY2, "Right/Down offsets (X2 generally == ScrollbarSize.x, Y2 == ScrollbarSizes.y).")
+        .def_readwrite("deco_inner_size_x1", &ImGuiWindow::DecoInnerSizeX1, "Applied AFTER/OVER InnerRect. Specialized for Tables as they use specialized form of clipping and frozen rows/columns are inside InnerRect (and not part of regular decoration sizes).")
+        .def_readwrite("deco_inner_size_y1", &ImGuiWindow::DecoInnerSizeY1, "Applied AFTER/OVER InnerRect. Specialized for Tables as they use specialized form of clipping and frozen rows/columns are inside InnerRect (and not part of regular decoration sizes).")
         .def_readwrite("name_buf_len", &ImGuiWindow::NameBufLen, "Size of buffer storing Name. May be larger than strlen(Name)!")
         .def_readwrite("move_id", &ImGuiWindow::MoveId, "== window->GetID(\"#MOVE\")")
         .def_readwrite("tab_id", &ImGuiWindow::TabId, "== window->GetID(\"#TAB\")")
@@ -2265,23 +2280,20 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiTableInstanceData =
         py::class_<ImGuiTableInstanceData>
             (m, "TableInstanceData", "Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)")
-        .def_readwrite("last_outer_height", &ImGuiTableInstanceData::LastOuterHeight, "Outer height from last frame // FIXME: multi-instance issue (#3955)")
-        .def_readwrite("last_first_row_height", &ImGuiTableInstanceData::LastFirstRowHeight, "Height of first row from last frame // FIXME: possible multi-instance issue?")
+        .def_readwrite("last_outer_height", &ImGuiTableInstanceData::LastOuterHeight, "Outer height from last frame")
+        .def_readwrite("last_first_row_height", &ImGuiTableInstanceData::LastFirstRowHeight, "Height of first row from last frame (FIXME: this is used as \"header height\" and may be reworked)")
+        .def_readwrite("last_frozen_height", &ImGuiTableInstanceData::LastFrozenHeight, "Height of frozen section from last frame")
         .def(py::init<>())
         ;
 
 
     auto pyClassImGuiTable =
         py::class_<ImGuiTable>
-            (m, "Table", "FIXME-TABLE: more transient data could be stored in a per-stacked table structure: DrawSplitter, SortSpecs, incoming RowData")
+            (m, "Table", "FIXME-TABLE: more transient data could be stored in a stacked ImGuiTableTempData: e.g. SortSpecs, incoming RowData")
         .def_readwrite("id_", &ImGuiTable::ID, "")
         .def_readwrite("flags", &ImGuiTable::Flags, "")
         .def_readwrite("raw_data", &ImGuiTable::RawData, "Single allocation to hold Columns[], DisplayOrderToIndex[] and RowCellData[]")
         .def_readwrite("temp_data", &ImGuiTable::TempData, "Transient data while table is active. Point within g.CurrentTableStack[]")
-        .def_readwrite("enabled_mask_by_display_order", &ImGuiTable::EnabledMaskByDisplayOrder, "Column DisplayOrder -> IsEnabled map")
-        .def_readwrite("enabled_mask_by_index", &ImGuiTable::EnabledMaskByIndex, "Column Index -> IsEnabled map (== not hidden by user/api) in a format adequate for iterating column without touching cold data")
-        .def_readwrite("visible_mask_by_index", &ImGuiTable::VisibleMaskByIndex, "Column Index -> IsVisibleX|IsVisibleY map (== not hidden by user/api && not hidden by scrolling/cliprect)")
-        .def_readwrite("request_output_mask_by_index", &ImGuiTable::RequestOutputMaskByIndex, "Column Index -> IsVisible || AutoFit (== expect user to submit items)")
         .def_readwrite("settings_loaded_flags", &ImGuiTable::SettingsLoadedFlags, "Which data were loaded from the .ini file (e.g. when order is not altered we won't save order)")
         .def_readwrite("settings_offset", &ImGuiTable::SettingsOffset, "Offset in g.SettingsTables")
         .def_readwrite("last_frame_active", &ImGuiTable::LastFrameActive, "")
@@ -2376,6 +2388,8 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("is_reset_display_order_request", &ImGuiTable::IsResetDisplayOrderRequest, "")
         .def_readwrite("is_unfrozen_rows", &ImGuiTable::IsUnfrozenRows, "Set when we got past the frozen row.")
         .def_readwrite("is_default_sizing_policy", &ImGuiTable::IsDefaultSizingPolicy, "Set if user didn't explicitly set a sizing policy in BeginTable()")
+        .def_readwrite("has_scrollbar_y_curr", &ImGuiTable::HasScrollbarYCurr, "Whether ANY instance of this table had a vertical scrollbar during the current frame.")
+        .def_readwrite("has_scrollbar_y_prev", &ImGuiTable::HasScrollbarYPrev, "Whether ANY instance of this table had a vertical scrollbar during the previous.")
         .def_readwrite("memory_compacted", &ImGuiTable::MemoryCompacted, "")
         .def_readwrite("host_skip_items", &ImGuiTable::HostSkipItems, "Backup of InnerWindow->SkipItem at the end of BeginTable(), because we will overwrite InnerWindow->SkipItem on a per-column basis")
         .def(py::init<>())
@@ -2660,9 +2674,6 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("window"), py::arg("rect"),
         "#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS\n(private API)");
 
-    m.def("get_item_id",
-        ImGui::GetItemID, "(private API)\n\n Get ID of last item (~~ often same ImGui::GetID(label) beforehand)");
-
     m.def("get_item_status_flags",
         ImGui::GetItemStatusFlags, "(private API)");
 
@@ -2924,8 +2935,8 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("is_mouse_drag_past_threshold",
         py::overload_cast<ImGuiMouseButton, float>(ImGui::IsMouseDragPastThreshold), py::arg("button"), py::arg("lock_threshold") = -1.0f);
 
-    m.def("get_key_vector2d",
-        ImGui::GetKeyVector2d, py::arg("key_left"), py::arg("key_right"), py::arg("key_up"), py::arg("key_down"));
+    m.def("get_key_magnitude2d",
+        ImGui::GetKeyMagnitude2d, py::arg("key_left"), py::arg("key_right"), py::arg("key_up"), py::arg("key_down"));
 
     m.def("get_nav_tweak_pressed_amount",
         ImGui::GetNavTweakPressedAmount, py::arg("axis"));
@@ -3517,23 +3528,32 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("button_ex",
         ImGui::ButtonEx, py::arg("label"), py::arg("size_arg") = ImVec2(0, 0), py::arg("flags") = 0);
 
+    m.def("arrow_button_ex",
+        ImGui::ArrowButtonEx, py::arg("str_id"), py::arg("dir"), py::arg("size_arg"), py::arg("flags") = 0);
+
+    m.def("image_button_ex",
+        ImGui::ImageButtonEx, py::arg("id_"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("bg_col"), py::arg("tint_col"));
+
+    m.def("separator_ex",
+        ImGui::SeparatorEx, py::arg("flags"));
+
+    m.def("checkbox_flags",
+        py::overload_cast<const char *, ImS64 *, ImS64>(ImGui::CheckboxFlags), py::arg("label"), py::arg("flags"), py::arg("flags_value"));
+
+    m.def("checkbox_flags",
+        py::overload_cast<const char *, ImU64 *, ImU64>(ImGui::CheckboxFlags), py::arg("label"), py::arg("flags"), py::arg("flags_value"));
+
     m.def("close_button",
         ImGui::CloseButton, py::arg("id_"), py::arg("pos"));
 
     m.def("collapse_button",
         ImGui::CollapseButton, py::arg("id_"), py::arg("pos"), py::arg("dock_node"));
 
-    m.def("arrow_button_ex",
-        ImGui::ArrowButtonEx, py::arg("str_id"), py::arg("dir"), py::arg("size_arg"), py::arg("flags") = 0);
-
     m.def("scrollbar",
         ImGui::Scrollbar, py::arg("axis"));
 
     m.def("scrollbar_ex",
         ImGui::ScrollbarEx, py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("p_scroll_v"), py::arg("avail_v"), py::arg("contents_v"), py::arg("flags"));
-
-    m.def("image_button_ex",
-        ImGui::ImageButtonEx, py::arg("id_"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("bg_col"), py::arg("tint_col"));
 
     m.def("get_window_scrollbar_rect",
         ImGui::GetWindowScrollbarRect, py::arg("window"), py::arg("axis"));
@@ -3548,15 +3568,6 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("get_window_resize_border_id",
         ImGui::GetWindowResizeBorderID, py::arg("window"), py::arg("dir"));
-
-    m.def("separator_ex",
-        ImGui::SeparatorEx, py::arg("flags"));
-
-    m.def("checkbox_flags",
-        py::overload_cast<const char *, ImS64 *, ImS64>(ImGui::CheckboxFlags), py::arg("label"), py::arg("flags"), py::arg("flags_value"));
-
-    m.def("checkbox_flags",
-        py::overload_cast<const char *, ImU64 *, ImU64>(ImGui::CheckboxFlags), py::arg("label"), py::arg("flags"), py::arg("flags_value"));
 
     m.def("button_behavior",
         [](const ImRect & bb, ImGuiID id, bool out_hovered, bool out_held, ImGuiButtonFlags flags = 0) -> std::tuple<bool, bool, bool>

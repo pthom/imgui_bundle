@@ -2137,6 +2137,9 @@ void py_init_module_imgui_main(py::module& m)
     m.def("is_any_item_focused",
         ImGui::IsAnyItemFocused, "is any item focused?");
 
+    m.def("get_item_id",
+        ImGui::GetItemID, "get ID of last item (~~ often same ImGui::GetID(label) beforehand)");
+
     m.def("get_item_rect_min",
         ImGui::GetItemRectMin, "get upper-left bounding rectangle of the last item (screen space)");
 
@@ -2492,7 +2495,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("chars_scientific", ImGuiInputTextFlags_CharsScientific, "Allow 0123456789.+-*/eE (Scientific notation input)")
         .value("callback_resize", ImGuiInputTextFlags_CallbackResize, "Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
         .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)")
-        .value("escape_clears_all", ImGuiInputTextFlags_EscapeClearsAll, "Escape key clears content if not empty, and deactivate otherwise (constrast to default behavior of Escape to revert)");
+        .value("escape_clears_all", ImGuiInputTextFlags_EscapeClearsAll, "Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)");
 
 
     py::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags_", py::arithmetic(), "Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()")
@@ -2697,7 +2700,7 @@ void py_init_module_imgui_main(py::module& m)
 
     py::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags_", py::arithmetic(), "Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()")
         .value("none", ImGuiDragDropFlags_None, "")
-        .value("source_no_preview_tooltip", ImGuiDragDropFlags_SourceNoPreviewTooltip, "By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.")
+        .value("source_no_preview_tooltip", ImGuiDragDropFlags_SourceNoPreviewTooltip, "Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.")
         .value("source_no_disable_hover", ImGuiDragDropFlags_SourceNoDisableHover, "By default, when dragging we clear data so that IsItemHovered() will return False, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call IsItemHovered() on the source item.")
         .value("source_no_hold_to_open_others", ImGuiDragDropFlags_SourceNoHoldToOpenOthers, "Disable the behavior that allows to open tree nodes and collapsing header by holding over them while dragging a source item.")
         .value("source_allow_null_id", ImGuiDragDropFlags_SourceAllowNullID, "Allow items such as Text(), Image() that have no unique identifier to be used as drag source, by manufacturing a temporary identifier based on their window-relative position. This is extremely unusual within the dear imgui ecosystem and so we made it explicit.")
@@ -2738,7 +2741,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("descending", ImGuiSortDirection_Descending, "Descending = 9->0, Z->A etc.");
 
 
-    py::enum_<ImGuiKey>(m, "Key", py::arithmetic(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value)\n All our named keys are >= 512. Keys value 0 to 511 are left unused as legacy native/opaque key values (< 1.87)\n Since >= 1.89 we increased typing (went from int to enum), some legacy code may need a cast to ImGuiKey.")
+    py::enum_<ImGuiKey>(m, "Key", py::arithmetic(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.\n All our named keys are >= 512. Keys value 0 to 511 are left unused as legacy native/opaque key values (< 1.87).\n Since >= 1.89 we increased typing (went from int to enum), some legacy code may need a cast to ImGuiKey.\n Read details about the 1.87 and 1.89 transition : https://github.com/ocornut/imgui/issues/4921")
         .value("none", ImGuiKey_None, "")
         .value("tab", ImGuiKey_Tab, "== ImGuiKey_NamedKey_BEGIN")
         .value("left_arrow", ImGuiKey_LeftArrow, "")
@@ -2882,11 +2885,11 @@ void py_init_module_imgui_main(py::module& m)
         .value("reserved_for_mod_super", ImGuiKey_ReservedForModSuper, "")
         .value("count", ImGuiKey_COUNT, "")
         .value("im_gui_mod_none", ImGuiMod_None, "")
-        .value("im_gui_mod_ctrl", ImGuiMod_Ctrl, "")
-        .value("im_gui_mod_shift", ImGuiMod_Shift, "")
+        .value("im_gui_mod_ctrl", ImGuiMod_Ctrl, "Ctrl")
+        .value("im_gui_mod_shift", ImGuiMod_Shift, "Shift")
         .value("im_gui_mod_alt", ImGuiMod_Alt, "Option/Menu")
         .value("im_gui_mod_super", ImGuiMod_Super, "Cmd/Super/Windows")
-        .value("im_gui_mod_shortcut", ImGuiMod_Shortcut, "[Internal, read-only] Alias of ImGuiMod_Super (macOS) or ImGuiMod_Ctrl (otherwise), decided by io.ConfigMacOSXBehaviors.")
+        .value("im_gui_mod_shortcut", ImGuiMod_Shortcut, "Alias for Ctrl (non-macOS) _or_ Super (macOS).")
         .value("im_gui_mod_mask_", ImGuiMod_Mask_, "5-bits")
         .value("named_key_begin", ImGuiKey_NamedKey_BEGIN, "")
         .value("named_key_end", ImGuiKey_NamedKey_END, "")
@@ -4235,8 +4238,10 @@ void py_init_module_imgui_main(py::module& m)
         .def_readonly("config_data", &ImFont::ConfigData, "4-8   // in  //            // Pointer within ContainerAtlas->ConfigData")
         .def_readwrite("config_data_count", &ImFont::ConfigDataCount, "2     // in  // ~ 1        // Number of ImFontConfig involved in creating this font. Bigger than 1 when merging multiple font sources into one ImFont.")
         .def_readwrite("fallback_char", &ImFont::FallbackChar, "2     // out // = FFFD/'?' // Character used if a glyph isn't found.")
-        .def_readwrite("ellipsis_char", &ImFont::EllipsisChar, "2     // out // = '...'    // Character used for ellipsis rendering.")
-        .def_readwrite("dot_char", &ImFont::DotChar, "2     // out // = '.'      // Character used for ellipsis rendering (if a single '...' character isn't found)")
+        .def_readwrite("ellipsis_char", &ImFont::EllipsisChar, "2     // out // = '...'/'.'// Character used for ellipsis rendering.")
+        .def_readwrite("ellipsis_char_count", &ImFont::EllipsisCharCount, "1     // out // 1 or 3")
+        .def_readwrite("ellipsis_width", &ImFont::EllipsisWidth, "4     // out               // Width")
+        .def_readwrite("ellipsis_char_step", &ImFont::EllipsisCharStep, "4     // out               // Step between characters when EllipsisCount > 0")
         .def_readwrite("dirty_lookup_tables", &ImFont::DirtyLookupTables, "1     // out //")
         .def_readwrite("scale", &ImFont::Scale, "4     // in  // = 1.      // Base font scale, multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
         .def_readwrite("ascent", &ImFont::Ascent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize]")
