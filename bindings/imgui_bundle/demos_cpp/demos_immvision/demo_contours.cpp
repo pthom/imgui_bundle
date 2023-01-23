@@ -66,9 +66,10 @@ void demo_contours()
 
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main()
+int main(int, char**)
 {
     ImmApp::Run(demo_contours, "blur", true);
     //ImmApp::Run(demo_contours, "blur", false, false, {800, 600});
+    return 0;
 }
 #endif
