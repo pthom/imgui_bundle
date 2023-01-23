@@ -402,7 +402,7 @@ inside `bindings/imgui_bundle/demos_python/notebooks`
 example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
 
 [40 seconds demo video on
-Youtube](https://www.youtube.com/watch?v=3GK1KNXTCqQ)
+Youtube](https://www.youtube.com/watch?v=QQIC7lpHono)
 
 ### API:
 

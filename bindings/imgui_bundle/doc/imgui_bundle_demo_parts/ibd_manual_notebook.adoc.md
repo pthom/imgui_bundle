@@ -8,7 +8,7 @@ Below is a screenshot, that you can test by running `jupyter notebook` inside `b
 
 ![immapp notebook example](images/immapp_notebook_example.jpg)
 
-[40 seconds demo video on Youtube](https://www.youtube.com/watch?v=3GK1KNXTCqQ)
+[40 seconds demo video on Youtube](https://www.youtube.com/watch?v=QQIC7lpHono)
 
 ## API:
 
