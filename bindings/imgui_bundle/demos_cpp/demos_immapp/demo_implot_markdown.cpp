@@ -24,10 +24,12 @@ int main(int, char**)
     auto gui = [x,y1,y2]()
     {
         ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
-        ImPlot::BeginPlot("Plot");
-        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
-        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
-        ImPlot::EndPlot();
+        if (ImPlot::BeginPlot("Plot"))
+        {
+            ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
+            ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+            ImPlot::EndPlot();
+        }
     };
 
     HelloImGui::SimpleRunnerParams runnerParams { .guiFunction = gui, .windowSize = {600, 400} };

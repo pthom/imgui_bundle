@@ -14,10 +14,10 @@ def main():
 
     def gui():
         imgui_md.render("# This is the plot of _cosinus_ and *sinus*")  # Markdown
-        implot.begin_plot("Plot")
-        implot.plot_line("y1", x, y1)
-        implot.plot_line("y2", x, y2)
-        implot.end_plot()
+        if implot.begin_plot("Plot"):
+            implot.plot_line("y1", x, y1)
+            implot.plot_line("y2", x, y2)
+            implot.end_plot()
 
     immapp.run(gui, with_implot=True, with_markdown=True, window_size=(600, 400))
 
