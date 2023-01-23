@@ -1,4 +1,4 @@
-=== Usage with C++
+=== Install for C++
 
 include::_utils.adoc[]
 

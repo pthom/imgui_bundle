@@ -1,4 +1,4 @@
-=== Usage with Python
+=== Install for Python
 
 include::_utils.adoc[]
 
