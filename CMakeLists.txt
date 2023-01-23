@@ -92,24 +92,18 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
 endif()
+
+# emscripten build additional settings
 if (EMSCRIPTEN)
     add_compile_definitions(EMSCRIPTEN)
-
-    # add_compile_options()
-    add_link_options(-sALLOW_MEMORY_GROWTH)
-
-    # esmcripten may hang because an unidentified component throws,
-    # and exceptions are disabled by default
-    # fixme: track the origin of these exceptions and remove them
-    # (was not found during a session with -fsanitize=address and -fsanitize=undefined)
-#    add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
-#    add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
-
-    # enable assertions in emscripten (IM_ASSERT will log)
+    # enable assertions in emscripten (IM_ASSERT will log and terminate on error)
     add_link_options(-sASSERTIONS)
 
+    # Exceptions handlings: by default in emscripten, exception do not work!
+    # Our program should not use them, but during development, it is possible to activate them temporarily)
+    #add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
+    #add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
     # This would enable exception to be handled by wasm (and thus may be faster)
-    # unfortunately, this breaks demo_imgui_bundle
     #add_compile_options(-fwasm-exceptions)
     #add_link_options(-fwasm-exceptions)
 endif()
