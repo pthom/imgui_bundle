@@ -125,6 +125,9 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("ImmApp - Immediate App"))
         ShowMarkdownDocFile("ibd_manual_immapp");
 
+    if (ImGui::CollapsingHeader("Using ImGui Bundle with jupyter notebook"))
+        ShowMarkdownDocFile("ibd_manual_notebook");
+
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))
         ShowPortingAdvices();
 

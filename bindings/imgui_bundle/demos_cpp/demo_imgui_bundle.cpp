@@ -18,7 +18,6 @@ void demo_immvision_launcher();
 void demo_imguizmo_launcher();
 void demo_tex_inspect_launcher();
 void demo_node_editor_launcher();
-void demo_immapp_notebook();
 void demo_themes();
 void demo_logger();
 void demo_utils();
@@ -104,7 +103,6 @@ int main(int, char **)
         DEMO_DETAILS("ImGuizmo", demo_imguizmo_launcher),
         DEMO_DETAILS("Themes", demo_themes),
         DEMO_DETAILS("Logger", demo_logger),
-        DEMO_DETAILS("Notebook", demo_immapp_notebook),
     };
 
     for (const auto& demo: demos)

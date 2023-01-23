@@ -151,6 +151,9 @@ def demo_gui() -> None:
     if imgui.collapsing_header("ImmApp - Immediate App"):
         show_markdown_file("ibd_manual_immapp")
 
+    if imgui.collapsing_header("Using ImGui Bundle with jupyter notebook"):
+        show_markdown_file("ibd_manual_notebook")
+
     if imgui.collapsing_header("C++ / Python porting advices"):
         show_porting_advices()
 

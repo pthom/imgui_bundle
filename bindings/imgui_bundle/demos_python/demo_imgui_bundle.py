@@ -16,7 +16,6 @@ from imgui_bundle.demos_python import demo_imguizmo_launcher
 from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
-from imgui_bundle.demos_python import demo_immapp_notebook
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_utils # this will set the assets folder
@@ -94,7 +93,6 @@ def main() -> None:
         DemoDetails("ImGuizmo", demo_imguizmo_launcher),
         DemoDetails("Themes", demo_themes),
         DemoDetails("Logger", demo_logger),
-        DemoDetails("Notebook", demo_immapp_notebook),
     ]
 
     for demo in demos:
