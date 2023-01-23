@@ -114,12 +114,12 @@ def free_asset_file_data(asset_file_data: AssetFileData) -> None:
 
 
 
-# std::string assetFileFullPath(const std::string& assetRelativeFilename);    /* original C++ signature */
+# std::string AssetFileFullPath(const std::string& assetRelativeFilename);    /* original C++ signature */
 def asset_file_full_path(asset_relative_filename: str) -> str:
     """*
     @@md#assetFileFullPath
 
-    `std::string assetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.
+    `std::string AssetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.
 
     This works under all platforms __except Android__.
     For compatibility with Android and other platforms, prefer to use `LoadAssetFileData` whenever possible.
@@ -134,19 +134,27 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
 
     """
     pass
-
-
-
-# Advanced: forces the assets folder location
-# (when using this, automatic assets installation on mobile platforms may not work)
-# void overrideAssetsFolder(const char* folder);    /* original C++ signature */
-def override_assets_folder(folder: str) -> None:
+# inline std::string assetFileFullPath(const std::string& assetRelativeFilename) { return AssetFileFullPath(assetRelativeFilename); }    /* original C++ signature */
+def asset_file_full_path(asset_relative_filename: str) -> str:
     pass
+
+# bool AssetExists(const std::string& assetRelativeFilename);    /* original C++ signature */
+def asset_exists(asset_relative_filename: str) -> bool:
+    """ Returns True if this asset file exists"""
+    pass
+
+
+# Sets the assets folder location
+# (when using this, automatic assets installation on mobile platforms may not work)
 # void SetAssetsFolder(const char* folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
     pass
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
+    pass
+# void overrideAssetsFolder(const char* folder);     /* original C++ signature */
+def override_assets_folder(folder: str) -> None:
+    """ synonym"""
     pass
 
 
@@ -155,7 +163,6 @@ def set_assets_folder(folder: str) -> None:
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_error.h included by hello_imgui.h                              //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -431,7 +438,11 @@ class WindowGeometry:
     * `size`: _int[2], default="{800, 600}"_. Size of the application window
       used if fullScreenMode==NoFullScreen and sizeAuto==False
     * `sizeAuto`: _bool, default=false_
-      If True, adapt the app window size to the presented widgets
+      If True, adapt the app window size to the presented widgets.
+      After the first frame was displayed, HelloImGui will measure its size,
+      and the backend application window will be resized. As a consequence, the application window size may
+      vary between the first and the second frame.
+
     * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
        You can choose between several full screen modes:
        ```cpp
@@ -465,6 +476,18 @@ class WindowGeometry:
           (this works with Glfw. With SDL, it only works under windows)
       * ScreenCoords: measure window size in screen coords
         (Note: screen coordinates might differ from real pixels on high dpi screen)
+
+    * `resizeAppWindowAtNextFrame`: _bool_, default=False;
+      If you set this to flag to True at any point during the execution, the application window
+      will then try to resize based on its content on the next displayed frame,
+      and this flag will subsequently be set to False.
+      Example:
+      ```cpp
+      // Will resize the app window at next displayed frame
+      HelloImGui::GetRunnerParams()->appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = True;
+      ```
+
+      :::Note: this flag is intended to be used during execution, not at startup (use sizeAuto at startup):::
     @@md
     *
     """
@@ -473,7 +496,7 @@ class WindowGeometry:
     size: ScreenSize = DefaultWindowSize
 
     # bool sizeAuto = false;    /* original C++ signature */
-    # If True, adapt the app window size to the presented widgets
+    # If True, adapt the app window size to the presented widgets. This is done at startup
     size_auto: bool = False
 
     # FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;    /* original C++ signature */
@@ -495,7 +518,11 @@ class WindowGeometry:
 
     # WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;    /* original C++ signature */
     window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
-    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi);    /* original C++ signature */
+
+    # bool resizeAppWindowAtNextFrame = false;    /* original C++ signature */
+    # If True, the application window will try to resize based on its content on the next displayed frame
+    resize_app_window_at_next_frame: bool = False
+    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi, bool resizeAppWindowAtNextFrame = false);    /* original C++ signature */
     def __init__(
         self,
         size: ScreenSize = DefaultWindowSize,
@@ -505,7 +532,8 @@ class WindowGeometry:
         position: ScreenPosition = DefaultScreenPosition,
         monitor_idx: int = 0,
         window_size_state: WindowSizeState = WindowSizeState.standard,
-        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi
+        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi,
+        resize_app_window_at_next_frame: bool = False
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1146,7 +1174,7 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25
         ) -> None:
         pass
@@ -1232,12 +1260,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False

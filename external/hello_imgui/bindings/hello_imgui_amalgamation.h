@@ -65,7 +65,7 @@ void FreeAssetFileData(AssetFileData * assetFileData);
 /**
 @@md#assetFileFullPath
 
-`std::string assetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.
+`std::string AssetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.
 
 This works under all platforms __except Android__.
 For compatibility with Android and other platforms, prefer to use `LoadAssetFileData` whenever possible.
@@ -78,16 +78,19 @@ For compatibility with Android and other platforms, prefer to use `LoadAssetFile
 
 @@md
 */
-std::string assetFileFullPath(const std::string& assetRelativeFilename);
+std::string AssetFileFullPath(const std::string& assetRelativeFilename);
+inline std::string assetFileFullPath(const std::string& assetRelativeFilename) { return AssetFileFullPath(assetRelativeFilename); }
 
+// Returns true if this asset file exists
+bool AssetExists(const std::string& assetRelativeFilename);
 
 extern std::string gAssetsSubfolderFolderName;  // "assets" by default
 
-// Advanced: forces the assets folder location
+// Sets the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
-void overrideAssetsFolder(const char* folder);
 void SetAssetsFolder(const char* folder);
 void SetAssetsFolder(const std::string& folder);
+void overrideAssetsFolder(const char* folder); // synonym
 
 } // namespace HelloImGui
 
@@ -99,12 +102,9 @@ void SetAssetsFolder(const std::string& folder);
 
 #define HIMG_ERROR(msg) \
     { \
-        std::cerr << "HIMG_ERROR: " << msg << "\t\t at " << __FILE__ << ":" << __LINE__ << "\n"; \
-        throw std::runtime_error(msg); \
+        std::cerr << "HelloImGui ERROR: " << msg << "\t\t at " << __FILE__ << ":" << __LINE__ << "\n"; \
+        IM_ASSERT(false); \
     }
-
-#define HIMG_THROW_STRING(...) \
-    HIMG_ERROR((__VA_ARGS__));
 
 #ifdef __EMSCRIPTEN__
 // Log utilities for emscripten, where the best debug tool is printf
@@ -1368,7 +1368,11 @@ Members:
 * `size`: _int[2], default="{800, 600}"_. Size of the application window
   used if fullScreenMode==NoFullScreen and sizeAuto==false
 * `sizeAuto`: _bool, default=false_
-  If true, adapt the app window size to the presented widgets
+  If true, adapt the app window size to the presented widgets.
+  After the first frame was displayed, HelloImGui will measure its size,
+  and the backend application window will be resized. As a consequence, the application window size may
+  vary between the first and the second frame.
+
 * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
    You can choose between several full screen modes:
    ```cpp
@@ -1402,6 +1406,18 @@ Members:
       (this works with Glfw. With SDL, it only works under windows)
   * ScreenCoords: measure window size in screen coords
     (Note: screen coordinates might differ from real pixels on high dpi screen)
+
+* `resizeAppWindowAtNextFrame`: _bool_, default=false;
+  If you set this to flag to true at any point during the execution, the application window
+  will then try to resize based on its content on the next displayed frame,
+  and this flag will subsequently be set to false.
+  Example:
+  ```cpp
+  // Will resize the app window at next displayed frame
+  HelloImGui::GetRunnerParams()->appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = true;
+  ```
+
+  :::Note: this flag is intended to be used during execution, not at startup (use sizeAuto at startup):::
 @@md
 **/
 struct WindowGeometry
@@ -1409,7 +1425,7 @@ struct WindowGeometry
     // used if fullScreenMode==NoFullScreen and sizeAuto==false. Value=(800, 600)
     ScreenSize size = DefaultWindowSize;
 
-    // If true, adapt the app window size to the presented widgets
+    // If true, adapt the app window size to the presented widgets. This is done at startup
     bool sizeAuto = false;
 
     FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;
@@ -1425,6 +1441,9 @@ struct WindowGeometry
     WindowSizeState windowSizeState = WindowSizeState::Standard;
 
     WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;
+
+    // If true, the application window will try to resize based on its content on the next displayed frame
+    bool resizeAppWindowAtNextFrame = false;
 };
 
 
