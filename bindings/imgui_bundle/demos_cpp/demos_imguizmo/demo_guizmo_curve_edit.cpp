@@ -7,12 +7,8 @@
 #include "immapp/immapp.h"
 #include "ImGuizmoPure/ImCurveEditPure.h"
 
-#include <algorithm>
-#include <string>
 #include <vector>
 #include <deque>
-#include <functional>
-
 
 
 // This is an extract from ImGuizmo example:
@@ -104,12 +100,10 @@ private:
 };
 
 
-// This returns a closure function that will later be invoked to run the app
 void demo_guizmo_curve_edit()
 {
     static bool wasInited = false;
 
-    // rampEdit will be encapsulated in the closure
     static RampEdit rampEdit;
 
     if (not wasInited)
