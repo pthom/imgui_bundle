@@ -29,7 +29,7 @@ pip install opencv-contrib-python
 
 ### Run the python demo
 
-Simply run `imgui_bundle_demo`.
+Simply run `demo_imgui_bundle`.
 
 The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
