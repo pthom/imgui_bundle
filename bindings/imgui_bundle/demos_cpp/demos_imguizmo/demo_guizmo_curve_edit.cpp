@@ -7,6 +7,7 @@
 #include "immapp/immapp.h"
 #include "ImGuizmoPure/ImCurveEditPure.h"
 
+#include <algorithm>
 #include <vector>
 #include <deque>
 
