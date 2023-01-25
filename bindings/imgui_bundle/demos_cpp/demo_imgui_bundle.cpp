@@ -45,7 +45,7 @@ int main(int, char **)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
     // Window size and title
-    runnerParams.appWindowParams.windowTitle = "ImGui Bundle interactive manual";
+    runnerParams.appWindowParams.windowTitle = "Dear ImGui Bundle interactive manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
 
     // Menu bar
@@ -90,7 +90,7 @@ int main(int, char **)
 #define DEMO_DETAILS(label, function_name) DemoDetails{ label, #function_name, function_name }
 
     std::vector<DemoDetails> demos {
-        DEMO_DETAILS("ImGui Bundle", demo_imgui_bundle_intro),
+        DEMO_DETAILS("Dear ImGui Bundle", demo_imgui_bundle_intro),
         DEMO_DETAILS("Dear ImGui Demo", demo_imgui_show_demo_window),
         DEMO_DETAILS("Immediate Apps", demo_immapp_launcher),
         DEMO_DETAILS("Implot", demo_implot),
@@ -118,7 +118,7 @@ int main(int, char **)
         {
             // Focus cannot be given at frame 0, since some additional windows will
             // be created after (and will steal the focus)
-            runnerParams.dockingParams.focusDockableWindow("ImGui Bundle");
+            runnerParams.dockingParams.focusDockableWindow("Dear ImGui Bundle");
         }
         nbFrames += 1;
     };

@@ -1,6 +1,6 @@
 # Hello ImGui - Starter pack
 
-ImGui Bundle includes [Hello ImGui](https://github.com/pthom/hello_imgui), which is itself based on ImGui. \"Hello ImGui\" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux, iOS, and [emscripten](https://en.wikipedia.org/wiki/Emscripten).
+Dear ImGui Bundle includes [Hello ImGui](https://github.com/pthom/hello_imgui), which is itself based on ImGui. \"Hello ImGui\" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux, iOS, and [emscripten](https://en.wikipedia.org/wiki/Emscripten).
 
 ## API
 

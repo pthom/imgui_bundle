@@ -1,4 +1,4 @@
-= ImGui Bundle documentation
+= Dear ImGui Bundle documentation
 
 :exclude_collapsible_details: 1
 :env_interactive_manual: 1

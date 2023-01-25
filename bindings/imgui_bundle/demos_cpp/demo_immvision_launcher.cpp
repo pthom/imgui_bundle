@@ -6,7 +6,7 @@
 #ifndef IMGUI_BUNDLE_WITH_IMMVISION
 void demo_immvision_launcher()
 {
-    ImGui::Text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)");
+    ImGui::Text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)");
 }
 
 #else

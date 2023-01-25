@@ -4,9 +4,9 @@
 
 As mentioned in the intro,
 
-[ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui), including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui), including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
 
-ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.
+Dear ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.
 
 It is well adapted for
 
@@ -18,11 +18,11 @@ It is well adapted for
 
 You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.
 
-Also, ImGui Bundle makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.
+Also, the library makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.
 
 ## Acknowledgments
 
-ImGui Bundle would not be possible without the work of the authors of \"Dear ImGui\", and especially [Omar Cornut](https://www.miracleworld.net/).
+Dear ImGui Bundle would not be possible without the work of the authors of \"Dear ImGui\", and especially [Omar Cornut](https://www.miracleworld.net/).
 
 It also includes a lot of other projects, and I'd like to thank their authors for their awesome work!
 
@@ -52,21 +52,23 @@ THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMP
 
 ## About the author
 
-ImGui Bundle is developed by Pascal Thomet. I am reachable on my [Github page](https://github.com/pthom). I sometimes [blog](http://code-ballads.net/). There is a [playlist](https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc) related to ImGui Bundle on YouTube.
+Dear ImGui Bundle is developed by Pascal Thomet. I am reachable on my [Github page](https://github.com/pthom). I sometimes [blog](http://code-ballads.net/). There is a [playlist](https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc) related to ImGui Bundle on YouTube.
 
 I have a past in computer vision, and a lot of experience in the trenches between development and research teams; and I found ImGui to be a nice way to reduce the delay between a research prototype and its use in production code.
 
 I also have an inclination for self documenting code, and the doc you are reading was a way to explore new ways to document projects.
 
-## How is ImGui Bundle developed
+## How is Dear ImGui Bundle developed
 
-The development of the initial version of ImGui Bundle took about one year at full time.
+The development of the initial version of Dear ImGui Bundle took about one year at full time.
 
 The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I'll give more information about the bindings generator a bit later in 2023.
 
-Please be tolerant if you find issues! ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).
+Please be tolerant if you find issues! Dear ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).
 
-If you need consulting about ImGui Bundle or about the bindings generator in the context of a commercial project, please contact me by email.
+If you need consulting about this library or about the bindings generator in the context of a commercial project, please contact me by email.
+
+Contributions are welcome!
 
 ### History
 
@@ -78,4 +80,4 @@ Three of my past projects gave me the idea to develop this library.
 
 -   [imgui_datascience](https://github.com/pthom/imgui_datascience), a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.
 
-Developments for ImGui Bundle and its related automatic binding generator began in january 2022.
+Developments for Dear ImGui Bundle and its related automatic binding generator began in january 2022.

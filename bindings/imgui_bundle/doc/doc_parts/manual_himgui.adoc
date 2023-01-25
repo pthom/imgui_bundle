@@ -2,7 +2,7 @@
 
 include::_utils.adoc[]
 
-ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
+Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
 ==== API
 

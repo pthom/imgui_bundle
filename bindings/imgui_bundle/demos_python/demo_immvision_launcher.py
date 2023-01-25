@@ -20,7 +20,7 @@ if HAS_IMMVISION and HAS_OPENCV:
 
 def demo_gui():
     if not HAS_IMMVISION:
-        imgui.text("ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
+        imgui.text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)")
         return
     elif not HAS_OPENCV:
         imgui_md.render_unindented(

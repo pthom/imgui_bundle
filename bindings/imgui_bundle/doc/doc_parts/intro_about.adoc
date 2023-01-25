@@ -1,7 +1,7 @@
-=== About ImGui Bundle
+=== About Dear ImGui Bundle
 
 // tag::motto[]
-https://github.com/pthom/imgui_bundle[ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
+https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
 // end::motto[]
 
 

@@ -91,7 +91,7 @@ def show_porting_advices() -> None:
 def gui_front_matter():
     imgui_md.render_unindented(
         """
-    # ImGui Bundle
+    # Dear ImGui Bundle
     Easily create ImGui applications in Python and C++. Batteries included!
     """
     )
@@ -151,7 +151,7 @@ def demo_gui() -> None:
     if imgui.collapsing_header("ImmApp - Immediate App"):
         show_markdown_file("ibd_manual_immapp")
 
-    if imgui.collapsing_header("Using ImGui Bundle with jupyter notebook"):
+    if imgui.collapsing_header("Using Dear ImGui Bundle with jupyter notebook"):
         show_markdown_file("ibd_manual_notebook")
 
     if imgui.collapsing_header("C++ / Python porting advices"):

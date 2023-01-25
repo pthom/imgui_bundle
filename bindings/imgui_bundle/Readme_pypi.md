@@ -1,6 +1,6 @@
 ![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)
 
-ImGui Bundle: easily create ImGui applications in Python and C++.
+Dear ImGui Bundle: easily create ImGui applications in Python and C++.
 Batteries included!
 
 [![sources](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
@@ -9,10 +9,10 @@ Batteries included!
 
 # Introduction
 
-## About ImGui Bundle
+## About Dear ImGui Bundle
 
-[ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for
-[Dear ImGui](https://github.com/ocornut/imgui), including various
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle
+for [Dear ImGui](https://github.com/ocornut/imgui), including various
 powerful libraries from its ecosystem. It enables to easily create ImGui
 applications in C++ and Python, under Windows, macOS, and Linux. It is
 aimed at application developers, researchers, and beginner developers
@@ -25,8 +25,8 @@ interactive demonstration.
 
 <figure>
 <img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif"
-id="truc" alt="ImGui Bundle interactive demo" />
-<figcaption aria-hidden="true">ImGui Bundle interactive
+id="truc" alt="Dear ImGui Bundle interactive demo" />
+<figcaption aria-hidden="true">Dear ImGui Bundle interactive
 demo</figcaption>
 </figure>
 
@@ -36,7 +36,7 @@ Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
 ## Batteries included
 
-ImGui Bundle includes the following libraries:
+Dear ImGui Bundle includes the following libraries:
 
 -   [imgui](https://github.com/ocornut/imgui.git) : Dear ImGui,
     bloat-free Graphical User interface for C++ with minimal
@@ -134,20 +134,19 @@ Simply run `imgui_bundle_demo`.
 The source for the demos can be found inside
 [bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
-Consider `imgui_bundle_demo` as an always available manual for ImGui
-Bundle with lots of examples and related code source.
+Consider `imgui_bundle_demo` as an always available manual for Dear
+ImGui Bundle with lots of examples and related code source.
 
 ## Install for C++
 
-### Integrate ImGui Bundle in your own project in 5 minutes
+### Integrate Dear ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use ImGui Bundle in an external project is to use the
-example provided in
+The easiest way to use Dear ImGui Bundle in an external project is to
+use the example provided in
 [example\_integration](https://github.com/pthom/imgui_bundle/tree/doc/_example_integration).
-This folder includes everything you need to set up your own project with
-ImGui Bundle.
+This folder includes everything you need to set up your own project.
 
-### Build ImGui Bundle from source
+### Build from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -174,7 +173,7 @@ If you have an existing OpenCV install, set its path via:
 
 ### Run the C++ demo
 
-If you built ImGui Bundle from source, Simply run
+If you built ImGuiBundle from source, Simply run
 `build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside
@@ -242,7 +241,7 @@ example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc
 
 ## Hello ImGui - Starter pack
 
-ImGui Bundle includes [Hello
+Dear ImGui Bundle includes [Hello
 ImGui](https://github.com/pthom/hello_imgui), which is itself based on
 ImGui. "Hello ImGui" can be compared to a starter pack that enables to
 easily write cross-platform Gui apps for Windows, macOS, Linux, iOS, and
@@ -389,7 +388,7 @@ Python:
     if __name__ == "__main__":
         main()
 
-## Using ImGui Bundle with jupyter notebook
+## Using Dear ImGui Bundle with jupyter notebook
 
 ImmApp adds support for integration inside jupyter notebook: the
 application will be run in an external window, and a screenshot will be
@@ -563,16 +562,16 @@ the glfw dynamic library.
 
 As mentioned in the intro,
 
-[ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for
-[Dear ImGui](https://github.com/ocornut/imgui), including various
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle
+for [Dear ImGui](https://github.com/ocornut/imgui), including various
 powerful libraries from its ecosystem. It enables to easily create ImGui
 applications in C++ and Python, under Windows, macOS, and Linux. It is
 aimed at application developers, researchers, and beginner developers
 who want to quickly get started.
 
-ImGui Bundle aims to make applications prototyping fast and easy, in a
-multiplatform / multi-tooling context. The intent is to reduce the time
-between an idea and a first GUI prototype down to almost zero.
+Dear ImGui Bundle aims to make applications prototyping fast and easy,
+in a multiplatform / multi-tooling context. The intent is to reduce the
+time between an idea and a first GUI prototype down to almost zero.
 
 It is well adapted for
 
@@ -589,14 +588,14 @@ You should prefer a more complete framework (such as Qt for example) if
 your intent is to build a fully fledged application, with support for
 internationalization, advanced styling, etc.
 
-Also, ImGui Bundle makes no guarantee of ABI stability, and its API is
+Also, the library makes no guarantee of ABI stability, and its API is
 opened to slight adaptations and breaking changes if they are found to
 make the overall usage better and/or safer.
 
 ## Acknowledgments
 
-ImGui Bundle would not be possible without the work of the authors of
-"Dear ImGui", and especially [Omar
+Dear ImGui Bundle would not be possible without the work of the authors
+of "Dear ImGui", and especially [Omar
 Cornut](https://www.miracleworld.net/).
 
 It also includes a lot of other projects, and I’d like to thank their
@@ -658,8 +657,8 @@ which makes it perhaps more suited for Python only projects.
 
 ## About the author
 
-ImGui Bundle is developed by Pascal Thomet. I am reachable on my [Github
-page](https://github.com/pthom). I sometimes
+Dear ImGui Bundle is developed by Pascal Thomet. I am reachable on my
+[Github page](https://github.com/pthom). I sometimes
 [blog](http://code-ballads.net/). There is a
 [playlist](https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc)
 related to ImGui Bundle on YouTube.
@@ -672,22 +671,24 @@ in production code.
 I also have an inclination for self documenting code, and the doc you
 are reading was a way to explore new ways to document projects.
 
-## How is ImGui Bundle developed
+## How is Dear ImGui Bundle developed
 
-The development of the initial version of ImGui Bundle took about one
-year at full time.
+The development of the initial version of Dear ImGui Bundle took about
+one year at full time.
 
 The bindings are auto-generated thanks to an advanced parser, so that
 they are easy to keep up to date. I’ll give more information about the
 bindings generator a bit later in 2023.
 
-Please be tolerant if you find issues! ImGui Bundle is developed for
-free, under a very permissive license, by one main author (and most of
-its API comes from external libraries).
+Please be tolerant if you find issues! Dear ImGui Bundle is developed
+for free, under a very permissive license, by one main author (and most
+of its API comes from external libraries).
 
-If you need consulting about ImGui Bundle or about the bindings
+If you need consulting about this library or about the bindings
 generator in the context of a commercial project, please contact me by
 email.
+
+Contributions are welcome!
 
 ### History
 
@@ -704,5 +705,5 @@ Three of my past projects gave me the idea to develop this library.
     python package I developed in 2018 for image analysis and debugging.
     Its successor is immvision.
 
-Developments for ImGui Bundle and its related automatic binding
+Developments for Dear ImGui Bundle and its related automatic binding
 generator began in january 2022.

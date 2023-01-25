@@ -34,16 +34,16 @@ Simply run `imgui_bundle_demo`.
 The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
 ::: tip
-Consider `imgui_bundle_demo` as an always available manual for ImGui Bundle with lots of examples and related code source.
+Consider `imgui_bundle_demo` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
 :::
 
 ## Install for C++
 
-### Integrate ImGui Bundle in your own project in 5 minutes
+### Integrate Dear ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use ImGui Bundle in an external project is to use the example provided in [example_integration](https://github.com/pthom/imgui_bundle/tree/doc/_example_integration). This folder includes everything you need to set up your own project with ImGui Bundle.
+The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in [example_integration](https://github.com/pthom/imgui_bundle/tree/doc/_example_integration). This folder includes everything you need to set up your own project.
 
-### Build ImGui Bundle from source
+### Build from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -71,7 +71,7 @@ cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 
 ### Run the C++ demo
 
-If you built ImGui Bundle from source, Simply run `build/bin/demo_imgui_bundle`.
+If you built ImGuiBundle from source, Simply run `build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside [bindings/imgui_bundle/demos_cpp](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/).
 

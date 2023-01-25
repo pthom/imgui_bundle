@@ -77,7 +77,7 @@ setup(
     version=VERSION,
     author="Pascal Thomet",
     author_email="pthomet@gmail.com",
-    description="ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!",
+    description="Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!",
     long_description=get_readme(),
     long_description_content_type="text/markdown",
     url="https://github.com/pthom/imgui_bundle",

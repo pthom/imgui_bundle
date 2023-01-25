@@ -69,7 +69,7 @@ void ShowPortingAdvices()
 void GuiFrontMatter()
 {
     ImGuiMd::RenderUnindented(R"(
-    # ImGui Bundle
+    # Dear ImGui Bundle
     Easily create ImGui applications in Python and C++. Batteries included!
     )");
     ImVec2 btnSize = HelloImGui::EmToVec2(0.f, 1.5f);
@@ -125,7 +125,7 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("ImmApp - Immediate App"))
         ShowMarkdownDocFile("ibd_manual_immapp");
 
-    if (ImGui::CollapsingHeader("Using ImGui Bundle with jupyter notebook"))
+    if (ImGui::CollapsingHeader("Using Dear ImGui Bundle with jupyter notebook"))
         ShowMarkdownDocFile("ibd_manual_notebook");
 
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))

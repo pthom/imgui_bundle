@@ -1,4 +1,4 @@
-= ImGui Bundle documentation
+= Dear ImGui Bundle documentation
 :toc: left
 :source-highlighter: pygments
 

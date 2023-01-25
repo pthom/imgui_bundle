@@ -1,12 +1,12 @@
 # Introduction
 
-## About ImGui Bundle
+## About Dear ImGui Bundle
 
-[ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui), including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui), including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C++ and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
 
 ## Batteries included
 
-ImGui Bundle includes the following libraries:
+Dear ImGui Bundle includes the following libraries:
 
 -   [imgui](https://github.com/ocornut/imgui.git) : Dear ImGui, bloat-free Graphical User interface for C++ with minimal dependencies
 

@@ -25,7 +25,7 @@ There are at least 4 incompatible ways to set an env var in Windows:
 
     set OpenCV_DIR=C:/your/path/to/opencv-4.6.0-vc14_vc15/opencv/build
 
-== Build ImGui Bundle pip package from sources
+== Build pip package from sources
 
 ```
 cd path/to/your/project  # optional step, but recommended:

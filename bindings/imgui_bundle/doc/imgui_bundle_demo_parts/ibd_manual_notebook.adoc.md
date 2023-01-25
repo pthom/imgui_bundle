@@ -1,4 +1,4 @@
-# Using ImGui Bundle with jupyter notebook
+# Using Dear ImGui Bundle with jupyter notebook
 
 ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.
 

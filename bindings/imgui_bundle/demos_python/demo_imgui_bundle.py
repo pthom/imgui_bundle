@@ -37,7 +37,7 @@ def main() -> None:
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
-    runner_params.app_window_params.window_title = "ImGui Bundle interactive manual"
+    runner_params.app_window_params.window_title = "Dear ImGui Bundle interactive manual"
     runner_params.app_window_params.window_geometry.size = (1400, 900)
 
     # Menu bar
@@ -80,7 +80,7 @@ def main() -> None:
         demo_module: ModuleType
 
     demos = [
-        DemoDetails("ImGui Bundle", demo_imgui_bundle_intro),
+        DemoDetails("Dear ImGui Bundle", demo_imgui_bundle_intro),
         DemoDetails("Dear ImGui Demo", demo_imgui_show_demo_window),
         DemoDetails("Immediate Apps", demo_immapp_launcher),
         DemoDetails("Implot", demo_implot),
@@ -106,7 +106,7 @@ def main() -> None:
         if show_gui.nb_frames == 1:
             # Focus cannot be given at frame 0, since some additional windows will
             # be created after (and will steal the focus)
-            runner_params.docking_params.focus_dockable_window("ImGui Bundle")
+            runner_params.docking_params.focus_dockable_window("Dear ImGui Bundle")
         show_gui.nb_frames += 1
 
     runner_params.callbacks.show_gui = show_gui
