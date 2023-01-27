@@ -66,7 +66,7 @@ def autogenerate_implot_internal() -> None:
 
 
 def main():
-    # autogenerate_implot()
+    autogenerate_implot()
     autogenerate_implot_internal()
 
 
