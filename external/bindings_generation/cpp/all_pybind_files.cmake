@@ -21,6 +21,7 @@ set(all_pybind_files
     ${external_dir}/immapp/bindings/pybind_immapp_cpp.cpp
     ${external_dir}/immvision/bindings/pybind_immvision.cpp
     ${external_dir}/implot/bindings/pybind_implot.cpp
+    ${external_dir}/implot/bindings/pybind_implot_internal.cpp
     ${external_dir}/imspinner/bindings/pybind_imspinner.cpp
     ${external_dir}/portable_file_dialogs/bindings/pybind_portable_file_dialogs.cpp
     )
