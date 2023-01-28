@@ -34,7 +34,7 @@ Simply run `demo_imgui_bundle`.
 The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
 
 ::: tip
-Consider `imgui_bundle_demo` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
+Consider `demo_imgui_bundle` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
 :::
 
 ## Install for C++
