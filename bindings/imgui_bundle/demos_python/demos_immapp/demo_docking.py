@@ -7,7 +7,6 @@
 #     - status bar
 # - A default menu, with default
 # - log window
-# - How to load assets and fonts
 
 import os
 from enum import Enum

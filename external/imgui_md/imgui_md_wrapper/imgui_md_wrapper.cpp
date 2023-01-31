@@ -149,7 +149,7 @@ assets/
 
                         float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
                         std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-                        ImFont * font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
+                        ImFont * font = HelloImGui::LoadFontTTF(fontFile, fontSize);
                         if (font == nullptr)
                         {
                             fprintf(stderr, "%s", error_message.c_str()); IM_ASSERT(false);
@@ -159,7 +159,7 @@ assets/
                 }
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
-                mFontCode = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(
+                mFontCode = HelloImGui::LoadFontTTF(
                     "fonts/SourceCodePro-Regular.ttf", fontSize);
                 if (mFontCode == nullptr) {
                     fprintf(stderr, "%s", error_message.c_str());

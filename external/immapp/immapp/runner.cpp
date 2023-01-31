@@ -58,8 +58,8 @@ namespace ImmApp
 
             auto previousFontLoaderFunction = runnerParams.callbacks.LoadAdditionalFonts;
             runnerParams.callbacks.LoadAdditionalFonts = [previousFontLoaderFunction](){
-                ImGuiMd::GetFontLoaderFunction()();
                 previousFontLoaderFunction();
+                ImGuiMd::GetFontLoaderFunction()();
             };
         }
 
