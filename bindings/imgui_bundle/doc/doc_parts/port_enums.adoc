@@ -3,15 +3,15 @@
 In the example below, two differences are important:
 
 ==== InputText functions:
-`imgui.input_text` (Python) is equivalent to `ImGui::InputText` (C++)
+`imgui.input_text` (Python) is equivalent to `ImGui::InputText` ({cpp})
 
-* In C++, it uses two parameters for the text: the text pointer, and its length.
+* In {cpp}, it uses two parameters for the text: the text pointer, and its length.
 * In Python, you can simply pass a string, and get back its modified value in the returned tuple.
 
 ==== Enums handling:
 
-* `ImGuiInputTextFlags_` (C++) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore).
-* `ImGuiInputTextFlags` (C++) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
+* `ImGuiInputTextFlags_` ({cpp}) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore).
+* `ImGuiInputTextFlags` ({cpp}) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
 
 You will find many similar enums.
 
@@ -19,7 +19,7 @@ The dichotomy between int and enums, enables you to write flags that are a combi
 
 ==== Example
 
-C++
+{cpp}
 [source, cpp]
 ----
 void DemoInputTextUpperCase()

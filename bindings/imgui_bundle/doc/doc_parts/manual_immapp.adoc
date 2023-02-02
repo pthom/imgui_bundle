@@ -7,7 +7,7 @@ ImGui Bundle includes a library named ImmApp (which stands for Immediate App). I
 
 ==== API
 
-{url-bundle-doc-tree}/external/immapp/immapp/runner.h[C++ API]
+{url-bundle-doc-tree}/external/immapp/immapp/runner.h[{cpp} API]
 
 {url-bindings-bundle}/immapp/immapp_cpp.pyi[Python bindings]
 
@@ -23,7 +23,7 @@ Some libraries included by ImGui Bundle require an initialization at startup. Im
 
 The example program below demonstrates how to run an application which will use implot (which requires a context to be created at startup), and imgui_md (which requires additional fonts to be loaded at startup).
 
-C++
+{cpp}
 [source, cpp]
 ----
 include::../../demos_cpp/demos_immapp/demo_implot_markdown.cpp[]

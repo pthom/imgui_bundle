@@ -18,7 +18,7 @@ ifndef::env_demo_markdown[]
 image::{url-logo}["abc", 150]
 endif::[]
 
-Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!
+Dear ImGui Bundle: easily create ImGui applications in Python and {cpp}. Batteries included!
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
 ****

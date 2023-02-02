@@ -18,7 +18,7 @@ See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello
 * Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
 * Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
 
-NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in C++ or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
+NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in {cpp} or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
 TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]
 

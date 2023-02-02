@@ -1,4 +1,4 @@
-=== Install for C++
+=== Install for {cpp}
 
 include::_utils.adoc[]
 
@@ -35,7 +35,7 @@ cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 ----
 ****
 
-==== Run the C++ demo
+==== Run the {cpp} demo
 
 If you built ImGuiBundle from source, Simply run `build/bin/demo_imgui_bundle`.
 

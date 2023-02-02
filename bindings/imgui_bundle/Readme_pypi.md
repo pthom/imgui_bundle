@@ -570,9 +570,9 @@ It can be used in two steps:
     its content so that it runs the python code you would like to debug.
     Make sure it works when you run it as a python script.
 
-2.  Now, debug the C project \`pybind\_native\_debug\_bundle\` which is
-    defined in the directory \`pybind\_native\_debug/\`. This will run
-    your python code from C, and you can debug the C++ side (place
+2.  Now, debug the C++ project `pybind_native_debug_bundle` which is
+    defined in the directory `pybind_native_debug/`. This will run your
+    python code from C++, and you can debug the C++ side (place
     breakpoints, watch variables, etc).
 
 Example: [this issue on
