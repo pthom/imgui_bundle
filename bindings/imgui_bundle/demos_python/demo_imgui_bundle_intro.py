@@ -87,6 +87,11 @@ def show_porting_advices() -> None:
     show_markdown_file("ibd_port_enums")
     demo_input_text_upper_case()
 
+    imgui.new_line()
+    imgui.new_line()
+    imgui.new_line()
+    show_markdown_file("ibd_port_debug_native");
+
 
 def gui_front_matter():
     imgui_md.render_unindented(

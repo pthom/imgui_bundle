@@ -541,6 +541,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <li><a href="#_general_advices">General advices</a></li>
 <li><a href="#_enums_and_textinput">Enums and TextInput</a></li>
 <li><a href="#_advanced_glfw_callbacks">Advanced glfw callbacks</a></li>
+<li><a href="#_debug_native_c_in_python_scripts">Debug native C++ in python scripts</a></li>
 </ul>
 </li>
 <li><a href="#_closing_words">Closing words</a>
@@ -1596,6 +1597,28 @@ It is important to import glfw <em>after</em> imgui_bundle, since - upon import 
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debug_native_c_in_python_scripts">Debug native C++ in python scripts</h3>
+<div class="paragraph">
+<p>ImGui Bundle provides tooling to help you debug the C++ side, when you encounter a bug that is difficult to diagnose from Python.</p>
+</div>
+<div class="paragraph">
+<p>It can be used in two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit the file <code>pybind_native_debug/pybind_native_debug.py</code>. Change its content so that it runs the python code you would like to debug. Make sure it works when you run it as a python script.</p>
+</li>
+<li>
+<p>Now, debug the C project `pybind_native_debug_bundle` which is defined in the directory `pybind_native_debug/`. This will run your python code from C, and you can debug the C++ side (place breakpoints, watch variables, etc).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Example: <a href="https://github.com/pthom/hello_imgui/issues/33">this issue on macOS</a> was solved thanks to this.</p>
 </div>
 </div>
 </div>

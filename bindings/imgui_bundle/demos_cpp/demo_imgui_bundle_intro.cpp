@@ -60,9 +60,11 @@ void ShowPortingAdvices()
     DemoRadioButton();
 
     ImGui::NewLine(); ImGui::NewLine(); ImGui::NewLine();
-
     ShowMarkdownDocFile("ibd_port_enums");
     DemoInputTextUpperCase();
+
+    ImGui::NewLine(); ImGui::NewLine(); ImGui::NewLine();
+    ShowMarkdownDocFile("ibd_port_debug_native");
 }
 
 

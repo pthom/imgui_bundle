@@ -5,3 +5,5 @@ include::port_general_advices.adoc[]
 include::port_enums.adoc[]
 
 include::port_glfw_callbacks.adoc[]
+
+include::port_debug_native.adoc[]
