@@ -16,6 +16,11 @@ cd "$doc_dir" || exit
 echo "generate Readme.adoc (for github)"
 asciidoctor-reducer --attribute env_gh_readme=1 Readme_source.adoc -o Readme.adoc
 
+# Generate preprocessed faq.adoc for Github readme (env_gh_readme)
+echo "generate faq.adoc (for github)"
+asciidoctor-reducer --attribute env_gh_readme=1 faq_source.adoc -o faq.adoc
+
+
 # Generate a markdown doc for pypi  (env_pypi)
 echo "Generating Readme_pypi.md (for pypi)"
 asciidoctor -b docbook --attribute exclude_collapsible_details=1 --attribute env_pypi=1 Readme_source.adoc
