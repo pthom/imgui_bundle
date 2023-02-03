@@ -37,12 +37,12 @@ endif()
 # ----------------------------------------------------------------------
 # (OpenCV is required by the optional module immvision.
 #  If IMMVISION_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
-#  Feel free to use your own version of OpenCV in C++)
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    # For the python package, we automatically fetch OpenCV
-    # (under windows, we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources)
+if (IMGUI_BUNDLE_BUILD_PYTHON OR EMSCRIPTEN)
+    # For emscripten and for the python package, we automatically fetch OpenCV
+    # Under windows and emscripten we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources
     set(IMMVISION_FETCH_OPENCV ON)
 else()
+    # In C++, feel free to use your own version of OpenCV, or to use this (minimal) version by setting IMMVISION_FETCH_OPENCV
     option(IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
 endif()
 # When building the pip package, you can disable OpenCV (and immvision) by setting the env variable
