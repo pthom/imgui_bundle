@@ -5,5 +5,6 @@
 //     bindings/imgui_bundle/doc/faq_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
-include::doc_parts/faq_dpi.adoc[]
+include::doc_parts/faq_python.adoc[]
 
+include::doc_parts/faq_dpi.adoc[]

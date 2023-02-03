@@ -444,7 +444,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_faq">FAQ</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_faq_high_dpi_with_imgui">FAQ: high-DPI with ImGui</h3>
+<h3 id="_python_bindings_faq">Python bindings FAQ</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Q: IDE support with Visual Studio Code / Visual studio does autocomplete my code (i.e. it does not find the stubs):</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It may take some time for Visual Studio code to find the stubs. You can try to change the setting "python.languageServer" to "default", and then change it back to "pylance". This might speed up the process a bit.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Q: Editable mode does not work</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You should upgrade pip: <code>pip install -U pip</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_high_dpi_with_imgui">High-DPI with ImGui</h3>
 <div class="paragraph">
 <p>A high-DPI screen could have a <code>physical pixel</code> resolution of 3840x2160, but on this screen the OS will display widgets with a scaling factor of 200%, so that widgets do not look too small on it.</p>
 </div>
@@ -452,7 +475,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.</p>
 </div>
 <div class="paragraph">
-<p>This document tries to be a complement to <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the related ImGui FAQ article</a></p>
+<p>This FAQ article tries to be a complement to <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the related ImGui FAQ article</a></p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -461,7 +484,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Note</div>
 </td>
 <td class="content">
-This article deals with standard ImGui applications. <code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated additional API </a>.
+This article is targeted to standard ImGui applications. <code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated additional API </a>.
 </td>
 </tr>
 </table>
@@ -684,7 +707,7 @@ ImGui::GetStyle().ScaleAllSizes(dpiScale);</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-03 16:10:13 +0100
+Last updated 2023-02-03 20:53:20 +0100
 </div>
 </div>
 </body>

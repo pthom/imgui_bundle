@@ -1,15 +1,25 @@
 # FAQ
 
-## FAQ: high-DPI with ImGui
+## Python bindings FAQ
+
+-   Q: IDE support with Visual Studio Code / Visual studio does autocomplete my code (i.e. it does not find the stubs):
+
+It may take some time for Visual Studio code to find the stubs. You can try to change the setting \"python.languageServer\" to \"default\", and then change it back to \"pylance\". This might speed up the process a bit.
+
+-   Q: Editable mode does not work
+
+You should upgrade pip: `pip install -U pip`
+
+## High-DPI with ImGui
 
 A high-DPI screen could have a `physical pixel` resolution of 3840x2160, but on this screen the OS will display widgets with a scaling factor of 200%, so that widgets do not look too small on it.
 
 Special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.
 
-This document tries to be a complement to [the related ImGui FAQ article](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application)
+This FAQ article tries to be a complement to [the related ImGui FAQ article](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application)
 
 ::: note
-This article deals with standard ImGui applications. `HelloImGui` and `Dear ImGui Bundle` provides a [dedicated additional API ](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h).
+This article is targeted to standard ImGui applications. `HelloImGui` and `Dear ImGui Bundle` provides a [dedicated additional API ](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h).
 :::
 
 ### macOS
