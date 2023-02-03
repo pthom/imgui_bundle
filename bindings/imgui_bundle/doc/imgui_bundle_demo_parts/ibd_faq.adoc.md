@@ -24,6 +24,8 @@ However, font rendering may appear poor and blurry if no action is taken. A simp
 
 ``` cpp
 // Query macOS for the scaling factor (by using NSScreen api)
+// (this is a simplified version, which handles only the main screen,
+//  see imgui/backends/imgui_impl_osx.mm for a more complete version)
 float windowDevicePixelRatio = NSScreen.mainScreen.backingScaleFactor;
 
 // [...]
@@ -41,7 +43,7 @@ ImGui::GetIO().FontGlobalScale = 1.f / windowDevicePixelRatio;
 
 With emscripten (i.e. inside a browser) the situation is close to macOS: widgets\' sizes are relative to the current scaling factor of the screen, **and** to the current zoom level of the given page.
 
-As a result, widgets\' sizes will appear consistent but font rendering may be blurry if no action is taken. A simple solution is to query the browser's devicePixel ratio:
+As a result, widgets\' sizes will appear consistent but font rendering may be blurry if no action is taken. A simple solution is to query the browser's `devicePixelRatio`:
 
 ``` cpp
 // Query the browser for the scaling factor (this depends on the screen scaling factor and on the browser zoom level)
@@ -90,10 +92,6 @@ The situation on linux is close to Windows\' DPI-aware applications. Application
 
 See [the ImGui related FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application)
 
-::: note
-the function `ImGui_ImplWin32_EnableDpiAwareness` inside [imgui_impl_win32.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_win32.cpp) is possibly broken. HelloImGui provides a corrected version: [win32_dpi_awareness.h](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/backend_window_helper/win32_dpi_awareness.h) and [win32_dpi_awareness.cpp](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/backend_window_helper/win32_dpi_awareness.cpp)
-:::
-
 ### Windows & Linux: how to correctly size and position the widgets
 
 It is almost always a bad idea to use fixed sizes. This will lead to portability issues, especially on high-DPI screens.
@@ -115,36 +113,47 @@ ImVec2 EmVec2(float x, float y)
 
 ### Windows & Linux: How to load fonts at the correct size
 
-You need to query the application monitor current Dpi scale. To achieve this, you can call [DpiForWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforwindow) on windows.
+You need to query the application window content scale.
 
-Some backends may make this easier, e.g. GLFW:
+On windows, to achieve this, you can call [DpiForWindow](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforwindow) on windows.
+
+For example:
 
 ``` cpp
-float DpiWindowSizeFactor(GLFWwindow * window)
-{
+float WindowContentScale(HWND window) {
+    int dpi = GetDpiForWindow(window);
+    float dpiScale = dpi / 96.f; // 96 is the "standard dpi"
+    return dpiScale;
+}
+```
+
+Some backends may wrap this, e.g. GLFW:
+
+``` cpp
+float WindowContentScale(GLFWwindow * window) {
     float xscale, yscale;
     glfwGetWindowContentScale((GLFWwindow *) window, &xscale, &yscale);
     return xscale; // xscale and yscale will likely be equal
 }
 ```
 
-Once you known the screen Dpi scale, you can use this when loading fonts:
+Once you know the window content scale, you can use this when loading fonts:
 
 ``` cpp
-float fontLoadingFactor = DpiWindowSizeFactor(...);
+float fontLoadingFactor = WindowContentScale(...);
 ImGui::GetIO().Fonts->AddFontFromFileTTF(fontFileName, fontSize * fontLoadingFactor);
 ```
 
 ### Windows & Linux: how to adapt Dear ImGui's styling scale
 
 ``` cppp
-float dpiScale = DpiWindowSizeFactor(...);
+float dpiScale = WindowContentScale(...);
 ImGui::GetStyle().ScaleAllSizes(dpiScale);
 ```
 
 ### Windows & Linux: how to have a consistent initial window size between monitors
 
-As mentioned before, multiply your window size by DpiWindowSizeFactor.
+As mentioned before, multiply your window size by WindowContentScale(...​).
 
 ### Windows & Linux: adapting windows and font size when application is moved between monitors
 
