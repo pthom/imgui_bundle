@@ -5,7 +5,7 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 
-std::string exampleMardownString()
+std::string exampleMarkdownString()
 {
     return R"(
 # Markdown example
@@ -80,5 +80,5 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 
 void demo_imgui_md()
 {
-    ImGuiMd::Render(exampleMardownString());
+    ImGuiMd::Render(exampleMarkdownString());
 }

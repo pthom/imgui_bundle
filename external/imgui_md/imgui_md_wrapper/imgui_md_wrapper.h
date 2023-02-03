@@ -16,8 +16,8 @@ namespace ImGuiMd
     {
         std::string fontBasePath = "fonts/Roboto/Roboto";
         int maxHeaderLevel = 2;
-        float sizeDiffBetweenLevels = 1.5f;
-        float regularSize = 15.f;
+        float sizeDiffBetweenLevels = 2.f;
+        float regularSize = 16.f;
     };
 
 

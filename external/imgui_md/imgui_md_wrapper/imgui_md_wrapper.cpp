@@ -26,8 +26,8 @@ namespace ImGuiMd
     {
         struct MarkdownEmphasis
         {
-            bool italic;
-            bool bold;
+            bool italic = false;
+            bool bold = false;
 
             bool operator==(const MarkdownEmphasis& rhs) const {
                 return (rhs.italic == italic) && (rhs.bold == bold);
@@ -81,7 +81,7 @@ namespace ImGuiMd
         struct MarkdownTextStyle
         {
             MarkdownEmphasis markdownEmphasis;
-            int headerLevel;
+            int headerLevel = 0;
 
             bool operator==(const MarkdownTextStyle& rhs) const {
                 return (rhs.markdownEmphasis == markdownEmphasis) && (rhs.headerLevel == headerLevel);
@@ -100,6 +100,12 @@ namespace ImGuiMd
             ImFont* GetFontCode() const
             {
                 return mFontCode;
+            }
+
+            ImFont* GetDefaultFont() const
+            {
+                auto defaultMarkdownStyle = MarkdownTextStyle{};
+                return GetFont(defaultMarkdownStyle);
             }
 
             ImFont* GetFont(const MarkdownTextStyle& _markdownTextStyle) const
@@ -204,9 +210,11 @@ assets/
 
         void Render(const std::string& s)
         {
+            ImGui::PushFont(mMarkdownCollection.mFontCollection.GetDefaultFont());
             const char * start = s.c_str();
             const char * end = start + s.size();
             this->print(start, end);
+            ImGui::PopFont();
         }
 
         ImFont* get_font_code()
