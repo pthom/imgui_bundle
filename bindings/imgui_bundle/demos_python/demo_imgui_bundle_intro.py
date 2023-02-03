@@ -122,6 +122,7 @@ def demo_gui() -> None:
     app_state: AppState = static.app_state
 
     gui_front_matter()
+    imgui_md.render_unindented("(*Note: this documentation is also available as a web page: click on \"View Docs\"*)")
 
     if imgui.collapsing_header("Introduction"):
         show_markdown_file("ibd_intro")
@@ -167,6 +168,9 @@ def demo_gui() -> None:
 
     if imgui.collapsing_header("Closing words"):
         show_markdown_file("ibd_words_author")
+
+    if imgui.collapsing_header("FAQ"):
+        show_markdown_file("ibd_faq")
 
     demo_utils.animate_logo(
         "images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30, "https://github.com/pthom/imgui_bundle"

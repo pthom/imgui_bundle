@@ -91,6 +91,7 @@ void demo_imgui_bundle_intro()
     static AppState app_state;
 
     GuiFrontMatter();
+    ImGuiMd::RenderUnindented("(*Note: this documentation is also available as a web page: click on \"View Docs\"*)");
 
     if (ImGui::CollapsingHeader("Introduction"))
         ShowMarkdownDocFile("ibd_intro");
@@ -135,6 +136,9 @@ void demo_imgui_bundle_intro()
 
     if (ImGui::CollapsingHeader("Closing words"))
         ShowMarkdownDocFile("ibd_words_author");
+
+    if (ImGui::CollapsingHeader("FAQ"))
+        ShowMarkdownDocFile("ibd_faq");
 
     AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
 }
