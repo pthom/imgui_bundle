@@ -34,12 +34,12 @@ class DemoAppTable:
         self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
         self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
-        self.snippet_cpp.max_height_in_lines = 22
+        self.snippet_cpp.max_height_in_lines = 20
 
         self.snippet_python = immapp.snippets.SnippetData()
         self.snippet_python.displayed_filename = "Python code"
         self.snippet_python.language = immapp.snippets.SnippetLanguage.python
-        self.snippet_python.max_height_in_lines = 22
+        self.snippet_python.max_height_in_lines = 20
 
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder

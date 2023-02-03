@@ -18,11 +18,11 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
 {
     _snippetCpp.DisplayedFilename = "C++ Code";
     _snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
-    _snippetCpp.MaxHeightInLines = 22;
+    _snippetCpp.MaxHeightInLines = 20;
 
     _snippetPython.DisplayedFilename = "Python Code";
     _snippetPython.Language = Snippets::SnippetLanguage::Python;
-    _snippetPython.MaxHeightInLines = 22;
+    _snippetPython.MaxHeightInLines = 20;
 
     _SetDemoApp(_demoApps[0]);
 }
