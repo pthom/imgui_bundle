@@ -42,6 +42,8 @@ namespace ImGuiMd
                     { true, true },
                 };
             }
+
+            bool IsDefault() { return  (!italic && !bold); }
         };
 
 
@@ -86,6 +88,8 @@ namespace ImGuiMd
             bool operator==(const MarkdownTextStyle& rhs) const {
                 return (rhs.markdownEmphasis == markdownEmphasis) && (rhs.headerLevel == headerLevel);
             }
+
+            bool IsDefault() { return (headerLevel == 0) && markdownEmphasis.IsDefault();  }
         };
 
 
@@ -155,11 +159,21 @@ assets/
 
                         float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
                         std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-                        ImFont * font = HelloImGui::LoadFontTTF(fontFile, fontSize);
+
+                        // we shall not load the icons for all the fonts variants, since the font atlas
+                        // texture might end up too big to fit in the GPU.
+                        ImFont * font;
+                        if (markdownTextStyle.IsDefault())
+                            font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
+                        else
+                            font = HelloImGui::LoadFontTTF(fontFile, fontSize);
+
                         if (font == nullptr)
                         {
-                            fprintf(stderr, "%s", error_message.c_str()); IM_ASSERT(false);
+                            fprintf(stderr, "%s", error_message.c_str());
+                            IM_ASSERT(false);
                         }
+
                         mFonts.push_back(std::make_pair(markdownTextStyle, font) );
                     }
                 }
