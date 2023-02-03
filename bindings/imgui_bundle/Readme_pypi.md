@@ -730,3 +730,7 @@ Three of my past projects gave me the idea to develop this library.
 
 Developments for Dear ImGui Bundle and its related automatic binding
 generator began in january 2022.
+
+# FAQ
+
+See [FAQ](https://pthom.github.io/imgui_bundle/faq.html)

@@ -29,6 +29,7 @@ pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
 # Generate html doc for github pages (env_gh_pages)
 echo "Generating $gh_pages_dir/index.html (for github pages)"
 asciidoctor --attribute env_gh_pages=1 Readme_source.adoc -o $gh_pages_dir/index.html
+asciidoctor --attribute env_gh_pages=1 faq_source.adoc -o $gh_pages_dir/faq.html
 
 # Generate markdowns doc for demo_imgui_bundle (env_demo_markdown)
 echo "Generate markdowns doc for demo_imgui_bundle"

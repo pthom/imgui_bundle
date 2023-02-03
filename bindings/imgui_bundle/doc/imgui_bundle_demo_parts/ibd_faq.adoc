@@ -1,0 +1,6 @@
+:exclude_collapsible_details: 0
+:env_interactive_manual: 1
+
+include::ibd_utils.adoc[]
+
+include::../faq.adoc[]

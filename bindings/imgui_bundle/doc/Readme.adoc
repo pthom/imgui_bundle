@@ -1029,3 +1029,6 @@ Three of my past projects gave me the idea to develop this library.
 * https://github.com/pthom/imgui_datascience[imgui_datascience], a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.
 
 Developments for Dear ImGui Bundle and its related automatic binding generator began in january 2022.
+
+== FAQ
+See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]
