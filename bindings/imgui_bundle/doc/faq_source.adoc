@@ -1,4 +1,6 @@
 = FAQ
+:toc: left
+:source-highlighter: pygments
 
 /////////////////////////////////////////////////////////////////////////////
 // IMPORTANT: do not *edit* faq.adoc. It is generated automatically from

@@ -435,16 +435,106 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<style>
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments { background: #f8f8f8; }
+pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
+<h1>FAQ</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_python_bindings_faq">Python bindings FAQ</a></li>
+<li><a href="#_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</a></li>
+<li><a href="#_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</a>
+<ul class="sectlevel2">
+<li><a href="#_macos">macOS</a></li>
+<li><a href="#_emscripten">Emscripten</a></li>
+<li><a href="#_windows">Windows</a></li>
+<li><a href="#_linux">Linux</a></li>
+<li><a href="#_windows_how_to_make_the_application_dpi_aware">Windows: how to make the application DPI aware</a></li>
+<li><a href="#_windows_linux_how_to_correctly_size_and_position_the_widgets">Windows &amp; Linux: how to correctly size and position the widgets</a></li>
+<li><a href="#_windows_linux_how_to_load_fonts_at_the_correct_size">Windows &amp; Linux: How to load fonts at the correct size</a></li>
+<li><a href="#_windows_linux_how_to_adapt_dear_imguis_styling_scale">Windows &amp; Linux: how to adapt Dear ImGui’s styling scale</a></li>
+<li><a href="#_windows_linux_how_to_have_a_consistent_initial_window_size_between_monitors">Windows &amp; Linux: how to have a consistent initial window size between monitors</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_faq">FAQ</h2>
+<h2 id="_python_bindings_faq">Python bindings FAQ</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_python_bindings_faq">Python bindings FAQ</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -466,31 +556,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>You should upgrade pip: <code>pip install -U pip</code></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_high_dpi_with_imgui">High-DPI with ImGui</h3>
+</div>
+<div class="sect1">
+<h2 id="_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>A high-DPI screen could have a <code>physical pixel</code> resolution of 3840x2160, but on this screen the OS will display widgets with a scaling factor of 200%, so that widgets do not look too small on it.</p>
 </div>
 <div class="paragraph">
-<p>Special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.</p>
+<p><code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated API</a> for High-DPI handling</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If your application uses Dear ImGui without HelloImGui or Dear ImGui Bundle, read on for more details: special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.</p>
 </div>
 <div class="paragraph">
 <p>This FAQ article tries to be a complement to <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the related ImGui FAQ article</a></p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-This article is targeted to standard ImGui applications. <code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated additional API </a>.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_macos">macOS</h4>
+<div class="sect2">
+<h3 id="_macos">macOS</h3>
 <div class="paragraph">
 <p>On macOS, our screen&#8217;s physical pixel resolution of 3840x2160 will be hidden by the OS. For example, the OS will answer 1920x1080 when querying the screen resolution (this corresponds to <code>screen coordinates</code>, which may differ from the physical pixels).</p>
 </div>
@@ -505,25 +593,25 @@ This article is targeted to standard ImGui applications. <code>HelloImGui</code>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">// Query macOS for the scaling factor (by using NSScreen api)
-// (this is a simplified version, which handles only the main screen,
-//  see imgui/backends/imgui_impl_osx.mm for a more complete version)
-float windowDevicePixelRatio = NSScreen.mainScreen.backingScaleFactor;
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query macOS for the scaling factor (by using NSScreen api)</span>
+<span class="tok-c1">// (this is a simplified version, which handles only the main screen,</span>
+<span class="tok-c1">//  see imgui/backends/imgui_impl_osx.mm for a more complete version)</span>
+<span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">NSScreen</span><span class="tok-p">.</span><span class="tok-n">mainScreen</span><span class="tok-p">.</span><span class="tok-n">backingScaleFactor</span><span class="tok-p">;</span><span class="tok-w"></span>
 
-// [...]
+<span class="tok-c1">// [...]</span>
 
-// When loading fonts use this factor:
-ImGui::GetIO().Fonts-&gt;AddFontFromFileTTF(fontFileName, fontSize * windowDevicePixelRatio);
+<span class="tok-c1">// When loading fonts use this factor:</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
 
-// [...]
+<span class="tok-c1">// [...]</span>
 
-// Set ImGui::GetIO().FontGlobalScale
-ImGui::GetIO().FontGlobalScale = 1.f / windowDevicePixelRatio;</code></pre>
+<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_emscripten">Emscripten</h4>
+<div class="sect2">
+<h3 id="_emscripten">Emscripten</h3>
 <div class="paragraph">
 <p>With emscripten (i.e. inside a browser) the situation is close to macOS: widgets' sizes are relative to the current scaling factor of the screen, <strong>and</strong> to the current zoom level of the given page.</p>
 </div>
@@ -532,23 +620,23 @@ ImGui::GetIO().FontGlobalScale = 1.f / windowDevicePixelRatio;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">// Query the browser for the scaling factor (this depends on the screen scaling factor and on the browser zoom level)
-double windowDevicePixelRatio = (float)EM_ASM_DOUBLE( { return window.devicePixelRatio; });
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query the browser for the scaling factor (this depends on the screen scaling factor and on the browser zoom level)</span>
+<span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-p">)</span><span class="tok-n">EM_ASM_DOUBLE</span><span class="tok-p">(</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">.</span><span class="tok-n">devicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-p">});</span><span class="tok-w"></span>
 
-// [...]
+<span class="tok-c1">// [...]</span>
 
-// When loading fonts use this factor:
-ImGui::GetIO().Fonts-&gt;AddFontFromFileTTF(fontFileName, fontSize * windowDevicePixelRatio);
+<span class="tok-c1">// When loading fonts use this factor:</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
 
-// [...]
+<span class="tok-c1">// [...]</span>
 
-// Set ImGui::GetIO().FontGlobalScale
-ImGui::GetIO().FontGlobalScale = 1.f / windowDevicePixelRatio;</code></pre>
+<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows">Windows</h4>
+<div class="sect2">
+<h3 id="_windows">Windows</h3>
 <div class="paragraph">
 <p>Under windows, two cases are possible:</p>
 </div>
@@ -597,20 +685,20 @@ Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing 
 </ul>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_linux">Linux</h4>
+<div class="sect2">
+<h3 id="_linux">Linux</h3>
 <div class="paragraph">
 <p>The situation on linux is close to Windows' DPI-aware applications. Applications are informed about the physical number of pixels, and they need to scale according to the screen dpi factor.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_how_to_make_the_application_dpi_aware">Windows: how to make the application DPI aware</h4>
+<div class="sect2">
+<h3 id="_windows_how_to_make_the_application_dpi_aware">Windows: how to make the application DPI aware</h3>
 <div class="paragraph">
 <p>See <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the ImGui related FAQ</a></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_correctly_size_and_position_the_widgets">Windows &amp; Linux: how to correctly size and position the widgets</h4>
+<div class="sect2">
+<h3 id="_windows_linux_how_to_correctly_size_and_position_the_widgets">Windows &amp; Linux: how to correctly size and position the widgets</h3>
 <div class="paragraph">
 <p>It is almost always a bad idea to use fixed sizes. This will lead to portability issues, especially on high-DPI screens.</p>
 </div>
@@ -627,19 +715,19 @@ Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">ImVec2 EmVec2(float x, float y)
-{
-    IM_ASSERT(GImGui != NULL);
-    float k = ImGui::GetFontSize();
-    return ImVec2(k * x, k * y);
-}</code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-nf">EmVec2</span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">IM_ASSERT</span><span class="tok-p">(</span><span class="tok-n">GImGui</span><span class="tok-w"> </span><span class="tok-o">!=</span><span class="tok-w"> </span><span class="tok-nb">NULL</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetFontSize</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_load_fonts_at_the_correct_size">Windows &amp; Linux: How to load fonts at the correct size</h4>
+<div class="sect2">
+<h3 id="_windows_linux_how_to_load_fonts_at_the_correct_size">Windows &amp; Linux: How to load fonts at the correct size</h3>
 <div class="paragraph">
 <p>You need to query the application window content scale.</p>
 </div>
@@ -651,11 +739,11 @@ Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">float WindowContentScale(HWND window) {
-    int dpi = GetDpiForWindow(window);
-    float dpiScale = dpi / 96.f; // 96 is the "standard dpi"
-    return dpiScale;
-}</code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">HWND</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">GetDpiForWindow</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-mf">96.f</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// 96 is the &quot;standard dpi&quot;</span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -663,11 +751,11 @@ Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">float WindowContentScale(GLFWwindow * window) {
-    float xscale, yscale;
-    glfwGetWindowContentScale((GLFWwindow *) window, &amp;xscale, &amp;yscale);
-    return xscale; // xscale and yscale will likely be equal
-}</code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">yscale</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">glfwGetWindowContentScale</span><span class="tok-p">((</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">yscale</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// xscale and yscale will likely be equal</span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -675,25 +763,24 @@ Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cpp" data-lang="cpp">float fontLoadingFactor = WindowContentScale(...);
-ImGui::GetIO().Fonts-&gt;AddFontFromFileTTF(fontFileName, fontSize * fontLoadingFactor);</code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">WindowContentScale</span><span class="tok-p">(...);</span><span class="tok-w"></span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-p">);</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_adapt_dear_imguis_styling_scale">Windows &amp; Linux: how to adapt Dear ImGui’s styling scale</h4>
+<div class="sect2">
+<h3 id="_windows_linux_how_to_adapt_dear_imguis_styling_scale">Windows &amp; Linux: how to adapt Dear ImGui’s styling scale</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-cppp" data-lang="cppp">float dpiScale = WindowContentScale(...);
+<pre class="pygments highlight"><code data-lang="cppp"><span></span>float dpiScale = WindowContentScale(...);
 ImGui::GetStyle().ScaleAllSizes(dpiScale);</code></pre>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_have_a_consistent_initial_window_size_between_monitors">Windows &amp; Linux: how to have a consistent initial window size between monitors</h4>
+<div class="sect2">
+<h3 id="_windows_linux_how_to_have_a_consistent_initial_window_size_between_monitors">Windows &amp; Linux: how to have a consistent initial window size between monitors</h3>
 <div class="paragraph">
 <p>As mentioned before, multiply your window size by WindowContentScale(&#8230;&#8203;).</p>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_windows_linux_adapting_windows_and_font_size_when_application_is_moved_between_monitors">Windows &amp; Linux: adapting windows and font size when application is moved between monitors</h4>
@@ -707,7 +794,7 @@ ImGui::GetStyle().ScaleAllSizes(dpiScale);</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-02-03 22:20:57 +0100
+Last updated 2023-02-03 22:25:25 +0100
 </div>
 </div>
 </body>
