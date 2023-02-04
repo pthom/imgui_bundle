@@ -20,7 +20,7 @@ const std::string DOC = R"(
 std::function<void()> makeGui()
 {
     std::vector<DemoApp> demoApps = {
-        DemoApp{"demo_hello_world", "Hello world demo: how to start an app with ImmApp in as few lines as possible"},
+        DemoApp{"demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."},
         DemoApp{"demo_assets", "How to load assets with HelloImGui"},
         DemoApp{
             "demo_docking",
@@ -28,7 +28,7 @@ std::function<void()> makeGui()
         },
         DemoApp{"demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"},
         DemoApp{
-            "demo_powersave", "How to have smooth animations, and how to let the application save CPU when idle"
+            "demo_powersave", "How to have smooth animations, and how spare the CPU when idling"
         },
         DemoApp{"demo_custom_font", "How to load custom fonts"},
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
@@ -36,10 +36,9 @@ std::function<void()> makeGui()
         DemoApp{
             "imgui_example_glfw_opengl3",
             R"(
-            How to port an existing ImGui application to python<br>
-            imgui_example_glfw_opengl3.py is an almost line by line translation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.
+            Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python.
             )"},
-        DemoApp{"imgui_example_glfw_opengl2","Same, this time with OpenGL2"}
+        DemoApp{"imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"}
     };
 
     DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");

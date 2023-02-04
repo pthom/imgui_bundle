@@ -2,6 +2,7 @@
 #include "demo_utils/api_demos.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
+#include "hello_imgui/hello_imgui.h"
 
 #include <fplus/fplus.hpp>
 #include <filesystem>
@@ -18,11 +19,11 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
 {
     _snippetCpp.DisplayedFilename = "C++ Code";
     _snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
-    _snippetCpp.MaxHeightInLines = 20;
+    _snippetCpp.MaxHeightInLines = 21;
 
     _snippetPython.DisplayedFilename = "Python Code";
     _snippetPython.Language = Snippets::SnippetLanguage::Python;
-    _snippetPython.MaxHeightInLines = 20;
+    _snippetPython.MaxHeightInLines = 21;
 
     _SetDemoApp(_demoApps[0]);
 }
@@ -46,13 +47,14 @@ void DemoAppTable::_SetDemoApp(const DemoApp &demo_app)
 
 void DemoAppTable::Gui()
 {
-    const int tableFlags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable;
+    const int tableFlags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame;
     const int nbColumns = 3;
+    ImGui::BeginChild("TableChild", HelloImGui::EmToVec2(0.f, 17.f));
     if (ImGui::BeginTable("Apps", nbColumns, tableFlags))
     {
-        ImGui::TableSetupColumn("Demo");
-        ImGui::TableSetupColumn("Info");
-        ImGui::TableSetupColumn("Action");
+        ImGui::TableSetupColumn("Demo", 0, 0.15f);
+        ImGui::TableSetupColumn("Info", 0, 0.6f);
+        ImGui::TableSetupColumn("Action", 0, 0.1f);
         // ImGui::TableHeadersRow();
 
         for (const auto &demoApp: _demoApps)
@@ -78,21 +80,21 @@ void DemoAppTable::Gui()
 
                 // Run button
                 {
-                    #ifndef __EMSCRIPTEN__
-                        std::string exeFolder = wai_getExecutableFolder_string();
-                    #else
-                        std::string exeFolder = "./";
-                    #endif
+#ifndef __EMSCRIPTEN__
+                    std::string exeFolder = wai_getExecutableFolder_string();
+#else
+                    std::string exeFolder = "./";
+#endif
 
                     std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
-                    #ifdef _WIN32
-                        exeFile += ".exe";
-                    #endif
+#ifdef _WIN32
+                    exeFile += ".exe";
+#endif
 
                     bool exeFound = std::filesystem::exists(exeFile);
-                    #ifdef __EMSCRIPTEN__
-                        exeFound = true;
-                    #endif
+#ifdef __EMSCRIPTEN__
+                    exeFound = true;
+#endif
 
                     if (exeFound && ImGui::Button("Run"))
                         SpawnDemo(demoApp.DemoFile);
@@ -102,10 +104,9 @@ void DemoAppTable::Gui()
             ImGui::PopID();
         }
         ImGui::EndTable();
-
-        ImGui::NewLine();
-        ImGui::Text("%s", (std::string("Code for ") + _currentApp.DemoFile).c_str());
-
-        Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
     }
+    ImGui::EndChild();
+
+    ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
+    Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
 }

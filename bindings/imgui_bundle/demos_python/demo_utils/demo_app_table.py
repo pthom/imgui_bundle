@@ -4,7 +4,7 @@ import subprocess
 import sys
 import os
 
-from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2, immapp
+from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2, immapp, hello_imgui
 
 
 def _read_code(filepath: str) -> str:
@@ -34,12 +34,12 @@ class DemoAppTable:
         self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
         self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
-        self.snippet_cpp.max_height_in_lines = 20
+        self.snippet_cpp.max_height_in_lines = 21
 
         self.snippet_python = immapp.snippets.SnippetData()
         self.snippet_python.displayed_filename = "Python code"
         self.snippet_python.language = immapp.snippets.SnippetLanguage.python
-        self.snippet_python.max_height_in_lines = 20
+        self.snippet_python.max_height_in_lines = 21
 
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
@@ -58,12 +58,13 @@ class DemoAppTable:
         self.snippet_python.code = _read_code(self._demo_python_file_path(demo_app))
 
     def gui(self):
-        table_flags = imgui.TableFlags_.row_bg | imgui.TableFlags_.borders | imgui.TableFlags_.resizable
+        table_flags = imgui.TableFlags_.row_bg | imgui.TableFlags_.borders | imgui.TableFlags_.resizable | imgui.TableFlags_.sizing_stretch_same
         nb_columns = 3
+        imgui.begin_child("TableChild", hello_imgui.em_to_vec2(0.0, 17.0))
         if imgui.begin_table("Apps", nb_columns, table_flags):
-            imgui.table_setup_column("Demo")
-            imgui.table_setup_column("Info")
-            imgui.table_setup_column("Action")
+            imgui.table_setup_column("Demo", 0, 0.15)
+            imgui.table_setup_column("Info", 0, 0.6)
+            imgui.table_setup_column("Action", 0, 0.1)
             # imgui.table_headers_row()
 
             for demo_app in self.demo_apps:
@@ -87,10 +88,8 @@ class DemoAppTable:
                         subprocess.Popen([sys.executable, self._demo_python_file_path(demo_app)])
 
                 imgui.pop_id()
-
             imgui.end_table()
+        imgui.end_child()
 
-        imgui.new_line()
-        imgui.text(f"Code for {self.current_app.demo_file}")
-
+        imgui_md.render("**Code for " + self.current_app.demo_file + "**")
         immapp.snippets.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)

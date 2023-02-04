@@ -22,25 +22,22 @@ DOC = """
 # This returns a closure function that will later be invoked to run the app
 def make_gui() -> GuiFunction:
     demo_apps = [
-        DemoApp("demo_hello_world", "Hello world demo: how to start an app with ImmApp in as few lines as possible"),
+        DemoApp("demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."),
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
         DemoApp(
             "demo_docking",
             """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
         ),
         DemoApp("demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
-        DemoApp("demo_powersave", "How to have smooth animations, and how to let the application save CPU when idle"),
+        DemoApp("demo_powersave", "How to have smooth animations, and how spare the CPU when idling"),
         DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp("demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"),
         DemoApp("haiku_implot_heart", "Share some love for ImGui and ImPlot"),
         DemoApp(
             "imgui_example_glfw_opengl3",
-            """
-            How to port an existing ImGui application to python<br>
-            imgui_example_glfw_opengl3.py is an almost line by line translation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.
-            """,
+            "Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python."
         ),
-        DemoApp("imgui_example_glfw_opengl2","Same, this time with OpenGL2")
+        DemoApp("imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui")
     ]
 
     this_dir = os.path.dirname(__file__)
