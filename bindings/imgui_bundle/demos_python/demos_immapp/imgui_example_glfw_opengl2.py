@@ -1,7 +1,7 @@
 # imgui_bundle can be used to run imgui with an almost line by line translation from C++ to python
 #
-# This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl3/main.cpp)
-# (see https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
+# This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl2/main.cpp)
+# (see https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp)
 
 
 import os.path
@@ -25,30 +25,8 @@ def main():
     glfw.set_error_callback(glfw_error_callback)
     if not glfw.init():
         sys.exit(1)
-
-    # Decide GL+GLSL versions
-    # #if defined(IMGUI_IMPL_OPENGL_ES2)
-    # // GL ES 2.0 + GLSL 100
-    # const char* glsl_version = "#version 100";
-    # glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    # glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    # glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-    if platform.system() == "Darwin":
-        glsl_version = "#version 150"
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)  # // 3.2+ only
-        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL.GL_TRUE)
-    else:
-        # GL 3.0 + GLSL 130
-        glsl_version = "#version 130"
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 0)
-        # glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE) # // 3.2+ only
-        # glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
-
     # Create window with graphics context
-    window = glfw.create_window(1280, 720, "Dear ImGui GLFW+OpenGL3 example", None, None)
+    window = glfw.create_window(1280, 720, "Dear ImGui GLFW+OpenGL2 example", None, None)
     if window is None:
         sys.exit(1)
     glfw.make_context_current(window)
@@ -61,7 +39,7 @@ def main():
     io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
     io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
-    # io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
+    io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.config_viewports_no_auto_merge = True
     # io.config_viewports_no_task_bar_icon = True
 
@@ -85,7 +63,7 @@ def main():
     window_address = ctypes.cast(window, ctypes.c_void_p).value
     imgui.backends.glfw_init_for_open_gl(window_address, True)
 
-    imgui.backends.opengl3_init(glsl_version)
+    imgui.backends.opengl2_init()
 
     # // Load Fonts
     # // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use imgui.PushFont()/PopFont() to select them.
@@ -150,7 +128,7 @@ def main():
         glfw.poll_events()
 
         # Start the Dear ImGui frame
-        imgui.backends.opengl3_new_frame()
+        imgui.backends.opengl2_new_frame()
         imgui.backends.glfw_new_frame()
         imgui.new_frame()
 
@@ -220,7 +198,7 @@ def main():
             clear_color[3],
         )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-        imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())
+        imgui.backends.opengl2_render_draw_data(imgui.get_draw_data())
 
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
@@ -234,7 +212,7 @@ def main():
         glfw.swap_buffers(window)
 
     # Cleanup
-    imgui.backends.opengl3_shutdown()
+    imgui.backends.opengl2_shutdown()
     imgui.backends.glfw_shutdown()
     imgui.destroy_context()
 

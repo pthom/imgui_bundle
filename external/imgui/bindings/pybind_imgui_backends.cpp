@@ -3,6 +3,8 @@
 
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/backends/imgui_impl_opengl2.h"
+
 namespace py = pybind11;
 
 
@@ -14,6 +16,7 @@ struct GLFWcursor;
 
 void py_init_module_imgui_backends(py::module& m)
 {
+    // <bindings for imgui_impl_opengl3.h
     m.def("opengl3_init",
         ImGui_ImplOpenGL3_Init, py::arg("glsl_version"));
 
@@ -37,10 +40,36 @@ void py_init_module_imgui_backends(py::module& m)
 
     m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
-    ////////////////////    </generated_from:imgui_impl_opengl3.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:imgui_impl_glfw.h>    ////////////////////
+    // <bindings for imgui_impl_opengl2.h
+    m.def("opengl2_init",
+          ImGui_ImplOpenGL2_Init);
+
+    m.def("opengl2_shutdown",
+          ImGui_ImplOpenGL2_Shutdown);
+
+    m.def("opengl2_new_frame",
+          ImGui_ImplOpenGL2_NewFrame);
+
+    m.def("opengl2_render_draw_data",
+          ImGui_ImplOpenGL2_RenderDrawData, py::arg("draw_data"));
+
+    m.def("opengl2_create_fonts_texture",
+          ImGui_ImplOpenGL2_CreateFontsTexture);
+
+    m.def("opengl2_destroy_fonts_texture",
+          ImGui_ImplOpenGL2_DestroyFontsTexture);
+
+    m.def("opengl2_create_device_objects",
+          ImGui_ImplOpenGL2_CreateDeviceObjects);
+
+    m.def("opengl2_destroy_device_objects",
+          ImGui_ImplOpenGL2_DestroyDeviceObjects);
+
+
+    // <bindings for imgui_impl_glfw.h
+
     m.def("glfw_init_for_open_gl",
         [](size_t window_address, bool install_callbacks) {
             return ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window_address, install_callbacks);

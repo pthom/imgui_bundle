@@ -40,6 +40,7 @@ def make_gui() -> GuiFunction:
             imgui_example_glfw_opengl3.py is an almost line by line translation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.
             """,
         ),
+        DemoApp("imgui_example_glfw_opengl2","Same, this time with OpenGL2")
     ]
 
     this_dir = os.path.dirname(__file__)

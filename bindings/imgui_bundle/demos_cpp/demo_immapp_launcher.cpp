@@ -38,7 +38,8 @@ std::function<void()> makeGui()
             R"(
             How to port an existing ImGui application to python<br>
             imgui_example_glfw_opengl3.py is an almost line by line translation of [a C++ example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui.
-            )"}
+            )"},
+        DemoApp{"imgui_example_glfw_opengl2","Same, this time with OpenGL2"}
     };
 
     DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");
