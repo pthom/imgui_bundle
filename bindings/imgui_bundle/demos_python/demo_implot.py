@@ -24,7 +24,7 @@ class DemoDragRectState:
         self.y_data1 = np.sin(arg)
         self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
         self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-        self.rect = implot.Rect(0.0025, 0.0045, 0, 0.5)  # type: ignore
+        self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)  # type: ignore
         self.flags = implot.DragToolFlags_.none
 
 
@@ -42,7 +42,7 @@ def demo_drag_rects():
     plot_height = immapp.em_size() * 15
     if implot.begin_plot("##Main", ImVec2(-1, plot_height)):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_tick_labels, implot.ImPlotAxisFlags_.no_tick_labels)
-        implot.setup_axes_limits(0, 0.01, -1, 1)
+        # implot.setup_axes_limits(0, 0.01, -1, 1)
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
         implot.plot_line("Signal 3", state.x_data, state.y_data3)
@@ -55,6 +55,11 @@ def demo_drag_rects():
             ImVec4(1, 0, 1, 1),
             state.flags,
         )
+
+        # Example showing how to use implot_internal
+        implot.internal.fit_point((0, -3.5))
+        implot.internal.fit_point((0, 1.5))
+
         implot.end_plot()
     if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
