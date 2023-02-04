@@ -106,7 +106,12 @@ namespace Snippets
         // Title Line
         bool hasTitleLine = ! snippetData.DisplayedFilename.empty() || snippetData.ShowCopyButton || snippetData.ShowCursorPosition;
 
-        float em = ImGui::GetFontSize();
+        float lineHeight;
+        {
+            ImGui::PushFont(ImGuiMd::GetCodeFont());
+            lineHeight = ImGui::GetFontSize();
+            ImGui::PopFont();
+        }
 
         ImVec2 editorSize;
         {
@@ -122,14 +127,14 @@ namespace Snippets
 
             if ((snippetData.MaxHeightInLines > 0) && (nbVisibleLines > snippetData.MaxHeightInLines))
                 nbVisibleLines = snippetData.MaxHeightInLines;
-            editorSize.y = em * nbVisibleLines;
+            editorSize.y = lineHeight * (nbVisibleLines + 1);
         }
 
         if (hasTitleLine)
         {
             ImVec2 topLeft = ImGui::GetCursorPos();
             ImVec2 topRight { topLeft.x + editorSize.x, topLeft.y};
-            float textY = topRight.y + em * 0.2;
+            float textY = topRight.y + lineHeight * 0.2;
 
             if (! snippetData.DisplayedFilename.empty())
             {
@@ -139,7 +144,7 @@ namespace Snippets
 
             if (snippetData.ShowCursorPosition)
             {
-                float textX = snippetData.ShowCopyButton ? topRight.x - em * 6.f : topRight.x - em * 4.5f;
+                float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
                 ImGui::SetCursorPos({textX, textY});
                 auto pos = editor.GetCursorPosition();
                 ImGui::Text("L:%02i C:%02i", pos.mLine + 1, pos.mColumn + 1);
@@ -147,7 +152,7 @@ namespace Snippets
 
             if (snippetData.ShowCopyButton)
             {
-                ImGui::SetCursorPos({topRight.x - em * 1.5f, topRight.y});
+                ImGui::SetCursorPos({topRight.x - lineHeight * 1.5f, topRight.y});
                 if (ImGui::Button(ICON_FA_COPY))
                 {
                     timeClickCopyButton[id] = ImmApp::ClockSeconds();
