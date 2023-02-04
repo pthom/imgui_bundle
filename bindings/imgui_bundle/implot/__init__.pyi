@@ -5,6 +5,8 @@ Python bindings for https://github.com/epezent/implot
 from typing import Any, Optional, Tuple
 import numpy as np
 import enum
+from . import internal as internal
+
 
 from imgui_bundle.imgui import ImVec4
 from imgui_bundle import imgui

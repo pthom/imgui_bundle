@@ -23,6 +23,7 @@ void py_init_module_immapp_cpp(py::module& m);
 void py_init_module_imgui_toggle(py::module& m);
 void py_init_module_portable_file_dialogs(py::module& m);
 void py_init_module_imgui_command_palette(py::module& m);
+void py_init_module_implot_internal(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -48,6 +49,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_implot =  m.def_submodule("implot");
     py_init_module_implot(module_implot);
+
+    auto module_implot_internal = module_implot.def_submodule("internal");
+    py_init_module_implot_internal(module_implot_internal);
 
     auto module_imgui_color_text_edit =  m.def_submodule("imgui_color_text_edit");
     py_init_module_imgui_color_text_edit(module_imgui_color_text_edit);
