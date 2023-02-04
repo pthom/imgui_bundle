@@ -13,7 +13,7 @@ int main(int, char **)
         "Hello!",
         true // window_size_auto
         // Uncomment the next line to restore window position and size from previous run
-        // window_restore_previous_geometry==true
+        // , true // windowRestorePreviousGeometry
     );
 
     return 0;
