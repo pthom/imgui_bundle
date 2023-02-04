@@ -21,6 +21,7 @@ std::function<void()> makeGui()
 {
     std::vector<DemoApp> demoApps = {
         DemoApp{"demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."},
+        DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
         DemoApp{"demo_assets", "How to load assets with HelloImGui"},
         DemoApp{
             "demo_docking",
@@ -38,7 +39,7 @@ std::function<void()> makeGui()
             R"(
             Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python.
             )"},
-        DemoApp{"imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"}
+        DemoApp{"imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"},
     };
 
     DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");

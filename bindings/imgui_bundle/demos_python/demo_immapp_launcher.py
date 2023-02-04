@@ -23,6 +23,7 @@ DOC = """
 def make_gui() -> GuiFunction:
     demo_apps = [
         DemoApp("demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."),
+        DemoApp("demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"),
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
         DemoApp(
             "demo_docking",
