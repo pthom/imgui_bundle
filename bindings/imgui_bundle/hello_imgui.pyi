@@ -166,6 +166,7 @@ def override_assets_folder(folder: str) -> None:
 
 
 
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/icons_font_awesome.h included by hello_imgui.h                             //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -814,6 +815,9 @@ class ImGuiWindowParams:
       * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
         If True, you can drag windows outside out the main window in order to put their content into new native windows.
 
+       * `menuAppTitle`: _string, default=""_. Set the title of the App menu. If empty, this menu name will use
+         the "windowTitle" from AppWindowParams
+
       * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
         Change the ImGui theme. Several themes are available, you can query the list by calling
         HelloImGui::AvailableThemes()
@@ -844,9 +848,12 @@ class ImGuiWindowParams:
     # bool enableViewports = false;    /* original C++ signature */
     enable_viewports: bool = False
 
+    # std::string menuAppTitle = "";    /* original C++ signature */
+    menu_app_title: str = ""
+
     # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
@@ -858,6 +865,7 @@ class ImGuiWindowParams:
         show_status_fps: bool = True,
         config_windows_move_from_title_bar_only: bool = True,
         enable_viewports: bool = False,
+        menu_app_title: str = "",
         tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme()
         ) -> None:
         """Auto-generated default constructor with named params"""
@@ -882,16 +890,24 @@ class ImGuiWindowParams:
 #using AnyEventCallback = std::function<bool(None * backendEvent)>
 #```
 #
+#**AppendCallback** can compose two callbacks. Use this when you want to set a callback and keep the (maybe) preexisting one.
 #@@md
 #*
+# VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunction& newCallback);    /* original C++ signature */
+def append_callback(
+    previous_callback: VoidFunction,
+    new_callback: VoidFunction
+    ) -> VoidFunction:
+    pass
+
 
 # inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
 def empty_void_function() -> VoidFunction:
     pass
 # inline AnyEventCallback EmptyEventCallback() {return {}; }    /* original C++ signature */
-# }
 def empty_event_callback() -> AnyEventCallback:
     pass
+
 
 
 
@@ -995,6 +1011,11 @@ class RunnerCallbacks:
         * Some default menus can be provided: see _ImGuiWindowParams_ options
           (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)
 
+    * `ShowAppMenuItems`: *VoidFunction, default=empty*.
+      A function that will render items that will be placed in the App menu.
+      They will be placed before the "Quit" MenuItem, which is added automatically by HelloImGui.
+      This will be displayed only if ImGuiWindowParams.showMenu_App is True
+
     * `ShowStatus`: *VoidFunction, default=empty*.
       A function that will add items to the status bar. Use small items (ImGui::Text for example),
       since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.
@@ -1007,6 +1028,9 @@ class RunnerCallbacks:
     * `BeforeExit`: *VoidFunction, default=empty*.
         You can here add a function that will be called once before exiting (when OpenGL and ImGui are
         still inited)
+
+     * `PreNewFrame`: *VoidFunction, default=empty*.
+        You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
 
     * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
       Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1038,12 +1062,16 @@ class RunnerCallbacks:
     show_gui: VoidFunction = EmptyVoidFunction()
     # VoidFunction ShowMenus = EmptyVoidFunction();    /* original C++ signature */
     show_menus: VoidFunction = EmptyVoidFunction()
+    # VoidFunction ShowAppMenuItems = EmptyVoidFunction();    /* original C++ signature */
+    show_app_menu_items: VoidFunction = EmptyVoidFunction()
     # VoidFunction ShowStatus = EmptyVoidFunction();    /* original C++ signature */
     show_status: VoidFunction = EmptyVoidFunction()
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
     post_init: VoidFunction = EmptyVoidFunction()
     # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
     before_exit: VoidFunction = EmptyVoidFunction()
+    # VoidFunction PreNewFrame = EmptyVoidFunction();    /* original C++ signature */
+    pre_new_frame: VoidFunction = EmptyVoidFunction()
 
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
@@ -1055,14 +1083,16 @@ class RunnerCallbacks:
     # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
     setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
         show_menus: VoidFunction = EmptyVoidFunction(),
+        show_app_menu_items: VoidFunction = EmptyVoidFunction(),
         show_status: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
         before_exit: VoidFunction = EmptyVoidFunction(),
+        pre_new_frame: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
         load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons),
         setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig),
@@ -1651,10 +1681,14 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 #
 #`HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
 #
-#
 #`HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
 # which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
 # HelloImGui::LoadFontTTF does this by default.
+#
+#`HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
+# default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
+# Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
+# this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
 #@@md
 #
 
@@ -1688,11 +1722,16 @@ def dpi_font_loading_factor() -> float:
     pass
 
 # float DpiWindowSizeFactor();    /* original C++ signature */
-# }
 def dpi_window_size_factor() -> float:
     """ DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
      It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
     """
+    pass
+
+# float ImGuiDefaultFontGlobalScale();    /* original C++ signature */
+# }
+def imgui_default_font_global_scale() -> float:
+    """ returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`"""
     pass
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1761,21 +1800,6 @@ def frame_rate(duration_for_mean: float = 0.5) -> float:
     """
     pass
 
-
-#*
-#@@md#SDLMain
-#
-#Warning for SDL apps under iOS and Android:
-#
-#SDL uses a dirty hack in order to _replace your main() function by its own main() function_,
-#which will then call your own main !
-#
-#Please make sure that the signature of your main() function is *exactly*
-#    `int main(int argc, char **argv)`
-#and that your main() function returns an int.
-#
-#@@md
-#
 
 # <submodule imgui_default_settings>
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings

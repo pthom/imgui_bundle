@@ -122,6 +122,7 @@ int main(int, char**)
     HelloImGui::RunnerParams runnerParams;
 
     runnerParams.appWindowParams.windowTitle = "Docking demo";
+    runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
     //runnerParams.appWindowParams.restorePreviousGeometry = true;
 
@@ -152,6 +153,11 @@ int main(int, char**)
         }
     };
     runnerParams.callbacks.ShowMenus = ShowMenuGui;
+
+    runnerParams.callbacks.ShowAppMenuItems = []() {
+        if (ImGui::MenuItem("A Custom app menu item"))
+            HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on A Custom app menu item");
+    };
 
     // optional native events handling
     // runnerParams.callbacks.AnyBackendEventCallback = ...

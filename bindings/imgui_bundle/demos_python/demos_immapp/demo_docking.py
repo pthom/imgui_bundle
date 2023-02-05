@@ -107,6 +107,7 @@ def main():
     runner_params = hello_imgui.RunnerParams()
 
     runner_params.app_window_params.window_title = "Docking demo"
+    runner_params.imgui_window_params.menu_app_title = "Docking App"
     runner_params.app_window_params.window_geometry.size = (1000, 800)
     runner_params.app_window_params.restore_previous_geometry = True
 
@@ -133,6 +134,14 @@ def main():
             imgui.end_menu()
 
     runner_params.callbacks.show_menus = show_menu_gui
+
+    def show_app_menu_items():
+        clicked, _ = imgui.menu_item("A Custom app menu item", "", False)
+        if clicked:
+            hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
+
+    runner_params.callbacks.show_app_menu_items = show_app_menu_items
+
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...

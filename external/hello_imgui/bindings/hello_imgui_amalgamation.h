@@ -99,6 +99,8 @@ void overrideAssetsFolder(const char* folder); // synonym
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <stdexcept>
 #include <iostream>
+#include "imgui.h"
+
 
 #define HIMG_ERROR(msg) \
     { \
@@ -1108,7 +1110,6 @@ void overrideAssetsFolder(const char* folder); // synonym
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef HELLOIMGUI_HAS_OPENGL
-#include "imgui.h"
 #include <memory>
 
 /**
@@ -1644,6 +1645,9 @@ In order to change the application window settings, change the _AppWindowsParams
   * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
     If true, you can drag windows outside out the main window in order to put their content into new native windows.
 
+   * `menuAppTitle`: _string, default=""_. Set the title of the App menu. If empty, this menu name will use
+     the "windowTitle" from AppWindowParams
+
   * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
     Change the ImGui theme. Several themes are available, you can query the list by calling
     HelloImGui::AvailableThemes()
@@ -1665,6 +1669,8 @@ struct ImGuiWindowParams
     bool configWindowsMoveFromTitleBarOnly = true;
 
     bool enableViewports = false;
+
+    std::string menuAppTitle = "";
 
     ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
 };
@@ -1690,13 +1696,17 @@ using VoidFunction = std::function<void(void)>
 using AnyEventCallback = std::function<bool(void * backendEvent)>
 ```
 
+**AppendCallback** can compose two callbacks. Use this when you want to set a callback and keep the (maybe) preexisting one.
 @@md
 **/
 using VoidFunction = std::function<void(void)>;
 using AnyEventCallback = std::function<bool(void * backendEvent)>;
+VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunction& newCallback);
+
 
 inline VoidFunction EmptyVoidFunction() { return {}; }
 inline AnyEventCallback EmptyEventCallback() {return {}; }
+
 }
 
 
@@ -1775,6 +1785,11 @@ struct MobileCallbacks
     * Some default menus can be provided: see _ImGuiWindowParams_ options
       (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)
 
+* `ShowAppMenuItems`: *VoidFunction, default=empty*.
+  A function that will render items that will be placed in the App menu.
+  They will be placed before the "Quit" MenuItem, which is added automatically by HelloImGui.
+  This will be displayed only if ImGuiWindowParams.showMenu_App is true
+
 * `ShowStatus`: *VoidFunction, default=empty*.
   A function that will add items to the status bar. Use small items (ImGui::Text for example),
   since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.
@@ -1787,6 +1802,9 @@ struct MobileCallbacks
 * `BeforeExit`: *VoidFunction, default=empty*.
     You can here add a function that will be called once before exiting (when OpenGL and ImGui are
     still inited)
+
+ * `PreNewFrame`: *VoidFunction, default=empty*.
+    You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
 
 * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
   Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1817,9 +1835,11 @@ struct RunnerCallbacks
 {
     VoidFunction ShowGui = EmptyVoidFunction();
     VoidFunction ShowMenus = EmptyVoidFunction();
+    VoidFunction ShowAppMenuItems = EmptyVoidFunction();
     VoidFunction ShowStatus = EmptyVoidFunction();
     VoidFunction PostInit = EmptyVoidFunction();
     VoidFunction BeforeExit = EmptyVoidFunction();
+    VoidFunction PreNewFrame = EmptyVoidFunction();
 
     AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();
 
@@ -2294,10 +2314,14 @@ For reproducible results, even on HighDPI screens, always scale your widgets and
 
 `HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
 
-
 `HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
  which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
  HelloImGui::LoadFontTTF does this by default.
+
+`HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
+ default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
+ Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
+ this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
 @@md
 */
 
@@ -2323,6 +2347,9 @@ namespace HelloImGui
     // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
     // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
     float DpiWindowSizeFactor();
+
+    // returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`
+    float ImGuiDefaultFontGlobalScale();
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //
@@ -2374,21 +2401,3 @@ namespace HelloImGui
     // (Will only lead to accurate values if you call it at each frame)
     float FrameRate(float durationForMean = 0.5f);
 }
-
-/**
-@@md#SDLMain
-
-Warning for SDL apps under iOS and Android:
-
-SDL uses a dirty hack in order to _replace your main() function by its own main() function_,
-which will then call your own main !
-
-Please make sure that the signature of your main() function is *exactly*
-    `int main(int argc, char **argv)`
-and that your main() function returns an int.
-
-@@md
-*/
-#if defined(HELLOIMGUI_USE_SDL_OPENGL3)
-#include <SDL_main.h>
-#endif
