@@ -2036,8 +2036,11 @@ struct DockableWindow
   Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
 * `dockableWindows`: _vector[DockableWindow]_.
   List of the dockable windows, together with their Gui code
-* `resetUserDockLayout`: _bool, default=true_.
-  Reset user layout at application startup
+* `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
+  When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
+  ApplicationStart (always reapply at application start), and Never.
+* `layoutReset`: _bool, default=false_.
+  Reset layout on next frame (layoutReset will be set to false after applying)
 
  _Helpers:_
 
@@ -2046,21 +2049,28 @@ struct DockableWindow
 
 @@md
  */
+
+enum class DockingLayoutCondition
+{
+    FirstUseEver,
+    ApplicationStart,
+    Never
+};
+
 struct DockingParams
 {
     std::vector<DockingSplit> dockingSplits;
 
     std::vector<DockableWindow> dockableWindows;
 
-    bool resetUserDockLayout = true;
-
-    // wasDockLayoutApplied is an internal variable
-    bool wasDockLayoutApplied = false;
+    DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;
+    bool layoutReset = false;
 
     DockableWindow * dockableWindowOfName(const std::string & name);
     void focusDockableWindow(const std::string& windowName);
 };
 } // namespace HelloImGui
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
@@ -2157,11 +2167,17 @@ struct FpsIdling
 * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
   Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
   and available.
+* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
+* `iniFilename`: _string, default = ""_
+  Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.
+  If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
+  Note: if appWindowParams.restorePreviousGeometry is true, then HelloImGui will also store the app window size and position into "iniFilename + _appWindow.ini"
+* `iniFilename_useAppWindowTitle`: _bool, default = true_.
+  Shall the iniFilename be derived from appWindowParams.windowTitle if empty
 * `appShallExit`: _bool, default=false_.
-   Will be set to true by the app when exiting.
+   During execution, set this to true to exit the app.
    _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
    shall not exit._
-* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
 * `emscripten_fps`: _int, default = 0_.
   Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
 @@md
@@ -2175,6 +2191,9 @@ struct RunnerParams
     BackendPointers backendPointers;
     BackendType backendType = BackendType::FirstAvailable;
     FpsIdling fpsIdling;
+
+    std::string iniFilename = "";
+    bool iniFilename_useAppWindowTitle = true;
 
     bool appShallExit = false;
     int emscripten_fps = 0;

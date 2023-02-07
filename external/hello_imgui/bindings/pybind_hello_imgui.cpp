@@ -474,25 +474,31 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    py::enum_<HelloImGui::DockingLayoutCondition>(m, "DockingLayoutCondition", py::arithmetic(), "")
+        .value("first_use_ever", HelloImGui::DockingLayoutCondition::FirstUseEver, "")
+        .value("application_start", HelloImGui::DockingLayoutCondition::ApplicationStart, "")
+        .value("never", HelloImGui::DockingLayoutCondition::Never, "");
+
+
     auto pyClassDockingParams =
         py::class_<HelloImGui::DockingParams>
-            (m, "DockingParams", "*\n@@md#DockingParams\n\n**DockingParams** contains all the settings concerning the docking,\n together _with the Gui functions for the docked windows_.\n\n _Members:_\n\n* `dockingSplits`: _vector[DockingSplit]_.\n  Defines the way docking splits should be applied on the screen in order to create new Dock Spaces\n* `dockableWindows`: _vector[DockableWindow]_.\n  List of the dockable windows, together with their Gui code\n* `resetUserDockLayout`: _bool, default=true_.\n  Reset user layout at application startup\n\n _Helpers:_\n\n * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window\n * `None focusDockableWindow(const std::string& name)`: will focus a dockable window\n\n@@md\n")
+            (m, "DockingParams", "")
         .def(py::init<>([](
-        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), bool resetUserDockLayout = true, bool wasDockLayoutApplied = false)
+        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
         {
             auto r = std::make_unique<DockingParams>();
             r->dockingSplits = dockingSplits;
             r->dockableWindows = dockableWindows;
-            r->resetUserDockLayout = resetUserDockLayout;
-            r->wasDockLayoutApplied = wasDockLayoutApplied;
+            r->layoutCondition = layoutCondition;
+            r->layoutReset = layoutReset;
             return r;
         })
-        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("reset_user_dock_layout") = true, py::arg("was_dock_layout_applied") = false
+        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
         )
         .def_readwrite("docking_splits", &DockingParams::dockingSplits, "")
         .def_readwrite("dockable_windows", &DockingParams::dockableWindows, "")
-        .def_readwrite("reset_user_dock_layout", &DockingParams::resetUserDockLayout, "")
-        .def_readwrite("was_dock_layout_applied", &DockingParams::wasDockLayoutApplied, "wasDockLayoutApplied is an internal variable")
+        .def_readwrite("layout_condition", &DockingParams::layoutCondition, "")
+        .def_readwrite("layout_reset", &DockingParams::layoutReset, "")
         .def("dockable_window_of_name",
             &DockingParams::dockableWindowOfName,
             py::arg("name"),
@@ -541,9 +547,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `appShallExit`: _bool, default=false_.\n   Will be set to True by the app when exiting.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
+            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)\n* `iniFilename`: _string, default = \"\"_\n  Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.\n  If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).\n  Note: if appWindowParams.restorePreviousGeometry is True, then HelloImGui will also store the app window size and position into \"iniFilename + _appWindow.ini\"\n* `iniFilename_useAppWindowTitle`: _bool, default = true_.\n  Shall the iniFilename be derived from appWindowParams.windowTitle if empty\n* `appShallExit`: _bool, default=false_.\n   During execution, set this to True to exit the app.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
         .def(py::init<>([](
-        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool appShallExit = false, int emscripten_fps = 0)
+        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0)
         {
             auto r = std::make_unique<RunnerParams>();
             r->callbacks = callbacks;
@@ -553,11 +559,13 @@ void py_init_module_hello_imgui(py::module& m)
             r->backendPointers = backendPointers;
             r->backendType = backendType;
             r->fpsIdling = fpsIdling;
+            r->iniFilename = iniFilename;
+            r->iniFilename_useAppWindowTitle = iniFilename_useAppWindowTitle;
             r->appShallExit = appShallExit;
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("fps_idling") = FpsIdling(), py::arg("app_shall_exit") = false, py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("fps_idling") = FpsIdling(), py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, "")
@@ -566,6 +574,8 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, "")
         .def_readwrite("backend_type", &RunnerParams::backendType, "")
         .def_readwrite("fps_idling", &RunnerParams::fpsIdling, "")
+        .def_readwrite("ini_filename", &RunnerParams::iniFilename, "")
+        .def_readwrite("ini_filename_use_app_window_title", &RunnerParams::iniFilename_useAppWindowTitle, "")
         .def_readwrite("app_shall_exit", &RunnerParams::appShallExit, "")
         .def_readwrite("emscripten_fps", &RunnerParams::emscripten_fps, "")
         ;

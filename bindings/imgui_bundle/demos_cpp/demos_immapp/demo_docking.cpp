@@ -121,10 +121,13 @@ int main(int, char**)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
 
+    // Note: by setting the window title, we also set the name of the ini files into which the settings for the user
+    // layout will be stored: Docking_demo.ini (imgui settings) and Docking_demo_appWindow.ini (app window size and position)
     runnerParams.appWindowParams.windowTitle = "Docking demo";
+
     runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
-    //runnerParams.appWindowParams.restorePreviousGeometry = true;
+    runnerParams.appWindowParams.restorePreviousGeometry = true;
 
     //
     // Status bar
@@ -189,6 +192,10 @@ int main(int, char**)
     // In this demo, we also demonstrate multiple viewports.
     // you can drag windows outside out the main window in order to put their content into new native windows
     runnerParams.imGuiWindowParams.enableViewports = true;
+
+    // uncomment the next line if you want to always start with this layout. Otherwise, the user layout will be persisted
+    // Otherwise, modifications to the layout applied by the user layout will be persisted
+    // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 
     // Then, add a space named "BottomSpace" whose height is 25% of the app height.
     // This will split the preexisting default dockspace "MainDockSpace" in two parts.

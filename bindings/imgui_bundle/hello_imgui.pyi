@@ -1300,42 +1300,52 @@ class DockableWindow:
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
 
+#*
+#@@md#DockingParams
+#
+#**DockingParams** contains all the settings concerning the docking,
+# together _with the Gui functions for the docked windows_.
+#
+# _Members:_
+#
+#* `dockingSplits`: _vector[DockingSplit]_.
+#  Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
+#* `dockableWindows`: _vector[DockableWindow]_.
+#  List of the dockable windows, together with their Gui code
+#* `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
+#  When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
+#  ApplicationStart (always reapply at application start), and Never.
+#* `layoutReset`: _bool, default=false_.
+#  Reset layout on next frame (layoutReset will be set to False after applying)
+#
+# _Helpers:_
+#
+# * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
+# * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
+#
+#@@md
+#
+
+class DockingLayoutCondition(enum.Enum):
+    # FirstUseEver,    /* original C++ signature */
+    first_use_ever = enum.auto()    # (= 0)
+    # ApplicationStart,    /* original C++ signature */
+    application_start = enum.auto() # (= 1)
+    # Never    /* original C++ signature */
+    # }
+    never = enum.auto()             # (= 2)
+
 class DockingParams:
-    """*
-    @@md#DockingParams
-
-    **DockingParams** contains all the settings concerning the docking,
-     together _with the Gui functions for the docked windows_.
-
-     _Members:_
-
-    * `dockingSplits`: _vector[DockingSplit]_.
-      Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
-    * `dockableWindows`: _vector[DockableWindow]_.
-      List of the dockable windows, together with their Gui code
-    * `resetUserDockLayout`: _bool, default=true_.
-      Reset user layout at application startup
-
-     _Helpers:_
-
-     * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
-     * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
-
-    @@md
-
-    """
     # std::vector<DockingSplit> dockingSplits;    /* original C++ signature */
     docking_splits: List[DockingSplit]
 
     # std::vector<DockableWindow> dockableWindows;    /* original C++ signature */
     dockable_windows: List[DockableWindow]
 
-    # bool resetUserDockLayout = true;    /* original C++ signature */
-    reset_user_dock_layout: bool = True
-
-    # bool wasDockLayoutApplied = false;    /* original C++ signature */
-    # wasDockLayoutApplied is an internal variable
-    was_dock_layout_applied: bool = False
+    # DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;    /* original C++ signature */
+    layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever
+    # bool layoutReset = false;    /* original C++ signature */
+    layout_reset: bool = False
 
     # DockableWindow * dockableWindowOfName(const std::string & name);    /* original C++ signature */
     def dockable_window_of_name(self, name: str) -> DockableWindow:
@@ -1343,16 +1353,17 @@ class DockingParams:
     # void focusDockableWindow(const std::string& windowName);    /* original C++ signature */
     def focus_dockable_window(self, window_name: str) -> None:
         pass
-    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), bool resetUserDockLayout = true, bool wasDockLayoutApplied = false);    /* original C++ signature */
+    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
     def __init__(
         self,
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
-        reset_user_dock_layout: bool = True,
-        was_dock_layout_applied: bool = False
+        layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
+        layout_reset: bool = False
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1472,11 +1483,17 @@ class RunnerParams:
     * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
       Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
       and available.
+    * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
+    * `iniFilename`: _string, default = ""_
+      Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.
+      If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
+      Note: if appWindowParams.restorePreviousGeometry is True, then HelloImGui will also store the app window size and position into "iniFilename + _appWindow.ini"
+    * `iniFilename_useAppWindowTitle`: _bool, default = true_.
+      Shall the iniFilename be derived from appWindowParams.windowTitle if empty
     * `appShallExit`: _bool, default=false_.
-       Will be set to True by the app when exiting.
+       During execution, set this to True to exit the app.
        _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
        shall not exit._
-    * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
     * `emscripten_fps`: _int, default = 0_.
       Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
     @@md
@@ -1497,11 +1514,16 @@ class RunnerParams:
     # FpsIdling fpsIdling;    /* original C++ signature */
     fps_idling: FpsIdling
 
+    # std::string iniFilename = "";    /* original C++ signature */
+    ini_filename: str = ""
+    # bool iniFilename_useAppWindowTitle = true;    /* original C++ signature */
+    ini_filename_use_app_window_title: bool = True
+
     # bool appShallExit = false;    /* original C++ signature */
     app_shall_exit: bool = False
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1511,6 +1533,8 @@ class RunnerParams:
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
         fps_idling: FpsIdling = FpsIdling(),
+        ini_filename: str = "",
+        ini_filename_use_app_window_title: bool = True,
         app_shall_exit: bool = False,
         emscripten_fps: int = 0
         ) -> None:

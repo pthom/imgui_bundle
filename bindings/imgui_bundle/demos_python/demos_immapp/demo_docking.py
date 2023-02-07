@@ -106,7 +106,10 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
 
+    # Note: by setting the window title, we also set the name of the ini files into which the settings for the user
+    # layout will be stored: Docking_demo.ini (imgui settings) and Docking_demo_appWindow.ini (app window size and position)
     runner_params.app_window_params.window_title = "Docking demo"
+
     runner_params.imgui_window_params.menu_app_title = "Docking App"
     runner_params.app_window_params.window_geometry.size = (1000, 800)
     runner_params.app_window_params.restore_previous_geometry = True
@@ -174,6 +177,10 @@ def main():
     # In this demo, we also demonstrate multiple viewports.
     # you can drag windows outside out the main window in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
+
+    # uncomment the next line if you want to always start with this layout.
+    # Otherwise, modifications to the layout applied by the user layout will be persisted
+    # runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
 
     # Then, add a space named "BottomSpace" whose height is 25% of the app height.
     # This will split the preexisting default dockspace "MainDockSpace" in two parts.
