@@ -1462,9 +1462,12 @@ Members:
    _Note: on a mobile device, the application will always be full screen._
 * `restorePreviousGeometry`: _bool, default=false_.
   If true, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
-* `borderless`: _bool, default = false_.
-* `resizable`: _bool, default = false_.
-@@md
+* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at
+creation.
+* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at
+creation.
+* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
+can show/hide the window with this). Full screen windows cannot be hidden.@@md
 **/
 struct AppWindowParams
 {
@@ -1477,6 +1480,7 @@ struct AppWindowParams
 
     bool borderless = false;
     bool resizable = true;
+    bool hidden = false;
 };
 
 }  // namespace HelloImGui

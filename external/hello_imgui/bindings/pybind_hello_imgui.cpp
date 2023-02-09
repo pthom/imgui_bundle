@@ -205,9 +205,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_.\n* `resizable`: _bool, default = false_.\n@@md\n*")
+            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you\ncan show/hide the window with this). Full screen windows cannot be hidden.@@md\n*")
         .def(py::init<>([](
-        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true)
+        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false)
         {
             auto r = std::make_unique<AppWindowParams>();
             r->windowTitle = windowTitle;
@@ -215,15 +215,17 @@ void py_init_module_hello_imgui(py::module& m)
             r->restorePreviousGeometry = restorePreviousGeometry;
             r->borderless = borderless;
             r->resizable = resizable;
+            r->hidden = hidden;
             return r;
         })
-        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true
+        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("hidden") = false
         )
         .def_readwrite("window_title", &AppWindowParams::windowTitle, "")
         .def_readwrite("window_geometry", &AppWindowParams::windowGeometry, "")
         .def_readwrite("restore_previous_geometry", &AppWindowParams::restorePreviousGeometry, "if True, then save & restore from last run")
         .def_readwrite("borderless", &AppWindowParams::borderless, "")
         .def_readwrite("resizable", &AppWindowParams::resizable, "")
+        .def_readwrite("hidden", &AppWindowParams::hidden, "")
         ;
 
 

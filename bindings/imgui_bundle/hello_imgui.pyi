@@ -555,9 +555,12 @@ class AppWindowParams:
        _Note: on a mobile device, the application will always be full screen._
     * `restorePreviousGeometry`: _bool, default=false_.
       If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
-    * `borderless`: _bool, default = false_.
-    * `resizable`: _bool, default = false_.
-    @@md
+    * `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at
+    creation.
+    * `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at
+    creation.
+    * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
+    can show/hide the window with this). Full screen windows cannot be hidden.@@md
     *
     """
     # std::string windowTitle;    /* original C++ signature */
@@ -574,14 +577,17 @@ class AppWindowParams:
     borderless: bool = False
     # bool resizable = true;    /* original C++ signature */
     resizable: bool = True
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true);    /* original C++ signature */
+    # bool hidden = false;    /* original C++ signature */
+    hidden: bool = False
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
         window_geometry: WindowGeometry = WindowGeometry(),
         restore_previous_geometry: bool = False,
         borderless: bool = False,
-        resizable: bool = True
+        resizable: bool = True,
+        hidden: bool = False
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass

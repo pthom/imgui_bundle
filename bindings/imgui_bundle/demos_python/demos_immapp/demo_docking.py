@@ -10,6 +10,7 @@
 
 import os
 from enum import Enum
+import time
 
 from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2, immapp
 from imgui_bundle.demos_python import demo_utils
@@ -27,6 +28,21 @@ class AppState:
         Launched = 2
 
     rocket_state: RocketState = RocketState.Init
+
+
+@immapp.static(last_hide_time = 1)
+def demo_hide_window():
+    static = demo_hide_window
+    imgui.separator()
+    imgui.text_wrapped("By clicking the button below, you can hide the window for 3 seconds.")
+    if imgui.button("Hide"):
+        static.last_hide_time = time.time()
+        hello_imgui.get_runner_params().app_window_params.hidden = True
+    if static.last_hide_time > 0.:
+        now = time.time()
+        if now - static.last_hide_time > 3:
+            static.last_hide_time = -1
+            hello_imgui.get_runner_params().app_window_params.hidden = False
 
 
 # CommandGui: the widgets on the left panel
@@ -65,6 +81,8 @@ def command_gui(state: AppState):
         if imgui.button("Reset Rocket"):
             state.rocket_state = AppState.RocketState.Init
             state.rocket_progress = 0.0
+
+    demo_hide_window()
 
     # Note, you can also show the tweak theme widgets via:
     # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
