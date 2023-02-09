@@ -15,6 +15,7 @@ It demonstrates:
 #include "imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
+#include "immapp/clock.h"
 #include "demo_utils/api_demos.h"
 
 
@@ -30,6 +31,29 @@ struct AppState {
     };
     RocketState rocket_state = RocketState::Init;
 };
+
+
+void DemoHideWindow()
+{
+    ImGui::Separator();
+    ImGui::TextWrapped("By clicking the button below, you can hide the window for 3 seconds.");
+
+    static double lastHideTime = -1.;
+    if (ImGui::Button("Hide"))
+    {
+        lastHideTime = ImmApp::ClockSeconds();
+        HelloImGui::GetRunnerParams()->appWindowParams.hidden = true;
+    }
+    if (lastHideTime > 0.)
+    {
+        double now = ImmApp::ClockSeconds();
+        if (now - lastHideTime > 3.)
+        {
+            lastHideTime = -1.;
+            HelloImGui::GetRunnerParams()->appWindowParams.hidden = false;
+        }
+    }
+}
 
 
 void CommandGui(AppState& state)
@@ -82,6 +106,8 @@ void CommandGui(AppState& state)
             state.rocket_progress = 0.f;
         }
     }
+
+    DemoHideWindow();
 
     // Note, you can also show the tweak theme widgets via:
     // hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
@@ -248,6 +274,7 @@ int main(int, char**)
     //###############################################################################################
     ImmApp::AddOnsParams addonsParams;
     addonsParams.withMarkdown = true;
+
     ImmApp::Run(runnerParams, addonsParams);
 
     return 0;
