@@ -2352,7 +2352,7 @@ void py_init_module_implot(py::module& m)
 
               PlotHeatmap_adapt_c_buffers(label_id, values, scale_min, scale_max, label_fmt, bounds_min, bounds_max, flags);
           },
-          py::arg("label_id"), py::arg("values"), py::arg("scale_min")= 0 , py::arg("scale_max") = 0, py::arg("label_fmt")="%.1f", py::arg("bounds_min")=ImPlotPoint(0,0), py::arg("bounds_max")=ImPlotPoint(1,1), py::arg("flags")=0
+          py::arg("label_id"), py::arg("values"), py::arg("scale_min")= 0, py::arg("scale_max") = 0, py::arg("label_fmt")="%.1f", py::arg("bounds_min")=ImPlotPoint(0,0), py::arg("bounds_max")=ImPlotPoint(1,1), py::arg("flags")=0
     );
 
 

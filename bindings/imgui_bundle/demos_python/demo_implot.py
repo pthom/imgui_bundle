@@ -122,7 +122,7 @@ def demo_heatmap():
         implot.end_plot()
     imgui.end_group()
     imgui.same_line()
-    implot.colormap_scale("##heatmap_scale", data.values.min(), data.values.max(), imgui.ImVec2(60,-1), "%g", 0, cmap)
+    implot.colormap_scale("##heatmap_scale", data.values.min(), data.values.max(), imgui.ImVec2(60, -1), "%g", 0, cmap)
     implot.pop_colormap()
 
 
