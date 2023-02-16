@@ -1569,6 +1569,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("dock_order", &ImGuiWindowSettings::DockOrder, "Order of the last time the window was visible within its DockNode. This is used to reorder windows that are reappearing on the same frame. Same value between windows that were active and windows that were none are possible.")
         .def_readwrite("collapsed", &ImGuiWindowSettings::Collapsed, "")
         .def_readwrite("want_apply", &ImGuiWindowSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
+        .def_readwrite("want_delete", &ImGuiWindowSettings::WantDelete, "Set to invalidate/delete the settings entry")
         .def(py::init<>())
         .def("get_name",
             &ImGuiWindowSettings::GetName,
@@ -1633,6 +1634,25 @@ void py_init_module_imgui_internal(py::module& m)
     auto pyClassImGuiMetricsConfig =
         py::class_<ImGuiMetricsConfig>
             (m, "MetricsConfig", "")
+        .def(py::init<>([](
+        bool ShowDebugLog = false, bool ShowStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowAtlasTintedWithTextColor = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1)
+        {
+            auto r = std::make_unique<ImGuiMetricsConfig>();
+            r->ShowDebugLog = ShowDebugLog;
+            r->ShowStackTool = ShowStackTool;
+            r->ShowWindowsRects = ShowWindowsRects;
+            r->ShowWindowsBeginOrder = ShowWindowsBeginOrder;
+            r->ShowTablesRects = ShowTablesRects;
+            r->ShowDrawCmdMesh = ShowDrawCmdMesh;
+            r->ShowDrawCmdBoundingBoxes = ShowDrawCmdBoundingBoxes;
+            r->ShowAtlasTintedWithTextColor = ShowAtlasTintedWithTextColor;
+            r->ShowDockingNodes = ShowDockingNodes;
+            r->ShowWindowsRectsType = ShowWindowsRectsType;
+            r->ShowTablesRectsType = ShowTablesRectsType;
+            return r;
+        })
+        , py::arg("show_debug_log") = false, py::arg("show_stack_tool") = false, py::arg("show_windows_rects") = false, py::arg("show_windows_begin_order") = false, py::arg("show_tables_rects") = false, py::arg("show_draw_cmd_mesh") = true, py::arg("show_draw_cmd_bounding_boxes") = true, py::arg("show_atlas_tinted_with_text_color") = false, py::arg("show_docking_nodes") = false, py::arg("show_windows_rects_type") = -1, py::arg("show_tables_rects_type") = -1
+        )
         .def_readwrite("show_debug_log", &ImGuiMetricsConfig::ShowDebugLog, "")
         .def_readwrite("show_stack_tool", &ImGuiMetricsConfig::ShowStackTool, "")
         .def_readwrite("show_windows_rects", &ImGuiMetricsConfig::ShowWindowsRects, "")
@@ -1640,10 +1660,10 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("show_tables_rects", &ImGuiMetricsConfig::ShowTablesRects, "")
         .def_readwrite("show_draw_cmd_mesh", &ImGuiMetricsConfig::ShowDrawCmdMesh, "")
         .def_readwrite("show_draw_cmd_bounding_boxes", &ImGuiMetricsConfig::ShowDrawCmdBoundingBoxes, "")
+        .def_readwrite("show_atlas_tinted_with_text_color", &ImGuiMetricsConfig::ShowAtlasTintedWithTextColor, "")
         .def_readwrite("show_docking_nodes", &ImGuiMetricsConfig::ShowDockingNodes, "")
         .def_readwrite("show_windows_rects_type", &ImGuiMetricsConfig::ShowWindowsRectsType, "")
         .def_readwrite("show_tables_rects_type", &ImGuiMetricsConfig::ShowTablesRectsType, "")
-        .def(py::init<>())
         ;
 
 
@@ -1854,9 +1874,11 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("input_text_password_font", &ImGuiContext::InputTextPasswordFont, "")
         .def_readwrite("temp_input_id", &ImGuiContext::TempInputId, "Temporary text input when CTRL+clicking on a slider, etc.")
         .def_readwrite("color_edit_options", &ImGuiContext::ColorEditOptions, "Store user options for color edit widgets")
-        .def_readwrite("color_edit_last_hue", &ImGuiContext::ColorEditLastHue, "Backup of last Hue associated to LastColor, so we can restore Hue in lossy RGB<>HSV round trips")
-        .def_readwrite("color_edit_last_sat", &ImGuiContext::ColorEditLastSat, "Backup of last Saturation associated to LastColor, so we can restore Saturation in lossy RGB<>HSV round trips")
-        .def_readwrite("color_edit_last_color", &ImGuiContext::ColorEditLastColor, "RGB value with alpha set to 0.")
+        .def_readwrite("color_edit_current_id", &ImGuiContext::ColorEditCurrentID, "Set temporarily while inside of the parent-most ColorEdit4/ColorPicker4 (because they call each others).")
+        .def_readwrite("color_edit_saved_id", &ImGuiContext::ColorEditSavedID, "ID we are saving/restoring HS for")
+        .def_readwrite("color_edit_saved_hue", &ImGuiContext::ColorEditSavedHue, "Backup of last Hue associated to LastColor, so we can restore Hue in lossy RGB<>HSV round trips")
+        .def_readwrite("color_edit_saved_sat", &ImGuiContext::ColorEditSavedSat, "Backup of last Saturation associated to LastColor, so we can restore Saturation in lossy RGB<>HSV round trips")
+        .def_readwrite("color_edit_saved_color", &ImGuiContext::ColorEditSavedColor, "RGB value with alpha set to 0.")
         .def_readwrite("color_picker_ref", &ImGuiContext::ColorPickerRef, "Initial/reference color at the time of opening the color picker.")
         .def_readwrite("combo_preview_data", &ImGuiContext::ComboPreviewData, "")
         .def_readwrite("slider_grab_click_offset", &ImGuiContext::SliderGrabClickOffset, "")
@@ -2162,7 +2184,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("requested_width", &ImGuiTabItem::RequestedWidth, "Width optionally requested by caller, -1.0 is unused")
         .def_readwrite("name_offset", &ImGuiTabItem::NameOffset, "When Window==None, offset to name within parent ImGuiTabBar::TabsNames")
         .def_readwrite("begin_order", &ImGuiTabItem::BeginOrder, "BeginTabItem() order, used to re-order tabs after toggling ImGuiTabBarFlags_Reorderable")
-        .def_readwrite("index_during_layout", &ImGuiTabItem::IndexDuringLayout, "Index only used during TabBarLayout()")
+        .def_readwrite("index_during_layout", &ImGuiTabItem::IndexDuringLayout, "Index only used during TabBarLayout(). Tabs gets reordered so 'Tabs[n].IndexDuringLayout == n' but may mismatch during additions.")
         .def_readwrite("want_close", &ImGuiTabItem::WantClose, "Marked as closed by SetTabItemClosed()")
         .def(py::init<>())
         ;
@@ -2202,15 +2224,6 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("backup_cursor_pos", &ImGuiTabBar::BackupCursorPos, "")
         .def_readwrite("tabs_names", &ImGuiTabBar::TabsNames, "For non-docking tab bar we re-append names in a contiguous buffer.")
         .def(py::init<>())
-        .def("get_tab_order",
-            &ImGuiTabBar::GetTabOrder,
-            py::arg("tab"),
-            "(private API)")
-        .def("get_tab_name",
-            &ImGuiTabBar::GetTabName,
-            py::arg("tab"),
-            "(private API)",
-            pybind11::return_value_policy::reference)
         ;
 
 
@@ -2279,7 +2292,8 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiTableInstanceData =
         py::class_<ImGuiTableInstanceData>
-            (m, "TableInstanceData", "Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs, does that needs they could be moved to ImGuiTableTempData ?)")
+            (m, "TableInstanceData", "Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs. Does that means they could be moved to ImGuiTableTempData?)")
+        .def_readwrite("table_instance_id", &ImGuiTableInstanceData::TableInstanceID, "")
         .def_readwrite("last_outer_height", &ImGuiTableInstanceData::LastOuterHeight, "Outer height from last frame")
         .def_readwrite("last_first_row_height", &ImGuiTableInstanceData::LastFirstRowHeight, "Height of first row from last frame (FIXME: this is used as \"header height\" and may be reworked)")
         .def_readwrite("last_frozen_height", &ImGuiTableInstanceData::LastFrozenHeight, "Height of frozen section from last frame")
@@ -2611,21 +2625,6 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("clear_ini_settings",
         ImGui::ClearIniSettings);
 
-    m.def("create_new_window_settings",
-        ImGui::CreateNewWindowSettings,
-        py::arg("name"),
-        pybind11::return_value_policy::reference);
-
-    m.def("find_window_settings",
-        ImGui::FindWindowSettings,
-        py::arg("id_"),
-        pybind11::return_value_policy::reference);
-
-    m.def("find_or_create_window_settings",
-        ImGui::FindOrCreateWindowSettings,
-        py::arg("name"),
-        pybind11::return_value_policy::reference);
-
     m.def("add_settings_handler",
         ImGui::AddSettingsHandler, py::arg("handler"));
 
@@ -2636,6 +2635,24 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::FindSettingsHandler,
         py::arg("type_name"),
         pybind11::return_value_policy::reference);
+
+    m.def("create_new_window_settings",
+        ImGui::CreateNewWindowSettings,
+        py::arg("name"),
+        pybind11::return_value_policy::reference);
+
+    m.def("find_window_settings_by_id",
+        ImGui::FindWindowSettingsByID,
+        py::arg("id_"),
+        pybind11::return_value_policy::reference);
+
+    m.def("find_window_settings_by_window",
+        ImGui::FindWindowSettingsByWindow,
+        py::arg("window"),
+        pybind11::return_value_policy::reference);
+
+    m.def("clear_window_settings",
+        ImGui::ClearWindowSettings, py::arg("name"));
 
     m.def("localize_register_entries",
         ImGui::LocalizeRegisterEntries,
@@ -2715,7 +2732,10 @@ void py_init_module_imgui_internal(py::module& m)
         "Push given value as-is at the top of the ID stack (whereas PushID combines old and new hashes)");
 
     m.def("get_id_with_seed",
-        ImGui::GetIDWithSeed, py::arg("str_id_begin"), py::arg("str_id_end"), py::arg("seed"));
+        py::overload_cast<const char *, const char *, ImGuiID>(ImGui::GetIDWithSeed), py::arg("str_id_begin"), py::arg("str_id_end"), py::arg("seed"));
+
+    m.def("get_id_with_seed",
+        py::overload_cast<int, ImGuiID>(ImGui::GetIDWithSeed), py::arg("n"), py::arg("seed"));
 
     m.def("item_size",
         py::overload_cast<const ImVec2 &, float>(ImGui::ItemSize),
@@ -3058,6 +3078,12 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("dock_context_queue_undock_node",
         ImGui::DockContextQueueUndockNode, py::arg("ctx"), py::arg("node"));
 
+    m.def("dock_context_process_undock_window",
+        ImGui::DockContextProcessUndockWindow, py::arg("ctx"), py::arg("window"), py::arg("clear_persistent_docking_ref") = true);
+
+    m.def("dock_context_process_undock_node",
+        ImGui::DockContextProcessUndockNode, py::arg("ctx"), py::arg("node"));
+
     m.def("dock_context_calc_drop_pos_for_docking",
         ImGui::DockContextCalcDropPosForDocking, py::arg("target"), py::arg("target_node"), py::arg("payload_window"), py::arg("payload_node"), py::arg("split_dir"), py::arg("split_outer"), py::arg("out_pos"));
 
@@ -3305,6 +3331,11 @@ void py_init_module_imgui_internal(py::module& m)
         "(private API)",
         pybind11::return_value_policy::reference);
 
+    m.def("table_get_instance_id",
+        py::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceID),
+        py::arg("table"), py::arg("instance_no"),
+        "(private API)");
+
     m.def("table_sort_specs_sanitize",
         py::overload_cast<ImGuiTable *>(ImGui::TableSortSpecsSanitize), py::arg("table"));
 
@@ -3341,7 +3372,7 @@ void py_init_module_imgui_internal(py::module& m)
         pybind11::return_value_policy::reference);
 
     m.def("table_get_column_resize_id",
-        py::overload_cast<const ImGuiTable *, int, int>(ImGui::TableGetColumnResizeID), py::arg("table"), py::arg("column_n"), py::arg("instance_no") = 0);
+        py::overload_cast<ImGuiTable *, int, int>(ImGui::TableGetColumnResizeID), py::arg("table"), py::arg("column_n"), py::arg("instance_no") = 0);
 
     m.def("table_get_max_column_width",
         py::overload_cast<const ImGuiTable *, int>(ImGui::TableGetMaxColumnWidth), py::arg("table"), py::arg("column_n"));
@@ -3391,6 +3422,11 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("id_"),
         pybind11::return_value_policy::reference);
 
+    m.def("get_current_tab_bar",
+        ImGui::GetCurrentTabBar,
+        " Tab Bars\n(private API)",
+        pybind11::return_value_policy::reference);
+
     m.def("begin_tab_bar_ex",
         ImGui::BeginTabBarEx, py::arg("tab_bar"), py::arg("bb"), py::arg("flags"), py::arg("dock_node"));
 
@@ -3399,9 +3435,29 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("tab_bar"), py::arg("tab_id"),
         pybind11::return_value_policy::reference);
 
+    m.def("tab_bar_find_tab_by_order",
+        ImGui::TabBarFindTabByOrder,
+        py::arg("tab_bar"), py::arg("order"),
+        pybind11::return_value_policy::reference);
+
     m.def("tab_bar_find_most_recently_selected_tab_for_active_window",
         ImGui::TabBarFindMostRecentlySelectedTabForActiveWindow,
         py::arg("tab_bar"),
+        pybind11::return_value_policy::reference);
+
+    m.def("tab_bar_get_current_tab",
+        ImGui::TabBarGetCurrentTab,
+        py::arg("tab_bar"),
+        pybind11::return_value_policy::reference);
+
+    m.def("tab_bar_get_tab_order",
+        ImGui::TabBarGetTabOrder,
+        py::arg("tab_bar"), py::arg("tab"),
+        "(private API)");
+
+    m.def("tab_bar_get_tab_name",
+        ImGui::TabBarGetTabName,
+        py::arg("tab_bar"), py::arg("tab"),
         pybind11::return_value_policy::reference);
 
     m.def("tab_bar_add_tab",
@@ -3412,6 +3468,9 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("tab_bar_close_tab",
         ImGui::TabBarCloseTab, py::arg("tab_bar"), py::arg("tab"));
+
+    m.def("tab_bar_queue_focus",
+        ImGui::TabBarQueueFocus, py::arg("tab_bar"), py::arg("tab"));
 
     m.def("tab_bar_queue_reorder",
         ImGui::TabBarQueueReorder, py::arg("tab_bar"), py::arg("tab"), py::arg("offset"));
@@ -3532,10 +3591,13 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::ArrowButtonEx, py::arg("str_id"), py::arg("dir"), py::arg("size_arg"), py::arg("flags") = 0);
 
     m.def("image_button_ex",
-        ImGui::ImageButtonEx, py::arg("id_"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("bg_col"), py::arg("tint_col"));
+        ImGui::ImageButtonEx, py::arg("id_"), py::arg("texture_id"), py::arg("size"), py::arg("uv0"), py::arg("uv1"), py::arg("bg_col"), py::arg("tint_col"), py::arg("flags") = 0);
 
     m.def("separator_ex",
         ImGui::SeparatorEx, py::arg("flags"));
+
+    m.def("separator_text_ex",
+        ImGui::SeparatorTextEx, py::arg("id_"), py::arg("label"), py::arg("label_end"), py::arg("extra_width"));
 
     m.def("checkbox_flags",
         py::overload_cast<const char *, ImS64 *, ImS64>(ImGui::CheckboxFlags), py::arg("label"), py::arg("flags"), py::arg("flags_value"));

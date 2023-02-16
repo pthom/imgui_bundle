@@ -856,6 +856,11 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("fmt"),
         "shortcut for Bullet()+Text()");
 
+    m.def("separator_text",
+        ImGui::SeparatorText,
+        py::arg("label"),
+        "currently: formatted text with an horizontal line");
+
     m.def("button",
         ImGui::Button,
         py::arg("label"), py::arg("size") = ImVec2(0, 0),
@@ -3008,6 +3013,9 @@ void py_init_module_imgui_main(py::module& m)
         .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
         .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
         .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
+        .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float  SeparatorTextBorderSize")
+        .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
+        .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
         .value("count", ImGuiStyleVar_COUNT, "");
 
 
@@ -3132,6 +3140,9 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_readwrite("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_readwrite("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
+        .def_readwrite("separator_text_border_size", &ImGuiStyle::SeparatorTextBorderSize, "Thickkness of border in SeparatorText()")
+        .def_readwrite("separator_text_align", &ImGuiStyle::SeparatorTextAlign, "Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).")
+        .def_readwrite("separator_text_padding", &ImGuiStyle::SeparatorTextPadding, "Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.")
         .def_readwrite("display_window_padding", &ImGuiStyle::DisplayWindowPadding, "Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.")
         .def_readwrite("display_safe_area_padding", &ImGuiStyle::DisplaySafeAreaPadding, "If you cannot see the edges of your screen (e.g. on a TV) increase the safe area padding. Apply to popups/tooltips as well regular windows. NB: Prefer configuring your TV sets correctly!")
         .def_readwrite("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale, "Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.")
@@ -3242,8 +3253,8 @@ void py_init_module_imgui_main(py::module& m)
             "Queue a mouse button change")
         .def("add_mouse_wheel_event",
             &ImGuiIO::AddMouseWheelEvent,
-            py::arg("wh_x"), py::arg("wh_y"),
-            "Queue a mouse wheel update")
+            py::arg("wheel_x"), py::arg("wheel_y"),
+            "Queue a mouse wheel update. wheel_y<0: scroll down, wheel_y>0: scroll up, wheel_x<0: scroll right, wheel_x>0: scroll left.")
         .def("add_mouse_viewport_event",
             &ImGuiIO::AddMouseViewportEvent,
             py::arg("id_"),
@@ -3299,8 +3310,8 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDown, base);
             }, [](ImGuiIO& self) {},
             "Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.")
-        .def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text.")
-        .def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")
+        .def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold SHIFT to turn vertical scroll into horizontal scroll.")
+        .def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. >0 scrolls Left, <0 scrolls Right. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")
         .def_readwrite("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")
         .def_readwrite("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Control")
         .def_readwrite("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")
