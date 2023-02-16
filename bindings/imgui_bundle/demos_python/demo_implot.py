@@ -89,13 +89,14 @@ def demo_mixed_plot():
 
 
 def demo_heatmap():
-    imgui.text("Hello, heatmap!")
-    x = np.linspace(-4,4, 401)
-    xx = np.outer(x,x)
+    x = np.linspace(-4, 4, 401)
+    xx = np.outer(x, x)
     yy = np.sinc(xx)
+
     rows, cols = yy.shape
     n_ticks = 5
-    x_ticks = y_ticks = [str(x) for x in np.linspace(-4,4,n_ticks)]
+    x_ticks = [str(x) for x in np.linspace(-4, 4, n_ticks)]
+    y_ticks = x_ticks
 
     axis_flags = implot.AxisFlags_.lock | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_tick_marks
     cmap = implot.Colormap_.viridis
