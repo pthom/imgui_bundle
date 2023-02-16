@@ -2300,9 +2300,9 @@ void py_init_module_implot(py::module& m)
 
     // PlotHeatmap, cf https://github.com/pthom/imgui_bundle/issues/81
     m.def("plot_heatmap",
-          [](const char * label_id, const py::array & values, int rows, int cols, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f", const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1), ImPlotHeatmapFlags flags = 0)
+          [](const char * label_id, const py::array & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f", const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1), ImPlotHeatmapFlags flags = 0)
           {
-              auto PlotHeatmap_adapt_c_buffers = [](const char * label_id, const py::array & values, int rows, int cols, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f",  const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1),  ImPlotHeatmapFlags flags = 0)
+              auto PlotHeatmap_adapt_c_buffers = [](const char * label_id, const py::array & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f",  const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1),  ImPlotHeatmapFlags flags = 0)
               {
                   // convert py::array to C standard buffer (const)
                   const void * values_from_pyarray = values.data();
@@ -2314,6 +2314,11 @@ void py_init_module_implot(py::module& m)
                   using np_uint_l = uint64_t;
                   using np_int_l = int64_t;
 #endif
+                  if (values.ndim() != 2)
+                      throw std::runtime_error("plot_heatmap expects a numpy bidimensional array ");
+                  int rows = static_cast<int>(values.shape()[0]);
+                  int cols = static_cast<int>(values.shape()[1]);
+
                   // call the correct template version by casting
                   char values_type = values.dtype().char_();
                   if (values_type == 'B')
@@ -2345,9 +2350,9 @@ void py_init_module_implot(py::module& m)
                       throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
               };
 
-              PlotHeatmap_adapt_c_buffers(label_id, values,  rows, cols, scale_min, scale_max, label_fmt, bounds_min, bounds_max, flags);
+              PlotHeatmap_adapt_c_buffers(label_id, values, scale_min, scale_max, label_fmt, bounds_min, bounds_max, flags);
           },
-          py::arg("label_id"), py::arg("values"), py::arg("rows"), py::arg("cols"), py::arg("scale_min")= 0 , py::arg("scale_max") = 0, py::arg("label_fmt")="%.1f", py::arg("bounds_min")=ImPlotPoint(0,0), py::arg("bounds_max")=ImPlotPoint(1,1), py::arg("flags")=0
+          py::arg("label_id"), py::arg("values"), py::arg("scale_min")= 0 , py::arg("scale_max") = 0, py::arg("label_fmt")="%.1f", py::arg("bounds_min")=ImPlotPoint(0,0), py::arg("bounds_max")=ImPlotPoint(1,1), py::arg("flags")=0
     );
 
 

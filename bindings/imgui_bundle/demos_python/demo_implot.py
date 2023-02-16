@@ -93,7 +93,6 @@ def demo_heatmap():
     xx = np.outer(x, x)
     yy = np.sinc(xx)
 
-    rows, cols = yy.shape
     n_ticks = 5
     x_ticks = [str(x) for x in np.linspace(-4, 4, n_ticks)]
     y_ticks = x_ticks
@@ -108,7 +107,7 @@ def demo_heatmap():
         implot.setup_axes(None,None, axis_flags, axis_flags)
         implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 1,n_ticks, x_ticks, False)
         implot.setup_axis_ticks(implot.ImAxis_.y1, 0, 1, n_ticks, y_ticks, False)
-        implot.plot_heatmap("##heatmap", yy, rows, cols, yy.min(), yy.max(), None, [0,1], [1,0], 0)
+        implot.plot_heatmap("##heatmap", yy, yy.min(), yy.max(), None, [0,1], [1,0], 0)
         implot.end_plot()
     imgui.end_group()
     imgui.same_line()
