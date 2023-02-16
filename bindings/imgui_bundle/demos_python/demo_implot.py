@@ -95,13 +95,15 @@ def demo_heatmap():
     yy = np.sinc(xx)
     rows, cols = yy.shape
     n_ticks = 5
-    x_ticks = y_ticks =[str(x) for x in np.linspace(-4,4,n_ticks)]
+    x_ticks = y_ticks = [str(x) for x in np.linspace(-4,4,n_ticks)]
 
     axis_flags = implot.AxisFlags_.lock | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_tick_marks
     cmap = implot.Colormap_.viridis
     implot.push_colormap(cmap)
     imgui.begin_group()
-    if implot.begin_plot("Sinc Function",[imgui.get_content_region_avail().x - 70, -1], implot.Flags_.no_legend | implot.Flags_.no_mouse_text):
+    plot_size = (imgui.get_content_region_avail().x - immapp.em_size() * 5, -1)
+    plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
+    if implot.begin_plot("Sinc Function", plot_size, plot_flags):
         implot.setup_axes(None,None, axis_flags, axis_flags)
         implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 1,n_ticks, x_ticks, False)
         implot.setup_axis_ticks(implot.ImAxis_.y1, 0, 1, n_ticks, y_ticks, False)
