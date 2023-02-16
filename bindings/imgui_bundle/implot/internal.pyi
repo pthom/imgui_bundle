@@ -62,7 +62,6 @@ time_t = int
 
 
 
-
 # Support for pre-1.84 versions. ImPool's GetSize() -> GetBufSize()
 
 #-----------------------------------------------------------------------------
