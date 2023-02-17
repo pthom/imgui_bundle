@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+from typing import List
 import math
 import numpy as np
 from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
@@ -88,6 +89,43 @@ def demo_mixed_plot():
         implot.end_plot()
 
 
+class MyHeatmapData:
+    values: np.ndarray
+    x_ticks: List[str]
+    y_ticks: List[str]
+    n_ticks: int
+
+    def __init__(self):
+        x = np.linspace(-4, 4, 401)
+        xx = np.outer(x, x)
+        self.values = np.sinc(xx)
+        self.n_ticks = 5
+        self.x_ticks = [str(x) for x in np.linspace(-4, 4, self.n_ticks)]
+        self.y_ticks = self.x_ticks
+
+
+@immapp.static(data=MyHeatmapData())
+def demo_heatmap():
+    data = demo_heatmap.data
+
+    axis_flags = implot.AxisFlags_.lock | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_tick_marks
+    cmap = implot.Colormap_.viridis
+    implot.push_colormap(cmap)
+    imgui.begin_group()
+    plot_size = (imgui.get_content_region_avail().x - immapp.em_size() * 5, -1)
+    plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
+    if implot.begin_plot("Sinc Function", plot_size, plot_flags):
+        implot.setup_axes(None,None, axis_flags, axis_flags)
+        implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False)
+        implot.setup_axis_ticks(implot.ImAxis_.y1, 0, 1, data.n_ticks, data.y_ticks, False)
+        implot.plot_heatmap("##heatmap", data.values, data.values.min(), data.values.max(), None, [0,1], [1,0], 0)
+        implot.end_plot()
+    imgui.end_group()
+    imgui.same_line()
+    implot.colormap_scale("##heatmap_scale", data.values.min(), data.values.max(), imgui.ImVec2(60, -1), "%g", 0, cmap)
+    implot.pop_colormap()
+
+
 def demo_gui():
     imgui_md.render_unindented(
         """
@@ -106,6 +144,8 @@ def demo_gui():
         demo_drag_rects()
     if imgui.collapsing_header("Mixed plot", imgui.TreeNodeFlags_.default_open):
         demo_mixed_plot()
+    if imgui.collapsing_header("Heatmap"):
+        demo_heatmap()
 
 
 def main():
