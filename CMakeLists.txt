@@ -76,7 +76,7 @@ endif()
 # IMGUI_BUNDLE_BUILD_DOC: Build doc
 # ---------------------------------
 # (reserved for this library authors)
-option(IMGUI_BUNDLE_BUILD_DOC OFF)
+option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
 
 ###############################################################################
