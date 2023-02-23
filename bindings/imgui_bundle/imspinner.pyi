@@ -423,7 +423,7 @@ def spinner_ing_yang(
     color_i: ImColor = ImColor(0xffffffff),
     color_y: ImColor = ImColor(0xffffffff),
     speed: float = 2.8,
-    angle: float = IM_PI  0.7
+    angle: float = IM_PI * 0.7
     ) -> None:
     pass
 
