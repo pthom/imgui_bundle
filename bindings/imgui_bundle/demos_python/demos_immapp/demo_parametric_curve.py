@@ -6,7 +6,9 @@ from imgui_bundle import imgui, immapp, implot, imgui_knobs, hello_imgui
 
 class Curve:
     "Just a parametric curve to demonstrate how to edit its parameters a, b, & c"
-    a = 2.; b = 60.; c = 2.
+    a = 2.0
+    b = 60.0
+    c = 2.0
 
     def get_xy(self):
         """Return x and y arrays that we will draw"""
@@ -29,14 +31,14 @@ def gui():
     implot.end_plot()
 
     # Edit the curve parameters: no callback is needed
-    _, curve.a = imgui_knobs.knob("a", curve.a, 0.5, 5.)
+    _, curve.a = imgui_knobs.knob("a", curve.a, 0.5, 5.0)
     imgui.same_line()
     _, curve.b = imgui_knobs.knob("b", curve.b, 55, 65)
     imgui.same_line()
-    _, curve.c = imgui_knobs.knob("c", curve.c, 0.5, 5.)
+    _, curve.c = imgui_knobs.knob("c", curve.c, 0.5, 5.0)
 
     #                             # As an illustration of the Immediate Gui paradigm,
-    if imgui.button("Random"):    # this draws a button
+    if imgui.button("Random"):  # this draws a button
         #                         # and you handle its action immediately!
         curve.a = random.uniform(0.5, 5)
         curve.b = random.uniform(55, 65)

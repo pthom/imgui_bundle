@@ -93,7 +93,7 @@ setup(
         "glfw > 2.5",
         "PyOpenGL >= 3.0",
         "PyGLM>=2.5.0",
-        "pillow >= 9.0.0"
+        "pillow >= 9.0.0",
     ],
     entry_points={
         "console_scripts": [

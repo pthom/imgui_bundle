@@ -37,23 +37,25 @@ def autogenerate_implot_internal() -> None:
     options.srcmlcpp_options.flag_show_progress = True
     options.python_run_black_formatter = False
 
-    options.fn_exclude_by_name__regex += "|" + "|".join([
-        "^ImMinMaxArray$",
-        "^ImMinArray$",
-        "^ImMaxArray$",
-        "^ImSum$",
-        "^FormatDate$",
-        "^FormatDateTime$",
-        "^LabelAxisValue$",
-        "^MkGmtTime$",
-        "^GetGmtTime$",
-        "^MkLocTime$",
-        "^GetLocTime$",
-        "^FormatTime$",
-        "^Formatter_Default$",
-        "^Formatter_Logit$",
-        "^Formatter_Time$",
-    ])
+    options.fn_exclude_by_name__regex += "|" + "|".join(
+        [
+            "^ImMinMaxArray$",
+            "^ImMinArray$",
+            "^ImMaxArray$",
+            "^ImSum$",
+            "^FormatDate$",
+            "^FormatDateTime$",
+            "^LabelAxisValue$",
+            "^MkGmtTime$",
+            "^GetGmtTime$",
+            "^MkLocTime$",
+            "^GetLocTime$",
+            "^FormatTime$",
+            "^Formatter_Default$",
+            "^Formatter_Logit$",
+            "^Formatter_Time$",
+        ]
+    )
     options.member_exclude_by_name__regex += "|^Formatter$|^Locator$|"
     options.fn_force_lambda__regex += "|^GetText$"
 

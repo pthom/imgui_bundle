@@ -39,7 +39,7 @@ def main():
     io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
     io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
-    io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
+    io.config_flags |= imgui.ConfigFlags_.viewports_enable  # Enable Multi-Viewport / Platform Windows
     # io.config_viewports_no_auto_merge = True
     # io.config_viewports_no_task_bar_icon = True
 

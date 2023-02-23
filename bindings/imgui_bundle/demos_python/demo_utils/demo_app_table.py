@@ -58,7 +58,12 @@ class DemoAppTable:
         self.snippet_python.code = _read_code(self._demo_python_file_path(demo_app))
 
     def gui(self):
-        table_flags = imgui.TableFlags_.row_bg | imgui.TableFlags_.borders | imgui.TableFlags_.resizable | imgui.TableFlags_.sizing_stretch_same
+        table_flags = (
+            imgui.TableFlags_.row_bg
+            | imgui.TableFlags_.borders
+            | imgui.TableFlags_.resizable
+            | imgui.TableFlags_.sizing_stretch_same
+        )
         nb_columns = 3
         imgui.begin_child("TableChild", hello_imgui.em_to_vec2(0.0, 17.0))
         if imgui.begin_table("Apps", nb_columns, table_flags):

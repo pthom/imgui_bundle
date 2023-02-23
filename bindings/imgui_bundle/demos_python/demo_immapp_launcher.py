@@ -5,7 +5,7 @@ from imgui_bundle import imgui_md
 from imgui_bundle import immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, DemoApp
-from imgui_bundle.demos_python import demo_utils # this will set the assets folder
+from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 DOC = """
@@ -23,7 +23,7 @@ DOC = """
 def make_gui() -> GuiFunction:
     demo_apps = [
         DemoApp("demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."),
-        DemoApp("demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"),
+        DemoApp("demo_parametric_curve", "Illustration of the Immediate GUI paradigm, with a simple parametric curve"),
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
         DemoApp(
             "demo_docking",
@@ -36,9 +36,12 @@ def make_gui() -> GuiFunction:
         DemoApp("haiku_implot_heart", "Share some love for ImGui and ImPlot"),
         DemoApp(
             "imgui_example_glfw_opengl3",
-            "Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python."
+            "Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python.",
         ),
-        DemoApp("imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui")
+        DemoApp(
+            "imgui_example_glfw_opengl2",
+            "Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui",
+        ),
     ]
 
     this_dir = os.path.dirname(__file__)

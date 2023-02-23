@@ -3,7 +3,7 @@ from typing import List
 import math
 import numpy as np
 from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
-from imgui_bundle.demos_python import demo_utils # this will set the assets folder
+from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 class DemoDragRectState:
@@ -115,10 +115,10 @@ def demo_heatmap():
     plot_size = (imgui.get_content_region_avail().x - immapp.em_size() * 5, -1)
     plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
     if implot.begin_plot("Sinc Function", plot_size, plot_flags):
-        implot.setup_axes(None,None, axis_flags, axis_flags)
+        implot.setup_axes(None, None, axis_flags, axis_flags)
         implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False)
         implot.setup_axis_ticks(implot.ImAxis_.y1, 0, 1, data.n_ticks, data.y_ticks, False)
-        implot.plot_heatmap("##heatmap", data.values, data.values.min(), data.values.max(), None, [0,1], [1,0], 0)
+        implot.plot_heatmap("##heatmap", data.values, data.values.min(), data.values.max(), None, [0, 1], [1, 0], 0)
         implot.end_plot()
     imgui.end_group()
     imgui.same_line()

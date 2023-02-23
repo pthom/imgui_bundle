@@ -14,7 +14,7 @@ class LaplacianData:
     laplacian: NDArray[float]
 
     blur_half_size: int = 1
-    kernel_half_size: int  = 1
+    kernel_half_size: int = 1
 
     params: immvision.ImageParams
 

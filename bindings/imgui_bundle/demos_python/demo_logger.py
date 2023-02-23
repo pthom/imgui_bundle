@@ -3,6 +3,7 @@ import random
 from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
 from imgui_bundle.demos_python.demo_utils import api_demos
 
+
 @immapp.static(idx_fortune=0)
 def demo_gui():
     static = demo_gui

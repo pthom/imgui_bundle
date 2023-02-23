@@ -30,7 +30,7 @@ class AppState:
     rocket_state: RocketState = RocketState.Init
 
 
-@immapp.static(last_hide_time = 1)
+@immapp.static(last_hide_time=1)
 def demo_hide_window():
     static = demo_hide_window
     imgui.separator()
@@ -38,7 +38,7 @@ def demo_hide_window():
     if imgui.button("Hide"):
         static.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
-    if static.last_hide_time > 0.:
+    if static.last_hide_time > 0.0:
         now = time.time()
         if now - static.last_hide_time > 3:
             static.last_hide_time = -1
@@ -162,7 +162,6 @@ def main():
             hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
 
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
-
 
     # optional native events handling
     # runner_params.callbacks.any_backend_event_callback = ...
