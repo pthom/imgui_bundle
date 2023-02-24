@@ -81,6 +81,10 @@ def litgen_options_implot() -> LitgenOptions:
             # void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, bool normalize=false, const char* label_fmt="%.1f", double angle0=90);
             #                                         ^                               ^
             "PlotPieChart",
+
+            # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);
+            # (This API is a bit exotic, and cannot be bound automatically)
+            "^AddColormap$"
         ]
     )
 

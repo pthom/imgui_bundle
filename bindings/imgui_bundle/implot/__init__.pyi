@@ -2232,13 +2232,6 @@ def get_marker_name(idx: Marker) -> str:
 # an assert otherwise! By default colormaps are considered to be qualitative (i.e. discrete). If you want to create a
 # continuous colormap, set #qual=False. This will treat the colors you provide as keys, and ImPlot will build a linearly
 # interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
-# IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImVec4* cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(name: str, cols: ImVec4, size: int, qual: bool = True) -> Colormap:
-    pass
-
-# IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(name: str, cols: ImU32, size: int, qual: bool = True) -> Colormap:
-    pass
 
 # IMPLOT_API int GetColormapCount();    /* original C++ signature */
 def get_colormap_count() -> int:
