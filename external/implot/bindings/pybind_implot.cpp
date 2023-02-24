@@ -2096,12 +2096,6 @@ void py_init_module_implot(py::module& m)
         "Returns the null terminated string name for an ImPlotMarker.",
         pybind11::return_value_policy::reference);
 
-    m.def("add_colormap",
-        py::overload_cast<const char *, const ImVec4 *, int, bool>(ImPlot::AddColormap), py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true);
-
-    m.def("add_colormap",
-        py::overload_cast<const char *, const ImU32 *, int, bool>(ImPlot::AddColormap), py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true);
-
     m.def("get_colormap_count",
         ImPlot::GetColormapCount, "Returns the number of available colormaps (i.e. the built-in + user-added count).");
 
