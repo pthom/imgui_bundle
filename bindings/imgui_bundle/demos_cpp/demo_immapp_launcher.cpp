@@ -40,6 +40,7 @@ std::function<void()> makeGui()
             Translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python.
             )"},
         DemoApp{"imgui_example_glfw_opengl2","Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"},
+        DemoApp{"demo_drag_and_drop", "Drag and drop demo"},
     };
 
     DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");

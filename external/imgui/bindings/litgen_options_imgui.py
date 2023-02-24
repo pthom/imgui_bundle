@@ -159,6 +159,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^ErrorCheckEnd",
             r"ImFileLoadToMemory",
             r"^GetGlyphRange",
+            r"SetDragDropPayload^$",
+            r"^AcceptDragDropPayload$",
+            r"^GetDragDropPayload$",
         ]
     )
 

@@ -269,6 +269,8 @@ Additional customizations
 TextRange = Any # internal structure of ImGuiTextFilter, composed of string pointers (cannot be easily adapted)
 StoragePair = Any
 
+PayloadId = int
+
 
 # Disable black formatter
 # fmt: off
@@ -2361,19 +2363,9 @@ def begin_drag_drop_target() -> bool:
     """call after submitting an item that may receive a payload. If this returns True, you can call AcceptDragDropPayload() + EndDragDropTarget()"""
     pass
 
-# IMGUI_API const ImGuiPayload*   AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags = 0);              /* original C++ signature */
-def accept_drag_drop_payload(type: str, flags: DragDropFlags = 0) -> Payload:
-    """accept contents of a given type. If ImGuiDragDropFlags_AcceptBeforeDelivery is set you can peek into the payload before the mouse button is released."""
-    pass
-
 # IMGUI_API void                  EndDragDropTarget();                                                                /* original C++ signature */
 def end_drag_drop_target() -> None:
     """only call EndDragDropTarget() if BeginDragDropTarget() returns True!"""
-    pass
-
-# IMGUI_API const ImGuiPayload*   GetDragDropPayload();                                                               /* original C++ signature */
-def get_drag_drop_payload() -> Payload:
-    """peek directly into the current payload from anywhere. may return None. use ImGuiPayload::IsDataType() to test for the payload type."""
     pass
 
 # Disabling [BETA API]
@@ -7280,6 +7272,49 @@ def input_text_with_hint(
 ) -> Tuple[bool, str]:
     pass
 ####################    </generated_from:imgui_stdlib.h>    ####################
+
+
+####################    <generated_from:imgui_pywrappers.h>    ####################
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Handwritten wrappers around parts of the imgui API, when needed for the python bindings
+
+class Payload_PyId:
+    # ImGuiPayloadId DataId;    /* original C++ signature */
+    # Stores an id that represents the payload. For example, this could be given by python `id(object)`
+    data_id: PayloadId
+
+    # std::string Type;    /* original C++ signature */
+    # A string representing the type of payload. It cannot exceed 32 characters.
+    type: str
+    # ImGuiPayload_PyId(ImGuiPayloadId DataId = ImGuiPayloadId(), std::string Type = std::string());    /* original C++ signature */
+    def __init__(self, data_id: PayloadId = PayloadId(), type: str = "") -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# Note: the drag and drop API differs a bit between C++ and Python.
+# * In C++, ImGui::SetDragDropPayload and AcceptDragDropPayload are able to accept any kind of object
+#   (by storing a buffer whose size is the object size).
+#
+# Unfortunately, this behaviour cannot be reproduced in python.
+#
+# * In Python, you can use imgui.set_drag_drop_payload_py_id and imgui.accept_drag_drop_payload_py_id.
+#   These versions can only store an integer id for the payload
+#   (so that you may have to store the corresponding payload somewhere else)
+# IMGUI_API bool                               SetDragDropPayload_PyId(const char* type, ImGuiPayloadId dataId, ImGuiCond cond = 0);    /* original C++ signature */
+def set_drag_drop_payload_py_id(type: str, data_id: PayloadId, cond: Cond = 0) -> bool:
+    pass
+
+# IMGUI_API std::optional<ImGuiPayload_PyId>   AcceptDragDropPayload_PyId(const char* type, ImGuiDragDropFlags flags = 0);    /* original C++ signature */
+def accept_drag_drop_payload_py_id(
+    type: str, flags: DragDropFlags = 0
+) -> Optional[Payload_PyId]:
+    pass
+
+# IMGUI_API std::optional<ImGuiPayload_PyId>   GetDragDropPayload_PyId();    /* original C++ signature */
+# }
+def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
+    pass
+####################    </generated_from:imgui_pywrappers.h>    ####################
 
 # </litgen_stub>
 

@@ -44,6 +44,9 @@ def autogenerate_imgui() -> None:
     print("Processing imgui_stdlib.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/misc/cpp/imgui_stdlib.h")
 
+    print("Processing imgui_pywrappers.h")
+    generator.process_cpp_file(THIS_DIR + "/../imgui_pywrappers/imgui_pywrappers.h")
+
     generator.write_generated_code(
         output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi"
     )
@@ -65,5 +68,15 @@ def main():
     autogenerate_imgui_internal()
 
 
+def sandbox():
+    code = """
+    """
+
+    options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
+    generated_code = litgen.generate_code(options_imgui, code)
+    print(generated_code.pydef_code)
+
+
 if __name__ == "__main__":
     main()
+    # sandbox()

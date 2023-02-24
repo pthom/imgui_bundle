@@ -27,7 +27,7 @@ def make_gui() -> GuiFunction:
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
         DemoApp(
             "demo_docking",
-            """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
+            "How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.",
         ),
         DemoApp("demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
         DemoApp("demo_powersave", "How to have smooth animations, and how spare the CPU when idling"),
@@ -42,6 +42,7 @@ def make_gui() -> GuiFunction:
             "imgui_example_glfw_opengl2",
             "Translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui",
         ),
+        DemoApp("demo_drag_and_drop", "Drag and drop demo"),
     ]
 
     this_dir = os.path.dirname(__file__)
