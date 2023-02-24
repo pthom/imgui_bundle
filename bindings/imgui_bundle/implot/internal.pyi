@@ -6,10 +6,13 @@ from typing import Any, Optional, Tuple
 import numpy as np
 import enum
 
-from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ImDrawList
+from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ImDrawList, Storage, TextBuffer
 from imgui_bundle.imgui.internal import ImRect
 from imgui_bundle import imgui
-from imgui_bundle.implot import Range, ImAxis, IMPLOT_AUTO, ItemFlags, Point, Location
+from imgui_bundle.implot import (
+    Range, ImAxis, Cond, Scale, IMPLOT_AUTO, ItemFlags, Point, Location, AxisFlags,
+    LegendFlags, Flags, MouseTextFlags, SubplotFlags, Marker, Style, InputMap
+)
 
 ImGui_Context = imgui.internal.Context
 Colormap = int
