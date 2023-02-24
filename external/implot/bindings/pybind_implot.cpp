@@ -2285,6 +2285,17 @@ void py_init_module_implot(py::module& m)
     // MANUAL BINDINGS BELOW
     ///////////////////////////////////////////////////////////////////////////
 
+    // Add a new colormap, inputs are np.array[uint32]
+    m.def("add_colormap",
+        [](const char * name, const py::array & cols, int size, bool qual=true)
+        {
+            const void * values_from_pyarray = cols.data();            
+            return ImPlot::AddColormap(name, static_cast<const uint32_t *>(values_from_pyarray),size, qual);
+
+        }, py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true,
+        "Add a new colormap."
+        );
+
     // SetupAxisTicks, cf https://github.com/pthom/imgui_bundle/issues/81
     m.def("setup_axis_ticks",
           [](ImAxis axis, double v_min, double v_max, int n_ticks, const std::vector<std::string>& labels, bool keep_default=false)
