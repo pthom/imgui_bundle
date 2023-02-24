@@ -253,12 +253,18 @@ void py_init_module_implot_internal(py::module& m)
         .def(py::init<>())
         .def(py::init<ImPlotDateFmt, ImPlotTimeFmt, bool, bool>(),
             py::arg("date_fmt"), py::arg("time_fmt"), py::arg("use_24_hr_clk") = false, py::arg("use_iso_8601") = false)
+        .def_readwrite("date", &ImPlotDateTimeSpec::Date, "")
+        .def_readwrite("time", &ImPlotDateTimeSpec::Time, "")
+        .def_readwrite("use_iso8601", &ImPlotDateTimeSpec::UseISO8601, "")
+        .def_readwrite("use24_hour_clock", &ImPlotDateTimeSpec::Use24HourClock, "")
         ;
 
 
     auto pyClassImPlotTime =
         py::class_<ImPlotTime>
             (m, "Time", "Two part timestamp struct.")
+        .def_readwrite("s", &ImPlotTime::S, "second part")
+        .def_readwrite("us", &ImPlotTime::Us, "microsecond part")
         .def(py::init<>())
         .def(py::init<time_t, int>(),
             py::arg("s"), py::arg("us") = 0)
@@ -276,6 +282,9 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotColormapData =
         py::class_<ImPlotColormapData>
             (m, "ColormapData", "Colormap data storage")
+        .def_readwrite("text", &ImPlotColormapData::Text, "")
+        .def_readwrite("map", &ImPlotColormapData::Map, "")
+        .def_readwrite("count", &ImPlotColormapData::Count, "")
         .def(py::init<>())
         .def("append",
             &ImPlotColormapData::Append,
@@ -340,6 +349,10 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotPointError =
         py::class_<ImPlotPointError>
             (m, "PointError", "ImPlotPoint with positive/negative error values")
+        .def_readwrite("x", &ImPlotPointError::X, "")
+        .def_readwrite("y", &ImPlotPointError::Y, "")
+        .def_readwrite("neg", &ImPlotPointError::Neg, "")
+        .def_readwrite("pos", &ImPlotPointError::Pos, "")
         .def(py::init<double, double, double, double>(),
             py::arg("x"), py::arg("y"), py::arg("neg"), py::arg("pos"))
         ;
@@ -348,6 +361,12 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotAnnotation =
         py::class_<ImPlotAnnotation>
             (m, "Annotation", "Interior plot label/annotation")
+        .def_readwrite("pos", &ImPlotAnnotation::Pos, "")
+        .def_readwrite("offset", &ImPlotAnnotation::Offset, "")
+        .def_readwrite("color_bg", &ImPlotAnnotation::ColorBg, "")
+        .def_readwrite("color_fg", &ImPlotAnnotation::ColorFg, "")
+        .def_readwrite("text_offset", &ImPlotAnnotation::TextOffset, "")
+        .def_readwrite("clamp", &ImPlotAnnotation::Clamp, "")
         .def(py::init<>())
         ;
 
@@ -355,6 +374,8 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotAnnotationCollection =
         py::class_<ImPlotAnnotationCollection>
             (m, "AnnotationCollection", "Collection of plot labels")
+        .def_readwrite("text_buffer", &ImPlotAnnotationCollection::TextBuffer, "")
+        .def_readwrite("size", &ImPlotAnnotationCollection::Size, "")
         .def(py::init<>())
         .def("append",
             [](ImPlotAnnotationCollection & self, const ImVec2 & pos, const ImVec2 & off, ImU32 bg, ImU32 fg, bool clamp, const char * fmt)
@@ -390,13 +411,32 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotTag =
         py::class_<ImPlotTag>
             (m, "Tag", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImAxis Axis = ImAxis(), double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int())
+        {
+            auto r = std::make_unique<ImPlotTag>();
+            r->Axis = Axis;
+            r->Value = Value;
+            r->ColorBg = ColorBg;
+            r->ColorFg = ColorFg;
+            r->TextOffset = TextOffset;
+            return r;
+        })
+        , py::arg("axis") = ImAxis(), py::arg("value") = double(), py::arg("color_bg") = ImU32(), py::arg("color_fg") = ImU32(), py::arg("text_offset") = int()
+        )
+        .def_readwrite("axis", &ImPlotTag::Axis, "")
+        .def_readwrite("value", &ImPlotTag::Value, "")
+        .def_readwrite("color_bg", &ImPlotTag::ColorBg, "")
+        .def_readwrite("color_fg", &ImPlotTag::ColorFg, "")
+        .def_readwrite("text_offset", &ImPlotTag::TextOffset, "")
         ;
 
 
     auto pyClassImPlotTagCollection =
         py::class_<ImPlotTagCollection>
             (m, "TagCollection", "")
+        .def_readwrite("text_buffer", &ImPlotTagCollection::TextBuffer, "")
+        .def_readwrite("size", &ImPlotTagCollection::Size, "")
         .def(py::init<>())
         .def("append",
             [](ImPlotTagCollection & self, ImAxis axis, double value, ImU32 bg, ImU32 fg, const char * fmt)
@@ -432,6 +472,14 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotTick =
         py::class_<ImPlotTick>
             (m, "Tick", "Tick mark info")
+        .def_readwrite("plot_pos", &ImPlotTick::PlotPos, "")
+        .def_readwrite("pixel_pos", &ImPlotTick::PixelPos, "")
+        .def_readwrite("label_size", &ImPlotTick::LabelSize, "")
+        .def_readwrite("text_offset", &ImPlotTick::TextOffset, "")
+        .def_readwrite("major", &ImPlotTick::Major, "")
+        .def_readwrite("show_label", &ImPlotTick::ShowLabel, "")
+        .def_readwrite("level", &ImPlotTick::Level, "")
+        .def_readwrite("idx", &ImPlotTick::Idx, "")
         .def(py::init<double, bool, int, bool>(),
             py::arg("value"), py::arg("major"), py::arg("level"), py::arg("show_label"))
         ;
@@ -440,6 +488,10 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotTicker =
         py::class_<ImPlotTicker>
             (m, "Ticker", "Collection of ticks")
+        .def_readwrite("text_buffer", &ImPlotTicker::TextBuffer, "")
+        .def_readwrite("max_size", &ImPlotTicker::MaxSize, "")
+        .def_readwrite("late_size", &ImPlotTicker::LateSize, "")
+        .def_readwrite("levels", &ImPlotTicker::Levels, "")
         .def(py::init<>())
         .def("add_tick",
             py::overload_cast<double, bool, int, bool, const char *>(&ImPlotTicker::AddTick),
@@ -493,6 +545,49 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotAxis =
         py::class_<ImPlotAxis>
             (m, "Axis", "Axis state information that must persist after EndPlot")
+        .def_readwrite("id_", &ImPlotAxis::ID, "")
+        .def_readwrite("flags", &ImPlotAxis::Flags, "")
+        .def_readwrite("previous_flags", &ImPlotAxis::PreviousFlags, "")
+        .def_readwrite("range", &ImPlotAxis::Range, "")
+        .def_readwrite("range_cond", &ImPlotAxis::RangeCond, "")
+        .def_readwrite("scale", &ImPlotAxis::Scale, "")
+        .def_readwrite("fit_extents", &ImPlotAxis::FitExtents, "")
+        .def_readwrite("ortho_axis", &ImPlotAxis::OrthoAxis, "")
+        .def_readwrite("constraint_range", &ImPlotAxis::ConstraintRange, "")
+        .def_readwrite("constraint_zoom", &ImPlotAxis::ConstraintZoom, "")
+        .def_readwrite("ticker", &ImPlotAxis::Ticker, "")
+        .def_readwrite("formatter_data", &ImPlotAxis::FormatterData, "")
+        .def_readwrite("linked_min", &ImPlotAxis::LinkedMin, "")
+        .def_readwrite("linked_max", &ImPlotAxis::LinkedMax, "")
+        .def_readwrite("picker_level", &ImPlotAxis::PickerLevel, "")
+        .def_readwrite("picker_time_min", &ImPlotAxis::PickerTimeMin, "")
+        .def_readwrite("picker_time_max", &ImPlotAxis::PickerTimeMax, "")
+        .def_readwrite("transform_data", &ImPlotAxis::TransformData, "")
+        .def_readwrite("pixel_min", &ImPlotAxis::PixelMin, "")
+        .def_readwrite("pixel_max", &ImPlotAxis::PixelMax, "")
+        .def_readwrite("scale_min", &ImPlotAxis::ScaleMin, "")
+        .def_readwrite("scale_max", &ImPlotAxis::ScaleMax, "")
+        .def_readwrite("scale_to_pixel", &ImPlotAxis::ScaleToPixel, "")
+        .def_readwrite("datum1", &ImPlotAxis::Datum1, "")
+        .def_readwrite("datum2", &ImPlotAxis::Datum2, "")
+        .def_readwrite("hover_rect", &ImPlotAxis::HoverRect, "")
+        .def_readwrite("label_offset", &ImPlotAxis::LabelOffset, "")
+        .def_readwrite("color_maj", &ImPlotAxis::ColorMaj, "")
+        .def_readwrite("color_min", &ImPlotAxis::ColorMin, "")
+        .def_readwrite("color_tick", &ImPlotAxis::ColorTick, "")
+        .def_readwrite("color_txt", &ImPlotAxis::ColorTxt, "")
+        .def_readwrite("color_bg", &ImPlotAxis::ColorBg, "")
+        .def_readwrite("color_hov", &ImPlotAxis::ColorHov, "")
+        .def_readwrite("color_act", &ImPlotAxis::ColorAct, "")
+        .def_readwrite("color_hi_li", &ImPlotAxis::ColorHiLi, "")
+        .def_readwrite("enabled", &ImPlotAxis::Enabled, "")
+        .def_readwrite("vertical", &ImPlotAxis::Vertical, "")
+        .def_readwrite("fit_this_frame", &ImPlotAxis::FitThisFrame, "")
+        .def_readwrite("has_range", &ImPlotAxis::HasRange, "")
+        .def_readwrite("has_format_spec", &ImPlotAxis::HasFormatSpec, "")
+        .def_readwrite("show_default_ticks", &ImPlotAxis::ShowDefaultTicks, "")
+        .def_readwrite("hovered", &ImPlotAxis::Hovered, "")
+        .def_readwrite("held", &ImPlotAxis::Held, "")
         .def(py::init<>())
         .def("reset",
             &ImPlotAxis::Reset, "(private API)")
@@ -594,6 +689,11 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotAlignmentData =
         py::class_<ImPlotAlignmentData>
             (m, "AlignmentData", "Align plots group data")
+        .def_readwrite("vertical", &ImPlotAlignmentData::Vertical, "")
+        .def_readwrite("pad_a", &ImPlotAlignmentData::PadA, "")
+        .def_readwrite("pad_b", &ImPlotAlignmentData::PadB, "")
+        .def_readwrite("pad_a_max", &ImPlotAlignmentData::PadAMax, "")
+        .def_readwrite("pad_b_max", &ImPlotAlignmentData::PadBMax, "")
         .def(py::init<>())
         .def("begin",
             &ImPlotAlignmentData::Begin, "(private API)")
@@ -625,6 +725,13 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotItem =
         py::class_<ImPlotItem>
             (m, "Item", "State information for Plot items")
+        .def_readwrite("id_", &ImPlotItem::ID, "")
+        .def_readwrite("color", &ImPlotItem::Color, "")
+        .def_readwrite("legend_hover_rect", &ImPlotItem::LegendHoverRect, "")
+        .def_readwrite("name_offset", &ImPlotItem::NameOffset, "")
+        .def_readwrite("show", &ImPlotItem::Show, "")
+        .def_readwrite("legend_hovered", &ImPlotItem::LegendHovered, "")
+        .def_readwrite("seen_this_frame", &ImPlotItem::SeenThisFrame, "")
         .def(py::init<>())
         ;
 
@@ -632,6 +739,15 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotLegend =
         py::class_<ImPlotLegend>
             (m, "Legend", "Holds Legend state")
+        .def_readwrite("flags", &ImPlotLegend::Flags, "")
+        .def_readwrite("previous_flags", &ImPlotLegend::PreviousFlags, "")
+        .def_readwrite("location", &ImPlotLegend::Location, "")
+        .def_readwrite("previous_location", &ImPlotLegend::PreviousLocation, "")
+        .def_readwrite("labels", &ImPlotLegend::Labels, "")
+        .def_readwrite("rect", &ImPlotLegend::Rect, "")
+        .def_readwrite("hovered", &ImPlotLegend::Hovered, "")
+        .def_readwrite("held", &ImPlotLegend::Held, "")
+        .def_readwrite("can_go_inside", &ImPlotLegend::CanGoInside, "")
         .def(py::init<>())
         .def("reset",
             &ImPlotLegend::Reset, "(private API)")
@@ -641,6 +757,9 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotItemGroup =
         py::class_<ImPlotItemGroup>
             (m, "ItemGroup", "Holds Items and Legend data")
+        .def_readwrite("id_", &ImPlotItemGroup::ID, "")
+        .def_readwrite("legend", &ImPlotItemGroup::Legend, "")
+        .def_readwrite("colormap_idx", &ImPlotItemGroup::ColormapIdx, "")
         .def(py::init<>())
         .def("get_item_count",
             &ImPlotItemGroup::GetItemCount, "(private API)")
@@ -692,6 +811,31 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotPlot =
         py::class_<ImPlotPlot>
             (m, "Plot", "Holds Plot state information that must persist after EndPlot")
+        .def_readwrite("id_", &ImPlotPlot::ID, "")
+        .def_readwrite("flags", &ImPlotPlot::Flags, "")
+        .def_readwrite("previous_flags", &ImPlotPlot::PreviousFlags, "")
+        .def_readwrite("mouse_text_location", &ImPlotPlot::MouseTextLocation, "")
+        .def_readwrite("mouse_text_flags", &ImPlotPlot::MouseTextFlags, "")
+        .def_readwrite("text_buffer", &ImPlotPlot::TextBuffer, "")
+        .def_readwrite("items", &ImPlotPlot::Items, "")
+        .def_readwrite("current_x", &ImPlotPlot::CurrentX, "")
+        .def_readwrite("current_y", &ImPlotPlot::CurrentY, "")
+        .def_readwrite("frame_rect", &ImPlotPlot::FrameRect, "")
+        .def_readwrite("canvas_rect", &ImPlotPlot::CanvasRect, "")
+        .def_readwrite("plot_rect", &ImPlotPlot::PlotRect, "")
+        .def_readwrite("axes_rect", &ImPlotPlot::AxesRect, "")
+        .def_readwrite("select_rect", &ImPlotPlot::SelectRect, "")
+        .def_readwrite("select_start", &ImPlotPlot::SelectStart, "")
+        .def_readwrite("title_offset", &ImPlotPlot::TitleOffset, "")
+        .def_readwrite("just_created", &ImPlotPlot::JustCreated, "")
+        .def_readwrite("initialized", &ImPlotPlot::Initialized, "")
+        .def_readwrite("setup_locked", &ImPlotPlot::SetupLocked, "")
+        .def_readwrite("fit_this_frame", &ImPlotPlot::FitThisFrame, "")
+        .def_readwrite("hovered", &ImPlotPlot::Hovered, "")
+        .def_readwrite("held", &ImPlotPlot::Held, "")
+        .def_readwrite("selecting", &ImPlotPlot::Selecting, "")
+        .def_readwrite("selected", &ImPlotPlot::Selected, "")
+        .def_readwrite("context_locked", &ImPlotPlot::ContextLocked, "")
         .def(py::init<>())
         .def("is_input_locked",
             &ImPlotPlot::IsInputLocked, "(private API)")
@@ -746,6 +890,26 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotSubplot =
         py::class_<ImPlotSubplot>
             (m, "Subplot", "Holds subplot data that must persist after EndSubplot")
+        .def_readwrite("id_", &ImPlotSubplot::ID, "")
+        .def_readwrite("flags", &ImPlotSubplot::Flags, "")
+        .def_readwrite("previous_flags", &ImPlotSubplot::PreviousFlags, "")
+        .def_readwrite("items", &ImPlotSubplot::Items, "")
+        .def_readwrite("rows", &ImPlotSubplot::Rows, "")
+        .def_readwrite("cols", &ImPlotSubplot::Cols, "")
+        .def_readwrite("current_idx", &ImPlotSubplot::CurrentIdx, "")
+        .def_readwrite("frame_rect", &ImPlotSubplot::FrameRect, "")
+        .def_readwrite("grid_rect", &ImPlotSubplot::GridRect, "")
+        .def_readwrite("cell_size", &ImPlotSubplot::CellSize, "")
+        .def_property("temp_sizes",
+            [](ImPlotSubplot &self) -> pybind11::array
+            {
+                auto dtype = pybind11::dtype(pybind11::format_descriptor<float>::format());
+                auto base = pybind11::array(dtype, {2}, {sizeof(float)});
+                return pybind11::array(dtype, {2}, {sizeof(float)}, self.TempSizes, base);
+            }, [](ImPlotSubplot& self) {},
+            "")
+        .def_readwrite("frame_hovered", &ImPlotSubplot::FrameHovered, "")
+        .def_readwrite("has_title", &ImPlotSubplot::HasTitle, "")
         .def(py::init<>())
         ;
 
@@ -762,6 +926,22 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotNextItemData =
         py::class_<ImPlotNextItemData>
             (m, "NextItemData", "Temporary data storage for upcoming item")
+        .def_readwrite("line_weight", &ImPlotNextItemData::LineWeight, "")
+        .def_readwrite("marker", &ImPlotNextItemData::Marker, "")
+        .def_readwrite("marker_size", &ImPlotNextItemData::MarkerSize, "")
+        .def_readwrite("marker_weight", &ImPlotNextItemData::MarkerWeight, "")
+        .def_readwrite("fill_alpha", &ImPlotNextItemData::FillAlpha, "")
+        .def_readwrite("error_bar_size", &ImPlotNextItemData::ErrorBarSize, "")
+        .def_readwrite("error_bar_weight", &ImPlotNextItemData::ErrorBarWeight, "")
+        .def_readwrite("digital_bit_height", &ImPlotNextItemData::DigitalBitHeight, "")
+        .def_readwrite("digital_bit_gap", &ImPlotNextItemData::DigitalBitGap, "")
+        .def_readwrite("render_line", &ImPlotNextItemData::RenderLine, "")
+        .def_readwrite("render_fill", &ImPlotNextItemData::RenderFill, "")
+        .def_readwrite("render_marker_line", &ImPlotNextItemData::RenderMarkerLine, "")
+        .def_readwrite("render_marker_fill", &ImPlotNextItemData::RenderMarkerFill, "")
+        .def_readwrite("has_hidden", &ImPlotNextItemData::HasHidden, "")
+        .def_readwrite("hidden", &ImPlotNextItemData::Hidden, "")
+        .def_readwrite("hidden_cond", &ImPlotNextItemData::HiddenCond, "")
         .def(py::init<>())
         .def("reset",
             &ImPlotNextItemData::Reset, "(private API)")
@@ -771,7 +951,48 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotContext =
         py::class_<ImPlotContext>
             (m, "Context", "Holds state information that must persist between calls to BeginPlot()/EndPlot()")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), bool ChildWindowMade = bool(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
+        {
+            auto r = std::make_unique<ImPlotContext>();
+            r->CTicker = CTicker;
+            r->Annotations = Annotations;
+            r->Tags = Tags;
+            r->ChildWindowMade = ChildWindowMade;
+            r->Style = Style;
+            r->ColormapData = ColormapData;
+            r->DigitalPlotItemCnt = DigitalPlotItemCnt;
+            r->DigitalPlotOffset = DigitalPlotOffset;
+            r->NextPlotData = NextPlotData;
+            r->NextItemData = NextItemData;
+            r->InputMap = InputMap;
+            r->OpenContextThisFrame = OpenContextThisFrame;
+            r->MousePosStringBuilder = MousePosStringBuilder;
+            return r;
+        })
+        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("child_window_made") = bool(), py::arg("style") = ImPlotStyle(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
+        )
+        .def_readwrite("current_plot", &ImPlotContext::CurrentPlot, "")
+        .def_readwrite("current_subplot", &ImPlotContext::CurrentSubplot, "")
+        .def_readwrite("current_items", &ImPlotContext::CurrentItems, "")
+        .def_readwrite("current_item", &ImPlotContext::CurrentItem, "")
+        .def_readwrite("previous_item", &ImPlotContext::PreviousItem, "")
+        .def_readwrite("c_ticker", &ImPlotContext::CTicker, "Tick Marks and Labels")
+        .def_readwrite("annotations", &ImPlotContext::Annotations, "")
+        .def_readwrite("tags", &ImPlotContext::Tags, "")
+        .def_readwrite("child_window_made", &ImPlotContext::ChildWindowMade, "Flags")
+        .def_readwrite("style", &ImPlotContext::Style, "")
+        .def_readwrite("colormap_data", &ImPlotContext::ColormapData, "")
+        .def_readwrite("digital_plot_item_cnt", &ImPlotContext::DigitalPlotItemCnt, "")
+        .def_readwrite("digital_plot_offset", &ImPlotContext::DigitalPlotOffset, "")
+        .def_readwrite("next_plot_data", &ImPlotContext::NextPlotData, "")
+        .def_readwrite("next_item_data", &ImPlotContext::NextItemData, "")
+        .def_readwrite("input_map", &ImPlotContext::InputMap, "")
+        .def_readwrite("open_context_this_frame", &ImPlotContext::OpenContextThisFrame, "")
+        .def_readwrite("mouse_pos_string_builder", &ImPlotContext::MousePosStringBuilder, "")
+        .def_readwrite("sort_items", &ImPlotContext::SortItems, "")
+        .def_readwrite("current_alignment_h", &ImPlotContext::CurrentAlignmentH, "")
+        .def_readwrite("current_alignment_v", &ImPlotContext::CurrentAlignmentV, "")
         ;
 
 
@@ -1212,7 +1433,19 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassFormatter_Time_Data =
         py::class_<ImPlot::Formatter_Time_Data>
             (m, "Formatter_Time_Data", "")
-        .def(py::init<>()) // implicit default constructor
+        .def(py::init<>([](
+        ImPlotTime Time = ImPlotTime(), ImPlotDateTimeSpec Spec = ImPlotDateTimeSpec())
+        {
+            auto r = std::make_unique<Formatter_Time_Data>();
+            r->Time = Time;
+            r->Spec = Spec;
+            return r;
+        })
+        , py::arg("time") = ImPlotTime(), py::arg("spec") = ImPlotDateTimeSpec()
+        )
+        .def_readwrite("time", &Formatter_Time_Data::Time, "")
+        .def_readwrite("spec", &Formatter_Time_Data::Spec, "")
+        .def_readwrite("user_formatter_data", &Formatter_Time_Data::UserFormatterData, "")
         ;
     ////////////////////    </generated_from:implot_internal.h>    ////////////////////
 

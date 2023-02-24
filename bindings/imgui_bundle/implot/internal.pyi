@@ -331,9 +331,21 @@ class DateTimeSpec:
     #     }
     def __init__(self, date_fmt: DateFmt, time_fmt: TimeFmt, use_24_hr_clk: bool = False, use_iso_8601: bool = False) -> None:
         pass
+    # ImPlotDateFmt Date;    /* original C++ signature */
+    date: DateFmt
+    # ImPlotTimeFmt Time;    /* original C++ signature */
+    time: TimeFmt
+    # bool UseISO8601;    /* original C++ signature */
+    use_iso8601: bool
+    # bool Use24HourClock;    /* original C++ signature */
+    use24_hour_clock: bool
 
 class Time:
     """ Two part timestamp struct."""
+    # time_t S;    /* original C++ signature */
+    s: time_t  # second part
+    # int    Us;    /* original C++ signature */
+    us: int    # microsecond part
     # ImPlotTime() { S = 0; Us = 0; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
@@ -357,6 +369,12 @@ class Time:
 
 class ColormapData:
     """ Colormap data storage"""
+    # ImGuiTextBuffer Text;    /* original C++ signature */
+    text: TextBuffer
+    # ImGuiStorage    Map;    /* original C++ signature */
+    map: Storage
+    # int             Count;    /* original C++ signature */
+    count: int
 
     # ImPlotColormapData() { Count = 0; }    /* original C++ signature */
     def __init__(self) -> None:
@@ -491,6 +509,14 @@ class ColormapData:
 
 class PointError:
     """ ImPlotPoint with positive/negative error values"""
+    # double X,     /* original C++ signature */
+    x: float
+    # Y,     /* original C++ signature */
+    y: float
+    # Neg,     /* original C++ signature */
+    neg: float
+    # Pos;    /* original C++ signature */
+    pos: float
     # ImPlotPointError(double x, double y, double neg, double pos) {    /* original C++ signature */
     #         X = x; Y = y; Neg = neg; Pos = pos;
     #     }
@@ -499,6 +525,18 @@ class PointError:
 
 class Annotation:
     """ Interior plot label/annotation"""
+    # ImVec2 Pos;    /* original C++ signature */
+    pos: ImVec2
+    # ImVec2 Offset;    /* original C++ signature */
+    offset: ImVec2
+    # ImU32  ColorBg;    /* original C++ signature */
+    color_bg: ImU32
+    # ImU32  ColorFg;    /* original C++ signature */
+    color_fg: ImU32
+    # int    TextOffset;    /* original C++ signature */
+    text_offset: int
+    # bool   Clamp;    /* original C++ signature */
+    clamp: bool
     # ImPlotAnnotation() {    /* original C++ signature */
     #         ColorBg = ColorFg = 0;
     #         TextOffset = 0;
@@ -510,6 +548,10 @@ class Annotation:
 class AnnotationCollection:
     """ Collection of plot labels"""
 
+    # ImGuiTextBuffer            TextBuffer;    /* original C++ signature */
+    text_buffer: TextBuffer
+    # int                        Size;    /* original C++ signature */
+    size: int
 
     # ImPlotAnnotationCollection() { Reset(); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -543,13 +585,27 @@ class AnnotationCollection:
         pass
 
 class Tag:
-    # ImPlotTag();    /* original C++ signature */
-    def __init__(self) -> None:
-        """Auto-generated default constructor"""
+    # ImAxis Axis;    /* original C++ signature */
+    axis: ImAxis
+    # double Value;    /* original C++ signature */
+    value: float
+    # ImU32  ColorBg;    /* original C++ signature */
+    color_bg: ImU32
+    # ImU32  ColorFg;    /* original C++ signature */
+    color_fg: ImU32
+    # int    TextOffset;    /* original C++ signature */
+    text_offset: int
+    # ImPlotTag(ImAxis Axis = ImAxis(), double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int());    /* original C++ signature */
+    def __init__(self, axis: ImAxis = ImAxis(), value: float = float(), color_bg: ImU32 = ImU32(), color_fg: ImU32 = ImU32(), text_offset: int = int()) -> None:
+        """Auto-generated default constructor with named params"""
         pass
 
 class TagCollection:
 
+    # ImGuiTextBuffer     TextBuffer;    /* original C++ signature */
+    text_buffer: TextBuffer
+    # int                 Size;    /* original C++ signature */
+    size: int
 
     # ImPlotTagCollection() { Reset(); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -584,6 +640,22 @@ class TagCollection:
 
 class Tick:
     """ Tick mark info"""
+    # double PlotPos;    /* original C++ signature */
+    plot_pos: float
+    # float  PixelPos;    /* original C++ signature */
+    pixel_pos: float
+    # ImVec2 LabelSize;    /* original C++ signature */
+    label_size: ImVec2
+    # int    TextOffset;    /* original C++ signature */
+    text_offset: int
+    # bool   Major;    /* original C++ signature */
+    major: bool
+    # bool   ShowLabel;    /* original C++ signature */
+    show_label: bool
+    # int    Level;    /* original C++ signature */
+    level: int
+    # int    Idx;    /* original C++ signature */
+    idx: int
 
     # ImPlotTick(double value, bool major, int level, bool show_label) {    /* original C++ signature */
     #         PixelPos     = 0;
@@ -598,6 +670,14 @@ class Tick:
 
 class Ticker:
     """ Collection of ticks"""
+    # ImGuiTextBuffer      TextBuffer;    /* original C++ signature */
+    text_buffer: TextBuffer
+    # ImVec2               MaxSize;    /* original C++ signature */
+    max_size: ImVec2
+    # ImVec2               LateSize;    /* original C++ signature */
+    late_size: ImVec2
+    # int                  Levels;    /* original C++ signature */
+    levels: int
 
     # ImPlotTicker() {    /* original C++ signature */
     #         Reset();
@@ -674,12 +754,98 @@ class Ticker:
 
 class Axis:
     """ Axis state information that must persist after EndPlot"""
+    # ImGuiID              ID;    /* original C++ signature */
+    id_: ID
+    # ImPlotAxisFlags      Flags;    /* original C++ signature */
+    flags: AxisFlags
+    # ImPlotAxisFlags      PreviousFlags;    /* original C++ signature */
+    previous_flags: AxisFlags
+    # ImPlotRange          Range;    /* original C++ signature */
+    range: Range
+    # ImPlotCond           RangeCond;    /* original C++ signature */
+    range_cond: Cond
+    # ImPlotScale          Scale;    /* original C++ signature */
+    scale: Scale
+    # ImPlotRange          FitExtents;    /* original C++ signature */
+    fit_extents: Range
+    # ImPlotAxis*          OrthoAxis;    /* original C++ signature */
+    ortho_axis: Axis
+    # ImPlotRange          ConstraintRange;    /* original C++ signature */
+    constraint_range: Range
+    # ImPlotRange          ConstraintZoom;    /* original C++ signature */
+    constraint_zoom: Range
 
+    # ImPlotTicker         Ticker;    /* original C++ signature */
+    ticker: Ticker
+    # void*                FormatterData;    /* original C++ signature */
+    formatter_data: Any
 
+    # double*              LinkedMin;    /* original C++ signature */
+    linked_min: float
+    # double*              LinkedMax;    /* original C++ signature */
+    linked_max: float
 
+    # int                  PickerLevel;    /* original C++ signature */
+    picker_level: int
+    # ImPlotTime           PickerTimeMin,     /* original C++ signature */
+    picker_time_min: Time
+    # PickerTimeMax;    /* original C++ signature */
+    picker_time_max: Time
 
+    # void*                TransformData;    /* original C++ signature */
+    transform_data: Any
+    # float                PixelMin,     /* original C++ signature */
+    pixel_min: float
+    # PixelMax;    /* original C++ signature */
+    pixel_max: float
+    # double               ScaleMin,     /* original C++ signature */
+    scale_min: float
+    # ScaleMax;    /* original C++ signature */
+    scale_max: float
+    # double               ScaleToPixel;    /* original C++ signature */
+    scale_to_pixel: float
+    # float                Datum1,     /* original C++ signature */
+    datum1: float
+    # Datum2;    /* original C++ signature */
+    datum2: float
 
+    # ImRect               HoverRect;    /* original C++ signature */
+    hover_rect: ImRect
+    # int                  LabelOffset;    /* original C++ signature */
+    label_offset: int
+    # ImU32                ColorMaj,     /* original C++ signature */
+    color_maj: ImU32
+    # ColorMin,     /* original C++ signature */
+    color_min: ImU32
+    # ColorTick,     /* original C++ signature */
+    color_tick: ImU32
+    # ColorTxt,     /* original C++ signature */
+    color_txt: ImU32
+    # ColorBg,     /* original C++ signature */
+    color_bg: ImU32
+    # ColorHov,     /* original C++ signature */
+    color_hov: ImU32
+    # ColorAct,     /* original C++ signature */
+    color_act: ImU32
+    # ColorHiLi;    /* original C++ signature */
+    color_hi_li: ImU32
 
+    # bool                 Enabled;    /* original C++ signature */
+    enabled: bool
+    # bool                 Vertical;    /* original C++ signature */
+    vertical: bool
+    # bool                 FitThisFrame;    /* original C++ signature */
+    fit_this_frame: bool
+    # bool                 HasRange;    /* original C++ signature */
+    has_range: bool
+    # bool                 HasFormatSpec;    /* original C++ signature */
+    has_format_spec: bool
+    # bool                 ShowDefaultTicks;    /* original C++ signature */
+    show_default_ticks: bool
+    # bool                 Hovered;    /* original C++ signature */
+    hovered: bool
+    # bool                 Held;    /* original C++ signature */
+    held: bool
 
     # ImPlotAxis() {    /* original C++ signature */
     #         ID               = 0;
@@ -1037,6 +1203,16 @@ class Axis:
 
 class AlignmentData:
     """ Align plots group data"""
+    # bool  Vertical;    /* original C++ signature */
+    vertical: bool
+    # float PadA;    /* original C++ signature */
+    pad_a: float
+    # float PadB;    /* original C++ signature */
+    pad_b: float
+    # float PadAMax;    /* original C++ signature */
+    pad_a_max: float
+    # float PadBMax;    /* original C++ signature */
+    pad_b_max: float
     # ImPlotAlignmentData() {    /* original C++ signature */
     #         Vertical    = true;
     #         PadA = PadB = PadAMax = PadBMax = 0;
@@ -1068,6 +1244,20 @@ class AlignmentData:
 
 class Item:
     """ State information for Plot items"""
+    # ImGuiID      ID;    /* original C++ signature */
+    id_: ID
+    # ImU32        Color;    /* original C++ signature */
+    color: ImU32
+    # ImRect       LegendHoverRect;    /* original C++ signature */
+    legend_hover_rect: ImRect
+    # int          NameOffset;    /* original C++ signature */
+    name_offset: int
+    # bool         Show;    /* original C++ signature */
+    show: bool
+    # bool         LegendHovered;    /* original C++ signature */
+    legend_hovered: bool
+    # bool         SeenThisFrame;    /* original C++ signature */
+    seen_this_frame: bool
 
     # ImPlotItem() {    /* original C++ signature */
     #         ID            = 0;
@@ -1083,6 +1273,24 @@ class Item:
 
 class Legend:
     """ Holds Legend state"""
+    # ImPlotLegendFlags Flags;    /* original C++ signature */
+    flags: LegendFlags
+    # ImPlotLegendFlags PreviousFlags;    /* original C++ signature */
+    previous_flags: LegendFlags
+    # ImPlotLocation    Location;    /* original C++ signature */
+    location: Location
+    # ImPlotLocation    PreviousLocation;    /* original C++ signature */
+    previous_location: Location
+    # ImGuiTextBuffer   Labels;    /* original C++ signature */
+    labels: TextBuffer
+    # ImRect            Rect;    /* original C++ signature */
+    rect: ImRect
+    # bool              Hovered;    /* original C++ signature */
+    hovered: bool
+    # bool              Held;    /* original C++ signature */
+    held: bool
+    # bool              CanGoInside;    /* original C++ signature */
+    can_go_inside: bool
 
     # ImPlotLegend() {    /* original C++ signature */
     #         Flags        = PreviousFlags = ImPlotLegendFlags_None;
@@ -1100,6 +1308,12 @@ class Legend:
 
 class ItemGroup:
     """ Holds Items and Legend data"""
+    # ImGuiID            ID;    /* original C++ signature */
+    id_: ID
+    # ImPlotLegend       Legend;    /* original C++ signature */
+    legend: Legend
+    # int                ColormapIdx;    /* original C++ signature */
+    colormap_idx: int
 
     # ImPlotItemGroup() { ID = 0; ColormapIdx = 0; }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1152,6 +1366,56 @@ class ItemGroup:
 
 class Plot:
     """ Holds Plot state information that must persist after EndPlot"""
+    # ImGuiID              ID;    /* original C++ signature */
+    id_: ID
+    # ImPlotFlags          Flags;    /* original C++ signature */
+    flags: Flags
+    # ImPlotFlags          PreviousFlags;    /* original C++ signature */
+    previous_flags: Flags
+    # ImPlotLocation       MouseTextLocation;    /* original C++ signature */
+    mouse_text_location: Location
+    # ImPlotMouseTextFlags MouseTextFlags;    /* original C++ signature */
+    mouse_text_flags: MouseTextFlags
+    # ImGuiTextBuffer      TextBuffer;    /* original C++ signature */
+    text_buffer: TextBuffer
+    # ImPlotItemGroup      Items;    /* original C++ signature */
+    items: ItemGroup
+    # ImAxis               CurrentX;    /* original C++ signature */
+    current_x: ImAxis
+    # ImAxis               CurrentY;    /* original C++ signature */
+    current_y: ImAxis
+    # ImRect               FrameRect;    /* original C++ signature */
+    frame_rect: ImRect
+    # ImRect               CanvasRect;    /* original C++ signature */
+    canvas_rect: ImRect
+    # ImRect               PlotRect;    /* original C++ signature */
+    plot_rect: ImRect
+    # ImRect               AxesRect;    /* original C++ signature */
+    axes_rect: ImRect
+    # ImRect               SelectRect;    /* original C++ signature */
+    select_rect: ImRect
+    # ImVec2               SelectStart;    /* original C++ signature */
+    select_start: ImVec2
+    # int                  TitleOffset;    /* original C++ signature */
+    title_offset: int
+    # bool                 JustCreated;    /* original C++ signature */
+    just_created: bool
+    # bool                 Initialized;    /* original C++ signature */
+    initialized: bool
+    # bool                 SetupLocked;    /* original C++ signature */
+    setup_locked: bool
+    # bool                 FitThisFrame;    /* original C++ signature */
+    fit_this_frame: bool
+    # bool                 Hovered;    /* original C++ signature */
+    hovered: bool
+    # bool                 Held;    /* original C++ signature */
+    held: bool
+    # bool                 Selecting;    /* original C++ signature */
+    selecting: bool
+    # bool                 Selected;    /* original C++ signature */
+    selected: bool
+    # bool                 ContextLocked;    /* original C++ signature */
+    context_locked: bool
 
     # ImPlotPlot() {    /* original C++ signature */
     #         Flags             = PreviousFlags = ImPlotFlags_None;
@@ -1270,6 +1534,32 @@ class Plot:
 
 class Subplot:
     """ Holds subplot data that must persist after EndSubplot"""
+    # ImGuiID                       ID;    /* original C++ signature */
+    id_: ID
+    # ImPlotSubplotFlags            Flags;    /* original C++ signature */
+    flags: SubplotFlags
+    # ImPlotSubplotFlags            PreviousFlags;    /* original C++ signature */
+    previous_flags: SubplotFlags
+    # ImPlotItemGroup               Items;    /* original C++ signature */
+    items: ItemGroup
+    # int                           Rows;    /* original C++ signature */
+    rows: int
+    # int                           Cols;    /* original C++ signature */
+    cols: int
+    # int                           CurrentIdx;    /* original C++ signature */
+    current_idx: int
+    # ImRect                        FrameRect;    /* original C++ signature */
+    frame_rect: ImRect
+    # ImRect                        GridRect;    /* original C++ signature */
+    grid_rect: ImRect
+    # ImVec2                        CellSize;    /* original C++ signature */
+    cell_size: ImVec2
+    # float                         TempSizes[2];    /* original C++ signature */
+    temp_sizes: np.ndarray  # ndarray[type=float, size=2]
+    # bool                          FrameHovered;    /* original C++ signature */
+    frame_hovered: bool
+    # bool                          HasTitle;    /* original C++ signature */
+    has_title: bool
 
     # ImPlotSubplot() {    /* original C++ signature */
     #         ID                          = 0;
@@ -1307,6 +1597,38 @@ class NextPlotData:
 
 class NextItemData:
     """ Temporary data storage for upcoming item"""
+    # float           LineWeight;    /* original C++ signature */
+    line_weight: float
+    # ImPlotMarker    Marker;    /* original C++ signature */
+    marker: Marker
+    # float           MarkerSize;    /* original C++ signature */
+    marker_size: float
+    # float           MarkerWeight;    /* original C++ signature */
+    marker_weight: float
+    # float           FillAlpha;    /* original C++ signature */
+    fill_alpha: float
+    # float           ErrorBarSize;    /* original C++ signature */
+    error_bar_size: float
+    # float           ErrorBarWeight;    /* original C++ signature */
+    error_bar_weight: float
+    # float           DigitalBitHeight;    /* original C++ signature */
+    digital_bit_height: float
+    # float           DigitalBitGap;    /* original C++ signature */
+    digital_bit_gap: float
+    # bool            RenderLine;    /* original C++ signature */
+    render_line: bool
+    # bool            RenderFill;    /* original C++ signature */
+    render_fill: bool
+    # bool            RenderMarkerLine;    /* original C++ signature */
+    render_marker_line: bool
+    # bool            RenderMarkerFill;    /* original C++ signature */
+    render_marker_fill: bool
+    # bool            HasHidden;    /* original C++ signature */
+    has_hidden: bool
+    # bool            Hidden;    /* original C++ signature */
+    hidden: bool
+    # ImPlotCond      HiddenCond;    /* original C++ signature */
+    hidden_cond: Cond
     # ImPlotNextItemData() { Reset(); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
@@ -1324,22 +1646,66 @@ class NextItemData:
 class Context:
     """ Holds state information that must persist between calls to BeginPlot()/EndPlot()"""
     # Plot States
+    # ImPlotPlot*           CurrentPlot;    /* original C++ signature */
+    current_plot: Plot
+    # ImPlotSubplot*        CurrentSubplot;    /* original C++ signature */
+    current_subplot: Subplot
+    # ImPlotItemGroup*      CurrentItems;    /* original C++ signature */
+    current_items: ItemGroup
+    # ImPlotItem*           CurrentItem;    /* original C++ signature */
+    current_item: Item
+    # ImPlotItem*           PreviousItem;    /* original C++ signature */
+    previous_item: Item
 
+    # ImPlotTicker CTicker;    /* original C++ signature */
+    # Tick Marks and Labels
+    c_ticker: Ticker
 
     # Annotation and Tabs
+    # ImPlotAnnotationCollection Annotations;    /* original C++ signature */
+    annotations: AnnotationCollection
+    # ImPlotTagCollection        Tags;    /* original C++ signature */
+    tags: TagCollection
 
+    # bool ChildWindowMade;    /* original C++ signature */
+    # Flags
+    child_window_made: bool
 
     # Style and Colormaps
+    # ImPlotStyle                 Style;    /* original C++ signature */
+    style: Style
+    # ImPlotColormapData          ColormapData;    /* original C++ signature */
+    colormap_data: ColormapData
 
 
     # Temp data for general use
 
     # Misc
+    # int                DigitalPlotItemCnt;    /* original C++ signature */
+    digital_plot_item_cnt: int
+    # int                DigitalPlotOffset;    /* original C++ signature */
+    digital_plot_offset: int
+    # ImPlotNextPlotData NextPlotData;    /* original C++ signature */
+    next_plot_data: NextPlotData
+    # ImPlotNextItemData NextItemData;    /* original C++ signature */
+    next_item_data: NextItemData
+    # ImPlotInputMap     InputMap;    /* original C++ signature */
+    input_map: InputMap
+    # bool               OpenContextThisFrame;    /* original C++ signature */
+    open_context_this_frame: bool
+    # ImGuiTextBuffer    MousePosStringBuilder;    /* original C++ signature */
+    mouse_pos_string_builder: TextBuffer
+    # ImPlotItemGroup*   SortItems;    /* original C++ signature */
+    sort_items: ItemGroup
 
     # Align plots
-    # ImPlotContext();    /* original C++ signature */
-    def __init__(self) -> None:
-        """Auto-generated default constructor"""
+    # ImPlotAlignmentData*        CurrentAlignmentH;    /* original C++ signature */
+    current_alignment_h: AlignmentData
+    # ImPlotAlignmentData*        CurrentAlignmentV;    /* original C++ signature */
+    current_alignment_v: AlignmentData
+    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), bool ChildWindowMade = bool(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer());    /* original C++ signature */
+    def __init__(self, c_ticker: Ticker = Ticker(), annotations: AnnotationCollection = AnnotationCollection(), tags: TagCollection = TagCollection(), child_window_made: bool = bool(), style: Style = Style(), colormap_data: ColormapData = ColormapData(), digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: NextPlotData = NextPlotData(), next_item_data: NextItemData = NextItemData(), input_map: InputMap = InputMap(), open_context_this_frame: bool = bool(), mouse_pos_string_builder: TextBuffer = TextBuffer()) -> None:
+        """Auto-generated default constructor with named params"""
         pass
 
 #-----------------------------------------------------------------------------
@@ -1894,9 +2260,15 @@ def transform_inverse_logit(v: float, param_1: Any) -> float:
 
 
 class Formatter_Time_Data:
-    # Formatter_Time_Data();    /* original C++ signature */
-    def __init__(self) -> None:
-        """Auto-generated default constructor"""
+    # ImPlotTime Time;    /* original C++ signature */
+    time: Time
+    # ImPlotDateTimeSpec Spec;    /* original C++ signature */
+    spec: DateTimeSpec
+    # void* UserFormatterData;    /* original C++ signature */
+    user_formatter_data: Any
+    # Formatter_Time_Data(ImPlotTime Time = ImPlotTime(), ImPlotDateTimeSpec Spec = ImPlotDateTimeSpec());    /* original C++ signature */
+    def __init__(self, time: Time = Time(), spec: DateTimeSpec = DateTimeSpec()) -> None:
+        """Auto-generated default constructor with named params"""
         pass
 
 

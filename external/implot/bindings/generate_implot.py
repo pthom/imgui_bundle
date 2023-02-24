@@ -56,7 +56,8 @@ def autogenerate_implot_internal() -> None:
             "^Formatter_Time$",
         ]
     )
-    options.member_exclude_by_name__regex += "|^Formatter$|^Locator$|"
+    options.member_exclude_by_name__regex += "|^Formatter$|^Locator$"
+    options.member_exclude_by_type__regex += "|^ImPlotTransform$|^ImPlotFormatter$|^tm$"
     options.fn_force_lambda__regex += "|^GetText$"
 
     litgen.write_generated_code_for_file(
