@@ -2281,12 +2281,23 @@ void py_init_module_implot(py::module& m)
 
     // Add a new colormap, inputs are np.array[uint32]
     m.def("add_colormap",
-        [](const char * name, const py::array & cols, int size, bool qual=true)
+        [](const char * name, const py::array & cols, bool qual=true)
         {
-            const void * values_from_pyarray = cols.data();            
-            return ImPlot::AddColormap(name, static_cast<const uint32_t *>(values_from_pyarray),size, qual);
+            const void * values_from_pyarray = cols.data(); 
 
-        }, py::arg("name"), py::arg("cols"), py::arg("size"), py::arg("qual") = true,
+            int ndim = cols.ndim();
+            int rows = static_cast<int>(cols.shape()[0]);
+
+            char cols_type = cols.dtype().char_();
+
+            if (cols_type == 'L' && ndim == 1)
+                return ImPlot::AddColormap(name, static_cast<const uint32_t *>(values_from_pyarray), rows, qual);
+            else if (cols_type =='f' && ndim == 2)
+                return ImPlot::AddColormap(name, static_cast<const ImVec4 *>(values_from_pyarray), rows, qual);
+            else
+                throw std::runtime_error(std::string("Bad array type, expected either 1D array of type uint32, or 2D (Nx4 ->RGBA) array of type float32. Got ('") + cols_type + "') of ndim =" + std::to_string(ndim) + " for cols.");
+
+        }, py::arg("name"), py::arg("cols"), py::arg("qual") = true,
         "Add a new colormap."
         );
 
