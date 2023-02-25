@@ -1,4 +1,4 @@
-=== How to use integrate Dear ImGui Bundle into your {cpp} application
+=== How to integrate Dear ImGui Bundle into your {cpp} application
 
 This directory is a *standalone* demonstration on how to easily integrate ImGuiBundle to your own project. This means that you can copy-paste the content folder in your project, and it will build, with no extra step!
 
