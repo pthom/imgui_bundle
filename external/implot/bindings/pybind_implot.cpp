@@ -2335,8 +2335,9 @@ void py_init_module_implot(py::module& m)
             int rows = static_cast<int>(cols.shape()[0]);
 
             char cols_type = cols.dtype().char_();
+            bool is_uint32 = is_py_array_unsigned_integer(cols) && cols.itemsize() == 4;
 
-            if (cols_type == 'L' && ndim == 1)
+            if (is_uint32 && (ndim == 1))
                 return ImPlot::AddColormap(name, static_cast<const uint32_t *>(values_from_pyarray), rows, qual);
             else if (cols_type =='f' && ndim == 2)
                 return ImPlot::AddColormap(name, static_cast<const ImVec4 *>(values_from_pyarray), rows, qual);
