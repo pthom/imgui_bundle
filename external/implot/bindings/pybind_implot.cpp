@@ -2333,13 +2333,14 @@ void py_init_module_implot(py::module& m)
 
             int ndim = cols.ndim();
             int rows = static_cast<int>(cols.shape()[0]);
+            int columns = ndim >= 2 ? static_cast<int>(cols.shape()[1]) : -1;
 
             char cols_type = cols.dtype().char_();
             bool is_uint32 = is_py_array_unsigned_integer(cols) && cols.itemsize() == 4;
 
             if (is_uint32 && (ndim == 1))
                 return ImPlot::AddColormap(name, static_cast<const uint32_t *>(values_from_pyarray), rows, qual);
-            else if (cols_type =='f' && ndim == 2)
+            else if ((cols_type =='f') && (ndim == 2) && (columns == 4))
                 return ImPlot::AddColormap(name, static_cast<const ImVec4 *>(values_from_pyarray), rows, qual);
             else
                 throw std::runtime_error(std::string("Bad array type, expected either 1D array of type uint32, or 2D (Nx4 ->RGBA) array of type float32. Got ('") + cols_type + "') of ndim =" + std::to_string(ndim) + " for cols.");
