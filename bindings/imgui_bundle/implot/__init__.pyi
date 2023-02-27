@@ -2232,13 +2232,6 @@ def get_marker_name(idx: Marker) -> str:
 # an assert otherwise! By default colormaps are considered to be qualitative (i.e. discrete). If you want to create a
 # continuous colormap, set #qual=False. This will treat the colors you provide as keys, and ImPlot will build a linearly
 # interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
-# IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImVec4* cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(name: str, cols: ImVec4, size: int, qual: bool = True) -> Colormap:
-    pass
-
-# IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);    /* original C++ signature */
-def add_colormap(name: str, cols: ImU32, size: int, qual: bool = True) -> Colormap:
-    pass
 
 # IMPLOT_API int GetColormapCount();    /* original C++ signature */
 def get_colormap_count() -> int:
@@ -2447,6 +2440,19 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
 ###############################################################################
 # MANUAL BINDINGS BELOW
 ###############################################################################
+
+# Add a new colormap. The color data will be copied. The colormap can be used by pushing either the returned index or the
+# string name with PushColormap. The colormap name must be unique and the size must be greater than 1. You will receive
+# an assert otherwise! By default, colormaps are considered to be qualitative (i.e. discrete). If you want to create a
+# continuous colormap, set #qual=False. This will treat the colors you provide as keys, and ImPlot will build a linearly
+# interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
+#
+# Warning:
+#   The colormap 'cols' must either be a 1D array of type uint32 (if using hexadecimal colors),
+#   or a 2D (Nx4 ->RGBA) array of type float32 (if using float values between 0 and 1)
+def add_colormap(name: str, cols: np.ndarray, qual: bool = True) -> Colormap:
+    pass
+
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 # IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=NULL, bool keep_default=false);    /* original C++ signature */
