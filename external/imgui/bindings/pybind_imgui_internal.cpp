@@ -3653,42 +3653,19 @@ void py_init_module_imgui_internal(py::module& m)
         py::overload_cast<const ImRect &, ImGuiID, ImGuiDataType, void *, const void *, const void *, const char *, ImGuiSliderFlags, ImRect *>(ImGui::SliderBehavior), py::arg("bb"), py::arg("id_"), py::arg("data_type"), py::arg("p_v"), py::arg("p_min"), py::arg("p_max"), py::arg("format"), py::arg("flags"), py::arg("out_grab_bb"));
 
     m.def("splitter_behavior",
-        [](const ImRect & bb, ImGuiID id, ImGuiAxis axis, py::array & size1, py::array & size2, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, ImU32 bg_col = 0) -> bool
+        [](const ImRect & bb, ImGuiID id, ImGuiAxis axis, float size1, float size2, float min_size1, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, ImU32 bg_col = 0) -> std::tuple<bool, float, float>
         {
-            auto SplitterBehavior_adapt_c_buffers = [](const ImRect & bb, ImGuiID id, ImGuiAxis axis, py::array & size1, py::array & size2, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, ImU32 bg_col = 0) -> bool
+            auto SplitterBehavior_adapt_modifiable_immutable_to_return = [](const ImRect & bb, ImGuiID id, ImGuiAxis axis, float size1, float size2, float min_size1, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, ImU32 bg_col = 0) -> std::tuple<bool, float, float>
             {
-                // convert py::array to C standard buffer (mutable)
-                void * size1_from_pyarray = size1.mutable_data();
-                py::ssize_t size1_count = size1.shape()[0];
-                char size1_type = size1.dtype().char_();
-                if (size1_type != 'f')
-                    throw std::runtime_error(std::string(R"msg(
-                            Bad type!  Expected a numpy array of native type:
-                                        float *
-                                    Which is equivalent to
-                                        f
-                                    (using py::array::dtype().char_() as an id)
-                        )msg"));
+                float * size1_adapt_modifiable = & size1;
+                float * size2_adapt_modifiable = & size2;
 
-                // convert py::array to C standard buffer (mutable)
-                void * size2_from_pyarray = size2.mutable_data();
-                py::ssize_t size2_count = size2.shape()[0];
-                char size2_type = size2.dtype().char_();
-                if (size2_type != 'f')
-                    throw std::runtime_error(std::string(R"msg(
-                            Bad type!  Expected a numpy array of native type:
-                                        float *
-                                    Which is equivalent to
-                                        f
-                                    (using py::array::dtype().char_() as an id)
-                        )msg"));
-
-                auto lambda_result = ImGui::SplitterBehavior(bb, id, axis, static_cast<float *>(size1_from_pyarray), static_cast<float *>(size2_from_pyarray), static_cast<float>(size2_count), min_size2, hover_extend, hover_visibility_delay, bg_col);
-                return lambda_result;
+                bool r = ImGui::SplitterBehavior(bb, id, axis, size1_adapt_modifiable, size2_adapt_modifiable, min_size1, min_size2, hover_extend, hover_visibility_delay, bg_col);
+                return std::make_tuple(r, size1, size2);
             };
 
-            return SplitterBehavior_adapt_c_buffers(bb, id, axis, size1, size2, min_size2, hover_extend, hover_visibility_delay, bg_col);
-        },     py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("size1"), py::arg("size2"), py::arg("min_size2"), py::arg("hover_extend") = 0.0f, py::arg("hover_visibility_delay") = 0.0f, py::arg("bg_col") = 0);
+            return SplitterBehavior_adapt_modifiable_immutable_to_return(bb, id, axis, size1, size2, min_size1, min_size2, hover_extend, hover_visibility_delay, bg_col);
+        },     py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("size1"), py::arg("size2"), py::arg("min_size1"), py::arg("min_size2"), py::arg("hover_extend") = 0.0f, py::arg("hover_visibility_delay") = 0.0f, py::arg("bg_col") = 0);
 
     m.def("tree_node_behavior",
         ImGui::TreeNodeBehavior, py::arg("id_"), py::arg("flags"), py::arg("label"), py::arg("label_end") = py::none());

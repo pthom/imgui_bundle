@@ -6094,13 +6094,14 @@ def splitter_behavior(
     bb: ImRect,
     id_: ID,
     axis: Axis,
-    size1: np.ndarray,
-    size2: np.ndarray,
+    size1: float,
+    size2: float,
+    min_size1: float,
     min_size2: float,
     hover_extend: float = 0.0,
     hover_visibility_delay: float = 0.0,
     bg_col: ImU32 = 0,
-) -> bool:
+) -> Tuple[bool, float, float]:
     pass
 
 # IMGUI_API bool          TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* label, const char* label_end = NULL);    /* original C++ signature */

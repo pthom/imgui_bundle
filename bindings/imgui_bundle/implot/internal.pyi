@@ -168,33 +168,6 @@ def im_almost_equal(v1: float, v2: float, ulp: int = 2) -> bool:
     (private API)
     """
     pass
-# template <typename T>    /* original C++ signature */
-# static inline double ImMean(const T* values, int count) {
-#     double den = 1.0 / count;
-#     double mu  = 0;
-#     for (int i = 0; i < count; ++i)
-#         mu += (double)values[i] * den;
-#     return mu;
-# }
-def im_mean(values: np.ndarray) -> float:
-    """ Finds the mean of an array
-    (private API)
-    """
-    pass
-# template <typename T>    /* original C++ signature */
-# static inline double ImStdDev(const T* values, int count) {
-#     double den = 1.0 / (count - 1.0);
-#     double mu  = ImMean(values, count);
-#     double x   = 0;
-#     for (int i = 0; i < count; ++i)
-#         x += ((double)values[i] - mu) * ((double)values[i] - mu) * den;
-#     return sqrt(x);
-# }
-def im_std_dev(values: np.ndarray) -> float:
-    """ Finds the sample standard deviation of an array
-    (private API)
-    """
-    pass
 # static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s) {    /* original C++ signature */
 # #ifdef IMPLOT_MIX64
 #     const ImU32 af = 256-s;
@@ -2108,30 +2081,6 @@ def intersection(a1: ImVec2, a2: ImVec2, b1: ImVec2, b2: ImVec2) -> ImVec2:
     pass
 
 
-# template <typename T>    /* original C++ signature */
-# static inline void CalculateBins(const T* values, int count, ImPlotBin meth, const ImPlotRange& range, int& bins_out, double& width_out) {
-#     switch (meth) {
-#         case ImPlotBin_Sqrt:
-#             bins_out  = (int)ceil(sqrt(count));
-#             break;
-#         case ImPlotBin_Sturges:
-#             bins_out  = (int)ceil(1.0 + log2(count));
-#             break;
-#         case ImPlotBin_Rice:
-#             bins_out  = (int)ceil(2 * cbrt(count));
-#             break;
-#         case ImPlotBin_Scott:
-#             width_out = 3.49 * ImStdDev(values, count) / cbrt(count);
-#             bins_out  = (int)round(range.Size() / width_out);
-#             break;
-#     }
-#     width_out = range.Size() / bins_out;
-# }
-def calculate_bins(values: np.ndarray, meth: Bin, range: Range, bins_out: int, width_out: float) -> Tuple[int, float]:
-    """ Calculate histogram bin counts and widths
-    (private API)
-    """
-    pass
 
 #-----------------------------------------------------------------------------
 # Time Utils
