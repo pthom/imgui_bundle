@@ -243,7 +243,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_return_force_policy_reference_for_references__regex = r".*"
 
-    options.fn_params_replace_buffer_by_array__regex = r".*"
+    options.fn_params_replace_buffer_by_array__regex = r"^Plot"
 
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
