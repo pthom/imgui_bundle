@@ -128,7 +128,7 @@ void StatusBarGui(AppState& app_state)
     {
         ImGui::Text("Rocket completion: ");
         ImGui::SameLine();
-        ImGui::ProgressBar(app_state.rocket_progress, ImVec2(100.0f, 15.0f));
+        ImGui::ProgressBar(app_state.rocket_progress, HelloImGui::EmToVec2(7.0f, 1.0f));
     }
 }
 
