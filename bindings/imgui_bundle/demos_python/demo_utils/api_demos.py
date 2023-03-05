@@ -84,7 +84,7 @@ def show_markdown_file(doc_filename: str) -> None:
 def read_code(filename: str) -> str:
     if not os.path.isfile(filename):
         return ""
-    with open(filename) as f:
+    with open(filename, encoding="utf8") as f:
         r = f.read()
         return r
 

@@ -9,7 +9,7 @@ from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, Im
 
 def _read_code(filepath: str) -> str:
     if os.path.isfile(filepath):
-        with open(filepath) as f:
+        with open(filepath, encoding="utf8") as f:
             code = f.read()
             return code
     else:
