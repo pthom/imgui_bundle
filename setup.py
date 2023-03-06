@@ -10,7 +10,7 @@ ROOT_PACKAGE_NAME = "imgui_bundle"
 
 
 def get_readme():
-    with open(ROOT_PACKAGE_FOLDER + "/Readme_pypi.md") as f:
+    with open(ROOT_PACKAGE_FOLDER + "/Readme_pypi.md", encoding="utf8") as f:
         r = f.read()
     return r
 

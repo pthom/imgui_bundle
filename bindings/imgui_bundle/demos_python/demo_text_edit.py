@@ -7,7 +7,7 @@ TextEditor = ed.TextEditor
 
 
 def _prepare_text_editor():
-    with open(__file__) as f:
+    with open(__file__, encoding="utf8") as f:
         this_file_code = f.read()
     editor = TextEditor()
     editor.set_text(this_file_code)

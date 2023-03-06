@@ -94,14 +94,14 @@ def add_copyright(filename):
         comment_marker = extensionCommentMarkers[extension]
         copyright_comment = comment_marker + " " + copyright_str
 
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding="utf8") as f:
             content = f.read()
             lines = content.split("\n")
 
         if lines[0] != copyright_comment:
             lines = [copyright_comment] + lines
             content_with_copyright = "\n".join(lines)
-            with open(filename, "w") as f:
+            with open(filename, "w", encoding="utf8") as f:
                 f.write(content_with_copyright)
 
 

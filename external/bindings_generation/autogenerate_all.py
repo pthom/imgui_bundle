@@ -39,7 +39,7 @@ _FILELIST_
     cmake_content = cmake_template.replace("_FILELIST_", filelist)
     this_dir = os.path.dirname(__file__)
     cmake_file = this_dir + "/cpp/all_pybind_files.cmake"
-    with open(cmake_file, "w") as f:
+    with open(cmake_file, "w", encoding="utf8") as f:
         f.write(cmake_content)
 
 
