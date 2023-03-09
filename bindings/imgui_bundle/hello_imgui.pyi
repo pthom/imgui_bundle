@@ -1028,8 +1028,8 @@ class RunnerCallbacks:
 
     * `PostInit`: *VoidFunction, default=empty*.
         You can here add a function that will be called once after OpenGL and ImGui are inited, but before
-        the backend callback are initialized. If you, for instance, want to add your own glfw callbacks,
-        you should use this function to do so."
+        the backend callback are initialized.
+        If you, for instance, want to add your own glfw callbacks, you should use this function to do so."
 
     * `BeforeExit`: *VoidFunction, default=empty*.
         You can here add a function that will be called once before exiting (when OpenGL and ImGui are
@@ -1042,6 +1042,7 @@ class RunnerCallbacks:
       Callbacks for events from a specific backend. _Only implemented for SDL, where the event
       will be of type 'SDL_Event *'_
       This callback should return True if the event was handled and shall not be processed further.
+      Note: in the case of GLFW, you should use register them in `PostInit`
 
     * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
        A function that is called when fonts are ready to be loaded.
@@ -1195,23 +1196,26 @@ class DockingSplit:
         At the start, there is only one Dock Space named "MainDockSpace".
         You should start by partitioning this space, in order to create a new dock space.
 
-    * `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created
+    * `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.
     * `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.
-    Direction where this dock space should be created
-    * `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space
+    Direction where this dock space should be created.
+    * `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space.
+    * `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space.
 
     @@md
 
     """
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
-    #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f)
-    #       : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_) {}
+    #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
+    #                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
+    #       : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
     def __init__(
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
         direction_: ImGuiDir_ = ImGuiDir_Down,
-        ratio_: float = 0.25
+        ratio_: float = 0.25,
+        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
         ) -> None:
         pass
 
@@ -1223,6 +1227,8 @@ class DockingSplit:
     direction: ImGuiDir_
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
+    # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
 class DockableWindow:
     """*

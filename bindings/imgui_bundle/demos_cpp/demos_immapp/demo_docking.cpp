@@ -238,7 +238,8 @@ int main(int, char**)
     splitMainLeft.newDock = "LeftSpace";
     splitMainLeft.direction = ImGuiDir_Left;
     splitMainLeft.ratio = 0.25f;
-    splitMainLeft.nodeFlags = ImGuiDockNodeFlags_NoTabBar;
+    // Exclude this space from Docking
+    splitMainLeft.nodeFlags = ImGuiDockNodeFlags_NoDocking | ImGuiDockNodeFlags_NoTabBar;
 
     // Finally, transmit these splits to HelloImGui
     runnerParams.dockingParams.dockingSplits = {splitMainBottom, splitMainLeft};
