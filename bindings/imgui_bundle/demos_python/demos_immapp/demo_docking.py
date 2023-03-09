@@ -213,6 +213,8 @@ def main():
     split_main_left.new_dock = "LeftSpace"
     split_main_left.direction = imgui.Dir_.left
     split_main_left.ratio = 0.25
+    # Exclude this space from Docking
+    split_main_left.node_flags = imgui.internal.DockNodeFlagsPrivate_.no_docking | imgui.internal.DockNodeFlagsPrivate_.no_tab_bar
 
     # Finally, transmit these splits to HelloImGui
     runner_params.docking_params.docking_splits = [split_main_bottom, split_main_left]

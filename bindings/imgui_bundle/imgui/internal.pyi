@@ -2196,74 +2196,72 @@ class DockNodeFlagsPrivate_(enum.Enum):
 
     # [Internal]
     # ImGuiDockNodeFlags_DockSpace                = 1 << 10,      /* original C++ signature */
-    im_gui_dock_node_flags_dock_space = (
+    dock_space = (
         enum.auto()
     )  # (= 1 << 10)  # Local, Saved  // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.
     # ImGuiDockNodeFlags_CentralNode              = 1 << 11,      /* original C++ signature */
-    im_gui_dock_node_flags_central_node = (
+    central_node = (
         enum.auto()
     )  # (= 1 << 11)  # Local, Saved  // The central node has 2 main properties: stay visible when empty, only use "remaining" spaces from its neighbor.
     # ImGuiDockNodeFlags_NoTabBar                 = 1 << 12,      /* original C++ signature */
-    im_gui_dock_node_flags_no_tab_bar = (
+    no_tab_bar = (
         enum.auto()
     )  # (= 1 << 12)  # Local, Saved  // Tab bar is completely unavailable. No triangle in the corner to enable it back.
     # ImGuiDockNodeFlags_HiddenTabBar             = 1 << 13,      /* original C++ signature */
-    im_gui_dock_node_flags_hidden_tab_bar = (
+    hidden_tab_bar = (
         enum.auto()
     )  # (= 1 << 13)  # Local, Saved  // Tab bar is hidden, with a triangle in the corner to show it again (NB: actual tab-bar instance may be destroyed as this is only used for single-window tab bar)
     # ImGuiDockNodeFlags_NoWindowMenuButton       = 1 << 14,      /* original C++ signature */
-    im_gui_dock_node_flags_no_window_menu_button = (
+    no_window_menu_button = (
         enum.auto()
     )  # (= 1 << 14)  # Local, Saved  // Disable window/docking menu (that one that appears instead of the collapse button)
     # ImGuiDockNodeFlags_NoCloseButton            = 1 << 15,      /* original C++ signature */
-    im_gui_dock_node_flags_no_close_button = (
-        enum.auto()
-    )  # (= 1 << 15)  # Local, Saved  //
+    no_close_button = enum.auto()  # (= 1 << 15)  # Local, Saved  //
     # ImGuiDockNodeFlags_NoDocking                = 1 << 16,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking = (
+    no_docking = (
         enum.auto()
     )  # (= 1 << 16)  # Local, Saved  // Disable any form of docking in this dockspace or individual node. (On a whole dockspace, this pretty much defeat the purpose of using a dockspace at all). Note: when turned on, existing docked nodes will be preserved.
     # ImGuiDockNodeFlags_NoDockingSplitMe         = 1 << 17,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_split_me = (
+    no_docking_split_me = (
         enum.auto()
     )  # (= 1 << 17)  # [EXPERIMENTAL] Prevent another window/node from splitting this node.
     # ImGuiDockNodeFlags_NoDockingSplitOther      = 1 << 18,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_split_other = (
+    no_docking_split_other = (
         enum.auto()
     )  # (= 1 << 18)  # [EXPERIMENTAL] Prevent this node from splitting another window/node.
     # ImGuiDockNodeFlags_NoDockingOverMe          = 1 << 19,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_me = (
+    no_docking_over_me = (
         enum.auto()
     )  # (= 1 << 19)  # [EXPERIMENTAL] Prevent another window/node to be docked over this node.
     # ImGuiDockNodeFlags_NoDockingOverOther       = 1 << 20,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_other = (
+    no_docking_over_other = (
         enum.auto()
     )  # (= 1 << 20)  # [EXPERIMENTAL] Prevent this node to be docked over another window or non-empty node.
     # ImGuiDockNodeFlags_NoDockingOverEmpty       = 1 << 21,      /* original C++ signature */
-    im_gui_dock_node_flags_no_docking_over_empty = (
+    no_docking_over_empty = (
         enum.auto()
     )  # (= 1 << 21)  # [EXPERIMENTAL] Prevent this node to be docked over an empty node (e.g. DockSpace with no other windows)
     # ImGuiDockNodeFlags_NoResizeX                = 1 << 22,      /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_x = enum.auto()  # (= 1 << 22)  # [EXPERIMENTAL]
+    no_resize_x = enum.auto()  # (= 1 << 22)  # [EXPERIMENTAL]
     # ImGuiDockNodeFlags_NoResizeY                = 1 << 23,      /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_y = enum.auto()  # (= 1 << 23)  # [EXPERIMENTAL]
+    no_resize_y = enum.auto()  # (= 1 << 23)  # [EXPERIMENTAL]
     # ImGuiDockNodeFlags_SharedFlagsInheritMask_  = ~0,    /* original C++ signature */
-    im_gui_dock_node_flags_shared_flags_inherit_mask_ = enum.auto()  # (= ~0)
+    shared_flags_inherit_mask_ = enum.auto()  # (= ~0)
     # ImGuiDockNodeFlags_NoResizeFlagsMask_       = ImGuiDockNodeFlags_NoResize | ImGuiDockNodeFlags_NoResizeX | ImGuiDockNodeFlags_NoResizeY,    /* original C++ signature */
-    im_gui_dock_node_flags_no_resize_flags_mask_ = (
+    no_resize_flags_mask_ = (
         enum.auto()
     )  # (= DockNodeFlags_NoResize | DockNodeFlags_NoResizeX | DockNodeFlags_NoResizeY)
     # ImGuiDockNodeFlags_LocalFlagsMask_          = ImGuiDockNodeFlags_NoSplit | ImGuiDockNodeFlags_NoResizeFlagsMask_ | ImGuiDockNodeFlags_AutoHideTabBar | ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_CentralNode | ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_HiddenTabBar | ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoDocking,    /* original C++ signature */
-    im_gui_dock_node_flags_local_flags_mask_ = (
+    local_flags_mask_ = (
         enum.auto()
     )  # (= DockNodeFlags_NoSplit | DockNodeFlags_NoResizeFlagsMask_ | DockNodeFlags_AutoHideTabBar | DockNodeFlags_DockSpace | DockNodeFlags_CentralNode | DockNodeFlags_NoTabBar | DockNodeFlags_HiddenTabBar | DockNodeFlags_NoWindowMenuButton | DockNodeFlags_NoCloseButton | DockNodeFlags_NoDocking)
     # ImGuiDockNodeFlags_LocalFlagsTransferMask_  = ImGuiDockNodeFlags_LocalFlagsMask_ & ~ImGuiDockNodeFlags_DockSpace,      /* original C++ signature */
-    im_gui_dock_node_flags_local_flags_transfer_mask_ = (
+    local_flags_transfer_mask_ = (
         enum.auto()
     )  # (= DockNodeFlags_LocalFlagsMask_  ~DockNodeFlags_DockSpace)  # When splitting those flags are moved to the inheriting child, never duplicated
     # ImGuiDockNodeFlags_SavedFlagsMask_          = ImGuiDockNodeFlags_NoResizeFlagsMask_ | ImGuiDockNodeFlags_DockSpace | ImGuiDockNodeFlags_CentralNode | ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_HiddenTabBar | ImGuiDockNodeFlags_NoWindowMenuButton | ImGuiDockNodeFlags_NoCloseButton | ImGuiDockNodeFlags_NoDocking    /* original C++ signature */
     # }
-    im_gui_dock_node_flags_saved_flags_mask_ = (
+    saved_flags_mask_ = (
         enum.auto()
     )  # (= DockNodeFlags_NoResizeFlagsMask_ | DockNodeFlags_DockSpace | DockNodeFlags_CentralNode | DockNodeFlags_NoTabBar | DockNodeFlags_HiddenTabBar | DockNodeFlags_NoWindowMenuButton | DockNodeFlags_NoCloseButton | DockNodeFlags_NoDocking)
 

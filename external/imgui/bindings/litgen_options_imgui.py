@@ -96,6 +96,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
     # fix https://github.com/pthom/imgui_bundle/issues/40
     options.var_names_replacements.add_last_replacement(r"im_gui_selectable_flags_", "")
+    options.var_names_replacements.add_last_replacement(r"im_gui_dock_node_flags_", "")
 
     # options.names_replacements.add_last_replacement(r"(^ImGui)([A-Z])", r"\2")
 
