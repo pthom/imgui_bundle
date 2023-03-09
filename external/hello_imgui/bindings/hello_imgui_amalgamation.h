@@ -1800,8 +1800,8 @@ struct MobileCallbacks
 
 * `PostInit`: *VoidFunction, default=empty*.
     You can here add a function that will be called once after OpenGL and ImGui are inited, but before
-    the backend callback are initialized. If you, for instance, want to add your own glfw callbacks,
-    you should use this function to do so."
+    the backend callback are initialized.
+    If you, for instance, want to add your own glfw callbacks, you should use this function to do so."
 
 * `BeforeExit`: *VoidFunction, default=empty*.
     You can here add a function that will be called once before exiting (when OpenGL and ImGui are
@@ -1814,6 +1814,7 @@ struct MobileCallbacks
   Callbacks for events from a specific backend. _Only implemented for SDL, where the event
   will be of type 'SDL_Event *'_
   This callback should return true if the event was handled and shall not be processed further.
+  Note: in the case of GLFW, you should use register them in `PostInit`
 
 * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
    A function that is called when fonts are ready to be loaded.
