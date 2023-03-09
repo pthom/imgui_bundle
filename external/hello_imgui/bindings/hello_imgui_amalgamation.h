@@ -1949,23 +1949,26 @@ _Members:_
     At the start, there is only one Dock Space named "MainDockSpace".
     You should start by partitioning this space, in order to create a new dock space.
 
-* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created
+* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.
 * `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.
-Direction where this dock space should be created
-* `ratio`: _float, default=0.25f_. Ratio of the initialDock size that should be used by the new dock space
+Direction where this dock space should be created.
+* `ratio`: _float, default=0.25f_. Ratio of the initialDock size that should be used by the new dock space.
+* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space.
 
 @@md
 */
 struct DockingSplit
 {
     DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",
-                 ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f)
-      : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_) {}
+                 ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
+                 ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
+      : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
 
     DockSpaceName initialDock;
     DockSpaceName newDock;
     ImGuiDir_ direction;
     float ratio = 0.25f;
+    ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;
 };
 
 /**

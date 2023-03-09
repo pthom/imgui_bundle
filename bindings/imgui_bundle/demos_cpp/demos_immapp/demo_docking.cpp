@@ -13,6 +13,7 @@ It demonstrates:
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome.h"
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "immapp/clock.h"
@@ -237,6 +238,8 @@ int main(int, char**)
     splitMainLeft.newDock = "LeftSpace";
     splitMainLeft.direction = ImGuiDir_Left;
     splitMainLeft.ratio = 0.25f;
+    // Exclude this space from Docking
+    splitMainLeft.nodeFlags = ImGuiDockNodeFlags_NoDocking | ImGuiDockNodeFlags_NoTabBar;
 
     // Finally, transmit these splits to HelloImGui
     runnerParams.dockingParams.dockingSplits = {splitMainBottom, splitMainLeft};

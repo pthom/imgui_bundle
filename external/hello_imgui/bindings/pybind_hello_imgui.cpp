@@ -445,13 +445,14 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassDockingSplit =
         py::class_<HelloImGui::DockingSplit>
-            (m, "DockingSplit", "*\n@@md#DockingSplit\n\n**DockingSplit** is a struct that defines the way the docking splits should be applied on the screen\nin order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,\nin order to partition the screen at your will.\n\n_Members:_\n\n* `initialDock`: _DockSpaceName (aka string)_\n\n    id of the space that should be split.\n    At the start, there is only one Dock Space named \"MainDockSpace\".\n    You should start by partitioning this space, in order to create a new dock space.\n\n* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created\n* `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.\nDirection where this dock space should be created\n* `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space\n\n@@md\n")
-        .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir_, float>(),
-            py::arg("initial_dock_") = "", py::arg("new_dock_") = "", py::arg("direction_") = ImGuiDir_Down, py::arg("ratio_") = 0.25f)
+            (m, "DockingSplit", "*\n@@md#DockingSplit\n\n**DockingSplit** is a struct that defines the way the docking splits should be applied on the screen\nin order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,\nin order to partition the screen at your will.\n\n_Members:_\n\n* `initialDock`: _DockSpaceName (aka string)_\n\n    id of the space that should be split.\n    At the start, there is only one Dock Space named \"MainDockSpace\".\n    You should start by partitioning this space, in order to create a new dock space.\n\n* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.\n* `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.\nDirection where this dock space should be created.\n* `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space.\n* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space.\n\n@@md\n")
+        .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir_, float, ImGuiDockNodeFlags>(),
+            py::arg("initial_dock_") = "", py::arg("new_dock_") = "", py::arg("direction_") = ImGuiDir_Down, py::arg("ratio_") = 0.25f, py::arg("node_flags_") = ImGuiDockNodeFlags_None)
         .def_readwrite("initial_dock", &DockingSplit::initialDock, "")
         .def_readwrite("new_dock", &DockingSplit::newDock, "")
         .def_readwrite("direction", &DockingSplit::direction, "")
         .def_readwrite("ratio", &DockingSplit::ratio, "")
+        .def_readwrite("node_flags", &DockingSplit::nodeFlags, "")
         ;
 
 
