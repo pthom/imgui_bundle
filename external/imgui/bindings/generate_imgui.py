@@ -53,13 +53,16 @@ def autogenerate_imgui() -> None:
 
 
 def autogenerate_imgui_internal() -> None:
-    print("Processing imgui_internal.h")
     options_imgui_internal = litgen_options_imgui(ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH)
-    litgen.write_generated_code_for_file(
-        options_imgui_internal,
-        input_cpp_header_file=CPP_HEADERS_DIR + "/imgui_internal.h",
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_internal.cpp",
-        output_stub_pyi_file=STUB_DIR + "/imgui/internal.pyi",
+    generator = litgen.LitgenGenerator(options_imgui_internal)
+
+    print("Processing imgui_internal.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_internal.h")
+    print("Processing imgui_internal_pywrappers.h")
+    generator.process_cpp_file(THIS_DIR + "/../imgui_pywrappers/imgui_internal_pywrappers.h")
+
+    generator.write_generated_code(
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_internal.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/internal.pyi"
     )
 
 

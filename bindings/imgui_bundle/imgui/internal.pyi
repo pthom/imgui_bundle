@@ -19,6 +19,7 @@ typedef int ImGuiDataAuthority;         // -> enum ImGuiDataAuthority_      // E
 typedef int ImGuiLayoutType;            // -> enum ImGuiLayoutType_         // Enum: Horizontal or vertical
 typedef int ImGuiActivateFlags;         // -> enum ImGuiActivateFlags_      // Flags: for navigation/focus function (will be for ActivateItem() later)
 typedef int ImGuiDebugLogFlags;         // -> enum ImGuiDebugLogFlags_      // Flags: for ShowDebugLogWindow(), g.DebugLogFlags
+typedef int ImGuiInputFlags;            // -> enum ImGuiInputFlags_         // Flags: for IsKeyPressed(), IsMouseClicked(), SetKeyOwner(), SetItemKeyOwner() etc.
 typedef int ImGuiItemFlags;             // -> enum ImGuiItemFlags_          // Flags: for PushItemFlag()
 typedef int ImGuiItemStatusFlags;       // -> enum ImGuiItemStatusFlags_    // Flags: for DC.LastItemStatusFlags
 typedef int ImGuiOldColumnFlags;        // -> enum ImGuiOldColumnFlags_     // Flags: for BeginColumns()
@@ -36,6 +37,7 @@ DataAuthority = int #         // -> enum DataAuthority_      // Enum: for storin
 LayoutType = int  #            // -> enum LayoutType_         // Enum: Horizontal or vertical
 ActivateFlags = int  #         // -> enum ActivateFlags_      // Flags: for navigation/focus function (will be for ActivateItem() later)
 DebugLogFlags = int  #         // -> enum DebugLogFlags_      // Flags: for ShowDebugLogWindow(), g.DebugLogFlags
+InputFlags = int  #            // -> enum ImGuiInputFlags_         // Flags: for IsKeyPressed(), IsMouseClicked(), SetKeyOwner(), SetItemKeyOwner() etc.
 ItemFlags = int  #             // -> enum ItemFlags_          // Flags: for PushItemFlag()
 ItemStatusFlags = int  #       // -> enum ItemStatusFlags_    // Flags: for DC.LastItemStatusFlags
 OldColumnFlags = int  #        // -> enum OldColumnFlags_     // Flags: for BeginColumns()
@@ -5370,17 +5372,6 @@ def dock_builder_set_node_pos(node_id: ID, pos: ImVec2) -> None:
 def dock_builder_set_node_size(node_id: ID, size: ImVec2) -> None:
     pass
 
-# IMGUI_API ImGuiID       DockBuilderSplitNode(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir, ImGuiID* out_id_at_dir, ImGuiID* out_id_at_opposite_dir);     /* original C++ signature */
-def dock_builder_split_node(
-    node_id: ID,
-    split_dir: Dir,
-    size_ratio_for_node_at_dir: float,
-    out_id_at_dir: ID,
-    out_id_at_opposite_dir: ID,
-) -> ID:
-    """Create 2 child nodes in this parent node."""
-    pass
-
 # IMGUI_API void          DockBuilderCopyDockSpace(ImGuiID src_dockspace_id, ImGuiID dst_dockspace_id, ImVector<const char*>* in_window_remap_pairs);    /* original C++ signature */
 def dock_builder_copy_dock_space(
     src_dockspace_id: ID, dst_dockspace_id: ID, in_window_remap_pairs: List[str]
@@ -6340,6 +6331,22 @@ class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
 
 # </submodule im_stb>
 ####################    </generated_from:imgui_internal.h>    ####################
+
+
+####################    <generated_from:imgui_internal_pywrappers.h>    ####################
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Handwritten wrappers around parts of the imgui API, when needed for the python bindings
+
+# IMGUI_API std::tuple<ImGuiID, ImGuiID, ImGuiID>       DockBuilderSplitNode_Py(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir);    /* original C++ signature */
+# }
+def dock_builder_split_node_py(
+    node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: float
+) -> Tuple[ID, ID, ID]:
+    """DockBuilderSplitNode_Py() create 2 child nodes within 1 node. The initial node becomes a parent node.
+    This version is an adaptation for the python bindings (the C++ version uses two output parameters for the ID of the child nodes, this version returns a tuple)
+    """
+    pass
+####################    </generated_from:imgui_internal_pywrappers.h>    ####################
 
 # </litgen_stub>
 

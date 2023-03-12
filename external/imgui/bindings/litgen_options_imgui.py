@@ -163,6 +163,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"SetDragDropPayload^$",
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
+            r"^DockBuilderSplitNode$"
         ]
     )
 

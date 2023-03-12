@@ -14,7 +14,10 @@ endif()
 # Add imgui_pywrappers
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_simple_external_library(imgui_pywrappers imgui/imgui_pywrappers)
-    target_sources(imgui_pywrappers PRIVATE imgui/imgui_pywrappers/imgui_pywrappers.cpp imgui/imgui_pywrappers/imgui_pywrappers.h)
+    target_sources(imgui_pywrappers PRIVATE
+        imgui/imgui_pywrappers/imgui_pywrappers.cpp imgui/imgui_pywrappers/imgui_pywrappers.h
+        imgui/imgui_pywrappers/imgui_internal_pywrappers.cpp imgui/imgui_pywrappers/imgui_internal_pywrappers.h
+        )
     target_link_libraries(imgui_pywrappers PUBLIC pybind11::pybind11)
 endif()
 # Build immvision
