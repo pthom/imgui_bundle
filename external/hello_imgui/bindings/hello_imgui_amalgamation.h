@@ -1864,6 +1864,7 @@ struct RunnerCallbacks
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <utility>
+#include <optional>
 #include <stdio.h>
 
 namespace HelloImGui
@@ -1980,8 +1981,8 @@ _Members:_
 
 * `label`: _string_. Title of the window.
 * `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window
-   should initialy be placed
-* `GuiFunction`: _VoidFuntion_. Any function that will render this window's Gui.
+   should initially be placed
+* `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.
 * `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.
 * `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.
 * `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End
@@ -2054,7 +2055,10 @@ struct DockableWindow
 
  * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
  * `void focusDockableWindow(const std::string& name)`: will focus a dockable window
-
+ * `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`: may return the ImGuiID corresponding
+   to the dockspace with this name.
+   **Warning**: this will work reliably only if layoutCondition = DockingLayoutCondition::ApplicationStart. In other
+   cases, the ID may be cached by ImGui himself at the first run, and HelloImGui will *not* know it on subsequent runs!
 @@md
  */
 
@@ -2076,6 +2080,8 @@ struct DockingParams
 
     DockableWindow * dockableWindowOfName(const std::string & name);
     void focusDockableWindow(const std::string& windowName);
+
+    std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);
 };
 } // namespace HelloImGui
 

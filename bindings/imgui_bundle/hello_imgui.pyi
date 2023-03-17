@@ -1240,8 +1240,8 @@ class DockableWindow:
 
     * `label`: _string_. Title of the window.
     * `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window
-       should initialy be placed
-    * `GuiFunction`: _VoidFuntion_. Any function that will render this window's Gui.
+       should initially be placed
+    * `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.
     * `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.
     * `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.
     * `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End
@@ -1334,7 +1334,10 @@ class DockableWindow:
 #
 # * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
 # * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
-#
+# * `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`: may return the ImGuiID corresponding
+#   to the dockspace with this name.
+#   **Warning**: this will work reliably only if layoutCondition = DockingLayoutCondition::ApplicationStart. In other
+#   cases, the ID may be cached by ImGui himself at the first run, and HelloImGui will *not* know it on subsequent runs!
 #@@md
 #
 
@@ -1364,6 +1367,10 @@ class DockingParams:
         pass
     # void focusDockableWindow(const std::string& windowName);    /* original C++ signature */
     def focus_dockable_window(self, window_name: str) -> None:
+        pass
+
+    # std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);    /* original C++ signature */
+    def dock_space_id_from_name(self, dock_space_name: str) -> Optional[ImGuiID]:
         pass
     # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
     def __init__(
