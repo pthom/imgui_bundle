@@ -1,5 +1,6 @@
 include(${CMAKE_CURRENT_LIST_DIR}/add_imgui.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/add_glfw.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/add_sdl.cmake)
 
 ####################################################
 # Build hello_imgui Bound C++ library
@@ -23,9 +24,9 @@ function (add_hello_imgui)
         add_glfw()
     endif()
 
-    # 2.2 Build sdl
-    if (IMGUI_BUNDLE_WITH_SDL AND NOT EMSCRIPTEN)
-        add_subdirectory(SDL/SDL)
+    # 2.2 Build sdl if required
+    if (IMGUI_BUNDLE_WITH_SDL)
+        add_sdl()
     endif()
 
     # 3. Configure hello-imgui with the following options:
