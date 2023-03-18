@@ -1,5 +1,4 @@
 import webbrowser
-
 from imgui_bundle import imgui, hello_imgui, immapp, ImVec4, ImVec2
 
 ImTextureID = int
@@ -35,10 +34,8 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
     def lerp(a, b, x):
         return a + (b - a) * x
 
-    ImRect = imgui.internal.ImRect
-
-    rect0: ImRect
-    rect1: ImRect
+    rect0: imgui.internal.ImRect
+    rect1: imgui.internal.ImRect
     alpha0: float
     alpha1: float
 

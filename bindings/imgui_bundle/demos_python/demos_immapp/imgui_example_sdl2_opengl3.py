@@ -1,7 +1,7 @@
 # imgui_bundle can be used to run imgui with an almost line by line translation from C++ to python
 #
-# This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl3/main.cpp)
-# (see https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp)
+# This file a direct adaptation of an imgui example (imgui/examples/example_sdl2_opengl3/main.cpp)
+# (see https://github.com/ocornut/imgui/blob/master/examples/example_sdl2_opengl3/main.cpp)
 
 
 import os.path
@@ -10,48 +10,42 @@ import platform
 import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui
 
-# Always import glfw *after* imgui_bundle
-# (since imgui_bundle will set the correct path where to look for the correct version of the glfw dynamic library)
-import glfw  # type: ignore
-
-
-def glfw_error_callback(error: int, description: str):
-    sys.stderr.write(f"Glfw Error {error}: {description}\n")
+# Always import sdl *after* imgui_bundle
+# (since imgui_bundle will set the correct path where to look for the correct version of the SDL dynamic library)
+import sdl2  # type: ignore # if this fails, you need to: pip install PySDL2
 
 
 def main():
     # Setup window
-    glfw.set_error_callback(glfw_error_callback)
-    if not glfw.init():
-        sys.exit(1)
+    if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER | sdl2.SDL_INIT_GAMECONTROLLER) != 0:
+        print(f"Error: {sdl2.SDL_GetError()}")
 
     # Decide GL+GLSL versions
-    # #if defined(IMGUI_IMPL_OPENGL_ES2)
-    # // GL ES 2.0 + GLSL 100
-    # const char* glsl_version = "#version 100";
-    # glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-    # glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    # glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     if platform.system() == "Darwin":
         glsl_version = "#version 150"
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
-        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)  # // 3.2+ only
-        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL.GL_TRUE)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FLAGS, sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) # Always required on Mac
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 2)
     else:
         # GL 3.0 + GLSL 130
-        glsl_version = "#version 130"
-        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 0)
-        # glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE) # // 3.2+ only
-        # glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FLAGS, 0)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
+        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 0)
+
+    # From 2.0.18: Enable native IME.
+    sdl2.SDL_SetHint(sdl2.SDL_HINT_IME_SHOW_UI, b"1")
 
     # Create window with graphics context
-    window = glfw.create_window(1280, 720, "Dear ImGui GLFW+OpenGL3 example", None, None)
-    if window is None:
-        sys.exit(1)
-    glfw.make_context_current(window)
-    glfw.swap_interval(1)  # // Enable vsync
+    sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
+    sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
+    sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_STENCIL_SIZE, 8)
+    window_flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE | sdl2.SDL_WINDOW_ALLOW_HIGHDPI
+    window = sdl2.SDL_CreateWindow(b"Dear ImGui SDL2+OpenGL3 example", sdl2.SDL_WINDOWPOS_CENTERED, sdl2.SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags)
+    gl_context = sdl2.SDL_GL_CreateContext(window)
+    sdl2.SDL_GL_MakeCurrent(window, gl_context)
+    sdl2.SDL_GL_SetSwapInterval(1) # Enable vsync
 
     # Setup Dear ImGui context
     # IMGUI_CHECKVERSION();
@@ -79,10 +73,11 @@ def main():
     # Setup Platform/Renderer backends
     import ctypes
 
-    # You need to transfer the window address to imgui.backends.glfw_init_for_opengl
+    # You need to transfer the window address to imgui.backends.sdl2_init_for_opengl
     # proceed as shown below to get it.
     window_address = ctypes.cast(window, ctypes.c_void_p).value
-    imgui.backends.glfw_init_for_opengl(window_address, True)
+    gl_context_address = ctypes.cast(gl_context, ctypes.c_void_p).value
+    imgui.backends.sdl2_init_for_opengl(window_address, gl_context_address)
 
     imgui.backends.opengl3_init(glsl_version)
 
@@ -139,18 +134,28 @@ def main():
     counter = 0
 
     # Main loop
-    while not glfw.window_should_close(window):
+    done = False
+    while not done:
 
         # // Poll and handle events (inputs, window resize, etc.)
         # // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         # // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
         # // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
         # // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-        glfw.poll_events()
+        event = sdl2.SDL_Event()
+        while sdl2.SDL_PollEvent(event):
+            # event_address = ctypes.cast(event, ctypes.c_void_p).value
+            event_address = ctypes.addressof(event)
+            imgui.backends.sdl2_process_event(event_address)
+            if event.type == sdl2.SDL_QUIT:
+                done = True
+            if (event.type == sdl2.SDL_WINDOWEVENT and event.window.event == sdl2.SDL_WINDOWEVENT_CLOSE and event.window.windowID == sdl2.SDL_GetWindowID(window)):
+                done = True
+
 
         # Start the Dear ImGui frame
         imgui.backends.opengl3_new_frame()
-        imgui.backends.glfw_new_frame()
+        imgui.backends.sdl2_new_frame()
         imgui.new_frame()
 
         # 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -210,8 +215,7 @@ def main():
 
         # Rendering
         imgui.render()
-        display_w, display_h = glfw.get_framebuffer_size(window)
-        GL.glViewport(0, 0, display_w, display_h)
+        GL.glViewport(0, 0, int(imgui.get_io().display_size.x), int(imgui.get_io().display_size.y))
         GL.glClearColor(
             clear_color[0] * clear_color[3],
             clear_color[1] * clear_color[3],
@@ -223,22 +227,24 @@ def main():
 
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-        #  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
+        #  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
         if io.config_flags & imgui.ConfigFlags_.viewports_enable > 0:
-            backup_current_context = glfw.get_current_context()
+            backup_current_window = sdl2.SDL_GL_GetCurrentWindow()
+            backup_current_context = sdl2.SDL_GL_GetCurrentContext()
             imgui.update_platform_windows()
             imgui.render_platform_windows_default()
-            glfw.make_context_current(backup_current_context)
+            sdl2.SDL_GL_MakeCurrent(backup_current_window, backup_current_context)
 
-        glfw.swap_buffers(window)
+        sdl2.SDL_GL_SwapWindow(window)
 
     # Cleanup
     imgui.backends.opengl3_shutdown()
-    imgui.backends.glfw_shutdown()
+    imgui.backends.sdl2_shutdown()
     imgui.destroy_context()
 
-    glfw.destroy_window(window)
-    glfw.terminate()
+    sdl2.SDL_GL_DeleteContext(gl_context)
+    sdl2.SDL_DestroyWindow(window);
+    sdl2.SDL_Quit();
 
 
 if __name__ == "__main__":

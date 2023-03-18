@@ -11,8 +11,7 @@ import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui
 
 # Always import glfw *after* imgui_bundle
-# (since imgui_bundle will set the correct path where to look for
-#  the correct version of the glfw dynamic library)
+# (since imgui_bundle will set the correct path where to look for the correct version of the glfw dynamic library)
 import glfw  # type: ignore
 
 
@@ -58,10 +57,10 @@ def main():
     # Setup Platform/Renderer backends
     import ctypes
 
-    # You need to transfer the window address to imgui.backends.glfw_init_for_open_gl
+    # You need to transfer the window address to imgui.backends.glfw_init_for_opengl
     # proceed as shown below to get it.
     window_address = ctypes.cast(window, ctypes.c_void_p).value
-    imgui.backends.glfw_init_for_open_gl(window_address, True)
+    imgui.backends.glfw_init_for_opengl(window_address, True)
 
     imgui.backends.opengl2_init()
 

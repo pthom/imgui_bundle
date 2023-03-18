@@ -2,12 +2,13 @@
 https://github.com/pthom/hello_imgui
 """
 
-from typing import List, Any, Callable, Tuple
+from typing import List, Any, Callable, Tuple, Optional
 import numpy as np
 import enum
 
 # Manual code
 import imgui_bundle.imgui
+ImGuiID = int
 
 DockSpaceName = str
 from imgui_bundle.imgui import (

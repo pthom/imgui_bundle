@@ -36,10 +36,11 @@ function(add_glfw_as_python_shared_library)
     # Build glfw as a *shared* library:
     #   this is required if we want to be able to use python bindings
     #   for glfw, using https://github.com/FlorianRhiem/pyGLFW
+    set(BUILD_SHARED_LIBS ON)
+
     # Note: the rpath is set by a call to
     #     lg_target_set_rpath(${python_native_module_name} ".")
     # (inside add_imgui_bundle_bindings)
-    set(BUILD_SHARED_LIBS ON)
     add_subdirectory(glfw/glfw)
     # glfw dynamic lib will be in the same folder as imgui_bundle
     install(TARGETS glfw DESTINATION .)
@@ -49,5 +50,6 @@ function(add_glfw_as_python_shared_library)
     #    below, we emulate those symlinks by creating copies of the dynamic library
     lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.dylib)
     lg_copy_target_output_to_python_wrapper_folder_with_custom_name(imgui_bundle glfw libglfw.3.so)
+
     set(BUILD_SHARED_LIBS OFF)
 endfunction()

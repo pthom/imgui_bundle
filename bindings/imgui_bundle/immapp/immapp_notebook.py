@@ -33,7 +33,8 @@ def run_nb(
 
     thumbnail_height and thumbnail_ratio control the size of the screenshot that is displayed after execution.
     """
-    import cv2  # pip install opencv-python or pip install opencv-contrib-python
+    # pip install opencv-python or pip install opencv-contrib-python
+    import cv2  # type: ignore
     import PIL.Image  # pip install pillow
     from IPython.display import display  # type: ignore
     from IPython.core.display import HTML  # type: ignore

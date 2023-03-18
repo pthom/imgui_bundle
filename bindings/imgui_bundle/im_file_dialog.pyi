@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import List, Any
 import numpy as np
 
+from imgui_bundle.imgui import ImTextureID
+
 
 class Path:
     def __init__(self, path: str) -> None:

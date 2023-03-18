@@ -63,6 +63,7 @@ TableDrawChannelIdx = int
 PopupFlags_None = PopupFlags_.none
 NavHighlightFlags_TypeDefault = NavHighlightFlags_.type_default
 
+KeyRoutingIndex = int
 
 # Disable black formatter
 # fmt: off

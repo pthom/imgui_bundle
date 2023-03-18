@@ -7,7 +7,7 @@ from imgui_bundle.demos_python import demo_utils  # this will set the assets fol
 
 HAS_OPENCV = False
 try:
-    import cv2
+    import cv2  # type: ignore
 
     HAS_OPENCV = True
 except ImportError:

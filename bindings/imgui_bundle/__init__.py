@@ -22,11 +22,18 @@ from imgui_bundle._imgui_bundle import __version__, compilation_time
 from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
 from imgui_bundle.im_col32 import IM_COL32
 
+# Glfw setup:
+# By importing imgui_bundle.glfw_utils, we make sure that glfw provided by pip will use our glfw dynamic library.
+# (imgui_bundle.glfw_utils will call _set_glfw_pip_search_path automatically)
+from imgui_bundle._glfw_set_search_path import _glfw_set_search_path
+_glfw_set_search_path()
+from imgui_bundle import glfw_utils as glfw_utils
 
-# By importing imgui_bundle.glfw_utils below,
-# _set_glfw_pip_search_path() will set os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip
-# uses our glfw library.
-from imgui_bundle.glfw_utils import glfw_window_hello_imgui as glfw_window_hello_imgui
+# SDL setup:
+# make sure that SDL provided by pip will use our SDL dynamic library.
+from imgui_bundle._sdl_set_set_search_path import _sdl_set_set_search_path
+_sdl_set_set_search_path()
+from imgui_bundle import sdl_utils as sdl_utils
 
 
 import os
@@ -50,7 +57,6 @@ __all__ = [
     "imgui_node_editor",
     "imgui_toggle",
     # Utilities related to ImGui
-    "glfw_window_hello_imgui",
     "icons_fontawesome",
     # Base ImGui types
     "IM_COL32",
