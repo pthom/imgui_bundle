@@ -552,7 +552,7 @@ changed:
 
 
     # Get the glfw window used by hello imgui
-    window = imgui_bundle.glfw_window_hello_imgui()
+    window = imgui_bundle.glfw_utils.glfw_window_hello_imgui()
     glfw.set_window_size_callback(window, my_window_size_callback)
 
 It is important to import glfw *after* imgui\_bundle, since - upon

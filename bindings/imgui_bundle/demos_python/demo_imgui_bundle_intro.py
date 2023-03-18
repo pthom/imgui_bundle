@@ -38,7 +38,7 @@ def demo_add_window_size_callback():
     import glfw  # type: ignore
 
     # Get the glfw window used by hello imgui
-    window = imgui_bundle.glfw_window_hello_imgui()
+    window = imgui_bundle.glfw_utils.glfw_window_hello_imgui()
 
     # define a callback
     def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
