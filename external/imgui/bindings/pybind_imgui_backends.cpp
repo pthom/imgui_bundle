@@ -16,7 +16,9 @@ struct GLFWcursor;
 
 void py_init_module_imgui_backends(py::module& m)
 {
+    //
     // <bindings for imgui_impl_opengl3.h
+    //
     m.def("opengl3_init",
         ImGui_ImplOpenGL3_Init, py::arg("glsl_version"));
 
@@ -42,7 +44,9 @@ void py_init_module_imgui_backends(py::module& m)
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
 
 
+    //
     // <bindings for imgui_impl_opengl2.h
+    //
     m.def("opengl2_init",
           ImGui_ImplOpenGL2_Init);
 
@@ -68,12 +72,14 @@ void py_init_module_imgui_backends(py::module& m)
           ImGui_ImplOpenGL2_DestroyDeviceObjects);
 
 
+    //
     // <bindings for imgui_impl_glfw.h
-
-    m.def("glfw_init_for_open_gl",
-        [](size_t window_address, bool install_callbacks) {
-            return ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window_address, install_callbacks);
-    }, py::arg("window_address"), py::arg("install_callbacks"));
+    //
+    auto glfw_init_for_opengl = [](size_t window_address, bool install_callbacks) {
+        return ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window_address, install_callbacks);
+    };
+    m.def("glfw_init_for_opengl", glfw_init_for_opengl, py::arg("window_address"), py::arg("install_callbacks"));
+    m.def("glfw_init_for_open_gl", glfw_init_for_opengl, py::arg("window_address"), py::arg("install_callbacks")); // legacy synonym
 
     m.def("glfw_init_for_vulkan",
           [](size_t window_address, bool install_callbacks) {
