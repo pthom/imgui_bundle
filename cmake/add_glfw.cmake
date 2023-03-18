@@ -1,5 +1,3 @@
-include(${CMAKE_CURRENT_LIST_DIR}/add_imgui.cmake)
-
 ####################################################
 # Build glfw
 ####################################################
@@ -14,10 +12,10 @@ function(add_glfw)
 endfunction()
 
 function(set_glfw_build_options_pre_add)
-    set(GLFW_BUILD_EXAMPLES OFF)
-    set(GLFW_BUILD_TESTS OFF)
-    set(GLFW_BUILD_DOCS OFF)
-    set(GLFW_INSTALL OFF)
+    set(GLFW_BUILD_EXAMPLES OFF PARENT_SCOPE)
+    set(GLFW_BUILD_TESTS OFF PARENT_SCOPE)
+    set(GLFW_BUILD_DOCS OFF PARENT_SCOPE)
+    set(GLFW_INSTALL OFF PARENT_SCOPE)
 endfunction()
 
 function(set_glfw_build_options_post_add)
