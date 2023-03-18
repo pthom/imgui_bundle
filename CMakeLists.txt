@@ -91,6 +91,8 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
+    # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
+    set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "")
 endif()
 
 # emscripten build additional settings
