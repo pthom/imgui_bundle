@@ -2,7 +2,7 @@ import os.path
 
 from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
-import cv2
+import cv2  # type: ignore
 
 
 def fill_inspector():

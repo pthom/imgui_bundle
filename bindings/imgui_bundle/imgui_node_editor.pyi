@@ -13,6 +13,7 @@ ImGuiMouseButton = imgui.MouseButton
 
 
 EditorContext = Any
+NodeEditorContext = Any
 
 
 class NodeId:

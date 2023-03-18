@@ -12,7 +12,7 @@ from imgui_bundle import imgui
 
 # Always import sdl *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for the correct version of the SDL dynamic library)
-import sdl2
+import sdl2  # type: ignore # if this fails, you need to: pip install PySDL2
 
 
 def main():

@@ -1,5 +1,5 @@
 import os.path
-import cv2
+import cv2  # type: ignore
 
 from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils

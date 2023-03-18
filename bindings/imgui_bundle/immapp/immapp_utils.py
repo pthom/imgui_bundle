@@ -34,7 +34,7 @@ def static(**kwargs: Any) -> Any:
     return wrapper
 
 
-def run_anon_block(function: Callable[[None], None]):
+def run_anon_block(function: Callable[[], None]):
     """Decorator for anonymous block
 
     This enables you to emulate CC++ anonymous blocks.
