@@ -29,6 +29,7 @@ def main():
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 2)
     else:
         # GL 3.0 + GLSL 130
+        glsl_version = "#version 130"
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FLAGS, 0)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
