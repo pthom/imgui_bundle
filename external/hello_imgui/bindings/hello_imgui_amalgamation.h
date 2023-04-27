@@ -1631,7 +1631,12 @@ In order to change the application window settings, change the _AppWindowsParams
     You can customize the menu via `RunnerCallbacks.ShowMenus()`
 
   * `showMenu_App`: _bool, default=true_.
-    If menu bar is shown, include or not the default app menu (with Quit button)
+    If menu bar is shown, include or not the default app menu
+
+   * `showMenu_App_Quit`: _bool, default=true_.
+    Include or not a "Quit" item in the default app menu.
+    Set this to false if you intend to provide your own quit callback with possible user confirmation
+    (and implement it inside RunnerCallbacks.ShowAppMenuItems)
 
   * `showMenu_View`: _bool, default=true_.
     If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and
@@ -1665,6 +1670,7 @@ struct ImGuiWindowParams
 
     bool showMenuBar = false;
     bool showMenu_App = true;
+    bool showMenu_App_Quit = true;
     bool showMenu_View = true;
 
     bool showStatusBar = false;

@@ -804,7 +804,12 @@ class ImGuiWindowParams:
         You can customize the menu via `RunnerCallbacks.ShowMenus()`
 
       * `showMenu_App`: _bool, default=true_.
-        If menu bar is shown, include or not the default app menu (with Quit button)
+        If menu bar is shown, include or not the default app menu
+
+       * `showMenu_App_Quit`: _bool, default=true_.
+        Include or not a "Quit" item in the default app menu.
+        Set this to False if you intend to provide your own quit callback with possible user confirmation
+        (and implement it inside RunnerCallbacks.ShowAppMenuItems)
 
       * `showMenu_View`: _bool, default=true_.
         If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and
@@ -841,6 +846,8 @@ class ImGuiWindowParams:
     show_menu_bar: bool = False
     # bool showMenu_App = true;    /* original C++ signature */
     show_menu_app: bool = True
+    # bool showMenu_App_Quit = true;    /* original C++ signature */
+    show_menu_app_quit: bool = True
     # bool showMenu_View = true;    /* original C++ signature */
     show_menu_view: bool = True
 
@@ -860,13 +867,14 @@ class ImGuiWindowParams:
 
     # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
         background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00),
         show_menu_bar: bool = False,
         show_menu_app: bool = True,
+        show_menu_app_quit: bool = True,
         show_menu_view: bool = True,
         show_status_bar: bool = False,
         show_status_fps: bool = True,
