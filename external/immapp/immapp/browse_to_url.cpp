@@ -5,7 +5,7 @@
 #include <emscripten.h>
 #elif defined(_WIN32)
 #include <windows.h>
-#include <Shellapi.h>
+#include <shellapi.h>
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
 #endif
