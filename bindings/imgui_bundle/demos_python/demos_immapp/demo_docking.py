@@ -5,8 +5,8 @@
 # - How to set up a complex layout:
 #     - dockable windows that can be moved, and even be detached from the main window
 #     - status bar
-# - A default menu, with default
-# - log window
+# - How to use default menus (App and view menu), and how to customize them
+# - How to display a log window
 
 
 import os
@@ -221,15 +221,17 @@ def main():
     runner_params.docking_params.docking_splits = [split_main_bottom, split_main_left]
 
     #
-    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
-    #     in a docking split.
+    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed in a docking split.
     #
 
     # A Command panel named "Commands" will be placed in "LeftSpace". Its Gui is provided calls "CommandGui"
     commands_window = hello_imgui.DockableWindow()
     commands_window.label = "Commands"
     commands_window.dock_space_name = "LeftSpace"
-    commands_window.gui_function = lambda: command_gui(app_state)
+    def additional_window_button_gui():
+        # This function is redefined later: it enables to show an additional window
+        pass
+    commands_window.gui_function = lambda: (command_gui(app_state), additional_window_button_gui())
     # A Log  window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
     logs_window = hello_imgui.DockableWindow()
     logs_window.label = "Logs"
@@ -241,11 +243,40 @@ def main():
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
     dear_imgui_demo_window.gui_function = imgui.show_demo_window
 
+    # additional_window: shows how to dynamically add dockable windows
+    # `additional_window`  is initially not visible, and will be opened only if the user chooses to display it.
+    # Notes:
+    #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
+    #       from the code inside a window's `gui_function`
+    #       (since this gui_function will be called while iterating on this vector!)
+    #     - there are two ways to dynamically add windows:
+    #           * either make them initially invisible, and exclude them from the view menu (such as shown here)
+    #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.pre_new_frame
+    additional_window = hello_imgui.DockableWindow()
+    additional_window.label = "Additional Window"
+    additional_window.is_visible = False               # Initially this window is hidden,
+    additional_window.include_in_view_menu = False     # and it is not shown in the view menu.
+    additional_window.dock_space_name = "BottomSpace"  # When shown, it will appear in BottomSpace.
+    additional_window.gui_function = lambda: imgui.text("This is the additional window")
+    # This gui function displays a button that will show additional_window (it is displayed inside commandsWindow)
+    def additional_window_button_gui():
+        window_name = "Additional Window"
+        imgui.new_line(); imgui_md.render_unindented("# Dynamically add window")
+        if imgui.button("Show additional window"):
+            # We need to query the new window pointer from HelloImGui, since it is stored inside
+            # the vector `runnerParams.dockingParams.dockableWindows`
+            # (i.e. as a copy from the user created DockableWindow during setup)
+            additional_window_ptr = hello_imgui.get_runner_params().docking_params.dockable_window_of_name(window_name)
+            if additional_window_ptr is not None:
+                additional_window_ptr.include_in_view_menu = True
+                additional_window_ptr.is_visible = True
+
     # Finally, transmit these windows to HelloImGui
     runner_params.docking_params.dockable_windows = [
         commands_window,
         logs_window,
         dear_imgui_demo_window,
+        additional_window,  # This window is initially hidden
     ]
 
     ################################################################################################

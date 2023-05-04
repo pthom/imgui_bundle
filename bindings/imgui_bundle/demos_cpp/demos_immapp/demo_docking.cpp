@@ -1,13 +1,13 @@
 /*
-"A more complex app demo,
+A more complex app demo,
 
 It demonstrates:
 - How to use a specific application state (instead of using static variables)
 - How to set up a complex layout:
-    - dockable windows that can be moved, and even be detached from the main window
+    - dockable windows that can be moved, detached from the main window, and dynamically added
     - status bar
-- A default menu, with default
-- log window
+- How to use default menus (App and view menu), and how to customize them
+- How to display a log window
 */
 
 #include "hello_imgui/hello_imgui.h"
@@ -245,31 +245,68 @@ int main(int, char**)
     runnerParams.dockingParams.dockingSplits = {splitMainBottom, splitMainLeft};
 
     //
-    // 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed
-    //     in a docking split.
+    // 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed  in a docking split.
     //
+
+    // A Command panel named "Commands" will be placed in "LeftSpace". Its Gui is provided calls "CommandGui"
     HelloImGui::DockableWindow commandsWindow;
     commandsWindow.label = "Commands";
     commandsWindow.dockSpaceName = "LeftSpace";
-    commandsWindow.GuiFunction = [&]{ CommandGui(appState); };
-
+    std::function<void(void)> additionalWindowButtonGui; // See definition later: it enables to show an additional window
+    commandsWindow.GuiFunction = [&] { CommandGui(appState); additionalWindowButtonGui(); };
 
     // A Log window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
     HelloImGui::DockableWindow logsWindow;
     logsWindow.label = "Logs";
     logsWindow.dockSpaceName = "BottomSpace";
     logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
+
     // A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
     HelloImGui::DockableWindow dearImGuiDemoWindow;
     dearImGuiDemoWindow.label = "Dear ImGui Demo";
     dearImGuiDemoWindow.dockSpaceName = "MainDockSpace";
     dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
 
+    // additionalWindow: shows how to dynamically add dockable windows
+    // `additionalWindow`  is initially not visible, and will be opened only if the user chooses to display it.
+    // Notes:
+    //     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
+    //       from the code inside a window's `GuiFunction`
+    //       (since this GuiFunction will be called while iterating on this vector!)
+    //     - there are two ways to dynamically add windows:
+    //           * either make them initially invisible, and exclude them from the view menu (such as shown here)
+    //           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
+    HelloImGui::DockableWindow additionalWindow;
+    additionalWindow.label = "Additional Window";
+    additionalWindow.isVisible = false;               // Initially this window is hidden,
+    additionalWindow.includeInViewMenu = false;       // and it is not shown in the view menu.
+    additionalWindow.dockSpaceName = "BottomSpace";   // When shown, it will appear in BottomSpace.
+    additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
+    // This gui function displays a button that will show additionalWindow (it is displayed inside commandsWindow)
+    additionalWindowButtonGui = []()
+    {
+        const char* windowName = "Additional Window";
+        ImGui::NewLine(); ImGuiMd::RenderUnindented("# Dynamically add window");
+        if (ImGui::Button("Show additional window"))
+        {
+            // We need to query the new window pointer from HelloImGui, since it is stored inside
+            // the vector `runnerParams.dockingParams.dockableWindows`
+            // (i.e. as a copy from the user created DockableWindow during setup)
+            auto additionalWindowPtr = HelloImGui::GetRunnerParams()->dockingParams.dockableWindowOfName(windowName);
+            if (additionalWindowPtr)
+            {
+                additionalWindowPtr->includeInViewMenu = true;
+                additionalWindowPtr->isVisible = true;
+            }
+        }
+    };
+
     // Finally, transmit these windows to HelloImGui
     runnerParams.dockingParams.dockableWindows = {
         commandsWindow,
         logsWindow,
         dearImGuiDemoWindow,
+        additionalWindow,  // This window is initially hidden
     };
 
     //###############################################################################################
