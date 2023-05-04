@@ -50,14 +50,14 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
 
         size0 = ImVec2(viewport_min_size * 0.8, viewport_min_size * 0.8 / ratio_width_height)
         position0 = ImVec2(vp_center.x - size0.x / 2, vp_center.y - size0.y / 2)
-        rect0 = ImRect(position0, ImVec2(position0.x + size0.x, position0.y + size0.y))
+        rect0 = imgui.internal.ImRect(position0, ImVec2(position0.x + size0.x, position0.y + size0.y))
         alpha0 = 1.0
 
         em = imgui.get_font_size()
         size1 = ImVec2(viewport_min_size * 0.12 * ratio_width_height, viewport_min_size * 0.12)
         position1 = ImVec2(viewport_position.x + viewport_size.x - size1.x, viewport_position.y)
         position1 = ImVec2(position1.x - em_top_right_margin.x * em, position1.y + em_top_right_margin.y * em)
-        rect1 = ImRect(position1, ImVec2(position1.x + size1.x, position1.y + size1.y))
+        rect1 = imgui.internal.ImRect(position1, ImVec2(position1.x + size1.x, position1.y + size1.y))
         alpha1 = final_alpha
 
     k_animation: float = 0  # between 0 and 1
@@ -77,7 +77,7 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
         else:
             k_animation = 1.0
 
-    rect = ImRect(
+    rect = imgui.internal.ImRect(
         imgui.internal.im_lerp(rect0.min, rect1.min, k_animation),
         imgui.internal.im_lerp(rect0.max, rect1.max, k_animation),
     )
