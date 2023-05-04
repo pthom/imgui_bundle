@@ -8,6 +8,7 @@
 # - A default menu, with default
 # - log window
 
+
 import os
 from enum import Enum
 import time
