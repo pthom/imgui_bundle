@@ -50,6 +50,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             .value("cursor", TextEditor::PaletteIndex::Cursor, "")
             .value("selection", TextEditor::PaletteIndex::Selection, "")
             .value("error_marker", TextEditor::PaletteIndex::ErrorMarker, "")
+            .value("control_character", TextEditor::PaletteIndex::ControlCharacter, "")
             .value("breakpoint", TextEditor::PaletteIndex::Breakpoint, "")
             .value("line_number", TextEditor::PaletteIndex::LineNumber, "")
             .value("current_line_fill", TextEditor::PaletteIndex::CurrentLineFill, "")
@@ -90,6 +91,8 @@ void py_init_module_imgui_color_text_edit(py::module& m)
                 &TextEditor::Coordinates::operator<=, py::arg("o"))
             .def("__ge__",
                 &TextEditor::Coordinates::operator>=, py::arg("o"))
+            .def("__sub__",
+                &TextEditor::Coordinates::operator-, py::arg("o"))
             ;
         auto pyClassTextEditor_ClassIdentifier =
             py::class_<TextEditor::Identifier>
@@ -130,21 +133,48 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             .def_readwrite("m_case_sensitive", &TextEditor::LanguageDefinition::mCaseSensitive, "")
             .def(py::init<>())
             .def_static("c_plus_plus",
-                &TextEditor::LanguageDefinition::CPlusPlus)
+                &TextEditor::LanguageDefinition::CPlusPlus, pybind11::return_value_policy::reference)
             .def_static("hlsl",
-                &TextEditor::LanguageDefinition::HLSL)
+                &TextEditor::LanguageDefinition::HLSL, pybind11::return_value_policy::reference)
             .def_static("glsl",
-                &TextEditor::LanguageDefinition::GLSL)
-            .def_static("c",
-                &TextEditor::LanguageDefinition::C)
-            .def_static("sql",
-                &TextEditor::LanguageDefinition::SQL)
-            .def_static("angel_script",
-                &TextEditor::LanguageDefinition::AngelScript)
-            .def_static("lua",
-                &TextEditor::LanguageDefinition::Lua)
+                &TextEditor::LanguageDefinition::GLSL, pybind11::return_value_policy::reference)
             .def_static("python",
-                &TextEditor::LanguageDefinition::Python)
+                &TextEditor::LanguageDefinition::Python, pybind11::return_value_policy::reference)
+            .def_static("c",
+                &TextEditor::LanguageDefinition::C, pybind11::return_value_policy::reference)
+            .def_static("sql",
+                &TextEditor::LanguageDefinition::SQL, pybind11::return_value_policy::reference)
+            .def_static("angel_script",
+                &TextEditor::LanguageDefinition::AngelScript, pybind11::return_value_policy::reference)
+            .def_static("lua",
+                &TextEditor::LanguageDefinition::Lua, pybind11::return_value_policy::reference)
+            .def_static("c_sharp",
+                &TextEditor::LanguageDefinition::CSharp, pybind11::return_value_policy::reference)
+            .def_static("json",
+                &TextEditor::LanguageDefinition::Json, pybind11::return_value_policy::reference)
+            ;
+        py::enum_<TextEditor::UndoOperationType>(pyClassTextEditor, "UndoOperationType", py::arithmetic(), "")
+            .value("add", TextEditor::UndoOperationType::Add, "")
+            .value("delete", TextEditor::UndoOperationType::Delete, "");
+        auto pyClassTextEditor_ClassUndoOperation =
+            py::class_<TextEditor::UndoOperation>
+                (pyClassTextEditor, "UndoOperation", "")
+            .def(py::init<>([](
+            std::string mText = std::string(), TextEditor::Coordinates mStart = TextEditor::Coordinates(), TextEditor::Coordinates mEnd = TextEditor::Coordinates(), TextEditor::UndoOperationType mType = TextEditor::UndoOperationType())
+            {
+                auto r = std::make_unique<TextEditor::UndoOperation>();
+                r->mText = mText;
+                r->mStart = mStart;
+                r->mEnd = mEnd;
+                r->mType = mType;
+                return r;
+            })
+            , py::arg("m_text") = std::string(), py::arg("m_start") = TextEditor::Coordinates(), py::arg("m_end") = TextEditor::Coordinates(), py::arg("m_type") = TextEditor::UndoOperationType()
+            )
+            .def_readwrite("m_text", &TextEditor::UndoOperation::mText, "")
+            .def_readwrite("m_start", &TextEditor::UndoOperation::mStart, "")
+            .def_readwrite("m_end", &TextEditor::UndoOperation::mEnd, "")
+            .def_readwrite("m_type", &TextEditor::UndoOperation::mType, "")
             ;
     } // end of inner classes & enums of TextEditor
 
@@ -152,10 +182,10 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def(py::init<>())
         .def("set_language_definition",
             &TextEditor::SetLanguageDefinition, py::arg("a_language_def"))
-        .def("get_language_definition",
-            &TextEditor::GetLanguageDefinition)
+        .def("get_language_definition_name",
+            &TextEditor::GetLanguageDefinitionName)
         .def("get_palette",
-            &TextEditor::GetPalette)
+            &TextEditor::GetPalette, pybind11::return_value_policy::reference)
         .def("set_palette",
             &TextEditor::SetPalette, py::arg("a_value"))
         .def("set_error_markers",
@@ -163,7 +193,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("set_breakpoints",
             &TextEditor::SetBreakpoints, py::arg("a_markers"))
         .def("render",
-            py::overload_cast<const char *, const ImVec2 &, bool>(&TextEditor::Render), py::arg("a_title"), py::arg("a_size") = ImVec2(), py::arg("a_border") = false)
+            py::overload_cast<const char *, bool, const ImVec2 &, bool>(&TextEditor::Render), py::arg("a_title"), py::arg("a_parent_is_focused") = false, py::arg("a_size") = ImVec2(), py::arg("a_border") = false)
         .def("set_text",
             &TextEditor::SetText, py::arg("a_text"))
         .def("get_text",
@@ -172,8 +202,10 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::SetTextLines, py::arg("a_lines"))
         .def("get_text_lines",
             &TextEditor::GetTextLines)
+        .def("get_clipboard_text",
+            &TextEditor::GetClipboardText)
         .def("get_selected_text",
-            &TextEditor::GetSelectedText)
+            &TextEditor::GetSelectedText, py::arg("a_cursor") = -1)
         .def("get_current_line_text",
             &TextEditor::GetCurrentLineText)
         .def("get_total_lines",
@@ -186,8 +218,8 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::IsReadOnly)
         .def("is_text_changed",
             &TextEditor::IsTextChanged)
-        .def("is_cursor_position_changed",
-            &TextEditor::IsCursorPositionChanged)
+        .def("on_cursor_position_changed",
+            &TextEditor::OnCursorPositionChanged, py::arg("a_cursor"))
         .def("is_colorizer_enabled",
             &TextEditor::IsColorizerEnabled)
         .def("set_colorizer_enable",
@@ -195,7 +227,15 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("get_cursor_position",
             &TextEditor::GetCursorPosition)
         .def("set_cursor_position",
-            &TextEditor::SetCursorPosition, py::arg("a_position"), py::arg("cursor_line_on_page") = -1)
+            py::overload_cast<const TextEditor::Coordinates &, int>(&TextEditor::SetCursorPosition), py::arg("a_position"), py::arg("a_cursor") = -1)
+        .def("set_cursor_position",
+            py::overload_cast<int, int, int>(&TextEditor::SetCursorPosition), py::arg("a_line"), py::arg("a_char_index"), py::arg("a_cursor") = -1)
+        .def("on_line_deleted",
+            &TextEditor::OnLineDeleted, py::arg("a_line_index"), py::arg("a_handled_cursors") = py::none())
+        .def("on_lines_deleted",
+            &TextEditor::OnLinesDeleted, py::arg("a_first_line_index"), py::arg("a_last_line_index"))
+        .def("on_line_added",
+            &TextEditor::OnLineAdded, py::arg("a_line_index"))
         .def("set_handle_mouse_inputs",
             &TextEditor::SetHandleMouseInputs, py::arg("a_value"))
         .def("is_handle_mouse_inputs_enabled",
@@ -216,14 +256,16 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::SetShowShortTabGlyphs, py::arg("a_value"))
         .def("is_showing_short_tab_glyphs",
             &TextEditor::IsShowingShortTabGlyphs)
+        .def("u32_color_to_vec4",
+            &TextEditor::U32ColorToVec4, py::arg("in_"))
         .def("set_tab_size",
             &TextEditor::SetTabSize, py::arg("a_value"))
         .def("get_tab_size",
             &TextEditor::GetTabSize)
         .def("insert_text",
-            py::overload_cast<const std::string &>(&TextEditor::InsertText), py::arg("a_value"))
+            py::overload_cast<const std::string &, int>(&TextEditor::InsertText), py::arg("a_value"), py::arg("a_cursor") = -1)
         .def("insert_text",
-            py::overload_cast<const char *>(&TextEditor::InsertText), py::arg("a_value"))
+            py::overload_cast<const char *, int>(&TextEditor::InsertText), py::arg("a_value"), py::arg("a_cursor") = -1)
         .def("move_up",
             &TextEditor::MoveUp, py::arg("a_amount") = 1, py::arg("a_select") = false)
         .def("move_down",
@@ -241,11 +283,13 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("move_end",
             &TextEditor::MoveEnd, py::arg("a_select") = false)
         .def("set_selection_start",
-            &TextEditor::SetSelectionStart, py::arg("a_position"))
+            &TextEditor::SetSelectionStart, py::arg("a_position"), py::arg("a_cursor") = -1)
         .def("set_selection_end",
-            &TextEditor::SetSelectionEnd, py::arg("a_position"))
+            &TextEditor::SetSelectionEnd, py::arg("a_position"), py::arg("a_cursor") = -1)
         .def("set_selection",
-            &TextEditor::SetSelection, py::arg("a_start"), py::arg("a_end"), py::arg("a_mode") = TextEditor::SelectionMode::Normal)
+            py::overload_cast<const TextEditor::Coordinates &, const TextEditor::Coordinates &, TextEditor::SelectionMode, int, bool>(&TextEditor::SetSelection), py::arg("a_start"), py::arg("a_end"), py::arg("a_mode") = TextEditor::SelectionMode::Normal, py::arg("a_cursor") = -1, py::arg("is_spawning_new_cursor") = false)
+        .def("set_selection",
+            py::overload_cast<int, int, int, int, TextEditor::SelectionMode, int, bool>(&TextEditor::SetSelection), py::arg("a_start_line"), py::arg("a_start_char_index"), py::arg("a_end_line"), py::arg("a_end_char_index"), py::arg("a_mode") = TextEditor::SelectionMode::Normal, py::arg("a_cursor") = -1, py::arg("is_spawning_new_cursor") = false)
         .def("select_word_under_cursor",
             &TextEditor::SelectWordUnderCursor)
         .def("select_all",
@@ -259,7 +303,9 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("paste",
             &TextEditor::Paste)
         .def("delete",
-            &TextEditor::Delete)
+            &TextEditor::Delete, py::arg("a_word_mode") = false)
+        .def("get_undo_index",
+            &TextEditor::GetUndoIndex)
         .def("can_undo",
             &TextEditor::CanUndo)
         .def("can_redo",
@@ -268,12 +314,28 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::Undo, py::arg("a_steps") = 1)
         .def("redo",
             &TextEditor::Redo, py::arg("a_steps") = 1)
+        .def("clear_extra_cursors",
+            &TextEditor::ClearExtraCursors)
+        .def("clear_selections",
+            &TextEditor::ClearSelections)
+        .def("select_next_occurrence_of",
+            &TextEditor::SelectNextOccurrenceOf, py::arg("a_text"), py::arg("a_text_size"), py::arg("a_cursor") = -1)
+        .def("add_cursor_for_next_occurrence",
+            &TextEditor::AddCursorForNextOccurrence)
+        .def_static("get_mariana_palette",
+            &TextEditor::GetMarianaPalette, pybind11::return_value_policy::reference)
         .def_static("get_dark_palette",
-            &TextEditor::GetDarkPalette)
+            &TextEditor::GetDarkPalette, pybind11::return_value_policy::reference)
         .def_static("get_light_palette",
-            &TextEditor::GetLightPalette)
+            &TextEditor::GetLightPalette, pybind11::return_value_policy::reference)
         .def_static("get_retro_blue_palette",
-            &TextEditor::GetRetroBluePalette)
+            &TextEditor::GetRetroBluePalette, pybind11::return_value_policy::reference)
+        .def_static("is_glyph_word_char",
+            &TextEditor::IsGlyphWordChar, py::arg("a_glyph"))
+        .def("im_gui_debug_panel",
+            &TextEditor::ImGuiDebugPanel, py::arg("panel_name") = "Debug")
+        .def("unit_tests",
+            &TextEditor::UnitTests)
         ;
     ////////////////////    </generated_from:TextEditor.h>    ////////////////////
 

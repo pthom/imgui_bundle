@@ -25,7 +25,8 @@ namespace Snippets
     {
         Dark,
         Light,
-        RetroBlue
+        RetroBlue,
+        Mariana
     };
 
 
@@ -53,7 +54,7 @@ namespace Snippets
         int HeightInLines = 0;              // Number of visible lines in the editor
         int MaxHeightInLines = 40;          // If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
 
-        bool ReadOnly = true;               // Snippets are read-only by default
+        bool ReadOnly = false;               // Snippets are read-only by default
 
         bool Border = false;                // Draw a border around the editor
 

@@ -317,7 +317,7 @@ assets/
             {
                 mSnippets[m_code_block] = Snippets::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
-                snippet.Palette = Snippets::SnippetTheme::Dark;
+                snippet.Palette = Snippets::SnippetTheme::Mariana;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language

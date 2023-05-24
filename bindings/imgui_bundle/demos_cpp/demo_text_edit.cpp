@@ -38,6 +38,9 @@ void demo_text_edit()
         ImGui::SameLine();
         if (ImGui::SmallButton("Retro blue palette"))
             editor.SetPalette(TextEditor::GetRetroBluePalette());
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Mariana palette"))
+            editor.SetPalette(TextEditor::GetMarianaPalette());
     };
 
     ShowPaletteButtons();

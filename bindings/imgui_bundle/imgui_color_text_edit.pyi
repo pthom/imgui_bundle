@@ -79,12 +79,13 @@ class TextEditor:
         cursor = enum.auto()                     # (= 13)
         selection = enum.auto()                  # (= 14)
         error_marker = enum.auto()               # (= 15)
-        breakpoint = enum.auto()                 # (= 16)
-        line_number = enum.auto()                # (= 17)
-        current_line_fill = enum.auto()          # (= 18)
-        current_line_fill_inactive = enum.auto() # (= 19)
-        current_line_edge = enum.auto()          # (= 20)
-        max = enum.auto()                        # (= 21)
+        control_character = enum.auto()          # (= 16)
+        breakpoint = enum.auto()                 # (= 17)
+        line_number = enum.auto()                # (= 18)
+        current_line_fill = enum.auto()          # (= 19)
+        current_line_fill_inactive = enum.auto() # (= 20)
+        current_line_edge = enum.auto()          # (= 21)
+        max = enum.auto()                        # (= 22)
 
     class SelectionMode(enum.Enum):
         normal = enum.auto()                     # (= 0)
@@ -136,6 +137,9 @@ class TextEditor:
         def __ge__(self, o: TextEditor.Coordinates) -> bool:
             pass
 
+        def __sub__(self, o: TextEditor.Coordinates) -> TextEditor.Coordinates:
+            pass
+
     class Identifier:
         m_location: Coordinates
         m_declaration: str
@@ -185,6 +189,9 @@ class TextEditor:
         def glsl() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
+        def python() -> TextEditor.LanguageDefinition:
+            pass
+        @staticmethod
         def c() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
@@ -197,7 +204,28 @@ class TextEditor:
         def lua() -> TextEditor.LanguageDefinition:
             pass
         @staticmethod
-        def python() -> TextEditor.LanguageDefinition:
+        def c_sharp() -> TextEditor.LanguageDefinition:
+            pass
+        @staticmethod
+        def json() -> TextEditor.LanguageDefinition:
+            pass
+
+    class UndoOperationType(enum.Enum):
+        add = enum.auto()                        # (= 0)
+        delete = enum.auto()                     # (= 1)
+    class UndoOperation:
+        m_text: str
+        m_start: TextEditor.Coordinates
+        m_end: TextEditor.Coordinates
+        m_type: UndoOperationType
+        def __init__(
+            self,
+            m_text: str = "",
+            m_start: Coordinates = Coordinates(),
+            m_end: Coordinates = Coordinates(),
+            m_type: UndoOperationType = UndoOperationType()
+            ) -> None:
+            """Auto-generated default constructor with named params"""
             pass
 
     def __init__(self) -> None:
@@ -208,7 +236,7 @@ class TextEditor:
         a_language_def: TextEditor.LanguageDefinition
         ) -> None:
         pass
-    def get_language_definition(self) -> TextEditor.LanguageDefinition:
+    def get_language_definition_name(self) -> str:
         pass
 
     def get_palette(self) -> Palette:
@@ -224,9 +252,10 @@ class TextEditor:
     def render(
         self,
         a_title: str,
+        a_parent_is_focused: bool = False,
         a_size: ImVec2 = ImVec2(),
         a_border: bool = False
-        ) -> None:
+        ) -> bool:
         pass
     def set_text(self, a_text: str) -> None:
         pass
@@ -238,7 +267,9 @@ class TextEditor:
     def get_text_lines(self) -> List[str]:
         pass
 
-    def get_selected_text(self) -> str:
+    def get_clipboard_text(self) -> str:
+        pass
+    def get_selected_text(self, a_cursor: int = -1) -> str:
         pass
     def get_current_line_text(self) -> str:
         pass
@@ -254,7 +285,8 @@ class TextEditor:
         pass
     def is_text_changed(self) -> bool:
         pass
-    def is_cursor_position_changed(self) -> bool:
+
+    def on_cursor_position_changed(self, a_cursor: int) -> None:
         pass
 
     def is_colorizer_enabled(self) -> bool:
@@ -267,8 +299,30 @@ class TextEditor:
     def set_cursor_position(
         self,
         a_position: TextEditor.Coordinates,
-        cursor_line_on_page: int = -1
+        a_cursor: int = -1
         ) -> None:
+        pass
+    def set_cursor_position(
+        self,
+        a_line: int,
+        a_char_index: int,
+        a_cursor: int = -1
+        ) -> None:
+        pass
+
+    def on_line_deleted(
+        self,
+        a_line_index: int,
+        a_handled_cursors: Optional[std.unordered_set<int>] = None
+        ) -> None:
+        pass
+    def on_lines_deleted(
+        self,
+        a_first_line_index: int,
+        a_last_line_index: int
+        ) -> None:
+        pass
+    def on_line_added(self, a_line_index: int) -> None:
         pass
 
     def set_handle_mouse_inputs(self, a_value: bool) -> None:
@@ -296,14 +350,17 @@ class TextEditor:
     def is_showing_short_tab_glyphs(self) -> bool:
         pass
 
+    def u32_color_to_vec4(self, in_: ImU32) -> ImVec4:
+        pass
+
     def set_tab_size(self, a_value: int) -> None:
         pass
     def get_tab_size(self) -> int:
         pass
 
-    def insert_text(self, a_value: str) -> None:
+    def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
         pass
-    def insert_text(self, a_value: str) -> None:
+    def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
         pass
 
     def move_up(self, a_amount: int = 1, a_select: bool = False) -> None:
@@ -333,15 +390,36 @@ class TextEditor:
     def move_end(self, a_select: bool = False) -> None:
         pass
 
-    def set_selection_start(self, a_position: TextEditor.Coordinates) -> None:
+    def set_selection_start(
+        self,
+        a_position: TextEditor.Coordinates,
+        a_cursor: int = -1
+        ) -> None:
         pass
-    def set_selection_end(self, a_position: TextEditor.Coordinates) -> None:
+    def set_selection_end(
+        self,
+        a_position: TextEditor.Coordinates,
+        a_cursor: int = -1
+        ) -> None:
         pass
     def set_selection(
         self,
         a_start: TextEditor.Coordinates,
         a_end: TextEditor.Coordinates,
-        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal
+        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal,
+        a_cursor: int = -1,
+        is_spawning_new_cursor: bool = False
+        ) -> None:
+        pass
+    def set_selection(
+        self,
+        a_start_line: int,
+        a_start_char_index: int,
+        a_end_line: int,
+        a_end_char_index: int,
+        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal,
+        a_cursor: int = -1,
+        is_spawning_new_cursor: bool = False
         ) -> None:
         pass
     def select_word_under_cursor(self) -> None:
@@ -357,9 +435,11 @@ class TextEditor:
         pass
     def paste(self) -> None:
         pass
-    def delete(self) -> None:
+    def delete(self, a_word_mode: bool = False) -> None:
         pass
 
+    def get_undo_index(self) -> int:
+        pass
     def can_undo(self) -> bool:
         pass
     def can_redo(self) -> bool:
@@ -369,6 +449,23 @@ class TextEditor:
     def redo(self, a_steps: int = 1) -> None:
         pass
 
+    def clear_extra_cursors(self) -> None:
+        pass
+    def clear_selections(self) -> None:
+        pass
+    def select_next_occurrence_of(
+        self,
+        a_text: str,
+        a_text_size: int,
+        a_cursor: int = -1
+        ) -> None:
+        pass
+    def add_cursor_for_next_occurrence(self) -> None:
+        pass
+
+    @staticmethod
+    def get_mariana_palette() -> Palette:
+        pass
     @staticmethod
     def get_dark_palette() -> Palette:
         pass
@@ -379,6 +476,14 @@ class TextEditor:
     def get_retro_blue_palette() -> Palette:
         pass
 
+    @staticmethod
+    def is_glyph_word_char(a_glyph: TextEditor.Glyph) -> bool:
+        pass
+
+    def im_gui_debug_panel(self, panel_name: str = "Debug") -> None:
+        pass
+    def unit_tests(self) -> None:
+        pass
 ####################    </generated_from:TextEditor.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!

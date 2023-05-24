@@ -23,6 +23,8 @@ namespace Snippets
             editor.SetPalette(TextEditor::GetLightPalette());
         else if (palette == SnippetTheme::RetroBlue)
             editor.SetPalette(TextEditor::GetRetroBluePalette());
+        else if (palette == SnippetTheme::Mariana)
+            editor.SetPalette(TextEditor::GetMarianaPalette());
     }
 
     void _SetLanguage(TextEditor& editor, SnippetLanguage lang)
@@ -181,7 +183,7 @@ namespace Snippets
         }
 
         ImGui::PushFont(ImGuiMd::GetCodeFont());
-        editor.Render(std::to_string(id).c_str(), editorSize, snippetData.Border);
+        editor.Render(std::to_string(id).c_str(), false, editorSize, snippetData.Border);
 #ifdef __EMSCRIPTEN__
         _ProcessClipboard_Emscripten(editor);
 #endif

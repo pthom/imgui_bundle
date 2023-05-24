@@ -36,6 +36,9 @@ def demo_gui():
         imgui.same_line()
         if imgui.small_button("Retro blue palette"):
             editor.set_palette(TextEditor.get_retro_blue_palette())
+        imgui.same_line()
+        if imgui.small_button("Mariana palette"):
+            editor.set_palette(TextEditor.get_mariana_palette())
 
     show_palette_buttons()
     imgui.push_font(imgui_md.get_code_font())
