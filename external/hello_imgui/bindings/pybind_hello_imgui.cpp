@@ -153,6 +153,13 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    m.def("int_pair_to_string",
+        HelloImGui::IntPairToString, py::arg("v"));
+
+    m.def("string_to_int_pair",
+        HelloImGui::StringToIntPair, py::arg("s"));
+
+
     py::enum_<HelloImGui::FullScreenMode>(m, "FullScreenMode", py::arithmetic(), "")
         .value("no_full_screen", HelloImGui::FullScreenMode::NoFullScreen, "")
         .value("full_screen", HelloImGui::FullScreenMode::FullScreen, "Full screen with specified resolution")
@@ -261,6 +268,9 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("theme"),
         pybind11::return_value_policy::reference);
 
+    m.def("imgui_theme_from_name",
+        ImGuiTheme::ImGuiTheme_FromName, py::arg("theme_name"));
+
     m.def("theme_to_style",
         ImGuiTheme::ThemeToStyle, py::arg("theme"));
 
@@ -331,9 +341,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassImGuiWindowParams =
         py::class_<HelloImGui::ImGuiWindowParams>
-            (m, "ImGuiWindowParams", "*\n@@md#ImGuiWindowParams\n\n__ImGuiWindowParams__ is a struct that defines the ImGui inner windows params\nThese settings affect the imgui inner windows inside the application window.\nIn order to change the application window settings, change the _AppWindowsParams_\n\n Members:\n\n  * `defaultImGuiWindowType`: _DefaultImGuiWindowType, default=ProvideFullScreenWindow_.\n      By default, a full window is provided in the background. You can still\n      add windows on top of it, since the Z-order of this background window is always behind\n\n  * `backgroundColor`: _ImVec4, default=ImVec4(0.45, 0.55, 0.60, 1.00)_.\n      This is the \"clearColor\", only visible is defaultImGuiWindowType is NoDefaultWindow.\n\n  * `showMenuBar`: _bool, default=false_.\n    Show Menu bar on top of imgui main window\n    You can customize the menu via `RunnerCallbacks.ShowMenus()`\n\n  * `showMenu_App`: _bool, default=true_.\n    If menu bar is shown, include or not the default app menu\n\n   * `showMenu_App_Quit`: _bool, default=true_.\n    Include or not a \"Quit\" item in the default app menu.\n    Set this to False if you intend to provide your own quit callback with possible user confirmation\n    (and implement it inside RunnerCallbacks.ShowAppMenuItems)\n\n  * `showMenu_View`: _bool, default=true_.\n    If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and\n    set the docked windows and status bar visibility)\n\n  * `showStatusBar`: _bool, default=false_.\n    Flag that enable to show a Status bar at the bottom. You can customize the status bar\n    via RunnerCallbacks.ShowStatus()\n\n  * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.\n\n  * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.\n    Make windows only movable from the title bar\n\n  * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)\n    If True, you can drag windows outside out the main window in order to put their content into new native windows.\n\n   * `menuAppTitle`: _string, default=\"\"_. Set the title of the App menu. If empty, this menu name will use\n     the \"windowTitle\" from AppWindowParams\n\n  * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.\n    Change the ImGui theme. Several themes are available, you can query the list by calling\n    HelloImGui::AvailableThemes()\n@@md\n")
+            (m, "ImGuiWindowParams", "*\n@@md#ImGuiWindowParams\n\n__ImGuiWindowParams__ is a struct that defines the ImGui inner windows params\nThese settings affect the imgui inner windows inside the application window.\nIn order to change the application window settings, change the _AppWindowsParams_\n\n Members:\n\n  * `defaultImGuiWindowType`: _DefaultImGuiWindowType, default=ProvideFullScreenWindow_.\n      By default, a full window is provided in the background. You can still\n      add windows on top of it, since the Z-order of this background window is always behind\n\n  * `backgroundColor`: _ImVec4, default=ImVec4(0.45, 0.55, 0.60, 1.00)_.\n      This is the \"clearColor\", only visible is defaultImGuiWindowType is NoDefaultWindow.\n\n  * `showMenuBar`: _bool, default=false_.\n    Show Menu bar on top of imgui main window\n    You can customize the menu via `RunnerCallbacks.ShowMenus()`\n\n  * `showMenu_App`: _bool, default=true_.\n    If menu bar is shown, include or not the default app menu\n\n   * `showMenu_App_Quit`: _bool, default=true_.\n    Include or not a \"Quit\" item in the default app menu.\n    Set this to False if you intend to provide your own quit callback with possible user confirmation\n    (and implement it inside RunnerCallbacks.ShowAppMenuItems)\n\n  * `showMenu_View`: _bool, default=true_.\n    If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and\n    set the docked windows and status bar visibility)\n\n  * `showStatusBar`: _bool, default=false_.\n    Flag that enable to show a Status bar at the bottom. You can customize the status bar\n    via RunnerCallbacks.ShowStatus()\n  * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.\n  * `rememberStatusBarSettings`: _bool, default=true_. If set, showStatusBar and showStatus_Fps are stored in the application settings.\n\n  * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.\n    Make windows only movable from the title bar\n\n  * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)\n    If True, you can drag windows outside out the main window in order to put their content into new native windows.\n\n   * `menuAppTitle`: _string, default=\"\"_. Set the title of the App menu. If empty, this menu name will use\n     the \"windowTitle\" from AppWindowParams\n\n  * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.\n    Change the ImGui theme. Several themes are available, you can query the list by calling\n    HelloImGui::AvailableThemes()\n  * `showMenu_View_Themes`: _bool, default=true_.\n    Show theme selection in view menu\n  * `rememberTheme`: _bool, default=true_.\n    Remember selected theme\n@@md\n")
         .def(py::init<>([](
-        HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme())
+        HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true)
         {
             auto r = std::make_unique<ImGuiWindowParams>();
             r->defaultImGuiWindowType = defaultImGuiWindowType;
@@ -344,13 +354,16 @@ void py_init_module_hello_imgui(py::module& m)
             r->showMenu_View = showMenu_View;
             r->showStatusBar = showStatusBar;
             r->showStatus_Fps = showStatus_Fps;
+            r->rememberStatusBarSettings = rememberStatusBarSettings;
             r->configWindowsMoveFromTitleBarOnly = configWindowsMoveFromTitleBarOnly;
             r->enableViewports = enableViewports;
             r->menuAppTitle = menuAppTitle;
             r->tweakedTheme = tweakedTheme;
+            r->showMenu_View_Themes = showMenu_View_Themes;
+            r->rememberTheme = rememberTheme;
             return r;
         })
-        , py::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, py::arg("background_color") = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), py::arg("show_menu_bar") = false, py::arg("show_menu_app") = true, py::arg("show_menu_app_quit") = true, py::arg("show_menu_view") = true, py::arg("show_status_bar") = false, py::arg("show_status_fps") = true, py::arg("config_windows_move_from_title_bar_only") = true, py::arg("enable_viewports") = false, py::arg("menu_app_title") = "", py::arg("tweaked_theme") = ImGuiTheme::ImGuiTweakedTheme()
+        , py::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, py::arg("background_color") = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), py::arg("show_menu_bar") = false, py::arg("show_menu_app") = true, py::arg("show_menu_app_quit") = true, py::arg("show_menu_view") = true, py::arg("show_status_bar") = false, py::arg("show_status_fps") = true, py::arg("remember_status_bar_settings") = true, py::arg("config_windows_move_from_title_bar_only") = true, py::arg("enable_viewports") = false, py::arg("menu_app_title") = "", py::arg("tweaked_theme") = ImGuiTheme::ImGuiTweakedTheme(), py::arg("show_menu_view_themes") = true, py::arg("remember_theme") = true
         )
         .def_readwrite("default_imgui_window_type", &ImGuiWindowParams::defaultImGuiWindowType, "")
         .def_readwrite("background_color", &ImGuiWindowParams::backgroundColor, "")
@@ -360,10 +373,13 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("show_menu_view", &ImGuiWindowParams::showMenu_View, "")
         .def_readwrite("show_status_bar", &ImGuiWindowParams::showStatusBar, "")
         .def_readwrite("show_status_fps", &ImGuiWindowParams::showStatus_Fps, "")
+        .def_readwrite("remember_status_bar_settings", &ImGuiWindowParams::rememberStatusBarSettings, "")
         .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiWindowParams::configWindowsMoveFromTitleBarOnly, "")
         .def_readwrite("enable_viewports", &ImGuiWindowParams::enableViewports, "")
         .def_readwrite("menu_app_title", &ImGuiWindowParams::menuAppTitle, "")
         .def_readwrite("tweaked_theme", &ImGuiWindowParams::tweakedTheme, "")
+        .def_readwrite("show_menu_view_themes", &ImGuiWindowParams::showMenu_View_Themes, "")
+        .def_readwrite("remember_theme", &ImGuiWindowParams::rememberTheme, "")
         ;
 
 
@@ -417,7 +433,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassRunnerCallbacks =
         py::class_<HelloImGui::RunnerCallbacks>
-            (m, "RunnerCallbacks", "*\n @@md#RunnerCallbacks\n\n **RunnerCallbacks** is a struct that contains the callbacks that are called by the application\n\n _Members_\n\n* `ShowGui`: *VoidFunction, default=empty*.\n  Fill it with a function that will add your widgets.\n\n* `ShowMenus`: *VoidFunction, default=empty*.\n    A function that will render your menus. Fill it with a function that will add ImGui menus by calling:\n    _ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()_\n\n    _Notes:_\n    * you do not need to call _ImGui::BeginMenuBar_ and _ImGui::EndMenuBar_\n    * Some default menus can be provided: see _ImGuiWindowParams_ options\n      (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)\n\n* `ShowAppMenuItems`: *VoidFunction, default=empty*.\n  A function that will render items that will be placed in the App menu.\n  They will be placed before the \"Quit\" MenuItem, which is added automatically by HelloImGui.\n  This will be displayed only if ImGuiWindowParams.showMenu_App is True\n\n* `ShowStatus`: *VoidFunction, default=empty*.\n  A function that will add items to the status bar. Use small items (ImGui::Text for example),\n  since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.\n\n* `PostInit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once after OpenGL and ImGui are inited, but before\n    the backend callback are initialized.\n    If you, for instance, want to add your own glfw callbacks, you should use this function to do so.\"\n\n* `BeforeExit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once before exiting (when OpenGL and ImGui are\n    still inited)\n\n * `PreNewFrame`: *VoidFunction, default=empty*.\n    You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().\n\n* `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.\n  Callbacks for events from a specific backend. _Only implemented for SDL, where the event\n  will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled and shall not be processed further.\n  Note: in the case of GLFW, you should use register them in `PostInit`\n\n* `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.\n   A function that is called when fonts are ready to be loaded.\n   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.\n\n* `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)\n\n* `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, setup your own style by providing your own SetupImGuiStyle callback\n\n\n* `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application\n    when running under \"Android, iOS and WinRT\".\nNotes:\n  * 'mobileCallbacks' is present only if the target device is a mobile device (iOS, Android).\n     Use `#ifdef HELLOIMGUI_MOBILEDEVICE` to detect this.\n  * These events are currently handled only with SDL backend.\n\n@@md\n")
+            (m, "RunnerCallbacks", "*\n @@md#RunnerCallbacks\n\n **RunnerCallbacks** is a struct that contains the callbacks that are called by the application\n\n _Members_\n\n* `ShowGui`: *VoidFunction, default=empty*.\n  Fill it with a function that will add your widgets.\n\n* `ShowMenus`: *VoidFunction, default=empty*.\n    A function that will render your menus. Fill it with a function that will add ImGui menus by calling:\n    _ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()_\n\n    _Notes:_\n    * you do not need to call _ImGui::BeginMenuBar_ and _ImGui::EndMenuBar_\n    * Some default menus can be provided: see _ImGuiWindowParams_ options\n      (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)\n\n* `ShowAppMenuItems`: *VoidFunction, default=empty*.\n  A function that will render items that will be placed in the App menu.\n  They will be placed before the \"Quit\" MenuItem, which is added automatically by HelloImGui.\n  This will be displayed only if ImGuiWindowParams.showMenu_App is True\n\n* `ShowStatus`: *VoidFunction, default=empty*.\n  A function that will add items to the status bar. Use small items (ImGui::Text for example),\n  since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.\n\n* `PostInit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once after OpenGL and ImGui are inited, but before\n    the backend callback are initialized.\n    If you, for instance, want to add your own glfw callbacks, you should use this function to do so.\"\n\n* `BeforeExit`: *VoidFunction, default=empty*.\n    You can here add a function that will be called once before exiting (when OpenGL and ImGui are\n    still inited)\n\n * `PreNewFrame`: *VoidFunction, default=empty*.\n    You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().\n    It is a good place to dynamically add new fonts, or dynamically add new dockable windows.\n\n* `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.\n  Callbacks for events from a specific backend. _Only implemented for SDL, where the event\n  will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled and shall not be processed further.\n  Note: in the case of GLFW, you should use register them in `PostInit`\n\n* `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.\n   A function that is called once, when fonts are ready to be loaded.\n   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.\n\n* `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)\n\n* `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n    If needed, setup your own style by providing your own SetupImGuiStyle callback\n\n\n* `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application\n    when running under \"Android, iOS and WinRT\".\nNotes:\n  * 'mobileCallbacks' is present only if the target device is a mobile device (iOS, Android).\n     Use `#ifdef HELLOIMGUI_MOBILEDEVICE` to detect this.\n  * These events are currently handled only with SDL backend.\n\n@@md\n")
         .def(py::init<>([](
         VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle))
         {
@@ -466,13 +482,14 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassDockableWindow =
         py::class_<HelloImGui::DockableWindow>
-            (m, "DockableWindow", "*\n@@md#DockableWindow\n\n**DockableWindow** is a struct that represents a window that can be docked.\n\n_Members:_\n\n* `label`: _string_. Title of the window.\n* `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window\n   should initially be placed\n* `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.\n* `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.\n* `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.\n* `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End\n   calls should be added automatically (with the given \"label\"). Set to False if you want to call\n   ImGui::Begin/End yourself\n* `includeInViewMenu`: _bool, default=true_. Flag that indicates whether this window should be mentioned\n   in the view menu.\n* `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_. Window flags, see enum ImGuiWindowFlags_\n* `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window size (unused if docked)\n* `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window size.\n* `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window position (unused if docked)\n* `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window position.\n* `focusWindowAtNextFrame`: _bool, default = false_. If set to True this window will be focused at the next frame.\n\n@@md\n*")
+            (m, "DockableWindow", "*\n@@md#DockableWindow\n\n**DockableWindow** is a struct that represents a window that can be docked.\n\n_Members:_\n\n* `label`: _string_. Title of the window.\n* `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window\n   should initially be placed\n* `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.\n* `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.\n* `rememberIsVisible`: _bool, default=true_. Flag that indicates whether the window visibility should be saved in settings or not.\n* `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.\n* `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End\n   calls should be added automatically (with the given \"label\"). Set to False if you want to call\n   ImGui::Begin/End yourself\n* `includeInViewMenu`: _bool, default=true_. Flag that indicates whether this window should be mentioned\n   in the view menu.\n* `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_. Window flags, see enum ImGuiWindowFlags_\n* `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window size (unused if docked)\n* `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window size.\n* `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window position (unused if docked)\n* `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window position.\n* `focusWindowAtNextFrame`: _bool, default = false_. If set to True this window will be focused at the next frame.\n\n@@md\n*")
         .def(py::init<const std::string &, const DockSpaceName &, const VoidFunction, bool, bool>(),
             py::arg("label_") = "", py::arg("dock_space_name_") = "", py::arg("gui_function_") = HelloImGui::EmptyVoidFunction(), py::arg("is_visible_") = true, py::arg("can_be_closed_") = true)
         .def_readwrite("label", &DockableWindow::label, "")
         .def_readwrite("dock_space_name", &DockableWindow::dockSpaceName, "")
         .def_readwrite("gui_function", &DockableWindow::GuiFunction, "")
         .def_readwrite("is_visible", &DockableWindow::isVisible, "")
+        .def_readwrite("remember_is_visible", &DockableWindow::rememberIsVisible, "")
         .def_readwrite("can_be_closed", &DockableWindow::canBeClosed, "")
         .def_readwrite("call_begin_end", &DockableWindow::callBeginEnd, "")
         .def_readwrite("include_in_view_menu", &DockableWindow::includeInViewMenu, "")
@@ -495,19 +512,21 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::DockingParams>
             (m, "DockingParams", "")
         .def(py::init<>([](
-        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
+        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
         {
             auto r = std::make_unique<DockingParams>();
             r->dockingSplits = dockingSplits;
             r->dockableWindows = dockableWindows;
+            r->layoutName = layoutName;
             r->layoutCondition = layoutCondition;
             r->layoutReset = layoutReset;
             return r;
         })
-        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
+        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_name") = "Default", py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
         )
         .def_readwrite("docking_splits", &DockingParams::dockingSplits, "")
         .def_readwrite("dockable_windows", &DockingParams::dockableWindows, "")
+        .def_readwrite("layout_name", &DockingParams::layoutName, "")
         .def_readwrite("layout_condition", &DockingParams::layoutCondition, "")
         .def_readwrite("layout_reset", &DockingParams::layoutReset, "")
         .def("dockable_window_of_name",
@@ -540,35 +559,39 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassFpsIdling =
         py::class_<HelloImGui::FpsIdling>
-            (m, "FpsIdling", "*\n @@md#FpsIdling\n\n**FpsIdling** is a struct that contains Fps Idling parameters\n\n* `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n@@md\n")
+            (m, "FpsIdling", "*\n @@md#FpsIdling\n\n**FpsIdling** is a struct that contains Fps Idling parameters\n\n* `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen very frequently.\n  In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets (for example a live video),\n  you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application refresh needs)\n* `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling (this can be changed dynamically during execution)\n* `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution, and will be set to True when it is idling.\n* `rememberEnableIdling`: _bool, default=true_.\n  If True, the last value of enableIdling is restored from the settings at startup.\n@@md\n")
         .def(py::init<>([](
-        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false)
+        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true)
         {
             auto r = std::make_unique<FpsIdling>();
             r->fpsIdle = fpsIdle;
             r->enableIdling = enableIdling;
             r->isIdling = isIdling;
+            r->rememberEnableIdling = rememberEnableIdling;
             return r;
         })
-        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false
+        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = true
         )
         .def_readwrite("fps_idle", &FpsIdling::fpsIdle, "")
         .def_readwrite("enable_idling", &FpsIdling::enableIdling, "")
         .def_readwrite("is_idling", &FpsIdling::isIdling, "")
+        .def_readwrite("remember_enable_idling", &FpsIdling::rememberEnableIdling, "")
         ;
 
 
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n    application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n    dockable windows content and layout\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)\n* `iniFilename`: _string, default = \"\"_\n  Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.\n  If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).\n  Note: if appWindowParams.restorePreviousGeometry is True, then HelloImGui will also store the app window size and position into \"iniFilename + _appWindow.ini\"\n* `iniFilename_useAppWindowTitle`: _bool, default = true_.\n  Shall the iniFilename be derived from appWindowParams.windowTitle if empty\n* `appShallExit`: _bool, default=false_.\n   During execution, set this to True to exit the app.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
+            (m, "RunnerParams", "*\n @@md#RunnerParams\n\n**RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.\n\n Members:\n* `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.\n   callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.\n* `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.\n   application Window Params (position, size, title)\n* `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.\n   imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)\n* `dockingParams`: _see [docking_params.h](docking_params.h)_.\n   dockable windows content and layout\n* `alternativeDockingLayouts`: _vector<DockingParams>, default=empty_\n   List of possible additional layout for the applications. Only used in advanced cases when several layouts are available.\n* `rememberSelectedAlternativeLayout`: _bool, default=true_\n   Shall the application remember the last selected layout. Only used in advanced cases when several layouts are available.\n* `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.\n   A struct that contains optional pointers to the backend implementations. These pointers will be filled\n   when the application starts\n* `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled\n  and available.\n* `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)\n* `iniFilename`: _string, default = \"\"_\n  Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.\n  If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).\n  Note: if appWindowParams.restorePreviousGeometry is True, then HelloImGui will also store the app window size and position into \"iniFilename + _appWindow.ini\"\n* `iniFilename_useAppWindowTitle`: _bool, default = true_.\n  Shall the iniFilename be derived from appWindowParams.windowTitle if empty\n* `appShallExit`: _bool, default=false_.\n   During execution, set this to True to exit the app.\n   _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps\n   shall not exit._\n* `emscripten_fps`: _int, default = 0_.\n  Set the application refresh rate (only used on emscripten: 0 stands for \"let the app or the browser decide\")\n@@md\n")
         .def(py::init<>([](
-        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0)
+        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0)
         {
             auto r = std::make_unique<RunnerParams>();
             r->callbacks = callbacks;
             r->appWindowParams = appWindowParams;
             r->imGuiWindowParams = imGuiWindowParams;
             r->dockingParams = dockingParams;
+            r->alternativeDockingLayouts = alternativeDockingLayouts;
+            r->rememberSelectedAlternativeLayout = rememberSelectedAlternativeLayout;
             r->backendPointers = backendPointers;
             r->backendType = backendType;
             r->fpsIdling = fpsIdling;
@@ -578,12 +601,14 @@ void py_init_module_hello_imgui(py::module& m)
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("fps_idling") = FpsIdling(), py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("alternative_docking_layouts") = std::vector<DockingParams>(), py::arg("remember_selected_alternative_layout") = true, py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("fps_idling") = FpsIdling(), py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &RunnerParams::callbacks, "")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, "")
         .def_readwrite("imgui_window_params", &RunnerParams::imGuiWindowParams, "")
         .def_readwrite("docking_params", &RunnerParams::dockingParams, "")
+        .def_readwrite("alternative_docking_layouts", &RunnerParams::alternativeDockingLayouts, "")
+        .def_readwrite("remember_selected_alternative_layout", &RunnerParams::rememberSelectedAlternativeLayout, "")
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, "")
         .def_readwrite("backend_type", &RunnerParams::backendType, "")
         .def_readwrite("fps_idling", &RunnerParams::fpsIdling, "")
@@ -674,7 +699,9 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("run",
-        py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run), py::arg("runner_params"));
+        py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run),
+        py::arg("runner_params"),
+        "*\n@@md#HelloImGui::Run\n\n__HelloImGui::Run()__ will run an application with a single call.\n\nThree signatures are provided:\n\n* `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.\n   Runs an application whose params and Gui are provided by runnerParams.\n\n* `HelloImGui::Run(const SimpleRunnerParams&)`:\n   Runs an application, using simpler params.\n\n* `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`\n\n\n__Other utilities:__\n\n* `HelloImGui::GetRunnerParams()`:\n  a convenience function that will return the runnerParams of the current application\n\n* `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.\n  May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps\n@@md\n");
 
     m.def("run",
         py::overload_cast<const HelloImGui::SimpleRunnerParams &>(HelloImGui::Run), py::arg("simple_params"));
@@ -689,6 +716,18 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::FrameRate,
         py::arg("duration_for_mean") = 0.5f,
         " Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,\n since one can choose the duration for the calculation of the mean value of the fps\n (Will only lead to accurate values if you call it at each frame)");
+
+    m.def("switch_layout",
+        HelloImGui::SwitchLayout, py::arg("layout_name"));
+
+    m.def("current_layout_name",
+        HelloImGui::CurrentLayoutName);
+
+    m.def("save_user_pref",
+        HelloImGui::SaveUserPref, py::arg("user_pref_name"), py::arg("user_pref_content"));
+
+    m.def("load_user_pref",
+        HelloImGui::LoadUserPref, py::arg("user_pref_name"));
 
     { // <namespace ImGuiDefaultSettings>
         py::module_ pyNsImGuiDefaultSettings = m.def_submodule("imgui_default_settings", "namespace ImGuiDefaultSettings");

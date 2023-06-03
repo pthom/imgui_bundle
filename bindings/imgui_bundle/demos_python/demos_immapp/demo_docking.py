@@ -2,122 +2,418 @@
 #
 # It demonstrates:
 # - How to use a specific application state (instead of using static variables)
-# - How to set up a complex layout:
-#     - dockable windows that can be moved, and even be detached from the main window
-#     - status bar
+# - How to set up a complex docking layouts (with several possible layouts):
+#     - How to use the status bar
 # - How to use default menus (App and view menu), and how to customize them
 # - How to display a log window
+# - How to load additional fonts
 
 
-import os
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, imgui_md, ImVec2, immapp
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp
 from imgui_bundle.demos_python import demo_utils
+from typing import List
+
+
+##########################################################################
+#    Our Application State
+##########################################################################
+class PersonInfo:
+    name: str = "Rob"
+    age: int = 10
+
+
+class RocketState(Enum):
+    Init = 0
+    Preparing = 1
+    Launched = 2
 
 
 # Struct that holds the application's state
 class AppState:
-    f: float = 0.0
-    counter: int = 0
-    rocket_progress: float = 0.0
+    f: float
+    counter: int
+    rocket_progress: float
+    person_info: PersonInfo
+    rocket_state: RocketState
 
-    class RocketState(Enum):
-        Init = 0
-        Preparing = 1
-        Launched = 2
+    def __init__(self):
+        self.f = 0
+        self.counter = 0
+        self.rocket_progress = 0.0
+        self.person_info = PersonInfo()
+        self.rocket_state = RocketState.Init
 
-    rocket_state: RocketState = RocketState.Init
+
+##########################################################################
+#    Additional fonts handling
+##########################################################################
+
+TITLE_FONT: imgui.ImFont
 
 
+def load_fonts():  # This is called by runnerParams.callbacks.LoadAdditionalFonts
+    global TITLE_FONT
+    # First, load the default font (the default font should be loaded first)
+    hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
+    # Then load the title font
+    TITLE_FONT = hello_imgui.load_font_ttf("fonts/DroidSans.ttf", 18.0)
+
+
+##########################################################################
+#    Save additional settings in the ini file
+##########################################################################
+# This demonstrates how to store additional info in the application settings
+# Use this sparingly!
+# This is provided as a convenience only, and it is not intended to store large quantities of text data.
+
+# Warning, the save/load function below are quite simplistic!
+def person_info_to_string(person_info: PersonInfo) -> str:
+    r = person_info.name + "\n" + str(person_info.age)
+    return r
+
+
+def string_to_person_info(s: str) -> PersonInfo:
+    r = PersonInfo()
+    lines = s.splitlines(False)
+    if len(lines) >= 2:
+        r.name = lines[0]
+        r.age = int(lines[1])
+    return r
+
+
+def load_user_settings(app_state: AppState):
+    """
+    Note: load_user_settings() and save_user_settings() will be called in the callbacks `post_init` and `before_exit`
+         runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
+         runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
+    """
+    app_state.person_info = string_to_person_info(hello_imgui.load_user_pref("UserInfo"))
+
+
+def save_user_settings(app_state: AppState):
+    hello_imgui.save_user_pref("UserInfo", person_info_to_string(app_state.person_info))
+
+
+##########################################################################
+#    Gui functions used in this demo
+##########################################################################
 @immapp.static(last_hide_time=1)
 def demo_hide_window():
-    static = demo_hide_window
-    imgui.separator()
+    # Display a button that will hide the application window
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Hide app window")
+    imgui.pop_font()
     imgui.text_wrapped("By clicking the button below, you can hide the window for 3 seconds.")
+
     if imgui.button("Hide"):
-        static.last_hide_time = time.time()
+        demo_hide_window.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
-    if static.last_hide_time > 0.0:
+
+    if demo_hide_window.last_hide_time > 0.:
         now = time.time()
-        if now - static.last_hide_time > 3:
-            static.last_hide_time = -1
+        if now - demo_hide_window.last_hide_time > 3.0:
+            demo_hide_window.last_hide_time = -1.
             hello_imgui.get_runner_params().app_window_params.hidden = False
 
 
-# CommandGui: the widgets on the left panel
-def command_gui(state: AppState):
-    imgui_md.render_unindented(
-        """
-        # Basic widgets demo
-        The widgets below will interact with the log window and the status bar.
-        """
-    )
-    # Edit 1 float using a slider from 0.0f to 1.0f
-    changed, state.f = imgui.slider_float("float", state.f, 0.0, 1.0)
+# Display a button that will show an additional window
+def demo_show_additional_window():
+    # Notes:
+    #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
+    #       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating
+    #       on this vector!)
+    #     - there are two ways to dynamically add windows:
+    #           * either make them initially invisible, and exclude them from the view menu (such as shown here)
+    #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
+    window_name = "Additional Window"
+
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Dynamically add window")
+    imgui.pop_font()
+
+    if imgui.button("Show additional window"):
+        runner_params = hello_imgui.get_runner_params()
+        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(window_name)
+        if additional_window_ptr:
+            # additional_window_ptr.include_in_view_menu = True
+            additional_window_ptr.is_visible = True
+
+
+def demo_advertise_features():
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Switch between layouts")
+    imgui.pop_font()
+    imgui.text("with the menu \"View/Layouts\"")
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n"
+                          "and the selected layout is restored at startup")
+    imgui.separator()
+
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Change the theme")
+    imgui.pop_font()
+    imgui.text("with the menu \"View/Theme\"")
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("The selected theme is remembered and restored at startup")
+    imgui.separator()
+
+
+def demo_basic_widgets(app_state: AppState):
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Basic widgets demo")
+    imgui.pop_font()
+    imgui.text_wrapped("The widgets below will interact with the log window and the status bar")
+
+    # Edit a float using a slider from 0.0 to 1.0
+    changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
     if changed:
-        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {state.f}")
+        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}")
 
     # Buttons return true when clicked (most widgets return true when edited/activated)
     if imgui.button("Button"):
-        state.counter += 1
+        app_state.counter += 1
         hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
-
     imgui.same_line()
-    imgui.text(f"counter = {state.counter}")
+    imgui.text(f"counter = {app_state.counter}")
 
-    if state.rocket_state == AppState.RocketState.Init:
-        if imgui.button(icons_fontawesome.ICON_FA_ROCKET + " Launch rocket"):
-            state.rocket_state = AppState.RocketState.Preparing
+
+def demo_user_settings(app_state: AppState):
+    imgui.push_font(TITLE_FONT)
+    imgui.text("User settings")
+    imgui.pop_font()
+    imgui.text_wrapped("The values below are stored in the application settings ini file and restored at startup")
+    imgui.set_next_item_width(hello_imgui.em_size(7.0))
+    _, app_state.person_info.name = imgui.input_text("Name", app_state.person_info.name)
+    imgui.set_next_item_width(hello_imgui.em_size(7.0))
+    _, app_state.person_info.age = imgui.slider_int("Age", app_state.person_info.age, 0, 100)
+
+
+def demo_rocket(app_state: AppState):
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Rocket demo")
+    imgui.pop_font()
+    imgui.text_wrapped("How to show a progress bar in the status bar")
+    if app_state.rocket_state == RocketState.Init:
+        if imgui.button(f"{icons_fontawesome.ICON_FA_ROCKET} Launch rocket"):
+            app_state.rocket_launch_time = time.time()
+            app_state.rocket_state = RocketState.Preparing
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
-    elif state.rocket_state == AppState.RocketState.Preparing:
+    elif app_state.rocket_state == RocketState.Preparing:
         imgui.text("Please Wait")
-        state.rocket_progress += 0.003
-        if state.rocket_progress >= 1.0:
-            state.rocket_state = AppState.RocketState.Launched
+        app_state.rocket_progress = (time.time() - app_state.rocket_launch_time) / 3.0
+        if app_state.rocket_progress >= 1.0:
+            app_state.rocket_state = RocketState.Launched
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
-    elif state.rocket_state == AppState.RocketState.Launched:
-        imgui.text(icons_fontawesome.ICON_FA_ROCKET + " Rocket Launched")
+    elif app_state.rocket_state == RocketState.Launched:
+        imgui.text(f"{icons_fontawesome.ICON_FA_ROCKET} Rocket launched")
         if imgui.button("Reset Rocket"):
-            state.rocket_state = AppState.RocketState.Init
-            state.rocket_progress = 0.0
+            app_state.rocket_state = RocketState.Init
+            app_state.rocket_progress = 0.0
 
+
+def command_gui(app_state: AppState):
+    demo_advertise_features()
+    imgui.separator()
+    demo_basic_widgets(app_state)
+    imgui.separator()
+    demo_rocket(app_state)
+    imgui.separator()
+    demo_user_settings(app_state)
+    imgui.separator()
     demo_hide_window()
-
-    # Note, you can also show the tweak theme widgets via:
-    # hello_imgui.show_theme_tweak_gui(hello_imgui.get_runner_params().imgui_window_params.tweaked_theme)
-    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + immapp.em_size(3.0))
-    imgui_md.render_unindented(
-        """
-        # Tweak the theme!
-        
-        Select the menu "View/Theme/Theme tweak window" in order to browse the available themes (more than 15). 
-        You can even easily tweak their colors.
-    """
-    )
+    imgui.separator()
+    demo_show_additional_window()
 
 
-# Our Gui in the status bar
 def status_bar_gui(app_state: AppState):
-    if app_state.rocket_state == AppState.RocketState.Preparing:
+    if app_state.rocket_state == RocketState.Preparing:
         imgui.text("Rocket completion: ")
         imgui.same_line()
         imgui.progress_bar(app_state.rocket_progress, hello_imgui.em_to_vec2(7.0, 1.0))  # type: ignore
 
 
-def main():
+def show_menu_gui():
+    if imgui.begin_menu("My Menu"):
+        clicked, _ = imgui.menu_item("Test me", "", False)
+        if clicked:
+            hello_imgui.log(hello_imgui.LogLevel.warning, "It works")
+        imgui.end_menu()
 
-    # Important: HelloImGui uses an assets dir where it can find assets (fonts, images, etc.)
+
+def show_app_menu_items():
+    clicked, _ = imgui.menu_item("A Custom app menu item", "", False)
+    if clicked:
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
+
+
+##########################################################################
+#    Docking Layouts and Docking windows
+##########################################################################
+
+#
+# 1. Define the Docking splits (two versions are available)
+#
+def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
+    # Define the default docking splits,
+    # i.e. the way the screen space is split in different target zones for the dockable windows
+    # We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
     #
-    # By default an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
+    #    ___________________________________________
+    #    |        |                                |
+    #    | Command|                                |
+    #    | Space  |    MainDockSpace               |
+    #    |        |                                |
+    #    |        |                                |
+    #    |        |                                |
+    #    -------------------------------------------
+    #    |     MiscSpace                           |
+    #    -------------------------------------------
+    #
+
+    # Uncomment the next line if you want to always start with this layout.
+    # Otherwise, modifications to the layout applied by the user layout will be remembered.
+    # runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.ApplicationStart
+
+    # Then, add a space named "MiscSpace" whose height is 25% of the app height.
+    # This will split the preexisting default dockspace "MainDockSpace" in two parts.
+    split_main_misc = hello_imgui.DockingSplit()
+    split_main_misc.initial_dock = "MainDockSpace"
+    split_main_misc.new_dock = "MiscSpace"
+    split_main_misc.direction = imgui.Dir_.down
+    split_main_misc.ratio = 0.25
+
+    # Then, add a space to the left which occupies a column whose width is 25% of the app width
+    split_main_command = hello_imgui.DockingSplit()
+    split_main_command.initial_dock = "MainDockSpace"
+    split_main_command.new_dock = "CommandSpace"
+    split_main_command.direction = imgui.Dir_.left
+    split_main_command.ratio = 0.25
+    # Exclude this space from Docking
+    split_main_command.node_flags = imgui.internal.DockNodeFlagsPrivate_.no_docking \
+                                    | imgui.internal.DockNodeFlagsPrivate_.no_tab_bar
+
+    splits = [split_main_misc, split_main_command]
+    return splits
+
+
+def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
+    # Define alternative docking splits for the "Alternative Layout"
+    #    ___________________________________________
+    #    |                |                        |
+    #    | Misc           |                        |
+    #    | Space          |    MainDockSpace       |
+    #    |                |                        |
+    #    -------------------------------------------
+    #    |                                         |
+    #    |                                         |
+    #    |     CommandSpace                        |
+    #    |                                         |
+    #    -------------------------------------------
+
+    split_main_command = hello_imgui.DockingSplit()
+    split_main_command.initial_dock = "MainDockSpace"
+    split_main_command.new_dock = "CommandSpace"
+    split_main_command.direction = imgui.Dir_.down
+    split_main_command.ratio = 0.5
+
+    split_main_misc = hello_imgui.DockingSplit()
+    split_main_misc.initial_dock = "MainDockSpace"
+    split_main_misc.new_dock = "MiscSpace"
+    split_main_misc.direction = imgui.Dir_.left
+    split_main_misc.ratio = 0.5
+
+    splits = [split_main_command, split_main_misc]
+    return splits
+
+
+#
+# 2. Define the Dockable windows
+#
+def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWindow]:
+    # A Command panel named "Commands" will be placed in "CommandSpace". Its Gui is provided calls "CommandGui"
+    commands_window = hello_imgui.DockableWindow()
+    commands_window.label = "Commands"
+    commands_window.dock_space_name = "CommandSpace"
+    commands_window.gui_function = lambda: command_gui(app_state)
+
+    # A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
+    logs_window = hello_imgui.DockableWindow()
+    logs_window.label = "Logs"
+    logs_window.dock_space_name = "MiscSpace"
+    logs_window.gui_function = hello_imgui.log_gui
+
+    # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
+    dear_imgui_demo_window = hello_imgui.DockableWindow()
+    dear_imgui_demo_window.label = "Dear ImGui Demo"
+    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+
+    # additional_window is initially not visible (and not mentioned in the view menu).
+    # it will be opened only if the user chooses to display it
+    additional_window = hello_imgui.DockableWindow()
+    additional_window.label = "Additional Window"
+    additional_window.is_visible = False  # this window is initially hidden,
+    additional_window.include_in_view_menu = False  # it is not shown in the view menu,
+    additional_window.remember_is_visible = False  # its visibility is not saved in the settings file,
+    additional_window.dock_space_name = "MiscSpace"  # when shown, it will appear in MiscSpace.
+    additional_window.gui_function = lambda: imgui.text("This is the additional window")
+
+    dockable_windows = [
+        commands_window,
+        logs_window,
+        dear_imgui_demo_window,
+        additional_window,
+    ]
+    return dockable_windows
+
+
+#
+# 3. Define the layouts:
+# A layout is stored inside DockingParams, and stores the splits + the dockable windows.
+# Here, we provide the default layout, and two alternative layouts.
+def create_default_layout(app_state: AppState) -> hello_imgui.DockingParams:
+    docking_params = hello_imgui.DockingParams()
+    # By default, the layout name is already "Default"
+    # docking_params.layout_name = "Default"
+    docking_params.docking_splits = create_default_docking_splits()
+    docking_params.dockable_windows = create_dockable_windows(app_state)
+    return docking_params
+
+
+def create_alternative_layouts(app_state: AppState) -> List[hello_imgui.DockingParams]:
+    alternative_layout = hello_imgui.DockingParams()
+    alternative_layout.layout_name = "Alternative Layout"
+    alternative_layout.docking_splits = create_alternative_docking_splits()
+    alternative_layout.dockable_windows = create_dockable_windows(app_state)
+
+    tabs_layout = hello_imgui.DockingParams()
+    tabs_layout.layout_name = "Tabs Layout"
+    tabs_layout.dockable_windows = create_dockable_windows(app_state)
+    # Force all windows to be presented in the MainDockSpace
+    for window in tabs_layout.dockable_windows:
+        window.dock_space_name = "MainDockSpace"
+    # In "Tabs Layout", no split is created
+    tabs_layout.docking_splits = []
+
+    return [alternative_layout, tabs_layout]
+
+
+##########################################################################
+#    main(): here, we simply fill RunnerParams, then run the application
+##########################################################################
+def main():
+    # By default, an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
     # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
-    # If you need to add more assets, make a copy of this assets folder and add your own files, and call set_assets_folder
+    # If you need to add more assets, make a copy of this assets folder and add your own files,
+    # and call set_assets_folder
     hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
 
-    ################################################################################################
+    #
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
-    ################################################################################################
+    #
 
     # Our application state
     app_state = AppState()
@@ -125,168 +421,60 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
 
-    # Note: by setting the window title, we also set the name of the ini files into which the settings for the user
-    # layout will be stored: Docking_demo.ini (imgui settings) and Docking_demo_appWindow.ini (app window size and position)
+    # Note: by setting the window title, we also set the name of the ini files in which the settings for the user
+    # layout will be stored: Docking_demo.ini
     runner_params.app_window_params.window_title = "Docking demo"
 
     runner_params.imgui_window_params.menu_app_title = "Docking App"
-    runner_params.app_window_params.window_geometry.size = (1000, 800)
+    runner_params.app_window_params.window_geometry.size = (1000, 900)
     runner_params.app_window_params.restore_previous_geometry = True
+
+    # Set LoadAdditionalFonts callback
+    runner_params.callbacks.load_additional_fonts = load_fonts
 
     #
     # Status bar
     #
     # We use the default status bar of Hello ImGui
     runner_params.imgui_window_params.show_status_bar = True
+    # Add custom widgets in the status bar
+    runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
     # uncomment next line in order to hide the FPS in the status bar
     # runner_params.im_gui_window_params.show_status_fps = False
-    runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
 
     #
     # Menu bar
     #
-    # We use the default menu of Hello ImGui, to which we add some more items
-    runner_params.imgui_window_params.show_menu_bar = True
-
-    def show_menu_gui():
-        if imgui.begin_menu("My Menu"):
-            clicked, _ = imgui.menu_item("Test me", "", False)
-            if clicked:
-                hello_imgui.log(hello_imgui.LogLevel.warning, "It works")
-            imgui.end_menu()
-
+    runner_params.imgui_window_params.show_menu_bar = True  # We use the default menu of Hello ImGui
+    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
     runner_params.callbacks.show_menus = show_menu_gui
-
-    def show_app_menu_items():
-        clicked, _ = imgui.menu_item("A Custom app menu item", "", False)
-        if clicked:
-            hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
-
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
 
-    # optional native events handling
-    # runner_params.callbacks.any_backend_event_callback = ...
+    #
+    # Load user settings at callbacks `post_init` and save them at `before_exit`
+    #
+    runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
+    runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
 
-    ################################################################################################
+    #
     # Part 2: Define the application layout and windows
-    ################################################################################################
-
-    #
-    #    2.1 Define the docking splits,
-    #    i.e. the way the screen space is split in different target zones for the dockable windows
-    #     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
-    #
-    #    ___________________________________________
-    #    |        |                                |
-    #    | Left   |                                |
-    #    | Space  |    MainDockSpace               |
-    #    |        |                                |
-    #    |        |                                |
-    #    |        |                                |
-    #    -------------------------------------------
-    #    |     BottomSpace                         |
-    #    -------------------------------------------
     #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.imgui_window_params.default_imgui_window_type = (
+    runner_params.imgui_window_params.default_imgui_window_type = \
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-    )
-    # In this demo, we also demonstrate multiple viewports.
-    # you can drag windows outside out the main window in order to put their content into new native windows
+    # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
+    # in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
-
-    # uncomment the next line if you want to always start with this layout.
-    # Otherwise, modifications to the layout applied by the user layout will be persisted
-    # runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
-
-    # Then, add a space named "BottomSpace" whose height is 25% of the app height.
-    # This will split the preexisting default dockspace "MainDockSpace" in two parts.
-    split_main_bottom = hello_imgui.DockingSplit()
-    split_main_bottom.initial_dock = "MainDockSpace"
-    split_main_bottom.new_dock = "BottomSpace"
-    split_main_bottom.direction = imgui.Dir_.down
-    split_main_bottom.ratio = 0.25
-
-    # Then, add a space to the left which occupies a column whose width is 25% of the app width
-    split_main_left = hello_imgui.DockingSplit()
-    split_main_left.initial_dock = "MainDockSpace"
-    split_main_left.new_dock = "LeftSpace"
-    split_main_left.direction = imgui.Dir_.left
-    split_main_left.ratio = 0.25
-    # Exclude this space from Docking
-    split_main_left.node_flags = imgui.internal.DockNodeFlagsPrivate_.no_docking | imgui.internal.DockNodeFlagsPrivate_.no_tab_bar
-
-    # Finally, transmit these splits to HelloImGui
-    runner_params.docking_params.docking_splits = [split_main_bottom, split_main_left]
+    # Set the default layout (this contains the default DockingSplits and DockableWindows)
+    runner_params.docking_params = create_default_layout(app_state)
+    # Add alternative layouts
+    runner_params.alternative_docking_layouts = create_alternative_layouts(app_state)
 
     #
-    # 2.1 Define our dockable windows : each window provide a Gui callback, and will be displayed in a docking split.
-    #
-
-    # A Command panel named "Commands" will be placed in "LeftSpace". Its Gui is provided calls "CommandGui"
-    commands_window = hello_imgui.DockableWindow()
-    commands_window.label = "Commands"
-    commands_window.dock_space_name = "LeftSpace"
-    def additional_window_button_gui():
-        # This function is redefined later: it enables to show an additional window
-        pass
-    commands_window.gui_function = lambda: (command_gui(app_state), additional_window_button_gui())
-    # A Log  window named "Logs" will be placed in "BottomSpace". It uses the HelloImGui logger gui
-    logs_window = hello_imgui.DockableWindow()
-    logs_window.label = "Logs"
-    logs_window.dock_space_name = "BottomSpace"
-    logs_window.gui_function = hello_imgui.log_gui
-    # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
-    dear_imgui_demo_window = hello_imgui.DockableWindow()
-    dear_imgui_demo_window.label = "Dear ImGui Demo"
-    dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
-
-    # additional_window: shows how to dynamically add dockable windows
-    # `additional_window`  is initially not visible, and will be opened only if the user chooses to display it.
-    # Notes:
-    #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
-    #       from the code inside a window's `gui_function`
-    #       (since this gui_function will be called while iterating on this vector!)
-    #     - there are two ways to dynamically add windows:
-    #           * either make them initially invisible, and exclude them from the view menu (such as shown here)
-    #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.pre_new_frame
-    additional_window = hello_imgui.DockableWindow()
-    additional_window.label = "Additional Window"
-    additional_window.is_visible = False               # Initially this window is hidden,
-    additional_window.include_in_view_menu = False     # and it is not shown in the view menu.
-    additional_window.dock_space_name = "BottomSpace"  # When shown, it will appear in BottomSpace.
-    additional_window.gui_function = lambda: imgui.text("This is the additional window")
-    # This gui function displays a button that will show additional_window (it is displayed inside commandsWindow)
-    def additional_window_button_gui():
-        window_name = "Additional Window"
-        imgui.new_line(); imgui_md.render_unindented("# Dynamically add window")
-        if imgui.button("Show additional window"):
-            # We need to query the new window pointer from HelloImGui, since it is stored inside
-            # the vector `runnerParams.dockingParams.dockableWindows`
-            # (i.e. as a copy from the user created DockableWindow during setup)
-            additional_window_ptr = hello_imgui.get_runner_params().docking_params.dockable_window_of_name(window_name)
-            if additional_window_ptr is not None:
-                additional_window_ptr.include_in_view_menu = True
-                additional_window_ptr.is_visible = True
-
-    # Finally, transmit these windows to HelloImGui
-    runner_params.docking_params.dockable_windows = [
-        commands_window,
-        logs_window,
-        dear_imgui_demo_window,
-        additional_window,  # This window is initially hidden
-    ]
-
-    ################################################################################################
     # Part 3: Run the app
-    ################################################################################################
-    import imgui_bundle
-
-    addons_params = immapp.AddOnsParams()
-    addons_params.with_markdown = True
-    immapp.run(runner_params, addons_params)
+    #
+    hello_imgui.run(runner_params)
 
 
 if __name__ == "__main__":

@@ -257,6 +257,8 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 
 
 
+
+
 """ namespace BackendApi"""
 
 # Note: note related to DPI and high resolution screens:
@@ -264,8 +266,6 @@ def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
 # Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
 # - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
 # - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
-
-
 
 class ScreenBounds:
     # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
@@ -283,84 +283,22 @@ class ScreenBounds:
     def center(self) -> ScreenPosition:
         pass
 
-    # bool Contains(ScreenPosition pixel) const{    /* original C++ signature */
-    #             ForDim2(dim) {
-    #                 if (pixel[dim] < TopLeftCorner()[dim])
-    #                     return false;
-    #                 if (pixel[dim] >= BottomRightCorner()[dim])
-    #                     return false;
-    #             }
-    #             return true;
-    #         }
+    # bool Contains(ScreenPosition pixel) const;    /* original C++ signature */
     def contains(self, pixel: ScreenPosition) -> bool:
         pass
-
-    # ScreenPosition WinPositionCentered(ScreenSize windowSize) const {    /* original C++ signature */
-    #             return {
-    #                 Center()[0] - windowSize[0] / 2,
-    #                 Center()[1] - windowSize[1] / 2
-    #             };
-    #         }
+    # ScreenPosition WinPositionCentered(ScreenSize windowSize) const;    /* original C++ signature */
     def win_position_centered(self, window_size: ScreenSize) -> ScreenPosition:
         pass
-
-    # int DistanceFromPixel(ScreenPosition point) const    /* original C++ signature */
-    #         {
-    #             auto distFromInterval = [](int a, int b, int x) {
-    #                 if (x < a)
-    #                     return a - x;
-    #                 else if (x > b)
-    #                     return x - b;
-    #                 else
-    #                     return 0;
-    #             };
-    #             int distance = 0;
-    #             ForDim2(dim)
-    #                 distance += distFromInterval(TopLeftCorner()[dim], BottomRightCorner()[dim], point[dim]);
-    #             return distance;
-    #         }
+    # int DistanceFromPixel(ScreenPosition point) const;    /* original C++ signature */
     def distance_from_pixel(self, point: ScreenPosition) -> int:
         pass
-
-    # ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const    /* original C++ signature */
-    #         {
-    #             auto &self = *this;
-    #             ScreenBounds windowBoundsNew = windowBoundsOriginal;
-    #             ForDim2(dim)
-    #             {
-    #                 // 1. if window is to the left or to the top, move it
-    #                 if (windowBoundsNew.position[dim] < self.position[dim])
-    #                     windowBoundsNew.position[dim] = self.position[dim];
-    #                 // 2.1 if the window is too big and does not fit the bottom right corner, try to move it
-    #                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
-    #                     windowBoundsNew.position[dim] = self.BottomRightCorner()[dim] - 1 - windowBoundsNew.size[dim];
-    #                 // Redo 1. if window is to the left or to the top, move it (since we may have moved)
-    #                 if (windowBoundsNew.position[dim] < self.position[dim])
-    #                     windowBoundsNew.position[dim] = self.position[dim];
-    #                 // 3. if it was not enough, resize it
-    #                 if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
-    #                     windowBoundsNew.size[dim] = self.size[dim];
-    #             }
-    #             return windowBoundsNew;
-    #         }
+    # ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const;    /* original C++ signature */
     def ensure_window_fits_this_monitor(
         self,
         window_bounds_original: HelloImGui.ScreenBounds
         ) -> HelloImGui.ScreenBounds:
         pass
-
-    # bool operator==(const ScreenBounds& other) const    /* original C++ signature */
-    #         {
-    #             auto &self = *this;
-    #             ForDim2(dim)
-    #             {
-    #                 if (self.size[dim] != other.size[dim])
-    #                     return false;
-    #                 if (self.position[dim] != other.position[dim])
-    #                     return false;
-    #             }
-    #             return true;
-    #         }
+    # bool operator==(const ScreenBounds& other) const;    /* original C++ signature */
     def __eq__(self, other: HelloImGui.ScreenBounds) -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
@@ -371,6 +309,15 @@ class ScreenBounds:
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+
+# std::string IntPairToString(std::array<int, 2> v);    /* original C++ signature */
+def int_pair_to_string(v: List[int]) -> str:
+    pass
+# std::optional<std::array<int, 2>> StringToIntPair(const std::string& s);    /* original C++ signature */
+def string_to_int_pair(s: str) -> Optional[List[int]]:
+    pass
+
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -648,6 +595,9 @@ class ImGuiTheme_(enum.Enum):
 # const char* ImGuiTheme_Name(ImGuiTheme_ theme);    /* original C++ signature */
 def imgui_theme_name(theme: ImGuiTheme_) -> str:
     pass
+# ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);    /* original C++ signature */
+def imgui_theme_from_name(theme_name: str) -> ImGuiTheme_:
+    pass
 # ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);    /* original C++ signature */
 def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
     pass
@@ -818,8 +768,8 @@ class ImGuiWindowParams:
       * `showStatusBar`: _bool, default=false_.
         Flag that enable to show a Status bar at the bottom. You can customize the status bar
         via RunnerCallbacks.ShowStatus()
-
       * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.
+      * `rememberStatusBarSettings`: _bool, default=true_. If set, showStatusBar and showStatus_Fps are stored in the application settings.
 
       * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.
         Make windows only movable from the title bar
@@ -833,6 +783,10 @@ class ImGuiWindowParams:
       * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
         Change the ImGui theme. Several themes are available, you can query the list by calling
         HelloImGui::AvailableThemes()
+      * `showMenu_View_Themes`: _bool, default=true_.
+        Show theme selection in view menu
+      * `rememberTheme`: _bool, default=true_.
+        Remember selected theme
     @@md
 
     """
@@ -855,6 +809,8 @@ class ImGuiWindowParams:
     show_status_bar: bool = False
     # bool showStatus_Fps = true;    /* original C++ signature */
     show_status_fps: bool = True
+    # bool rememberStatusBarSettings = true;    /* original C++ signature */
+    remember_status_bar_settings: bool = True
 
     # bool configWindowsMoveFromTitleBarOnly = true;    /* original C++ signature */
     config_windows_move_from_title_bar_only: bool = True
@@ -867,7 +823,11 @@ class ImGuiWindowParams:
 
     # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
     tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme());    /* original C++ signature */
+    # bool showMenu_View_Themes = true;    /* original C++ signature */
+    show_menu_view_themes: bool = True
+    # bool rememberTheme = true;    /* original C++ signature */
+    remember_theme: bool = True
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true);    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
@@ -878,10 +838,13 @@ class ImGuiWindowParams:
         show_menu_view: bool = True,
         show_status_bar: bool = False,
         show_status_fps: bool = True,
+        remember_status_bar_settings: bool = True,
         config_windows_move_from_title_bar_only: bool = True,
         enable_viewports: bool = False,
         menu_app_title: str = "",
-        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme()
+        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme(),
+        show_menu_view_themes: bool = True,
+        remember_theme: bool = True
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1046,6 +1009,7 @@ class RunnerCallbacks:
 
      * `PreNewFrame`: *VoidFunction, default=empty*.
         You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
+        It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
 
     * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
       Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1054,7 +1018,7 @@ class RunnerCallbacks:
       Note: in the case of GLFW, you should use register them in `PostInit`
 
     * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
-       A function that is called when fonts are ready to be loaded.
+       A function that is called once, when fonts are ready to be loaded.
        By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.
 
     * `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
@@ -1252,6 +1216,7 @@ class DockableWindow:
        should initially be placed
     * `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.
     * `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.
+    * `rememberIsVisible`: _bool, default=true_. Flag that indicates whether the window visibility should be saved in settings or not.
     * `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.
     * `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End
        calls should be added automatically (with the given "label"). Set to False if you want to call
@@ -1299,6 +1264,9 @@ class DockableWindow:
 
     # bool isVisible = true;    /* original C++ signature */
     is_visible: bool = True
+    # bool rememberIsVisible = true;    /* original C++ signature */
+    remember_is_visible: bool = True
+
     # bool canBeClosed = true;    /* original C++ signature */
     can_be_closed: bool = True
     # bool callBeginEnd = true;    /* original C++ signature */
@@ -1321,6 +1289,7 @@ class DockableWindow:
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
 
+
 #*
 #@@md#DockingParams
 #
@@ -1333,6 +1302,8 @@ class DockableWindow:
 #  Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
 #* `dockableWindows`: _vector[DockableWindow]_.
 #  List of the dockable windows, together with their Gui code
+#* `layoutName`: _string, default="default"_.
+#  Displayed name of the layout. Only used in advanced cases when several layouts are available.
 #* `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
 #  When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
 #  ApplicationStart (always reapply at application start), and Never.
@@ -1366,6 +1337,9 @@ class DockingParams:
     # std::vector<DockableWindow> dockableWindows;    /* original C++ signature */
     dockable_windows: List[DockableWindow]
 
+    # std::string layoutName = "Default";    /* original C++ signature */
+    layout_name: str = "Default"
+
     # DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;    /* original C++ signature */
     layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever
     # bool layoutReset = false;    /* original C++ signature */
@@ -1381,11 +1355,12 @@ class DockingParams:
     # std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);    /* original C++ signature */
     def dock_space_id_from_name(self, dock_space_name: str) -> Optional[ImGuiID]:
         pass
-    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
+    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
     def __init__(
         self,
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
+        layout_name: str = "Default",
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False
         ) -> None:
@@ -1437,10 +1412,10 @@ class BackendPointers:
 
 
 
-
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 """ namespace HelloImGui"""
 
@@ -1471,6 +1446,8 @@ class FpsIdling:
       Set this to False to disable idling (this can be changed dynamically during execution)
     * `isIdling`: bool (dynamically updated during execution)
       This bool will be updated during the application execution, and will be set to True when it is idling.
+    * `rememberEnableIdling`: _bool, default=true_.
+      If True, the last value of enableIdling is restored from the settings at startup.
     @@md
 
     """
@@ -1480,12 +1457,15 @@ class FpsIdling:
     enable_idling: bool = True
     # bool  isIdling = false;    /* original C++ signature */
     is_idling: bool = False
-    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false);    /* original C++ signature */
+    # bool  rememberEnableIdling = true;    /* original C++ signature */
+    remember_enable_idling: bool = True
+    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.,
         enable_idling: bool = True,
-        is_idling: bool = False
+        is_idling: bool = False,
+        remember_enable_idling: bool = True
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1498,13 +1478,17 @@ class RunnerParams:
 
      Members:
     * `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.
-        callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
+       callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
     * `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.
-        application Window Params (position, size, title)
+       application Window Params (position, size, title)
     * `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.
-        imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)
+       imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)
     * `dockingParams`: _see [docking_params.h](docking_params.h)_.
-        dockable windows content and layout
+       dockable windows content and layout
+    * `alternativeDockingLayouts`: _vector<DockingParams>, default=empty_
+       List of possible additional layout for the applications. Only used in advanced cases when several layouts are available.
+    * `rememberSelectedAlternativeLayout`: _bool, default=true_
+       Shall the application remember the last selected layout. Only used in advanced cases when several layouts are available.
     * `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.
        A struct that contains optional pointers to the backend implementations. These pointers will be filled
        when the application starts
@@ -1533,8 +1517,14 @@ class RunnerParams:
     app_window_params: AppWindowParams
     # ImGuiWindowParams imGuiWindowParams;    /* original C++ signature */
     imgui_window_params: ImGuiWindowParams
+
     # DockingParams dockingParams;    /* original C++ signature */
     docking_params: DockingParams
+    # std::vector<DockingParams> alternativeDockingLayouts;    /* original C++ signature */
+    alternative_docking_layouts: List[DockingParams]
+    # bool rememberSelectedAlternativeLayout = true;    /* original C++ signature */
+    remember_selected_alternative_layout: bool = True
+
     # BackendPointers backendPointers;    /* original C++ signature */
     backend_pointers: BackendPointers
     # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
@@ -1551,13 +1541,15 @@ class RunnerParams:
     app_shall_exit: bool = False
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
         app_window_params: AppWindowParams = AppWindowParams(),
         imgui_window_params: ImGuiWindowParams = ImGuiWindowParams(),
         docking_params: DockingParams = DockingParams(),
+        alternative_docking_layouts: List[DockingParams] = List[DockingParams](),
+        remember_selected_alternative_layout: bool = True,
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
         fps_idling: FpsIdling = FpsIdling(),
@@ -1793,40 +1785,47 @@ def imgui_default_font_global_scale() -> float:
 
 
 
-"""*
-@@md#HelloImGui::Run
 
-__HelloImGui::Run()__ will run an application with a single call.
-
-Three signatures are provided:
-
-* `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
-   Runs an application whose params and Gui are provided by runnerParams.
-
-* `HelloImGui::Run(const SimpleRunnerParams&)`:
-   Runs an application, using simpler params.
-
-* `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`
-
-__HelloImGui::GetRunnerParams()__ is a convenience function that will return the runnerParams of the current application.
-
-@@md
-
-"""
-# void Run(RunnerParams & runnerParams);    /* original C++ signature */
+# void Run(RunnerParams &runnerParams);    /* original C++ signature */
 def run(runner_params: RunnerParams) -> None:
+    """*
+    @@md#HelloImGui::Run
+
+    __HelloImGui::Run()__ will run an application with a single call.
+
+    Three signatures are provided:
+
+    * `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
+       Runs an application whose params and Gui are provided by runnerParams.
+
+    * `HelloImGui::Run(const SimpleRunnerParams&)`:
+       Runs an application, using simpler params.
+
+    * `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`
+
+
+    __Other utilities:__
+
+    * `HelloImGui::GetRunnerParams()`:
+      a convenience function that will return the runnerParams of the current application
+
+    * `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
+      May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps
+    @@md
+
+    """
     pass
 
-# void Run(const SimpleRunnerParams& simpleParams);    /* original C++ signature */
+# void Run(const SimpleRunnerParams &simpleParams);    /* original C++ signature */
 def run(simple_params: SimpleRunnerParams) -> None:
     pass
 
 # void Run(    /* original C++ signature */
-#         const VoidFunction& guiFunction,
-#         const std::string& windowTitle = "",
+#         const VoidFunction &guiFunction,
+#         const std::string &windowTitle = "",
 #         bool windowSizeAuto = false,
 #         bool windowRestorePreviousGeometry = false,
-#         const ScreenSize& windowSize = DefaultWindowSize,
+#         const ScreenSize &windowSize = DefaultWindowSize,
 #         float fpsIdle = 10.f
 #     );
 def run(
@@ -1839,17 +1838,58 @@ def run(
     ) -> None:
     pass
 
-# RunnerParams* GetRunnerParams();    /* original C++ signature */
+# RunnerParams *GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
     pass
 
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
-# }
 def frame_rate(duration_for_mean: float = 0.5) -> float:
     """ Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
      since one can choose the duration for the calculation of the mean value of the fps
      (Will only lead to accurate values if you call it at each frame)
     """
+    pass
+
+
+#*
+#@@md#HelloImGui::Layouts
+#
+# In advanced cases when several layouts are available, you can switch between layouts.
+#(see demo inside [hello_imgui_demodocking.main.cpp](../hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp))
+#
+#* `SwitchLayout(layoutName)`
+#  Changes the application current layout. Only used in advanced cases when several layouts are available,
+#  i.e. if you filled runnerParams.alternativeDockingLayouts.
+#* `CurrentLayoutName()`: returns the name of the current layout
+#@@md
+#
+# void           SwitchLayout(const std::string& layoutName);    /* original C++ signature */
+def switch_layout(layout_name: str) -> None:
+    pass
+# std::string    CurrentLayoutName();    /* original C++ signature */
+def current_layout_name() -> str:
+    pass
+
+
+#*
+#@@md#HelloImGui::UserPref
+#
+#You may store additional user settings in the application settings. This is provided as a convenience only,
+#and it is not intended to store large quantities of text data. Use sparingly.
+#
+#* `SaveUserPref(string userPrefName, string userPrefContent)`:
+#  Shall be called in the callback runnerParams.callbacks.BeforeExit
+#
+#* `string LoadUserPref(string& userPrefName)`
+#  Shall be called in the callback runnerParams.callbacks.PostInit
+#@@md
+#
+# void        SaveUserPref(const std::string& userPrefName, const std::string& userPrefContent);    /* original C++ signature */
+def save_user_pref(user_pref_name: str, user_pref_content: str) -> None:
+    pass
+# std::string LoadUserPref(const std::string& userPrefName);    /* original C++ signature */
+# }
+def load_user_pref(user_pref_name: str) -> str:
     pass
 
 

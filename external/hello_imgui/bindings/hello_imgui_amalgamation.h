@@ -1211,6 +1211,10 @@ namespace HelloImGui
 
 #include <array>
 #include <stddef.h>
+#include <optional>
+
+
+#define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
 
 
 namespace HelloImGui
@@ -1226,9 +1230,6 @@ namespace HelloImGui
     constexpr ScreenPosition DefaultScreenPosition = {0, 0};
     constexpr ScreenSize DefaultWindowSize = {800, 600};
 
-
-#define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
-
     struct ScreenBounds
     {
         ScreenPosition position = DefaultScreenPosition;
@@ -1238,74 +1239,17 @@ namespace HelloImGui
         ScreenPosition BottomRightCorner() const{ return { position[0] + size[0], position[1] + size[1] }; }
         ScreenPosition Center() const{ return { position[0] + size[0] / 2, position[1] + size[1] / 2 }; }
 
-        bool Contains(ScreenPosition pixel) const{
-            ForDim2(dim) {
-                if (pixel[dim] < TopLeftCorner()[dim])
-                    return false;
-                if (pixel[dim] >= BottomRightCorner()[dim])
-                    return false;
-            }
-            return true;
-        }
-
-        ScreenPosition WinPositionCentered(ScreenSize windowSize) const {
-            return {
-                Center()[0] - windowSize[0] / 2,
-                Center()[1] - windowSize[1] / 2
-            };
-        }
-
-        int DistanceFromPixel(ScreenPosition point) const
-        {
-            auto distFromInterval = [](int a, int b, int x) {
-                if (x < a)
-                    return a - x;
-                else if (x > b)
-                    return x - b;
-                else
-                    return 0;
-            };
-            int distance = 0;
-            ForDim2(dim)
-                distance += distFromInterval(TopLeftCorner()[dim], BottomRightCorner()[dim], point[dim]);
-            return distance;
-        }
-
-        ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const
-        {
-            auto &self = *this;
-            ScreenBounds windowBoundsNew = windowBoundsOriginal;
-            ForDim2(dim)
-            {
-                // 1. if window is to the left or to the top, move it
-                if (windowBoundsNew.position[dim] < self.position[dim])
-                    windowBoundsNew.position[dim] = self.position[dim];
-                // 2.1 if the window is too big and does not fit the bottom right corner, try to move it
-                if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
-                    windowBoundsNew.position[dim] = self.BottomRightCorner()[dim] - 1 - windowBoundsNew.size[dim];
-                // Redo 1. if window is to the left or to the top, move it (since we may have moved)
-                if (windowBoundsNew.position[dim] < self.position[dim])
-                    windowBoundsNew.position[dim] = self.position[dim];
-                // 3. if it was not enough, resize it
-                if (windowBoundsNew.BottomRightCorner()[dim] >= self.BottomRightCorner()[dim])
-                    windowBoundsNew.size[dim] = self.size[dim];
-            }
-            return windowBoundsNew;
-        }
-
-        bool operator==(const ScreenBounds& other) const
-        {
-            auto &self = *this;
-            ForDim2(dim)
-            {
-                if (self.size[dim] != other.size[dim])
-                    return false;
-                if (self.position[dim] != other.position[dim])
-                    return false;
-            }
-            return true;
-        }
+        bool Contains(ScreenPosition pixel) const;
+        ScreenPosition WinPositionCentered(ScreenSize windowSize) const;
+        int DistanceFromPixel(ScreenPosition point) const;
+        ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const;
+        bool operator==(const ScreenBounds& other) const;
     };
+
+
+    std::string IntPairToString(std::array<int, 2> v);
+    std::optional<std::array<int, 2>> StringToIntPair(const std::string& s);
+
 } // namespace BackendApi
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1524,6 +1468,7 @@ namespace ImGuiTheme
         ImGuiTheme_Count
     };
     const char* ImGuiTheme_Name(ImGuiTheme_ theme);
+    ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);
     ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);
     void ApplyTheme(ImGuiTheme_ theme);
 
@@ -1645,8 +1590,8 @@ In order to change the application window settings, change the _AppWindowsParams
   * `showStatusBar`: _bool, default=false_.
     Flag that enable to show a Status bar at the bottom. You can customize the status bar
     via RunnerCallbacks.ShowStatus()
-
   * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.
+  * `rememberStatusBarSettings`: _bool, default=true_. If set, showStatusBar and showStatus_Fps are stored in the application settings.
 
   * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.
     Make windows only movable from the title bar
@@ -1660,6 +1605,10 @@ In order to change the application window settings, change the _AppWindowsParams
   * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
     Change the ImGui theme. Several themes are available, you can query the list by calling
     HelloImGui::AvailableThemes()
+  * `showMenu_View_Themes`: _bool, default=true_.
+    Show theme selection in view menu
+  * `rememberTheme`: _bool, default=true_.
+    Remember selected theme
 @@md
  */
 struct ImGuiWindowParams
@@ -1675,6 +1624,7 @@ struct ImGuiWindowParams
 
     bool showStatusBar = false;
     bool showStatus_Fps = true;
+    bool rememberStatusBarSettings = true;
 
     bool configWindowsMoveFromTitleBarOnly = true;
 
@@ -1683,6 +1633,8 @@ struct ImGuiWindowParams
     std::string menuAppTitle = "";
 
     ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
+    bool showMenu_View_Themes = true;
+    bool rememberTheme = true;
 };
 
 }  // namespace HelloImGui
@@ -1815,6 +1767,7 @@ struct MobileCallbacks
 
  * `PreNewFrame`: *VoidFunction, default=empty*.
     You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
+    It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
 
 * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
   Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1823,7 +1776,7 @@ struct MobileCallbacks
   Note: in the case of GLFW, you should use register them in `PostInit`
 
 * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
-   A function that is called when fonts are ready to be loaded.
+   A function that is called once, when fonts are ready to be loaded.
    By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.
 
 * `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
@@ -1870,7 +1823,6 @@ struct RunnerCallbacks
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <utility>
-#include <optional>
 #include <stdio.h>
 
 namespace HelloImGui
@@ -1990,6 +1942,7 @@ _Members:_
    should initially be placed
 * `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.
 * `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.
+* `rememberIsVisible`: _bool, default=true_. Flag that indicates whether the window visibility should be saved in settings or not.
 * `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.
 * `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End
    calls should be added automatically (with the given "label"). Set to false if you want to call
@@ -2025,6 +1978,8 @@ struct DockableWindow
     VoidFunction GuiFunction = EmptyVoidFunction();
 
     bool isVisible = true;
+    bool rememberIsVisible = true;
+
     bool canBeClosed = true;
     bool callBeginEnd = true;
     bool includeInViewMenu = true;
@@ -2037,6 +1992,7 @@ struct DockableWindow
     ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;
 
     bool focusWindowAtNextFrame = false;
+
 };
 
 /**
@@ -2051,6 +2007,8 @@ struct DockableWindow
   Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
 * `dockableWindows`: _vector[DockableWindow]_.
   List of the dockable windows, together with their Gui code
+* `layoutName`: _string, default="default"_.
+  Displayed name of the layout. Only used in advanced cases when several layouts are available.
 * `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
   When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
   ApplicationStart (always reapply at application start), and Never.
@@ -2080,6 +2038,8 @@ struct DockingParams
     std::vector<DockingSplit> dockingSplits;
 
     std::vector<DockableWindow> dockableWindows;
+
+    std::string layoutName = "Default";
 
     DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;
     bool layoutReset = false;
@@ -2127,10 +2087,10 @@ struct BackendPointers
 
 }  // namespace HelloImGui
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h continued                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 namespace HelloImGui
 {
@@ -2158,6 +2118,8 @@ enum class BackendType
   Set this to false to disable idling (this can be changed dynamically during execution)
 * `isIdling`: bool (dynamically updated during execution)
   This bool will be updated during the application execution, and will be set to true when it is idling.
+* `rememberEnableIdling`: _bool, default=true_.
+  If true, the last value of enableIdling is restored from the settings at startup.
 @@md
 */
 struct FpsIdling
@@ -2165,6 +2127,7 @@ struct FpsIdling
     float fpsIdle = 9.f;
     bool  enableIdling = true;
     bool  isIdling = false;
+    bool  rememberEnableIdling = true;
 };
 
 /**
@@ -2174,13 +2137,17 @@ struct FpsIdling
 
  Members:
 * `callbacks`: _see [runner_callbacks.h](runner_callbacks.h)_.
-    callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
+   callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
 * `appWindowParams`: _see [app_window_params.h](app_window_params.h)_.
-    application Window Params (position, size, title)
+   application Window Params (position, size, title)
 * `imGuiWindowParams`: _see [imgui_window_params.h](imgui_window_params.h)_.
-    imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)
+   imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)
 * `dockingParams`: _see [docking_params.h](docking_params.h)_.
-    dockable windows content and layout
+   dockable windows content and layout
+* `alternativeDockingLayouts`: _vector<DockingParams>, default=empty_
+   List of possible additional layout for the applications. Only used in advanced cases when several layouts are available.
+* `rememberSelectedAlternativeLayout`: _bool, default=true_
+   Shall the application remember the last selected layout. Only used in advanced cases when several layouts are available.
 * `backendPointers`: _see [backend_pointers.h](backend_pointers.h)_.
    A struct that contains optional pointers to the backend implementations. These pointers will be filled
    when the application starts
@@ -2207,7 +2174,11 @@ struct RunnerParams
     RunnerCallbacks callbacks;
     AppWindowParams appWindowParams;
     ImGuiWindowParams imGuiWindowParams;
+
     DockingParams dockingParams;
+    std::vector<DockingParams> alternativeDockingLayouts;
+    bool rememberSelectedAlternativeLayout = true;
+
     BackendPointers backendPointers;
     BackendType backendType = BackendType::FirstAvailable;
     FpsIdling fpsIdling;
@@ -2399,6 +2370,9 @@ namespace HelloImGui
 #include <cstdint>
 
 
+namespace HelloImGui
+{
+
 /**
 @@md#HelloImGui::Run
 
@@ -2414,29 +2388,66 @@ Three signatures are provided:
 
 * `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=false, restoreLastWindowGeometry=false, fpsIdle=10)`
 
-__HelloImGui::GetRunnerParams()__ is a convenience function that will return the runnerParams of the current application.
 
+__Other utilities:__
+
+* `HelloImGui::GetRunnerParams()`:
+  a convenience function that will return the runnerParams of the current application
+
+* `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
+  May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps
 @@md
 */
-namespace HelloImGui
-{
-    void Run(RunnerParams & runnerParams);
+    void Run(RunnerParams &runnerParams);
 
-    void Run(const SimpleRunnerParams& simpleParams);
+    void Run(const SimpleRunnerParams &simpleParams);
 
     void Run(
-        const VoidFunction& guiFunction,
-        const std::string& windowTitle = "",
+        const VoidFunction &guiFunction,
+        const std::string &windowTitle = "",
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = DefaultWindowSize,
+        const ScreenSize &windowSize = DefaultWindowSize,
         float fpsIdle = 10.f
     );
 
-    RunnerParams* GetRunnerParams();
+    RunnerParams *GetRunnerParams();
 
     // Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
     // since one can choose the duration for the calculation of the mean value of the fps
     // (Will only lead to accurate values if you call it at each frame)
     float FrameRate(float durationForMean = 0.5f);
+
+
+/**
+@@md#HelloImGui::Layouts
+
+ In advanced cases when several layouts are available, you can switch between layouts.
+(see demo inside [hello_imgui_demodocking.main.cpp](../hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp))
+
+* `SwitchLayout(layoutName)`
+  Changes the application current layout. Only used in advanced cases when several layouts are available,
+  i.e. if you filled runnerParams.alternativeDockingLayouts.
+* `CurrentLayoutName()`: returns the name of the current layout
+@@md
+*/
+    void           SwitchLayout(const std::string& layoutName);
+    std::string    CurrentLayoutName();
+
+
+/**
+@@md#HelloImGui::UserPref
+
+You may store additional user settings in the application settings. This is provided as a convenience only,
+and it is not intended to store large quantities of text data. Use sparingly.
+
+* `SaveUserPref(string userPrefName, string userPrefContent)`:
+  Shall be called in the callback runnerParams.callbacks.BeforeExit
+
+* `string LoadUserPref(string& userPrefName)`
+  Shall be called in the callback runnerParams.callbacks.PostInit
+@@md
+*/
+    void        SaveUserPref(const std::string& userPrefName, const std::string& userPrefContent);
+    std::string LoadUserPref(const std::string& userPrefName);
 }
