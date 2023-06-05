@@ -20,9 +20,9 @@ from typing import List
 ##########################################################################
 #    Our Application State
 ##########################################################################
-class PersonInfo:
-    name: str = "Rob"
-    age: int = 10
+class MyAppSettings:
+    name: str = "Test"
+    value: int = 10
 
 
 class RocketState(Enum):
@@ -36,14 +36,14 @@ class AppState:
     f: float
     counter: int
     rocket_progress: float
-    person_info: PersonInfo
+    my_app_settings: MyAppSettings
     rocket_state: RocketState
 
     def __init__(self):
         self.f = 0
         self.counter = 0
         self.rocket_progress = 0.0
-        self.person_info = PersonInfo()
+        self.my_app_settings = MyAppSettings()
         self.rocket_state = RocketState.Init
 
 
@@ -70,31 +70,31 @@ def load_fonts():  # This is called by runnerParams.callbacks.LoadAdditionalFont
 # This is provided as a convenience only, and it is not intended to store large quantities of text data.
 
 # Warning, the save/load function below are quite simplistic!
-def person_info_to_string(person_info: PersonInfo) -> str:
-    r = person_info.name + "\n" + str(person_info.age)
+def my_app_settings_to_string(settings: MyAppSettings) -> str:
+    r = settings.name + "\n" + str(settings.value)
     return r
 
 
-def string_to_person_info(s: str) -> PersonInfo:
-    r = PersonInfo()
+def string_to_my_app_settings(s: str) -> MyAppSettings:
+    r = MyAppSettings()
     lines = s.splitlines(False)
     if len(lines) >= 2:
         r.name = lines[0]
-        r.age = int(lines[1])
+        r.value = int(lines[1])
     return r
 
 
-def load_user_settings(app_state: AppState):
+def load_my_app_settings(app_state: AppState):
     """
-    Note: load_user_settings() and save_user_settings() will be called in the callbacks `post_init` and `before_exit`
+    Note: load_my_app_settings() and save_my_app_settings() will be called in the callbacks `post_init` and `before_exit`
          runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
          runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
     """
-    app_state.person_info = string_to_person_info(hello_imgui.load_user_pref("UserInfo"))
+    app_state.my_app_settings = string_to_my_app_settings(hello_imgui.load_user_pref("MyAppSettings"))
 
 
-def save_user_settings(app_state: AppState):
-    hello_imgui.save_user_pref("UserInfo", person_info_to_string(app_state.person_info))
+def save_my_app_settings(app_state: AppState):
+    hello_imgui.save_user_pref("MyAppSettings", my_app_settings_to_string(app_state.my_app_settings))
 
 
 ##########################################################################
@@ -165,7 +165,7 @@ def demo_basic_widgets(app_state: AppState):
     imgui.push_font(TITLE_FONT)
     imgui.text("Basic widgets demo")
     imgui.pop_font()
-    imgui.text_wrapped("The widgets below will interact with the log window and the status bar")
+    imgui.text_wrapped("The widgets below will interact with the log window")
 
     # Edit a float using a slider from 0.0 to 1.0
     changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
@@ -186,9 +186,9 @@ def demo_user_settings(app_state: AppState):
     imgui.pop_font()
     imgui.text_wrapped("The values below are stored in the application settings ini file and restored at startup")
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.person_info.name = imgui.input_text("Name", app_state.person_info.name)
+    _, app_state.my_app_settings.name = imgui.input_text("Name", app_state.my_app_settings.name)
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.person_info.age = imgui.slider_int("Age", app_state.person_info.age, 0, 100)
+    _, app_state.my_app_settings.value = imgui.slider_int("Value", app_state.my_app_settings.value, 0, 100)
 
 
 def demo_rocket(app_state: AppState):
@@ -453,8 +453,8 @@ def main():
     #
     # Load user settings at callbacks `post_init` and save them at `before_exit`
     #
-    runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
-    runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
+    runner_params.callbacks.post_init = lambda: load_my_app_settings(app_state)
+    runner_params.callbacks.before_exit = lambda: save_my_app_settings(app_state)
 
     #
     # Part 2: Define the application layout and windows

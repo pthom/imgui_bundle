@@ -21,10 +21,10 @@ It demonstrates:
 //////////////////////////////////////////////////////////////////////////
 //    Our Application State
 //////////////////////////////////////////////////////////////////////////
-struct PersonInfo
+struct MyAppSettings
 {
-    std::string name = "Rob";
-    int age = 10;
+    std::string name = "Test";
+    int value = 10;
 };
 
 struct AppState
@@ -42,7 +42,7 @@ struct AppState
     };
     RocketState rocket_state = RocketState::Init;
 
-    PersonInfo personInfo; // This values will be stored in the application settings
+    MyAppSettings myAppSettings; // This values will be stored in the application settings
 };
 
 
@@ -67,32 +67,32 @@ void LoadFonts() // This is called by runnerParams.callbacks.LoadAdditionalFonts
 // This is provided as a convenience only, and it is not intended to store large quantities of text data.
 
 // Warning, the save/load function below are quite simplistic!
-std::string PersonInfoToString(const PersonInfo& userInfo)
+std::string MyAppSettingsToString(const MyAppSettings& myAppSettings)
 {
     std::stringstream ss;
-    ss << userInfo.name << "\n";
-    ss << userInfo.age;
+    ss << myAppSettings.name << "\n";
+    ss << myAppSettings.value;
     return ss.str();
 }
-PersonInfo StringToPersonInfo(const std::string& s)
+MyAppSettings StringToMyAppSettings(const std::string& s)
 {
     std::stringstream ss(s);
-    PersonInfo userInfo;
-    ss >> userInfo.name;
-    ss >> userInfo.age;
-    return userInfo;
+    MyAppSettings myAppSettings;
+    ss >> myAppSettings.name;
+    ss >> myAppSettings.value;
+    return myAppSettings;
 }
 
 // Note: LoadUserSettings() and SaveUserSettings() will be called in the callbacks `PostInit` and `BeforeExit`:
-//     runnerParams.callbacks.PostInit = [&appState]   { LoadUserSettings(appState);};
-//     runnerParams.callbacks.BeforeExit = [&appState] { SaveUserSettings(appState);};
-void LoadUserSettings(AppState& appState) //
+//     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
+//     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
+void LoadMyAppSettings(AppState& appState) //
 {
-    appState.personInfo = StringToPersonInfo(HelloImGui::LoadUserPref("UserInfo") );
+    appState.myAppSettings = StringToMyAppSettings(HelloImGui::LoadUserPref("MyAppSettings"));
 }
-void SaveUserSettings(const AppState& appState)
+void SaveMyAppSettings(const AppState& appState)
 {
-    HelloImGui::SaveUserPref("UserInfo", PersonInfoToString(appState.personInfo));
+    HelloImGui::SaveUserPref("MyAppSettings", MyAppSettingsToString(appState.myAppSettings));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -162,7 +162,7 @@ void DemoAdvertiseFeatures()
 void DemoBasicWidgets(AppState& appState)
 {
     ImGui::PushFont(gTitleFont); ImGui::Text("Basic widgets demo"); ImGui::PopFont();
-    ImGui::TextWrapped("The widgets below will interact with the log window and the status bar");
+    ImGui::TextWrapped("The widgets below will interact with the log window");
 
     // Edit a float using a slider from 0.0f to 1.0f
     bool changed = ImGui::SliderFloat("float", &appState.f, 0.0f, 1.0f);
@@ -185,9 +185,9 @@ void DemoUserSettings(AppState& appState)
     ImGui::PushFont(gTitleFont); ImGui::Text("User settings"); ImGui::PopFont();
     ImGui::TextWrapped("The values below are stored in the application settings ini file and restored at startup");
     ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
-    ImGui::InputText("Name", &appState.personInfo.name);
+    ImGui::InputText("Name", &appState.myAppSettings.name);
     ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
-    ImGui::SliderInt("Age", &appState.personInfo.age, 0, 100);
+    ImGui::SliderInt("Age", &appState.myAppSettings.value, 0, 100);
 }
 
 void DemoRocket(AppState& appState)
@@ -479,8 +479,8 @@ int main(int, char**)
     //
     // Load user settings at callbacks `PostInit` and save them at `BeforeExit`
     //
-    runnerParams.callbacks.PostInit = [&appState]   { LoadUserSettings(appState);};
-    runnerParams.callbacks.BeforeExit = [&appState] { SaveUserSettings(appState);};
+    runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
+    runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
     //###############################################################################################
     // Part 2: Define the application layout and windows
