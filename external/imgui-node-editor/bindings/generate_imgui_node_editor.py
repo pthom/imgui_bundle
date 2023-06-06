@@ -30,6 +30,7 @@ def main():
         " inline SaveReasonFlags operator |",
         "SaveReasonFlags operator &",
     ]
+    options.srcmlcpp_options.functions_api_prefixes = "IMGUI_NODE_EDITOR_API"
     options.original_location_flag_show = True
     options.original_signature_flag_show = True
     options.python_run_black_formatter = True

@@ -6,6 +6,6 @@
 
 using NodeEditorContext = ax::NodeEditor::EditorContext;
 
-NodeEditorContext* DefaultNodeEditorContext_Immapp();
-void SuspendNodeEditorCanvas_Immapp();
-void ResumeNodeEditorCanvas_Immapp();
+IMGUI_NODE_EDITOR_API NodeEditorContext* DefaultNodeEditorContext_Immapp();
+IMGUI_NODE_EDITOR_API void SuspendNodeEditorCanvas_Immapp();
+IMGUI_NODE_EDITOR_API void ResumeNodeEditorCanvas_Immapp();
