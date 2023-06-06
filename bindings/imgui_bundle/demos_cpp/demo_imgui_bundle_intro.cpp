@@ -1,7 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include "imgui.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "imgui.h"
 #include "imgui/misc/cpp/imgui_stdlib.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"

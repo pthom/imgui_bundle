@@ -5,10 +5,10 @@
 // # Warning! This component does not render well on high DPI
 // # (especially under windows) => this demo is hidden by default
 // ###############################################################################
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 #include "demo_utils/api_demos.h"
 
-#include "imgui.h"
 #include "immapp/immapp.h"
 #include "ImGuizmoPure/ImZoomSliderPure.h"
 

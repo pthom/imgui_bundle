@@ -1,3 +1,5 @@
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "demo_utils/animate_logo.h"
 
 #include <map>

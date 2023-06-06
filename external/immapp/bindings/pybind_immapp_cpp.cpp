@@ -5,6 +5,7 @@
 
 #include <pybind11/stl_bind.h>
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"

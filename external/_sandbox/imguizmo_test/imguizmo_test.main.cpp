@@ -1,6 +1,10 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // Adapted from https://github.com/CedricGuillemet/ImGuizmo/blob/master/example/main.cpp
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
+#include "imgui_internal.h"
+
 #include "hello_imgui/hello_imgui.h"
 
 // https://github.com/CedricGuillemet/ImGuizmo
@@ -28,11 +32,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
-#include "imgui.h"
-#include "hello_imgui/hello_imgui_include_opengl.h"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include "hello_imgui/hello_imgui_include_opengl.h"
 
 #include "ImGuizmo/ImGuizmo.h"
 #include "ImGuizmo/ImSequencer.h"

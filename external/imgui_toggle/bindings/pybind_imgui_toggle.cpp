@@ -4,6 +4,7 @@
 //#include <pybind11/functional.h>
 //#include <pybind11/numpy.h>
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_toggle/imgui_toggle.h"
 #include "imgui_toggle/imgui_toggle_palette.h"
 #include "imgui_toggle/imgui_toggle_renderer.h"

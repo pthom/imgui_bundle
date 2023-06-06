@@ -1,8 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #pragma once
 #include "imgui.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
 #include <cstdint>
 #include "ImGuizmo/ImZoomSlider.h"
 #include "ImGuizmoPure/Editable.h"

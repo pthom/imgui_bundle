@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
 #include "imgui_internal.h"
 
 void DrawTransparentImage(ImTextureID texture, ImRect rect, float alpha);
