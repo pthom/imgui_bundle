@@ -264,6 +264,8 @@ applications.
     Android (poorly supported). See demo
     [video](https://traineq.org/HelloImGui_6_Platforms.mp4)
 
+-   Advanced layout handling
+
 -   Power Save mode: reduce FPS when application is idle (see
     [RunnerParams.fpsIdle](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h))
 
@@ -294,6 +296,36 @@ example](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/de
 HelloImGui is fully configurable by POD (plain old data) structures. See
 [their
 description](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md)
+
+### Advanced layout and theming with Hello ImGui:
+
+See the demo named "demo\_docking", which demonstrates:
+
+-   How to handle complex layouts: you can define several layouts and
+    switch between them: each layout which will remember the user
+    modifications and the list of opened windows
+
+-   How to use theming
+
+-   How to store you own user settings in the app ini file
+
+-   How to add a status bar and a log window
+
+-   How to reduce the FPS when idling (to reduce CPU usage)
+
+Links:
+
+-   see
+    [demo\_docking.py](https://github.com/pthom/imgui_bundle//blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py)
+
+-   see
+    [demo\_docking.cpp](https://github.com/pthom/imgui_bundle//blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp)
+
+-   [Run this demo
+    online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
+
+-   see [a short video explanation about
+    layouts](https://www.youtube.com/watch?v=XKxmz__F4ow) on YouTube
 
 ## ImmApp - Immediate App
 

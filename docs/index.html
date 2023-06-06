@@ -1214,6 +1214,9 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <p>Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo <a href="https://traineq.org/HelloImGui_6_Platforms.mp4">video</a></p>
 </li>
 <li>
+<p>Advanced layout handling</p>
+</li>
+<li>
 <p>Power Save mode: reduce FPS when application is idle (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.fpsIdle</a>)</p>
 </li>
 <li>
@@ -1256,6 +1259,50 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_advanced_layout_and_theming_with_hello_imgui">Advanced layout and theming with Hello ImGui:</h4>
+<div class="paragraph">
+<p>See the demo named "demo_docking", which demonstrates:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How to handle complex layouts: you can define several layouts and switch between them:  each layout which will remember the user modifications and the list of opened windows</p>
+</li>
+<li>
+<p>How to use theming</p>
+</li>
+<li>
+<p>How to store you own user settings in the app ini file</p>
+</li>
+<li>
+<p>How to add a status bar and a log window</p>
+</li>
+<li>
+<p>How to reduce the FPS when idling (to reduce CPU usage)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Links:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>see <a href="https://github.com/pthom/imgui_bundle//blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py">demo_docking.py</a></p>
+</li>
+<li>
+<p>see <a href="https://github.com/pthom/imgui_bundle//blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp">demo_docking.cpp</a></p>
+</li>
+<li>
+<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html">Run this demo online</a></p>
+</li>
+<li>
+<p>see <a href="https://www.youtube.com/watch?v=XKxmz__F4ow">a short video explanation about layouts</a> on YouTube</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
