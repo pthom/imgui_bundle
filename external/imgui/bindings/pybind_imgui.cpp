@@ -146,12 +146,12 @@ void py_init_module_imgui_main(py::module& m)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
-            "(private API)\n\n We very rarely use this [] operator, the assert overhead is fine.")
+            "(private API)\n\n We very rarely use this [] operator, so the assert overhead is fine.",
+            pybind11::return_value_policy::reference)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            "(private API)")
         ;
 
 
@@ -585,13 +585,13 @@ void py_init_module_imgui_main(py::module& m)
     m.def("pop_style_var",
         ImGui::PopStyleVar, py::arg("count") = 1);
 
-    m.def("push_allow_keyboard_focus",
-        ImGui::PushAllowKeyboardFocus,
-        py::arg("allow_keyboard_focus"),
+    m.def("push_tab_stop",
+        ImGui::PushTabStop,
+        py::arg("tab_stop"),
         "== tab stop enable. Allow focusing using TAB/Shift-TAB, enabled by default but you can disable it for certain widgets");
 
-    m.def("pop_allow_keyboard_focus",
-        ImGui::PopAllowKeyboardFocus);
+    m.def("pop_tab_stop",
+        ImGui::PopTabStop);
 
     m.def("push_button_repeat",
         ImGui::PushButtonRepeat,
@@ -1774,7 +1774,7 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::BeginTooltip, "begin/append a tooltip window. to create full-featured tooltip (with any kind of items).");
 
     m.def("end_tooltip",
-        ImGui::EndTooltip);
+        ImGui::EndTooltip, "only call EndTooltip() if BeginTooltip() returns True!");
 
     m.def("set_tooltip",
         [](const char * fmt)
@@ -2736,7 +2736,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("descending", ImGuiSortDirection_Descending, "Descending = 9->0, Z->A etc.");
 
 
-    py::enum_<ImGuiKey>(m, "Key", py::arithmetic(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.\n All our named keys are >= 512. Keys value 0 to 511 are left unused as legacy native/opaque key values (< 1.87).\n Since >= 1.89 we increased typing (went from int to enum), some legacy code may need a cast to ImGuiKey.\n Read details about the 1.87 and 1.89 transition : https://github.com/ocornut/imgui/issues/4921")
+    py::enum_<ImGuiKey>(m, "Key", py::arithmetic(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.\n All our named keys are >= 512. Keys value 0 to 511 are left unused as legacy native/opaque key values (< 1.87).\n Since >= 1.89 we increased typing (went from int to enum), some legacy code may need a cast to ImGuiKey.\n Read details about the 1.87 and 1.89 transition : https://github.com/ocornut/imgui/issues/4921\n Note that \"Keys\" related to physical keys and are not the same concept as input \"Characters\", the later are submitted via io.AddInputCharacter().")
         .value("none", ImGuiKey_None, "")
         .value("tab", ImGuiKey_Tab, "== ImGuiKey_NamedKey_BEGIN")
         .value("left_arrow", ImGuiKey_LeftArrow, "")
@@ -2893,7 +2893,7 @@ void py_init_module_imgui_main(py::module& m)
 
     py::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", py::arithmetic(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
         .value("none", ImGuiConfigFlags_None, "")
-        .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag.")
+        .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.")
         .value("nav_enable_gamepad", ImGuiConfigFlags_NavEnableGamepad, "Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.")
         .value("nav_enable_set_mouse_pos", ImGuiConfigFlags_NavEnableSetMousePos, "Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=True. If enabled you MUST honor io.WantSetMousePos requests in your backend, otherwise ImGui will react as if the mouse is jumping around back and forth.")
         .value("nav_no_capture_keyboard", ImGuiConfigFlags_NavNoCaptureKeyboard, "Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.")
@@ -3080,6 +3080,13 @@ void py_init_module_imgui_main(py::module& m)
         .value("count", ImGuiMouseCursor_COUNT, "");
 
 
+    py::enum_<ImGuiMouseSource>(m, "MouseSource", py::arithmetic(), " Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.\n Historically we use \"Mouse\" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()\n But that \"Mouse\" data can come from different source which occasionally may be useful for application to know about.\n You can submit a change of pointer type using io.AddMouseSourceEvent().")
+        .value("mouse", ImGuiMouseSource_Mouse, "Input is coming from an actual mouse.")
+        .value("touch_screen", ImGuiMouseSource_TouchScreen, "Input is coming from a touch screen (no hovering prior to initial press, less precise initial press aiming, dual-axis wheeling possible).")
+        .value("pen", ImGuiMouseSource_Pen, "Input is coming from a pressure/magnetic pen (often used in conjunction with high-sampling rates).")
+        .value("count", ImGuiMouseSource_COUNT, "");
+
+
     py::enum_<ImGuiCond_>(m, "Cond_", py::arithmetic(), " Enumeration for ImGui::SetWindow***(), SetNextWindow***(), SetNextItem***() functions\n Represent a condition.\n Important: Treat as a regular enum! Do NOT combine multiple values using binary operators! All the functions above treat 0 as a shortcut to ImGuiCond_Always.")
         .value("none", ImGuiCond_None, "No condition (always set the variable), same as _Always")
         .value("always", ImGuiCond_Always, "No condition (always set the variable), same as _None")
@@ -3219,6 +3226,9 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")
         .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False       // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")
         .def_readwrite("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")
+        .def_readwrite("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
+        .def_readwrite("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
+        .def_readwrite("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys() in input processing.")
         .def_readonly("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")
         .def_readonly("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")
         .def_readwrite("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")
@@ -3245,6 +3255,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiIO::AddMouseWheelEvent,
             py::arg("wheel_x"), py::arg("wheel_y"),
             "Queue a mouse wheel update. wheel_y<0: scroll down, wheel_y>0: scroll up, wheel_x<0: scroll right, wheel_x>0: scroll left.")
+        .def("add_mouse_source_event",
+            &ImGuiIO::AddMouseSourceEvent,
+            py::arg("source"),
+            "Queue a mouse source change (Mouse/TouchScreen/Pen)")
         .def("add_mouse_viewport_event",
             &ImGuiIO::AddMouseViewportEvent,
             py::arg("id_"),
@@ -3291,6 +3305,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows, "Number of active windows")
         .def_readwrite("metrics_active_allocations", &ImGuiIO::MetricsActiveAllocations, "Number of active allocations, updated by MemAlloc/MemFree based on current context. May be off if you have multiple imgui contexts.")
         .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "")
+        .def_readwrite("ctx", &ImGuiIO::Ctx, "Parent UI context (needs to be set explicitly by parent).")
         .def_readwrite("mouse_pos", &ImGuiIO::MousePos, "Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)")
         .def_property("mouse_down",
             [](ImGuiIO &self) -> pybind11::array
@@ -3302,6 +3317,7 @@ void py_init_module_imgui_main(py::module& m)
             "Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.")
         .def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold SHIFT to turn vertical scroll into horizontal scroll.")
         .def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. >0 scrolls Left, <0 scrolls Right. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")
+        .def_readwrite("mouse_source", &ImGuiIO::MouseSource, "Mouse actual input peripheral (Mouse/TouchScreen/Pen).")
         .def_readwrite("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")
         .def_readwrite("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Control")
         .def_readwrite("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")
@@ -3374,6 +3390,7 @@ void py_init_module_imgui_main(py::module& m)
                 return pybind11::array(dtype, {5}, {sizeof(bool)}, self.MouseDownOwnedUnlessPopupClose, base);
             }, [](ImGuiIO& self) {},
             "Track if button was clicked inside a dear imgui window.")
+        .def_readwrite("mouse_wheel_request_axis_swap", &ImGuiIO::MouseWheelRequestAxisSwap, "On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.")
         .def_property("mouse_down_duration",
             [](ImGuiIO &self) -> pybind11::array
             {
@@ -3419,6 +3436,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiInputTextCallbackData =
         py::class_<ImGuiInputTextCallbackData>
             (m, "InputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
+        .def_readwrite("ctx", &ImGuiInputTextCallbackData::Ctx, "Parent UI context")
         .def_readwrite("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")
         .def_readwrite("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")
         .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")
@@ -3697,6 +3715,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiListClipper =
         py::class_<ImGuiListClipper>
             (m, "ListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
+        .def_readwrite("ctx", &ImGuiListClipper::Ctx, "Parent UI context")
         .def_readwrite("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")
         .def_readwrite("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")
         .def_readwrite("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")
@@ -3711,10 +3730,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiListClipper::End, "Automatically called on the last call of Step() that returns False.")
         .def("step",
             &ImGuiListClipper::Step, "Call until it returns False. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.")
-        .def("force_display_range_by_indices",
-            &ImGuiListClipper::ForceDisplayRangeByIndices,
-            py::arg("item_min"), py::arg("item_max"),
-            "Call ForceDisplayRangeByIndices() before first call to Step() if you need a range of items to be displayed regardless of visibility.")
+        .def("include_range_by_indices",
+            &ImGuiListClipper::IncludeRangeByIndices,
+            py::arg("item_begin"), py::arg("item_end"),
+            " Call IncludeRangeByIndices() *BEFORE* first call to Step() if you need a range of items to not be clipped, regardless of their visibility.\n (Due to alignment / padding of certain items it is possible that an extra item may be included on either end of the display range).")
         ;
 
 
@@ -3986,7 +4005,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("prim_vtx",
             &ImDrawList::PrimVtx,
             py::arg("pos"), py::arg("uv"), py::arg("col"),
-            "(private API)")
+            "(private API)\n\n Write vertex with unique index")
         .def("_reset_for_new_frame",
             &ImDrawList::_ResetForNewFrame)
         .def("_clear_free_memory",
@@ -4299,17 +4318,18 @@ void py_init_module_imgui_main(py::module& m)
         .value("none", ImGuiViewportFlags_None, "")
         .value("is_platform_window", ImGuiViewportFlags_IsPlatformWindow, "Represent a Platform Window")
         .value("is_platform_monitor", ImGuiViewportFlags_IsPlatformMonitor, "Represent a Platform Monitor (unused yet)")
-        .value("owned_by_app", ImGuiViewportFlags_OwnedByApp, "Platform Window: is created/managed by the application (rather than a dear imgui backend)")
+        .value("owned_by_app", ImGuiViewportFlags_OwnedByApp, "Platform Window: Was created/managed by the user application? (rather than our backend)")
         .value("no_decoration", ImGuiViewportFlags_NoDecoration, "Platform Window: Disable platform decorations: title bar, borders, etc. (generally set all windows, but if ImGuiConfigFlags_ViewportsDecoration is set we only set this on popups/tooltips)")
         .value("no_task_bar_icon", ImGuiViewportFlags_NoTaskBarIcon, "Platform Window: Disable platform task bar icon (generally set on popups/tooltips, or all windows if ImGuiConfigFlags_ViewportsNoTaskBarIcon is set)")
         .value("no_focus_on_appearing", ImGuiViewportFlags_NoFocusOnAppearing, "Platform Window: Don't take focus when created.")
         .value("no_focus_on_click", ImGuiViewportFlags_NoFocusOnClick, "Platform Window: Don't take focus when clicked on.")
         .value("no_inputs", ImGuiViewportFlags_NoInputs, "Platform Window: Make mouse pass through so we can drag this window while peaking behind it.")
         .value("no_renderer_clear", ImGuiViewportFlags_NoRendererClear, "Platform Window: Renderer doesn't need to clear the framebuffer ahead (because we will fill it entirely).")
-        .value("top_most", ImGuiViewportFlags_TopMost, "Platform Window: Display on top (for tooltips only).")
-        .value("minimized", ImGuiViewportFlags_Minimized, "Platform Window: Window is minimized, can skip render. When minimized we tend to avoid using the viewport pos/size for clipping window or testing if they are contained in the viewport.")
         .value("no_auto_merge", ImGuiViewportFlags_NoAutoMerge, "Platform Window: Avoid merging this window into another host window. This can only be set via ImGuiWindowClass viewport flags override (because we need to now ahead if we are going to create a viewport in the first place!).")
-        .value("can_host_other_windows", ImGuiViewportFlags_CanHostOtherWindows, "Main viewport: can host multiple imgui windows (secondary viewports are associated to a single window).");
+        .value("top_most", ImGuiViewportFlags_TopMost, "Platform Window: Display on top (for tooltips only).")
+        .value("can_host_other_windows", ImGuiViewportFlags_CanHostOtherWindows, "Viewport can host multiple imgui windows (secondary viewports are associated to a single window). // FIXME: In practice there's still probably code making the assumption that this is always and only on the MainViewport. Will fix once we add support for \"no main viewport\".")
+        .value("is_minimized", ImGuiViewportFlags_IsMinimized, "Platform Window: Window is minimized, can skip render. When minimized we tend to avoid using the viewport pos/size for clipping window or testing if they are contained in the viewport.")
+        .value("is_focused", ImGuiViewportFlags_IsFocused, "Platform Window: Window is focused (last call to Platform_GetWindowFocus() returned True)");
 
 
     auto pyClassImGuiViewport =
@@ -4356,6 +4376,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("work_pos", &ImGuiPlatformMonitor::WorkPos, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")
         .def_readwrite("work_size", &ImGuiPlatformMonitor::WorkSize, "Coordinates without task bars / side bars / menu bars. Used to avoid positioning popups/tooltips inside this region. If you don't have this info, please copy the value for MainPos/MainSize.")
         .def_readwrite("dpi_scale", &ImGuiPlatformMonitor::DpiScale, "1.0 = 96 DPI")
+        .def_readwrite("platform_handle", &ImGuiPlatformMonitor::PlatformHandle, "Backend dependant data (e.g. HMONITOR, GLFWmonitor*, SDL Display Index, NSScreen*)")
         .def(py::init<>())
         ;
 
@@ -4378,14 +4399,14 @@ void py_init_module_imgui_main(py::module& m)
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////
     m.def("input_text",
-        [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+        [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputText_adapt_exclude_params = [](const char * label, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
+            auto InputText_adapt_exclude_params = [](const char * label, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
             {
-                auto lambda_result = ImGui::InputText(label, str, flags, NULL, user_data);
+                auto lambda_result = ImGui::InputText(label, str, flags, nullptr, user_data);
                 return lambda_result;
             };
-            auto InputText_adapt_modifiable_immutable_to_return = [&InputText_adapt_exclude_params](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+            auto InputText_adapt_modifiable_immutable_to_return = [&InputText_adapt_exclude_params](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
@@ -4397,14 +4418,14 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("str"), py::arg("flags") = 0, py::arg("user_data") = py::none());
 
     m.def("input_text_multiline",
-        [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+        [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputTextMultiline_adapt_exclude_params = [](const char * label, std::string * str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
+            auto InputTextMultiline_adapt_exclude_params = [](const char * label, std::string * str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
             {
-                auto lambda_result = ImGui::InputTextMultiline(label, str, size, flags, NULL, user_data);
+                auto lambda_result = ImGui::InputTextMultiline(label, str, size, flags, nullptr, user_data);
                 return lambda_result;
             };
-            auto InputTextMultiline_adapt_modifiable_immutable_to_return = [&InputTextMultiline_adapt_exclude_params](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+            auto InputTextMultiline_adapt_modifiable_immutable_to_return = [&InputTextMultiline_adapt_exclude_params](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
@@ -4416,14 +4437,14 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("str"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("user_data") = py::none());
 
     m.def("input_text_with_hint",
-        [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+        [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputTextWithHint_adapt_exclude_params = [](const char * label, const char * hint, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> bool
+            auto InputTextWithHint_adapt_exclude_params = [](const char * label, const char * hint, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
             {
-                auto lambda_result = ImGui::InputTextWithHint(label, hint, str, flags, NULL, user_data);
+                auto lambda_result = ImGui::InputTextWithHint(label, hint, str, flags, nullptr, user_data);
                 return lambda_result;
             };
-            auto InputTextWithHint_adapt_modifiable_immutable_to_return = [&InputTextWithHint_adapt_exclude_params](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = NULL) -> std::tuple<bool, std::string>
+            auto InputTextWithHint_adapt_modifiable_immutable_to_return = [&InputTextWithHint_adapt_exclude_params](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
