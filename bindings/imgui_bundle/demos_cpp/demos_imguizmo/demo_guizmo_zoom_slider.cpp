@@ -10,6 +10,7 @@
 #include "demo_utils/api_demos.h"
 
 #include "immapp/immapp.h"
+#include "imgui_internal.h"
 #include "ImGuizmoPure/ImZoomSliderPure.h"
 
 
