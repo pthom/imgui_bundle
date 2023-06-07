@@ -3,7 +3,7 @@ from typing import List
 import sys
 import os
 
-VERSION = "0.8.6"  # Remember to mirror changes on line 2 of main CMakeLists!
+VERSION = "0.8.7"  # Remember to mirror changes on line 2 of main CMakeLists!
 THIS_DIR = os.path.dirname(__file__)
 ROOT_PACKAGE_FOLDER = "bindings/imgui_bundle"
 ROOT_PACKAGE_NAME = "imgui_bundle"
