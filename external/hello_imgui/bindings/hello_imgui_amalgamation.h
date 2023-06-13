@@ -1992,7 +1992,6 @@ struct DockableWindow
     ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;
 
     bool focusWindowAtNextFrame = false;
-
 };
 
 /**

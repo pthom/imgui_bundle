@@ -87,3 +87,6 @@ inline std::string _file_short_name(const std::string& filename)
 #endif
 
 #define IMGUI_USE_WCHAR32
+
+// Enable 32 bits ImDrawIdx for ImPlot
+#define ImDrawIdx unsigned int
