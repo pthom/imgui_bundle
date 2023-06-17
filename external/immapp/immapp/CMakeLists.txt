@@ -1,6 +1,8 @@
 file(GLOB_RECURSE sources *.cpp *.h)
 add_library(immapp STATIC ${sources})
-
+if (IMGUI_BUNDLE_WITH_IMMVISION)
+    target_compile_definitions(immapp PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
+endif()
 target_include_directories(immapp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/..)
 target_link_libraries(immapp PUBLIC hello_imgui imgui_node_editor implot imgui_tex_inspect imgui_md im_file_dialog)
 if (IMGUI_BUNDLE_WITH_IMMVISION)
