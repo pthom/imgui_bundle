@@ -57,49 +57,47 @@ namespace ImmApp
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
-            auto previousFontLoaderFunction = runnerParams.callbacks.LoadAdditionalFonts;
-            runnerParams.callbacks.LoadAdditionalFonts = [previousFontLoaderFunction](){
-                previousFontLoaderFunction();
-                ImGuiMd::GetFontLoaderFunction()();
-            };
+            runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::FunctionalUtils::sequence_functions(
+                runnerParams.callbacks.LoadAdditionalFonts,
+                ImGuiMd::GetFontLoaderFunction());
         }
 
         ImFileDialogSetupTextureLoader();
 
         if (addOnsParams.withTexInspect)
         {
-            // Modify post-init: call ImGuiTexInspect::ImplOpenGL3_Init
+            // Modify post-init: Init ImGuiTexInspect
             {
-                auto oldPostInit = runnerParams.callbacks.PostInit;
-                auto newPostInit = [oldPostInit]() {
+                auto fn_ImGuiTextInspect_Init = [](){
                     ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
                     ImGuiTexInspect::Init();
                     gImmAppContext._ImGuiTextInspect_Context = ImGuiTexInspect::CreateContext();
-
-                    if (oldPostInit)
-                        oldPostInit();
                 };
-                runnerParams.callbacks.PostInit = newPostInit;
+                runnerParams.callbacks.PostInit = HelloImGui::FunctionalUtils::sequence_functions(
+                    fn_ImGuiTextInspect_Init,
+                    runnerParams.callbacks.PostInit
+                    );
             }
-            // Modify before-exit: call ImGuiTexInspect::ImplOpenGL3_Init
+
+            // Modify before-exit: DeInit ImGuiTexInspect
             {
-                auto oldBeforeExit = runnerParams.callbacks.BeforeExit;
-                auto newBeforeExit = [oldBeforeExit]() {
+                auto fn_ImGuiTextInspect_DeInit = [](){
                     ImGuiTexInspect::Shutdown();
                     ImGuiTexInspect::DestroyContext(gImmAppContext._ImGuiTextInspect_Context);
-
                     ImGuiTexInspect::ImplOpenGl3_Shutdown();
-                    if (oldBeforeExit)
-                        oldBeforeExit();
                 };
-                runnerParams.callbacks.BeforeExit = newBeforeExit;
+                runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
+                    fn_ImGuiTextInspect_DeInit,
+                    runnerParams.callbacks.BeforeExit
+                    );
             }
         }
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized
         runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
-            runnerParams.callbacks.BeforeExit, ImmVision::ClearTextureCache);
+            runnerParams.callbacks.BeforeExit,
+            ImmVision::ClearTextureCache);
 #endif
         HelloImGui::Run(runnerParams);
 
