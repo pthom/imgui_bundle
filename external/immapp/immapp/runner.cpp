@@ -6,6 +6,7 @@
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/internal/functional_utils.h"
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 #include "immvision/immvision.h"
 #endif
@@ -95,6 +96,11 @@ namespace ImmApp
             }
         }
 
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+        // Clear ImmVision cache, before OpenGl is uninitialized
+        runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
+            runnerParams.callbacks.BeforeExit, ImmVision::ClearTextureCache);
+#endif
         HelloImGui::Run(runnerParams);
 
         if (addOnsParams.withImplot)
@@ -110,9 +116,6 @@ namespace ImmApp
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
             ImGuiMd::DeInitializeMarkdown();
 
-#ifdef IMGUI_BUNDLE_WITH_IMMVISION
-        ImmVision::ClearTextureCache();
-#endif
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
