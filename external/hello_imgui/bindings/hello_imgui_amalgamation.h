@@ -1830,57 +1830,120 @@ namespace HelloImGui
 /**
 @@md#DockingIntro
 
-HelloImGui facilitates the use of dockable windows (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
+HelloImGui makes it easy to use dockable windows (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
 
-You can easily specify the default layout of the dockable windows, as well as their GUI code.
-HelloImGui will then provide a "View" menu with options in order to show/hide the dockable windows, and to restore the default layout
+You can define several layouts and switch between them:  each layout which will remember the user modifications and the list of opened windows
 
-![demo docking](../../docs/images/docking.gif)
+HelloImGui will then provide a "View" menu with options to show/hide the dockable windows, restore the default layout, switch between layouts, etc.
 
-Source for this example: [src/hello_imgui_demos/hello_imgui_demodocking](../../src/hello_imgui_demos/hello_imgui_demodocking)
+![demo docking](https://traineq.org/ImGuiBundle/HelloImGuiLayout.gif)
 
-This is done via the `DockingParams` struct: its member `dockingSplits` specifies the layout,
-and its member `dockableWindows` specifies the list of dockable windows, along with their default location,
-and their code (given by lambdas). See doc below for more details.
+* Source for this example: [src/hello_imgui_demos/hello_imgui_demodocking](../../src/hello_imgui_demos/hello_imgui_demodocking)
+* [Video explanation on YouTube](https://www.youtube.com/watch?v=XKxmz__F4ow) (5 minutes)
+
+
+The different available layouts are provided inside RunnerParams via the two members below:
+```cpp
+struct RunnerParams
+{
+    ...
+    DockingParams dockingParams;                            // default layout of the application
+    std::vector<DockingParams> alternativeDockingLayouts;   // optional alternative layouts
+    ...
+};
+```
+
+And `DockingParams` contains members that define a layout:
+
+```cpp
+struct DockingParams
+{
+    std::string layoutName = "Default";          // displayed name of the layout
+    std::vector<DockingSplit> dockingSplits;     // list of splits (which define spaces where the windows will be placed)
+    std::vector<DockableWindow> dockableWindows; // list of windows (with their gui code, and specifying in which space they will be placed)
+    ...
+};
+```
+
+Inside DockingParams, the member `dockingSplits` specifies the layout, and the member `dockableWindows`
+ specifies the list of dockable windows, along with their default location, and their code (given by lambdas).
 
  @@md
 
 
 @@md#DockingExample
 
-Docking params: Example usage
+Below is an example that shows how to instantiate a layout:
+
+1. First, define the docking splits:
+
+```cpp
+std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
+{
+    //     Here, we want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+    //    ___________________________________________
+    //    |        |                                |
+    //    | Command|                                |
+    //    | Space  |    MainDockSpace               |
+    //    |        |                                |
+    //    |        |                                |
+    //    |        |                                |
+    //    -------------------------------------------
+    //    |     MiscSpace                           |
+    //    -------------------------------------------
+    //
+
+    // add a space named "MiscSpace" whose height is 25% of the app height.
+    // This will split the preexisting default dockspace "MainDockSpace" in two parts.
+    HelloImGui::DockingSplit splitMainMisc;
+    splitMainMisc.initialDock = "MainDockSpace";
+    splitMainMisc.newDock = "MiscSpace";
+    splitMainMisc.direction = ImGuiDir_Down;
+    splitMainMisc.ratio = 0.25f;
+
+    // Then, add a space to the left which occupies a column whose width is 25% of the app width
+    HelloImGui::DockingSplit splitMainCommand;
+    splitMainCommand.initialDock = "MainDockSpace";
+    splitMainCommand.newDock = "CommandSpace";
+    splitMainCommand.direction = ImGuiDir_Left;
+    splitMainCommand.ratio = 0.25f;
+
+    std::vector<HelloImGui::DockingSplit> splits {splitMainMisc, splitMainCommand};
+    return splits;
+}
+```
+
+2. Then, define the dockable windows:
+
+```cpp
+std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState)
+{
+    // A Command panel named "Commands" will be placed in "CommandSpace". Its Gui is provided calls "CommandGui"
+    HelloImGui::DockableWindow commandsWindow;
+    commandsWindow.label = "Commands";
+    commandsWindow.dockSpaceName = "CommandSpace";
+    commandsWindow.GuiFunction = [&] { CommandGui(appState); };
+
+    // A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
+    HelloImGui::DockableWindow logsWindow;
+    logsWindow.label = "Logs";
+    logsWindow.dockSpaceName = "MiscSpace";
+    logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
+
+    ...
+}
+```
+
+3. Finally, fill the RunnerParams
 
 ```cpp
 HelloImGui::RunnerParams runnerParams;
 runnerParams.imGuiWindowParams.defaultImGuiWindowType =
     HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
 
-runnerParams.dockingParams.dockingSplits =
-{
-    // First, add a bottom space whose height is 25% of the app height
-    // This will split the preexisting default dockspace "MainDockSpace"
-    // in two parts.
-    { "MainDockSpace", "BottomSpace", ImGuiDir_Down, 0.25 },
-    // Then, add a space to the left which occupies a column
-    // whose width is 25% of the app height
-    { "MainDockSpace", "LeftSpace", ImGuiDir_Left, 0.25 }
-    // We now have three spaces: "MainDockSpace", "BottomSpace", and "LeftSpace"
-};
-runnerParams.dockingParams.dockableWindows =
-{
-    // A Window named "Main" will be placed in "MainDockSpace".
-    // Its Gui is provided by the VoidFunction "MainGui"
-    {"Main", "MainDockSpace", MainGui},
-    // A Log  window named "Logs" will be placed in "BottomSpace".
-    // Its Gui is provided by the VoidFunction "ShowLogs"
-    {"Logs", "BottomSpace", ShowLogs},
-    // A Command panel named "Commands" will be placed in "LeftSpace".
-    // Its Gui is provided by the VoidFunction "ShowCommandsPanel"
-    {"Commands", "LeftSpace", ShowCommandsPanel}
-};
+runnerParams.dockingParams.dockingSplits = CreateDefaultDockingSplits();
+runnerParams.dockingParams.dockableWindows = CreateDockableWindows();
 
-runnerParams.imGuiWindowParams.showMenuBar = true;
-runnerParams.imGuiWindowParams.showStatusBar = true;
 
 HelloImGui::Run(runnerParams);
 ```
@@ -1912,7 +1975,7 @@ _Members:_
 * `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.
 Direction where this dock space should be created.
 * `ratio`: _float, default=0.25f_. Ratio of the initialDock size that should be used by the new dock space.
-* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space.
+* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space (enable/disable resizing, splitting, tab bar, etc.)
 
 @@md
 */
@@ -1992,6 +2055,7 @@ struct DockableWindow
     ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;
 
     bool focusWindowAtNextFrame = false;
+
 };
 
 /**
@@ -2011,8 +2075,12 @@ struct DockableWindow
 * `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
   When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
   ApplicationStart (always reapply at application start), and Never.
+* `mainDockSpaceNodeFlags`: _ImGuiDockNodeFlags (enum), default=ImGuiDockNodeFlags_PassthruCentralNode_
+   Flags to apply to the main dock space (enable/disable resizing, splitting, tab bar, etc.).
+   Most flags are inherited by children dock spaces. You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
 * `layoutReset`: _bool, default=false_.
-  Reset layout on next frame (layoutReset will be set to false after applying)
+  Reset layout on next frame, i.e. drop the layout customizations which were applied manually by the user.
+  (layoutReset will be set to false after applying)
 
  _Helpers:_
 
@@ -2034,8 +2102,7 @@ enum class DockingLayoutCondition
 
 struct DockingParams
 {
-    std::vector<DockingSplit> dockingSplits;
-
+    std::vector<DockingSplit>   dockingSplits;
     std::vector<DockableWindow> dockableWindows;
 
     std::string layoutName = "Default";
@@ -2043,9 +2110,11 @@ struct DockingParams
     DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;
     bool layoutReset = false;
 
-    DockableWindow * dockableWindowOfName(const std::string & name);
-    void focusDockableWindow(const std::string& windowName);
+    ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;
 
+    // Helpers
+    DockableWindow * dockableWindowOfName(const std::string& name);
+    void focusDockableWindow(const std::string& windowName);
     std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);
 };
 } // namespace HelloImGui

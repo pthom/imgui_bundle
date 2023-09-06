@@ -86,7 +86,7 @@ def string_to_my_app_settings(s: str) -> MyAppSettings:
 
 def load_my_app_settings(app_state: AppState):
     """
-    Note: load_my_app_settings() and save_my_app_settings() will be called in the callbacks `post_init` and `before_exit`
+    Note: load_my_app_settings() and save_my_app_settings() will be called in the callbacks `post_init` & `before_exit`
          runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
          runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
     """
@@ -142,25 +142,6 @@ def demo_show_additional_window():
             additional_window_ptr.is_visible = True
 
 
-def demo_advertise_features():
-    imgui.push_font(TITLE_FONT)
-    imgui.text("Switch between layouts")
-    imgui.pop_font()
-    imgui.text("with the menu \"View/Layouts\"")
-    if imgui.is_item_hovered():
-        imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n"
-                          "and the selected layout is restored at startup")
-    imgui.separator()
-
-    imgui.push_font(TITLE_FONT)
-    imgui.text("Change the theme")
-    imgui.pop_font()
-    imgui.text("with the menu \"View/Theme\"")
-    if imgui.is_item_hovered():
-        imgui.set_tooltip("The selected theme is remembered and restored at startup")
-    imgui.separator()
-
-
 def demo_basic_widgets(app_state: AppState):
     imgui.push_font(TITLE_FONT)
     imgui.text("Basic widgets demo")
@@ -214,9 +195,68 @@ def demo_rocket(app_state: AppState):
             app_state.rocket_progress = 0.0
 
 
-def command_gui(app_state: AppState):
-    demo_advertise_features()
+def demo_docking_flags():
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Main dock space node flags")
+    imgui.pop_font()
+    imgui.text_wrapped(
+        """
+This will edit the ImGuiDockNodeFlags for "MainDockSpace".
+Most flags are inherited by children dock spaces.
+        """
+    )
+
+    class DockFlagWithInfo:
+        def __init__(self, flag, label, tip):
+            self.flag = flag
+            self.label = label
+            self.tip = tip
+
+    all_flags = [
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_split, "NoSplit", "prevent Dock Nodes from being split"),
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
+        DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
+                         "show tab bar only if multiple windows\n" +
+                         "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_in_central_node, "NoDockingInCentralNode",
+                         "prevent docking in central node\n(only works with the main dock space)"),
+        # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
+    ]
+
+    main_dock_space_node_flags = hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+    for flag_with_info in all_flags:
+        _, main_dock_space_node_flags = imgui.checkbox_flags(
+            flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("%s" % flag_with_info.tip)
+
+    hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = main_dock_space_node_flags
+
+
+def gui_window_layout_customization():
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Switch between layouts")
+    imgui.pop_font()
+    imgui.text("with the menu \"View/Layouts\"")
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n" +
+                          "and the selected layout is restored at startup")
+
     imgui.separator()
+
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Change the theme")
+    imgui.pop_font()
+    imgui.text("with the menu \"View/Theme\"")
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("The selected theme is remembered and restored at startup")
+    imgui.separator()
+
+    demo_docking_flags()
+    imgui.separator()
+
+
+def gui_window_demo_features(app_state: AppState):
     demo_basic_widgets(app_state)
     imgui.separator()
     demo_rocket(app_state)
@@ -226,6 +266,7 @@ def command_gui(app_state: AppState):
     demo_hide_window()
     imgui.separator()
     demo_show_additional_window()
+    imgui.separator()
 
 
 def status_bar_gui(app_state: AppState):
@@ -291,9 +332,6 @@ def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_command.new_dock = "CommandSpace"
     split_main_command.direction = imgui.Dir_.left
     split_main_command.ratio = 0.25
-    # Exclude this space from Docking
-    split_main_command.node_flags = imgui.internal.DockNodeFlagsPrivate_.no_docking \
-                                    | imgui.internal.DockNodeFlagsPrivate_.no_tab_bar
 
     splits = [split_main_misc, split_main_command]
     return splits
@@ -333,11 +371,19 @@ def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
 # 2. Define the Dockable windows
 #
 def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWindow]:
-    # A Command panel named "Commands" will be placed in "CommandSpace". Its Gui is provided calls "CommandGui"
-    commands_window = hello_imgui.DockableWindow()
-    commands_window.label = "Commands"
-    commands_window.dock_space_name = "CommandSpace"
-    commands_window.gui_function = lambda: command_gui(app_state)
+    # A features demo window named "FeaturesDemo" will be placed in "CommandSpace".
+    # Its Gui is provided by "gui_window_demo_features"
+    features_demo_window = hello_imgui.DockableWindow()
+    features_demo_window.label = "Features Demo"
+    features_demo_window.dock_space_name = "CommandSpace"
+    features_demo_window.gui_function = lambda: gui_window_demo_features(app_state)
+
+    # A layout customization window will be placed in "MainDockSpace".
+    # Its Gui is provided by "gui_window_layout_customization"
+    layout_customization_window = hello_imgui.DockableWindow()
+    layout_customization_window.label = "Layout customization"
+    layout_customization_window.dock_space_name = "MainDockSpace"
+    layout_customization_window.gui_function = gui_window_layout_customization
 
     # A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
     logs_window = hello_imgui.DockableWindow()
@@ -362,7 +408,8 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     additional_window.gui_function = lambda: imgui.text("This is the additional window")
 
     dockable_windows = [
-        commands_window,
+        features_demo_window,
+        layout_customization_window,
         logs_window,
         dear_imgui_demo_window,
         additional_window,

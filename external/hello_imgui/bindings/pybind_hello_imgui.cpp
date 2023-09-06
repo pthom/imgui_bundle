@@ -469,7 +469,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassDockingSplit =
         py::class_<HelloImGui::DockingSplit>
-            (m, "DockingSplit", "*\n@@md#DockingSplit\n\n**DockingSplit** is a struct that defines the way the docking splits should be applied on the screen\nin order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,\nin order to partition the screen at your will.\n\n_Members:_\n\n* `initialDock`: _DockSpaceName (aka string)_\n\n    id of the space that should be split.\n    At the start, there is only one Dock Space named \"MainDockSpace\".\n    You should start by partitioning this space, in order to create a new dock space.\n\n* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.\n* `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.\nDirection where this dock space should be created.\n* `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space.\n* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space.\n\n@@md\n")
+            (m, "DockingSplit", "*\n@@md#DockingSplit\n\n**DockingSplit** is a struct that defines the way the docking splits should be applied on the screen\nin order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,\nin order to partition the screen at your will.\n\n_Members:_\n\n* `initialDock`: _DockSpaceName (aka string)_\n\n    id of the space that should be split.\n    At the start, there is only one Dock Space named \"MainDockSpace\".\n    You should start by partitioning this space, in order to create a new dock space.\n\n* `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.\n* `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.\nDirection where this dock space should be created.\n* `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space.\n* `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space (enable/disable resizing, splitting, tab bar, etc.)\n\n@@md\n")
         .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir_, float, ImGuiDockNodeFlags>(),
             py::arg("initial_dock_") = "", py::arg("new_dock_") = "", py::arg("direction_") = ImGuiDir_Down, py::arg("ratio_") = 0.25f, py::arg("node_flags_") = ImGuiDockNodeFlags_None)
         .def_readwrite("initial_dock", &DockingSplit::initialDock, "")
@@ -512,7 +512,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::DockingParams>
             (m, "DockingParams", "")
         .def(py::init<>([](
-        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
+        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false, ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode)
         {
             auto r = std::make_unique<DockingParams>();
             r->dockingSplits = dockingSplits;
@@ -520,15 +520,17 @@ void py_init_module_hello_imgui(py::module& m)
             r->layoutName = layoutName;
             r->layoutCondition = layoutCondition;
             r->layoutReset = layoutReset;
+            r->mainDockSpaceNodeFlags = mainDockSpaceNodeFlags;
             return r;
         })
-        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_name") = "Default", py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
+        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_name") = "Default", py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false, py::arg("main_dock_space_node_flags") = ImGuiDockNodeFlags_PassthruCentralNode
         )
         .def_readwrite("docking_splits", &DockingParams::dockingSplits, "")
         .def_readwrite("dockable_windows", &DockingParams::dockableWindows, "")
         .def_readwrite("layout_name", &DockingParams::layoutName, "")
         .def_readwrite("layout_condition", &DockingParams::layoutCondition, "")
         .def_readwrite("layout_reset", &DockingParams::layoutReset, "")
+        .def_readwrite("main_dock_space_node_flags", &DockingParams::mainDockSpaceNodeFlags, "")
         .def("dockable_window_of_name",
             &DockingParams::dockableWindowOfName,
             py::arg("name"),
