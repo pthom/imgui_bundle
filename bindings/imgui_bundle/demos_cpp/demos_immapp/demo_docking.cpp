@@ -329,10 +329,6 @@ std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
     //    -------------------------------------------
     //
 
-    // uncomment the next line if you want to always start with this layout.
-    // Otherwise, modifications to the layout applied by the user layout will be remembered.
-    // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
-
     // Then, add a space named "MiscSpace" whose height is 25% of the app height.
     // This will split the preexisting default dockspace "MainDockSpace" in two parts.
     HelloImGui::DockingSplit splitMainMisc;
@@ -532,6 +528,10 @@ int main(int, char**)
     runnerParams.dockingParams = CreateDefaultLayout(appState);
     // Add alternative layouts
     runnerParams.alternativeDockingLayouts = CreateAlternativeLayouts(appState);
+
+    // uncomment the next line if you want to always start with the layout defined in the code
+    //     (otherwise, modifications to the layout applied by the user layout will be remembered)
+    // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 
     //###############################################################################################
     // Part 3: Run the app
