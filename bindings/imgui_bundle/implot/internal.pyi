@@ -32,7 +32,7 @@ time_t = int
 ####################    <generated_from:implot_internal.h>    ####################
 # MIT License
 
-# Copyright (c) 2022 Evan Pezent
+# Copyright (c) 2023 Evan Pezent
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ time_t = int
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v0.14
+# ImPlot v0.17
 
 # You may use this file to debug, understand or extend ImPlot features but we
 # don't provide any guarantee of forward compatibility!
@@ -430,45 +430,45 @@ class ColormapData:
         """(private API)"""
         pass
 
-    # inline bool           IsQual(ImPlotColormap cmap) const                      { return Quals[cmap];                                             }    /* original C++ signature */
+    # inline bool           IsQual(ImPlotColormap cmap) const                      { return Quals[cmap];                                                }    /* original C++ signature */
     def is_qual(self, cmap: Colormap) -> bool:
         """(private API)"""
         pass
-    # inline const char*    GetName(ImPlotColormap cmap) const                     { return cmap < Count ? Text.Buf.Data + TextOffsets[cmap] : NULL; }    /* original C++ signature */
+    # inline const char*    GetName(ImPlotColormap cmap) const                     { return cmap < Count ? Text.Buf.Data + TextOffsets[cmap] : nullptr; }    /* original C++ signature */
     def get_name(self, cmap: Colormap) -> str:
         """(private API)"""
         pass
-    # inline ImPlotColormap GetIndex(const char* name) const                       { ImGuiID key = ImHashStr(name); return Map.GetInt(key,-1);       }    /* original C++ signature */
+    # inline ImPlotColormap GetIndex(const char* name) const                       { ImGuiID key = ImHashStr(name); return Map.GetInt(key,-1);          }    /* original C++ signature */
     def get_index(self, name: str) -> Colormap:
         """(private API)"""
         pass
 
-    # inline const ImU32*   GetKeys(ImPlotColormap cmap) const                     { return &Keys[KeyOffsets[cmap]];                                 }    /* original C++ signature */
+    # inline const ImU32*   GetKeys(ImPlotColormap cmap) const                     { return &Keys[KeyOffsets[cmap]];                                    }    /* original C++ signature */
     def get_keys(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int            GetKeyCount(ImPlotColormap cmap) const                 { return KeyCounts[cmap];                                         }    /* original C++ signature */
+    # inline int            GetKeyCount(ImPlotColormap cmap) const                 { return KeyCounts[cmap];                                            }    /* original C++ signature */
     def get_key_count(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32          GetKeyColor(ImPlotColormap cmap, int idx) const        { return Keys[KeyOffsets[cmap]+idx];                              }    /* original C++ signature */
+    # inline ImU32          GetKeyColor(ImPlotColormap cmap, int idx) const        { return Keys[KeyOffsets[cmap]+idx];                                 }    /* original C++ signature */
     def get_key_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
-    # inline void           SetKeyColor(ImPlotColormap cmap, int idx, ImU32 value) { Keys[KeyOffsets[cmap]+idx] = value; RebuildTables();            }    /* original C++ signature */
+    # inline void           SetKeyColor(ImPlotColormap cmap, int idx, ImU32 value) { Keys[KeyOffsets[cmap]+idx] = value; RebuildTables();               }    /* original C++ signature */
     def set_key_color(self, cmap: Colormap, idx: int, value: ImU32) -> None:
         """(private API)"""
         pass
 
-    # inline const ImU32*   GetTable(ImPlotColormap cmap) const                    { return &Tables[TableOffsets[cmap]];                             }    /* original C++ signature */
+    # inline const ImU32*   GetTable(ImPlotColormap cmap) const                    { return &Tables[TableOffsets[cmap]];                                }    /* original C++ signature */
     def get_table(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int            GetTableSize(ImPlotColormap cmap) const                { return TableSizes[cmap];                                        }    /* original C++ signature */
+    # inline int            GetTableSize(ImPlotColormap cmap) const                { return TableSizes[cmap];                                           }    /* original C++ signature */
     def get_table_size(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32          GetTableColor(ImPlotColormap cmap, int idx) const      { return Tables[TableOffsets[cmap]+idx];                          }    /* original C++ signature */
+    # inline ImU32          GetTableColor(ImPlotColormap cmap, int idx) const      { return Tables[TableOffsets[cmap]+idx];                             }    /* original C++ signature */
     def get_table_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
@@ -663,7 +663,7 @@ class Ticker:
 
     # ImPlotTick& AddTick(double value, bool major, int level, bool show_label, const char* label) {    /* original C++ signature */
     #         ImPlotTick tick(value, major, level, show_label);
-    #         if (show_label && label != NULL) {
+    #         if (show_label && label != nullptr) {
     #             tick.TextOffset = TextBuffer.size();
     #             TextBuffer.append(label, label + strlen(label) + 1);
     #             tick.LabelSize = ImGui::CalcTextSize(TextBuffer.Buf.Data + tick.TextOffset);
@@ -829,23 +829,23 @@ class Axis:
     #         Range.Min        = 0;
     #         Range.Max        = 1;
     #         Scale            = ImPlotScale_Linear;
-    #         TransformForward = TransformInverse = NULL;
-    #         TransformData    = NULL;
+    #         TransformForward = TransformInverse = nullptr;
+    #         TransformData    = nullptr;
     #         FitExtents.Min   = HUGE_VAL;
     #         FitExtents.Max   = -HUGE_VAL;
-    #         OrthoAxis        = NULL;
+    #         OrthoAxis        = nullptr;
     #         ConstraintRange  = ImPlotRange(-INFINITY,INFINITY);
     #         ConstraintZoom   = ImPlotRange(DBL_MIN,INFINITY);
-    #         LinkedMin        = LinkedMax = NULL;
+    #         LinkedMin        = LinkedMax = nullptr;
     #         PickerLevel      = 0;
     #         Datum1           = Datum2 = 0;
     #         PixelMin         = PixelMax = 0;
     #         LabelOffset      = -1;
     #         ColorMaj         = ColorMin = ColorTick = ColorTxt = ColorBg = ColorHov = ColorAct = 0;
     #         ColorHiLi        = IM_COL32_BLACK_TRANS;
-    #         Formatter        = NULL;
-    #         FormatterData    = NULL;
-    #         Locator          = NULL;
+    #         Formatter        = nullptr;
+    #         FormatterData    = nullptr;
+    #         Locator          = nullptr;
     #         Enabled          = Hovered = Held = FitThisFrame = HasRange = HasFormatSpec = false;
     #         ShowDefaultTicks = true;
     #     }
@@ -855,18 +855,18 @@ class Axis:
     # inline void Reset() {    /* original C++ signature */
     #         Enabled          = false;
     #         Scale            = ImPlotScale_Linear;
-    #         TransformForward = TransformInverse = NULL;
-    #         TransformData    = NULL;
+    #         TransformForward = TransformInverse = nullptr;
+    #         TransformData    = nullptr;
     #         LabelOffset      = -1;
     #         HasFormatSpec    = false;
-    #         Formatter        = NULL;
-    #         FormatterData    = NULL;
-    #         Locator          = NULL;
+    #         Formatter        = nullptr;
+    #         FormatterData    = nullptr;
+    #         Locator          = nullptr;
     #         ShowDefaultTicks = true;
     #         FitThisFrame     = false;
     #         FitExtents.Min   = HUGE_VAL;
     #         FitExtents.Max   = -HUGE_VAL;
-    #         OrthoAxis        = NULL;
+    #         OrthoAxis        = nullptr;
     #         ConstraintRange  = ImPlotRange(-INFINITY,INFINITY);
     #         ConstraintZoom   = ImPlotRange(DBL_MIN,INFINITY);
     #         Ticker.Reset();
@@ -991,7 +991,7 @@ class Axis:
 
     # inline void UpdateTransformCache() {    /* original C++ signature */
     #         ScaleToPixel = (PixelMax - PixelMin) / Range.Size();
-    #         if (TransformForward != NULL) {
+    #         if (TransformForward != nullptr) {
     #             ScaleMin = TransformForward(Range.Min, TransformData);
     #             ScaleMax = TransformForward(Range.Max, TransformData);
     #         }
@@ -1005,7 +1005,7 @@ class Axis:
         pass
 
     # inline float PlotToPixels(double plt) const {    /* original C++ signature */
-    #         if (TransformForward != NULL) {
+    #         if (TransformForward != nullptr) {
     #             double s = TransformForward(plt, TransformData);
     #             double t = (s - ScaleMin) / (ScaleMax - ScaleMin);
     #             plt      = Range.Min + Range.Size() * t;
@@ -1019,7 +1019,7 @@ class Axis:
 
     # inline double PixelsToPlot(float pix) const {    /* original C++ signature */
     #         double plt = (pix - PixelMin) / ScaleToPixel + Range.Min;
-    #         if (TransformInverse != NULL) {
+    #         if (TransformInverse != nullptr) {
     #             double t = (plt - Range.Min) / Range.Size();
     #             double s = t * (ScaleMax - ScaleMin) + ScaleMin;
     #             plt = TransformInverse(s, TransformData);
@@ -1170,8 +1170,9 @@ class Axis:
         pass
 
     # void PullLinks() {    /* original C++ signature */
-    #         if (LinkedMin) { SetMin(*LinkedMin,true); }
-    #         if (LinkedMax) { SetMax(*LinkedMax,true); }
+    #         if (LinkedMin && LinkedMax) { SetRange(*LinkedMin, *LinkedMax); }
+    #         else if (LinkedMin) { SetMin(*LinkedMin,true); }
+    #         else if (LinkedMax) { SetMax(*LinkedMax,true); }
     #     }
     def pull_links(self) -> None:
         """(private API)"""
@@ -1257,10 +1258,14 @@ class Legend:
     location: Location
     # ImPlotLocation    PreviousLocation;    /* original C++ signature */
     previous_location: Location
+    # ImVec2            Scroll;    /* original C++ signature */
+    scroll: ImVec2
     # ImGuiTextBuffer   Labels;    /* original C++ signature */
     labels: TextBuffer
     # ImRect            Rect;    /* original C++ signature */
     rect: ImRect
+    # ImRect            RectClamped;    /* original C++ signature */
+    rect_clamped: ImRect
     # bool              Hovered;    /* original C++ signature */
     hovered: bool
     # bool              Held;    /* original C++ signature */
@@ -1273,6 +1278,7 @@ class Legend:
     #         CanGoInside  = true;
     #         Hovered      = Held = false;
     #         Location     = PreviousLocation = ImPlotLocation_NorthWest;
+    #         Scroll       = ImVec2(0,0);
     #     }
     def __init__(self) -> None:
         pass
@@ -1433,7 +1439,7 @@ class Plot:
         pass
 
     # inline void SetTitle(const char* title) {    /* original C++ signature */
-    #         if (title && ImGui::FindRenderedTextEnd(title, NULL) != title) {
+    #         if (title && ImGui::FindRenderedTextEnd(title, nullptr) != title) {
     #             TitleOffset = TextBuffer.size();
     #             TextBuffer.append(title, title + strlen(title) + 1);
     #         }
@@ -1491,7 +1497,7 @@ class Plot:
         pass
 
     # inline void SetAxisLabel(ImPlotAxis& axis, const char* label) {    /* original C++ signature */
-    #         if (label && ImGui::FindRenderedTextEnd(label, NULL) != label) {
+    #         if (label && ImGui::FindRenderedTextEnd(label, nullptr) != label) {
     #             axis.LabelOffset = TextBuffer.size();
     #             TextBuffer.append(label, label + strlen(label) + 1);
     #         }
@@ -1541,7 +1547,6 @@ class Subplot:
     #         ID                          = 0;
     #         Flags = PreviousFlags       = ImPlotSubplotFlags_None;
     #         Rows = Cols = CurrentIdx    = 0;
-    #         FrameHovered                = false;
     #         Items.Legend.Location       = ImPlotLocation_North;
     #         Items.Legend.Flags          = ImPlotLegendFlags_Horizontal|ImPlotLegendFlags_Outside;
     #         Items.Legend.CanGoInside    = false;
@@ -1563,7 +1568,7 @@ class NextPlotData:
     #         for (int i = 0; i < ImAxis_COUNT; ++i) {
     #             HasRange[i]                 = false;
     #             Fit[i]                      = false;
-    #             LinkedMin[i] = LinkedMax[i] = NULL;
+    #             LinkedMin[i] = LinkedMax[i] = nullptr;
     #         }
     #     }
     def reset(self) -> None:
@@ -1643,10 +1648,6 @@ class Context:
     # ImPlotTagCollection        Tags;    /* original C++ signature */
     tags: TagCollection
 
-    # bool ChildWindowMade;    /* original C++ signature */
-    # Flags
-    child_window_made: bool
-
     # Style and Colormaps
     # ImPlotStyle                 Style;    /* original C++ signature */
     style: Style
@@ -1679,8 +1680,8 @@ class Context:
     current_alignment_h: AlignmentData
     # ImPlotAlignmentData*        CurrentAlignmentV;    /* original C++ signature */
     current_alignment_v: AlignmentData
-    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), bool ChildWindowMade = bool(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer());    /* original C++ signature */
-    def __init__(self, c_ticker: Ticker = Ticker(), annotations: AnnotationCollection = AnnotationCollection(), tags: TagCollection = TagCollection(), child_window_made: bool = bool(), style: Style = Style(), colormap_data: ColormapData = ColormapData(), digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: NextPlotData = NextPlotData(), next_item_data: NextItemData = NextItemData(), input_map: InputMap = InputMap(), open_context_this_frame: bool = bool(), mouse_pos_string_builder: TextBuffer = TextBuffer()) -> None:
+    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer());    /* original C++ signature */
+    def __init__(self, c_ticker: Ticker = Ticker(), annotations: AnnotationCollection = AnnotationCollection(), tags: TagCollection = TagCollection(), style: Style = Style(), colormap_data: ColormapData = ColormapData(), digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: NextPlotData = NextPlotData(), next_item_data: NextItemData = NextItemData(), input_map: InputMap = InputMap(), open_context_this_frame: bool = bool(), mouse_pos_string_builder: TextBuffer = TextBuffer()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -1739,9 +1740,10 @@ def show_plot_context_menu(plot: Plot) -> None:
 #-----------------------------------------------------------------------------
 
 # static inline void SetupLock() {    /* original C++ signature */
-#     if (!GImPlot->CurrentPlot->SetupLocked)
+#     ImPlotContext& gp = *GImPlot;
+#     if (!gp.CurrentPlot->SetupLocked)
 #         SetupFinish();
-#     GImPlot->CurrentPlot->SetupLocked = true;
+#     gp.CurrentPlot->SetupLocked = true;
 # }
 def setup_lock() -> None:
     """ Lock Setup and call SetupFinish if necessary.
@@ -1778,7 +1780,7 @@ def end_item() -> None:
     """ Ends an item (call only if BeginItem returns True). Pops PlotClipRect."""
     pass
 
-# IMPLOT_API ImPlotItem* RegisterOrGetItem(const char* label_id, ImPlotItemFlags flags, bool* just_created = NULL);    /* original C++ signature */
+# IMPLOT_API ImPlotItem* RegisterOrGetItem(const char* label_id, ImPlotItemFlags flags, bool* just_created = nullptr);    /* original C++ signature */
 def register_or_get_item(label_id: str, flags: ItemFlags, just_created: Optional[bool] = None) -> Tuple[Item , Optional[bool]]:
     """ Register or get an existing item from the current plot."""
     pass
@@ -1914,7 +1916,11 @@ def get_location_pos(outer_rect: ImRect, inner_size: ImVec2, location: Location,
     pass
 # IMPLOT_API ImVec2 CalcLegendSize(ImPlotItemGroup& items, const ImVec2& pad, const ImVec2& spacing, bool vertical);    /* original C++ signature */
 def calc_legend_size(items: ItemGroup, pad: ImVec2, spacing: ImVec2, vertical: bool) -> ImVec2:
-    """ Calculates the bounding box size of a legend"""
+    """ Calculates the bounding box size of a legend _before_ clipping."""
+    pass
+# IMPLOT_API bool ClampLegendRect(ImRect& legend_rect, const ImRect& outer_rect, const ImVec2& pad);          /* original C++ signature */
+def clamp_legend_rect(legend_rect: ImRect, outer_rect: ImRect, pad: ImVec2) -> bool:
+    """ Clips calculated legend size"""
     pass
 # IMPLOT_API bool ShowLegendEntries(ImPlotItemGroup& items, const ImRect& legend_bb, bool interactable, const ImVec2& pad, const ImVec2& spacing, bool vertical, ImDrawList& DrawList);    /* original C++ signature */
 def show_legend_entries(items: ItemGroup, legend_bb: ImRect, interactable: bool, pad: ImVec2, spacing: ImVec2, vertical: bool, draw_list: ImDrawList) -> bool:
@@ -1922,11 +1928,11 @@ def show_legend_entries(items: ItemGroup, legend_bb: ImRect, interactable: bool,
     pass
 # IMPLOT_API void ShowAltLegend(const char* title_id, bool vertical = true, const ImVec2 size = ImVec2(0,0), bool interactable = true);    /* original C++ signature */
 def show_alt_legend(title_id: str, vertical: bool = True, size: ImVec2 = ImVec2(0,0), interactable: bool = True) -> None:
-    """ Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window!)."""
+    """ Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!)."""
     pass
 # IMPLOT_API bool ShowLegendContextMenu(ImPlotLegend& legend, bool visible);    /* original C++ signature */
 def show_legend_context_menu(legend: Legend, visible: bool) -> bool:
-    """ Shows an legends's context menu."""
+    """ Shows a legend's context menu."""
     pass
 
 #-----------------------------------------------------------------------------
@@ -1953,7 +1959,7 @@ def is_color_auto(col: ImVec4) -> bool:
     pass
 # static inline bool IsColorAuto(ImPlotCol idx) { return IsColorAuto(GImPlot->Style.Colors[idx]); }    /* original C++ signature */
 def is_color_auto(idx: Col) -> bool:
-    """ Returns True if a style color is set to be automaticaly determined
+    """ Returns True if a style color is set to be automatically determined
     (private API)
     """
     pass
@@ -1972,11 +1978,11 @@ def get_style_color_u32(idx: Col) -> ImU32:
     """(private API)"""
     pass
 
-# IMPLOT_API void AddTextVertical(ImDrawList *DrawList, ImVec2 pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
+# IMPLOT_API void AddTextVertical(ImDrawList *DrawList, ImVec2 pos, ImU32 col, const char* text_begin, const char* text_end = nullptr);    /* original C++ signature */
 def add_text_vertical(draw_list: ImDrawList, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
     """ Draws vertical text. The position is the bottom left of the text rect."""
     pass
-# IMPLOT_API void AddTextCentered(ImDrawList* DrawList, ImVec2 top_center, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
+# IMPLOT_API void AddTextCentered(ImDrawList* DrawList, ImVec2 top_center, ImU32 col, const char* text_begin, const char* text_end = nullptr);    /* original C++ signature */
 def add_text_centered(draw_list: ImDrawList, top_center: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
     """ Draws multiline horizontal text centered."""
     pass
@@ -2142,7 +2148,7 @@ def combine_date_time(date_part: Time, time_part: Time) -> Time:
     pass
 
 
-# IMPLOT_API bool ShowDatePicker(const char* id, int* level, ImPlotTime* t, const ImPlotTime* t1 = NULL, const ImPlotTime* t2 = NULL);    /* original C++ signature */
+# IMPLOT_API bool ShowDatePicker(const char* id, int* level, ImPlotTime* t, const ImPlotTime* t1 = nullptr, const ImPlotTime* t2 = nullptr);    /* original C++ signature */
 def show_date_picker(id_: str, level: int, t: Time, t1: Optional[Time] = None, t2: Optional[Time] = None) -> Tuple[bool, int]:
     """ Shows a date picker widget block (year/month/day).
      #level = 0 for day, 1 for month, 2 for year. Modified by user interaction.

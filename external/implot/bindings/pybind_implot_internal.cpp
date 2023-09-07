@@ -639,8 +639,10 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("previous_flags", &ImPlotLegend::PreviousFlags, "")
         .def_readwrite("location", &ImPlotLegend::Location, "")
         .def_readwrite("previous_location", &ImPlotLegend::PreviousLocation, "")
+        .def_readwrite("scroll", &ImPlotLegend::Scroll, "")
         .def_readwrite("labels", &ImPlotLegend::Labels, "")
         .def_readwrite("rect", &ImPlotLegend::Rect, "")
+        .def_readwrite("rect_clamped", &ImPlotLegend::RectClamped, "")
         .def_readwrite("hovered", &ImPlotLegend::Hovered, "")
         .def_readwrite("held", &ImPlotLegend::Held, "")
         .def_readwrite("can_go_inside", &ImPlotLegend::CanGoInside, "")
@@ -848,13 +850,12 @@ void py_init_module_implot_internal(py::module& m)
         py::class_<ImPlotContext>
             (m, "Context", "Holds state information that must persist between calls to BeginPlot()/EndPlot()")
         .def(py::init<>([](
-        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), bool ChildWindowMade = bool(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
+        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
         {
             auto r = std::make_unique<ImPlotContext>();
             r->CTicker = CTicker;
             r->Annotations = Annotations;
             r->Tags = Tags;
-            r->ChildWindowMade = ChildWindowMade;
             r->Style = Style;
             r->ColormapData = ColormapData;
             r->DigitalPlotItemCnt = DigitalPlotItemCnt;
@@ -866,7 +867,7 @@ void py_init_module_implot_internal(py::module& m)
             r->MousePosStringBuilder = MousePosStringBuilder;
             return r;
         })
-        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("child_window_made") = bool(), py::arg("style") = ImPlotStyle(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
+        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("style") = ImPlotStyle(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
         )
         .def_readwrite("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_readwrite("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -876,7 +877,6 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("c_ticker", &ImPlotContext::CTicker, "Tick Marks and Labels")
         .def_readwrite("annotations", &ImPlotContext::Annotations, "")
         .def_readwrite("tags", &ImPlotContext::Tags, "")
-        .def_readwrite("child_window_made", &ImPlotContext::ChildWindowMade, "Flags")
         .def_readwrite("style", &ImPlotContext::Style, "")
         .def_readwrite("colormap_data", &ImPlotContext::ColormapData, "")
         .def_readwrite("digital_plot_item_cnt", &ImPlotContext::DigitalPlotItemCnt, "")
@@ -1039,7 +1039,12 @@ void py_init_module_implot_internal(py::module& m)
     m.def("calc_legend_size",
         ImPlot::CalcLegendSize,
         py::arg("items"), py::arg("pad"), py::arg("spacing"), py::arg("vertical"),
-        "Calculates the bounding box size of a legend");
+        "Calculates the bounding box size of a legend _before_ clipping.");
+
+    m.def("clamp_legend_rect",
+        ImPlot::ClampLegendRect,
+        py::arg("legend_rect"), py::arg("outer_rect"), py::arg("pad"),
+        "Clips calculated legend size");
 
     m.def("show_legend_entries",
         ImPlot::ShowLegendEntries,
@@ -1049,12 +1054,12 @@ void py_init_module_implot_internal(py::module& m)
     m.def("show_alt_legend",
         ImPlot::ShowAltLegend,
         py::arg("title_id"), py::arg("vertical") = true, py::arg("size") = ImVec2(0,0), py::arg("interactable") = true,
-        "Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window!).");
+        "Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).");
 
     m.def("show_legend_context_menu",
         ImPlot::ShowLegendContextMenu,
         py::arg("legend"), py::arg("visible"),
-        "Shows an legends's context menu.");
+        "Shows a legend's context menu.");
 
     m.def("get_item_data",
         ImPlot::GetItemData,
@@ -1069,7 +1074,7 @@ void py_init_module_implot_internal(py::module& m)
     m.def("is_color_auto",
         py::overload_cast<ImPlotCol>(ImPlot::IsColorAuto),
         py::arg("idx"),
-        " Returns True if a style color is set to be automaticaly determined\n(private API)");
+        " Returns True if a style color is set to be automatically determined\n(private API)");
 
     m.def("get_auto_color",
         ImPlot::GetAutoColor,
@@ -1215,9 +1220,9 @@ void py_init_module_implot_internal(py::module& m)
         "Combines the date of one timestamp with the time-of-day of another timestamp.");
 
     m.def("show_date_picker",
-        [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = NULL, const ImPlotTime * t2 = NULL) -> std::tuple<bool, int>
+        [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = nullptr, const ImPlotTime * t2 = nullptr) -> std::tuple<bool, int>
         {
-            auto ShowDatePicker_adapt_modifiable_immutable_to_return = [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = NULL, const ImPlotTime * t2 = NULL) -> std::tuple<bool, int>
+            auto ShowDatePicker_adapt_modifiable_immutable_to_return = [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = nullptr, const ImPlotTime * t2 = nullptr) -> std::tuple<bool, int>
             {
                 int * level_adapt_modifiable = & level;
 

@@ -389,10 +389,10 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::GetWindowDpiScale, "get DPI scale currently associated to the current window's viewport.");
 
     m.def("get_window_pos",
-        ImGui::GetWindowPos, "get current window position in screen space (useful if you want to do your own drawing via the DrawList API)");
+        ImGui::GetWindowPos, "get current window position in screen space (note: it is unlikely you need to use this. Consider using current layout pos instead, GetScreenCursorPos())");
 
     m.def("get_window_size",
-        ImGui::GetWindowSize, "get current window size");
+        ImGui::GetWindowSize, "get current window size (note: it is unlikely you need to use this. Consider using GetScreenCursorPos() and e.g. GetContentRegionAvail() instead)");
 
     m.def("get_window_width",
         ImGui::GetWindowWidth, "get current window width (shortcut for GetWindowSize().x)");
@@ -1771,10 +1771,10 @@ void py_init_module_imgui_main(py::module& m)
         "return True when activated + toggle (*p_selected) if p_selected != None");
 
     m.def("begin_tooltip",
-        ImGui::BeginTooltip, "begin/append a tooltip window. to create full-featured tooltip (with any kind of items).");
+        ImGui::BeginTooltip, "begin/append a tooltip window.");
 
     m.def("end_tooltip",
-        ImGui::EndTooltip, "only call EndTooltip() if BeginTooltip() returns True!");
+        ImGui::EndTooltip, "only call EndTooltip() if BeginTooltip()/BeginItemTooltip() returns True!");
 
     m.def("set_tooltip",
         [](const char * fmt)
@@ -1787,7 +1787,23 @@ void py_init_module_imgui_main(py::module& m)
             SetTooltip_adapt_variadic_format(fmt);
         },
         py::arg("fmt"),
-        "set a text-only tooltip, typically use with ImGui::IsItemHovered(). override any previous call to SetTooltip().");
+        "set a text-only tooltip. Often used after a ImGui::IsItemHovered() check. Override any previous call to SetTooltip().");
+
+    m.def("begin_item_tooltip",
+        ImGui::BeginItemTooltip, "begin/append a tooltip window if preceding item was hovered.");
+
+    m.def("set_item_tooltip",
+        [](const char * fmt)
+        {
+            auto SetItemTooltip_adapt_variadic_format = [](const char * fmt)
+            {
+                ImGui::SetItemTooltip("%s", fmt);
+            };
+
+            SetItemTooltip_adapt_variadic_format(fmt);
+        },
+        py::arg("fmt"),
+        "set a text-only tooltip if preceeding item was hovered. override any previous call to SetTooltip().");
 
     m.def("begin_popup",
         py::overload_cast<const char *, ImGuiWindowFlags>(ImGui::BeginPopup),
@@ -2089,6 +2105,9 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("offset") = 0,
         "focus keyboard on the next widget. Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget.");
 
+    m.def("set_next_item_allow_overlap",
+        ImGui::SetNextItemAllowOverlap, "allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this.");
+
     m.def("is_item_hovered",
         ImGui::IsItemHovered,
         py::arg("flags") = 0,
@@ -2143,9 +2162,6 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("get_item_rect_size",
         ImGui::GetItemRectSize, "get size of last item");
-
-    m.def("set_item_allow_overlap",
-        ImGui::SetItemAllowOverlap, "allow last item to be overlapped by a subsequent item. sometimes useful with invisible buttons, selectables, etc. to catch unused area.");
 
     m.def("get_main_viewport",
         ImGui::GetMainViewport,
@@ -2497,14 +2513,14 @@ void py_init_module_imgui_main(py::module& m)
         .value("none", ImGuiTreeNodeFlags_None, "")
         .value("selected", ImGuiTreeNodeFlags_Selected, "Draw as selected")
         .value("framed", ImGuiTreeNodeFlags_Framed, "Draw frame with background (e.g. for CollapsingHeader)")
-        .value("allow_item_overlap", ImGuiTreeNodeFlags_AllowItemOverlap, "Hit testing to allow subsequent widgets to overlap this one")
+        .value("allow_overlap", ImGuiTreeNodeFlags_AllowOverlap, "Hit testing to allow subsequent widgets to overlap this one")
         .value("no_tree_push_on_open", ImGuiTreeNodeFlags_NoTreePushOnOpen, "Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack")
         .value("no_auto_open_on_log", ImGuiTreeNodeFlags_NoAutoOpenOnLog, "Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)")
         .value("default_open", ImGuiTreeNodeFlags_DefaultOpen, "Default node to be open")
         .value("open_on_double_click", ImGuiTreeNodeFlags_OpenOnDoubleClick, "Need double-click to open node")
         .value("open_on_arrow", ImGuiTreeNodeFlags_OpenOnArrow, "Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.")
         .value("leaf", ImGuiTreeNodeFlags_Leaf, "No collapsing, no arrow (use as a convenience for leaf nodes).")
-        .value("bullet", ImGuiTreeNodeFlags_Bullet, "Display a bullet instead of arrow")
+        .value("bullet", ImGuiTreeNodeFlags_Bullet, "Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag!")
         .value("frame_padding", ImGuiTreeNodeFlags_FramePadding, "Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().")
         .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.")
         .value("span_full_width", ImGuiTreeNodeFlags_SpanFullWidth, "Extend hit box to the left-most and right-most edges (bypass the indented area).")
@@ -2532,7 +2548,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Selectable frame can span all columns (text will still fit in current column)")
         .value("allow_double_click", ImGuiSelectableFlags_AllowDoubleClick, "Generate press events on double clicks too")
         .value("disabled", ImGuiSelectableFlags_Disabled, "Cannot be selected, display grayed out text")
-        .value("allow_item_overlap", ImGuiSelectableFlags_AllowItemOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one");
+        .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one");
 
 
     py::enum_<ImGuiComboFlags_>(m, "ComboFlags_", py::arithmetic(), "Flags for ImGui::BeginCombo()")
@@ -2673,14 +2689,19 @@ void py_init_module_imgui_main(py::module& m)
         .value("dock_hierarchy", ImGuiHoveredFlags_DockHierarchy, "IsWindowHovered() only: Consider docking hierarchy (treat dockspace host as parent of docked window) (when used with _ChildWindows or _RootWindow)")
         .value("allow_when_blocked_by_popup", ImGuiHoveredFlags_AllowWhenBlockedByPopup, "Return True even if a popup window is normally blocking access to this item/window")
         .value("allow_when_blocked_by_active_item", ImGuiHoveredFlags_AllowWhenBlockedByActiveItem, "Return True even if an active item is blocking access to this item/window. Useful for Drag and Drop patterns.")
-        .value("allow_when_overlapped", ImGuiHoveredFlags_AllowWhenOverlapped, "IsItemHovered() only: Return True even if the position is obstructed or overlapped by another window")
+        .value("allow_when_overlapped_by_item", ImGuiHoveredFlags_AllowWhenOverlappedByItem, "IsItemHovered() only: Return True even if the item uses AllowOverlap mode and is overlapped by another hoverable item.")
+        .value("allow_when_overlapped_by_window", ImGuiHoveredFlags_AllowWhenOverlappedByWindow, "IsItemHovered() only: Return True even if the position is obstructed or overlapped by another window.")
         .value("allow_when_disabled", ImGuiHoveredFlags_AllowWhenDisabled, "IsItemHovered() only: Return True even if the item is disabled")
-        .value("no_nav_override", ImGuiHoveredFlags_NoNavOverride, "Disable using gamepad/keyboard navigation state when active, always query mouse.")
+        .value("no_nav_override", ImGuiHoveredFlags_NoNavOverride, "IsItemHovered() only: Disable using gamepad/keyboard navigation state when active, always query mouse")
+        .value("allow_when_overlapped", ImGuiHoveredFlags_AllowWhenOverlapped, "")
         .value("rect_only", ImGuiHoveredFlags_RectOnly, "")
         .value("root_and_child_windows", ImGuiHoveredFlags_RootAndChildWindows, "")
-        .value("delay_normal", ImGuiHoveredFlags_DelayNormal, "Return True after io.HoverDelayNormal elapsed (~0.30 sec)")
-        .value("delay_short", ImGuiHoveredFlags_DelayShort, "Return True after io.HoverDelayShort elapsed (~0.10 sec)")
-        .value("no_shared_delay", ImGuiHoveredFlags_NoSharedDelay, "Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)");
+        .value("for_tooltip", ImGuiHoveredFlags_ForTooltip, "Shortcut for standard flags when using IsItemHovered() + SetTooltip() sequence.")
+        .value("stationary", ImGuiHoveredFlags_Stationary, "Require mouse to be stationary for style.HoverStationaryDelay (~0.15 sec) _at least one time_. After this, can move on same item/window. Using the stationary test tends to reduces the need for a long delay.")
+        .value("delay_none", ImGuiHoveredFlags_DelayNone, "IsItemHovered() only: Return True immediately (default). As this is the default you generally ignore this.")
+        .value("delay_short", ImGuiHoveredFlags_DelayShort, "IsItemHovered() only: Return True after style.HoverDelayShort elapsed (~0.15 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).")
+        .value("delay_normal", ImGuiHoveredFlags_DelayNormal, "IsItemHovered() only: Return True after style.HoverDelayNormal elapsed (~0.40 sec) (shared between items) + requires mouse to be stationary for style.HoverStationaryDelay (once per item).")
+        .value("no_shared_delay", ImGuiHoveredFlags_NoSharedDelay, "IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)");
 
 
     py::enum_<ImGuiDockNodeFlags_>(m, "DockNodeFlags_", py::arithmetic(), " Flags for ImGui::DockSpace(), shared/inherited by child nodes.\n (Some flags can be applied to individual nodes directly)\n FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.")
@@ -3006,6 +3027,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float  SeparatorTextBorderSize")
         .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
         .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
+        .value("docking_separator_size", ImGuiStyleVar_DockingSeparatorSize, "float     DockingSeparatorSize")
         .value("count", ImGuiStyleVar_COUNT, "");
 
 
@@ -3122,7 +3144,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("frame_border_size", &ImGuiStyle::FrameBorderSize, "Thickness of border around frames. Generally set to 0.0 or 1.0. (Other values are not well tested and more CPU/GPU costly).")
         .def_readwrite("item_spacing", &ImGuiStyle::ItemSpacing, "Horizontal and vertical spacing between widgets/lines.")
         .def_readwrite("item_inner_spacing", &ImGuiStyle::ItemInnerSpacing, "Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label).")
-        .def_readwrite("cell_padding", &ImGuiStyle::CellPadding, "Padding within a table cell")
+        .def_readwrite("cell_padding", &ImGuiStyle::CellPadding, "Padding within a table cell. CellPadding.y may be altered between different rows.")
         .def_readwrite("touch_extra_padding", &ImGuiStyle::TouchExtraPadding, "Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!")
         .def_readwrite("indent_spacing", &ImGuiStyle::IndentSpacing, "Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).")
         .def_readwrite("columns_min_spacing", &ImGuiStyle::ColumnsMinSpacing, "Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).")
@@ -3142,12 +3164,18 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("separator_text_padding", &ImGuiStyle::SeparatorTextPadding, "Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.")
         .def_readwrite("display_window_padding", &ImGuiStyle::DisplayWindowPadding, "Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.")
         .def_readwrite("display_safe_area_padding", &ImGuiStyle::DisplaySafeAreaPadding, "If you cannot see the edges of your screen (e.g. on a TV) increase the safe area padding. Apply to popups/tooltips as well regular windows. NB: Prefer configuring your TV sets correctly!")
+        .def_readwrite("docking_separator_size", &ImGuiStyle::DockingSeparatorSize, "Thickness of resizing border between docked windows")
         .def_readwrite("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale, "Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.")
         .def_readwrite("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
         .def_readwrite("anti_aliased_lines_use_tex", &ImGuiStyle::AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).")
         .def_readwrite("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
         .def_readwrite("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.")
         .def_readwrite("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError, "Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.")
+        .def_readwrite("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay, "Delay for IsItemHovered(ImGuiHoveredFlags_Stationary). Time required to consider mouse stationary.")
+        .def_readwrite("hover_delay_short", &ImGuiStyle::HoverDelayShort, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayShort). Usually used along with HoverStationaryDelay.")
+        .def_readwrite("hover_delay_normal", &ImGuiStyle::HoverDelayNormal, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayNormal). \"")
+        .def_readwrite("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.")
+        .def_readwrite("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",
@@ -3196,13 +3224,6 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")
         .def_readonly("ini_filename", &ImGuiIO::IniFilename, "= \"imgui.ini\"    // Path to .ini file (important: default \"imgui.ini\" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.")
         .def_readonly("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
-        .def_readwrite("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")
-        .def_readwrite("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click, in pixels.")
-        .def_readwrite("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold, "= 6.0           // Distance threshold before considering we are dragging.")
-        .def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")
-        .def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")
-        .def_readwrite("hover_delay_normal", &ImGuiIO::HoverDelayNormal, "= 0.30 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayNormal) returns True.")
-        .def_readwrite("hover_delay_short", &ImGuiIO::HoverDelayShort, "= 0.10 sec       // Delay on hovering before IsItemHovered(ImGuiHoveredFlags_DelayShort) returns True.")
         .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
@@ -3226,15 +3247,22 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")
         .def_readwrite("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False       // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")
         .def_readwrite("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")
+        .def_readwrite("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")
+        .def_readwrite("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click, in pixels.")
+        .def_readwrite("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold, "= 6.0           // Distance threshold before considering we are dragging.")
+        .def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")
+        .def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")
         .def_readwrite("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
         .def_readwrite("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
         .def_readwrite("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys() in input processing.")
+        .def_readwrite("config_debug_ini_settings", &ImGuiIO::ConfigDebugIniSettings, "= False          // Save .ini data with extra comments (particularly helpful for Docking, but makes saving slower)")
         .def_readonly("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")
         .def_readonly("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")
         .def_readwrite("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")
         .def_readwrite("backend_renderer_user_data", &ImGuiIO::BackendRendererUserData, "= None           // User data for renderer backend")
         .def_readwrite("backend_language_user_data", &ImGuiIO::BackendLanguageUserData, "= None           // User data for non C++ programming language backend")
         .def_readwrite("clipboard_user_data", &ImGuiIO::ClipboardUserData, "")
+        .def_readwrite("platform_locale_decimal_point", &ImGuiIO::PlatformLocaleDecimalPoint, "'.'              // [Experimental] Configure decimal point e.g. '.' or ',' useful for some languages (e.g. German), generally pulled from *localeconv()->decimal_point")
         .def("add_key_event",
             &ImGuiIO::AddKeyEvent,
             py::arg("key"), py::arg("down"),
@@ -3287,10 +3315,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiIO::SetAppAcceptingEvents,
             py::arg("accepting_events"),
             "Set master flag for accepting key/mouse/text events (default to True). Useful if you have native dialog boxes that are interrupting your application loop/refresh, and you want to disable events being queued while your app is frozen.")
-        .def("clear_input_characters",
-            &ImGuiIO::ClearInputCharacters, "[Internal] Clear the text input buffer manually")
+        .def("clear_events_queue",
+            &ImGuiIO::ClearEventsQueue, "Clear all incoming events.")
         .def("clear_input_keys",
-            &ImGuiIO::ClearInputKeys, "[Internal] Release all keys")
+            &ImGuiIO::ClearInputKeys)
         .def_readwrite("want_capture_mouse", &ImGuiIO::WantCaptureMouse, "Set when Dear ImGui will use mouse inputs, in this case do not dispatch them to your main game/application (either way, always pass on mouse inputs to imgui). (e.g. unclicked mouse is hovering over an imgui window, widget is active, mouse was clicked over an imgui window, etc.).")
         .def_readwrite("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard, "Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. InputText active, or an imgui window is focused and navigation is enabled, etc.).")
         .def_readwrite("want_text_input", &ImGuiIO::WantTextInput, "Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a InputText widget is active).")
@@ -3730,10 +3758,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiListClipper::End, "Automatically called on the last call of Step() that returns False.")
         .def("step",
             &ImGuiListClipper::Step, "Call until it returns False. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.")
-        .def("include_range_by_indices",
-            &ImGuiListClipper::IncludeRangeByIndices,
-            py::arg("item_begin"), py::arg("item_end"),
-            " Call IncludeRangeByIndices() *BEFORE* first call to Step() if you need a range of items to not be clipped, regardless of their visibility.\n (Due to alignment / padding of certain items it is possible that an extra item may be included on either end of the display range).")
+        .def("include_item_by_index",
+            &ImGuiListClipper::IncludeItemByIndex,
+            py::arg("item_index"),
+            " Call IncludeItemByIndex() or IncludeItemsByIndex() *BEFORE* first call to Step() if you need a range of items to not be clipped, regardless of their visibility.\n (Due to alignment / padding of certain items it is possible that an extra item may be included on either end of the display range).\n(private API)")
+        .def("include_items_by_index",
+            &ImGuiListClipper::IncludeItemsByIndex, py::arg("item_begin"), py::arg("item_end"))
         ;
 
 
@@ -4043,7 +4073,11 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>(),
             "Functions")
         .def("clear",
-            &ImDrawData::Clear, "(private API)\n\n The ImDrawList are owned by ImGuiContext!")
+            &ImDrawData::Clear)
+        .def("add_draw_list",
+            py::overload_cast<ImDrawList *>(&ImDrawData::AddDrawList),
+            py::arg("draw_list"),
+            "Helper to add an external draw list into an existing ImDrawData.")
         .def("de_index_all_buffers",
             &ImDrawData::DeIndexAllBuffers, "Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!")
         .def("scale_clip_rects",
@@ -4061,7 +4095,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")
         .def_readwrite("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
         .def_readwrite("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")
-        .def_readwrite("oversample_h", &ImFontConfig::OversampleH, "3        // Rasterize at higher quality for sub-pixel positioning. Note the difference between 2 and 3 is minimal so you can reduce this to 2 to save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
+        .def_readwrite("oversample_h", &ImFontConfig::OversampleH, "2        // Rasterize at higher quality for sub-pixel positioning. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
         .def_readwrite("oversample_v", &ImFontConfig::OversampleV, "1        // Rasterize at higher quality for sub-pixel positioning. This is not really useful as we don't use sub-pixel positions on the Y axis.")
         .def_readwrite("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph to pixel boundary. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
         .def_readwrite("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing, "0, 0     // Extra spacing (in pixels) between glyphs. Only X axis is supported for now.")

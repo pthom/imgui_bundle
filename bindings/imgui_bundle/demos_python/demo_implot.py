@@ -47,7 +47,8 @@ def demo_drag_rects():
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
         implot.plot_line("Signal 3", state.x_data, state.y_data3)
-        _, state.rect.x.min, state.rect.y.min, state.rect.x.max, state.rect.y.max = implot.drag_rect(
+        _, state.rect.x.min, state.rect.y.min, state.rect.x.max, state.rect.y.max, clicked, hovered, held = \
+            implot.drag_rect(
             0,
             state.rect.x.min,
             state.rect.y.min,

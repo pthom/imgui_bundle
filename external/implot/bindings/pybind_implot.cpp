@@ -99,7 +99,6 @@ void py_init_module_implot(py::module& m)
         .value("no_inputs", ImPlotFlags_NoInputs, "the user will not be able to interact with the plot")
         .value("no_menus", ImPlotFlags_NoMenus, "the user will not be able to open context menus")
         .value("no_box_select", ImPlotFlags_NoBoxSelect, "the user will not be able to box-select")
-        .value("no_child", ImPlotFlags_NoChild, "a child window region will not be used to capture mouse scroll (can boost performance for single ImGui window applications)")
         .value("no_frame", ImPlotFlags_NoFrame, "the ImGui frame will not be rendered")
         .value("equal", ImPlotFlags_Equal, "x and y axes pairs will be constrained to have the same units/pixel")
         .value("crosshairs", ImPlotFlags_Crosshairs, "the default mouse cursor will be replaced with a crosshair when hovered")
@@ -393,7 +392,7 @@ void py_init_module_implot(py::module& m)
 
     auto pyClassImPlotPoint =
         py::class_<ImPlotPoint>
-            (m, "Point", "Double precision version of ImVec2 used by ImPlot. Extensible by end users.")
+            (m, "Point", "")
         .def_readwrite("x", &ImPlotPoint::x, "")
         .def_readwrite("y", &ImPlotPoint::y, "")
         .def(py::init<>())
@@ -404,12 +403,12 @@ void py_init_module_implot(py::module& m)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImPlotPoint::operator[]),
             py::arg("idx"),
-            "(private API)")
+            "(private API)",
+            pybind11::return_value_policy::reference)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImPlotPoint::operator[]),
             py::arg("idx"),
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            "(private API)")
         ;
 
 
@@ -614,7 +613,7 @@ void py_init_module_implot(py::module& m)
     m.def("setup_axis_limits",
         ImPlot::SetupAxisLimits,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"), py::arg("cond") = ImPlotCond_Once,
-        "Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.");
+        "Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.");
 
     m.def("setup_axis_links",
         [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
@@ -666,7 +665,7 @@ void py_init_module_implot(py::module& m)
     m.def("setup_legend",
         ImPlot::SetupLegend,
         py::arg("location"), py::arg("flags") = 0,
-        "Sets up the plot legend.");
+        "Sets up the plot legend. This can also be called immediately after BeginSubplots when using ImPlotSubplotFlags_ShareItems.");
 
     m.def("setup_mouse_text",
         ImPlot::SetupMouseText,
@@ -1828,71 +1827,107 @@ void py_init_module_implot(py::module& m)
         "Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)");
 
     m.def("drag_point",
-        [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double>
+        [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragPoint_adapt_modifiable_immutable_to_return = [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double>
+            auto DragPoint_adapt_modifiable_immutable_to_return = [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x_adapt_modifiable = & x;
                 double * y_adapt_modifiable = & y;
+                bool * out_clicked_adapt_modifiable = nullptr;
+                if (out_clicked.has_value())
+                    out_clicked_adapt_modifiable = & (*out_clicked);
+                bool * out_hovered_adapt_modifiable = nullptr;
+                if (out_hovered.has_value())
+                    out_hovered_adapt_modifiable = & (*out_hovered);
+                bool * held_adapt_modifiable = nullptr;
+                if (held.has_value())
+                    held_adapt_modifiable = & (*held);
 
-                bool r = ImPlot::DragPoint(id, x_adapt_modifiable, y_adapt_modifiable, col, size, flags);
-                return std::make_tuple(r, x, y);
+                bool r = ImPlot::DragPoint(id, x_adapt_modifiable, y_adapt_modifiable, col, size, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
+                return std::make_tuple(r, x, y, out_clicked, out_hovered, held);
             };
 
-            return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags);
+            return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags, out_clicked, out_hovered, held);
         },
-        py::arg("id_"), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("size") = 4, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x"), py::arg("y"), py::arg("col"), py::arg("size") = 4, py::arg("flags") = 0, py::arg("out_clicked") = py::none(), py::arg("out_hovered") = py::none(), py::arg("held") = py::none(),
         "Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_x",
-        [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
+        [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragLineX_adapt_modifiable_immutable_to_return = [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
+            auto DragLineX_adapt_modifiable_immutable_to_return = [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x_adapt_modifiable = & x;
+                bool * out_clicked_adapt_modifiable = nullptr;
+                if (out_clicked.has_value())
+                    out_clicked_adapt_modifiable = & (*out_clicked);
+                bool * out_hovered_adapt_modifiable = nullptr;
+                if (out_hovered.has_value())
+                    out_hovered_adapt_modifiable = & (*out_hovered);
+                bool * held_adapt_modifiable = nullptr;
+                if (held.has_value())
+                    held_adapt_modifiable = & (*held);
 
-                bool r = ImPlot::DragLineX(id, x_adapt_modifiable, col, thickness, flags);
-                return std::make_tuple(r, x);
+                bool r = ImPlot::DragLineX(id, x_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
+                return std::make_tuple(r, x, out_clicked, out_hovered, held);
             };
 
-            return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags);
+            return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags, out_clicked, out_hovered, held);
         },
-        py::arg("id_"), py::arg("x"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0, py::arg("out_clicked") = py::none(), py::arg("out_hovered") = py::none(), py::arg("held") = py::none(),
         "Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_y",
-        [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
+        [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragLineY_adapt_modifiable_immutable_to_return = [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double>
+            auto DragLineY_adapt_modifiable_immutable_to_return = [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * y_adapt_modifiable = & y;
+                bool * out_clicked_adapt_modifiable = nullptr;
+                if (out_clicked.has_value())
+                    out_clicked_adapt_modifiable = & (*out_clicked);
+                bool * out_hovered_adapt_modifiable = nullptr;
+                if (out_hovered.has_value())
+                    out_hovered_adapt_modifiable = & (*out_hovered);
+                bool * held_adapt_modifiable = nullptr;
+                if (held.has_value())
+                    held_adapt_modifiable = & (*held);
 
-                bool r = ImPlot::DragLineY(id, y_adapt_modifiable, col, thickness, flags);
-                return std::make_tuple(r, y);
+                bool r = ImPlot::DragLineY(id, y_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
+                return std::make_tuple(r, y, out_clicked, out_hovered, held);
             };
 
-            return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags);
+            return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags, out_clicked, out_hovered, held);
         },
-        py::arg("id_"), py::arg("y"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0,
+        py::arg("id_"), py::arg("y"), py::arg("col"), py::arg("thickness") = 1, py::arg("flags") = 0, py::arg("out_clicked") = py::none(), py::arg("out_hovered") = py::none(), py::arg("held") = py::none(),
         "Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_rect",
-        [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double, double, double>
+        [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragRect_adapt_modifiable_immutable_to_return = [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0) -> std::tuple<bool, double, double, double, double>
+            auto DragRect_adapt_modifiable_immutable_to_return = [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x1_adapt_modifiable = & x1;
                 double * y1_adapt_modifiable = & y1;
                 double * x2_adapt_modifiable = & x2;
                 double * y2_adapt_modifiable = & y2;
+                bool * out_clicked_adapt_modifiable = nullptr;
+                if (out_clicked.has_value())
+                    out_clicked_adapt_modifiable = & (*out_clicked);
+                bool * out_hovered_adapt_modifiable = nullptr;
+                if (out_hovered.has_value())
+                    out_hovered_adapt_modifiable = & (*out_hovered);
+                bool * held_adapt_modifiable = nullptr;
+                if (held.has_value())
+                    held_adapt_modifiable = & (*held);
 
-                bool r = ImPlot::DragRect(id, x1_adapt_modifiable, y1_adapt_modifiable, x2_adapt_modifiable, y2_adapt_modifiable, col, flags);
-                return std::make_tuple(r, x1, y1, x2, y2);
+                bool r = ImPlot::DragRect(id, x1_adapt_modifiable, y1_adapt_modifiable, x2_adapt_modifiable, y2_adapt_modifiable, col, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
+                return std::make_tuple(r, x1, y1, x2, y2, out_clicked, out_hovered, held);
             };
 
-            return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags);
+            return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags, out_clicked, out_hovered, held);
         },
-        py::arg("id_"), py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"), py::arg("col"), py::arg("flags") = 0,
+        py::arg("id_"), py::arg("x1"), py::arg("y1"), py::arg("x2"), py::arg("y2"), py::arg("col"), py::arg("flags") = 0, py::arg("out_clicked") = py::none(), py::arg("out_hovered") = py::none(), py::arg("held") = py::none(),
         "Shows a draggable and resizeable rectangle.");
 
     m.def("annotation",
@@ -2195,9 +2230,9 @@ void py_init_module_implot(py::module& m)
         "Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.");
 
     m.def("colormap_slider",
-        [](const char * label, float t, ImVec4 * out = NULL, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
+        [](const char * label, float t, ImVec4 * out = nullptr, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
         {
-            auto ColormapSlider_adapt_modifiable_immutable_to_return = [](const char * label, float t, ImVec4 * out = NULL, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
+            auto ColormapSlider_adapt_modifiable_immutable_to_return = [](const char * label, float t, ImVec4 * out = nullptr, const char * format = "", ImPlotColormap cmap = IMPLOT_AUTO) -> std::tuple<bool, float>
             {
                 float * t_adapt_modifiable = & t;
 
