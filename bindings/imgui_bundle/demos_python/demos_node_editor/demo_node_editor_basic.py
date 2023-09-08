@@ -178,7 +178,7 @@ class DemoNodeEditor:
                     # by calling ed.RejectNewItem():. This will allow editor to give
                     # visual feedback by changing link thickness and color.
 
-        ed.end_create()  # Wraps up object creation action handling.
+            ed.end_create()  # Wraps up object creation action handling.
 
         # Handle deletion action
         if ed.begin_delete():
@@ -196,7 +196,7 @@ class DemoNodeEditor:
                 # You may reject link deletion by calling:
                 # ed.reject_deleted_item()
 
-        ed.end_delete()  # Wrap up deletion action
+            ed.end_delete()  # Wrap up deletion action
 
         # End of interaction with editor.
         ed.end()
