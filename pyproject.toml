@@ -21,7 +21,8 @@ profile = "black"
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+# build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*"]
+build = ["cp312-*"]
 
 # Tests
 test-requires = "pytest"
