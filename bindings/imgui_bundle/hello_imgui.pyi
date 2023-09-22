@@ -1019,7 +1019,8 @@ class RunnerCallbacks:
 
     * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
        A function that is called once, when fonts are ready to be loaded.
-       By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.
+       By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy and customize it.
+       (LoadDefaultFont_WithFontAwesome will load from assets/fonts/ but reverts to the ImGui embedded font if not found)
 
     * `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
         If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)
@@ -1380,7 +1381,7 @@ class DockableWindow:
 # _Helpers:_
 #
 # * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
-# * `None focusDockableWindow(const std::string& name)`: will focus a dockable window
+# * `bool focusDockableWindow(const std::string& name)`: will focus a dockable window (and make its tab visible if needed)
 # * `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`: may return the ImGuiID corresponding
 #   to the dockspace with this name.
 #   **Warning**: this will work reliably only if layoutCondition = DockingLayoutCondition::ApplicationStart. In other
@@ -1418,8 +1419,8 @@ class DockingParams:
     # DockableWindow * dockableWindowOfName(const std::string& name);    /* original C++ signature */
     def dockable_window_of_name(self, name: str) -> DockableWindow:
         pass
-    # void focusDockableWindow(const std::string& windowName);    /* original C++ signature */
-    def focus_dockable_window(self, window_name: str) -> None:
+    # bool focusDockableWindow(const std::string& windowName);    /* original C++ signature */
+    def focus_dockable_window(self, window_name: str) -> bool:
         pass
     # std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);    /* original C++ signature */
     def dock_space_id_from_name(self, dock_space_name: str) -> Optional[ImGuiID]:
@@ -1970,15 +1971,25 @@ class imgui_default_settings:  # Proxy class that introduces typings for the *su
     # void LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     @staticmethod
     def load_default_font_with_font_awesome_icons() -> None:
+        """ LoadDefaultFont_WithFontAwesome will load from assets/fonts and reverts to the imgui embedded font if not found."""
         pass
+
     # void SetupDefaultImGuiConfig();    /* original C++ signature */
     @staticmethod
     def setup_default_imgui_config() -> None:
         pass
     # void SetupDefaultImGuiStyle();    /* original C++ signature */
-    # }
     @staticmethod
     def setup_default_imgui_style() -> None:
+        pass
+
+    # bool DidCallHelloImGuiLoadFontTTF();    /* original C++ signature */
+    # }
+    @staticmethod
+    def did_call_hello_imgui_load_font_ttf() -> bool:
+        """ indicates that fonts were loaded using HelloImGui::LoadFontTTF. In that case, fonts may have been resized to
+         account for HighDPI (on macOS and emscripten)
+        """
         pass
 
 # </submodule imgui_default_settings>

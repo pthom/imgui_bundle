@@ -1685,9 +1685,15 @@ ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontC
 
 namespace ImGuiDefaultSettings
 {
+// LoadDefaultFont_WithFontAwesome will load from assets/fonts and reverts to the imgui embedded font if not found.
 void LoadDefaultFont_WithFontAwesomeIcons();
+
 void SetupDefaultImGuiConfig();
 void SetupDefaultImGuiStyle();
+
+// indicates that fonts were loaded using HelloImGui::LoadFontTTF. In that case, fonts may have been resized to
+// account for HighDPI (on macOS and emscripten)
+bool DidCallHelloImGuiLoadFontTTF();
 }  // namespace ImGuiDefaultSettings
 }  // namespace HelloImGui
 
@@ -1777,7 +1783,8 @@ struct MobileCallbacks
 
 * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
    A function that is called once, when fonts are ready to be loaded.
-   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy-customize it.
+   By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy and customize it.
+   (LoadDefaultFont_WithFontAwesome will load from assets/fonts/ but reverts to the ImGui embedded font if not found)
 
 * `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)
@@ -2085,7 +2092,7 @@ struct DockableWindow
  _Helpers:_
 
  * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
- * `void focusDockableWindow(const std::string& name)`: will focus a dockable window
+ * `bool focusDockableWindow(const std::string& name)`: will focus a dockable window (and make its tab visible if needed)
  * `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`: may return the ImGuiID corresponding
    to the dockspace with this name.
    **Warning**: this will work reliably only if layoutCondition = DockingLayoutCondition::ApplicationStart. In other
@@ -2114,7 +2121,7 @@ struct DockingParams
 
     // Helpers
     DockableWindow * dockableWindowOfName(const std::string& name);
-    void focusDockableWindow(const std::string& windowName);
+    bool focusDockableWindow(const std::string& windowName);
     std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);
 };
 } // namespace HelloImGui
