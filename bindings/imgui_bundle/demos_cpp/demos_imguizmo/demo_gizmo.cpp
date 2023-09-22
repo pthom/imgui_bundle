@@ -428,6 +428,7 @@ int main(int, char**)
     HelloImGui::RunnerParams runnerParams;
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
     runnerParams.imGuiWindowParams.enableViewports = true;
+    runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
     runnerParams.callbacks.ShowGui = gui;
     runnerParams.appWindowParams.windowGeometry.size = {1200, 800};
     // Docking Splits

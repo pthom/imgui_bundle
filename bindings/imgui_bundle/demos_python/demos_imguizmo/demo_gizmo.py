@@ -348,6 +348,7 @@ def main():
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     )
     runner_params.imgui_window_params.enable_viewports = True
+    runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
     runner_params.callbacks.show_gui = gui
     runner_params.app_window_params.window_geometry.size = (1200, 800)
 
