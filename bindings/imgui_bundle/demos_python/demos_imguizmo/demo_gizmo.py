@@ -9,8 +9,12 @@ import munch  # type: ignore
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 
-# pip install PyGLM
-import glm
+try:
+    import glm  # pip install PyGLM
+except ModuleNotFoundError:
+    print("\nThis demo require PyGLM, please install it with this command:\n\n\tpip install PyGLM\n")
+    exit(1)
+
 
 Matrix16 = np.ndarray
 Matrix6 = np.ndarray
