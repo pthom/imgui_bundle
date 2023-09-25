@@ -1011,6 +1011,10 @@ class RunnerCallbacks:
         You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
         It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
 
+     * `BeforeImGuiRender`: *VoidFunction, default=empty*.
+        You can here add a function that will be called at each frame, after the user Gui code,
+        and just before the call to ImGui::Render() (which will also call ImGui::EndFrame()).
+
     * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
       Callbacks for events from a specific backend. _Only implemented for SDL, where the event
       will be of type 'SDL_Event *'_
@@ -1053,6 +1057,8 @@ class RunnerCallbacks:
     before_exit: VoidFunction = EmptyVoidFunction()
     # VoidFunction PreNewFrame = EmptyVoidFunction();    /* original C++ signature */
     pre_new_frame: VoidFunction = EmptyVoidFunction()
+    # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
+    before_imgui_render: VoidFunction = EmptyVoidFunction()
 
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
@@ -1064,7 +1070,7 @@ class RunnerCallbacks:
     # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
     setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1074,6 +1080,7 @@ class RunnerCallbacks:
         post_init: VoidFunction = EmptyVoidFunction(),
         before_exit: VoidFunction = EmptyVoidFunction(),
         pre_new_frame: VoidFunction = EmptyVoidFunction(),
+        before_imgui_render: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
         load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons),
         setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig),
