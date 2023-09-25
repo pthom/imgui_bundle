@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Optional
+from typing import Any, List, Tuple, Optional, Callable
 import enum
 import numpy as np
 
@@ -9,6 +9,8 @@ from imgui_bundle.imgui import *
 #    Manually inserted code (typedefs, etc.)
 ##################################################
 
+# ErrorStringCallback represent a function that accepts a string as a single param (it will contain the error message)
+ErrorStringCallback = Callable[[str], None]
 
 # from imgui_bundle.imgui import
 
@@ -123,6 +125,16 @@ KeyRoutingIndex = int
 # [SECTION] Header mess
 # -----------------------------------------------------------------------------
 
+#
+# Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
+#
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
+
 # Enable SSE intrinsics if available
 
 # Visual Studio warnings
@@ -145,6 +157,8 @@ KeyRoutingIndex = int
 # Use your programming IDE "Go to definition" facility on the names of the center columns to find the actual flags/enum lists.
 
 # Flags
+
+# [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Context pointer
@@ -6441,6 +6455,17 @@ def debug_log(fmt: str) -> None:
 # IMGUI_API void          ErrorCheckUsingSetCursorPosToExtendParentBoundaries();    /* original C++ signature */
 def error_check_using_set_cursor_pos_to_extend_parent_boundaries() -> None:
     pass
+
+# [ADAPT_IMGUI_BUNDLE]
+# IMGUI_API void          ErrorCheckEndFrameRecover(ImGuiErrorStringCallback callback);    /* original C++ signature */
+def error_check_end_frame_recover(callback: ErrorStringCallback) -> None:
+    pass
+
+# IMGUI_API void          ErrorCheckEndWindowRecover(ImGuiErrorStringCallback callback);    /* original C++ signature */
+def error_check_end_window_recover(callback: ErrorStringCallback) -> None:
+    pass
+
+# [/ADAPT_IMGUI_BUNDLE]
 
 # IMGUI_API void          DebugDrawCursorPos(ImU32 col = IM_COL32(255, 0, 0, 255));    /* original C++ signature */
 def debug_draw_cursor_pos(col: ImU32 = IM_COL32(255, 0, 0, 255)) -> None:

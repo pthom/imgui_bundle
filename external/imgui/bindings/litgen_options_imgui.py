@@ -157,7 +157,6 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^DataType",
             r"^InputTextEx$",
             r"^TempInput",
-            r"^ErrorCheckEnd",
             r"ImFileLoadToMemory",
             r"^GetGlyphRange",
             r"SetDragDropPayload^$",
@@ -250,7 +249,8 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
     options.fn_params_exclude_types__regex = r"Callback$|size_t[ ]*\*"
-    options.fn_exclude_by_param_type__regex = "^char$|^const ImWchar \*$"
+    # Exclude functions that take char or const ImWchar * params
+    options.fn_exclude_by_param_type__regex = "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"
 
     # Version where we use Boxed types everywhere
     # options.fn_params_replace_modifiable_immutable_by_boxed__regex = r".*"
