@@ -39,8 +39,11 @@ endif()
 #  If IMMVISION_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
 if (IMGUI_BUNDLE_BUILD_PYTHON OR EMSCRIPTEN)
     # For emscripten and for the python package, we automatically fetch OpenCV
+     #    (unless IMMVISION_FETCH_OPENCV is set in the cache, via for example -DIMMVISION_FETCH_OPENCV=OFF)
     # Under windows and emscripten we fetch a precompiled package, under linux and mac OS a minimal OpenCV will be compiled from sources
-    set(IMMVISION_FETCH_OPENCV ON)
+    if(NOT DEFINED CACHE{IMMVISION_FETCH_OPENCV})
+        set(IMMVISION_FETCH_OPENCV ON)
+    endif()
 else()
     # In C++, feel free to use your own version of OpenCV, or to use this (minimal) version by setting IMMVISION_FETCH_OPENCV
     option(IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
