@@ -52,9 +52,9 @@ void gui()
     //                               // As an illustration of the Immediate Gui paradigm,
     if (ImGui::Button("Random"))     // this draws a button
     {                                // and you handle its action immediately!
-        curve.a = (float)rand() / RAND_MAX * (5.0f - 0.5f) + 0.5f;
-        curve.b = (float)rand() / RAND_MAX * (65.0f - 55.0f) + 55.0f;
-        curve.c = (float)rand() / RAND_MAX * (5.0f - 0.5f) + 0.5f;
+        curve.a = (float)rand() / (float)RAND_MAX * (5.0f - 0.5f) + 0.5f;
+        curve.b = (float)rand() / (float)RAND_MAX * (65.0f - 55.0f) + 55.0f;
+        curve.c = (float)rand() / (float)RAND_MAX * (5.0f - 0.5f) + 0.5f;
     }
 }
 
