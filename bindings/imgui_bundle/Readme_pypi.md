@@ -194,16 +194,38 @@ online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
 
-### Consult the ImGui Manual
+### Dear ImGui demo (and manual)
 
 Dear ImGui comes with a complete demo. It demonstrates all the widgets,
 together with an example code on how to use them.
 
-[ImGui
-Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-is an easy way to consult this demo, and to see the corresponding code.
-The demo code is in C++, but read on for "Code advices" on how to
-translate from C++ to python.
+To run this demo in your browser, launch [ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html).  
+  
+For each widget, you will see the corresponding demo code (in C++. Read
+the part "C++ / Python porting advices" to see how easy it is to
+translate Gui code from C++ to python.
+
+### Dear ImGui C++ API
+
+Dear ImGui’s C++ API is thoroughly documented in its header files:
+
+-   [main API](https://github.com/ocornut/imgui/blob/master/imgui.h)
+
+-   [internal
+    API](https://github.com/ocornut/imgui/blob/master/imgui_internal.h)
+
+### Dear ImGui Python API
+
+The python API closely mirrors the C++ API, and its documentation is
+extremely easy to access from your IDE, via thoroughly documented stub
+(\*.pyi) files.
+
+-   [main
+    API](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi)
+
+-   [internal
+    API](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi)
 
 ### Example
 
