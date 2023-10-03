@@ -1644,6 +1644,7 @@ struct ImGuiWindowParams
 
 namespace HelloImGui
 {
+
 /**
 @@md#VoidFunction_AnyEventCallback
 
@@ -1704,6 +1705,7 @@ bool DidCallHelloImGuiLoadFontTTF();
 
 namespace HelloImGui
 {
+
 /**
 @@md#MobileCallbacks
 
@@ -1733,6 +1735,7 @@ struct MobileCallbacks
     VoidFunction OnPause = EmptyVoidFunction();
     VoidFunction OnResume = EmptyVoidFunction();
 };
+
 
 /**
  @@md#RunnerCallbacks
@@ -1771,13 +1774,20 @@ struct MobileCallbacks
     You can here add a function that will be called once before exiting (when OpenGL and ImGui are
     still inited)
 
- * `PreNewFrame`: *VoidFunction, default=empty*.
+* `BeforeExit_PostCleanup`: *VoidFunction, default=empty*.
+    You can here add a function that will be called once before exiting (after OpenGL and ImGui have been deinited)
+
+* `PreNewFrame`: *VoidFunction, default=empty*.
     You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
     It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
 
- * `BeforeImGuiRender`: *VoidFunction, default=empty*.
+* `BeforeImGuiRender`: *VoidFunction, default=empty*.
     You can here add a function that will be called at each frame, after the user Gui code,
     and just before the call to ImGui::Render() (which will also call ImGui::EndFrame()).
+
+* `AfterSwap`: *VoidFunction, default=empty*.
+    You can here add a function that will be called at each frame, after the Gui was rendered
+    and swapped to the screen.
 
 * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
   Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1796,6 +1806,8 @@ struct MobileCallbacks
 * `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     If needed, setup your own style by providing your own SetupImGuiStyle callback
 
+* `RegisterTests`: *VoidFunction, default=empty*.
+   A function that is called once ImGuiTestEngine is ready to be filled with tests and automations definitions.
 
 * `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application
     when running under "Android, iOS and WinRT".
@@ -1812,16 +1824,22 @@ struct RunnerCallbacks
     VoidFunction ShowMenus = EmptyVoidFunction();
     VoidFunction ShowAppMenuItems = EmptyVoidFunction();
     VoidFunction ShowStatus = EmptyVoidFunction();
+
     VoidFunction PostInit = EmptyVoidFunction();
     VoidFunction BeforeExit = EmptyVoidFunction();
+    VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();
+
     VoidFunction PreNewFrame = EmptyVoidFunction();
     VoidFunction BeforeImGuiRender = EmptyVoidFunction();
+    VoidFunction AfterSwap = EmptyVoidFunction();
 
     AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();
 
     VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
     VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);
     VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);
+
+    VoidFunction RegisterTests = EmptyVoidFunction();
 
 #ifdef HELLOIMGUI_MOBILEDEVICE
     MobileCallbacks mobileCallbacks;
@@ -2235,6 +2253,8 @@ struct FpsIdling
   Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
   and available.
 * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
+* `useImGuiTestEngine`: _bool, default=false_.
+   Set this to true if you intend to use imgui_test_engine (please read note below)
 * `iniFilename`: _string, default = ""_
   Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.
   If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
@@ -2247,7 +2267,14 @@ struct FpsIdling
    shall not exit._
 * `emscripten_fps`: _int, default = 0_.
   Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
-@@md
+
+Notes about the use of [Dear ImGui Test & Automation Engine](https://github.com/ocornut/imgui_test_engine):
+* HelloImGui must be compiled with the option HELLOIMGUI_WITH_TEST_ENGINE (-DHELLOIMGUI_WITH_TEST_ENGINE=ON)
+* See demo in src/hello_imgui_demos/hello_imgui_demo_test_engine.
+* imgui_test_engine is subject to a [specific license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)
+  (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses.)
+
+    @@md
  */
 struct RunnerParams
 {
@@ -2261,7 +2288,10 @@ struct RunnerParams
 
     BackendPointers backendPointers;
     BackendType backendType = BackendType::FirstAvailable;
+
     FpsIdling fpsIdling;
+
+    bool useImGuiTestEngine = false;
 
     std::string iniFilename = "";
     bool iniFilename_useAppWindowTitle = true;
@@ -2449,6 +2479,8 @@ namespace HelloImGui
 #include <cstddef>
 #include <cstdint>
 
+struct ImGuiTestEngine;
+
 
 namespace HelloImGui
 {
@@ -2476,6 +2508,9 @@ __Other utilities:__
 
 * `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
   May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps
+
+* `ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance of ImGuiTestEngine that was
+  initialized by HelloImGui (iif ImGui Test Engine is active).
 @@md
 */
     void Run(RunnerParams &runnerParams);
@@ -2498,6 +2533,7 @@ __Other utilities:__
     // (Will only lead to accurate values if you call it at each frame)
     float FrameRate(float durationForMean = 0.5f);
 
+    ImGuiTestEngine* GetImGuiTestEngine();
 
 /**
 @@md#HelloImGui::Layouts
