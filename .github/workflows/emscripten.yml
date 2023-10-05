@@ -8,6 +8,7 @@ on:
       - master
       - main
       - dev
+      - with_test_engine
 
 
 jobs:
