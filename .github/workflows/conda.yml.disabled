@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Get conda
         uses: conda-incubator/setup-miniconda@v2.1.1
