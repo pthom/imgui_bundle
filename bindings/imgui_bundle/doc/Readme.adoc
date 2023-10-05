@@ -58,9 +58,12 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 ****
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
-image::{url-logo}["abc", 150]
+link:{url-demo-imgui-bundle}[image:{url-logo}["abc", 150]]
 
 Dear ImGui Bundle: easily create ImGui applications in Python and {cpp}. Batteries included!
+
+[TIP]
+Click on the logo for a complete interactive demonstration!
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
 ****
@@ -550,11 +553,29 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
 
-==== Consult the ImGui Manual
+==== Dear ImGui demo (and manual)
 
 Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.
 
-https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual] is an easy way to consult this demo, and to see the corresponding code. The demo code is in {cpp}, but read on for "Code advices" on how to translate from {cpp} to python.
+TIP: To run this demo in your browser, launch
+link:https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[ImGui Manual]. +
+ +
+For each widget, you will see the corresponding demo code (in {cpp}. Read the part "C++ / Python porting advices" to see how easy it is to translate Gui code from {cpp} to python.
+
+==== Dear ImGui C++ API
+
+Dear ImGui's {cpp} API is thoroughly documented in its header files:
+
+* link:https://github.com/ocornut/imgui/blob/master/imgui.h[main API]
+* link:https://github.com/ocornut/imgui/blob/master/imgui_internal.h[internal API]
+
+==== Dear ImGui Python API
+
+The python API closely mirrors the {cpp} API, and its documentation is extremely easy to access from your IDE, via thoroughly documented stub (*.pyi) files.
+
+* link:https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/$$__init__$$.pyi[main API]
+* link:https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi[internal API]
+
 
 ==== Example
 

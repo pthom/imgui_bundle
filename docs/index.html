@@ -563,13 +563,23 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <div class="sectionbody">
 <div class="sidebarblock">
 <div class="content">
-<div class="imageblock">
-<div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png" alt="abc" width="150">
-</div>
+<div class="paragraph">
+<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png" alt="abc" width="150"></span></a></p>
 </div>
 <div class="paragraph">
 <p>Dear ImGui Bundle: easily create ImGui applications in Python and C&#43;&#43;. Batteries included!</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Click on the logo for a complete interactive demonstration!
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><a href="https://github.com/pthom/imgui_bundle/"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png" alt="sources" width="100"></span></a> <a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" alt="doc" width="81"></span></a> <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" alt="manual" width="137"></span></a></p>
@@ -1134,12 +1144,56 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 <p>Dear ImGui is an implementation of the Immediate Gui paradigm.</p>
 </div>
 <div class="sect3">
-<h4 id="_consult_the_imgui_manual">Consult the ImGui Manual</h4>
+<h4 id="_dear_imgui_demo_and_manual">Dear ImGui demo (and manual)</h4>
 <div class="paragraph">
 <p>Dear ImGui comes with a complete demo. It demonstrates all the widgets, together with an example code on how to use them.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+To run this demo in your browser, launch
+<a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>.<br>
+<br>
+For each widget, you will see the corresponding demo code (in C&#43;&#43;. Read the part "C++ / Python porting advices" to see how easy it is to translate Gui code from C&#43;&#43; to python.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dear_imgui_c_api">Dear ImGui C++ API</h4>
 <div class="paragraph">
-<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> is an easy way to consult this demo, and to see the corresponding code. The demo code is in C&#43;&#43;, but read on for "Code advices" on how to translate from C&#43;&#43; to python.</p>
+<p>Dear ImGui&#8217;s C&#43;&#43; API is thoroughly documented in its header files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/ocornut/imgui/blob/master/imgui.h">main API</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ocornut/imgui/blob/master/imgui_internal.h">internal API</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dear_imgui_python_api">Dear ImGui Python API</h4>
+<div class="paragraph">
+<p>The python API closely mirrors the C&#43;&#43; API, and its documentation is extremely easy to access from your IDE, via thoroughly documented stub (*.pyi) files.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi">main API</a></p>
+</li>
+<li>
+<p><a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi">internal API</a></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect3">

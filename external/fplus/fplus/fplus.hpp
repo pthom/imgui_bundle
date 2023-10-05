@@ -7441,6 +7441,7 @@ maybe<TOut> first_match(const ContainerIn1& xs, const ContainerIn2& ys)
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <functional>
 #include <limits>
 #include <stdexcept>
@@ -8888,6 +8889,7 @@ UnordSetType unordered_sets_intersection(const ContainerIn& sets)
 
 
 #include <algorithm>
+#include <cstdint>
 #include <numeric>
 #include <type_traits>
 
@@ -11256,7 +11258,7 @@ Container stride(std::size_t step, const Container& xs)
 template <typename Container>
 Container winsorize(double trim_ratio, const Container& xs)
 {
-    if (size_of_cont(xs) < 2)
+    if (size_of_cont(xs) == 1 || size_of_cont(xs) == 0)
     {
         return xs;
     }
@@ -11347,6 +11349,7 @@ ContainerOut separate(const ContainerIn& xs)
 
 
 #include <algorithm>
+#include <cstdint>
 #include <future>
 #include <iterator>
 #include <mutex>
@@ -12682,8 +12685,10 @@ Container replace_tokens
 
 #include <iomanip>
 #include <ios>
+#include <list>
 #include <sstream>
 #include <string>
+#include <tuple>
 
 namespace fplus
 {
@@ -12940,6 +12945,52 @@ std::string show_fill_right(const std::string::value_type& filler,
     std::size_t min_size, const T& x)
 {
     return fill_right(filler, min_size, show<T>(x));
+}
+
+// Based on https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
+// Case N, recursive
+template<class Tuple, std::size_t N>
+struct TupleStreamer {
+    static void stream(const Tuple& t, std::list<std::string>& sl) 
+    {
+        TupleStreamer<Tuple, N-1>::stream(t,sl);
+        std::stringstream ss;
+        ss << std::get<N-1>(t);
+        sl.emplace_back(ss.str());
+    }
+};
+
+// Based on https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
+// Case N=1
+template<class Tuple>
+struct TupleStreamer<Tuple, 1> {
+    static void stream(const Tuple& t, std::list<std::string>& sl) 
+    {
+        std::stringstream ss;
+        ss << std::get<0>(t);
+        sl.emplace_back(ss.str());
+    }
+};
+
+// Based on https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
+// Case N=0
+template<typename... Args, std::enable_if_t<sizeof...(Args) == 0, int> = 0>
+void stream(const std::tuple<Args...>& , std::list<std::string>& )
+{
+    return;
+}
+
+// Based on https://en.cppreference.com/w/cpp/utility/tuple/tuple_cat
+// Example:
+// std::tuple<int, std::string, float> t1(10, "Test", 3.14);
+// std::list<std::string> lt1 = stream(t1);
+// std::cout << fplus::show_cont(lt1);
+template<typename... Args, std::enable_if_t<sizeof...(Args) != 0, int> = 0>
+std::list<std::string> stream(const std::tuple<Args...>& t)
+{
+    std::list<std::string> sl;
+    TupleStreamer<decltype(t), sizeof...(Args)>::stream(t,sl);
+    return sl;
 }
 
 } // namespace fplus
