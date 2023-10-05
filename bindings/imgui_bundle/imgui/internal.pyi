@@ -158,6 +158,11 @@ KeyRoutingIndex = int
 
 # Flags
 
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
@@ -6457,6 +6462,8 @@ def error_check_using_set_cursor_pos_to_extend_parent_boundaries() -> None:
     pass
 
 # [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # IMGUI_API void          ErrorCheckEndFrameRecover(ImGuiErrorStringCallback callback);    /* original C++ signature */
 def error_check_end_frame_recover(callback: ErrorStringCallback) -> None:
     pass
@@ -6465,6 +6472,8 @@ def error_check_end_frame_recover(callback: ErrorStringCallback) -> None:
 def error_check_end_window_recover(callback: ErrorStringCallback) -> None:
     pass
 
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # IMGUI_API void          DebugDrawCursorPos(ImU32 col = IM_COL32(255, 0, 0, 255));    /* original C++ signature */

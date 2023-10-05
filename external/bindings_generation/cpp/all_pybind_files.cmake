@@ -8,6 +8,7 @@ set(all_pybind_files
     ${external_dir}/imgui/bindings/pybind_imgui_backends.cpp
     ${external_dir}/imgui/bindings/pybind_imgui.cpp
     ${external_dir}/imgui/bindings/pybind_imgui_internal.cpp
+    ${external_dir}/imgui/bindings/pybind_imgui_test_engine.cpp
     ${external_dir}/hello_imgui/bindings/pybind_hello_imgui.cpp
     ${external_dir}/ImFileDialog/bindings/pybind_im_file_dialog.cpp
     ${external_dir}/imgui-command-palette/bindings/pybind_imgui_command_palette.cpp
