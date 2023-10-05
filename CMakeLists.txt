@@ -159,8 +159,9 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     # adapt imgui_test_engine
     # 1. imgui_test_engine should move the GIL between threads
     target_compile_definitions(imgui_test_engine PUBLIC IMGUI_TEST_ENGINE_WITH_PYTHON)
-    # 2. and for this it needs to link with pybind
-    target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module)
+    # 2. and for this it needs to link with pybind and Python
+    find_package(Python3 COMPONENTS Development)
+    target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module Python3::Python)
 endif()
 
 
