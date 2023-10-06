@@ -51,11 +51,12 @@ void AppGui()
 }
 
 
-void sandbox_tstengine()
+int main(int, char**)
 {
     HelloImGui::RunnerParams runnerParams;
     runnerParams.useImGuiTestEngine = true;
 
     runnerParams.callbacks.ShowGui = AppGui;
     runnerParams.callbacks.RegisterTests = MyRegisterTests;
+    HelloImGui::Run(runnerParams);
 }
