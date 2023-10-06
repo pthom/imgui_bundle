@@ -162,7 +162,7 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     # 2. and for this it needs to link with pybind
     target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module)
     # 3. And under linux, we need to manually link python on the cpp lib
-    if (IMGUI_BUNDLE_BUILD_CPP AND (CMAKE_SYSTEM_NAME MATCHES "Linux"))
+    if (IMGUI_BUNDLE_BUILD_CPP)
         find_package(Python3 COMPONENTS Development)
         target_link_libraries(imgui_test_engine PUBLIC Python3::Python)
     endif()
