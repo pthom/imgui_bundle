@@ -27,7 +27,7 @@ function(imgui_bundle_add_app)
 	# 3. if building python bindings, then we need to link python
 	if (IMGUI_BUNDLE_BUILD_PYTHON)
 		find_package(Python3 COMPONENTS Development)
-		target_link_libraries(${app_name} PRIVATE Python3::Python)
+		target_link_libraries(${app_name} PUBLIC Python3::Python)
 	endif()
 
 	# if (MSVC)
