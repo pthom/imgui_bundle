@@ -174,7 +174,8 @@ bool SpawnDemo(const std::string& demoName)
         const char *command_line[2] = {exeFile.c_str(), NULL};
         struct subprocess_s subprocess;
         #ifdef __linux__
-            system(command_line[0]);
+            int system_command_result = system(command_line[0]);
+            IM_ASSERT(system_command_result == 0);
         #else
             subprocess_create(command_line, subprocess_option_no_window, &subprocess);
         #endif
