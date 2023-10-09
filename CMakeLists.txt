@@ -56,6 +56,11 @@ endif()
 option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
 
+# IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
+# ----------------------------------------------------------------------
+option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
+
+
 # IMGUI_BUNDLE_WITH_SDL: Add SDL backend
 # --------------------------------------
 # (HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option)
@@ -101,6 +106,14 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
 endif()
 
+# IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
+set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "" FORCE)
+if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_TEST_ENGINE)
+endif()
+if (NOT IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON)
+    message(FATAL_ERROR "When building python (IMGUI_BUNDLE_BUILD_PYTHON), support for imgui_test_engine (IMGUI_BUNDLE_WITH_TEST_ENGINE) should be ON")
+endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
@@ -156,17 +169,19 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
 
-    # adapt imgui_test_engine
-    # 1. imgui_test_engine should move the GIL between threads
-    target_compile_definitions(imgui_test_engine PUBLIC IMGUI_TEST_ENGINE_WITH_PYTHON_GIL)
-    # 2. and for this it needs to link with pybind
-    target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module)
-    # 3. And it also needs to link with Python3
-    #    Except on macOS, where this is done later by imgui_bundle_add_app
-    if (NOT APPLE)
-        find_package(Python3 COMPONENTS Development)
-        target_link_libraries(imgui_test_engine PUBLIC Python3::Python)
-    endif()
+    if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+        # adapt imgui_test_engine
+        # 1. imgui_test_engine should move the GIL between threads
+        target_compile_definitions(imgui_test_engine PUBLIC IMGUI_TEST_ENGINE_WITH_PYTHON_GIL)
+        # 2. and for this it needs to link with pybind
+        target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module)
+        # 3. And it also needs to link with Python3
+        #    Except on macOS, where this is done later by imgui_bundle_add_app
+        if (NOT APPLE)
+            find_package(Python3 COMPONENTS Development)
+            target_link_libraries(imgui_test_engine PUBLIC Python3::Python)
+        endif()
+    endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()
 
 ####################################################

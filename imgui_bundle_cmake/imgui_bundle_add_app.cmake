@@ -26,7 +26,7 @@ function(imgui_bundle_add_app)
 
 	# if building python bindings, then we need to link the app with python on macOS
 	# (on other platforms, imgui_test_engine already links with python)
-	if (IMGUI_BUNDLE_BUILD_PYTHON AND APPLE)
+	if (IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON AND APPLE)
 		find_package(Python3 COMPONENTS Development)
 		target_link_libraries(${app_name} PUBLIC Python3::Python)
 	endif()
