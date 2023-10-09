@@ -36,4 +36,8 @@ function(add_imgui_bundle_bindings)
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
+
+    if (HELLOIMGUI_WITH_TEST_ENGINE)
+        target_link_libraries(${python_native_module_name} PUBLIC imgui_test_engine_py)
+    endif()
 endfunction()

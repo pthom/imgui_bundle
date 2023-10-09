@@ -45,6 +45,11 @@ function (add_hello_imgui)
 
     #    iv. Use ImGui Test Engine
     set(HELLOIMGUI_WITH_TEST_ENGINE ON CACHE BOOL "" FORCE)
+    if (HELLOIMGUI_WITH_TEST_ENGINE)
+        if (IMGUI_BUNDLE_BUILD_PYTHON)
+            set(HELLOIMGUI_BUILD_PYTHON ON)
+        endif()
+    endif()
 
     # 4. Finally, add hello_imgui
     add_subdirectory(hello_imgui/hello_imgui)

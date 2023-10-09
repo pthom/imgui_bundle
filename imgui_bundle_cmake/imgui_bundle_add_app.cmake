@@ -30,6 +30,8 @@ function(imgui_bundle_add_app)
 		target_link_libraries(${app_name} PUBLIC Python3::Python)
 	endif()
 
+	target_link_libraries(${app_name} PUBLIC imgui_test_engine)
+
 	# if (MSVC)
 	# 	hello_imgui_msvc_target_group_sources(${app_name})
 	# endif()

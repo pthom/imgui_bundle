@@ -155,12 +155,6 @@ add_subdirectory(external)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
-
-    # adapt imgui_test_engine
-    # 1. imgui_test_engine should move the GIL between threads
-    target_compile_definitions(imgui_test_engine PUBLIC IMGUI_TEST_ENGINE_WITH_PYTHON)
-    # 2. and for this it needs to link with pybind
-    target_link_libraries(imgui_test_engine PUBLIC pybind11::pybind11 pybind11::module)
 endif()
 
 ####################################################
