@@ -16,9 +16,14 @@ NOTE: the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), th
 * Then run:
 
 ```
-pipx run cibuildwheel --platform macos && say "wheel build finished"
+CIBW_ARCHS_MACOS="arm64" pipx run cibuildwheel --platform=macos && say "wheel build finished"
 
 twine upload wheelhouse/*
+```
+
+or
+```
+CIBW_ARCHS_MACOS="arm64" CIBW_BUILD="cp311-* cp312-*"  pipx run cibuildwheel --platform=macos
 ```
 
 == Build and deploy to pypi via twine
