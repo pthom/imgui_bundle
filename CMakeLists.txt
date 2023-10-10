@@ -158,23 +158,20 @@ hello_imgui_msvc_target_group_sources(imgui_bundle)
 
 
 #########################################################################
-# Build external libraries
+# Build external libraries: this will add imgui, hello_imgui, immapp, implot, etc
 #########################################################################
 add_subdirectory(external)
 
 #########################################################################
 # Build python bindings
 #########################################################################
+include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/src/hello_imgui_test_engine_integration/hello_imgui_test_engine_cmake.cmake)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
 
     if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
-        # adapt imgui_test_engine
-        # 1. imgui_test_engine should move the GIL between threads
-        target_compile_definitions(imgui_test_engine PUBLIC IMGUI_TEST_ENGINE_WITH_PYTHON_GIL)
-        # 2. and for this it needs to link with pybind
-        target_link_libraries(imgui_test_engine PUBLIC pybind11::embed)
+        configure_imgui_test_engine_with_python_gil()
     endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()
 
