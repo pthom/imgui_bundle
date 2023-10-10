@@ -3,12 +3,10 @@ project(imgui_bundle VERSION "0.9.0") # Remember to mirror changes to setup.py!
 
 
 ###############################################################################
-# imgui_bundle_add_app location
+# imgui_bundle_add_app
 ###############################################################################
-# In order to use `hello_imgui_add_app`, just write
-#     list(APPEND CMAKE_MODULE_PATH ${HELLOIMGUI_CMAKE_PATH})
-#     include(imgui_bundle_add_app)
-# somewhere before calling `imgui_bundle_add_app`
+# the easiest way to build an app with imgui_bundle is to use
+#     imgui_bundle_add_app(my_app my_file.cpp)
 set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
 list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
 include(imgui_bundle_add_app)
