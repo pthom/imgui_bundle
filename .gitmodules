@@ -73,3 +73,6 @@
 	path = external/imgui-command-palette/imgui-command-palette
 	url = https://github.com/pthom/imgui-command-palette.git
 	branch = imgui_bundle
+[submodule "external/imgui_test_engine/imgui_test_engine"]
+	path = external/imgui_test_engine/imgui_test_engine
+	url = https://github.com/pthom/imgui_test_engine.git

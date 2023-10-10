@@ -40,6 +40,15 @@ def lib_imgui() -> ExternalLibrary:
     )
 
 
+def lib_imgui_test_engine() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui",
+        official_git_url="https://github.com/ocornut/imgui_test_engine.git",
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui_test_engine.git",
+    )
+
+
 def lib_imgui_command_palette() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui-command-palette",
@@ -187,6 +196,7 @@ def lib_sdl() -> ExternalLibrary:
 
 ALL_LIBS = [
     lib_imgui(),  # must be first as it declare bindings used by the next ones
+    lib_imgui_test_engine(),
     lib_glfw(),
     lib_hello_imgui(),
     lib_im_file_dialog(),
