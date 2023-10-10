@@ -156,21 +156,31 @@ add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
 hello_imgui_msvc_target_group_sources(imgui_bundle)
 
+#########################################################################
+# configure imgui_test_engine (*before* adding hello_imgui)
+#########################################################################
+if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    set(HELLOIMGUI_FETCH_IMGUI_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_IMGUI_TEST_ENGINE_SOURCE_DIR
+        ${CMAKE_CURRENT_LIST_DIR}/external/imgui_test_engine/imgui_test_engine
+        CACHE STRING "" FORCE)
+endif()
 
 #########################################################################
 # Build external libraries: this will add imgui, hello_imgui, immapp, implot, etc
 #########################################################################
 add_subdirectory(external)
 
+
 #########################################################################
 # Build python bindings
 #########################################################################
-include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/src/hello_imgui_test_engine_integration/hello_imgui_test_engine_cmake.cmake)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
 
     if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+        include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/src/hello_imgui_test_engine_integration/hello_imgui_test_engine_cmake.cmake)
         configure_imgui_test_engine_with_python_gil()
     endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()

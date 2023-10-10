@@ -69,7 +69,7 @@ def autogenerate_imgui_internal() -> None:
 def autogenerate_imgui_test_engine() -> None:
     options = litgen_options_imgui(ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH)
     generator = litgen.LitgenGenerator(options)
-    imgui_test_engine_dir = THIS_DIR + "/../../hello_imgui/hello_imgui/external/imgui_test_engine/imgui_test_engine"
+    imgui_test_engine_dir = THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"
     print("Processing imgui_test_engine")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_engine.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_context.h")
