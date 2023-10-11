@@ -27,6 +27,11 @@ void py_init_module_imgui_command_palette(py::module& m)
         .value("count", ImCmdTextType_COUNT, "");
 
 
+    py::enum_<ImCmdTextFlag>(m, "ImCmdTextFlag", py::arithmetic(), "")
+        .value("underline", ImCmdTextFlag_Underline, "")
+        .value("count", ImCmdTextFlag_COUNT, "");
+
+
     auto pyClassCommand =
         py::class_<ImCmd::Command>
             (m, "Command", "")
@@ -44,8 +49,20 @@ void py_init_module_imgui_command_palette(py::module& m)
     m.def("remove_command",
         ImCmd::RemoveCommand, py::arg("name"));
 
+    m.def("get_style_flag",
+        ImCmd::GetStyleFlag, py::arg("type"), py::arg("flag"));
+
+    m.def("set_style_flag",
+        ImCmd::SetStyleFlag, py::arg("type"), py::arg("flag"), py::arg("enabled"));
+
+    m.def("get_style_font",
+        ImCmd::GetStyleFont, py::arg("type"));
+
     m.def("set_style_font",
         ImCmd::SetStyleFont, py::arg("type"), py::arg("font"));
+
+    m.def("get_style_color",
+        ImCmd::GetStyleColor, py::arg("type"));
 
     m.def("set_style_color",
         ImCmd::SetStyleColor, py::arg("type"), py::arg("color"));

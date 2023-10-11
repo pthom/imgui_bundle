@@ -1,7 +1,7 @@
 """A texture inspector tool for Dear ImGui
 https://github.com/andyborrell/imgui_tex_inspect
 """
-from typing import Any
+from typing import overload
 import enum
 
 import imgui_bundle
@@ -83,6 +83,7 @@ class SizeExcludingBorder:
         pass
 # BeginInspectorPanel
 # * Returns True if panel is drawn.  Note that flags will only be considered on the first call
+@overload
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
@@ -90,6 +91,7 @@ def begin_inspector_panel(
     flags: InspectorFlags = 0
     ) -> bool:
     pass
+@overload
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
@@ -98,6 +100,7 @@ def begin_inspector_panel(
     size: SizeIncludingBorder
     ) -> bool:
     pass
+@overload
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
@@ -162,8 +165,10 @@ def current_inspector_invalidate_texture_cache() -> None:
 # * If using InspectorAlphaMode_CustomColor then this is the color that will be
 # * blended as the background where alpha is less than one.
 #
+@overload
 def current_inspector_set_custom_background_color(color: ImVec4) -> None:
     pass
+@overload
 def current_inspector_set_custom_background_color(color: ImU32) -> None:
     pass
 

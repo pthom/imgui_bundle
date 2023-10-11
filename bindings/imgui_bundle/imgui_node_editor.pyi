@@ -2,7 +2,7 @@
 Python bindings for https://github.com/thedmd/imgui-node-editor
 """
 
-from typing import Any, Optional
+from typing import Any, Optional, overload
 import numpy as np
 import enum
 from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList
@@ -146,6 +146,7 @@ class SaveReasonFlags(enum.Enum):  # imgui_node_editor.h:68
     user = enum.auto()  # (= 0x00000040)
 
 class Config:  # imgui_node_editor.h:91
+
     # std::string             SettingsFile;    /* original C++ signature */
     settings_file: str  # imgui_node_editor.h:95
     # void*                   UserPointer;    /* original C++ signature */
@@ -444,18 +445,21 @@ def pop_style_color(count: int = 1) -> None:  # imgui_node_editor.h:292
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, float value);    /* original C++ signature */
+@overload
 def push_style_var(
     var_index: StyleVar, value: float
 ) -> None:  # imgui_node_editor.h:294
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec2& value);    /* original C++ signature */
+@overload
 def push_style_var(
     var_index: StyleVar, value: ImVec2
 ) -> None:  # imgui_node_editor.h:295
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec4& value);    /* original C++ signature */
+@overload
 def push_style_var(
     var_index: StyleVar, value: ImVec4
 ) -> None:  # imgui_node_editor.h:296
@@ -567,40 +571,48 @@ def begin_create(  # imgui_node_editor.h:327
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId);    /* original C++ signature */
+@overload
 def query_new_link(start_id: PinId, end_id: PinId) -> bool:  # imgui_node_editor.h:328
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
+@overload
 def query_new_link(  # imgui_node_editor.h:329
     start_id: PinId, end_id: PinId, color: ImVec4, thickness: float = 1.0
 ) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId);    /* original C++ signature */
+@overload
 def query_new_node(pin_id: PinId) -> bool:  # imgui_node_editor.h:330
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
+@overload
 def query_new_node(  # imgui_node_editor.h:331
     pin_id: PinId, color: ImVec4, thickness: float = 1.0
 ) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem();    /* original C++ signature */
+@overload
 def accept_new_item() -> bool:  # imgui_node_editor.h:332
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
+@overload
 def accept_new_item(
     color: ImVec4, thickness: float = 1.0
 ) -> bool:  # imgui_node_editor.h:333
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem();    /* original C++ signature */
+@overload
 def reject_new_item() -> None:  # imgui_node_editor.h:334
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
+@overload
 def reject_new_item(
     color: ImVec4, thickness: float = 1.0
 ) -> None:  # imgui_node_editor.h:335
@@ -747,21 +759,25 @@ def delete_link(link_id: LinkId) -> bool:  # imgui_node_editor.h:374
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasAnyLinks(NodeId nodeId);     /* original C++ signature */
+@overload
 def has_any_links(node_id: NodeId) -> bool:  # imgui_node_editor.h:376
     """Returns True if node has any link connected"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasAnyLinks(PinId pinId);     /* original C++ signature */
+@overload
 def has_any_links(pin_id: PinId) -> bool:  # imgui_node_editor.h:377
     """Return True if pin has any link connected"""
     pass
 
 # IMGUI_NODE_EDITOR_API int BreakLinks(NodeId nodeId);     /* original C++ signature */
+@overload
 def break_links(node_id: NodeId) -> int:  # imgui_node_editor.h:378
     """Break all links connected to this node"""
     pass
 
 # IMGUI_NODE_EDITOR_API int BreakLinks(PinId pinId);     /* original C++ signature */
+@overload
 def break_links(pin_id: PinId) -> int:  # imgui_node_editor.h:379
     """Break all links connected to this pin"""
     pass
@@ -886,9 +902,7 @@ def get_background_click_button_index() -> ImGuiMouseButton:  # imgui_node_edito
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundDoubleClickButtonIndex();     /* original C++ signature */
-def get_background_double_click_button_index() -> (
-    ImGuiMouseButton
-):  # imgui_node_editor.h:414
+def get_background_double_click_button_index() -> ImGuiMouseButton:  # imgui_node_editor.h:414
     """-1 if none"""
     pass
 
@@ -938,9 +952,7 @@ def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.
 
 ####################    <generated_from:node_editor_default_context.h>    ####################
 # IMGUI_NODE_EDITOR_API NodeEditorContext* DefaultNodeEditorContext_Immapp();    /* original C++ signature */
-def default_node_editor_context_immapp() -> (
-    NodeEditorContext
-):  # node_editor_default_context.h:9
+def default_node_editor_context_immapp() -> NodeEditorContext:  # node_editor_default_context.h:9
     pass
 
 # IMGUI_NODE_EDITOR_API void SuspendNodeEditorCanvas_Immapp();    /* original C++ signature */

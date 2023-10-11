@@ -747,6 +747,9 @@ void py_init_module_imguizmo(py::module& m)
         pyNsImGuizmo.def("is_using",
             ImGuizmo::IsUsing, "return True if mouse IsOver or if the gizmo is in moving state");
 
+        pyNsImGuizmo.def("is_using_any",
+            ImGuizmo::IsUsingAny, "return True if any gizmo is in moving state");
+
         pyNsImGuizmo.def("enable",
             ImGuizmo::Enable,
             py::arg("enable"),
@@ -801,6 +804,16 @@ void py_init_module_imguizmo(py::module& m)
             ImGuizmo::AllowAxisFlip,
             py::arg("value"),
             " Allow axis to flip\n When True (default), the guizmo axis flip for better visibility\n When False, they always stay along the positive world/local axis");
+
+        pyNsImGuizmo.def("set_axis_limit",
+            ImGuizmo::SetAxisLimit,
+            py::arg("value"),
+            "Configure the limit where axis are hidden");
+
+        pyNsImGuizmo.def("set_plane_limit",
+            ImGuizmo::SetPlaneLimit,
+            py::arg("value"),
+            "Configure the limit where planes are hiden");
 
 
         py::enum_<ImGuizmo::COLOR>(pyNsImGuizmo, "COLOR", py::arithmetic(), "")

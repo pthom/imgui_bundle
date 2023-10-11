@@ -1,5 +1,5 @@
 import sys
-from typing import Literal, List, Any, Optional, Tuple
+from typing import Literal, List, Any, Optional, Tuple, overload
 import numpy as np
 import enum
 from . import internal as internal
@@ -403,12 +403,15 @@ class ImVec2:
     # y;    /* original C++ signature */
     y: float
     # constexpr ImVec2()                      : x(0.0f), y(0.0f) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
+    @overload
     def __init__(self, _x: float, _y: float) -> None:
         pass
     # float& operator[] (size_t idx)          { IM_ASSERT(idx == 0 || idx == 1); return ((float*)(void*)(char*)this)[idx]; }     /* original C++ signature */
+    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)
 
@@ -416,6 +419,7 @@ class ImVec2:
         """
         pass
     # float  operator[] (size_t idx) const    { IM_ASSERT(idx == 0 || idx == 1); return ((const float*)(const void*)(const char*)this)[idx]; }    /* original C++ signature */
+    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
@@ -432,9 +436,11 @@ class ImVec4:
     # w;    /* original C++ signature */
     w: float
     # constexpr ImVec4()                                        : x(0.0f), y(0.0f), z(0.0f), w(0.0f) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w) { }    /* original C++ signature */
+    @overload
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
 
@@ -444,7 +450,6 @@ class ImVec4:
 # -----------------------------------------------------------------------------
 
 """ namespace ImGui"""
-
 # Context creation and access
 # - Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.
 # - DLL users: heaps and globals are not shared across DLL boundaries! You will need to call SetCurrentContext() + SetAllocatorFunctions()
@@ -595,6 +600,7 @@ def end() -> None:
 #    BeginPopup/EndPopup, etc. where the EndXXX call should only be called if the corresponding BeginXXX function
 #    returned True. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 # IMGUI_API bool          BeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0);    /* original C++ signature */
+@overload
 def begin_child(
     str_id: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -604,6 +610,7 @@ def begin_child(
     pass
 
 # IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), bool border = false, ImGuiWindowFlags flags = 0);    /* original C++ signature */
+@overload
 def begin_child(
     id_: ID, size: ImVec2 = ImVec2(0, 0), border: bool = False, flags: WindowFlags = 0
 ) -> bool:
@@ -720,21 +727,25 @@ def set_next_window_viewport(viewport_id: ID) -> None:
     pass
 
 # IMGUI_API void          SetWindowPos(const ImVec2& pos, ImGuiCond cond = 0);                            /* original C++ signature */
+@overload
 def set_window_pos(pos: ImVec2, cond: Cond = 0) -> None:
     """(not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects."""
     pass
 
 # IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
+@overload
 def set_window_size(size: ImVec2, cond: Cond = 0) -> None:
     """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
     pass
 
 # IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                         /* original C++ signature */
+@overload
 def set_window_collapsed(collapsed: bool, cond: Cond = 0) -> None:
     """(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed()."""
     pass
 
 # IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
+@overload
 def set_window_focus() -> None:
     """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
     pass
@@ -745,21 +756,25 @@ def set_window_font_scale(scale: float) -> None:
     pass
 
 # IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);          /* original C++ signature */
+@overload
 def set_window_pos(name: str, pos: ImVec2, cond: Cond = 0) -> None:
     """set named window position."""
     pass
 
 # IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);        /* original C++ signature */
+@overload
 def set_window_size(name: str, size: ImVec2, cond: Cond = 0) -> None:
     """set named window size. set axis to 0.0 to force an auto-fit on this axis."""
     pass
 
 # IMGUI_API void          SetWindowCollapsed(const char* name, bool collapsed, ImGuiCond cond = 0);       /* original C++ signature */
+@overload
 def set_window_collapsed(name: str, collapsed: bool, cond: Cond = 0) -> None:
     """set named window collapsed state"""
     pass
 
 # IMGUI_API void          SetWindowFocus(const char* name);                                               /* original C++ signature */
+@overload
 def set_window_focus(name: str) -> None:
     """set named window to be focused / top-most. use None to remove focus."""
     pass
@@ -851,11 +866,13 @@ def pop_font() -> None:
     pass
 
 # IMGUI_API void          PushStyleColor(ImGuiCol idx, ImU32 col);                            /* original C++ signature */
+@overload
 def push_style_color(idx: Col, col: ImU32) -> None:
     """modify a style color. always use this if you modify the style after NewFrame()."""
     pass
 
 # IMGUI_API void          PushStyleColor(ImGuiCol idx, const ImVec4& col);    /* original C++ signature */
+@overload
 def push_style_color(idx: Col, col: ImVec4) -> None:
     pass
 
@@ -864,11 +881,13 @@ def pop_style_color(count: int = 1) -> None:
     pass
 
 # IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, float val);                         /* original C++ signature */
+@overload
 def push_style_var(idx: StyleVar, val: float) -> None:
     """modify a style float variable. always use this if you modify the style after NewFrame()."""
     pass
 
 # IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, const ImVec2& val);                 /* original C++ signature */
+@overload
 def push_style_var(idx: StyleVar, val: ImVec2) -> None:
     """modify a style ImVec2 variable. always use this if you modify the style after NewFrame()."""
     pass
@@ -942,16 +961,19 @@ def get_font_tex_uv_white_pixel() -> ImVec2:
     pass
 
 # IMGUI_API ImU32         GetColorU32(ImGuiCol idx, float alpha_mul = 1.0f);                  /* original C++ signature */
+@overload
 def get_color_u32(idx: Col, alpha_mul: float = 1.0) -> ImU32:
     """retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for ImDrawList"""
     pass
 
 # IMGUI_API ImU32         GetColorU32(const ImVec4& col);                                     /* original C++ signature */
+@overload
 def get_color_u32(col: ImVec4) -> ImU32:
     """retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"""
     pass
 
 # IMGUI_API ImU32         GetColorU32(ImU32 col);                                             /* original C++ signature */
+@overload
 def get_color_u32(col: ImU32) -> ImU32:
     """retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"""
     pass
@@ -1094,21 +1116,25 @@ def get_frame_height_with_spacing() -> float:
 # - In this header file we use the "label"/"name" terminology to denote a string that will be displayed + used as an ID,
 #   whereas "str_id" denote a string that is only used as an ID and not normally displayed.
 # IMGUI_API void          PushID(const char* str_id);                                         /* original C++ signature */
+@overload
 def push_id(str_id: str) -> None:
     """push string into the ID stack (will hash string)."""
     pass
 
 # IMGUI_API void          PushID(const char* str_id_begin, const char* str_id_end);           /* original C++ signature */
+@overload
 def push_id(str_id_begin: str, str_id_end: str) -> None:
     """push string into the ID stack (will hash string)."""
     pass
 
 # IMGUI_API void          PushID(const void* ptr_id);                                         /* original C++ signature */
+@overload
 def push_id(ptr_id: Any) -> None:
     """push pointer into the ID stack (will hash pointer)."""
     pass
 
 # IMGUI_API void          PushID(int int_id);                                                 /* original C++ signature */
+@overload
 def push_id(int_id: int) -> None:
     """push integer into the ID stack (will hash integer)."""
     pass
@@ -1119,15 +1145,18 @@ def pop_id() -> None:
     pass
 
 # IMGUI_API ImGuiID       GetID(const char* str_id);                                          /* original C++ signature */
+@overload
 def get_id(str_id: str) -> ID:
     """calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
     pass
 
 # IMGUI_API ImGuiID       GetID(const char* str_id_begin, const char* str_id_end);    /* original C++ signature */
+@overload
 def get_id(str_id_begin: str, str_id_end: str) -> ID:
     pass
 
 # IMGUI_API ImGuiID       GetID(const void* ptr_id);    /* original C++ signature */
+@overload
 def get_id(ptr_id: Any) -> ID:
     pass
 
@@ -1200,19 +1229,23 @@ def checkbox(label: str, v: bool) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, int* flags, int flags_value);    /* original C++ signature */
+@overload
 def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value);    /* original C++ signature */
+@overload
 def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          RadioButton(const char* label, bool active);                        /* original C++ signature */
+@overload
 def radio_button(label: str, active: bool) -> bool:
     """use with e.g. if (RadioButton("one", my_value==1)) { my_value = 1; }"""
     pass
 
 # IMGUI_API bool          RadioButton(const char* label, int* v, int v_button);               /* original C++ signature */
+@overload
 def radio_button(label: str, v: int, v_button: int) -> Tuple[bool, int]:
     """shortcut to handle the above pattern when value is an integer"""
     pass
@@ -1268,12 +1301,14 @@ def end_combo() -> None:
     pass
 
 # IMGUI_API bool          Combo(const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items = -1);    /* original C++ signature */
+@overload
 def combo(
     label: str, current_item: int, items: List[str], popup_max_height_in_items: int = -1
 ) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items = -1);          /* original C++ signature */
+@overload
 def combo(
     label: str,
     current_item: int,
@@ -1753,37 +1788,45 @@ def set_color_edit_options(flags: ColorEditFlags) -> None:
 # Widgets: Trees
 # - TreeNode functions return True when the node is open, in which case you need to also call TreePop() when you are finished displaying the tree node contents.
 # IMGUI_API bool          TreeNode(const char* label);    /* original C++ signature */
+@overload
 def tree_node(label: str) -> bool:
     pass
 
 # IMGUI_API bool          TreeNode(const char* str_id, const char* fmt, ...) ;       /* original C++ signature */
+@overload
 def tree_node(str_id: str, fmt: str) -> bool:
     """helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet()."""
     pass
 
 # IMGUI_API bool          TreeNode(const void* ptr_id, const char* fmt, ...) ;       /* original C++ signature */
+@overload
 def tree_node(ptr_id: Any, fmt: str) -> bool:
     """ " """
     pass
 
 # IMGUI_API bool          TreeNodeEx(const char* label, ImGuiTreeNodeFlags flags = 0);    /* original C++ signature */
+@overload
 def tree_node_ex(label: str, flags: TreeNodeFlags = 0) -> bool:
     pass
 
 # IMGUI_API bool          TreeNodeEx(const char* str_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) ;    /* original C++ signature */
+@overload
 def tree_node_ex(str_id: str, flags: TreeNodeFlags, fmt: str) -> bool:
     pass
 
 # IMGUI_API bool          TreeNodeEx(const void* ptr_id, ImGuiTreeNodeFlags flags, const char* fmt, ...) ;    /* original C++ signature */
+@overload
 def tree_node_ex(ptr_id: Any, flags: TreeNodeFlags, fmt: str) -> bool:
     pass
 
 # IMGUI_API void          TreePush(const char* str_id);                                           /* original C++ signature */
+@overload
 def tree_push(str_id: str) -> None:
     """~ Indent()+PushId(). Already called by TreeNode() when returning True, but you can call TreePush/TreePop yourself if desired."""
     pass
 
 # IMGUI_API void          TreePush(const void* ptr_id);                                           /* original C++ signature */
+@overload
 def tree_push(ptr_id: Any) -> None:
     """ " """
     pass
@@ -1799,11 +1842,13 @@ def get_tree_node_to_label_spacing() -> float:
     pass
 
 # IMGUI_API bool          CollapsingHeader(const char* label, ImGuiTreeNodeFlags flags = 0);      /* original C++ signature */
+@overload
 def collapsing_header(label: str, flags: TreeNodeFlags = 0) -> bool:
     """if returning 'True' the header is open. doesn't indent nor push on ID stack. user doesn't have to call TreePop()."""
     pass
 
 # IMGUI_API bool          CollapsingHeader(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags = 0);     /* original C++ signature */
+@overload
 def collapsing_header(
     label: str, p_visible: bool, flags: TreeNodeFlags = 0
 ) -> Tuple[bool, bool]:
@@ -1885,18 +1930,22 @@ def plot_histogram(
 # Widgets: Value() Helpers.
 # - Those are merely shortcut to calling Text() with a format string. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
 # IMGUI_API void          Value(const char* prefix, bool b);    /* original C++ signature */
+@overload
 def value(prefix: str, b: bool) -> None:
     pass
 
 # IMGUI_API void          Value(const char* prefix, int v);    /* original C++ signature */
+@overload
 def value(prefix: str, v: int) -> None:
     pass
 
 # IMGUI_API void          Value(const char* prefix, unsigned int v);    /* original C++ signature */
+@overload
 def value(prefix: str, v: int) -> None:
     pass
 
 # IMGUI_API void          Value(const char* prefix, float v, const char* float_format = NULL);    /* original C++ signature */
+@overload
 def value(prefix: str, v: float, float_format: Optional[str] = None) -> None:
     pass
 
@@ -2016,11 +2065,13 @@ def end_popup() -> None:
 #  - Use IsWindowAppearing() after BeginPopup() to tell if a window just opened.
 #  - IMPORTANT: Notice that for OpenPopupOnItemClick() we exceptionally default flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter
 # IMGUI_API void          OpenPopup(const char* str_id, ImGuiPopupFlags popup_flags = 0);                         /* original C++ signature */
+@overload
 def open_popup(str_id: str, popup_flags: PopupFlags = 0) -> None:
     """call to mark popup as open (don't call every frame!)."""
     pass
 
 # IMGUI_API void          OpenPopup(ImGuiID id, ImGuiPopupFlags popup_flags = 0);                                 /* original C++ signature */
+@overload
 def open_popup(id_: ID, popup_flags: PopupFlags = 0) -> None:
     """id overload to facilitate calling from nested stacks"""
     pass
@@ -2529,32 +2580,38 @@ def get_main_viewport() -> Viewport:
 
 # Background/Foreground Draw Lists
 # IMGUI_API ImDrawList*   GetBackgroundDrawList();                                                /* original C++ signature */
+@overload
 def get_background_draw_list() -> ImDrawList:
     """get background draw list for the viewport associated to the current window. this draw list will be the first rendering one. Useful to quickly draw shapes/text behind dear imgui contents."""
     pass
 
 # IMGUI_API ImDrawList*   GetForegroundDrawList();                                                /* original C++ signature */
+@overload
 def get_foreground_draw_list() -> ImDrawList:
     """get foreground draw list for the viewport associated to the current window. this draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents."""
     pass
 
 # IMGUI_API ImDrawList*   GetBackgroundDrawList(ImGuiViewport* viewport);                         /* original C++ signature */
+@overload
 def get_background_draw_list(viewport: Viewport) -> ImDrawList:
     """get background draw list for the given viewport. this draw list will be the first rendering one. Useful to quickly draw shapes/text behind dear imgui contents."""
     pass
 
 # IMGUI_API ImDrawList*   GetForegroundDrawList(ImGuiViewport* viewport);                         /* original C++ signature */
+@overload
 def get_foreground_draw_list(viewport: Viewport) -> ImDrawList:
     """get foreground draw list for the given viewport. this draw list will be the last rendered one. Useful to quickly draw shapes/text over dear imgui contents."""
     pass
 
 # Miscellaneous Utilities
 # IMGUI_API bool          IsRectVisible(const ImVec2& size);                                      /* original C++ signature */
+@overload
 def is_rect_visible(size: ImVec2) -> bool:
     """test if rectangle (of given size, starting from cursor position) is visible / not clipped."""
     pass
 
 # IMGUI_API bool          IsRectVisible(const ImVec2& rect_min, const ImVec2& rect_max);          /* original C++ signature */
+@overload
 def is_rect_visible(rect_min: ImVec2, rect_max: ImVec2) -> bool:
     """test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
     pass
@@ -5638,9 +5695,11 @@ class TextFilter:
         e: str
 
         # ImGuiTextRange()                                { b = e = NULL; }    /* original C++ signature */
+        @overload
         def __init__(self) -> None:
             pass
         # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
+        @overload
         def __init__(self, _b: str, _e: str) -> None:
             pass
         # bool            empty() const                   { return b == e; }    /* original C++ signature */
@@ -5717,12 +5776,15 @@ class Storage:
         # ImGuiID key;    /* original C++ signature */
         key: ID
         # ImGuiStoragePair(ImGuiID _key, int _val_i)      { key = _key; val_i = _val_i; }    /* original C++ signature */
+        @overload
         def __init__(self, _key: ID, _val_i: int) -> None:
             pass
         # ImGuiStoragePair(ImGuiID _key, float _val_f)    { key = _key; val_f = _val_f; }    /* original C++ signature */
+        @overload
         def __init__(self, _key: ID, _val_f: float) -> None:
             pass
         # ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }    /* original C++ signature */
+        @overload
         def __init__(self, _key: ID, _val_p: Any) -> None:
             pass
     # void                Clear() { Data.clear(); }    /* original C++ signature */
@@ -5870,18 +5932,23 @@ class ImColor:
     value: ImVec4
 
     # constexpr ImColor()                                             { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImColor(float r, float g, float b, float a = 1.0f)    : Value(r, g, b, a) { }    /* original C++ signature */
+    @overload
     def __init__(self, r: float, g: float, b: float, a: float = 1.0) -> None:
         pass
     # constexpr ImColor(const ImVec4& col)                            : Value(col) {}    /* original C++ signature */
+    @overload
     def __init__(self, col: ImVec4) -> None:
         pass
     # constexpr ImColor(int r, int g, int b, int a = 255)             : Value((float)r * (1.0f / 255.0f), (float)g * (1.0f / 255.0f), (float)b * (1.0f / 255.0f), (float)a* (1.0f / 255.0f)) {}    /* original C++ signature */
+    @overload
     def __init__(self, r: int, g: int, b: int, a: int = 255) -> None:
         pass
     # constexpr ImColor(ImU32 rgba)                                   : Value((float)((rgba >> IM_COL32_R_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_G_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_B_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_A_SHIFT) & 0xFF) * (1.0f / 255.0f)) {}    /* original C++ signature */
+    @overload
     def __init__(self, rgba: ImU32) -> None:
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
@@ -5889,8 +5956,8 @@ class ImColor:
     def set_hsv(self, h: float, s: float, v: float, a: float = 1.0) -> None:
         """(private API)"""
         pass
-    @staticmethod
     # static ImColor HSV(float h, float s, float v, float a = 1.0f)   { float r, g, b; ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b); return ImColor(r, g, b, a); }    /* original C++ signature */
+    @staticmethod
     def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
         """(private API)"""
         pass
@@ -6256,11 +6323,13 @@ class ImDrawList:
     ) -> None:
         pass
     # IMGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
+    @overload
     def add_text(
         self, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None
     ) -> None:
         pass
     # IMGUI_API void  AddText(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL);    /* original C++ signature */
+    @overload
     def add_text(
         self,
         font: ImFont,

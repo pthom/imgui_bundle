@@ -33,6 +33,10 @@ void py_init_module_imgui_internal(py::module& m)
     //
     // #endif
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #endif
+    //
 
     m.def("im_hash_data",
         ImHashData, py::arg("data"), py::arg("data_size"), py::arg("seed") = 0);
@@ -3869,12 +3873,16 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("error_check_using_set_cursor_pos_to_extend_parent_boundaries",
         ImGui::ErrorCheckUsingSetCursorPosToExtendParentBoundaries);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("error_check_end_frame_recover",
         py::overload_cast<ImGuiErrorStringCallback>(ImGui::ErrorCheckEndFrameRecover), py::arg("callback"));
 
     m.def("error_check_end_window_recover",
         py::overload_cast<ImGuiErrorStringCallback>(ImGui::ErrorCheckEndWindowRecover), py::arg("callback"));
+    // #endif
+    //
 
     m.def("debug_draw_cursor_pos",
         ImGui::DebugDrawCursorPos, py::arg("col") = IM_COL32(255, 0, 0, 255));

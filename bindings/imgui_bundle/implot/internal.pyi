@@ -2,7 +2,7 @@
 Python bindings for https://github.com/epezent/implot
 """
 
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, overload
 import numpy as np
 import enum
 
@@ -97,26 +97,32 @@ time_t = int
 
 # Computes the common (base-10) logarithm
 # static inline float  ImLog10(float x)  { return log10f(x); }    /* original C++ signature */
+@overload
 def im_log10(x: float) -> float:
     """(private API)"""
     pass
 # static inline double ImLog10(double x) { return log10(x);  }    /* original C++ signature */
+@overload
 def im_log10(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImSinh(float x)   { return sinhf(x);  }    /* original C++ signature */
+@overload
 def im_sinh(x: float) -> float:
     """(private API)"""
     pass
 # static inline double ImSinh(double x)  { return sinh(x);   }    /* original C++ signature */
+@overload
 def im_sinh(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImAsinh(float x)  { return asinhf(x); }    /* original C++ signature */
+@overload
 def im_asinh(x: float) -> float:
     """(private API)"""
     pass
 # static inline double ImAsinh(double x) { return asinh(x);  }    /* original C++ signature */
+@overload
 def im_asinh(x: float) -> float:
     """(private API)"""
     pass
@@ -297,6 +303,7 @@ class TimeFmt_(enum.Enum):
 class DateTimeSpec:
     """ Combined date/time format spec"""
     # ImPlotDateTimeSpec() {}    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # ImPlotDateTimeSpec(ImPlotDateFmt date_fmt, ImPlotTimeFmt time_fmt, bool use_24_hr_clk = false, bool use_iso_8601 = false) {    /* original C++ signature */
@@ -305,6 +312,7 @@ class DateTimeSpec:
     #         UseISO8601     = use_iso_8601;
     #         Use24HourClock = use_24_hr_clk;
     #     }
+    @overload
     def __init__(self, date_fmt: DateFmt, time_fmt: TimeFmt, use_24_hr_clk: bool = False, use_iso_8601: bool = False) -> None:
         pass
     # ImPlotDateFmt Date;    /* original C++ signature */
@@ -323,9 +331,11 @@ class Time:
     # int    Us;    /* original C++ signature */
     us: int    # microsecond part
     # ImPlotTime() { S = 0; Us = 0; }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # ImPlotTime(time_t s, int us = 0) { S  = s + us / 1000000; Us = us % 1000000; }    /* original C++ signature */
+    @overload
     def __init__(self, s: time_t, us: int = 0) -> None:
         pass
     # void RollOver() { S  = S + Us / 1000000;  Us = Us % 1000000; }    /* original C++ signature */
@@ -336,8 +346,8 @@ class Time:
     def to_double(self) -> float:
         """(private API)"""
         pass
-    @staticmethod
     # static ImPlotTime FromDouble(double t) { return ImPlotTime((time_t)t, (int)(t * 1000000 - floor(t) * 1000000)); }    /* original C++ signature */
+    @staticmethod
     def from_double(t: float) -> Time:
         """(private API)"""
         pass
@@ -670,6 +680,7 @@ class Ticker:
     #         }
     #         return AddTick(tick);
     #     }
+    @overload
     def add_tick(self, value: float, major: bool, level: int, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
@@ -684,6 +695,7 @@ class Ticker:
     #         Ticks.push_back(tick);
     #         return Ticks.back();
     #     }
+    @overload
     def add_tick(self, tick: Tick) -> Tick:
         """(private API)"""
         pass
@@ -691,6 +703,7 @@ class Ticker:
     # const char* GetText(int idx) const {    /* original C++ signature */
     #         return TextBuffer.Buf.Data + Ticks[idx].TextOffset;
     #     }
+    @overload
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
@@ -698,6 +711,7 @@ class Ticker:
     # const char* GetText(const ImPlotTick& tick) {    /* original C++ signature */
     #         return GetText(tick.Idx);
     #     }
+    @overload
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
@@ -927,6 +941,7 @@ class Axis:
     #         PickerTimeMax = ImPlotTime::FromDouble(Range.Max);
     #         UpdateTransformCache();
     #     }
+    @overload
     def set_range(self, v1: float, v2: float) -> None:
         """(private API)"""
         pass
@@ -934,6 +949,7 @@ class Axis:
     # inline void SetRange(const ImPlotRange& range) {    /* original C++ signature */
     #         SetRange(range.Min, range.Max);
     #     }
+    @overload
     def set_range(self, range: Range) -> None:
         """(private API)"""
         pass
@@ -1310,10 +1326,12 @@ class ItemGroup:
         """(private API)"""
         pass
     # ImPlotItem* GetItem(ImGuiID id)              { return ItemPool.GetByKey(id);                                 }    /* original C++ signature */
+    @overload
     def get_item(self, id_: ID) -> Item:
         """(private API)"""
         pass
     # ImPlotItem* GetItem(const char* label_id)    { return GetItem(GetItemID(label_id));                          }    /* original C++ signature */
+    @overload
     def get_item(self, label_id: str) -> Item:
         """(private API)"""
         pass
@@ -1460,18 +1478,22 @@ class Plot:
         pass
 
     # inline       ImPlotAxis& XAxis(int i)       { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
+    @overload
     def x_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
     # inline const ImPlotAxis& XAxis(int i) const { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
+    @overload
     def x_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
     # inline       ImPlotAxis& YAxis(int i)       { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
+    @overload
     def y_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
     # inline const ImPlotAxis& YAxis(int i) const { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
+    @overload
     def y_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
@@ -1952,12 +1974,14 @@ def get_item_data() -> NextItemData:
     pass
 
 # static inline bool IsColorAuto(const ImVec4& col) { return col.w == -1; }    /* original C++ signature */
+@overload
 def is_color_auto(col: ImVec4) -> bool:
     """ Returns True if a color is set to be automatically determined
     (private API)
     """
     pass
 # static inline bool IsColorAuto(ImPlotCol idx) { return IsColorAuto(GImPlot->Style.Colors[idx]); }    /* original C++ signature */
+@overload
 def is_color_auto(idx: Col) -> bool:
     """ Returns True if a style color is set to be automatically determined
     (private API)
@@ -1997,10 +2021,12 @@ def calc_text_size_vertical(text: str) -> ImVec2:
     pass
 # Returns white or black text given background color
 # static inline ImU32 CalcTextColor(const ImVec4& bg) { return (bg.x * 0.299f + bg.y * 0.587f + bg.z * 0.114f) > 0.5f ? IM_COL32_BLACK : IM_COL32_WHITE; }    /* original C++ signature */
+@overload
 def calc_text_color(bg: ImVec4) -> ImU32:
     """(private API)"""
     pass
 # static inline ImU32 CalcTextColor(ImU32 bg)         { return CalcTextColor(ImGui::ColorConvertU32ToFloat4(bg)); }    /* original C++ signature */
+@overload
 def calc_text_color(bg: ImU32) -> ImU32:
     """(private API)"""
     pass

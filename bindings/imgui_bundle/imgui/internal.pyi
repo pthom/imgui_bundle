@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Optional, Callable
+from typing import Any, List, Tuple, Optional, Callable, overload
 import enum
 import numpy as np
 
@@ -158,6 +158,11 @@ KeyRoutingIndex = int
 
 # Flags
 
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
@@ -240,11 +245,13 @@ def im_alpha_blend_colors(col_a: ImU32, col_b: ImU32) -> ImU32:
 
 # Helpers: Bit manipulation
 # static inline bool      ImIsPowerOfTwo(int v)           { return v != 0 && (v & (v - 1)) == 0; }    /* original C++ signature */
+@overload
 def im_is_power_of_two(v: int) -> bool:
     """(private API)"""
     pass
 
 # static inline bool      ImIsPowerOfTwo(ImU64 v)         { return v != 0 && (v & (v - 1)) == 0; }    /* original C++ signature */
+@overload
 def im_is_power_of_two(v: ImU64) -> bool:
     """(private API)"""
     pass
@@ -272,31 +279,37 @@ def im_char_is_blank_w(c: int) -> bool:
 # (Exceptionally using templates here but we could also redefine them for those types)
 # - Misc maths helpers
 # static inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs)                { return ImVec2(lhs.x < rhs.x ? lhs.x : rhs.x, lhs.y < rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
+@overload
 def im_min(lhs: ImVec2, rhs: ImVec2) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImMax(const ImVec2& lhs, const ImVec2& rhs)                { return ImVec2(lhs.x >= rhs.x ? lhs.x : rhs.x, lhs.y >= rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
+@overload
 def im_max(lhs: ImVec2, rhs: ImVec2) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImClamp(const ImVec2& v, const ImVec2& mn, ImVec2 mx)      { return ImVec2((v.x < mn.x) ? mn.x : (v.x > mx.x) ? mx.x : v.x, (v.y < mn.y) ? mn.y : (v.y > mx.y) ? mx.y : v.y); }    /* original C++ signature */
+@overload
 def im_clamp(v: ImVec2, mn: ImVec2, mx: ImVec2) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, float t)          { return ImVec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t); }    /* original C++ signature */
+@overload
 def im_lerp(a: ImVec2, b: ImVec2, t: float) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, const ImVec2& t)  { return ImVec2(a.x + (b.x - a.x) * t.x, a.y + (b.y - a.y) * t.y); }    /* original C++ signature */
+@overload
 def im_lerp(a: ImVec2, b: ImVec2, t: ImVec2) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec4 ImLerp(const ImVec4& a, const ImVec4& b, float t)          { return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t); }    /* original C++ signature */
+@overload
 def im_lerp(a: ImVec4, b: ImVec4, t: float) -> ImVec4:
     """(private API)"""
     pass
@@ -307,11 +320,13 @@ def im_saturate(f: float) -> float:
     pass
 
 # static inline float  ImLengthSqr(const ImVec2& lhs)                             { return (lhs.x * lhs.x) + (lhs.y * lhs.y); }    /* original C++ signature */
+@overload
 def im_length_sqr(lhs: ImVec2) -> float:
     """(private API)"""
     pass
 
 # static inline float  ImLengthSqr(const ImVec4& lhs)                             { return (lhs.x * lhs.x) + (lhs.y * lhs.y) + (lhs.z * lhs.z) + (lhs.w * lhs.w); }    /* original C++ signature */
+@overload
 def im_length_sqr(lhs: ImVec4) -> float:
     """(private API)"""
     pass
@@ -322,11 +337,13 @@ def im_inv_length(lhs: ImVec2, fail_value: float) -> float:
     pass
 
 # static inline float  ImFloor(float f)                                           { return (float)(int)(f); }    /* original C++ signature */
+@overload
 def im_floor(f: float) -> float:
     """(private API)"""
     pass
 
 # static inline float  ImFloorSigned(float f)                                     { return (float)((f >= 0 || (float)(int)f == f) ? (int)f : (int)f - 1); }     /* original C++ signature */
+@overload
 def im_floor_signed(f: float) -> float:
     """(private API)
 
@@ -335,11 +352,13 @@ def im_floor_signed(f: float) -> float:
     pass
 
 # static inline ImVec2 ImFloor(const ImVec2& v)                                   { return ImVec2((float)(int)(v.x), (float)(int)(v.y)); }    /* original C++ signature */
+@overload
 def im_floor(v: ImVec2) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImFloorSigned(const ImVec2& v)                             { return ImVec2(ImFloorSigned(v.x), ImFloorSigned(v.y)); }    /* original C++ signature */
+@overload
 def im_floor_signed(v: ImVec2) -> ImVec2:
     """(private API)"""
     pass
@@ -431,9 +450,11 @@ class ImVec1:
     # float   x;    /* original C++ signature */
     x: float
     # constexpr ImVec1()         : x(0.0f) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImVec1(float _x) : x(_x) { }    /* original C++ signature */
+    @overload
     def __init__(self, _x: float) -> None:
         pass
 
@@ -445,12 +466,15 @@ class ImVec2ih:
     # y;    /* original C++ signature */
     y: int
     # constexpr ImVec2ih()                           : x(0), y(0) {}    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImVec2ih(short _x, short _y)         : x(_x), y(_y) {}    /* original C++ signature */
+    @overload
     def __init__(self, _x: int, _y: int) -> None:
         pass
     # constexpr explicit ImVec2ih(const ImVec2& rhs) : x((short)rhs.x), y((short)rhs.y) {}    /* original C++ signature */
+    @overload
     def __init__(self, rhs: ImVec2) -> None:
         pass
 
@@ -465,15 +489,19 @@ class ImRect:
     max: ImVec2  # Lower-right
 
     # constexpr ImRect()                                        : Min(0.0f, 0.0f), Max(0.0f, 0.0f)  {}    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImRect(const ImVec2& min, const ImVec2& max)    : Min(min), Max(max)                {}    /* original C++ signature */
+    @overload
     def __init__(self, min: ImVec2, max: ImVec2) -> None:
         pass
     # constexpr ImRect(const ImVec4& v)                         : Min(v.x, v.y), Max(v.z, v.w)      {}    /* original C++ signature */
+    @overload
     def __init__(self, v: ImVec4) -> None:
         pass
     # constexpr ImRect(float x1, float y1, float x2, float y2)  : Min(x1, y1), Max(x2, y2)          {}    /* original C++ signature */
+    @overload
     def __init__(self, x1: float, y1: float, x2: float, y2: float) -> None:
         pass
     # ImVec2      GetCenter() const                   { return ImVec2((Min.x + Max.x) * 0.5f, (Min.y + Max.y) * 0.5f); }    /* original C++ signature */
@@ -525,10 +553,12 @@ class ImRect:
         """
         pass
     # bool        Contains(const ImVec2& p) const     { return p.x     >= Min.x && p.y     >= Min.y && p.x     <  Max.x && p.y     <  Max.y; }    /* original C++ signature */
+    @overload
     def contains(self, p: ImVec2) -> bool:
         """(private API)"""
         pass
     # bool        Contains(const ImRect& r) const     { return r.Min.x >= Min.x && r.Min.y >= Min.y && r.Max.x <= Max.x && r.Max.y <= Max.y; }    /* original C++ signature */
+    @overload
     def contains(self, r: ImRect) -> bool:
         """(private API)"""
         pass
@@ -537,18 +567,22 @@ class ImRect:
         """(private API)"""
         pass
     # void        Add(const ImVec2& p)                { if (Min.x > p.x)     Min.x = p.x;     if (Min.y > p.y)     Min.y = p.y;     if (Max.x < p.x)     Max.x = p.x;     if (Max.y < p.y)     Max.y = p.y; }    /* original C++ signature */
+    @overload
     def add(self, p: ImVec2) -> None:
         """(private API)"""
         pass
     # void        Add(const ImRect& r)                { if (Min.x > r.Min.x) Min.x = r.Min.x; if (Min.y > r.Min.y) Min.y = r.Min.y; if (Max.x < r.Max.x) Max.x = r.Max.x; if (Max.y < r.Max.y) Max.y = r.Max.y; }    /* original C++ signature */
+    @overload
     def add(self, r: ImRect) -> None:
         """(private API)"""
         pass
     # void        Expand(const float amount)          { Min.x -= amount;   Min.y -= amount;   Max.x += amount;   Max.y += amount; }    /* original C++ signature */
+    @overload
     def expand(self, amount: float) -> None:
         """(private API)"""
         pass
     # void        Expand(const ImVec2& amount)        { Min.x -= amount.x; Min.y -= amount.y; Max.x += amount.x; Max.y += amount.y; }    /* original C++ signature */
+    @overload
     def expand(self, amount: ImVec2) -> None:
         """(private API)"""
         pass
@@ -755,6 +789,7 @@ class ImDrawListSharedData:
         pass
 
 class ImDrawDataBuilder:
+
     # ImDrawDataBuilder()                     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
@@ -1219,12 +1254,15 @@ class StyleMod:
     # ImGuiStyleVar   VarIdx;    /* original C++ signature */
     var_idx: StyleVar
     # ImGuiStyleMod(ImGuiStyleVar idx, int v)     { VarIdx = idx; BackupInt[0] = v; }    /* original C++ signature */
+    @overload
     def __init__(self, idx: StyleVar, v: int) -> None:
         pass
     # ImGuiStyleMod(ImGuiStyleVar idx, float v)   { VarIdx = idx; BackupFloat[0] = v; }    /* original C++ signature */
+    @overload
     def __init__(self, idx: StyleVar, v: float) -> None:
         pass
     # ImGuiStyleMod(ImGuiStyleVar idx, ImVec2 v)  { VarIdx = idx; BackupFloat[0] = v.x; BackupFloat[1] = v.y; }    /* original C++ signature */
+    @overload
     def __init__(self, idx: StyleVar, v: ImVec2) -> None:
         pass
 
@@ -1684,9 +1722,11 @@ class PtrOrIndex:
     index: int  # Usually index in a main pool.
 
     # ImGuiPtrOrIndex(void* ptr)  { Ptr = ptr; Index = -1; }    /* original C++ signature */
+    @overload
     def __init__(self, ptr: Any) -> None:
         pass
     # ImGuiPtrOrIndex(int index)  { Ptr = NULL; Index = index; }    /* original C++ signature */
+    @overload
     def __init__(self, index: int) -> None:
         pass
 
@@ -2019,13 +2059,13 @@ class ListClipperRange:
     # ImS8    PosToIndexOffsetMax;    /* original C++ signature */
     pos_to_index_offset_max: ImS8  # Add to Min after converting to indices
 
-    @staticmethod
     # static ImGuiListClipperRange    FromIndices(int min, int max)                               { ImGuiListClipperRange r = { min, max, false, 0, 0 }; return r; }    /* original C++ signature */
+    @staticmethod
     def from_indices(min: int, max: int) -> ListClipperRange:
         """(private API)"""
         pass
-    @staticmethod
     # static ImGuiListClipperRange    FromPositions(float y1, float y2, int off_min, int off_max) { ImGuiListClipperRange r = { (int)y1, (int)y2, true, (ImS8)off_min, (ImS8)off_max }; return r; }    /* original C++ signature */
+    @staticmethod
     def from_positions(
         y1: float, y2: float, off_min: int, off_max: int
     ) -> ListClipperRange:
@@ -3939,14 +3979,17 @@ class Window:
     def __init__(self, context: Context, name: str) -> None:
         pass
     # ImGuiID     GetID(const char* str, const char* str_end = NULL);    /* original C++ signature */
+    @overload
     def get_id(self, str: str, str_end: Optional[str] = None) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetID(const void* ptr);    /* original C++ signature */
+    @overload
     def get_id(self, ptr: Any) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetID(int n);    /* original C++ signature */
+    @overload
     def get_id(self, n: int) -> ID:
         """(private API)"""
         pass
@@ -4559,7 +4602,6 @@ class TableSettings:
 # -----------------------------------------------------------------------------
 
 """ namespace ImGui"""
-
 # Windows
 # We should always have a CurrentWindow in the stack (there is an implicit "Debug" window)
 # If this ever crash because g.CurrentWindow is None it means that either
@@ -4792,10 +4834,12 @@ def find_hovered_viewport_from_platform_window_stack(
 
 # Settings
 # IMGUI_API void                  MarkIniSettingsDirty();    /* original C++ signature */
+@overload
 def mark_ini_settings_dirty() -> None:
     pass
 
 # IMGUI_API void                  MarkIniSettingsDirty(ImGuiWindow* window);    /* original C++ signature */
+@overload
 def mark_ini_settings_dirty(window: Window) -> None:
     pass
 
@@ -4941,19 +4985,23 @@ def push_override_id(id_: ID) -> None:
     pass
 
 # IMGUI_API ImGuiID       GetIDWithSeed(const char* str_id_begin, const char* str_id_end, ImGuiID seed);    /* original C++ signature */
+@overload
 def get_id_with_seed(str_id_begin: str, str_id_end: str, seed: ID) -> ID:
     pass
 
 # IMGUI_API ImGuiID       GetIDWithSeed(int n, ImGuiID seed);    /* original C++ signature */
+@overload
 def get_id_with_seed(n: int, seed: ID) -> ID:
     pass
 
 # IMGUI_API void          ItemSize(const ImVec2& size, float text_baseline_y = -1.0f);    /* original C++ signature */
+@overload
 def item_size(size: ImVec2, text_baseline_y: float = -1.0) -> None:
     """Basic Helpers for widget code"""
     pass
 
 # inline void             ItemSize(const ImRect& bb, float text_baseline_y = -1.0f) { ItemSize(bb.GetSize(), text_baseline_y); }     /* original C++ signature */
+@overload
 def item_size(bb: ImRect, text_baseline_y: float = -1.0) -> None:
     """(private API)
 
@@ -5285,10 +5333,12 @@ def convert_single_mod_flag_to_key(ctx: Context, key: Key) -> Key:
     pass
 
 # IMGUI_API ImGuiKeyData* GetKeyData(ImGuiContext* ctx, ImGuiKey key);    /* original C++ signature */
+@overload
 def get_key_data(ctx: Context, key: Key) -> KeyData:
     pass
 
 # inline ImGuiKeyData*    GetKeyData(ImGuiKey key)                                    { ImGuiContext& g = *GImGui; return GetKeyData(&g, key); }    /* original C++ signature */
+@overload
 def get_key_data(key: Key) -> KeyData:
     """(private API)"""
     pass
@@ -5912,10 +5962,12 @@ def table_remove(table: Table) -> None:
     pass
 
 # IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTable* table);    /* original C++ signature */
+@overload
 def table_gc_compact_transient_buffers(table: Table) -> None:
     pass
 
 # IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTableTempData* table);    /* original C++ signature */
+@overload
 def table_gc_compact_transient_buffers(table: TableTempData) -> None:
     pass
 
@@ -6033,10 +6085,12 @@ def tab_item_ex(
     pass
 
 # IMGUI_API ImVec2        TabItemCalcSize(const char* label, bool has_close_button_or_unsaved_marker);    /* original C++ signature */
+@overload
 def tab_item_calc_size(label: str, has_close_button_or_unsaved_marker: bool) -> ImVec2:
     pass
 
 # IMGUI_API ImVec2        TabItemCalcSize(ImGuiWindow* window);    /* original C++ signature */
+@overload
 def tab_item_calc_size(window: Window) -> ImVec2:
     pass
 
@@ -6258,10 +6312,12 @@ def separator_text_ex(id_: ID, label: str, label_end: str, extra_width: float) -
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, ImS64* flags, ImS64 flags_value);    /* original C++ signature */
+@overload
 def checkbox_flags(label: str, flags: ImS64, flags_value: ImS64) -> bool:
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, ImU64* flags, ImU64 flags_value);    /* original C++ signature */
+@overload
 def checkbox_flags(label: str, flags: ImU64, flags_value: ImU64) -> bool:
     pass
 
@@ -6457,14 +6513,20 @@ def error_check_using_set_cursor_pos_to_extend_parent_boundaries() -> None:
     pass
 
 # [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # IMGUI_API void          ErrorCheckEndFrameRecover(ImGuiErrorStringCallback callback);    /* original C++ signature */
+@overload
 def error_check_end_frame_recover(callback: ErrorStringCallback) -> None:
     pass
 
 # IMGUI_API void          ErrorCheckEndWindowRecover(ImGuiErrorStringCallback callback);    /* original C++ signature */
+@overload
 def error_check_end_window_recover(callback: ErrorStringCallback) -> None:
     pass
 
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # IMGUI_API void          DebugDrawCursorPos(ImU32 col = IM_COL32(255, 0, 0, 255));    /* original C++ signature */

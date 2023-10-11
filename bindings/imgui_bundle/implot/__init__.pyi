@@ -2,7 +2,7 @@
 Python bindings for https://github.com/epezent/implot
 """
 
-from typing import Any, Optional, Tuple, List
+from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum
 from . import internal as internal
@@ -986,19 +986,24 @@ class Point:
     # y;    /* original C++ signature */
     y: float
     # constexpr ImPlotPoint()                     : x(0.0), y(0.0) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImPlotPoint(double _x, double _y) : x(_x), y(_y) { }    /* original C++ signature */
+    @overload
     def __init__(self, _x: float, _y: float) -> None:
         pass
     # constexpr ImPlotPoint(const ImVec2& p)      : x((double)p.x), y((double)p.y) { }    /* original C++ signature */
+    @overload
     def __init__(self, p: ImVec2) -> None:
         pass
     # double& operator[] (size_t idx)             { IM_ASSERT(idx == 0 || idx == 1); return ((double*)(void*)(char*)this)[idx]; }    /* original C++ signature */
+    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
     # double  operator[] (size_t idx) const       { IM_ASSERT(idx == 0 || idx == 1); return ((const double*)(const void*)(const char*)this)[idx]; }    /* original C++ signature */
+    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
@@ -1011,9 +1016,11 @@ class Range:
     # Max;    /* original C++ signature */
     max: float
     # constexpr ImPlotRange()                         : Min(0.0), Max(0.0) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImPlotRange(double _min, double _max) : Min(_min), Max(_max) { }    /* original C++ signature */
+    @overload
     def __init__(self, _min: float, _max: float) -> None:
         pass
     # bool Contains(double value) const               { return value >= Min && value <= Max;                      }    /* original C++ signature */
@@ -1037,16 +1044,20 @@ class Rect:
     # Y;    /* original C++ signature */
     y: Range
     # constexpr ImPlotRect()                                                       : X(0.0,0.0), Y(0.0,0.0) { }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImPlotRect(double x_min, double x_max, double y_min, double y_max) : X(x_min, x_max), Y(y_min, y_max) { }    /* original C++ signature */
+    @overload
     def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float) -> None:
         pass
     # bool Contains(const ImPlotPoint& p) const                                    { return Contains(p.x, p.y);                 }    /* original C++ signature */
+    @overload
     def contains(self, p: Point) -> bool:
         """(private API)"""
         pass
     # bool Contains(double x, double y) const                                      { return X.Contains(x) && Y.Contains(y);     }    /* original C++ signature */
+    @overload
     def contains(self, x: float, y: float) -> bool:
         """(private API)"""
         pass
@@ -1055,10 +1066,12 @@ class Rect:
         """(private API)"""
         pass
     # ImPlotPoint Clamp(const ImPlotPoint& p)                                      { return Clamp(p.x, p.y);                    }    /* original C++ signature */
+    @overload
     def clamp(self, p: Point) -> Point:
         """(private API)"""
         pass
     # ImPlotPoint Clamp(double x, double y)                                        { return ImPlotPoint(X.Clamp(x),Y.Clamp(y)); }    /* original C++ signature */
+    @overload
     def clamp(self, x: float, y: float) -> Point:
         """(private API)"""
         pass
@@ -1371,11 +1384,13 @@ def setup_axis_links(
     pass
 
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
+@overload
 def setup_axis_format(axis: ImAxis, fmt: str) -> None:
     """Sets the format of numeric axis labels via formater specifier (default="%g"). Formated values will be double (i.e. use %f)."""
     pass
 
 # IMPLOT_API void SetupAxisScale(ImAxis axis, ImPlotScale scale);    /* original C++ signature */
+@overload
 def setup_axis_scale(axis: ImAxis, scale: Scale) -> None:
     """Sets an axis' scale using built-in options."""
     pass
@@ -1529,6 +1544,7 @@ def set_next_axes_to_fit() -> None:
 
 # Plots a standard 2D line plot.
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_line(
     label_id: str,
     values: np.ndarray,
@@ -1541,6 +1557,7 @@ def plot_line(
     pass
 
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_line(
     label_id: str,
     xs: np.ndarray,
@@ -1553,6 +1570,7 @@ def plot_line(
 
 # Plots a standard 2D scatter plot. Default marker is ImPlotMarker_Circle.
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_scatter(
     label_id: str,
     values: np.ndarray,
@@ -1565,6 +1583,7 @@ def plot_scatter(
     pass
 
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_scatter(
     label_id: str,
     xs: np.ndarray,
@@ -1577,6 +1596,7 @@ def plot_scatter(
 
 # Plots a a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval [x[i], x[i+1]) has the value y[i]
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_stairs(
     label_id: str,
     values: np.ndarray,
@@ -1589,6 +1609,7 @@ def plot_stairs(
     pass
 
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_stairs(
     label_id: str,
     xs: np.ndarray,
@@ -1601,6 +1622,7 @@ def plot_stairs(
 
 # Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set yref to +/-INFINITY for infinite fill extents.
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* values, int count, double yref=0, double xscale=1, double xstart=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_shaded(
     label_id: str,
     values: np.ndarray,
@@ -1614,6 +1636,7 @@ def plot_shaded(
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_shaded(
     label_id: str,
     xs: np.ndarray,
@@ -1626,6 +1649,7 @@ def plot_shaded(
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_shaded(
     label_id: str,
     xs: np.ndarray,
@@ -1639,6 +1663,7 @@ def plot_shaded(
 
 # Plots a bar graph. Vertical by default. #bar_size and #shift are in plot units.
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* values, int count, double bar_size=0.67, double shift=0, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_bars(
     label_id: str,
     values: np.ndarray,
@@ -1651,6 +1676,7 @@ def plot_bars(
     pass
 
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_bars(
     label_id: str,
     xs: np.ndarray,
@@ -1664,6 +1690,7 @@ def plot_bars(
 
 # Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_error_bars(
     label_id: str,
     xs: np.ndarray,
@@ -1676,6 +1703,7 @@ def plot_error_bars(
     pass
 
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* neg, const T* pos, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_error_bars(
     label_id: str,
     xs: np.ndarray,
@@ -1690,6 +1718,7 @@ def plot_error_bars(
 
 # Plots stems. Vertical by default.
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* values, int count, double ref=0, double scale=1, double start=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_stems(
     label_id: str,
     values: np.ndarray,
@@ -1703,6 +1732,7 @@ def plot_stems(
     pass
 
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+@overload
 def plot_stems(
     label_id: str,
     xs: np.ndarray,
@@ -1869,6 +1899,7 @@ def drag_rect(
 
 # Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
 # IMPLOT_API void Annotation(double x, double y, const ImVec4& col, const ImVec2& pix_offset, bool clamp, bool round = false);    /* original C++ signature */
+@overload
 def annotation(
     x: float,
     y: float,
@@ -1880,6 +1911,7 @@ def annotation(
     pass
 
 # IMPLOT_API void Annotation(double x, double y, const ImVec4& col, const ImVec2& pix_offset, bool clamp, const char* fmt, ...)           ;    /* original C++ signature */
+@overload
 def annotation(
     x: float, y: float, col: ImVec4, pix_offset: ImVec2, clamp: bool, fmt: str
 ) -> None:
@@ -1887,19 +1919,23 @@ def annotation(
 
 # Shows a x-axis tag at the specified coordinate value.
 # IMPLOT_API void TagX(double x, const ImVec4& col, bool round = false);    /* original C++ signature */
+@overload
 def tag_x(x: float, col: ImVec4, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagX(double x, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
+@overload
 def tag_x(x: float, col: ImVec4, fmt: str) -> None:
     pass
 
 # Shows a y-axis tag at the specified coordinate value.
 # IMPLOT_API void TagY(double y, const ImVec4& col, bool round = false);    /* original C++ signature */
+@overload
 def tag_y(y: float, col: ImVec4, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagY(double y, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
+@overload
 def tag_y(y: float, col: ImVec4, fmt: str) -> None:
     pass
 
@@ -1918,12 +1954,14 @@ def set_axes(x_axis: ImAxis, y_axis: ImAxis) -> None:
 
 # Convert pixels to a position in the current plot's coordinate system. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
+@overload
 def pixels_to_plot(
     pix: ImVec2, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
 ) -> Point:
     pass
 
 # IMPLOT_API ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
+@overload
 def pixels_to_plot(
     x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
 ) -> Point:
@@ -1931,12 +1969,14 @@ def pixels_to_plot(
 
 # Convert a position in the current plot's coordinate system to pixels. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImVec2 PlotToPixels(const ImPlotPoint& plt, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
+@overload
 def plot_to_pixels(
     plt: Point, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
 ) -> ImVec2:
     pass
 
 # IMPLOT_API ImVec2 PlotToPixels(double x, double y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
+@overload
 def plot_to_pixels(
     x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO
 ) -> ImVec2:
@@ -2150,10 +2190,12 @@ def style_colors_light(dst: Optional[Style] = None) -> None:
 
 # Temporarily modify a style color. Don't forget to call PopStyleColor!
 # IMPLOT_API void PushStyleColor(ImPlotCol idx, ImU32 col);    /* original C++ signature */
+@overload
 def push_style_color(idx: Col, col: ImU32) -> None:
     pass
 
 # IMPLOT_API void PushStyleColor(ImPlotCol idx, const ImVec4& col);    /* original C++ signature */
+@overload
 def push_style_color(idx: Col, col: ImVec4) -> None:
     pass
 
@@ -2163,16 +2205,19 @@ def pop_style_color(count: int = 1) -> None:
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, float val);    /* original C++ signature */
+@overload
 def push_style_var(idx: StyleVar, val: float) -> None:
     """Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, int val);    /* original C++ signature */
+@overload
 def push_style_var(idx: StyleVar, val: int) -> None:
     """Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, const ImVec2& val);    /* original C++ signature */
+@overload
 def push_style_var(idx: StyleVar, val: ImVec2) -> None:
     """Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!"""
     pass
@@ -2272,11 +2317,13 @@ def get_colormap_index(name: str) -> Colormap:
     pass
 
 # IMPLOT_API void PushColormap(ImPlotColormap cmap);    /* original C++ signature */
+@overload
 def push_colormap(cmap: Colormap) -> None:
     """Temporarily switch to one of the built-in (i.e. ImPlotColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to call PopColormap!"""
     pass
 
 # IMPLOT_API void PushColormap(const char* name);    /* original C++ signature */
+@overload
 def push_colormap(name: str) -> None:
     """Push a colormap by string name. Use built-in names such as "Default", "Deep", "Jet", etc. or a string you provided to AddColormap. Don't forget to call PopColormap!"""
     pass
@@ -2379,10 +2426,12 @@ def map_input_reverse(dst: Optional[InputMap] = None) -> None:
 
 # Render icons similar to those that appear in legends (nifty for data lists).
 # IMPLOT_API void ItemIcon(const ImVec4& col);    /* original C++ signature */
+@overload
 def item_icon(col: ImVec4) -> None:
     pass
 
 # IMPLOT_API void ItemIcon(ImU32 col);    /* original C++ signature */
+@overload
 def item_icon(col: ImU32) -> None:
     pass
 
