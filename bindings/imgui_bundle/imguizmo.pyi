@@ -2,7 +2,7 @@
 https://github.com/CedricGuillemet/ImGuizmo
 """
 
-from typing import List, Optional, Tuple, Any
+from typing import List, Optional, Any, overload
 from imgui_bundle.imgui import ImVec2, ImVec4
 from imgui_bundle.imgui.internal import ImRect
 import enum
@@ -316,6 +316,10 @@ class im_gradient:  # Proxy class that introduces typings for the *submodule* im
 ####################    <generated_from:ImZoomSliderPure.h>    ####################
 # THIS FILE WAS GENERATED AUTOMATICALLY. DO NOT EDIT.
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       ImGuizmoPure/ImZoomSliderPure.h                                                        //
+#//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmo/ImZoomSlider.h included by ImGuizmoPure/ImZoomSliderPure.h                    //
@@ -507,6 +511,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         pass
 
     @staticmethod
+    @overload
     def is_over() -> bool:
         """ return True if mouse cursor is over any gizmo control (axis, plan or screen component)"""
         pass
@@ -514,6 +519,11 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     @staticmethod
     def is_using() -> bool:
         """ return True if mouse IsOver or if the gizmo is in moving state"""
+        pass
+
+    @staticmethod
+    def is_using_any() -> bool:
+        """ return True if any gizmo is in moving state"""
         pass
 
     @staticmethod
@@ -586,6 +596,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
 
     # return True if the cursor is over the operation's gizmo
     @staticmethod
+    @overload
     def is_over(op: OPERATION) -> bool:
         pass
     @staticmethod
@@ -598,6 +609,15 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
          When True (default), the guizmo axis flip for better visibility
          When False, they always stay along the positive world/local axis
         """
+        pass
+
+    @staticmethod
+    def set_axis_limit(value: float) -> None:
+        """ Configure the limit where axis are hidden"""
+        pass
+    @staticmethod
+    def set_plane_limit(value: float) -> None:
+        """ Configure the limit where planes are hiden"""
         pass
 
     class COLOR(enum.Enum):
@@ -702,6 +722,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         pass
 
     @staticmethod
+    @overload
     def view_manipulate(
         view: Matrix16,
         length: float,
@@ -719,6 +740,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         pass
 
     @staticmethod
+    @overload
     def view_manipulate(
         view: Matrix16,
         projection: Matrix16,

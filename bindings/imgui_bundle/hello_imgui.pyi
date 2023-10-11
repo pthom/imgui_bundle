@@ -2,7 +2,7 @@
 https://github.com/pthom/hello_imgui
 """
 
-from typing import List, Any, Callable, Tuple, Optional
+from typing import List, Any, Callable, Tuple, Optional, overload
 import numpy as np
 import enum
 
@@ -10,6 +10,12 @@ import enum
 import imgui_bundle.imgui
 ImGuiID = int
 ImGuiDefaultSettings = imgui_default_settings
+
+from imgui_bundle import hello_imgui as HelloImGui
+from imgui_bundle.imgui.internal import DockNodeFlags_, DockNodeFlags
+
+ImGuiDockNodeFlags_ = DockNodeFlags_
+ImGuiDockNodeFlags = DockNodeFlags
 
 DockSpaceName = str
 from imgui_bundle.imgui import (
@@ -159,9 +165,11 @@ def asset_exists(asset_relative_filename: str) -> bool:
 # Sets the assets folder location
 # (when using this, automatic assets installation on mobile platforms may not work)
 # void SetAssetsFolder(const char* folder);    /* original C++ signature */
+@overload
 def set_assets_folder(folder: str) -> None:
     pass
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
+@overload
 def set_assets_folder(folder: str) -> None:
     pass
 # void overrideAssetsFolder(const char* folder);     /* original C++ signature */
@@ -1292,9 +1300,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none
         ) -> None:
         pass
 
@@ -1307,7 +1315,7 @@ class DockingSplit:
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
     # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
 
 class DockableWindow:
     """*
@@ -1385,12 +1393,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0., 0.)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
@@ -1455,7 +1463,7 @@ class DockingParams:
     layout_reset: bool = False
 
     # ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;    /* original C++ signature */
-    main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode
+    main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node
 
     # Helpers
     # DockableWindow * dockableWindowOfName(const std::string& name);    /* original C++ signature */
@@ -1475,7 +1483,7 @@ class DockingParams:
         layout_name: str = "Default",
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
-        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode
+        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1864,6 +1872,7 @@ def log_gui(size: ImVec2 = ImVec2(0., 0.)) -> None:
 #
 
 # float EmSize();    /* original C++ signature */
+@overload
 def em_size() -> float:
     """ __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
      widgets and windows relatively to this size.
@@ -1873,15 +1882,18 @@ def em_size() -> float:
     pass
 
 # float EmSize(float nbLines);    /* original C++ signature */
+@overload
 def em_size(nb_lines: float) -> float:
     """ __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
     pass
 
 # __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
 # ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
+@overload
 def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 # ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
+@overload
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
@@ -1915,6 +1927,7 @@ def imgui_default_font_global_scale() -> float:
 
 
 # void Run(RunnerParams &runnerParams);    /* original C++ signature */
+@overload
 def run(runner_params: RunnerParams) -> None:
     """*
     @@md#HelloImGui::Run
@@ -1948,6 +1961,7 @@ def run(runner_params: RunnerParams) -> None:
     pass
 
 # void Run(const SimpleRunnerParams &simpleParams);    /* original C++ signature */
+@overload
 def run(simple_params: SimpleRunnerParams) -> None:
     pass
 
@@ -1959,6 +1973,7 @@ def run(simple_params: SimpleRunnerParams) -> None:
 #         const ScreenSize &windowSize = DefaultWindowSize,
 #         float fpsIdle = 10.f
 #     );
+@overload
 def run(
     gui_function: VoidFunction,
     window_title: str = "",

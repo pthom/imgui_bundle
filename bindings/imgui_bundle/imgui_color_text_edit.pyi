@@ -40,11 +40,11 @@ If you want to contribute, please refer to CONTRIBUTE file.
 
 """
 from __future__ import annotations
-from typing import List, Any, Dict, Set
+from typing import List, Any, Dict, Set, overload
 import numpy as np
 import enum
 
-from imgui_bundle.imgui import ImVec2
+from imgui_bundle.imgui import ImVec2, ImVec4, ImU32
 
 
 String = str
@@ -111,8 +111,10 @@ class TextEditor:
         """
         m_line: int
         m_column: int
+        @overload
         def __init__(self) -> None:
             pass
+        @overload
         def __init__(self, a_line: int, a_column: int) -> None:
             pass
         @staticmethod
@@ -249,6 +251,7 @@ class TextEditor:
     def set_breakpoints(self, a_markers: Breakpoints) -> None:
         pass
 
+    @overload
     def render(
         self,
         a_title: str,
@@ -259,6 +262,7 @@ class TextEditor:
         pass
     def set_text(self, a_text: str) -> None:
         pass
+    @overload
     def get_text(self) -> str:
         pass
 
@@ -296,12 +300,14 @@ class TextEditor:
 
     def get_cursor_position(self) -> TextEditor.Coordinates:
         pass
+    @overload
     def set_cursor_position(
         self,
         a_position: TextEditor.Coordinates,
         a_cursor: int = -1
         ) -> None:
         pass
+    @overload
     def set_cursor_position(
         self,
         a_line: int,
@@ -358,8 +364,10 @@ class TextEditor:
     def get_tab_size(self) -> int:
         pass
 
+    @overload
     def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
         pass
+    @overload
     def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
         pass
 
@@ -402,6 +410,7 @@ class TextEditor:
         a_cursor: int = -1
         ) -> None:
         pass
+    @overload
     def set_selection(
         self,
         a_start: TextEditor.Coordinates,
@@ -411,6 +420,7 @@ class TextEditor:
         is_spawning_new_cursor: bool = False
         ) -> None:
         pass
+    @overload
     def set_selection(
         self,
         a_start_line: int,

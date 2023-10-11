@@ -2,7 +2,7 @@
 Python bindings for https://github.com/altschuler/imgui-knobs
 """
 
-from typing import Tuple, Optional
+from typing import Tuple, Optional, overload
 import numpy as np
 import enum
 
@@ -39,8 +39,10 @@ class color_set:
     hovered: ImColor
     active: ImColor
 
+    @overload
     def __init__(self, base: ImColor, hovered: ImColor, active: ImColor) -> None:
         pass
+    @overload
     def __init__(self, color: ImColor) -> None:
         pass
 

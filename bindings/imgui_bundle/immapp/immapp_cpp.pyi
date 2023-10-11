@@ -1,13 +1,13 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle
 """
 
-from typing import Tuple, Optional, Callable, List
+from typing import Tuple, Optional, Callable, List, overload
 import numpy as np
 import enum
 
 from imgui_bundle import imgui_md, hello_imgui, ImVec2
 from imgui_bundle.imgui_node_editor import Config as NodeEditorConfig, EditorContext as NodeEditorContext
-
+from imgui_bundle.hello_imgui import DefaultWindowSize
 
 ImGuiMd = imgui_md
 HelloImGui = hello_imgui
@@ -73,12 +73,14 @@ class AddOnsParams:
 #
 # /////////////////////////////////////////////////////////////////////////////////////
 # Run an application using HelloImGui params + some addons
+@overload
 def run(
     runner_params: HelloImGui.RunnerParams,
     add_ons_params: AddOnsParams = AddOnsParams(),
 ) -> None:
     pass
 
+@overload
 def run(
     simple_params: HelloImGui.SimpleRunnerParams,
     add_ons_params: AddOnsParams = AddOnsParams(),
@@ -101,6 +103,7 @@ def run_with_markdown(
     """Run an application with markdown"""
     pass
 
+@overload
 def run(
     gui_function: VoidFunction,
     window_title: str = "",
@@ -145,6 +148,7 @@ def run(
 #
 # /////////////////////////////////////////////////////////////////////////////////////
 
+@overload
 def em_size() -> float:
     """EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
     widgets and windows relatively to this size.
@@ -153,14 +157,17 @@ def em_size() -> float:
     """
     pass
 
+@overload
 def em_size(nb_lines: float) -> float:
     """EmSize(nbLines) returns a size corresponding to nbLines text lines"""
     pass
 
 # EmToVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+@overload
 def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 
+@overload
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
@@ -226,6 +233,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         dark = enum.auto()  # (= 0)
         light = enum.auto()  # (= 1)
         retro_blue = enum.auto()  # (= 2)
+        mariana = enum.auto()  # (= 3)
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
         """DefaultSnippetLanguage will be Cpp or Python if using python bindings."""
@@ -245,7 +253,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         height_in_lines: int = 0  # Number of visible lines in the editor
         max_height_in_lines: int = 40  # If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
 
-        read_only: bool = True  # Snippets are read-only by default
+        read_only: bool = False  # Snippets are read-only by default
 
         border: bool = False  # Draw a border around the editor
 
@@ -263,7 +271,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             displayed_filename: str = "",
             height_in_lines: int = 0,
             max_height_in_lines: int = 40,
-            read_only: bool = True,
+            read_only: bool = False,
             border: bool = False,
             de_indent_code: bool = True,
         ) -> None:
@@ -275,6 +283,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     ) -> None:
         pass
     @staticmethod
+    @overload
     def show_side_by_side_snippets(
         snippet1: SnippetData,
         snippet2: SnippetData,
@@ -283,6 +292,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     ) -> None:
         pass
     @staticmethod
+    @overload
     def show_side_by_side_snippets(
         snippets: List[SnippetData],
         hide_if_empty: bool = True,

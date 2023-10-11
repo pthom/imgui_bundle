@@ -2,7 +2,7 @@
 Python bindings for https://github.com/cmdwtf/imgui_toggle
 """
 
-from typing import Tuple
+from typing import Tuple, overload
 import numpy as np
 import enum
 
@@ -100,16 +100,19 @@ class ToggleConstants:
 # Config structure:
 # - The overload taking a reference to an ImGuiToggleConfig structure allows for more complete control over the widget.
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImVec2& size = ImVec2());    /* original C++ signature */
+@overload
 def toggle(label: str, v: bool, size: ImVec2 = ImVec2()) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, const ImVec2& size = ImVec2());    /* original C++ signature */
+@overload
 def toggle(
     label: str, v: bool, flags: ToggleFlags, size: ImVec2 = ImVec2()
 ) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float animation_duration, const ImVec2& size = ImVec2());    /* original C++ signature */
+@overload
 def toggle(
     label: str,
     v: bool,
@@ -120,6 +123,7 @@ def toggle(
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding, const ImVec2& size = ImVec2());    /* original C++ signature */
+@overload
 def toggle(
     label: str,
     v: bool,
@@ -131,6 +135,7 @@ def toggle(
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float animation_duration, float frame_rounding, float knob_rounding, const ImVec2& size = ImVec2());    /* original C++ signature */
+@overload
 def toggle(
     label: str,
     v: bool,
@@ -143,6 +148,7 @@ def toggle(
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImGuiToggleConfig& config);    /* original C++ signature */
+@overload
 def toggle(label: str, v: bool, config: ToggleConfig) -> Tuple[bool, bool]:
     pass
 
@@ -403,18 +409,23 @@ class ImOffsetRect:
     """Helper: ImOffsetRect A set of offsets to apply to an ImRect."""
 
     # constexpr ImOffsetRect()                                                    : Top(0.0f), Left(0.0f), Bottom(0.0f), Right(0.0f)                  {}    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # constexpr ImOffsetRect(const ImVec2& topLeft, const ImVec2& bottomRight)    : ImOffsetRect(topLeft.y, topLeft.x, bottomRight.y, bottomRight.x)  {}    /* original C++ signature */
+    @overload
     def __init__(self, top_left: ImVec2, bottom_right: ImVec2) -> None:
         pass
     # constexpr ImOffsetRect(const ImVec4& v)                                     : ImOffsetRect(v.x, v.y, v.z, v.w)                                  {}    /* original C++ signature */
+    @overload
     def __init__(self, v: ImVec4) -> None:
         pass
     # constexpr ImOffsetRect(float top, float left, float bottom, float right)    : Top(top), Left(left), Bottom(bottom), Right(right)                {}    /* original C++ signature */
+    @overload
     def __init__(self, top: float, left: float, bottom: float, right: float) -> None:
         pass
     # constexpr ImOffsetRect(float all)                                           : Top(all), Left(all), Bottom(all), Right(all)                      {}    /* original C++ signature */
+    @overload
     def __init__(self, all: float) -> None:
         pass
     # ImVec2      GetSize() const { return ImVec2(Left + Right, Top + Bottom); }    /* original C++ signature */
