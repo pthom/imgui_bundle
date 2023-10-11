@@ -766,12 +766,15 @@ class TestRef:
     id_: ID  # Pre-hashed ID
 
     # ImGuiTestRef()                  { ID = 0; Path = Str(""); }    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         pass
     # ImGuiTestRef(ImGuiID id)        { ID = id; Path = Str(""); }    /* original C++ signature */
+    @overload
     def __init__(self, id_: ID) -> None:
         pass
     # ImGuiTestRef(const char* path)  { ID = 0; Path = Str(path); }    /* original C++ signature */
+    @overload
     def __init__(self, path: str) -> None:
         pass
     # bool IsEmpty() const            { return ID == 0 && Path.length() == 0; }    /* original C++ signature */
@@ -1227,10 +1230,12 @@ class TestContext:
     # - SetRef("//$FOCUSED"), ItemClick("Button") --> click "Button" in focused window.
     # Takes multiple frames to complete if specified ref is an item id.
     # void        SetRef(ImGuiTestRef ref);    /* original C++ signature */
+    @overload
     def set_ref(self, ref: TestRef) -> None:
         """(private API)"""
         pass
     # void        SetRef(ImGuiWindow* window);     /* original C++ signature */
+    @overload
     def set_ref(self, window: Window) -> None:
         """(private API)
 
@@ -1308,10 +1313,12 @@ class TestContext:
     # Get hash for a decorated ID Path.
     # Note: for windows you may use WindowInfo()
     # ImGuiID     GetID(ImGuiTestRef ref);    /* original C++ signature */
+    @overload
     def get_id(self, ref: TestRef) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetID(ImGuiTestRef ref, ImGuiTestRef seed_ref);    /* original C++ signature */
+    @overload
     def get_id(self, ref: TestRef, seed_ref: TestRef) -> ID:
         """(private API)"""
         pass
@@ -1713,14 +1720,17 @@ class TestContext:
         pass
     # Item/Widgets: Helpers to easily set a value
     # void        ItemInputValue(ImGuiTestRef ref, int v);    /* original C++ signature */
+    @overload
     def item_input_value(self, ref: TestRef, v: int) -> None:
         """(private API)"""
         pass
     # void        ItemInputValue(ImGuiTestRef ref, float f);    /* original C++ signature */
+    @overload
     def item_input_value(self, ref: TestRef, f: float) -> None:
         """(private API)"""
         pass
     # void        ItemInputValue(ImGuiTestRef ref, const char* str);    /* original C++ signature */
+    @overload
     def item_input_value(self, ref: TestRef, str: str) -> None:
         """(private API)"""
         pass
@@ -2072,7 +2082,6 @@ class TestInput:
     # ImGuiID                 ViewportId = 0;    /* original C++ signature */
     viewport_id: ID = 0
 
-    @staticmethod
     # static ImGuiTestInput   ForKeyChord(ImGuiKeyChord key_chord, bool down)    /* original C++ signature */
     #     {
     #         ImGuiTestInput inp;
@@ -2081,10 +2090,10 @@ class TestInput:
     #         inp.Down = down;
     #         return inp;
     #     }
+    @staticmethod
     def for_key_chord(key_chord: KeyChord, down: bool) -> TestInput:
         """(private API)"""
         pass
-    @staticmethod
     # static ImGuiTestInput   ForChar(ImWchar v)    /* original C++ signature */
     #     {
     #         ImGuiTestInput inp;
@@ -2092,10 +2101,10 @@ class TestInput:
     #         inp.Char = v;
     #         return inp;
     #     }
+    @staticmethod
     def for_char(v: ImWchar) -> TestInput:
         """(private API)"""
         pass
-    @staticmethod
     # static ImGuiTestInput   ForViewportFocus(ImGuiID viewport_id)    /* original C++ signature */
     #     {
     #         ImGuiTestInput inp;
@@ -2103,10 +2112,10 @@ class TestInput:
     #         inp.ViewportId = viewport_id;
     #         return inp;
     #     }
+    @staticmethod
     def for_viewport_focus(viewport_id: ID) -> TestInput:
         """(private API)"""
         pass
-    @staticmethod
     # static ImGuiTestInput   ForViewportClose(ImGuiID viewport_id)    /* original C++ signature */
     #     {
     #         ImGuiTestInput inp;
@@ -2114,6 +2123,7 @@ class TestInput:
     #         inp.ViewportId = viewport_id;
     #         return inp;
     #     }
+    @staticmethod
     def for_viewport_close(viewport_id: ID) -> TestInput:
         """(private API)"""
         pass
