@@ -1,5 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
+import time
+from functools import wraps
 
 import litgen
 from litgen_options_imgui import (
@@ -14,6 +16,17 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 FLAG_DOCKING_BRANCH = True
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui"
+
+
+def my_time_it(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.6f} seconds to run.")
+        return result
+    return wrapper
 
 
 def autogenerate_imgui() -> None:
@@ -81,6 +94,7 @@ def autogenerate_imgui_test_engine() -> None:
     )
 
 
+@my_time_it
 def main():
     autogenerate_imgui()
     autogenerate_imgui_internal()
