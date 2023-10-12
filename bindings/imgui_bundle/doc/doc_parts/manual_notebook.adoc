@@ -12,6 +12,7 @@ This requires a window server, and will not run on google collab.
 
 Below is a screenshot, that you can test by running `jupyter notebook` inside `bindings/imgui_bundle/demos_python/notebooks`
 
+.Using ImGui Bundle inside Jupyter Notebook
 image::{notebook-example-image}[width=600]
 
 

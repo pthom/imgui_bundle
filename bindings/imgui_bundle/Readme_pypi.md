@@ -202,8 +202,8 @@ Then study the examples below.
 
 ## Hello, World
 
-![demo
-hello](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_hello.jpg)
+![Hello
+World](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_hello.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html)
@@ -282,8 +282,8 @@ This cmake file is part of a quick start example available
 
 ## Using assets & add-ons (ImPlot, Markdown)
 
-![demo assets
-addons](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg)
+![Demo assets and add-ons
+usage](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html)
@@ -863,8 +863,8 @@ CMakeLists.txt, or into your execution folder.
 
 ## Complex layouts with docking windows
 
-![demo
-docking](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg)
+![Complex docking
+layout](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
@@ -3554,8 +3554,8 @@ This requires a window server, and will not run on google collab.
 Below is a screenshot, that you can test by running `jupyter notebook`
 inside `bindings/imgui_bundle/demos_python/notebooks`
 
-![immapp notebook
-example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
+![Using ImGui Bundle inside Jupyter
+Notebook](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
 
 [40 seconds demo video on
 Youtube](https://www.youtube.com/watch?v=QQIC7lpHono)

@@ -2,6 +2,7 @@ include::_utils.adoc[]
 
 === Complex layouts with docking windows
 
+.Complex docking layout
 image::{url-demo-images}/demo_docking.jpg[width=400]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html[Run this demo in your browser]
 

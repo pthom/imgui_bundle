@@ -6,7 +6,7 @@ This requires a window server, and will not run on google collab.
 
 Below is a screenshot, that you can test by running `jupyter notebook` inside `bindings/imgui_bundle/demos_python/notebooks`
 
-![immapp notebook example](images/immapp_notebook_example.jpg)
+![Using ImGui Bundle inside Jupyter Notebook](images/immapp_notebook_example.jpg)
 
 [40 seconds demo video on Youtube](https://www.youtube.com/watch?v=QQIC7lpHono)
 

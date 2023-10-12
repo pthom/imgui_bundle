@@ -2,6 +2,7 @@ include::_utils.adoc[]
 
 === Using assets & add-ons (ImPlot, Markdown)
 
+.Demo assets and add-ons usage
 image::{url-demo-images}/demo_assets_addons.jpg[width=400]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html[Run this demo in your browser]
 

@@ -415,7 +415,7 @@ Then study the examples below.
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Hello, World
-
+.Hello World
 image::{url-demo-images}/demo_hello.jpg[]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
 
@@ -514,6 +514,7 @@ immapp.run(
 
 === Using assets & add-ons (ImPlot, Markdown)
 
+.Demo assets and add-ons usage
 image::{url-demo-images}/demo_assets_addons.jpg[width=400]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html[Run this demo in your browser]
 
@@ -1120,6 +1121,7 @@ Look at the link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_
 
 === Complex layouts with docking windows
 
+.Complex docking layout
 image::{url-demo-images}/demo_docking.jpg[width=400]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html[Run this demo in your browser]
 
@@ -3916,6 +3918,7 @@ This requires a window server, and will not run on google collab.
 
 Below is a screenshot, that you can test by running `jupyter notebook` inside `bindings/imgui_bundle/demos_python/notebooks`
 
+.Using ImGui Bundle inside Jupyter Notebook
 image::{notebook-example-image}[width=600]
 
 

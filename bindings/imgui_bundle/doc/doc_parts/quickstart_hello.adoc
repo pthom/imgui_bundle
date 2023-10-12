@@ -1,7 +1,7 @@
 include::_utils.adoc[]
 
 === Hello, World
-
+.Hello World
 image::{url-demo-images}/demo_hello.jpg[]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
 
