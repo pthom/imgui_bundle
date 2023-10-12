@@ -154,7 +154,4 @@ void demo_immvision_process()
 
 
 // The main function is not present in this file, but it could be written as
-//    int main(int, char **)
-//    {
 //        ImmApp::RunWithMarkdown(demo_immvision_process, "demo_immvision_process");
-//    }
