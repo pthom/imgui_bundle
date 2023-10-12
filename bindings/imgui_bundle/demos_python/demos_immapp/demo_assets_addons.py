@@ -8,7 +8,8 @@ from dataclasses import dataclass, field
 
 
 def get_doc(which_doc: str) -> str:
-    """Will be implemented later"""
+    """This function returns the different help strings that are displayed in this demo application
+    (implemented later in this file)"""
     ...
 
 

@@ -23,13 +23,13 @@ DOC = """
 def make_gui() -> GuiFunction:
     demo_apps = [
         DemoApp("demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."),
+        DemoApp("demo_assets_addons", "How to use assets, and how to use add-ons (Markdown and ImPlot)"),
         DemoApp("demo_parametric_curve", "Illustration of the Immediate GUI paradigm, with a simple parametric curve"),
         DemoApp("demo_assets", "How to load assets with HelloImGui"),
         DemoApp(
             "demo_docking",
             "How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.",
         ),
-        DemoApp("demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
         DemoApp("demo_powersave", "How to have smooth animations, and how spare the CPU when idling"),
         DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp("demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"),
