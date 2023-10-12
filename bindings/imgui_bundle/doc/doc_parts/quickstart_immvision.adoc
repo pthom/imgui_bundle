@@ -1,0 +1,39 @@
+include::_utils.adoc[]
+
+=== Display & analyze images with ImmVision
+
+.Immvision in action
+image::{url-demo-images}/demo_immvision_process_1.jpg[width=400]
+.Zooming on the images (with the mouse wheel) to display pixel values
+image::{url-demo-images}/demo_immvision_process_2.jpg[width=400]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html[Run this demo in your browser]
+
+link:https://github.com/pthom/immvision[ImmVision], is an immediate image debugger which can display multiple kinds of images (RGB, RGBA, float, etc.), zoom to examine precise pixel values, display float images with a versatile colormap, etc.
+
+This demonstration showcases how to:
+
+- display two versions of an image, before after an image processing pipeline
+- zoom on specific ROI of those images to see pixel values
+- play with the parameter of the image processing pipeline
+
+Its source code is heavily documented and should be self-explanatory.
+
+.Click to see its source code in {cpp}
+[%collapsible]
+====
+{cpp}
+[source, cpp]
+----
+include::../../demos_cpp/demos_immvision/demo_immvision_process.cpp[]
+----
+====
+
+.Click to see its source code in Python
+[%collapsible]
+====
+Python:
+[source, python]
+----
+include::../../demos_python/demos_immvision/demo_immvision_process.py[]
+----
+====

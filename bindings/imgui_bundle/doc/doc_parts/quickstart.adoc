@@ -2,16 +2,18 @@ include::_utils.adoc[]
 
 == Quick Start & Examples
 
-Install Dear ImGui Bundle following the <<install-instructions>>.
+First, install Dear ImGui Bundle following the <<install-instructions>>.
 
-ifndef::env_interactive_manual[]
-
-TIP: All of the examples provided below are available in the https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual], where you can test them in action and look at their code at the same time.
-
-endif::[]
-
+Then study the examples below.
 
 include::quickstart_hello.adoc[]
 
-include::quickstart_addons.adoc[]
+include::quickstart_assets_addons.adoc[]
 
+include::quickstart_docking.adoc[]
+
+include::quickstart_immvision.adoc[]
+
+include::quickstart_widgets.adoc[]
+
+include::quickstart_other.adoc[]

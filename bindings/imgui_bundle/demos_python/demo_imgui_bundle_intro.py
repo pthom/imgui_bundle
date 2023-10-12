@@ -126,8 +126,7 @@ def demo_gui() -> None:
 
     if imgui.collapsing_header("Introduction"):
         show_markdown_file("ibd_intro")
-    if imgui.collapsing_header("Repository folders structure"):
-        show_markdown_file("ibd_folders_structure")
+
     if imgui.collapsing_header("Build and install instruction"):
         show_markdown_file("ibd_install")
 
@@ -159,6 +158,9 @@ def demo_gui() -> None:
 
     if imgui.collapsing_header("Using Dear ImGui Bundle with jupyter notebook"):
         show_markdown_file("ibd_manual_notebook")
+
+    if imgui.collapsing_header("Repository folders structure"):
+        show_markdown_file("ibd_folders_structure")
 
     if imgui.collapsing_header("C++ / Python porting advices"):
         show_porting_advices()

@@ -94,8 +94,7 @@ void demo_imgui_bundle_intro()
 
     if (ImGui::CollapsingHeader("Introduction"))
         ShowMarkdownDocFile("ibd_intro");
-    if (ImGui::CollapsingHeader("Repository folders structure"))
-        ShowMarkdownDocFile("ibd_folders_structure");
+
     if (ImGui::CollapsingHeader("Build and install instruction"))
         ShowMarkdownDocFile("ibd_install");
 
@@ -129,6 +128,9 @@ void demo_imgui_bundle_intro()
 
     if (ImGui::CollapsingHeader("Using Dear ImGui Bundle with jupyter notebook"))
         ShowMarkdownDocFile("ibd_manual_notebook");
+
+    if (ImGui::CollapsingHeader("Repository folders structure"))
+        ShowMarkdownDocFile("ibd_folders_structure");
 
     if (ImGui::CollapsingHeader("C++ / Python porting advices"))
         ShowPortingAdvices();

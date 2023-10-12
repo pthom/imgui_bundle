@@ -1,0 +1,85 @@
+include::_utils.adoc[]
+
+=== Widgets, lots of widgets
+
+.Knobs widget
+image::{url-demo-images}/demo_widgets_knobs.jpg[width=400]
+.Toggle widget
+image::{url-demo-images}/demo_widgets_toggle.jpg[width=400]
+.Spinners widget
+image::{url-demo-images}/demo_widgets_spinners.jpg[width=400]
+.File dialog
+image::{url-demo-images}/demo_widgets_file_dialog.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these widgets in your browser]
+
+.Click to see the widgets code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_widgets.cpp[]
+----
+====
+
+.Click to see the widgets code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_widgets.py[]
+----
+====
+
+
+---
+
+
+.Logger
+image::{url-demo-images}/demo_widgets_logger.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html[Try the logger in your browser]
+
+.Click to see the logger code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_logger.cpp[]
+----
+====
+
+.Click to see the logger code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_logger.py[]
+----
+====
+
+
+---
+
+.Code editor
+image::{url-demo-images}/demo_widgets_editor.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html[Try the code editor in your browser]
+
+.Click to see the code editor code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_text_edit.cpp[]
+----
+====
+
+.Click to see the code editor code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_text_edit.py[]
+----
+====

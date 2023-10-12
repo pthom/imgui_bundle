@@ -40,7 +40,7 @@ If you want to contribute, please refer to CONTRIBUTE file.
 
 """
 from __future__ import annotations
-from typing import List, Any, Dict, Set, overload
+from typing import List, Any, Dict, Set, overload, Optional
 import numpy as np
 import enum
 
@@ -319,7 +319,7 @@ class TextEditor:
     def on_line_deleted(
         self,
         a_line_index: int,
-        a_handled_cursors: Optional[std.unordered_set<int>] = None
+        a_handled_cursors: Optional[Set] = None
         ) -> None:
         pass
     def on_lines_deleted(
