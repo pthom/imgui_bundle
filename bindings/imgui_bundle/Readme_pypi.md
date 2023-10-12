@@ -2154,10 +2154,7 @@ C++
 
 
     // The main function is not present in this file, but it could be written as
-    //    int main(int, char **)
-    //    {
     //        ImmApp::RunWithMarkdown(demo_immvision_process, "demo_immvision_process");
-    //    }
 
 Python:
 
@@ -3278,8 +3275,8 @@ apps](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bind
 
 The [interactive
 manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
-provides many demos, *with any easy access to their code*. It includes
-all the examples that are explained here, and many more.
+provides many demos, *with easy access to their code*. It includes all
+the examples that are explained here, and many more.
 
 ![ImGui Node editor in
 action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg)
