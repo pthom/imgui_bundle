@@ -16,12 +16,11 @@ ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
 
 
-class Orientation(Enum):
-    Horizontal = 0
-    Vertical = 1
-
-
 class SobelParams:
+    """The parameters for our image processing pipeline"""
+    class Orientation(Enum):
+        Horizontal = 0
+        Vertical = 1
     blur_size = 1.25
     deriv_order = 1  # order of the derivative
     k_size = 7  # size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
@@ -29,13 +28,14 @@ class SobelParams:
 
 
 def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
+    """Our image processing pipeline"""
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_float = gray / 255.0
     blurred = cv2.GaussianBlur(img_float, (0, 0), params.blur_size, params.blur_size)
 
     good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
 
-    if params.orientation == Orientation.Vertical:
+    if params.orientation == SobelParams.Orientation.Vertical:
         dx = params.deriv_order
         dy = 0
     else:
@@ -46,6 +46,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
 
 
 def gui_sobel_params(params: SobelParams) -> bool:
+    """A GUI to edit the parameters for our image processing pipeline"""
     changed = False
 
     # Blur size
@@ -71,17 +72,22 @@ def gui_sobel_params(params: SobelParams) -> bool:
 
     imgui.text("Orientation")
     imgui.same_line()
-    if imgui.radio_button("Horizontal", params.orientation == Orientation.Horizontal):
+    if imgui.radio_button("Horizontal", params.orientation == SobelParams.Orientation.Horizontal):
         changed = True
-        params.orientation = Orientation.Horizontal
+        params.orientation = SobelParams.Orientation.Horizontal
     imgui.same_line()
-    if imgui.radio_button("Vertical", params.orientation == Orientation.Vertical):
+    if imgui.radio_button("Vertical", params.orientation == SobelParams.Orientation.Vertical):
         changed = True
-        params.orientation = Orientation.Vertical
+        params.orientation = SobelParams.Orientation.Vertical
 
     return changed
 
 
+# Our Application State contains:
+#     - the original & processed image (image & imageSobel)
+#     - our parameters for the processing pipeline (sobelParams)
+#     - parameters to display the images via ImmVision: they share the same zoom key,
+#       so that we can move the two image in sync
 class AppState:
     image: ImageRgb
     image_sobel: ImageFloat
@@ -105,6 +111,8 @@ class AppState:
         self.immvision_params_sobel.show_options_panel = True
 
 
+# Our GUI function
+#    (which instantiates a static app state at startup)
 @immapp.static(app_state=None)
 def demo_gui():
     static = demo_gui
@@ -132,6 +140,7 @@ def demo_gui():
     immvision.image("Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel)
 
 
+# The main entry point will run our GUI function
 if __name__ == "__main__":
     demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))

@@ -15,22 +15,26 @@ def get_doc(which_doc: str) -> str:
 
 @dataclass
 class AppState:
-    """
-    Your global application state, that will be edited during the execution.
+    """Your global application state, that will be edited during the execution."""
 
-    Note about AppState:
-    Inside ImGui demo code, you will often see static variables, such as in this example
-        static int value = 10;
-        bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
-    In this example, `value` is a static variable whose state is preserved:
-    it merely acts as a global variable, whose scope is limited to this function.
-    Global variables should be avoided, and storing the Application State like this is preferable in production code.
-    """
+    # you can edit the ImPlot pie chart values
     plot_data: List[float] = field(default_factory=lambda: [0.15, 0.30, 0.2, 0.05])
+
+    # You can edit a demo markdown string
     markdown_input: str = "*Welcome to the interactive markdown demo!* Try writing some markdown content here."
+
+    # Flags that set whether we show help strings
     show_assets_info: bool = False
     show_markdown_info: bool = False
     show_implot_info: bool = False
+    #
+    # Note about AppState:
+    # Inside ImGui demo code, you will often see static variables, such as in this example
+    #     static int value = 10;
+    #     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
+    # In this example, `value` is a static variable whose state is preserved:
+    # it merely acts as a global variable, whose scope is limited to this function.
+    # Global variables should be avoided, and storing the Application State like this is preferable in production code.
 
 
 def demo_assets(app_state: AppState):

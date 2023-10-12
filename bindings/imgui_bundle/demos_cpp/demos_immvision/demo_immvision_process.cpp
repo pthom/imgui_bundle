@@ -7,14 +7,14 @@
 #include <opencv2/imgcodecs.hpp>
 
 
-enum class Orientation
-{
-    Horizontal,
-    Vertical
-};
-
+// The parameters for our image processing pipeline
 struct SobelParams
 {
+    enum class Orientation
+    {
+        Horizontal,
+        Vertical
+    };
     float blur_size = 1.25f;
     int deriv_order = 1;  // order of the derivative
     int k_size = 7;  // size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
@@ -22,6 +22,7 @@ struct SobelParams
 };
 
 
+// Our image processing pipeline
 cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
 {
     cv::Mat gray;
@@ -34,7 +35,7 @@ cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
     double good_scale = 1.0 / std::pow(2.0, (params.k_size - 2 * params.deriv_order - 2));
 
     int dx, dy;
-    if (params.orientation == Orientation::Vertical)
+    if (params.orientation == SobelParams::Orientation::Vertical)
     {
         dx = params.deriv_order;
         dy = 0;
@@ -50,6 +51,7 @@ cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
 }
 
 
+// A GUI to edit the parameters for our image processing pipeline
 bool GuiSobelParams(SobelParams& params)
 {
     bool changed = false;
@@ -82,22 +84,27 @@ bool GuiSobelParams(SobelParams& params)
 
     ImGui::Text("Orientation");
     ImGui::SameLine();
-    if (ImGui::RadioButton("Horizontal", params.orientation == Orientation::Horizontal))
+    if (ImGui::RadioButton("Horizontal", params.orientation == SobelParams::Orientation::Horizontal))
     {
         changed = true;
-        params.orientation = Orientation::Horizontal;
+        params.orientation = SobelParams::Orientation::Horizontal;
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Vertical", params.orientation == Orientation::Vertical))
+    if (ImGui::RadioButton("Vertical", params.orientation == SobelParams::Orientation::Vertical))
     {
         changed = true;
-        params.orientation = Orientation::Vertical;
+        params.orientation = SobelParams::Orientation::Vertical;
     }
 
     return changed;
 }
 
 
+// Our Application State contains:
+//     - the original & processed image (image & imageSobel)
+//     - our parameters for the processing pipeline (sobelParams)
+//     - parameters to display the images via ImmVision: they share the same zoom key,
+//       so that we can move the two image in sync
 struct AppStateProcess {
     cv::Mat image;
     cv::Mat imageSobel;
@@ -123,6 +130,8 @@ struct AppStateProcess {
 };
 
 
+// Our GUI function
+//     (which instantiates a static app state at startup)
 void demo_immvision_process()
 {
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
@@ -142,3 +151,10 @@ void demo_immvision_process()
     ImGui::SameLine();
     ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
 }
+
+
+// The main function is not present in this file, but it could be written as
+//    int main(int, char **)
+//    {
+//        ImmApp::RunWithMarkdown(demo_immvision_process, "demo_immvision_process");
+//    }

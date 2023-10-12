@@ -22,8 +22,6 @@ std::function<void()> makeGui()
     std::vector<DemoApp> demoApps = {
         DemoApp{"demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."},
         DemoApp{"demo_assets_addons", "How to use assets, and how to use add-ons (Markdown and ImPlot)"},
-        DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
-        DemoApp{"demo_assets", "How to load assets with HelloImGui"},
         DemoApp{
             "demo_docking",
             """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
@@ -33,6 +31,7 @@ std::function<void()> makeGui()
         },
         DemoApp{"demo_custom_font", "How to load custom fonts"},
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
+        DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
         DemoApp{"haiku_implot_heart", "Share some love for ImGui and ImPlot"},
         DemoApp{
             "imgui_example_glfw_opengl3",
