@@ -10,3 +10,5 @@
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/

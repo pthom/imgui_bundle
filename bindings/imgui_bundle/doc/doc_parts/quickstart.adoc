@@ -1,0 +1,17 @@
+include::_utils.adoc[]
+
+== Quick Start & Examples
+
+Install Dear ImGui Bundle following the <<install-instructions>>.
+
+ifndef::env_interactive_manual[]
+
+TIP: All of the examples provided below are available in the https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual], where you can test them in action and look at their code at the same time.
+
+endif::[]
+
+
+include::quickstart_hello.adoc[]
+
+include::quickstart_addons.adoc[]
+

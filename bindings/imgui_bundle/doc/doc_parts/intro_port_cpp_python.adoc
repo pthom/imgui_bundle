@@ -7,6 +7,8 @@ The original code documentation is meticulously kept inside the python stubs. Se
 
 Thanks to this, code completion in your favorite python IDE works like a charm, and porting code between Python and {cpp} becomes easy.
 
+TIP: GPT can help you translate between C++ and Python: see link:https://chat.openai.com/share/1e61dfec-c2de-4c2a-8149-24926276bbd5[this conversation] where GPT4 was used to translate code and summarize the differences between the {cpp} and Python APIs.
+
 ifndef::exclude_collapsible_details[]
 
 .Click to see an example

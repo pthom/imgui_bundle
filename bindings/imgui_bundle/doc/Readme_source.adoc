@@ -14,13 +14,15 @@ include::doc_parts/front_matter.adoc[]
 
 include::doc_parts/intro.adoc[]
 
+include::doc_parts/install.adoc[]
+
+include::doc_parts/quickstart.adoc[]
+
+include::doc_parts/manual.adoc[]
+
 ifndef::exclude_collapsible_details[]
 include::doc_parts/folders_structure.adoc[]
 endif::[]
-
-include::doc_parts/install.adoc[]
-
-include::doc_parts/manual.adoc[]
 
 include::doc_parts/port.adoc[]
 
