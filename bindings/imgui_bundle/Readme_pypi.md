@@ -202,7 +202,8 @@ Then study the examples below.
 
 ## Hello, World
 
-![demo hello](doc_images/demo_hello.jpg)
+![demo
+hello](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_hello.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html)
@@ -281,7 +282,8 @@ This cmake file is part of a quick start example available
 
 ## Using assets & add-ons (ImPlot, Markdown)
 
-![demo assets addons](doc_images/demo_assets_addons.jpg)
+![demo assets
+addons](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html)
@@ -861,7 +863,8 @@ CMakeLists.txt, or into your execution folder.
 
 ## Complex layouts with docking windows
 
-![demo docking](doc_images/demo_docking.jpg)
+![demo
+docking](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
@@ -1968,10 +1971,11 @@ Python:
 
 ## Display & analyze images with ImmVision
 
-![Immvision in action](doc_images/demo_immvision_process_1.jpg)
+![Immvision in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg)
 
 ![Zooming on the images (with the mouse wheel) to display pixel
-values](doc_images/demo_immvision_process_2.jpg)
+values](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg)
 
 [Run this demo in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html)
@@ -2308,7 +2312,8 @@ Python:
 
 **Dear ImGui Widgets**
 
-![Dear ImGui widgets](doc_images/demo_widgets_imgui.jpg)
+![Dear ImGui
+widgets](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg)
 
 [Dear ImGui](https://github.com/ocornut/imgui) provides *lots* of
 widgets by default.
@@ -2319,13 +2324,17 @@ enables you to browse all of them all, while looking at their code.
 
 **Additional Widgets**
 
-![Knobs widget](doc_images/demo_widgets_knobs.jpg)
+![Knobs
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg)
 
-![Toggle widget](doc_images/demo_widgets_toggle.jpg)
+![Toggle
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg)
 
-![Spinners widget](doc_images/demo_widgets_spinners.jpg)
+![Spinners
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg)
 
-![File dialog](doc_images/demo_widgets_file_dialog.jpg)
+![File
+dialog](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_file_dialog.jpg)
 
 [Try these widgets in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
@@ -3015,7 +3024,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
 
 **Logger**
 
-![Logger](doc_images/demo_widgets_logger.jpg)
+![Logger](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_logger.jpg)
 
 [Try the logger in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
@@ -3146,7 +3155,8 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
 
 **Code Editor**
 
-![Code editor](doc_images/demo_widgets_editor.jpg)
+![Code
+editor](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg)
 
 [Try the code editor in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html)
@@ -3264,16 +3274,18 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html)
 Tip: use the interactive manual as an inspiration
 
 [![demo immapp
-apps](doc_images/demo_immapp_apps.jpg)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+apps](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immapp_apps.jpg)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 The [interactive
 manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 provides many demos, *with any easy access to their code*. It includes
 all the examples that are explained here, and many more.
 
-![ImGui Node editor in action](doc_images/demo_node_editor.jpg)
+![ImGui Node editor in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg)
 
-![ImGuizmo in action](doc_images/demo_gizmo.jpg)
+![ImGuizmo in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg)
 
 # Usage instructions
 

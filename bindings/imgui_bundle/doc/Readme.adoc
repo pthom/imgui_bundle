@@ -20,9 +20,7 @@
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 :_badge-sources: {url-doc-images}/badge_view_sources.png
 :_badge-doc: {url-doc-images}/badge_view_docs.png
 :_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png
@@ -51,9 +49,7 @@ TIP: For a more readable version of this document, click on {btn-doc}
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 image:{url-bundle}/workflows/CppLib/badge.svg[]
 image:{url-bundle}/workflows/Pip/badge.svg[]
@@ -91,9 +87,7 @@ Click on the logo for a complete interactive demonstration!
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === About Dear ImGui Bundle
 
@@ -118,9 +112,7 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 Click on the animated demonstration below to launch the fully interactive demonstration.
 
@@ -290,9 +282,7 @@ int main(int , char *[]) {
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 ==== Install from pypi
 
@@ -342,9 +332,7 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 ==== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
@@ -403,9 +391,7 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 == Quick Start & Examples
 
@@ -426,9 +412,7 @@ Then study the examples below.
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Hello, World
 
@@ -526,9 +510,7 @@ immapp.run(
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Using assets & add-ons (ImPlot, Markdown)
 
@@ -1134,9 +1116,7 @@ Look at the link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Complex layouts with docking windows
 
@@ -2264,9 +2244,7 @@ if __name__ == "__main__":
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Display & analyze images with ImmVision
 
@@ -2623,9 +2601,7 @@ if __name__ == "__main__":
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === Widgets, lots of widgets
 
@@ -3643,9 +3619,7 @@ if __name__ == "__main__":
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 === And many more!
 
@@ -3678,9 +3652,7 @@ image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
 
@@ -3766,9 +3738,7 @@ image::{url-doc-images}/immediate_gui_example.png[]
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
@@ -3823,9 +3793,7 @@ Links:
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 
 
 ImGui Bundle includes a library named ImmApp (which stands for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup
@@ -3942,9 +3910,7 @@ if __name__ == "__main__":
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images-ok: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-:url-demo-images: doc_images
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
 :notebook-example-image: {url-doc-images}/immapp_notebook_example.jpg
 
 ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.
