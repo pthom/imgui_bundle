@@ -2306,6 +2306,19 @@ Python:
 
 ## Widgets, lots of widgets
 
+**Dear ImGui Widgets**
+
+![Dear ImGui widgets](doc_images/demo_widgets_imgui.jpg)
+
+[Dear ImGui](https://github.com/ocornut/imgui) provides *lots* of
+widgets by default.
+
+[ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
+enables you to browse all of them all, while looking at their code.
+
+**Additional Widgets**
+
 ![Knobs widget](doc_images/demo_widgets_knobs.jpg)
 
 ![Toggle widget](doc_images/demo_widgets_toggle.jpg)
@@ -3000,6 +3013,8 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
 
         immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
 
+**Logger**
+
 ![Logger](doc_images/demo_widgets_logger.jpg)
 
 [Try the logger in your
@@ -3128,6 +3143,8 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
 
     if __name__ == "__main__":
         main()
+
+**Code Editor**
 
 ![Code editor](doc_images/demo_widgets_editor.jpg)
 

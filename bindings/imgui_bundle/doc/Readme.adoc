@@ -2629,6 +2629,19 @@ if __name__ == "__main__":
 
 === Widgets, lots of widgets
 
+*Dear ImGui Widgets*
+
+.Dear ImGui widgets
+image::{url-demo-images}/demo_widgets_imgui.jpg[width=400]
+
+link:https://github.com/ocornut/imgui[Dear ImGui] provides _lots_ of widgets by default.
+
+link:{url-imgui-manual}[ImGui Manual] enables you to browse all of them all, while looking at their code.
+
+---
+
+*Additional Widgets*
+
 .Knobs widget
 image::{url-demo-images}/demo_widgets_knobs.jpg[width=400]
 .Toggle widget
@@ -3340,6 +3353,7 @@ if __name__ == "__main__":
 
 ---
 
+*Logger*
 
 .Logger
 image::{url-demo-images}/demo_widgets_logger.jpg[width=400]
@@ -3486,6 +3500,8 @@ if __name__ == "__main__":
 
 
 ---
+
+*Code Editor*
 
 .Code editor
 image::{url-demo-images}/demo_widgets_editor.jpg[width=400]
