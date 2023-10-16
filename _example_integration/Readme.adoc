@@ -15,6 +15,7 @@ The link:CMakeLists.txt[CMakeLists.txt] file
 * Makes the `imgui_bundle_add_app` cmake function available
 * Uses `imgui_bundle_add_app` to build your app and link it with ImGuiBundle
 
+_Note: imgui_bundle_add_app will automaticaly link your app to imgui_bundle, and will embed the assets folder (for desktop, mobile, and emscripten apps)_
 
 ==== Main cpp file
 
