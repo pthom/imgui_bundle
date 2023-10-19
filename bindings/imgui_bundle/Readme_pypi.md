@@ -4070,3 +4070,8 @@ generator began in january 2022.
 # FAQ
 
 See [FAQ](https://pthom.github.io/imgui_bundle/faq.html)
+
+# Developer docs
+
+See [developer
+docs](https://pthom.github.io/imgui_bundle/devel_docs/index.html)

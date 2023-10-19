@@ -4498,3 +4498,6 @@ Developments for Dear ImGui Bundle and its related automatic binding generator b
 
 == FAQ
 See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]
+
+== Developer docs
+See link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[developer docs]

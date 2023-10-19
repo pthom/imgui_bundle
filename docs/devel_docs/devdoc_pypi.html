@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle documentation</title>
+<title>Dear ImGui Bundle development doc</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -511,190 +511,121 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="install-instructions" class="article toc2 toc-left">
+<body id="devdoc_pypi" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle documentation</h1>
+<h1>Dear ImGui Bundle development doc</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="introduction.html">Introduction</a>
+<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle development doc</a></span></p><ul class="sectlevel1">
+<li><a href="bindings.html">Python bindings: update &amp; adding new libraries</a>
 </li>
-<li><a href="install-instructions.html"><span class="toc-current">Build and install instructions</span></a>
+<li><a href="devdoc_emscripten.html">Developer notes / emscripten</a>
+</li>
+<li><a href="devdoc_winarm64.html">Developer note: Windows ARM64</a>
+</li>
+<li><a href="devdoc_pypi.html"><span class="toc-current">Pypi bundle package distribution</span></a>
 <ul class="sectlevel2">
-<li><a href="install-instructions.html#_install_for_python">Install for Python</a>
+<li><a href="devdoc_pypi.html#_build_mac_arm64_via_cibuildwheel">Build / Mac arm64 via cibuildwheel</a>
 </li>
-<li><a href="install-instructions.html#_install_for_c">Install for C&#43;&#43;</a>
+<li><a href="devdoc_pypi.html#_build_and_deploy_to_pypi_via_twine">Build and deploy to pypi via twine</a>
 </li>
 </ul>
 </li>
-<li><a href="quickstart.html">Quick Start &amp; Examples</a>
-</li>
-<li><a href="manual.html">Usage instructions</a>
-</li>
-<li><a href="folders.html">Repository folders structure</a>
-</li>
-<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
-</li>
-<li><a href="words_author.html">Closing words</a>
-</li>
-<li><a href="faq.html">FAQ</a>
-</li>
-<li><a href="_developer_docs.html">Developer docs</a>
+<li><a href="devdoc_pip.html">Python pip package build instructions</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="install-instructions">Build and install instructions</h2>
+<h2 id="devdoc_pypi">Pypi bundle package distribution</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_install_for_python">Install for Python</h3>
-<div class="sect3">
-<h4 id="_install_from_pypi">Install from pypi</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>pip install imgui-bundle
-pip install opencv-contrib-python # <b class="conum">(1)</b></code></pre>
+<div class="paragraph">
+<p>In order to create a new version,</p>
 </div>
-</div>
-<div class="colist arabic">
-<ol>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>in order to run the immvision module, install opencv-python or opencv-contrib-python</p>
+<p>Modify the version number in <a href="../setup.py">setup.py</a> and <a href="../CMakeLists.txt">CMakeList.txt</a></p>
+</li>
+<li>
+<p>Create a release on GitHub, and give it a new tag (e.g. <code>v0.8.3</code>)
+Wheels will be uploaded to pypi</p>
+</li>
+<li>
+<p>Manually build and upload the macOS_arm64 wheel:</p>
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>Note: under windows, you might need to install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022">msvc redist</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_install_from_source">Install from source:</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-pip install -v . # <b class="conum">(2)</b>
-pip install opencv-contrib-python</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The build process might take up to 5 minutes</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_run_the_python_demo">Run the python demo</h4>
-<div class="paragraph">
-<p>Simply run <code>demo_imgui_bundle</code>.</p>
-</div>
-<div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
-</div>
-<div class="admonitionblock tip">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Tip</div>
+<div class="title">Note</div>
 </td>
 <td class="content">
-Consider <code>demo_imgui_bundle</code> as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
+the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), this is why it shall be built on an M1 Mac.
 </td>
 </tr>
 </table>
 </div>
+<div class="sect2">
+<h3 id="_build_mac_arm64_via_cibuildwheel">Build / Mac arm64 via cibuildwheel</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Edit pyproject, change os arch</p>
+</li>
+<li>
+<p>Then run:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>CIBW_ARCHS_MACOS=&quot;arm64&quot; pipx run cibuildwheel --platform=macos &amp;&amp; say &quot;wheel build finished&quot;
+
+twine upload wheelhouse/*</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>CIBW_ARCHS_MACOS=&quot;arm64&quot; CIBW_BUILD=&quot;cp311-* cp312-*&quot;  pipx run cibuildwheel --platform=macos</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_for_c">Install for C&#43;&#43;</h3>
-<div class="sect3">
-<h4 id="_integrate_dear_imgui_bundle_in_your_own_project_in_5_minutes">Integrate Dear ImGui Bundle in your own project in 5 minutes</h4>
-<div class="paragraph">
-<p>The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in <a href="https://github.com/pthom/imgui_bundle/tree/doc/_example_integration">example_integration</a>.
-This folder  includes everything you need to set up your own project.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_build_from_source">Build from source</h4>
-<div class="paragraph">
-<p>If you choose to clone this repo, follow these instructions:</p>
-</div>
+<h3 id="_build_and_deploy_to_pypi_via_twine">Build and deploy to pypi via twine</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-mkdir build
-<span class="tok-nb">cd</span> build
-cmake .. -DIMMVISION_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
-make -j</code></pre>
+<pre class="pygments highlight"><code><span></span>python3 -m build --wheel  --sdist .
+python3 -m build --sdist .
+
+# or
+python3 -m build  .
+
+# then
+
+twine upload dist/*</code></pre>
 </div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The flag <code>-DIMMVISION_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
-</li>
-</ol>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p>The <code>immvision</code> module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.</p>
 </div>
 <div class="paragraph">
-<p>If you have an existing OpenCV install, set its path via:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>cmake .. -DOpenCV_DIR<span class="tok-o">=</span>/.../path/to/OpenCVConfig.cmake</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_run_the_c_demo">Run the C&#43;&#43; demo</h4>
-<div class="paragraph">
-<p>If you built ImGuiBundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
-</div>
-<div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/">bindings/imgui_bundle/demos_cpp</a>.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and related code source. It is always <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">available online</a>
-</td>
-</tr>
-</table>
-</div>
+<p>login = <em>token</em>
+password = &#8230;&#8203;api_token&#8230;&#8203;</p>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="introduction.html">Introduction</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="quickstart.html">Quick Start &amp; Examples</a> →</p>
+<p>← Previous: <a href="devdoc_winarm64.html">Developer note: Windows ARM64</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle development doc</a> | Next: <a href="devdoc_pip.html">Python pip package build instructions</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 22:11:04 +0200
+Last updated 2023-10-19 21:17:40 +0200
 </div>
 </div>
 </body>

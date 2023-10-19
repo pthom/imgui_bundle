@@ -1,4 +1,5 @@
-= imgui pypi bundle package distribution
+[[devdoc_pypi]]
+== Pypi bundle package distribution
 
 In order to create a new version,
 
@@ -9,7 +10,7 @@ In order to create a new version,
 
 NOTE: the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), this is why it shall be built on an M1 Mac.
 
-== Build / Mac arm64 via cibuildwheel
+=== Build / Mac arm64 via cibuildwheel
 
 * Edit pyproject, change os arch
 
@@ -26,7 +27,7 @@ or
 CIBW_ARCHS_MACOS="arm64" CIBW_BUILD="cp311-* cp312-*"  pipx run cibuildwheel --platform=macos
 ```
 
-== Build and deploy to pypi via twine
+=== Build and deploy to pypi via twine
 
 ```
 python3 -m build --wheel  --sdist .

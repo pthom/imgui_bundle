@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle documentation</title>
+<title>Dear ImGui Bundle development doc</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -511,93 +511,95 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="install-instructions" class="article toc2 toc-left">
+<body id="bindings" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle documentation</h1>
+<h1>Dear ImGui Bundle development doc</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="introduction.html">Introduction</a>
-</li>
-<li><a href="install-instructions.html"><span class="toc-current">Build and install instructions</span></a>
+<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle development doc</a></span></p><ul class="sectlevel1">
+<li><a href="bindings.html"><span class="toc-current">Python bindings: update &amp; adding new libraries</span></a>
 <ul class="sectlevel2">
-<li><a href="install-instructions.html#_install_for_python">Install for Python</a>
+<li><a href="bindings.html#bindings_intro">Automated bindings: introduction</a>
 </li>
-<li><a href="install-instructions.html#_install_for_c">Install for C&#43;&#43;</a>
+<li><a href="bindings.html#bindings_update">Update existing bindings</a>
+</li>
+<li><a href="bindings.html#bindings_newlib">Adding a new library to the bindings</a>
 </li>
 </ul>
 </li>
-<li><a href="quickstart.html">Quick Start &amp; Examples</a>
+<li><a href="devdoc_emscripten.html">Developer notes / emscripten</a>
 </li>
-<li><a href="manual.html">Usage instructions</a>
+<li><a href="devdoc_winarm64.html">Developer note: Windows ARM64</a>
 </li>
-<li><a href="folders.html">Repository folders structure</a>
+<li><a href="devdoc_pypi.html">Pypi bundle package distribution</a>
 </li>
-<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
-</li>
-<li><a href="words_author.html">Closing words</a>
-</li>
-<li><a href="faq.html">FAQ</a>
-</li>
-<li><a href="_developer_docs.html">Developer docs</a>
+<li><a href="devdoc_pip.html">Python pip package build instructions</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="install-instructions">Build and install instructions</h2>
+<h2 id="bindings">Python bindings: update &amp; adding new libraries</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_install_for_python">Install for Python</h3>
+<h3 id="bindings_intro">Automated bindings: introduction</h3>
+<div class="paragraph">
+<p>The bindings are generated automatically thanks to a sophisticated generator, which is based on <a href="https://www.srcml.org">srcML</a>.</p>
+</div>
+<div class="paragraph">
+<p>The generator in itself is located in <a href="https://github.com/pthom/srcmlcpp/tree/main/packages/litgen">the litgen module</a> provided by <a href="https://github.com/pthom/srcmlcpp">srcmlcpp</a>.</p>
+</div>
 <div class="sect3">
-<h4 id="_install_from_pypi">Install from pypi</h4>
+<h4 id="_installing_the_generator">Installing the generator</h4>
+<div class="paragraph">
+<p><strong>Step 1: install srcML</strong></p>
+</div>
+<div class="paragraph">
+<p>Get and install srcML from its <a href="http://www.srcml.org/#download">official site</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Step 2: install the generator and the required libraries</strong></p>
+</div>
+<div class="paragraph">
+<p>You will need to install the following python packages (see requirements-dev.txt):</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>pip install imgui-bundle
-pip install opencv-contrib-python # <b class="conum">(1)</b></code></pre>
+<pre>srcmlcpp @ git+https://github.com/pthom/srcmlcpp
+black
+mypy
+pytest
+opencv-contrib-python</pre>
 </div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>in order to run the immvision module, install opencv-python or opencv-contrib-python</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Note: under windows, you might need to install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022">msvc redist</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_install_from_source">Install from source:</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-pip install -v . # <b class="conum">(2)</b>
-pip install opencv-contrib-python</code></pre>
+<h4 id="_quick_information_about_the_generator">Quick information about the generator</h4>
+<div class="paragraph">
+<p><code>litgen</code> (aka "Literate Generator") is the package provided by srcmlcpp that will generate the python bindings.</p>
 </div>
+<div class="paragraph">
+<p>Its source code is available <a href="https://github.com/pthom/srcmlcpp/tree/main/packages/litgen">here</a>.</p>
 </div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The build process might take up to 5 minutes</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>It is heavily configurable by <a href="https://github.com/pthom/srcmlcpp/blob/main/packages/litgen/options.py">a wide range of options</a>.</p>
+</div>
+<div class="paragraph">
+<p>See for examples the <a href="https://github.com/pthom/imgui_bundle/blob/main/external/imgui/bindings/litgen_options_imgui.py">specific options for imgui bindings generation</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_run_the_python_demo">Run the python demo</h4>
+<h4 id="_folders_structure">Folders structure</h4>
 <div class="paragraph">
-<p>Simply run <code>demo_imgui_bundle</code>.</p>
+<p>In order to work on bindings, it is essential to understand the folders structure inside Dear ImGui Bundle.
+Please study the <a href="https://pthom.github.io/imgui_bundle/folders.html">dedicated doc</a>.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_study_of_a_bound_library_generation">Study of a bound library generation</h4>
 <div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
+<p>Let&#8217;s take the example of the library ImCoolBar.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -606,72 +608,79 @@ pip install opencv-contrib-python</code></pre>
 <div class="title">Tip</div>
 </td>
 <td class="content">
-Consider <code>demo_imgui_bundle</code> as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
+The processing of adding a new library from scratch is documented in <a href="bindings.html#bindings_newlib">Adding a new library to the bindings</a>. It uses ImCoolBar as an example
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Here is how the generation works for the library. The library principal files are located in external/ImCoolBar:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>external/ImCoolBar/                        <span class="tok-c1"># Root folder for ImCoolBar</span>
+├── ImCoolBar/                             <span class="tok-c1"># ImCoolBar submodule</span>
+│         ├── CMakeLists.txt               <span class="tok-c1"># ImCoolBar code</span>
+│         ├── ImCoolbar.cpp
+│         ├── ImCoolbar.h
+│         ├── LICENSE
+│         └── README.md
+└── bindings/                               <span class="tok-c1"># Scripts for the bindings generations &amp; bindings</span>
+    ├── generate_imcoolbar.py               <span class="tok-c1"># This script reads external/ImCoolBar/ImCoolBar/ImCoolbar.h and generate</span>
+    <span class="tok-p">|</span>                                       <span class="tok-c1">#     - binding C++ code in ./pybind_imcoolbar.cpp</span>
+    <span class="tok-p">|</span>                                       <span class="tok-c1">#     - stubs in</span>
+    <span class="tok-p">|</span>                                       <span class="tok-c1">#          bindings/imgui_bundle/im_cool_bar_pyi</span>
+    ├── im_cool_bar.pyi -&gt; ../../../bindings/imgui_bundle/im_cool_bar.pyi   <span class="tok-c1"># this is a symlink!</span>
+    └── pybind_imcoolbar.cpp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The actual stubs are located here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>imgui_bundle/bindings/imgui_bundle/
+├── im_cool_bar.pyi              <span class="tok-c1"># Location of the stubs</span>
+├── __init__.pyi                 <span class="tok-c1"># Main imgui_bundle stub file, which loads im_cool_bar.pyi</span>
+├── __init__.py                  <span class="tok-c1"># Main imgui_bundle python module which loads</span>
+<span class="tok-p">|</span>                                <span class="tok-c1"># the actual im_cool_bar module</span>
+├── ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the library is referenced in a global generation script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>imgui_bundle/external/bindings_generation/
+├── autogenerate_all.py          <span class="tok-c1"># This script will call generate_imcoolbar.py (among many others)</span>
+├── all_external_libraries.py    <span class="tok-c1"># ImCoolBar is referenced here</span>
+├── ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to update the bindings for ImCoolBar, one needs to run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>python external/ImCoolBar/bindings/generate_imcoolbar.py</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_for_c">Install for C&#43;&#43;</h3>
-<div class="sect3">
-<h4 id="_integrate_dear_imgui_bundle_in_your_own_project_in_5_minutes">Integrate Dear ImGui Bundle in your own project in 5 minutes</h4>
+<h3 id="bindings_update">Update existing bindings</h3>
 <div class="paragraph">
-<p>The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in <a href="https://github.com/pthom/imgui_bundle/tree/doc/_example_integration">example_integration</a>.
-This folder  includes everything you need to set up your own project.</p>
+<p>&#8230;&#8203;to be continued&#8230;&#8203;</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_build_from_source">Build from source</h4>
+<div class="sect2">
+<h3 id="bindings_newlib">Adding a new library to the bindings</h3>
 <div class="paragraph">
-<p>If you choose to clone this repo, follow these instructions:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-mkdir build
-<span class="tok-nb">cd</span> build
-cmake .. -DIMMVISION_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
-make -j</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The flag <code>-DIMMVISION_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
-</li>
-</ol>
-</div>
-<div class="sidebarblock">
-<div class="content">
-<div class="paragraph">
-<p>The <code>immvision</code> module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.</p>
-</div>
-<div class="paragraph">
-<p>If you have an existing OpenCV install, set its path via:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>cmake .. -DOpenCV_DIR<span class="tok-o">=</span>/.../path/to/OpenCVConfig.cmake</code></pre>
-</div>
-</div>
-</div>
-</div>
+<p>This example is based on the addition of <a href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>, which was added in Oct 2023.</p>
 </div>
 <div class="sect3">
-<h4 id="_run_the_c_demo">Run the C&#43;&#43; demo</h4>
-<div class="paragraph">
-<p>If you built ImGuiBundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
-</div>
-<div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/">bindings/imgui_bundle/demos_cpp</a>.</p>
-</div>
+<h4 id="_step_1_reference_the_new_library">Step 1: Reference the new library</h4>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -679,22 +688,298 @@ make -j</code></pre>
 <div class="title">Tip</div>
 </td>
 <td class="content">
-Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and related code source. It is always <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">available online</a>
+All the modifications done in step 1 can be seen in <a href="https://github.com/pthom/imgui_bundle/commit/68e6f3b3a5e812a1a3ddea275ad24296df5b7ce6">this commit</a>.
 </td>
 </tr>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_step_1_a_add_needed_folders_files_and_submodules_inside_external">Step 1-a: Add needed folders, files and submodules inside external/</h5>
+<div class="paragraph">
+<p><strong>Add the library as a submodule in external/lib_name/lib_name</strong></p>
+</div>
+<div class="paragraph">
+<p>If the library can be included without adaptations for inclusion inside ImGui Bundle, you can add it directly as a submodule.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mkdir external/ImCoolBar
+git submodule add https://github.com/aiekick/ImCoolBar.git external/ImCoolBar/ImCoolBar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, if it requires adaptations, you need to create a fork (it was the case for ImCoolBar):
+So, the following actions were done separately:
+* ImCoolBar was cloned into github.com/pthom/ImCoolBar.git
+* a branch imgui_bundle was created and pushed to github. It will contain the adaptations and bug corrections for imgui_bundle.</p>
+</div>
+<div class="paragraph">
+<p>Then, we add this fork as a submodule.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-c1"># clone ImCoolBar</span>
+git submodule add https://github.com/pthom/ImCoolBar.git external/ImCoolBar/ImCoolBar
+<span class="tok-nb">cd</span> external/ImCoolBar/ImCoolBar
+git checkout imgui_bundle
+<span class="tok-nb">cd</span> -</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Create the folder external/lib_name/bindings/</strong></p>
+</div>
+<div class="paragraph">
+<p>Copy the folder <code>external/bindings_generation/bindings_generator_template</code> into <code>external/lib_name/bindings/</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>cp -r external/bindings_generation/bindings_generator_template external/ImCoolBar/bindings</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Rename files in external/lib_name/bindings</strong></p>
+</div>
+<div class="paragraph">
+<p>After having copied the template files, we need to rename them.
+In the example of ImCoolbar, we will rename them as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span> mv external/ImCoolBar/bindings/generate_LIBNAME.py external/ImCoolBar/bindings/generate_imcoolbar.py
+mv external/ImCoolBar/bindings/pybind_LIBNAME.cpp external/ImCoolBar/bindings/pybind_imcoolbar.cpp
+<span class="tok-c1"># im_cool_bar will be the final name of the python module: imgui_bundle.im_cool_bar</span>
+mv external/ImCoolBar/bindings/LIBNAME.pyi external/ImCoolBar/bindings/im_cool_bar.pyi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Move external/ImCoolBar/bindings/im_cool_bar.pyi to bindings/imgui_bundle/</strong></p>
+</div>
+<div class="paragraph">
+<p>The stub file (*.pyi) <em>must</em> be inside bindings/imgui_bundle. In order to facilitate development, we will create a symlink to it inside external/ImCoolBar/bindings/</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mv external/ImCoolBar/bindings/im_cool_bar.pyi bindings/imgui_bundle/im_cool_bar.pyi
+<span class="tok-nb">cd</span> external/ImCoolBar/bindings/
+ln -s ../../../bindings/imgui_bundle/im_cool_bar.pyi .
+<span class="tok-nb">cd</span> -</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Final folder structure</strong></p>
+</div>
+<div class="paragraph">
+<p>We end up with the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>external/ImCoolBar/
+├── ImCoolBar/                   <span class="tok-c1"># Note that the submodule is inside</span>
+│         ├── CMakeLists.txt     <span class="tok-c1"># external/ImCoolBar/ImCoolBar/ !!!</span>
+│         ├── ImCoolbar.cpp
+│         ├── ImCoolbar.h
+│         ├── LICENSE
+│         └── README.md
+└── bindings/
+    ├── im_cool_bar.pyi              <span class="tok-c1"># We will edit and rename those files later</span>
+    ├── generate_imcoolbar.py -&gt; symlink to ../../../bindings/imgui_bundle/im_cool_bar.pyi
+    └── pybind_imcoolbar.cpp</code></pre>
+</div>
+</div>
+<hr>
+</div>
+<div class="sect4">
+<h5 id="_step_1_b_update_python_generator_manager">Step 1-b:  Update python generator manager</h5>
+<div class="paragraph">
+<p><strong>Update external/bindings_generation/all_external_libraries.py</strong></p>
+</div>
+<div class="paragraph">
+<p>Add a function that returns info about this new library:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-k">def</span> <span class="tok-nf">lib_imcoolbar</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-n">ExternalLibrary</span><span class="tok-p">:</span>
+    <span class="tok-k">return</span> <span class="tok-n">ExternalLibrary</span><span class="tok-p">(</span>
+        <span class="tok-n">name</span><span class="tok-o">=</span><span class="tok-s2">&quot;ImCoolBar&quot;</span><span class="tok-p">,</span>
+        <span class="tok-n">official_git_url</span><span class="tok-o">=</span><span class="tok-s2">&quot;https://github.com/aiekick/ImCoolBar.git&quot;</span><span class="tok-p">,</span>
+        <span class="tok-n">official_branch</span><span class="tok-o">=</span><span class="tok-s2">&quot;master&quot;</span><span class="tok-p">,</span>
+        <span class="tok-n">fork_git_url</span><span class="tok-o">=</span><span class="tok-s2">&quot;https://github.com/pthom/ImCoolBar.git&quot;</span><span class="tok-p">,</span>
+        <span class="tok-n">fork_branch</span><span class="tok-o">=</span><span class="tok-s2">&quot;imgui_bundle&quot;</span>
+    <span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-n">ALL_LIBS</span> <span class="tok-o">=</span> <span class="tok-p">[</span>
+    <span class="tok-n">lib_imgui</span><span class="tok-p">(),</span>  <span class="tok-c1"># must be first as it declare bindings used by the next ones</span>
+    <span class="tok-c1"># ...</span>
+    <span class="tok-n">lib_imcoolbar</span><span class="tok-p">(),</span>  <span class="tok-c1"># Add the lib here</span>
+    <span class="tok-c1"># ...</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_1_c_update_the_c_sources_to_include_the_new_lib_binding_generation">Step 1-c:  Update the C++ sources to include the new lib binding generation</h5>
+<div class="paragraph">
+<p><strong>In external/CMakeLists.txt:</strong>
+Add a cmake directive to compile the new library.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cmake"><span></span><span class="tok-c"># If the library is &quot;simple&quot; to compile you can use `add_simple_external_library_with_sources`</span>
+<span class="tok-nb">add_simple_external_library_with_sources</span><span class="tok-p">(</span><span class="tok-s">imcoolbar</span> <span class="tok-s">ImCoolBar</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>In external/bindings_generation/cpp/all_pybind_files.cmake:</strong></p>
+</div>
+<div class="paragraph">
+<p>add <code>external/ImCoolBar/bindings/pybind_imcoolbar.cpp</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+the script external/bindings_generation/autogenerate_all.py will also regenerate this file from scratch.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>In external/bindings_generation/cpp/pybind_imgui_bundle.cpp:</strong></p>
+</div>
+<div class="paragraph">
+<p>Add the bindings</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// ... Near the start of the file, add a new function declaration</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_command_palette</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_implot_internal</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imcoolbar</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w">         </span><span class="tok-c1">// added this line</span>
+<span class="tok-c1">//  ...</span>
+
+
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_bundle</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// ...</span>
+
+<span class="tok-w">    </span><span class="tok-c1">// At the end of py_init_module_imgui_bundle, register your new python module</span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">module_imcooolbar</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">.</span><span class="tok-n">def_submodule</span><span class="tok-p">(</span><span class="tok-s">&quot;im_cool_bar&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// the python module will be known as imgui_bundle.im_cool_bar</span>
+<span class="tok-w">    </span><span class="tok-n">py_init_module_imcoolbar</span><span class="tok-p">(</span><span class="tok-n">module_imcooolbar</span><span class="tok-p">);</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, run cmake.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_1_d_edit_and_adapt_the_generation_scripts">Step 1-d: Edit and adapt the generation scripts</h5>
+<div class="paragraph">
+<p>Edit the 3 files inside <code>external/ImCoolBar/bindings</code> and replace occurrences of LIBNAME with appropriate values.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_1_e_edit_and_adapt_the_imgui_bundle_init_scripts">Step 1-e: Edit and adapt the imgui_bundle <em>init</em> scripts</h5>
+<div class="paragraph">
+<p>In bindings/imgui_bundle/<em>init</em>.py, this line was added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle._imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">im_cool_bar</span> <span class="tok-k">as</span> <span class="tok-n">im_cool_bar</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In bindings/imgui_bundle/<em>init</em>.pyi, this line was added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">from</span> <span class="tok-nn">.</span> <span class="tok-kn">import</span> <span class="tok-n">im_cool_bar</span> <span class="tok-k">as</span> <span class="tok-n">im_cool_bar</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_step_2_fine_tune_the_generation_options_and_write_a_demo">Step 2: fine tune the generation options and write a demo</h4>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+All the modifications done in step 2 can be seen in <a href="https://github.com/pthom/imgui_bundle/commit/25e6ef43c1aa8c83c8a7286cd7491b296b58de00">this commit</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="_step_2_a_edit_and_run_externalimcoolbarbindingsgenerate_imcoolbar_py">Step 2-a: Edit and run <code>external/ImCoolBar/bindings/generate_imcoolbar.py</code>:</h5>
+<div class="paragraph">
+<p>Edit and re-run it until the generated code fits the expected needs.</p>
+</div>
+<div class="paragraph">
+<p>In the case of ImCoolBar, two simple changes were made:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+    <span class="tok-c1"># ...</span>
+    <span class="tok-c1"># ...</span>
+
+    <span class="tok-c1"># Configure options</span>
+    <span class="tok-n">options</span> <span class="tok-o">=</span> <span class="tok-n">litgen</span><span class="tok-o">.</span><span class="tok-n">LitgenOptions</span><span class="tok-p">()</span>
+    <span class="tok-n">options</span><span class="tok-o">.</span><span class="tok-n">namespace_root__regex</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;ImGui&quot;</span>
+    <span class="tok-n">options</span><span class="tok-o">.</span><span class="tok-n">srcmlcpp_options</span><span class="tok-o">.</span><span class="tok-n">functions_api_prefixes</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;IMGUI_API&quot;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each time you run the code generation, look at <code>external/ImCoolBar/bindings/im_cool_bar.pyi</code> and <code>external/ImCoolBar/bindings/pybind_imcoolbar.cpp</code> to see if they seem OK. Also run a compilation.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_2_b_fix_syntax_issues_in_externalimcoolbarbindingsim_cool_bar_pyi">Step 2-b: Fix syntax issues in  <code>external/ImCoolBar/bindings/im_cool_bar.pyi</code>:</h5>
+<div class="paragraph">
+<p>You can add some code before the autogenerated code to fix the syntax issues.
+For example, this was added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span>
+<span class="tok-kn">import</span> <span class="tok-nn">enum</span>
+
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.imgui</span> <span class="tok-kn">import</span> <span class="tok-n">ImVec2</span><span class="tok-p">,</span> <span class="tok-n">WindowFlags</span><span class="tok-p">,</span> <span class="tok-n">WindowFlags_</span>
+<span class="tok-n">ImCoolBarFlags</span> <span class="tok-o">=</span> <span class="tok-nb">int</span>
+<span class="tok-n">ImGuiWindowFlags</span> <span class="tok-o">=</span> <span class="tok-n">WindowFlags</span>
+<span class="tok-n">ImGuiWindowFlags_None</span> <span class="tok-o">=</span> <span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">none</span>
+
+
+<span class="tok-c1"># !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span>
+<span class="tok-c1"># &lt;litgen_stub&gt; // Autogenerated code below! Do not edit!</span>
+<span class="tok-c1">####################    &lt;generated_from:ImCoolbar.h&gt;    ####################</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_2_c_write_a_nice_looking_demo">Step 2-c: Write a nice looking demo</h5>
+<div class="paragraph">
+<p>It should demo the library, and act as a tutorial, in python and C++.</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="introduction.html">Introduction</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="quickstart.html">Quick Start &amp; Examples</a> →</p>
+<p>↑ Up: <a href="index.html">Dear ImGui Bundle development doc</a> | Next: <a href="devdoc_emscripten.html">Developer notes / emscripten</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 22:11:04 +0200
+Last updated 2023-10-19 21:17:40 +0200
 </div>
 </div>
 </body>

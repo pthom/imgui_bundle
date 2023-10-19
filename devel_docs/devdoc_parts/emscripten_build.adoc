@@ -1,11 +1,12 @@
-= Build for emscripten
+[[devdoc_emscripten]]
+== Developer notes / emscripten
 
 Install emscripten:
 see
 https://emscripten.org/docs/getting_started/downloads.html
 or use external/hello_imgui/hello_imgui/tools/emscripten/install_emscripten.sh
 
-== Build imgui_bundle for emscripten
+=== Build imgui_bundle for emscripten
 
 ```bash
 mkdir build_ems
@@ -24,7 +25,7 @@ python -m http.server
 
 Then open http://localhost:8000/bin/ in a browser
 
-== How to build the precompiled OpenCV package for emscripten
+=== How to build the precompiled OpenCV package for emscripten
 
 Docs and tricks, cf:
 
@@ -33,7 +34,7 @@ Docs and tricks, cf:
 * https://answers.opencv.org/question/212376/how-to-decode-an-image-using-emscripten/
 
 
-== Clone Opencv 4.7.0
+==== Clone Opencv 4.7.0
 
 ```
 git clone https://github.com/opencv/opencv.git
@@ -42,7 +43,7 @@ git checkout 4.7.0
 cd ..
 ```
 
-== Option 1: Build by hacking opencv/platforms/js/build_js.py
+==== Option 1: Build by hacking opencv/platforms/js/build_js.py
 
 Edit opencv/platforms/js/build_js.py
 Change the following values inside get_cmake_cmd():
@@ -67,7 +68,7 @@ make install
 
 => then you can use the install folder (OpenCVConfig.cmake is inside opencv_install/lib/cmake/opencv4/OpenCVConfig.cmake)
 
-== Option2: With cmake command extracted from build_js.py:
+==== Option2: With cmake command extracted from build_js.py:
 
 
 ```bash
@@ -97,7 +98,7 @@ make install
 ```
 
 
-=== Deploy to github
+===== Deploy to github
 
 ```
 tar cvfz opencv_emscripten_install.tgz opencv_emscripten_install

@@ -1,6 +1,7 @@
-= Author private notes
+[[autor_private_notes]]
+== Author private notes
 
-== Full build settings:
+=== Full build settings:
 
 ```bash
 -DSRCMLCPP_BUILD_DEMOS=ON

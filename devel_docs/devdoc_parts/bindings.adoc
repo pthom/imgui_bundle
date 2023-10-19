@@ -1,0 +1,8 @@
+[[bindings]]
+== Python bindings: update & adding new libraries
+
+include::bindings_intro.adoc[]
+
+include::bindings_update.adoc[]
+
+include::bindings_newlib.adoc[]

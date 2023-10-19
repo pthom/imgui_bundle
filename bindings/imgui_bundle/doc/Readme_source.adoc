@@ -35,3 +35,6 @@ endif::[]
 ifdef::env_gh_pages[]
 include::faq_source.adoc[]
 endif::[]
+
+== Developer docs
+See link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[developer docs]

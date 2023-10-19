@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle documentation</title>
+<title>Dear ImGui Bundle development doc</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -511,190 +511,309 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="install-instructions" class="article toc2 toc-left">
+<body id="devdoc_winarm64" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle documentation</h1>
+<h1>Dear ImGui Bundle development doc</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="introduction.html">Introduction</a>
+<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle development doc</a></span></p><ul class="sectlevel1">
+<li><a href="bindings.html">Python bindings: update &amp; adding new libraries</a>
 </li>
-<li><a href="install-instructions.html"><span class="toc-current">Build and install instructions</span></a>
+<li><a href="devdoc_emscripten.html">Developer notes / emscripten</a>
+</li>
+<li><a href="devdoc_winarm64.html"><span class="toc-current">Developer note: Windows ARM64</span></a>
 <ul class="sectlevel2">
-<li><a href="install-instructions.html#_install_for_python">Install for Python</a>
+<li><a href="devdoc_winarm64.html#_using_a_world_dll_version_of_opencv">Using a "world" dll version of OpenCV</a>
 </li>
-<li><a href="install-instructions.html#_install_for_c">Install for C&#43;&#43;</a>
+<li><a href="devdoc_winarm64.html#_using_a_static_version_of_opencv">Using a static version of OpenCV</a>
 </li>
 </ul>
 </li>
-<li><a href="quickstart.html">Quick Start &amp; Examples</a>
+<li><a href="devdoc_pypi.html">Pypi bundle package distribution</a>
 </li>
-<li><a href="manual.html">Usage instructions</a>
-</li>
-<li><a href="folders.html">Repository folders structure</a>
-</li>
-<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
-</li>
-<li><a href="words_author.html">Closing words</a>
-</li>
-<li><a href="faq.html">FAQ</a>
-</li>
-<li><a href="_developer_docs.html">Developer docs</a>
+<li><a href="devdoc_pip.html">Python pip package build instructions</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="install-instructions">Build and install instructions</h2>
+<h2 id="devdoc_winarm64">Developer note: Windows ARM64</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_install_for_python">Install for Python</h3>
-<div class="sect3">
-<h4 id="_install_from_pypi">Install from pypi</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>pip install imgui-bundle
-pip install opencv-contrib-python # <b class="conum">(1)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>in order to run the immvision module, install opencv-python or opencv-contrib-python</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Note: under windows, you might need to install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022">msvc redist</a>.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_install_from_source">Install from source:</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-pip install -v . # <b class="conum">(2)</b>
-pip install opencv-contrib-python</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The build process might take up to 5 minutes</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_run_the_python_demo">Run the python demo</h4>
-<div class="paragraph">
-<p>Simply run <code>demo_imgui_bundle</code>.</p>
-</div>
-<div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-Consider <code>demo_imgui_bundle</code> as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_install_for_c">Install for C&#43;&#43;</h3>
-<div class="sect3">
-<h4 id="_integrate_dear_imgui_bundle_in_your_own_project_in_5_minutes">Integrate Dear ImGui Bundle in your own project in 5 minutes</h4>
-<div class="paragraph">
-<p>The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in <a href="https://github.com/pthom/imgui_bundle/tree/doc/_example_integration">example_integration</a>.
-This folder  includes everything you need to set up your own project.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_build_from_source">Build from source</h4>
-<div class="paragraph">
-<p>If you choose to clone this repo, follow these instructions:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git clone https://github.com/pthom/imgui_bundle.git
-<span class="tok-nb">cd</span> imgui_bundle
-git submodule update --init --recursive # <b class="conum">(1)</b>
-mkdir build
-<span class="tok-nb">cd</span> build
-cmake .. -DIMMVISION_FETCH_OPENCV<span class="tok-o">=</span>ON # <b class="conum">(2)</b>
-make -j</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The flag <code>-DIMMVISION_FETCH_OPENCV=ON</code> is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)</p>
-</li>
-</ol>
-</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
-<p>The <code>immvision</code> module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.</p>
-</div>
-<div class="paragraph">
-<p>If you have an existing OpenCV install, set its path via:</p>
+<p>Summary (private note for this library author):
+- Cpp: use ARM64 build</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>cmake .. -DOpenCV_DIR<span class="tok-o">=</span>/.../path/to/OpenCVConfig.cmake</code></pre>
+<pre class="pygments highlight"><code><span></span>cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DIMGUI_BUNDLE_WITH_SDL=ON</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Python: prefer python x64 aka amd64 (because numpy does not work on python arm64)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>F:\Utils\Python311-amd64\python.exe -m venv venv_x64
+.\venv_x64\Scripts\activate
+pip install -v .
+pip install opencv-contrib-python
+demo_imgui_bundle</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>There is no prebuild version of OpenCV for Windows ARM64. See instructions below, in order to build your own.</p>
+</div>
+<div class="paragraph">
+<p>Note: if you are on windows ARM64 and want to build for x64 use:
+cmake .. -A x64</p>
+</div>
+<div class="sect2">
+<h3 id="_using_a_world_dll_version_of_opencv">Using a "world" dll version of OpenCV</h3>
+<div class="sect3">
+<h4 id="_build_and_install_a_dll_world_version_of_opencv_for_arm64">Build and install a DLL "world" version of OpenCV for ARM64</h4>
+<div class="paragraph">
+<p>(world means you get only one dll for all OpenCV)</p>
+</div>
+<div class="paragraph">
+<p>The two important options are INSTALL_CREATE_DISTRIB (will create dll opencv_world), BUILD_SHARED_LIBS=ON (required for world build).</p>
+</div>
+<div class="paragraph">
+<p>You can tweak the other options, which are here to reduce the build time.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>(**Change the last parameter of the cmake command to your desired installation path**)</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>mkdir build_arm64_dll_world
+cd build_arm64_dll_world
+
+cmake ../opencv_git -DINSTALL_CREATE_DISTRIB=ON -DBUILD_SHARED_LIBS=ON -A ARM64 -DCMAKE_BUILD_TYPE=Release -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DCMAKE_INSTALL_PREFIX=F:/dvp/_OpenCV/opencv4.6.0_arm64_dll_world
+
+cmake --build . --config Release
+cmake --install . --config Release
+
+cmake --build . --config Debug
+cmake --install . --config Debug
+
+cd ..</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_run_the_c_demo">Run the C&#43;&#43; demo</h4>
+<h4 id="_build_imgui_bundle_pip_package_on_windows_arm64_with_world_opencv">Build ImGui Bundle pip package on Windows ARM64 with "world" opencv</h4>
 <div class="paragraph">
-<p>If you built ImGuiBundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
+<p>Note / December 2022: at the time of writing, the pip package "opencv-python" refuses to build with python ARM64 on windows. imgui_bundle does work however but one cannot use opencv (aka cv2) from python.</p>
 </div>
 <div class="paragraph">
-<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/">bindings/imgui_bundle/demos_cpp</a>.</p>
+<p>You need an arm version of python. See <a href="https://www.python.org/downloads/windows/" class="bare">https://www.python.org/downloads/windows/</a>
+(if you need pip, youd need the full setup, not the embeddable version)</p>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and related code source. It is always <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">available online</a>
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Set OpenCV env variables:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenCV_DIR=/path/to/your/opencv_world_install</p>
+</li>
+<li>
+<p>CMAKE_GENERATOR_PLATFORM=ARM64</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Not so funny note: there are at least 4 incompatible ways to set an env var in Windows.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The clicky way</strong></p>
+</li>
+<li>
+<p><strong>with PowerShell</strong>
+Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_arm64_dll_world'
+Set-Item -Path 'Env:CMAKE_GENERATOR_PLATFORM' -Value 'ARM64'</p>
+</li>
+<li>
+<p><strong>With bash</strong>
+export OpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world
+export CMAKE_GENERATOR_PLATFORM=ARM64</p>
+</li>
+<li>
+<p><strong>With dos</strong>
+set OpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world
+set CMAKE_GENERATOR_PLATFORM=ARM64</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, pip install:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>pip install -v .</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_build_cpplib_on_windows_arm64_with_world_opencv">Build CppLib on Windows ARM64 with world OpenCV</h4>
+<div class="paragraph">
+<p>Specify cmake options</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Explanations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenCV_DIR: you opencv install path</p>
+</li>
+<li>
+<p>CMAKE_GENERATOR_PLATFORM: tells openCV to look in  the ARM64 folder</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_a_static_version_of_opencv">Using a static version of OpenCV</h3>
+<div class="sect3">
+<h4 id="_build_and_install_a_static_version_of_opencv_for_arm64">Build and install a static version of OpenCV for ARM64</h4>
+<div class="paragraph">
+<p>Git clone and checkout v4.6.0</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>mkdir _opencv
+cd _opencv
+git clone https://github.com/opencv/opencv.git opencv_git
+cd opencv_git
+git checkout 4.6.0
+cd ..</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Build and install OpenCV with those settings (<strong>Change the last parameter of the cmake command to your desired installation path</strong>)</p>
+</div>
+<div class="paragraph">
+<p>The important option is BUILD_SHARED_LIBS=OFF.
+You can tweak the other options, which are here to reduce the build time.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>mkdir build_ARM64
+cd build_ARM64
+
+cmake ../opencv_git -A ARM64 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_opencv_apps=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_JASPER=OFF -DWITH_JASPER=OFF -DWITH_CUDA=OFF -DWITH_FFMPEG=OFF -DWITH_GTK=OFF -DCMAKE_INSTALL_PREFIX=F:/dvp/_OpenCV/opencv4.6.0_static_install_win_vc17
+
+cmake --build . --config Release
+cmake --install .
+cd ..</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_build_imgui_bundle_pip_package_on_windows_arm64_with_static_opencv">Build ImGui Bundle pip package on Windows ARM64 with <strong>static</strong> OpenCV</h4>
+<div class="paragraph">
+<p>You need an arm version of python. See <a href="https://www.python.org/downloads/windows/" class="bare">https://www.python.org/downloads/windows/</a>
+(if you need pip, youd need the full setup, not the embeddable version)</p>
+</div>
+<div class="paragraph">
+<p>Set OpenCV env variables:
+* with PowerShell</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Set-Item -Path 'Env:OpenCV_DIR' -Value 'F:/dvp/_opencv/opencv4.6.0_static_install_win_vc17'
+Set-Item -Path 'Env:OpenCV_STATIC' -Value 'ON'</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Set-Item -Path 'Env:CMAKE_GENERATOR_PLATFORM' -Value 'ARM64'</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>With bash:</p>
+<div class="literalblock">
+<div class="content">
+<pre>export OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build</pre>
+</div>
+</div>
+</li>
+<li>
+<p>With dos:</p>
+<div class="literalblock">
+<div class="content">
+<pre>set OpenCV_DIR=F:/dvp/_opencv/opencv-4.6.0-vc14_vc15/opencv/build</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_build_cpplib_on_windows_arm64_with_static_opencv">Build CppLib on Windows ARM64 with static OpenCV</h4>
+<div class="paragraph">
+<p>Specify cmake options</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code><span></span>cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_static_install_win_vc17 -DOpenCV_STATIC=ON -DCMAKE_GENERATOR_PLATFORM=ARM64 -DBUILD_SHARED_LIBS=OFF -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Explanations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>OpenCV_DIR: you opencv install path</p>
+</li>
+<li>
+<p>CMAKE_GENERATOR_PLATFORM: tells openCV to look in  the ARM64 folder</p>
+</li>
+<li>
+<p>OpenCV_STATIC: tells OpenCV to look in the ARM64/vc17/staticlib folder</p>
+</li>
+<li>
+<p>CMAKE_MSVC_RUNTIME_LIBRARY: tells MSVC to use static runtime (/MT)</p>
+</li>
+<li>
+<p>BUILD_SHARED_LIBS=OFF: build static libs. Normally, this could be ignored</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="introduction.html">Introduction</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="quickstart.html">Quick Start &amp; Examples</a> →</p>
+<p>← Previous: <a href="devdoc_emscripten.html">Developer notes / emscripten</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle development doc</a> | Next: <a href="devdoc_pypi.html">Pypi bundle package distribution</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 22:11:04 +0200
+Last updated 2023-10-19 21:17:40 +0200
 </div>
 </div>
 </body>

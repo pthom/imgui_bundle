@@ -1,4 +1,5 @@
-= Windows ARM64 specific instructions
+[[devdoc_winarm64]]
+== Developer note: Windows ARM64
 
 ****
 Summary (private note for this library author):
@@ -26,9 +27,9 @@ Note: if you are on windows ARM64 and want to build for x64 use:
 cmake .. -A x64
 
 
-== Using a "world" dll version of OpenCV
+=== Using a "world" dll version of OpenCV
 
-=== Build and install a DLL "world" version of OpenCV for ARM64
+==== Build and install a DLL "world" version of OpenCV for ARM64
 (world means you get only one dll for all OpenCV)
 
 The two important options are INSTALL_CREATE_DISTRIB (will create dll opencv_world), BUILD_SHARED_LIBS=ON (required for world build).
@@ -53,7 +54,7 @@ cd ..
 ```
 
 
-=== Build ImGui Bundle pip package on Windows ARM64 with "world" opencv
+==== Build ImGui Bundle pip package on Windows ARM64 with "world" opencv
 
 Note / December 2022: at the time of writing, the pip package "opencv-python" refuses to build with python ARM64 on windows. imgui_bundle does work however but one cannot use opencv (aka cv2) from python.
 
@@ -83,7 +84,7 @@ Then, pip install:
 
     pip install -v .
 
-=== Build CppLib on Windows ARM64 with world OpenCV
+==== Build CppLib on Windows ARM64 with world OpenCV
 
 Specify cmake options
 
@@ -96,9 +97,9 @@ Explanations:
 
 
 
-== Using a static version of OpenCV
+=== Using a static version of OpenCV
 
-=== Build and install a static version of OpenCV for ARM64
+==== Build and install a static version of OpenCV for ARM64
 
 
 Git clone and checkout v4.6.0
@@ -129,7 +130,7 @@ cd ..
 ```
 
 
-=== Build ImGui Bundle pip package on Windows ARM64 with *static* OpenCV
+==== Build ImGui Bundle pip package on Windows ARM64 with *static* OpenCV
 
 You need an arm version of python. See https://www.python.org/downloads/windows/
 (if you need pip, youd need the full setup, not the embeddable version)
@@ -154,7 +155,7 @@ Set OpenCV env variables:
 
 
 
-=== Build CppLib on Windows ARM64 with static OpenCV
+==== Build CppLib on Windows ARM64 with static OpenCV
 
 Specify cmake options
 
