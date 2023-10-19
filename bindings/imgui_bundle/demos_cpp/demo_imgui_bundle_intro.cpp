@@ -98,6 +98,9 @@ void demo_imgui_bundle_intro()
     if (ImGui::CollapsingHeader("Build and install instruction"))
         ShowMarkdownDocFile("ibd_install");
 
+    if (ImGui::CollapsingHeader("Quick start & examples"))
+        ImGuiMd::Render("View [quickstart & examples](https://pthom.github.io/imgui_bundle/quickstart.html) in your browser.");
+
     if (ImGui::CollapsingHeader("Dear ImGui - Immediate gui"))
     {
         auto immediate_gui_example = []() {

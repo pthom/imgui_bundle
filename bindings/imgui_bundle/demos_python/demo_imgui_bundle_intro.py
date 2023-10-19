@@ -130,6 +130,9 @@ def demo_gui() -> None:
     if imgui.collapsing_header("Build and install instruction"):
         show_markdown_file("ibd_install")
 
+    if imgui.collapsing_header("Quick start & examples"):
+        imgui_md.render("View [quickstart & examples](https://pthom.github.io/imgui_bundle/quickstart.html) in your browser.")
+
     if imgui.collapsing_header("Dear ImGui - Immediate gui"):
 
         def immediate_gui_example():
