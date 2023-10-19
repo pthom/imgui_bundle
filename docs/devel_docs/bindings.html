@@ -658,20 +658,40 @@ The processing of adding a new library from scratch is documented in <a href="bi
 ├── ...</code></pre>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bindings_update">Update existing bindings</h3>
 <div class="paragraph">
-<p>In order to update the bindings for ImCoolBar, one needs to run:</p>
+<p>The process for updating bindings for a given library is straightforward:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Update the library submodule in external/LIBNAME/LIBNAME</p>
+</li>
+<li>
+<p>Run the generation script in external/LIBNAME/generate_LIBNAME.py</p>
+</li>
+<li>
+<p>Compile and test python bindings
+(carefully study that nothing was broken)</p>
+</li>
+<li>
+<p>Commit and push</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For example with ImCoolBar, in order to update the bindings for ImCoolBar, one needs to run:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>python external/ImCoolBar/bindings/generate_imcoolbar.py</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="bindings_update">Update existing bindings</h3>
 <div class="paragraph">
-<p>&#8230;&#8203;to be continued&#8230;&#8203;</p>
+<p>(See <a href="bindings.html#bindings_intro">Automated bindings: introduction</a>)</p>
 </div>
 </div>
 <div class="sect2">
@@ -709,17 +729,24 @@ git submodule add https://github.com/aiekick/ImCoolBar.git external/ImCoolBar/Im
 </div>
 <div class="paragraph">
 <p>However, if it requires adaptations, you need to create a fork (it was the case for ImCoolBar):
-So, the following actions were done separately:
-* ImCoolBar was cloned into github.com/pthom/ImCoolBar.git
-* a branch imgui_bundle was created and pushed to github. It will contain the adaptations and bug corrections for imgui_bundle.</p>
+So, the following actions were done separately:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ImCoolBar was cloned into github.com/pthom/ImCoolBar.git</p>
+</li>
+<li>
+<p>a branch imgui_bundle was created and pushed to github. It will contain the adaptations and bug corrections for imgui_bundle.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Then, we add this fork as a submodule.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-c1"># clone ImCoolBar</span>
-git submodule add https://github.com/pthom/ImCoolBar.git external/ImCoolBar/ImCoolBar
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git submodule add https://github.com/pthom/ImCoolBar.git external/ImCoolBar/ImCoolBar
 <span class="tok-nb">cd</span> external/ImCoolBar/ImCoolBar
 git checkout imgui_bundle
 <span class="tok-nb">cd</span> -</code></pre>

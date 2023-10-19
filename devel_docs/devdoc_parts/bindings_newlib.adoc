@@ -21,13 +21,13 @@ git submodule add https://github.com/aiekick/ImCoolBar.git external/ImCoolBar/Im
 
 However, if it requires adaptations, you need to create a fork (it was the case for ImCoolBar):
 So, the following actions were done separately:
+
 * ImCoolBar was cloned into github.com/pthom/ImCoolBar.git
 * a branch imgui_bundle was created and pushed to github. It will contain the adaptations and bug corrections for imgui_bundle.
 
 Then, we add this fork as a submodule.
 [source, bash]
 ----
-# clone ImCoolBar
 git submodule add https://github.com/pthom/ImCoolBar.git external/ImCoolBar/ImCoolBar
 cd external/ImCoolBar/ImCoolBar
 git checkout imgui_bundle

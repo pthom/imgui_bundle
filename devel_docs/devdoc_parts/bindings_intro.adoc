@@ -88,10 +88,3 @@ imgui_bundle/external/bindings_generation/
 ├── ...
 ----
 
-
-In order to update the bindings for ImCoolBar, one needs to run:
-
-[source,bash]
-----
-python external/ImCoolBar/bindings/generate_imcoolbar.py
-----
