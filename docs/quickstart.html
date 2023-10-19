@@ -525,7 +525,9 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <ul class="sectlevel2">
 <li><a href="quickstart.html#_hello_world">Hello, World</a>
 </li>
-<li><a href="quickstart.html#_using_assets_add_ons_implot_markdown">Using assets &amp; add-ons (ImPlot, Markdown)</a>
+<li><a href="quickstart.html#quickstart_about_assets">About assets</a>
+</li>
+<li><a href="quickstart.html#_demo_using_assets_add_ons">Demo using assets &amp; add-ons</a>
 </li>
 <li><a href="quickstart.html#_complex_layouts_with_docking_windows">Complex layouts with docking windows</a>
 </li>
@@ -707,7 +709,60 @@ This cmake file is part of a quick start example available <a href="https://gith
 </div>
 </div>
 <div class="sect2">
-<h3 id="_using_assets_add_ons_implot_markdown">Using assets &amp; add-ons (ImPlot, Markdown)</h3>
+<h3 id="quickstart_about_assets">About assets</h3>
+<div class="paragraph">
+<p>HelloImGui and ImmApp applications rely on the presence of an <code>assets</code> folder.
+The typical layout of an assets folder looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>assets/
+    +-- fonts/
+    <span class="tok-p">|</span>         +-- DroidSans.ttf                       <span class="tok-c1"># Default fonts used by HelloImGui to</span>
+    <span class="tok-p">|</span>         +-- fontawesome-webfont.ttf             <span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>                                       <span class="tok-c1"># if absent, a default LowRes font is used.</span>
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>
+    <span class="tok-p">|</span>         +-- Roboto/                             <span class="tok-c1"># Optional: fonts for markdown</span>
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- LICENSE.txt
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- Roboto-Bold.ttf
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- Roboto-BoldItalic.ttf
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- Roboto-Regular.ttf
+    <span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- Roboto-RegularItalic.ttf
+    <span class="tok-p">|</span>         +-- SourceCodePro-Regular.ttf           <span class="tok-c1"># Optional: font / markdown</span>
+    +-- images/
+              +-- markdown_broken_image.png           <span class="tok-c1"># Optional: used for markdown</span>
+              <span class="tok-p">|</span>
+              +-- world.jpg                           <span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can change the assets folder via <code>HelloImGui::SetAssetsFolder</code> (C&#43;&#43;) or <code>hello_imgui.set_assets_folder</code> (python).</p>
+</div>
+<div class="paragraph">
+<p><strong>Where to find the default assets</strong></p>
+</div>
+<div class="paragraph">
+<p>Look at the <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets">imgui_bundle/bindings/imgui_bundle/assets</a> folder which provides them.</p>
+</div>
+<div class="paragraph">
+<p><strong>Where to place your assets folder</strong></p>
+</div>
+<div class="paragraph">
+<p>You can either:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>copy it into your execution folder (<em>C&#43;&#43; and python</em>)</p>
+</li>
+<li>
+<p>place it besides your CMakeLists.txt, and it will be deployed into the execution folder automatically (<em>C&#43;&#43; only</em>)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_demo_using_assets_add_ons">Demo using assets &amp; add-ons</h3>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg" alt="demo assets addons" width="400">
@@ -734,7 +789,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 </ul>
 </div>
 <div class="paragraph">
-<p>Its source code is heavily documented and should be self-explanatory.</p>
+<p>This demonstration source code is heavily documented and should be self-explanatory.</p>
 </div>
 <details>
 <summary class="title">Click to see its source code in C&#43;&#43;</summary>
@@ -754,8 +809,8 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;map&gt;</span><span class="tok-cp"></span>
 
 
-<span class="tok-c1">// This function returns the different help strings that are displayed in this demo application</span>
-<span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-nf">GetDoc</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">whichDoc</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-c1">// This function displays the help messages that are displayed in this demo application</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowDoc</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">whichDoc</span><span class="tok-p">);</span><span class="tok-w"></span>
 
 
 <span class="tok-c1">// Your global application state, that will be edited during the execution</span>
@@ -766,11 +821,6 @@ This cmake file is part of a quick start example available <a href="https://gith
 
 <span class="tok-w">    </span><span class="tok-c1">// You can edit a demo markdown string</span>
 <span class="tok-w">    </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-n">MarkdownInput</span><span class="tok-p">[</span><span class="tok-mi">4000</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;*Welcome to the interactive markdown demo!* Try writing some markdown content here.&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
-
-<span class="tok-w">    </span><span class="tok-c1">// Flags that set whether we show help strings</span>
-<span class="tok-w">    </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">ShowAssetsInfo</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">ShowMarkdownInfo</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">ShowImplotInfo</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-c1">//</span>
 <span class="tok-w">    </span><span class="tok-c1">// Note about AppState:</span>
@@ -789,7 +839,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-c1">// A demo showcasing the assets usage in HelloImGui and ImmApp</span>
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoAssets</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;AssetsIntro&quot;</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">Render</span><span class="tok-p">(</span><span class="tok-s">&quot;# Demo Assets&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Here are some icons from Font Awesome: &quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetCursorPosX</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">40.f</span><span class="tok-p">));</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_INFO</span><span class="tok-w"> </span><span class="tok-s">&quot; &quot;</span><span class="tok-w"> </span><span class="tok-n">ICON_FA_EXCLAMATION_TRIANGLE</span><span class="tok-w"> </span><span class="tok-s">&quot; &quot;</span><span class="tok-w"> </span><span class="tok-n">ICON_FA_SAVE</span><span class="tok-p">);</span><span class="tok-w"></span>
@@ -799,14 +849,13 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetCursorPosX</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">40.f</span><span class="tok-p">));</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-c1">// Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
-<span class="tok-w">    </span><span class="tok-c1">//     Below, imageSize is equivalent to the size of 5 lines of text</span>
+<span class="tok-w">    </span><span class="tok-c1">//     Below, imageSize is equivalent to the size of 3 lines of text</span>
 <span class="tok-w">    </span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-n">imageSize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">3.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">3.f</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imageSize</span><span class="tok-p">);</span><span class="tok-w"></span>
 
-<span class="tok-w">    </span><span class="tok-c1">// Display help</span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Checkbox</span><span class="tok-p">(</span><span class="tok-s">&quot;More info&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowAssetsInfo</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowAssetsInfo</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;AssetsDoc&quot;</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">Render</span><span class="tok-p">(</span><span class="tok-s">&quot;**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">ShowDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;AssetsDoc&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span>
 
 
@@ -816,7 +865,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-n">markdownDemo</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
 <span class="tok-s">        # Demo markdown usage</span>
 
-<span class="tok-s">        *Let&#39;s ask GPT4 to give us some fun programming fortunes:*</span>
+<span class="tok-s">        Let&#39;s ask GPT4 to give us some fun programming fortunes in markdown format:</span>
 
 <span class="tok-s">        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night&#39;s sleep_.</span>
 
@@ -839,17 +888,14 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">MarkdownInput</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span><span class="tok-w"></span>
 
-<span class="tok-w">    </span><span class="tok-c1">// Display help</span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Checkbox</span><span class="tok-p">(</span><span class="tok-s">&quot;More info##Markdown&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowMarkdownInfo</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowMarkdownInfo</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;MarkdownDoc&quot;</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ShowDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;MarkdownDoc&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span>
 
 
 <span class="tok-c1">// A demo showcasing the usage of ImPlot</span>
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoPlot</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;PlotIntro&quot;</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">Render</span><span class="tok-p">(</span><span class="tok-s">&quot;# Demo ImPlot&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">data_labels</span><span class="tok-p">[]</span><span class="tok-w">    </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-s">&quot;Frogs&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Hogs&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Dogs&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Logs&quot;</span><span class="tok-p">};</span><span class="tok-w"></span>
 
@@ -858,7 +904,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">DragFloat4</span><span class="tok-p">(</span><span class="tok-s">&quot;Pie Data&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">PlotData</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-mf">0.01f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">);</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-c1">// Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
-<span class="tok-w">    </span><span class="tok-c1">//     Below, plotSize is equivalent to the size of 20 lines of text</span>
+<span class="tok-w">    </span><span class="tok-c1">//     Below, plotSize is equivalent to the size of 1 lines of text</span>
 <span class="tok-w">    </span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-n">plotSize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">15.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">15.f</span><span class="tok-p">);</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">BeginPlot</span><span class="tok-p">(</span><span class="tok-s">&quot;Pie Chart&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">plotSize</span><span class="tok-p">))</span><span class="tok-w"></span>
@@ -875,10 +921,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">            </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">EndPlot</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
 
-<span class="tok-w">    </span><span class="tok-c1">// Display help</span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Checkbox</span><span class="tok-p">(</span><span class="tok-s">&quot;More info##Implot&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowImplotInfo</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ShowImplotInfo</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;PlotDoc&quot;</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ShowDoc</span><span class="tok-p">(</span><span class="tok-s">&quot;PlotDoc&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span>
 
 
@@ -925,7 +968,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 
 
 <span class="tok-c1">//</span>
-<span class="tok-c1">// Note: the code below only defines the displayed help strings</span>
+<span class="tok-c1">// Note: the code below only displays the help messages</span>
 <span class="tok-c1">//</span>
 
 <span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-nf">GetDoc</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">whichDoc</span><span class="tok-p">)</span><span class="tok-w"></span>
@@ -933,109 +976,90 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">map</span><span class="tok-o">&lt;</span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">docs</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"></span>
 <span class="tok-w">        </span><span class="tok-p">{</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">                </span><span class="tok-s">&quot;AssetsIntro&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
-<span class="tok-w">                </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
-<span class="tok-s">                # Demos assets</span>
-<span class="tok-s">                In order to improve text rendering, HelloImGui will load a default font (DroidSans) as well as &quot;Font Awesome&quot; to be able to display some icons.</span>
-<span class="tok-s">                </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-p">},</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-s">&quot;AssetsDoc&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
-<span class="tok-s">                **About assets**</span>
+<span class="tok-s">                    The icons and image were shown via this code:</span>
 
-<span class="tok-s">                HelloImGui and ImmApp applications rely on the presence of an `assets` folder.</span>
-<span class="tok-s">                The typical layout of an assets folder looks like this:</span>
-<span class="tok-s">                ```</span>
-<span class="tok-s">                assets/</span>
-<span class="tok-s">                    +-- fonts/</span>
-<span class="tok-s">                    |         +-- DroidSans.ttf             # default fonts used by HelloImGui in order to</span>
-<span class="tok-s">                    |         +-- fontawesome-webfont.ttf   # improve text rendering.</span>
-<span class="tok-s">                    +-- images/</span>
-<span class="tok-s">                              +-- world.jpg                 # you can add any asset here!</span>
-<span class="tok-s">                ```</span>
+<span class="tok-s">                    C++</span>
+<span class="tok-s">                    ```cpp</span>
+<span class="tok-s">                    ImGui::Text(ICON_FA_INFO &quot; &quot; ICON_FA_EXCLAMATION_TRIANGLE &quot; &quot; ICON_FA_SAVE);</span>
+<span class="tok-s">                    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);</span>
+<span class="tok-s">                    HelloImGui::ImageFromAsset(&quot;images/world.jpg&quot;, imageSize);</span>
+<span class="tok-s">                    ```</span>
 
-<span class="tok-s">                You can change the assets folder via:</span>
-<span class="tok-s">                ```cpp</span>
-<span class="tok-s">                HelloImGui::SetAssetsFolder(&quot;my_assets&quot;); // (By default, HelloImGui will search inside &quot;assets&quot;)</span>
-<span class="tok-s">                ```</span>
+<span class="tok-s">                    Python</span>
+<span class="tok-s">                    ```python</span>
+<span class="tok-s">                    imgui.text(icons_fontawesome.ICON_FA_INFO + &quot; &quot; + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + &quot; &quot; + icons_fontawesome.ICON_FA_SAVE)</span>
+<span class="tok-s">                    image_size = hello_imgui.em_to_vec2(3.0, 3.0)</span>
+<span class="tok-s">                    hello_imgui.image_from_asset(&quot;images/world.jpg&quot;, image_size)</span>
+<span class="tok-s">                    ```</span>
 
-
-<span class="tok-s">                **Where to find the default assets**</span>
-
-<span class="tok-s">                Look at the [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) folder which provides them.</span>
-<span class="tok-s">                You can either copy it besides your CMakeLists.txt (it will be deployed into the execution folder automatically), or copy it into your execution folder.</span>
-
-
-<span class="tok-s">                **How was this image displayed**</span>
-
-<span class="tok-s">                This image was found inside the assets folder at `assets/images/world.jpg` and displayed via HelloImGui with the following code:</span>
-<span class="tok-s">                ```cpp</span>
-<span class="tok-s">                ImVec2 imageSize = HelloImGui::EmToVec2(5.f, 5.f);</span>
-<span class="tok-s">                HelloImGui::ImageFromAsset(&quot;images/world.jpg&quot;, imageSize);</span>
-<span class="tok-s">                ```</span>
-
-<span class="tok-s">                *Note: prefer to specify sizes using the [&quot;em&quot; unit](https://en.wikipedia.org/wiki/Em_(typography)). Here, `imageSize` is equivalent to the size of 5 lines of text.*</span>
-
+<span class="tok-s">                    *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*</span>
 <span class="tok-s">                </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">},</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-s">&quot;MarkdownDoc&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
-<span class="tok-s">                This markdown string was rendered by calling:</span>
+<span class="tok-s">                This markdown string was rendered by calling either:</span>
+
+<span class="tok-s">                C++</span>
 <span class="tok-s">                ```cpp</span>
-<span class="tok-s">                ImGuiMd::Render(markdown_string);           // render a markdown string</span>
-<span class="tok-s">                // or</span>
+<span class="tok-s">                ImGuiMd::Render(markdown_string);            // render a markdown string</span>
 <span class="tok-s">                ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering</span>
+<span class="tok-s">                ```</span>
+
+<span class="tok-s">                Python</span>
+<span class="tok-s">                ```python</span>
+<span class="tok-s">                imgui_md.render(markdown_string);            # render a markdown string</span>
+<span class="tok-s">                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering</span>
 <span class="tok-s">                ```</span>
 
 <span class="tok-s">                This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.</span>
 <span class="tok-s">                It supports the most common markdown features: emphasis, link, code blocks, etc.</span>
-
-<span class="tok-s">                In order to work, it needs a few files in the assets folder:</span>
-<span class="tok-s">                ```</span>
-<span class="tok-s">                assets/</span>
-<span class="tok-s">                +-- fonts/</span>
-<span class="tok-s">                |         +-- DroidSans.ttf</span>
-<span class="tok-s">                |         +-- Roboto/</span>
-<span class="tok-s">                |         |         +-- LICENSE.txt</span>
-<span class="tok-s">                |         |         +-- Roboto-Bold.ttf</span>
-<span class="tok-s">                |         |         +-- Roboto-BoldItalic.ttf</span>
-<span class="tok-s">                |         |         +-- Roboto-Regular.ttf</span>
-<span class="tok-s">                |         |         \-- Roboto-RegularItalic.ttf</span>
-<span class="tok-s">                |         +-- SourceCodePro-Regular.ttf</span>
-<span class="tok-s">                |         +-- fontawesome-webfont.ttf</span>
-<span class="tok-s">                +-- images/</span>
-<span class="tok-s">                    +-- markdown_broken_image.png</span>
-<span class="tok-s">                ```</span>
-
-<span class="tok-s">                Note: in order to use ImPlot, you need to &quot;activate&quot; this add-on, like this:</span>
-<span class="tok-s">                ```cpp</span>
-<span class="tok-s">                ImmApp::AddOnsParams addons { .withMarkdown = true };</span>
-<span class="tok-s">                ImmApp::Run(runnerParams, addons);</span>
-<span class="tok-s">                ```</span>
-<span class="tok-s">                </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-p">},</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">                </span><span class="tok-s">&quot;PlotIntro&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
-<span class="tok-w">                </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
-<span class="tok-s">                # Demo Plot</span>
-<span class="tok-s">                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)</span>
 <span class="tok-s">                </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">},</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-s">&quot;PlotDoc&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
 <span class="tok-w">                </span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
+<span class="tok-s">                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)</span>
+
 <span class="tok-s">                Note: in order to use ImPlot, you need to &quot;activate&quot; this add-on, like this:</span>
+
+<span class="tok-s">                C++</span>
 <span class="tok-s">                ```cpp</span>
 <span class="tok-s">                ImmApp::AddOnsParams addons { .withImplot = true };</span>
 <span class="tok-s">                ImmApp::Run(runnerParams, addons);</span>
+<span class="tok-s">                ```</span>
+
+<span class="tok-s">                Python:</span>
+<span class="tok-s">                ```python</span>
+<span class="tok-s">                addons = immapp.AddOnsParams(with_implot=True)</span>
+<span class="tok-s">                immapp.run(runner_params, addons);</span>
 <span class="tok-s">                ```</span>
 <span class="tok-s">                </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-w"></span>
 <span class="tok-w">            </span><span class="tok-p">},</span><span class="tok-w"></span>
 <span class="tok-w">        </span><span class="tok-p">};</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">docs</span><span class="tok-p">.</span><span class="tok-n">at</span><span class="tok-p">(</span><span class="tok-n">whichDoc</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowDoc</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">whichDoc</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">map</span><span class="tok-o">&lt;</span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">bool</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">is_doc_visible</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">is_doc_visible</span><span class="tok-p">.</span><span class="tok-n">find</span><span class="tok-p">(</span><span class="tok-n">whichDoc</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">==</span><span class="tok-w"> </span><span class="tok-n">is_doc_visible</span><span class="tok-p">.</span><span class="tok-n">end</span><span class="tok-p">())</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">whichDoc</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushID</span><span class="tok-p">(</span><span class="tok-n">whichDoc</span><span class="tok-p">.</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Checkbox</span><span class="tok-p">(</span><span class="tok-s">&quot;More info&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">whichDoc</span><span class="tok-p">]);</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">whichDoc</span><span class="tok-p">])</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-n">GetDoc</span><span class="tok-p">(</span><span class="tok-n">whichDoc</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Dummy</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">1.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">6.f</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopID</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
@@ -1058,8 +1082,8 @@ This cmake file is part of a quick start example available <a href="https://gith
 <span class="tok-kn">from</span> <span class="tok-nn">dataclasses</span> <span class="tok-kn">import</span> <span class="tok-n">dataclass</span><span class="tok-p">,</span> <span class="tok-n">field</span>
 
 
-<span class="tok-k">def</span> <span class="tok-nf">get_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">:</span> <span class="tok-nb">str</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-nb">str</span><span class="tok-p">:</span>
-    <span class="tok-sd">&quot;&quot;&quot;This function returns the different help strings that are displayed in this demo application</span>
+<span class="tok-k">def</span> <span class="tok-nf">show_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">:</span> <span class="tok-nb">str</span><span class="tok-p">):</span>
+    <span class="tok-sd">&quot;&quot;&quot;This function displays the help messages that are displayed in this demo application</span>
 <span class="tok-sd">    (implemented later in this file)&quot;&quot;&quot;</span>
     <span class="tok-o">...</span>
 
@@ -1074,10 +1098,6 @@ This cmake file is part of a quick start example available <a href="https://gith
     <span class="tok-c1"># You can edit a demo markdown string</span>
     <span class="tok-n">markdown_input</span><span class="tok-p">:</span> <span class="tok-nb">str</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;*Welcome to the interactive markdown demo!* Try writing some markdown content here.&quot;</span>
 
-    <span class="tok-c1"># Flags that set whether we show help strings</span>
-    <span class="tok-n">show_assets_info</span><span class="tok-p">:</span> <span class="tok-nb">bool</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
-    <span class="tok-n">show_markdown_info</span><span class="tok-p">:</span> <span class="tok-nb">bool</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
-    <span class="tok-n">show_implot_info</span><span class="tok-p">:</span> <span class="tok-nb">bool</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
     <span class="tok-c1">#</span>
     <span class="tok-c1"># Note about AppState:</span>
     <span class="tok-c1"># Inside ImGui demo code, you will often see static variables, such as in this example</span>
@@ -1090,7 +1110,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_assets</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
     <span class="tok-sd">&quot;&quot;&quot;A demo showcasing the assets usage in HelloImGui and ImmApp&quot;&quot;&quot;</span>
-    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;AssetsIntro&quot;</span><span class="tok-p">))</span>
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-s2">&quot;# Demo Assets&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Here are some icons from Font Awesome: &quot;</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
@@ -1102,14 +1122,12 @@ This cmake file is part of a quick start example available <a href="https://gith
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_cursor_pos_x</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">40.0</span><span class="tok-p">))</span>
 
     <span class="tok-c1"># Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
-    <span class="tok-c1"># Below, image_size is equivalent to the size of 5 lines of text</span>
+    <span class="tok-c1"># Below, image_size is equivalent to the size of 3 lines of text</span>
     <span class="tok-n">image_size</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">3.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">)</span>
     <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-n">image_size</span><span class="tok-p">)</span>
 
-    <span class="tok-c1"># Display help</span>
-    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_assets_info</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">checkbox</span><span class="tok-p">(</span><span class="tok-s2">&quot;More info&quot;</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_assets_info</span><span class="tok-p">)</span>
-    <span class="tok-k">if</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_assets_info</span><span class="tok-p">:</span>
-        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;AssetsDoc&quot;</span><span class="tok-p">))</span>
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-s2">&quot;**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**&quot;</span><span class="tok-p">);</span>
+    <span class="tok-n">show_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;AssetsDoc&quot;</span><span class="tok-p">)</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_markdown</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
@@ -1117,7 +1135,7 @@ This cmake file is part of a quick start example available <a href="https://gith
     <span class="tok-n">markdown_demo</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;&quot;&quot;</span>
 <span class="tok-s2">        # Demo markdown usage</span>
 
-<span class="tok-s2">        *Let&#39;s ask GPT4 to give us some fun programming fortunes:*</span>
+<span class="tok-s2">        Let&#39;s ask GPT4 to give us some fun programming fortunes in markdown format:</span>
 
 <span class="tok-s2">        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night&#39;s sleep_.</span>
 
@@ -1140,15 +1158,12 @@ This cmake file is part of a quick start example available <a href="https://gith
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">markdown_input</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
 
-    <span class="tok-c1"># Display help</span>
-    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_markdown_info</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">checkbox</span><span class="tok-p">(</span><span class="tok-s2">&quot;More info##Markdown&quot;</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_markdown_info</span><span class="tok-p">)</span>
-    <span class="tok-k">if</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_markdown_info</span><span class="tok-p">:</span>
-        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;MarkdownDoc&quot;</span><span class="tok-p">))</span>
+    <span class="tok-n">show_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;MarkdownDoc&quot;</span><span class="tok-p">)</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_plot</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
     <span class="tok-sd">&quot;&quot;&quot;A demo showcasing the usage of ImPlot&quot;&quot;&quot;</span>
-    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;PlotIntro&quot;</span><span class="tok-p">))</span>
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-s2">&quot;# Demo ImPlot&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-n">data_labels</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;Frogs&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Hogs&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Dogs&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Logs&quot;</span><span class="tok-p">]</span>
 
@@ -1157,7 +1172,7 @@ This cmake file is part of a quick start example available <a href="https://gith
     <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">plot_data</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">drag_float4</span><span class="tok-p">(</span><span class="tok-s2">&quot;Pie Data&quot;</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">plot_data</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
 
     <span class="tok-c1"># Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
-    <span class="tok-c1"># Below, plot_size is equivalent to the size of 20 lines of text</span>
+    <span class="tok-c1"># Below, plot_size is equivalent to the size of 15 lines of text</span>
     <span class="tok-n">plot_size</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">15.0</span><span class="tok-p">,</span> <span class="tok-mf">15.0</span><span class="tok-p">)</span>
 
     <span class="tok-k">if</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Pie Chart&quot;</span><span class="tok-p">,</span> <span class="tok-n">plot_size</span><span class="tok-p">):</span>
@@ -1165,10 +1180,7 @@ This cmake file is part of a quick start example available <a href="https://gith
         <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_pie_chart</span><span class="tok-p">(</span><span class="tok-n">data_labels</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">array</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">plot_data</span><span class="tok-p">),</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.35</span><span class="tok-p">,</span> <span class="tok-s2">&quot;</span><span class="tok-si">%.2f</span><span class="tok-s2">&quot;</span><span class="tok-p">,</span> <span class="tok-mi">90</span><span class="tok-p">)</span>
         <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
 
-    <span class="tok-c1"># Display help</span>
-    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_implot_info</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">checkbox</span><span class="tok-p">(</span><span class="tok-s2">&quot;More info##Implot&quot;</span><span class="tok-p">,</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_implot_info</span><span class="tok-p">)</span>
-    <span class="tok-k">if</span> <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">show_implot_info</span><span class="tok-p">:</span>
-        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;PlotDoc&quot;</span><span class="tok-p">))</span>
+    <span class="tok-n">show_doc</span><span class="tok-p">(</span><span class="tok-s2">&quot;PlotDoc&quot;</span><span class="tok-p">)</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
@@ -1188,16 +1200,15 @@ This cmake file is part of a quick start example available <a href="https://gith
         <span class="tok-n">demo_plot</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
 
     <span class="tok-c1"># Then, we start our application:</span>
+    <span class="tok-c1">#     First, we set some RunnerParams, with simple settings</span>
     <span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">SimpleRunnerParams</span><span class="tok-p">()</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">window_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">gui</span>
-
-    <span class="tok-c1"># We need to activate two addons: ImPlot and Markdown</span>
-    <span class="tok-n">addons</span> <span class="tok-o">=</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">AddOnsParams</span><span class="tok-p">()</span>  <span class="tok-c1"># Assuming we have such a class in Python</span>
+    <span class="tok-c1">#     We need to activate two addons: ImPlot and Markdown</span>
+    <span class="tok-n">addons</span> <span class="tok-o">=</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">AddOnsParams</span><span class="tok-p">()</span>
     <span class="tok-n">addons</span><span class="tok-o">.</span><span class="tok-n">with_implot</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
     <span class="tok-n">addons</span><span class="tok-o">.</span><span class="tok-n">with_markdown</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
-
-    <span class="tok-c1"># And we are ready to go!</span>
+    <span class="tok-c1">#     And we are ready to go!</span>
     <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">,</span> <span class="tok-n">addons</span><span class="tok-p">)</span>
 
 
@@ -1207,103 +1218,94 @@ This cmake file is part of a quick start example available <a href="https://gith
 
 
 <span class="tok-c1"># //</span>
-<span class="tok-c1"># // Note: the code below only defines the displayed help strings</span>
+<span class="tok-c1"># // Note: the code below only displays the help messages</span>
 <span class="tok-c1"># //</span>
 
 <span class="tok-k">def</span> <span class="tok-nf">get_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">:</span> <span class="tok-nb">str</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-nb">str</span><span class="tok-p">:</span>
     <span class="tok-sd">&quot;&quot;&quot;Return the associated documentation string based on the key.&quot;&quot;&quot;</span>
 
     <span class="tok-n">docs</span><span class="tok-p">:</span> <span class="tok-n">Dict</span><span class="tok-p">[</span><span class="tok-nb">str</span><span class="tok-p">,</span> <span class="tok-nb">str</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-p">{</span>
-        <span class="tok-s2">&quot;AssetsIntro&quot;</span><span class="tok-p">:</span> <span class="tok-s2">&quot;&quot;&quot;</span>
-<span class="tok-s2">            # Demos assets</span>
-<span class="tok-s2">            In order to improve text rendering, HelloImGui will load a default font (DroidSans) as well as &quot;Font Awesome&quot; to be able to display some icons.</span>
-<span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">,</span>
-
         <span class="tok-s2">&quot;AssetsDoc&quot;</span><span class="tok-p">:</span> <span class="tok-s2">&quot;&quot;&quot;</span>
-<span class="tok-s2">            **About assets**</span>
+<span class="tok-s2">            The icons and image were shown via this code:</span>
 
-<span class="tok-s2">            HelloImGui and ImmApp applications rely on the presence of an `assets` folder.</span>
-<span class="tok-s2">            The typical layout of an assets folder looks like this:</span>
-<span class="tok-s2">            ```</span>
-<span class="tok-s2">            assets/</span>
-<span class="tok-s2">                +-- fonts/</span>
-<span class="tok-s2">                |         +-- DroidSans.ttf             # default fonts used by HelloImGui in order to</span>
-<span class="tok-s2">                |         +-- fontawesome-webfont.ttf   # improve text rendering.</span>
-<span class="tok-s2">                +-- images/</span>
-<span class="tok-s2">                          +-- world.jpg                 # you can add any asset here!</span>
-<span class="tok-s2">            ```</span>
-
-<span class="tok-s2">            You can change the assets folder via:</span>
+<span class="tok-s2">            C++</span>
 <span class="tok-s2">            ```cpp</span>
-<span class="tok-s2">            hello_imgui.set_assets_folder(&quot;my_assets&quot;); // (By default, HelloImGui will search inside &quot;assets&quot;)</span>
+<span class="tok-s2">            ImGui::Text(ICON_FA_INFO &quot; &quot; ICON_FA_EXCLAMATION_TRIANGLE &quot; &quot; ICON_FA_SAVE);</span>
+<span class="tok-s2">            ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);</span>
+<span class="tok-s2">            HelloImGui::ImageFromAsset(&quot;images/world.jpg&quot;, imageSize);</span>
 <span class="tok-s2">            ```</span>
 
-<span class="tok-s2">            **Where to find the default assets**</span>
-
-<span class="tok-s2">            Look at the [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) folder which provides them.</span>
-<span class="tok-s2">            You can copy it into your execution folder.</span>
-
-<span class="tok-s2">            **How was this image displayed**</span>
-
-<span class="tok-s2">            This image was found inside the assets folder at `assets/images/world.jpg` and displayed via HelloImGui with the following code:</span>
+<span class="tok-s2">            Python</span>
 <span class="tok-s2">            ```python</span>
-<span class="tok-s2">            image_size = hello_imgui.em_to_vec2(5., 5.)</span>
-<span class="tok-s2">            hello_imgui.image_from_asset(&quot;images/world.jpg&quot;, imageSize);</span>
+<span class="tok-s2">            imgui.text(icons_fontawesome.ICON_FA_INFO + &quot; &quot; + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + &quot; &quot; + icons_fontawesome.ICON_FA_SAVE)</span>
+<span class="tok-s2">            image_size = hello_imgui.em_to_vec2(3.0, 3.0)</span>
+<span class="tok-s2">            hello_imgui.image_from_asset(&quot;images/world.jpg&quot;, image_size)</span>
 <span class="tok-s2">            ```</span>
 
-<span class="tok-s2">            *Note: prefer to specify sizes using the [&quot;em&quot; unit](https://en.wikipedia.org/wiki/Em_(typography)). Here, `image_size` is equivalent to the size of 5 lines of text.*</span>
+<span class="tok-s2">            *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*</span>
 <span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">,</span>
 
         <span class="tok-s2">&quot;MarkdownDoc&quot;</span><span class="tok-p">:</span> <span class="tok-s2">&quot;&quot;&quot;</span>
-<span class="tok-s2">            This markdown string was rendered by calling:</span>
+<span class="tok-s2">            This markdown string was rendered by calling either:</span>
+
+<span class="tok-s2">            C++</span>
+<span class="tok-s2">            ```cpp</span>
+<span class="tok-s2">            ImGuiMd::Render(markdown_string);            // render a markdown string</span>
+<span class="tok-s2">            ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering</span>
+<span class="tok-s2">            ```</span>
+
+<span class="tok-s2">            Python</span>
 <span class="tok-s2">            ```python</span>
-<span class="tok-s2">            imgui_md.render(markdown_string);             # render a markdown string</span>
-<span class="tok-s2">            # or</span>
-<span class="tok-s2">            imgui_md.render_unindented(markdown_string);  # remove top-most indentation before rendering</span>
+<span class="tok-s2">            imgui_md.render(markdown_string);            # render a markdown string</span>
+<span class="tok-s2">            imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering</span>
 <span class="tok-s2">            ```</span>
 
 <span class="tok-s2">            This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.</span>
 <span class="tok-s2">            It supports the most common markdown features: emphasis, link, code blocks, etc.</span>
-
-<span class="tok-s2">            In order to work, it needs a few files in the assets folder:</span>
-<span class="tok-s2">            ```</span>
-<span class="tok-s2">            assets/</span>
-<span class="tok-s2">            +-- fonts/</span>
-<span class="tok-s2">            |         +-- DroidSans.ttf</span>
-<span class="tok-s2">            |         +-- Roboto/</span>
-<span class="tok-s2">            |         |         +-- LICENSE.txt</span>
-<span class="tok-s2">            |         |         +-- Roboto-Bold.ttf</span>
-<span class="tok-s2">            |         |         +-- Roboto-BoldItalic.ttf</span>
-<span class="tok-s2">            |         |         +-- Roboto-Regular.ttf</span>
-<span class="tok-s2">            |         |         </span><span class="tok-se">\\</span><span class="tok-s2">-- Roboto-RegularItalic.ttf</span>
-<span class="tok-s2">            |         +-- SourceCodePro-Regular.ttf</span>
-<span class="tok-s2">            |         +-- fontawesome-webfont.ttf</span>
-<span class="tok-s2">            +-- images/</span>
-<span class="tok-s2">                +-- markdown_broken_image.png</span>
-<span class="tok-s2">            ```</span>
-
-<span class="tok-s2">            Note: in order to use ImPlot, you need to &quot;activate&quot; this add-on, like this:</span>
-<span class="tok-s2">            ```python</span>
-<span class="tok-s2">            addons = immapp.AddOnsParams(with_markdown=True)</span>
-<span class="tok-s2">            immapp.run(runner_params, addons);</span>
-<span class="tok-s2">            ```</span>
-<span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">,</span>
-
-        <span class="tok-s2">&quot;PlotIntro&quot;</span><span class="tok-p">:</span> <span class="tok-s2">&quot;&quot;&quot;</span>
-<span class="tok-s2">            # Demo Plot</span>
-<span class="tok-s2">            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)</span>
 <span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">,</span>
 
         <span class="tok-s2">&quot;PlotDoc&quot;</span><span class="tok-p">:</span> <span class="tok-s2">&quot;&quot;&quot;</span>
+<span class="tok-s2">            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)</span>
+
 <span class="tok-s2">            Note: in order to use ImPlot, you need to &quot;activate&quot; this add-on, like this:</span>
+
+<span class="tok-s2">            C++</span>
+<span class="tok-s2">            ```cpp</span>
+<span class="tok-s2">            ImmApp::AddOnsParams addons { .withImplot = true };</span>
+<span class="tok-s2">            ImmApp::Run(runnerParams, addons);</span>
+<span class="tok-s2">            ```</span>
+
+<span class="tok-s2">            Python:</span>
 <span class="tok-s2">            ```python</span>
 <span class="tok-s2">            addons = immapp.AddOnsParams(with_implot=True)</span>
-<span class="tok-s2">            immapp.run(runnerParams, addons);</span>
+<span class="tok-s2">            immapp.run(runner_params, addons);</span>
 <span class="tok-s2">            ```</span>
 <span class="tok-s2">        &quot;&quot;&quot;</span>
     <span class="tok-p">}</span>
 
     <span class="tok-k">return</span> <span class="tok-n">docs</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">]</span>
+
+
+<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">is_doc_visible</span><span class="tok-o">=</span><span class="tok-p">{})</span>
+<span class="tok-k">def</span> <span class="tok-nf">show_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">):</span>
+    <span class="tok-c1"># Access the &#39;static&#39; variable</span>
+    <span class="tok-n">is_doc_visible</span> <span class="tok-o">=</span> <span class="tok-n">show_doc</span><span class="tok-o">.</span><span class="tok-n">is_doc_visible</span>
+
+    <span class="tok-c1"># Check if the doc visibility entry exists, if not, add it</span>
+    <span class="tok-k">if</span> <span class="tok-n">which_doc</span> <span class="tok-ow">not</span> <span class="tok-ow">in</span> <span class="tok-n">is_doc_visible</span><span class="tok-p">:</span>
+        <span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_id</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">)</span>
+    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">checkbox</span><span class="tok-p">(</span><span class="tok-s2">&quot;More info&quot;</span><span class="tok-p">,</span> <span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">])</span>
+
+    <span class="tok-k">if</span> <span class="tok-n">is_doc_visible</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">]:</span>
+        <span class="tok-c1"># The following are assumed to be valid calls within the context of your specific ImGui wrapper.</span>
+        <span class="tok-c1"># &#39;imgui_md&#39; and &#39;get_doc&#39; should correspond to your actual usage and imports.</span>
+        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-n">get_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">))</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">dummy</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span> <span class="tok-mf">6.0</span><span class="tok-p">))</span>  <span class="tok-c1"># Assumes &#39;hello_imgui&#39; is available in your environment</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_id</span><span class="tok-p">()</span>
 
 
 <span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
@@ -1312,19 +1314,6 @@ This cmake file is part of a quick start example available <a href="https://gith
 </div>
 </div>
 </details>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-This demo relies on the presence of an "assets" folder.
-Look at the <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets">imgui_bundle/bindings/imgui_bundle/assets</a> folder which provides it. You can either copy it besides your CMakeLists.txt, or into your execution folder.
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_complex_layouts_with_docking_windows">Complex layouts with docking windows</h3>
@@ -3923,7 +3912,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 13:42:02 +0200
+Last updated 2023-10-19 16:07:33 +0200
 </div>
 </div>
 </body>

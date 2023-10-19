@@ -8,8 +8,8 @@
 #include <map>
 
 
-// This function returns the different help strings that are displayed in this demo application
-std::string GetDoc(const std::string& whichDoc);
+// This function displays the help messages that are displayed in this demo application
+void ShowDoc(const std::string& whichDoc);
 
 
 // Your global application state, that will be edited during the execution
@@ -20,11 +20,6 @@ struct AppState
 
     // You can edit a demo markdown string
     char MarkdownInput[4000] = "*Welcome to the interactive markdown demo!* Try writing some markdown content here.";
-
-    // Flags that set whether we show help strings
-    bool ShowAssetsInfo = false;
-    bool ShowMarkdownInfo = false;
-    bool ShowImplotInfo = false;
 
     //
     // Note about AppState:
@@ -43,7 +38,7 @@ struct AppState
 // A demo showcasing the assets usage in HelloImGui and ImmApp
 void DemoAssets(AppState& appState)
 {
-    ImGuiMd::RenderUnindented(GetDoc("AssetsIntro"));
+    ImGuiMd::Render("# Demo Assets");
     ImGui::Text("Here are some icons from Font Awesome: ");
     ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
     ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
@@ -53,14 +48,13 @@ void DemoAssets(AppState& appState)
     ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
 
     // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    //     Below, imageSize is equivalent to the size of 5 lines of text
+    //     Below, imageSize is equivalent to the size of 3 lines of text
     ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
     HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
 
-    // Display help
-    ImGui::Checkbox("More info", &appState.ShowAssetsInfo);
-    if (appState.ShowAssetsInfo)
-        ImGuiMd::RenderUnindented(GetDoc("AssetsDoc"));
+    ImGuiMd::Render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+
+    ShowDoc("AssetsDoc");
 }
 
 
@@ -70,7 +64,7 @@ void DemoMarkdown(AppState& appState)
     std::string markdownDemo = R"(
         # Demo markdown usage
 
-        *Let's ask GPT4 to give us some fun programming fortunes:*
+        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
 
         1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
 
@@ -93,17 +87,14 @@ void DemoMarkdown(AppState& appState)
     ImGuiMd::RenderUnindented(appState.MarkdownInput);
     ImGui::Separator();
 
-    // Display help
-    ImGui::Checkbox("More info##Markdown", &appState.ShowMarkdownInfo);
-    if (appState.ShowMarkdownInfo)
-        ImGuiMd::RenderUnindented(GetDoc("MarkdownDoc"));
+    ShowDoc("MarkdownDoc");
 }
 
 
 // A demo showcasing the usage of ImPlot
 void DemoPlot(AppState& appState)
 {
-    ImGuiMd::RenderUnindented(GetDoc("PlotIntro"));
+    ImGuiMd::Render("# Demo ImPlot");
 
     static const char* data_labels[]    = {"Frogs", "Hogs", "Dogs", "Logs"};
 
@@ -112,7 +103,7 @@ void DemoPlot(AppState& appState)
     ImGui::DragFloat4("Pie Data", appState.PlotData.data(), 0.01f, 0, 1);
 
     // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    //     Below, plotSize is equivalent to the size of 20 lines of text
+    //     Below, plotSize is equivalent to the size of 1 lines of text
     ImVec2 plotSize = ImmApp::EmToVec2(15.f, 15.f);
 
     if (ImPlot::BeginPlot("Pie Chart", plotSize))
@@ -129,10 +120,7 @@ void DemoPlot(AppState& appState)
             ImPlot::EndPlot();
     }
 
-    // Display help
-    ImGui::Checkbox("More info##Implot", &appState.ShowImplotInfo);
-    if (appState.ShowImplotInfo)
-        ImGuiMd::RenderUnindented(GetDoc("PlotDoc"));
+    ShowDoc("PlotDoc");
 }
 
 
@@ -179,7 +167,7 @@ int main(int, char**)
 
 
 //
-// Note: the code below only defines the displayed help strings
+// Note: the code below only displays the help messages
 //
 
 std::string GetDoc(const std::string& whichDoc)
@@ -187,103 +175,65 @@ std::string GetDoc(const std::string& whichDoc)
     static std::map<std::string, std::string> docs =
         {
             {
-                "AssetsIntro",
-                R"(
-                # Demos assets
-                In order to improve text rendering, HelloImGui will load a default font (DroidSans) as well as "Font Awesome" to be able to display some icons.
-                )"
-            },
-            {
                 "AssetsDoc",
                 R"(
-                **About assets**
+                    The icons and image were shown via this code:
 
-                HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
-                The typical layout of an assets folder looks like this:
-                ```
-                assets/
-                    +-- fonts/
-                    |         +-- DroidSans.ttf             # default fonts used by HelloImGui in order to
-                    |         +-- fontawesome-webfont.ttf   # improve text rendering.
-                    +-- images/
-                              +-- world.jpg                 # you can add any asset here!
-                ```
+                    C++
+                    ```cpp
+                    ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+                    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+                    HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+                    ```
 
-                You can change the assets folder via:
-                ```cpp
-                HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
-                ```
+                    Python
+                    ```python
+                    imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+                    image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+                    hello_imgui.image_from_asset("images/world.jpg", image_size)
+                    ```
 
-
-                **Where to find the default assets**
-
-                Look at the [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) folder which provides them.
-                You can either copy it besides your CMakeLists.txt (it will be deployed into the execution folder automatically), or copy it into your execution folder.
-
-
-                **How was this image displayed**
-
-                This image was found inside the assets folder at `assets/images/world.jpg` and displayed via HelloImGui with the following code:
-                ```cpp
-                ImVec2 imageSize = HelloImGui::EmToVec2(5.f, 5.f);
-                HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
-                ```
-
-                *Note: prefer to specify sizes using the ["em" unit](https://en.wikipedia.org/wiki/Em_(typography)). Here, `imageSize` is equivalent to the size of 5 lines of text.*
-
+                    *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
                 )"
             },
             {
                 "MarkdownDoc",
                 R"(
-                This markdown string was rendered by calling:
+                This markdown string was rendered by calling either:
+
+                C++
                 ```cpp
-                ImGuiMd::Render(markdown_string);           // render a markdown string
-                // or
+                ImGuiMd::Render(markdown_string);            // render a markdown string
                 ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                ```
+
+                Python
+                ```python
+                imgui_md.render(markdown_string);            # render a markdown string
+                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
                 ```
 
                 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
                 It supports the most common markdown features: emphasis, link, code blocks, etc.
-
-                In order to work, it needs a few files in the assets folder:
-                ```
-                assets/
-                +-- fonts/
-                |         +-- DroidSans.ttf
-                |         +-- Roboto/
-                |         |         +-- LICENSE.txt
-                |         |         +-- Roboto-Bold.ttf
-                |         |         +-- Roboto-BoldItalic.ttf
-                |         |         +-- Roboto-Regular.ttf
-                |         |         \-- Roboto-RegularItalic.ttf
-                |         +-- SourceCodePro-Regular.ttf
-                |         +-- fontawesome-webfont.ttf
-                +-- images/
-                    +-- markdown_broken_image.png
-                ```
-
-                Note: in order to use ImPlot, you need to "activate" this add-on, like this:
-                ```cpp
-                ImmApp::AddOnsParams addons { .withMarkdown = true };
-                ImmApp::Run(runnerParams, addons);
-                ```
-                )"
-            },
-            {
-                "PlotIntro",
-                R"(
-                # Demo Plot
-                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
                 )"
             },
             {
                 "PlotDoc",
                 R"(
+                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
                 Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+                C++
                 ```cpp
                 ImmApp::AddOnsParams addons { .withImplot = true };
                 ImmApp::Run(runnerParams, addons);
+                ```
+
+                Python:
+                ```python
+                addons = immapp.AddOnsParams(with_implot=True)
+                immapp.run(runner_params, addons);
                 ```
                 )"
             },
@@ -292,3 +242,21 @@ std::string GetDoc(const std::string& whichDoc)
     return docs.at(whichDoc);
 }
 
+
+void ShowDoc(const std::string& whichDoc)
+{
+    static std::map<std::string, bool> is_doc_visible;
+    if (is_doc_visible.find(whichDoc) == is_doc_visible.end())
+        is_doc_visible[whichDoc] = false;
+
+    ImGui::PushID(whichDoc.c_str());
+    ImGui::Checkbox("More info", &is_doc_visible[whichDoc]);
+
+    if (is_doc_visible[whichDoc])
+    {
+        ImGuiMd::RenderUnindented(GetDoc(whichDoc));
+        ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
+        ImGui::Separator();
+    }
+    ImGui::PopID();
+}

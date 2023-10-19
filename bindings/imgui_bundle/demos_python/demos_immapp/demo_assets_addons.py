@@ -7,8 +7,8 @@ from typing import Dict, List
 from dataclasses import dataclass, field
 
 
-def get_doc(which_doc: str) -> str:
-    """This function returns the different help strings that are displayed in this demo application
+def show_doc(which_doc: str):
+    """This function displays the help messages that are displayed in this demo application
     (implemented later in this file)"""
     ...
 
@@ -23,10 +23,6 @@ class AppState:
     # You can edit a demo markdown string
     markdown_input: str = "*Welcome to the interactive markdown demo!* Try writing some markdown content here."
 
-    # Flags that set whether we show help strings
-    show_assets_info: bool = False
-    show_markdown_info: bool = False
-    show_implot_info: bool = False
     #
     # Note about AppState:
     # Inside ImGui demo code, you will often see static variables, such as in this example
@@ -39,7 +35,7 @@ class AppState:
 
 def demo_assets(app_state: AppState):
     """A demo showcasing the assets usage in HelloImGui and ImmApp"""
-    imgui_md.render_unindented(get_doc("AssetsIntro"))
+    imgui_md.render("# Demo Assets")
 
     imgui.text("Here are some icons from Font Awesome: ")
     imgui.same_line()
@@ -51,14 +47,12 @@ def demo_assets(app_state: AppState):
     imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
 
     # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    # Below, image_size is equivalent to the size of 5 lines of text
+    # Below, image_size is equivalent to the size of 3 lines of text
     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
     hello_imgui.image_from_asset("images/world.jpg", image_size)
 
-    # Display help
-    _, app_state.show_assets_info = imgui.checkbox("More info", app_state.show_assets_info)
-    if app_state.show_assets_info:
-        imgui_md.render_unindented(get_doc("AssetsDoc"))
+    imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+    show_doc("AssetsDoc")
 
 
 def demo_markdown(app_state: AppState):
@@ -66,7 +60,7 @@ def demo_markdown(app_state: AppState):
     markdown_demo = """
         # Demo markdown usage
 
-        *Let's ask GPT4 to give us some fun programming fortunes:*
+        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
 
         1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
 
@@ -89,15 +83,12 @@ def demo_markdown(app_state: AppState):
     imgui_md.render_unindented(app_state.markdown_input)
     imgui.separator()
 
-    # Display help
-    _, app_state.show_markdown_info = imgui.checkbox("More info##Markdown", app_state.show_markdown_info)
-    if app_state.show_markdown_info:
-        imgui_md.render_unindented(get_doc("MarkdownDoc"))
+    show_doc("MarkdownDoc")
 
 
 def demo_plot(app_state: AppState):
     """A demo showcasing the usage of ImPlot"""
-    imgui_md.render_unindented(get_doc("PlotIntro"))
+    imgui_md.render("# Demo ImPlot")
 
     data_labels = ["Frogs", "Hogs", "Dogs", "Logs"]
 
@@ -106,7 +97,7 @@ def demo_plot(app_state: AppState):
     _, app_state.plot_data = imgui.drag_float4("Pie Data", app_state.plot_data, 0.01, 0, 1)
 
     # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    # Below, plot_size is equivalent to the size of 20 lines of text
+    # Below, plot_size is equivalent to the size of 15 lines of text
     plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
 
     if implot.begin_plot("Pie Chart", plot_size):
@@ -114,10 +105,7 @@ def demo_plot(app_state: AppState):
         implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
         implot.end_plot()
 
-    # Display help
-    _, app_state.show_implot_info = imgui.checkbox("More info##Implot", app_state.show_implot_info)
-    if app_state.show_implot_info:
-        imgui_md.render_unindented(get_doc("PlotDoc"))
+    show_doc("PlotDoc")
 
 
 def main():
@@ -137,16 +125,15 @@ def main():
         demo_plot(app_state)
 
     # Then, we start our application:
+    #     First, we set some RunnerParams, with simple settings
     runner_params = hello_imgui.SimpleRunnerParams()
     runner_params.window_size = (1000, 1000)
     runner_params.gui_function = gui
-
-    # We need to activate two addons: ImPlot and Markdown
-    addons = immapp.AddOnsParams()  # Assuming we have such a class in Python
+    #     We need to activate two addons: ImPlot and Markdown
+    addons = immapp.AddOnsParams()
     addons.with_implot = True
     addons.with_markdown = True
-
-    # And we are ready to go!
+    #     And we are ready to go!
     immapp.run(runner_params, addons)
 
 
@@ -156,103 +143,94 @@ def main():
 
 
 # //
-# // Note: the code below only defines the displayed help strings
+# // Note: the code below only displays the help messages
 # //
 
 def get_doc(which_doc: str) -> str:
     """Return the associated documentation string based on the key."""
 
     docs: Dict[str, str] = {
-        "AssetsIntro": """
-            # Demos assets
-            In order to improve text rendering, HelloImGui will load a default font (DroidSans) as well as "Font Awesome" to be able to display some icons.
-        """,
-
         "AssetsDoc": """
-            **About assets**
+            The icons and image were shown via this code:
 
-            HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
-            The typical layout of an assets folder looks like this:
-            ```
-            assets/
-                +-- fonts/
-                |         +-- DroidSans.ttf             # default fonts used by HelloImGui in order to
-                |         +-- fontawesome-webfont.ttf   # improve text rendering.
-                +-- images/
-                          +-- world.jpg                 # you can add any asset here!
-            ```
-
-            You can change the assets folder via:
+            C++
             ```cpp
-            hello_imgui.set_assets_folder("my_assets"); // (By default, HelloImGui will search inside "assets")
+            ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+            ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+            HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
             ```
 
-            **Where to find the default assets**
-
-            Look at the [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) folder which provides them.
-            You can copy it into your execution folder.
-
-            **How was this image displayed**
-
-            This image was found inside the assets folder at `assets/images/world.jpg` and displayed via HelloImGui with the following code:
+            Python
             ```python
-            image_size = hello_imgui.em_to_vec2(5., 5.)
-            hello_imgui.image_from_asset("images/world.jpg", imageSize);
+            imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+            image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+            hello_imgui.image_from_asset("images/world.jpg", image_size)
             ```
 
-            *Note: prefer to specify sizes using the ["em" unit](https://en.wikipedia.org/wiki/Em_(typography)). Here, `image_size` is equivalent to the size of 5 lines of text.*
+            *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
         """,
 
         "MarkdownDoc": """
-            This markdown string was rendered by calling:
+            This markdown string was rendered by calling either:
+
+            C++
+            ```cpp
+            ImGuiMd::Render(markdown_string);            // render a markdown string
+            ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+            ```
+
+            Python
             ```python
-            imgui_md.render(markdown_string);             # render a markdown string
-            # or
-            imgui_md.render_unindented(markdown_string);  # remove top-most indentation before rendering
+            imgui_md.render(markdown_string);            # render a markdown string
+            imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
             ```
 
             This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
             It supports the most common markdown features: emphasis, link, code blocks, etc.
-
-            In order to work, it needs a few files in the assets folder:
-            ```
-            assets/
-            +-- fonts/
-            |         +-- DroidSans.ttf
-            |         +-- Roboto/
-            |         |         +-- LICENSE.txt
-            |         |         +-- Roboto-Bold.ttf
-            |         |         +-- Roboto-BoldItalic.ttf
-            |         |         +-- Roboto-Regular.ttf
-            |         |         \\-- Roboto-RegularItalic.ttf
-            |         +-- SourceCodePro-Regular.ttf
-            |         +-- fontawesome-webfont.ttf
-            +-- images/
-                +-- markdown_broken_image.png
-            ```
-
-            Note: in order to use ImPlot, you need to "activate" this add-on, like this:
-            ```python
-            addons = immapp.AddOnsParams(with_markdown=True)
-            immapp.run(runner_params, addons);
-            ```
-        """,
-
-        "PlotIntro": """
-            # Demo Plot
-            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
         """,
 
         "PlotDoc": """
+            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
             Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+            C++
+            ```cpp
+            ImmApp::AddOnsParams addons { .withImplot = true };
+            ImmApp::Run(runnerParams, addons);
+            ```
+
+            Python:
             ```python
             addons = immapp.AddOnsParams(with_implot=True)
-            immapp.run(runnerParams, addons);
+            immapp.run(runner_params, addons);
             ```
         """
     }
 
     return docs[which_doc]
+
+
+@immapp.static(is_doc_visible={})
+def show_doc(which_doc):
+    # Access the 'static' variable
+    is_doc_visible = show_doc.is_doc_visible
+
+    # Check if the doc visibility entry exists, if not, add it
+    if which_doc not in is_doc_visible:
+        is_doc_visible[which_doc] = False
+
+    imgui.push_id(which_doc)
+    _, is_doc_visible[which_doc] = imgui.checkbox("More info", is_doc_visible[which_doc])
+
+    if is_doc_visible[which_doc]:
+        # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
+        # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
+        imgui_md.render_unindented(get_doc(which_doc))
+        imgui.dummy(hello_imgui.em_to_vec2(1.0, 6.0))  # Assumes 'hello_imgui' is available in your environment
+        imgui.separator()
+
+    imgui.pop_id()
 
 
 if __name__ == "__main__":

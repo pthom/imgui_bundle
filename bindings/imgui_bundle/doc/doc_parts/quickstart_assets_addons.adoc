@@ -1,6 +1,6 @@
 include::_utils.adoc[]
 
-=== Using assets & add-ons (ImPlot, Markdown)
+=== Demo using assets & add-ons
 
 .Demo assets and add-ons usage
 image::{url-demo-images}/demo_assets_addons.jpg[width=400]
@@ -12,7 +12,8 @@ This demonstration showcases how to:
 * Use ImPlot to display various types of plots
 * Use markdown to display formatted messages
 
-Its source code is heavily documented and should be self-explanatory.
+
+This demonstration source code is heavily documented and should be self-explanatory.
 
 
 .Click to see its source code in {cpp}
@@ -35,8 +36,4 @@ Python:
 ----
 include::../../demos_python/demos_immapp/demo_assets_addons.py[]
 ----
-
 ====
-
-NOTE: This demo relies on the presence of an "assets" folder.
-Look at the link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] folder which provides it. You can either copy it besides your CMakeLists.txt, or into your execution folder.

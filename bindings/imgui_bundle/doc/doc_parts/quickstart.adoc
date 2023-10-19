@@ -9,6 +9,8 @@ Then study the examples below.
 
 include::quickstart_hello.adoc[]
 
+include::quickstart_about_assets.adoc[]
+
 include::quickstart_assets_addons.adoc[]
 
 include::quickstart_docking.adoc[]
