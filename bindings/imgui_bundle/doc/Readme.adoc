@@ -518,7 +518,18 @@ int main(int, char **)
 }
 ----
 
-===== Build with cmake (using imgui_bundle as a submodule)
+===== Build with cmake, using `imgui_bundle_add_app`
+
+====
+`imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
+
+* automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
+* embed the assets (for desktop, mobile, and emscripten apps)
+* perform additional customization (app icon and name on mobile platforms, etc)
+====
+
+
+===== Option 1: using imgui_bundle as a submodule
 
 First, add imgui_bundle as a submodule:
 [source, bash]
@@ -539,17 +550,24 @@ add_subdirectory(imgui_bundle)
 imgui_bundle_add_app(hello_world hello_world.cpp)
 ----
 
-====
-`imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
 
-* automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
-* embed the assets (for desktop, mobile, and emscripten apps)
-* perform additional customization (app icon and name on mobile platforms, etc)
-====
+===== Option 2 : Fetch imgui_bundle during compilation
 
-===== Build with cmake (without imgui_bundle as a submodule)
+[source,cmake]
+----
+cmake_minimum_required(VERSION 3.12)
+project(helloworld_with_helloimgui)
+set(CMAKE_CXX_STANDARD 17)
 
-Copy this link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration/CMakeLists.txt[CMakeLists.txt] file: it will download and compile imgui-bundle during your app compilation.
+include(FetchContent)
+Set(FETCHCONTENT_QUIET FALSE)
+FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
+FetchContent_MakeAvailable(imgui_bundle)
+# set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
+
+# Build your app
+imgui_bundle_add_app(hello_world hello_world.cpp)
+----
 
 NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here].
 

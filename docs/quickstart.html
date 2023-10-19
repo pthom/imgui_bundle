@@ -601,7 +601,30 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </div>
 </div>
 <div class="sect4">
-<h5 id="_build_with_cmake_using_imgui_bundle_as_a_submodule">Build with cmake (using imgui_bundle as a submodule)</h5>
+<h5 id="_build_with_cmake_using_imgui_bundle_add_app">Build with cmake, using <code>imgui_bundle_add_app</code></h5>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><code>imgui_bundle_add_app</code> is a cmake command, close to <code>add_executable</code>, which will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)</p>
+</li>
+<li>
+<p>embed the assets (for desktop, mobile, and emscripten apps)</p>
+</li>
+<li>
+<p>perform additional customization (app icon and name on mobile platforms, etc)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_option_1_using_imgui_bundle_as_a_submodule">Option 1: using imgui_bundle as a submodule</h5>
 <div class="paragraph">
 <p>First, add imgui_bundle as a submodule:</p>
 </div>
@@ -625,31 +648,24 @@ git submodule update --init --recursive</code></pre>
 <span class="tok-nb">imgui_bundle_add_app</span><span class="tok-p">(</span><span class="tok-s">hello_world</span> <span class="tok-s">hello_world.cpp</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p><code>imgui_bundle_add_app</code> is a cmake command, close to <code>add_executable</code>, which will:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)</p>
-</li>
-<li>
-<p>embed the assets (for desktop, mobile, and emscripten apps)</p>
-</li>
-<li>
-<p>perform additional customization (app icon and name on mobile platforms, etc)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
 </div>
 <div class="sect4">
-<h5 id="_build_with_cmake_without_imgui_bundle_as_a_submodule">Build with cmake (without imgui_bundle as a submodule)</h5>
-<div class="paragraph">
-<p>Copy this <a href="https://github.com/pthom/imgui_bundle/tree/main/_example_integration/CMakeLists.txt">CMakeLists.txt</a> file: it will download and compile imgui-bundle during your app compilation.</p>
+<h5 id="_option_2_fetch_imgui_bundle_during_compilation">Option 2 : Fetch imgui_bundle during compilation</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cmake"><span></span><span class="tok-nb">cmake_minimum_required</span><span class="tok-p">(</span><span class="tok-s">VERSION</span> <span class="tok-s">3.12</span><span class="tok-p">)</span>
+<span class="tok-nb">project</span><span class="tok-p">(</span><span class="tok-s">helloworld_with_helloimgui</span><span class="tok-p">)</span>
+<span class="tok-nb">set</span><span class="tok-p">(</span><span class="tok-s">CMAKE_CXX_STANDARD</span> <span class="tok-s">17</span><span class="tok-p">)</span>
+
+<span class="tok-nb">include</span><span class="tok-p">(</span><span class="tok-s">FetchContent</span><span class="tok-p">)</span>
+<span class="tok-nb">Set</span><span class="tok-p">(</span><span class="tok-s">FETCHCONTENT_QUIET</span> <span class="tok-s">FALSE</span><span class="tok-p">)</span>
+<span class="tok-nb">FetchContent_Declare</span><span class="tok-p">(</span><span class="tok-s">imgui_bundle</span> <span class="tok-s">GIT_REPOSITORY</span> <span class="tok-s">https://github.com/pthom/imgui_bundle.git</span> <span class="tok-s">GIT_TAG</span> <span class="tok-s">main</span><span class="tok-p">)</span>
+<span class="tok-nb">FetchContent_MakeAvailable</span><span class="tok-p">(</span><span class="tok-s">imgui_bundle</span><span class="tok-p">)</span>
+<span class="tok-c"># set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision</span>
+
+<span class="tok-c"># Build your app</span>
+<span class="tok-nb">imgui_bundle_add_app</span><span class="tok-p">(</span><span class="tok-s">hello_world</span> <span class="tok-s">hello_world.cpp</span><span class="tok-p">)</span></code></pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3907,7 +3923,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 13:30:08 +0200
+Last updated 2023-10-19 13:42:02 +0200
 </div>
 </div>
 </body>

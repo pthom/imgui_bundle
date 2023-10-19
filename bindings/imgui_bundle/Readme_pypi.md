@@ -322,7 +322,20 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html)
         return 0;
     }
 
-#### Build with cmake (using imgui\_bundle as a submodule)
+#### Build with cmake, using `imgui_bundle_add_app`
+
+`imgui_bundle_add_app` is a cmake command, close to `add_executable`,
+which will:
+
+-   automatically link your app to the required libraries
+    (imgui\_bundle, OpenGl, glad, etc)
+
+-   embed the assets (for desktop, mobile, and emscripten apps)
+
+-   perform additional customization (app icon and name on mobile
+    platforms, etc)
+
+#### Option 1: using imgui\_bundle as a submodule
 
 First, add imgui\_bundle as a submodule:
 
@@ -340,23 +353,20 @@ call `imgui_bundle_add_app` to create your application.
     add_subdirectory(imgui_bundle)
     imgui_bundle_add_app(hello_world hello_world.cpp)
 
-`imgui_bundle_add_app` is a cmake command, close to `add_executable`,
-which will:
+#### Option 2 : Fetch imgui\_bundle during compilation
 
--   automatically link your app to the required libraries
-    (imgui\_bundle, OpenGl, glad, etc)
+    cmake_minimum_required(VERSION 3.12)
+    project(helloworld_with_helloimgui)
+    set(CMAKE_CXX_STANDARD 17)
 
--   embed the assets (for desktop, mobile, and emscripten apps)
+    include(FetchContent)
+    Set(FETCHCONTENT_QUIET FALSE)
+    FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
+    FetchContent_MakeAvailable(imgui_bundle)
+    # set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
 
--   perform additional customization (app icon and name on mobile
-    platforms, etc)
-
-#### Build with cmake (without imgui\_bundle as a submodule)
-
-Copy this
-[CMakeLists.txt](https://github.com/pthom/imgui_bundle/tree/main/_example_integration/CMakeLists.txt)
-file: it will download and compile imgui-bundle during your app
-compilation.
+    # Build your app
+    imgui_bundle_add_app(hello_world hello_world.cpp)
 
 This cmake file is part of a quick start example available
 [here](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
