@@ -381,7 +381,7 @@ void DemoCoolBar()
     )");
 
     ImGui::ImCoolBarConfig coolBarConfig;
-    coolBarConfig.anchor = ImVec2(0.5f, 0.f);
+    coolBarConfig.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
     if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
     {
         for (const std::string& label: buttonLabels)
@@ -394,6 +394,8 @@ void DemoCoolBar()
         }
         ImGui::EndCoolBar();
     }
+
+    ImGui::NewLine(); ImGui::NewLine();
 }
 
 
