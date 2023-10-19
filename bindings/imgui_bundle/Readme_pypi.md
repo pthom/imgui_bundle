@@ -38,53 +38,142 @@ Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
 ## Batteries included
 
-Dear ImGui Bundle includes the following libraries:
+Dear ImGui Bundle includes the following librariesn which are available
+in C++ *and* in Python:
 
--   [imgui](https://github.com/ocornut/imgui.git) : Dear ImGui,
-    bloat-free Graphical User interface for C++ with minimal
-    dependencies
-
--   [implot](https://github.com/epezent/implot): Immediate Mode Plotting
-
--   [Hello ImGui](https://github.com/pthom/hello_imgui.git):
-    cross-platform Gui apps with the simplicity of a "Hello World" app
-
--   [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo.git):
-    Immediate mode 3D gizmo for scene editing and other controls based
-    on Dear ImGui
-
--   [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit):
-    Colorizing text editor for ImGui
-
--   [imgui-node-editor](https://github.com/thedmd/imgui-node-editor):
-    Node Editor built using Dear ImGui
-
--   [imgui-knobs](https://github.com/altschuler/imgui-knobs): Knobs
-    widgets for ImGui
-
--   [ImFileDialog](https://github.com/pthom/ImFileDialog.git): A file
-    dialog library for Dear ImGui
-
--   [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)
-    Portable GUI dialogs library (C++11, single-header)
-
--   [imgui\_md](https://github.com/mekhontsev/imgui_md.git): Markdown
-    renderer for Dear ImGui using MD4C parser
-
--   [imspinner](https://github.com/dalerank/imspinner): Set of nice
-    spinners for imgui
-
--   [imgui\_toggle](https://github.com/cmdwtf/imgui_toggle): A toggle
-    switch widget for Dear ImGui.
-
--   [ImmVision](https://github.com/pthom/immvision.git): Immediate image
-    debugger and insights
-
--   [imgui\_tex\_inspect](https://github.com/andyborrell/imgui_tex_inspect):
-    A texture inspector tool for Dear ImGui
-
--   [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git):
-    A Sublime Text or VSCode style command palette in ImGui
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/ocornut/imgui.git">imgui</a> : Dear ImGui,
+bloat-free Graphical User interface for C++ with minimal
+dependencies</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg"
+alt="demo widgets imgui" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/epezent/implot">implot</a>: Immediate Mode
+Plotting</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//battery_implot.jpg"
+alt="battery implot" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/hello_imgui.git">Hello ImGui</a>:
+cross-platform Gui apps with the simplicity of a "Hello World"
+app</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg"
+alt="demo docking" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/CedricGuillemet/ImGuizmo.git">ImGuizmo</a>:
+Immediate mode 3D gizmo for scene editing and other controls based on
+Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg"
+alt="demo gizmo" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a>:
+Colorizing text editor for ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg"
+alt="demo widgets editor" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/thedmd/imgui-node-editor">imgui-node-editor</a>:
+Node Editor built using Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg"
+alt="demo node editor" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/mekhontsev/imgui_md.git">imgui_md</a>: Markdown
+renderer for Dear ImGui using MD4C parser</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_md.jpg"
+alt="demo widgets md" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate
+image debugger and insights</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg"
+alt="demo immvision process 1" /> <img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg"
+alt="demo immvision process 2" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>:
+A texture inspector tool for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_imgui_tex_inspector.jpg"
+alt="demo imgui tex inspector" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A
+file dialog library for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imfiledialog.jpg"
+alt="demo widgets imfiledialog" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>
+<em>OS native</em> file dialogs library (C++11, single-header)</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_portablefiledialogs.jpg"
+alt="demo widgets portablefiledialogs" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs
+widgets for ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg"
+alt="demo widgets knobs" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice
+spinners for imgui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg"
+alt="demo widgets spinners" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle
+switch widget for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg"
+alt="demo widgets toggle" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
+A Sublime Text or VSCode style command palette in ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_command_palette.jpg"
+alt="demo widgets command palette" /></p></td>
+</tr>
+</tbody>
+</table>
 
 A big thank you to their authors for their awesome work!
 
