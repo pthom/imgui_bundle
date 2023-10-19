@@ -4010,7 +4010,7 @@ if __name__ == "__main__":
 ====
 
 
-=== Using Dear ImGui Bundle with jupyter notebook
+=== Usage withing jupyter notebook
 
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -4032,7 +4032,7 @@ if __name__ == "__main__":
 
 ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.
 
-This requires a window server, and will not run on google collab.
+This requires a window server, and will not run on Google collab.
 
 Below is a screenshot, that you can test by running `jupyter notebook` inside `bindings/imgui_bundle/demos_python/notebooks`
 
@@ -4054,6 +4054,7 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 .Click to see a detailed explanation of this repository folder structure.
 [%collapsible]
 ====
+
 [source,bash]
 ----
 ./
@@ -4153,6 +4154,7 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 |         +-- imgui_bundle/                               # main cpp library: almost empty,
                                                           # but linked to all external libraries
 ----
+
 ====
 
 [[porting]]
