@@ -2445,6 +2445,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
     #include "ImGuiColorTextEdit/TextEditor.h"
     #include "ImFileDialog/ImFileDialog.h"
     #include "imgui_md_wrapper.h"
+    #include "ImCoolBar/ImCoolbar.h"
     #include "demo_utils/api_demos.h"
 
     #include <fplus/fplus.hpp>
@@ -2453,6 +2454,10 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
 
     void DemoKnobs()
     {
+        ImGuiMd::RenderUnindented(R"(
+            # Knobs
+            [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.
+            )");
         static float knob_float_value = 0.f;
         static int knob_int_value = 0;
 
@@ -2534,6 +2539,11 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
 
     void DemoSpinner()
     {
+        ImGuiMd::RenderUnindented(R"(
+            # Spinners
+            [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.
+        )");
+
         ImColor color(0.3f, 0.5f, 0.9f, 1.f);
         ImGui::Text("spinner_moving_dots");
         ImGui::SameLine();
@@ -2775,8 +2785,53 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
     }
 
 
+    void DemoCoolBar()
+    {
+        auto ShowCoolBarButton = [](const std::string& label) -> bool
+        {
+            float w         = ImGui::GetCoolBarItemWidth();
+
+            // Display transparent image and check if clicked
+            HelloImGui::ImageFromAsset("images/bear_transparent.png", ImVec2(w, w));
+            bool clicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(0);
+
+            // Optional: add a label on the image
+            {
+                ImVec2 topLeftCorner = ImGui::GetItemRectMin();
+                ImVec2 textPos(topLeftCorner.x + ImmApp::EmSize(1.f), topLeftCorner.y + ImmApp::EmSize(1.f));
+                ImGui::GetForegroundDrawList()->AddText(textPos, 0xFFFFFFFF, label.c_str());
+            }
+
+            return clicked;
+        };
+
+
+        std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
+        ImGuiMd::RenderUnindented(R"(
+            # ImCoolBar:
+            ImCoolBar provides a dock-like Cool bar for Dear ImGui
+        )");
+
+        ImGui::ImCoolBarConfig coolBarConfig;
+        coolBarConfig.anchor = ImVec2(0.5f, 0.f);
+        if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
+        {
+            for (const std::string& label: buttonLabels)
+            {
+                if (ImGui::CoolBarItem())
+                {
+                    if (ShowCoolBarButton(label))
+                        printf("Clicked %s\n", label.c_str());
+                }
+            }
+            ImGui::EndCoolBar();
+        }
+    }
+
+
     void demo_widgets()
     {
+        DemoCoolBar();
         DemoPortableFileDialogs(); ImGui::NewLine();
         DemoImFileDialog(); ImGui::NewLine();
         DemoKnobs();
@@ -2787,7 +2842,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
 
     # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
     from typing import List
-    from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome
+    from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome, im_cool_bar
     from imgui_bundle import imgui_command_palette as imcmd
     from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
@@ -3096,7 +3151,42 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
         imgui.text(f"{static.counter=}")
 
 
+    def demo_cool_bar():
+        # Function to show a CoolBar button
+        def show_cool_bar_button(label):
+            w = im_cool_bar.get_cool_bar_item_width()
+
+            # Display transparent image and check if clicked
+            # You would need to implement ImageFromAsset yourself in Python
+            # Here, we simply use a placeholder for the image
+            hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
+            clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
+
+            # Optional: add a label on the image
+            top_left_corner = imgui.get_item_rect_min()
+            text_pos = (top_left_corner.x + immapp.em_size(1.), top_left_corner.y + immapp.em_size(1.))
+            imgui.get_window_draw_list().add_text(text_pos, 0xFFFFFFFF, label)
+
+            return clicked
+
+        button_labels = ["A", "B", "C", "D", "E", "F"]
+        imgui_md.render_unindented("""
+            # ImCoolBar:
+            ImCoolBar provides a dock-like Cool bar for Dear ImGui
+            """)
+
+        cool_bar_config = im_cool_bar.ImCoolBarConfig();
+        cool_bar_config.anchor = ImVec2(0.5, 0.)
+        if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
+            for label in button_labels:
+                if im_cool_bar.cool_bar_item():
+                    if show_cool_bar_button(label):
+                        print(f"Clicked {label}")
+            im_cool_bar.end_cool_bar()
+
+
     def demo_gui():
+        demo_cool_bar()
         demo_portable_file_dialogs()
         imgui.new_line()
         demo_imfile_dialog()
@@ -3111,7 +3201,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
     if __name__ == "__main__":
         from imgui_bundle import immapp
 
-        immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
+        immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
 
 **Logger**
 

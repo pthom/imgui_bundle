@@ -2901,6 +2901,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;ImGuiColorTextEdit/TextEditor.h&quot;</span><span class="tok-cp"></span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;ImFileDialog/ImFileDialog.h&quot;</span><span class="tok-cp"></span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_md_wrapper.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;ImCoolBar/ImCoolbar.h&quot;</span><span class="tok-cp"></span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;demo_utils/api_demos.h&quot;</span><span class="tok-cp"></span>
 
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;fplus/fplus.hpp&gt;</span><span class="tok-cp"></span>
@@ -2909,6 +2910,10 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoKnobs</span><span class="tok-p">()</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
+<span class="tok-s">        # Knobs</span>
+<span class="tok-s">        [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.</span>
+<span class="tok-s">        </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">knob_float_value</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.f</span><span class="tok-p">;</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">knob_int_value</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
 
@@ -2990,6 +2995,11 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoSpinner</span><span class="tok-p">()</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
+<span class="tok-s">        # Spinners</span>
+<span class="tok-s">        [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.</span>
+<span class="tok-s">    </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+
 <span class="tok-w">    </span><span class="tok-n">ImColor</span><span class="tok-w"> </span><span class="tok-n">color</span><span class="tok-p">(</span><span class="tok-mf">0.3f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.5f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.9f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;spinner_moving_dots&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
@@ -3231,8 +3241,53 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-p">}</span><span class="tok-w"></span>
 
 
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoCoolBar</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">ShowCoolBarButton</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[](</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">label</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-&gt;</span><span class="tok-w"> </span><span class="tok-kt">bool</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">w</span><span class="tok-w">         </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetCoolBarItemWidth</span><span class="tok-p">();</span><span class="tok-w"></span>
+
+<span class="tok-w">        </span><span class="tok-c1">// Display transparent image and check if clicked</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/bear_transparent.png&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-n">w</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">w</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">clicked</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">IsItemHovered</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">&amp;&amp;</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">IsMouseClicked</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-w">        </span><span class="tok-c1">// Optional: add a label on the image</span>
+<span class="tok-w">        </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-n">topLeftCorner</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetItemRectMin</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-n">textPos</span><span class="tok-p">(</span><span class="tok-n">topLeftCorner</span><span class="tok-p">.</span><span class="tok-n">x</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">1.f</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-n">topLeftCorner</span><span class="tok-p">.</span><span class="tok-n">y</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">1.f</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetForegroundDrawList</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">AddText</span><span class="tok-p">(</span><span class="tok-n">textPos</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mh">0xFFFFFFFF</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">label</span><span class="tok-p">.</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
+
+<span class="tok-w">        </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">clicked</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+
+
+<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">buttonLabels</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-s">&quot;A&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;B&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;C&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;D&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;E&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;F&quot;</span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
+<span class="tok-s">        # ImCoolBar:</span>
+<span class="tok-s">        ImCoolBar provides a dock-like Cool bar for Dear ImGui</span>
+<span class="tok-s">    </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">ImCoolBarConfig</span><span class="tok-w"> </span><span class="tok-n">coolBarConfig</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">coolBarConfig</span><span class="tok-p">.</span><span class="tok-n">anchor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.f</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">BeginCoolBar</span><span class="tok-p">(</span><span class="tok-s">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImCoolBarFlags_Horizontal</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">coolBarConfig</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-nl">label</span><span class="tok-p">:</span><span class="tok-w"> </span><span class="tok-n">buttonLabels</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">CoolBarItem</span><span class="tok-p">())</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">                </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ShowCoolBarButton</span><span class="tok-p">(</span><span class="tok-n">label</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">                    </span><span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&quot;Clicked %s</span><span class="tok-se">\n</span><span class="tok-s">&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">label</span><span class="tok-p">.</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">EndCoolBar</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">demo_widgets</span><span class="tok-p">()</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">DemoCoolBar</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoPortableFileDialogs</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoImFileDialog</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoKnobs</span><span class="tok-p">();</span><span class="tok-w"></span>
@@ -3251,7 +3306,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <div class="content">
 <pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-c1"># Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle</span>
 <span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">List</span>
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span><span class="tok-p">,</span> <span class="tok-n">imgui_toggle</span><span class="tok-p">,</span> <span class="tok-n">ImVec2</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">ImVec4</span><span class="tok-p">,</span> <span class="tok-n">icons_fontawesome</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span><span class="tok-p">,</span> <span class="tok-n">imgui_toggle</span><span class="tok-p">,</span> <span class="tok-n">ImVec2</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">ImVec4</span><span class="tok-p">,</span> <span class="tok-n">icons_fontawesome</span><span class="tok-p">,</span> <span class="tok-n">im_cool_bar</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui_command_palette</span> <span class="tok-k">as</span> <span class="tok-n">imcmd</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>  <span class="tok-c1"># this will set the assets folder</span>
 
@@ -3560,7 +3615,42 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;</span><span class="tok-si">{</span><span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">counter</span><span class="tok-si">=}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
 
 
+<span class="tok-k">def</span> <span class="tok-nf">demo_cool_bar</span><span class="tok-p">():</span>
+    <span class="tok-c1"># Function to show a CoolBar button</span>
+    <span class="tok-k">def</span> <span class="tok-nf">show_cool_bar_button</span><span class="tok-p">(</span><span class="tok-n">label</span><span class="tok-p">):</span>
+        <span class="tok-n">w</span> <span class="tok-o">=</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">get_cool_bar_item_width</span><span class="tok-p">()</span>
+
+        <span class="tok-c1"># Display transparent image and check if clicked</span>
+        <span class="tok-c1"># You would need to implement ImageFromAsset yourself in Python</span>
+        <span class="tok-c1"># Here, we simply use a placeholder for the image</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/bear_transparent.png&quot;</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-n">w</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">))</span>
+        <span class="tok-n">clicked</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_item_hovered</span><span class="tok-p">()</span> <span class="tok-ow">and</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_mouse_clicked</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">)</span>
+
+        <span class="tok-c1"># Optional: add a label on the image</span>
+        <span class="tok-n">top_left_corner</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_item_rect_min</span><span class="tok-p">()</span>
+        <span class="tok-n">text_pos</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-n">top_left_corner</span><span class="tok-o">.</span><span class="tok-n">x</span> <span class="tok-o">+</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">1.</span><span class="tok-p">),</span> <span class="tok-n">top_left_corner</span><span class="tok-o">.</span><span class="tok-n">y</span> <span class="tok-o">+</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">1.</span><span class="tok-p">))</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_window_draw_list</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">add_text</span><span class="tok-p">(</span><span class="tok-n">text_pos</span><span class="tok-p">,</span> <span class="tok-mh">0xFFFFFFFF</span><span class="tok-p">,</span> <span class="tok-n">label</span><span class="tok-p">)</span>
+
+        <span class="tok-k">return</span> <span class="tok-n">clicked</span>
+
+    <span class="tok-n">button_labels</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-s2">&quot;A&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;B&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;C&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;D&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;E&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;F&quot;</span><span class="tok-p">]</span>
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;&quot;</span>
+<span class="tok-s2">        # ImCoolBar:</span>
+<span class="tok-s2">        ImCoolBar provides a dock-like Cool bar for Dear ImGui</span>
+<span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">)</span>
+
+    <span class="tok-n">cool_bar_config</span> <span class="tok-o">=</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarConfig</span><span class="tok-p">();</span>
+    <span class="tok-n">cool_bar_config</span><span class="tok-o">.</span><span class="tok-n">anchor</span> <span class="tok-o">=</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">begin_cool_bar</span><span class="tok-p">(</span><span class="tok-s2">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarFlags_</span><span class="tok-o">.</span><span class="tok-n">horizontal</span><span class="tok-p">,</span> <span class="tok-n">cool_bar_config</span><span class="tok-p">):</span>
+        <span class="tok-k">for</span> <span class="tok-n">label</span> <span class="tok-ow">in</span> <span class="tok-n">button_labels</span><span class="tok-p">:</span>
+            <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">cool_bar_item</span><span class="tok-p">():</span>
+                <span class="tok-k">if</span> <span class="tok-n">show_cool_bar_button</span><span class="tok-p">(</span><span class="tok-n">label</span><span class="tok-p">):</span>
+                    <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Clicked </span><span class="tok-si">{</span><span class="tok-n">label</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">end_cool_bar</span><span class="tok-p">()</span>
+
+
 <span class="tok-k">def</span> <span class="tok-nf">demo_gui</span><span class="tok-p">():</span>
+    <span class="tok-n">demo_cool_bar</span><span class="tok-p">()</span>
     <span class="tok-n">demo_portable_file_dialogs</span><span class="tok-p">()</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">new_line</span><span class="tok-p">()</span>
     <span class="tok-n">demo_imfile_dialog</span><span class="tok-p">()</span>
@@ -3575,7 +3665,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
     <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">immapp</span>
 
-    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">800</span><span class="tok-p">))</span>  <span class="tok-c1"># type: ignore</span></code></pre>
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">))</span>  <span class="tok-c1"># type: ignore</span></code></pre>
 </div>
 </div>
 </div>
@@ -3912,7 +4002,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 16:24:17 +0200
+Last updated 2023-10-19 20:15:45 +0200
 </div>
 </div>
 </body>
