@@ -1,3 +1,5 @@
+# FAQ
+
 # Python bindings FAQ
 
 -   Q: IDE support with Visual Studio Code / Visual studio does autocomplete my code (i.e. it does not find the stubs):
