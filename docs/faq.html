@@ -511,276 +511,305 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="_introduction" class="article toc2 toc-left">
+<body id="faq" class="article toc2 toc-left">
 <div id="header">
 <h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="_introduction.html"><span class="toc-current">Introduction</span></a>
-<ul class="sectlevel2">
-<li><a href="_introduction.html#_about_dear_imgui_bundle">About Dear ImGui Bundle</a>
-</li>
-<li><a href="_introduction.html#_interactive_manual_demo_in_one_click">Interactive manual &amp; demo in one click!</a>
-</li>
-<li><a href="_introduction.html#_batteries_included">Batteries included</a>
-</li>
-<li><a href="_introduction.html#_easily_port_your_code_between_python_and_c">Easily port your code between python and C&#43;&#43;</a>
-</li>
-</ul>
+<li><a href="introduction.html">Introduction</a>
 </li>
 <li><a href="install-instructions.html">Build and install instructions</a>
 </li>
-<li><a href="_quick_start_examples.html">Quick Start &amp; Examples</a>
+<li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="_usage_instructions.html">Usage instructions</a>
+<li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="_repository_folders_structure.html">Repository folders structure</a>
+<li><a href="folders.html">Repository folders structure</a>
 </li>
-<li><a href="_c_python_porting_advices.html">C&#43;&#43; / Python porting advices</a>
+<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
 </li>
-<li><a href="_closing_words.html">Closing words</a>
+<li><a href="words_author.html">Closing words</a>
 </li>
-<li><a href="_faq.html">FAQ</a>
+<li><a href="faq.html"><span class="toc-current">FAQ</span></a>
+<ul class="sectlevel2">
+<li><a href="faq.html#_python_bindings_faq">Python bindings FAQ</a>
+</li>
+<li><a href="faq.html#_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</a>
+</li>
+<li><a href="faq.html#_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</a>
+</li>
+</ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_introduction">Introduction</h2>
+<h2 id="faq">FAQ</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_about_dear_imgui_bundle">About Dear ImGui Bundle</h3>
-<div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle">Dear ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C&#43;&#43; and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_interactive_manual_demo_in_one_click">Interactive manual &amp; demo in one click!</h3>
-<div class="paragraph">
-<p>Click on the animated demonstration below to launch the fully interactive demonstration.</p>
-</div>
-<div id="truc" class="imageblock">
-<div class="content">
-<a class="image" href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif" alt="Demo" width="700"></a>
-</div>
-<div class="title">Figure 1. Dear ImGui Bundle interactive demo</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-This demonstration is also an interactive manual, similar to the online <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_batteries_included">Batteries included</h3>
-<div class="paragraph">
-<p>Dear ImGui Bundle includes the following libraries:</p>
-</div>
+<h3 id="_python_bindings_faq">Python bindings FAQ</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/ocornut/imgui.git">imgui</a> : Dear ImGui, bloat-free Graphical User interface for C&#43;&#43; with minimal dependencies</p>
-</li>
-<li>
-<p><a href="https://github.com/epezent/implot">implot</a>: Immediate Mode Plotting</p>
-</li>
-<li>
-<p><a href="https://github.com/pthom/hello_imgui.git">Hello ImGui</a>: cross-platform Gui apps with the simplicity of a "Hello World" app</p>
-</li>
-<li>
-<p><a href="https://github.com/CedricGuillemet/ImGuizmo.git">ImGuizmo</a>: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a>: Colorizing text editor for ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/thedmd/imgui-node-editor">imgui-node-editor</a>: Node Editor built using Dear ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs widgets for ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A file dialog library for Dear ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>  Portable GUI dialogs library (C&#43;&#43;11, single-header)</p>
-</li>
-<li>
-<p><a href="https://github.com/mekhontsev/imgui_md.git">imgui_md</a>: Markdown renderer for Dear ImGui using MD4C parser</p>
-</li>
-<li>
-<p><a href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice spinners for imgui</p>
-</li>
-<li>
-<p><a href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle switch widget for Dear ImGui.</p>
-</li>
-<li>
-<p><a href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate image debugger and insights</p>
-</li>
-<li>
-<p><a href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>: A texture inspector tool for Dear ImGui</p>
-</li>
-<li>
-<p><a href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>: A Sublime Text or VSCode style command palette in ImGui</p>
+<p>Q: IDE support with Visual Studio Code / Visual studio does autocomplete my code (i.e. it does not find the stubs):</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>A big thank you to their authors for their awesome work!</p>
+<p>It may take some time for Visual Studio code to find the stubs. You can try to change the setting "python.languageServer" to "default", and then change it back to "pylance". This might speed up the process a bit.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Q: Editable mode does not work</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You should upgrade pip: <code>pip install -U pip</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_easily_port_your_code_between_python_and_c">Easily port your code between python and C&#43;&#43;</h3>
+<h3 id="_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</h3>
 <div class="paragraph">
-<p>The python bindings are autogenerated via an advanced generator (so that keeping them up to date is easy), and closely mirror the original C&#43;&#43; API, with fully typed bindings.</p>
+<p>A high-DPI screen could have a <code>physical pixel</code> resolution of 3840x2160, but on this screen the OS will display widgets with a scaling factor of 200%, so that widgets do not look too small on it.</p>
 </div>
 <div class="paragraph">
-<p>The original code documentation is meticulously kept inside the python stubs. See for example the documentation for <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi">imgui</a>
-, <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi">implot</a>, and <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi">hello imgui</a></p>
+<p><code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated API</a> for High-DPI handling</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</h3>
+<div class="paragraph">
+<p>If your application uses Dear ImGui without HelloImGui or Dear ImGui Bundle, read on for more details: special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.</p>
 </div>
 <div class="paragraph">
-<p>Thanks to this, code completion in your favorite python IDE works like a charm, and porting code between Python and C&#43;&#43; becomes easy.</p>
+<p>This FAQ article tries to be a complement to <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the related ImGui FAQ article</a></p>
 </div>
-<div class="admonitionblock tip">
+<div class="sect3">
+<h4 id="_macos">macOS</h4>
+<div class="paragraph">
+<p>On macOS, our screen&#8217;s physical pixel resolution of 3840x2160 will be hidden by the OS. For example, the OS will answer 1920x1080 when querying the screen resolution (this corresponds to <code>screen coordinates</code>, which may differ from the physical pixels).</p>
+</div>
+<div class="paragraph">
+<p>However, each window has an internal frame buffer whose size is in physical pixels. This is just hidden from the user in most occasions. When  using ImGui, this info is stored inside <code>ImGui::GetDrawData()&#8594;FramebufferScale</code>.</p>
+</div>
+<div class="paragraph">
+<p>On macOS, the visible windows and widgets sizes will appear consistent when switching from a high-DPI screen (for example a Retina screen) to a standard screen.</p>
+</div>
+<div class="paragraph">
+<p>However, font rendering may appear poor and blurry if no action is taken. A simple solution is to query the main screen "backing scale factor", and to use it when loading fonts, like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query macOS for the scaling factor (by using NSScreen api)</span>
+<span class="tok-c1">// (this is a simplified version, which handles only the main screen,</span>
+<span class="tok-c1">//  see imgui/backends/imgui_impl_osx.mm for a more complete version)</span>
+<span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">NSScreen</span><span class="tok-p">.</span><span class="tok-n">mainScreen</span><span class="tok-p">.</span><span class="tok-n">backingScaleFactor</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-c1">// [...]</span>
+
+<span class="tok-c1">// When loading fonts use this factor:</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-c1">// [...]</span>
+
+<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_emscripten">Emscripten</h4>
+<div class="paragraph">
+<p>With emscripten (i.e. inside a browser) the situation is close to macOS: widgets' sizes are relative to the current scaling factor of the screen, <strong>and</strong> to the current zoom level of the given page.</p>
+</div>
+<div class="paragraph">
+<p>As a result, widgets' sizes will appear consistent but font rendering may be blurry if no action is taken. A simple solution is to query the browser&#8217;s <code>devicePixelRatio</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query the browser for the scaling factor (this depends on the screen scaling factor and on the browser zoom level)</span>
+<span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-p">)</span><span class="tok-n">EM_ASM_DOUBLE</span><span class="tok-p">(</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">.</span><span class="tok-n">devicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-p">});</span><span class="tok-w"></span>
+
+<span class="tok-c1">// [...]</span>
+
+<span class="tok-c1">// When loading fonts use this factor:</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-c1">// [...]</span>
+
+<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows">Windows</h4>
+<div class="paragraph">
+<p>Under windows, two cases are possible:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If the application is not <a href="https://learn.microsoft.com/en-us/windows/win32/hidpi/setting-the-default-dpi-awareness-for-a-process">"DPI aware"</a> the application will not be informed about the physical screen resolution. Windows and widgets sizes will be consistent between monitors; however fonts will appear blurry, and nothing can be done about it (there is no access to an underlying buffer with a bigger resolution).</p>
+</li>
+<li>
+<p>If the application is "DPI aware", the application will be informed about the physical size of the screen (i.e. in this case, screen coordinates correspond to physical pixels). As a result, windows fonts, and widgets may appear too small, because their sizes need to be multiplied by the scaling factor. Widgets positioning is also impacted. Also, when moving a window from a high-DPI screen to a standard screen, its apparent size may double suddenly.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Tip</div>
+<div class="title">Note</div>
 </td>
 <td class="content">
-GPT can help you translate between C++ and Python: see <a href="https://chat.openai.com/share/1e61dfec-c2de-4c2a-8149-24926276bbd5">this conversation</a> where GPT4 was used to translate code and summarize the differences between the C&#43;&#43; and Python APIs.
+Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing can be done to improve the rendering of non DPI aware applications</em>. The rest of this FAQ deals with DPI aware applications.
 </td>
 </tr>
 </table>
 </div>
-<details>
-<summary class="title">Click to see an example</summary>
-<div class="content">
 <div class="paragraph">
-<p><span class="image"><img src="https://traineq.org/imgui_bundle_doc/heart.gif" alt="heart" width="200"></span></p>
+<p>Several issues can be encountered when running a DPI-Aware application with ImGui. For example, with a scaling factor of 200%, and if no action  is taken:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The application window initial size will be twice too small</p>
+</li>
+<li>
+<p>Widgets' sizes will be twice too small. Widgets' position will be also affected</p>
+</li>
+<li>
+<p>Fonts will be displayed twice too small</p>
+</li>
+<li>
+<p>Dear ImGui&#8217;s styling will be too small (margins, roundings, etc.)</p>
+</li>
+<li>
+<p>The application window size will visually double when moving the window to a standard screen</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_linux">Linux</h4>
+<div class="paragraph">
+<p>The situation on linux is close to Windows' DPI-aware applications. Applications are informed about the physical number of pixels, and they need to scale according to the screen dpi factor.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_how_to_make_the_application_dpi_aware">Windows: how to make the application DPI aware</h4>
+<div class="paragraph">
+<p>See <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the ImGui related FAQ</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_linux_how_to_correctly_size_and_position_the_widgets">Windows &amp; Linux: how to correctly size and position the widgets</h4>
+<div class="paragraph">
+<p>It is almost always a bad idea to use fixed sizes. This will lead to portability issues, especially on high-DPI screens.</p>
 </div>
 <div class="paragraph">
-<p>Python</p>
+<p>Always pre-multiply your positions and sizes by <code>ImGui::GetFontSize()</code>!</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>In order to make this simpler, the <code>EmVec2</code> function below can greatly reduce the friction: whenever you need to use ImVec2 for positioning or sizing, use <code>EmVec2</code> instead!</p>
+</div>
+<div class="paragraph">
+<p><code>EmVec2()</code> returns a size in multiples of the font height. It is somewhat comparable to the <a href="https://lyty.dev/css/css-unit.html">em CSS Unit</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">time</span>
-<span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
-
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">implot</span><span class="tok-p">,</span> <span class="tok-n">imgui_knobs</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span>
-
-<span class="tok-c1"># Fill x and y whose plot is a heart</span>
-<span class="tok-n">vals</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">2</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
-<span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">power</span><span class="tok-p">(</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">vals</span><span class="tok-p">),</span> <span class="tok-mi">3</span><span class="tok-p">)</span> <span class="tok-o">*</span> <span class="tok-mi">16</span>
-<span class="tok-n">y</span> <span class="tok-o">=</span> <span class="tok-mi">13</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-mi">5</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">3</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span> <span class="tok-o">-</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mi">4</span> <span class="tok-o">*</span> <span class="tok-n">vals</span><span class="tok-p">)</span>
-<span class="tok-c1"># Heart pulse rate and time tracking</span>
-<span class="tok-n">phase</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
-<span class="tok-n">t0</span> <span class="tok-o">=</span> <span class="tok-n">time</span><span class="tok-o">.</span><span class="tok-n">time</span><span class="tok-p">()</span> <span class="tok-o">+</span> <span class="tok-mf">0.2</span>
-<span class="tok-n">heart_pulse_rate</span> <span class="tok-o">=</span> <span class="tok-mi">80</span>
-
-
-<span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
-    <span class="tok-k">global</span> <span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span> <span class="tok-n">phase</span><span class="tok-p">,</span> <span class="tok-n">t0</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y</span>
-    <span class="tok-c1"># Make sure that the animation is smooth</span>
-    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">fps_idling</span><span class="tok-o">.</span><span class="tok-n">enable_idling</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
-
-    <span class="tok-n">t</span> <span class="tok-o">=</span> <span class="tok-n">time</span><span class="tok-o">.</span><span class="tok-n">time</span><span class="tok-p">()</span>
-    <span class="tok-n">phase</span> <span class="tok-o">+=</span> <span class="tok-p">(</span><span class="tok-n">t</span> <span class="tok-o">-</span> <span class="tok-n">t0</span><span class="tok-p">)</span> <span class="tok-o">*</span> <span class="tok-n">heart_pulse_rate</span> <span class="tok-o">/</span> <span class="tok-p">(</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">2</span><span class="tok-p">)</span>
-    <span class="tok-n">k</span> <span class="tok-o">=</span> <span class="tok-mf">0.8</span> <span class="tok-o">+</span> <span class="tok-mf">0.1</span> <span class="tok-o">*</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">phase</span><span class="tok-p">)</span>
-    <span class="tok-n">t0</span> <span class="tok-o">=</span> <span class="tok-n">t</span>
-
-    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Bloat free code&quot;</span><span class="tok-p">)</span>
-    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Heart&quot;</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mi">21</span><span class="tok-p">,</span> <span class="tok-mi">21</span><span class="tok-p">))</span>
-    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span> <span class="tok-o">*</span> <span class="tok-n">k</span><span class="tok-p">,</span> <span class="tok-n">y</span> <span class="tok-o">*</span> <span class="tok-n">k</span><span class="tok-p">)</span>
-    <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
-
-    <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">heart_pulse_rate</span> <span class="tok-o">=</span> <span class="tok-n">imgui_knobs</span><span class="tok-o">.</span><span class="tok-n">knob</span><span class="tok-p">(</span><span class="tok-s2">&quot;Pulse&quot;</span><span class="tok-p">,</span> <span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span> <span class="tok-mi">30</span><span class="tok-p">,</span> <span class="tok-mi">180</span><span class="tok-p">)</span>
-
-
-<span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
-    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">300</span><span class="tok-p">,</span> <span class="tok-mi">450</span><span class="tok-p">),</span> <span class="tok-n">window_title</span><span class="tok-o">=</span><span class="tok-s2">&quot;Hello!&quot;</span><span class="tok-p">,</span> <span class="tok-n">with_implot</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">fps_idle</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>  <span class="tok-c1"># type: ignore</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>C&#43;&#43;</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui.h&quot;</span><span class="tok-cp"></span>
-<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;implot/implot.h&quot;</span><span class="tok-cp"></span>
-<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui-knobs/imgui-knobs.h&quot;</span><span class="tok-cp"></span>
-<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span><span class="tok-cp"></span>
-
-<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;cmath&gt;</span><span class="tok-cp"></span>
-
-<span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;&amp;</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">)</span><span class="tok-w"></span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-nf">EmVec2</span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">)</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-p">(</span><span class="tok-n">values</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">size_t</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-o">++</span><span class="tok-n">i</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">r</span><span class="tok-p">[</span><span class="tok-n">i</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">values</span><span class="tok-p">[</span><span class="tok-n">i</span><span class="tok-p">];</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-p">}</span><span class="tok-w"></span>
-
-<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-p">[])</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-c1">// Fill x and y whose plot is a heart</span>
-<span class="tok-w">    </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">3.1415926535</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-kt">double</span><span class="tok-o">&gt;</span><span class="tok-w">  </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">2.</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-mf">0.01</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-n">x</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-n">pow</span><span class="tok-p">(</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">3.</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">16.</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-n">y</span><span class="tok-p">.</span><span class="tok-n">push_back</span><span class="tok-p">(</span><span class="tok-mf">13.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-mi">5</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">2.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-mi">2</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">3.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-mf">4.</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">));</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-c1">// Heart pulse rate and time tracking</span>
-<span class="tok-w">    </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">phase</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">t0</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">ClockSeconds</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-mf">0.2</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">80.</span><span class="tok-p">;</span><span class="tok-w"></span>
-
-<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">gui</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-c1">// Make sure that the animation is smooth</span>
-<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">fpsIdling</span><span class="tok-p">.</span><span class="tok-n">enableIdling</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
-
-<span class="tok-w">        </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">ClockSeconds</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">phase</span><span class="tok-w"> </span><span class="tok-o">+=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">t</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">t0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">double</span><span class="tok-p">)</span><span class="tok-n">heart_pulse_rate</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">pi</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">2.</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.8</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-mf">0.1</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">phase</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">t0</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-p">;</span><span class="tok-w"></span>
-
-<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Bloat free code&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">xk</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-n">yk</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">VectorTimesK</span><span class="tok-p">(</span><span class="tok-n">y</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">BeginPlot</span><span class="tok-p">(</span><span class="tok-s">&quot;Heart&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mi">21</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">21</span><span class="tok-p">));</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">PlotLine</span><span class="tok-p">(</span><span class="tok-s">&quot;&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">xk</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-n">yk</span><span class="tok-p">.</span><span class="tok-n">data</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">)</span><span class="tok-n">xk</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">());</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImPlot</span><span class="tok-o">::</span><span class="tok-n">EndPlot</span><span class="tok-p">();</span><span class="tok-w"></span>
-
-<span class="tok-w">        </span><span class="tok-n">ImGuiKnobs</span><span class="tok-o">::</span><span class="tok-n">Knob</span><span class="tok-p">(</span><span class="tok-s">&quot;Pulse&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">heart_pulse_rate</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">30.</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">180.</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
-
-<span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">gui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Hello!&quot;</span><span class="tok-p">,</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-cm">/*windowSizeAuto=*/</span><span class="tok-nb">false</span><span class="tok-w"> </span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*windowRestorePreviousGeometry==*/</span><span class="tok-nb">false</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*windowSize=*/</span><span class="tok-p">{</span><span class="tok-mi">300</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">450</span><span class="tok-p">},</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-cm">/*fpsIdle=*/</span><span class="tok-w"> </span><span class="tok-mf">25.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-cm">/*withImplot=*/</span><span class="tok-nb">true</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">IM_ASSERT</span><span class="tok-p">(</span><span class="tok-n">GImGui</span><span class="tok-w"> </span><span class="tok-o">!=</span><span class="tok-w"> </span><span class="tok-nb">NULL</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetFontSize</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
-</details>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_linux_how_to_load_fonts_at_the_correct_size">Windows &amp; Linux: How to load fonts at the correct size</h4>
+<div class="paragraph">
+<p>You need to query the application window content scale.</p>
+</div>
+<div class="paragraph">
+<p>On windows, to achieve this, you can call <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforwindow">DpiForWindow</a> on windows.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">HWND</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">GetDpiForWindow</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-mf">96.f</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// 96 is the &quot;standard dpi&quot;</span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Some backends may wrap this, e.g. GLFW:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">yscale</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">glfwGetWindowContentScale</span><span class="tok-p">((</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">yscale</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// xscale and yscale will likely be equal</span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you know the window content scale, you can use this when loading fonts:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">WindowContentScale</span><span class="tok-p">(...);</span><span class="tok-w"></span>
+<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-p">);</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_linux_how_to_adapt_dear_imguis_styling_scale">Windows &amp; Linux: how to adapt Dear ImGui’s styling scale</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cppp"><span></span>float dpiScale = WindowContentScale(...);
+ImGui::GetStyle().ScaleAllSizes(dpiScale);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_linux_how_to_have_a_consistent_initial_window_size_between_monitors">Windows &amp; Linux: how to have a consistent initial window size between monitors</h4>
+<div class="paragraph">
+<p>As mentioned before, multiply your window size by WindowContentScale(&#8230;&#8203;).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_windows_linux_adapting_windows_and_font_size_when_application_is_moved_between_monitors">Windows &amp; Linux: adapting windows and font size when application is moved between monitors</h4>
+<div class="paragraph">
+<p>This is a bit more difficult: see <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">ImGui related FAQ</a></p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="install-instructions.html">Build and install instructions</a> →</p>
+<p>← Previous: <a href="words_author.html">Closing words</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a></p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 12:21:30 +0200
+Last updated 2023-10-19 12:31:40 +0200
 </div>
 </div>
 </body>

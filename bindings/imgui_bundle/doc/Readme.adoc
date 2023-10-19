@@ -72,6 +72,7 @@ Click on the logo for a complete interactive demonstration!
 {btn-sources} {btn-doc} {btn-interactive-manual}
 ****
 
+[[introduction]]
 == Introduction
 
 :doc_branch: doc
@@ -378,6 +379,9 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_cp
 TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
 
 
+[[quickstart]]
+== Quick Start & Examples
+
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -392,8 +396,6 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
-
-== Quick Start & Examples
 
 First, install Dear ImGui Bundle following the <<install-instructions>>.
 
@@ -3641,6 +3643,7 @@ image::{url-demo-images}/demo_node_editor.jpg[width="400"]
 .ImGuizmo in action
 image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 
+[[manual]]
 == Usage instructions
 
 === Dear ImGui - Immediate GUI
@@ -3937,6 +3940,7 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 
 
 
+[[folders]]
 == Repository folders structure
 
 .Click to see a detailed explanation of this repository folder structure.
@@ -4043,6 +4047,7 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 ----
 ====
 
+[[porting]]
 == {cpp} / Python porting advices
 
 === General advices
@@ -4193,6 +4198,7 @@ It can be used in two steps:
 
 Example: https://github.com/pthom/hello_imgui/issues/33[this issue on macOS] was solved thanks to this.
 
+[[words_author]]
 == Closing words
 
 === Who is this project for
@@ -4291,4 +4297,4 @@ Three of my past projects gave me the idea to develop this library.
 Developments for Dear ImGui Bundle and its related automatic binding generator began in january 2022.
 
 == FAQ
-See link:https://pthom.github.io/imgui_bundle/_faq.html[FAQ]
+See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]

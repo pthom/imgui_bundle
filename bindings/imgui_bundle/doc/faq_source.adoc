@@ -1,3 +1,4 @@
+[[faq]]
 == FAQ
 :toc: left
 :source-highlighter: pygments

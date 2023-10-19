@@ -435,214 +435,225 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<style>
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments { background: #f8f8f8; }
+pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 <style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
                        font-size: 0.9em;} #content{display: flex; flex-direction: column; flex: 1 1 auto;}
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="_closing_words" class="article toc2 toc-left">
+<body id="folders" class="article toc2 toc-left">
 <div id="header">
 <h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="_introduction.html">Introduction</a>
+<li><a href="introduction.html">Introduction</a>
 </li>
 <li><a href="install-instructions.html">Build and install instructions</a>
 </li>
-<li><a href="_quick_start_examples.html">Quick Start &amp; Examples</a>
+<li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="_usage_instructions.html">Usage instructions</a>
+<li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="_repository_folders_structure.html">Repository folders structure</a>
+<li><a href="folders.html"><span class="toc-current">Repository folders structure</span></a>
 </li>
-<li><a href="_c_python_porting_advices.html">C&#43;&#43; / Python porting advices</a>
+<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
 </li>
-<li><a href="_closing_words.html"><span class="toc-current">Closing words</span></a>
-<ul class="sectlevel2">
-<li><a href="_closing_words.html#_who_is_this_project_for">Who is this project for</a>
+<li><a href="words_author.html">Closing words</a>
 </li>
-<li><a href="_closing_words.html#_acknowledgments">Acknowledgments</a>
-</li>
-<li><a href="_closing_words.html#_license">License</a>
-</li>
-<li><a href="_closing_words.html#_alternatives">Alternatives</a>
-</li>
-<li><a href="_closing_words.html#_about_the_author">About the author</a>
-</li>
-<li><a href="_closing_words.html#_how_is_dear_imgui_bundle_developed">How is Dear ImGui Bundle developed</a>
-</li>
-</ul>
-</li>
-<li><a href="_faq.html">FAQ</a>
+<li><a href="faq.html">FAQ</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_closing_words">Closing words</h2>
+<h2 id="folders">Repository folders structure</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_who_is_this_project_for">Who is this project for</h3>
-<div class="paragraph">
-<p>As mentioned in the intro,</p>
-</div>
-<div class="sidebarblock">
+<details>
+<summary class="title">Click to see a detailed explanation of this repository folder structure.</summary>
 <div class="content">
-<div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle">Dear ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C&#43;&#43; and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Dear ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.</p>
-</div>
-<div class="paragraph">
-<p>It is well adapted for</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>developers and researchers who want to switch easily between and research and development environment by facilitating the port of research artifacts</p>
-</li>
-<li>
-<p>beginners and developers who want to quickly develop an application without learning a GUI framework</p>
-</li>
-</ul>
-</div>
-<div class="sect3">
-<h4 id="_who_is_this_project_not_for">Who is this project <strong>not</strong> for</h4>
-<div class="paragraph">
-<p>You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.</p>
-</div>
-<div class="paragraph">
-<p>Also, the library makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_acknowledgments">Acknowledgments</h3>
-<div class="paragraph">
-<p>Dear ImGui Bundle would not be possible without the work of the authors of "Dear ImGui", and especially <a href="https://www.miracleworld.net/">Omar Cornut</a>.</p>
-</div>
-<div class="paragraph">
-<p>It also includes a lot of other projects, and I&#8217;d like to thank their authors for their awesome work!</p>
-</div>
-<div class="paragraph">
-<p>A particular mention for <a href="https://evanpezent.com/">Evan Pezent</a> (author of ImPlot), <a href="https://github.com/CedricGuillemet">Cédric Guillemet</a> (author of ImGuizmo), <a href="https://merlin3d.wordpress.com/about/">Balázs Jákó</a> (author of ImGuiColorTextEdit), and <a href="https://github.com/thedmd">Michał Cichoń</a> (author of imgui-node-editor), and <a href="https://github.com/mekhontsev">Dmitry Mekhontsev</a> (author of imgui-md), <a href="https://github.com/andyborrell">Andy Borrel</a> (author of imgui-tex-inspect, another image debugging tool, which I discovered long after having developed immvision).</p>
-</div>
-<div class="paragraph">
-<p>This doc was built using <a href="https://asciidoc.org/">Asciidoc</a>.</p>
-</div>
-<div class="paragraph">
-<p>Immvision was inspired by <a href="https://billbaxter.com/projects/imdebug/">The Image Debugger</a>, by Bill Baxter.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_license">License</h3>
-<div class="sidebarblock">
+<div class="listingblock">
 <div class="content">
-<div class="paragraph">
-<p>The MIT License (MIT)</p>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>./
++-- Readme.md -&gt; bindings/imgui_bundle/Readme.md           <span class="tok-c1"># doc</span>
++-- Readme_devel.md
+<span class="tok-p">|</span>
++-- _example_integration/                                   <span class="tok-c1"># Demonstrate how to easily use</span>
+<span class="tok-p">|</span>         +-- CMakeLists.txt                                <span class="tok-c1"># imgui_bundle in a C++ app</span>
+<span class="tok-p">|</span>         +-- assets/
+<span class="tok-p">|</span>         +-- hello_world.main.cpp
+<span class="tok-p">|</span>
++-- imgui_bundle_cmake/                                     <span class="tok-c1"># imgui_bundle_add_app() :</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                 <span class="tok-c1"># a cmake function you can use</span>
+<span class="tok-p">|</span>         +-- imgui_bundle_add_app.cmake                    <span class="tok-c1"># to create an app in one line</span>
+<span class="tok-p">|</span>
++-- bindings/                                               <span class="tok-c1"># root for the python bindings</span>
+<span class="tok-p">|</span>         +-- imgui_bundle/
+<span class="tok-p">|</span>                  +-- assets/                              <span class="tok-c1"># assets/ folder: you need to</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># copy this folder</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># into your app folder if you</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                        <span class="tok-c1"># intend to use markdown</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>
+<span class="tok-p">|</span>                  +-- demos_assets/                        <span class="tok-c1"># assets used by demos</span>
+<span class="tok-p">|</span>                  +-- demos_cpp/                           <span class="tok-c1"># lots of C++ demos</span>
+<span class="tok-p">|</span>                  +-- demos_python/                        <span class="tok-c1"># lots of python demos</span>
+<span class="tok-p">|</span>                  +-- imgui/                               <span class="tok-c1"># imgui stubs</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- __init__.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- backends.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- internal.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>     +-- py.typed
+<span class="tok-p">|</span>                  +-- implot.pyi                           <span class="tok-c1"># implot stubs</span>
+<span class="tok-p">|</span>                  +-- __init__.py
+<span class="tok-p">|</span>                  +-- __init__.pyi
+<span class="tok-p">|</span>                  +-- hello_imgui.pyi
+<span class="tok-p">|</span>                  +-- ...                                  <span class="tok-c1"># lots of other libs stubs</span>
+<span class="tok-p">|</span>                  +-- ...
+<span class="tok-p">|</span>                  +-- ...
+<span class="tok-p">|</span>                  +-- immapp/                              <span class="tok-c1"># immapp: immediate app</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        <span class="tok-p">|</span>                               <span class="tok-c1"># utilities</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- __init__.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- __init__.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- icons_fontawesome.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- immapp_cpp.pyi
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- immapp_utils.py
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>        +-- py.typed
+<span class="tok-p">|</span>                  +-- _imgui_bundle.cpython-38-darwin.so  <span class="tok-c1"># imGui_bundle python</span>
+<span class="tok-p">|</span>                  <span class="tok-p">|</span>                                       <span class="tok-c1"># dynamic library</span>
+<span class="tok-p">|</span>                  +-- glfw_utils.py
+<span class="tok-p">|</span>                  +-- py.typed
+<span class="tok-p">|</span>
+<span class="tok-p">|</span>
++-- cmake/                                                 <span class="tok-c1"># Private cmake utilities</span>
+<span class="tok-p">|</span>         +-- add_imgui.cmake
+<span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>
++-- external/                                              <span class="tok-c1"># Root of all bound libraries</span>
+<span class="tok-p">|</span>         +-- CMakeLists.txt
+<span class="tok-p">|</span>         +-- imgui/                                       <span class="tok-c1"># ImGui root</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/                          <span class="tok-c1"># ImGui bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- imgui/                             <span class="tok-c1"># ImGui submodule</span>
+<span class="tok-p">|</span>         +-- ImGuizmo/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/                          <span class="tok-c1"># ImGuizmo bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ImGuizmo/                          <span class="tok-c1"># ImGuizmo submodule</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ImGuizmoPure/                      <span class="tok-c1"># Manual wrappers to help</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># bindings generation</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- ... lots of other bound libraries/           <span class="tok-c1"># Lots of other bound libraries</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- <span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- bindings/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- _doc/
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- bindings_generation/                         <span class="tok-c1"># Script to generate bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         <span class="tok-p">|</span>                                      <span class="tok-c1"># and to facilitate external</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- __init__.py                        <span class="tok-c1"># libraries update</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- all_external_libraries.py
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- autogenerate_all.py
+<span class="tok-p">|</span>         <span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>         <span class="tok-p">|</span>
+<span class="tok-p">|</span>         +-- SDL/SDL/                                     <span class="tok-c1"># Linked library (without</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># python bindings)</span>
+<span class="tok-p">|</span>         +-- fplus/fplus/                                 <span class="tok-c1"># Library without bindings</span>
+<span class="tok-p">|</span>         +-- glfw/glfw                                    <span class="tok-c1"># Library without bindings</span>
+<span class="tok-p">|</span>
++-- lg_cmake_utils/                                        <span class="tok-c1"># Cmake utils for bindings</span>
+<span class="tok-p">|</span>         <span class="tok-p">|</span>                                                <span class="tok-c1"># generation</span>
+<span class="tok-p">|</span>         +-- lg_cmake_utils.cmake
+<span class="tok-p">|</span>         +-- ...
+<span class="tok-p">|</span>
++-- pybind_native_debug/
+<span class="tok-p">|</span>         +-- CMakeLists.txt
+<span class="tok-p">|</span>         +-- Readme.md
+<span class="tok-p">|</span>         +-- pybind_native_debug.cpp
+<span class="tok-p">|</span>         +-- pybind_native_debug.py
+<span class="tok-p">|</span>
++-- src/
+<span class="tok-p">|</span>         +-- imgui_bundle/                               <span class="tok-c1"># main cpp library: almost empty,</span>
+                                                          <span class="tok-c1"># but linked to all external libraries</span></code></pre>
 </div>
-<div class="paragraph">
-<p>Copyright (c) 2021-2023 Pascal Thomet</p>
-</div>
-<div class="paragraph">
-<p>Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:</p>
-</div>
-<div class="paragraph">
-<p>The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.</p>
-</div>
-<div class="paragraph">
-<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.</p>
 </div>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_alternatives">Alternatives</h3>
-<div class="paragraph">
-<p><a href="https://pyimgui.readthedocs.io/en/latest/">pyimgui</a> provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.</p>
-</div>
-<div class="paragraph">
-<p><a href="https://dearpygui.readthedocs.io/en/latest/">Dear PyGui</a>  (<a href="https://github.com/hoffstadt/DearPyGui">repository</a>) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_about_the_author">About the author</h3>
-<div class="paragraph">
-<p>Dear ImGui Bundle is developed by Pascal Thomet. I am reachable on my <a href="https://github.com/pthom">Github page</a>. I sometimes <a href="http://code-ballads.net/">blog</a>. There is a <a href="https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc">playlist</a> related to ImGui Bundle on YouTube.</p>
-</div>
-<div class="paragraph">
-<p>I have a past in computer vision, and a lot of experience in the trenches between development and research teams; and I found ImGui to be a nice way to reduce the delay between a research prototype and its use in production code.</p>
-</div>
-<div class="paragraph">
-<p>I also have an inclination for self documenting code, and the doc you are reading was a way to explore new ways to document projects.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_is_dear_imgui_bundle_developed">How is Dear ImGui Bundle developed</h3>
-<div class="paragraph">
-<p>The development of the initial version of Dear ImGui Bundle took about one year at full time.</p>
-</div>
-<div class="paragraph">
-<p>The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I&#8217;ll give more information about the bindings generator a bit later in 2023.</p>
-</div>
-<div class="paragraph">
-<p>Please be tolerant if you find issues! Dear ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).</p>
-</div>
-<div class="paragraph">
-<p>If you need consulting about this library or about the bindings generator in the context of a commercial project, please contact me by email.</p>
-</div>
-<div class="paragraph">
-<p>Contributions are welcome!</p>
-</div>
-<div class="sect3">
-<h4 id="_history">History</h4>
-<div class="paragraph">
-<p>Three of my past projects gave me the idea to develop this library.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>, an interactive manual for Dear ImGui, which I developed in June 2020</p>
-</li>
-<li>
-<p><a href="https://traineq.org/implot_demo/src/implot_demo.html">implot demo</a> which I developed in 2020.</p>
-</li>
-<li>
-<p><a href="https://github.com/pthom/imgui_datascience">imgui_datascience</a>, a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Developments for Dear ImGui Bundle and its related automatic binding generator began in january 2022.</p>
-</div>
-</div>
-</div>
+</details>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="_c_python_porting_advices.html">C&#43;&#43; / Python porting advices</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="_faq.html">FAQ</a> →</p>
+<p>← Previous: <a href="manual.html">Usage instructions</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="porting.html">C&#43;&#43; / Python porting advices</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 12:21:30 +0200
+Last updated 2023-10-19 12:31:40 +0200
 </div>
 </div>
 </body>

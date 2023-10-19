@@ -435,353 +435,214 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
-<style>
-pre.pygments .hll { background-color: #ffffcc }
-pre.pygments { background: #f8f8f8; }
-pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
-pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
-pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
-pre.pygments .tok-o { color: #666666 } /* Operator */
-pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
-pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
-pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
-pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
-pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
-pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
-pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
-pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
-pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
-pre.pygments .tok-go { color: #888888 } /* Generic.Output */
-pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
-pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
-pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
-pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
-pre.pygments .tok-m { color: #666666 } /* Literal.Number */
-pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
-pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
-pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
-pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
-pre.pygments .tok-no { color: #880000 } /* Name.Constant */
-pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
-pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
-pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
-pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
-pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
-pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
-pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
-pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
-pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
-pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
-pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
-pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
-pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
-pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
-pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
-pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
-pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
-pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
-pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
-pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
-pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
-pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
-pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
-pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
-pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
-pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
-pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
-pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
-pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
-pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
-pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
-pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
-</style>
 <style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
                        font-size: 0.9em;} #content{display: flex; flex-direction: column; flex: 1 1 auto;}
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="_c_python_porting_advices" class="article toc2 toc-left">
+<body id="words_author" class="article toc2 toc-left">
 <div id="header">
 <h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="_introduction.html">Introduction</a>
+<li><a href="introduction.html">Introduction</a>
 </li>
 <li><a href="install-instructions.html">Build and install instructions</a>
 </li>
-<li><a href="_quick_start_examples.html">Quick Start &amp; Examples</a>
+<li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="_usage_instructions.html">Usage instructions</a>
+<li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="_repository_folders_structure.html">Repository folders structure</a>
+<li><a href="folders.html">Repository folders structure</a>
 </li>
-<li><a href="_c_python_porting_advices.html"><span class="toc-current">C&#43;&#43; / Python porting advices</span></a>
+<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
+</li>
+<li><a href="words_author.html"><span class="toc-current">Closing words</span></a>
 <ul class="sectlevel2">
-<li><a href="_c_python_porting_advices.html#_general_advices">General advices</a>
+<li><a href="words_author.html#_who_is_this_project_for">Who is this project for</a>
 </li>
-<li><a href="_c_python_porting_advices.html#_enums_and_textinput">Enums and TextInput</a>
+<li><a href="words_author.html#_acknowledgments">Acknowledgments</a>
 </li>
-<li><a href="_c_python_porting_advices.html#_advanced_glfw_callbacks">Advanced glfw callbacks</a>
+<li><a href="words_author.html#_license">License</a>
 </li>
-<li><a href="_c_python_porting_advices.html#_debug_native_c_in_python_scripts">Debug native C&#43;&#43; in python scripts</a>
+<li><a href="words_author.html#_alternatives">Alternatives</a>
+</li>
+<li><a href="words_author.html#_about_the_author">About the author</a>
+</li>
+<li><a href="words_author.html#_how_is_dear_imgui_bundle_developed">How is Dear ImGui Bundle developed</a>
 </li>
 </ul>
 </li>
-<li><a href="_closing_words.html">Closing words</a>
-</li>
-<li><a href="_faq.html">FAQ</a>
+<li><a href="faq.html">FAQ</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_c_python_porting_advices">C&#43;&#43; / Python porting advices</h2>
+<h2 id="words_author">Closing words</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_general_advices">General advices</h3>
+<h3 id="_who_is_this_project_for">Who is this project for</h3>
 <div class="paragraph">
-<p>ImGui is a C&#43;&#43; library that was ported to Python. In order to work with it, you will often refer to its <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">manual</a>, which shows example code in C&#43;&#43;.</p>
-</div>
-<div class="paragraph">
-<p>In order to translate from C&#43;&#43; to Python:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Change the function names and parameters' names from <code>CamelCase</code> to <code>snake_case</code></p>
-</li>
-<li>
-<p>Change the way the output are handled.</p>
-<div class="olist loweralpha">
-<ol class="loweralpha">
-<li>
-<p>in C&#43;&#43; <code>ImGui::RadioButton</code> modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.</p>
-</li>
-<li>
-<p>In python, the (possibly modified) value is transmitted via the return: <code>imgui.radio_button</code> returns a <code>Tuple[bool, str]</code> which contains <code>(user_clicked, new_value)</code>.</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>if porting some code that uses static variables, use the <code>@immapp.static</code> decorator.
- In this case, this decorator simply adds a variable <code>value</code> at  the function scope. It is preserved between calls.
-Normally, this variable should be accessed via <code>demo_radio_button.value</code>, however the first line of the function adds a synonym named static for more clarity.
-Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.</p>
-</li>
-</ol>
-</div>
-<div class="sect3">
-<h4 id="_example_2">Example:</h4>
-<div class="paragraph">
-<p>C&#43;&#43;</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoRadioButton</span><span class="tok-p">()</span><span class="tok-w"></span>
-<span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">value</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio a&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio b&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio c&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">2</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Python</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>
-<span class="tok-k">def</span> <span class="tok-nf">demo_radio_button</span><span class="tok-p">():</span>
-    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_radio_button</span>
-    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio a&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
-    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
-    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio b&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
-    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
-    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio c&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">2</span><span class="tok-p">)</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_enums_and_textinput">Enums and TextInput</h3>
-<div class="paragraph">
-<p>In the example below, two differences are important:</p>
-</div>
-<div class="sect3">
-<h4 id="_inputtext_functions">InputText functions:</h4>
-<div class="paragraph">
-<p><code>imgui.input_text</code> (Python) is equivalent to <code>ImGui::InputText</code> (C&#43;&#43;)</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>In C&#43;&#43;, it uses two parameters for the text: the text pointer, and its length.</p>
-</li>
-<li>
-<p>In Python, you can simply pass a string, and get back its modified value in the returned tuple.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_enums_handling">Enums handling:</h4>
-<div class="ulist">
-<ul>
-<li>
-<p><code>ImGuiInputTextFlags_</code> (C&#43;&#43;) corresponds to <code>imgui.InputTextFlags_</code> (python) and it is an <em>enum</em> (note the trailing underscore).</p>
-</li>
-<li>
-<p><code>ImGuiInputTextFlags</code> (C&#43;&#43;) corresponds to <code>imgui.InputTextFlags</code> (python) and it is an <em>int</em>  (note: no trailing underscore)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You will find many similar enums.</p>
-</div>
-<div class="paragraph">
-<p>The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_example_3">Example</h4>
-<div class="paragraph">
-<p>C&#43;&#43;</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase</span><span class="tok-p">()</span><span class="tok-w"></span>
-<span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">[</span><span class="tok-mi">64</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">64</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Python</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">text</span><span class="tok-o">=</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span>
-<span class="tok-k">def</span> <span class="tok-nf">demo_input_text_decimal</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
-    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_input_text_decimal</span>
-    <span class="tok-n">flags</span><span class="tok-p">:</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
-            <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_uppercase</span><span class="tok-o">.</span><span class="tok-n">value</span>
-          <span class="tok-o">|</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_no_blank</span><span class="tok-o">.</span><span class="tok-n">value</span>
-        <span class="tok-p">)</span>
-    <span class="tok-n">changed</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">,</span> <span class="tok-n">flags</span><span class="tok-p">)</span></code></pre>
-</div>
+<p>As mentioned in the intro,</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
-<p>Note: in C&#43;&#43;, by using <code>imgui_stdlib.h</code>, it is also possible to write:</p>
+<p><a href="https://github.com/pthom/imgui_bundle">Dear ImGui Bundle</a> is a bundle for <a href="https://github.com/ocornut/imgui">Dear ImGui</a>, including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in C&#43;&#43; and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.</p>
 </div>
-<div class="listingblock">
+</div>
+</div>
+<div class="paragraph">
+<p>Dear ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.</p>
+</div>
+<div class="paragraph">
+<p>It is well adapted for</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>developers and researchers who want to switch easily between and research and development environment by facilitating the port of research artifacts</p>
+</li>
+<li>
+<p>beginners and developers who want to quickly develop an application without learning a GUI framework</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_who_is_this_project_not_for">Who is this project <strong>not</strong> for</h4>
+<div class="paragraph">
+<p>You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.</p>
+</div>
+<div class="paragraph">
+<p>Also, the library makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_acknowledgments">Acknowledgments</h3>
+<div class="paragraph">
+<p>Dear ImGui Bundle would not be possible without the work of the authors of "Dear ImGui", and especially <a href="https://www.miracleworld.net/">Omar Cornut</a>.</p>
+</div>
+<div class="paragraph">
+<p>It also includes a lot of other projects, and I&#8217;d like to thank their authors for their awesome work!</p>
+</div>
+<div class="paragraph">
+<p>A particular mention for <a href="https://evanpezent.com/">Evan Pezent</a> (author of ImPlot), <a href="https://github.com/CedricGuillemet">Cédric Guillemet</a> (author of ImGuizmo), <a href="https://merlin3d.wordpress.com/about/">Balázs Jákó</a> (author of ImGuiColorTextEdit), and <a href="https://github.com/thedmd">Michał Cichoń</a> (author of imgui-node-editor), and <a href="https://github.com/mekhontsev">Dmitry Mekhontsev</a> (author of imgui-md), <a href="https://github.com/andyborrell">Andy Borrel</a> (author of imgui-tex-inspect, another image debugging tool, which I discovered long after having developed immvision).</p>
+</div>
+<div class="paragraph">
+<p>This doc was built using <a href="https://asciidoc.org/">Asciidoc</a>.</p>
+</div>
+<div class="paragraph">
+<p>Immvision was inspired by <a href="https://billbaxter.com/projects/imdebug/">The Image Debugger</a>, by Bill Baxter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_license">License</h3>
+<div class="sidebarblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui/misc/cpp/imgui_stdlib.h&quot;</span><span class="tok-cp"></span>
-
-<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase_StdString</span><span class="tok-p">()</span><span class="tok-w"></span>
-<span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+<div class="paragraph">
+<p>The MIT License (MIT)</p>
 </div>
+<div class="paragraph">
+<p>Copyright (c) 2021-2023 Pascal Thomet</p>
 </div>
+<div class="paragraph">
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+</div>
+<div class="paragraph">
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+</div>
+<div class="paragraph">
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_advanced_glfw_callbacks">Advanced glfw callbacks</h3>
+<h3 id="_alternatives">Alternatives</h3>
 <div class="paragraph">
-<p>When using the glfw backend, you can set advanced callbacks on all glfw events.</p>
+<p><a href="https://pyimgui.readthedocs.io/en/latest/">pyimgui</a> provides battle-tested comprehensive python bindings for ImGui. I worked with this project a lot, and contributed a bit to it. In the end, I had to develop a separate project, in order to be able to add auto-generated and auto-documented python modules.</p>
 </div>
 <div class="paragraph">
-<p>Below is an example that triggers a callback whenever the window size is changed:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">imgui_bundle</span>
-<span class="tok-kn">import</span> <span class="tok-nn">glfw</span>   <span class="tok-c1"># always import glfw *after* imgui_bundle!!!</span>
-
-
-<span class="tok-c1"># define a callback</span>
-<span class="tok-k">def</span> <span class="tok-nf">my_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">:</span> <span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">_GLFWwindow</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">,</span> <span class="tok-n">h</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">):</span>
-    <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Window size changed to </span><span class="tok-si">{</span><span class="tok-n">w</span><span class="tok-si">}</span><span class="tok-s2">x</span><span class="tok-si">{</span><span class="tok-n">h</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
-
-
-<span class="tok-c1"># Get the glfw window used by hello imgui</span>
-<span class="tok-n">window</span> <span class="tok-o">=</span> <span class="tok-n">imgui_bundle</span><span class="tok-o">.</span><span class="tok-n">glfw_utils</span><span class="tok-o">.</span><span class="tok-n">glfw_window_hello_imgui</span><span class="tok-p">()</span>
-<span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">set_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span> <span class="tok-n">my_window_size_callback</span><span class="tok-p">)</span></code></pre>
-</div>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Caution</div>
-</td>
-<td class="content">
-It is important to import glfw <em>after</em> imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
-</td>
-</tr>
-</table>
+<p><a href="https://dearpygui.readthedocs.io/en/latest/">Dear PyGui</a>  (<a href="https://github.com/hoffstadt/DearPyGui">repository</a>) provides python bindings for ImGui with a lot of addons, and a more pythonesque API, which makes it perhaps more suited for Python only projects.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_debug_native_c_in_python_scripts">Debug native C&#43;&#43; in python scripts</h3>
+<h3 id="_about_the_author">About the author</h3>
 <div class="paragraph">
-<p>ImGui Bundle provides tooling to help you debug the C&#43;&#43; side, when you encounter a bug that is difficult to diagnose from Python.</p>
+<p>Dear ImGui Bundle is developed by Pascal Thomet. I am reachable on my <a href="https://github.com/pthom">Github page</a>. I sometimes <a href="http://code-ballads.net/">blog</a>. There is a <a href="https://www.youtube.com/playlist?list=PLaJx_KrDECZPzttQ77Gv8DD7OAUwmtWUc">playlist</a> related to ImGui Bundle on YouTube.</p>
 </div>
 <div class="paragraph">
-<p>It can be used in two steps:</p>
+<p>I have a past in computer vision, and a lot of experience in the trenches between development and research teams; and I found ImGui to be a nice way to reduce the delay between a research prototype and its use in production code.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="paragraph">
+<p>I also have an inclination for self documenting code, and the doc you are reading was a way to explore new ways to document projects.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_is_dear_imgui_bundle_developed">How is Dear ImGui Bundle developed</h3>
+<div class="paragraph">
+<p>The development of the initial version of Dear ImGui Bundle took about one year at full time.</p>
+</div>
+<div class="paragraph">
+<p>The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I&#8217;ll give more information about the bindings generator a bit later in 2023.</p>
+</div>
+<div class="paragraph">
+<p>Please be tolerant if you find issues! Dear ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).</p>
+</div>
+<div class="paragraph">
+<p>If you need consulting about this library or about the bindings generator in the context of a commercial project, please contact me by email.</p>
+</div>
+<div class="paragraph">
+<p>Contributions are welcome!</p>
+</div>
+<div class="sect3">
+<h4 id="_history">History</h4>
+<div class="paragraph">
+<p>Three of my past projects gave me the idea to develop this library.</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p>Edit the file <code>pybind_native_debug/pybind_native_debug.py</code>. Change its content so that it runs the python code you would like to debug. Make sure it works when you run it as a python script.</p>
+<p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>, an interactive manual for Dear ImGui, which I developed in June 2020</p>
 </li>
 <li>
-<p>Now, debug the C&#43;&#43; project <code>pybind_native_debug_bundle</code> which is defined in the directory <code>pybind_native_debug/</code>. This will run your python code from C&#43;&#43;, and you can debug the C&#43;&#43; side (place breakpoints, watch variables, etc).</p>
+<p><a href="https://traineq.org/implot_demo/src/implot_demo.html">implot demo</a> which I developed in 2020.</p>
 </li>
-</ol>
+<li>
+<p><a href="https://github.com/pthom/imgui_datascience">imgui_datascience</a>, a python package I developed in 2018 for image analysis and debugging. Its successor is immvision.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Example: <a href="https://github.com/pthom/hello_imgui/issues/33">this issue on macOS</a> was solved thanks to this.</p>
+<p>Developments for Dear ImGui Bundle and its related automatic binding generator began in january 2022.</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="_repository_folders_structure.html">Repository folders structure</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="_closing_words.html">Closing words</a> →</p>
+<p>← Previous: <a href="porting.html">C&#43;&#43; / Python porting advices</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="faq.html">FAQ</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 12:21:30 +0200
+Last updated 2023-10-19 12:31:40 +0200
 </div>
 </div>
 </body>

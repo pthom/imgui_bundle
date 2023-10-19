@@ -511,305 +511,277 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="_faq" class="article toc2 toc-left">
+<body id="porting" class="article toc2 toc-left">
 <div id="header">
 <h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="_introduction.html">Introduction</a>
+<li><a href="introduction.html">Introduction</a>
 </li>
 <li><a href="install-instructions.html">Build and install instructions</a>
 </li>
-<li><a href="_quick_start_examples.html">Quick Start &amp; Examples</a>
+<li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="_usage_instructions.html">Usage instructions</a>
+<li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="_repository_folders_structure.html">Repository folders structure</a>
+<li><a href="folders.html">Repository folders structure</a>
 </li>
-<li><a href="_c_python_porting_advices.html">C&#43;&#43; / Python porting advices</a>
-</li>
-<li><a href="_closing_words.html">Closing words</a>
-</li>
-<li><a href="_faq.html"><span class="toc-current">FAQ</span></a>
+<li><a href="porting.html"><span class="toc-current">C&#43;&#43; / Python porting advices</span></a>
 <ul class="sectlevel2">
-<li><a href="_faq.html#_python_bindings_faq">Python bindings FAQ</a>
+<li><a href="porting.html#_general_advices">General advices</a>
 </li>
-<li><a href="_faq.html#_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</a>
+<li><a href="porting.html#_enums_and_textinput">Enums and TextInput</a>
 </li>
-<li><a href="_faq.html#_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</a>
+<li><a href="porting.html#_advanced_glfw_callbacks">Advanced glfw callbacks</a>
+</li>
+<li><a href="porting.html#_debug_native_c_in_python_scripts">Debug native C&#43;&#43; in python scripts</a>
 </li>
 </ul>
+</li>
+<li><a href="words_author.html">Closing words</a>
+</li>
+<li><a href="faq.html">FAQ</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_faq">FAQ</h2>
+<h2 id="porting">C&#43;&#43; / Python porting advices</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_python_bindings_faq">Python bindings FAQ</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Q: IDE support with Visual Studio Code / Visual studio does autocomplete my code (i.e. it does not find the stubs):</p>
-</li>
-</ul>
+<h3 id="_general_advices">General advices</h3>
+<div class="paragraph">
+<p>ImGui is a C&#43;&#43; library that was ported to Python. In order to work with it, you will often refer to its <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">manual</a>, which shows example code in C&#43;&#43;.</p>
 </div>
 <div class="paragraph">
-<p>It may take some time for Visual Studio code to find the stubs. You can try to change the setting "python.languageServer" to "default", and then change it back to "pylance". This might speed up the process a bit.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Q: Editable mode does not work</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You should upgrade pip: <code>pip install -U pip</code></p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_high_dpi_with_helloimgui_and_imgui_bundle">High-DPI with HelloImGui and ImGui Bundle</h3>
-<div class="paragraph">
-<p>A high-DPI screen could have a <code>physical pixel</code> resolution of 3840x2160, but on this screen the OS will display widgets with a scaling factor of 200%, so that widgets do not look too small on it.</p>
-</div>
-<div class="paragraph">
-<p><code>HelloImGui</code> and <code>Dear ImGui Bundle</code> provides a <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/dpi_aware.h">dedicated API</a> for High-DPI handling</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_high_dpi_with_dear_imgui">High-DPI with Dear ImGui</h3>
-<div class="paragraph">
-<p>If your application uses Dear ImGui without HelloImGui or Dear ImGui Bundle, read on for more details: special care must be taken in order to correctly handle screen with high-DPI within ImGui. The solutions will differ greatly depending on the platform.</p>
-</div>
-<div class="paragraph">
-<p>This FAQ article tries to be a complement to <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the related ImGui FAQ article</a></p>
-</div>
-<div class="sect3">
-<h4 id="_macos">macOS</h4>
-<div class="paragraph">
-<p>On macOS, our screen&#8217;s physical pixel resolution of 3840x2160 will be hidden by the OS. For example, the OS will answer 1920x1080 when querying the screen resolution (this corresponds to <code>screen coordinates</code>, which may differ from the physical pixels).</p>
-</div>
-<div class="paragraph">
-<p>However, each window has an internal frame buffer whose size is in physical pixels. This is just hidden from the user in most occasions. When  using ImGui, this info is stored inside <code>ImGui::GetDrawData()&#8594;FramebufferScale</code>.</p>
-</div>
-<div class="paragraph">
-<p>On macOS, the visible windows and widgets sizes will appear consistent when switching from a high-DPI screen (for example a Retina screen) to a standard screen.</p>
-</div>
-<div class="paragraph">
-<p>However, font rendering may appear poor and blurry if no action is taken. A simple solution is to query the main screen "backing scale factor", and to use it when loading fonts, like so:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query macOS for the scaling factor (by using NSScreen api)</span>
-<span class="tok-c1">// (this is a simplified version, which handles only the main screen,</span>
-<span class="tok-c1">//  see imgui/backends/imgui_impl_osx.mm for a more complete version)</span>
-<span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">NSScreen</span><span class="tok-p">.</span><span class="tok-n">mainScreen</span><span class="tok-p">.</span><span class="tok-n">backingScaleFactor</span><span class="tok-p">;</span><span class="tok-w"></span>
-
-<span class="tok-c1">// [...]</span>
-
-<span class="tok-c1">// When loading fonts use this factor:</span>
-<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
-
-<span class="tok-c1">// [...]</span>
-
-<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
-<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_emscripten">Emscripten</h4>
-<div class="paragraph">
-<p>With emscripten (i.e. inside a browser) the situation is close to macOS: widgets' sizes are relative to the current scaling factor of the screen, <strong>and</strong> to the current zoom level of the given page.</p>
-</div>
-<div class="paragraph">
-<p>As a result, widgets' sizes will appear consistent but font rendering may be blurry if no action is taken. A simple solution is to query the browser&#8217;s <code>devicePixelRatio</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Query the browser for the scaling factor (this depends on the screen scaling factor and on the browser zoom level)</span>
-<span class="tok-kt">double</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-p">)</span><span class="tok-n">EM_ASM_DOUBLE</span><span class="tok-p">(</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">.</span><span class="tok-n">devicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-p">});</span><span class="tok-w"></span>
-
-<span class="tok-c1">// [...]</span>
-
-<span class="tok-c1">// When loading fonts use this factor:</span>
-<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">);</span><span class="tok-w"></span>
-
-<span class="tok-c1">// [...]</span>
-
-<span class="tok-c1">// Set ImGui::GetIO().FontGlobalScale</span>
-<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">FontGlobalScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">1.f</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-n">windowDevicePixelRatio</span><span class="tok-p">;</span><span class="tok-w"></span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_windows">Windows</h4>
-<div class="paragraph">
-<p>Under windows, two cases are possible:</p>
+<p>In order to translate from C&#43;&#43; to Python:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>If the application is not <a href="https://learn.microsoft.com/en-us/windows/win32/hidpi/setting-the-default-dpi-awareness-for-a-process">"DPI aware"</a> the application will not be informed about the physical screen resolution. Windows and widgets sizes will be consistent between monitors; however fonts will appear blurry, and nothing can be done about it (there is no access to an underlying buffer with a bigger resolution).</p>
+<p>Change the function names and parameters' names from <code>CamelCase</code> to <code>snake_case</code></p>
 </li>
 <li>
-<p>If the application is "DPI aware", the application will be informed about the physical size of the screen (i.e. in this case, screen coordinates correspond to physical pixels). As a result, windows fonts, and widgets may appear too small, because their sizes need to be multiplied by the scaling factor. Widgets positioning is also impacted. Also, when moving a window from a high-DPI screen to a standard screen, its apparent size may double suddenly.</p>
+<p>Change the way the output are handled.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha">
+<li>
+<p>in C&#43;&#43; <code>ImGui::RadioButton</code> modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.</p>
+</li>
+<li>
+<p>In python, the (possibly modified) value is transmitted via the return: <code>imgui.radio_button</code> returns a <code>Tuple[bool, str]</code> which contains <code>(user_clicked, new_value)</code>.</p>
 </li>
 </ol>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Windows applications are <strong>not</strong> DPI aware by default. <em>Nothing can be done to improve the rendering of non DPI aware applications</em>. The rest of this FAQ deals with DPI aware applications.
-</td>
-</tr>
-</table>
+</li>
+<li>
+<p>if porting some code that uses static variables, use the <code>@immapp.static</code> decorator.
+ In this case, this decorator simply adds a variable <code>value</code> at  the function scope. It is preserved between calls.
+Normally, this variable should be accessed via <code>demo_radio_button.value</code>, however the first line of the function adds a synonym named static for more clarity.
+Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_example_2">Example:</h4>
+<div class="paragraph">
+<p>C&#43;&#43;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoRadioButton</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">value</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio a&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio b&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">RadioButton</span><span class="tok-p">(</span><span class="tok-s">&quot;radio c&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">value</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">2</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Several issues can be encountered when running a DPI-Aware application with ImGui. For example, with a scaling factor of 200%, and if no action  is taken:</p>
+<p>Python</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">value</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>
+<span class="tok-k">def</span> <span class="tok-nf">demo_radio_button</span><span class="tok-p">():</span>
+    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_radio_button</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio a&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio b&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;radio c&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-mi">2</span><span class="tok-p">)</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_enums_and_textinput">Enums and TextInput</h3>
+<div class="paragraph">
+<p>In the example below, two differences are important:</p>
+</div>
+<div class="sect3">
+<h4 id="_inputtext_functions">InputText functions:</h4>
+<div class="paragraph">
+<p><code>imgui.input_text</code> (Python) is equivalent to <code>ImGui::InputText</code> (C&#43;&#43;)</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The application window initial size will be twice too small</p>
+<p>In C&#43;&#43;, it uses two parameters for the text: the text pointer, and its length.</p>
 </li>
 <li>
-<p>Widgets' sizes will be twice too small. Widgets' position will be also affected</p>
-</li>
-<li>
-<p>Fonts will be displayed twice too small</p>
-</li>
-<li>
-<p>Dear ImGui&#8217;s styling will be too small (margins, roundings, etc.)</p>
-</li>
-<li>
-<p>The application window size will visually double when moving the window to a standard screen</p>
+<p>In Python, you can simply pass a string, and get back its modified value in the returned tuple.</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_linux">Linux</h4>
+<h4 id="_enums_handling">Enums handling:</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ImGuiInputTextFlags_</code> (C&#43;&#43;) corresponds to <code>imgui.InputTextFlags_</code> (python) and it is an <em>enum</em> (note the trailing underscore).</p>
+</li>
+<li>
+<p><code>ImGuiInputTextFlags</code> (C&#43;&#43;) corresponds to <code>imgui.InputTextFlags</code> (python) and it is an <em>int</em>  (note: no trailing underscore)</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>The situation on linux is close to Windows' DPI-aware applications. Applications are informed about the physical number of pixels, and they need to scale according to the screen dpi factor.</p>
+<p>You will find many similar enums.</p>
+</div>
+<div class="paragraph">
+<p>The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_windows_how_to_make_the_application_dpi_aware">Windows: how to make the application DPI aware</h4>
+<h4 id="_example_3">Example</h4>
 <div class="paragraph">
-<p>See <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">the ImGui related FAQ</a></p>
+<p>C&#43;&#43;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">[</span><span class="tok-mi">64</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">64</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_correctly_size_and_position_the_widgets">Windows &amp; Linux: how to correctly size and position the widgets</h4>
 <div class="paragraph">
-<p>It is almost always a bad idea to use fixed sizes. This will lead to portability issues, especially on high-DPI screens.</p>
+<p>Python</p>
 </div>
-<div class="paragraph">
-<p>Always pre-multiply your positions and sizes by <code>ImGui::GetFontSize()</code>!</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">text</span><span class="tok-o">=</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span>
+<span class="tok-k">def</span> <span class="tok-nf">demo_input_text_decimal</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
+    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_input_text_decimal</span>
+    <span class="tok-n">flags</span><span class="tok-p">:</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
+            <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_uppercase</span><span class="tok-o">.</span><span class="tok-n">value</span>
+          <span class="tok-o">|</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">InputTextFlags_</span><span class="tok-o">.</span><span class="tok-n">chars_no_blank</span><span class="tok-o">.</span><span class="tok-n">value</span>
+        <span class="tok-p">)</span>
+    <span class="tok-n">changed</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">,</span> <span class="tok-n">flags</span><span class="tok-p">)</span></code></pre>
+</div>
 </div>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
-<p>In order to make this simpler, the <code>EmVec2</code> function below can greatly reduce the friction: whenever you need to use ImVec2 for positioning or sizing, use <code>EmVec2</code> instead!</p>
-</div>
-<div class="paragraph">
-<p><code>EmVec2()</code> returns a size in multiples of the font height. It is somewhat comparable to the <a href="https://lyty.dev/css/css-unit.html">em CSS Unit</a>.</p>
+<p>Note: in C&#43;&#43;, by using <code>imgui_stdlib.h</code>, it is also possible to write:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-nf">EmVec2</span><span class="tok-p">(</span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">)</span><span class="tok-w"></span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui/misc/cpp/imgui_stdlib.h&quot;</span><span class="tok-cp"></span>
+
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoInputTextUpperCase_StdString</span><span class="tok-p">()</span><span class="tok-w"></span>
 <span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">IM_ASSERT</span><span class="tok-p">(</span><span class="tok-n">GImGui</span><span class="tok-w"> </span><span class="tok-o">!=</span><span class="tok-w"> </span><span class="tok-nb">NULL</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetFontSize</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">x</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">k</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">y</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiInputTextFlags</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiInputTextFlags_CharsUppercase</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">ImGuiInputTextFlags_CharsNoBlank</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-cm">/*bool changed = */</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">InputText</span><span class="tok-p">(</span><span class="tok-s">&quot;Upper case, no spaces&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">flags</span><span class="tok-p">);</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span></code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_load_fonts_at_the_correct_size">Windows &amp; Linux: How to load fonts at the correct size</h4>
+</div>
+<div class="sect2">
+<h3 id="_advanced_glfw_callbacks">Advanced glfw callbacks</h3>
 <div class="paragraph">
-<p>You need to query the application window content scale.</p>
+<p>When using the glfw backend, you can set advanced callbacks on all glfw events.</p>
 </div>
 <div class="paragraph">
-<p>On windows, to achieve this, you can call <a href="https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdpiforwindow">DpiForWindow</a> on windows.</p>
-</div>
-<div class="paragraph">
-<p>For example:</p>
+<p>Below is an example that triggers a callback whenever the window size is changed:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">HWND</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">GetDpiForWindow</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">dpi</span><span class="tok-w"> </span><span class="tok-o">/</span><span class="tok-w"> </span><span class="tok-mf">96.f</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// 96 is the &quot;standard dpi&quot;</span>
-<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">dpiScale</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">imgui_bundle</span>
+<span class="tok-kn">import</span> <span class="tok-nn">glfw</span>   <span class="tok-c1"># always import glfw *after* imgui_bundle!!!</span>
+
+
+<span class="tok-c1"># define a callback</span>
+<span class="tok-k">def</span> <span class="tok-nf">my_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">:</span> <span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">_GLFWwindow</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">,</span> <span class="tok-n">h</span><span class="tok-p">:</span> <span class="tok-nb">int</span><span class="tok-p">):</span>
+    <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Window size changed to </span><span class="tok-si">{</span><span class="tok-n">w</span><span class="tok-si">}</span><span class="tok-s2">x</span><span class="tok-si">{</span><span class="tok-n">h</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
+
+
+<span class="tok-c1"># Get the glfw window used by hello imgui</span>
+<span class="tok-n">window</span> <span class="tok-o">=</span> <span class="tok-n">imgui_bundle</span><span class="tok-o">.</span><span class="tok-n">glfw_utils</span><span class="tok-o">.</span><span class="tok-n">glfw_window_hello_imgui</span><span class="tok-p">()</span>
+<span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">set_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span> <span class="tok-n">my_window_size_callback</span><span class="tok-p">)</span></code></pre>
 </div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+It is important to import glfw <em>after</em> imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debug_native_c_in_python_scripts">Debug native C&#43;&#43; in python scripts</h3>
+<div class="paragraph">
+<p>ImGui Bundle provides tooling to help you debug the C&#43;&#43; side, when you encounter a bug that is difficult to diagnose from Python.</p>
 </div>
 <div class="paragraph">
-<p>Some backends may wrap this, e.g. GLFW:</p>
+<p>It can be used in two steps:</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-nf">WindowContentScale</span><span class="tok-p">(</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">yscale</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">glfwGetWindowContentScale</span><span class="tok-p">((</span><span class="tok-n">GLFWwindow</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">xscale</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">yscale</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">xscale</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-c1">// xscale and yscale will likely be equal</span>
-<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Edit the file <code>pybind_native_debug/pybind_native_debug.py</code>. Change its content so that it runs the python code you would like to debug. Make sure it works when you run it as a python script.</p>
+</li>
+<li>
+<p>Now, debug the C&#43;&#43; project <code>pybind_native_debug_bundle</code> which is defined in the directory <code>pybind_native_debug/</code>. This will run your python code from C&#43;&#43;, and you can debug the C&#43;&#43; side (place breakpoints, watch variables, etc).</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>Once you know the window content scale, you can use this when loading fonts:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-kt">float</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">WindowContentScale</span><span class="tok-p">(...);</span><span class="tok-w"></span>
-<span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetIO</span><span class="tok-p">().</span><span class="tok-n">Fonts</span><span class="tok-o">-&gt;</span><span class="tok-n">AddFontFromFileTTF</span><span class="tok-p">(</span><span class="tok-n">fontFileName</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontSize</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">fontLoadingFactor</span><span class="tok-p">);</span><span class="tok-w"></span></code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_adapt_dear_imguis_styling_scale">Windows &amp; Linux: how to adapt Dear ImGui’s styling scale</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cppp"><span></span>float dpiScale = WindowContentScale(...);
-ImGui::GetStyle().ScaleAllSizes(dpiScale);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_windows_linux_how_to_have_a_consistent_initial_window_size_between_monitors">Windows &amp; Linux: how to have a consistent initial window size between monitors</h4>
-<div class="paragraph">
-<p>As mentioned before, multiply your window size by WindowContentScale(&#8230;&#8203;).</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_windows_linux_adapting_windows_and_font_size_when_application_is_moved_between_monitors">Windows &amp; Linux: adapting windows and font size when application is moved between monitors</h4>
-<div class="paragraph">
-<p>This is a bit more difficult: see <a href="https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-how-should-i-handle-dpi-in-my-application">ImGui related FAQ</a></p>
-</div>
+<p>Example: <a href="https://github.com/pthom/hello_imgui/issues/33">this issue on macOS</a> was solved thanks to this.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="_closing_words.html">Closing words</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a></p>
+<p>← Previous: <a href="folders.html">Repository folders structure</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="words_author.html">Closing words</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 12:21:30 +0200
+Last updated 2023-10-19 12:31:40 +0200
 </div>
 </div>
 </body>

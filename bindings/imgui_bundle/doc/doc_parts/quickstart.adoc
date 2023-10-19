@@ -1,6 +1,7 @@
-include::_utils.adoc[]
-
+[[quickstart]]
 == Quick Start & Examples
+
+include::_utils.adoc[]
 
 First, install Dear ImGui Bundle following the <<install-instructions>>.
 

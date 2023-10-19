@@ -3896,4 +3896,4 @@ generator began in january 2022.
 
 # FAQ
 
-See [FAQ](https://pthom.github.io/imgui_bundle/_faq.html)
+See [FAQ](https://pthom.github.io/imgui_bundle/faq.html)
