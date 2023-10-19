@@ -76,3 +76,6 @@
 [submodule "external/imgui_test_engine/imgui_test_engine"]
 	path = external/imgui_test_engine/imgui_test_engine
 	url = https://github.com/pthom/imgui_test_engine.git
+[submodule "external/ImCoolBar/ImCoolBar"]
+	path = external/ImCoolBar/ImCoolBar
+	url = https://github.com/pthom/ImCoolBar.git

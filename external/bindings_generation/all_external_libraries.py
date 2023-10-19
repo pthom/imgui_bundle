@@ -31,6 +31,16 @@ def lib_im_file_dialog() -> ExternalLibrary:
     )
 
 
+def lib_imcoolbar() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="ImCoolBar",
+        official_git_url="https://github.com/aiekick/ImCoolBar.git",
+        official_branch="master",
+        fork_git_url="https://github.com/pthom/ImCoolBar.git",
+        fork_branch="imgui_bundle"
+    )
+
+
 def lib_imgui() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui",
@@ -199,6 +209,7 @@ ALL_LIBS = [
     lib_imgui_test_engine(),
     lib_glfw(),
     lib_hello_imgui(),
+    lib_imcoolbar(),
     lib_im_file_dialog(),
     lib_imgui_command_palette(),
     lib_imgui_knobs(),

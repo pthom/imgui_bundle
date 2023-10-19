@@ -90,6 +90,8 @@ target_sources(imgui_tex_inspect PRIVATE
 add_library(portable_file_dialogs INTERFACE)
 target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
 target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+# Add ImCoolBar
+add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
 target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
 target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
