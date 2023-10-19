@@ -13,6 +13,7 @@
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "ImFileDialog/ImFileDialog.h"
 #include "imgui_md_wrapper.h"
+#include "ImCoolBar/ImCoolbar.h"
 #include "demo_utils/api_demos.h"
 
 #include <fplus/fplus.hpp>
@@ -21,6 +22,10 @@
 
 void DemoKnobs()
 {
+    ImGuiMd::RenderUnindented(R"(
+        # Knobs
+        [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.
+        )");
     static float knob_float_value = 0.f;
     static int knob_int_value = 0;
 
@@ -102,6 +107,11 @@ void DemoKnobs()
 
 void DemoSpinner()
 {
+    ImGuiMd::RenderUnindented(R"(
+        # Spinners
+        [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.
+    )");
+
     ImColor color(0.3f, 0.5f, 0.9f, 1.f);
     ImGui::Text("spinner_moving_dots");
     ImGui::SameLine();
@@ -343,8 +353,53 @@ void DemoCommandPalette()
 }
 
 
+void DemoCoolBar()
+{
+    auto ShowCoolBarButton = [](const std::string& label) -> bool
+    {
+        float w         = ImGui::GetCoolBarItemWidth();
+
+        // Display transparent image and check if clicked
+        HelloImGui::ImageFromAsset("images/bear_transparent.png", ImVec2(w, w));
+        bool clicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(0);
+
+        // Optional: add a label on the image
+        {
+            ImVec2 topLeftCorner = ImGui::GetItemRectMin();
+            ImVec2 textPos(topLeftCorner.x + ImmApp::EmSize(1.f), topLeftCorner.y + ImmApp::EmSize(1.f));
+            ImGui::GetForegroundDrawList()->AddText(textPos, 0xFFFFFFFF, label.c_str());
+        }
+
+        return clicked;
+    };
+
+
+    std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
+    ImGuiMd::RenderUnindented(R"(
+        # ImCoolBar:
+        ImCoolBar provides a dock-like Cool bar for Dear ImGui
+    )");
+
+    ImGui::ImCoolBarConfig coolBarConfig;
+    coolBarConfig.anchor = ImVec2(0.5f, 0.f);
+    if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
+    {
+        for (const std::string& label: buttonLabels)
+        {
+            if (ImGui::CoolBarItem())
+            {
+                if (ShowCoolBarButton(label))
+                    printf("Clicked %s\n", label.c_str());
+            }
+        }
+        ImGui::EndCoolBar();
+    }
+}
+
+
 void demo_widgets()
 {
+    DemoCoolBar();
     DemoPortableFileDialogs(); ImGui::NewLine();
     DemoImFileDialog(); ImGui::NewLine();
     DemoKnobs();

@@ -19,7 +19,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    # options.namespace_root__regex = "LIBNAME"
+    options.namespace_root__regex = "ImGui"
+    options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     # options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # options.python_run_black_formatter = True
 

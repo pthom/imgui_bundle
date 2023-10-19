@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome
+from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome, im_cool_bar
 from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
@@ -309,7 +309,42 @@ def demo_command_palette():
     imgui.text(f"{static.counter=}")
 
 
+def demo_cool_bar():
+    # Function to show a CoolBar button
+    def show_cool_bar_button(label):
+        w = im_cool_bar.get_cool_bar_item_width()
+
+        # Display transparent image and check if clicked
+        # You would need to implement ImageFromAsset yourself in Python
+        # Here, we simply use a placeholder for the image
+        hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
+        clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
+
+        # Optional: add a label on the image
+        top_left_corner = imgui.get_item_rect_min()
+        text_pos = (top_left_corner.x + immapp.em_size(1.), top_left_corner.y + immapp.em_size(1.))
+        imgui.get_window_draw_list().add_text(text_pos, 0xFFFFFFFF, label)
+
+        return clicked
+
+    button_labels = ["A", "B", "C", "D", "E", "F"]
+    imgui_md.render_unindented("""
+        # ImCoolBar:
+        ImCoolBar provides a dock-like Cool bar for Dear ImGui
+        """)
+
+    cool_bar_config = im_cool_bar.ImCoolBarConfig();
+    cool_bar_config.anchor = ImVec2(0.5, 0.)
+    if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
+        for label in button_labels:
+            if im_cool_bar.cool_bar_item():
+                if show_cool_bar_button(label):
+                    print(f"Clicked {label}")
+        im_cool_bar.end_cool_bar()
+
+
 def demo_gui():
+    demo_cool_bar()
     demo_portable_file_dialogs()
     imgui.new_line()
     demo_imfile_dialog()
@@ -324,4 +359,4 @@ def demo_gui():
 if __name__ == "__main__":
     from imgui_bundle import immapp
 
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
