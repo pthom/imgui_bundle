@@ -23,6 +23,8 @@ image::{url-demo-images}/demo_widgets_toggle.jpg[width=400]
 image::{url-demo-images}/demo_widgets_spinners.jpg[width=400]
 .File dialog
 image::{url-demo-images}/demo_widgets_file_dialog.jpg[width=400]
+.Cool bar
+image::{url-demo-images}/demo_widgets_coolbar.jpg[width=400]
 
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these widgets in your browser]
 

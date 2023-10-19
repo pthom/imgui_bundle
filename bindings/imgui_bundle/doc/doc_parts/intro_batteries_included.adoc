@@ -51,6 +51,9 @@ image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
 |https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui
 |image:{url-demo-images}/demo_widgets_toggle.jpg[width=200]
 
+|https://github.com/aiekick/ImCoolBar[ImCoolBar]: A Cool bar for Dear ImGui
+|image:{url-demo-images}/demo_widgets_coolbar.jpg[width=200]
+
 |https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
 |image:{url-demo-images}/demo_widgets_command_palette.jpg[width=200]
 

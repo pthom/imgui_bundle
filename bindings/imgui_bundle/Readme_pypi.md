@@ -166,6 +166,14 @@ alt="demo widgets toggle" /></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><a
+href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>: A Cool bar
+for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg"
+alt="demo widgets coolbar" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
 href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
 A Sublime Text or VSCode style command palette in ImGui</p></td>
 <td style="text-align: left;"><p><img
@@ -2426,6 +2434,9 @@ widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bi
 
 ![File
 dialog](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_file_dialog.jpg)
+
+![Cool
+bar](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg)
 
 [Try these widgets in your
 browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
