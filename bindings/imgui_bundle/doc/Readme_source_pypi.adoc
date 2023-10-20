@@ -1,0 +1,16 @@
+= Dear ImGui Bundle documentation
+:toc: left
+:source-highlighter: pygments
+
+_Note: You can find a more complete version of this document in the link:https://pthom.github.io/imgui_bundle[official documentation site] for Dear ImGui Bundle._
+
+include::doc_parts/_utils.adoc[]
+include::doc_parts/_badges.adoc[]
+
+include::doc_parts/front_matter.adoc[]
+
+include::doc_parts/intro.adoc[]
+
+include::doc_parts/install.adoc[]
+
+include::doc_parts/words_author.adoc[]

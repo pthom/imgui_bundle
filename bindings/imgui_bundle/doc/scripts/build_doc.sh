@@ -21,8 +21,8 @@ asciidoctor-reducer --attribute env_gh_readme=1 Readme_source.adoc -o Readme.ado
 
 # Generate a markdown doc for pypi  (env_pypi)
 echo "Generating Readme_pypi.md (for pypi)"
-asciidoctor -b docbook --attribute exclude_collapsible_details=1 --attribute env_pypi=1 Readme_source.adoc
-pandoc -f docbook -t markdown_strict Readme_source.xml -o ../Readme_pypi.md
+asciidoctor -b docbook --attribute exclude_collapsible_details=1 --attribute env_pypi=1 Readme_source_pypi.adoc
+pandoc -f docbook -t markdown_strict Readme_source_pypi.xml -o ../Readme_pypi.md
 
 
 # Generate multipage html doc for github pages (env_gh_pages)

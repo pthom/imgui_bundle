@@ -1,5 +1,10 @@
 file(GLOB input_docpart_files ${CMAKE_CURRENT_LIST_DIR}/doc_parts/*.adoc)
-set(input_doc_files ${input_docpart_files} ${CMAKE_CURRENT_LIST_DIR}/Readme_source.adoc ${CMAKE_CURRENT_LIST_DIR}/faq_source.adoc)
+set(input_doc_files
+    ${input_docpart_files}
+    ${CMAKE_CURRENT_LIST_DIR}/Readme_source.adoc
+    ${CMAKE_CURRENT_LIST_DIR}/Readme_source_pypi.adoc
+    ${CMAKE_CURRENT_LIST_DIR}/faq_source.adoc
+    )
 file(GLOB output_html_files ${IMGUIBUNDLE_PATH}/docs/*.html)
 
 add_custom_command(
