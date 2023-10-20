@@ -18,6 +18,7 @@ if(EMSCRIPTEN)
     # for situations in which you can't control the headers (e.g. GitHub pages).
 
     get_property(runtime_output_directory TARGET demo_testengine PROPERTY RUNTIME_OUTPUT_DIRECTORY)
+    FILE(MAKE_DIRECTORY ${runtime_output_directory})
     FILE(COPY_FILE ${CMAKE_CURRENT_LIST_DIR}/coi-serviceworker.js ${runtime_output_directory}/coi-serviceworker.js)
 
     target_link_options(demo_testengine PUBLIC -pthread -sPTHREAD_POOL_SIZE=2)
