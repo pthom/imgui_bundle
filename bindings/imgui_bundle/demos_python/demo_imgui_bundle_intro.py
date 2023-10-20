@@ -100,14 +100,19 @@ def demo_gui():
         """
         *Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*
 
-        Welcome to the interactive manual for *Dear ImGui Bundle*! This manual presents lots of examples, together with their code (in C++ and Python).
+        Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
 
         Advices:
-        * This interactive manual works best when viewed together with [Dear ImGui Bundle docs](https://pthom.github.io/imgui_bundle)
-        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo".
-          Click on it to show the source code for the current demo.
+        * This interactive manual works best when viewed together with "Dear ImGui Bundle docs"
         """
     )
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.))
+    if imgui.button("Open Dear ImGui Bundle docs"):
+        webbrowser.open("https://pthom.github.io/imgui_bundle/")
+
+    imgui_md.render_unindented("""
+        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
+    """)
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
         if imgui.button("Show me##demo_code_demo"):
@@ -132,6 +137,13 @@ def demo_gui():
         if imgui.button("Show me##demo_test_engine"):
             imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), automation_show_me_imgui_test_engine())
         imgui_md.render_unindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*")
+
+    imgui_md.render_unindented("""
+        * The best way to learn about the numerous ImGui widgets is to open "ImGui Manual". It shows code snippets in C++, but you can refer to [these instructions](https://pthom.github.io/imgui_bundle/porting.html) on how to easily convert C++ ImGui code to Python.
+        """)
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.))
+    if imgui.button("Open ImGui Manual"):
+        webbrowser.open("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html")
 
     # Navigation buttons
     imgui.separator()

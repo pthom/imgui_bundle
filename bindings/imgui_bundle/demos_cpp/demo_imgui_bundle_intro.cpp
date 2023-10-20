@@ -114,9 +114,14 @@ void demo_imgui_bundle_intro()
         Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
 
         Advices:
-        * This interactive manual works best when viewed together with [Dear ImGui Bundle docs](https://pthom.github.io/imgui_bundle)
-        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo".
-          Click on it to show the source code for the current demo.
+        * This interactive manual works best when viewed together with "Dear ImGui Bundle docs"
+    )");
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
+    if (ImGui::Button("Open Dear ImGui Bundle docs"))
+        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle/");
+
+    ImGuiMd::RenderUnindented(R"(
+        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
     )");
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
@@ -146,6 +151,12 @@ void demo_imgui_bundle_intro()
         ImGuiMd::RenderUnindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*");
     }
 
+    ImGuiMd::RenderUnindented(R"(
+         * The best way to learn about the numerous ImGui widgets is to open "ImGui Manual". It shows code snippets in C++, but you can refer to [these instructions](https://pthom.github.io/imgui_bundle/porting.html) on how to easily convert C++ ImGui code to Python.
+    )");
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
+    if (ImGui::Button("Open ImGui Manual"))
+        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html");
 
     // Navigation buttons
     {
