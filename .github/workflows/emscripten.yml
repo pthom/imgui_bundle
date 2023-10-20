@@ -21,8 +21,8 @@ jobs:
         with:
           submodules: true
 
-      - name: Setup interactive tmate session
-        uses: mxschmitt/action-tmate@v3
+#      - name: Setup interactive tmate session
+#        uses: mxschmitt/action-tmate@v3
 
       - name: Build and install
         shell: bash

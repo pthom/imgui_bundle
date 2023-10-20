@@ -4,7 +4,7 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(imgui_example_glfw_opengl3 PUBLIC GL)
 endif()
 
-if(EMSCRIPTEN)
+if(EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)
     # Needed addition for multithread support (required by ImGui Test Engine)
     # Note: see the shell.emscripten.html in this folder we are using a custom shell,
     #       that provides Cross-origin isolation (COOP and COEP) through a service worker
@@ -21,5 +21,5 @@ if(EMSCRIPTEN)
     FILE(MAKE_DIRECTORY ${runtime_output_directory})
     FILE(COPY_FILE ${CMAKE_CURRENT_LIST_DIR}/coi-serviceworker.js ${runtime_output_directory}/coi-serviceworker.js)
 
-    target_link_options(demo_testengine PUBLIC -pthread -sPTHREAD_POOL_SIZE=2)
+    target_link_options(demo_testengine PUBLIC -sPTHREAD_POOL_SIZE=2)
 endif()

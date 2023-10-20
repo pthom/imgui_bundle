@@ -119,7 +119,7 @@ if (MSVC)
     FILE(COPY msvc_note.txt DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()
 
-if(EMSCRIPTEN)
+if(EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)
     # Needed addition for multithread support (required by ImGui Test Engine)
     # Note: see the shell.emscripten.html in this folder we are using a custom shell,
     #       that provides Cross-origin isolation (COOP and COEP) through a service worker
@@ -136,5 +136,5 @@ if(EMSCRIPTEN)
     FILE(MAKE_DIRECTORY ${runtime_output_directory})
     FILE(COPY_FILE ${CMAKE_CURRENT_LIST_DIR}/coi-serviceworker.js ${runtime_output_directory}/coi-serviceworker.js)
 
-    target_link_options(demo_imgui_bundle PUBLIC -pthread -sPTHREAD_POOL_SIZE=2)
+    target_link_options(demo_imgui_bundle PUBLIC -sPTHREAD_POOL_SIZE=2)
 endif()

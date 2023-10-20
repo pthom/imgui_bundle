@@ -94,7 +94,7 @@ include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
-
+# if build python binding, add definitions and use SDL + GLFW
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
@@ -102,11 +102,6 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "" FORCE)
     # When building python bindings, sdl is always built as a shared library (see cmake/add_sdl.cmake)
     set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
-endif()
-
-if (EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)
-    add_compile_options(-pthread)
-    add_link_options(-pthread)
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
@@ -123,6 +118,17 @@ if (EMSCRIPTEN)
     add_compile_definitions(EMSCRIPTEN)
     # enable assertions in emscripten (IM_ASSERT will log and terminate on error)
     add_link_options(-sASSERTIONS)
+
+    # If  building emscripten and building demos, we need to activate multithreading support (for ImGuiTestEngine)
+    if (IMGUI_BUNDLE_BUILD_DEMOS)
+        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
+    endif()
+    if (HELLOIMGUI_EMSCRIPTEN_PTHREAD)
+        add_compile_options(-pthread)
+        add_link_options(-pthread)
+        set(IMMVISION_OPENCV_EMSCRIPTEN_WITH_PTHREAD ON CACHE BOOL "" FORCE)
+    endif()
 
     # Exceptions handlings: by default in emscripten, exception do not work!
     # Our program should not use them, but during development, it is possible to activate them temporarily)
