@@ -3301,7 +3301,10 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">DemoPortableFileDialogs</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoImFileDialog</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoKnobs</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-cp">#ifndef __EMSCRIPTEN__</span>
+<span class="tok-w">    </span><span class="tok-c1">// Demo broken under emscripten...</span>
 <span class="tok-w">    </span><span class="tok-n">DemoToggle</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-cp">#endif</span>
 <span class="tok-w">    </span><span class="tok-n">DemoSpinner</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoCommandPalette</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span></code></pre>
@@ -4014,7 +4017,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-20 01:25:51 +0200
+Last updated 2023-10-20 14:10:50 +0200
 </div>
 </div>
 </body>

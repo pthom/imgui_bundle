@@ -151,7 +151,7 @@ TIP: This demonstration is also an interactive manual, similar to the online {ur
 
 //:url-demo-images: doc_images/
 
-Dear ImGui Bundle includes the following librariesn which are available in {cpp} _and_ in Python:
+Dear ImGui Bundle includes the following libraries, which are available in {cpp} _and_ in Python:
 
 [cols="30,30" grid=none frame=none width=75%]
 |===
@@ -3152,7 +3152,10 @@ void demo_widgets()
     DemoPortableFileDialogs(); ImGui::NewLine();
     DemoImFileDialog(); ImGui::NewLine();
     DemoKnobs();
+#ifndef __EMSCRIPTEN__
+    // Demo broken under emscripten...
     DemoToggle(); ImGui::NewLine();
+#endif
     DemoSpinner();
     DemoCommandPalette();
 }

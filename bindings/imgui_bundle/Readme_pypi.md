@@ -38,7 +38,7 @@ Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
 ## Batteries included
 
-Dear ImGui Bundle includes the following librariesn which are available
+Dear ImGui Bundle includes the following libraries, which are available
 in C++ *and* in Python:
 
 <table>
@@ -2848,7 +2848,10 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
         DemoPortableFileDialogs(); ImGui::NewLine();
         DemoImFileDialog(); ImGui::NewLine();
         DemoKnobs();
+    #ifndef __EMSCRIPTEN__
+        // Demo broken under emscripten...
         DemoToggle(); ImGui::NewLine();
+    #endif
         DemoSpinner();
         DemoCommandPalette();
     }

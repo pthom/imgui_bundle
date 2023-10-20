@@ -1,7 +1,7 @@
 === Batteries included
 include::_utils.adoc[]
 
-Dear ImGui Bundle includes the following librariesn which are available in {cpp} _and_ in Python:
+Dear ImGui Bundle includes the following libraries, which are available in {cpp} _and_ in Python:
 
 [cols="30,30" grid=none frame=none width=75%]
 |===
