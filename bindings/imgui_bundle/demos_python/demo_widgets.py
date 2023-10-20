@@ -315,8 +315,6 @@ def demo_cool_bar():
         w = im_cool_bar.get_cool_bar_item_width()
 
         # Display transparent image and check if clicked
-        # You would need to implement ImageFromAsset yourself in Python
-        # Here, we simply use a placeholder for the image
         hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
         clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
 
