@@ -2077,7 +2077,7 @@ Python:
 action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_testengine.jpg)
 
 [Run this demo in your
-browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_test_engine.html)
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html)
 
 [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) is a
 Tests & Automation Engine for Dear ImGui.

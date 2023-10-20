@@ -2361,7 +2361,7 @@ if __name__ == "__main__":
 
 .ImmGui Test Engine in action
 image::{url-demo-images}/demo_testengine.jpg[width=300]
-link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_test_engine.html[Run this demo in your browser]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html[Run this demo in your browser]
 
 link:https://github.com/ocornut/imgui_test_engine[ImGui Test Engine] is a Tests & Automation Engine for Dear ImGui.
 
