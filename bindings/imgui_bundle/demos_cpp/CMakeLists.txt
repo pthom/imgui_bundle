@@ -118,3 +118,22 @@ FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 if (MSVC)
     FILE(COPY msvc_note.txt DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()
+
+if(EMSCRIPTEN)
+    # Needed addition for multithread support (required by ImGui Test Engine)
+    # Note: see the shell.emscripten.html in this folder we are using a custom shell,
+    #       that provides Cross-origin isolation (COOP and COEP) through a service worker
+    #       for situations in which you can't control the headers (e.g. GitHub pages).
+    #
+    # coi-serviceworker.js was found at https://github.com/gzuidhof/coi-serviceworker, and manually patched:
+    #    see https://github.com/gzuidhof/coi-serviceworker/issues/20
+    #    and https://github.com/gzuidhof/coi-serviceworker/compare/master...tamo:coi-serviceworker:coep-ua-brand
+    #
+    # coi-serviceworker.js provides Cross-origin isolation (COOP and COEP) through a service worker
+    # for situations in which you can't control the headers (e.g. GitHub pages).
+
+    get_property(runtime_output_directory TARGET demo_imgui_bundle PROPERTY RUNTIME_OUTPUT_DIRECTORY)
+    FILE(COPY_FILE ${CMAKE_CURRENT_LIST_DIR}/coi-serviceworker.js ${runtime_output_directory}/coi-serviceworker.js)
+
+    target_link_options(demo_imgui_bundle PUBLIC -pthread -sPTHREAD_POOL_SIZE=2)
+endif()
