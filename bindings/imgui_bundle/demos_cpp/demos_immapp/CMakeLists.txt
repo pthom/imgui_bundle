@@ -5,6 +5,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 if(EMSCRIPTEN)
+    # Needed addition for multithread support (required by ImGui Test Engine)
     # Note: see the shell.emscripten.html in this folder we are using a custom shell,
     #       that provides Cross-origin isolation (COOP and COEP) through a service worker
     #       for situations in which you can't control the headers (e.g. GitHub pages).
