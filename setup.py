@@ -3,7 +3,9 @@ from typing import List
 import sys
 import os
 
-VERSION = "0.9.0"  # Remember to mirror changes on line 2 of main CMakeLists!
+VERSION = "1.0.0b1"  # Remember to mirror changes on line 2 of main CMakeLists!
+                     # (1.0.0 beta 1)
+                     # Remember to remove classifiers=['Development Status :: 4 - Beta',] when releasing final version
 THIS_DIR = os.path.dirname(__file__)
 ROOT_PACKAGE_FOLDER = "bindings/imgui_bundle"
 ROOT_PACKAGE_NAME = "imgui_bundle"
@@ -74,6 +76,7 @@ except ImportError:
 
 setup(
     name="imgui-bundle",
+    classifiers=['Development Status :: 4 - Beta',],
     version=VERSION,
     author="Pascal Thomet",
     author_email="pthomet@gmail.com",
