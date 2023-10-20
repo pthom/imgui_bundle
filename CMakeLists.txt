@@ -85,6 +85,35 @@ endif()
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
+# SANITIZERS:
+# ---------------------------------
+option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_ASAN)
+    add_compile_options(-fsanitize=address -fsanitize-address-use-after-scope)
+    add_link_options(-fsanitize=address -fsanitize-address-use-after-scope)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_TSAN "Build ImGui Bundle with thread sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_TSAN)
+    add_compile_options(-fsanitize=thread)
+    add_link_options(-fsanitize=thread)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER "Build ImGui Bundle with memory sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER)
+    add_compile_options(-fsanitize=memory)
+    add_link_options(-fsanitize=memory)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER "Build ImGui Bundle with undefined behavior sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER)
+    add_compile_options(-fsanitize=undefined)
+    add_link_options(-fsanitize=undefined)
+endif()
+# Also see scan-build (clang static analyzer). No bugs reported on 2023-10-21
+#     brew install llvm
+#     mkdir build_llvm && cd llvm
+#     export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+#     cmake .. -DIMMVISION_FETCH_OPENCV=ON
+#     scan-build make -j
+
 
 ###############################################################################
 # Main
