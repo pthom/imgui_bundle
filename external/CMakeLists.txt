@@ -3,7 +3,9 @@ include(../cmake/add_simple_library.cmake) # Tooling to build libraries and link
 # Add fplus
 add_library(fplus INTERFACE)
 target_include_directories(fplus INTERFACE fplus)
-
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(fplus INTERFACE -Wno-psabi)  # "note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1"
+endif()
 
 # Build imgui + hello_imgui
 include(../cmake/add_hello_imgui.cmake)
@@ -88,6 +90,8 @@ target_sources(imgui_tex_inspect PRIVATE
 add_library(portable_file_dialogs INTERFACE)
 target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
 target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+# Add ImCoolBar
+add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
 target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
 target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)

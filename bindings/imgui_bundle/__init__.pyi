@@ -16,6 +16,7 @@ from . import immapp as immapp
 from . import imgui_toggle as imgui_toggle
 from . import portable_file_dialogs as portable_file_dialogs
 from .immapp import icons_fontawesome as icons_fontawesome
+from . import im_cool_bar as im_cool_bar
 
 from . import immapp as immapp
 

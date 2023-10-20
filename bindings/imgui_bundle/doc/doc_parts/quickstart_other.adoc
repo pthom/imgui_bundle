@@ -1,0 +1,15 @@
+include::_utils.adoc[]
+
+=== And many more!
+
+TIP: Tip: use the interactive manual as an inspiration
+
+link:{url-demo-imgui-bundle}[image:{url-demo-images}/demo_immapp_apps.jpg[width="400"]]
+
+The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual] provides many demos, _with easy access to their code_. It includes all the examples that are explained here, and many more.
+
+.ImGui Node editor in action
+image::{url-demo-images}/demo_node_editor.jpg[width="400"]
+
+.ImGuizmo in action
+image::{url-demo-images}/demo_gizmo.jpg[width="400"]

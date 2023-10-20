@@ -44,8 +44,8 @@ _FILELIST_
 
 
 def main():
-    autogenerate_all()
     write_cmake_all_pybind_files()
+    autogenerate_all()
 
 
 if __name__ == "__main__":

@@ -68,9 +68,20 @@ def autogenerate_implot_internal() -> None:
     )
 
 
+def sandbox():
+    code  = """
+    IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
+    """
+    options = litgen_options_implot()
+    generator = litgen.LitgenGenerator(options)
+    generator.process_cpp_code(code, "file")
+    print(generator.pydef_code())
+
+
 def main():
-    autogenerate_implot()
-    autogenerate_implot_internal()
+    # autogenerate_implot()
+    # autogenerate_implot_internal()
+    sandbox()
 
 
 if __name__ == "__main__":

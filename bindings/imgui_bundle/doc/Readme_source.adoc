@@ -14,17 +14,28 @@ include::doc_parts/front_matter.adoc[]
 
 include::doc_parts/intro.adoc[]
 
+include::doc_parts/install.adoc[]
+
+include::doc_parts/quickstart.adoc[]
+
+include::doc_parts/manual.adoc[]
+
 ifndef::exclude_collapsible_details[]
 include::doc_parts/folders_structure.adoc[]
 endif::[]
-
-include::doc_parts/install.adoc[]
-
-include::doc_parts/manual.adoc[]
 
 include::doc_parts/port.adoc[]
 
 include::doc_parts/words_author.adoc[]
 
+ifndef::env_gh_pages[]
 == FAQ
 See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]
+endif::[]
+ifdef::env_gh_pages[]
+include::faq_source.adoc[]
+endif::[]
+
+[[devel_docs]]
+== Developer docs
+See link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[developer docs]

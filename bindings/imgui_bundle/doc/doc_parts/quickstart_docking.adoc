@@ -1,0 +1,45 @@
+include::_utils.adoc[]
+
+=== Complex layouts with docking windows
+
+.Complex docking layout
+image::{url-demo-images}/demo_docking.jpg[width=400]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html[Run this demo in your browser]
+
+TIP: As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined themes. In this demo, you can access them via the menu "View/Theme".
+
+This demonstration showcases how to:
+
+- set up a complex docking layouts (with several possible layouts):
+- use the status bar
+- use default menus (App and view menu), and how to customize them
+- display a log window
+- load additional fonts
+- use a specific application state (instead of using static variables)
+- save some additional user settings within imgui ini file
+
+Its source code is heavily documented and should be self-explanatory.
+
+
+.Click to see its source code in {cpp}
+[%collapsible]
+====
+{cpp}
+[source, cpp]
+----
+include::../../demos_cpp/demos_immapp/demo_docking.cpp[]
+----
+
+====
+
+
+.Click to see its source code in Python
+[%collapsible]
+====
+Python:
+[source, python]
+----
+include::../../demos_python/demos_immapp/demo_docking.py[]
+----
+
+====

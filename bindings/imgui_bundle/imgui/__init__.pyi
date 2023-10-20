@@ -4,6 +4,7 @@ import numpy as np
 import enum
 from . import internal as internal
 from . import backends as backends
+from . import test_engine as test_engine
 
 
 ##################################################

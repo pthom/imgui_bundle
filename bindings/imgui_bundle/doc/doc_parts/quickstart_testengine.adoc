@@ -1,0 +1,44 @@
+include::_utils.adoc[]
+
+[[quickstart_testengine]]
+=== Test & Automation with ImGui Test Engine
+
+.ImmGui Test Engine in action
+image::{url-demo-images}/demo_testengine.jpg[width=300]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html[Run this demo in your browser]
+
+link:https://github.com/ocornut/imgui_test_engine[ImGui Test Engine] is a Tests & Automation Engine for Dear ImGui.
+
+
+This demo source code is heavily documented and should be self-explanatory. It shows how to:
+
+* enable ImGui Test Engine via RunnerParams.use_imgui_test_engine
+* define a callback where the tests are registered (runner_params.callbacks.register_tests)
+* create tests, and:
+    ** automate actions using "named references" (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)
+    ** display an optional custom GUI for a test
+* manipulate custom variables
+* check that simulated actions do modify those variables
+
+NOTE: See link:https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt[Dear ImGui Test Engine License]. (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses)
+
+
+.Click to see its source code in {cpp}
+[%collapsible]
+====
+{cpp}
+[source, cpp]
+----
+include::../../demos_cpp/demos_immapp/demo_testengine.cpp[]
+----
+====
+
+.Click to see its source code in Python
+[%collapsible]
+====
+Python:
+[source, python]
+----
+include::../../demos_python/demos_immapp/demo_testengine.py[]
+----
+====

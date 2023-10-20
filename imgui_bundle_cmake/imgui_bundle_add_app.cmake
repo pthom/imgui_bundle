@@ -9,7 +9,10 @@ include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 # Usage:
 # imgui_bundle_add_app(app_name file1.cpp file2.cpp ...)
 #
-# Features: see the doc for hello_imgui_prepare_app, which is called by this function
+# Features:
+#     * It will automatically link the target to the required libraries (imgui_bundle, OpenGl, glad, etc)
+#     * It will embed the assets (for desktop, mobile, and emscripten apps)
+#     * It will perform additional customization (app icon and name on mobile platforms, etc)
 function(imgui_bundle_add_app)
     set(args ${ARGN})
     list(GET args 0 app_name)

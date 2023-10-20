@@ -34,12 +34,12 @@ class DemoAppTable:
         self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
         self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
-        self.snippet_cpp.max_height_in_lines = 21
+        self.snippet_cpp.max_height_in_lines = 30
 
         self.snippet_python = immapp.snippets.SnippetData()
         self.snippet_python.displayed_filename = "Python code"
         self.snippet_python.language = immapp.snippets.SnippetLanguage.python
-        self.snippet_python.max_height_in_lines = 21
+        self.snippet_python.max_height_in_lines = 30
 
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
@@ -65,7 +65,7 @@ class DemoAppTable:
             | imgui.TableFlags_.sizing_stretch_same
         )
         nb_columns = 3
-        imgui.begin_child("TableChild", hello_imgui.em_to_vec2(0.0, 17.0))
+        imgui.begin_child("TableChild", hello_imgui.em_to_vec2(0.0, 8.5))
         if imgui.begin_table("Apps", nb_columns, table_flags):
             imgui.table_setup_column("Demo", 0, 0.15)
             imgui.table_setup_column("Info", 0, 0.6)

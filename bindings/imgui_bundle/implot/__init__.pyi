@@ -1688,6 +1688,18 @@ def plot_bars(
 ) -> None:
     pass
 
+# IMPLOT_TMP void PlotBarGroups(const char* const label_ids[], const T* values, int item_count, int group_count, double group_size=0.67, double shift=0, ImPlotBarGroupsFlags flags=0);    /* original C++ signature */
+def plot_bar_groups(
+    label_ids: List[str],
+    values: np.ndarray,
+    group_count: int,
+    group_size: float = 0.67,
+    shift: float = 0,
+    flags: BarGroupsFlags = 0,
+) -> None:
+    """Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements."""
+    pass
+
 # Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
@@ -1753,6 +1765,20 @@ def plot_inf_lines(
     stride: int = -1,
 ) -> None:
     """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
+    pass
+
+# IMPLOT_TMP void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, const char* label_fmt="%.1f", double angle0=90, ImPlotPieChartFlags flags=0);    /* original C++ signature */
+def plot_pie_chart(
+    label_ids: List[str],
+    values: np.ndarray,
+    x: float,
+    y: float,
+    radius: float,
+    label_fmt: str = "%.1",
+    angle0: float = 90,
+    flags: PieChartFlags = 0,
+) -> None:
+    """Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels."""
     pass
 
 # IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), ImPlotHistogramFlags flags=0);    /* original C++ signature */

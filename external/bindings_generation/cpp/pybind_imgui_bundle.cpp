@@ -8,6 +8,7 @@ void py_init_module_imgui_bundle_inner(py::module& m);
 void py_init_module_hello_imgui(py::module& m);
 void py_init_module_imgui_main(py::module& m);
 void py_init_module_imgui_internal(py::module& m);
+void py_init_module_imgui_test_engine(py::module& m);
 void py_init_module_implot(py::module& m);
 void py_init_module_imgui_color_text_edit(py::module& m);
 void py_init_module_imgui_node_editor(py::module& m);
@@ -24,6 +25,7 @@ void py_init_module_imgui_toggle(py::module& m);
 void py_init_module_portable_file_dialogs(py::module& m);
 void py_init_module_imgui_command_palette(py::module& m);
 void py_init_module_implot_internal(py::module& m);
+void py_init_module_imcoolbar(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -43,6 +45,9 @@ void py_init_module_imgui_bundle(py::module& m)
     // Submodule imgui.backends
     auto module_imgui_backends =  module_imgui.def_submodule("backends");
     py_init_module_imgui_backends(module_imgui_backends);
+    // Submodule imgui.test_engine
+    auto module_imgui_test_engine =  module_imgui.def_submodule("test_engine");
+    py_init_module_imgui_test_engine(module_imgui_test_engine);
 
     auto module_himgui =  m.def_submodule("hello_imgui");
     py_init_module_hello_imgui(module_himgui);
@@ -91,6 +96,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_imgui_command_palette = m.def_submodule("imgui_command_palette");
     py_init_module_imgui_command_palette(module_imgui_command_palette);
+
+    auto module_imcooolbar = m.def_submodule("im_cool_bar");
+    py_init_module_imcoolbar(module_imcooolbar);
 }
 
 

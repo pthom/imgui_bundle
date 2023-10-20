@@ -1,13 +1,14 @@
 /*
-A more complex app demo,
+A more complex app demo
 
-It demonstrates:
-- How to use a specific application state (instead of using static variables)
-- How to set up a complex docking layouts (with several possible layouts):
-- How to use the status bar
-- How to use default menus (App and view menu), and how to customize them
-- How to display a log window
-- How to load additional fonts
+It demonstrates how to:
+- set up a complex docking layouts (with several possible layouts):
+- use the status bar
+- use default menus (App and view menu), and how to customize them
+- display a log window
+- load additional fonts
+- use a specific application state (instead of using static variables)
+- save some additional user settings within imgui ini file
 */
 
 #include "hello_imgui/hello_imgui.h"

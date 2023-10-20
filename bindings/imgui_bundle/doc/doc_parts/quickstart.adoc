@@ -1,0 +1,24 @@
+[[quickstart]]
+== Quick Start & Examples
+
+include::_utils.adoc[]
+
+First, install Dear ImGui Bundle following the <<install-instructions>>.
+
+Then study the examples below.
+
+include::quickstart_hello.adoc[]
+
+include::quickstart_about_assets.adoc[]
+
+include::quickstart_assets_addons.adoc[]
+
+include::quickstart_docking.adoc[]
+
+include::quickstart_testengine.adoc[]
+
+include::quickstart_immvision.adoc[]
+
+include::quickstart_widgets.adoc[]
+
+include::quickstart_other.adoc[]

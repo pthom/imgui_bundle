@@ -1,0 +1,39 @@
+include::_utils.adoc[]
+
+=== Demo using assets & add-ons
+
+.Demo assets and add-ons usage
+image::{url-demo-images}/demo_assets_addons.jpg[width=400]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html[Run this demo in your browser]
+
+This demonstration showcases how to:
+
+* Load and use assets (fonts, images, icons, etc.)
+* Use ImPlot to display various types of plots
+* Use markdown to display formatted messages
+
+
+This demonstration source code is heavily documented and should be self-explanatory.
+
+
+.Click to see its source code in {cpp}
+[%collapsible]
+====
+{cpp}
+[source, cpp]
+----
+include::../../demos_cpp/demos_immapp/demo_assets_addons.cpp[]
+----
+
+====
+
+
+.Click to see its source code in Python
+[%collapsible]
+====
+Python:
+[source, python]
+----
+include::../../demos_python/demos_immapp/demo_assets_addons.py[]
+----
+====

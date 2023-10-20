@@ -1,22 +1,64 @@
 === Batteries included
+include::_utils.adoc[]
 
-Dear ImGui Bundle includes the following libraries:
+Dear ImGui Bundle includes the following libraries, which are available in {cpp} _and_ in Python:
 
-* https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for {cpp} with minimal dependencies
-* https://github.com/epezent/implot[implot]: Immediate Mode Plotting
-* https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
-* https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
-* https://github.com/BalazsJako/ImGuiColorTextEdit[ImGuiColorTextEdit]: Colorizing text editor for ImGui
-* https://github.com/thedmd/imgui-node-editor[imgui-node-editor]: Node Editor built using Dear ImGui
-* https://github.com/altschuler/imgui-knobs[imgui-knobs]: Knobs widgets for ImGui
-* https://github.com/pthom/ImFileDialog.git[ImFileDialog]: A file dialog library for Dear ImGui
-* https://github.com/samhocevar/portable-file-dialogs[portable-file-dialogs]  Portable GUI dialogs library ({cpp}11, single-header)
-* https://github.com/mekhontsev/imgui_md.git[imgui_md]: Markdown renderer for Dear ImGui using MD4C parser
-* https://github.com/dalerank/imspinner[imspinner]: Set of nice spinners for imgui
-* https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui.
-* https://github.com/pthom/immvision.git[ImmVision]: Immediate image debugger and insights
-* https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
-* https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
+[cols="30,30" grid=none frame=none width=75%]
+|===
+|https://github.com/ocornut/imgui.git[imgui] : Dear ImGui, bloat-free Graphical User interface for {cpp} with minimal dependencies
+|image:{url-demo-images}/demo_widgets_imgui.jpg[width=200]
+
+|https://github.com/epezent/implot[implot]: Immediate Mode Plotting
+|image:{url-demo-images}/battery_implot.jpg[width=200]
+
+|https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
+|image:{url-demo-images}/demo_docking.jpg[width=200]
+
+|https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
+|image:{url-demo-images}/demo_gizmo.jpg[width=200]
+
+
+|https://github.com/BalazsJako/ImGuiColorTextEdit[ImGuiColorTextEdit]: Colorizing text editor for ImGui
+|image:{url-demo-images}/demo_widgets_editor.jpg[width=200]
+
+|https://github.com/thedmd/imgui-node-editor[imgui-node-editor]: Node Editor built using Dear ImGui
+|image:{url-demo-images}/demo_node_editor.jpg[width=200]
+
+|https://github.com/mekhontsev/imgui_md.git[imgui_md]: Markdown renderer for Dear ImGui using MD4C parser
+|image:{url-demo-images}/demo_widgets_md.jpg[width=200]
+
+
+|https://github.com/pthom/immvision.git[ImmVision]: Immediate image debugger and insights
+|image:{url-demo-images}/demo_immvision_process_1.jpg[width=200]
+image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
+
+|https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
+|image:{url-demo-images}/demo_imgui_tex_inspector.jpg[width=200]
+
+
+|https://github.com/pthom/ImFileDialog.git[ImFileDialog]: A file dialog library for Dear ImGui
+|image:{url-demo-images}/demo_widgets_imfiledialog.jpg[width=200]
+
+|https://github.com/samhocevar/portable-file-dialogs[portable-file-dialogs]  _OS native_ file dialogs library ({cpp}11, single-header)
+|image:{url-demo-images}/demo_widgets_portablefiledialogs.jpg[width=200]
+
+|https://github.com/altschuler/imgui-knobs[imgui-knobs]: Knobs widgets for ImGui
+|image:{url-demo-images}/demo_widgets_knobs.jpg[width=200]
+
+|https://github.com/dalerank/imspinner[imspinner]: Set of nice spinners for imgui
+|image:{url-demo-images}/demo_widgets_spinners.jpg[width=200]
+
+|https://github.com/cmdwtf/imgui_toggle[imgui_toggle]: A toggle switch widget for Dear ImGui
+|image:{url-demo-images}/demo_widgets_toggle.jpg[width=200]
+
+|https://github.com/aiekick/ImCoolBar[ImCoolBar]: A Cool bar for Dear ImGui
+|image:{url-demo-images}/demo_widgets_coolbar.jpg[width=200]
+
+|https://github.com/hnOsmium0001/imgui-command-palette.git[imgui-command-palette]: A Sublime Text or VSCode style command palette in ImGui
+|image:{url-demo-images}/demo_widgets_command_palette.jpg[width=200]
+
+|===
+
 
 A big thank you to their authors for their awesome work!
 

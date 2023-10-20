@@ -1343,6 +1343,66 @@ void py_init_module_implot(py::module& m)
             PlotBars_adapt_c_buffers(label_id, xs, ys, bar_size, flags, offset, stride);
         },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("bar_size"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
+    m.def("plot_bar_groups",
+        [](const std::vector<std::string> & label_ids, const py::array & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
+        {
+            auto PlotBarGroups_adapt_c_buffers = [](const char * const label_ids[], const py::array & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
+            {
+                // convert py::array to C standard buffer (const)
+                const void * values_from_pyarray = values.data();
+                py::ssize_t values_count = values.shape()[0];
+
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
+                // call the correct template version by casting
+                char values_type = values.dtype().char_();
+                if (values_type == 'B')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint8_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'b')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int8_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'H')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint16_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'h')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int16_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'I')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'i')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'L')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'l')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'f')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'd')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const double *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'g')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const long double *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                else if (values_type == 'q')
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const long long *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                // If we reach this point, the array type is not supported!
+                else
+                    throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
+            };
+            auto PlotBarGroups_adapt_c_string_list_no_count = [&PlotBarGroups_adapt_c_buffers](const std::vector<std::string> & label_ids, const py::array & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
+            {
+                std::vector<const char *> label_ids_ptrs;
+                for (const auto& v: label_ids)
+                    label_ids_ptrs.push_back(v.c_str());
+
+                PlotBarGroups_adapt_c_buffers(label_ids_ptrs.data(), values, group_count, group_size, shift, flags);
+            };
+
+            PlotBarGroups_adapt_c_string_list_no_count(label_ids, values, group_count, group_size, shift, flags);
+        },
+        py::arg("label_ids"), py::arg("values"), py::arg("group_count"), py::arg("group_size") = 0.67, py::arg("shift") = 0, py::arg("flags") = 0,
+        "Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.");
+
     m.def("plot_error_bars",
         [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
@@ -1643,6 +1703,66 @@ void py_init_module_implot(py::module& m)
         },
         py::arg("label_id"), py::arg("values"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1,
         "Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).");
+
+    m.def("plot_pie_chart",
+        [](const std::vector<std::string> & label_ids, const py::array & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, ImPlotPieChartFlags flags = 0)
+        {
+            auto PlotPieChart_adapt_c_buffers = [](const char * const label_ids[], const py::array & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, ImPlotPieChartFlags flags = 0)
+            {
+                // convert py::array to C standard buffer (const)
+                const void * values_from_pyarray = values.data();
+                py::ssize_t values_count = values.shape()[0];
+
+                #ifdef _WIN32
+                using np_uint_l = uint32_t;
+                using np_int_l = int32_t;
+                #else
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+                #endif
+                // call the correct template version by casting
+                char values_type = values.dtype().char_();
+                if (values_type == 'B')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const uint8_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'b')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const int8_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'H')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const uint16_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'h')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const int16_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'I')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'i')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'L')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'l')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'f')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'd')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const double *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'g')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const long double *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                else if (values_type == 'q')
+                    ImPlot::PlotPieChart(label_ids, static_cast<const long long *>(values_from_pyarray), static_cast<int>(values_count), x, y, radius, label_fmt, angle0, flags);
+                // If we reach this point, the array type is not supported!
+                else
+                    throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
+            };
+            auto PlotPieChart_adapt_c_string_list_no_count = [&PlotPieChart_adapt_c_buffers](const std::vector<std::string> & label_ids, const py::array & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, ImPlotPieChartFlags flags = 0)
+            {
+                std::vector<const char *> label_ids_ptrs;
+                for (const auto& v: label_ids)
+                    label_ids_ptrs.push_back(v.c_str());
+
+                PlotPieChart_adapt_c_buffers(label_ids_ptrs.data(), values, x, y, radius, label_fmt, angle0, flags);
+            };
+
+            PlotPieChart_adapt_c_string_list_no_count(label_ids, values, x, y, radius, label_fmt, angle0, flags);
+        },
+        py::arg("label_ids"), py::arg("values"), py::arg("x"), py::arg("y"), py::arg("radius"), py::arg("label_fmt") = "%.1f", py::arg("angle0") = 90, py::arg("flags") = 0,
+        "Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels.");
 
     m.def("plot_histogram",
         [](const char * label_id, const py::array & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), ImPlotHistogramFlags flags = 0) -> double

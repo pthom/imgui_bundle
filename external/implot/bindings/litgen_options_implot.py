@@ -73,14 +73,6 @@ def litgen_options_implot() -> LitgenOptions:
             # void SetupAxisTicks(ImAxis idx, const double* values, int n_ticks, const char* const labels[], bool show_default)
             #                                                            ^                           ^
             "SetupAxisTicks",
-            # void PlotBarGroupsH(const char* const label_ids[], const T* values, int item_count, int group_count, double group_height=0.67, double y0=0, ImPlotBarGroupsFlags flags=ImPlotBarGroupsFlags_None);
-            # void PlotBarGroups (const char* const label_ids[], const T* values, int item_count, int group_count, double group_width=0.67, double x0=0, ImPlotBarGroupsFlags flags=ImPlotBarGroupsFlags_None);
-            #                                            ^                                ^
-            "PlotBarGroups",
-            "PlotBarGroupsH",
-            # void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, bool normalize=false, const char* label_fmt="%.1f", double angle0=90);
-            #                                         ^                               ^
-            "PlotPieChart",
 
             # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);
             # (This API is a bit exotic, and cannot be bound automatically)

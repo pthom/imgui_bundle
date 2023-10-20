@@ -30,14 +30,23 @@ void demo_logger()
 
     static size_t idxFortune = 0;
 
-    auto addLog = []()
+    auto addLogs = []()
     {
-        HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
-        HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
-        ++ idxFortune;
-        if (idxFortune >= fortunes.size())
-            idxFortune = 0;
+        for (int i = 0; i < 10; ++i)
+        {
+            HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
+            HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
+            ++ idxFortune;
+            if (idxFortune >= fortunes.size())
+                idxFortune = 0;
+        }
     };
+    static bool addedLogs = false;
+    if (! addedLogs)
+    {
+        addLogs();
+        addedLogs = true;
+    }
 
     ImGuiMd::RenderUnindented(R"(
         # Graphical logger for ImGui
@@ -48,8 +57,7 @@ void demo_logger()
     ImGui::Separator();
 
     if (ImGui::Button("Add logs"))
-        for (int i = 0; i < 10; ++i)
-            addLog();
+        addLogs();
 
     ImGui::Separator();
     HelloImGui::LogGui();

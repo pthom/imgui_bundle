@@ -9,9 +9,13 @@ def demo_gui():
         # Dear ImGui demo
          [Dear ImGui](https://github.com/ocornut/imgui.git) is one possible implementation of an idea generally described as the IMGUI (Immediate Mode GUI) paradigm. 
          
-         The following is the output of imgui.show_demo_window(), which is always accessible online with [ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html). 
+         Advices:
+         * The best way to learn about the numerous ImGui widgets is to open [Dear ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html).
+         * Dear ImGui Manual shows code snippets in C++, but you can refer to [these instructions](https://pthom.github.io/imgui_bundle/porting.html) on how to easily convert C++ ImGui code to Python. 
     """
     )
+    imgui.new_line()
+    imgui.separator()
     imgui.show_demo_window()
     demo_utils.animate_logo(
         "images/logo_imgui_600.png", 2.0, ImVec2(1.0, 4.8), 0.45, "https://github.com/ocornut/imgui"

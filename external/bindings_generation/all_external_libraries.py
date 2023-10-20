@@ -31,12 +31,31 @@ def lib_im_file_dialog() -> ExternalLibrary:
     )
 
 
+def lib_imcoolbar() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="ImCoolBar",
+        official_git_url="https://github.com/aiekick/ImCoolBar.git",
+        official_branch="master",
+        fork_git_url="https://github.com/pthom/ImCoolBar.git",
+        fork_branch="imgui_bundle"
+    )
+
+
 def lib_imgui() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui",
         official_git_url="https://github.com/ocornut/imgui.git",
         official_branch="docking",
         fork_git_url="https://github.com/pthom/imgui.git"
+    )
+
+
+def lib_imgui_test_engine() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui",
+        official_git_url="https://github.com/ocornut/imgui_test_engine.git",
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/imgui_test_engine.git",
     )
 
 
@@ -187,8 +206,10 @@ def lib_sdl() -> ExternalLibrary:
 
 ALL_LIBS = [
     lib_imgui(),  # must be first as it declare bindings used by the next ones
+    lib_imgui_test_engine(),
     lib_glfw(),
     lib_hello_imgui(),
+    lib_imcoolbar(),
     lib_im_file_dialog(),
     lib_imgui_command_palette(),
     lib_imgui_knobs(),

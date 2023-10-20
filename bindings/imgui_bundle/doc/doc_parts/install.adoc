@@ -1,3 +1,4 @@
+[[install-instructions]]
 == Build and install instructions
 
 include::install_python_doc.adoc[]

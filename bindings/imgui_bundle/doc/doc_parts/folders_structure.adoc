@@ -1,8 +1,12 @@
+[[folders]]
 == Repository folders structure
 
+ifndef::env_gh_pages[]
 .Click to see a detailed explanation of this repository folder structure.
 [%collapsible]
 ====
+endif::[]
+
 [source,bash]
 ----
 ./
@@ -102,4 +106,7 @@
 |         +-- imgui_bundle/                               # main cpp library: almost empty,
                                                           # but linked to all external libraries
 ----
+
+ifndef::env_gh_pages[]
 ====
+endif::[]

@@ -1,3 +1,4 @@
+[[manual]]
 == Usage instructions
 
 include::manual_imgui.adoc[]

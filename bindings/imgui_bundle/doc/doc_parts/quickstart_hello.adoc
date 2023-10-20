@@ -1,0 +1,77 @@
+include::_utils.adoc[]
+
+=== Hello, World
+.Hello World
+image::{url-demo-images}/demo_hello.jpg[]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
+
+==== Hello, World in {cpp}
+
+_link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]_
+[source,cpp]
+----
+include::../../demos_cpp/demos_immapp/demo_hello_world.cpp[]
+----
+
+===== Build with cmake, using `imgui_bundle_add_app`
+
+====
+`imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
+
+* automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
+* embed the assets (for desktop, mobile, and emscripten apps)
+* perform additional customization (app icon and name on mobile platforms, etc)
+====
+
+
+===== Option 1: using imgui_bundle as a submodule
+
+First, add imgui_bundle as a submodule:
+[source, bash]
+----
+git submodule add https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+git submodule update --init --recursive
+----
+
+Then, write a simple CMakeLists file where you add imgui_bundle, then call `imgui_bundle_add_app` to create your application.
+[source,cmake]
+----
+cmake_minimum_required(VERSION 3.20)
+project(imgui_bundle_hello)
+set(CMAKE_CXX_STANDARD 17)
+
+add_subdirectory(imgui_bundle)
+imgui_bundle_add_app(hello_world hello_world.cpp)
+----
+
+
+===== Option 2 : Fetch imgui_bundle during compilation
+
+[source,cmake]
+----
+cmake_minimum_required(VERSION 3.12)
+project(helloworld_with_helloimgui)
+set(CMAKE_CXX_STANDARD 17)
+
+include(FetchContent)
+Set(FETCHCONTENT_QUIET FALSE)
+FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
+FetchContent_MakeAvailable(imgui_bundle)
+# set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
+
+# Build your app
+imgui_bundle_add_app(hello_world hello_world.cpp)
+----
+
+NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here].
+
+==== Hello, World in Python
+
+link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+
+[source,python]
+----
+include::../../demos_python/demos_immapp/demo_hello_world.py[]
+----
+

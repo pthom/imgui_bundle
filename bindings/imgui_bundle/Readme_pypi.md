@@ -38,53 +38,150 @@ Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
 ## Batteries included
 
-Dear ImGui Bundle includes the following libraries:
+Dear ImGui Bundle includes the following libraries, which are available
+in C++ *and* in Python:
 
--   [imgui](https://github.com/ocornut/imgui.git) : Dear ImGui,
-    bloat-free Graphical User interface for C++ with minimal
-    dependencies
-
--   [implot](https://github.com/epezent/implot): Immediate Mode Plotting
-
--   [Hello ImGui](https://github.com/pthom/hello_imgui.git):
-    cross-platform Gui apps with the simplicity of a "Hello World" app
-
--   [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo.git):
-    Immediate mode 3D gizmo for scene editing and other controls based
-    on Dear ImGui
-
--   [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit):
-    Colorizing text editor for ImGui
-
--   [imgui-node-editor](https://github.com/thedmd/imgui-node-editor):
-    Node Editor built using Dear ImGui
-
--   [imgui-knobs](https://github.com/altschuler/imgui-knobs): Knobs
-    widgets for ImGui
-
--   [ImFileDialog](https://github.com/pthom/ImFileDialog.git): A file
-    dialog library for Dear ImGui
-
--   [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)
-    Portable GUI dialogs library (C++11, single-header)
-
--   [imgui\_md](https://github.com/mekhontsev/imgui_md.git): Markdown
-    renderer for Dear ImGui using MD4C parser
-
--   [imspinner](https://github.com/dalerank/imspinner): Set of nice
-    spinners for imgui
-
--   [imgui\_toggle](https://github.com/cmdwtf/imgui_toggle): A toggle
-    switch widget for Dear ImGui.
-
--   [ImmVision](https://github.com/pthom/immvision.git): Immediate image
-    debugger and insights
-
--   [imgui\_tex\_inspect](https://github.com/andyborrell/imgui_tex_inspect):
-    A texture inspector tool for Dear ImGui
-
--   [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git):
-    A Sublime Text or VSCode style command palette in ImGui
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/ocornut/imgui.git">imgui</a> : Dear ImGui,
+bloat-free Graphical User interface for C++ with minimal
+dependencies</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg"
+alt="demo widgets imgui" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/epezent/implot">implot</a>: Immediate Mode
+Plotting</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//battery_implot.jpg"
+alt="battery implot" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/hello_imgui.git">Hello ImGui</a>:
+cross-platform Gui apps with the simplicity of a "Hello World"
+app</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg"
+alt="demo docking" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/CedricGuillemet/ImGuizmo.git">ImGuizmo</a>:
+Immediate mode 3D gizmo for scene editing and other controls based on
+Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg"
+alt="demo gizmo" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a>:
+Colorizing text editor for ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg"
+alt="demo widgets editor" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/thedmd/imgui-node-editor">imgui-node-editor</a>:
+Node Editor built using Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg"
+alt="demo node editor" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/mekhontsev/imgui_md.git">imgui_md</a>: Markdown
+renderer for Dear ImGui using MD4C parser</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_md.jpg"
+alt="demo widgets md" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate
+image debugger and insights</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg"
+alt="demo immvision process 1" /> <img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg"
+alt="demo immvision process 2" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>:
+A texture inspector tool for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_imgui_tex_inspector.jpg"
+alt="demo imgui tex inspector" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A
+file dialog library for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imfiledialog.jpg"
+alt="demo widgets imfiledialog" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>
+<em>OS native</em> file dialogs library (C++11, single-header)</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_portablefiledialogs.jpg"
+alt="demo widgets portablefiledialogs" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs
+widgets for ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg"
+alt="demo widgets knobs" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice
+spinners for imgui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg"
+alt="demo widgets spinners" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle
+switch widget for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg"
+alt="demo widgets toggle" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
+href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>: A Cool bar
+for Dear ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg"
+alt="demo widgets coolbar" /></p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p><a
+href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
+A Sublime Text or VSCode style command palette in ImGui</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_command_palette.jpg"
+alt="demo widgets command palette" /></p></td>
+</tr>
+</tbody>
+</table>
 
 A big thank you to their authors for their awesome work!
 
@@ -104,6 +201,11 @@ imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hel
 
 Thanks to this, code completion in your favorite python IDE works like a
 charm, and porting code between Python and C++ becomes easy.
+
+GPT can help you translate between C++ and Python: see [this
+conversation](https://chat.openai.com/share/1e61dfec-c2de-4c2a-8149-24926276bbd5)
+where GPT4 was used to translate code and summarize the differences
+between the C++ and Python APIs.
 
 # Build and install instructions
 
@@ -187,6 +289,3645 @@ The source for the demos can be found inside
 Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available
 online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+
+# Quick Start & Examples
+
+First, install Dear ImGui Bundle following the [Build and install
+instructions](#install-instructions).
+
+Then study the examples below.
+
+## Hello, World
+
+![Hello
+World](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_hello.jpg)
+
+[Run this demo in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html)
+
+### Hello, World in C++
+
+*[demo\_hello\_world.cpp](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp)*
+
+    #include "immapp/immapp.h"
+    #include "imgui.h"
+
+    void Gui()
+    {
+        ImGui::Text("Hello, world!");
+    }
+
+    int main(int, char **)
+    {
+        ImmApp::Run(
+            Gui,
+            "Hello!",
+            true // window_size_auto
+            // Uncomment the next line to restore window position and size from previous run
+            // , true // windowRestorePreviousGeometry
+        );
+
+        return 0;
+    }
+
+#### Build with cmake, using `imgui_bundle_add_app`
+
+`imgui_bundle_add_app` is a cmake command, close to `add_executable`,
+which will:
+
+-   automatically link your app to the required libraries
+    (imgui\_bundle, OpenGl, glad, etc)
+
+-   embed the assets (for desktop, mobile, and emscripten apps)
+
+-   perform additional customization (app icon and name on mobile
+    platforms, etc)
+
+#### Option 1: using imgui\_bundle as a submodule
+
+First, add imgui\_bundle as a submodule:
+
+    git submodule add https://github.com/pthom/imgui_bundle.git
+    cd imgui_bundle
+    git submodule update --init --recursive
+
+Then, write a simple CMakeLists file where you add imgui\_bundle, then
+call `imgui_bundle_add_app` to create your application.
+
+    cmake_minimum_required(VERSION 3.20)
+    project(imgui_bundle_hello)
+    set(CMAKE_CXX_STANDARD 17)
+
+    add_subdirectory(imgui_bundle)
+    imgui_bundle_add_app(hello_world hello_world.cpp)
+
+#### Option 2 : Fetch imgui\_bundle during compilation
+
+    cmake_minimum_required(VERSION 3.12)
+    project(helloworld_with_helloimgui)
+    set(CMAKE_CXX_STANDARD 17)
+
+    include(FetchContent)
+    Set(FETCHCONTENT_QUIET FALSE)
+    FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
+    FetchContent_MakeAvailable(imgui_bundle)
+    # set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
+
+    # Build your app
+    imgui_bundle_add_app(hello_world hello_world.cpp)
+
+This cmake file is part of a quick start example available
+[here](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
+
+### Hello, World in Python
+
+[demo\_hello\_world.py](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py)
+
+    from imgui_bundle import imgui, immapp
+
+
+    def gui():
+        imgui.text("Hello, world!")
+
+
+    immapp.run(
+        gui_function=gui,  # The Gui function to run
+        window_title="Hello!",  # the window title
+        window_size_auto=True,  # Auto size the application window given its widgets
+        # Uncomment the next line to restore window position and size from previous run
+        # window_restore_previous_geometry==True
+    )
+
+## About assets
+
+HelloImGui and ImmApp applications rely on the presence of an `assets`
+folder. The typical layout of an assets folder looks like this:
+
+    assets/
+        +-- fonts/
+        |         +-- DroidSans.ttf                       # Default fonts used by HelloImGui to
+        |         +-- fontawesome-webfont.ttf             # improve text rendering (esp. on High DPI)
+        |         |                                       # if absent, a default LowRes font is used.
+        |         |
+        |         +-- Roboto/                             # Optional: fonts for markdown
+        |         |         +-- LICENSE.txt
+        |         |         +-- Roboto-Bold.ttf
+        |         |         +-- Roboto-BoldItalic.ttf
+        |         |         +-- Roboto-Regular.ttf
+        |         |         +-- Roboto-RegularItalic.ttf
+        |         +-- SourceCodePro-Regular.ttf           # Optional: font / markdown
+        +-- images/
+                  +-- markdown_broken_image.png           # Optional: used for markdown
+                  |
+                  +-- world.jpg                           # Add anything in the assets folder!
+
+You can change the assets folder via `HelloImGui::SetAssetsFolder` (C++)
+or `hello_imgui.set_assets_folder` (python).
+
+**Where to find the default assets**
+
+Look at the
+[imgui\_bundle/bindings/imgui\_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets)
+folder which provides them.
+
+**Where to place your assets folder**
+
+You can either:
+
+-   copy it into your execution folder (*C++ and python*)
+
+-   place it besides your CMakeLists.txt, and it will be deployed into
+    the execution folder automatically (*C++ only*)
+
+## Demo using assets & add-ons
+
+![Demo assets and add-ons
+usage](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg)
+
+[Run this demo in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html)
+
+This demonstration showcases how to:
+
+-   Load and use assets (fonts, images, icons, etc.)
+
+-   Use ImPlot to display various types of plots
+
+-   Use markdown to display formatted messages
+
+This demonstration source code is heavily documented and should be
+self-explanatory.
+
+C++
+
+    #include "hello_imgui/hello_imgui.h"
+    #include "immapp/immapp.h"
+    #include "imgui_md_wrapper/imgui_md_wrapper.h"
+    #include "implot/implot.h"
+    #include "immapp/code_utils.h"
+    #include "demo_utils/api_demos.h"
+    #include <vector>
+    #include <map>
+
+
+    // This function displays the help messages that are displayed in this demo application
+    void ShowDoc(const std::string& whichDoc);
+
+
+    // Your global application state, that will be edited during the execution
+    struct AppState
+    {
+        // you can edit the ImPlot pie chart values
+        std::vector<float> PlotData = {0.15f, 0.30f, 0.2f, 0.05f};
+
+        // You can edit a demo markdown string
+        char MarkdownInput[4000] = "*Welcome to the interactive markdown demo!* Try writing some markdown content here.";
+
+        //
+        // Note about AppState:
+        // Inside ImGui demo code, you will often see static variables, such as in this example
+        // ```cpp
+        //     static int value = 10;
+        //     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
+        // ```
+        // In this example, `value` is a static variable whose state is preserved:
+        // it merely acts as a global variable, whose scope is limited to this function.
+        // Global variables should be avoided, and storing the Application State like this is preferable in production code.
+        //
+    };
+
+
+    // A demo showcasing the assets usage in HelloImGui and ImmApp
+    void DemoAssets(AppState& appState)
+    {
+        ImGuiMd::Render("# Demo Assets");
+        ImGui::Text("Here are some icons from Font Awesome: ");
+        ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+        ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+
+
+        ImGui::Text("Here is an image that was loaded from the assets: ");
+        ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+
+        // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+        //     Below, imageSize is equivalent to the size of 3 lines of text
+        ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+        HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+
+        ImGuiMd::Render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+
+        ShowDoc("AssetsDoc");
+    }
+
+
+    // A demo about the usage of the markdown renderer
+    void DemoMarkdown(AppState& appState)
+    {
+        std::string markdownDemo = R"(
+            # Demo markdown usage
+
+            Let's ask GPT4 to give us some fun programming fortunes in markdown format:
+
+            1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
+
+            2. **Pythonic Wisdom**:
+                > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
+                ```python
+                def explain(thing):
+                    return "It's just a " + thing + ". Nothing fancy!"
+                ```
+            )";
+        ImGuiMd::RenderUnindented(markdownDemo);
+
+        // Interactive demo
+        ImGui::Separator();
+        ImGuiMd::Render("*Try it yourself*");
+        ImGui::SameLine(HelloImGui::EmSize(30.f));
+        if (ImGui::SmallButton("Edit the fortune markdown"))
+            strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
+        ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
+        ImGuiMd::RenderUnindented(appState.MarkdownInput);
+        ImGui::Separator();
+
+        ShowDoc("MarkdownDoc");
+    }
+
+
+    // A demo showcasing the usage of ImPlot
+    void DemoPlot(AppState& appState)
+    {
+        ImGuiMd::Render("# Demo ImPlot");
+
+        static const char* data_labels[]    = {"Frogs", "Hogs", "Dogs", "Logs"};
+
+        ImGui::Text("Edit Pie Chart values");
+        ImGui::SetNextItemWidth(250);
+        ImGui::DragFloat4("Pie Data", appState.PlotData.data(), 0.01f, 0, 1);
+
+        // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+        //     Below, plotSize is equivalent to the size of 1 lines of text
+        ImVec2 plotSize = ImmApp::EmToVec2(15.f, 15.f);
+
+        if (ImPlot::BeginPlot("Pie Chart", plotSize))
+        {
+            ImPlot::SetupAxes("", "", ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+            ImPlot::PlotPieChart(
+                data_labels,
+                appState.PlotData.data(), appState.PlotData.size(), // data and count
+                0.5, 0.5, // pie center position in the plot(x, y). Here, it is centered
+                0.35,      // pie radius relative to plotSize
+                "%.2f",   // fmt
+                90        // angle
+                );
+                ImPlot::EndPlot();
+        }
+
+        ShowDoc("PlotDoc");
+    }
+
+
+    // Our main function
+    int main(int, char**)
+    {
+        // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+        //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
+        ChdirBesideAssetsFolder();
+
+        AppState appState;         // Our global appState
+
+        // This is our GUI function:
+        //     it will display the widgets
+        //     it captures the appState, since it can modify it
+        auto gui = [&appState]()
+        {
+            DemoAssets(appState);
+            ImGui::NewLine();
+            DemoMarkdown(appState);
+            ImGui::NewLine();
+            DemoPlot(appState);
+        };
+
+        // Then, we start our application:
+        //     First, we set some RunnerParams, with simple settings
+        HelloImGui::SimpleRunnerParams runnerParams;
+        runnerParams.windowSize = {1000, 1000};
+        //     Here we set our GUI function
+        runnerParams.guiFunction = gui;
+        //     Then, we need to activate two addons: ImPlot and Markdown
+        ImmApp::AddOnsParams addons;
+        addons.withImplot = true;
+        addons.withMarkdown = true;
+        //     And we are ready to go!
+        ImmApp::Run(runnerParams, addons);
+
+        return 0;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // End of demo code
+    ///////////////////////////////////////////////////////////////////////////////
+
+
+    //
+    // Note: the code below only displays the help messages
+    //
+
+    std::string GetDoc(const std::string& whichDoc)
+    {
+        static std::map<std::string, std::string> docs =
+            {
+                {
+                    "AssetsDoc",
+                    R"(
+                        The icons and image were shown via this code:
+
+                        C++
+                        ```cpp
+                        ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+                        ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+                        HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+                        ```
+
+                        Python
+                        ```python
+                        imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+                        image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+                        hello_imgui.image_from_asset("images/world.jpg", image_size)
+                        ```
+
+                        *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
+                    )"
+                },
+                {
+                    "MarkdownDoc",
+                    R"(
+                    This markdown string was rendered by calling either:
+
+                    C++
+                    ```cpp
+                    ImGuiMd::Render(markdown_string);            // render a markdown string
+                    ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                    ```
+
+                    Python
+                    ```python
+                    imgui_md.render(markdown_string);            # render a markdown string
+                    imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+                    ```
+
+                    This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+                    It supports the most common markdown features: emphasis, link, code blocks, etc.
+                    )"
+                },
+                {
+                    "PlotDoc",
+                    R"(
+                    By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
+                    Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+                    C++
+                    ```cpp
+                    ImmApp::AddOnsParams addons { .withImplot = true };
+                    ImmApp::Run(runnerParams, addons);
+                    ```
+
+                    Python:
+                    ```python
+                    addons = immapp.AddOnsParams(with_implot=True)
+                    immapp.run(runner_params, addons);
+                    ```
+                    )"
+                },
+            };
+
+        return docs.at(whichDoc);
+    }
+
+
+    void ShowDoc(const std::string& whichDoc)
+    {
+        static std::map<std::string, bool> is_doc_visible;
+        if (is_doc_visible.find(whichDoc) == is_doc_visible.end())
+            is_doc_visible[whichDoc] = false;
+
+        ImGui::PushID(whichDoc.c_str());
+        ImGui::Checkbox("More info", &is_doc_visible[whichDoc]);
+
+        if (is_doc_visible[whichDoc])
+        {
+            ImGuiMd::RenderUnindented(GetDoc(whichDoc));
+            ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
+            ImGui::Separator();
+        }
+        ImGui::PopID();
+    }
+
+Python:
+
+    from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
+    from imgui_bundle.demos_python import demo_utils
+
+    from dataclasses import dataclass, field
+    import numpy as np
+    from typing import Dict, List
+    from dataclasses import dataclass, field
+
+
+    def show_doc(which_doc: str):
+        """This function displays the help messages that are displayed in this demo application
+        (implemented later in this file)"""
+        ...
+
+
+    @dataclass
+    class AppState:
+        """Your global application state, that will be edited during the execution."""
+
+        # you can edit the ImPlot pie chart values
+        plot_data: List[float] = field(default_factory=lambda: [0.15, 0.30, 0.2, 0.05])
+
+        # You can edit a demo markdown string
+        markdown_input: str = "*Welcome to the interactive markdown demo!* Try writing some markdown content here."
+
+        #
+        # Note about AppState:
+        # Inside ImGui demo code, you will often see static variables, such as in this example
+        #     static int value = 10;
+        #     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
+        # In this example, `value` is a static variable whose state is preserved:
+        # it merely acts as a global variable, whose scope is limited to this function.
+        # Global variables should be avoided, and storing the Application State like this is preferable in production code.
+
+
+    def demo_assets(app_state: AppState):
+        """A demo showcasing the assets usage in HelloImGui and ImmApp"""
+        imgui_md.render("# Demo Assets")
+
+        imgui.text("Here are some icons from Font Awesome: ")
+        imgui.same_line()
+        imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
+        imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+
+        imgui.text("Here is an image that was loaded from the assets: ")
+        imgui.same_line()
+        imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
+
+        # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+        # Below, image_size is equivalent to the size of 3 lines of text
+        image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+        hello_imgui.image_from_asset("images/world.jpg", image_size)
+
+        imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+        show_doc("AssetsDoc")
+
+
+    def demo_markdown(app_state: AppState):
+        """A demo about the usage of the markdown renderer"""
+        markdown_demo = """
+            # Demo markdown usage
+
+            Let's ask GPT4 to give us some fun programming fortunes in markdown format:
+
+            1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
+
+            2. **Pythonic Wisdom**:
+                > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
+                ```python
+                def explain(thing):
+                    return "It's just a " + thing + ". Nothing fancy!"
+                ```
+        """
+        imgui_md.render_unindented(markdown_demo)
+
+        # Interactive demo
+        imgui.separator()
+        imgui_md.render("*Try it yourself*")
+        imgui.same_line(hello_imgui.em_size(30.0))
+        if imgui.small_button("Edit the fortune markdown"):
+            app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
+        _, app_state.markdown_input = imgui.input_text_multiline("##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0))
+        imgui_md.render_unindented(app_state.markdown_input)
+        imgui.separator()
+
+        show_doc("MarkdownDoc")
+
+
+    def demo_plot(app_state: AppState):
+        """A demo showcasing the usage of ImPlot"""
+        imgui_md.render("# Demo ImPlot")
+
+        data_labels = ["Frogs", "Hogs", "Dogs", "Logs"]
+
+        imgui.text("Edit Pie Chart values")
+        imgui.set_next_item_width(250)
+        _, app_state.plot_data = imgui.drag_float4("Pie Data", app_state.plot_data, 0.01, 0, 1)
+
+        # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+        # Below, plot_size is equivalent to the size of 15 lines of text
+        plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
+
+        if implot.begin_plot("Pie Chart", plot_size):
+            implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
+            implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
+            implot.end_plot()
+
+        show_doc("PlotDoc")
+
+
+    def main():
+        # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+        #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
+        demo_utils.set_hello_imgui_demo_assets_folder()
+
+        app_state = AppState()  # Initialize our global appState
+
+        # This is our GUI function:
+        # it will display the widgets, and it can modify the app_state
+        def gui():
+            demo_assets(app_state)
+            imgui.new_line()
+            demo_markdown(app_state)
+            imgui.new_line()
+            demo_plot(app_state)
+
+        # Then, we start our application:
+        #     First, we set some RunnerParams, with simple settings
+        runner_params = hello_imgui.SimpleRunnerParams()
+        runner_params.window_size = (1000, 1000)
+        runner_params.gui_function = gui
+        #     We need to activate two addons: ImPlot and Markdown
+        addons = immapp.AddOnsParams()
+        addons.with_implot = True
+        addons.with_markdown = True
+        #     And we are ready to go!
+        immapp.run(runner_params, addons)
+
+
+    # ///////////////////////////////////////////////////////////////////////////////
+    # // End of demo code
+    # ///////////////////////////////////////////////////////////////////////////////
+
+
+    # //
+    # // Note: the code below only displays the help messages
+    # //
+
+    def get_doc(which_doc: str) -> str:
+        """Return the associated documentation string based on the key."""
+
+        docs: Dict[str, str] = {
+            "AssetsDoc": """
+                The icons and image were shown via this code:
+
+                C++
+                ```cpp
+                ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+                ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+                HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+                ```
+
+                Python
+                ```python
+                imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+                image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+                hello_imgui.image_from_asset("images/world.jpg", image_size)
+                ```
+
+                *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
+            """,
+
+            "MarkdownDoc": """
+                This markdown string was rendered by calling either:
+
+                C++
+                ```cpp
+                ImGuiMd::Render(markdown_string);            // render a markdown string
+                ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                ```
+
+                Python
+                ```python
+                imgui_md.render(markdown_string);            # render a markdown string
+                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+                ```
+
+                This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+                It supports the most common markdown features: emphasis, link, code blocks, etc.
+            """,
+
+            "PlotDoc": """
+                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
+                Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+                C++
+                ```cpp
+                ImmApp::AddOnsParams addons { .withImplot = true };
+                ImmApp::Run(runnerParams, addons);
+                ```
+
+                Python:
+                ```python
+                addons = immapp.AddOnsParams(with_implot=True)
+                immapp.run(runner_params, addons);
+                ```
+            """
+        }
+
+        return docs[which_doc]
+
+
+    @immapp.static(is_doc_visible={})
+    def show_doc(which_doc):
+        # Access the 'static' variable
+        is_doc_visible = show_doc.is_doc_visible
+
+        # Check if the doc visibility entry exists, if not, add it
+        if which_doc not in is_doc_visible:
+            is_doc_visible[which_doc] = False
+
+        imgui.push_id(which_doc)
+        _, is_doc_visible[which_doc] = imgui.checkbox("More info", is_doc_visible[which_doc])
+
+        if is_doc_visible[which_doc]:
+            # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
+            # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
+            imgui_md.render_unindented(get_doc(which_doc))
+            imgui.dummy(hello_imgui.em_to_vec2(1.0, 6.0))  # Assumes 'hello_imgui' is available in your environment
+            imgui.separator()
+
+        imgui.pop_id()
+
+
+    if __name__ == "__main__":
+        main()
+
+## Complex layouts with docking windows
+
+![Complex docking
+layout](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg)
+
+[Run this demo in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
+
+As shown in the screenshot, Dear ImGui Bundle provides a variety of
+predefined themes. In this demo, you can access them via the menu
+"View/Theme".
+
+This demonstration showcases how to:
+
+-   set up a complex docking layouts (with several possible layouts):
+
+-   use the status bar
+
+-   use default menus (App and view menu), and how to customize them
+
+-   display a log window
+
+-   load additional fonts
+
+-   use a specific application state (instead of using static variables)
+
+-   save some additional user settings within imgui ini file
+
+Its source code is heavily documented and should be self-explanatory.
+
+C++
+
+    /*
+    A more complex app demo
+
+    It demonstrates how to:
+    - set up a complex docking layouts (with several possible layouts):
+    - use the status bar
+    - use default menus (App and view menu), and how to customize them
+    - display a log window
+    - load additional fonts
+    - use a specific application state (instead of using static variables)
+    - save some additional user settings within imgui ini file
+    */
+
+    #include "hello_imgui/hello_imgui.h"
+    #include "imgui.h"
+    #include "imgui/misc/cpp/imgui_stdlib.h"
+    #include "imgui_internal.h"
+    #include "demo_utils/api_demos.h"
+
+    #include <sstream>
+
+    //////////////////////////////////////////////////////////////////////////
+    //    Our Application State
+    //////////////////////////////////////////////////////////////////////////
+    struct MyAppSettings
+    {
+        std::string name = "Test";
+        int value = 10;
+    };
+
+    struct AppState
+    {
+        float f = 0.0f;
+        int counter = 0;
+
+        float rocket_launch_time = 0.f;
+        float rocket_progress = 0.0f;
+
+        enum class RocketState {
+            Init,
+            Preparing,
+            Launched
+        };
+        RocketState rocket_state = RocketState::Init;
+
+        MyAppSettings myAppSettings; // This values will be stored in the application settings
+    };
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //    Additional fonts handling
+    //////////////////////////////////////////////////////////////////////////
+    ImFont * gTitleFont;
+    void LoadFonts() // This is called by runnerParams.callbacks.LoadAdditionalFonts
+    {
+        // First, load the default font (the default font should be loaded first)
+        HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
+        // Then load the title font
+        gTitleFont = HelloImGui::LoadFontTTF("fonts/DroidSans.ttf", 18.f);
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //    Save additional settings in the ini file
+    //////////////////////////////////////////////////////////////////////////
+    // This demonstrates how to store additional info in the application settings
+    // Use this sparingly!
+    // This is provided as a convenience only, and it is not intended to store large quantities of text data.
+
+    // Warning, the save/load function below are quite simplistic!
+    std::string MyAppSettingsToString(const MyAppSettings& myAppSettings)
+    {
+        std::stringstream ss;
+        ss << myAppSettings.name << "\n";
+        ss << myAppSettings.value;
+        return ss.str();
+    }
+    MyAppSettings StringToMyAppSettings(const std::string& s)
+    {
+        std::stringstream ss(s);
+        MyAppSettings myAppSettings;
+        ss >> myAppSettings.name;
+        ss >> myAppSettings.value;
+        return myAppSettings;
+    }
+
+    // Note: LoadUserSettings() and SaveUserSettings() will be called in the callbacks `PostInit` and `BeforeExit`:
+    //     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
+    //     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
+    void LoadMyAppSettings(AppState& appState) //
+    {
+        appState.myAppSettings = StringToMyAppSettings(HelloImGui::LoadUserPref("MyAppSettings"));
+    }
+    void SaveMyAppSettings(const AppState& appState)
+    {
+        HelloImGui::SaveUserPref("MyAppSettings", MyAppSettingsToString(appState.myAppSettings));
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    //    Gui functions used in this demo
+    //////////////////////////////////////////////////////////////////////////
+
+    // Display a button that will hide the application window
+    void DemoHideWindow()
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("Hide app window"); ImGui::PopFont();
+        ImGui::TextWrapped("By clicking the button below, you can hide the window for 3 seconds.");
+
+        static double lastHideTime = -1.;
+        if (ImGui::Button("Hide"))
+        {
+            lastHideTime =  ImGui::GetTime();
+            HelloImGui::GetRunnerParams()->appWindowParams.hidden = true;
+        }
+        if (lastHideTime > 0.)
+        {
+            double now = ImGui::GetTime();
+            if (now - lastHideTime > 3.)
+            {
+                lastHideTime = -1.;
+                HelloImGui::GetRunnerParams()->appWindowParams.hidden = false;
+            }
+        }
+    }
+
+    // Display a button that will show an additional window
+    void DemoShowAdditionalWindow()
+    {
+        // Notes:
+        //     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
+        //       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating on this vector!)
+        //     - there are two ways to dynamically add windows:
+        //           * either make them initially invisible, and exclude them from the view menu (such as shown here)
+        //           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
+        const char* windowName = "Additional Window";
+        ImGui::PushFont(gTitleFont); ImGui::Text("Dynamically add window"); ImGui::PopFont();
+        if (ImGui::Button("Show additional window"))
+        {
+            auto additionalWindowPtr = HelloImGui::GetRunnerParams()->dockingParams.dockableWindowOfName(windowName);
+            if (additionalWindowPtr)
+            {
+                // additionalWindowPtr->includeInViewMenu = true;
+                additionalWindowPtr->isVisible = true;
+            }
+        }
+    }
+
+
+    void DemoBasicWidgets(AppState& appState)
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("Basic widgets demo"); ImGui::PopFont();
+        ImGui::TextWrapped("The widgets below will interact with the log window");
+
+        // Edit a float using a slider from 0.0f to 1.0f
+        bool changed = ImGui::SliderFloat("float", &appState.f, 0.0f, 1.0f);
+        if (changed)
+            HelloImGui::Log(HelloImGui::LogLevel::Warning, "state.f was changed to %f", appState.f);
+
+        // Buttons return true when clicked (most widgets return true when edited/activated)
+        if (ImGui::Button("Button"))
+        {
+            appState.counter++;
+            HelloImGui::Log(HelloImGui::LogLevel::Info, "Button was pressed");
+        }
+
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", appState.counter);
+    }
+
+    void DemoUserSettings(AppState& appState)
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("User settings"); ImGui::PopFont();
+        ImGui::TextWrapped("The values below are stored in the application settings ini file and restored at startup");
+        ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
+        ImGui::InputText("Name", &appState.myAppSettings.name);
+        ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
+        ImGui::SliderInt("Value", &appState.myAppSettings.value, 0, 100);
+    }
+
+    void DemoRocket(AppState& appState)
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("Rocket demo"); ImGui::PopFont();
+        ImGui::TextWrapped("How to show a progress bar in the status bar");
+        if (appState.rocket_state == AppState::RocketState::Init)
+        {
+            if (ImGui::Button(ICON_FA_ROCKET" Launch rocket"))
+            {
+                appState.rocket_launch_time = (float)ImGui::GetTime();
+                appState.rocket_state = AppState::RocketState::Preparing;
+                HelloImGui::Log(HelloImGui::LogLevel::Warning, "Rocket is being prepared");
+            }
+        }
+        else if (appState.rocket_state == AppState::RocketState::Preparing)
+        {
+            ImGui::Text("Please Wait");
+            appState.rocket_progress = (float)(ImGui::GetTime() - appState.rocket_launch_time) / 3.f;
+            if (appState.rocket_progress >= 1.0f)
+            {
+                appState.rocket_state = AppState::RocketState::Launched;
+                HelloImGui::Log(HelloImGui::LogLevel::Warning, "Rocket was launched");
+            }
+        }
+        else if (appState.rocket_state == AppState::RocketState::Launched)
+        {
+            ImGui::Text(ICON_FA_ROCKET " Rocket launched");
+            if (ImGui::Button("Reset Rocket"))
+            {
+                appState.rocket_state = AppState::RocketState::Init;
+                appState.rocket_progress = 0.f;
+            }
+        }
+    }
+
+    void DemoDockingFlags()
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("Main dock space node flags"); ImGui::PopFont();
+        ImGui::TextWrapped(R"(
+    This will edit the ImGuiDockNodeFlags for "MainDockSpace".
+    Most flags are inherited by children dock spaces.
+        )");
+        struct DockFlagWithInfo {
+            ImGuiDockNodeFlags flag;
+            std::string label;
+            std::string tip;
+        };
+        std::vector<DockFlagWithInfo> all_flags = {
+            {ImGuiDockNodeFlags_NoSplit, "NoSplit", "prevent Dock Nodes from being split"},
+            {ImGuiDockNodeFlags_NoResize, "NoResize", "prevent Dock Nodes from being resized"},
+            {ImGuiDockNodeFlags_AutoHideTabBar, "AutoHideTabBar",
+             "show tab bar only if multiple windows\n"
+             "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"},
+            {ImGuiDockNodeFlags_NoDockingInCentralNode, "NoDockingInCentralNode",
+             "prevent docking in central node\n"
+             "(only works with the main dock space)"},
+            // {ImGuiDockNodeFlags_PassthruCentralNode, "PassthruCentralNode", "advanced"},
+        };
+        auto & mainDockSpaceNodeFlags = HelloImGui::GetRunnerParams()->dockingParams.mainDockSpaceNodeFlags;
+        for (auto flag: all_flags)
+        {
+            ImGui::CheckboxFlags(flag.label.c_str(), &mainDockSpaceNodeFlags, flag.flag);
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("%s", flag.tip.c_str());
+        }
+    }
+
+    void GuiWindowLayoutCustomization()
+    {
+        ImGui::PushFont(gTitleFont); ImGui::Text("Switch between layouts"); ImGui::PopFont();
+        ImGui::Text("with the menu \"View/Layouts\"");
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Each layout remembers separately the modifications applied by the user, \nand the selected layout is restored at startup");
+        ImGui::Separator();
+        ImGui::PushFont(gTitleFont); ImGui::Text("Change the theme"); ImGui::PopFont();
+        ImGui::Text("with the menu \"View/Theme\"");
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("The selected theme is remembered and restored at startup");
+        ImGui::Separator();
+        DemoDockingFlags();
+        ImGui::Separator();
+    }
+
+    void GuiWindowDemoFeatures(AppState& appState)
+    {
+        DemoBasicWidgets(appState);
+        ImGui::Separator();
+        DemoRocket(appState);
+        ImGui::Separator();
+        DemoUserSettings(appState);
+        ImGui::Separator();
+        DemoHideWindow();
+        ImGui::Separator();
+        DemoShowAdditionalWindow();
+        ImGui::Separator();
+    }
+
+    // The Gui of the status bar
+    void StatusBarGui(AppState& app_state)
+    {
+        if (app_state.rocket_state == AppState::RocketState::Preparing)
+        {
+            ImGui::Text("Rocket completion: ");
+            ImGui::SameLine();
+            ImGui::ProgressBar(app_state.rocket_progress, HelloImGui::EmToVec2(7.0f, 1.0f));
+        }
+    }
+
+    // The menu gui
+    void ShowMenuGui()
+    {
+        if (ImGui::BeginMenu("My Menu"))
+        {
+            bool clicked = ImGui::MenuItem("Test me", "", false);
+            if (clicked)
+            {
+                HelloImGui::Log(HelloImGui::LogLevel::Warning, "It works");
+            }
+            ImGui::EndMenu();
+        }
+    }
+
+    void ShowAppMenuItems()
+    {
+        if (ImGui::MenuItem("A Custom app menu item"))
+            HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on A Custom app menu item");
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //    Docking Layouts and Docking windows
+    //////////////////////////////////////////////////////////////////////////
+
+    //
+    // 1. Define the Docking splits (two versions are available)
+    //
+    std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
+    {
+        //    Define the default docking splits,
+        //    i.e. the way the screen space is split in different target zones for the dockable windows
+        //     We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+        //
+        //    ___________________________________________
+        //    |        |                                |
+        //    | Command|                                |
+        //    | Space  |    MainDockSpace               |
+        //    |        |                                |
+        //    |        |                                |
+        //    |        |                                |
+        //    -------------------------------------------
+        //    |     MiscSpace                           |
+        //    -------------------------------------------
+        //
+
+        // Then, add a space named "MiscSpace" whose height is 25% of the app height.
+        // This will split the preexisting default dockspace "MainDockSpace" in two parts.
+        HelloImGui::DockingSplit splitMainMisc;
+        splitMainMisc.initialDock = "MainDockSpace";
+        splitMainMisc.newDock = "MiscSpace";
+        splitMainMisc.direction = ImGuiDir_Down;
+        splitMainMisc.ratio = 0.25f;
+
+        // Then, add a space to the left which occupies a column whose width is 25% of the app width
+        HelloImGui::DockingSplit splitMainCommand;
+        splitMainCommand.initialDock = "MainDockSpace";
+        splitMainCommand.newDock = "CommandSpace";
+        splitMainCommand.direction = ImGuiDir_Left;
+        splitMainCommand.ratio = 0.25f;
+
+        std::vector<HelloImGui::DockingSplit> splits {splitMainMisc, splitMainCommand};
+        return splits;
+    }
+
+    std::vector<HelloImGui::DockingSplit> CreateAlternativeDockingSplits()
+    {
+        //    Define alternative docking splits for the "Alternative Layout"
+        //    ___________________________________________
+        //    |                |                        |
+        //    | Misc           |                        |
+        //    | Space          |    MainDockSpace       |
+        //    |                |                        |
+        //    -------------------------------------------
+        //    |                                         |
+        //    |                                         |
+        //    |     CommandSpace                        |
+        //    |                                         |
+        //    -------------------------------------------
+
+        HelloImGui::DockingSplit splitMainCommand;
+        splitMainCommand.initialDock = "MainDockSpace";
+        splitMainCommand.newDock = "CommandSpace";
+        splitMainCommand.direction = ImGuiDir_Down;
+        splitMainCommand.ratio = 0.5f;
+
+        HelloImGui::DockingSplit splitMainMisc;
+        splitMainMisc.initialDock = "MainDockSpace";
+        splitMainMisc.newDock = "MiscSpace";
+        splitMainMisc.direction = ImGuiDir_Left;
+        splitMainMisc.ratio = 0.5f;
+
+        std::vector<HelloImGui::DockingSplit> splits {splitMainCommand, splitMainMisc};
+        return splits;
+    }
+
+    //
+    // 2. Define the Dockable windows
+    //
+    std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState)
+    {
+        // A window named "FeaturesDemo" will be placed in "CommandSpace". Its Gui is provided by "GuiWindowDemoFeatures"
+        HelloImGui::DockableWindow featuresDemoWindow;
+        featuresDemoWindow.label = "Features Demo";
+        featuresDemoWindow.dockSpaceName = "CommandSpace";
+        featuresDemoWindow.GuiFunction = [&] { GuiWindowDemoFeatures(appState); };
+
+        // A layout customization window will be placed in "MainDockSpace". Its Gui is provided by "GuiWindowLayoutCustomization"
+        HelloImGui::DockableWindow layoutCustomizationWindow;
+        layoutCustomizationWindow.label = "Layout customization";
+        layoutCustomizationWindow.dockSpaceName = "MainDockSpace";
+        layoutCustomizationWindow.GuiFunction = GuiWindowLayoutCustomization;
+
+        // A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
+        HelloImGui::DockableWindow logsWindow;
+        logsWindow.label = "Logs";
+        logsWindow.dockSpaceName = "MiscSpace";
+        logsWindow.GuiFunction = [] { HelloImGui::LogGui(); };
+
+        // A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
+        HelloImGui::DockableWindow dearImGuiDemoWindow;
+        dearImGuiDemoWindow.label = "Dear ImGui Demo";
+        dearImGuiDemoWindow.dockSpaceName = "MainDockSpace";
+        dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
+
+        // additionalWindow is initially not visible (and not mentioned in the view menu).
+        // it will be opened only if the user chooses to display it
+        HelloImGui::DockableWindow additionalWindow;
+        additionalWindow.label = "Additional Window";
+        additionalWindow.isVisible = false;               // this window is initially hidden,
+        additionalWindow.includeInViewMenu = false;       // it is not shown in the view menu,
+        additionalWindow.rememberIsVisible = false;       // its visibility is not saved in the settings file,
+        additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
+        additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
+
+        std::vector<HelloImGui::DockableWindow> dockableWindows {
+            featuresDemoWindow,
+            layoutCustomizationWindow,
+            logsWindow,
+            dearImGuiDemoWindow,
+            additionalWindow,
+        };
+        return dockableWindows;
+    };
+
+    //
+    // 3. Define the layouts:
+    //        A layout is stored inside DockingParams, and stores the splits + the dockable windows.
+    //        Here, we provide the default layout, and two alternative layouts.
+    //
+    HelloImGui::DockingParams CreateDefaultLayout(AppState& appState)
+    {
+        HelloImGui::DockingParams dockingParams;
+        // dockingParams.layoutName = "Default"; // By default, the layout name is already "Default"
+        dockingParams.dockingSplits = CreateDefaultDockingSplits();
+        dockingParams.dockableWindows = CreateDockableWindows(appState);
+        return dockingParams;
+    }
+
+    std::vector<HelloImGui::DockingParams> CreateAlternativeLayouts(AppState& appState)
+    {
+        HelloImGui::DockingParams alternativeLayout;
+        {
+            alternativeLayout.layoutName = "Alternative Layout";
+            alternativeLayout.dockingSplits = CreateAlternativeDockingSplits();
+            alternativeLayout.dockableWindows = CreateDockableWindows(appState);
+        }
+        HelloImGui::DockingParams tabsLayout;
+        {
+            tabsLayout.layoutName = "Tabs Layout";
+            tabsLayout.dockableWindows = CreateDockableWindows(appState);
+            // Force all windows to be presented in the MainDockSpace
+            for (auto& window: tabsLayout.dockableWindows)
+                window.dockSpaceName = "MainDockSpace";
+            // In "Tabs Layout", no split is created
+            tabsLayout.dockingSplits = {};
+        }
+        return {alternativeLayout, tabsLayout};
+    };
+
+
+    //////////////////////////////////////////////////////////////////////////
+    //    main(): here, we simply fill RunnerParams, then run the application
+    //////////////////////////////////////////////////////////////////////////
+    int main(int, char**)
+    {
+        ChdirBesideAssetsFolder();
+
+        //###############################################################################################
+        // Part 1: Define the application state, fill the status and menu bars, and load additional font
+        //###############################################################################################
+
+        // Our application state
+        AppState appState;
+
+        // Hello ImGui params (they hold the settings as well as the Gui callbacks)
+        HelloImGui::RunnerParams runnerParams;
+
+        // Note: by setting the window title, we also set the name of the ini files in which the settings for the user
+        // layout will be stored: Docking_demo.ini
+        runnerParams.appWindowParams.windowTitle = "Docking demo";
+
+        runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
+        runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
+        runnerParams.appWindowParams.restorePreviousGeometry = true;
+
+        // Set LoadAdditionalFonts callback
+        runnerParams.callbacks.LoadAdditionalFonts = LoadFonts;
+
+        //
+        // Status bar
+        //
+        // We use the default status bar of Hello ImGui
+        runnerParams.imGuiWindowParams.showStatusBar = true;
+        // Add custom widgets in the status bar
+        runnerParams.callbacks.ShowStatus = [&appState]() { StatusBarGui(appState); };
+        // uncomment next line in order to hide the FPS in the status bar
+        // runnerParams.imGuiWindowParams.showStatusFps = false;
+
+        //
+        // Menu bar
+        //
+        runnerParams.imGuiWindowParams.showMenuBar = true;          // We use the default menu of Hello ImGui
+        // fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
+        runnerParams.callbacks.ShowMenus = ShowMenuGui;
+        runnerParams.callbacks.ShowAppMenuItems = ShowAppMenuItems;
+
+        //
+        // Load user settings at callbacks `PostInit` and save them at `BeforeExit`
+        //
+        runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
+        runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
+
+        //###############################################################################################
+        // Part 2: Define the application layout and windows
+        //###############################################################################################
+
+        // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
+        runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
+        // In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window in order to put their content into new native windows
+        runnerParams.imGuiWindowParams.enableViewports = true;
+        // Set the default layout (this contains the default DockingSplits and DockableWindows)
+        runnerParams.dockingParams = CreateDefaultLayout(appState);
+        // Add alternative layouts
+        runnerParams.alternativeDockingLayouts = CreateAlternativeLayouts(appState);
+
+        // uncomment the next line if you want to always start with the layout defined in the code
+        //     (otherwise, modifications to the layout applied by the user layout will be remembered)
+        // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
+
+        //###############################################################################################
+        // Part 3: Run the app
+        //###############################################################################################
+        HelloImGui::Run(runnerParams); // Note: with ImGuiBundle, it is also possible to use ImmApp::Run(...)
+
+
+        return 0;
+    }
+
+Python:
+
+    # A more complex app demo
+    #
+    # It demonstrates how to:
+    # - set up a complex docking layouts (with several possible layouts):
+    # - use the status bar
+    # - use default menus (App and view menu), and how to customize them
+    # - display a log window
+    # - load additional fonts
+    # - use a specific application state (instead of using static variables)
+    # - save some additional user settings within imgui ini file
+
+    from enum import Enum
+    import time
+
+    from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp
+    from imgui_bundle.demos_python import demo_utils
+    from typing import List
+
+
+    ##########################################################################
+    #    Our Application State
+    ##########################################################################
+    class MyAppSettings:
+        name: str = "Test"
+        value: int = 10
+
+
+    class RocketState(Enum):
+        Init = 0
+        Preparing = 1
+        Launched = 2
+
+
+    # Struct that holds the application's state
+    class AppState:
+        f: float
+        counter: int
+        rocket_progress: float
+        my_app_settings: MyAppSettings
+        rocket_state: RocketState
+
+        def __init__(self):
+            self.f = 0
+            self.counter = 0
+            self.rocket_progress = 0.0
+            self.my_app_settings = MyAppSettings()
+            self.rocket_state = RocketState.Init
+
+
+    ##########################################################################
+    #    Additional fonts handling
+    ##########################################################################
+
+    TITLE_FONT: imgui.ImFont
+
+
+    def load_fonts():  # This is called by runnerParams.callbacks.LoadAdditionalFonts
+        global TITLE_FONT
+        # First, load the default font (the default font should be loaded first)
+        hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
+        # Then load the title font
+        TITLE_FONT = hello_imgui.load_font_ttf("fonts/DroidSans.ttf", 18.0)
+
+
+    ##########################################################################
+    #    Save additional settings in the ini file
+    ##########################################################################
+    # This demonstrates how to store additional info in the application settings
+    # Use this sparingly!
+    # This is provided as a convenience only, and it is not intended to store large quantities of text data.
+
+    # Warning, the save/load function below are quite simplistic!
+    def my_app_settings_to_string(settings: MyAppSettings) -> str:
+        r = settings.name + "\n" + str(settings.value)
+        return r
+
+
+    def string_to_my_app_settings(s: str) -> MyAppSettings:
+        r = MyAppSettings()
+        lines = s.splitlines(False)
+        if len(lines) >= 2:
+            r.name = lines[0]
+            r.value = int(lines[1])
+        return r
+
+
+    def load_my_app_settings(app_state: AppState):
+        """
+        Note: load_my_app_settings() and save_my_app_settings() will be called in the callbacks `post_init` & `before_exit`
+             runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
+             runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
+        """
+        app_state.my_app_settings = string_to_my_app_settings(hello_imgui.load_user_pref("MyAppSettings"))
+
+
+    def save_my_app_settings(app_state: AppState):
+        hello_imgui.save_user_pref("MyAppSettings", my_app_settings_to_string(app_state.my_app_settings))
+
+
+    ##########################################################################
+    #    Gui functions used in this demo
+    ##########################################################################
+    @immapp.static(last_hide_time=1)
+    def demo_hide_window():
+        # Display a button that will hide the application window
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Hide app window")
+        imgui.pop_font()
+        imgui.text_wrapped("By clicking the button below, you can hide the window for 3 seconds.")
+
+        if imgui.button("Hide"):
+            demo_hide_window.last_hide_time = time.time()
+            hello_imgui.get_runner_params().app_window_params.hidden = True
+
+        if demo_hide_window.last_hide_time > 0.:
+            now = time.time()
+            if now - demo_hide_window.last_hide_time > 3.0:
+                demo_hide_window.last_hide_time = -1.
+                hello_imgui.get_runner_params().app_window_params.hidden = False
+
+
+    # Display a button that will show an additional window
+    def demo_show_additional_window():
+        # Notes:
+        #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
+        #       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating
+        #       on this vector!)
+        #     - there are two ways to dynamically add windows:
+        #           * either make them initially invisible, and exclude them from the view menu (such as shown here)
+        #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
+        window_name = "Additional Window"
+
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Dynamically add window")
+        imgui.pop_font()
+
+        if imgui.button("Show additional window"):
+            runner_params = hello_imgui.get_runner_params()
+            additional_window_ptr = runner_params.docking_params.dockable_window_of_name(window_name)
+            if additional_window_ptr:
+                # additional_window_ptr.include_in_view_menu = True
+                additional_window_ptr.is_visible = True
+
+
+    def demo_basic_widgets(app_state: AppState):
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Basic widgets demo")
+        imgui.pop_font()
+        imgui.text_wrapped("The widgets below will interact with the log window")
+
+        # Edit a float using a slider from 0.0 to 1.0
+        changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
+        if changed:
+            hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}")
+
+        # Buttons return true when clicked (most widgets return true when edited/activated)
+        if imgui.button("Button"):
+            app_state.counter += 1
+            hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
+        imgui.same_line()
+        imgui.text(f"counter = {app_state.counter}")
+
+
+    def demo_user_settings(app_state: AppState):
+        imgui.push_font(TITLE_FONT)
+        imgui.text("User settings")
+        imgui.pop_font()
+        imgui.text_wrapped("The values below are stored in the application settings ini file and restored at startup")
+        imgui.set_next_item_width(hello_imgui.em_size(7.0))
+        _, app_state.my_app_settings.name = imgui.input_text("Name", app_state.my_app_settings.name)
+        imgui.set_next_item_width(hello_imgui.em_size(7.0))
+        _, app_state.my_app_settings.value = imgui.slider_int("Value", app_state.my_app_settings.value, 0, 100)
+
+
+    def demo_rocket(app_state: AppState):
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Rocket demo")
+        imgui.pop_font()
+        imgui.text_wrapped("How to show a progress bar in the status bar")
+        if app_state.rocket_state == RocketState.Init:
+            if imgui.button(f"{icons_fontawesome.ICON_FA_ROCKET} Launch rocket"):
+                app_state.rocket_launch_time = time.time()
+                app_state.rocket_state = RocketState.Preparing
+                hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
+        elif app_state.rocket_state == RocketState.Preparing:
+            imgui.text("Please Wait")
+            app_state.rocket_progress = (time.time() - app_state.rocket_launch_time) / 3.0
+            if app_state.rocket_progress >= 1.0:
+                app_state.rocket_state = RocketState.Launched
+                hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
+        elif app_state.rocket_state == RocketState.Launched:
+            imgui.text(f"{icons_fontawesome.ICON_FA_ROCKET} Rocket launched")
+            if imgui.button("Reset Rocket"):
+                app_state.rocket_state = RocketState.Init
+                app_state.rocket_progress = 0.0
+
+
+    def demo_docking_flags():
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Main dock space node flags")
+        imgui.pop_font()
+        imgui.text_wrapped(
+            """
+    This will edit the ImGuiDockNodeFlags for "MainDockSpace".
+    Most flags are inherited by children dock spaces.
+            """
+        )
+
+        class DockFlagWithInfo:
+            def __init__(self, flag, label, tip):
+                self.flag = flag
+                self.label = label
+                self.tip = tip
+
+        all_flags = [
+            DockFlagWithInfo(imgui.DockNodeFlags_.no_split, "NoSplit", "prevent Dock Nodes from being split"),
+            DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
+            DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
+                             "show tab bar only if multiple windows\n" +
+                             "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
+            DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_in_central_node, "NoDockingInCentralNode",
+                             "prevent docking in central node\n(only works with the main dock space)"),
+            # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
+        ]
+
+        main_dock_space_node_flags = hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+        for flag_with_info in all_flags:
+            _, main_dock_space_node_flags = imgui.checkbox_flags(
+                flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag)
+            if imgui.is_item_hovered():
+                imgui.set_tooltip("%s" % flag_with_info.tip)
+
+        hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = main_dock_space_node_flags
+
+
+    def gui_window_layout_customization():
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Switch between layouts")
+        imgui.pop_font()
+        imgui.text("with the menu \"View/Layouts\"")
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n" +
+                              "and the selected layout is restored at startup")
+
+        imgui.separator()
+
+        imgui.push_font(TITLE_FONT)
+        imgui.text("Change the theme")
+        imgui.pop_font()
+        imgui.text("with the menu \"View/Theme\"")
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("The selected theme is remembered and restored at startup")
+        imgui.separator()
+
+        demo_docking_flags()
+        imgui.separator()
+
+
+    def gui_window_demo_features(app_state: AppState):
+        demo_basic_widgets(app_state)
+        imgui.separator()
+        demo_rocket(app_state)
+        imgui.separator()
+        demo_user_settings(app_state)
+        imgui.separator()
+        demo_hide_window()
+        imgui.separator()
+        demo_show_additional_window()
+        imgui.separator()
+
+
+    def status_bar_gui(app_state: AppState):
+        if app_state.rocket_state == RocketState.Preparing:
+            imgui.text("Rocket completion: ")
+            imgui.same_line()
+            imgui.progress_bar(app_state.rocket_progress, hello_imgui.em_to_vec2(7.0, 1.0))  # type: ignore
+
+
+    def show_menu_gui():
+        if imgui.begin_menu("My Menu"):
+            clicked, _ = imgui.menu_item("Test me", "", False)
+            if clicked:
+                hello_imgui.log(hello_imgui.LogLevel.warning, "It works")
+            imgui.end_menu()
+
+
+    def show_app_menu_items():
+        clicked, _ = imgui.menu_item("A Custom app menu item", "", False)
+        if clicked:
+            hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
+
+
+    ##########################################################################
+    #    Docking Layouts and Docking windows
+    ##########################################################################
+
+    #
+    # 1. Define the Docking splits (two versions are available)
+    #
+    def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
+        # Define the default docking splits,
+        # i.e. the way the screen space is split in different target zones for the dockable windows
+        # We want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+        #
+        #    ___________________________________________
+        #    |        |                                |
+        #    | Command|                                |
+        #    | Space  |    MainDockSpace               |
+        #    |        |                                |
+        #    |        |                                |
+        #    |        |                                |
+        #    -------------------------------------------
+        #    |     MiscSpace                           |
+        #    -------------------------------------------
+        #
+
+        # Uncomment the next line if you want to always start with this layout.
+        # Otherwise, modifications to the layout applied by the user layout will be remembered.
+        # runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.ApplicationStart
+
+        # Then, add a space named "MiscSpace" whose height is 25% of the app height.
+        # This will split the preexisting default dockspace "MainDockSpace" in two parts.
+        split_main_misc = hello_imgui.DockingSplit()
+        split_main_misc.initial_dock = "MainDockSpace"
+        split_main_misc.new_dock = "MiscSpace"
+        split_main_misc.direction = imgui.Dir_.down
+        split_main_misc.ratio = 0.25
+
+        # Then, add a space to the left which occupies a column whose width is 25% of the app width
+        split_main_command = hello_imgui.DockingSplit()
+        split_main_command.initial_dock = "MainDockSpace"
+        split_main_command.new_dock = "CommandSpace"
+        split_main_command.direction = imgui.Dir_.left
+        split_main_command.ratio = 0.25
+
+        splits = [split_main_misc, split_main_command]
+        return splits
+
+
+    def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
+        # Define alternative docking splits for the "Alternative Layout"
+        #    ___________________________________________
+        #    |                |                        |
+        #    | Misc           |                        |
+        #    | Space          |    MainDockSpace       |
+        #    |                |                        |
+        #    -------------------------------------------
+        #    |                                         |
+        #    |                                         |
+        #    |     CommandSpace                        |
+        #    |                                         |
+        #    -------------------------------------------
+
+        split_main_command = hello_imgui.DockingSplit()
+        split_main_command.initial_dock = "MainDockSpace"
+        split_main_command.new_dock = "CommandSpace"
+        split_main_command.direction = imgui.Dir_.down
+        split_main_command.ratio = 0.5
+
+        split_main_misc = hello_imgui.DockingSplit()
+        split_main_misc.initial_dock = "MainDockSpace"
+        split_main_misc.new_dock = "MiscSpace"
+        split_main_misc.direction = imgui.Dir_.left
+        split_main_misc.ratio = 0.5
+
+        splits = [split_main_command, split_main_misc]
+        return splits
+
+
+    #
+    # 2. Define the Dockable windows
+    #
+    def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWindow]:
+        # A features demo window named "FeaturesDemo" will be placed in "CommandSpace".
+        # Its Gui is provided by "gui_window_demo_features"
+        features_demo_window = hello_imgui.DockableWindow()
+        features_demo_window.label = "Features Demo"
+        features_demo_window.dock_space_name = "CommandSpace"
+        features_demo_window.gui_function = lambda: gui_window_demo_features(app_state)
+
+        # A layout customization window will be placed in "MainDockSpace".
+        # Its Gui is provided by "gui_window_layout_customization"
+        layout_customization_window = hello_imgui.DockableWindow()
+        layout_customization_window.label = "Layout customization"
+        layout_customization_window.dock_space_name = "MainDockSpace"
+        layout_customization_window.gui_function = gui_window_layout_customization
+
+        # A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
+        logs_window = hello_imgui.DockableWindow()
+        logs_window.label = "Logs"
+        logs_window.dock_space_name = "MiscSpace"
+        logs_window.gui_function = hello_imgui.log_gui
+
+        # A Window named "Dear ImGui Demo" will be placed in "MainDockSpace"
+        dear_imgui_demo_window = hello_imgui.DockableWindow()
+        dear_imgui_demo_window.label = "Dear ImGui Demo"
+        dear_imgui_demo_window.dock_space_name = "MainDockSpace"
+        dear_imgui_demo_window.gui_function = imgui.show_demo_window
+
+        # additional_window is initially not visible (and not mentioned in the view menu).
+        # it will be opened only if the user chooses to display it
+        additional_window = hello_imgui.DockableWindow()
+        additional_window.label = "Additional Window"
+        additional_window.is_visible = False  # this window is initially hidden,
+        additional_window.include_in_view_menu = False  # it is not shown in the view menu,
+        additional_window.remember_is_visible = False  # its visibility is not saved in the settings file,
+        additional_window.dock_space_name = "MiscSpace"  # when shown, it will appear in MiscSpace.
+        additional_window.gui_function = lambda: imgui.text("This is the additional window")
+
+        dockable_windows = [
+            features_demo_window,
+            layout_customization_window,
+            logs_window,
+            dear_imgui_demo_window,
+            additional_window,
+        ]
+        return dockable_windows
+
+
+    #
+    # 3. Define the layouts:
+    # A layout is stored inside DockingParams, and stores the splits + the dockable windows.
+    # Here, we provide the default layout, and two alternative layouts.
+    def create_default_layout(app_state: AppState) -> hello_imgui.DockingParams:
+        docking_params = hello_imgui.DockingParams()
+        # By default, the layout name is already "Default"
+        # docking_params.layout_name = "Default"
+        docking_params.docking_splits = create_default_docking_splits()
+        docking_params.dockable_windows = create_dockable_windows(app_state)
+        return docking_params
+
+
+    def create_alternative_layouts(app_state: AppState) -> List[hello_imgui.DockingParams]:
+        alternative_layout = hello_imgui.DockingParams()
+        alternative_layout.layout_name = "Alternative Layout"
+        alternative_layout.docking_splits = create_alternative_docking_splits()
+        alternative_layout.dockable_windows = create_dockable_windows(app_state)
+
+        tabs_layout = hello_imgui.DockingParams()
+        tabs_layout.layout_name = "Tabs Layout"
+        tabs_layout.dockable_windows = create_dockable_windows(app_state)
+        # Force all windows to be presented in the MainDockSpace
+        for window in tabs_layout.dockable_windows:
+            window.dock_space_name = "MainDockSpace"
+        # In "Tabs Layout", no split is created
+        tabs_layout.docking_splits = []
+
+        return [alternative_layout, tabs_layout]
+
+
+    ##########################################################################
+    #    main(): here, we simply fill RunnerParams, then run the application
+    ##########################################################################
+    def main():
+        # By default, an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
+        # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
+        # If you need to add more assets, make a copy of this assets folder and add your own files,
+        # and call set_assets_folder
+        hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
+
+        #
+        # Part 1: Define the application state, fill the status and menu bars, and load additional font
+        #
+
+        # Our application state
+        app_state = AppState()
+
+        # Hello ImGui params (they hold the settings as well as the Gui callbacks)
+        runner_params = hello_imgui.RunnerParams()
+
+        # Note: by setting the window title, we also set the name of the ini files in which the settings for the user
+        # layout will be stored: Docking_demo.ini
+        runner_params.app_window_params.window_title = "Docking demo"
+
+        runner_params.imgui_window_params.menu_app_title = "Docking App"
+        runner_params.app_window_params.window_geometry.size = (1000, 900)
+        runner_params.app_window_params.restore_previous_geometry = True
+
+        # Set LoadAdditionalFonts callback
+        runner_params.callbacks.load_additional_fonts = load_fonts
+
+        #
+        # Status bar
+        #
+        # We use the default status bar of Hello ImGui
+        runner_params.imgui_window_params.show_status_bar = True
+        # Add custom widgets in the status bar
+        runner_params.callbacks.show_status = lambda: status_bar_gui(app_state)
+        # uncomment next line in order to hide the FPS in the status bar
+        # runner_params.im_gui_window_params.show_status_fps = False
+
+        #
+        # Menu bar
+        #
+        runner_params.imgui_window_params.show_menu_bar = True  # We use the default menu of Hello ImGui
+        # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
+        runner_params.callbacks.show_menus = show_menu_gui
+        runner_params.callbacks.show_app_menu_items = show_app_menu_items
+
+        #
+        # Load user settings at callbacks `post_init` and save them at `before_exit`
+        #
+        runner_params.callbacks.post_init = lambda: load_my_app_settings(app_state)
+        runner_params.callbacks.before_exit = lambda: save_my_app_settings(app_state)
+
+        #
+        # Part 2: Define the application layout and windows
+        #
+
+        # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
+        runner_params.imgui_window_params.default_imgui_window_type = \
+            hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+        # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
+        # in order to put their content into new native windows
+        runner_params.imgui_window_params.enable_viewports = True
+        # Set the default layout (this contains the default DockingSplits and DockableWindows)
+        runner_params.docking_params = create_default_layout(app_state)
+        # Add alternative layouts
+        runner_params.alternative_docking_layouts = create_alternative_layouts(app_state)
+
+        #
+        # Part 3: Run the app
+        #
+        hello_imgui.run(runner_params)
+
+
+    if __name__ == "__main__":
+        main()
+
+## Test & Automation with ImGui Test Engine
+
+![ImmGui Test Engine in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_testengine.jpg)
+
+[Run this demo in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html)
+
+[ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) is a
+Tests & Automation Engine for Dear ImGui.
+
+This demo source code is heavily documented and should be
+self-explanatory. It shows how to:
+
+-   enable ImGui Test Engine via RunnerParams.use\_imgui\_test\_engine
+
+-   define a callback where the tests are registered
+    (runner\_params.callbacks.register\_tests)
+
+-   create tests, and:
+
+    -   automate actions using "named references" (see
+        <https://github.com/ocornut/imgui_test_engine/wiki/Named-References>)
+
+    -   display an optional custom GUI for a test
+
+-   manipulate custom variables
+
+-   check that simulated actions do modify those variables
+
+See [Dear ImGui Test Engine
+License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt).
+(TL;DR: free for individuals, educational, open-source and small
+businesses uses. Paid for larger businesses)
+
+C++
+
+    // A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
+    //
+    // It demonstrates how to:
+    // - enable ImGui Test Engine via runnerParams.useImGuiTestEngine
+    // - define a callback where the tests are registered (runnerParams.callbacks.RegisterTests)
+    // - create tests, and:
+    //   - automate actions using "named references" (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)
+    //   - display an optional custom GUI for a test
+    //   - manipulate custom variables
+    //   - check that simulated actions do modify those variables
+    //
+    // Important note: ImGui Test Engine falls under the Dear ImGui Test Engine License
+    //    See: https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt
+    //    TL;DR: free for individuals, educational, open-source and small businesses uses.
+    //           Paid for larger businesses. Read license for details.
+    //           License sales to larger businesses are used to fund and sustain the development of Dear ImGui.
+
+    #include "immapp/immapp.h"
+    #include "imgui.h"
+    #include "imgui_test_engine/imgui_te_engine.h"
+    #include "imgui_test_engine/imgui_te_context.h"
+    #include "imgui_test_engine/imgui_te_ui.h"
+
+
+    #include <vector>
+
+    // Our tests, that will automate the application
+    ImGuiTest* testOpenPopup;
+    ImGuiTest* testCaptureScreenshot;
+    ImGuiTest* testCustomGui;
+
+
+    // This function is called at startup and will instantiate the tests
+    void MyRegisterTests()
+    {
+        ImGuiTestEngine* engine = HelloImGui::GetImGuiTestEngine();
+
+        // Demo 1: Open popup
+        testOpenPopup = IM_REGISTER_TEST(engine, "Demo Tests", "Open Popup");
+        auto testOpenPopupFunc = [](ImGuiTestContext* ctx) {
+            // This is the function that will be called by our test
+            ctx->SetRef("Dear ImGui Demo");              // From now on, all actions happen in the "Dear ImGui Demo" window
+            ctx->ItemOpen("Popups & Modal windows");     // Open the "Popups & Modal windows" tree item
+            ctx->ItemOpen("Modals");                     // Open the "Modal" tree item
+            ctx->ItemClick("**/Delete..");               // Click the "Delete.." button ("**" means: search inside children)
+            ctx->ItemClick("//Delete?/Cancel");          // Click the "Cancel" button:
+            //    here, "//"  means "ignore previous set_ref" and search
+            //    for the cancel button in the root popup window named "Delete?"
+            ctx->ItemClose("Popups & Modal windows");    // Close the "Popups & Modal windows" tree item
+        };
+        // Let the test call our function
+        testOpenPopup->TestFunc = testOpenPopupFunc;
+
+        // Demo 2: Capture Dear ImGui Demo window
+        testCaptureScreenshot = IM_REGISTER_TEST(engine, "Demo Tests", "Capture Screenshot");
+        auto testCaptureScreenshotFunc = [](ImGuiTestContext* ctx)
+        {
+            ctx->SetRef("Dear ImGui Demo");                   // From now on, actions happen in the "Dear ImGui Demo" window
+            ctx->ItemOpen("Widgets");                         // Open the "Widgets", then "Basic" tree item
+            ctx->ItemOpenAll("Basic");
+            ctx->CaptureScreenshotWindow("Dear ImGui Demo"); // Capture window and save screenshot
+            ctx->ItemClose("Widgets");
+        };
+        testCaptureScreenshot->TestFunc = testCaptureScreenshotFunc;
+
+        // Demo 3: a test with a custom GUI and custom variables
+        // which asserts that simulated actions successfully changed the variables values
+        testCustomGui = IM_REGISTER_TEST(engine, "Demo Tests", "Test custom GUI & vars");
+        // Our custom variables container
+        struct TestVar2 {
+            int myInt = 42;
+        };
+        testCustomGui->SetVarsDataType<TestVar2>();
+        auto testCustomGuiFunc = [](ImGuiTestContext* ctx)
+        {
+            // Custom GUI for this test: it can edit our custom variable
+            TestVar2& vars = ctx->GetVars<TestVar2>();
+            ImGui::SetNextWindowSize(HelloImGui::EmToVec2(40, 8));
+            ImGui::Begin("Custom Gui Test Window", nullptr, ImGuiWindowFlags_NoSavedSettings);
+            ImGui::SliderInt("Slider", &vars.myInt, 0, 1000);
+            ImGui::End();
+        };
+        auto testWithVarsTestFunc = [](ImGuiTestContext* ctx){
+            // Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
+            TestVar2& vars = ctx->GetVars<TestVar2>();
+            ctx->SetRef("Custom Gui Test Window");
+            IM_CHECK_EQ(vars.myInt, 42);
+            ctx->ItemInputValue("Slider", 123);
+            IM_CHECK_EQ(vars.myInt, 123);
+        };
+        // Let the test call our test function, and also call our custom GUI
+        testCustomGui->TestFunc = testWithVarsTestFunc;
+        testCustomGui->GuiFunc = testCustomGuiFunc;
+    }
+
+
+    // Our application GUI: shows that we can trigger the test manually
+    void MyGui()
+    {
+        ImGuiTestEngine* testEngine = HelloImGui::GetImGuiTestEngine();
+        if (ImGui::Button("Run \"Open popup\""))
+            ImGuiTestEngine_QueueTest(testEngine, testOpenPopup);
+        if (ImGui::Button("Run \"Capture Screenshot\""))
+            ImGuiTestEngine_QueueTest(testEngine, testCaptureScreenshot);
+        if (ImGui::Button("Run \"Test custom GUI & vars\""))
+            ImGuiTestEngine_QueueTest(testEngine, testCustomGui);
+
+        ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(testEngine);
+        ImGui::Text("Test speed:");
+        if (ImGui::Button("Fast"))
+            engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Fast;
+        ImGui::SameLine();
+        if (ImGui::Button("Normal"))
+            engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Normal;
+        ImGui::SameLine();
+        if (ImGui::Button("Cinematic"))
+            engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
+    }
+
+    // Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window
+    void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams);
+
+
+    // Our main function, where we need to:
+    // - instantiate RunnerParams
+    // - set `runnerParams.useImGuiTestEngine = true`
+    // - fill `runnerParams.callbacks.registerTests`
+    int main(int, const char**)
+    {
+        // Instantiate RunnerParams
+        HelloImGui::RunnerParams runnerParams;
+
+        // Apply the application layout configuration
+        ApplyApplicationLayout(&runnerParams);
+
+        // Enable ImGui Test Engine
+        runnerParams.useImGuiTestEngine = true;
+
+        // Set the test registration function
+        runnerParams.callbacks.RegisterTests = MyRegisterTests;
+
+        // Run the ImGui application
+        HelloImGui::Run(runnerParams);
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // End of demo code
+    ///////////////////////////////////////////////////////////////////////////////
+
+
+    // Define the default docking splits for the application layout
+    std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
+    {
+        // Define the application layout: split the window into 3 spaces
+        HelloImGui::DockingSplit splitMainDemo;
+        splitMainDemo.initialDock = "MainDockSpace";
+        splitMainDemo.newDock = "ImGuiDemoSpace";
+        splitMainDemo.direction = ImGuiDir_Right;
+        splitMainDemo.ratio = 0.5f;
+
+        HelloImGui::DockingSplit splitMainTest;
+        splitMainTest.initialDock = "MainDockSpace";
+        splitMainTest.newDock = "TestEngineSpace";
+        splitMainTest.direction = ImGuiDir_Down;
+        splitMainTest.ratio = 0.7f;
+
+        return {splitMainDemo, splitMainTest};
+    }
+
+    // Define the dockable windows for the application layout
+    std::vector<HelloImGui::DockableWindow> CreateDockableWindows()
+    {
+        // Define the app windows: MyGui, ImGui Demo Window, Dear ImGui Test Engine
+        HelloImGui::DockableWindow myWindow;
+        myWindow.label = "Run Demos";
+        myWindow.dockSpaceName = "MainDockSpace";
+        myWindow.GuiFunction = &MyGui;
+
+        HelloImGui::DockableWindow dearImGuiDemoWindow;
+        dearImGuiDemoWindow.label = "Dear ImGui Demo";
+        dearImGuiDemoWindow.dockSpaceName = "ImGuiDemoSpace";
+        dearImGuiDemoWindow.GuiFunction = []() { ImGui::ShowDemoWindow(); };
+
+        HelloImGui::DockableWindow testEngineWindow;
+        testEngineWindow.label = "Dear ImGui Test Engine";
+        testEngineWindow.dockSpaceName = "TestEngineSpace";
+        testEngineWindow.GuiFunction = []() { ImGuiTestEngine_ShowTestEngineWindows(HelloImGui::GetImGuiTestEngine(), nullptr); };
+
+        return {myWindow, dearImGuiDemoWindow, testEngineWindow};
+    }
+
+
+    // Apply the application layout and windows to the runner parameters
+    void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
+    {
+        // Define the application layout and windows
+        runnerParams->appWindowParams.windowTitle = "Demo ImGui Test Engine";
+        runnerParams->imGuiWindowParams.defaultImGuiWindowType =
+            HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
+        runnerParams->dockingParams.dockingSplits = CreateDefaultDockingSplits();
+        runnerParams->dockingParams.dockableWindows = CreateDockableWindows();
+        runnerParams->dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
+    }
+
+Python:
+
+    # A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
+    #
+    # It demonstrates how to:
+    # - enable ImGui Test Engine via RunnerParams.use_imgui_test_engine
+    # - define a callback where the tests are registered (runner_params.callbacks.register_tests)
+    # - create tests, and:
+    #   - automate actions using "named references" (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)
+    #   - display an optional custom GUI for a test
+    #   - manipulate custom variables
+    #   - check that simulated actions do modify those variables
+    #
+    # Important note: ImGui Test Engine falls under the Dear ImGui Test Engine License
+    #     See: https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt
+    #     TL;DR: free for individuals, educational, open-source and small businesses uses.
+    #            Paid for larger businesses. Read license for details.
+    #            License sales to larger businesses are used to fund and sustain the development of Dear ImGui.
+
+
+    from imgui_bundle import imgui, hello_imgui
+    from imgui_bundle.imgui.test_engine_checks import CHECK
+    from typing import List
+
+
+    # Our tests, that will automate the application
+    test_open_popup: imgui.test_engine.Test
+    test_capture_screenshot: imgui.test_engine.Test
+    test_custom_gui = imgui.test_engine.Test
+
+
+    # This function is called at startup and will instantiate the tests
+    def my_register_tests():
+        global test_open_popup, test_capture_screenshot, test_custom_gui
+        engine = hello_imgui.get_imgui_test_engine()
+
+        # Demo 1: Open popup
+        test_open_popup = imgui.test_engine.register_test(engine, "Demo Tests", "Open Popup")
+        def test_open_popup_func(ctx: imgui.test_engine.TestContext):
+            # This is the function that will be called by our test
+            ctx.set_ref("Dear ImGui Demo")              # From now on, all actions happen in the "Dear ImGui Demo" window
+            ctx.item_open("Popups & Modal windows")     # Open the "Popups & Modal windows" tree item
+            ctx.item_open("Modals")                     # Open the "Modal" tree item
+            ctx.item_click("**/Delete..")               # Click the "Delete.." button ("**" means: search inside children)
+            ctx.item_click("//Delete?/Cancel")          # Click the "Cancel" button:
+                                                        #    here, "//"  means "ignore previous set_ref" and search
+                                                        #    for the cancel button in the root popup window named "Delete?"
+            ctx.item_close("Popups & Modal windows")    # Close the "Popups & Modal windows" tree item
+        # let the test call our function
+        test_open_popup.test_func = test_open_popup_func
+
+        # Demo 2 : Capture Dear ImGui Demo window
+        test_capture_screenshot = imgui.test_engine.register_test(engine, "Demo Tests", "Capture Screenshot")
+        def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext):
+            ctx.set_ref("Dear ImGui Demo")                   # From now on, actions happen in the "Dear ImGui Demo" window
+            ctx.item_open("Widgets")                         # Open the "Widgets", then "Basic" tree item
+            ctx.item_open_all("Basic")
+            ctx.capture_screenshot_window("Dear ImGui Demo") # Capture window and save screenshot
+            ctx.item_close("Widgets")
+        test_capture_screenshot.test_func = test_capture_screenshot_func
+
+        # Demo 3: a test with a custom GUI and custom variables
+        #         which asserts that simulated actions successfully changed the variables values
+        test_custom_gui = imgui.test_engine.register_test(engine, "Demo Tests", "Test custom GUI & vars")
+        # Our custom variables container
+        class TestVar2:
+            my_int = 42
+        test_var2 = TestVar2()  # our custom variable(s)
+        def test_custom_gui_func(ctx: imgui.test_engine.TestContext):
+            # Custom GUI for this test: it can edit our custom variable
+            imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
+            imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings)
+            _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
+            imgui.end()
+        def test_with_vars_test_func(ctx: imgui.test_engine.TestContext):
+            # Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
+            # Optional: reset test_var2 to its startup values
+            nonlocal test_var2
+            test_var2 = TestVar2()
+            # Run the test
+            ctx.set_ref("Custom Gui Test Window")
+            CHECK(test_var2.my_int == 42)
+            ctx.item_input_value("Slider", 123)
+            CHECK(test_var2.my_int == 123)
+        # let the test call our test function, and also call our custom Gui
+        test_custom_gui.test_func = test_with_vars_test_func
+        test_custom_gui.gui_func = test_custom_gui_func
+
+
+    # Our application GUI: shows that we can trigger the test manually
+    def my_gui():
+        test_engine = hello_imgui.get_imgui_test_engine()
+        if imgui.button('Run "Open popup"'):
+            imgui.test_engine.queue_test(test_engine, test_open_popup)
+        if imgui.button('Run "Capture Screenshot"'):
+            imgui.test_engine.queue_test(test_engine, test_capture_screenshot)
+        if imgui.button('Run "Test custom GUI & vars"'):
+            imgui.test_engine.queue_test(test_engine, test_custom_gui)
+
+        engine_io = imgui.test_engine.get_io(test_engine)
+        imgui.text("Test speed:")
+        if imgui.button("Fast"):
+            engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.fast
+        imgui.same_line()
+        if imgui.button("Normal"):
+            engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.normal
+        imgui.same_line()
+        if imgui.button("Cinematic"):
+            engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
+
+
+    # Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window
+    def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+        ...
+
+
+    # Our main  function, where we need to:
+    #        - instantiate RunnerParams
+    #        - set `runner_params.use_imgui_test_engine = True`
+    #        - fill `runner_params.callbacks.register_tests`
+    def main():
+        runner_params = hello_imgui.RunnerParams()
+        apply_application_layout(runner_params)
+
+        runner_params.use_imgui_test_engine = True
+        runner_params.callbacks.register_tests = my_register_tests
+
+        hello_imgui.run(runner_params)
+
+
+    # ///////////////////////////////////////////////////////////////////////////////
+    # // End of demo code
+    # ///////////////////////////////////////////////////////////////////////////////
+
+
+    # //
+    # // Note: the code below only helps to
+    # //    - define the application layout
+    # //    - display the ImGui Demo Window
+    # //    - display the ImGui Test Engine Window
+
+
+    def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
+        # Define the application layout: splits the window in 3 spaces
+        split_main_demo = hello_imgui.DockingSplit()
+        split_main_demo.initial_dock = "MainDockSpace"
+        split_main_demo.new_dock = "ImGuiDemoSpace"
+        split_main_demo.direction = imgui.Dir_.right
+        split_main_demo.ratio = 0.5
+
+        split_main_test = hello_imgui.DockingSplit()
+        split_main_test.initial_dock = "MainDockSpace"
+        split_main_test.new_dock = "TestEngineSpace"
+        split_main_test.direction = imgui.Dir_.down
+        split_main_test.ratio = 0.7
+
+        return [split_main_demo, split_main_test]
+
+
+    def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
+        # Define the app windows: my_gui, ImGui Demo Window, Dear ImGui Test Engine
+        my_window = hello_imgui.DockableWindow()
+        my_window.label = "Run Demos"
+        my_window.dock_space_name = "MainDockSpace"
+        my_window.gui_function = my_gui
+
+        dear_imgui_demo_window = hello_imgui.DockableWindow()
+        dear_imgui_demo_window.label = "Dear ImGui Demo"
+        dear_imgui_demo_window.dock_space_name = "ImGuiDemoSpace"
+        dear_imgui_demo_window.gui_function = imgui.show_demo_window
+
+        test_engine_window = hello_imgui.DockableWindow()
+        test_engine_window.label = "Dear ImGui Test Engine"
+        test_engine_window.dock_space_name = "TestEngineSpace"
+        test_engine_window.gui_function = lambda: imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+
+        return [my_window, dear_imgui_demo_window, test_engine_window]
+
+
+    def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+        # Define the application layout and windows
+        runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
+        runner_params.imgui_window_params.default_imgui_window_type = \
+            hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+        runner_params.docking_params.docking_splits = create_default_docking_splits()
+        runner_params.docking_params.dockable_windows = create_dockable_windows()
+        runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
+
+
+    if __name__ == "__main__":
+        main()
+
+## Display & analyze images with ImmVision
+
+![Immvision in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg)
+
+![Zooming on the images (with the mouse wheel) to display pixel
+values](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg)
+
+[Run this demo in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html)
+
+[ImmVision](https://github.com/pthom/immvision), is an immediate image
+debugger which can display multiple kinds of images (RGB, RGBA, float,
+etc.), zoom to examine precise pixel values, display float images with a
+versatile colormap, etc.
+
+This demonstration showcases how to:
+
+-   display two versions of an image, before after an image processing
+    pipeline
+
+-   zoom on specific ROI of those images to see pixel values
+
+-   play with the parameter of the image processing pipeline
+
+Its source code is heavily documented and should be self-explanatory.
+
+C++
+
+    #include "demo_utils/api_demos.h"
+    #include "immvision/immvision.h"
+    #include "immapp/immapp.h"
+
+    #include <opencv2/core.hpp>
+    #include <opencv2/imgproc.hpp>
+    #include <opencv2/imgcodecs.hpp>
+
+
+    // The parameters for our image processing pipeline
+    struct SobelParams
+    {
+        enum class Orientation
+        {
+            Horizontal,
+            Vertical
+        };
+        float blur_size = 1.25f;
+        int deriv_order = 1;  // order of the derivative
+        int k_size = 7;  // size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
+        Orientation orientation = Orientation::Vertical;
+    };
+
+
+    // Our image processing pipeline
+    cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
+    {
+        cv::Mat gray;
+        cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+        cv::Mat img_float;
+        gray.convertTo(img_float, CV_32F, 1.0 / 255.0);
+        cv::Mat blurred;
+        cv::GaussianBlur(img_float, blurred, cv::Size(), params.blur_size, params.blur_size);
+
+        double good_scale = 1.0 / std::pow(2.0, (params.k_size - 2 * params.deriv_order - 2));
+
+        int dx, dy;
+        if (params.orientation == SobelParams::Orientation::Vertical)
+        {
+            dx = params.deriv_order;
+            dy = 0;
+        }
+        else
+        {
+            dx = 0;
+            dy = params.deriv_order;
+        }
+        cv::Mat r;
+        cv::Sobel(blurred, r, CV_64F, dx, dy, params.k_size, good_scale);
+        return r;
+    }
+
+
+    // A GUI to edit the parameters for our image processing pipeline
+    bool GuiSobelParams(SobelParams& params)
+    {
+        bool changed = false;
+
+        // Blur size
+        ImGui::SetNextItemWidth(ImmApp::EmSize() * 10);
+        if (ImGui::SliderFloat("Blur size", &params.blur_size, 0.5f, 10.0f))
+        {
+            changed = true;
+        }
+        ImGui::SameLine();
+        ImGui::Text(" | ");
+        ImGui::SameLine();
+
+        // Deriv order
+        ImGui::Text("Deriv order");
+        ImGui::SameLine();
+        for (int deriv_order = 1; deriv_order <= 4; ++deriv_order)
+        {
+            if (ImGui::RadioButton(std::to_string(deriv_order).c_str(), params.deriv_order == deriv_order))
+            {
+                changed = true;
+                params.deriv_order = deriv_order;
+            }
+            ImGui::SameLine();
+        }
+
+        ImGui::Text(" | ");
+        ImGui::SameLine();
+
+        ImGui::Text("Orientation");
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Horizontal", params.orientation == SobelParams::Orientation::Horizontal))
+        {
+            changed = true;
+            params.orientation = SobelParams::Orientation::Horizontal;
+        }
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Vertical", params.orientation == SobelParams::Orientation::Vertical))
+        {
+            changed = true;
+            params.orientation = SobelParams::Orientation::Vertical;
+        }
+
+        return changed;
+    }
+
+
+    // Our Application State contains:
+    //     - the original & processed image (image & imageSobel)
+    //     - our parameters for the processing pipeline (sobelParams)
+    //     - parameters to display the images via ImmVision: they share the same zoom key,
+    //       so that we can move the two image in sync
+    struct AppStateProcess {
+        cv::Mat image;
+        cv::Mat imageSobel;
+        SobelParams sobelParams;
+
+        ImmVision::ImageParams immvisionParams;
+        ImmVision::ImageParams immvisionParamsSobel;
+
+        AppStateProcess(const std::string& image_file) {
+            image = cv::imread(image_file);
+            sobelParams = SobelParams();
+            imageSobel = ComputeSobel(image, sobelParams);
+
+            immvisionParams = ImmVision::ImageParams();
+            immvisionParams.ImageDisplaySize = cv::Size(350, 0);
+            immvisionParams.ZoomKey = "z";
+
+            immvisionParamsSobel = ImmVision::ImageParams();
+            immvisionParamsSobel.ImageDisplaySize = cv::Size(350, 0);
+            immvisionParamsSobel.ZoomKey = "z";
+            immvisionParamsSobel.ShowOptionsPanel = true;
+        }
+    };
+
+
+    // Our GUI function
+    //     (which instantiates a static app state at startup)
+    void demo_immvision_process()
+    {
+        static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
+
+        ImGuiMd::RenderUnindented(R"(
+            This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
+
+            Apply Colormaps to the filtered image in the options tab.
+        )");
+        ImGui::Separator();
+
+        if (GuiSobelParams(appState.sobelParams)) {
+            appState.imageSobel = ComputeSobel(appState.image, appState.sobelParams);
+            appState.immvisionParamsSobel.RefreshImage = true;
+        }
+        ImmVision::Image("Original", appState.image, &appState.immvisionParams);
+        ImGui::SameLine();
+        ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
+    }
+
+
+    // The main function is not present in this file, but it could be written as
+    //        ImmApp::RunWithMarkdown(demo_immvision_process, "demo_immvision_process");
+
+Python:
+
+    import os.path
+
+    import numpy as np
+    from typing import Any, List
+    from numpy.typing import NDArray
+    from enum import Enum
+    import cv2  # type: ignore
+    import math
+
+    from imgui_bundle.demos_python.demo_utils.api_demos import *
+    from imgui_bundle import imgui, immvision, immapp, imgui_md
+    from imgui_bundle.demos_python import demo_utils
+
+
+    ImageRgb = NDArray[np.uint8]
+    ImageFloat = NDArray[np.floating[Any]]
+
+
+    class SobelParams:
+        """The parameters for our image processing pipeline"""
+        class Orientation(Enum):
+            Horizontal = 0
+            Vertical = 1
+        blur_size = 1.25
+        deriv_order = 1  # order of the derivative
+        k_size = 7  # size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
+        orientation: Orientation = Orientation.Vertical
+
+
+    def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
+        """Our image processing pipeline"""
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        img_float = gray / 255.0
+        blurred = cv2.GaussianBlur(img_float, (0, 0), params.blur_size, params.blur_size)
+
+        good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
+
+        if params.orientation == SobelParams.Orientation.Vertical:
+            dx = params.deriv_order
+            dy = 0
+        else:
+            dx = 0
+            dy = params.deriv_order
+        r = cv2.Sobel(blurred, ddepth=cv2.CV_64F, dx=dx, dy=dy, ksize=params.k_size, scale=good_scale)
+        return r
+
+
+    def gui_sobel_params(params: SobelParams) -> bool:
+        """A GUI to edit the parameters for our image processing pipeline"""
+        changed = False
+
+        # Blur size
+        imgui.set_next_item_width(immapp.em_size() * 10)
+        c, params.blur_size = imgui.slider_float("Blur size", params.blur_size, 0.5, 10)
+        if c:
+            changed = True
+        imgui.same_line()
+        imgui.text(" | ")
+        imgui.same_line()
+
+        # Deriv order
+        imgui.text("Deriv order")
+        imgui.same_line()
+        for deriv_order in (1, 2, 3, 4):
+            c, params.deriv_order = imgui.radio_button(str(deriv_order), params.deriv_order, deriv_order)
+            if c:
+                changed = True
+            imgui.same_line()
+
+        imgui.text(" | ")
+        imgui.same_line()
+
+        imgui.text("Orientation")
+        imgui.same_line()
+        if imgui.radio_button("Horizontal", params.orientation == SobelParams.Orientation.Horizontal):
+            changed = True
+            params.orientation = SobelParams.Orientation.Horizontal
+        imgui.same_line()
+        if imgui.radio_button("Vertical", params.orientation == SobelParams.Orientation.Vertical):
+            changed = True
+            params.orientation = SobelParams.Orientation.Vertical
+
+        return changed
+
+
+    # Our Application State contains:
+    #     - the original & processed image (image & imageSobel)
+    #     - our parameters for the processing pipeline (sobelParams)
+    #     - parameters to display the images via ImmVision: they share the same zoom key,
+    #       so that we can move the two image in sync
+    class AppState:
+        image: ImageRgb
+        image_sobel: ImageFloat
+        sobel_params: SobelParams
+
+        immvision_params: immvision.ImageParams
+        immvision_params_sobel: immvision.ImageParams
+
+        def __init__(self, image_file: str):
+            self.image = cv2.imread(image_file)
+            self.sobel_params = SobelParams()
+            self.image_sobel = compute_sobel(self.image, self.sobel_params)
+
+            self.immvision_params = immvision.ImageParams()
+            self.immvision_params.image_display_size = (350, 0)
+            self.immvision_params.zoom_key = "z"
+
+            self.immvision_params_sobel = immvision.ImageParams()
+            self.immvision_params_sobel.image_display_size = (350, 0)
+            self.immvision_params_sobel.zoom_key = "z"
+            self.immvision_params_sobel.show_options_panel = True
+
+
+    # Our GUI function
+    #    (which instantiates a static app state at startup)
+    @immapp.static(app_state=None)
+    def demo_gui():
+        static = demo_gui
+
+        if static.app_state is None:
+            this_dir = os.path.dirname(__file__)
+            static.app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
+
+        imgui_md.render_unindented(
+            """
+            This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. 
+            
+            Apply Colormaps to the filtered image in the options tab.
+            """
+        )
+        imgui.separator()
+
+        changed = gui_sobel_params(static.app_state.sobel_params)
+        if changed:
+            static.app_state.image_sobel = compute_sobel(static.app_state.image, static.app_state.sobel_params)
+        static.app_state.immvision_params_sobel.refresh_image = changed
+
+        immvision.image("Original", static.app_state.image, static.app_state.immvision_params)
+        imgui.same_line()
+        immvision.image("Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel)
+
+
+    # The main entry point will run our GUI function
+    if __name__ == "__main__":
+        demo_utils.set_hello_imgui_demo_assets_folder()
+        immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
+
+## Widgets, lots of widgets
+
+**Dear ImGui Widgets**
+
+![Dear ImGui
+widgets](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg)
+
+[Dear ImGui](https://github.com/ocornut/imgui) provides *lots* of
+widgets by default.
+
+[ImGui
+Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
+enables you to browse all of them all, while looking at their code.
+
+**Additional Widgets**
+
+![Knobs
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg)
+
+![Toggle
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg)
+
+![Spinners
+widget](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg)
+
+![File
+dialog](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_file_dialog.jpg)
+
+![Cool
+bar](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg)
+
+[Try these widgets in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
+
+    // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    #include "hello_imgui/hello_imgui.h"
+    #include "implot/implot.h"
+    #include "imspinner/imspinner.h"
+    #include "imgui_toggle/imgui_toggle.h"
+    #include "imgui_toggle/imgui_toggle_presets.h"
+    #include "imgui_toggle/imgui_toggle_palette.h"
+    #include "imgui_toggle/imgui_toggle_renderer.h"
+    #include "immapp/immapp.h"
+    #include "portable_file_dialogs/portable_file_dialogs.h"
+    #include "imgui-command-palette/imcmd_command_palette.h"
+    #include "imgui-knobs/imgui-knobs.h"
+    #include "ImGuiColorTextEdit/TextEditor.h"
+    #include "ImFileDialog/ImFileDialog.h"
+    #include "imgui_md_wrapper.h"
+    #include "ImCoolBar/ImCoolbar.h"
+    #include "demo_utils/api_demos.h"
+
+    #include <fplus/fplus.hpp>
+    #include <memory>
+
+
+    void DemoKnobs()
+    {
+        ImGuiMd::RenderUnindented(R"(
+            # Knobs
+            [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.
+            )");
+        static float knob_float_value = 0.f;
+        static int knob_int_value = 0;
+
+        std::vector<std::pair<ImGuiKnobVariant, std::string>> knob_types = {
+            {ImGuiKnobVariant_Tick, "tick"},
+            {ImGuiKnobVariant_Dot, "dot"},
+            {ImGuiKnobVariant_Space, "space"},
+            {ImGuiKnobVariant_Stepped, "stepped"},
+            {ImGuiKnobVariant_Wiper, "wiper"},
+            {ImGuiKnobVariant_WiperDot, "wiper_dot"},
+            {ImGuiKnobVariant_WiperOnly, "wiper_only"},
+        };
+
+        auto show_float_knobs = [&knob_types](float knob_size)
+        {
+            std::string knob_size_str = std::to_string(knob_size);
+            ImGui::PushID((knob_size_str + "_float").c_str());
+            for (const auto& [knob_type, knob_typename] : knob_types)
+            {
+                ImGuiKnobs::Knob(
+                    knob_typename.c_str(),
+                    &knob_float_value,
+                    /*v_min=*/   0.0f,
+                    /*v_max=*/   1.0f,
+                    /*speed=*/   0,
+                    /*format=*/  "%.2f",
+                    /*variant=*/ knob_type,
+                    /*size=*/    knob_size,
+                    /*flags=*/   0,
+                    /*steps=*/   100
+                );
+                ImGui::SameLine();
+            }
+            ImGui::NewLine();
+            ImGui::PopID();
+        };
+
+
+        auto show_int_knobs = [&knob_types](float knob_size)
+        {
+            std::string knob_size_str = std::to_string(knob_size);
+            ImGui::PushID((knob_size_str + "_int").c_str());
+            for (const auto& [knob_type, knob_typename] : knob_types)
+            {
+                ImGuiKnobs::KnobInt(
+                    knob_typename.c_str(),
+                    &knob_int_value,
+                    /*v_min=*/   0.0,
+                    /*v_max=*/   15,
+                    /*speed=*/   0,
+                    /*format=*/  "%02i",
+                    /*variant=*/ knob_type,
+                    /*size=*/    knob_size,
+                    /*flags=*/   0,
+                    /*steps=*/   10
+                );
+                ImGui::SameLine();
+            }
+            ImGui::NewLine();
+            ImGui::PopID();
+        };
+
+        float knobsSizeSmall = ImmApp::EmSize() * 2.5;
+        float knobsSizeBig = knobsSizeSmall * 1.3;
+
+        ImGui::BeginGroup();
+        ImGui::Text("Some small knobs");
+        show_float_knobs(knobsSizeSmall);
+        ImGui::EndGroup();
+
+        ImGui::SameLine();
+
+        ImGui::BeginGroup();
+        ImGui::Text("Some big knobs (int values)");
+        show_int_knobs(knobsSizeBig);
+        ImGui::EndGroup();
+    }
+
+
+    void DemoSpinner()
+    {
+        ImGuiMd::RenderUnindented(R"(
+            # Spinners
+            [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.
+        )");
+
+        ImColor color(0.3f, 0.5f, 0.9f, 1.f);
+        ImGui::Text("spinner_moving_dots");
+        ImGui::SameLine();
+        ImSpinner::SpinnerMovingDots("spinner_moving_dots", 3.0, color, 28.0);
+        ImGui::SameLine();
+
+        float radius = ImGui::GetFontSize() / 1.8f;
+        ImGui::Text("spinner_arc_rotation");
+        ImGui::SameLine();
+        ImSpinner::SpinnerArcRotation("spinner_arc_rotation", radius, 4.0, color);
+        ImGui::SameLine();
+
+        float radius1 = ImGui::GetFontSize() / 2.5f;
+        ImGui::Text("spinner_ang_triple");
+        ImGui::SameLine();
+        ImSpinner::SpinnerAngTriple("spinner_ang_triple", radius1, radius1 * 1.5f, radius1 * 2.0f, 2.5f, color, color, color);
+    }
+
+
+    void DemoToggle()
+    {
+        static bool flag = true;
+
+        ImGuiMd::RenderUnindented(R"(
+            # Toggle Switch
+            [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
+        )");
+
+        bool changed = false;
+        changed |= ImGui::Toggle("Default Toggle", &flag);
+        ImGui::SameLine();
+
+        changed |= ImGui::Toggle("Animated Toggle", &flag, ImGuiToggleFlags_Animated);
+        ImGui::SameLine();
+
+        auto toggle_config = ImGuiTogglePresets::MaterialStyle();
+        toggle_config.AnimationDuration = 0.4f;
+        changed |= ImGui::Toggle("Material Style (with slowed anim)", &flag, toggle_config);
+
+        ImGui::SameLine();
+        changed |= ImGui::Toggle("iOS style", &flag, ImGuiTogglePresets::iOSStyle(0.2f));
+
+        ImGui::SameLine();
+        changed |= ImGui::Toggle(
+            "iOS style (light)", &flag, ImGuiTogglePresets::iOSStyle(0.2f, true));
+    }
+
+
+    void DemoPortableFileDialogs()
+    {
+        static std::string lastFileSelection;
+
+        ImGui::PushID("pfd");
+        ImGuiMd::RenderUnindented(R"(
+            # Portable File Dialogs
+             [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs
+        )");
+
+        auto logResult = [](std::string what) {
+            lastFileSelection = what;
+        };
+        auto logResultList = [](const std::vector<std::string>& whats) {
+            lastFileSelection = fplus::join(std::string("\n"), whats);
+        };
+
+        static std::unique_ptr<pfd::open_file> openFileDialog;
+        if (ImGui::Button("Open File"))
+            openFileDialog = std::make_unique<pfd::open_file>("Select file");
+        if (openFileDialog.get() && openFileDialog->ready())
+        {
+            logResultList(openFileDialog->result());
+            openFileDialog.reset();
+        }
+
+        ImGui::SameLine();
+
+        
+        static std::unique_ptr<pfd::open_file> openFileMultiselect;
+        if (ImGui::Button("Open File (multiselect)"))
+            openFileMultiselect.reset(new pfd::open_file("Select file", "", {}, pfd::opt::multiselect));
+        if (openFileMultiselect.get() && openFileMultiselect->ready())
+        {
+            logResultList(openFileMultiselect->result());
+            openFileMultiselect.reset();
+        }
+
+        ImGui::SameLine();
+
+        static std::unique_ptr<pfd::save_file> saveFileDialog;
+        if (ImGui::Button("Save File"))
+            saveFileDialog = std::make_unique<pfd::save_file>("Save file");
+        if (saveFileDialog.get() && saveFileDialog->ready())
+        {
+            logResult(saveFileDialog->result());
+            saveFileDialog.reset();
+        }
+
+        ImGui::SameLine();
+
+        static std::unique_ptr<pfd::select_folder> selectFolderDialog;
+        if (ImGui::Button("Select Folder"))
+            selectFolderDialog = std::make_unique<pfd::select_folder>("Select folder");
+        if (selectFolderDialog.get() && selectFolderDialog->ready())
+        {
+            logResult(selectFolderDialog->result());
+            selectFolderDialog.reset();
+        }
+        
+
+        if (lastFileSelection.size() > 0)
+            ImGui::Text("%s", lastFileSelection.c_str());
+
+        ImGui::PopID();
+    }
+
+
+    void DemoImFileDialog()
+    {
+        static std::string selectedFilename;
+
+        ImGuiMd::RenderUnindented(R"(
+            # ImFileDialog
+             [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
+             *Not (yet) adapted for High DPI resolution under windows*
+            )");
+
+        if (ImGui::Button("Open file"))
+            ifd::FileDialog::Instance().Open(
+                "ShaderOpenDialog",
+                "Open a shader",
+                "Image file (*.png*.jpg*.jpeg*.bmp*.tga).png,.jpg,.jpeg,.bmp,.tga,.*",
+                true
+            );
+        ImGui::SameLine();
+        if (ImGui::Button("Open directory"))
+            ifd::FileDialog::Instance().Open("DirectoryOpenDialog", "Open a directory", "");
+        ImGui::SameLine();
+        if (ImGui::Button("Save file"))
+            ifd::FileDialog::Instance().Save("ShaderSaveDialog", "Save a shader", "*.sprj .sprj");
+
+        if (selectedFilename.size() > 0)
+            ImGui::Text("Last file selection:\n%s", selectedFilename.c_str());
+
+        if (ifd::FileDialog::Instance().IsDone("ShaderOpenDialog"))
+        {
+            if (ifd::FileDialog::Instance().HasResult())
+            {
+                // get_results: plural form - ShaderOpenDialog supports multi-selection
+                auto results = ifd::FileDialog::Instance().GetResults();
+                selectedFilename = "";
+                for (auto path: results)
+                    selectedFilename += path.string() + "\n";
+            }
+            ifd::FileDialog::Instance().Close();
+        }
+
+        if (ifd::FileDialog::Instance().IsDone("DirectoryOpenDialog"))
+        {
+            if (ifd::FileDialog::Instance().HasResult())
+                selectedFilename = ifd::FileDialog::Instance().GetResult().string();
+            ifd::FileDialog::Instance().Close();
+        }
+
+        if (ifd::FileDialog::Instance().IsDone("ShaderSaveDialog"))
+        {
+            if (ifd::FileDialog::Instance().HasResult())
+                selectedFilename = ifd::FileDialog::Instance().GetResult().string();
+            ifd::FileDialog::Instance().Close();
+        }
+    }
+
+
+    void DemoCommandPalette()
+    {
+        static bool wasInited = false;
+        static bool showCommandPalette = false;
+        static ImCmd::Context * commandPaletteContext = nullptr;
+        static int counter = 0;
+
+        auto initCommandPalette = []()
+        {
+            commandPaletteContext = ImCmd::CreateContext();
+            ImVec4 highlight_font_color(1.0f, 0.0f, 0.0f, 1.0f);
+            ImCmd::SetStyleColor(ImCmdTextType_Highlight, ImGui::ColorConvertFloat4ToU32(highlight_font_color));
+
+            // Add theme command: a two steps command, with initial callback + SubsequentCallback
+            {
+                ImCmd::Command select_theme_cmd;
+                select_theme_cmd.Name = "Select theme";
+                select_theme_cmd.InitialCallback = [&]() {
+                    ImCmd::Prompt(std::vector<std::string>{
+                        "Classic",
+                        "Dark",
+                        "Light",
+                    });
+                };
+                select_theme_cmd.SubsequentCallback = [&](int selected_option) {
+                    switch (selected_option) {
+                        case 0: ImGui::StyleColorsClassic(); break;
+                        case 1: ImGui::StyleColorsDark(); break;
+                        case 2: ImGui::StyleColorsLight(); break;
+                        default: break;
+                    }
+                };
+                ImCmd::AddCommand(std::move(select_theme_cmd));
+            }
+
+            // Simple command that increments a counter
+            {
+                ImCmd::Command inc_cmd;
+                inc_cmd.Name = "increment counter";
+                inc_cmd.InitialCallback = [] { counter += 1; };
+                ImCmd::AddCommand(inc_cmd);
+            }
+        };
+
+        if (!wasInited)
+        {
+            initCommandPalette();
+            wasInited = true;
+        }
+
+        ImGuiMd::RenderUnindented(R"(
+            # Command Palette
+            [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
+        )");
+
+        auto& io = ImGui::GetIO();
+        if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_P))
+            showCommandPalette = ! showCommandPalette;
+
+        if (showCommandPalette)
+            ImCmd::CommandPaletteWindow("CommandPalette", &showCommandPalette);
+
+        ImGui::NewLine();
+        ImGui::Text("Press Ctrl+Shift+P to bring up the command palette");
+        ImGui::NewLine();
+        ImGui::Text("counter=%i", counter);
+    }
+
+
+    void DemoCoolBar()
+    {
+        auto ShowCoolBarButton = [](const std::string& label) -> bool
+        {
+            float w         = ImGui::GetCoolBarItemWidth();
+
+            // Display transparent image and check if clicked
+            HelloImGui::ImageFromAsset("images/bear_transparent.png", ImVec2(w, w));
+            bool clicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(0);
+
+            // Optional: add a label on the image
+            {
+                ImVec2 topLeftCorner = ImGui::GetItemRectMin();
+                ImVec2 textPos(topLeftCorner.x + ImmApp::EmSize(1.f), topLeftCorner.y + ImmApp::EmSize(1.f));
+                ImGui::GetForegroundDrawList()->AddText(textPos, 0xFFFFFFFF, label.c_str());
+            }
+
+            return clicked;
+        };
+
+
+        std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
+        ImGuiMd::RenderUnindented(R"(
+            # ImCoolBar:
+            ImCoolBar provides a dock-like Cool bar for Dear ImGui
+        )");
+
+        ImGui::ImCoolBarConfig coolBarConfig;
+        coolBarConfig.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
+        if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
+        {
+            for (const std::string& label: buttonLabels)
+            {
+                if (ImGui::CoolBarItem())
+                {
+                    if (ShowCoolBarButton(label))
+                        printf("Clicked %s\n", label.c_str());
+                }
+            }
+            ImGui::EndCoolBar();
+        }
+
+        ImGui::NewLine(); ImGui::NewLine();
+    }
+
+
+    void demo_widgets()
+    {
+        DemoCoolBar();
+        DemoPortableFileDialogs(); ImGui::NewLine();
+        DemoImFileDialog(); ImGui::NewLine();
+        DemoKnobs();
+        DemoToggle(); ImGui::NewLine();
+        DemoSpinner();
+        DemoCommandPalette();
+    }
+
+    # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    from typing import List
+    from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome, im_cool_bar
+    from imgui_bundle import imgui_command_palette as imcmd
+    from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+
+
+    @immapp.static(knob_float_value=0, knob_int_value=0)
+    def demo_knobs():
+        static = demo_knobs
+        from imgui_bundle import imgui_knobs
+
+        imgui_md.render(
+            """
+    # Knobs
+      [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui."""
+        )
+        knob_types = {
+            "tick": imgui_knobs.ImGuiKnobVariant_.tick,
+            "dot": imgui_knobs.ImGuiKnobVariant_.dot,
+            "space": imgui_knobs.ImGuiKnobVariant_.space,
+            "stepped": imgui_knobs.ImGuiKnobVariant_.stepped,
+            "wiper": imgui_knobs.ImGuiKnobVariant_.wiper,
+            "wiper_dot": imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+            "wiper_only": imgui_knobs.ImGuiKnobVariant_.wiper_only,
+        }
+
+        def show_float_knobs(knob_size: float):
+            imgui.push_id(f"{knob_size}_float")
+            for knob_typename, knob_type in knob_types.items():
+                changed, static.knob_float_value = imgui_knobs.knob(
+                    knob_typename,
+                    p_value=static.knob_float_value,
+                    v_min=0.0,
+                    v_max=1.0,
+                    speed=0,
+                    format="%.2f",
+                    variant=knob_type,
+                    size=knob_size,
+                    flags=0,
+                    steps=100,
+                )
+                imgui.same_line()
+            imgui.new_line()
+            imgui.pop_id()
+
+        def show_int_knobs(knob_size: float):
+            imgui.push_id(f"{knob_size}_int")
+            for knob_typename, knob_type in knob_types.items():
+                changed, static.knob_int_value = imgui_knobs.knob_int(
+                    knob_typename,
+                    p_value=static.knob_int_value,
+                    v_min=0,
+                    v_max=15,
+                    speed=0,
+                    format="%02i",
+                    variant=knob_type,
+                    steps=10,
+                    size=knob_size,
+                )
+                imgui.same_line()
+            imgui.new_line()
+            imgui.pop_id()
+
+        knobs_size_small = immapp.em_size() * 2.5
+        knobs_size_big = knobs_size_small * 1.3
+
+        imgui.begin_group()
+        imgui.text("Some small knobs")
+        show_float_knobs(knobs_size_small)
+        imgui.end_group()
+
+        imgui.same_line()
+
+        imgui.begin_group()
+        imgui.text("Some big knobs (int values)")
+        show_int_knobs(knobs_size_big)
+        imgui.end_group()
+
+
+    def demo_spinner():
+        from imgui_bundle import imspinner
+
+        imgui_md.render(
+            """
+    # Spinners
+      [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui."""
+        )
+
+        color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
+        imgui.text("spinner_moving_dots")
+        imgui.same_line()
+        imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
+        imgui.same_line()
+
+        radius = imgui.get_font_size() / 1.8
+        imgui.text("spinner_arc_rotation")
+        imgui.same_line()
+        imspinner.spinner_arc_rotation("spinner_arc_rotation", radius, 4.0, color)
+        imgui.same_line()
+
+        radius1 = imgui.get_font_size() / 2.5
+        imgui.text("spinner_ang_triple")
+        imgui.same_line()
+        imspinner.spinner_ang_triple("spinner_ang_triple", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
+
+
+    @immapp.static(flag=True)
+    def demo_toggle():
+        static = demo_toggle
+        imgui_md.render_unindented(
+            """
+            # Toggle Switch
+              [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
+        )
+
+        _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
+        imgui.same_line()
+
+        _changed, static.flag = imgui_toggle.toggle("Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated)
+        imgui.same_line()
+
+        toggle_config = imgui_toggle.material_style()
+        toggle_config.animation_duration = 0.4
+        _changed, static.flag = imgui_toggle.toggle("Material Style (with slowed anim)", static.flag, config=toggle_config)
+
+        imgui.same_line()
+        _changed, static.flag = imgui_toggle.toggle("iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2))
+
+        imgui.same_line()
+        _changed, static.flag = imgui_toggle.toggle(
+            "iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True)
+        )
+
+
+    @immapp.static(
+        open_file_dialog=None,
+        open_file_multiselect=None,
+        save_file_dialog=None,
+        select_folder_dialog=None,
+        last_file_selection="",
+    )
+    def demo_portable_file_dialogs():
+        static = demo_portable_file_dialogs
+
+        from imgui_bundle import portable_file_dialogs as pfd
+
+        imgui.push_id("pfd")
+        imgui_md.render_unindented(
+            """
+            # Portable File Dialogs
+             [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
+        """
+        )
+
+        def log_result(what: str):
+            static.last_file_selection = what
+
+        def log_result_list(whats: List[str]):
+            static.last_file_selection = "\n".join(whats)
+
+        if imgui.button("Open file"):
+            static.open_file_dialog = pfd.open_file("Select file")
+        if static.open_file_dialog is not None and static.open_file_dialog.ready():
+            log_result_list(static.open_file_dialog.result())
+            static.open_file_dialog = None
+
+        imgui.same_line()
+
+        if imgui.button("Open file (multiselect)"):
+            static.open_file_multiselect = pfd.open_file("Select file", options=pfd.opt.multiselect)
+        if static.open_file_multiselect is not None and static.open_file_multiselect.ready():
+            log_result_list(static.open_file_multiselect.result())
+            static.open_file_multiselect = None
+
+        imgui.same_line()
+
+        if imgui.button("Save file"):
+            static.save_file_dialog = pfd.save_file("Save file")
+        if static.save_file_dialog is not None and static.save_file_dialog.ready():
+            log_result(static.save_file_dialog.result())
+            static.save_file_dialog = None
+
+        imgui.same_line()
+
+        if imgui.button("Select folder"):
+            static.select_folder_dialog = pfd.select_folder("Select folder")
+        if static.select_folder_dialog is not None and static.select_folder_dialog.ready():
+            log_result(static.select_folder_dialog.result())
+            static.select_folder_dialog = None
+
+        if len(static.last_file_selection) > 0:
+            imgui.text(static.last_file_selection)
+
+        imgui.pop_id()
+
+
+    @immapp.static(selected_filename="")
+    def demo_imfile_dialog():
+        static = demo_imfile_dialog  # Access to static variable via static
+        from imgui_bundle import im_file_dialog as ifd
+
+        imgui_md.render_unindented(
+            """
+            # ImFileDialog
+             [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
+             *Not (yet) adapted for High DPI resolution under windows*
+            """
+        )
+
+        if imgui.button("Open file"):
+            ifd.FileDialog.instance().open(
+                "ShaderOpenDialog",
+                "Open a shader",
+                "Image file (*.png*.jpg*.jpeg*.bmp*.tga).png,.jpg,.jpeg,.bmp,.tga,.*",
+                True,
+            )
+        imgui.same_line()
+        if imgui.button("Open directory"):
+            ifd.FileDialog.instance().open("DirectoryOpenDialog", "Open a directory", "")
+        imgui.same_line()
+        if imgui.button("Save file"):
+            ifd.FileDialog.instance().save("ShaderSaveDialog", "Save a shader", "*.sprj .sprj")
+
+        if len(static.selected_filename) > 0:
+            imgui.text(f"Last file selection:\n  {static.selected_filename}")
+
+        # file dialogs
+        if ifd.FileDialog.instance().is_done("ShaderOpenDialog"):
+            if ifd.FileDialog.instance().has_result():
+                # get_results: plural form - ShaderOpenDialog supports multi-selection
+                res = ifd.FileDialog.instance().get_results()
+                filenames = [f.path() for f in res]
+                static.selected_filename = "\n  ".join(filenames)
+
+            ifd.FileDialog.instance().close()
+
+        if ifd.FileDialog.instance().is_done("DirectoryOpenDialog"):
+            if ifd.FileDialog.instance().has_result():
+                static.selected_filename = ifd.FileDialog.instance().get_result().path()
+
+            ifd.FileDialog.instance().close()
+
+        if ifd.FileDialog.instance().is_done("ShaderSaveDialog"):
+            if ifd.FileDialog.instance().has_result():
+                static.selected_filename = ifd.FileDialog.instance().get_result().path()
+
+            ifd.FileDialog.instance().close()
+
+
+    @immapp.static(was_inited=False, show_command_palette=False, counter=0, command_palette_context=None)
+    def demo_command_palette():
+        static = demo_command_palette
+
+        def init_command_palette():
+            static.command_palette_context = imcmd.ContextWrapper()
+            highlight_font_color = ImVec4(1.0, 0.0, 0.0, 1.0)
+            imcmd.set_style_color(imcmd.ImCmdTextType.highlight, imgui.color_convert_float4_to_u32(highlight_font_color))
+            # Add theme command: a two steps command, with initial callback + SubsequentCallback
+            select_theme_cmd = imcmd.Command()
+            select_theme_cmd.name = "Select theme"
+
+            def select_theme_cmd_initial_cb():
+                imcmd.prompt(["Classic", "Dark", "Light"])
+
+            def select_theme_cmd_subsequent_cb(selected_option: int):
+                if selected_option == 0:
+                    imgui.style_colors_classic()
+                elif selected_option == 1:
+                    imgui.style_colors_dark()
+                elif selected_option == 2:
+                    imgui.style_colors_light()
+
+            select_theme_cmd.initial_callback = select_theme_cmd_initial_cb
+            select_theme_cmd.subsequent_callback = select_theme_cmd_subsequent_cb
+            imcmd.add_command(select_theme_cmd)
+
+            # Simple command that increments a counter
+            inc_cmd = imcmd.Command()
+            inc_cmd.name = "increment counter"
+
+            def inc_counter():
+                static.counter += 1
+
+            inc_cmd.initial_callback = inc_counter
+            imcmd.add_command(inc_cmd)
+
+        if not static.was_inited:
+            init_command_palette()
+            static.was_inited = True
+
+        imgui_md.render_unindented(
+            """
+            # Command Palette
+            [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
+            """
+        )
+
+        io = imgui.get_io()
+        if io.key_ctrl and io.key_shift and imgui.is_key_pressed(imgui.Key.p):
+            static.show_command_palette = not static.show_command_palette
+
+        if static.show_command_palette:
+            static.show_command_palette = imcmd.command_palette_window("CommandPalette", True)
+
+        imgui.new_line()
+        imgui.text("Press Ctrl+Shift+P to bring up the command palette")
+        imgui.new_line()
+        imgui.text(f"{static.counter=}")
+
+
+    def demo_cool_bar():
+        # Function to show a CoolBar button
+        def show_cool_bar_button(label):
+            w = im_cool_bar.get_cool_bar_item_width()
+
+            # Display transparent image and check if clicked
+            # You would need to implement ImageFromAsset yourself in Python
+            # Here, we simply use a placeholder for the image
+            hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
+            clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
+
+            # Optional: add a label on the image
+            top_left_corner = imgui.get_item_rect_min()
+            text_pos = (top_left_corner.x + immapp.em_size(1.), top_left_corner.y + immapp.em_size(1.))
+            imgui.get_window_draw_list().add_text(text_pos, 0xFFFFFFFF, label)
+
+            return clicked
+
+        button_labels = ["A", "B", "C", "D", "E", "F"]
+        imgui_md.render_unindented("""
+            # ImCoolBar:
+            ImCoolBar provides a dock-like Cool bar for Dear ImGui
+            """)
+
+        cool_bar_config = im_cool_bar.ImCoolBarConfig();
+        cool_bar_config.anchor = ImVec2(0.5, 0.07)  #  position in the window (ratio of window size)
+        if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
+            for label in button_labels:
+                if im_cool_bar.cool_bar_item():
+                    if show_cool_bar_button(label):
+                        print(f"Clicked {label}")
+            im_cool_bar.end_cool_bar()
+
+        imgui.new_line(); imgui.new_line()
+
+
+    def demo_gui():
+        demo_cool_bar()
+        demo_portable_file_dialogs()
+        imgui.new_line()
+        demo_imfile_dialog()
+        imgui.new_line()
+        demo_knobs()
+        demo_toggle()
+        imgui.new_line()
+        demo_spinner()
+        demo_command_palette()
+
+
+    if __name__ == "__main__":
+        from imgui_bundle import immapp
+
+        immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
+
+**Logger**
+
+![Logger](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_logger.jpg)
+
+[Try the logger in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
+
+    // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    #include "imgui_md_wrapper/imgui_md_wrapper.h"
+    #include "immapp/immapp.h"
+    #include "hello_imgui/hello_imgui.h"
+    #include "demo_utils/api_demos.h"
+
+    #include <vector>
+    #include <string>
+
+
+    void demo_logger()
+    {
+        static std::vector<std::string> fortunes {
+            "If at first you don't succeed, skydiving is not for you.",
+            "You will be a winner today. Pick a fight.",
+            "The world may be your oyster, but it doesn't mean you'll get its pearl.",
+            "Borrow money from a pessimist, they don't expect it back.",
+            "You will be hungry again in an hour.",
+            "A closed mouth gathers no foot.",
+            "Today, you will invent the wheel...again.",
+            "If you can't convince them, confuse them.",
+            "The journey of a thousand miles begins with a single step, or a really good map.",
+            "You will find a pot of gold at the end of a rainbow, but it'll be someone else's.",
+            "Opportunities will knock on your door, but don't worry, they'll be gone by the time you get up to answer.",
+            "You will have a long and healthy life...and a very boring one.",
+            "A wise man once said nothing.",
+            "You will have a great day...tomorrow.",
+            "The only thing constant in life is change, except for death and taxes, those are pretty constant too."
+        };
+
+        static size_t idxFortune = 0;
+
+        auto addLogs = []()
+        {
+            for (int i = 0; i < 10; ++i)
+            {
+                HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
+                HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
+                ++ idxFortune;
+                if (idxFortune >= fortunes.size())
+                    idxFortune = 0;
+            }
+        };
+        static bool addedLogs = false;
+        if (! addedLogs)
+        {
+            addLogs();
+            addedLogs = true;
+        }
+
+        ImGuiMd::RenderUnindented(R"(
+            # Graphical logger for ImGui
+            This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+
+            Its colors are computed automatically from the WindowBg color, in order to remain readable when the theme is changed.
+        )");
+        ImGui::Separator();
+
+        if (ImGui::Button("Add logs"))
+            addLogs();
+
+        ImGui::Separator();
+        HelloImGui::LogGui();
+    }
+
+    # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    import random
+    from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
+    from imgui_bundle.demos_python.demo_utils import api_demos
+
+
+    @immapp.static(idx_fortune=0, added_logs=False)
+    def demo_gui():
+        static = demo_gui
+        fortunes = [
+            "If at first you don't succeed, skydiving is not for you.",
+            "You will be a winner today. Pick a fight.",
+            "The world may be your oyster, but it doesn't mean you'll get its pearl.",
+            "Borrow money from a pessimist, they don't expect it back.",
+            "You will be hungry again in an hour.",
+            "A closed mouth gathers no foot.",
+            "Today, you will invent the wheel...again.",
+            "If you can't convince them, confuse them.",
+            "The journey of a thousand miles begins with a single step, or a really good map.",
+            "You will find a pot of gold at the end of a rainbow, but it'll be someone else's.",
+            "Opportunities will knock on your door, but don't worry, they'll be gone by the time you get up to answer.",
+            "You will have a long and healthy life...and a very boring one.",
+            "A wise man once said nothing.",
+            "You will have a great day...tomorrow.",
+            "The only thing constant in life is change, except for death and taxes, those are pretty constant too.",
+        ]
+
+        def add_logs():
+            for i in range(10):
+                log_level = random.choice(
+                    [
+                        hello_imgui.LogLevel.debug,
+                        hello_imgui.LogLevel.info,
+                        hello_imgui.LogLevel.warning,
+                        hello_imgui.LogLevel.error,
+                    ]
+                )
+                hello_imgui.log(log_level, fortunes[static.idx_fortune])
+                static.idx_fortune += 1
+                if static.idx_fortune >= len(fortunes):
+                    static.idx_fortune = 0
+        if not static.added_logs:
+            add_logs()
+            static.added_logs = True
+
+        imgui_md.render_unindented(
+            """
+            # Graphical logger for ImGui
+            This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
+
+            Its colors are computed automatically from the WindowBg color, in order to remain readable when the theme is changed.
+            """
+        )
+        imgui.separator()
+
+        if imgui.button("Add logs"):
+            for i in range(10):
+                add_logs()
+
+        imgui.separator()
+        hello_imgui.log_gui()
+
+
+    def main():
+        api_demos.set_hello_imgui_demo_assets_folder()
+        immapp.run(demo_gui, "Log", with_markdown=True)
+
+
+    if __name__ == "__main__":
+        main()
+
+**Code Editor**
+
+![Code
+editor](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg)
+
+[Try the code editor in your
+browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html)
+
+    // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    #include "imgui.h"
+    #include "immapp/immapp.h"
+    #include "ImGuiColorTextEdit/TextEditor.h"
+    #include <fplus/fplus.hpp>
+
+    TextEditor _PrepareTextEditor()
+    {
+        TextEditor editor;
+        std::string filename = __FILE__;
+    #ifndef __EMSCRIPTEN__
+        std::string this_file_code = fplus::read_text_file(filename)();
+    #else
+        std::string this_file_code = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
+    #endif
+        editor.SetText(this_file_code);
+        editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+        return editor;
+    }
+
+
+    void demo_text_edit()
+    {
+        static TextEditor editor = _PrepareTextEditor();
+
+        ImGuiMd::Render(R"(
+    # ImGuiColorTextEdit:
+    [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
+        )");
+
+        auto ShowPaletteButtons = []()
+        {
+            if (ImGui::SmallButton("Dark palette"))
+                editor.SetPalette(TextEditor::GetDarkPalette());
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Light palette"))
+                editor.SetPalette(TextEditor::GetLightPalette());
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Retro blue palette"))
+                editor.SetPalette(TextEditor::GetRetroBluePalette());
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Mariana palette"))
+                editor.SetPalette(TextEditor::GetMarianaPalette());
+        };
+
+        ShowPaletteButtons();
+        ImGui::PushFont(ImGuiMd::GetCodeFont());
+        editor.Render("Code");
+        ImGui::PopFont();
+    }
+
+    # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+    from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md
+    from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+    from imgui_bundle.immapp import static
+
+    TextEditor = ed.TextEditor
+
+
+    def _prepare_text_editor():
+        with open(__file__, encoding="utf8") as f:
+            this_file_code = f.read()
+        editor = TextEditor()
+        editor.set_text(this_file_code)
+        editor.set_language_definition(TextEditor.LanguageDefinition.python())
+        return editor
+
+
+    @static(editor=_prepare_text_editor())
+    def demo_gui():
+        static = demo_gui
+        editor = static.editor
+
+        imgui_md.render(
+            """
+    # ImGuiColorTextEdit: 
+    [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
+        """
+        )
+
+        def show_palette_buttons():
+            if imgui.small_button("Dark palette"):
+                editor.set_palette(ed.TextEditor.get_dark_palette())
+            imgui.same_line()
+            if imgui.small_button("Light palette"):
+                editor.set_palette(TextEditor.get_light_palette())
+            imgui.same_line()
+            if imgui.small_button("Retro blue palette"):
+                editor.set_palette(TextEditor.get_retro_blue_palette())
+            imgui.same_line()
+            if imgui.small_button("Mariana palette"):
+                editor.set_palette(TextEditor.get_mariana_palette())
+
+        show_palette_buttons()
+        imgui.push_font(imgui_md.get_code_font())
+        editor.render("Code")
+        imgui.pop_font()
+
+
+    def main():
+        from imgui_bundle import immapp
+
+        immapp.run(demo_gui, with_markdown=True)
+
+
+    if __name__ == "__main__":
+        main()
+
+## And many more!
+
+Tip: use the interactive manual as an inspiration
+
+[![demo immapp
+apps](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immapp_apps.jpg)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+
+The [interactive
+manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+provides many demos, *with easy access to their code*. It includes all
+the examples that are explained here, and many more.
+
+![ImGui Node editor in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg)
+
+![ImGuizmo in
+action](https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg)
 
 # Usage instructions
 
@@ -447,19 +4188,19 @@ Python:
     if __name__ == "__main__":
         main()
 
-## Using Dear ImGui Bundle with jupyter notebook
+## Usage withing jupyter notebook
 
 ImmApp adds support for integration inside jupyter notebook: the
 application will be run in an external window, and a screenshot will be
 placed on the notebook after execution.
 
-This requires a window server, and will not run on google collab.
+This requires a window server, and will not run on Google collab.
 
 Below is a screenshot, that you can test by running `jupyter notebook`
 inside `bindings/imgui_bundle/demos_python/notebooks`
 
-![immapp notebook
-example](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
+![Using ImGui Bundle inside Jupyter
+Notebook](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg)
 
 [40 seconds demo video on
 Youtube](https://www.youtube.com/watch?v=QQIC7lpHono)
@@ -790,3 +4531,8 @@ generator began in january 2022.
 # FAQ
 
 See [FAQ](https://pthom.github.io/imgui_bundle/faq.html)
+
+# Developer docs
+
+See [developer
+docs](https://pthom.github.io/imgui_bundle/devel_docs/index.html)

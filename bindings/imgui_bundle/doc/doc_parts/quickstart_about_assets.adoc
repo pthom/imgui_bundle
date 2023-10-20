@@ -1,0 +1,43 @@
+include::_utils.adoc[]
+
+[[quickstart_about_assets]]
+=== About assets
+
+HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
+The typical layout of an assets folder looks like this:
+
+[source,bash]
+----
+assets/
+    +-- fonts/
+    |         +-- DroidSans.ttf                       # Default fonts used by HelloImGui to
+    |         +-- fontawesome-webfont.ttf             # improve text rendering (esp. on High DPI)
+    |         |                                       # if absent, a default LowRes font is used.
+    |         |
+    |         +-- Roboto/                             # Optional: fonts for markdown
+    |         |         +-- LICENSE.txt
+    |         |         +-- Roboto-Bold.ttf
+    |         |         +-- Roboto-BoldItalic.ttf
+    |         |         +-- Roboto-Regular.ttf
+    |         |         +-- Roboto-RegularItalic.ttf
+    |         +-- SourceCodePro-Regular.ttf           # Optional: font / markdown
+    +-- images/
+              +-- markdown_broken_image.png           # Optional: used for markdown
+              |
+              +-- world.jpg                           # Add anything in the assets folder!
+----
+
+You can change the assets folder via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
+
+
+
+**Where to find the default assets**
+
+Look at the link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] folder which provides them.
+
+**Where to place your assets folder**
+
+You can either:
+
+* copy it into your execution folder (_{cpp} and python_)
+* place it besides your CMakeLists.txt, and it will be deployed into the execution folder automatically (_{cpp} only_)

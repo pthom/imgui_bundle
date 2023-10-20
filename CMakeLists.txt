@@ -3,12 +3,10 @@ project(imgui_bundle VERSION "0.9.0") # Remember to mirror changes to setup.py!
 
 
 ###############################################################################
-# imgui_bundle_add_app location
+# imgui_bundle_add_app
 ###############################################################################
-# In order to use `hello_imgui_add_app`, just write
-#     list(APPEND CMAKE_MODULE_PATH ${HELLOIMGUI_CMAKE_PATH})
-#     include(imgui_bundle_add_app)
-# somewhere before calling `imgui_bundle_add_app`
+# the easiest way to build an app with imgui_bundle is to use
+#     imgui_bundle_add_app(my_app my_file.cpp)
 set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
 list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
 include(imgui_bundle_add_app)
@@ -56,6 +54,11 @@ endif()
 option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
 
+# IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
+# ----------------------------------------------------------------------
+option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
+
+
 # IMGUI_BUNDLE_WITH_SDL: Add SDL backend
 # --------------------------------------
 # (HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option)
@@ -82,6 +85,35 @@ endif()
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
+# SANITIZERS:
+# ---------------------------------
+option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_ASAN)
+    add_compile_options(-fsanitize=address -fsanitize-address-use-after-scope)
+    add_link_options(-fsanitize=address -fsanitize-address-use-after-scope)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_TSAN "Build ImGui Bundle with thread sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_TSAN)
+    add_compile_options(-fsanitize=thread)
+    add_link_options(-fsanitize=thread)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER "Build ImGui Bundle with memory sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER)
+    add_compile_options(-fsanitize=memory)
+    add_link_options(-fsanitize=memory)
+endif()
+option(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER "Build ImGui Bundle with undefined behavior sanitizer" OFF)
+if(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER)
+    add_compile_options(-fsanitize=undefined)
+    add_link_options(-fsanitize=undefined)
+endif()
+# Also see scan-build (clang static analyzer). No bugs reported on 2023-10-21
+#     brew install llvm
+#     mkdir build_llvm && cd llvm
+#     export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+#     cmake .. -DIMMVISION_FETCH_OPENCV=ON
+#     scan-build make -j
+
 
 ###############################################################################
 # Main
@@ -91,7 +123,7 @@ include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
-
+# if build python binding, add definitions and use SDL + GLFW
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
@@ -101,12 +133,31 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
 endif()
 
+# IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
+set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "" FORCE)
+if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_TEST_ENGINE)
+endif()
+if (NOT IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON)
+    message(FATAL_ERROR "When building python (IMGUI_BUNDLE_BUILD_PYTHON), support for imgui_test_engine (IMGUI_BUNDLE_WITH_TEST_ENGINE) should be ON")
+endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
     add_compile_definitions(EMSCRIPTEN)
     # enable assertions in emscripten (IM_ASSERT will log and terminate on error)
     add_link_options(-sASSERTIONS)
+
+    # If  building emscripten and building demos, we need to activate multithreading support (for ImGuiTestEngine)
+    if (IMGUI_BUNDLE_BUILD_DEMOS)
+        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
+    endif()
+    if (HELLOIMGUI_EMSCRIPTEN_PTHREAD)
+        add_compile_options(-pthread)
+        add_link_options(-pthread)
+        set(IMMVISION_OPENCV_EMSCRIPTEN_WITH_PTHREAD ON CACHE BOOL "" FORCE)
+    endif()
 
     # Exceptions handlings: by default in emscripten, exception do not work!
     # Our program should not use them, but during development, it is possible to activate them temporarily)
@@ -143,11 +194,21 @@ add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
 hello_imgui_msvc_target_group_sources(imgui_bundle)
 
+#########################################################################
+# configure imgui_test_engine (*before* adding hello_imgui)
+#########################################################################
+if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    set(HELLOIMGUI_FETCH_IMGUI_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_IMGUI_TEST_ENGINE_SOURCE_DIR
+        ${CMAKE_CURRENT_LIST_DIR}/external/imgui_test_engine/imgui_test_engine
+        CACHE STRING "" FORCE)
+endif()
 
 #########################################################################
-# Build external libraries
+# Build external libraries: this will add imgui, hello_imgui, immapp, implot, etc
 #########################################################################
 add_subdirectory(external)
+
 
 #########################################################################
 # Build python bindings
@@ -155,8 +216,12 @@ add_subdirectory(external)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
-endif()
 
+    if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+        include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/src/hello_imgui_test_engine_integration/hello_imgui_test_engine_cmake.cmake)
+        configure_imgui_test_engine_with_python_gil()
+    endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
+endif()
 
 ####################################################
 # C++ Apps
@@ -183,6 +248,7 @@ endif()
 ####################################################
 if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
+    add_subdirectory(devel_docs)
 endif()
 
 ####################################################

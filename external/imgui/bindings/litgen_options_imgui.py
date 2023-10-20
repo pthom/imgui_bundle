@@ -1,5 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from enum import Enum
+import copy
 
 import codemanip.code_utils
 import litgen
@@ -14,6 +15,7 @@ class ImguiOptionsType(Enum):
     imgui_h = 1
     imgui_stdlib_h = 2
     imgui_internal_h = 3
+    imgui_test_engine = 4
 
 
 def _preprocess_imgui_code(code: str) -> str:
@@ -268,6 +270,24 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
         options.class_template_options.add_ignore(".*")
     elif options_type == ImguiOptionsType.imgui_stdlib_h:
         pass
+    elif options_type == ImguiOptionsType.imgui_test_engine:
+
+        # patch preprocess: add replace("ImFuncPtr(ImGuiTestTestFunc)", "VoidFunction")
+        old_preprocess = copy.copy(options.srcmlcpp_options.code_preprocess_function)
+        def preprocess_ImGuiTestGuiFunc(code: str) -> str:
+            r = code
+            r = r.replace("ImFuncPtr(ImGuiTestTestFunc)", "Function_TestRunner")
+            r = r.replace("ImFuncPtr(ImGuiTestGuiFunc)", "Function_TestGui")
+            r = old_preprocess(r)
+            return r
+        options.srcmlcpp_options.code_preprocess_function = preprocess_ImGuiTestGuiFunc
+
+        options.function_names_replacements.add_last_replacement("^ImGuiTestEngine_", "")
+        options.function_names_replacements.add_last_replacement("^ImGuiTestEngineHook_", "hook_")
+        options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
+        options.member_exclude_by_name__regex += "|Coroutine|^ExportResultsFormat$|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
+        options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
+        options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
 
     return options
 

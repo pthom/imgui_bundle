@@ -1,5 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
+import time
+from functools import wraps
 
 import litgen
 from litgen_options_imgui import (
@@ -14,6 +16,17 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 FLAG_DOCKING_BRANCH = True
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui"
+
+
+def my_time_it(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.6f} seconds to run.")
+        return result
+    return wrapper
 
 
 def autogenerate_imgui() -> None:
@@ -66,9 +79,26 @@ def autogenerate_imgui_internal() -> None:
     )
 
 
+def autogenerate_imgui_test_engine() -> None:
+    options = litgen_options_imgui(ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH)
+    generator = litgen.LitgenGenerator(options)
+    imgui_test_engine_dir = THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"
+    print("Processing imgui_test_engine")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_engine.h")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_context.h")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_internal.h")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_ui.h")
+    # generator.process_cpp_file(imgui_test_engine_dir + "/imgui_capture_tool.h")
+    generator.write_generated_code(
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_test_engine.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/test_engine.pyi"
+    )
+
+
+@my_time_it
 def main():
     autogenerate_imgui()
     autogenerate_imgui_internal()
+    autogenerate_imgui_test_engine()
 
 
 def sandbox():

@@ -9,6 +9,7 @@ import enum
 # Manual code
 import imgui_bundle.imgui
 ImGuiID = int
+ImGuiDefaultSettings = imgui_default_settings
 
 from imgui_bundle import hello_imgui as HelloImGui
 from imgui_bundle.imgui.internal import DockNodeFlags_, DockNodeFlags
@@ -24,12 +25,22 @@ from imgui_bundle.imgui import (
     Dir_,
     Cond_,
 )
+from imgui_bundle.imgui.internal import (
+    DockNodeFlags, DockNodeFlags_
+)
+
+from imgui_bundle.imgui import test_engine
+ImGuiTestEngine = test_engine.TestEngine
 
 VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
 ScreenPosition = Tuple[int, int]
 ImGuiCond_FirstUseEver = Cond_.first_use_ever
+ImGuiDockNodeFlags = DockNodeFlags
+ImGuiDockNodeFlags_None = DockNodeFlags_.none
+ImGuiDockNodeFlags_PassthruCentralNode = DockNodeFlags_.passthru_central_node
+
 
 DefaultScreenSize = (800, 600)
 DefaultWindowSize = (800, 600)
@@ -862,6 +873,7 @@ class ImGuiWindowParams:
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 #*
 #@@md#VoidFunction_AnyEventCallback
 #
@@ -934,6 +946,7 @@ def merge_font_awesome_to_last_font(
 #                       hello_imgui/runner_callbacks.h continued                                               //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 class MobileCallbacks:
     """*
     @@md#MobileCallbacks
@@ -977,6 +990,7 @@ class MobileCallbacks:
         """Auto-generated default constructor with named params"""
         pass
 
+
 class RunnerCallbacks:
     """*
      @@md#RunnerCallbacks
@@ -1015,13 +1029,20 @@ class RunnerCallbacks:
         You can here add a function that will be called once before exiting (when OpenGL and ImGui are
         still inited)
 
-     * `PreNewFrame`: *VoidFunction, default=empty*.
+    * `BeforeExit_PostCleanup`: *VoidFunction, default=empty*.
+        You can here add a function that will be called once before exiting (after OpenGL and ImGui have been deinited)
+
+    * `PreNewFrame`: *VoidFunction, default=empty*.
         You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
         It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
 
-     * `BeforeImGuiRender`: *VoidFunction, default=empty*.
+    * `BeforeImGuiRender`: *VoidFunction, default=empty*.
         You can here add a function that will be called at each frame, after the user Gui code,
         and just before the call to ImGui::Render() (which will also call ImGui::EndFrame()).
+
+    * `AfterSwap`: *VoidFunction, default=empty*.
+        You can here add a function that will be called at each frame, after the Gui was rendered
+        and swapped to the screen.
 
     * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
       Callbacks for events from a specific backend. _Only implemented for SDL, where the event
@@ -1040,6 +1061,8 @@ class RunnerCallbacks:
     * `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
         If needed, setup your own style by providing your own SetupImGuiStyle callback
 
+    * `RegisterTests`: *VoidFunction, default=empty*.
+       A function that is called once ImGuiTestEngine is ready to be filled with tests and automations definitions.
 
     * `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application
         when running under "Android, iOS and WinRT".
@@ -1059,14 +1082,20 @@ class RunnerCallbacks:
     show_app_menu_items: VoidFunction = EmptyVoidFunction()
     # VoidFunction ShowStatus = EmptyVoidFunction();    /* original C++ signature */
     show_status: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
     post_init: VoidFunction = EmptyVoidFunction()
     # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
     before_exit: VoidFunction = EmptyVoidFunction()
+    # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
+    before_exit_post_cleanup: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction PreNewFrame = EmptyVoidFunction();    /* original C++ signature */
     pre_new_frame: VoidFunction = EmptyVoidFunction()
     # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
     before_imgui_render: VoidFunction = EmptyVoidFunction()
+    # VoidFunction AfterSwap = EmptyVoidFunction();    /* original C++ signature */
+    after_swap: VoidFunction = EmptyVoidFunction()
 
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
@@ -1078,7 +1107,10 @@ class RunnerCallbacks:
     # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
     setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle));    /* original C++ signature */
+    # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
+    register_tests: VoidFunction = EmptyVoidFunction()
+
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1087,12 +1119,15 @@ class RunnerCallbacks:
         show_status: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
         before_exit: VoidFunction = EmptyVoidFunction(),
+        before_exit_post_cleanup: VoidFunction = EmptyVoidFunction(),
         pre_new_frame: VoidFunction = EmptyVoidFunction(),
         before_imgui_render: VoidFunction = EmptyVoidFunction(),
+        after_swap: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
         load_additional_fonts: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons),
         setup_imgui_config: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiConfig),
-        setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle)
+        setup_imgui_style: VoidFunction = (VoidFunction)(ImGuiDefaultSettings.SetupDefaultImGuiStyle),
+        register_tests: VoidFunction = EmptyVoidFunction()
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1582,6 +1617,8 @@ class RunnerParams:
       Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
       and available.
     * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
+    * `useImGuiTestEngine`: _bool, default=false_.
+       Set this to True if you intend to use imgui_test_engine (please read note below)
     * `iniFilename`: _string, default = ""_
       Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.
       If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
@@ -1594,7 +1631,14 @@ class RunnerParams:
        shall not exit._
     * `emscripten_fps`: _int, default = 0_.
       Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
-    @@md
+
+    Notes about the use of [Dear ImGui Test & Automation Engine](https://github.com/ocornut/imgui_test_engine):
+    * HelloImGui must be compiled with the option HELLOIMGUI_WITH_TEST_ENGINE (-DHELLOIMGUI_WITH_TEST_ENGINE=ON)
+    * See demo in src/hello_imgui_demos/hello_imgui_demo_test_engine.
+    * imgui_test_engine is subject to a [specific license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)
+      (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses.)
+
+        @@md
 
     """
     # RunnerCallbacks callbacks;    /* original C++ signature */
@@ -1615,8 +1659,12 @@ class RunnerParams:
     backend_pointers: BackendPointers
     # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
     backend_type: BackendType = BackendType.first_available
+
     # FpsIdling fpsIdling;    /* original C++ signature */
     fps_idling: FpsIdling
+
+    # bool useImGuiTestEngine = false;    /* original C++ signature */
+    use_imgui_test_engine: bool = False
 
     # std::string iniFilename = "";    /* original C++ signature */
     ini_filename: str = ""
@@ -1627,7 +1675,7 @@ class RunnerParams:
     app_shall_exit: bool = False
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1639,6 +1687,7 @@ class RunnerParams:
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
         fps_idling: FpsIdling = FpsIdling(),
+        use_imgui_test_engine: bool = False,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,
         app_shall_exit: bool = False,
@@ -1876,6 +1925,7 @@ def imgui_default_font_global_scale() -> float:
 
 
 
+
 # void Run(RunnerParams &runnerParams);    /* original C++ signature */
 @overload
 def run(runner_params: RunnerParams) -> None:
@@ -1902,6 +1952,9 @@ def run(runner_params: RunnerParams) -> None:
 
     * `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
       May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps
+
+    * `ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance of ImGuiTestEngine that was
+      initialized by HelloImGui (iif ImGui Test Engine is active).
     @@md
 
     """
@@ -1943,6 +1996,9 @@ def frame_rate(duration_for_mean: float = 0.5) -> float:
     """
     pass
 
+# ImGuiTestEngine* GetImGuiTestEngine();    /* original C++ signature */
+def get_imgui_test_engine() -> ImGuiTestEngine:
+    pass
 
 #*
 #@@md#HelloImGui::Layouts

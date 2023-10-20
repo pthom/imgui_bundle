@@ -19,11 +19,11 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
 {
     _snippetCpp.DisplayedFilename = "C++ Code";
     _snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
-    _snippetCpp.MaxHeightInLines = 21;
+    _snippetCpp.MaxHeightInLines = 30;
 
     _snippetPython.DisplayedFilename = "Python Code";
     _snippetPython.Language = Snippets::SnippetLanguage::Python;
-    _snippetPython.MaxHeightInLines = 21;
+    _snippetPython.MaxHeightInLines = 30;
 
     _SetDemoApp(_demoApps[0]);
 }
@@ -49,7 +49,7 @@ void DemoAppTable::Gui()
 {
     const int tableFlags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame;
     const int nbColumns = 3;
-    ImGui::BeginChild("TableChild", HelloImGui::EmToVec2(0.f, 17.f));
+    ImGui::BeginChild("TableChild", HelloImGui::EmToVec2(0.f, 8.5f));
     if (ImGui::BeginTable("Apps", nbColumns, tableFlags))
     {
         ImGui::TableSetupColumn("Demo", 0, 0.15f);

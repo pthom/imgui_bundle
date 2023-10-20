@@ -112,6 +112,7 @@ def main() -> None:
         show_gui.nb_frames += 1
 
     runner_params.callbacks.show_gui = show_gui
+    runner_params.use_imgui_test_engine = True
 
     ################################################################################################
     # Part 3: Run the app

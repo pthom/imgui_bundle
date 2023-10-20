@@ -1,3 +1,4 @@
+[[words_author]]
 == Closing words
 
 === Who is this project for

@@ -1,0 +1,103 @@
+include::_utils.adoc[]
+
+=== Widgets, lots of widgets
+
+*Dear ImGui Widgets*
+
+.Dear ImGui widgets
+image::{url-demo-images}/demo_widgets_imgui.jpg[width=400]
+
+link:https://github.com/ocornut/imgui[Dear ImGui] provides _lots_ of widgets by default.
+
+link:{url-imgui-manual}[ImGui Manual] enables you to browse all of them all, while looking at their code.
+
+---
+
+*Additional Widgets*
+
+.Knobs widget
+image::{url-demo-images}/demo_widgets_knobs.jpg[width=400]
+.Toggle widget
+image::{url-demo-images}/demo_widgets_toggle.jpg[width=400]
+.Spinners widget
+image::{url-demo-images}/demo_widgets_spinners.jpg[width=400]
+.File dialog
+image::{url-demo-images}/demo_widgets_file_dialog.jpg[width=400]
+.Cool bar
+image::{url-demo-images}/demo_widgets_coolbar.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these widgets in your browser]
+
+.Click to see the widgets code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_widgets.cpp[]
+----
+====
+
+.Click to see the widgets code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_widgets.py[]
+----
+====
+
+
+---
+
+*Logger*
+
+.Logger
+image::{url-demo-images}/demo_widgets_logger.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html[Try the logger in your browser]
+
+.Click to see the logger code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_logger.cpp[]
+----
+====
+
+.Click to see the logger code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_logger.py[]
+----
+====
+
+
+---
+
+*Code Editor*
+
+.Code editor
+image::{url-demo-images}/demo_widgets_editor.jpg[width=400]
+
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html[Try the code editor in your browser]
+
+.Click to see the code editor code in {cpp}
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../demos_cpp/demo_text_edit.cpp[]
+----
+====
+
+.Click to see the code editor code in Python
+[%collapsible]
+====
+[source, python]
+----
+include::../../demos_python/demo_text_edit.py[]
+----
+====
