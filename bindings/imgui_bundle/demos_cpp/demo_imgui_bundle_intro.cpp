@@ -60,12 +60,36 @@ ImGuiTest* AutomationShowMeImmediateApps()
 }
 
 
+ImGuiTest* AutomationShowMeImGuiTestEngine()
+{
+    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
+
+    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImGuiTestEngine");
+    auto testOpenPopupFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Immediate Apps";
+        const char* tabIntroName = "//**/Dear ImGui Bundle";
+
+        ctx->MouseMove(tabImmAppsName);
+        ctx->MouseClick(0);
+        ctx->ItemClick("//**/demo_testengine/View code");
+        ctx->Sleep(2.5f);
+        ctx->MouseMove("//**/demo_testengine/Run");
+        ctx->MouseMove(tabIntroName);
+        ctx->MouseClick(0);
+    };
+    automation->TestFunc = testOpenPopupFunc;
+    return automation;
+}
+
+
 void demo_imgui_bundle_intro()
 {
     //
     // Automations
     //
-    static ImGuiTest* automationShowMeCode = nullptr, *automationShowMeImmediateApps = nullptr;
+    static ImGuiTest *automationShowMeCode = nullptr;
+    static ImGuiTest *automationShowMeImmediateApps = nullptr;
+    static ImGuiTest *automationShowMeImGuiTestEngine = nullptr;
     static bool wasAutomationInited = false;
     // Create automations upon first display
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
@@ -75,6 +99,7 @@ void demo_imgui_bundle_intro()
             wasAutomationInited = true;
             automationShowMeCode = AutomationShowMeCode();
             automationShowMeImmediateApps = AutomationShowMeImmediateApps();
+            automationShowMeImGuiTestEngine = AutomationShowMeImGuiTestEngine();
         }
         // set automation speed
         ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
@@ -109,6 +134,18 @@ void demo_imgui_bundle_intro()
         if (ImGui::Button("Show me##demo_imm_apps"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
     }
+
+    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+    {
+        ImGuiMd::RenderUnindented(R"(
+            * The automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine), which is integrated into ImGui Bundle and available via Python and C++.
+        )");
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
+        if (ImGui::Button("Show me##demo_test_engine"))
+            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImGuiTestEngine);
+        ImGuiMd::RenderUnindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*");
+    }
+
 
     // Navigation buttons
     {

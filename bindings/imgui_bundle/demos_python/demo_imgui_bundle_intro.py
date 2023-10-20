@@ -53,7 +53,29 @@ def automation_show_me_immediate_apps():
     return automation
 
 
-@immapp.static(automation_show_me_code=None, automation_show_me_immediate_apps=None, was_automation_inited=False)
+def automation_show_me_imgui_test_engine():
+    engine = hello_imgui.get_imgui_test_engine()
+    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeImGuiTestEngine")
+
+    def test_open_popup_func(ctx):
+        tab_imm_apps_name = "//**/Immediate Apps"
+        tab_intro_name = "//**/Dear ImGui Bundle"
+
+        ctx.mouse_move(tab_imm_apps_name)
+        ctx.mouse_click(0)
+        ctx.item_click("//**/demo_testengine/View code")
+        ctx.sleep(2.5)
+        ctx.mouse_move("//**/demo_testengine/Run")
+        ctx.mouse_move(tab_intro_name)
+        ctx.mouse_click(0)
+
+    automation.test_func = test_open_popup_func
+    return automation
+
+
+@immapp.static(
+    automation_show_me_code=None, automation_show_me_immediate_apps=None, automation_show_me_imgui_test_engine=None,
+    was_automation_inited=False)
 def demo_gui():
     statics = demo_gui
     #
@@ -65,6 +87,7 @@ def demo_gui():
             statics.was_automation_inited = True
             statics.automation_show_me_code = automation_show_me_code()
             statics.automation_show_me_immediate_apps = automation_show_me_immediate_apps()
+            statics.automation_show_me_imgui_test_engine = automation_show_me_imgui_test_engine()
 
         # Set automation speed
         engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
@@ -99,6 +122,16 @@ def demo_gui():
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
         if imgui.button("Show me##demo_imm_apps"):
             imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), statics.automation_show_me_immediate_apps)
+
+    if hello_imgui.get_runner_params().use_imgui_test_engine:
+        imgui_md.render_unindented("""
+            * The automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine), which is integrated into ImGui Bundle and available via Python and C++.
+        """)
+
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
+        if imgui.button("Show me##demo_test_engine"):
+            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), automation_show_me_imgui_test_engine())
+        imgui_md.render_unindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*")
 
     # Navigation buttons
     imgui.separator()
