@@ -30,14 +30,3 @@ echo "Generating $gh_pages_dir/index.html (for github pages)"
 cp Readme_source.adoc index.adoc  # first copy to index.adoc, so that the main page is index.html
 asciidoctor-multipage --attribute env_gh_pages=1 -D $gh_pages_dir index.adoc
 rm index.adoc
-
-
-# Generate markdowns doc for demo_imgui_bundle (env_demo_markdown)
-echo "Generate markdowns doc for demo_imgui_bundle"
-for doc_file in imgui_bundle_demo_parts/*.adoc; do
-asciidoctor --attribute env_demo_markdown=1 -b docbook $doc_file -o $doc_file.xml
-# Note: -t markdown-header_attributes means "output markdown, without the extension header_attributes"
-# (see extensions here: https://boisgera.github.io/pandoc/markdown/#extension-auto_identifiers
-#  and https://pandoc.org/MANUAL.html#general-options)
-pandoc -f docbook -t markdown-header_attributes+escaped_line_breaks --columns=2000 $doc_file.xml -o $doc_file.md
-done
