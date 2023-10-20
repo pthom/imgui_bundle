@@ -248,6 +248,7 @@ endif()
 ####################################################
 if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
+    add_subdirectory(devel_docs)
 endif()
 
 ####################################################
