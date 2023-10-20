@@ -4,7 +4,7 @@ from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
 from imgui_bundle.demos_python.demo_utils import api_demos
 
 
-@immapp.static(idx_fortune=0)
+@immapp.static(idx_fortune=0, added_logs=False)
 def demo_gui():
     static = demo_gui
     fortunes = [
@@ -25,19 +25,23 @@ def demo_gui():
         "The only thing constant in life is change, except for death and taxes, those are pretty constant too.",
     ]
 
-    def add_log():
-        log_level = random.choice(
-            [
-                hello_imgui.LogLevel.debug,
-                hello_imgui.LogLevel.info,
-                hello_imgui.LogLevel.warning,
-                hello_imgui.LogLevel.error,
-            ]
-        )
-        hello_imgui.log(log_level, fortunes[static.idx_fortune])
-        static.idx_fortune += 1
-        if static.idx_fortune >= len(fortunes):
-            static.idx_fortune = 0
+    def add_logs():
+        for i in range(10):
+            log_level = random.choice(
+                [
+                    hello_imgui.LogLevel.debug,
+                    hello_imgui.LogLevel.info,
+                    hello_imgui.LogLevel.warning,
+                    hello_imgui.LogLevel.error,
+                ]
+            )
+            hello_imgui.log(log_level, fortunes[static.idx_fortune])
+            static.idx_fortune += 1
+            if static.idx_fortune >= len(fortunes):
+                static.idx_fortune = 0
+    if not static.added_logs:
+        add_logs()
+        static.added_logs = True
 
     imgui_md.render_unindented(
         """
@@ -51,7 +55,7 @@ def demo_gui():
 
     if imgui.button("Add logs"):
         for i in range(10):
-            add_log()
+            add_logs()
 
     imgui.separator()
     hello_imgui.log_gui()
