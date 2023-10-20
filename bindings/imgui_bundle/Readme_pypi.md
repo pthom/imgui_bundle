@@ -3282,10 +3282,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
         DemoPortableFileDialogs(); ImGui::NewLine();
         DemoImFileDialog(); ImGui::NewLine();
         DemoKnobs();
-    #ifndef __EMSCRIPTEN__
-        // Demo broken under emscripten...
         DemoToggle(); ImGui::NewLine();
-    #endif
         DemoSpinner();
         DemoCommandPalette();
     }
@@ -3694,14 +3691,23 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
 
         static size_t idxFortune = 0;
 
-        auto addLog = []()
+        auto addLogs = []()
         {
-            HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
-            HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
-            ++ idxFortune;
-            if (idxFortune >= fortunes.size())
-                idxFortune = 0;
+            for (int i = 0; i < 10; ++i)
+            {
+                HelloImGui::LogLevel logLevel = HelloImGui::LogLevel(rand() % 4);
+                HelloImGui::Log(logLevel, fortunes[idxFortune].c_str());
+                ++ idxFortune;
+                if (idxFortune >= fortunes.size())
+                    idxFortune = 0;
+            }
         };
+        static bool addedLogs = false;
+        if (! addedLogs)
+        {
+            addLogs();
+            addedLogs = true;
+        }
 
         ImGuiMd::RenderUnindented(R"(
             # Graphical logger for ImGui
@@ -3712,8 +3718,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
         ImGui::Separator();
 
         if (ImGui::Button("Add logs"))
-            for (int i = 0; i < 10; ++i)
-                addLog();
+            addLogs();
 
         ImGui::Separator();
         HelloImGui::LogGui();
@@ -3725,7 +3730,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
     from imgui_bundle.demos_python.demo_utils import api_demos
 
 
-    @immapp.static(idx_fortune=0)
+    @immapp.static(idx_fortune=0, added_logs=False)
     def demo_gui():
         static = demo_gui
         fortunes = [
@@ -3746,19 +3751,23 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
             "The only thing constant in life is change, except for death and taxes, those are pretty constant too.",
         ]
 
-        def add_log():
-            log_level = random.choice(
-                [
-                    hello_imgui.LogLevel.debug,
-                    hello_imgui.LogLevel.info,
-                    hello_imgui.LogLevel.warning,
-                    hello_imgui.LogLevel.error,
-                ]
-            )
-            hello_imgui.log(log_level, fortunes[static.idx_fortune])
-            static.idx_fortune += 1
-            if static.idx_fortune >= len(fortunes):
-                static.idx_fortune = 0
+        def add_logs():
+            for i in range(10):
+                log_level = random.choice(
+                    [
+                        hello_imgui.LogLevel.debug,
+                        hello_imgui.LogLevel.info,
+                        hello_imgui.LogLevel.warning,
+                        hello_imgui.LogLevel.error,
+                    ]
+                )
+                hello_imgui.log(log_level, fortunes[static.idx_fortune])
+                static.idx_fortune += 1
+                if static.idx_fortune >= len(fortunes):
+                    static.idx_fortune = 0
+        if not static.added_logs:
+            add_logs()
+            static.added_logs = True
 
         imgui_md.render_unindented(
             """
@@ -3772,7 +3781,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html)
 
         if imgui.button("Add logs"):
             for i in range(10):
-                add_log()
+                add_logs()
 
         imgui.separator()
         hello_imgui.log_gui()

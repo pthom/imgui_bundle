@@ -3779,10 +3779,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">DemoPortableFileDialogs</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoImFileDialog</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoKnobs</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-cp">#ifndef __EMSCRIPTEN__</span>
-<span class="tok-w">    </span><span class="tok-c1">// Demo broken under emscripten...</span>
 <span class="tok-w">    </span><span class="tok-n">DemoToggle</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
-<span class="tok-cp">#endif</span>
 <span class="tok-w">    </span><span class="tok-n">DemoSpinner</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">DemoCommandPalette</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span></code></pre>
@@ -4213,14 +4210,23 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
 <span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">size_t</span><span class="tok-w"> </span><span class="tok-n">idxFortune</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
 
-<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">addLog</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">addLogs</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-w"> </span><span class="tok-n">logLevel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-p">(</span><span class="tok-n">rand</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">%</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">logLevel</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fortunes</span><span class="tok-p">[</span><span class="tok-n">idxFortune</span><span class="tok-p">].</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-o">++</span><span class="tok-w"> </span><span class="tok-n">idxFortune</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">idxFortune</span><span class="tok-w"> </span><span class="tok-o">&gt;=</span><span class="tok-w"> </span><span class="tok-n">fortunes</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">())</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-n">idxFortune</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">10</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-o">++</span><span class="tok-n">i</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-w"> </span><span class="tok-n">logLevel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-p">(</span><span class="tok-n">rand</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">%</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">logLevel</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fortunes</span><span class="tok-p">[</span><span class="tok-n">idxFortune</span><span class="tok-p">].</span><span class="tok-n">c_str</span><span class="tok-p">());</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-o">++</span><span class="tok-w"> </span><span class="tok-n">idxFortune</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">idxFortune</span><span class="tok-w"> </span><span class="tok-o">&gt;=</span><span class="tok-w"> </span><span class="tok-n">fortunes</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-p">())</span><span class="tok-w"></span>
+<span class="tok-w">                </span><span class="tok-n">idxFortune</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">static</span><span class="tok-w"> </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">addedLogs</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-o">!</span><span class="tok-w"> </span><span class="tok-n">addedLogs</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">addLogs</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">addedLogs</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span><span class="tok-s"></span>
 <span class="tok-s">        # Graphical logger for ImGui</span>
@@ -4231,8 +4237,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Add logs&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
-<span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-n">i</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">10</span><span class="tok-p">;</span><span class="tok-w"> </span><span class="tok-o">++</span><span class="tok-n">i</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-w">            </span><span class="tok-n">addLog</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">addLogs</span><span class="tok-p">();</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogGui</span><span class="tok-p">();</span><span class="tok-w"></span>
@@ -4252,7 +4257,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python.demo_utils</span> <span class="tok-kn">import</span> <span class="tok-n">api_demos</span>
 
 
-<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">idx_fortune</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">)</span>
+<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">idx_fortune</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">added_logs</span><span class="tok-o">=</span><span class="tok-kc">False</span><span class="tok-p">)</span>
 <span class="tok-k">def</span> <span class="tok-nf">demo_gui</span><span class="tok-p">():</span>
     <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_gui</span>
     <span class="tok-n">fortunes</span> <span class="tok-o">=</span> <span class="tok-p">[</span>
@@ -4273,19 +4278,23 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
         <span class="tok-s2">&quot;The only thing constant in life is change, except for death and taxes, those are pretty constant too.&quot;</span><span class="tok-p">,</span>
     <span class="tok-p">]</span>
 
-    <span class="tok-k">def</span> <span class="tok-nf">add_log</span><span class="tok-p">():</span>
-        <span class="tok-n">log_level</span> <span class="tok-o">=</span> <span class="tok-n">random</span><span class="tok-o">.</span><span class="tok-n">choice</span><span class="tok-p">(</span>
-            <span class="tok-p">[</span>
-                <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">debug</span><span class="tok-p">,</span>
-                <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span>
-                <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">warning</span><span class="tok-p">,</span>
-                <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">error</span><span class="tok-p">,</span>
-            <span class="tok-p">]</span>
-        <span class="tok-p">)</span>
-        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">log_level</span><span class="tok-p">,</span> <span class="tok-n">fortunes</span><span class="tok-p">[</span><span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span><span class="tok-p">])</span>
-        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">+=</span> <span class="tok-mi">1</span>
-        <span class="tok-k">if</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">&gt;=</span> <span class="tok-nb">len</span><span class="tok-p">(</span><span class="tok-n">fortunes</span><span class="tok-p">):</span>
-            <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+    <span class="tok-k">def</span> <span class="tok-nf">add_logs</span><span class="tok-p">():</span>
+        <span class="tok-k">for</span> <span class="tok-n">i</span> <span class="tok-ow">in</span> <span class="tok-nb">range</span><span class="tok-p">(</span><span class="tok-mi">10</span><span class="tok-p">):</span>
+            <span class="tok-n">log_level</span> <span class="tok-o">=</span> <span class="tok-n">random</span><span class="tok-o">.</span><span class="tok-n">choice</span><span class="tok-p">(</span>
+                <span class="tok-p">[</span>
+                    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">debug</span><span class="tok-p">,</span>
+                    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span>
+                    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">warning</span><span class="tok-p">,</span>
+                    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">error</span><span class="tok-p">,</span>
+                <span class="tok-p">]</span>
+            <span class="tok-p">)</span>
+            <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">log_level</span><span class="tok-p">,</span> <span class="tok-n">fortunes</span><span class="tok-p">[</span><span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span><span class="tok-p">])</span>
+            <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">+=</span> <span class="tok-mi">1</span>
+            <span class="tok-k">if</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">&gt;=</span> <span class="tok-nb">len</span><span class="tok-p">(</span><span class="tok-n">fortunes</span><span class="tok-p">):</span>
+                <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">idx_fortune</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+    <span class="tok-k">if</span> <span class="tok-ow">not</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">added_logs</span><span class="tok-p">:</span>
+        <span class="tok-n">add_logs</span><span class="tok-p">()</span>
+        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">added_logs</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
 
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span>
         <span class="tok-sd">&quot;&quot;&quot;</span>
@@ -4299,7 +4308,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Add logs&quot;</span><span class="tok-p">):</span>
         <span class="tok-k">for</span> <span class="tok-n">i</span> <span class="tok-ow">in</span> <span class="tok-nb">range</span><span class="tok-p">(</span><span class="tok-mi">10</span><span class="tok-p">):</span>
-            <span class="tok-n">add_log</span><span class="tok-p">()</span>
+            <span class="tok-n">add_logs</span><span class="tok-p">()</span>
 
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
     <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log_gui</span><span class="tok-p">()</span>
@@ -4495,7 +4504,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-20 15:14:14 +0200
+Last updated 2023-10-20 21:04:15 +0200
 </div>
 </div>
 </body>
