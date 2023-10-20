@@ -3277,7 +3277,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-s">    </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
 
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">ImCoolBarConfig</span><span class="tok-w"> </span><span class="tok-n">coolBarConfig</span><span class="tok-p">;</span><span class="tok-w"></span>
-<span class="tok-w">    </span><span class="tok-n">coolBarConfig</span><span class="tok-p">.</span><span class="tok-n">anchor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.f</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">coolBarConfig</span><span class="tok-p">.</span><span class="tok-n">anchor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.07f</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// position in the window (ratio of window size)</span>
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">BeginCoolBar</span><span class="tok-p">(</span><span class="tok-s">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImCoolBarFlags_Horizontal</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">coolBarConfig</span><span class="tok-p">))</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
 <span class="tok-w">        </span><span class="tok-k">for</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-nl">label</span><span class="tok-p">:</span><span class="tok-w"> </span><span class="tok-n">buttonLabels</span><span class="tok-p">)</span><span class="tok-w"></span>
@@ -3290,6 +3290,8 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">        </span><span class="tok-p">}</span><span class="tok-w"></span>
 <span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">EndCoolBar</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-w">    </span><span class="tok-p">}</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">NewLine</span><span class="tok-p">();</span><span class="tok-w"></span>
 <span class="tok-p">}</span><span class="tok-w"></span>
 
 
@@ -3648,13 +3650,15 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-s2">        &quot;&quot;&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-n">cool_bar_config</span> <span class="tok-o">=</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarConfig</span><span class="tok-p">();</span>
-    <span class="tok-n">cool_bar_config</span><span class="tok-o">.</span><span class="tok-n">anchor</span> <span class="tok-o">=</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.</span><span class="tok-p">)</span>
+    <span class="tok-n">cool_bar_config</span><span class="tok-o">.</span><span class="tok-n">anchor</span> <span class="tok-o">=</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.07</span><span class="tok-p">)</span>  <span class="tok-c1">#  position in the window (ratio of window size)</span>
     <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">begin_cool_bar</span><span class="tok-p">(</span><span class="tok-s2">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarFlags_</span><span class="tok-o">.</span><span class="tok-n">horizontal</span><span class="tok-p">,</span> <span class="tok-n">cool_bar_config</span><span class="tok-p">):</span>
         <span class="tok-k">for</span> <span class="tok-n">label</span> <span class="tok-ow">in</span> <span class="tok-n">button_labels</span><span class="tok-p">:</span>
             <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">cool_bar_item</span><span class="tok-p">():</span>
                 <span class="tok-k">if</span> <span class="tok-n">show_cool_bar_button</span><span class="tok-p">(</span><span class="tok-n">label</span><span class="tok-p">):</span>
                     <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Clicked </span><span class="tok-si">{</span><span class="tok-n">label</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
         <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">end_cool_bar</span><span class="tok-p">()</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">new_line</span><span class="tok-p">();</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">new_line</span><span class="tok-p">()</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_gui</span><span class="tok-p">():</span>
@@ -4010,7 +4014,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-19 22:29:55 +0200
+Last updated 2023-10-20 01:25:51 +0200
 </div>
 </div>
 </body>

@@ -2824,7 +2824,7 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
         )");
 
         ImGui::ImCoolBarConfig coolBarConfig;
-        coolBarConfig.anchor = ImVec2(0.5f, 0.f);
+        coolBarConfig.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
         if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
         {
             for (const std::string& label: buttonLabels)
@@ -2837,6 +2837,8 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
             }
             ImGui::EndCoolBar();
         }
+
+        ImGui::NewLine(); ImGui::NewLine();
     }
 
 
@@ -3187,13 +3189,15 @@ browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html)
             """)
 
         cool_bar_config = im_cool_bar.ImCoolBarConfig();
-        cool_bar_config.anchor = ImVec2(0.5, 0.)
+        cool_bar_config.anchor = ImVec2(0.5, 0.07)  #  position in the window (ratio of window size)
         if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
             for label in button_labels:
                 if im_cool_bar.cool_bar_item():
                     if show_cool_bar_button(label):
                         print(f"Clicked {label}")
             im_cool_bar.end_cool_bar()
+
+        imgui.new_line(); imgui.new_line()
 
 
     def demo_gui():
