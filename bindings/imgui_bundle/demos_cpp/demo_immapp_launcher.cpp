@@ -29,6 +29,7 @@ std::function<void()> makeGui()
         DemoApp{
             "demo_powersave", "How to have smooth animations, and how spare the CPU when idling"
         },
+        DemoApp{"demo_testengine", "How to use ImGui Test Engine to test and automate your application"},
         DemoApp{"demo_custom_font", "How to load custom fonts"},
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
         DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
