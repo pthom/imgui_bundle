@@ -527,7 +527,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <ul class="sectlevel2">
 <li><a href="devdoc_pypi.html#_build_mac_arm64_via_cibuildwheel">Build / Mac arm64 via cibuildwheel</a>
 </li>
-<li><a href="devdoc_pypi.html#_build_and_deploy_to_pypi_via_twine">Build and deploy to pypi via twine</a>
+<li><a href="devdoc_pypi.html#_build_and_deploy_to_pypi_via_twine_obsolete">Build and deploy to pypi via twine (obsolete)</a>
 </li>
 </ul>
 </li>
@@ -571,16 +571,6 @@ the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), this is 
 </div>
 <div class="sect2">
 <h3 id="_build_mac_arm64_via_cibuildwheel">Build / Mac arm64 via cibuildwheel</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Edit pyproject, change os arch</p>
-</li>
-<li>
-<p>Then run:</p>
-</li>
-</ul>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code><span></span>CIBW_ARCHS_MACOS=&quot;arm64&quot; pipx run cibuildwheel --platform=macos &amp;&amp; say &quot;wheel build finished&quot;
@@ -598,7 +588,7 @@ twine upload wheelhouse/*</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_build_and_deploy_to_pypi_via_twine">Build and deploy to pypi via twine</h3>
+<h3 id="_build_and_deploy_to_pypi_via_twine_obsolete">Build and deploy to pypi via twine (obsolete)</h3>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code><span></span>python3 -m build --wheel  --sdist .
@@ -625,7 +615,7 @@ password = &#8230;&#8203;api_token&#8230;&#8203;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-20 22:20:16 +0200
+Last updated 2023-10-20 22:32:04 +0200
 </div>
 </div>
 </body>

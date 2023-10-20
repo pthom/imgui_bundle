@@ -57,7 +57,7 @@ external/ImCoolBar/                        # Root folder for ImCoolBar
 │         ├── LICENSE
 │         └── README.md
 └── bindings/                               # Scripts for the bindings generations & bindings
-    ├── generate_imcoolbar.py               # This script reads external/ImCoolBar/ImCoolBar/ImCoolbar.h and generate
+    ├── generate_imcoolbar.py               # This script reads ImCoolbar.h and generates:
     |                                       #     - binding C++ code in ./pybind_imcoolbar.cpp
     |                                       #     - stubs in
     |                                       #          bindings/imgui_bundle/im_cool_bar_pyi
