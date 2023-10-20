@@ -91,7 +91,7 @@ def demo_gui():
 
         # Set automation speed
         engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
-        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.normal
+        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
 
         # Optional: show test engine window
         # imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)

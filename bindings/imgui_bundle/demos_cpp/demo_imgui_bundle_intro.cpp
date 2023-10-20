@@ -103,7 +103,7 @@ void demo_imgui_bundle_intro()
         }
         // set automation speed
         ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
-        engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Normal;
+        engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
         // Optional: show test engine window
         //ImGuiTestEngine_ShowTestEngineWindows(HelloImGui::GetImGuiTestEngine(), nullptr);
     }
