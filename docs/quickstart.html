@@ -531,6 +531,8 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="quickstart.html#_complex_layouts_with_docking_windows">Complex layouts with docking windows</a>
 </li>
+<li><a href="quickstart.html#quickstart_testengine">Test &amp; Automation with ImGui Test Engine</a>
+</li>
 <li><a href="quickstart.html#_display_analyze_images_with_immvision">Display &amp; analyze images with ImmVision</a>
 </li>
 <li><a href="quickstart.html#_widgets_lots_of_widgets">Widgets, lots of widgets</a>
@@ -2469,18 +2471,494 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 </details>
 </div>
 <div class="sect2">
+<h3 id="quickstart_testengine">Test &amp; Automation with ImGui Test Engine</h3>
+<div class="imageblock">
+<div class="content">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_testengine.jpg" alt="demo testengine" width="300">
+</div>
+<div class="title">Figure 5. ImmGui Test Engine in action</div>
+</div>
+<div class="paragraph">
+<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_test_engine.html">Run this demo in your browser</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/ocornut/imgui_test_engine">ImGui Test Engine</a> is a Tests &amp; Automation Engine for Dear ImGui.</p>
+</div>
+<div class="paragraph">
+<p>This demo source code is heavily documented and should be self-explanatory. It shows how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>enable ImGui Test Engine via RunnerParams.use_imgui_test_engine</p>
+</li>
+<li>
+<p>define a callback where the tests are registered (runner_params.callbacks.register_tests)</p>
+</li>
+<li>
+<p>create tests, and:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>automate actions using "named references" (see <a href="https://github.com/ocornut/imgui_test_engine/wiki/Named-References" class="bare">https://github.com/ocornut/imgui_test_engine/wiki/Named-References</a>)</p>
+</li>
+<li>
+<p>display an optional custom GUI for a test</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>manipulate custom variables</p>
+</li>
+<li>
+<p>check that simulated actions do modify those variables</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt">Dear ImGui Test Engine License</a>. (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses)
+</td>
+</tr>
+</table>
+</div>
+<details>
+<summary class="title">Click to see its source code in C&#43;&#43;</summary>
+<div class="content">
+<div class="paragraph">
+<p>C&#43;&#43;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)</span>
+<span class="tok-c1">//</span>
+<span class="tok-c1">// It demonstrates how to:</span>
+<span class="tok-c1">// - enable ImGui Test Engine via runnerParams.useImGuiTestEngine</span>
+<span class="tok-c1">// - define a callback where the tests are registered (runnerParams.callbacks.RegisterTests)</span>
+<span class="tok-c1">// - create tests, and:</span>
+<span class="tok-c1">//   - automate actions using &quot;named references&quot; (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)</span>
+<span class="tok-c1">//   - display an optional custom GUI for a test</span>
+<span class="tok-c1">//   - manipulate custom variables</span>
+<span class="tok-c1">//   - check that simulated actions do modify those variables</span>
+<span class="tok-c1">//</span>
+<span class="tok-c1">// Important note: ImGui Test Engine falls under the Dear ImGui Test Engine License</span>
+<span class="tok-c1">//    See: https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt</span>
+<span class="tok-c1">//    TL;DR: free for individuals, educational, open-source and small businesses uses.</span>
+<span class="tok-c1">//           Paid for larger businesses. Read license for details.</span>
+<span class="tok-c1">//           License sales to larger businesses are used to fund and sustain the development of Dear ImGui.</span>
+
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_test_engine/imgui_te_engine.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_test_engine/imgui_te_context.h&quot;</span><span class="tok-cp"></span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_test_engine/imgui_te_ui.h&quot;</span><span class="tok-cp"></span>
+
+
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;vector&gt;</span><span class="tok-cp"></span>
+
+<span class="tok-c1">// Our tests, that will automate the application</span>
+<span class="tok-n">ImGuiTest</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">testOpenPopup</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-n">ImGuiTest</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">testCaptureScreenshot</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-n">ImGuiTest</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">testCustomGui</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+
+<span class="tok-c1">// This function is called at startup and will instantiate the tests</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">MyRegisterTests</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiTestEngine</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">engine</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetImGuiTestEngine</span><span class="tok-p">();</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Demo 1: Open popup</span>
+<span class="tok-w">    </span><span class="tok-n">testOpenPopup</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">IM_REGISTER_TEST</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Demo Tests&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Open Popup&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">testOpenPopupFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[](</span><span class="tok-n">ImGuiTestContext</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-c1">// This is the function that will be called by our test</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">SetRef</span><span class="tok-p">(</span><span class="tok-s">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">);</span><span class="tok-w">              </span><span class="tok-c1">// From now on, all actions happen in the &quot;Dear ImGui Demo&quot; window</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemOpen</span><span class="tok-p">(</span><span class="tok-s">&quot;Popups &amp; Modal windows&quot;</span><span class="tok-p">);</span><span class="tok-w">     </span><span class="tok-c1">// Open the &quot;Popups &amp; Modal windows&quot; tree item</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemOpen</span><span class="tok-p">(</span><span class="tok-s">&quot;Modals&quot;</span><span class="tok-p">);</span><span class="tok-w">                     </span><span class="tok-c1">// Open the &quot;Modal&quot; tree item</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemClick</span><span class="tok-p">(</span><span class="tok-s">&quot;**/Delete..&quot;</span><span class="tok-p">);</span><span class="tok-w">               </span><span class="tok-c1">// Click the &quot;Delete..&quot; button (&quot;**&quot; means: search inside children)</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemClick</span><span class="tok-p">(</span><span class="tok-s">&quot;//Delete?/Cancel&quot;</span><span class="tok-p">);</span><span class="tok-w">          </span><span class="tok-c1">// Click the &quot;Cancel&quot; button:</span>
+<span class="tok-w">        </span><span class="tok-c1">//    here, &quot;//&quot;  means &quot;ignore previous set_ref&quot; and search</span>
+<span class="tok-w">        </span><span class="tok-c1">//    for the cancel button in the root popup window named &quot;Delete?&quot;</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemClose</span><span class="tok-p">(</span><span class="tok-s">&quot;Popups &amp; Modal windows&quot;</span><span class="tok-p">);</span><span class="tok-w">    </span><span class="tok-c1">// Close the &quot;Popups &amp; Modal windows&quot; tree item</span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Let the test call our function</span>
+<span class="tok-w">    </span><span class="tok-n">testOpenPopup</span><span class="tok-o">-&gt;</span><span class="tok-n">TestFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">testOpenPopupFunc</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Demo 2: Capture Dear ImGui Demo window</span>
+<span class="tok-w">    </span><span class="tok-n">testCaptureScreenshot</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">IM_REGISTER_TEST</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Demo Tests&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Capture Screenshot&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">testCaptureScreenshotFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[](</span><span class="tok-n">ImGuiTestContext</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">SetRef</span><span class="tok-p">(</span><span class="tok-s">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">);</span><span class="tok-w">                   </span><span class="tok-c1">// From now on, actions happen in the &quot;Dear ImGui Demo&quot; window</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemOpen</span><span class="tok-p">(</span><span class="tok-s">&quot;Widgets&quot;</span><span class="tok-p">);</span><span class="tok-w">                         </span><span class="tok-c1">// Open the &quot;Widgets&quot;, then &quot;Basic&quot; tree item</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemOpenAll</span><span class="tok-p">(</span><span class="tok-s">&quot;Basic&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">CaptureScreenshotWindow</span><span class="tok-p">(</span><span class="tok-s">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// Capture window and save screenshot</span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemClose</span><span class="tok-p">(</span><span class="tok-s">&quot;Widgets&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testCaptureScreenshot</span><span class="tok-o">-&gt;</span><span class="tok-n">TestFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">testCaptureScreenshotFunc</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Demo 3: a test with a custom GUI and custom variables</span>
+<span class="tok-w">    </span><span class="tok-c1">// which asserts that simulated actions successfully changed the variables values</span>
+<span class="tok-w">    </span><span class="tok-n">testCustomGui</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">IM_REGISTER_TEST</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Demo Tests&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Test custom GUI &amp; vars&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Our custom variables container</span>
+<span class="tok-w">    </span><span class="tok-k">struct</span> <span class="tok-nc">TestVar2</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">myInt</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">42</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testCustomGui</span><span class="tok-o">-&gt;</span><span class="tok-n">SetVarsDataType</span><span class="tok-o">&lt;</span><span class="tok-n">TestVar2</span><span class="tok-o">&gt;</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">testCustomGuiFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[](</span><span class="tok-n">ImGuiTestContext</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-c1">// Custom GUI for this test: it can edit our custom variable</span>
+<span class="tok-w">        </span><span class="tok-n">TestVar2</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">vars</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">GetVars</span><span class="tok-o">&lt;</span><span class="tok-n">TestVar2</span><span class="tok-o">&gt;</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetNextWindowSize</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mi">40</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">8</span><span class="tok-p">));</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Begin</span><span class="tok-p">(</span><span class="tok-s">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">ImGuiWindowFlags_NoSavedSettings</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SliderInt</span><span class="tok-p">(</span><span class="tok-s">&quot;Slider&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">vars</span><span class="tok-p">.</span><span class="tok-n">myInt</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1000</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">End</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">testWithVarsTestFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[](</span><span class="tok-n">ImGuiTestContext</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-p">){</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-c1">// Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables</span>
+<span class="tok-w">        </span><span class="tok-n">TestVar2</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">vars</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">GetVars</span><span class="tok-o">&lt;</span><span class="tok-n">TestVar2</span><span class="tok-o">&gt;</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">SetRef</span><span class="tok-p">(</span><span class="tok-s">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">IM_CHECK_EQ</span><span class="tok-p">(</span><span class="tok-n">vars</span><span class="tok-p">.</span><span class="tok-n">myInt</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">42</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ctx</span><span class="tok-o">-&gt;</span><span class="tok-n">ItemInputValue</span><span class="tok-p">(</span><span class="tok-s">&quot;Slider&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">123</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">IM_CHECK_EQ</span><span class="tok-p">(</span><span class="tok-n">vars</span><span class="tok-p">.</span><span class="tok-n">myInt</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">123</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Let the test call our test function, and also call our custom GUI</span>
+<span class="tok-w">    </span><span class="tok-n">testCustomGui</span><span class="tok-o">-&gt;</span><span class="tok-n">TestFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">testWithVarsTestFunc</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testCustomGui</span><span class="tok-o">-&gt;</span><span class="tok-n">GuiFunc</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">testCustomGuiFunc</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+
+<span class="tok-c1">// Our application GUI: shows that we can trigger the test manually</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">MyGui</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiTestEngine</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">testEngine</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetImGuiTestEngine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Run </span><span class="tok-se">\&quot;</span><span class="tok-s">Open popup</span><span class="tok-se">\&quot;</span><span class="tok-s">&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiTestEngine_QueueTest</span><span class="tok-p">(</span><span class="tok-n">testEngine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">testOpenPopup</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Run </span><span class="tok-se">\&quot;</span><span class="tok-s">Capture Screenshot</span><span class="tok-se">\&quot;</span><span class="tok-s">&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiTestEngine_QueueTest</span><span class="tok-p">(</span><span class="tok-n">testEngine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">testCaptureScreenshot</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Run </span><span class="tok-se">\&quot;</span><span class="tok-s">Test custom GUI &amp; vars</span><span class="tok-se">\&quot;</span><span class="tok-s">&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">ImGuiTestEngine_QueueTest</span><span class="tok-p">(</span><span class="tok-n">testEngine</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">testCustomGui</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGuiTestEngineIO</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">engineIo</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTestEngine_GetIO</span><span class="tok-p">(</span><span class="tok-n">testEngine</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Test speed:&quot;</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Fast&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">engineIo</span><span class="tok-p">.</span><span class="tok-n">ConfigRunSpeed</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTestRunSpeed_Fast</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Normal&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">engineIo</span><span class="tok-p">.</span><span class="tok-n">ConfigRunSpeed</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTestRunSpeed_Normal</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Cinematic&quot;</span><span class="tok-p">))</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">engineIo</span><span class="tok-p">.</span><span class="tok-n">ConfigRunSpeed</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTestRunSpeed_Cinematic</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+<span class="tok-c1">// Defined later: helps to define the application layout, display the ImGui Demo, &amp; ImGui Test Engine Window</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ApplyApplicationLayout</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RunnerParams</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+
+<span class="tok-c1">// Our main function, where we need to:</span>
+<span class="tok-c1">// - instantiate RunnerParams</span>
+<span class="tok-c1">// - set `runnerParams.useImGuiTestEngine = true`</span>
+<span class="tok-c1">// - fill `runnerParams.callbacks.registerTests`</span>
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Instantiate RunnerParams</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RunnerParams</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Apply the application layout configuration</span>
+<span class="tok-w">    </span><span class="tok-n">ApplyApplicationLayout</span><span class="tok-p">(</span><span class="tok-o">&amp;</span><span class="tok-n">runnerParams</span><span class="tok-p">);</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Enable ImGui Test Engine</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">useImGuiTestEngine</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Set the test registration function</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">RegisterTests</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">MyRegisterTests</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Run the ImGui application</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+
+<span class="tok-c1">///////////////////////////////////////////////////////////////////////////////</span>
+<span class="tok-c1">// End of demo code</span>
+<span class="tok-c1">///////////////////////////////////////////////////////////////////////////////</span>
+
+
+<span class="tok-c1">// Define the default docking splits for the application layout</span>
+<span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingSplit</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">CreateDefaultDockingSplits</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Define the application layout: split the window into 3 spaces</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingSplit</span><span class="tok-w"> </span><span class="tok-n">splitMainDemo</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainDemo</span><span class="tok-p">.</span><span class="tok-n">initialDock</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;MainDockSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainDemo</span><span class="tok-p">.</span><span class="tok-n">newDock</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;ImGuiDemoSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainDemo</span><span class="tok-p">.</span><span class="tok-n">direction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiDir_Right</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainDemo</span><span class="tok-p">.</span><span class="tok-n">ratio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.5f</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingSplit</span><span class="tok-w"> </span><span class="tok-n">splitMainTest</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainTest</span><span class="tok-p">.</span><span class="tok-n">initialDock</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;MainDockSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainTest</span><span class="tok-p">.</span><span class="tok-n">newDock</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;TestEngineSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainTest</span><span class="tok-p">.</span><span class="tok-n">direction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiDir_Down</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">splitMainTest</span><span class="tok-p">.</span><span class="tok-n">ratio</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.7f</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-n">splitMainDemo</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">splitMainTest</span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+<span class="tok-c1">// Define the dockable windows for the application layout</span>
+<span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">vector</span><span class="tok-o">&lt;</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-n">CreateDockableWindows</span><span class="tok-p">()</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Define the app windows: MyGui, ImGui Demo Window, Dear ImGui Test Engine</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">myWindow</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">myWindow</span><span class="tok-p">.</span><span class="tok-n">label</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Run Demos&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">myWindow</span><span class="tok-p">.</span><span class="tok-n">dockSpaceName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;MainDockSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">myWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-o">&amp;</span><span class="tok-n">MyGui</span><span class="tok-p">;</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">.</span><span class="tok-n">label</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">.</span><span class="tok-n">dockSpaceName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;ImGuiDemoSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">ShowDemoWindow</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-p">};</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">testEngineWindow</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testEngineWindow</span><span class="tok-p">.</span><span class="tok-n">label</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Dear ImGui Test Engine&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testEngineWindow</span><span class="tok-p">.</span><span class="tok-n">dockSpaceName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;TestEngineSpace&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">testEngineWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ImGuiTestEngine_ShowTestEngineWindows</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetImGuiTestEngine</span><span class="tok-p">(),</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">};</span><span class="tok-w"></span>
+
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-n">myWindow</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">testEngineWindow</span><span class="tok-p">};</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span>
+
+
+<span class="tok-c1">// Apply the application layout and windows to the runner parameters</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-n">ApplyApplicationLayout</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RunnerParams</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">)</span><span class="tok-w"></span>
+<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-c1">// Define the application layout and windows</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">appWindowParams</span><span class="tok-p">.</span><span class="tok-n">windowTitle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Demo ImGui Test Engine&quot;</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">defaultImGuiWindowType</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"></span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DefaultImGuiWindowType</span><span class="tok-o">::</span><span class="tok-n">ProvideFullScreenDockSpace</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockingSplits</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">CreateDefaultDockingSplits</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockableWindows</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">CreateDockableWindows</span><span class="tok-p">();</span><span class="tok-w"></span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">layoutCondition</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingLayoutCondition</span><span class="tok-o">::</span><span class="tok-n">ApplicationStart</span><span class="tok-p">;</span><span class="tok-w"></span>
+<span class="tok-p">}</span><span class="tok-w"></span></code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Click to see its source code in Python</summary>
+<div class="content">
+<div class="paragraph">
+<p>Python:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-c1"># A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)</span>
+<span class="tok-c1">#</span>
+<span class="tok-c1"># It demonstrates how to:</span>
+<span class="tok-c1"># - enable ImGui Test Engine via RunnerParams.use_imgui_test_engine</span>
+<span class="tok-c1"># - define a callback where the tests are registered (runner_params.callbacks.register_tests)</span>
+<span class="tok-c1"># - create tests, and:</span>
+<span class="tok-c1">#   - automate actions using &quot;named references&quot; (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)</span>
+<span class="tok-c1">#   - display an optional custom GUI for a test</span>
+<span class="tok-c1">#   - manipulate custom variables</span>
+<span class="tok-c1">#   - check that simulated actions do modify those variables</span>
+<span class="tok-c1">#</span>
+<span class="tok-c1"># Important note: ImGui Test Engine falls under the Dear ImGui Test Engine License</span>
+<span class="tok-c1">#     See: https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt</span>
+<span class="tok-c1">#     TL;DR: free for individuals, educational, open-source and small businesses uses.</span>
+<span class="tok-c1">#            Paid for larger businesses. Read license for details.</span>
+<span class="tok-c1">#            License sales to larger businesses are used to fund and sustain the development of Dear ImGui.</span>
+
+
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.imgui.test_engine_checks</span> <span class="tok-kn">import</span> <span class="tok-n">CHECK</span>
+<span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">List</span>
+
+
+<span class="tok-c1"># Our tests, that will automate the application</span>
+<span class="tok-n">test_open_popup</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
+<span class="tok-n">test_capture_screenshot</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
+<span class="tok-n">test_custom_gui</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
+
+
+<span class="tok-c1"># This function is called at startup and will instantiate the tests</span>
+<span class="tok-k">def</span> <span class="tok-nf">my_register_tests</span><span class="tok-p">():</span>
+    <span class="tok-k">global</span> <span class="tok-n">test_open_popup</span><span class="tok-p">,</span> <span class="tok-n">test_capture_screenshot</span><span class="tok-p">,</span> <span class="tok-n">test_custom_gui</span>
+    <span class="tok-n">engine</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">()</span>
+
+    <span class="tok-c1"># Demo 1: Open popup</span>
+    <span class="tok-n">test_open_popup</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">register_test</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Demo Tests&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Open Popup&quot;</span><span class="tok-p">)</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_open_popup_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+        <span class="tok-c1"># This is the function that will be called by our test</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">set_ref</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">)</span>              <span class="tok-c1"># From now on, all actions happen in the &quot;Dear ImGui Demo&quot; window</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open</span><span class="tok-p">(</span><span class="tok-s2">&quot;Popups &amp; Modal windows&quot;</span><span class="tok-p">)</span>     <span class="tok-c1"># Open the &quot;Popups &amp; Modal windows&quot; tree item</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open</span><span class="tok-p">(</span><span class="tok-s2">&quot;Modals&quot;</span><span class="tok-p">)</span>                     <span class="tok-c1"># Open the &quot;Modal&quot; tree item</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_click</span><span class="tok-p">(</span><span class="tok-s2">&quot;**/Delete..&quot;</span><span class="tok-p">)</span>               <span class="tok-c1"># Click the &quot;Delete..&quot; button (&quot;**&quot; means: search inside children)</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_click</span><span class="tok-p">(</span><span class="tok-s2">&quot;//Delete?/Cancel&quot;</span><span class="tok-p">)</span>          <span class="tok-c1"># Click the &quot;Cancel&quot; button:</span>
+                                                    <span class="tok-c1">#    here, &quot;//&quot;  means &quot;ignore previous set_ref&quot; and search</span>
+                                                    <span class="tok-c1">#    for the cancel button in the root popup window named &quot;Delete?&quot;</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_close</span><span class="tok-p">(</span><span class="tok-s2">&quot;Popups &amp; Modal windows&quot;</span><span class="tok-p">)</span>    <span class="tok-c1"># Close the &quot;Popups &amp; Modal windows&quot; tree item</span>
+    <span class="tok-c1"># let the test call our function</span>
+    <span class="tok-n">test_open_popup</span><span class="tok-o">.</span><span class="tok-n">test_func</span> <span class="tok-o">=</span> <span class="tok-n">test_open_popup_func</span>
+
+    <span class="tok-c1"># Demo 2 : Capture Dear ImGui Demo window</span>
+    <span class="tok-n">test_capture_screenshot</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">register_test</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Demo Tests&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Capture Screenshot&quot;</span><span class="tok-p">)</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_capture_screenshot_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">set_ref</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">)</span>                   <span class="tok-c1"># From now on, actions happen in the &quot;Dear ImGui Demo&quot; window</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open</span><span class="tok-p">(</span><span class="tok-s2">&quot;Widgets&quot;</span><span class="tok-p">)</span>                         <span class="tok-c1"># Open the &quot;Widgets&quot;, then &quot;Basic&quot; tree item</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open_all</span><span class="tok-p">(</span><span class="tok-s2">&quot;Basic&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">capture_screenshot_window</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">)</span> <span class="tok-c1"># Capture window and save screenshot</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_close</span><span class="tok-p">(</span><span class="tok-s2">&quot;Widgets&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">test_capture_screenshot</span><span class="tok-o">.</span><span class="tok-n">test_func</span> <span class="tok-o">=</span> <span class="tok-n">test_capture_screenshot_func</span>
+
+    <span class="tok-c1"># Demo 3: a test with a custom GUI and custom variables</span>
+    <span class="tok-c1">#         which asserts that simulated actions successfully changed the variables values</span>
+    <span class="tok-n">test_custom_gui</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">register_test</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Demo Tests&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Test custom GUI &amp; vars&quot;</span><span class="tok-p">)</span>
+    <span class="tok-c1"># Our custom variables container</span>
+    <span class="tok-k">class</span> <span class="tok-nc">TestVar2</span><span class="tok-p">:</span>
+        <span class="tok-n">my_int</span> <span class="tok-o">=</span> <span class="tok-mi">42</span>
+    <span class="tok-n">test_var2</span> <span class="tok-o">=</span> <span class="tok-n">TestVar2</span><span class="tok-p">()</span>  <span class="tok-c1"># our custom variable(s)</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_custom_gui_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+        <span class="tok-c1"># Custom GUI for this test: it can edit our custom variable</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mi">40</span><span class="tok-p">,</span> <span class="tok-mi">8</span><span class="tok-p">))</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s2">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">,</span> <span class="tok-kc">None</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">no_saved_settings</span><span class="tok-p">)</span>
+        <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">slider_int</span><span class="tok-p">(</span><span class="tok-s2">&quot;Slider&quot;</span><span class="tok-p">,</span> <span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_with_vars_test_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+        <span class="tok-c1"># Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables</span>
+        <span class="tok-c1"># Optional: reset test_var2 to its startup values</span>
+        <span class="tok-k">nonlocal</span> <span class="tok-n">test_var2</span>
+        <span class="tok-n">test_var2</span> <span class="tok-o">=</span> <span class="tok-n">TestVar2</span><span class="tok-p">()</span>
+        <span class="tok-c1"># Run the test</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">set_ref</span><span class="tok-p">(</span><span class="tok-s2">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">CHECK</span><span class="tok-p">(</span><span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span> <span class="tok-o">==</span> <span class="tok-mi">42</span><span class="tok-p">)</span>
+        <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_input_value</span><span class="tok-p">(</span><span class="tok-s2">&quot;Slider&quot;</span><span class="tok-p">,</span> <span class="tok-mi">123</span><span class="tok-p">)</span>
+        <span class="tok-n">CHECK</span><span class="tok-p">(</span><span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span> <span class="tok-o">==</span> <span class="tok-mi">123</span><span class="tok-p">)</span>
+    <span class="tok-c1"># let the test call our test function, and also call our custom Gui</span>
+    <span class="tok-n">test_custom_gui</span><span class="tok-o">.</span><span class="tok-n">test_func</span> <span class="tok-o">=</span> <span class="tok-n">test_with_vars_test_func</span>
+    <span class="tok-n">test_custom_gui</span><span class="tok-o">.</span><span class="tok-n">gui_func</span> <span class="tok-o">=</span> <span class="tok-n">test_custom_gui_func</span>
+
+
+<span class="tok-c1"># Our application GUI: shows that we can trigger the test manually</span>
+<span class="tok-k">def</span> <span class="tok-nf">my_gui</span><span class="tok-p">():</span>
+    <span class="tok-n">test_engine</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s1">&#39;Run &quot;Open popup&quot;&#39;</span><span class="tok-p">):</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">queue_test</span><span class="tok-p">(</span><span class="tok-n">test_engine</span><span class="tok-p">,</span> <span class="tok-n">test_open_popup</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s1">&#39;Run &quot;Capture Screenshot&quot;&#39;</span><span class="tok-p">):</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">queue_test</span><span class="tok-p">(</span><span class="tok-n">test_engine</span><span class="tok-p">,</span> <span class="tok-n">test_capture_screenshot</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s1">&#39;Run &quot;Test custom GUI &amp; vars&quot;&#39;</span><span class="tok-p">):</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">queue_test</span><span class="tok-p">(</span><span class="tok-n">test_engine</span><span class="tok-p">,</span> <span class="tok-n">test_custom_gui</span><span class="tok-p">)</span>
+
+    <span class="tok-n">engine_io</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">get_io</span><span class="tok-p">(</span><span class="tok-n">test_engine</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Test speed:&quot;</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Fast&quot;</span><span class="tok-p">):</span>
+        <span class="tok-n">engine_io</span><span class="tok-o">.</span><span class="tok-n">config_run_speed</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestRunSpeed</span><span class="tok-o">.</span><span class="tok-n">fast</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Normal&quot;</span><span class="tok-p">):</span>
+        <span class="tok-n">engine_io</span><span class="tok-o">.</span><span class="tok-n">config_run_speed</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestRunSpeed</span><span class="tok-o">.</span><span class="tok-n">normal</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Cinematic&quot;</span><span class="tok-p">):</span>
+        <span class="tok-n">engine_io</span><span class="tok-o">.</span><span class="tok-n">config_run_speed</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestRunSpeed</span><span class="tok-o">.</span><span class="tok-n">cinematic</span>
+
+
+<span class="tok-c1"># Defined later: helps to define the application layout, display the ImGui Demo, &amp; ImGui Test Engine Window</span>
+<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">):</span>
+    <span class="tok-o">...</span>
+
+
+<span class="tok-c1"># Our main  function, where we need to:</span>
+<span class="tok-c1">#        - instantiate RunnerParams</span>
+<span class="tok-c1">#        - set `runner_params.use_imgui_test_engine = True`</span>
+<span class="tok-c1">#        - fill `runner_params.callbacks.register_tests`</span>
+<span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+    <span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">()</span>
+    <span class="tok-n">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
+
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">use_imgui_test_engine</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">register_tests</span> <span class="tok-o">=</span> <span class="tok-n">my_register_tests</span>
+
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
+
+
+<span class="tok-c1"># ///////////////////////////////////////////////////////////////////////////////</span>
+<span class="tok-c1"># // End of demo code</span>
+<span class="tok-c1"># ///////////////////////////////////////////////////////////////////////////////</span>
+
+
+<span class="tok-c1"># //</span>
+<span class="tok-c1"># // Note: the code below only helps to</span>
+<span class="tok-c1"># //    - define the application layout</span>
+<span class="tok-c1"># //    - display the ImGui Demo Window</span>
+<span class="tok-c1"># //    - display the ImGui Test Engine Window</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">create_default_docking_splits</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-n">List</span><span class="tok-p">[</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">]:</span>
+    <span class="tok-c1"># Define the application layout: splits the window in 3 spaces</span>
+    <span class="tok-n">split_main_demo</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
+    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
+    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;ImGuiDemoSpace&quot;</span>
+    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">right</span>
+    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.5</span>
+
+    <span class="tok-n">split_main_test</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
+    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
+    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;TestEngineSpace&quot;</span>
+    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">down</span>
+    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.7</span>
+
+    <span class="tok-k">return</span> <span class="tok-p">[</span><span class="tok-n">split_main_demo</span><span class="tok-p">,</span> <span class="tok-n">split_main_test</span><span class="tok-p">]</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">create_dockable_windows</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-n">List</span><span class="tok-p">[</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">]:</span>
+    <span class="tok-c1"># Define the app windows: my_gui, ImGui Demo Window, Dear ImGui Test Engine</span>
+    <span class="tok-n">my_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
+    <span class="tok-n">my_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Run Demos&quot;</span>
+    <span class="tok-n">my_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
+    <span class="tok-n">my_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">my_gui</span>
+
+    <span class="tok-n">dear_imgui_demo_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Demo&quot;</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;ImGuiDemoSpace&quot;</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>
+
+    <span class="tok-n">test_engine_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
+    <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Test Engine&quot;</span>
+    <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;TestEngineSpace&quot;</span>
+    <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">show_test_engine_windows</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">(),</span> <span class="tok-kc">None</span><span class="tok-p">)</span>
+
+    <span class="tok-k">return</span> <span class="tok-p">[</span><span class="tok-n">my_window</span><span class="tok-p">,</span> <span class="tok-n">dear_imgui_demo_window</span><span class="tok-p">,</span> <span class="tok-n">test_engine_window</span><span class="tok-p">]</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">):</span>
+    <span class="tok-c1"># Define the application layout and windows</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">app_window_params</span><span class="tok-o">.</span><span class="tok-n">window_title</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Demo ImGui Test Engine&quot;</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">default_imgui_window_type</span> <span class="tok-o">=</span> \
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DefaultImGuiWindowType</span><span class="tok-o">.</span><span class="tok-n">provide_full_screen_dock_space</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">docking_params</span><span class="tok-o">.</span><span class="tok-n">docking_splits</span> <span class="tok-o">=</span> <span class="tok-n">create_default_docking_splits</span><span class="tok-p">()</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">docking_params</span><span class="tok-o">.</span><span class="tok-n">dockable_windows</span> <span class="tok-o">=</span> <span class="tok-n">create_dockable_windows</span><span class="tok-p">()</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">docking_params</span><span class="tok-o">.</span><span class="tok-n">layout_condition</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingLayoutCondition</span><span class="tok-o">.</span><span class="tok-n">application_start</span>
+
+
+<span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
+    <span class="tok-n">main</span><span class="tok-p">()</span></code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect2">
 <h3 id="_display_analyze_images_with_immvision">Display &amp; analyze images with ImmVision</h3>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg" alt="demo immvision process 1" width="400">
 </div>
-<div class="title">Figure 5. Immvision in action</div>
+<div class="title">Figure 6. Immvision in action</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg" alt="demo immvision process 2" width="400">
 </div>
-<div class="title">Figure 6. Zooming on the images (with the mouse wheel) to display pixel values</div>
+<div class="title">Figure 7. Zooming on the images (with the mouse wheel) to display pixel values</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html">Run this demo in your browser</a></p>
@@ -2844,7 +3322,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg" alt="demo widgets imgui" width="400">
 </div>
-<div class="title">Figure 7. Dear ImGui widgets</div>
+<div class="title">Figure 8. Dear ImGui widgets</div>
 </div>
 <div class="paragraph">
 <p><a href="https://github.com/ocornut/imgui">Dear ImGui</a> provides <em>lots</em> of widgets by default.</p>
@@ -2860,31 +3338,31 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg" alt="demo widgets knobs" width="400">
 </div>
-<div class="title">Figure 8. Knobs widget</div>
+<div class="title">Figure 9. Knobs widget</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg" alt="demo widgets toggle" width="400">
 </div>
-<div class="title">Figure 9. Toggle widget</div>
+<div class="title">Figure 10. Toggle widget</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg" alt="demo widgets spinners" width="400">
 </div>
-<div class="title">Figure 10. Spinners widget</div>
+<div class="title">Figure 11. Spinners widget</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_file_dialog.jpg" alt="demo widgets file dialog" width="400">
 </div>
-<div class="title">Figure 11. File dialog</div>
+<div class="title">Figure 12. File dialog</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg" alt="demo widgets coolbar" width="400">
 </div>
-<div class="title">Figure 12. Cool bar</div>
+<div class="title">Figure 13. Cool bar</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html">Try these widgets in your browser</a></p>
@@ -3693,7 +4171,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_logger.jpg" alt="demo widgets logger" width="400">
 </div>
-<div class="title">Figure 13. Logger</div>
+<div class="title">Figure 14. Logger</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html">Try the logger in your browser</a></p>
@@ -3846,7 +4324,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg" alt="demo widgets editor" width="400">
 </div>
-<div class="title">Figure 14. Code editor</div>
+<div class="title">Figure 15. Code editor</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html">Try the code editor in your browser</a></p>
@@ -4000,13 +4478,13 @@ Tip: use the interactive manual as an inspiration
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg" alt="demo node editor" width="400">
 </div>
-<div class="title">Figure 15. ImGui Node editor in action</div>
+<div class="title">Figure 16. ImGui Node editor in action</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg" alt="demo gizmo" width="400">
 </div>
-<div class="title">Figure 16. ImGuizmo in action</div>
+<div class="title">Figure 17. ImGuizmo in action</div>
 </div>
 </div>
 </div>
@@ -4017,7 +4495,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-20 14:10:50 +0200
+Last updated 2023-10-20 15:07:57 +0200
 </div>
 </div>
 </body>
