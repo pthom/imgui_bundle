@@ -124,6 +124,7 @@ int main(int, char **)
     };
 
     runnerParams.callbacks.ShowGui = showGui;
+    runnerParams.useImGuiTestEngine = true;
 
     // ################################################################################################
     // Part 3: Run the app

@@ -7,179 +7,113 @@ from imgui_bundle import immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
-class AppState:
-    counter = 0
-    name = ""
+def automation_show_me_code():
+    engine = hello_imgui.get_imgui_test_engine()
+    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeCode")
+
+    def test_open_popup_func(ctx):
+        ctx.set_ref("Dear ImGui Bundle")
+        ctx.item_open("Code for this demo")
+        ctx.sleep(2.5)
+        ctx.item_close("Code for this demo")
+
+        tab_logger_name = "//**/Logger"
+        tab_intro_name = "//**/Dear ImGui Bundle"
+
+        ctx.mouse_move(tab_logger_name)
+        ctx.mouse_click(0)
+        ctx.set_ref("Logger")
+        ctx.item_open("Code for this demo")
+        ctx.item_close("Code for this demo")
+        ctx.mouse_move(tab_intro_name)
+        ctx.mouse_click(0)
+
+    automation.test_func = test_open_popup_func
+    return automation
 
 
-@immapp.static(value=0)
-def demo_radio_button():
-    static = demo_radio_button
-    clicked, static.value = imgui.radio_button("radio a", static.value, 0)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio b", static.value, 1)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio c", static.value, 2)
+def automation_show_me_immediate_apps():
+    engine = hello_imgui.get_imgui_test_engine()
+    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeImmediateApps")
+
+    def test_open_popup_func(ctx):
+        tab_imm_apps_name = "//**/Immediate Apps"
+        tab_intro_name = "//**/Dear ImGui Bundle"
+
+        ctx.mouse_move(tab_imm_apps_name)
+        ctx.mouse_click(0)
+        ctx.item_click("//**/demo_docking/View code")
+        ctx.item_click("//**/demo_assets_addons/View code")
+        ctx.item_click("//**/demo_hello_world/View code")
+        ctx.mouse_move("//**/demo_hello_world/Run")
+        ctx.mouse_move(tab_intro_name)
+        ctx.mouse_click(0)
+
+    automation.test_func = test_open_popup_func
+    return automation
 
 
-@immapp.static(text="")
-def demo_input_text_upper_case() -> None:
-    static = demo_input_text_upper_case
-    flags: imgui.InputTextFlags = (
-        imgui.InputTextFlags_.chars_uppercase.value | imgui.InputTextFlags_.chars_no_blank.value
-    )
-    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
+@immapp.static(automation_show_me_code=None, automation_show_me_immediate_apps=None, was_automation_inited=False)
+def demo_gui():
+    statics = demo_gui
+    #
+    # Automations
+    #
+    # Create automations upon first display
+    if hello_imgui.get_runner_params().use_imgui_test_engine:
+        if not statics.was_automation_inited:
+            statics.was_automation_inited = True
+            statics.automation_show_me_code = automation_show_me_code()
+            statics.automation_show_me_immediate_apps = automation_show_me_immediate_apps()
 
+        # Set automation speed
+        engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
+        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.normal
 
-def demo_add_window_size_callback():
-    import imgui_bundle
+        # Optional: show test engine window
+        # imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
 
-    # always import glfw *after* imgui_bundle!!!
-    import glfw  # type: ignore
-
-    # Get the glfw window used by hello imgui
-    window = imgui_bundle.glfw_utils.glfw_window_hello_imgui()
-
-    # define a callback
-    def my_window_size_callback(window: glfw._GLFWwindow, w: int, h: int):
-        from imgui_bundle import hello_imgui
-
-        hello_imgui.log(hello_imgui.LogLevel.info, f"Window size changed to {w}x{h}")
-
-    glfw.set_window_size_callback(window, my_window_size_callback)
-
-
-@immapp.static(snippet=None)
-def show_glfw_callback_advice():
-    static = show_glfw_callback_advice
-    if static.snippet is None:
-        import inspect
-
-        static.snippet = immapp.snippets.SnippetData()
-        static.snippet.code = inspect.getsource(demo_add_window_size_callback)
-
-    imgui.text("Code for this demo")
-    immapp.snippets.show_code_snippet(static.snippet)
-
-    imgui_md.render_unindented(
-        """For more complex applications, you can set various callbacks, using glfw.
-    *Click the button below to add a callback*"""
-    )
-
-    if imgui.button("Add glfw callback"):
-        demo_add_window_size_callback()
-        hello_imgui.log(
-            hello_imgui.LogLevel.warning,
-            "A callback was handed to watch the window size. Change this window size and look at the logs",
-        )
-
-    hello_imgui.log_gui()
-
-
-def show_porting_advices() -> None:
-    show_markdown_file("ibd_port_general_advices")
-    demo_radio_button()
-
-    imgui.new_line()
-    imgui.new_line()
-    imgui.new_line()
-
-    show_markdown_file("ibd_port_enums")
-    demo_input_text_upper_case()
-
-    imgui.new_line()
-    imgui.new_line()
-    imgui.new_line()
-    show_markdown_file("ibd_port_debug_native")
-
-
-def gui_front_matter():
     imgui_md.render_unindented(
         """
-    # Dear ImGui Bundle
-    Easily create ImGui applications in Python and C++. Batteries included!
-    """
+        *Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*
+
+        Welcome to the interactive manual for *Dear ImGui Bundle*! This manual presents lots of examples, together with their code (in C++ and Python).
+
+        Advices:
+        * This interactive manual works best when viewed together with [Dear ImGui Bundle docs](https://pthom.github.io/imgui_bundle)
+        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo".
+          Click on it to show the source code for the current demo.
+        """
     )
-    btnSize = hello_imgui.em_to_vec2(0.0, 1.5)
-    if hello_imgui.image_button_from_asset("images/badge_view_sources.png", btnSize):
+    if hello_imgui.get_runner_params().use_imgui_test_engine:
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
+        if imgui.button("Show me##demo_code_demo"):
+            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), statics.automation_show_me_code)
+
+    imgui_md.render_unindented(
+        """
+        * The "Immediate Apps" tab is especially interesting, as it provides sample starter apps from which you can take inspiration. Click on the "View Code" button to view the app's code, and click on "Run" to run them.
+        """
+    )
+    if hello_imgui.get_runner_params().use_imgui_test_engine:
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
+        if imgui.button("Show me##demo_imm_apps"):
+            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), statics.automation_show_me_immediate_apps)
+
+    # Navigation buttons
+    imgui.separator()
+    imgui.dummy(hello_imgui.em_to_vec2(1.0, 6.0))  # Skip 6 lines
+    btn_size = hello_imgui.em_to_vec2(0.0, 1.5)
+    if hello_imgui.image_button_from_asset("images/badge_view_sources.png", btn_size):
         webbrowser.open("https://github.com/pthom/imgui_bundle")
     imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btnSize):
+    if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btn_size):
         webbrowser.open("https://pthom.github.io/imgui_bundle")
     imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_interactive_manual.png", btnSize):
+    if hello_imgui.image_button_from_asset("images/badge_interactive_manual.png", btn_size):
         webbrowser.open("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html")
 
-
-@immapp.static(is_initialized=False)
-def demo_gui() -> None:
-    static = demo_gui
-
-    if not static.is_initialized:
-        static.app_state = AppState()
-        static.is_initialized = True
-
-    app_state: AppState = static.app_state
-
-    gui_front_matter()
-    imgui_md.render_unindented('(*Note: this documentation is also available as a web page: click on "View Docs"*)')
-
-    if imgui.collapsing_header("Introduction"):
-        show_markdown_file("ibd_intro")
-
-    if imgui.collapsing_header("Build and install instruction"):
-        show_markdown_file("ibd_install")
-
-    if imgui.collapsing_header("Quick start & examples"):
-        imgui_md.render("View [quickstart & examples](https://pthom.github.io/imgui_bundle/quickstart.html) in your browser.")
-
-    if imgui.collapsing_header("Dear ImGui - Immediate gui"):
-
-        def immediate_gui_example():
-            # Display a text
-            imgui.text(f"Counter = {app_state.counter}")
-            imgui.same_line()  # by default ImGui starts a new line at each widget
-
-            # The following line displays a button
-            if imgui.button("increment counter"):
-                # And returns true if it was clicked: you can *immediately* handle the click
-                app_state.counter += 1
-
-            # Input a text: in python, input_text returns a tuple(modified, new_value)
-            changed, app_state.name = imgui.input_text("Your name?", app_state.name)
-            imgui.text(f"Hello {app_state.name}!")
-
-        show_markdown_file("ibd_manual_imgui")
-        immediate_gui_example()
-        imgui.separator()
-
-    if imgui.collapsing_header("Hello ImGui - Starter pack"):
-        show_markdown_file("ibd_manual_himgui")
-
-    if imgui.collapsing_header("ImmApp - Immediate App"):
-        show_markdown_file("ibd_manual_immapp")
-
-    if imgui.collapsing_header("Using Dear ImGui Bundle with jupyter notebook"):
-        show_markdown_file("ibd_manual_notebook")
-
-    if imgui.collapsing_header("Repository folders structure"):
-        show_markdown_file("ibd_folders_structure")
-
-    if imgui.collapsing_header("C++ / Python porting advices"):
-        show_porting_advices()
-
-    if imgui.collapsing_header("Advanced glfw callbacks"):
-        show_glfw_callback_advice()
-
-    if imgui.collapsing_header("Closing words"):
-        show_markdown_file("ibd_words_author")
-
-    if imgui.collapsing_header("FAQ"):
-        show_markdown_file("ibd_faq")
-
-    demo_utils.animate_logo(
-        "images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30, "https://github.com/pthom/imgui_bundle"
-    )
+    demo_utils.animate_logo("images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30, "https://github.com/pthom/imgui_bundle")
 
 
 if __name__ == "__main__":
