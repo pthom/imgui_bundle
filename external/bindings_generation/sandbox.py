@@ -8,5 +8,5 @@ def sandbox():
 
 
 if __name__ == "__main__":
-    all_external_libraries.pull_all_submodules()
-    # all_external_libraries.reattach_all_submodules()
+    all_external_libraries.reattach_all_submodules()
+    # all_external_libraries.pull_all_submodules()

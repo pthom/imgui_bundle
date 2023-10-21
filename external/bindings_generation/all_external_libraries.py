@@ -237,6 +237,15 @@ def published_libs() -> List[ExternalLibrary]:
 
 
 def reattach_all_submodules():
+    """
+    Will remove existing git remotes
+    Then add two remotes if it is a fork
+        - official : points to the official repo
+        - pthom: points to the forked library
+    Or add one remote if it is not a fork
+        - official : points to the official repo
+    then attach the submodule to the correct remote branch (set-upstream)
+    """
     for lib in ALL_LIBS:
         if lib.is_submodule():
             print(lib.name)
