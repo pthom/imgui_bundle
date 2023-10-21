@@ -213,12 +213,12 @@ Most flags are inherited by children dock spaces.
             self.tip = tip
 
     all_flags = [
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_split, "NoSplit", "prevent Dock Nodes from being split"),
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_split, "NoSplit", "prevent Dock Nodes from being split"),
         DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
         DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
                          "show tab bar only if multiple windows\n" +
                          "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_in_central_node, "NoDockingInCentralNode",
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_over_central_node, "NoDockingInCentralNode",
                          "prevent docking in central node\n(only works with the main dock space)"),
         # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
     ]

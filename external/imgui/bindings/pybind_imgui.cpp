@@ -262,20 +262,20 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("p_open") = py::none(),
         "create Debug Log window. display a simplified log of important dear imgui events.");
 
-    m.def("show_stack_tool_window",
+    m.def("show_id_stack_tool_window",
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
         {
-            auto ShowStackToolWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            auto ShowIDStackToolWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
                     p_open_adapt_modifiable = & (*p_open);
 
-                ImGui::ShowStackToolWindow(p_open_adapt_modifiable);
+                ImGui::ShowIDStackToolWindow(p_open_adapt_modifiable);
                 return p_open;
             };
 
-            return ShowStackToolWindow_adapt_modifiable_immutable_to_return(p_open);
+            return ShowIDStackToolWindow_adapt_modifiable_immutable_to_return(p_open);
         },
         py::arg("p_open") = py::none(),
         "create Stack Tool window. hover items with mouse to query information about the source of their unique ID.");
@@ -356,10 +356,10 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::End);
 
     m.def("begin_child",
-        py::overload_cast<const char *, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("flags") = 0);
+        py::overload_cast<const char *, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("window_flags") = 0);
 
     m.def("begin_child",
-        py::overload_cast<ImGuiID, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("flags") = 0);
+        py::overload_cast<ImGuiID, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("window_flags") = 0);
 
     m.def("end_child",
         ImGui::EndChild);
@@ -389,10 +389,10 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::GetWindowDpiScale, "get DPI scale currently associated to the current window's viewport.");
 
     m.def("get_window_pos",
-        ImGui::GetWindowPos, "get current window position in screen space (note: it is unlikely you need to use this. Consider using current layout pos instead, GetScreenCursorPos())");
+        ImGui::GetWindowPos, "get current window position in screen space (note: it is unlikely you need to use this. Consider using current layout pos instead, GetCursorScreenPos())");
 
     m.def("get_window_size",
-        ImGui::GetWindowSize, "get current window size (note: it is unlikely you need to use this. Consider using GetScreenCursorPos() and e.g. GetContentRegionAvail() instead)");
+        ImGui::GetWindowSize, "get current window size (note: it is unlikely you need to use this. Consider using GetCursorScreenPos() and e.g. GetContentRegionAvail() instead)");
 
     m.def("get_window_width",
         ImGui::GetWindowWidth, "get current window width (shortcut for GetWindowSize().x)");
@@ -657,6 +657,41 @@ void py_init_module_imgui_main(py::module& m)
         "retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.",
         pybind11::return_value_policy::reference);
 
+    m.def("get_cursor_screen_pos",
+        ImGui::GetCursorScreenPos, "cursor position in absolute coordinates (prefer using this, also more useful to work with ImDrawList API).");
+
+    m.def("set_cursor_screen_pos",
+        ImGui::SetCursorScreenPos,
+        py::arg("pos"),
+        "cursor position in absolute coordinates");
+
+    m.def("get_cursor_pos",
+        ImGui::GetCursorPos, "[window-local] cursor position in window coordinates (relative to window position)");
+
+    m.def("get_cursor_pos_x",
+        ImGui::GetCursorPosX, "[window-local] \"");
+
+    m.def("get_cursor_pos_y",
+        ImGui::GetCursorPosY, "[window-local] \"");
+
+    m.def("set_cursor_pos",
+        ImGui::SetCursorPos,
+        py::arg("local_pos"),
+        "[window-local] \"");
+
+    m.def("set_cursor_pos_x",
+        ImGui::SetCursorPosX,
+        py::arg("local_x"),
+        "[window-local] \"");
+
+    m.def("set_cursor_pos_y",
+        ImGui::SetCursorPosY,
+        py::arg("local_y"),
+        "[window-local] \"");
+
+    m.def("get_cursor_start_pos",
+        ImGui::GetCursorStartPos, "[window-local] initial cursor position, in window coordinates");
+
     m.def("separator",
         ImGui::Separator, "separator, generally horizontal. inside a menu bar or in horizontal layout mode, this becomes a vertical separator.");
 
@@ -691,39 +726,6 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("end_group",
         ImGui::EndGroup, "unlock horizontal starting position + capture the whole group bounding box into one \"item\" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)");
-
-    m.def("get_cursor_pos",
-        ImGui::GetCursorPos, "cursor position in window coordinates (relative to window position)");
-
-    m.def("get_cursor_pos_x",
-        ImGui::GetCursorPosX, "(some functions are using window-relative coordinates, such as: GetCursorPos, GetCursorStartPos, GetContentRegionMax, GetWindowContentRegion* etc.");
-
-    m.def("get_cursor_pos_y",
-        ImGui::GetCursorPosY, "other functions such as GetCursorScreenPos or everything in ImDrawList::");
-
-    m.def("set_cursor_pos",
-        ImGui::SetCursorPos,
-        py::arg("local_pos"),
-        "are using the main, absolute coordinate system.");
-
-    m.def("set_cursor_pos_x",
-        ImGui::SetCursorPosX,
-        py::arg("local_x"),
-        "GetWindowPos() + GetCursorPos() == GetCursorScreenPos() etc.)");
-
-    m.def("set_cursor_pos_y",
-        ImGui::SetCursorPosY, py::arg("local_y"));
-
-    m.def("get_cursor_start_pos",
-        ImGui::GetCursorStartPos, "initial cursor position in window coordinates");
-
-    m.def("get_cursor_screen_pos",
-        ImGui::GetCursorScreenPos, "cursor position in absolute coordinates (useful to work with ImDrawList API). generally top-left == GetMainViewport()->Pos == (0,0) in single viewport mode, and bottom-right == GetMainViewport()->Pos+Size == io.DisplaySize in single-viewport mode.");
-
-    m.def("set_cursor_screen_pos",
-        ImGui::SetCursorScreenPos,
-        py::arg("pos"),
-        "cursor position in absolute coordinates");
 
     m.def("align_text_to_frame_padding",
         ImGui::AlignTextToFramePadding, "vertically align upcoming text baseline to FramePadding.y so that it will align properly to regularly framed items (call if you have text on a line before a framed item)");
@@ -870,7 +872,7 @@ void py_init_module_imgui_main(py::module& m)
     m.def("small_button",
         ImGui::SmallButton,
         py::arg("label"),
-        "button with FramePadding=(0,0) to easily embed within text");
+        "button with (FramePadding.y == 0) to easily embed within text");
 
     m.def("invisible_button",
         ImGui::InvisibleButton,
@@ -955,7 +957,7 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::Image, py::arg("user_texture_id"), py::arg("size"), py::arg("uv0") = ImVec2(0, 0), py::arg("uv1") = ImVec2(1, 1), py::arg("tint_col") = ImVec4(1, 1, 1, 1), py::arg("border_col") = ImVec4(0, 0, 0, 0));
 
     m.def("image_button",
-        py::overload_cast<const char *, ImTextureID, const ImVec2 &, const ImVec2 &, const ImVec2 &, const ImVec4 &, const ImVec4 &>(ImGui::ImageButton), py::arg("str_id"), py::arg("user_texture_id"), py::arg("size"), py::arg("uv0") = ImVec2(0, 0), py::arg("uv1") = ImVec2(1, 1), py::arg("bg_col") = ImVec4(0, 0, 0, 0), py::arg("tint_col") = ImVec4(1, 1, 1, 1));
+        py::overload_cast<const char *, ImTextureID, const ImVec2 &, const ImVec2 &, const ImVec2 &, const ImVec4 &, const ImVec4 &>(ImGui::ImageButton), py::arg("str_id"), py::arg("user_texture_id"), py::arg("image_size"), py::arg("uv0") = ImVec2(0, 0), py::arg("uv1") = ImVec2(1, 1), py::arg("bg_col") = ImVec4(0, 0, 0, 0), py::arg("tint_col") = ImVec4(1, 1, 1, 1));
 
     m.def("begin_combo",
         ImGui::BeginCombo, py::arg("label"), py::arg("preview_value"), py::arg("flags") = 0);
@@ -1896,13 +1898,16 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("cols"), py::arg("rows"),
         "lock columns/rows so they stay visible when scrolled.");
 
-    m.def("table_headers_row",
-        py::overload_cast<>(ImGui::TableHeadersRow), "submit all headers cells based on data provided to TableSetupColumn() + submit context menu");
-
     m.def("table_header",
         py::overload_cast<const char *>(ImGui::TableHeader),
         py::arg("label"),
         "submit one header cell manually (rarely used)");
+
+    m.def("table_headers_row",
+        py::overload_cast<>(ImGui::TableHeadersRow), "submit a row with headers cells based on data provided to TableSetupColumn() + submit context menu");
+
+    m.def("table_angled_headers_row",
+        py::overload_cast<>(ImGui::TableAngledHeadersRow), "submit a row with angled headers for every column with the ImGuiTableColumnFlags_AngledHeader flag. MUST BE FIRST ROW.");
 
     m.def("table_get_sort_specs",
         py::overload_cast<>(ImGui::TableGetSortSpecs),
@@ -2524,6 +2529,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("frame_padding", ImGuiTreeNodeFlags_FramePadding, "Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().")
         .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.")
         .value("span_full_width", ImGuiTreeNodeFlags_SpanFullWidth, "Extend hit box to the left-most and right-most edges (bypass the indented area).")
+        .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
         .value("nav_left_jumps_back_here", ImGuiTreeNodeFlags_NavLeftJumpsBackHere, "(WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)")
         .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 14,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible");
 
@@ -2545,7 +2551,7 @@ void py_init_module_imgui_main(py::module& m)
     py::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags_", py::arithmetic(), "Flags for ImGui::Selectable()")
         .value("none", ImGuiSelectableFlags_None, "")
         .value("dont_close_popups", ImGuiSelectableFlags_DontClosePopups, "Clicking this doesn't close parent popup window")
-        .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Selectable frame can span all columns (text will still fit in current column)")
+        .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
         .value("allow_double_click", ImGuiSelectableFlags_AllowDoubleClick, "Generate press events on double clicks too")
         .value("disabled", ImGuiSelectableFlags_Disabled, "Cannot be selected, display grayed out text")
         .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one");
@@ -2560,6 +2566,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("height_largest", ImGuiComboFlags_HeightLargest, "As many fitting items as possible")
         .value("no_arrow_button", ImGuiComboFlags_NoArrowButton, "Display on the preview box without the square arrow button")
         .value("no_preview", ImGuiComboFlags_NoPreview, "Display only a square arrow button")
+        .value("width_fit_preview", ImGuiComboFlags_WidthFitPreview, "Width dynamically calculated from preview contents")
         .value("height_mask_", ImGuiComboFlags_HeightMask_, "");
 
 
@@ -2625,6 +2632,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("scroll_y", ImGuiTableFlags_ScrollY, "Enable vertical scrolling. Require 'outer_size' parameter of BeginTable() to specify the container size.")
         .value("sort_multi", ImGuiTableFlags_SortMulti, "Hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).")
         .value("sort_tristate", ImGuiTableFlags_SortTristate, "Allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).")
+        .value("highlight_hovered_column", ImGuiTableFlags_HighlightHoveredColumn, "Highlight column headers when hovered (may evolve into a fuller highlight)")
         .value("sizing_mask_", ImGuiTableFlags_SizingMask_, "[Internal] Combinations and masks");
 
 
@@ -2642,12 +2650,13 @@ void py_init_module_imgui_main(py::module& m)
         .value("no_sort", ImGuiTableColumnFlags_NoSort, "Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).")
         .value("no_sort_ascending", ImGuiTableColumnFlags_NoSortAscending, "Disable ability to sort in the ascending direction.")
         .value("no_sort_descending", ImGuiTableColumnFlags_NoSortDescending, "Disable ability to sort in the descending direction.")
-        .value("no_header_label", ImGuiTableColumnFlags_NoHeaderLabel, "TableHeadersRow() will not submit label for this column. Convenient for some small columns. Name will still appear in context menu.")
+        .value("no_header_label", ImGuiTableColumnFlags_NoHeaderLabel, "TableHeadersRow() will not submit horizontal label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers.")
         .value("no_header_width", ImGuiTableColumnFlags_NoHeaderWidth, "Disable header text width contribution to automatic column width.")
         .value("prefer_sort_ascending", ImGuiTableColumnFlags_PreferSortAscending, "Make the initial sort direction Ascending when first sorting on this column (default).")
         .value("prefer_sort_descending", ImGuiTableColumnFlags_PreferSortDescending, "Make the initial sort direction Descending when first sorting on this column.")
         .value("indent_enable", ImGuiTableColumnFlags_IndentEnable, "Use current Indent value when entering cell (default for column 0).")
         .value("indent_disable", ImGuiTableColumnFlags_IndentDisable, "Ignore current Indent value when entering cell (default for columns > 0). Indentation changes _within_ the cell will still be honored.")
+        .value("angled_header", ImGuiTableColumnFlags_AngledHeader, "TableHeadersRow() will submit an angled header row for this column. Note this will add an extra row.")
         .value("is_enabled", ImGuiTableColumnFlags_IsEnabled, "Status: is enabled == not hidden by user/api (referred to as \"Hide\" in _DefaultHide and _NoHide) flags.")
         .value("is_visible", ImGuiTableColumnFlags_IsVisible, "Status: is visible == is enabled AND not clipped by scrolling.")
         .value("is_sorted", ImGuiTableColumnFlags_IsSorted, "Status: is currently part of the sort specs")
@@ -2706,12 +2715,13 @@ void py_init_module_imgui_main(py::module& m)
 
     py::enum_<ImGuiDockNodeFlags_>(m, "DockNodeFlags_", py::arithmetic(), " Flags for ImGui::DockSpace(), shared/inherited by child nodes.\n (Some flags can be applied to individual nodes directly)\n FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.")
         .value("none", ImGuiDockNodeFlags_None, "")
-        .value("keep_alive_only", ImGuiDockNodeFlags_KeepAliveOnly, "Shared       // Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.")
-        .value("no_docking_in_central_node", ImGuiDockNodeFlags_NoDockingInCentralNode, "Shared       // Disable docking inside the Central Node, which will be always kept empty.")
-        .value("passthru_central_node", ImGuiDockNodeFlags_PassthruCentralNode, "Shared       // Enable passthru dockspace: 1) DockSpace() will render a ImGuiCol_WindowBg background covering everything excepted the Central Node when empty. Meaning the host window should probably use SetNextWindowBgAlpha(0.0) prior to Begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background. See demo for details.")
-        .value("no_split", ImGuiDockNodeFlags_NoSplit, "Shared/Local // Disable splitting the node into smaller nodes. Useful e.g. when embedding dockspaces into a main root one (the root one may have splitting disabled to reduce confusion). Note: when turned off, existing splits will be preserved.")
-        .value("no_resize", ImGuiDockNodeFlags_NoResize, "Shared/Local // Disable resizing node using the splitter/separators. Useful with programmatically setup dockspaces.")
-        .value("auto_hide_tab_bar", ImGuiDockNodeFlags_AutoHideTabBar, "Shared/Local // Tab bar will automatically hide when there is a single window in the dock node.");
+        .value("keep_alive_only", ImGuiDockNodeFlags_KeepAliveOnly, "// Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.")
+        .value("no_docking_over_central_node", ImGuiDockNodeFlags_NoDockingOverCentralNode, "// Disable docking over the Central Node, which will be always kept empty.")
+        .value("passthru_central_node", ImGuiDockNodeFlags_PassthruCentralNode, "// Enable passthru dockspace: 1) DockSpace() will render a ImGuiCol_WindowBg background covering everything excepted the Central Node when empty. Meaning the host window should probably use SetNextWindowBgAlpha(0.0) prior to Begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background. See demo for details.")
+        .value("no_docking_split", ImGuiDockNodeFlags_NoDockingSplit, "// Disable other windows/nodes from splitting this node.")
+        .value("no_resize", ImGuiDockNodeFlags_NoResize, "Saved // Disable resizing node using the splitter/separators. Useful with programmatically setup dockspaces.")
+        .value("auto_hide_tab_bar", ImGuiDockNodeFlags_AutoHideTabBar, "// Tab bar will automatically hide when there is a single window in the dock node.")
+        .value("no_undocking", ImGuiDockNodeFlags_NoUndocking, "// Disable undocking this node.");
 
 
     py::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags_", py::arithmetic(), "Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()")
@@ -2831,6 +2841,18 @@ void py_init_module_imgui_main(py::module& m)
         .value("f10", ImGuiKey_F10, "")
         .value("f11", ImGuiKey_F11, "")
         .value("f12", ImGuiKey_F12, "")
+        .value("f13", ImGuiKey_F13, "")
+        .value("f14", ImGuiKey_F14, "")
+        .value("f15", ImGuiKey_F15, "")
+        .value("f16", ImGuiKey_F16, "")
+        .value("f17", ImGuiKey_F17, "")
+        .value("f18", ImGuiKey_F18, "")
+        .value("f19", ImGuiKey_F19, "")
+        .value("f20", ImGuiKey_F20, "")
+        .value("f21", ImGuiKey_F21, "")
+        .value("f22", ImGuiKey_F22, "")
+        .value("f23", ImGuiKey_F23, "")
+        .value("f24", ImGuiKey_F24, "")
         .value("apostrophe", ImGuiKey_Apostrophe, "'")
         .value("comma", ImGuiKey_Comma, ",")
         .value("minus", ImGuiKey_Minus, "-")
@@ -2864,6 +2886,8 @@ void py_init_module_imgui_main(py::module& m)
         .value("keypad_add", ImGuiKey_KeypadAdd, "")
         .value("keypad_enter", ImGuiKey_KeypadEnter, "")
         .value("keypad_equal", ImGuiKey_KeypadEqual, "")
+        .value("app_back", ImGuiKey_AppBack, "Available on some keyboard/mouses. Often referred as \"Browser Back\"")
+        .value("app_forward", ImGuiKey_AppForward, "")
         .value("gamepad_start", ImGuiKey_GamepadStart, "Menu (Xbox)      + (Switch)   Start/Options (PS)")
         .value("gamepad_back", ImGuiKey_GamepadBack, "View (Xbox)      - (Switch)   Share (PS)")
         .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X (Xbox)         Y (Switch)   Square (PS)        // Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
@@ -3022,6 +3046,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("grab_min_size", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
         .value("grab_rounding", ImGuiStyleVar_GrabRounding, "float     GrabRounding")
         .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
+        .value("tab_bar_border_size", ImGuiStyleVar_TabBarBorderSize, "float     TabBarBorderSize")
         .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
         .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
         .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float  SeparatorTextBorderSize")
@@ -3156,6 +3181,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("tab_rounding", &ImGuiStyle::TabRounding, "Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.")
         .def_readwrite("tab_border_size", &ImGuiStyle::TabBorderSize, "Thickness of border around tabs.")
         .def_readwrite("tab_min_width_for_close_button", &ImGuiStyle::TabMinWidthForCloseButton, "Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0 to always show when hovering, set to FLT_MAX to never show close button unless selected.")
+        .def_readwrite("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize, "Thickness of tab-bar separator, which takes on the tab active color to denote focus.")
+        .def_readwrite("table_angled_headers_angle", &ImGuiStyle::TableAngledHeadersAngle, "Angle of angled headers (supported values range from -50.0 degrees to +50.0 degrees).")
         .def_readwrite("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_readwrite("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_readwrite("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
@@ -3331,7 +3358,6 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("metrics_render_indices", &ImGuiIO::MetricsRenderIndices, "Indices output during last call to Render() = number of triangles * 3")
         .def_readwrite("metrics_render_windows", &ImGuiIO::MetricsRenderWindows, "Number of visible windows")
         .def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows, "Number of active windows")
-        .def_readwrite("metrics_active_allocations", &ImGuiIO::MetricsActiveAllocations, "Number of active allocations, updated by MemAlloc/MemFree based on current context. May be off if you have multiple imgui contexts.")
         .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "")
         .def_readwrite("ctx", &ImGuiIO::Ctx, "Parent UI context (needs to be set explicitly by parent).")
         .def_readwrite("mouse_pos", &ImGuiIO::MousePos, "Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)")
@@ -3688,11 +3714,11 @@ void py_init_module_imgui_main(py::module& m)
                 (pyClassImGuiStorage, "StoragePair", "[Internal]")
             .def_readwrite("key", &ImGuiStorage::ImGuiStoragePair::key, "")
             .def(py::init<ImGuiID, int>(),
-                py::arg("_key"), py::arg("_val_i"))
+                py::arg("_key"), py::arg("_val"))
             .def(py::init<ImGuiID, float>(),
-                py::arg("_key"), py::arg("_val_f"))
+                py::arg("_key"), py::arg("_val"))
             .def(py::init<ImGuiID, void *>(),
-                py::arg("_key"), py::arg("_val_p"))
+                py::arg("_key"), py::arg("_val"))
             ;
     } // end of inner classes & enums of Storage
 
@@ -3731,12 +3757,12 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiStorage::GetFloatRef,
             py::arg("key"), py::arg("default_val") = 0.0f,
             pybind11::return_value_policy::reference)
+        .def("build_sort_by_key",
+            &ImGuiStorage::BuildSortByKey, "Advanced: for quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once.")
         .def("set_all_int",
             &ImGuiStorage::SetAllInt,
             py::arg("val"),
-            "Use on your own storage if you know only integer are being stored (open/close all tree nodes)")
-        .def("build_sort_by_key",
-            &ImGuiStorage::BuildSortByKey, "For quicker full rebuild of a storage (instead of an incremental one), you may add all your contents and then sort once.")
+            "Obsolete: use on your own storage if you know only integer are being stored (open/close all tree nodes)")
         ;
 
 
@@ -3936,6 +3962,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::AddNgon, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments"), py::arg("thickness") = 1.0f)
         .def("add_ngon_filled",
             &ImDrawList::AddNgonFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments"))
+        .def("add_ellipse",
+            &ImDrawList::AddEllipse, py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0, py::arg("thickness") = 1.0f)
+        .def("add_ellipse_filled",
+            &ImDrawList::AddEllipseFilled, py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0)
         .def("add_text",
             py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
         .def("add_text",
@@ -3982,6 +4012,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImDrawList::PathArcToFast,
             py::arg("center"), py::arg("radius"), py::arg("a_min_of_12"), py::arg("a_max_of_12"),
             "Use precomputed angles for a 12 steps circle")
+        .def("path_elliptical_arc_to",
+            &ImDrawList::PathEllipticalArcTo,
+            py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("rot"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0,
+            "Ellipse")
         .def("path_bezier_cubic_curve_to",
             &ImDrawList::PathBezierCubicCurveTo,
             py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("num_segments") = 0,
