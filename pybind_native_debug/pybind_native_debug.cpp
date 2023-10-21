@@ -1,65 +1,91 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+
+//This program reads the Python virtual environment path from a configuration file named
+//    pybind_native_debug_venv.txt
+//This file should be placed next to this C++ file, and must contain a single line that specifies the path
+//to the Python virtual environment.
+//
+//Example of 'pybind_native_debug_venv.txt' content:
+//
+///home/me/venv
+
 #include <pybind11/embed.h>
+#include <optional>
 #include <iostream>
+#include <fstream>
 #include <filesystem>
+
 
 namespace py = pybind11;
 
 
-std::string THIS_DIR = std::filesystem::path(__FILE__).parent_path().string();
-
-
-std::string string_replace(const std::string& src, const std::string& target, const std::string& repl)
+// read pybind_native_debug_venv.txt
+std::string read_venv_path_from_file(const std::filesystem::path& file_path)
 {
-    if (src.empty() || target.empty())
-        return src;
+    std::ifstream file_stream(file_path);
+    if (!file_stream)
+        throw std::runtime_error("Could not open the venv path file.");
 
-    std::string result = src;
-    size_t idx = 0;
-    while(true)
-    {
-        idx = result.find( target, idx);
-        if (idx == std::string::npos)
-            break;
-        result.replace(idx, target.length(), repl);
-        idx += repl.length();
-    }
-    return result;
+    std::string venv_path;
+    std::getline(file_stream, venv_path);
+    return venv_path;
 }
 
 
-void use_venv_python()
+// Search for the 'site-packages' directory within the venv
+std::optional<std::string> find_site_packages_from_venv(const std::string& venv_path)
 {
-    std::string venv_dir = THIS_DIR + "/../venv";
-    #ifndef _WIN32
-    std::string python_program = venv_dir + "/bin/python";
-    #else
-    std::string python_program = venv_dir + "/Scripts/python.exe";
-    #endif
+    for (const auto& dir_entry : std::filesystem::recursive_directory_iterator(venv_path))
+        if (dir_entry.is_directory() && dir_entry.path().filename() == "site-packages")
+            return dir_entry.path().string();
+    return std::nullopt;
+}
 
-    if (! std::filesystem::is_regular_file(python_program))
-        throw std::runtime_error("Can find python program!");
+// adds a path to sys.path
+void add_python_path(const std::string& path)
+{
+    std::string cmd;
+    cmd += "import sys\n";
+    cmd += "sys.path.append(\"" + path + "\")\n";
+    py::exec(cmd);
+}
 
-    std::cout << "pybind_native_debug: THIS_DIR=" << THIS_DIR << "\n";
-    std::cout << "    using python: " << python_program << "\n";
 
-
-    std::wstring python_program_wstring(python_program.begin(), python_program.end());
-    Py_SetProgramName(python_program_wstring.c_str());
+// Given a venv path, add site-packages to sys.path
+void initialize_python_with_venv(const std::string& venv_path)
+{
+    auto site_packages_path_opt = find_site_packages_from_venv(venv_path);
+    if (!site_packages_path_opt)
+        throw std::runtime_error("Error: 'site-packages' directory not found in '" + venv_path);
+    add_python_path(*site_packages_path_opt);
 }
 
 
 int main()
 {
-    use_venv_python();
-
     py::scoped_interpreter guard{};
 
-    std::string cmd = R"(
-import sys
-sys.path.append("THIS_DIR")
-import pybind_native_debug
-    )";
-    cmd = string_replace(cmd, "THIS_DIR", THIS_DIR);
-    py::exec(cmd);
+    //This program reads the Python virtual environment path from a configuration file named
+    //    pybind_native_debug_venv.txt
+    //This file should be placed next to this C++ file, and must contain a single line that specifies the path
+    //to the Python virtual environment.
+    //
+    //Example of 'pybind_native_debug_venv.txt' content:
+    //
+    ///home/me/venv
+
+    // Initialize python path with the virtual environment
+    auto this_dir = std::filesystem::path(__FILE__).parent_path();
+    std::string venv_path = read_venv_path_from_file(this_dir / "pybind_native_debug_venv.txt");
+    initialize_python_with_venv(venv_path);
+
+    // Add path to imgui_bundle bindings (in pip editable development mode)
+    auto bundle_bindings_dir = this_dir.parent_path() / "bindings";
+    add_python_path(bundle_bindings_dir.string());
+
+    // Add path to this dir, so that we can import pybind_native_debug.py
+    add_python_path(this_dir.string());
+
+    // Run pybind_native_debug.py
+    py::exec("import pybind_native_debug");
 }
