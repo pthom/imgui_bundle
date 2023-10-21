@@ -592,12 +592,16 @@ class InfLinesFlags_(enum.Enum):
 class PieChartFlags_(enum.Enum):
     """Flags for PlotPieChart"""
 
-    # ImPlotPieChartFlags_None      = 0,          /* original C++ signature */
+    # ImPlotPieChartFlags_None         = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
-    # ImPlotPieChartFlags_Normalize = 1 << 10     /* original C++ signature */
+    # ImPlotPieChartFlags_Normalize    = 1 << 10,     /* original C++ signature */
     normalize = (
         enum.auto()
     )  # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
+    # ImPlotPieChartFlags_IgnoreHidden = 1 << 11      /* original C++ signature */
+    ignore_hidden = (
+        enum.auto()
+    )  # (= 1 << 11)  # ignore hidden slices when drawing the pie chart (as if they were not there)
 
 class HeatmapFlags_(enum.Enum):
     """Flags for PlotHeatmap"""
@@ -1767,7 +1771,9 @@ def plot_inf_lines(
     """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
     pass
 
+# Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels.
 # IMPLOT_TMP void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, const char* label_fmt="%.1f", double angle0=90, ImPlotPieChartFlags flags=0);    /* original C++ signature */
+@overload
 def plot_pie_chart(
     label_ids: List[str],
     values: np.ndarray,
@@ -1778,7 +1784,6 @@ def plot_pie_chart(
     angle0: float = 90,
     flags: PieChartFlags = 0,
 ) -> None:
-    """Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels."""
     pass
 
 # IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), ImPlotHistogramFlags flags=0);    /* original C++ signature */

@@ -234,7 +234,8 @@ void py_init_module_implot(py::module& m)
 
     py::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", py::arithmetic(), "Flags for PlotPieChart")
         .value("none", ImPlotPieChartFlags_None, "default")
-        .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)");
+        .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
+        .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)");
 
 
     py::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", py::arithmetic(), "Flags for PlotHeatmap")
@@ -1760,9 +1761,7 @@ void py_init_module_implot(py::module& m)
             };
 
             PlotPieChart_adapt_c_string_list_no_count(label_ids, values, x, y, radius, label_fmt, angle0, flags);
-        },
-        py::arg("label_ids"), py::arg("values"), py::arg("x"), py::arg("y"), py::arg("radius"), py::arg("label_fmt") = "%.1f", py::arg("angle0") = 90, py::arg("flags") = 0,
-        "Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels.");
+        },     py::arg("label_ids"), py::arg("values"), py::arg("x"), py::arg("y"), py::arg("radius"), py::arg("label_fmt") = "%.1f", py::arg("angle0") = 90, py::arg("flags") = 0);
 
     m.def("plot_histogram",
         [](const char * label_id, const py::array & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), ImPlotHistogramFlags flags = 0) -> double
