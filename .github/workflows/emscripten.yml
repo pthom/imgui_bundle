@@ -4,11 +4,6 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:
-      - master
-      - main
-      - dev
-      - with_test_engine
 
 
 jobs:
