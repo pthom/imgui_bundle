@@ -1,0 +1,21 @@
+=== Prepare development environment for ImGui Bundle
+
+==== Clone repository / update submodules
+
+==== Create a python virtual environment
+
+==== Compile imgui_bundle
+** Look at options in CMakeLists
+** Enable build of the python library
+** Enable support for ImmVision / OpenCV
+** Compile
+** Demo
+
+==== Install imgui_bundle for python
+** Look at build system: skbuild
+** pip install in standard mode
+** pip install in developer mode
+
+==== Debugging python code
+** From Python
+** Debug C++ calls from python

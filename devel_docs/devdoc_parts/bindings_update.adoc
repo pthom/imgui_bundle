@@ -16,3 +16,6 @@ For example with ImCoolBar, in order to update the bindings for ImCoolBar, one n
 python external/ImCoolBar/bindings/generate_imcoolbar.py
 ----
 (See <<bindings_intro>>)
+
+
+TIP: This link:https://youtu.be/QeBCxU7tn68[video] demonstrates from starts to finish the process of updating imgui and its bindings (17 minutes).
