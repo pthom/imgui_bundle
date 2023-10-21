@@ -11,14 +11,12 @@ project(imgui_bundle VERSION "1.0.0")   # Remember to mirror changes to setup.py
 set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
 list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
 include(imgui_bundle_add_app)
-
 set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
 
 
 ###############################################################################
 # Build Options
 ###############################################################################
-
 # IMGUI_BUNDLE_BUILD_PYTHON: include python support
 # --------------------------------------------------
 # (OFF when building the cpp library; ON by default when using pip install.
