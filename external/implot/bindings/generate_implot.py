@@ -79,9 +79,9 @@ def sandbox():
 
 
 def main():
-    # autogenerate_implot()
-    # autogenerate_implot_internal()
-    sandbox()
+    autogenerate_implot()
+    autogenerate_implot_internal()
+    # sandbox()
 
 
 if __name__ == "__main__":
