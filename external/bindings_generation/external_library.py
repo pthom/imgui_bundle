@@ -14,7 +14,6 @@ class ExternalLibrary:
     custom_git_folder: Optional[str] = None
 
     official_branch: str = "master"
-    official_tag: Optional[str] = None
     official_remote_name: str = "official"
 
     fork_git_url: Optional[str] = None
@@ -26,6 +25,9 @@ class ExternalLibrary:
 
     def base_folder_abs_path(self):
         return external_libraries_dir() + "/" + self.name
+
+    def is_submodule(self):
+        return self.fork_git_url is not None or self.official_git_url is not None
 
     def git_url(self) -> Optional[str]:
         r = self.fork_git_url if self.fork_git_url is not None else self.official_git_url
@@ -91,21 +93,19 @@ class ExternalLibrary:
     def cmd_update_official(self) -> ShellCommands:
         assert self.fork_git_url is None  # if this is a fork, use run_rebase_fork_on_official_changes!
 
-        def official_tag_to_checkout():
-            if self.official_tag is not None:
-                return self.official_tag
-            else:
-                return f"{self.official_branch}"
-
         cmd = f"""
         cd {self.git_folder_abs_path()}
         git fetch {self.official_remote_name}
-        git checkout {official_tag_to_checkout()}        
+        git checkout {self.official_branch}
+        git pull --set-upstream {self.official_remote_name} {self.official_branch}        
         """
+        return ShellCommands(cmd)
 
-        if self.official_tag is None:
-            cmd += f"git pull --set-upstream {self.official_remote_name} {self.official_branch}"
-
+    def cmd_pull(self) -> ShellCommands:
+        cmd = f"""
+        cd {self.git_folder_abs_path()}
+        git pull
+        """
         return ShellCommands(cmd)
 
     def cmd_attach_branches(self) -> ShellCommands:
@@ -171,10 +171,16 @@ class ExternalLibrary:
             - official : points to the official repo
         then attach the submodule to the correct remote branch (set-upstream)
         """
-        if self.fork_git_url is None and self.official_git_url is None:
+        if not self.is_submodule():
             print(f"run_reattach_submodule: skipped {self.name} because it does not appear to be a submodule")
             return
         self.cmd_rm_remotes().run()
         self.cmd_add_remotes().run()
         self.cmd_fetch_all().run()
         self.cmd_attach_branches().run()
+
+    def run_pull(self):
+        if not self.is_submodule():
+            print(f"run_pull: skipped {self.name} because it does not appear to be a submodule")
+            return
+        self.cmd_pull().run()

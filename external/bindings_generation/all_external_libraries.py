@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+import os
 from typing import List
 from bindings_generation.external_library import ExternalLibrary
 
@@ -233,3 +234,17 @@ ALL_LIBS = [
 def published_libs() -> List[ExternalLibrary]:
     r = list(filter(lambda lib: lib.is_published_in_python, ALL_LIBS))
     return r
+
+
+def reattach_all_submodules():
+    for lib in ALL_LIBS:
+        if lib.is_submodule():
+            print(lib.name)
+            lib.run_reattach_submodule()
+
+
+def pull_all_submodules():
+    for lib in ALL_LIBS:
+        if lib.is_submodule():
+            print(lib.name)
+            lib.run_pull()
