@@ -257,3 +257,10 @@ def pull_all_submodules():
         if lib.is_submodule():
             print(lib.name)
             lib.run_pull()
+
+
+def fetch_all_submodules():
+    for lib in ALL_LIBS:
+        if lib.is_submodule():
+            print(lib.name)
+            lib.cmd_fetch_all().run()
