@@ -8,6 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 include::doc_parts/_utils.adoc[]
+
 include::doc_parts/_badges.adoc[]
 
 include::doc_parts/front_matter.adoc[]
