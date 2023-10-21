@@ -52,7 +52,7 @@ def lib_imgui() -> ExternalLibrary:
 
 def lib_imgui_test_engine() -> ExternalLibrary:
     return ExternalLibrary(
-        name="imgui",
+        name="imgui_test_engine",
         official_git_url="https://github.com/ocornut/imgui_test_engine.git",
         official_branch="main",
         fork_git_url="https://github.com/pthom/imgui_test_engine.git",

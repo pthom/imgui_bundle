@@ -4,12 +4,16 @@ from bindings_generation.all_external_libraries import *
 from bindings_generation.paths import repo_dir
 
 
-def sandbox():
+def reattach_all_submodule():
     os.chdir(repo_dir())
     for lib in ALL_LIBS:
-        if lib.fork_git_url is None:
-            print(lib.name)
+        print(lib.name)
+        lib.run_reattach_submodule()
+
+
+def sandbox():
+    pass
 
 
 if __name__ == "__main__":
-    sandbox()
+    reattach_all_submodule()

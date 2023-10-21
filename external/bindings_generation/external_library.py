@@ -19,7 +19,7 @@ class ExternalLibrary:
 
     fork_git_url: Optional[str] = None
     fork_branch: str = "imgui_bundle"
-    fork_remote_name: str = "pthom"
+    fork_remote_name: str = "fork"
 
     is_published_in_python: bool = True
     is_sub_library: bool = False
@@ -31,8 +31,12 @@ class ExternalLibrary:
         r = self.fork_git_url if self.fork_git_url is not None else self.official_git_url
         return r
 
-    def git_branch(self) -> Optional[str]:
+    def attached_git_branch(self) -> Optional[str]:
         r = self.fork_branch if self.fork_git_url is not None else self.official_branch
+        return r
+
+    def attached_git_remote(self) -> Optional[str]:
+        r = self.fork_remote_name if self.fork_git_url is not None else self.official_remote_name
         return r
 
     def bindings_folder_abs_path(self) -> str:
@@ -84,7 +88,7 @@ class ExternalLibrary:
         r = to_snake_case(r)
         return r
 
-    def run_update_official(self) -> ShellCommands:
+    def cmd_update_official(self) -> ShellCommands:
         assert self.fork_git_url is None  # if this is a fork, use run_rebase_fork_on_official_changes!
 
         def official_tag_to_checkout():
@@ -104,7 +108,15 @@ class ExternalLibrary:
 
         return ShellCommands(cmd)
 
-    def run_rm_remotes(self) -> ShellCommands:
+    def cmd_attach_branches(self) -> ShellCommands:
+        cmd = f"""
+            cd {self.git_folder_abs_path()}
+            git checkout -b {self.attached_git_branch()} || git checkout {self.attached_git_branch()}
+            git branch --set-upstream-to={self.attached_git_remote()}/{self.attached_git_branch()}
+        """
+        return ShellCommands(cmd)
+
+    def cmd_rm_remotes(self) -> ShellCommands:
         cmd = f"""
         cd {self.git_folder_abs_path()}
         git remote rm origin
@@ -116,7 +128,7 @@ class ExternalLibrary:
             """
         return ShellCommands(cmd, abort_on_error=False)
 
-    def run_add_remotes(self) -> ShellCommands:
+    def cmd_add_remotes(self) -> ShellCommands:
         cmd = f"""
         cd {self.git_folder_abs_path()}
         git remote add {self.official_remote_name} {self.official_git_url}
@@ -127,7 +139,14 @@ class ExternalLibrary:
             """
         return ShellCommands(cmd)
 
-    def run_rebase_fork_on_official_changes(self) -> ShellCommands:
+    def cmd_fetch_all(self) -> ShellCommands:
+        cmd = f"""
+        cd {self.git_folder_abs_path()}
+        git fetch --all
+        """
+        return ShellCommands(cmd)
+
+    def cmd_rebase_fork_on_official_changes(self) -> ShellCommands:
         assert self.fork_git_url is not None
         cmd = f"""
         cd {self.git_folder_abs_path()}
@@ -141,3 +160,21 @@ class ExternalLibrary:
         echo "if the rebase did some updates, please force push manually those changes to the fork"
         """
         return ShellCommands(cmd)
+
+    def run_reattach_submodule(self):
+        """
+        Will remove existing git remotes
+        Then add two remotes if it is a fork
+            - official : points to the official repo
+            - pthom: points to the forked library
+        Or add one remote if it is not a fork
+            - official : points to the official repo
+        then attach the submodule to the correct remote branch (set-upstream)
+        """
+        if self.fork_git_url is None and self.official_git_url is None:
+            print(f"run_reattach_submodule: skipped {self.name} because it does not appear to be a submodule")
+            return
+        self.cmd_rm_remotes().run()
+        self.cmd_add_remotes().run()
+        self.cmd_fetch_all().run()
+        self.cmd_attach_branches().run()
