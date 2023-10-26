@@ -76,7 +76,14 @@ except ImportError:
 
 setup(
     name="imgui-bundle",
-    classifiers=['Development Status :: 4 - Beta',],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "License :: OSI Approved :: MIT License",
+        "Topic :: Scientific/Engineering",
+        "Typing :: Typed",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+    ],
     version=VERSION,
     author="Pascal Thomet",
     author_email="pthomet@gmail.com",
