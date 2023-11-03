@@ -52,8 +52,10 @@ ScrollFlags = int  #           // -> enum ScrollFlags_        // Flags: for Scro
 SeparatorFlags = int  #        // -> enum SeparatorFlags_     // Flags: for SeparatorEx()
 TextFlags = int  #             // -> enum TextFlags_          // Flags: for TextEx()
 TooltipFlags = int  #          // -> enum TooltipFlags_       // Flags: for BeginTooltipEx()
+TypingSelectFlags = int
+FocusRequestFlags = int
 
-
+TypingSelectFlags_None  = 0
 ImFileHandle = Any
 
 # // Our current column maximum is 64 but we may raise that in the future.
@@ -61,6 +63,7 @@ ImFileHandle = Any
 # typedef ImU8 ImGuiTableDrawChannelIdx;
 TableColumnIdx = int
 TableDrawChannelIdx = int
+SelectionUserData = int
 
 PopupFlags_None = PopupFlags_.none
 NavHighlightFlags_TypeDefault = NavHighlightFlags_.type_default
@@ -682,6 +685,8 @@ class ImBitVector:
     Store 1-bit per value.
     """
 
+    # ImVector<ImU32> Storage;    /* original C++ signature */
+    storage: ImVector_ImU32
     # void            Create(int sz)              { Storage.resize((sz + 31) >> 5); memset(Storage.Data, 0, (size_t)Storage.Size * sizeof(Storage.Data[0])); }    /* original C++ signature */
     def create(self, sz: int) -> None:
         """(private API)"""
@@ -702,9 +707,9 @@ class ImBitVector:
     def clear_bit(self, n: int) -> None:
         """(private API)"""
         pass
-    # ImBitVector();    /* original C++ signature */
-    def __init__(self) -> None:
-        """Auto-generated default constructor"""
+    # ImBitVector(ImVector<ImU32> Storage = ImVector<ImU32>());    /* original C++ signature */
+    def __init__(self, storage: ImVector_ImU32 = ImVector_ImU32()) -> None:
+        """Auto-generated default constructor with named params"""
         pass
 
 class TextIndex:
@@ -712,6 +717,8 @@ class TextIndex:
     Maintain a line index for a text buffer. This is a strong candidate to be moved into the public API.
     """
 
+    # ImVector<int>   LineOffsets;    /* original C++ signature */
+    line_offsets: ImVector_int
     # int             EndOffset = 0;    /* original C++ signature */
     end_offset: int = 0  # Because we don't own text buffer we need to maintain EndOffset (may bake in LineOffsets?)
 
@@ -735,8 +742,10 @@ class TextIndex:
     def append(self, base: str, old_size: int, new_size: int) -> None:
         """(private API)"""
         pass
-    # ImGuiTextIndex(int EndOffset = 0);    /* original C++ signature */
-    def __init__(self, end_offset: int = 0) -> None:
+    # ImGuiTextIndex(ImVector<int> LineOffsets = ImVector<int>(), int EndOffset = 0);    /* original C++ signature */
+    def __init__(
+        self, line_offsets: ImVector_int = ImVector_int(), end_offset: int = 0
+    ) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -779,6 +788,10 @@ class ImDrawListSharedData:
     # ImDrawListFlags InitialFlags;    /* original C++ signature */
     initial_flags: ImDrawListFlags  # Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)
 
+    # ImVector<ImVec2> TempBuffer;    /* original C++ signature */
+    # [Internal] Temp write buffer
+    temp_buffer: ImVector_ImVec2
+
     # [Internal] Lookup tables
     # float           ArcFastRadiusCutoff;    /* original C++ signature */
     arc_fast_radius_cutoff: float  # Cutoff radius after which arc drawing will fallback to slower PathArcTo()
@@ -796,6 +809,8 @@ class ImDrawListSharedData:
         pass
 
 class ImDrawDataBuilder:
+    # ImVector<ImDrawList*>   LayerData1;    /* original C++ signature */
+    layer_data1: ImVector_ImDrawList_ptr
 
     # ImDrawDataBuilder()                     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1198,7 +1213,7 @@ class DataVarInfo:
     count: ImU32  # 1+
     # ImU32           Offset;    /* original C++ signature */
     offset: ImU32  # Offset in parent structure
-    # void* GetVarPtr(void* parent) const { return (void*)((unsigned char*)parent + Offset); }    /* original C++ signature */
+    # void* GetVarPtr(void* parent) const { return (void*)((uchar*)parent + Offset); }    /* original C++ signature */
     def get_var_ptr(self, parent: Any) -> Any:
         """(private API)"""
         pass
@@ -2567,6 +2582,8 @@ class DockNode:
     state: DockNodeState
     # ImGuiDockNode*          ParentNode;    /* original C++ signature */
     parent_node: DockNode
+    # ImVector<ImGuiWindow*>  Windows;    /* original C++ signature */
+    windows: ImVector_Window_ptr  # Note: unordered list! Iterate TabBar->Tabs for user-order.
     # ImGuiTabBar*            TabBar;    /* original C++ signature */
     tab_bar: TabBar
     # ImVec2                  Pos;    /* original C++ signature */
@@ -2828,10 +2845,16 @@ class WindowSettings:
     # ImGuiWindowSettings()       { memset(this, 0, sizeof(*this)); DockOrder = -1; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # char* GetName()             { return (char*)(this + 1); }    /* original C++ signature */
-    def get_name(self) -> char:
+    # [ADAPT_IMGUI_BUNDLE]
+    #                  #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::string GetNameStr()             { return std::string((const char*)(this + 1)); }    /* original C++ signature */
+    def get_name_str(self) -> str:
         """(private API)"""
         pass
+    #                  #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
 
 class SettingsHandler:
     # const char* TypeName;    /* original C++ signature */
@@ -3118,6 +3141,12 @@ class Context:
     input_events_next_event_id: ImU32
 
     # Windows state
+    # ImVector<ImGuiWindow*>  Windows;    /* original C++ signature */
+    windows: ImVector_Window_ptr  # Windows, sorted in display order, back to front
+    # ImVector<ImGuiWindow*>  WindowsFocusOrder;    /* original C++ signature */
+    windows_focus_order: ImVector_Window_ptr  # Root windows, sorted in focus order, back to front.
+    # ImVector<ImGuiWindow*>  WindowsTempSortBuffer;    /* original C++ signature */
+    windows_temp_sort_buffer: ImVector_Window_ptr  # Temporary buffer used in EndFrame() to reorder windows so parents are kept before their child
     # ImGuiStorage            WindowsById;    /* original C++ signature */
     windows_by_id: Storage  # Map window's ImGuiID to ImGuiWindow*
     # int                     WindowsActiveCount;    /* original C++ signature */
@@ -3228,6 +3257,10 @@ class Context:
     debug_show_group_rects: bool
 
     # Shared stacks
+    # ImVector<ImFont*>           FontStack;    /* original C++ signature */
+    font_stack: ImVector_ImFont_ptr  # Stack for PushFont()/PopFont() - inherited by Begin()
+    # ImVector<ImGuiID>           FocusScopeStack;    /* original C++ signature */
+    focus_scope_stack: ImVector_ID  # Stack for PushFocusScope()/PopFocusScope() - inherited by BeginChild(), pushed into by Begin()
 
     # int                     BeginMenuCount;    /* original C++ signature */
     begin_menu_count: int
@@ -3405,6 +3438,10 @@ class Context:
     current_table: Table
     # int                             TablesTempDataStacked;    /* original C++ signature */
     tables_temp_data_stacked: int  # Temporary table data size (because we leave previous instances undestructed, we generally don't use TablesTempData.Size)
+    # ImVector<float>                 TablesLastTimeActive;    /* original C++ signature */
+    tables_last_time_active: ImVector_float  # Last used timestamp of each tables (SOA, for efficient GC)
+    # ImVector<ImDrawChannel>         DrawChannelsTempMergeBuffer;    /* original C++ signature */
+    draw_channels_temp_merge_buffer: ImVector_ImDrawChannel
 
     # Tab bars
     # ImGuiTabBar*                    CurrentTabBar;    /* original C++ signature */
@@ -3479,6 +3516,8 @@ class Context:
     lock_mark_edited: int
     # short                   TooltipOverrideCount;    /* original C++ signature */
     tooltip_override_count: int
+    # ImVector<ImGuiID>       MenusIdSubmittedThisFrame;    /* original C++ signature */
+    menus_id_submitted_this_frame: ImVector_ID  # A list of menu IDs that were rendered at least once
     # ImGuiTypingSelectState  TypingSelectState;    /* original C++ signature */
     typing_select_state: TypingSelectState  # State for GetTypingSelectRequest()
 
@@ -3828,6 +3867,8 @@ class WindowTempData:
     tree_depth: int  # Current tree depth.
     # ImU32                   TreeJumpToParentOnPopMask;    /* original C++ signature */
     tree_jump_to_parent_on_pop_mask: ImU32  # Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.
+    # ImVector<ImGuiWindow*>  ChildWindows;    /* original C++ signature */
+    child_windows: ImVector_Window_ptr
     # ImGuiStorage*           StateStorage;    /* original C++ signature */
     state_storage: Storage  # Current persistent per-window storage (store e.g. tree node open/close state)
     # ImGuiOldColumns*        CurrentColumns;    /* original C++ signature */
@@ -3845,7 +3886,11 @@ class WindowTempData:
     item_width: float  # Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).
     # float                   TextWrapPos;    /* original C++ signature */
     text_wrap_pos: float  # Current text wrap pos.
-    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float());    /* original C++ signature */
+    # ImVector<float>         ItemWidthStack;    /* original C++ signature */
+    item_width_stack: ImVector_float  # Store item widths to restore (attention: .back() is not == ItemWidth)
+    # ImVector<float>         TextWrapPosStack;    /* original C++ signature */
+    text_wrap_pos_stack: ImVector_float  # Store text wrap pos to restore (attention: .back() is not == TextWrapPos)
+    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
     def __init__(
         self,
         cursor_pos: ImVec2 = ImVec2(),
@@ -3874,11 +3919,14 @@ class WindowTempData:
         menu_columns: MenuColumns = MenuColumns(),
         tree_depth: int = int(),
         tree_jump_to_parent_on_pop_mask: ImU32 = ImU32(),
+        child_windows: ImVector_Window_ptr = ImVector_Window_ptr(),
         current_table_idx: int = int(),
         layout_type: LayoutType = LayoutType(),
         parent_layout_type: LayoutType = LayoutType(),
         item_width: float = float(),
         text_wrap_pos: float = float(),
+        item_width_stack: ImVector_float = ImVector_float(),
+        text_wrap_pos_stack: ImVector_float = ImVector_float(),
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -4017,6 +4065,8 @@ class Window:
     # ImVec2                  SetWindowPosPivot;    /* original C++ signature */
     set_window_pos_pivot: ImVec2  # store window pivot for positioning. ImVec2(0, 0) when positioning from top-left corner; ImVec2(0.5, 0.5) for centering; ImVec2(1, 1) for bottom right.
 
+    # ImVector<ImGuiID>       IDStack;    /* original C++ signature */
+    id_stack: ImVector_ID  # ID stack. ID are hashes seeded with the value at the top of the stack. (In theory this should be in the TempData structure)
     # ImGuiWindowTempData     DC;    /* original C++ signature */
     dc: WindowTempData  # Temporary per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the "DC" variable name.
 
@@ -4891,7 +4941,7 @@ def get_foreground_draw_list(window: Window) -> ImDrawList:
 
 # IMGUI_API void          AddDrawListToDrawDataEx(ImDrawData* draw_data, ImVector<ImDrawList*>* out_list, ImDrawList* draw_list);    /* original C++ signature */
 def add_draw_list_to_draw_data_ex(
-    draw_data: ImDrawData, out_list: List[ImDrawList], draw_list: ImDrawList
+    draw_data: ImDrawData, out_list: ImVector_ImDrawList_ptr, draw_list: ImDrawList
 ) -> None:
     pass
 
@@ -5497,10 +5547,6 @@ def get_key_data(key: Key) -> KeyData:
     """(private API)"""
     pass
 
-# IMGUI_API void          GetKeyChordName(ImGuiKeyChord key_chord, char* out_buf, int out_buf_size);    /* original C++ signature */
-def get_key_chord_name(key_chord: KeyChord, out_buf: char, out_buf_size: int) -> None:
-    pass
-
 # inline ImGuiKey         MouseButtonToKey(ImGuiMouseButton button)                   { IM_ASSERT(button >= 0 && button < ImGuiMouseButton_COUNT); return (ImGuiKey)(ImGuiKey_MouseLeft + button); }    /* original C++ signature */
 def mouse_button_to_key(button: MouseButton) -> Key:
     """(private API)"""
@@ -5847,15 +5893,9 @@ def dock_builder_set_node_pos(node_id: ID, pos: ImVec2) -> None:
 def dock_builder_set_node_size(node_id: ID, size: ImVec2) -> None:
     pass
 
-# IMGUI_API void          DockBuilderCopyDockSpace(ImGuiID src_dockspace_id, ImGuiID dst_dockspace_id, ImVector<const char*>* in_window_remap_pairs);    /* original C++ signature */
-def dock_builder_copy_dock_space(
-    src_dockspace_id: ID, dst_dockspace_id: ID, in_window_remap_pairs: List[str]
-) -> None:
-    pass
-
 # IMGUI_API void          DockBuilderCopyNode(ImGuiID src_node_id, ImGuiID dst_node_id, ImVector<ImGuiID>* out_node_remap_pairs);    /* original C++ signature */
 def dock_builder_copy_node(
-    src_node_id: ID, dst_node_id: ID, out_node_remap_pairs: List[ID]
+    src_node_id: ID, dst_node_id: ID, out_node_remap_pairs: ImVector_ID
 ) -> None:
     pass
 
@@ -6838,7 +6878,7 @@ def debug_node_window_settings(settings: WindowSettings) -> None:
     pass
 
 # IMGUI_API void          DebugNodeWindowsList(ImVector<ImGuiWindow*>* windows, const char* label);    /* original C++ signature */
-def debug_node_windows_list(windows: List[Window], label: str) -> None:
+def debug_node_windows_list(windows: ImVector_Window_ptr, label: str) -> None:
     pass
 
 # IMGUI_API void          DebugNodeViewport(ImGuiViewportP* viewport);    /* original C++ signature */

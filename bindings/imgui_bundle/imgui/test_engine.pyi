@@ -330,14 +330,6 @@ def get_result(
 ) -> Tuple[int, int]:
     pass
 
-# IMGUI_API void                ImGuiTestEngine_GetTestList(ImGuiTestEngine* engine, ImVector<ImGuiTest*>* out_tests);    /* original C++ signature */
-def get_test_list(engine: TestEngine, out_tests: List[Test]) -> None:
-    pass
-
-# IMGUI_API void                ImGuiTestEngine_GetTestQueue(ImGuiTestEngine* engine, ImVector<ImGuiTestRunTask>* out_tests);    /* original C++ signature */
-def get_test_queue(engine: TestEngine, out_tests: List[TestRunTask]) -> None:
-    pass
-
 # Functions: Crash Handling
 # Ensure past test results are properly exported even if application crash during a test.
 # IMGUI_API void                ImGuiTestEngine_InstallDefaultCrashHandler();         /* original C++ signature */
@@ -1080,6 +1072,8 @@ class TestContext:
     input_mode: InputSource = (
         InputSource_Mouse  # Prefer interacting with mouse/keyboard/gamepad
     )
+    # ImVector<ImGuiWindow*>  ForeignWindowsToHide;    /* original C++ signature */
+    foreign_windows_to_hide: ImVector_Window_ptr
     # ImGuiTestItemInfo       DummyItemInfoNull;    /* original C++ signature */
     dummy_item_info_null: TestItemInfo  # Storage for ItemInfoNull()
     # bool                    CachedLinesPrintedToTTY = false;    /* original C++ signature */
@@ -1907,7 +1901,7 @@ class TestContext:
     def foreign_windows_unhide_all(self) -> None:
         """(private API)"""
         pass
-    # ImGuiTestContext(ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false);    /* original C++ signature */
+    # ImGuiTestContext(ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImVector<ImGuiWindow*> ForeignWindowsToHide = ImVector<ImGuiWindow*>(), ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false);    /* original C++ signature */
     def __init__(
         self,
         generic_vars: TestGenericVars = TestGenericVars(),
@@ -1929,6 +1923,7 @@ class TestContext:
         ref_id: ID = 0,
         ref_window_id: ID = 0,
         input_mode: InputSource = InputSource_Mouse,
+        foreign_windows_to_hide: ImVector_Window_ptr = ImVector_Window_ptr(),
         dummy_item_info_null: TestItemInfo = TestItemInfo(),
         cached_lines_printed_to_tty: bool = False,
     ) -> None:

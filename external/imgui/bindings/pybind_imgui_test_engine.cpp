@@ -223,12 +223,6 @@ void py_init_module_imgui_test_engine(py::module& m)
             return ImGuiTestEngine_GetResult_adapt_modifiable_immutable_to_return(engine, count_tested, success_count);
         },     py::arg("engine"), py::arg("count_tested"), py::arg("success_count"));
 
-    m.def("get_test_list",
-        ImGuiTestEngine_GetTestList, py::arg("engine"), py::arg("out_tests"));
-
-    m.def("get_test_queue",
-        ImGuiTestEngine_GetTestQueue, py::arg("engine"), py::arg("out_tests"));
-
     m.def("install_default_crash_handler",
         ImGuiTestEngine_InstallDefaultCrashHandler, "Install default crash handler (if you don't have one)");
 
@@ -612,7 +606,7 @@ void py_init_module_imgui_test_engine(py::module& m)
         py::class_<ImGuiTestContext>
             (m, "TestContext", "")
         .def(py::init<>([](
-        ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false)
+        ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImVector<ImGuiWindow*> ForeignWindowsToHide = ImVector<ImGuiWindow*>(), ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false)
         {
             auto r = std::make_unique<ImGuiTestContext>();
             r->GenericVars = GenericVars;
@@ -634,11 +628,12 @@ void py_init_module_imgui_test_engine(py::module& m)
             r->RefID = RefID;
             r->RefWindowID = RefWindowID;
             r->InputMode = InputMode;
+            r->ForeignWindowsToHide = ForeignWindowsToHide;
             r->DummyItemInfoNull = DummyItemInfoNull;
             r->CachedLinesPrintedToTTY = CachedLinesPrintedToTTY;
             return r;
         })
-        , py::arg("generic_vars") = ImGuiTestGenericVars(), py::arg("op_flags") = ImGuiTestOpFlags_None, py::arg("perf_stress_amount") = 0, py::arg("frame_count") = 0, py::arg("first_test_frame_count") = 0, py::arg("first_gui_frame") = false, py::arg("has_dock") = false, py::arg("run_flags") = ImGuiTestRunFlags_None, py::arg("active_func") = ImGuiTestActiveFunc_None, py::arg("running_time") = 0.0, py::arg("action_depth") = 0, py::arg("capture_counter") = 0, py::arg("error_counter") = 0, py::arg("abort") = false, py::arg("perf_ref_dt") = -1.0, py::arg("perf_iterations") = 400, py::arg("ref_id") = 0, py::arg("ref_window_id") = 0, py::arg("input_mode") = ImGuiInputSource_Mouse, py::arg("dummy_item_info_null") = ImGuiTestItemInfo(), py::arg("cached_lines_printed_to_tty") = false
+        , py::arg("generic_vars") = ImGuiTestGenericVars(), py::arg("op_flags") = ImGuiTestOpFlags_None, py::arg("perf_stress_amount") = 0, py::arg("frame_count") = 0, py::arg("first_test_frame_count") = 0, py::arg("first_gui_frame") = false, py::arg("has_dock") = false, py::arg("run_flags") = ImGuiTestRunFlags_None, py::arg("active_func") = ImGuiTestActiveFunc_None, py::arg("running_time") = 0.0, py::arg("action_depth") = 0, py::arg("capture_counter") = 0, py::arg("error_counter") = 0, py::arg("abort") = false, py::arg("perf_ref_dt") = -1.0, py::arg("perf_iterations") = 400, py::arg("ref_id") = 0, py::arg("ref_window_id") = 0, py::arg("input_mode") = ImGuiInputSource_Mouse, py::arg("foreign_windows_to_hide") = ImVector<ImGuiWindow*>(), py::arg("dummy_item_info_null") = ImGuiTestItemInfo(), py::arg("cached_lines_printed_to_tty") = false
         )
         .def_readwrite("generic_vars", &ImGuiTestContext::GenericVars, "")
         .def_readwrite("user_vars", &ImGuiTestContext::UserVars, "Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().")
@@ -665,6 +660,7 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("ref_id", &ImGuiTestContext::RefID, "Reference ID over which all named references are based")
         .def_readwrite("ref_window_id", &ImGuiTestContext::RefWindowID, "ID of a window that contains RefID item")
         .def_readwrite("input_mode", &ImGuiTestContext::InputMode, "Prefer interacting with mouse/keyboard/gamepad")
+        .def_readwrite("foreign_windows_to_hide", &ImGuiTestContext::ForeignWindowsToHide, "")
         .def_readwrite("dummy_item_info_null", &ImGuiTestContext::DummyItemInfoNull, "Storage for ItemInfoNull()")
         .def_readwrite("cached_lines_printed_to_tty", &ImGuiTestContext::CachedLinesPrintedToTTY, "")
         .def("finish",
