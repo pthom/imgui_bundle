@@ -15,7 +15,7 @@ from . import test_engine as test_engine
 from .internal import Context, ImDrawListSharedData, ImFontBuilderIO, ImRect, ColorMod, GroupData, PopupData, \
     ViewportP, InputEvent, TableInstanceData, TableTempData, NavTreeNodeData, PtrOrIndex, SettingsHandler, \
     ShrinkWidthItem, StackLevelInfo, TabItem, KeyRoutingData, ListClipperData, ListClipperRange, OldColumnData, \
-    OldColumns, StyleMod
+    OldColumns, StyleMod, WindowStackData
 
 VoidPtr = Any
 
