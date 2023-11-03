@@ -115,11 +115,7 @@ endif()
 
 # Automation test (run app in CI)
 # ---------------------------------
-if(PROJECT_IS_TOP_LEVEL)
-    option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" ON)
-else()
-    option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
-endif()
+option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 
 ###############################################################################
 # Main

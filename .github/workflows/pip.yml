@@ -16,10 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-latest, ubuntu-latest]
-        #        platform: [windows-latest, macos-latest, ubuntu-latest]
-        # "pypy-3.9" was removed from python-version because numpy install fails
-        python-version: ["3.10"]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -48,30 +46,25 @@ jobs:
         # Extract the archive using 7-zip which is preinstalled on the GitHub Actions Windows runner
         7z x mesa3d-23.1.9-release-msvc.7z -omesa3d
         
-        # Optionally move/copy the required DLLs to the directory of your executable
-        # For this example, I'll assume your executable is in '.github/ci_automation_tests/build'
-        # Copy the opengl32.dll to your executable directory
-        cp mesa3d/x64/*.* .github/ci_automation_tests/
+        # copy the mesa DLLs to the python directory
+        python_dir=$(dirname $(which python))
+        cp mesa3d/x64/*.* $python_dir
 
-    - name: Setup interactive tmate session
-      uses: mxschmitt/action-tmate@v3
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
       run: |
-        # Optional: set IMMVISION_FETCH_OPENCV to OFF to disable OpenCV/Immvision
-        # ------------------------------------------------------------------------------------
-        # export IMMVISION_FETCH_OPENCV=OFF
-
-        #
-        # Build pip
-        # ------------------------------------------------------------------------------------
+        # optionally: export IMMVISION_FETCH_OPENCV=OFF
         pip install --verbose .[test]
 
     - name: pytest
       run: pytest
 
-    - name: CI Automation python test
+    - name: CI Automation python test (windows and ubuntu)
+      shell: bash
+      if: ${{ matrix.platform == 'ubuntu-latest' || matrix.platform == 'windows-latest' }}
       run: |
         cd .github/ci_automation_tests
         python ci_automation_test_app_bundle.py
