@@ -6497,6 +6497,10 @@ void py_init_module_imgui_main(py::module& m)
     // doesn't find the latter.
     pyClassImFontAtlas.def("get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
+
+    // VERTEX_SIZE, VERTEX_BUFFER_POS_OFFSET, VERTEX_BUFFER_UV_OFFSET, etc.
+    // Utilities to facilitate rendering in python backends: they provide buffer offsets info
+    //
     //    def _py_vertex_buffer_vertex_size():
     //    return sizeof(cimgui.ImDrawVert)
     m.attr("VERTEX_SIZE") = sizeof(ImDrawVert);
@@ -6513,5 +6517,4 @@ void py_init_module_imgui_main(py::module& m)
     //    def _py_index_buffer_index_size():
     //    return sizeof(cimgui.ImDrawIdx)
     m.attr("INDEX_SIZE") = sizeof(ImDrawIdx);
-
 }

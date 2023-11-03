@@ -282,6 +282,14 @@ StoragePair = Any
 
 PayloadId = int
 
+# VERTEX_SIZE, VERTEX_BUFFER_POS_OFFSET, VERTEX_BUFFER_UV_OFFSET, etc.
+# Utilities to facilitate rendering in python backends: they provide buffer offsets info
+VERTEX_SIZE: int
+VERTEX_BUFFER_POS_OFFSET: int
+VERTEX_BUFFER_UV_OFFSET: int
+VERTEX_BUFFER_COL_OFFSET: int
+INDEX_SIZE: int
+
 
 # Disable black formatter
 # fmt: off
