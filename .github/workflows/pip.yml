@@ -19,7 +19,7 @@ jobs:
         platform: [windows-latest, ubuntu-latest]
         #        platform: [windows-latest, macos-latest, ubuntu-latest]
         # "pypy-3.9" was removed from python-version because numpy install fails
-        python-version: ["3.12"]
+        python-version: ["3.10"]
 
     steps:
     - uses: actions/checkout@v4
@@ -53,8 +53,8 @@ jobs:
         # Copy the opengl32.dll to your executable directory
         cp mesa3d/x64/*.* .github/ci_automation_tests/
 
-    #    - name: Setup interactive tmate session
-    #      uses: mxschmitt/action-tmate@v3
+    - name: Setup interactive tmate session
+      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
