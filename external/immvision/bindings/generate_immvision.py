@@ -24,6 +24,20 @@ def main():
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
     options.python_run_black_formatter = True
 
+    def post_process_stub(code: str):
+        r = (code
+             .replace(": cv.Mat", ": Mat")
+             .replace("cv.Point2d", "Point2d")
+             .replace(" = cv.Point2(", " = (")
+             .replace(" = cv.Point(", " = (")
+             .replace(": cv.Point", ": Point")
+             .replace("List[cv.Point]", "List[Point]")
+             .replace("List[cv.Point]", "List[Point]")
+             .replace("cv.Size", "Size")
+             )
+        return r
+    options.postprocess_stub_function = post_process_stub
+
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immvision.h")
 

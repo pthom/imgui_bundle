@@ -31,7 +31,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     """Our image processing pipeline"""
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_float = gray / 255.0
-    blurred = cv2.GaussianBlur(img_float, (0, 0), params.blur_size, params.blur_size)
+    blurred = cv2.GaussianBlur(img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size)
 
     good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
 

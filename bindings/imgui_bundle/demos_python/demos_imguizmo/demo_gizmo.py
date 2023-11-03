@@ -183,9 +183,9 @@ def EditTransform(
     viewManipulateTop = 0.0
 
     if useWindow:
-        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing)
-        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing)
-        imgui.push_style_color(imgui.Col_.window_bg, imgui.ImColor(0.35, 0.3, 0.3).value)
+        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing.value)
+        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing.value)
+        imgui.push_style_color(imgui.Col_.window_bg.value, imgui.ImColor(0.35, 0.3, 0.3).value)
         imgui.begin("Gizmo", None, statics.gizmoWindowFlags)
         gizmo.set_drawlist()
         windowWidth = imgui.get_window_width()

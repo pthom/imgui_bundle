@@ -122,7 +122,6 @@ Col = int               # -> enum Col_             # Enum: A color identifier fo
 Cond = int              # -> enum Cond_            # Enum: A condition for many Set*() functions
 DataType = int          # -> enum DataType_        # Enum: A primary data type
 Dir = int               # -> enum Dir_             # Enum: A cardinal direction
-Key = int               # -> enum Key_             # Enum: A key identifier
 NavInput = int          # -> enum NavInput_        # Enum: An input identifier for navigation
 MouseButton = int       # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
 MouseCursor = int       # -> enum MouseCursor_     # Enum: A mouse cursor identifier

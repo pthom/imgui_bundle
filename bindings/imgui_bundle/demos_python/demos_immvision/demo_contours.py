@@ -15,7 +15,7 @@ class BlurData:
 
     def __init__(self, image_file: str):
         img = cv2.imread(image_file)
-        img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)
+        img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)  # type: ignore
         self.src_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.update_contours()
 

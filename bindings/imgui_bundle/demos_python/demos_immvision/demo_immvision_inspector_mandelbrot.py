@@ -57,7 +57,7 @@ def mandelbrot(
                     break
 
             if not escaped:
-                color = 0.0
+                color = 0
 
             result[iy, ix] = color
 

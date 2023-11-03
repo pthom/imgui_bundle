@@ -15,8 +15,8 @@ def mul_scalar_imvec4(a: ImVec4, k: float) -> ImVec4:
     return ImVec4(a.x * k, a.y * k, a.z * k, a.w * k)
 
 
-ImVec4.__add__ = add_imvec4  # monkey patching
-ImVec4.__mul__ = mul_scalar_imvec4
+ImVec4.__add__ = add_imvec4  # type: ignore # monkey patching
+ImVec4.__mul__ = mul_scalar_imvec4  # type: ignore # monkey patching
 
 
 class MyGradient(imguizmo.im_gradient.DelegateStl):
@@ -61,8 +61,8 @@ class MyGradient(imguizmo.im_gradient.DelegateStl):
         interval_length = v1.w - v0.w
         k0 = (t - v0.w) / interval_length
         k1 = 1.0 - k0
-        r = v0 * k0 + v1 * k1
-        return r
+        r = v0 * k0 + v1 * k1  # type: ignore
+        return r  # type: ignore
 
     def add_point(self, value: ImVec4) -> None:
         self.points.append(value)
