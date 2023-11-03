@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from imgui.integrations.glfw import GlfwRenderer
-from testwindow import show_test_window
+from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl
+from imgui_bundle import imgui
 import glfw
-import imgui
 import sys
 
 
@@ -39,12 +38,11 @@ def main():
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
                 imgui.text("Bar")
-                imgui.text_ansi("B\033[31marA\033[mnsi ")
-                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0)
-                imgui.extra.text_ansi_colored("Eggs", 0.2, 1.0, 0.0)
+                if imgui.button("Hello"):
+                    print("World")
             imgui.end()
 
-        show_test_window()
+        # show_test_window()
         # imgui.show_test_window()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)

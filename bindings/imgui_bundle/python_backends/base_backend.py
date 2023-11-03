@@ -1,4 +1,4 @@
-import imgui
+from imgui_bundle import imgui
 
 
 class BaseOpenGLRenderer(object):

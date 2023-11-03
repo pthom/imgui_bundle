@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import glfw
-import imgui
+import glfw  # type: ignore
+from imgui_bundle import imgui
 
-from . import compute_fb_scale
-from .opengl import ProgrammablePipelineRenderer
+from imgui_bundle.python_backends import compute_fb_scale
+from .opengl_backend import ProgrammablePipelineRenderer
+
 
 class GlfwRenderer(ProgrammablePipelineRenderer):
     def __init__(self, window, attach_callbacks:bool=True):
@@ -20,10 +21,10 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
-        self.io.get_clipboard_text_fn = self._get_clipboard_text
-        self.io.set_clipboard_text_fn = self._set_clipboard_text
+        # self.io.get_clipboard_text_fn = self._get_clipboard_text
+        # self.io.set_clipboard_text_fn = self._set_clipboard_text
 
-        self._map_keys()
+        # self._map_keys()
         self._gui_time = None
 
     def _get_clipboard_text(self):
@@ -32,31 +33,31 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def _set_clipboard_text(self, text):
         glfw.set_clipboard_string(self.window, text)
 
-    def _map_keys(self):
-        key_map = self.io.key_map
-
-        key_map[imgui.KEY_TAB] = glfw.KEY_TAB
-        key_map[imgui.KEY_LEFT_ARROW] = glfw.KEY_LEFT
-        key_map[imgui.KEY_RIGHT_ARROW] = glfw.KEY_RIGHT
-        key_map[imgui.KEY_UP_ARROW] = glfw.KEY_UP
-        key_map[imgui.KEY_DOWN_ARROW] = glfw.KEY_DOWN
-        key_map[imgui.KEY_PAGE_UP] = glfw.KEY_PAGE_UP
-        key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
-        key_map[imgui.KEY_HOME] = glfw.KEY_HOME
-        key_map[imgui.KEY_END] = glfw.KEY_END
-        key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
-        key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
-        key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
-        key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
-        key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
-        key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
-        key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
-        key_map[imgui.KEY_A] = glfw.KEY_A
-        key_map[imgui.KEY_C] = glfw.KEY_C
-        key_map[imgui.KEY_V] = glfw.KEY_V
-        key_map[imgui.KEY_X] = glfw.KEY_X
-        key_map[imgui.KEY_Y] = glfw.KEY_Y
-        key_map[imgui.KEY_Z] = glfw.KEY_Z
+    # def _map_keys(self):
+    #     key_map = self.io.key_map
+    #
+    #     key_map[imgui.KEY_TAB] = glfw.KEY_TAB
+    #     key_map[imgui.KEY_LEFT_ARROW] = glfw.KEY_LEFT
+    #     key_map[imgui.KEY_RIGHT_ARROW] = glfw.KEY_RIGHT
+    #     key_map[imgui.KEY_UP_ARROW] = glfw.KEY_UP
+    #     key_map[imgui.KEY_DOWN_ARROW] = glfw.KEY_DOWN
+    #     key_map[imgui.KEY_PAGE_UP] = glfw.KEY_PAGE_UP
+    #     key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
+    #     key_map[imgui.KEY_HOME] = glfw.KEY_HOME
+    #     key_map[imgui.KEY_END] = glfw.KEY_END
+    #     key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
+    #     key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
+    #     key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
+    #     key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
+    #     key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
+    #     key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
+    #     key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
+    #     key_map[imgui.KEY_A] = glfw.KEY_A
+    #     key_map[imgui.KEY_C] = glfw.KEY_C
+    #     key_map[imgui.KEY_V] = glfw.KEY_V
+    #     key_map[imgui.KEY_X] = glfw.KEY_X
+    #     key_map[imgui.KEY_Y] = glfw.KEY_Y
+    #     key_map[imgui.KEY_Z] = glfw.KEY_Z
 
     def keyboard_callback(self, window, key, scancode, action, mods):
         # perf: local for faster access
@@ -110,7 +111,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         fb_size = glfw.get_framebuffer_size(self.window)
 
         io.display_size = window_size
-        io.display_fb_scale = compute_fb_scale(window_size, fb_size)
+        io.display_framebuffer_scale = compute_fb_scale(window_size, fb_size)
         io.delta_time = 1.0/60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
