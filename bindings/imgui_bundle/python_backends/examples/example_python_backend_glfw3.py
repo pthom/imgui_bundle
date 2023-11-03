@@ -8,6 +8,13 @@ import glfw
 import sys
 
 
+class AppState:
+    text: str = """Hello, World\nLorem ipsum, etc.\netc."""
+
+
+app_state = AppState()
+
+
 def main():
     imgui.create_context()
     window = impl_glfw_init()
@@ -35,15 +42,14 @@ def main():
             imgui.end_main_menu_bar()
 
         if show_custom_window:
+            imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
-                imgui.text("Bar")
+                imgui.text("Example Text")
                 if imgui.button("Hello"):
                     print("World")
+                _, app_state.text = imgui.input_text_multiline("Edit", app_state.text, imgui.ImVec2(200, 200))
             imgui.end()
-
-        # show_test_window()
-        # imgui.show_test_window()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)

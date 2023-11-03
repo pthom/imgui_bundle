@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+from typing import Dict
 import glfw  # type: ignore
 from imgui_bundle import imgui
 
@@ -8,7 +9,12 @@ from imgui_bundle.python_backends import compute_fb_scale
 from .opengl_backend import ProgrammablePipelineRenderer
 
 
+GlfwKey = int
+
+
 class GlfwRenderer(ProgrammablePipelineRenderer):
+    key_map: Dict[GlfwKey, imgui.Key]
+
     def __init__(self, window, attach_callbacks:bool=True):
         super(GlfwRenderer, self).__init__()
         self.window = window
@@ -24,7 +30,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # self.io.get_clipboard_text_fn = self._get_clipboard_text
         # self.io.set_clipboard_text_fn = self._set_clipboard_text
 
-        # self._map_keys()
+        self._map_keys()
         self._gui_time = None
 
     def _get_clipboard_text(self):
@@ -33,60 +39,56 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
     def _set_clipboard_text(self, text):
         glfw.set_clipboard_string(self.window, text)
 
-    # def _map_keys(self):
-    #     key_map = self.io.key_map
-    #
-    #     key_map[imgui.KEY_TAB] = glfw.KEY_TAB
-    #     key_map[imgui.KEY_LEFT_ARROW] = glfw.KEY_LEFT
-    #     key_map[imgui.KEY_RIGHT_ARROW] = glfw.KEY_RIGHT
-    #     key_map[imgui.KEY_UP_ARROW] = glfw.KEY_UP
-    #     key_map[imgui.KEY_DOWN_ARROW] = glfw.KEY_DOWN
-    #     key_map[imgui.KEY_PAGE_UP] = glfw.KEY_PAGE_UP
-    #     key_map[imgui.KEY_PAGE_DOWN] = glfw.KEY_PAGE_DOWN
-    #     key_map[imgui.KEY_HOME] = glfw.KEY_HOME
-    #     key_map[imgui.KEY_END] = glfw.KEY_END
-    #     key_map[imgui.KEY_INSERT] = glfw.KEY_INSERT
-    #     key_map[imgui.KEY_DELETE] = glfw.KEY_DELETE
-    #     key_map[imgui.KEY_BACKSPACE] = glfw.KEY_BACKSPACE
-    #     key_map[imgui.KEY_SPACE] = glfw.KEY_SPACE
-    #     key_map[imgui.KEY_ENTER] = glfw.KEY_ENTER
-    #     key_map[imgui.KEY_ESCAPE] = glfw.KEY_ESCAPE
-    #     key_map[imgui.KEY_PAD_ENTER] = glfw.KEY_KP_ENTER
-    #     key_map[imgui.KEY_A] = glfw.KEY_A
-    #     key_map[imgui.KEY_C] = glfw.KEY_C
-    #     key_map[imgui.KEY_V] = glfw.KEY_V
-    #     key_map[imgui.KEY_X] = glfw.KEY_X
-    #     key_map[imgui.KEY_Y] = glfw.KEY_Y
-    #     key_map[imgui.KEY_Z] = glfw.KEY_Z
+    def _map_keys(self):
+        self.key_map = {}
+        key_map = self.key_map
+        key_map[glfw.KEY_LEFT] = imgui.Key.left_arrow
+        key_map[glfw.KEY_RIGHT] = imgui.Key.right_arrow
 
-    def keyboard_callback(self, window, key, scancode, action, mods):
+        key_map[glfw.KEY_LEFT_CONTROL] = imgui.Key.left_ctrl
+        key_map[glfw.KEY_RIGHT_CONTROL] = imgui.Key.right_ctrl
+        key_map[glfw.KEY_LEFT_SHIFT] = imgui.Key.left_shift
+        key_map[glfw.KEY_RIGHT_SHIFT] = imgui.Key.right_shift
+        key_map[glfw.KEY_LEFT_ALT] = imgui.Key.left_alt
+        key_map[glfw.KEY_RIGHT_ALT] = imgui.Key.right_alt
+        key_map[glfw.KEY_LEFT_SUPER] = imgui.Key.left_super
+        key_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.right_super
+
+        key_map[glfw.KEY_TAB] = imgui.Key.tab
+        key_map[glfw.KEY_LEFT] = imgui.Key.left_arrow
+        key_map[glfw.KEY_RIGHT] = imgui.Key.right_arrow
+        key_map[glfw.KEY_UP] = imgui.Key.up_arrow
+        key_map[glfw.KEY_DOWN] = imgui.Key.down_arrow
+        key_map[glfw.KEY_PAGE_UP] = imgui.Key.page_up
+        key_map[glfw.KEY_PAGE_DOWN] = imgui.Key.page_down
+        key_map[glfw.KEY_HOME] = imgui.Key.home
+        key_map[glfw.KEY_END] = imgui.Key.end
+        key_map[glfw.KEY_INSERT] = imgui.Key.insert
+        key_map[glfw.KEY_DELETE] = imgui.Key.delete
+        key_map[glfw.KEY_BACKSPACE] = imgui.Key.backspace
+        key_map[glfw.KEY_SPACE] = imgui.Key.space
+        key_map[glfw.KEY_ENTER] = imgui.Key.enter
+        key_map[glfw.KEY_ESCAPE] = imgui.Key.escape
+        key_map[glfw.KEY_KP_ENTER] = imgui.Key.keypad_enter
+        key_map[glfw.KEY_A] = imgui.Key.a
+        key_map[glfw.KEY_C] = imgui.Key.c
+        key_map[glfw.KEY_V] = imgui.Key.v
+        key_map[glfw.KEY_X] = imgui.Key.x
+        key_map[glfw.KEY_Y] = imgui.Key.y
+        key_map[glfw.KEY_Z] = imgui.Key.z
+
+    def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
         # perf: local for faster access
         io = self.io
 
+        if glfw_key not in self.key_map:
+            return
+        imgui_key = self.key_map[glfw_key]
+
         if action == glfw.PRESS:
-            io.keys_down[key] = True
+            io.add_key_event(imgui_key, down=True)
         elif action == glfw.RELEASE:
-            io.keys_down[key] = False
-
-        io.key_ctrl = (
-            io.keys_down[glfw.KEY_LEFT_CONTROL] or
-            io.keys_down[glfw.KEY_RIGHT_CONTROL]
-        )
-
-        io.key_alt = (
-            io.keys_down[glfw.KEY_LEFT_ALT] or
-            io.keys_down[glfw.KEY_RIGHT_ALT]
-        )
-
-        io.key_shift = (
-            io.keys_down[glfw.KEY_LEFT_SHIFT] or
-            io.keys_down[glfw.KEY_RIGHT_SHIFT]
-        )
-
-        io.key_super = (
-            io.keys_down[glfw.KEY_LEFT_SUPER] or
-            io.keys_down[glfw.KEY_RIGHT_SUPER]
-        )
+            io.add_key_event(imgui_key, down=False)
 
     def char_callback(self, window, char):
         io = imgui.get_io()
