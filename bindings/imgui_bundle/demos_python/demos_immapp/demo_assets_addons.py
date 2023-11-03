@@ -101,7 +101,7 @@ def demo_plot(app_state: AppState):
     plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
 
     if implot.begin_plot("Pie Chart", plot_size):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
         implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
         implot.end_plot()
 
@@ -211,7 +211,7 @@ def get_doc(which_doc: str) -> str:
     return docs[which_doc]
 
 
-@immapp.static(is_doc_visible={})
+@immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
 def show_doc(which_doc):
     # Access the 'static' variable
     is_doc_visible = show_doc.is_doc_visible

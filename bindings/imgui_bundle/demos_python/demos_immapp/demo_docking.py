@@ -38,11 +38,13 @@ class AppState:
     rocket_progress: float
     my_app_settings: MyAppSettings
     rocket_state: RocketState
+    rocket_launch_time: float
 
     def __init__(self):
         self.f = 0
         self.counter = 0
         self.rocket_progress = 0.0
+        self.rocket_launch_time = 0.0
         self.my_app_settings = MyAppSettings()
         self.rocket_state = RocketState.Init
 
@@ -395,7 +397,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # additional_window is initially not visible (and not mentioned in the view menu).
     # it will be opened only if the user chooses to display it

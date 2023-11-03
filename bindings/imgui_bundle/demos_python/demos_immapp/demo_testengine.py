@@ -67,7 +67,7 @@ def my_register_tests():
     def test_custom_gui_func(ctx: imgui.test_engine.TestContext):
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
-        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings)
+        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value)
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
     def test_with_vars_test_func(ctx: imgui.test_engine.TestContext):
@@ -165,17 +165,19 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "ImGuiDemoSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     test_engine_window = hello_imgui.DockableWindow()
     test_engine_window.label = "Dear ImGui Test Engine"
     test_engine_window.dock_space_name = "TestEngineSpace"
-    test_engine_window.gui_function = lambda: imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+    def show_test_engine_windows():
+        imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+    test_engine_window.gui_function = show_test_engine_windows
 
     return [my_window, dear_imgui_demo_window, test_engine_window]
 
 
-def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+def apply_application_layout(runner_params: hello_imgui.RunnerParams):  # type: ignore
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
     runner_params.imgui_window_params.default_imgui_window_type = \

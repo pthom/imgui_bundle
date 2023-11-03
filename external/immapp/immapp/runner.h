@@ -53,24 +53,6 @@ namespace ImmApp
     // Run an application using HelloImGui params + some addons
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams = AddOnsParams());
-    // Run an application with markdown
-    void RunWithMarkdown(
-        // HelloImGui::SimpleRunnerParams below:
-        const VoidFunction& guiFunction,
-        const std::string& windowTitle = "",
-        bool windowSizeAuto = false,
-        bool windowRestorePreviousGeometry = false,
-        const ScreenSize& windowSize = DefaultWindowSize,
-        float fpsIdle = 10.f,
-
-        // AddOnsParams below:
-        bool withImplot = false,
-        bool withNodeEditor = false,
-        bool withTexInspect = false,
-        const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
-    );
-
 
     /////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -105,6 +87,24 @@ namespace ImmApp
         // AddOnsParams below:
         bool withImplot = false,
         bool withMarkdown = false,
+        bool withNodeEditor = false,
+        bool withTexInspect = false,
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+    );
+
+    // Run an application with markdown
+    void RunWithMarkdown(
+        // HelloImGui::SimpleRunnerParams below:
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle = "",
+        bool windowSizeAuto = false,
+        bool windowRestorePreviousGeometry = false,
+        const ScreenSize& windowSize = DefaultWindowSize,
+        float fpsIdle = 10.f,
+
+        // AddOnsParams below:
+        bool withImplot = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,

@@ -81,15 +81,15 @@ void py_init_module_immapp_cpp(py::module& m)
     m.def("run",
         py::overload_cast<const HelloImGui::SimpleRunnerParams &, const ImmApp::AddOnsParams &>(ImmApp::Run), py::arg("simple_params"), py::arg("add_ons_params") = ImmApp::AddOnsParams());
 
-    m.def("run_with_markdown",
-        ImmApp::RunWithMarkdown,
-        py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
-        "Run an application with markdown");
-
     m.def("run",
         py::overload_cast<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float, bool, bool, bool, bool, const std::optional<NodeEditorConfig> &, const std::optional<ImGuiMd::MarkdownOptions> &>(ImmApp::Run),
         py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
         "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.");
+
+    m.def("run_with_markdown",
+        ImmApp::RunWithMarkdown,
+        py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
+        "Run an application with markdown");
 
     m.def("em_size",
         py::overload_cast<>(ImmApp::EmSize), " EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");

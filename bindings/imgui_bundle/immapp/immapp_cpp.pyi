@@ -1,7 +1,7 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle
 """
 
-from typing import Tuple, Optional, Callable, List, overload
+from typing import Tuple, Optional, Callable, List, overload, Any
 import numpy as np
 import enum
 
@@ -12,7 +12,7 @@ from imgui_bundle.hello_imgui import DefaultWindowSize
 ImGuiMd = imgui_md
 HelloImGui = hello_imgui
 
-VoidFunction = Callable[[None], None]
+VoidFunction = Callable[[], Any]
 ScreenSize = Tuple[int, int]
 DefaultScreenSize = (800, 600)
 
@@ -87,22 +87,6 @@ def run(
 ) -> None:
     pass
 
-def run_with_markdown(
-    gui_function: VoidFunction,
-    window_title: str = "",
-    window_size_auto: bool = False,
-    window_restore_previous_geometry: bool = False,
-    window_size: ScreenSize = DefaultWindowSize,
-    fps_idle: float = 10.0,
-    with_implot: bool = False,
-    with_node_editor: bool = False,
-    with_tex_inspect: bool = False,
-    with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
-) -> None:
-    """Run an application with markdown"""
-    pass
-
 @overload
 def run(
     gui_function: VoidFunction,
@@ -140,6 +124,22 @@ def run(
          - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
            will be created automatically.
     """
+    pass
+
+def run_with_markdown(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = False,
+    window_restore_previous_geometry: bool = False,
+    window_size: ScreenSize = DefaultWindowSize,
+    fps_idle: float = 10.0,
+    with_implot: bool = False,
+    with_node_editor: bool = False,
+    with_tex_inspect: bool = False,
+    with_node_editor_config: Optional[NodeEditorConfig] = None,
+    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+) -> None:
+    """Run an application with markdown"""
     pass
 
 # ///////////////////////////////////////////////////////////////////////////////////////
