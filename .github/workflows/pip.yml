@@ -16,9 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2019, macos-latest, ubuntu-latest]
-        # "pypy-3.9" was removed from python-version because numpy install fails
-        python-version: ["3.7", "3.10"]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -29,32 +28,43 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: install xorg-dev on ubuntu
+    - name: install xorg-dev & start Xvfb (ubuntu only)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
-      run: ./ci_scripts/install_xorg_dev.sh
+      run: |
+        sudo apt-get update && sudo apt-get install -y xorg-dev
+        sudo apt-get install -y xvfb
+        Xvfb :99 &
+        echo "DISPLAY=:99.0" >> $GITHUB_ENV
 
-    # Install OpenCV (ubuntu & macos)
-    #- name: install OpenCV (ubuntu)
-    #  if: ${{ matrix.platform == 'ubuntu-latest' }}
-    #  run: sudo apt-get install -y libopencv-dev
-    #- name: install OpenCV (macos)
-    #  if: ${{ matrix.platform == 'macos-latest' }}
-    #  run: brew install opencv
+    - name: install mesa OpenGL software renderer (windows only)
+      shell: bash
+      if: ${{ matrix.platform == 'windows-latest' }}
+      run: |
+        # Download the archive
+        curl -L -O https://github.com/pal1000/mesa-dist-win/releases/download/23.1.9/mesa3d-23.1.9-release-msvc.7z
+        
+        # Extract the archive using 7-zip which is preinstalled on the GitHub Actions Windows runner
+        7z x mesa3d-23.1.9-release-msvc.7z -omesa3d
+        
+        # copy the mesa DLLs to the python directory
+        python_dir=$(dirname $(which python))
+        cp mesa3d/x64/*.* $python_dir
 
-    #    - name: Setup interactive tmate session
-    #      uses: mxschmitt/action-tmate@v3
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
       run: |
-        # Optional: set IMMVISION_FETCH_OPENCV to OFF to disable OpenCV/Immvision
-        # ------------------------------------------------------------------------------------
-        # export IMMVISION_FETCH_OPENCV=OFF
-
-        #
-        # Build pip
-        # ------------------------------------------------------------------------------------
+        # optionally: export IMMVISION_FETCH_OPENCV=OFF
         pip install --verbose .[test]
 
-    - name: Test
+    - name: pytest
       run: pytest
+
+    - name: CI Automation python test (windows and ubuntu)
+      shell: bash
+      if: ${{ matrix.platform == 'ubuntu-latest' || matrix.platform == 'windows-latest' }}
+      run: |
+        cd .github/ci_automation_tests
+        python ci_automation_test_app_bundle.py
