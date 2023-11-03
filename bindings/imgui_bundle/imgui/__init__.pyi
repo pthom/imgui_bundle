@@ -1,6 +1,6 @@
 from __future__ import annotations
 import sys
-from typing import List, Any, Optional, Tuple, overload, Iterator
+from typing import List, Any, Optional, Tuple, overload, Iterator, Callable
 import numpy as np
 import enum
 from . import internal as internal
@@ -281,6 +281,14 @@ TextRange = Any # internal structure of ImGuiTextFilter, composed of string poin
 StoragePair = Any
 
 PayloadId = int
+
+# VERTEX_SIZE, VERTEX_BUFFER_POS_OFFSET, VERTEX_BUFFER_UV_OFFSET, etc.
+# Utilities to facilitate rendering in python backends: they provide buffer offsets info
+VERTEX_SIZE: int
+VERTEX_BUFFER_POS_OFFSET: int
+VERTEX_BUFFER_UV_OFFSET: int
+VERTEX_BUFFER_COL_OFFSET: int
+INDEX_SIZE: int
 
 
 # Disable black formatter
@@ -4993,6 +5001,15 @@ class ImNewWrapper:
 #  ------------------------------------------------------------------------
 #      <template specializations for class ImVector>
 class ImVector_int:  # Python specialization for ImVector<int>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5050,6 +5067,15 @@ class ImVector_int:  # Python specialization for ImVector<int>
         pass
 
 class ImVector_uint:  # Python specialization for ImVector<uint>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5107,6 +5133,15 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
         pass
 
 class ImVector_float:  # Python specialization for ImVector<float>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5164,6 +5199,15 @@ class ImVector_float:  # Python specialization for ImVector<float>
         pass
 
 class ImVector_char:  # Python specialization for ImVector<char>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5221,6 +5265,15 @@ class ImVector_char:  # Python specialization for ImVector<char>
         pass
 
 class ImVector_uchar:  # Python specialization for ImVector<uchar>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5278,6 +5331,15 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
         pass
 
 class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5335,6 +5397,15 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
         pass
 
 class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChannel>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5392,6 +5463,15 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
         pass
 
 class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5449,6 +5529,15 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
         pass
 
 class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5506,6 +5595,15 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         pass
 
 class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5563,6 +5661,15 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         pass
 
 class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5620,6 +5727,15 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
         pass
 
 class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5677,6 +5793,15 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
         pass
 
 class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5734,6 +5859,15 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
         pass
 
 class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatformMonitor>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5791,6 +5925,15 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
         pass
 
 class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5848,6 +5991,15 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
         pass
 
 class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5905,6 +6057,15 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
         pass
 
 class ImVector_ImFontAtlasCustomRect:  # Python specialization for ImVector<ImFontAtlasCustomRect>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5962,6 +6123,15 @@ class ImVector_ImFontAtlasCustomRect:  # Python specialization for ImVector<ImFo
         pass
 
 class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6019,6 +6189,15 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
         pass
 
 class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6076,6 +6255,15 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
         pass
 
 class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6133,6 +6321,15 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
         pass
 
 class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6190,6 +6387,15 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
         pass
 
 class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6247,6 +6453,15 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
         pass
 
 class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewportP *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6304,6 +6519,15 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
         pass
 
 class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6361,6 +6585,15 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
         pass
 
 class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindowStackData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6418,6 +6651,15 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
         pass
 
 class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGuiTableColumnSortSpecs>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6475,6 +6717,15 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
         pass
 
 class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTableInstanceData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6532,6 +6783,15 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
         pass
 
 class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTempData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6589,6 +6849,15 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
         pass
 
 class ImVector_NavTreeNodeData:  # Python specialization for ImVector<ImGuiNavTreeNodeData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6646,6 +6915,15 @@ class ImVector_NavTreeNodeData:  # Python specialization for ImVector<ImGuiNavTr
         pass
 
 class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6703,6 +6981,15 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
         pass
 
 class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSettingsHandler>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6760,6 +7047,15 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
         pass
 
 class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrinkWidthItem>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6817,6 +7113,15 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
         pass
 
 class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackLevelInfo>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6874,6 +7179,15 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
         pass
 
 class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6931,6 +7245,15 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
         pass
 
 class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRoutingData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6988,6 +7311,15 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
         pass
 
 class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListClipperData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7045,6 +7377,15 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
         pass
 
 class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiListClipperRange>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7102,6 +7443,15 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
         pass
 
 class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColumnData>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7159,6 +7509,15 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
         pass
 
 class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7216,6 +7575,15 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
         pass
 
 class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -10037,3 +10405,9 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
+
+class IO:
+    def set_backend_get_clipboard_text_fn(self, f: Callable[[], str]):
+        pass
+    def set_backend_set_clipboard_text_fn(self, f: Callable[[str], None]):
+        pass
