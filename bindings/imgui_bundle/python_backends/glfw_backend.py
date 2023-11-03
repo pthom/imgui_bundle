@@ -27,8 +27,14 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
-        # self.io.get_clipboard_text_fn = self._get_clipboard_text
-        # self.io.set_clipboard_text_fn = self._set_clipboard_text
+
+        def get_clipboard_text() -> str:
+            return self._get_clipboard_text()
+        def set_clipboard_text(text: str) -> None:
+            self._set_clipboard_text(text)
+
+        imgui.get_io().set_backend_get_clipboard_text_fn(get_clipboard_text)
+        imgui.get_io().set_backend_set_clipboard_text_fn(set_clipboard_text)
 
         self._map_keys()
         self._gui_time = None

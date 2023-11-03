@@ -1,6 +1,6 @@
 from __future__ import annotations
 import sys
-from typing import List, Any, Optional, Tuple, overload, Iterator
+from typing import List, Any, Optional, Tuple, overload, Iterator, Callable
 import numpy as np
 import enum
 from . import internal as internal
@@ -10405,3 +10405,9 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
+
+class IO:
+    def set_backend_get_clipboard_text_fn(self, f: Callable[[], str]):
+        pass
+    def set_backend_set_clipboard_text_fn(self, f: Callable[[str], None]):
+        pass

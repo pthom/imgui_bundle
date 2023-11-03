@@ -2,6 +2,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/functional.h>
 
 #include "imgui.h"
 #include "imgui_pywrappers/imgui_pywrappers.h"
@@ -6517,4 +6518,31 @@ void py_init_module_imgui_main(py::module& m)
     //    def _py_index_buffer_index_size():
     //    return sizeof(cimgui.ImDrawIdx)
     m.attr("INDEX_SIZE") = sizeof(ImDrawIdx);
+
+    //
+    // Manual publication of clipboard callbacks
+    //
+    using FnGetClipboardFromBackend = std::function<std::string()>;
+    using FnSetClipboardToBackend = std::function<void(std::string)>;
+
+    static FnGetClipboardFromBackend gFnGetClipboardFromBackend;
+    static FnSetClipboardToBackend gFnSetClipboardToBackend;
+    static std::string gExternalClipboardText;
+
+    pyClassImGuiIO.def("set_backend_get_clipboard_text_fn", [](ImGuiIO& io, FnGetClipboardFromBackend f){
+        gFnGetClipboardFromBackend = f;
+        io.GetClipboardTextFn = [](void*) -> const char*
+        {
+            gExternalClipboardText = gFnGetClipboardFromBackend();
+            return gExternalClipboardText.c_str();
+        };
+    });
+    pyClassImGuiIO.def("set_backend_set_clipboard_text_fn", [](ImGuiIO& io, FnSetClipboardToBackend f){
+        gFnSetClipboardToBackend = f;
+        io.SetClipboardTextFn = [](void*, const char* text)
+        {
+            gFnSetClipboardToBackend(std::string(text));
+        };
+    });
+
 }
