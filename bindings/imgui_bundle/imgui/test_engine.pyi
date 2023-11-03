@@ -1,5 +1,5 @@
 import sys
-from typing import List, Any, Optional, Tuple, Callable, overload
+from typing import List, Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
 import enum
 from imgui_bundle.imgui import  internal as internal
@@ -784,7 +784,7 @@ class TestRefDesc:
         """(private API)"""
         pass
     # ImGuiTestRefDesc(const ImGuiTestRef& ref, const ImGuiTestItemInfo* item);    /* original C++ signature */
-    def __init__(self, ref: TestRef, item: TestItemInfo) -> None:
+    def __init__(self, ref: Union[TestRef, str], item: TestItemInfo) -> None:
         pass
 
 # -------------------------------------------------------------------------
@@ -1227,7 +1227,7 @@ class TestContext:
     # Takes multiple frames to complete if specified ref is an item id.
     # void        SetRef(ImGuiTestRef ref);    /* original C++ signature */
     @overload
-    def set_ref(self, ref: TestRef) -> None:
+    def set_ref(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        SetRef(ImGuiWindow* window);     /* original C++ signature */
@@ -1245,34 +1245,34 @@ class TestContext:
     # Windows
     # ImGuiTestItemInfo* WindowInfo(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_info(
-        self, window_ref: TestRef, flags: TestOpFlags = TestOpFlags_None
+        self, window_ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
     ) -> TestItemInfo:
         """(private API)"""
         pass
     # void        WindowClose(ImGuiTestRef window_ref);    /* original C++ signature */
-    def window_close(self, window_ref: TestRef) -> None:
+    def window_close(self, window_ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        WindowCollapse(ImGuiTestRef window_ref, bool collapsed);    /* original C++ signature */
-    def window_collapse(self, window_ref: TestRef, collapsed: bool) -> None:
+    def window_collapse(self, window_ref: Union[TestRef, str], collapsed: bool) -> None:
         """(private API)"""
         pass
     # void        WindowFocus(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_focus(
-        self, window_ref: TestRef, flags: TestOpFlags = TestOpFlags_None
+        self, window_ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
     ) -> None:
         """(private API)"""
         pass
     # void        WindowBringToFront(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_bring_to_front(
-        self, window_ref: TestRef, flags: TestOpFlags = TestOpFlags_None
+        self, window_ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
     ) -> None:
         """(private API)"""
         pass
     # void        WindowMove(ImGuiTestRef window_ref, ImVec2 pos, ImVec2 pivot = ImVec2(0.0f, 0.0f), ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_move(
         self,
-        window_ref: TestRef,
+        window_ref: Union[TestRef, str],
         pos: ImVec2,
         pivot: ImVec2 = ImVec2(0.0, 0.0),
         flags: TestOpFlags = TestOpFlags_None,
@@ -1280,17 +1280,17 @@ class TestContext:
         """(private API)"""
         pass
     # void        WindowResize(ImGuiTestRef window_ref, ImVec2 sz);    /* original C++ signature */
-    def window_resize(self, window_ref: TestRef, sz: ImVec2) -> None:
+    def window_resize(self, window_ref: Union[TestRef, str], sz: ImVec2) -> None:
         """(private API)"""
         pass
     # bool        WindowTeleportToMakePosVisible(ImGuiTestRef window_ref, ImVec2 pos_in_window);    /* original C++ signature */
     def window_teleport_to_make_pos_visible(
-        self, window_ref: TestRef, pos_in_window: ImVec2
+        self, window_ref: Union[TestRef, str], pos_in_window: ImVec2
     ) -> bool:
         """(private API)"""
         pass
     # ImGuiWindow*GetWindowByRef(ImGuiTestRef window_ref);    /* original C++ signature */
-    def get_window_by_ref(self, window_ref: TestRef) -> Window:
+    def get_window_by_ref(self, window_ref: Union[TestRef, str]) -> Window:
         """(private API)"""
         pass
     # Popups
@@ -1303,19 +1303,19 @@ class TestContext:
         """(private API)"""
         pass
     # ImGuiID     PopupGetWindowID(ImGuiTestRef ref);    /* original C++ signature */
-    def popup_get_window_id(self, ref: TestRef) -> ID:
+    def popup_get_window_id(self, ref: Union[TestRef, str]) -> ID:
         """(private API)"""
         pass
     # Get hash for a decorated ID Path.
     # Note: for windows you may use WindowInfo()
     # ImGuiID     GetID(ImGuiTestRef ref);    /* original C++ signature */
     @overload
-    def get_id(self, ref: TestRef) -> ID:
+    def get_id(self, ref: Union[TestRef, str]) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetID(ImGuiTestRef ref, ImGuiTestRef seed_ref);    /* original C++ signature */
     @overload
-    def get_id(self, ref: TestRef, seed_ref: TestRef) -> ID:
+    def get_id(self, ref: Union[TestRef, str], seed_ref: Union[TestRef, str]) -> ID:
         """(private API)"""
         pass
     # Misc
@@ -1327,7 +1327,7 @@ class TestContext:
         """
         pass
     # ImVec2      GetWindowTitlebarPoint(ImGuiTestRef window_ref);                        /* original C++ signature */
-    def get_window_titlebar_point(self, window_ref: TestRef) -> ImVec2:
+    def get_window_titlebar_point(self, window_ref: Union[TestRef, str]) -> ImVec2:
         """(private API)
 
         Return a clickable point on window title-bar (window tab for docked windows).
@@ -1360,14 +1360,14 @@ class TestContext:
         """
         pass
     # bool        CaptureAddWindow(ImGuiTestRef ref);                                     /* original C++ signature */
-    def capture_add_window(self, ref: TestRef) -> bool:
+    def capture_add_window(self, ref: Union[TestRef, str]) -> bool:
         """(private API)
 
         Add window to be captured (default to capture everything)
         """
         pass
     # void        CaptureScreenshotWindow(ImGuiTestRef ref, int capture_flags = 0);       /* original C++ signature */
-    def capture_screenshot_window(self, ref: TestRef, capture_flags: int = 0) -> None:
+    def capture_screenshot_window(self, ref: Union[TestRef, str], capture_flags: int = 0) -> None:
         """(private API)
 
         Trigger a screen capture of a single window (== CaptureAddWindow() + CaptureScreenshot())
@@ -1393,7 +1393,7 @@ class TestContext:
         pass
     # Mouse inputs
     # void        MouseMove(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
-    def mouse_move(self, ref: TestRef, flags: TestOpFlags = TestOpFlags_None) -> None:
+    def mouse_move(self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None) -> None:
         """(private API)"""
         pass
     # void        MouseMoveToPos(ImVec2 pos);    /* original C++ signature */
@@ -1540,7 +1540,7 @@ class TestContext:
         """
         pass
     # void        NavMoveTo(ImGuiTestRef ref);    /* original C++ signature */
-    def nav_move_to(self, ref: TestRef) -> None:
+    def nav_move_to(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        NavActivate();                                  /* original C++ signature */
@@ -1560,7 +1560,7 @@ class TestContext:
     # void        ScrollTo(ImGuiTestRef ref, ImGuiAxis axis, float scroll_v, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def scroll_to(
         self,
-        ref: TestRef,
+        ref: Union[TestRef, str],
         axis: Axis,
         scroll_v: float,
         flags: TestOpFlags = TestOpFlags_None,
@@ -1570,33 +1570,33 @@ class TestContext:
         """
         pass
     # void        ScrollToX(ImGuiTestRef ref, float scroll_x) { ScrollTo(ref, ImGuiAxis_X, scroll_x); }    /* original C++ signature */
-    def scroll_to_x(self, ref: TestRef, scroll_x: float) -> None:
+    def scroll_to_x(self, ref: Union[TestRef, str], scroll_x: float) -> None:
         """(private API)"""
         pass
     # void        ScrollToY(ImGuiTestRef ref, float scroll_y) { ScrollTo(ref, ImGuiAxis_Y, scroll_y); }    /* original C++ signature */
-    def scroll_to_y(self, ref: TestRef, scroll_y: float) -> None:
+    def scroll_to_y(self, ref: Union[TestRef, str], scroll_y: float) -> None:
         """(private API)"""
         pass
     # void        ScrollToTop(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_to_top(self, ref: TestRef) -> None:
+    def scroll_to_top(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ScrollToBottom(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_to_bottom(self, ref: TestRef) -> None:
+    def scroll_to_bottom(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ScrollToItem(ImGuiTestRef ref, ImGuiAxis axis, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def scroll_to_item(
-        self, ref: TestRef, axis: Axis, flags: TestOpFlags = TestOpFlags_None
+        self, ref: Union[TestRef, str], axis: Axis, flags: TestOpFlags = TestOpFlags_None
     ) -> None:
         """(private API)"""
         pass
     # void        ScrollToItemX(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_to_item_x(self, ref: TestRef) -> None:
+    def scroll_to_item_x(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ScrollToItemY(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_to_item_y(self, ref: TestRef) -> None:
+    def scroll_to_item_y(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ScrollToTabItem(ImGuiTabBar* tab_bar, ImGuiID tab_id);    /* original C++ signature */
@@ -1610,20 +1610,20 @@ class TestContext:
         """(private API)"""
         pass
     # void        ScrollVerifyScrollMax(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_verify_scroll_max(self, ref: TestRef) -> None:
+    def scroll_verify_scroll_max(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # Low-level queries
     # Since 2022/06/25 to faciliate test code and reduce crashes: ItemInfo queries never return a None pointer, instead they return an empty instance (info->IsEmpty(), info->ID == 0).
     # ImGuiTestItemInfo*  ItemInfo(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def item_info(
-        self, ref: TestRef, flags: TestOpFlags = TestOpFlags_None
+        self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
     ) -> TestItemInfo:
         """(private API)"""
         pass
     # ImGuiTestItemInfo*  ItemInfoOpenFullPath(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def item_info_open_full_path(
-        self, ref: TestRef, flags: TestOpFlags = TestOpFlags_None
+        self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
     ) -> TestItemInfo:
         """(private API)"""
         pass
@@ -1642,7 +1642,7 @@ class TestContext:
         pass
     # void                GatherItems(ImGuiTestItemList* out_list, ImGuiTestRef parent, int depth = -1);    /* original C++ signature */
     def gather_items(
-        self, out_list: TestItemList, parent: TestRef, depth: int = -1
+        self, out_list: TestItemList, parent: Union[TestRef, str], depth: int = -1
     ) -> None:
         """(private API)"""
         pass
@@ -1650,7 +1650,7 @@ class TestContext:
     def item_action(
         self,
         action: TestAction,
-        ref: TestRef,
+        ref: Union[TestRef, str],
         flags: TestOpFlags = 0,
         action_arg: Optional[Any] = None,
     ) -> None:
@@ -1660,36 +1660,36 @@ class TestContext:
         pass
     # void        ItemClick(ImGuiTestRef ref, ImGuiMouseButton button = 0, ImGuiTestOpFlags flags = 0) { ItemAction(ImGuiTestAction_Click, ref, flags, (void*)(size_t)button); }    /* original C++ signature */
     def item_click(
-        self, ref: TestRef, button: MouseButton = 0, flags: TestOpFlags = 0
+        self, ref: Union[TestRef, str], button: MouseButton = 0, flags: TestOpFlags = 0
     ) -> None:
         """(private API)"""
         pass
     # void        ItemDoubleClick(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)           { ItemAction(ImGuiTestAction_DoubleClick, ref, flags); }    /* original C++ signature */
-    def item_double_click(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_double_click(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemCheck(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)                 { ItemAction(ImGuiTestAction_Check, ref, flags); }    /* original C++ signature */
-    def item_check(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_check(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemUncheck(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)               { ItemAction(ImGuiTestAction_Uncheck, ref, flags); }    /* original C++ signature */
-    def item_uncheck(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_uncheck(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemOpen(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)                  { ItemAction(ImGuiTestAction_Open, ref, flags); }    /* original C++ signature */
-    def item_open(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_open(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemClose(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)                 { ItemAction(ImGuiTestAction_Close, ref, flags); }    /* original C++ signature */
-    def item_close(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_close(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemInput(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)                 { ItemAction(ImGuiTestAction_Input, ref, flags); }    /* original C++ signature */
-    def item_input(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_input(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # void        ItemNavActivate(ImGuiTestRef ref, ImGuiTestOpFlags flags = 0)           { ItemAction(ImGuiTestAction_NavActivate, ref, flags); }    /* original C++ signature */
-    def item_nav_activate(self, ref: TestRef, flags: TestOpFlags = 0) -> None:
+    def item_nav_activate(self, ref: Union[TestRef, str], flags: TestOpFlags = 0) -> None:
         """(private API)"""
         pass
     # Item/Widgets: Batch actions over an entire scope
@@ -1697,143 +1697,143 @@ class TestContext:
     def item_action_all(
         self,
         action: TestAction,
-        ref_parent: TestRef,
+        ref_parent: Union[TestRef, str],
         filter: Optional[TestActionFilter] = None,
     ) -> None:
         """(private API)"""
         pass
     # void        ItemOpenAll(ImGuiTestRef ref_parent, int depth = -1, int passes = -1);    /* original C++ signature */
     def item_open_all(
-        self, ref_parent: TestRef, depth: int = -1, passes: int = -1
+        self, ref_parent: Union[TestRef, str], depth: int = -1, passes: int = -1
     ) -> None:
         """(private API)"""
         pass
     # void        ItemCloseAll(ImGuiTestRef ref_parent, int depth = -1, int passes = -1);    /* original C++ signature */
     def item_close_all(
-        self, ref_parent: TestRef, depth: int = -1, passes: int = -1
+        self, ref_parent: Union[TestRef, str], depth: int = -1, passes: int = -1
     ) -> None:
         """(private API)"""
         pass
     # Item/Widgets: Helpers to easily set a value
     # void        ItemInputValue(ImGuiTestRef ref, int v);    /* original C++ signature */
     @overload
-    def item_input_value(self, ref: TestRef, v: int) -> None:
+    def item_input_value(self, ref: Union[TestRef, str], v: int) -> None:
         """(private API)"""
         pass
     # void        ItemInputValue(ImGuiTestRef ref, float f);    /* original C++ signature */
     @overload
-    def item_input_value(self, ref: TestRef, f: float) -> None:
+    def item_input_value(self, ref: Union[TestRef, str], f: float) -> None:
         """(private API)"""
         pass
     # void        ItemInputValue(ImGuiTestRef ref, const char* str);    /* original C++ signature */
     @overload
-    def item_input_value(self, ref: TestRef, str: str) -> None:
+    def item_input_value(self, ref: Union[TestRef, str], str: str) -> None:
         """(private API)"""
         pass
     # Item/Widgets: Drag and Mouse operations
     # void        ItemHold(ImGuiTestRef ref, float time);    /* original C++ signature */
-    def item_hold(self, ref: TestRef, time: float) -> None:
+    def item_hold(self, ref: Union[TestRef, str], time: float) -> None:
         """(private API)"""
         pass
     # void        ItemHoldForFrames(ImGuiTestRef ref, int frames);    /* original C++ signature */
-    def item_hold_for_frames(self, ref: TestRef, frames: int) -> None:
+    def item_hold_for_frames(self, ref: Union[TestRef, str], frames: int) -> None:
         """(private API)"""
         pass
     # void        ItemDragOverAndHold(ImGuiTestRef ref_src, ImGuiTestRef ref_dst);    /* original C++ signature */
-    def item_drag_over_and_hold(self, ref_src: TestRef, ref_dst: TestRef) -> None:
+    def item_drag_over_and_hold(self, ref_src: Union[TestRef, str], ref_dst: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ItemDragAndDrop(ImGuiTestRef ref_src, ImGuiTestRef ref_dst, ImGuiMouseButton button = 0);    /* original C++ signature */
     def item_drag_and_drop(
-        self, ref_src: TestRef, ref_dst: TestRef, button: MouseButton = 0
+        self, ref_src: Union[TestRef, str], ref_dst: Union[TestRef, str], button: MouseButton = 0
     ) -> None:
         """(private API)"""
         pass
     # void        ItemDragWithDelta(ImGuiTestRef ref_src, ImVec2 pos_delta);    /* original C++ signature */
-    def item_drag_with_delta(self, ref_src: TestRef, pos_delta: ImVec2) -> None:
+    def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2) -> None:
         """(private API)"""
         pass
     # Helpers for Item/Widget state query
     # bool        ItemExists(ImGuiTestRef ref);    /* original C++ signature */
-    def item_exists(self, ref: TestRef) -> bool:
+    def item_exists(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
         pass
     # bool        ItemIsChecked(ImGuiTestRef ref);    /* original C++ signature */
-    def item_is_checked(self, ref: TestRef) -> bool:
+    def item_is_checked(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
         pass
     # bool        ItemIsOpened(ImGuiTestRef ref);    /* original C++ signature */
-    def item_is_opened(self, ref: TestRef) -> bool:
+    def item_is_opened(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
         pass
     # void        ItemVerifyCheckedIfAlive(ImGuiTestRef ref, bool checked);    /* original C++ signature */
-    def item_verify_checked_if_alive(self, ref: TestRef, checked: bool) -> None:
+    def item_verify_checked_if_alive(self, ref: Union[TestRef, str], checked: bool) -> None:
         """(private API)"""
         pass
     # Helpers for Tab Bars widgets
     # void        TabClose(ImGuiTestRef ref);    /* original C++ signature */
-    def tab_close(self, ref: TestRef) -> None:
+    def tab_close(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # Helpers for Menus widgets
     # void        MenuAction(ImGuiTestAction action, ImGuiTestRef ref);    /* original C++ signature */
-    def menu_action(self, action: TestAction, ref: TestRef) -> None:
+    def menu_action(self, action: TestAction, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuActionAll(ImGuiTestAction action, ImGuiTestRef ref_parent);    /* original C++ signature */
-    def menu_action_all(self, action: TestAction, ref_parent: TestRef) -> None:
+    def menu_action_all(self, action: TestAction, ref_parent: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuClick(ImGuiTestRef ref)                 { MenuAction(ImGuiTestAction_Click, ref); }    /* original C++ signature */
-    def menu_click(self, ref: TestRef) -> None:
+    def menu_click(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuCheck(ImGuiTestRef ref)                 { MenuAction(ImGuiTestAction_Check, ref); }    /* original C++ signature */
-    def menu_check(self, ref: TestRef) -> None:
+    def menu_check(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuUncheck(ImGuiTestRef ref)               { MenuAction(ImGuiTestAction_Uncheck, ref); }    /* original C++ signature */
-    def menu_uncheck(self, ref: TestRef) -> None:
+    def menu_uncheck(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuCheckAll(ImGuiTestRef ref_parent)       { MenuActionAll(ImGuiTestAction_Check, ref_parent); }    /* original C++ signature */
-    def menu_check_all(self, ref_parent: TestRef) -> None:
+    def menu_check_all(self, ref_parent: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        MenuUncheckAll(ImGuiTestRef ref_parent)     { MenuActionAll(ImGuiTestAction_Uncheck, ref_parent); }    /* original C++ signature */
-    def menu_uncheck_all(self, ref_parent: TestRef) -> None:
+    def menu_uncheck_all(self, ref_parent: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # Helpers for Combo Boxes
     # void        ComboClick(ImGuiTestRef ref);    /* original C++ signature */
-    def combo_click(self, ref: TestRef) -> None:
+    def combo_click(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # void        ComboClickAll(ImGuiTestRef ref);    /* original C++ signature */
-    def combo_click_all(self, ref: TestRef) -> None:
+    def combo_click_all(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
     # Helpers for Tables
     # void                        TableOpenContextMenu(ImGuiTestRef ref, int column_n = -1);    /* original C++ signature */
-    def table_open_context_menu(self, ref: TestRef, column_n: int = -1) -> None:
+    def table_open_context_menu(self, ref: Union[TestRef, str], column_n: int = -1) -> None:
         """(private API)"""
         pass
     # ImGuiSortDirection          TableClickHeader(ImGuiTestRef ref, const char* label, ImGuiKeyChord key_mods = 0);    /* original C++ signature */
     def table_click_header(
-        self, ref: TestRef, label: str, key_mods: KeyChord = 0
+        self, ref: Union[TestRef, str], label: str, key_mods: KeyChord = 0
     ) -> SortDirection:
         """(private API)"""
         pass
     # void                        TableSetColumnEnabled(ImGuiTestRef ref, const char* label, bool enabled);    /* original C++ signature */
-    def table_set_column_enabled(self, ref: TestRef, label: str, enabled: bool) -> None:
+    def table_set_column_enabled(self, ref: Union[TestRef, str], label: str, enabled: bool) -> None:
         """(private API)"""
         pass
     # void                        TableResizeColumn(ImGuiTestRef ref, int column_n, float width);    /* original C++ signature */
-    def table_resize_column(self, ref: TestRef, column_n: int, width: float) -> None:
+    def table_resize_column(self, ref: Union[TestRef, str], column_n: int, width: float) -> None:
         """(private API)"""
         pass
     # const ImGuiTableSortSpecs*  TableGetSortSpecs(ImGuiTestRef ref);    /* original C++ signature */
-    def table_get_sort_specs(self, ref: TestRef) -> TableSortSpecs:
+    def table_get_sort_specs(self, ref: Union[TestRef, str]) -> TableSortSpecs:
         """(private API)"""
         pass
     # Viewports
@@ -1850,8 +1850,8 @@ class TestContext:
     # void        DockInto(ImGuiTestRef src_id, ImGuiTestRef dst_id, ImGuiDir split_dir = ImGuiDir_None, bool is_outer_docking = false, ImGuiTestOpFlags flags = 0);    /* original C++ signature */
     def dock_into(
         self,
-        src_id: TestRef,
-        dst_id: TestRef,
+        src_id: Union[TestRef, str],
+        dst_id: Union[TestRef, str],
         split_dir: Dir = Dir_None,
         is_outer_docking: bool = False,
         flags: TestOpFlags = 0,
@@ -2319,6 +2319,11 @@ def show_test_engine_windows(engine: TestEngine, p_open: bool) -> bool:
     pass
 ####################    </generated_from:imgui_te_ui.h>    ####################
 
-# </litgen_stub>
+# </litgen_stub> // Autogenerated code end!
 
 # fmt: on
+
+class TestContext:
+    @overload
+    def set_ref(self, id: str) -> None:
+        pass

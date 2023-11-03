@@ -142,6 +142,31 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
             python_class_name__regex=python_class_name__regex, python_iterable_type=python_iterable_type)
 
 
+def add_imgui_test_engine_options(options: LitgenOptions):
+    # patch preprocess: add replace("ImFuncPtr(ImGuiTestTestFunc)", "VoidFunction")
+    old_preprocess = copy.copy(options.srcmlcpp_options.code_preprocess_function)
+    def preprocess_ImGuiTestGuiFunc(code: str) -> str:
+        r = code
+        r = r.replace("ImFuncPtr(ImGuiTestTestFunc)", "Function_TestRunner")
+        r = r.replace("ImFuncPtr(ImGuiTestGuiFunc)", "Function_TestGui")
+        r = old_preprocess(r)
+        return r
+    options.srcmlcpp_options.code_preprocess_function = preprocess_ImGuiTestGuiFunc
+
+    options.function_names_replacements.add_last_replacement("^ImGuiTestEngine_", "")
+    options.function_names_replacements.add_last_replacement("^ImGuiTestEngineHook_", "hook_")
+    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
+    options.member_exclude_by_name__regex += "|Coroutine|^ExportResultsFormat$|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
+    options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
+    options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
+
+    def postprocess_stub(code: str):
+        # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
+        r = code.replace(": TestRef", ": Union[TestRef, str]")
+        return r
+    options.postprocess_stub_function = postprocess_stub
+
+
 def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -> LitgenOptions:
     from litgen.internal import cpp_to_python
 
@@ -363,23 +388,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     elif options_type == ImguiOptionsType.imgui_stdlib_h:
         pass
     elif options_type == ImguiOptionsType.imgui_test_engine:
-
-        # patch preprocess: add replace("ImFuncPtr(ImGuiTestTestFunc)", "VoidFunction")
-        old_preprocess = copy.copy(options.srcmlcpp_options.code_preprocess_function)
-        def preprocess_ImGuiTestGuiFunc(code: str) -> str:
-            r = code
-            r = r.replace("ImFuncPtr(ImGuiTestTestFunc)", "Function_TestRunner")
-            r = r.replace("ImFuncPtr(ImGuiTestGuiFunc)", "Function_TestGui")
-            r = old_preprocess(r)
-            return r
-        options.srcmlcpp_options.code_preprocess_function = preprocess_ImGuiTestGuiFunc
-
-        options.function_names_replacements.add_last_replacement("^ImGuiTestEngine_", "")
-        options.function_names_replacements.add_last_replacement("^ImGuiTestEngineHook_", "hook_")
-        options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
-        options.member_exclude_by_name__regex += "|Coroutine|^ExportResultsFormat$|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
-        options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
-        options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
+        add_imgui_test_engine_options(options)
 
     return options
 
