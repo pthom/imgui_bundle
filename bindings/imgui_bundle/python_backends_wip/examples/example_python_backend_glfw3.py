@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
+from imgui_bundle.python_backends_wip.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl
 from imgui_bundle import imgui
 import glfw
