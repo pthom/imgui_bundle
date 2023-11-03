@@ -113,5 +113,6 @@ int main(int, char *[])
     WriteWin32SuccessFile();
     #endif
 
+    printf("Exiting ci_automation_test_app with success!\n");
     return 0;
 }

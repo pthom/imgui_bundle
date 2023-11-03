@@ -1,11 +1,12 @@
 from imgui_bundle import hello_imgui, immapp, imgui
 
 import sys
+from typing import Optional
 
 
-test_open_metrics: imgui.test_engine.Test = None
-test_capture: imgui.test_engine.Test = None
-test_exit: imgui.test_engine.Test = None
+test_open_metrics: Optional[imgui.test_engine.Test] = None
+test_capture: Optional[imgui.test_engine.Test] = None
+test_exit: Optional[imgui.test_engine.Test] = None
 
 
 def my_register_tests():
@@ -13,7 +14,8 @@ def my_register_tests():
     engine = hello_imgui.get_imgui_test_engine()
 
     # Open Metrics window
-    test_open_metrics =imgui.test_engine.register_test(engine, "demo_tests", "open_metrics")
+    test_open_metrics = imgui.test_engine.register_test(engine, "demo_tests", "open_metrics")
+
     def test_func_metrics(ctx: imgui.test_engine.TestContext):
         ctx.set_ref("Dear ImGui Demo")
         ctx.menu_check("Tools/Metrics\\/Debugger")
@@ -21,6 +23,7 @@ def my_register_tests():
 
     # Capture entire Dear ImGui Demo window.
     test_capture = imgui.test_engine.register_test(engine, "demo_tests", "capture_screenshot")
+
     def test_func_capture(ctx: imgui.test_engine.TestContext):
         ctx.set_ref("Dear ImGui Demo")
         ctx.item_open("Widgets")       # Open collapsing header
@@ -30,12 +33,13 @@ def my_register_tests():
 
     # Exit
     test_exit = imgui.test_engine.register_test(engine, "demo_tests", "exit")
+
     def test_func_exit(ctx: imgui.test_engine.TestContext):
         ctx.item_click("**/Exit")
     test_exit.test_func = test_func_exit
 
 
-@immapp.static(idx_frame_count = 0)
+@immapp.static(idx_frame_count=0)
 def queue_all_tests():
     static = queue_all_tests
     static.idx_frame_count += 1
@@ -57,7 +61,7 @@ def app_gui():
         hello_imgui.get_runner_params().app_shall_exit = True
 
     imgui.show_demo_window()
-    imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+    imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), True)
 
     queue_all_tests()
 
@@ -75,6 +79,7 @@ def main() -> int:
         print("ERROR: exception in ci_automation_test_app", e)
         return 1
 
+    print("Exiting ci_automation_test_app with success!\n")
     return 0
 
 
