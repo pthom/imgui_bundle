@@ -1,0 +1,85 @@
+name: "ci_automation_test"
+
+# Run an app with automation thanks to imgui_test_engine / ensure it works
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+
+jobs:
+  build:
+    name: Automation Test
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+        # platform: [windows-latest, ubuntu-latest]
+        # this does not work under macos-latest (may be "Off-screen Mesa" could help)
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: install xorg-dev & start Xvfb (ubuntu only)
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y xorg-dev
+          sudo apt-get install -y xvfb
+          Xvfb :99 &
+          echo "DISPLAY=:99.0" >> $GITHUB_ENV
+
+      #      - name: Setup interactive tmate session
+      #        uses: mxschmitt/action-tmate@v3
+
+      - name: Build C++ automation app
+        shell: bash
+        run: |
+          cd .github/ci_automation_tests
+          mkdir build
+          cd build
+          cmake ..  -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_WIN32_NO_CONSOLE=OFF -DHELLOIMGUI_WIN32_AUTO_WINMAIN=OFF
+          cmake --build . -j 3 --config Release
+
+      - name: install mesa OpenGL software renderer (windows only)
+        shell: bash
+        if: ${{ matrix.platform == 'windows-latest' }}
+        run: |
+          # Download the archive
+          curl -L -O https://github.com/pal1000/mesa-dist-win/releases/download/23.1.9/mesa3d-23.1.9-release-msvc.7z
+
+          # Extract the archive using 7-zip which is preinstalled on the GitHub Actions Windows runner
+          7z x mesa3d-23.1.9-release-msvc.7z -omesa3d
+
+          # Optionally move/copy the required DLLs to the directory of your executable
+          # For this example, I'll assume your executable is in '.github/ci_automation_tests/build'
+          # Copy the opengl32.dll to your executable directory
+          cp mesa3d/x64/*.* .github/ci_automation_tests/build/Release
+
+      - name: Run C++ Automation Test (windows)
+        shell: bash
+        if: ${{ matrix.platform == 'windows-latest' }}
+        run: |
+          cd .github/ci_automation_tests/build/Release
+          
+          # Run the application, but don't exit the script even if it fails
+          # Under windows, the app works well a local machine and on GitHub CI
+          # However it ends with a segfault on Github CI, althought it did run to the end.
+          # Let's detect this via an old-style hack.
+          ./ci_automation_test_app_bundle.exe || true
+          
+          # Now check for the success file
+          if [[ ! -f ci_automation_test_app_success.txt ]]; then
+            echo "Error: ci_automation_test_app_success.txt not found!"
+            exit 1
+          fi
+
+      - name: Run C++ Automation Test (nixes)
+        shell: bash
+        if: ${{ matrix.platform != 'windows-latest' }}
+        run: |
+          cd .github/ci_automation_tests/build
+          ./ci_automation_test_app_bundle

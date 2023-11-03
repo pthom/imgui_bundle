@@ -113,6 +113,14 @@ endif()
 #     scan-build make -j
 
 
+# Automation test (run app in CI)
+# ---------------------------------
+if(PROJECT_IS_TOP_LEVEL)
+    option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" ON)
+else()
+    option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
+endif()
+
 ###############################################################################
 # Main
 ###############################################################################
@@ -236,6 +244,13 @@ if (IMGUI_BUNDLE_BUILD_CPP)
 endif()
 
 ####################################################
+# CI Automation
+####################################################
+if (IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS)
+    add_subdirectory(.github/ci_automation_tests)
+endif()
+
+####################################################
 # Help msvc tidy up its room
 ####################################################
 if (MSVC)
@@ -243,7 +258,7 @@ if (MSVC)
 endif()
 
 ####################################################
-# Help msvc tidy up its room
+# Doc
 ####################################################
 if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)

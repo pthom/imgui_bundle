@@ -30,14 +30,6 @@ jobs:
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
 
-    # Install OpenCV (ubuntu & macos)
-    #- name: install OpenCV (ubuntu)
-    #  if: ${{ matrix.platform == 'ubuntu-latest' }}
-    #  run: sudo apt-get install -y libopencv-dev
-    #- name: install OpenCV (macos)
-    #  if: ${{ matrix.platform == 'macos-latest' }}
-    #  run: brew install opencv
-
     # Install conan & pybind11
     - name: install conan and pybind11 (linux and ubuntu)
       if: ${{ matrix.platform != 'windows-2019' }}
