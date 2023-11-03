@@ -55,6 +55,9 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "int",
         "uint",
         "float",
+        "char",
+        "uchar",
+
         "ImDrawCmd",
         "ImDrawChannel",
         "ImDrawVert",
@@ -68,57 +71,56 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiWindow*",
         "ImFontAtlasCustomRect",
         "ImFontConfig",
+
+        # from imgui_internal.h
         "ImRect",
+        "ImGuiColorMod",
+        "ImGuiGroupData",
+        "ImGuiPopupData",
+        "ImGuiViewportP*",
+        "ImGuiInputEvent",
+        "ImGuiWindowStackData",
+        "ImGuiTableColumnSortSpecs",
+        "ImGuiTableInstanceData",
+        "ImGuiTableTempData",
+        "ImGuiNavTreeNodeData",
+        "ImGuiPtrOrIndex",
+        "ImGuiSettingsHandler",
+        "ImGuiShrinkWidthItem",
+        "ImGuiStackLevelInfo",
+        "ImGuiTabItem",
+        "ImGuiKeyRoutingData",
+        "ImGuiListClipperData",
+        "ImGuiListClipperRange",
+        "ImGuiOldColumnData",
+        "ImGuiOldColumns",
+        "ImGuiStyleMod",  # uses union
     ]
     cpp_synonyms_list_str=[
         "ImTextureID=int",
         "ImDrawIdx=uint",
         "ImGuiID=uint",
-        "ImU32=uint"
+        "ImU32=uint",
+        "ImWchar32=uint",
+        "ImWchar=ImWchar32",
+        "ImGuiItemFlags=int",
     ]
     ignored_types = [
-        "T",
-        "ImWchar",
-        "ImBitArray",
-        "ImGuiTextRange",
-        "char",
-        "ImGuiStoragePair",
-        "ImVec1",
-        "ImVec2ih",
-        "ImDrawIdx",
-        "ImGuiColorMod",
-        "ImGuiContextHook",
-        "ImGuiDockNodeSettings",
-        "ImGuiDockRequest",
-        "ImGuiGroupData",
-        "ImGuiInputEvent",
-        "ImGuiItemFlags",
-        "ImGuiKeyRoutingData",
-        "ImGuiListClipperData",
-        "ImGuiListClipperRange",
-        "ImGuiNavTreeNodeData",
-        "ImGuiOldColumnData",
-        "ImGuiOldColumns",
-        "ImGuiPopupData",
-        "ImGuiPtrOrIndex",
-        "ImGuiSettingsHandler",
-        "ImGuiShrinkWidthItem",
-        "ImGuiStackLevelInfo",
-        "ImGuiStyleMod",
-        "ImGuiTabItem",
-        "ImGuiTableColumnSortSpecs",
-        "ImGuiTableInstanceData",
-        "ImGuiTableTempData",
-        "ImGuiTest*",
+        "const char*",
+
+        "ImBitArray",  # double template
+        "ImGuiTextRange",  # char * pointers
+        "ImGuiStoragePair",  # internal subclass
+        "ImGuiContextHook",  # callbacks with C function pointers
+        "ImGuiDockNodeSettings",  # opaque
+        "ImGuiDockRequest",  # opaque
+
+        "ImGuiTest*",  # ImGui Test Engine only
         "ImGuiTestInfoTask*",
         "ImGuiTestInput",
         "ImGuiTestLogLineInfo",
         "ImGuiTestRunTask",
         "ImGuiTestRunTask",
-        "ImGuiViewportP*",
-        "ImGuiWindowStackData",
-        "const char*",
-        "uchar",
     ]
 
     options.class_template_options.add_specialization(
@@ -128,6 +130,8 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
     )
     for ignored_spec in ignored_types:
         options.srcmlcpp_options.ignored_warning_parts.append("Excluding template type ImVector<" + ignored_spec + ">")
+    options.srcmlcpp_options.ignored_warning_parts += [
+        "Excluding template type const ImVector<T>", "Excluding template type ImVector<T>"]
 
     for instantiated_type in instantiated_types:
         python_iterable_type = instantiated_type.replace("ImGui", "").replace("*", "_ptr")
@@ -228,25 +232,18 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.fn_exclude_by_name__regex = join_string_by_pipe_char(
         [
             # IMGUI_API void          SetAllocatorFunctions(ImGuiMemAllocFunc alloc_func, ImGuiMemFreeFunc free_func, void* user_data = NULL);
-            #                                               ^
             # IMGUI_API void          GetAllocatorFunctions(ImGuiMemAllocFunc* p_alloc_func, ImGuiMemFreeFunc* p_free_func, void** p_user_data);
-            #                                               ^
             # IMGUI_API void*         MemAlloc(size_t size);
-            #           ^
             # IMGUI_API void          MemFree(void* ptr);
-            #                                 ^
             r"\bGetAllocatorFunctions\b",
             r"\bSetAllocatorFunctions\b",
             r"\bMemAlloc\b",
             r"\bMemFree\b",
             # IMGUI_API void              GetTexDataAsAlpha8(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL);  // 1 byte per-pixel
-            #                                                             ^
             # IMGUI_API void              GetTexDataAsRGBA32(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = NULL);  // 4 bytes-per-pixel
-            #                                                             ^
             r"\bGetTexDataAsAlpha8\b",
             r"\bGetTexDataAsRGBA32\b",
             # IMGUI_API ImVec2            CalcTextSizeA(float size, float max_width, float wrap_width, const char* text_begin, const char* text_end = NULL, const char** remaining = NULL) const; // utf8
-            #                                                                                                                                                         ^
             r"\bCalcTextSizeA\b",
             r"ImFormatStringToTempBuffer",
             r"ImTextStrFromUtf8",
@@ -279,7 +276,6 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
         [
             #     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
             #     ImDrawCallback  UserCallback;       // 4-8  // If != NULL, call the function instead of rendering the vertices. clip_rect and texture_id will be set normally.
-            #     ^
             r"Callback$",
             r"^TexPixelsAlpha8$"
         ]
@@ -297,16 +293,10 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^ImBitArray",
             r"::STB_",
             r"ImGuiStoragePair"
-            # r"^ImGuiStorage$"
         ]
     )
 
-    options.class_exclude_by_name__regex = join_string_by_pipe_char(
-        [
-            # "ImGuiTextBuffer",
-            # "^ImGuiStorage$"
-        ]
-    )
+    options.class_exclude_by_name__regex = join_string_by_pipe_char([])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
         [
@@ -355,9 +345,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     # Exclude functions that take char or const ImWchar * params
     options.fn_exclude_by_param_type__regex = "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"
 
-    # Version where we use Boxed types everywhere
-    # options.fn_params_replace_modifiable_immutable_by_boxed__regex = r".*"
-    # Version where we return tuples
+    # Version where we use Boxed types everywhere:
+    #     options.fn_params_replace_modifiable_immutable_by_boxed__regex = r".*"
+    # Version where we return tuples:
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
 
     options.fn_params_replace_c_array_modifiable_by_boxed__regex = ""
@@ -396,11 +386,6 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
 def sandbox():
     code = """
-
-struct ImDrawData
-{
-    ImVector<ImDrawList*> CmdLists;
-};
     """
 
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, True)

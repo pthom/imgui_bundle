@@ -1404,6 +1404,8 @@ class InputTextDeactivatedState:
 
     # ImGuiID            ID;    /* original C++ signature */
     id_: ID  # widget id owning the text state (which just got deactivated)
+    # ImVector<char>     TextA;    /* original C++ signature */
+    text_a: ImVector_char  # text buffer
 
     # ImGuiInputTextDeactivatedState()    { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1426,6 +1428,12 @@ class InputTextState:
     cur_len_w: int  # we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.
     # CurLenA;    /* original C++ signature */
     cur_len_a: int  # we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.
+    # ImVector<ImWchar>       TextW;    /* original C++ signature */
+    text_w: ImVector_ImWchar  # edit buffer, we need to persist but can't guarantee the persistence of the user-provided buffer. so we copy into own buffer.
+    # ImVector<char>          TextA;    /* original C++ signature */
+    text_a: ImVector_char  # temporary UTF8 buffer for callbacks and other operations. this is not updated in every code-path! size=capacity.
+    # ImVector<char>          InitialTextA;    /* original C++ signature */
+    initial_text_a: ImVector_char  # backup of end-user buffer at the time of focus (in UTF-8, unaltered)
     # bool                    TextAIsValid;    /* original C++ signature */
     text_a_is_valid: bool  # temporary UTF8 buffer is not initially valid before we make the widget active (until then we pull the data from user argument)
     # int                     BufCapacityA;    /* original C++ signature */
@@ -1939,6 +1947,11 @@ class KeyRoutingTable:
     Stored in main context (1 instance)
     """
 
+    # ImVector<ImGuiKeyRoutingData>   Entries;    /* original C++ signature */
+    entries: ImVector_KeyRoutingData
+    # ImVector<ImGuiKeyRoutingData>   EntriesNext;    /* original C++ signature */
+    entries_next: ImVector_KeyRoutingData  # Double-buffer to avoid reallocation (could use a shared buffer)
+
     # ImGuiKeyRoutingTable()          { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
@@ -2127,6 +2140,8 @@ class ListClipperData:
     step_no: int
     # int                             ItemsFrozen;    /* original C++ signature */
     items_frozen: int
+    # ImVector<ImGuiListClipperRange> Ranges;    /* original C++ signature */
+    ranges: ImVector_ListClipperRange
 
     # ImGuiListClipperData()          { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -2454,6 +2469,8 @@ class OldColumns:
     host_backup_clip_rect: ImRect  # Backup of ClipRect during PushColumnsBackground()/PopColumnsBackground()
     # ImRect              HostBackupParentWorkRect;    /* original C++ signature */
     host_backup_parent_work_rect: ImRect  # Backup of WorkRect at the time of BeginColumns()
+    # ImVector<ImGuiOldColumnData> Columns;    /* original C++ signature */
+    columns: ImVector_OldColumnData
     # ImDrawListSplitter  Splitter;    /* original C++ signature */
     splitter: ImDrawListSplitter
 
@@ -3039,6 +3056,8 @@ class IDStackTool:
     stack_level: int  # -1: query stack and resize Results, >= 0: individual stack level
     # ImGuiID                 QueryId;    /* original C++ signature */
     query_id: ID  # ID to query details for
+    # ImVector<ImGuiStackLevelInfo> Results;    /* original C++ signature */
+    results: ImVector_StackLevelInfo
     # bool                    CopyToClipboardOnCtrlC;    /* original C++ signature */
     copy_to_clipboard_on_ctrl_c: bool
     # float                   CopyToClipboardLastTime;    /* original C++ signature */
@@ -3135,6 +3154,10 @@ class Context:
     test_engine: Any  # Test engine user data
 
     # Inputs
+    # ImVector<ImGuiInputEvent> InputEventsQueue;    /* original C++ signature */
+    input_events_queue: ImVector_InputEvent  # Input events which will be trickled/written into IO structure.
+    # ImVector<ImGuiInputEvent> InputEventsTrail;    /* original C++ signature */
+    input_events_trail: ImVector_InputEvent  # Past input events processed in NewFrame(). This is to allow domain-specific application to access e.g mouse/pen trail.
     # ImGuiMouseSource        InputEventsNextMouseSource;    /* original C++ signature */
     input_events_next_mouse_source: MouseSource
     # ImU32                   InputEventsNextEventId;    /* original C++ signature */
@@ -3147,6 +3170,8 @@ class Context:
     windows_focus_order: ImVector_Window_ptr  # Root windows, sorted in focus order, back to front.
     # ImVector<ImGuiWindow*>  WindowsTempSortBuffer;    /* original C++ signature */
     windows_temp_sort_buffer: ImVector_Window_ptr  # Temporary buffer used in EndFrame() to reorder windows so parents are kept before their child
+    # ImVector<ImGuiWindowStackData> CurrentWindowStack;    /* original C++ signature */
+    current_window_stack: ImVector_WindowStackData
     # ImGuiStorage            WindowsById;    /* original C++ signature */
     windows_by_id: Storage  # Map window's ImGuiID to ImGuiWindow*
     # int                     WindowsActiveCount;    /* original C++ signature */
@@ -3257,15 +3282,31 @@ class Context:
     debug_show_group_rects: bool
 
     # Shared stacks
+    # ImVector<ImGuiColorMod>     ColorStack;    /* original C++ signature */
+    color_stack: ImVector_ColorMod  # Stack for PushStyleColor()/PopStyleColor() - inherited by Begin()
+    # ImVector<ImGuiStyleMod>     StyleVarStack;    /* original C++ signature */
+    style_var_stack: ImVector_StyleMod  # Stack for PushStyleVar()/PopStyleVar() - inherited by Begin()
     # ImVector<ImFont*>           FontStack;    /* original C++ signature */
     font_stack: ImVector_ImFont_ptr  # Stack for PushFont()/PopFont() - inherited by Begin()
     # ImVector<ImGuiID>           FocusScopeStack;    /* original C++ signature */
     focus_scope_stack: ImVector_ID  # Stack for PushFocusScope()/PopFocusScope() - inherited by BeginChild(), pushed into by Begin()
+    # ImVector<ImGuiItemFlags>    ItemFlagsStack;    /* original C++ signature */
+    item_flags_stack: ImVector_ItemFlags  # Stack for PushItemFlag()/PopItemFlag() - inherited by Begin()
+    # ImVector<ImGuiGroupData>    GroupStack;    /* original C++ signature */
+    group_stack: ImVector_GroupData  # Stack for BeginGroup()/EndGroup() - not inherited by Begin()
+    # ImVector<ImGuiPopupData>    OpenPopupStack;    /* original C++ signature */
+    open_popup_stack: ImVector_PopupData  # Which popups are open (persistent)
+    # ImVector<ImGuiPopupData>    BeginPopupStack;    /* original C++ signature */
+    begin_popup_stack: ImVector_PopupData  # Which level of BeginPopup() we are in (reset every frame)
+    # ImVector<ImGuiNavTreeNodeData> NavTreeNodeStack;    /* original C++ signature */
+    nav_tree_node_stack: ImVector_NavTreeNodeData  # Stack for TreeNode() when a NavLeft requested is emitted.
 
     # int                     BeginMenuCount;    /* original C++ signature */
     begin_menu_count: int
 
     # Viewports
+    # ImVector<ImGuiViewportP*> Viewports;    /* original C++ signature */
+    viewports: ImVector_ViewportP_ptr  # Active viewports (always 1+, and generally 1 unless multi-viewports are enabled). Each viewports hold their copy of ImDrawData.
     # float                   CurrentDpiScale;    /* original C++ signature */
     current_dpi_scale: float  # == CurrentViewport->DpiScale
     # ImGuiViewportP*         CurrentViewport;    /* original C++ signature */
@@ -3428,16 +3469,22 @@ class Context:
     drag_drop_accept_frame_count: int  # Last time a target expressed a desire to accept the source
     # ImGuiID                 DragDropHoldJustPressedId;    /* original C++ signature */
     drag_drop_hold_just_pressed_id: ID  # Set when holding a payload just made ButtonBehavior() return a press.
+    # ImVector<uchar> DragDropPayloadBufHeap;    /* original C++ signature */
+    drag_drop_payload_buf_heap: ImVector_uchar  # We don't expose the ImVector<> directly, ImGuiPayload only holds pointer+size
 
     # Clipper
     # int                             ClipperTempDataStacked;    /* original C++ signature */
     clipper_temp_data_stacked: int
+    # ImVector<ImGuiListClipperData>  ClipperTempData;    /* original C++ signature */
+    clipper_temp_data: ImVector_ListClipperData
 
     # Tables
     # ImGuiTable*                     CurrentTable;    /* original C++ signature */
     current_table: Table
     # int                             TablesTempDataStacked;    /* original C++ signature */
     tables_temp_data_stacked: int  # Temporary table data size (because we leave previous instances undestructed, we generally don't use TablesTempData.Size)
+    # ImVector<ImGuiTableTempData>    TablesTempData;    /* original C++ signature */
+    tables_temp_data: ImVector_TableTempData  # Temporary table data (buffers reused/shared across instances, support nesting)
     # ImVector<float>                 TablesLastTimeActive;    /* original C++ signature */
     tables_last_time_active: ImVector_float  # Last used timestamp of each tables (SOA, for efficient GC)
     # ImVector<ImDrawChannel>         DrawChannelsTempMergeBuffer;    /* original C++ signature */
@@ -3446,6 +3493,10 @@ class Context:
     # Tab bars
     # ImGuiTabBar*                    CurrentTabBar;    /* original C++ signature */
     current_tab_bar: TabBar
+    # ImVector<ImGuiPtrOrIndex>       CurrentTabBarStack;    /* original C++ signature */
+    current_tab_bar_stack: ImVector_PtrOrIndex
+    # ImVector<ImGuiShrinkWidthItem>  ShrinkWidthBuffer;    /* original C++ signature */
+    shrink_width_buffer: ImVector_ShrinkWidthItem
 
     # Hover Delay system
     # ImGuiID                 HoverItemDelayId;    /* original C++ signature */
@@ -3516,6 +3567,8 @@ class Context:
     lock_mark_edited: int
     # short                   TooltipOverrideCount;    /* original C++ signature */
     tooltip_override_count: int
+    # ImVector<char>          ClipboardHandlerData;    /* original C++ signature */
+    clipboard_handler_data: ImVector_char  # If no custom clipboard handler is defined
     # ImVector<ImGuiID>       MenusIdSubmittedThisFrame;    /* original C++ signature */
     menus_id_submitted_this_frame: ImVector_ID  # A list of menu IDs that were rendered at least once
     # ImGuiTypingSelectState  TypingSelectState;    /* original C++ signature */
@@ -3541,6 +3594,8 @@ class Context:
     settings_dirty_timer: float  # Save .ini Settings to memory when time reaches zero
     # ImGuiTextBuffer         SettingsIniData;    /* original C++ signature */
     settings_ini_data: TextBuffer  # In memory .ini settings
+    # ImVector<ImGuiSettingsHandler>      SettingsHandlers;    /* original C++ signature */
+    settings_handlers: ImVector_SettingsHandler  # List of .ini settings handlers
     # ImGuiID                             HookIdNext;    /* original C++ signature */
     hook_id_next: ID  # Next available HookId
 
@@ -3611,6 +3666,8 @@ class Context:
     want_capture_keyboard_next_frame: int  # "
     # int                     WantTextInputNextFrame;    /* original C++ signature */
     want_text_input_next_frame: int
+    # ImVector<char>          TempBuffer;    /* original C++ signature */
+    temp_buffer: ImVector_char  # Temporary text buffer
 
     # ImGuiContext(ImFontAtlas* shared_font_atlas)    /* original C++ signature */
     #     {
@@ -4101,6 +4158,8 @@ class Window:
     item_width_default: float
     # ImGuiStorage            StateStorage;    /* original C++ signature */
     state_storage: Storage
+    # ImVector<ImGuiOldColumns> ColumnsStorage;    /* original C++ signature */
+    columns_storage: ImVector_OldColumns
     # float                   FontWindowScale;    /* original C++ signature */
     font_window_scale: float  # User scale multiplier per-window, via SetWindowFontScale()
     # float                   FontDpiScale;    /* original C++ signature */
@@ -4278,6 +4337,8 @@ class TabItem:
 class TabBar:
     """Storage for a tab bar (sizeof() 152 bytes)"""
 
+    # ImVector<ImGuiTabItem> Tabs;    /* original C++ signature */
+    tabs: ImVector_TabItem
     # ImGuiTabBarFlags    Flags;    /* original C++ signature */
     flags: TabBarFlags
     # ImGuiID             ID;    /* original C++ signature */
@@ -4600,8 +4661,12 @@ class Table:
     draw_splitter: ImDrawListSplitter  # Shortcut to TempData->DrawSplitter while in table. Isolate draw commands per columns to avoid switching clip rect constantly
     # ImGuiTableInstanceData      InstanceDataFirst;    /* original C++ signature */
     instance_data_first: TableInstanceData
+    # ImVector<ImGuiTableInstanceData>    InstanceDataExtra;    /* original C++ signature */
+    instance_data_extra: ImVector_TableInstanceData  # FIXME-OPT: Using a small-vector pattern would be good.
     # ImGuiTableColumnSortSpecs   SortSpecsSingle;    /* original C++ signature */
     sort_specs_single: TableColumnSortSpecs
+    # ImVector<ImGuiTableColumnSortSpecs> SortSpecsMulti;    /* original C++ signature */
+    sort_specs_multi: ImVector_TableColumnSortSpecs  # FIXME-OPT: Using a small-vector pattern would be good.
     # ImGuiTableSortSpecs         SortSpecs;    /* original C++ signature */
     sort_specs: TableSortSpecs  # Public facing sorts specs, this is what we return in TableGetSortSpecs()
     # ImGuiTableColumnIdx         SortSpecsCount;    /* original C++ signature */

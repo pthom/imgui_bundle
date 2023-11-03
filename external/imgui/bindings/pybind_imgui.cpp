@@ -9,6 +9,7 @@
 #include "imgui_docking_internal_types.h"
 
 using uint = unsigned int;
+using uchar = unsigned char;
 
 namespace py = pybind11;
 
@@ -3261,6 +3262,80 @@ void py_init_module_imgui_main(py::module& m)
         .def("__iter__", [](const ImVector<float> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<float> &v) { return v.size(); })
         ;
+    auto pyClassImVector_char =
+        py::class_<ImVector<char>>
+            (m, "ImVector_char", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<char> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<char>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<char>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<char>::empty, "(private API)")
+        .def("size",
+            &ImVector<char>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<char>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<char>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<char>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<char>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<char>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<char> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<char> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_uchar =
+        py::class_<ImVector<uchar>>
+            (m, "ImVector_uchar", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<uchar> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<uchar>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<uchar>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<uchar>::empty, "(private API)")
+        .def("size",
+            &ImVector<uchar>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<uchar>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<uchar>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<uchar>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<uchar>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<uchar>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<uchar> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<uchar> &v) { return v.size(); })
+        ;
     auto pyClassImVector_ImDrawCmd =
         py::class_<ImVector<ImDrawCmd>>
             (m, "ImVector_ImDrawCmd", "")
@@ -3779,6 +3854,783 @@ void py_init_module_imgui_main(py::module& m)
         .def("__iter__", [](const ImVector<ImRect> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImRect> &v) { return v.size(); })
         ;
+    auto pyClassImVector_ImGuiColorMod =
+        py::class_<ImVector<ImGuiColorMod>>
+            (m, "ImVector_ColorMod", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiColorMod> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiColorMod>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiColorMod>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiColorMod>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiColorMod>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiColorMod>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiColorMod>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiColorMod>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiColorMod> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiColorMod> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiGroupData =
+        py::class_<ImVector<ImGuiGroupData>>
+            (m, "ImVector_GroupData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiGroupData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiGroupData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiGroupData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiGroupData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiGroupData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiGroupData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiGroupData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiGroupData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiGroupData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiGroupData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiPopupData =
+        py::class_<ImVector<ImGuiPopupData>>
+            (m, "ImVector_PopupData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiPopupData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiPopupData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiPopupData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiPopupData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiPopupData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiPopupData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiPopupData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiPopupData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiPopupData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiPopupData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiViewportP_ptr =
+        py::class_<ImVector<ImGuiViewportP *>>
+            (m, "ImVector_ViewportP_ptr", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiViewportP *> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiViewportP *>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiViewportP *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiViewportP *>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiViewportP *>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiViewportP *>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiViewportP *>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiViewportP *>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiViewportP *> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiViewportP *> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiInputEvent =
+        py::class_<ImVector<ImGuiInputEvent>>
+            (m, "ImVector_InputEvent", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiInputEvent> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiInputEvent>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiInputEvent>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiInputEvent>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiInputEvent>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiInputEvent>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiInputEvent>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiInputEvent>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiInputEvent> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiInputEvent> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiWindowStackData =
+        py::class_<ImVector<ImGuiWindowStackData>>
+            (m, "ImVector_WindowStackData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiWindowStackData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiWindowStackData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiWindowStackData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiWindowStackData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiWindowStackData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiWindowStackData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiWindowStackData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiWindowStackData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiWindowStackData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiWindowStackData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiTableColumnSortSpecs =
+        py::class_<ImVector<ImGuiTableColumnSortSpecs>>
+            (m, "ImVector_TableColumnSortSpecs", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiTableColumnSortSpecs> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiTableColumnSortSpecs>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiTableColumnSortSpecs>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiTableColumnSortSpecs>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiTableColumnSortSpecs>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiTableColumnSortSpecs>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiTableColumnSortSpecs>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiTableColumnSortSpecs>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiTableColumnSortSpecs> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiTableColumnSortSpecs> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiTableInstanceData =
+        py::class_<ImVector<ImGuiTableInstanceData>>
+            (m, "ImVector_TableInstanceData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiTableInstanceData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiTableInstanceData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiTableInstanceData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiTableInstanceData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiTableInstanceData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiTableInstanceData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiTableInstanceData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiTableInstanceData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiTableInstanceData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiTableInstanceData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiTableTempData =
+        py::class_<ImVector<ImGuiTableTempData>>
+            (m, "ImVector_TableTempData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiTableTempData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiTableTempData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiTableTempData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiTableTempData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiTableTempData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiTableTempData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiTableTempData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiTableTempData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiTableTempData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiTableTempData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiNavTreeNodeData =
+        py::class_<ImVector<ImGuiNavTreeNodeData>>
+            (m, "ImVector_NavTreeNodeData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiNavTreeNodeData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiNavTreeNodeData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiNavTreeNodeData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiNavTreeNodeData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiNavTreeNodeData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiNavTreeNodeData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiNavTreeNodeData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiNavTreeNodeData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiNavTreeNodeData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiNavTreeNodeData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiNavTreeNodeData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiNavTreeNodeData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiPtrOrIndex =
+        py::class_<ImVector<ImGuiPtrOrIndex>>
+            (m, "ImVector_PtrOrIndex", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiPtrOrIndex> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiPtrOrIndex>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiPtrOrIndex>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiPtrOrIndex>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiPtrOrIndex>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiPtrOrIndex>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiPtrOrIndex>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiPtrOrIndex>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiPtrOrIndex> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiPtrOrIndex> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiSettingsHandler =
+        py::class_<ImVector<ImGuiSettingsHandler>>
+            (m, "ImVector_SettingsHandler", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiSettingsHandler> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiSettingsHandler>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiSettingsHandler>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiSettingsHandler>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiSettingsHandler>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiSettingsHandler>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiSettingsHandler>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiSettingsHandler>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiSettingsHandler> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiSettingsHandler> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiShrinkWidthItem =
+        py::class_<ImVector<ImGuiShrinkWidthItem>>
+            (m, "ImVector_ShrinkWidthItem", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiShrinkWidthItem> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiShrinkWidthItem>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiShrinkWidthItem>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiShrinkWidthItem>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiShrinkWidthItem>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiShrinkWidthItem>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiShrinkWidthItem>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiShrinkWidthItem>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiShrinkWidthItem> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiShrinkWidthItem> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiStackLevelInfo =
+        py::class_<ImVector<ImGuiStackLevelInfo>>
+            (m, "ImVector_StackLevelInfo", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiStackLevelInfo> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiStackLevelInfo>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiStackLevelInfo>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiStackLevelInfo>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiStackLevelInfo>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiStackLevelInfo>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiStackLevelInfo>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiStackLevelInfo>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiStackLevelInfo> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiStackLevelInfo> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiTabItem =
+        py::class_<ImVector<ImGuiTabItem>>
+            (m, "ImVector_TabItem", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiTabItem> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiTabItem>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiTabItem>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiTabItem>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiTabItem>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiTabItem>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiTabItem>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiTabItem>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiTabItem> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiTabItem> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiKeyRoutingData =
+        py::class_<ImVector<ImGuiKeyRoutingData>>
+            (m, "ImVector_KeyRoutingData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiKeyRoutingData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiKeyRoutingData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiKeyRoutingData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiKeyRoutingData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiKeyRoutingData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiKeyRoutingData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiKeyRoutingData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiKeyRoutingData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiKeyRoutingData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiKeyRoutingData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiListClipperData =
+        py::class_<ImVector<ImGuiListClipperData>>
+            (m, "ImVector_ListClipperData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiListClipperData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiListClipperData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiListClipperData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiListClipperData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiListClipperData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiListClipperData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiListClipperData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiListClipperData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiListClipperData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiListClipperData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiListClipperRange =
+        py::class_<ImVector<ImGuiListClipperRange>>
+            (m, "ImVector_ListClipperRange", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiListClipperRange> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiListClipperRange>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiListClipperRange>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiListClipperRange>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiListClipperRange>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiListClipperRange>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiListClipperRange>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiListClipperRange>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiListClipperRange> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiListClipperRange> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiOldColumnData =
+        py::class_<ImVector<ImGuiOldColumnData>>
+            (m, "ImVector_OldColumnData", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiOldColumnData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiOldColumnData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiOldColumnData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiOldColumnData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiOldColumnData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiOldColumnData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiOldColumnData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiOldColumnData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiOldColumnData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiOldColumnData> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiOldColumns =
+        py::class_<ImVector<ImGuiOldColumns>>
+            (m, "ImVector_OldColumns", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiOldColumns> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiOldColumns>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiOldColumns>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiOldColumns>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiOldColumns>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiOldColumns>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiOldColumns>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiOldColumns>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiOldColumns> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiOldColumns> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImGuiStyleMod =
+        py::class_<ImVector<ImGuiStyleMod>>
+            (m, "ImVector_StyleMod", "")
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiStyleMod> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiStyleMod>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiStyleMod>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiStyleMod>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiStyleMod>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiStyleMod>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiStyleMod>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiStyleMod>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiStyleMod> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiStyleMod> &v) { return v.size(); })
+        ;
 
 
     auto pyClassImGuiStyle =
@@ -4107,6 +4959,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("backend_using_legacy_key_arrays", &ImGuiIO::BackendUsingLegacyKeyArrays, "-1: unknown, 0: using AddKeyEvent(), 1: using legacy io.KeysDown[]")
         .def_readwrite("backend_using_legacy_nav_input_array", &ImGuiIO::BackendUsingLegacyNavInputArray, "0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly")
         .def_readwrite("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")
+        .def_readwrite("input_queue_characters", &ImGuiIO::InputQueueCharacters, "Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.")
         .def(py::init<>())
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
@@ -4294,6 +5147,7 @@ void py_init_module_imgui_main(py::module& m)
     auto pyClassImGuiTextBuffer =
         py::class_<ImGuiTextBuffer>
             (m, "TextBuffer", " Helper: Growable text buffer for logging/accumulating text\n (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')")
+        .def_readwrite("buf", &ImGuiTextBuffer::Buf, "")
         .def(py::init<>())
         .def("__getitem__",
             &ImGuiTextBuffer::operator[],
@@ -4877,6 +5731,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImFontGlyphRangesBuilder::AddText,
             py::arg("text"), py::arg("text_end") = py::none(),
             "Add string (each character of the UTF-8 string are added)")
+        .def("build_ranges",
+            &ImFontGlyphRangesBuilder::BuildRanges,
+            py::arg("out_ranges"),
+            "Output new ranges")
         ;
 
 
@@ -4999,6 +5857,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("index_advance_x", &ImFont::IndexAdvanceX, "12-16 // out //            // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this this info, and are often bottleneck in large UI).")
         .def_readwrite("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")
         .def_readwrite("font_size", &ImFont::FontSize, "4     // in  //            // Height of characters/line, set during loading (don't change after loading)")
+        .def_readwrite("index_lookup", &ImFont::IndexLookup, "12-16 // out //            // Sparse. Index glyphs by Unicode code-point.")
         .def_readwrite("glyphs", &ImFont::Glyphs, "12-16 // out //            // All glyphs.")
         .def_readonly("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")
         .def_readwrite("container_atlas", &ImFont::ContainerAtlas, "4-8   // out //            // What we has been loaded into")

@@ -104,7 +104,6 @@ def main():
 def sandbox():
     code = """
     """
-
     options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
     generated_code = litgen.generate_code(options_imgui, code)
     print(generated_code.pydef_code)
