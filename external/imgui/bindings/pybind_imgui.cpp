@@ -5012,8 +5012,20 @@ void py_init_module_imgui_main(py::module& m)
         .def_readonly("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")
         .def_readwrite("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")
         .def_readwrite("backend_renderer_user_data", &ImGuiIO::BackendRendererUserData, "= None           // User data for renderer backend")
-        .def_readwrite("backend_language_user_data", &ImGuiIO::BackendLanguageUserData, "= None           // User data for non C++ programming language backend")
-        .def_readwrite("clipboard_user_data", &ImGuiIO::ClipboardUserData, "")
+        .def_readwrite("backend_language_user_data", &ImGuiIO::BackendLanguageUserData, "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def_readwrite("get_clipboard_text_fn_", &ImGuiIO::GetClipboardTextFn_, "")
+        .def_readwrite("set_clipboard_text_fn_", &ImGuiIO::SetClipboardTextFn_, "")
+        // #endif
+        //
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def_readwrite("set_platform_ime_data_fn", &ImGuiIO::SetPlatformImeDataFn, "")
+        // #else
+        //
+        // #endif
+        //
         .def_readwrite("platform_locale_decimal_point", &ImGuiIO::PlatformLocaleDecimalPoint, "'.'              // [Experimental] Configure decimal point e.g. '.' or ',' useful for some languages (e.g. German), generally pulled from *localeconv()->decimal_point")
         .def("add_key_event",
             &ImGuiIO::AddKeyEvent,
@@ -6518,31 +6530,4 @@ void py_init_module_imgui_main(py::module& m)
     //    def _py_index_buffer_index_size():
     //    return sizeof(cimgui.ImDrawIdx)
     m.attr("INDEX_SIZE") = sizeof(ImDrawIdx);
-
-    //
-    // Manual publication of clipboard callbacks
-    //
-    using FnGetClipboardFromBackend = std::function<std::string()>;
-    using FnSetClipboardToBackend = std::function<void(std::string)>;
-
-    static FnGetClipboardFromBackend gFnGetClipboardFromBackend;
-    static FnSetClipboardToBackend gFnSetClipboardToBackend;
-    static std::string gExternalClipboardText;
-
-    pyClassImGuiIO.def("set_backend_get_clipboard_text_fn", [](ImGuiIO& io, FnGetClipboardFromBackend f){
-        gFnGetClipboardFromBackend = f;
-        io.GetClipboardTextFn = [](void*) -> const char*
-        {
-            gExternalClipboardText = gFnGetClipboardFromBackend();
-            return gExternalClipboardText.c_str();
-        };
-    });
-    pyClassImGuiIO.def("set_backend_set_clipboard_text_fn", [](ImGuiIO& io, FnSetClipboardToBackend f){
-        gFnSetClipboardToBackend = f;
-        io.SetClipboardTextFn = [](void*, const char* text)
-        {
-            gFnSetClipboardToBackend(std::string(text));
-        };
-    });
-
 }

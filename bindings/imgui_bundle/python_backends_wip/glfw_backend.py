@@ -33,8 +33,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         def set_clipboard_text(text: str) -> None:
             self._set_clipboard_text(text)
 
-        imgui.get_io().set_backend_get_clipboard_text_fn(get_clipboard_text)
-        imgui.get_io().set_backend_set_clipboard_text_fn(set_clipboard_text)
+        imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
+        imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
 
         self._map_keys()
         self._gui_time = None

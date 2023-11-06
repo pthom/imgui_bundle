@@ -395,11 +395,16 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
 def sandbox():
     code = """
+    struct Foo { 
+    std::function<std::string(void*)> GetClipboardTextFn_;
+    std::function<void(std::string)> SetClipboardTextFn_;
+
+    std::function<void(ImGuiViewport*, ImGuiPlatformImeData*)> SetPlatformImeDataFn;
+    };
     """
 
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, True)
-    options.fn_force_overload__regex = "BeginPlot"
-    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
+    # options.python_run_black_formatter = False
 
     generated_code = litgen.generate_code(options, code)
     print(generated_code.stub_code)

@@ -7950,12 +7950,32 @@ class IO:
     # void*       BackendRendererUserData;    /* original C++ signature */
     backend_renderer_user_data: Any  # = None           // User data for renderer backend
     # void*       BackendLanguageUserData;    /* original C++ signature */
-    backend_language_user_data: Any  # = None           // User data for non C++ programming language backend
+    backend_language_user_data: Any
+    # = None           // User data for non C++ programming language backend
 
+    # [ADAPT_IMGUI_BUNDLE]
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
     # Optional: Access OS clipboard
     # (default to use native Win32 clipboard on Windows, otherwise uses a private clipboard. Override to access OS clipboard on other architectures)
-    # void*       ClipboardUserData;    /* original C++ signature */
-    clipboard_user_data: Any
+    # std::function<std::string()> GetClipboardTextFn_;    /* original C++ signature */
+    get_clipboard_text_fn_: Callable[[], str]
+    # std::function<void(std::string)> SetClipboardTextFn_;    /* original C++ signature */
+    set_clipboard_text_fn_: Callable[[str], None]
+    #                                                #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
+    # Optional: Notify OS Input Method Editor of the screen position of your cursor for text input position (e.g. when using Japanese/Chinese IME on Windows)
+    # (default to use native imm32 api on Windows)
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::function<void(ImGuiViewport*, ImGuiPlatformImeData*)> SetPlatformImeDataFn;    /* original C++ signature */
+    set_platform_ime_data_fn: Callable[[Viewport, PlatformImeData], None]
+    #                                                #else
+    #
+    #                                                #endif
+    #
 
     # Optional: Platform locale
     # ImWchar     PlatformLocaleDecimalPoint;    /* original C++ signature */
@@ -10405,9 +10425,3 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
-
-class IO:
-    def set_backend_get_clipboard_text_fn(self, f: Callable[[], str]):
-        pass
-    def set_backend_set_clipboard_text_fn(self, f: Callable[[str], None]):
-        pass
