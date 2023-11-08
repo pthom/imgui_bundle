@@ -139,7 +139,7 @@ def demo_gui():
         imgui_md.render_unindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*")
 
     imgui_md.render_unindented("""
-        * The best way to learn about the numerous ImGui widgets is to open "ImGui Manual". It shows code snippets in C++, but you can refer to [these instructions](https://pthom.github.io/imgui_bundle/porting.html) on how to easily convert C++ ImGui code to Python.
+        * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
         """)
     imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.))
     if imgui.button("Open ImGui Manual"):

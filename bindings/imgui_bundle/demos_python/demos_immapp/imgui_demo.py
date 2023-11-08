@@ -1,9 +1,10 @@
-# noqa: E701
-# noqa: E702
-# noqa: E501
+# Port of imgui_demo.cpp (largely made with ChatGPT)
 
 # dear imgui, v1.90 WIP
 # (demo code)
+# noqa: E701
+# noqa: E702
+# noqa: E501
 
 # Help:
 # - Read FAQ at http://dearimgui.com/faq

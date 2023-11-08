@@ -152,7 +152,7 @@ void demo_imgui_bundle_intro()
     }
 
     ImGuiMd::RenderUnindented(R"(
-         * The best way to learn about the numerous ImGui widgets is to open "ImGui Manual". It shows code snippets in C++, but you can refer to [these instructions](https://pthom.github.io/imgui_bundle/porting.html) on how to easily convert C++ ImGui code to Python.
+        * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
     )");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
     if (ImGui::Button("Open ImGui Manual"))
