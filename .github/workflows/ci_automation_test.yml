@@ -20,7 +20,7 @@ jobs:
         # this does not work under macos-latest (may be "Off-screen Mesa" could help)
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
