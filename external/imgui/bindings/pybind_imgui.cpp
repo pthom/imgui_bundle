@@ -1758,6 +1758,15 @@ void py_init_module_imgui_main(py::module& m)
 
     m.def("end_menu",
         ImGui::EndMenu, "only call EndMenu() if BeginMenu() returns True!");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("menu_item_simple",
+        ImGui::MenuItemSimple,
+        py::arg("label"), py::arg("shortcut") = py::none(), py::arg("selected") = false, py::arg("enabled") = true,
+        "(private API)");
+    // #endif
+    //
 
     m.def("menu_item",
         [](const char * label, const char * shortcut, bool p_selected, bool enabled = true) -> std::tuple<bool, bool>
@@ -6530,4 +6539,10 @@ void py_init_module_imgui_main(py::module& m)
     //    def _py_index_buffer_index_size():
     //    return sizeof(cimgui.ImDrawIdx)
     m.attr("INDEX_SIZE") = sizeof(ImDrawIdx);
+
+
+    m.def("IM_COL32", [](int r, int g, int b, int a){
+       return IM_COL32(r, g, b, a);
+    });
+
 }

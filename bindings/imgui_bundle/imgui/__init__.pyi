@@ -2009,6 +2009,20 @@ def end_menu() -> None:
     """only call EndMenu() if BeginMenu() returns True!"""
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# inline bool          MenuItemSimple(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true) { return MenuItem(label, shortcut, selected, enabled); }    /* original C++ signature */
+def menu_item_simple(
+    label: str,
+    shortcut: Optional[str] = None,
+    selected: bool = False,
+    enabled: bool = True,
+) -> bool:
+    """(private API)"""
+    pass
+
+# #endif
+#
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */
 def menu_item(
     label: str, shortcut: str, p_selected: bool, enabled: bool = True
