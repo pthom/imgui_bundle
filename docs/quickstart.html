@@ -1180,7 +1180,7 @@ The typical layout of an assets folder looks like this:</p>
     <span class="tok-n">plot_size</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">15.0</span><span class="tok-p">,</span> <span class="tok-mf">15.0</span><span class="tok-p">)</span>
 
     <span class="tok-k">if</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Pie Chart&quot;</span><span class="tok-p">,</span> <span class="tok-n">plot_size</span><span class="tok-p">):</span>
-        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">setup_axes</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">AxisFlags_</span><span class="tok-o">.</span><span class="tok-n">no_decorations</span><span class="tok-p">,</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">AxisFlags_</span><span class="tok-o">.</span><span class="tok-n">no_decorations</span><span class="tok-p">)</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">setup_axes</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">AxisFlags_</span><span class="tok-o">.</span><span class="tok-n">no_decorations</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">AxisFlags_</span><span class="tok-o">.</span><span class="tok-n">no_decorations</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">)</span>
         <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_pie_chart</span><span class="tok-p">(</span><span class="tok-n">data_labels</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">array</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">plot_data</span><span class="tok-p">),</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.35</span><span class="tok-p">,</span> <span class="tok-s2">&quot;</span><span class="tok-si">%.2f</span><span class="tok-s2">&quot;</span><span class="tok-p">,</span> <span class="tok-mi">90</span><span class="tok-p">)</span>
         <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
 
@@ -1290,7 +1290,7 @@ The typical layout of an assets folder looks like this:</p>
     <span class="tok-k">return</span> <span class="tok-n">docs</span><span class="tok-p">[</span><span class="tok-n">which_doc</span><span class="tok-p">]</span>
 
 
-<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">is_doc_visible</span><span class="tok-o">=</span><span class="tok-p">{})</span>
+<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">is_doc_visible</span><span class="tok-o">=</span><span class="tok-p">{})</span>  <span class="tok-c1"># type: ignore # (ignore redef)</span>
 <span class="tok-k">def</span> <span class="tok-nf">show_doc</span><span class="tok-p">(</span><span class="tok-n">which_doc</span><span class="tok-p">):</span>
     <span class="tok-c1"># Access the &#39;static&#39; variable</span>
     <span class="tok-n">is_doc_visible</span> <span class="tok-o">=</span> <span class="tok-n">show_doc</span><span class="tok-o">.</span><span class="tok-n">is_doc_visible</span>
@@ -1977,11 +1977,13 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">rocket_progress</span><span class="tok-p">:</span> <span class="tok-nb">float</span>
     <span class="tok-n">my_app_settings</span><span class="tok-p">:</span> <span class="tok-n">MyAppSettings</span>
     <span class="tok-n">rocket_state</span><span class="tok-p">:</span> <span class="tok-n">RocketState</span>
+    <span class="tok-n">rocket_launch_time</span><span class="tok-p">:</span> <span class="tok-nb">float</span>
 
     <span class="tok-k">def</span> <span class="tok-fm">__init__</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-p">):</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">f</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">counter</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">rocket_progress</span> <span class="tok-o">=</span> <span class="tok-mf">0.0</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">rocket_launch_time</span> <span class="tok-o">=</span> <span class="tok-mf">0.0</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">my_app_settings</span> <span class="tok-o">=</span> <span class="tok-n">MyAppSettings</span><span class="tok-p">()</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">rocket_state</span> <span class="tok-o">=</span> <span class="tok-n">RocketState</span><span class="tok-o">.</span><span class="tok-n">Init</span>
 
@@ -2152,12 +2154,12 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
             <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">tip</span> <span class="tok-o">=</span> <span class="tok-n">tip</span>
 
     <span class="tok-n">all_flags</span> <span class="tok-o">=</span> <span class="tok-p">[</span>
-        <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">no_split</span><span class="tok-p">,</span> <span class="tok-s2">&quot;NoSplit&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;prevent Dock Nodes from being split&quot;</span><span class="tok-p">),</span>
+        <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">no_docking_split</span><span class="tok-p">,</span> <span class="tok-s2">&quot;NoSplit&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;prevent Dock Nodes from being split&quot;</span><span class="tok-p">),</span>
         <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">no_resize</span><span class="tok-p">,</span> <span class="tok-s2">&quot;NoResize&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;prevent Dock Nodes from being resized&quot;</span><span class="tok-p">),</span>
         <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">auto_hide_tab_bar</span><span class="tok-p">,</span> <span class="tok-s2">&quot;AutoHideTabBar&quot;</span><span class="tok-p">,</span>
                          <span class="tok-s2">&quot;show tab bar only if multiple windows</span><span class="tok-se">\n</span><span class="tok-s2">&quot;</span> <span class="tok-o">+</span>
                          <span class="tok-s2">&quot;You will need to restore the layout after changing (Menu </span><span class="tok-se">\&quot;</span><span class="tok-s2">View/Restore Layout</span><span class="tok-se">\&quot;</span><span class="tok-s2">)&quot;</span><span class="tok-p">),</span>
-        <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">no_docking_in_central_node</span><span class="tok-p">,</span> <span class="tok-s2">&quot;NoDockingInCentralNode&quot;</span><span class="tok-p">,</span>
+        <span class="tok-n">DockFlagWithInfo</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">DockNodeFlags_</span><span class="tok-o">.</span><span class="tok-n">no_docking_over_central_node</span><span class="tok-p">,</span> <span class="tok-s2">&quot;NoDockingInCentralNode&quot;</span><span class="tok-p">,</span>
                          <span class="tok-s2">&quot;prevent docking in central node</span><span class="tok-se">\n</span><span class="tok-s2">(only works with the main dock space)&quot;</span><span class="tok-p">),</span>
         <span class="tok-c1"># DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, &quot;PassthruCentralNode&quot;, &quot;advanced&quot;),</span>
     <span class="tok-p">]</span>
@@ -2334,7 +2336,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">dear_imgui_demo_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Demo&quot;</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
-    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>  <span class="tok-c1"># type: ignore</span>
 
     <span class="tok-c1"># additional_window is initially not visible (and not mentioned in the view menu).</span>
     <span class="tok-c1"># it will be opened only if the user chooses to display it</span>
@@ -2788,7 +2790,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
     <span class="tok-c1"># Demo 1: Open popup</span>
     <span class="tok-n">test_open_popup</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">register_test</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Demo Tests&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Open Popup&quot;</span><span class="tok-p">)</span>
-    <span class="tok-k">def</span> <span class="tok-nf">test_open_popup_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_open_popup_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
         <span class="tok-c1"># This is the function that will be called by our test</span>
         <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">set_ref</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">)</span>              <span class="tok-c1"># From now on, all actions happen in the &quot;Dear ImGui Demo&quot; window</span>
         <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open</span><span class="tok-p">(</span><span class="tok-s2">&quot;Popups &amp; Modal windows&quot;</span><span class="tok-p">)</span>     <span class="tok-c1"># Open the &quot;Popups &amp; Modal windows&quot; tree item</span>
@@ -2803,7 +2805,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
     <span class="tok-c1"># Demo 2 : Capture Dear ImGui Demo window</span>
     <span class="tok-n">test_capture_screenshot</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">register_test</span><span class="tok-p">(</span><span class="tok-n">engine</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Demo Tests&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Capture Screenshot&quot;</span><span class="tok-p">)</span>
-    <span class="tok-k">def</span> <span class="tok-nf">test_capture_screenshot_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_capture_screenshot_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
         <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">set_ref</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dear ImGui Demo&quot;</span><span class="tok-p">)</span>                   <span class="tok-c1"># From now on, actions happen in the &quot;Dear ImGui Demo&quot; window</span>
         <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open</span><span class="tok-p">(</span><span class="tok-s2">&quot;Widgets&quot;</span><span class="tok-p">)</span>                         <span class="tok-c1"># Open the &quot;Widgets&quot;, then &quot;Basic&quot; tree item</span>
         <span class="tok-n">ctx</span><span class="tok-o">.</span><span class="tok-n">item_open_all</span><span class="tok-p">(</span><span class="tok-s2">&quot;Basic&quot;</span><span class="tok-p">)</span>
@@ -2818,13 +2820,13 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-k">class</span> <span class="tok-nc">TestVar2</span><span class="tok-p">:</span>
         <span class="tok-n">my_int</span> <span class="tok-o">=</span> <span class="tok-mi">42</span>
     <span class="tok-n">test_var2</span> <span class="tok-o">=</span> <span class="tok-n">TestVar2</span><span class="tok-p">()</span>  <span class="tok-c1"># our custom variable(s)</span>
-    <span class="tok-k">def</span> <span class="tok-nf">test_custom_gui_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_custom_gui_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
         <span class="tok-c1"># Custom GUI for this test: it can edit our custom variable</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mi">40</span><span class="tok-p">,</span> <span class="tok-mi">8</span><span class="tok-p">))</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s2">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">,</span> <span class="tok-kc">None</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">no_saved_settings</span><span class="tok-p">)</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s2">&quot;Custom Gui Test Window&quot;</span><span class="tok-p">,</span> <span class="tok-kc">None</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">no_saved_settings</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">)</span>
         <span class="tok-n">_</span><span class="tok-p">,</span> <span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">slider_int</span><span class="tok-p">(</span><span class="tok-s2">&quot;Slider&quot;</span><span class="tok-p">,</span> <span class="tok-n">test_var2</span><span class="tok-o">.</span><span class="tok-n">my_int</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">)</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
-    <span class="tok-k">def</span> <span class="tok-nf">test_with_vars_test_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">):</span>
+    <span class="tok-k">def</span> <span class="tok-nf">test_with_vars_test_func</span><span class="tok-p">(</span><span class="tok-n">ctx</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">TestContext</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
         <span class="tok-c1"># Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables</span>
         <span class="tok-c1"># Optional: reset test_var2 to its startup values</span>
         <span class="tok-k">nonlocal</span> <span class="tok-n">test_var2</span>
@@ -2862,7 +2864,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
 
 <span class="tok-c1"># Defined later: helps to define the application layout, display the ImGui Demo, &amp; ImGui Test Engine Window</span>
-<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">):</span>
+<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
     <span class="tok-o">...</span>
 
 
@@ -2870,7 +2872,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-c1">#        - instantiate RunnerParams</span>
 <span class="tok-c1">#        - set `runner_params.use_imgui_test_engine = True`</span>
 <span class="tok-c1">#        - fill `runner_params.callbacks.register_tests`</span>
-<span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+<span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">()</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
     <span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">()</span>
     <span class="tok-n">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
 
@@ -2919,17 +2921,19 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">dear_imgui_demo_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Demo&quot;</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;ImGuiDemoSpace&quot;</span>
-    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>  <span class="tok-c1"># type: ignore</span>
 
     <span class="tok-n">test_engine_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
     <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Test Engine&quot;</span>
     <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;TestEngineSpace&quot;</span>
-    <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">show_test_engine_windows</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">(),</span> <span class="tok-kc">None</span><span class="tok-p">)</span>
+    <span class="tok-k">def</span> <span class="tok-nf">show_test_engine_windows</span><span class="tok-p">():</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">show_test_engine_windows</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">(),</span> <span class="tok-kc">None</span><span class="tok-p">)</span>
+    <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">show_test_engine_windows</span>
 
     <span class="tok-k">return</span> <span class="tok-p">[</span><span class="tok-n">my_window</span><span class="tok-p">,</span> <span class="tok-n">dear_imgui_demo_window</span><span class="tok-p">,</span> <span class="tok-n">test_engine_window</span><span class="tok-p">]</span>
 
 
-<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">):</span>
+<span class="tok-k">def</span> <span class="tok-nf">apply_application_layout</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-kc">None</span><span class="tok-p">:</span>  <span class="tok-c1"># type: ignore</span>
     <span class="tok-c1"># Define the application layout and windows</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">app_window_params</span><span class="tok-o">.</span><span class="tok-n">window_title</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Demo ImGui Test Engine&quot;</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">default_imgui_window_type</span> <span class="tok-o">=</span> \
@@ -3171,8 +3175,8 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-kn">import</span> <span class="tok-nn">cv2</span>  <span class="tok-c1"># type: ignore</span>
 <span class="tok-kn">import</span> <span class="tok-nn">math</span>
 
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python.demo_utils.api_demos</span> <span class="tok-kn">import</span> <span class="tok-o">*</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immvision</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python.demo_utils.api_demos</span> <span class="tok-kn">import</span> <span class="tok-o">*</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
 
 
@@ -3195,7 +3199,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-sd">&quot;&quot;&quot;Our image processing pipeline&quot;&quot;&quot;</span>
     <span class="tok-n">gray</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">cvtColor</span><span class="tok-p">(</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">COLOR_BGR2GRAY</span><span class="tok-p">)</span>
     <span class="tok-n">img_float</span> <span class="tok-o">=</span> <span class="tok-n">gray</span> <span class="tok-o">/</span> <span class="tok-mf">255.0</span>
-    <span class="tok-n">blurred</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">GaussianBlur</span><span class="tok-p">(</span><span class="tok-n">img_float</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">),</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">)</span>
+    <span class="tok-n">blurred</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">GaussianBlur</span><span class="tok-p">(</span><span class="tok-n">img_float</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">),</span> <span class="tok-n">sigmaX</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">,</span> <span class="tok-n">sigmaY</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">)</span>
 
     <span class="tok-n">good_scale</span> <span class="tok-o">=</span> <span class="tok-mf">1.0</span> <span class="tok-o">/</span> <span class="tok-n">math</span><span class="tok-o">.</span><span class="tok-n">pow</span><span class="tok-p">(</span><span class="tok-mf">2.0</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">k_size</span> <span class="tok-o">-</span> <span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span> <span class="tok-o">-</span> <span class="tok-mi">2</span><span class="tok-p">))</span>
 
@@ -4502,7 +4506,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-21 13:31:38 +0200
+Last updated 2023-11-09 22:03:08 +0100
 </div>
 </div>
 </body>

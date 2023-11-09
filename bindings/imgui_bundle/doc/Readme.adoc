@@ -248,7 +248,7 @@ vals = np.arange(0, np.pi * 2, 0.01)
 x = np.power(np.sin(vals), 3) * 16
 y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
 # Heart pulse rate and time tracking
-phase = 0
+phase = 0.0
 t0 = time.time() + 0.2
 heart_pulse_rate = 80
 
@@ -1076,7 +1076,7 @@ def demo_plot(app_state: AppState):
     plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
 
     if implot.begin_plot("Pie Chart", plot_size):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
         implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
         implot.end_plot()
 
@@ -1186,7 +1186,7 @@ def get_doc(which_doc: str) -> str:
     return docs[which_doc]
 
 
-@immapp.static(is_doc_visible={})
+@immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
 def show_doc(which_doc):
     # Access the 'static' variable
     is_doc_visible = show_doc.is_doc_visible
@@ -1852,11 +1852,13 @@ class AppState:
     rocket_progress: float
     my_app_settings: MyAppSettings
     rocket_state: RocketState
+    rocket_launch_time: float
 
     def __init__(self):
         self.f = 0
         self.counter = 0
         self.rocket_progress = 0.0
+        self.rocket_launch_time = 0.0
         self.my_app_settings = MyAppSettings()
         self.rocket_state = RocketState.Init
 
@@ -2027,12 +2029,12 @@ Most flags are inherited by children dock spaces.
             self.tip = tip
 
     all_flags = [
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_split, "NoSplit", "prevent Dock Nodes from being split"),
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_split, "NoSplit", "prevent Dock Nodes from being split"),
         DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
         DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
                          "show tab bar only if multiple windows\n" +
                          "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_in_central_node, "NoDockingInCentralNode",
+        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_over_central_node, "NoDockingInCentralNode",
                          "prevent docking in central node\n(only works with the main dock space)"),
         # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
     ]
@@ -2209,7 +2211,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # additional_window is initially not visible (and not mentioned in the view menu).
     # it will be opened only if the user chooses to display it
@@ -2639,7 +2641,7 @@ def my_register_tests():
 
     # Demo 1: Open popup
     test_open_popup = imgui.test_engine.register_test(engine, "Demo Tests", "Open Popup")
-    def test_open_popup_func(ctx: imgui.test_engine.TestContext):
+    def test_open_popup_func(ctx: imgui.test_engine.TestContext) -> None:
         # This is the function that will be called by our test
         ctx.set_ref("Dear ImGui Demo")              # From now on, all actions happen in the "Dear ImGui Demo" window
         ctx.item_open("Popups & Modal windows")     # Open the "Popups & Modal windows" tree item
@@ -2654,7 +2656,7 @@ def my_register_tests():
 
     # Demo 2 : Capture Dear ImGui Demo window
     test_capture_screenshot = imgui.test_engine.register_test(engine, "Demo Tests", "Capture Screenshot")
-    def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext):
+    def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext) -> None:
         ctx.set_ref("Dear ImGui Demo")                   # From now on, actions happen in the "Dear ImGui Demo" window
         ctx.item_open("Widgets")                         # Open the "Widgets", then "Basic" tree item
         ctx.item_open_all("Basic")
@@ -2669,13 +2671,13 @@ def my_register_tests():
     class TestVar2:
         my_int = 42
     test_var2 = TestVar2()  # our custom variable(s)
-    def test_custom_gui_func(ctx: imgui.test_engine.TestContext):
+    def test_custom_gui_func(ctx: imgui.test_engine.TestContext) -> None:
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
-        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings)
+        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value)
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
-    def test_with_vars_test_func(ctx: imgui.test_engine.TestContext):
+    def test_with_vars_test_func(ctx: imgui.test_engine.TestContext) -> None:
         # Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
         # Optional: reset test_var2 to its startup values
         nonlocal test_var2
@@ -2713,7 +2715,7 @@ def my_gui():
 
 
 # Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window
-def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:
     ...
 
 
@@ -2721,7 +2723,7 @@ def apply_application_layout(runner_params: hello_imgui.RunnerParams):
 #        - instantiate RunnerParams
 #        - set `runner_params.use_imgui_test_engine = True`
 #        - fill `runner_params.callbacks.register_tests`
-def main():
+def main() -> None:
     runner_params = hello_imgui.RunnerParams()
     apply_application_layout(runner_params)
 
@@ -2770,17 +2772,19 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "ImGuiDemoSpace"
-    dear_imgui_demo_window.gui_function = imgui.show_demo_window
+    dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     test_engine_window = hello_imgui.DockableWindow()
     test_engine_window.label = "Dear ImGui Test Engine"
     test_engine_window.dock_space_name = "TestEngineSpace"
-    test_engine_window.gui_function = lambda: imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+    def show_test_engine_windows():
+        imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+    test_engine_window.gui_function = show_test_engine_windows
 
     return [my_window, dear_imgui_demo_window, test_engine_window]
 
 
-def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
     runner_params.imgui_window_params.default_imgui_window_type = \
@@ -3013,8 +3017,8 @@ from enum import Enum
 import cv2  # type: ignore
 import math
 
-from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle.demos_python import demo_utils
 
 
@@ -3037,7 +3041,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     """Our image processing pipeline"""
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_float = gray / 255.0
-    blurred = cv2.GaussianBlur(img_float, (0, 0), params.blur_size, params.blur_size)
+    blurred = cv2.GaussianBlur(img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size)
 
     good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
 
