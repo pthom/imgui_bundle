@@ -1,10 +1,11 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# mypy: disable_error_code=no-untyped-call
 from typing import Optional, Callable, Tuple
 from imgui_bundle import immapp, hello_imgui
 import imgui_bundle
 
 
-VoidFunction = Callable[[None], None]
+VoidFunction = Callable[[], None]
 ScreenSize = Tuple[int, int]
 
 
@@ -18,8 +19,8 @@ def run_nb(
     with_implot: bool = True,
     with_markdown: bool = True,
     with_node_editor: bool = True,
-    thumbnail_height=150,
-    thumbnail_ratio=0.0,
+    thumbnail_height: int =150,
+    thumbnail_ratio: float =0.0,
     run_id: Optional[str] = None,
 ) -> None:
     """ImguiBundle app runner for jupyter notebook
@@ -65,7 +66,7 @@ def run_nb(
         )
 
     def make_thumbnail(image):
-        resize_ratio = 1
+        resize_ratio = 1.0
         if thumbnail_ratio != 0.0:
             resize_ratio = thumbnail_ratio
         elif thumbnail_height > 0:

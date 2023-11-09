@@ -61,7 +61,7 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         # Draw anything in the zoomable part,
         # or reserve some space (for example with imgui.Dummy)
         @immapp.run_anon_block
-        def _():
+        def _block():
             zone_width = 380.0
             imgui.begin_group()
             # If needed, just use imgui.Dummy to reserve some space

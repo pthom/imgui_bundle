@@ -20,7 +20,7 @@ def draw_transparent_image(texture: ImTextureID, rect: imgui.internal.ImRect, al
     )
 
 
-@immapp.static(start_time=-1.0, was_idling_restored=False)
+@immapp.static(start_time=-1.0, was_idling_restored=False)  # type: ignore
 def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin: ImVec2, final_alpha: float, url: str):
     static = animate_logo
     if static.start_time < 0:

@@ -2,15 +2,16 @@
 from typing import List
 import math
 import numpy as np
+from numpy.typing import NDArray
 from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 class DemoDragRectState:
-    x_data: np.ndarray
-    y_data1: np.ndarray
-    y_data2: np.ndarray
-    y_data3: np.ndarray
+    x_data: NDArray[np.float64]
+    y_data1: NDArray[np.float64]
+    y_data2: NDArray[np.float64]
+    y_data3: NDArray[np.float64]
     rect: implot.Rect
     flags: int
 
@@ -91,7 +92,7 @@ def demo_mixed_plot():
 
 
 class MyHeatmapData:
-    values: np.ndarray
+    values: NDArray[np.float64]
     x_ticks: List[str]
     y_ticks: List[str]
     n_ticks: int

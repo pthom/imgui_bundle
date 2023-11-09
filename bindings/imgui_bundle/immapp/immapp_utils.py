@@ -1,10 +1,17 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from typing import Callable, Any, Tuple, Optional
+from typing import Callable, Any, Tuple, Optional, TypeVar
 import imgui_bundle
 from imgui_bundle import immapp, hello_imgui
 
 
-def static(**kwargs: Any) -> Any:
+from typing import Callable, TypeVar, Any
+
+# Create type variables for the argument and return types of the function
+A = TypeVar('A', bound=Callable[..., Any])
+R = TypeVar('R')
+
+
+def static(**kwargs: Any) -> Callable[[A], A]:
     """A decorator that adds static variables to a function
     :param kwargs: list of static variables to add
     :return: decorated function
@@ -25,16 +32,15 @@ def static(**kwargs: Any) -> Any:
     Static variables are similar to global variables, with the same shortcomings!
     Use them only in small scripts, not in production code!
     """
-
-    def wrapper(function: Callable[[Any], Any]):
+    def decorator(func: A) -> A:
         for key, value in kwargs.items():
-            setattr(function, key, value)
-        return function
+            setattr(func, key, value)
+        return func
+    return decorator
 
-    return wrapper
 
 
-def run_anon_block(function: Callable[[], None]):
+def run_anon_block(function: Callable[[], None]) -> None:
     """Decorator for anonymous block
 
     This enables you to emulate CC++ anonymous blocks.

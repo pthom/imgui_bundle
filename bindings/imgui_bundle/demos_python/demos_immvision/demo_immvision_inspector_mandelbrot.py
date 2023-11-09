@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.typing import NDArray
 from imgui_bundle import immvision, immapp, imgui
 from imgui_bundle.demos_python import demo_utils
 
@@ -16,7 +17,7 @@ def lerp(a, b, x):
 # @njit(cache=True, nogil=True, parallel=True)
 def mandelbrot(
     width: int, height: int, x_center: PreciseFloat, y_center: PreciseFloat, zoom: PreciseFloat, max_iterations: int
-) -> np.ndarray:
+) -> NDArray[np.float32]:
     result = np.zeros((height, width), ColorType)
 
     # Compute boundings
@@ -78,9 +79,9 @@ def fill_inspector():
         width = 400
         height = 300
         max_iterations = 300
-        x = location["coords"][0]
-        y = location["coords"][1]
-        zoom = location["zoom"]
+        x = location["coords"][0]  # type: ignore
+        y = location["coords"][1]  # type: ignore
+        zoom: float = location["zoom"]  # type: ignore
         image = mandelbrot(width, height, x, y, zoom, max_iterations)
         immvision.inspector_add_image(
             image,

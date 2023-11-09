@@ -15,7 +15,7 @@ from imgui_bundle import imgui
 import sdl2  # type: ignore # if this fails, you need to: pip install PySDL2
 
 
-def main():
+def main() -> None:
     # Setup window
     if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER | sdl2.SDL_INIT_GAMECONTROLLER) != 0:
         print(f"Error: {sdl2.SDL_GetError()}")
@@ -164,7 +164,7 @@ def main():
             show_demo_window = imgui.show_demo_window(show_demo_window)
 
         # 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        def show_simple_window():
+        def show_simple_window() -> None:
             nonlocal show_demo_window, show_another_window, clear_color, counter, f
             # static float f = 0.0f;
             # static int counter = 0;
@@ -201,7 +201,7 @@ def main():
         show_simple_window()
 
         # 3. Show another simple window.
-        def gui_another_window():
+        def gui_another_window() -> None:
             nonlocal show_another_window
             if show_another_window:
                 imgui.begin(

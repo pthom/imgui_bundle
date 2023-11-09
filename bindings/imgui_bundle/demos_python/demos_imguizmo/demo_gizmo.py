@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 import math
 import munch  # type: ignore
+from numpy.typing import NDArray
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
@@ -16,9 +17,9 @@ except ModuleNotFoundError:
     exit(1)
 
 
-Matrix16 = np.ndarray
-Matrix6 = np.ndarray
-Matrix3 = np.ndarray
+Matrix16 = NDArray[np.float64]
+Matrix6 = NDArray[np.float64]
+Matrix3 = NDArray[np.float64]
 
 
 gizmo = imguizmo.im_guizmo
@@ -101,7 +102,7 @@ class EditTransformResult:
     cameraView: Matrix16
 
 
-@immapp.static(statics=None)
+@immapp.static(statics=None)  # type: ignore
 def EditTransform(
     cameraView: Matrix16, cameraProjection: Matrix16, objectMatrix: Matrix16, editTransformDecomposition: bool
 ) -> EditTransformResult:
@@ -257,11 +258,11 @@ def make_closure_demo_guizmo() -> GuiFunction:
         io = imgui.get_io()
         if isPerspective:
             radians = glm.radians(fov)  # The gui is in degree, we need radians for glm
-            cameraProjection = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)
+            cameraProjection = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)  # type: ignore
             cameraProjection = np.array(cameraProjection)
         else:
             viewHeight = viewWidth * io.display_size.y / io.display_size.x
-            cameraProjection = glm.ortho(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)
+            cameraProjection = glm.ortho(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)  # type: ignore
             cameraProjection = np.array(cameraProjection)
 
         gizmo.set_orthographic(not isPerspective)
@@ -305,7 +306,7 @@ def make_closure_demo_guizmo() -> GuiFunction:
             )
             at = glm.vec3(0.0, 0.0, 0.0)
             up = glm.vec3(0.0, 1.0, 0.0)
-            cameraView = glm.lookAt(eye, at, up)
+            cameraView = glm.lookAt(eye, at, up)  # type: ignore
             cameraView = np.array(cameraView)
             firstFrame = False
 
@@ -328,7 +329,7 @@ def make_closure_demo_guizmo() -> GuiFunction:
         for matId in range(gizmoCount):
             gizmo.set_id(matId)
 
-            result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)
+            result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)  # type: ignore
             if result.changed:
                 gObjectMatrix[matId] = result.objectMatrix
                 cameraView = result.cameraView

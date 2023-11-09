@@ -1,4 +1,6 @@
 # Port of imgui_demo.cpp (largely made with ChatGPT)
+# mypy: disable_error_code=attr-defined
+# mypy: disable_error_code=no-untyped-call
 
 # dear imgui, v1.90 WIP
 # (demo code)
@@ -110,49 +112,49 @@ IMGUI_DISABLE_DEBUG_TOOLS = False  # or True, depending on your configuration
 
 # Forward Declarations
 def show_example_app_main_menu_bar():
-    ...
+    pass
 
 def show_example_app_console(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_custom_rendering(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_dock_space(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_documents(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_log(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_layout(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_property_editor(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_simple_overlay(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_auto_resize(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_constrained_resize(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_fullscreen(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_long_text(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_example_app_window_titles(p_open: bool) -> bool:
-    ...
+    return True
 
 def show_demo_window_columns():
-    ...
+    return True
 
 
 
@@ -210,7 +212,7 @@ def IMGUI_DEMO_MARKER(section: str):
 # You may execute this function to experiment with the UI and understand what it does.
 # You may then search for keywords in the code when you are interested by a specific feature.
 
-def show_demo_window(p_open: bool) -> bool:
+def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
     # Exceptionally add an extra assert here for people confused about initial Dear ImGui setup
     # Most functions would normally just assert/crash if the context is missing.
     assert imgui.get_current_context() is not None, "Missing Dear ImGui context. Refer to examples app!"
@@ -548,6 +550,7 @@ def show_demo_window(p_open: bool) -> bool:
     imgui.end_child()  # </imgui.begin_child("Demos")>
     imgui.pop_item_width()
     imgui.end()
+    return True
 
 
 def show_demo_window_widgets():
@@ -3050,8 +3053,8 @@ def imgui_demo_marker_callback_default(marker):
     def get_caller_line_number() -> int:
         frame = inspect.currentframe()
         try:
-            caller_frame = frame.f_back.f_back.f_back
-            return caller_frame.f_lineno
+            caller_frame = frame.f_back.f_back.f_back  # type: ignore
+            return caller_frame.f_lineno  # type: ignore
         finally:
             del frame
     if not IMGUI_DEMO_MARKER_IS_ACTIVE:
@@ -3102,7 +3105,7 @@ class ImGuiDemoMarkerHighlight_Impl_DemoMarkersRegistry:
     # highlight starts a demo marker zone.
     # If the highlight mode is active and the demo marker zone is hovered, it will highlight it,
     # display a tooltip and return true. Otherwise it will return false.
-    def highlight(self, line_number):
+    def highlight(self, line_number) -> bool:
         # This will store the bounding for the next widgets, and this bounding will extend until the next call to DemoMarker
         self._store_zone_boundings(line_number)
         zone_boundings = self._get_zone_boundings_for_line(line_number)

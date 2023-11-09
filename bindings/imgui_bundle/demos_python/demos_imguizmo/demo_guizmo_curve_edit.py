@@ -10,7 +10,7 @@ from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 im_curve_edit = imguizmo.im_curve_edit
 
 
-class RampEdit(im_curve_edit.DelegatePure):
+class RampEdit(im_curve_edit.DelegatePure):  # type: ignore
     points: List[List[ImVec2]]
     visible: List[bool]
     min: ImVec2
@@ -68,7 +68,7 @@ class RampEdit(im_curve_edit.DelegatePure):
     def get_points_list(self, curve_index: int) -> List[ImVec2]:  # overridable (pure virtual)
         return self.points[curve_index]
 
-    def get_curve_type(self, param_0: int) -> im_curve_edit.CurveType:
+    def get_curve_type(self, param_0: int) -> im_curve_edit.CurveType:  # type: ignore
         return im_curve_edit.CurveType.curve_smooth
 
     def edit_point(self, curve_index: int, point_index: int, value: ImVec2) -> int:  # overridable (pure virtual)
@@ -86,7 +86,7 @@ class RampEdit(im_curve_edit.DelegatePure):
 
     def _sort_values(self, curve_index: int):
         def cmp(a: ImVec2, b: ImVec2) -> bool:
-            return a.x < b.x
+            return a.x < b.x  # type: ignore
 
         curve = self.points[curve_index]
         curve.sort(key=lambda point: point.x)

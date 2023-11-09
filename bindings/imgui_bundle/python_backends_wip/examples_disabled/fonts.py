@@ -5,7 +5,7 @@ from glob import glob
 from imgui.integrations.glfw import GlfwRenderer
 import OpenGL.GL as gl
 import glfw
-import imgui
+from imgui_bundle import imgui
 import os
 import random
 import sys

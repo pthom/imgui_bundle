@@ -22,7 +22,7 @@ def demo_gui():
 
 
 def main():
-    hello_imgui.set_assets_folder(demo_assets_folder())
+    set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000))
 
 

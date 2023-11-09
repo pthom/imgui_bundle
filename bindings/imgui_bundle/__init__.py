@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle._imgui_bundle import imgui as imgui
+from imgui_bundle._imgui_bundle import imgui as imgui  # type: ignore
 from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui
 from imgui_bundle._imgui_bundle import implot as implot
 from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
@@ -20,7 +20,7 @@ from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
 
 from imgui_bundle._imgui_bundle import __version__, compilation_time
 
-from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX
+from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # type: ignore
 from imgui_bundle.im_col32 import IM_COL32
 
 # Glfw setup:

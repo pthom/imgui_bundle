@@ -34,7 +34,7 @@ def my_register_tests():
 
     # Demo 1: Open popup
     test_open_popup = imgui.test_engine.register_test(engine, "Demo Tests", "Open Popup")
-    def test_open_popup_func(ctx: imgui.test_engine.TestContext):
+    def test_open_popup_func(ctx: imgui.test_engine.TestContext) -> None:
         # This is the function that will be called by our test
         ctx.set_ref("Dear ImGui Demo")              # From now on, all actions happen in the "Dear ImGui Demo" window
         ctx.item_open("Popups & Modal windows")     # Open the "Popups & Modal windows" tree item
@@ -49,7 +49,7 @@ def my_register_tests():
 
     # Demo 2 : Capture Dear ImGui Demo window
     test_capture_screenshot = imgui.test_engine.register_test(engine, "Demo Tests", "Capture Screenshot")
-    def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext):
+    def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext) -> None:
         ctx.set_ref("Dear ImGui Demo")                   # From now on, actions happen in the "Dear ImGui Demo" window
         ctx.item_open("Widgets")                         # Open the "Widgets", then "Basic" tree item
         ctx.item_open_all("Basic")
@@ -64,13 +64,13 @@ def my_register_tests():
     class TestVar2:
         my_int = 42
     test_var2 = TestVar2()  # our custom variable(s)
-    def test_custom_gui_func(ctx: imgui.test_engine.TestContext):
+    def test_custom_gui_func(ctx: imgui.test_engine.TestContext) -> None:
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
         imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value)
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
-    def test_with_vars_test_func(ctx: imgui.test_engine.TestContext):
+    def test_with_vars_test_func(ctx: imgui.test_engine.TestContext) -> None:
         # Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
         # Optional: reset test_var2 to its startup values
         nonlocal test_var2
@@ -108,7 +108,7 @@ def my_gui():
 
 
 # Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window
-def apply_application_layout(runner_params: hello_imgui.RunnerParams):
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:
     ...
 
 
@@ -116,7 +116,7 @@ def apply_application_layout(runner_params: hello_imgui.RunnerParams):
 #        - instantiate RunnerParams
 #        - set `runner_params.use_imgui_test_engine = True`
 #        - fill `runner_params.callbacks.register_tests`
-def main():
+def main() -> None:
     runner_params = hello_imgui.RunnerParams()
     apply_application_layout(runner_params)
 
@@ -177,7 +177,7 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     return [my_window, dear_imgui_demo_window, test_engine_window]
 
 
-def apply_application_layout(runner_params: hello_imgui.RunnerParams):  # type: ignore
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
     runner_params.imgui_window_params.default_imgui_window_type = \

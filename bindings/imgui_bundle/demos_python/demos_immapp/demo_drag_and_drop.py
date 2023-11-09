@@ -31,7 +31,7 @@ class DemoState:
         ]
 
 
-def gui_drag_and_drop(state: DemoState):
+def gui_drag_and_drop(state: DemoState) -> None:
     if imgui.radio_button("Copy", state.mode == DragMode.Copy):
         state.mode = DragMode.Copy
     imgui.same_line()
@@ -78,7 +78,7 @@ def gui_drag_and_drop(state: DemoState):
         imgui.pop_id()
 
 
-def main():
+def main() -> None:
     state = DemoState()
     def gui():
         gui_drag_and_drop(state)

@@ -10,8 +10,8 @@ from numpy.typing import NDArray
 
 # First, lets define `LaplacianData` (a class that contains an image and its laplacian)
 class LaplacianData:
-    src_gray: NDArray[np.float32]
-    laplacian: NDArray[np.float32]
+    src_gray: NDArray[np.float64]
+    laplacian: NDArray[np.float64]
 
     blur_half_size: int = 1
     kernel_half_size: int = 1

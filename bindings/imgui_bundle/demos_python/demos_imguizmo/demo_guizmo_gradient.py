@@ -19,7 +19,7 @@ ImVec4.__add__ = add_imvec4  # type: ignore # monkey patching
 ImVec4.__mul__ = mul_scalar_imvec4  # type: ignore # monkey patching
 
 
-class MyGradient(imguizmo.im_gradient.DelegateStl):
+class MyGradient(imguizmo.im_gradient.DelegateStl):  # type: ignore
     points: List[ImVec4]
 
     def __init__(self) -> None:

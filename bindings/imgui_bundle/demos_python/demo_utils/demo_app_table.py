@@ -23,8 +23,8 @@ class DemoApp:
 
 
 class DemoAppTable:
-    snippet_python: immapp.snippets.SnippetData
-    snippet_cpp: immapp.snippets.SnippetData
+    snippet_python: immapp.snippets.SnippetData  # type: ignore
+    snippet_cpp: immapp.snippets.SnippetData  # type: ignore
     demo_apps: List[DemoApp]
     current_app: DemoApp
     demo_python_folder: str

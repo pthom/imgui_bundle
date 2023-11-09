@@ -4,7 +4,7 @@
 from imgui_bundle import hello_imgui, imgui
 
 
-def sub_window_gui():
+def sub_window_gui() -> None:
     imgui.set_next_window_size((600, 200))
     imgui.begin("Sub window")
     imgui.text_wrapped("The button below will raise an exception which lead to imgui.end() not being called")
@@ -14,7 +14,7 @@ def sub_window_gui():
     imgui.end()
 
 
-def gui():
+def gui() -> None:
     try:
         imgui.text("Hello")
         sub_window_gui()
@@ -24,11 +24,11 @@ def gui():
 
 # ImGui Bundle provides a fork of ImGui
 # where imgui.internal.error_check_end_frame_recover() can use a simple callback, such a below:
-def my_end_frame_error_callback(message):
+def my_end_frame_error_callback(message: str) -> None:
     print("my_end_frame_error_callback ==> " + message)
 
 
-def main():
+def main() -> None:
 
     runner_params = hello_imgui.RunnerParams()
     runner_params.callbacks.show_gui = gui

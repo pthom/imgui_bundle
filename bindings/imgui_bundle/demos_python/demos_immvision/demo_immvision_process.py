@@ -7,8 +7,8 @@ from enum import Enum
 import cv2  # type: ignore
 import math
 
-from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle.demos_python import demo_utils
 
 

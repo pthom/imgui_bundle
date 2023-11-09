@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from imgui_bundle.python_backends_wip.glfw_backend import GlfwRenderer
-import OpenGL.GL as gl
+import OpenGL.GL as gl  # type: ignore
 from imgui_bundle import imgui
-import glfw
+import glfw  # type: ignore
 import sys
 
 

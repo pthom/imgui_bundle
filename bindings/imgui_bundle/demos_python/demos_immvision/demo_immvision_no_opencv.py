@@ -6,7 +6,7 @@ ImVec2 = imgui.ImVec2
 ImVec4 = imgui.ImVec4
 
 
-def main():
+def main() -> None:
     from imgui_bundle import immapp
 
     image = np.zeros((1000, 800, 3), np.uint8)

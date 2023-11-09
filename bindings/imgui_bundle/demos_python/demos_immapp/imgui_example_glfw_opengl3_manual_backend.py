@@ -17,14 +17,14 @@ from imgui_bundle import imgui
 import glfw  # type: ignore
 
 
-def glfw_error_callback(error: int, description: str):
+def glfw_error_callback(error: int, description: str) -> None:
     sys.stderr.write(f"Glfw Error {error}: {description}\n")
 
 
 # def backends_glfw_init_for_opengl(window_address, True)
 
 
-def main():
+def main() -> None:
     # Setup window
     glfw.set_error_callback(glfw_error_callback)
     if not glfw.init():
@@ -163,7 +163,7 @@ def main():
             show_demo_window = imgui.show_demo_window(show_demo_window)
 
         # 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        def show_simple_window():
+        def show_simple_window() -> None:
             nonlocal show_demo_window, show_another_window, clear_color, counter, f
             # static float f = 0.0f;
             # static int counter = 0;
@@ -200,7 +200,7 @@ def main():
         show_simple_window()
 
         # 3. Show another simple window.
-        def gui_another_window():
+        def gui_another_window() -> None:
             nonlocal show_another_window
             if show_another_window:
                 imgui.begin(
