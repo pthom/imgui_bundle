@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from typing import Dict
-import glfw  # type: ignore
 from imgui_bundle import imgui
+import glfw  # type: ignore
 
 from imgui_bundle.python_backends_wip import compute_fb_scale
 from .opengl_backend import ProgrammablePipelineRenderer
 
+from typing import Dict
 
 GlfwKey = int
 
@@ -29,21 +29,14 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.display_size = glfw.get_framebuffer_size(self.window)
 
         def get_clipboard_text() -> str:
-            return self._get_clipboard_text()
+            return glfw.get_clipboard_string(self.window)
         def set_clipboard_text(text: str) -> None:
-            self._set_clipboard_text(text)
-
+            glfw.set_clipboard_string(self.window, text)
         imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
         imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
 
         self._map_keys()
         self._gui_time = None
-
-    def _get_clipboard_text(self):
-        return glfw.get_clipboard_string(self.window)
-
-    def _set_clipboard_text(self, text):
-        glfw.set_clipboard_string(self.window, text)
 
     def _map_keys(self):
         self.key_map = {}

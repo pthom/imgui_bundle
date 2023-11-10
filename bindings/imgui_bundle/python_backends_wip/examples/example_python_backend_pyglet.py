@@ -2,25 +2,27 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+from imgui_bundle import imgui
+from imgui_bundle.python_backends_wip import pyglet_backend
+
 from pyglet import gl
-from testwindow import show_test_window
 import pyglet
-import imgui
 import sys
 
 
-# Note that we could explicitly choose to use PygletFixedPipelineRenderer
-# or PygletProgrammablePipelineRenderer, but create_renderer handles the
-# version checking for us.
-from imgui.integrations.pyglet import create_renderer
+class AppState:
+    text: str = """Hello, World\nLorem ipsum, etc.\netc."""
+    text2: str = "Ahh"
+
+
+app_state = AppState()
 
 
 def main():
-
     window = pyglet.window.Window(width=1280, height=720, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
     imgui.create_context()
-    impl = create_renderer(window)
+    impl = pyglet_backend.create_renderer(window)
 
     global show_custom_window
     show_custom_window = True
@@ -41,19 +43,16 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        show_test_window()
-        # imgui.show_test_window()
-
         global show_custom_window
         if show_custom_window:
+            imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
-                imgui.text("Bar")
-                imgui.text_colored("Eggs", 0.2, 1.0, 0.0)
-
-                imgui.text_ansi("B\033[31marA\033[mnsi ")
-                imgui.text_ansi_colored("Eg\033[31mgAn\033[msi ", 0.2, 1.0, 0.0)
-
+                imgui.text("Example Text")
+                if imgui.button("Hello"):
+                    print("World")
+                _, app_state.text = imgui.input_text_multiline("Edit", app_state.text, imgui.ImVec2(200, 200))
+                _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
             imgui.end()
 
     def draw(dt):

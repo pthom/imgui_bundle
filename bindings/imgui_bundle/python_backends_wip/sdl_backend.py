@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+from imgui_bundle import imgui
 from sdl2 import *
 
-import imgui
+from .opengl_backend import ProgrammablePipelineRenderer
+
 import ctypes
 
-from .opengl import ProgrammablePipelineRenderer
+from typing import Dict
+
+SdlKey = int
 
 
 class SDL2Renderer(ProgrammablePipelineRenderer):
     """Basic SDL2 integration implementation."""
+    key_map: Dict[SdlKey, imgui.Key]
     MOUSE_WHEEL_OFFSET_SCALE = 0.5
 
     def __init__(self, window):
@@ -26,42 +31,41 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         SDL_GetWindowSize(self.window, width_ptr, height_ptr)
 
         self.io.display_size = width_ptr[0], height_ptr[0]
-        self.io.get_clipboard_text_fn = self._get_clipboard_text
-        self.io.set_clipboard_text_fn = self._set_clipboard_text
+
+        def get_clipboard_text() -> str:
+            return SDL_GetClipboardText()
+        def set_clipboard_text(text: str) -> None:
+            SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
+        imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
+        imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
 
         self._map_keys()
 
-    def _get_clipboard_text(self):
-        return SDL_GetClipboardText()
-
-    def _set_clipboard_text(self, text):
-        SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
-
     def _map_keys(self):
-        key_map = self.io.key_map
-
-        key_map[imgui.KEY_TAB] = SDL_SCANCODE_TAB
-        key_map[imgui.KEY_LEFT_ARROW] = SDL_SCANCODE_LEFT
-        key_map[imgui.KEY_RIGHT_ARROW] = SDL_SCANCODE_RIGHT
-        key_map[imgui.KEY_UP_ARROW] = SDL_SCANCODE_UP
-        key_map[imgui.KEY_DOWN_ARROW] = SDL_SCANCODE_DOWN
-        key_map[imgui.KEY_PAGE_UP] = SDL_SCANCODE_PAGEUP
-        key_map[imgui.KEY_PAGE_DOWN] = SDL_SCANCODE_PAGEDOWN
-        key_map[imgui.KEY_HOME] = SDL_SCANCODE_HOME
-        key_map[imgui.KEY_END] = SDL_SCANCODE_END
-        key_map[imgui.KEY_INSERT] = SDL_SCANCODE_INSERT
-        key_map[imgui.KEY_DELETE] = SDL_SCANCODE_DELETE
-        key_map[imgui.KEY_BACKSPACE] = SDL_SCANCODE_BACKSPACE
-        key_map[imgui.KEY_SPACE] = SDL_SCANCODE_SPACE
-        key_map[imgui.KEY_ENTER] = SDL_SCANCODE_RETURN
-        key_map[imgui.KEY_ESCAPE] = SDL_SCANCODE_ESCAPE
-        key_map[imgui.KEY_PAD_ENTER] = SDL_SCANCODE_KP_ENTER
-        key_map[imgui.KEY_A] = SDL_SCANCODE_A
-        key_map[imgui.KEY_C] = SDL_SCANCODE_C
-        key_map[imgui.KEY_V] = SDL_SCANCODE_V
-        key_map[imgui.KEY_X] = SDL_SCANCODE_X
-        key_map[imgui.KEY_Y] = SDL_SCANCODE_Y
-        key_map[imgui.KEY_Z] = SDL_SCANCODE_Z
+        self.key_map = {}
+        key_map = self.key_map
+        key_map[SDL_SCANCODE_TAB] = imgui.Key.tab
+        key_map[SDL_SCANCODE_LEFT] = imgui.Key.left_arrow
+        key_map[SDL_SCANCODE_RIGHT] = imgui.Key.right_arrow
+        key_map[SDL_SCANCODE_UP] = imgui.Key.up_arrow
+        key_map[SDL_SCANCODE_DOWN] = imgui.Key.down_arrow
+        key_map[SDL_SCANCODE_PAGEUP] = imgui.Key.page_up
+        key_map[SDL_SCANCODE_PAGEDOWN] = imgui.Key.page_down
+        key_map[SDL_SCANCODE_HOME] = imgui.Key.home
+        key_map[SDL_SCANCODE_END] = imgui.Key.end
+        key_map[SDL_SCANCODE_INSERT] = imgui.Key.insert
+        key_map[SDL_SCANCODE_DELETE] = imgui.Key.delete
+        key_map[SDL_SCANCODE_BACKSPACE] = imgui.Key.backspace
+        key_map[SDL_SCANCODE_SPACE] = imgui.Key.space
+        key_map[SDL_SCANCODE_RETURN] = imgui.Key.enter
+        key_map[SDL_SCANCODE_ESCAPE] = imgui.Key.escape
+        key_map[SDL_SCANCODE_KP_ENTER] = imgui.Key.keypad_enter
+        key_map[SDL_SCANCODE_A] = imgui.Key.a
+        key_map[SDL_SCANCODE_C] = imgui.Key.c
+        key_map[SDL_SCANCODE_V] = imgui.Key.v
+        key_map[SDL_SCANCODE_X] = imgui.Key.x
+        key_map[SDL_SCANCODE_Y] = imgui.Key.y
+        key_map[SDL_SCANCODE_Z] = imgui.Key.z
 
     def process_event(self, event):
         io = self.io
@@ -80,10 +84,13 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             return True
 
         if event.type == SDL_KEYUP or event.type == SDL_KEYDOWN:
-            key = event.key.keysym.scancode
-
-            if key < SDL_NUM_SCANCODES:
-                io.keys_down[key] = event.type == SDL_KEYDOWN
+            sdl_key = event.key.keysym.scancode
+            if sdl_key in self.key_map:
+                imgui_key = self.key_map[sdl_key]
+                if event.type == SDL_KEYUP:
+                    io.add_key_event(imgui_key, down=False)
+                elif event.type == SDL_KEYDOWN:
+                    io.add_key_event(imgui_key, down=True)
 
             io.key_shift = ((SDL_GetModState() & KMOD_SHIFT) != 0)
             io.key_ctrl = ((SDL_GetModState() & KMOD_CTRL) != 0)
@@ -107,7 +114,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         h = s_h.contents.value
 
         io.display_size = w, h
-        io.display_fb_scale = 1, 1
+        io.display_framebuffer_scale = (1, 1)
 
         current_time = SDL_GetTicks() / 1000.0
 

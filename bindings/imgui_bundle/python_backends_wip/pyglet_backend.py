@@ -3,52 +3,53 @@ from __future__ import absolute_import
 import warnings
 from distutils.version import LooseVersion
 
+from imgui_bundle import imgui
+
 from pyglet.window import key, mouse, Window
 import pyglet
 import pyglet.clock
 
-import imgui
 
 from . import compute_fb_scale
-from .opengl import FixedPipelineRenderer, ProgrammablePipelineRenderer
+from .opengl_backend import FixedPipelineRenderer, ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):
     REVERSE_KEY_MAP = {
-        key.TAB: imgui.KEY_TAB,
-        key.LEFT: imgui.KEY_LEFT_ARROW,
-        key.RIGHT: imgui.KEY_RIGHT_ARROW,
-        key.UP: imgui.KEY_UP_ARROW,
-        key.DOWN: imgui.KEY_DOWN_ARROW,
-        key.PAGEUP: imgui.KEY_PAGE_UP,
-        key.PAGEDOWN: imgui.KEY_PAGE_DOWN,
-        key.HOME: imgui.KEY_HOME,
-        key.END: imgui.KEY_END,
-        key.INSERT: imgui.KEY_INSERT,
-        key.DELETE: imgui.KEY_DELETE,
-        key.BACKSPACE: imgui.KEY_BACKSPACE,
-        key.SPACE: imgui.KEY_SPACE,
-        key.RETURN: imgui.KEY_ENTER,
-        key.ESCAPE: imgui.KEY_ESCAPE,
-        key.NUM_ENTER: imgui.KEY_PAD_ENTER,
-        key.A: imgui.KEY_A,
-        key.C: imgui.KEY_C,
-        key.V: imgui.KEY_V,
-        key.X: imgui.KEY_X,
-        key.Y: imgui.KEY_Y,
-        key.Z: imgui.KEY_Z,
+        key.TAB: imgui.Key.tab,
+        key.LEFT: imgui.Key.left_arrow,
+        key.RIGHT: imgui.Key.right_arrow,
+        key.UP: imgui.Key.up_arrow,
+        key.DOWN: imgui.Key.down_arrow,
+        key.PAGEUP: imgui.Key.page_up,
+        key.PAGEDOWN: imgui.Key.page_down,
+        key.HOME: imgui.Key.home,
+        key.END: imgui.Key.end,
+        key.INSERT: imgui.Key.insert,
+        key.DELETE: imgui.Key.delete,
+        key.BACKSPACE: imgui.Key.backspace,
+        key.SPACE: imgui.Key.space,
+        key.RETURN: imgui.Key.enter,
+        key.ESCAPE: imgui.Key.escape,
+        key.NUM_ENTER: imgui.Key.keypad_enter,
+        key.A: imgui.Key.a,
+        key.C: imgui.Key.c,
+        key.V: imgui.Key.v,
+        key.X: imgui.Key.x,
+        key.Y: imgui.Key.y,
+        key.Z: imgui.Key.z,
     }
     _gui_time = None
 
     MOUSE_CURSORS = {
-        imgui.MOUSE_CURSOR_ARROW: Window.CURSOR_DEFAULT,
-        imgui.MOUSE_CURSOR_TEXT_INPUT: Window.CURSOR_TEXT,
-        imgui.MOUSE_CURSOR_RESIZE_ALL: Window.CURSOR_SIZE,
-        imgui.MOUSE_CURSOR_RESIZE_NS: Window.CURSOR_SIZE_UP_DOWN,
-        imgui.MOUSE_CURSOR_RESIZE_EW: Window.CURSOR_SIZE_LEFT_RIGHT,
-        imgui.MOUSE_CURSOR_RESIZE_NESW: Window.CURSOR_SIZE_DOWN_LEFT,
-        imgui.MOUSE_CURSOR_RESIZE_NWSE: Window.CURSOR_SIZE_DOWN_RIGHT,
-        imgui.MOUSE_CURSOR_HAND: Window.CURSOR_HAND
+        imgui.MouseCursor_.arrow.value: Window.CURSOR_DEFAULT,
+        imgui.MouseCursor_.text_input.value: Window.CURSOR_TEXT,
+        imgui.MouseCursor_.resize_all.value: Window.CURSOR_SIZE,
+        imgui.MouseCursor_.resize_ns.value: Window.CURSOR_SIZE_UP_DOWN,
+        imgui.MouseCursor_.resize_ew.value: Window.CURSOR_SIZE_LEFT_RIGHT,
+        imgui.MouseCursor_.resize_nesw.value: Window.CURSOR_SIZE_DOWN_LEFT,
+        imgui.MouseCursor_.resize_nwse.value: Window.CURSOR_SIZE_DOWN_RIGHT,
+        imgui.MouseCursor_.hand.value: Window.CURSOR_HAND
     }
 
     def __init__(self):
@@ -56,7 +57,8 @@ class PygletMixin(object):
         self._cursor = -2
         self._window = None
         # Let Dear imgui know we have mouse cursor support
-        self.io.backend_flags |= imgui.BACKEND_HAS_MOUSE_CURSORS
+        self.io = imgui.get_io()
+        self.io.backend_flags |= imgui.BackendFlags_.has_mouse_cursors
 
     def _set_pixel_ratio(self, window):
         window_size = window.get_size()
@@ -68,12 +70,11 @@ class PygletMixin(object):
             viewport_size = window.get_viewport_size()
             self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
         elif hasattr(window, 'get_pixel_ratio'):
-            self.io.display_fb_scale = (window.get_pixel_ratio(),
+            self.io.display_framebuffer_scale = (window.get_pixel_ratio(),
                                         window.get_pixel_ratio())
         else:
             # Default to 1.0 in this unlikely circumstance
             self.io.display_fb_scale = (1.0, 1.0)
-
 
     def _attach_callbacks(self, window):
         self._window = window
@@ -89,15 +90,6 @@ class PygletMixin(object):
             self.on_resize,
         )
 
-
-    def _map_keys(self):
-        key_map = self.io.key_map
-
-        # note: we cannot use default mechanism of mapping keys
-        #       because pyglet uses weird key translation scheme
-        for value in self.REVERSE_KEY_MAP.values():
-            key_map[value] = value
-
     def _on_mods_change(self, mods, key_pressed = 0):
         self.io.key_ctrl = mods & key.MOD_CTRL or \
                             key_pressed in (key.LCTRL, key.RCTRL)
@@ -109,14 +101,14 @@ class PygletMixin(object):
                             key_pressed in (key.LSHIFT, key.RSHIFT)
 
     def _handle_mouse_cursor(self):
-        if self.io.config_flags & imgui.CONFIG_NO_MOUSE_CURSOR_CHANGE:
+        if self.io.config_flags & imgui.ConfigFlags_.no_mouse_cursor_change.value:
             return
 
         mouse_cursor = imgui.get_mouse_cursor()
         window = self._window
         if self._cursor != mouse_cursor:
             self._cursor = mouse_cursor
-            if mouse_cursor == imgui.MOUSE_CURSOR_NONE:
+            if mouse_cursor == imgui.MouseCursor_.none:
                 window.set_mouse_visible(False)
             else:
                 cursor = self.MOUSE_CURSORS.get(mouse_cursor)
@@ -127,12 +119,14 @@ class PygletMixin(object):
 
     def on_key_press(self, key_pressed, mods):
         if key_pressed in self.REVERSE_KEY_MAP:
-            self.io.keys_down[self.REVERSE_KEY_MAP[key_pressed]] = True
+            imgui_key = self.REVERSE_KEY_MAP[key_pressed]
+            self.io.add_key_event(imgui_key, down=True)
         self._on_mods_change(mods, key_pressed)
 
     def on_key_release(self, key_released, mods):
         if key_released in self.REVERSE_KEY_MAP:
-            self.io.keys_down[self.REVERSE_KEY_MAP[key_released]] = False
+            imgui_key = self.REVERSE_KEY_MAP[key_released]
+            self.io.add_key_event(imgui_key, down=False)
         self._on_mods_change(mods)
 
     def on_text(self, text):
@@ -212,7 +206,6 @@ class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRender
     def __init__(self, window, attach_callbacks = True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
-        self._map_keys()
         if attach_callbacks: self._attach_callbacks(window)
 
     def render(self, draw_data):
