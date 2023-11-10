@@ -1,6 +1,7 @@
 = Dear ImGui Bundle documentation
 :toc: left
 :source-highlighter: pygments
+:docinfo: shared
 
 /////////////////////////////////////////////////////////////////////////////
 // IMPORTANT: do not *edit* Readme.adoc. It is generated automatically from
