@@ -30,6 +30,3 @@ echo "Generating $gh_pages_dir/index.html (for github pages)"
 cp Readme_source.adoc index.adoc  # first copy to index.adoc, so that the main page is index.html
 asciidoctor-multipage --attribute env_gh_pages=1 -D $gh_pages_dir index.adoc
 rm index.adoc
-
-# deploy goatcounter_count.js
-cp $doc_dir/goatcounter_count.js $gh_pages_dir/goatcounter_count.js
