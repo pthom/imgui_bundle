@@ -236,7 +236,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         self._font_texture = 0
 
 
-class FixedPipelineRenderer(BaseOpenGLRenderer):
+class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad rendering with pygame)
     """Basic OpenGL integration base class."""
 
     # note: no need to override __init__
@@ -244,7 +244,8 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
     def refresh_font_texture(self):
         # save texture state
         # last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-        width, height, pixels = self.io.fonts.get_tex_data_as_alpha8()
+        # width, height, pixels = self.io.fonts.get_tex_data_as_alpha8()
+        texture: np.array = self.io.fonts.get_tex_data_as_rgba32()
 
         if self._font_texture is not None:
             gl.glDeleteTextures([self._font_texture])
@@ -253,9 +254,10 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, width, height, 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, pixels)
+        # gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, width, height, 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, pixels)
+        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, texture.shape[0], texture.shape[1], 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, texture.data)
 
-        self.io.fonts.texture_id = self._font_texture
+        self.io.fonts.tex_id = self._font_texture
         # gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
         self.io.fonts.clear_tex_data()
 
@@ -267,13 +269,13 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         io = self.io
 
         display_width, display_height = io.display_size
-        fb_width = int(display_width * io.display_fb_scale[0])
-        fb_height = int(display_height * io.display_fb_scale[1])
+        fb_width = int(display_width * io.display_framebuffer_scale[0])
+        fb_height = int(display_height * io.display_framebuffer_scale[1])
 
         if fb_width == 0 or fb_height == 0:
             return
 
-        draw_data.scale_clip_rects(*io.display_fb_scale)
+        draw_data.scale_clip_rects(io.display_framebuffer_scale)
 
         # note: we are using fixed pipeline for cocos2d/pyglet
         # todo: consider porting to programmable pipeline
@@ -302,14 +304,14 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
         gl.glPushMatrix()
         gl.glLoadIdentity()
 
-        for commands in draw_data.commands_lists:
-            idx_buffer = commands.idx_buffer_data
+        for commands in draw_data.cmd_lists:
+            ptr_idx_buffer = commands.idx_buffer.data_address()
 
-            gl.glVertexPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_POS_OFFSET))
-            gl.glTexCoordPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_UV_OFFSET))
-            gl.glColorPointer(4, gl.GL_UNSIGNED_BYTE, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer_data + imgui.VERTEX_BUFFER_COL_OFFSET))
+            gl.glVertexPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_POS_OFFSET))
+            gl.glTexCoordPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_UV_OFFSET))
+            gl.glColorPointer(4, gl.GL_UNSIGNED_BYTE, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_COL_OFFSET))
 
-            for command in commands.commands:
+            for command in commands.cmd_buffer:
                 gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
 
                 x, y, z, w = command.clip_rect
@@ -320,9 +322,9 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
                 else:
                     gltype = gl.GL_UNSIGNED_INT
 
-                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(idx_buffer))
+                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(ptr_idx_buffer))
 
-                idx_buffer += (command.elem_count * imgui.INDEX_SIZE)
+                ptr_idx_buffer += (command.elem_count * imgui.INDEX_SIZE)
 
         restore_common_gl_state(common_gl_state_tuple)
 
@@ -341,6 +343,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):
             gl.glDeleteTextures([self._font_texture])
         self.io.fonts.texture_id = 0
         self._font_texture = 0
+
 
 def get_common_gl_state():
     """

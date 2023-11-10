@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
+
+from imgui_bundle import imgui
+
 from cocos.director import director
-from imgui.integrations.cocos2d import ImguiLayer
+from imgui_bundle.python_backends_wip.python_backends_disabled.cocos2d_backend import ImguiLayer
 from pyglet import gl
 import cocos
-import imgui
 import sys
 
 

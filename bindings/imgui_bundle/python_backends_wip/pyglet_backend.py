@@ -10,8 +10,8 @@ import pyglet
 import pyglet.clock
 
 
-from . import compute_fb_scale
-from .opengl_backend import FixedPipelineRenderer, ProgrammablePipelineRenderer
+from imgui_bundle.python_backends_wip import compute_fb_scale
+from imgui_bundle.python_backends_wip.opengl_backend import FixedPipelineRenderer, ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):
@@ -68,7 +68,7 @@ class PygletMixin(object):
         # minor introspection here to check.
         if hasattr(window, 'get_viewport_size'):
             viewport_size = window.get_viewport_size()
-            self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+            self.io.display_framebuffer_scale = compute_fb_scale(window_size, viewport_size)
         elif hasattr(window, 'get_pixel_ratio'):
             self.io.display_framebuffer_scale = (window.get_pixel_ratio(),
                                         window.get_pixel_ratio())
@@ -194,7 +194,6 @@ class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletFixedPipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
-        self._map_keys()
         if attach_callbacks: self._attach_callbacks(window)
 
     def render(self, draw_data):

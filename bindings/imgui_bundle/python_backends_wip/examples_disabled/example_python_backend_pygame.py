@@ -2,11 +2,20 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
-from imgui.integrations.pygame import PygameRenderer
+
+from imgui_bundle import imgui
+from imgui_bundle.python_backends_wip.python_backends_disabled.pygame_backend import PygameRenderer
 import OpenGL.GL as gl
-import imgui
 import pygame
 import sys
+
+
+class AppState:
+    text: str = """Hello, World\nLorem ipsum, etc.\netc."""
+    text2: str = "Ahh"
+
+
+app_state = AppState()
 
 
 def main():
@@ -45,13 +54,15 @@ def main():
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-        imgui.show_test_window()
-
         if show_custom_window:
+            imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
-                imgui.text("Bar")
-                imgui.text_colored("Eggs", 0.2, 1.0, 0.0)
+                imgui.text("Example Text")
+                if imgui.button("Hello"):
+                    print("World")
+                _, app_state.text = imgui.input_text_multiline("Edit", app_state.text, imgui.ImVec2(200, 200))
+                _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
             imgui.end()
 
         # note: cannot use screen.fill((1, 1, 1)) because pygame's screen

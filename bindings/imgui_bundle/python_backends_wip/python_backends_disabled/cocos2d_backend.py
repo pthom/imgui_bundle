@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+from imgui_bundle import imgui
 import cocos
 
-import imgui
-
 from .import compute_fb_scale
-from .pyglet import PygletMixin
-from .opengl import FixedPipelineRenderer
+from .pyglet_backend import PygletMixin
+from .opengl_backend import FixedPipelineRenderer
 
 
 class ImguiLayer(PygletMixin, cocos.layer.Layer):
@@ -21,7 +20,6 @@ class ImguiLayer(PygletMixin, cocos.layer.Layer):
 
         self.io = imgui.get_io()
         self.io.display_size = window_size
-        self.io.display_fb_scale = compute_fb_scale(window_size, viewport_size)
+        self.io.display_framebuffer_scale = compute_fb_scale(window_size, viewport_size)
 
         self.renderer = FixedPipelineRenderer()
-        self._map_keys()
