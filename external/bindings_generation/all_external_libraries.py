@@ -56,6 +56,7 @@ def lib_imgui_test_engine() -> ExternalLibrary:
         official_git_url="https://github.com/ocornut/imgui_test_engine.git",
         official_branch="main",
         fork_git_url="https://github.com/pthom/imgui_test_engine.git",
+        is_published_in_python=False  # published by generate_imgui.py
     )
 
 

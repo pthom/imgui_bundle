@@ -78,6 +78,10 @@ class ExternalLibrary:
             return filename.startswith("generate_") and filename.endswith(".py")
 
         generators_modules = list(filter(is_generator_module, files))
+        if len(generators_modules) != 1:
+            print(
+                f"ERROR: {self.name} has {len(generators_modules)} generator modules, expected 1"
+            )
         assert len(generators_modules) == 1
         return generators_modules[0][:-3]  # remove extension ".py"
 

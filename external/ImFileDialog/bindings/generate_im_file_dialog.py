@@ -38,5 +38,9 @@ def autogenerate_im_file_dialog():
     )
 
 
-if __name__ == "__main__":
+def main():
     autogenerate_im_file_dialog()
+
+
+if __name__ == "__main__":
+    main()

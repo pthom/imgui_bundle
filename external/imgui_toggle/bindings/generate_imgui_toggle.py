@@ -2,7 +2,6 @@
 import os
 import sys
 import litgen
-import litgen_options_imgui
 
 
 THIS_DIR = os.path.dirname(__file__)
@@ -12,6 +11,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui_toggle"
 
 sys.path.append(THIS_DIR + "/../../imgui/bindings")
+import litgen_options_imgui  # noqa: E402
 
 
 def main():
