@@ -33,7 +33,12 @@ class ShellCommands:
         """
 
         def _cmd_to_echo_and_cmd_lines(cmd: str) -> [str]:
-            lines_with_echo = ["echo '###### Run command ######'", f"echo '{cmd}'", "echo ''", cmd]
+            lines_with_echo = [
+                "echo '###### Run command ######'",
+                f"echo '{cmd}'",
+                "echo ''",
+                cmd,
+            ]
             return lines_with_echo
 
         lines = self.shell_commands.split("\n")
@@ -47,7 +52,9 @@ class ShellCommands:
         lines_with_echo = []
         for line in lines:
             if line.startswith("##"):
-                echo_line = f"echo '******************** {line[2:].strip()} ***************'"
+                echo_line = (
+                    f"echo '******************** {line[2:].strip()} ***************'"
+                )
                 lines_with_echo.append(echo_line)
             elif not line.startswith("#"):
                 if step_by_step_echo:

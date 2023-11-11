@@ -26,13 +26,16 @@ def my_time_it(func):
         end = time.time()
         print(f"{func.__name__} took {end - start:.6f} seconds to run.")
         return result
+
     return wrapper
 
 
 def autogenerate_imgui() -> None:
     print("Processing imgui.h")
     # Generate for imgui.h
-    options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
+    options_imgui = litgen_options_imgui(
+        ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
+    )
 
     # Workaround internal compiler error on MSVC:
     # See failure logs: https://github.com/pthom/imgui_bundle/actions/runs/3267470437/jobs/5372682867
@@ -45,7 +48,9 @@ def autogenerate_imgui() -> None:
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
     # Generate for imgui_stdlib.h
-    options_imgui_stdlib = litgen_options_imgui(ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH)
+    options_imgui_stdlib = litgen_options_imgui(
+        ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH
+    )
     options_imgui.srcmlcpp_options.flag_quiet = True
 
     # Workaround internal compiler error on MSVC:
@@ -61,28 +66,38 @@ def autogenerate_imgui() -> None:
     generator.process_cpp_file(THIS_DIR + "/../imgui_pywrappers/imgui_pywrappers.h")
 
     generator.write_generated_code(
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi"
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp",
+        output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi",
     )
 
 
 def autogenerate_imgui_internal() -> None:
-    options_imgui_internal = litgen_options_imgui(ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH)
+    options_imgui_internal = litgen_options_imgui(
+        ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH
+    )
     generator = litgen.LitgenGenerator(options_imgui_internal)
 
     print("Processing imgui_internal.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_internal.h")
     print("Processing imgui_internal_pywrappers.h")
-    generator.process_cpp_file(THIS_DIR + "/../imgui_pywrappers/imgui_internal_pywrappers.h")
+    generator.process_cpp_file(
+        THIS_DIR + "/../imgui_pywrappers/imgui_internal_pywrappers.h"
+    )
 
     generator.write_generated_code(
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_internal.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/internal.pyi"
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_internal.cpp",
+        output_stub_pyi_file=STUB_DIR + "/imgui/internal.pyi",
     )
 
 
 def autogenerate_imgui_test_engine() -> None:
-    options = litgen_options_imgui(ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH)
+    options = litgen_options_imgui(
+        ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH
+    )
     generator = litgen.LitgenGenerator(options)
-    imgui_test_engine_dir = THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"
+    imgui_test_engine_dir = (
+        THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"
+    )
     print("Processing imgui_test_engine")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_engine.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_context.h")
@@ -90,7 +105,8 @@ def autogenerate_imgui_test_engine() -> None:
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_ui.h")
     # generator.process_cpp_file(imgui_test_engine_dir + "/imgui_capture_tool.h")
     generator.write_generated_code(
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_test_engine.cpp", output_stub_pyi_file=STUB_DIR + "/imgui/test_engine.pyi"
+        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_test_engine.cpp",
+        output_stub_pyi_file=STUB_DIR + "/imgui/test_engine.pyi",
     )
 
 
@@ -104,7 +120,9 @@ def main():
 def sandbox():
     code = """
     """
-    options_imgui = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH)
+    options_imgui = litgen_options_imgui(
+        ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
+    )
     generated_code = litgen.generate_code(options_imgui, code)
     print(generated_code.pydef_code)
 

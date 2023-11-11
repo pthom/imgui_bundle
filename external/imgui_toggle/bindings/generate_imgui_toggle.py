@@ -2,6 +2,8 @@
 import os
 import sys
 import litgen
+import litgen_options_imgui
+
 
 THIS_DIR = os.path.dirname(__file__)
 PYDEF_DIR = THIS_DIR
@@ -10,7 +12,6 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui_toggle"
 
 sys.path.append(THIS_DIR + "/../../imgui/bindings")
-import litgen_options_imgui
 
 
 def main():
@@ -19,7 +20,9 @@ def main():
     output_stub_pyi_file = STUB_DIR + "/imgui_toggle.pyi"
 
     # Configure options
-    options = litgen_options_imgui.litgen_options_imgui(litgen_options_imgui.ImguiOptionsType.imgui_h, True)
+    options = litgen_options_imgui.litgen_options_imgui(
+        litgen_options_imgui.ImguiOptionsType.imgui_h, True
+    )
     options.srcmlcpp_options.flag_show_progress = False
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False

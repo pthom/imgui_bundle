@@ -26,11 +26,17 @@ def main():
 
     generator = litgen.LitgenGenerator(options)
 
-    generator.process_cpp_file(THIS_DIR + "/../imgui-command-palette/imcmd_command_palette.h")
-    generator.process_cpp_file(THIS_DIR + "/../imgui-command-palette-py-wrapper/imgui-command-palette-py-wrapper.h")
+    generator.process_cpp_file(
+        THIS_DIR + "/../imgui-command-palette/imcmd_command_palette.h"
+    )
+    generator.process_cpp_file(
+        THIS_DIR
+        + "/../imgui-command-palette-py-wrapper/imgui-command-palette-py-wrapper.h"
+    )
 
     generator.write_generated_code(
-        output_cpp_pydef_file=output_cpp_pydef_file, output_stub_pyi_file=output_stub_pyi_file
+        output_cpp_pydef_file=output_cpp_pydef_file,
+        output_stub_pyi_file=output_stub_pyi_file,
     )
 
 

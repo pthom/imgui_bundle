@@ -19,7 +19,9 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.srcmlcpp_options.ignored_warnings = [WarningType.LitgenClassMemberSkipBitfield]
+    options.srcmlcpp_options.ignored_warnings = [
+        WarningType.LitgenClassMemberSkipBitfield
+    ]
     options.member_exclude_by_type__regex = "Callback$|^char$"
     options.fn_return_force_policy_reference_for_references__regex = ".*"
 
@@ -27,7 +29,8 @@ def main():
     generator.process_cpp_file(MAIN_DIR + "/ImGuiColorTextEdit/TextEditor.h")
 
     generator.write_generated_code(
-        output_cpp_pydef_file=output_cpp_pydef_file, output_stub_pyi_file=output_stub_pyi_file
+        output_cpp_pydef_file=output_cpp_pydef_file,
+        output_stub_pyi_file=output_stub_pyi_file,
     )
 
 

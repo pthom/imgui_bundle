@@ -34,17 +34,22 @@ def _preprocess_imgui_code(code: str) -> str:
     # Also, imgui_internal.h contains lines like this (with no final ";"):
     #       IM_MSVC_RUNTIME_CHECKS_OFF
     # This confuses srcML, so we add a ";" at the end of those lines
-    new_code, _n = re.subn(r"\nIM_MSVC_RUNTIME_CHECKS_OFF\n", "\nIM_MSVC_RUNTIME_CHECKS_OFF;\n", new_code)
-    new_code, _n = re.subn(r"\nIM_MSVC_RUNTIME_CHECKS_RESTORE\n", "\nIM_MSVC_RUNTIME_CHECKS_RESTORE;\n", new_code)
+    new_code, _n = re.subn(
+        r"\nIM_MSVC_RUNTIME_CHECKS_OFF\n", "\nIM_MSVC_RUNTIME_CHECKS_OFF;\n", new_code
+    )
+    new_code, _n = re.subn(
+        r"\nIM_MSVC_RUNTIME_CHECKS_RESTORE\n",
+        "\nIM_MSVC_RUNTIME_CHECKS_RESTORE;\n",
+        new_code,
+    )
 
     # force publish GetCurrentWindow
     new_code = new_code.replace(
-        "inline    ImGuiWindow*  GetCurrentWindow()", "IMGUI_API ImGuiWindow*  GetCurrentWindow()"
+        "inline    ImGuiWindow*  GetCurrentWindow()",
+        "IMGUI_API ImGuiWindow*  GetCurrentWindow()",
     )
 
-    new_code = new_code.replace(
-        "unsigned char", "uchar"
-    )
+    new_code = new_code.replace("unsigned char", "uchar")
 
     return new_code
 
@@ -56,7 +61,6 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "float",
         "char",
         "uchar",
-
         "ImDrawCmd",
         "ImDrawChannel",
         "ImDrawVert",
@@ -70,7 +74,6 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiWindow*",
         "ImFontAtlasCustomRect",
         "ImFontConfig",
-
         # from imgui_internal.h
         "ImRect",
         "ImGuiColorMod",
@@ -95,7 +98,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiOldColumns",
         "ImGuiStyleMod",  # uses union
     ]
-    cpp_synonyms_list_str=[
+    cpp_synonyms_list_str = [
         "ImTextureID=int",
         "ImDrawIdx=uint",
         "ImGuiID=uint",
@@ -106,14 +109,12 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
     ]
     ignored_types = [
         "const char*",
-
         "ImBitArray",  # double template
         "ImGuiTextRange",  # char * pointers
         "ImGuiStoragePair",  # internal subclass
         "ImGuiContextHook",  # callbacks with C function pointers
         "ImGuiDockNodeSettings",  # opaque
         "ImGuiDockRequest",  # opaque
-
         "ImGuiTest*",  # ImGui Test Engine only
         "ImGuiTestInfoTask*",
         "ImGuiTestInput",
@@ -124,36 +125,48 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
 
     options.class_template_options.add_specialization(
         name_regex="^ImVector$",
-        cpp_types_list_str = instantiated_types,
-        cpp_synonyms_list_str=cpp_synonyms_list_str
+        cpp_types_list_str=instantiated_types,
+        cpp_synonyms_list_str=cpp_synonyms_list_str,
     )
     for ignored_spec in ignored_types:
-        options.srcmlcpp_options.ignored_warning_parts.append("Excluding template type ImVector<" + ignored_spec + ">")
+        options.srcmlcpp_options.ignored_warning_parts.append(
+            "Excluding template type ImVector<" + ignored_spec + ">"
+        )
     options.srcmlcpp_options.ignored_warning_parts += [
-        "Excluding template type const ImVector<T>", "Excluding template type ImVector<T>"]
+        "Excluding template type const ImVector<T>",
+        "Excluding template type ImVector<T>",
+    ]
 
     for instantiated_type in instantiated_types:
-        python_iterable_type = instantiated_type.replace("ImGui", "").replace("*", "_ptr")
+        python_iterable_type = instantiated_type.replace("ImGui", "").replace(
+            "*", "_ptr"
+        )
         python_class_name__regex = "^ImVector_" + python_iterable_type + "$"
         if python_iterable_type.endswith("_ptr"):
-            python_iterable_type = python_iterable_type[:-len("_ptr")]
+            python_iterable_type = python_iterable_type[: -len("_ptr")]
         options.class_iterables_infos.add_iterable_class(
-            python_class_name__regex=python_class_name__regex, python_iterable_type=python_iterable_type)
+            python_class_name__regex=python_class_name__regex,
+            python_iterable_type=python_iterable_type,
+        )
 
 
 def add_imgui_test_engine_options(options: LitgenOptions):
     # patch preprocess: add replace("ImFuncPtr(ImGuiTestTestFunc)", "VoidFunction")
     old_preprocess = copy.copy(options.srcmlcpp_options.code_preprocess_function)
+
     def preprocess_ImGuiTestGuiFunc(code: str) -> str:
         r = code
         r = r.replace("ImFuncPtr(ImGuiTestTestFunc)", "Function_TestRunner")
         r = r.replace("ImFuncPtr(ImGuiTestGuiFunc)", "Function_TestGui")
         r = old_preprocess(r)
         return r
+
     options.srcmlcpp_options.code_preprocess_function = preprocess_ImGuiTestGuiFunc
 
     options.function_names_replacements.add_last_replacement("^ImGuiTestEngine_", "")
-    options.function_names_replacements.add_last_replacement("^ImGuiTestEngineHook_", "hook_")
+    options.function_names_replacements.add_last_replacement(
+        "^ImGuiTestEngineHook_", "hook_"
+    )
     options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
     options.member_exclude_by_name__regex += "|Coroutine|^ExportResultsFormat$|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
     options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
@@ -163,10 +176,13 @@ def add_imgui_test_engine_options(options: LitgenOptions):
         # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
         r = code.replace(": TestRef", ": Union[TestRef, str]")
         return r
+
     options.postprocess_stub_function = postprocess_stub
 
 
-def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -> LitgenOptions:
+def litgen_options_imgui(
+    options_type: ImguiOptionsType, docking_branch: bool
+) -> LitgenOptions:
     from litgen.internal import cpp_to_python
 
     options = LitgenOptions()
@@ -187,19 +203,15 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
         'Unsupported zero param "operator',
         "Ignoring template function",
         "inline ImVector<T>& operator=(const ImVector<T>& src)",
-
         "Ignoring template class ImChunkStream",
         "Ignoring template class ImPool",
         "Ignoring template class ImBitArray",
         "Ignoring template class ImSpan",
         "Ignoring template class ImSpanAllocator",
-
     ]
     # Warning: (Undefined) Excluding template type std::unique_ptr<ImSpan> because its specialization for `ImSpan` is not handled
     # Excluding template type ImSpan<T> * because its specialization for `T`
     # Excluding template type ImVector<ImDrawList*> because its specialization for `ImDrawList *` is not handled
-
-
 
     options.cpp_indent_size = 4
 
@@ -227,7 +239,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     )
 
     options.type_replacements.add_last_replacement(r"ImGui([A-Z][a-zA-Z0-9]*)", r"\1")
-    options.var_names_replacements.add_last_replacement(r"^id$", "id_")  # id() is a built-in function in python
+    options.var_names_replacements.add_last_replacement(
+        r"^id$", "id_"
+    )  # id() is a built-in function in python
 
     # fix https://github.com/pthom/imgui_bundle/issues/40
     options.var_names_replacements.add_last_replacement(r"im_gui_selectable_flags_", "")
@@ -235,7 +249,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
     # options.names_replacements.add_last_replacement(r"(^ImGui)([A-Z])", r"\2")
 
-    options.python_max_line_length = -1  # in ImGui, the function decls are on *one* line
+    options.python_max_line_length = (
+        -1
+    )  # in ImGui, the function decls are on *one* line
     options.python_convert_to_snake_case = True
     options.original_location_flag_show = False
     options.original_signature_flag_show = True
@@ -246,8 +262,12 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     options.fn_exclude_non_api = False
 
     options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_DISABLE$"
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_BUNDLE_PYTHON_API$"
+    options.srcmlcpp_options.header_filter_acceptable__regex += (
+        "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
+    )
+    options.srcmlcpp_options.header_filter_acceptable__regex += (
+        "|^IMGUI_BUNDLE_PYTHON_API$"
+    )
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
 
@@ -292,7 +312,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
             r"^DockBuilderSplitNode$",
-            r"^GetKeyChordName$"
+            r"^GetKeyChordName$",
         ]
     )
 
@@ -301,7 +321,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             #     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
             #     ImDrawCallback  UserCallback;       // 4-8  // If != NULL, call the function instead of rendering the vertices. clip_rect and texture_id will be set normally.
             r"Callback$",
-            r"^TexPixelsAlpha8$"
+            r"^TexPixelsAlpha8$",
         ]
     )
 
@@ -316,7 +336,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
             r"^ImSpan",
             r"^ImBitArray",
             r"::STB_",
-            r"ImGuiStoragePair"
+            r"ImGuiStoragePair",
         ]
     )
 
@@ -367,7 +387,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     # (since imgui use bare C function pointers, not easily portable)
     options.fn_params_exclude_types__regex = r"Callback$|size_t[ ]*\*"
     # Exclude functions that take char or const ImWchar * params
-    options.fn_exclude_by_param_type__regex = "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"
+    options.fn_exclude_by_param_type__regex = (
+        "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"
+    )
 
     # Version where we use Boxed types everywhere:
     #     options.fn_params_replace_modifiable_immutable_by_boxed__regex = r".*"

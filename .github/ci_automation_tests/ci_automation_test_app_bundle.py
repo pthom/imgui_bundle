@@ -14,21 +14,27 @@ def my_register_tests():
     engine = hello_imgui.get_imgui_test_engine()
 
     # Open Metrics window
-    test_open_metrics = imgui.test_engine.register_test(engine, "demo_tests", "open_metrics")
+    test_open_metrics = imgui.test_engine.register_test(
+        engine, "demo_tests", "open_metrics"
+    )
 
     def test_func_metrics(ctx: imgui.test_engine.TestContext):
         ctx.set_ref("Dear ImGui Demo")
         ctx.menu_check("Tools/Metrics\\/Debugger")
+
     test_open_metrics.test_func = test_func_metrics
 
     # Capture entire Dear ImGui Demo window.
-    test_capture = imgui.test_engine.register_test(engine, "demo_tests", "capture_screenshot")
+    test_capture = imgui.test_engine.register_test(
+        engine, "demo_tests", "capture_screenshot"
+    )
 
     def test_func_capture(ctx: imgui.test_engine.TestContext):
         ctx.set_ref("Dear ImGui Demo")
-        ctx.item_open("Widgets")       # Open collapsing header
-        ctx.item_open_all("Basic")     # Open tree node and all its descendants
+        ctx.item_open("Widgets")  # Open collapsing header
+        ctx.item_open_all("Basic")  # Open tree node and all its descendants
         ctx.capture_screenshot_window("Dear ImGui Demo")
+
     test_capture.test_func = test_func_capture
 
     # Exit
@@ -36,6 +42,7 @@ def my_register_tests():
 
     def test_func_exit(ctx: imgui.test_engine.TestContext):
         ctx.item_click("**/Exit")
+
     test_exit.test_func = test_func_exit
 
 
@@ -61,7 +68,9 @@ def app_gui():
         hello_imgui.get_runner_params().app_shall_exit = True
 
     imgui.show_demo_window()
-    imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), True)
+    imgui.test_engine.show_test_engine_windows(
+        hello_imgui.get_imgui_test_engine(), True
+    )
 
     queue_all_tests()
 

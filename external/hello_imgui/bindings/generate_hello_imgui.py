@@ -47,8 +47,8 @@ def main():
     options.srcmlcpp_options.ignored_warning_parts = ["gAssetsSubfolderFolderName"]
     options.namespace_names_replacements.add_last_replacement("ImGui", "Imgui")
     options.namespace_root__regex = "^HelloImGui$|^ImGuiTheme$"
-    options.fn_return_force_policy_reference_for_pointers__regex = join_string_by_pipe_char(
-        [r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"]
+    options.fn_return_force_policy_reference_for_pointers__regex = (
+        join_string_by_pipe_char([r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"])
     )
     options.var_names_replacements.replacements = [
         RegexReplacement("imGui", "imgui"),

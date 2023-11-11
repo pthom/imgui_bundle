@@ -4,9 +4,7 @@ import os
 from bindings_generation import paths
 
 
-copyright_str = (
-    "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle"
-)
+copyright_str = "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle"
 
 
 directories = """

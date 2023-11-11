@@ -25,7 +25,9 @@ def autogenerate_im_file_dialog():
     options.type_replacements.add_last_replacement(r"std.vector<(\w*)>", r"List[\1]")
     options.type_replacements.add_last_replacement(r"time_t", r"int")
 
-    options.postprocess_stub_function = lambda code: code.replace("ifd.FileDialog", "FileDialog")
+    options.postprocess_stub_function = lambda code: code.replace(
+        "ifd.FileDialog", "FileDialog"
+    )
 
     litgen.write_generated_code_for_file(
         options,

@@ -38,7 +38,9 @@ def main():
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
     options.type_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
-    options.type_replacements.add_last_replacement(r"CanvasSizeModeAlias", "CanvasSizeMode")
+    options.type_replacements.add_last_replacement(
+        r"CanvasSizeModeAlias", "CanvasSizeMode"
+    )
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
             # All those types are C style functions pointers
@@ -53,7 +55,9 @@ def main():
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
-    generator.process_cpp_file(THIS_DIR + "/../imgui_node_editor_immapp/node_editor_default_context.h")
+    generator.process_cpp_file(
+        THIS_DIR + "/../imgui_node_editor_immapp/node_editor_default_context.h"
+    )
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

@@ -25,22 +25,23 @@ def main():
     options.python_run_black_formatter = True
 
     def post_process_stub(code: str):
-        r = (code
-             .replace(": cv.Mat", ": Mat")
-             .replace("cv.Point2d", "Point2d")
-             .replace(" = cv.Point2(", " = (")
-             .replace(" = cv.Point(", " = (")
-             .replace(": cv.Point", ": Point")
-             .replace("cv.Matx33.eye()", "np.eye(3)")
-             .replace("cv.Matx33d", "Matx33d")
-             .replace("ColorMapStatsTypeId()", "ColorMapStatsTypeId.from_full_image")
-             .replace("List[cv.Point]", "List[Point]")
-             .replace("List[cv.Point]", "List[Point]")
-             .replace("cv.Size", "Size")
-             .replace("Point2d = ()", "Point2d = (0, 0)")
-             .replace(" = Size()", " = (0, 0)")
-             )
+        r = (
+            code.replace(": cv.Mat", ": Mat")
+            .replace("cv.Point2d", "Point2d")
+            .replace(" = cv.Point2(", " = (")
+            .replace(" = cv.Point(", " = (")
+            .replace(": cv.Point", ": Point")
+            .replace("cv.Matx33.eye()", "np.eye(3)")
+            .replace("cv.Matx33d", "Matx33d")
+            .replace("ColorMapStatsTypeId()", "ColorMapStatsTypeId.from_full_image")
+            .replace("List[cv.Point]", "List[Point]")
+            .replace("List[cv.Point]", "List[Point]")
+            .replace("cv.Size", "Size")
+            .replace("Point2d = ()", "Point2d = (0, 0)")
+            .replace(" = Size()", " = (0, 0)")
+        )
         return r
+
     options.postprocess_stub_function = post_process_stub
 
     generator = litgen.LitgenGenerator(options)

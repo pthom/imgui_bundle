@@ -8,7 +8,7 @@ import os
 
 THIS_DIR = os.path.dirname(__file__)
 sys.path.append(THIS_DIR + "/../../imgui/bindings")
-from litgen_options_imgui import litgen_options_imgui, ImguiOptionsType
+from litgen_options_imgui import litgen_options_imgui, ImguiOptionsType  # noqa: E402
 
 
 def litgen_options_implot() -> LitgenOptions:
@@ -73,10 +73,9 @@ def litgen_options_implot() -> LitgenOptions:
             # void SetupAxisTicks(ImAxis idx, const double* values, int n_ticks, const char* const labels[], bool show_default)
             #                                                            ^                           ^
             "SetupAxisTicks",
-
             # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);
             # (This API is a bit exotic, and cannot be bound automatically)
-            "^AddColormap$"
+            "^AddColormap$",
         ]
     )
 

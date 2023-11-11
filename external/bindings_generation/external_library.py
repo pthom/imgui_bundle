@@ -30,7 +30,11 @@ class ExternalLibrary:
         return self.fork_git_url is not None or self.official_git_url is not None
 
     def git_url(self) -> Optional[str]:
-        r = self.fork_git_url if self.fork_git_url is not None else self.official_git_url
+        r = (
+            self.fork_git_url
+            if self.fork_git_url is not None
+            else self.official_git_url
+        )
         return r
 
     def attached_git_branch(self) -> Optional[str]:
@@ -38,7 +42,11 @@ class ExternalLibrary:
         return r
 
     def attached_git_remote(self) -> Optional[str]:
-        r = self.fork_remote_name if self.fork_git_url is not None else self.official_remote_name
+        r = (
+            self.fork_remote_name
+            if self.fork_git_url is not None
+            else self.official_remote_name
+        )
         return r
 
     def bindings_folder_abs_path(self) -> str:
@@ -58,7 +66,9 @@ class ExternalLibrary:
             return filename.startswith("pybind_") and filename.endswith(".cpp")
 
         pybind_files = list(filter(is_pybind_file, files))
-        pybind_files = [self.bindings_folder_path_from_external() + "/" + f for f in pybind_files]
+        pybind_files = [
+            self.bindings_folder_path_from_external() + "/" + f for f in pybind_files
+        ]
         return pybind_files
 
     def generator_script_name(self) -> str:
@@ -91,7 +101,9 @@ class ExternalLibrary:
         return r
 
     def cmd_update_official(self) -> ShellCommands:
-        assert self.fork_git_url is None  # if this is a fork, use run_rebase_fork_on_official_changes!
+        assert (
+            self.fork_git_url is None
+        )  # if this is a fork, use run_rebase_fork_on_official_changes!
 
         cmd = f"""
         cd {self.git_folder_abs_path()}
@@ -172,7 +184,9 @@ class ExternalLibrary:
         then attach the submodule to the correct remote branch (set-upstream)
         """
         if not self.is_submodule():
-            print(f"run_reattach_submodule: skipped {self.name} because it does not appear to be a submodule")
+            print(
+                f"run_reattach_submodule: skipped {self.name} because it does not appear to be a submodule"
+            )
             return
         self.cmd_rm_remotes().run()
         self.cmd_add_remotes().run()
@@ -181,6 +195,8 @@ class ExternalLibrary:
 
     def run_pull(self):
         if not self.is_submodule():
-            print(f"run_pull: skipped {self.name} because it does not appear to be a submodule")
+            print(
+                f"run_pull: skipped {self.name} because it does not appear to be a submodule"
+            )
             return
         self.cmd_pull().run()

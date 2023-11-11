@@ -69,7 +69,7 @@ def autogenerate_implot_internal() -> None:
 
 
 def sandbox():
-    code  = """
+    code = """
     IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
     """
     options = litgen_options_implot()

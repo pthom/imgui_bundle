@@ -65,7 +65,9 @@ def build_image():
 
 
 def run_bash():
-    run_local_command(f"docker start {DOCKER_CONTAINER_NAME} && docker exec -it {DOCKER_CONTAINER_NAME} /bin/bash")
+    run_local_command(
+        f"docker start {DOCKER_CONTAINER_NAME} && docker exec -it {DOCKER_CONTAINER_NAME} /bin/bash"
+    )
 
 
 def full_build():
