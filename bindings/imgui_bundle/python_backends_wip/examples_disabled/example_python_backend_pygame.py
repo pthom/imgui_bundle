@@ -5,8 +5,8 @@ from __future__ import absolute_import
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends_wip.python_backends_disabled.pygame_backend import PygameRenderer
-import OpenGL.GL as gl
-import pygame
+import OpenGL.GL as gl  # type: ignore
+import pygame  # type: ignore
 import sys
 
 

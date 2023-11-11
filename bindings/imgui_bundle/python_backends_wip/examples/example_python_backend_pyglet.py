@@ -5,8 +5,8 @@ from __future__ import absolute_import
 from imgui_bundle import imgui
 from imgui_bundle.python_backends_wip import pyglet_backend
 
-from pyglet import gl
-import pyglet
+from pyglet import gl  # type: ignore
+import pyglet  # type: ignore
 import sys
 
 

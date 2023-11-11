@@ -4,18 +4,18 @@ import numpy as np
 
 import ctypes
 from ctypes import *
-import imgui
-from imgui.integrations.opengl import BaseOpenGLRenderer
+from imgui_bundle.python_backends_wip.opengl_backend import BaseOpenGLRenderer
 
-from glumpy import  gloo, gl
+from glumpy import  gloo, gl  # type: ignore
 
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt  # type: ignore
 
-from glumpy.log import log
+from glumpy.log import log  # type: ignore
 
 import glfw
 
-from imgui.integrations import compute_fb_scale
+from imgui_bundle.python_backends_wip import compute_fb_scale
+
 
 class GlumpyRenderer(BaseOpenGLRenderer):
     

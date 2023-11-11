@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle._imgui_bundle import immapp_cpp as immapp_cpp  # type: ignore
-from imgui_bundle._imgui_bundle.immapp_cpp import (
+from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     clock_seconds,
     default_node_editor_context,
     em_size,

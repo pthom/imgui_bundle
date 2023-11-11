@@ -5,7 +5,7 @@
 from imgui_bundle import imgui
 from imgui_bundle.python_backends_wip.sdl_backend import SDL2Renderer
 import OpenGL.GL as gl  # type: ignore
-from sdl2 import *
+from sdl2 import *  # type: ignore
 import ctypes
 import sys
 
