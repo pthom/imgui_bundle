@@ -1,7 +1,8 @@
 # demo_tex_inspect_simple
 # See equivalent C++ program: demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp
-from imgui_bundle import imgui_tex_inspect, ImVec2
-from imgui_bundle.demos_python.demo_utils.api_demos import *
+from imgui_bundle import imgui_tex_inspect, ImVec2, immapp, hello_imgui
+
+from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder
 
 
 @immapp.static(texture_id=None)

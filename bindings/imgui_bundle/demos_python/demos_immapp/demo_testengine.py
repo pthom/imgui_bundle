@@ -177,7 +177,7 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     return [my_window, dear_imgui_demo_window, test_engine_window]
 
 
-def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore # noqa: F811
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
     runner_params.imgui_window_params.default_imgui_window_type = \

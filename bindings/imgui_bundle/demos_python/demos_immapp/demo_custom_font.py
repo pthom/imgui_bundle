@@ -67,7 +67,7 @@ def main() -> None:
     custom_font: imgui.ImFont
 
     def gui() -> None:
-        imgui.push_font(custom_font)
+        imgui.push_font(custom_font) # noqa: F821
         imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
         imgui.pop_font()
         imgui.text("Text with standard font")

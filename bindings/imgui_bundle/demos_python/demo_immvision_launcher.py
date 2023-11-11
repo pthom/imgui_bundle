@@ -1,17 +1,11 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, immvision, immapp, imgui_md
-
+import importlib.util
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+from imgui_bundle.demos_python import demo_utils  # this will set the assets folder  # noqa: E402
 
 
-HAS_OPENCV = False
-try:
-    import cv2  # type: ignore
-
-    HAS_OPENCV = True
-except ImportError:
-    pass
+HAS_OPENCV = importlib.util.find_spec("cv2") is not None
 
 
 if HAS_IMMVISION and HAS_OPENCV:

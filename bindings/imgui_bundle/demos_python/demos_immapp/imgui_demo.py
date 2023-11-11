@@ -1545,7 +1545,7 @@ def show_demo_window_widgets():
             if not hasattr(static, "next_tab_id"):
                 static.next_tab_id = 0
             if static.next_tab_id == 0:  # Initialize with some default tabs
-                for i in range(3):
+                for _ in range(3):
                     static.active_tabs.append(static.next_tab_id)
                     static.next_tab_id += 1
 
@@ -2535,8 +2535,8 @@ def show_demo_window_tables():
         return
 
     # Using these as base values to create width/height that are a factor of the size of our font
-    imgui.calc_text_size("A").x
-    imgui.get_text_line_height_with_spacing()
+    # imgui.calc_text_size("A").x
+    # imgui.get_text_line_height_with_spacing()
 
     imgui.push_id("Tables")
 

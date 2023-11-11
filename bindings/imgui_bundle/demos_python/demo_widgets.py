@@ -339,7 +339,8 @@ def demo_cool_bar():
                     print(f"Clicked {label}")
         im_cool_bar.end_cool_bar()
 
-    imgui.new_line(); imgui.new_line()
+    imgui.new_line()
+    imgui.new_line()
 
 
 def demo_gui():

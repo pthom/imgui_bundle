@@ -78,8 +78,6 @@ def make_closure_demo_guizmo_gradient() -> GuiFunction:
     size = ImVec2(400, 20)
 
     def gui() -> None:
-        result: bool
-        selection: int
         _result = imguizmo.im_gradient.edit_pure(my_gradient, size)
         imgui.text_wrapped(
             """

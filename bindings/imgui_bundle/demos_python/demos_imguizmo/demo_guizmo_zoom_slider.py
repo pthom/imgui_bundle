@@ -9,10 +9,10 @@
 
 from imgui_bundle import imgui, ImVec4, ImVec2, imguizmo, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
+import numpy as np
 
 im_zoom_slider = imguizmo.im_zoom_slider
 
-import numpy as np
 
 
 def lerp(a: float, b: float, x: float):

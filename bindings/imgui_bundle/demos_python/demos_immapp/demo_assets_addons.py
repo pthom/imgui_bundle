@@ -1,7 +1,6 @@
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
 from imgui_bundle.demos_python import demo_utils
 
-from dataclasses import dataclass, field
 import numpy as np
 from typing import Dict, List
 from dataclasses import dataclass, field
@@ -212,7 +211,7 @@ def get_doc(which_doc: str) -> str:
 
 
 @immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
-def show_doc(which_doc):
+def show_doc(which_doc):  # noqa: F811
     # Access the 'static' variable
     is_doc_visible = show_doc.is_doc_visible
 

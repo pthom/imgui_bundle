@@ -34,10 +34,10 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
     def lerp(a, b, x):
         return a + (b - a) * x
 
-    rect0: imgui.internal.ImRect
-    rect1: imgui.internal.ImRect
-    alpha0: float
-    alpha1: float
+    rect0: imgui.internal.ImRect = imgui.internal.ImRect()
+    rect1: imgui.internal.ImRect = imgui.internal.ImRect()
+    alpha0: float = 1
+    alpha1: float = 1
 
     @immapp.run_anon_block
     def fill_positions():
