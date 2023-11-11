@@ -1,4 +1,5 @@
 # Port of imgui_demo.cpp (largely made with ChatGPT)
+# fmt: off
 # mypy: disable_error_code=attr-defined
 # mypy: disable_error_code=no-untyped-call
 

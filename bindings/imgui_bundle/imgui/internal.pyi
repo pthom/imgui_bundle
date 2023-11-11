@@ -5,7 +5,6 @@ import numpy as np
 
 from imgui_bundle.imgui import *
 
-
 ##################################################
 #    Manually inserted code (typedefs, etc.)
 ##################################################
@@ -14,7 +13,6 @@ from imgui_bundle.imgui import *
 ErrorStringCallback = Callable[[str], None]
 
 # from imgui_bundle.imgui import
-
 
 """
 // Use your programming IDE "Go to definition" facility on the names of the center columns to find the actual flags/enum lists.

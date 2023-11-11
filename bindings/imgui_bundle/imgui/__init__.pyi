@@ -58,7 +58,7 @@ def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
-
+# fmt: off
 """
 // Forward declarations
 struct ImDrawChannel;               // Temporary storage to output draw commands out of order, used by ImDrawListSplitter and ImDrawList::ChannelsSplit()

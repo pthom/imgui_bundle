@@ -3,7 +3,6 @@
 
 from imgui_bundle.imgui import ImDrawData
 
-
 ###############################################################################
 # <bindings for imgui_impl_opengl3.h
 ###############################################################################
@@ -31,7 +30,6 @@ def opengl3_create_device_objects() -> bool:
 
 def opengl3_destroy_device_objects() -> None:
     pass
-
 
 ###############################################################################
 # <bindings for imgui_impl_opengl2.h
@@ -63,7 +61,6 @@ def opengl2_create_device_objects() -> bool:
 
 def opengl2_destroy_device_objects() -> None:
     pass
-
 
 ###############################################################################
 # <bindings for imgui_impl_glfw.h
@@ -124,7 +121,6 @@ def glfw_char_callback(window_address: int, c: int) -> None:
 
 # def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
 #     pass
-
 
 ###############################################################################
 # <bindings for imgui_impl_sdl2.h

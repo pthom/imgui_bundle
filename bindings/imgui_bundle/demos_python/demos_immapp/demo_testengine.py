@@ -29,6 +29,7 @@ test_custom_gui = imgui.test_engine.Test
 
 # This function is called at startup and will instantiate the tests
 def my_register_tests():
+    # fmt: off
     global test_open_popup, test_capture_screenshot, test_custom_gui
     engine = hello_imgui.get_imgui_test_engine()
 
@@ -91,6 +92,7 @@ def my_register_tests():
     # let the test call our test function, and also call our custom Gui
     test_custom_gui.test_func = test_with_vars_test_func
     test_custom_gui.gui_func = test_custom_gui_func
+    # fmt: on
 
 
 # Our application GUI: shows that we can trigger the test manually

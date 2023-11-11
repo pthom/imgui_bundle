@@ -52,7 +52,9 @@ def main() -> None:
         # glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
 
     # Create window with graphics context
-    window = glfw.create_window(1280, 720, "Dear ImGui GLFW+OpenGL3 example", None, None)
+    window = glfw.create_window(
+        1280, 720, "Dear ImGui GLFW+OpenGL3 example", None, None
+    )
     if window is None:
         sys.exit(1)
     glfw.make_context_current(window)
@@ -62,7 +64,9 @@ def main() -> None:
     # IMGUI_CHECKVERSION();
     imgui.create_context()
     io = imgui.get_io()
-    io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
+    io.config_flags |= (
+        imgui.ConfigFlags_.nav_enable_keyboard
+    )  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
     io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
     # io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
@@ -167,7 +171,9 @@ def main() -> None:
             nonlocal show_demo_window, show_another_window, clear_color, counter, f
             # static float f = 0.0f;
             # static int counter = 0;
-            imgui.begin("Hello, world!")  # Create a window called "Hello, world!" and append into it.
+            imgui.begin(
+                "Hello, world!"
+            )  # Create a window called "Hello, world!" and append into it.
 
             # Demo custom font
             _id = id(custom_font)
@@ -175,14 +181,22 @@ def main() -> None:
             imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
             imgui.pop_font()
 
-            imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
+            imgui.text(
+                "This is some useful text."
+            )  # Display some text (you can use a format strings too)
             _, show_demo_window = imgui.checkbox(
                 "Demo Window", show_demo_window
             )  # Edit bools storing our window open/close state
-            _, show_another_window = imgui.checkbox("Another Window", show_another_window)
+            _, show_another_window = imgui.checkbox(
+                "Another Window", show_another_window
+            )
 
-            _, f = imgui.slider_float("float", f, 0.0, 1.0)  # Edit 1 float using a slider from 0.0f to 1.0f
-            _, clear_color = imgui.color_edit4("clear color", clear_color)  # Edit 4 floats representing a color
+            _, f = imgui.slider_float(
+                "float", f, 0.0, 1.0
+            )  # Edit 1 float using a slider from 0.0f to 1.0f
+            _, clear_color = imgui.color_edit4(
+                "clear color", clear_color
+            )  # Edit 4 floats representing a color
 
             if imgui.button(
                 "Button"
