@@ -74,4 +74,3 @@ link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_he
 ----
 include::../../demos_python/demos_immapp/demo_hello_world.py[]
 ----
-

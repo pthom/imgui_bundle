@@ -3,19 +3,19 @@
 
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2021-2022 Dalerank
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- * 
+ *
  */
 
 
@@ -224,13 +224,13 @@ namespace ImSpinner
       {
         radius_b -= (0.005f * speed);
         radius_b = ImMax(radius_k, ImMax(0.8f, radius_b));
-      } 
-      else 
+      }
+      else
       {
         radius_b = (1 - radius_k);
       }
       storage->SetFloat(radiusbId, radius_b);
-      
+
       float radius_tb = sequence ? ImMax(radius_k, radius_b) * radius : (radius_b * radius);
       window->DrawList->PathClear();
       for (size_t i = 0; i <= num_segments; i++)
@@ -540,7 +540,7 @@ namespace ImSpinner
         }
         if (offset > size.x - thickness)
           th = size.x - offset;
-        
+
         window->DrawList->AddCircleFilled(ImVec2(pos.x + style.FramePadding.x + offset, centre.y), th, color, 8);
       }
     }
@@ -556,7 +556,7 @@ namespace ImSpinner
 
       float velocity = storage->GetFloat(velocityId, 0.f);
       float vtime = storage->GetFloat(vtimeId, 0.f);
-     
+
       float dtime = ImFmod((float)vtime, IM_PI);
       float start = (vtime += velocity);
       if (dtime > 0.f && dtime < IM_PI / 2.f)
@@ -980,7 +980,7 @@ namespace ImSpinner
           }
           c.Value.w = ImMax(0.05f, c.Value.w);
         }
-       
+
         window->DrawList->PathStroke(c, false, thickness);
       }
     }
@@ -1068,7 +1068,7 @@ namespace ImSpinner
           c.Value.w = 1.f;
         }
         c.Value.w = ImMax(0.f, 1.f - c.Value.w);
-        
+
         window->DrawList->PathClear();
         window->DrawList->PathLineTo(centre);
         for (size_t i = 0; i < num_segments + 1; i++)
@@ -1317,7 +1317,7 @@ namespace ImSpinner
                     [&] (auto i) { return (num_segments + i + 1) * angle_offset; },
                     [&] (auto i) { return thickness - th * i; });
 
-      const float b_angle_offset = (2.f * IM_PI - angle) / num_segments; 
+      const float b_angle_offset = (2.f * IM_PI - angle) / num_segments;
       draw_gradient([&] (auto i) { return num_segments * angle_offset * 2.f + (i * b_angle_offset); },
                     [&] (auto i) { return num_segments * angle_offset * 2.f + ((i + 1) * b_angle_offset); },
                     [] (auto) { return 1.f; });
@@ -1526,7 +1526,7 @@ namespace ImSpinner
 
       static int hue = 0;
       static float nextdot = 0, nextdot2;
-      
+
       nextdot -= 0.07f;
 
       static float velocity = 1.f;
@@ -1629,7 +1629,7 @@ namespace ImSpinner
       ImGui::SameLine();
       ImSpinner::SpinnerAngTwin("SpinnerAngTwin4", 16, 13, 2, ImColor(255, 0, 0), ImColor(255, 255, 255), 6 * velocity, IM_PI / 2.f, 2);
 
-      ImGui::SameLine(); 
+      ImGui::SameLine();
       ImSpinner::SpinnerTwinPulsar("SpinnerTwinPulsar", 16, 2, ImColor(255, 255, 255), 0.5f * velocity, 2);
 
       ImGui::SameLine();

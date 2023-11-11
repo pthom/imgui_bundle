@@ -26,7 +26,7 @@ ImFont* MyLoadFontsManually()
     // (although it seems to work fine in release mode. Probable memory overflow somewhere)
 
     // First, we load the default font
-    // Note: 
+    // Note:
     // on high dpi screen, this font might look very small if you do not take into account the font scaling factor, such as show below.
     // HelloImGui provides HelloImGui::DpiFontLoadingFactor() which corresponds to:
     //      `DpiWindowFactor() * 1.f / ImGui::GetIO().FontGlobalScale`

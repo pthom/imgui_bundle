@@ -1,5 +1,4 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-import os
 from typing import List
 from bindings_generation.external_library import ExternalLibrary
 

@@ -29,13 +29,13 @@ index a173cde..12fca88 100644
  # include <cstdint> // std::uintXX_t
  # include <utility> // std::move
 +#include <string>
- 
- 
+
+
  //------------------------------------------------------------------------------
 @@ -85,7 +86,7 @@ struct Config
  {
      using CanvasSizeModeAlias = ax::NodeEditor::CanvasSizeMode;
- 
+
 -    const char*             SettingsFile;
 +    std::string             SettingsFile;
      ConfigSession           BeginSaveSession;

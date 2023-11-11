@@ -61,7 +61,7 @@ endfunction()
 function(add_this_folder_demos)
     # Creates demo apps for all cpp files in the current folder
     FILE(GLOB demo_cpp_files *.cpp)
-    FOREACH(demo_cpp_file ${demo_cpp_files})        
+    FOREACH(demo_cpp_file ${demo_cpp_files})
         add_single_file_demo_cpp(${demo_cpp_file})
     ENDFOREACH()
 endfunction()

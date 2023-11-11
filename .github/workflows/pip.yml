@@ -42,10 +42,10 @@ jobs:
       run: |
         # Download the archive
         curl -L -O https://github.com/pal1000/mesa-dist-win/releases/download/23.1.9/mesa3d-23.1.9-release-msvc.7z
-        
+
         # Extract the archive using 7-zip which is preinstalled on the GitHub Actions Windows runner
         7z x mesa3d-23.1.9-release-msvc.7z -omesa3d
-        
+
         # copy the mesa DLLs to the python directory
         python_dir=$(dirname $(which python))
         cp mesa3d/x64/*.* $python_dir

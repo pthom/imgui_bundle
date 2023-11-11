@@ -37,4 +37,3 @@ RUN apt-get install ninja-build
 # Set the working directory inside the container
 RUN mkdir -p /dvp/build
 WORKDIR /dvp/build
-

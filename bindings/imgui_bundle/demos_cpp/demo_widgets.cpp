@@ -188,7 +188,7 @@ void DemoPortableFileDialogs()
 
     ImGui::SameLine();
 
-    
+
     static std::unique_ptr<pfd::open_file> openFileMultiselect;
     if (ImGui::Button("Open File (multiselect)"))
         openFileMultiselect.reset(new pfd::open_file("Select file", "", {}, pfd::opt::multiselect));
@@ -219,7 +219,7 @@ void DemoPortableFileDialogs()
         logResult(selectFolderDialog->result());
         selectFolderDialog.reset();
     }
-    
+
 
     if (lastFileSelection.size() > 0)
         ImGui::Text("%s", lastFileSelection.c_str());

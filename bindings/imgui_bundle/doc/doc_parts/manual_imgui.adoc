@@ -71,4 +71,3 @@ Displays this:
 ifndef::env_interactive_manual[]
 image::{url-doc-images}/immediate_gui_example.png[]
 endif::[]
-

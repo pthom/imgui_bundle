@@ -33,41 +33,51 @@ repos:
   - id: requirements-txt-fixer
   - id: trailing-whitespace
 
-# Black, the code formatter, natively supports pre-commit
-- repo: https://github.com/psf/black
-  rev: 22.3.0
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.1.5
   hooks:
-  - id: black
-    exclude: ^(docs)
+    # Run the linter.
+    - id: ruff
+    #    args: [ --fix ]
+    # Run the formatter.
+    # - id: ruff-format
 
-# Sort your imports in a standard form
-- repo: https://github.com/PyCQA/isort
-  rev: 5.10.1
-  hooks:
-  - id: isort
+## Black, the code formatter, natively supports pre-commit
+#- repo: https://github.com/psf/black
+#  rev: 22.3.0
+#  hooks:
+#  - id: black
+#    exclude: ^(docs)
+
+## Sort your imports in a standard form
+#- repo: https://github.com/PyCQA/isort
+#  rev: 5.10.1
+#  hooks:
+#  - id: isort
 
 # Upgrade older Python syntax
-- repo: https://github.com/asottile/pyupgrade
-  rev: v2.31.1
-  hooks:
-  - id: pyupgrade
-    args: ["--py36-plus"]
+#- repo: https://github.com/asottile/pyupgrade
+#  rev: v2.31.1
+#  hooks:
+#  - id: pyupgrade
+#    args: ["--py36-plus"]
 
-# Changes tabs to spaces
-- repo: https://github.com/Lucas-C/pre-commit-hooks
-  rev: v1.1.13
-  hooks:
-  - id: remove-tabs
-    exclude: ^(docs)
+## Changes tabs to spaces
+#- repo: https://github.com/Lucas-C/pre-commit-hooks
+#  rev: v1.1.13
+#  hooks:
+#  - id: remove-tabs
+#    exclude: ^(docs)
 
-# CMake formatting
-- repo: https://github.com/cheshirekow/cmake-format-precommit
-  rev: v0.6.13
-  hooks:
-  - id: cmake-format
-    additional_dependencies: [pyyaml]
-    types: [file]
-    files: (\.cmake|CMakeLists.txt)(.in)?$
+## CMake formatting
+#- repo: https://github.com/cheshirekow/cmake-format-precommit
+#  rev: v0.6.13
+#  hooks:
+#  - id: cmake-format
+#    additional_dependencies: [pyyaml]
+#    types: [file]
+#    files: (\.cmake|CMakeLists.txt)(.in)?$
 
 # Suggested hook if you add a .clang-format file
 # - repo: https://github.com/pre-commit/mirrors-clang-format

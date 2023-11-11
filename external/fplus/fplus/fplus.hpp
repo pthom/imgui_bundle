@@ -12951,7 +12951,7 @@ std::string show_fill_right(const std::string::value_type& filler,
 // Case N, recursive
 template<class Tuple, std::size_t N>
 struct TupleStreamer {
-    static void stream(const Tuple& t, std::list<std::string>& sl) 
+    static void stream(const Tuple& t, std::list<std::string>& sl)
     {
         TupleStreamer<Tuple, N-1>::stream(t,sl);
         std::stringstream ss;
@@ -12964,7 +12964,7 @@ struct TupleStreamer {
 // Case N=1
 template<class Tuple>
 struct TupleStreamer<Tuple, 1> {
-    static void stream(const Tuple& t, std::list<std::string>& sl) 
+    static void stream(const Tuple& t, std::list<std::string>& sl)
     {
         std::stringstream ss;
         ss << std::get<0>(t);
@@ -13701,7 +13701,7 @@ auto execute_max_n_times_until_success(std::size_t n,
 
 // API search type: execute_n_times : (Int, Io a) -> Io ()
 // Returns a function that (when called) executes n times
-// the provided side effect function. 
+// the provided side effect function.
 // The return values (if present) are dropped.
 template<typename Effect>
 auto execute_n_times(std::size_t n, const Effect& eff)
@@ -14487,9 +14487,9 @@ namespace internal
     {
     public:
         explicit timed_function_impl(Fn fn) : _fn(fn) {};
-        template<typename ...Args> auto operator()(Args&&... args) 
-        { 
-            return _timed_result(std::forward<Args>(args)...); 
+        template<typename ...Args> auto operator()(Args&&... args)
+        {
+            return _timed_result(std::forward<Args>(args)...);
         }
 
     private:

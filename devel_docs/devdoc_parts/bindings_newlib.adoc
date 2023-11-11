@@ -231,4 +231,3 @@ ImGuiWindowFlags_None = WindowFlags_.none
 ===== Step 2-c: Write a nice looking demo
 
 It should demo the library, and act as a tutorial, in python and C++.
-

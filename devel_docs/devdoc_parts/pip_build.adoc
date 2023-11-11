@@ -42,4 +42,3 @@ pip install -v .          # install the library
 ==== Build and the library pip package from sources:
 
     pip install -v .
-

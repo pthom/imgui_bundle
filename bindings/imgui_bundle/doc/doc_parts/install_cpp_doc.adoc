@@ -44,4 +44,3 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_cp
 
 
 TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
-

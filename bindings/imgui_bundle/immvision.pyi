@@ -7,7 +7,6 @@ import enum
 import numpy as np
 from numpy.typing import NDArray
 
-import cv2  # type: ignore
 import cv2 as cv
 
 

@@ -21,4 +21,3 @@ link:https://www.youtube.com/watch?v=QQIC7lpHono[40 seconds demo video on Youtub
 ==== API:
 
 link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
-

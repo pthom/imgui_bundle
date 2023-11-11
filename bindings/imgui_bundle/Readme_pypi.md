@@ -225,7 +225,7 @@ between the C++ and Python APIs.
 ### Install from pypi
 
     pip install imgui-bundle
-    pip install opencv-contrib-python 
+    pip install opencv-contrib-python
 
 -   in order to run the immvision module, install opencv-python or
     opencv-contrib-python
@@ -237,8 +237,8 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
-    git submodule update --init --recursive 
-    pip install -v . 
+    git submodule update --init --recursive
+    pip install -v .
     pip install opencv-contrib-python
 
 -   Since there are lots of submodules, this might take a few minutes
@@ -270,10 +270,10 @@ If you choose to clone this repo, follow these instructions:
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
-    git submodule update --init --recursive 
+    git submodule update --init --recursive
     mkdir build
     cd build
-    cmake .. -DIMMVISION_FETCH_OPENCV=ON 
+    cmake .. -DIMMVISION_FETCH_OPENCV=ON
     make -j
 
 -   Since there are lots of submodules, this might take a few minutes

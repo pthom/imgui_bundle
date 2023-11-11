@@ -3134,8 +3134,8 @@ def demo_gui():
 
     imgui_md.render_unindented(
         """
-        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. 
-        
+        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
+
         Apply Colormaps to the filtered image in the options tab.
         """
     )
@@ -3398,7 +3398,7 @@ void DemoPortableFileDialogs()
 
     ImGui::SameLine();
 
-    
+
     static std::unique_ptr<pfd::open_file> openFileMultiselect;
     if (ImGui::Button("Open File (multiselect)"))
         openFileMultiselect.reset(new pfd::open_file("Select file", "", {}, pfd::opt::multiselect));
@@ -3429,7 +3429,7 @@ void DemoPortableFileDialogs()
         logResult(selectFolderDialog->result());
         selectFolderDialog.reset();
     }
-    
+
 
     if (lastFileSelection.size() > 0)
         ImGui::Text("%s", lastFileSelection.c_str());
@@ -3778,7 +3778,7 @@ def demo_portable_file_dialogs():
     imgui_md.render_unindented(
         """
         # Portable File Dialogs
-         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
+         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs
     """
     )
 
@@ -3832,7 +3832,7 @@ def demo_imfile_dialog():
     imgui_md.render_unindented(
         """
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
          *Not (yet) adapted for High DPI resolution under windows*
         """
     )
@@ -4249,7 +4249,7 @@ def demo_gui():
 
     imgui_md.render(
         """
-# ImGuiColorTextEdit: 
+# ImGuiColorTextEdit:
 [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
     """
     )

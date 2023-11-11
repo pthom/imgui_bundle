@@ -1,5 +1,5 @@
-srcmlcpp @ git+https://github.com/pthom/srcmlcpp
 black
 mypy
-pytest
 opencv-contrib-python
+pytest
+srcmlcpp @ git+https://github.com/pthom/srcmlcpp

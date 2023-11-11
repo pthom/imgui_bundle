@@ -65,4 +65,3 @@ image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
 
 
 A big thank you to their authors for their awesome work!
-

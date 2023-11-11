@@ -2,7 +2,6 @@
 from enum import Enum
 import copy
 
-import codemanip.code_utils
 import litgen
 from codemanip.code_replacements import RegexReplacementList
 from codemanip.code_utils import join_string_by_pipe_char
@@ -395,7 +394,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
 def sandbox():
     code = """
-    struct Foo { 
+    struct Foo {
     std::function<std::string(void*)> GetClipboardTextFn_;
     std::function<void(std::string)> SetClipboardTextFn_;
 

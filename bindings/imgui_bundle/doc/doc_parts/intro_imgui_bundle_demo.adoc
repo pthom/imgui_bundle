@@ -13,4 +13,3 @@ image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
 
 endif::[]
-

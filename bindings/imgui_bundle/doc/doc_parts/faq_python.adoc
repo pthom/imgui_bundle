@@ -7,4 +7,3 @@ It may take some time for Visual Studio code to find the stubs. You can try to c
 * Q: Editable mode does not work
 
 You should upgrade pip: `pip install -U pip`
-

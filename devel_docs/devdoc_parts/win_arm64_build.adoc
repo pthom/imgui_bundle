@@ -170,4 +170,3 @@ Explanations:
 * OpenCV_STATIC: tells OpenCV to look in the ARM64/vc17/staticlib folder
 * CMAKE_MSVC_RUNTIME_LIBRARY: tells MSVC to use static runtime (/MT)
 * BUILD_SHARED_LIBS=OFF: build static libs. Normally, this could be ignored
-

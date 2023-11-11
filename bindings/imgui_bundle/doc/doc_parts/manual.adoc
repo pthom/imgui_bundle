@@ -8,4 +8,3 @@ include::manual_himgui.adoc[]
 include::manual_immapp.adoc[]
 
 include::manual_notebook.adoc[]
-

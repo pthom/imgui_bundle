@@ -87,4 +87,3 @@ imgui_bundle/external/bindings_generation/
 ├── all_external_libraries.py    # ImCoolBar is referenced here
 ├── ...
 ----
-

@@ -31,4 +31,3 @@ set(all_pybind_files
     ${external_dir}/imspinner/bindings/pybind_imspinner.cpp
     ${external_dir}/portable_file_dialogs/bindings/pybind_portable_file_dialogs.cpp
     )
-    

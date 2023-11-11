@@ -2483,7 +2483,7 @@ void py_init_module_implot(py::module& m)
     m.def("add_colormap",
         [](const char * name, const py::array & cols, bool qual=true)
         {
-            const void * values_from_pyarray = cols.data(); 
+            const void * values_from_pyarray = cols.data();
 
             int ndim = cols.ndim();
             int rows = static_cast<int>(cols.shape()[0]);
@@ -2601,12 +2601,12 @@ void py_init_module_implot(py::module& m)
     pyClassImPlotPoint.def(py::init([](py::array a) {
         return cast_to_point(a);
     }), py::arg("array"));
- 
+
     py::implicitly_convertible<py::tuple, ImPlotPoint>();
     py::implicitly_convertible<py::list, ImPlotPoint>();
     py::implicitly_convertible<py::array, ImPlotPoint>();
     py::implicitly_convertible<ImVec2, ImPlotPoint>();
- 
+
     pyClassImPlotPoint.def(py::init([](ImPlotPoint ipp) {
         return ImPlotPoint(ipp.x, ipp.y);
     }), py::arg("implotpoint"));

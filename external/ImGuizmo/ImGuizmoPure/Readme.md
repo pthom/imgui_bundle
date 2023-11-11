@@ -16,7 +16,7 @@ namespace ImCurveEdit
       ...
    };
 
-   int Edit(Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL, 
+   int Edit(Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL,
             ImVector<EditPoint>* selectedPoints = NULL // This is an output only
             );
 }
@@ -43,7 +43,7 @@ namespace ImCurveEdit
    // ret, selected_points = im_curve_edit.edit(delegate, size, id_, clipping_rect)
    // ```
    std::tuple<int, std::vector<EditPoint>> Edit(
-       DelegateCpp& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL, 
+       DelegateCpp& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL,
        * selectedPoints = NULL);
 }
 ```

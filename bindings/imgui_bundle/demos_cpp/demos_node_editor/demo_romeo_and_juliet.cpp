@@ -108,4 +108,3 @@ void demo_romeo_and_juliet()
         link.Draw();
     ed::End();
 }
-

@@ -36,4 +36,3 @@ include::../../demos_python/demos_immapp/demo_implot_markdown.py[]
 ----
 
 ====
-

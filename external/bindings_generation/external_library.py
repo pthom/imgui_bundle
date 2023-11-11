@@ -97,7 +97,7 @@ class ExternalLibrary:
         cd {self.git_folder_abs_path()}
         git fetch {self.official_remote_name}
         git checkout {self.official_branch}
-        git pull --set-upstream {self.official_remote_name} {self.official_branch}        
+        git pull --set-upstream {self.official_remote_name} {self.official_branch}
         """
         return ShellCommands(cmd)
 

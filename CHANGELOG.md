@@ -2,7 +2,7 @@
 ### Added support for ImGui Test Engine
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_testengine.jpg" width=200 />
 
-ImGui Test Engine is a Tests & Automation Engine for Dear ImGui. 
+ImGui Test Engine is a Tests & Automation Engine for Dear ImGui.
 
 * Can be used with python, and C++ (all platforms, incl emscripten). See [python bindings](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/test_engine.pyi) declarations (stubs).
 * Enabled by default inside ImGui Bundle. Needs to be enabled manually when using Hello ImGui.
@@ -186,4 +186,3 @@ Lots of additions
   (see https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos/notebooks/demo_notebook.ipynb)
 
 **Full Changelog**: https://github.com/pthom/imgui_bundle/compare/v0.6.4...v0.6.5
-

@@ -189,5 +189,3 @@ def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  
 
 if __name__ == "__main__":
     main()
-
-

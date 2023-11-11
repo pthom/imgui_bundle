@@ -118,4 +118,3 @@ make install
 ```
 
 => then you can use the install folder (OpenCVConfig.cmake is inside opencv_install/lib/cmake/opencv4/OpenCVConfig.cmake)
-

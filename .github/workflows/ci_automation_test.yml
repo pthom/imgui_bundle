@@ -64,13 +64,13 @@ jobs:
         if: ${{ matrix.platform == 'windows-latest' }}
         run: |
           cd .github/ci_automation_tests/build/Release
-          
+
           # Run the application, but don't exit the script even if it fails
           # Under windows, the app works well a local machine and on GitHub CI
           # However it ends with a segfault on Github CI, althought it did run to the end.
           # Let's detect this via an old-style hack.
           ./ci_automation_test_app_bundle.exe || true
-          
+
           # Now check for the success file
           if [[ ! -f ci_automation_test_app_success.txt ]]; then
             echo "Error: ci_automation_test_app_success.txt not found!"
