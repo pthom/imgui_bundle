@@ -8,26 +8,46 @@ from . import internal as internal
 from . import backends as backends
 from . import test_engine as test_engine
 
-
 ##################################################
 #    Manually inserted code (typedefs, etc.)
 ##################################################
 
-from .internal import Context, ImDrawListSharedData, ImFontBuilderIO, ImRect, ColorMod, GroupData, PopupData, \
-    ViewportP, InputEvent, TableInstanceData, TableTempData, NavTreeNodeData, PtrOrIndex, SettingsHandler, \
-    ShrinkWidthItem, StackLevelInfo, TabItem, KeyRoutingData, ListClipperData, ListClipperRange, OldColumnData, \
-    OldColumns, StyleMod, WindowStackData
+from .internal import (
+    Context,
+    ImDrawListSharedData,
+    ImFontBuilderIO,
+    ImRect,
+    ColorMod,
+    GroupData,
+    PopupData,
+    ViewportP,
+    InputEvent,
+    TableInstanceData,
+    TableTempData,
+    NavTreeNodeData,
+    PtrOrIndex,
+    SettingsHandler,
+    ShrinkWidthItem,
+    StackLevelInfo,
+    TabItem,
+    KeyRoutingData,
+    ListClipperData,
+    ListClipperRange,
+    OldColumnData,
+    OldColumns,
+    StyleMod,
+    WindowStackData,
+)
 
 VoidPtr = Any
 
-FLT_MIN: float # value defined by this module as the minimum acceptable C(++) float
-FLT_MAX: float # value defined by this module as the maximum acceptable C(++) float
+FLT_MIN: float  # value defined by this module as the minimum acceptable C(++) float
+FLT_MAX: float  # value defined by this module as the maximum acceptable C(++) float
 
 Window = internal.Window
 uint = int
 uchar = int
 char = int
-
 
 def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
     """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
@@ -35,10 +55,9 @@ def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
     """
     pass
 
-
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 """
 // Forward declarations
@@ -75,7 +94,6 @@ struct ImGuiViewport;               // A Platform Window (always only one in 'ma
 """
 # We forward declare only the opaque structures
 # ImDrawVert = Any
-
 
 """
 // Enums/Flags (declared as int for compatibility with old C++, to allow using as flags without overhead, and to not pollute the top of this file)
@@ -177,7 +195,6 @@ typedef unsigned short ImDrawIdx;   // Default: 16-bit (for maximum compatibilit
 """
 ImDrawIdx = int
 
-
 """
 // Scalar data types
 typedef unsigned int        ImGuiID;// A unique ID used by widgets (typically the result of hashing a stack of string)
@@ -201,7 +218,6 @@ ImU32 = int  # 32-bit integer (often used to store packed colors)
 ImS64 = int  # 64-bit integer
 ImU64 = int  # 64-bit integer
 
-
 """
 // Character types
 // (we generally use UTF-8 encoded string in the API. This is storage specifically for a decoded character used for keyboard input and display)
@@ -216,7 +232,6 @@ typedef ImWchar16 ImWchar;
 ImWchar = int
 ImWchar16 = int
 ImWchar32 = int
-
 
 """
 // Callback and functions types
@@ -235,7 +250,6 @@ SizeCallback = Any            # and thus are hard to create from python
 MemAllocFunc = Any
 MemFreeFunc = Any
 ImDrawCallback = Any
-
 
 """
 // Helpers macros to generate 32-bit encoded colors
@@ -260,25 +274,27 @@ ImDrawCallback = Any
 #define IM_COL32_BLACK       IM_COL32(0,0,0,255)        // Opaque black
 #define IM_COL32_BLACK_TRANS IM_COL32(0,0,0,0)          // Transparent black = 0x00000000
 """
-IM_COL32_R_SHIFT= 0
+IM_COL32_R_SHIFT = 0
 IM_COL32_G_SHIFT = 8
 IM_COL32_B_SHIFT = 16
 IM_COL32_A_SHIFT = 24
 
-
 def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
-    r = ((a<<IM_COL32_A_SHIFT) | (b<<IM_COL32_B_SHIFT) | (g<<IM_COL32_G_SHIFT) | (r<<IM_COL32_R_SHIFT))
+    r = (
+        (a << IM_COL32_A_SHIFT)
+        | (b << IM_COL32_B_SHIFT)
+        | (g << IM_COL32_G_SHIFT)
+        | (r << IM_COL32_R_SHIFT)
+    )
     return r
-
 
 IM_COL32_WHITE = IM_COL32(255, 255, 255, 255)
 IM_COL32_BLACK = IM_COL32(0, 0, 0, 255)
 
-
 """
 Additional customizations
 """
-TextRange = Any # internal structure of ImGuiTextFilter, composed of string pointers (cannot be easily adapted)
+TextRange = Any  # internal structure of ImGuiTextFilter, composed of string pointers (cannot be easily adapted)
 StoragePair = Any
 
 PayloadId = int
@@ -290,7 +306,6 @@ VERTEX_BUFFER_POS_OFFSET: int
 VERTEX_BUFFER_UV_OFFSET: int
 VERTEX_BUFFER_COL_OFFSET: int
 INDEX_SIZE: int
-
 
 # Disable black formatter
 # fmt: off

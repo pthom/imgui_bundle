@@ -10,4 +10,4 @@ def compute_fb_scale(window_size, frame_buffer_size):
     if win_width != 0 and win_height != 0:
         return float(fb_width) / win_width, float(fb_height) / win_height
 
-    return 1., 1.
+    return 1.0, 1.0

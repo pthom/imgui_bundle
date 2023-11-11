@@ -41,7 +41,9 @@ class MyGradient(imguizmo.im_gradient.DelegateStl):  # type: ignore
     def get_points_list(self) -> List[ImVec4]:
         return self.points
 
-    def edit_point(self, point_index: int, value: ImVec4) -> int:  # overridable (pure virtual)
+    def edit_point(
+        self, point_index: int, value: ImVec4
+    ) -> int:  # overridable (pure virtual)
         self.points[point_index] = value
         return 0
 

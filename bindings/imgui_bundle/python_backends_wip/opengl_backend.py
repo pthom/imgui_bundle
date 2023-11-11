@@ -78,7 +78,17 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, width, height, 0, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, pixels)
+        gl.glTexImage2D(
+            gl.GL_TEXTURE_2D,
+            0,
+            gl.GL_RGBA,
+            width,
+            height,
+            0,
+            gl.GL_RGBA,
+            gl.GL_UNSIGNED_BYTE,
+            pixels,
+        )
 
         self.io.fonts.tex_id = self._font_texture
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
@@ -110,11 +120,17 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glDeleteShader(vertex_shader)
         gl.glDeleteShader(fragment_shader)
 
-        self._attrib_location_tex = gl.glGetUniformLocation(self._shader_handle, "Texture")
+        self._attrib_location_tex = gl.glGetUniformLocation(
+            self._shader_handle, "Texture"
+        )
         self._attrib_proj_mtx = gl.glGetUniformLocation(self._shader_handle, "ProjMtx")
-        self._attrib_location_position = gl.glGetAttribLocation(self._shader_handle, "Position")
+        self._attrib_location_position = gl.glGetAttribLocation(
+            self._shader_handle, "Position"
+        )
         self._attrib_location_uv = gl.glGetAttribLocation(self._shader_handle, "UV")
-        self._attrib_location_color = gl.glGetAttribLocation(self._shader_handle, "Color")
+        self._attrib_location_color = gl.glGetAttribLocation(
+            self._shader_handle, "Color"
+        )
 
         self._vbo_handle = gl.glGenBuffers(1)
         self._elements_handle = gl.glGenBuffers(1)
@@ -127,9 +143,30 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glEnableVertexAttribArray(self._attrib_location_uv)
         gl.glEnableVertexAttribArray(self._attrib_location_color)
 
-        gl.glVertexAttribPointer(self._attrib_location_position, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET))
-        gl.glVertexAttribPointer(self._attrib_location_uv, 2, gl.GL_FLOAT, gl.GL_FALSE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET))
-        gl.glVertexAttribPointer(self._attrib_location_color, 4, gl.GL_UNSIGNED_BYTE, gl.GL_TRUE, imgui.VERTEX_SIZE, ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET))
+        gl.glVertexAttribPointer(
+            self._attrib_location_position,
+            2,
+            gl.GL_FLOAT,
+            gl.GL_FALSE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_POS_OFFSET),
+        )
+        gl.glVertexAttribPointer(
+            self._attrib_location_uv,
+            2,
+            gl.GL_FLOAT,
+            gl.GL_FALSE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_UV_OFFSET),
+        )
+        gl.glVertexAttribPointer(
+            self._attrib_location_color,
+            4,
+            gl.GL_UNSIGNED_BYTE,
+            gl.GL_TRUE,
+            imgui.VERTEX_SIZE,
+            ctypes.c_void_p(imgui.VERTEX_BUFFER_COL_OFFSET),
+        )
 
         # restore state
         gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
@@ -170,10 +207,22 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
         ortho_projection = (ctypes.c_float * 16)(
-             2.0/display_width, 0.0,                   0.0, 0.0,
-             0.0,               2.0/-display_height,   0.0, 0.0,
-             0.0,               0.0,                  -1.0, 0.0,
-            -1.0,               1.0,                   0.0, 1.0
+            2.0 / display_width,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0 / -display_height,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            -1.0,
+            1.0,
+            0.0,
+            1.0,
         )
 
         gl.glUseProgram(self._shader_handle)
@@ -186,11 +235,21 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
             # todo: check this (sizes)
-            gl.glBufferData(gl.GL_ARRAY_BUFFER, commands.vtx_buffer.size() * imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address()), gl.GL_STREAM_DRAW)
+            gl.glBufferData(
+                gl.GL_ARRAY_BUFFER,
+                commands.vtx_buffer.size() * imgui.VERTEX_SIZE,
+                ctypes.c_void_p(commands.vtx_buffer.data_address()),
+                gl.GL_STREAM_DRAW,
+            )
 
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._elements_handle)
             # todo: check this (sizes)
-            gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, commands.idx_buffer.size() * imgui.INDEX_SIZE, ctypes.c_void_p(commands.idx_buffer.data_address()), gl.GL_STREAM_DRAW)
+            gl.glBufferData(
+                gl.GL_ELEMENT_ARRAY_BUFFER,
+                commands.idx_buffer.size() * imgui.INDEX_SIZE,
+                ctypes.c_void_p(commands.idx_buffer.data_address()),
+                gl.GL_STREAM_DRAW,
+            )
 
             # todo: allow to iterate over _CmdList
             for command in commands.cmd_buffer:
@@ -205,7 +264,12 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
                 else:
                     gltype = gl.GL_UNSIGNED_INT
 
-                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(idx_buffer_offset))
+                gl.glDrawElements(
+                    gl.GL_TRIANGLES,
+                    command.elem_count,
+                    gltype,
+                    ctypes.c_void_p(idx_buffer_offset),
+                )
 
                 idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
 
@@ -236,7 +300,9 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         self._font_texture = 0
 
 
-class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad rendering with pygame)
+class FixedPipelineRenderer(
+    BaseOpenGLRenderer
+):  # Probably buggy (bad rendering with pygame)
     """Basic OpenGL integration base class."""
 
     # note: no need to override __init__
@@ -255,7 +321,17 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad renderin
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
         # gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, width, height, 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, pixels)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_ALPHA, texture.shape[0], texture.shape[1], 0, gl.GL_ALPHA, gl.GL_UNSIGNED_BYTE, texture.data)
+        gl.glTexImage2D(
+            gl.GL_TEXTURE_2D,
+            0,
+            gl.GL_ALPHA,
+            texture.shape[0],
+            texture.shape[1],
+            0,
+            gl.GL_ALPHA,
+            gl.GL_UNSIGNED_BYTE,
+            texture.data,
+        )
 
         self.io.fonts.tex_id = self._font_texture
         # gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
@@ -299,7 +375,7 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad renderin
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glPushMatrix()
         gl.glLoadIdentity()
-        gl.glOrtho(0, io.display_size.x, io.display_size.y, 0.0, -1., 1.)
+        gl.glOrtho(0, io.display_size.x, io.display_size.y, 0.0, -1.0, 1.0)
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glPushMatrix()
         gl.glLoadIdentity()
@@ -307,9 +383,30 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad renderin
         for commands in draw_data.cmd_lists:
             ptr_idx_buffer = commands.idx_buffer.data_address()
 
-            gl.glVertexPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_POS_OFFSET))
-            gl.glTexCoordPointer(2, gl.GL_FLOAT, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_UV_OFFSET))
-            gl.glColorPointer(4, gl.GL_UNSIGNED_BYTE, imgui.VERTEX_SIZE, ctypes.c_void_p(commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_COL_OFFSET))
+            gl.glVertexPointer(
+                2,
+                gl.GL_FLOAT,
+                imgui.VERTEX_SIZE,
+                ctypes.c_void_p(
+                    commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_POS_OFFSET
+                ),
+            )
+            gl.glTexCoordPointer(
+                2,
+                gl.GL_FLOAT,
+                imgui.VERTEX_SIZE,
+                ctypes.c_void_p(
+                    commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_UV_OFFSET
+                ),
+            )
+            gl.glColorPointer(
+                4,
+                gl.GL_UNSIGNED_BYTE,
+                imgui.VERTEX_SIZE,
+                ctypes.c_void_p(
+                    commands.vtx_buffer.data_address() + imgui.VERTEX_BUFFER_COL_OFFSET
+                ),
+            )
 
             for command in commands.cmd_buffer:
                 gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
@@ -322,9 +419,14 @@ class FixedPipelineRenderer(BaseOpenGLRenderer):  # Probably buggy (bad renderin
                 else:
                     gltype = gl.GL_UNSIGNED_INT
 
-                gl.glDrawElements(gl.GL_TRIANGLES, command.elem_count, gltype, ctypes.c_void_p(ptr_idx_buffer))
+                gl.glDrawElements(
+                    gl.GL_TRIANGLES,
+                    command.elem_count,
+                    gltype,
+                    ctypes.c_void_p(ptr_idx_buffer),
+                )
 
-                ptr_idx_buffer += (command.elem_count * imgui.INDEX_SIZE)
+                ptr_idx_buffer += command.elem_count * imgui.INDEX_SIZE
 
         restore_common_gl_state(common_gl_state_tuple)
 
@@ -361,7 +463,7 @@ def get_common_gl_state():
     last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
     last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
     last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
-    last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
+    last_blend_equation_rgb = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
     last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
     last_front_and_back_polygon_mode, _ = gl.glGetIntegerv(gl.GL_POLYGON_MODE)
     return (
@@ -378,6 +480,7 @@ def get_common_gl_state():
         last_blend_equation_alpha,
         last_front_and_back_polygon_mode,
     )
+
 
 def restore_common_gl_state(common_gl_state_tuple):
     """
@@ -425,6 +528,12 @@ def restore_common_gl_state(common_gl_state_tuple):
     else:
         gl.glDisable(gl.GL_SCISSOR_TEST)
 
-
-    gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
-    gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
+    gl.glScissor(
+        last_scissor_box[0],
+        last_scissor_box[1],
+        last_scissor_box[2],
+        last_scissor_box[3],
+    )
+    gl.glViewport(
+        last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3]
+    )

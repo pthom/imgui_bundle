@@ -2,8 +2,8 @@
 from typing import Callable, TypeVar, Any
 
 # Create type variables for the argument and return types of the function
-A = TypeVar('A', bound=Callable[..., Any])
-R = TypeVar('R')
+A = TypeVar("A", bound=Callable[..., Any])
+R = TypeVar("R")
 
 
 def static(**kwargs: Any) -> Callable[[A], A]:
@@ -27,12 +27,13 @@ def static(**kwargs: Any) -> Callable[[A], A]:
     Static variables are similar to global variables, with the same shortcomings!
     Use them only in small scripts, not in production code!
     """
+
     def decorator(func: A) -> A:
         for key, value in kwargs.items():
             setattr(func, key, value)
         return func
-    return decorator
 
+    return decorator
 
 
 def run_anon_block(function: Callable[[], None]) -> None:

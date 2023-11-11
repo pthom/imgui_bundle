@@ -65,13 +65,17 @@ class RampEdit(im_curve_edit.DelegatePure):  # type: ignore
         cols = [0xFF0000FF, 0xFF00FF00, 0xFFFF0000]
         return cols[curve_index]
 
-    def get_points_list(self, curve_index: int) -> List[ImVec2]:  # overridable (pure virtual)
+    def get_points_list(
+        self, curve_index: int
+    ) -> List[ImVec2]:  # overridable (pure virtual)
         return self.points[curve_index]
 
     def get_curve_type(self, param_0: int) -> im_curve_edit.CurveType:  # type: ignore
         return im_curve_edit.CurveType.curve_smooth
 
-    def edit_point(self, curve_index: int, point_index: int, value: ImVec2) -> int:  # overridable (pure virtual)
+    def edit_point(
+        self, curve_index: int, point_index: int, value: ImVec2
+    ) -> int:  # overridable (pure virtual)
         self.points[curve_index][point_index] = value
         self._sort_values(curve_index)
 
@@ -80,7 +84,9 @@ class RampEdit(im_curve_edit.DelegatePure):  # type: ignore
                 return i
         return point_index
 
-    def add_point(self, curve_index: int, value: ImVec2) -> None:  # overridable (pure virtual)
+    def add_point(
+        self, curve_index: int, value: ImVec2
+    ) -> None:  # overridable (pure virtual)
         self.points[curve_index].append(value)
         self._sort_values(curve_index)
 

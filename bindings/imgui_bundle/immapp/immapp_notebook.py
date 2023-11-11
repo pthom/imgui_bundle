@@ -19,8 +19,8 @@ def run_nb(
     with_implot: bool = True,
     with_markdown: bool = True,
     with_node_editor: bool = True,
-    thumbnail_height: int =150,
-    thumbnail_ratio: float =0.0,
+    thumbnail_height: int = 150,
+    thumbnail_ratio: float = 0.0,
     run_id: Optional[str] = None,
 ) -> None:
     """ImguiBundle app runner for jupyter notebook
@@ -73,7 +73,13 @@ def run_nb(
             resize_ratio = thumbnail_height / image.shape[0]
 
         if resize_ratio != 1:
-            thumbnail_image = cv2.resize(image, (0, 0), fx=resize_ratio, fy=resize_ratio, interpolation=cv2.INTER_AREA)
+            thumbnail_image = cv2.resize(
+                image,
+                (0, 0),
+                fx=resize_ratio,
+                fy=resize_ratio,
+                interpolation=cv2.INTER_AREA,
+            )
         else:
             thumbnail_image = image
         return thumbnail_image
@@ -114,7 +120,11 @@ def run_nb(
             run_app_and_display_thumb()
         else:
             if hasattr(imgui_bundle, "JAVASCRIPT_RUN_ID"):
-                print("imgui_bundle.JAVASCRIPT_RUN_ID=" + imgui_bundle.JAVASCRIPT_RUN_ID + "{run_id=}")
+                print(
+                    "imgui_bundle.JAVASCRIPT_RUN_ID="
+                    + imgui_bundle.JAVASCRIPT_RUN_ID
+                    + "{run_id=}"
+                )
                 if imgui_bundle.JAVASCRIPT_RUN_ID == run_id:
                     run_app_and_display_thumb()
             else:

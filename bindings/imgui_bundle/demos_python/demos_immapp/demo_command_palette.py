@@ -13,7 +13,10 @@ class AppState:
 
 def init_command_palette():
     highlight_font_color = ImVec4(1.0, 0.0, 0.0, 1.0)
-    imcmd.set_style_color(imcmd.ImCmdTextType.highlight, imgui.color_convert_float4_to_u32(highlight_font_color))
+    imcmd.set_style_color(
+        imcmd.ImCmdTextType.highlight,
+        imgui.color_convert_float4_to_u32(highlight_font_color),
+    )
 
     # Add theme command: a two steps command, with initial callback + SubsequentCallback
     select_theme_cmd = imcmd.Command()
@@ -38,7 +41,8 @@ def init_command_palette():
     log_cmd = imcmd.Command()
     log_cmd.name = "You say goodbye"
     log_cmd.initial_callback = lambda: hello_imgui.log(
-        hello_imgui.LogLevel.info, "... and I say hello..." + icons_fontawesome.ICON_FA_MUSIC
+        hello_imgui.LogLevel.info,
+        "... and I say hello..." + icons_fontawesome.ICON_FA_MUSIC,
     )
     imcmd.add_command(log_cmd)
 
@@ -53,7 +57,9 @@ def main():
             app_state.show_command_palette = not app_state.show_command_palette
 
         if app_state.show_command_palette:
-            app_state.show_command_palette = imcmd.command_palette_window("CommandPalette", True)
+            app_state.show_command_palette = imcmd.command_palette_window(
+                "CommandPalette", True
+            )
 
         imgui.text("Press Ctrl+Shift+P to bring up the command palette")
 

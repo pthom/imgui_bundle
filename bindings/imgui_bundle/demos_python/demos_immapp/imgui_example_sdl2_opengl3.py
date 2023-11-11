@@ -16,21 +16,32 @@ import sdl2  # type: ignore # if this fails, you need to: pip install PySDL2
 
 def main() -> None:
     # Setup window
-    if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER | sdl2.SDL_INIT_GAMECONTROLLER) != 0:
+    if (
+        sdl2.SDL_Init(
+            sdl2.SDL_INIT_VIDEO | sdl2.SDL_INIT_TIMER | sdl2.SDL_INIT_GAMECONTROLLER
+        )
+        != 0
+    ):
         print(f"Error: {sdl2.SDL_GetError()}")
 
     # Decide GL+GLSL versions
     if platform.system() == "Darwin":
         glsl_version = "#version 150"
-        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FLAGS, sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) # Always required on Mac
-        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_FLAGS, sdl2.SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG
+        )  # Always required on Mac
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE
+        )
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 2)
     else:
         # GL 3.0 + GLSL 130
         glsl_version = "#version 130"
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_FLAGS, 0)
-        sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE)
+        sdl2.SDL_GL_SetAttribute(
+            sdl2.SDL_GL_CONTEXT_PROFILE_MASK, sdl2.SDL_GL_CONTEXT_PROFILE_CORE
+        )
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
         sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_CONTEXT_MINOR_VERSION, 0)
 
@@ -41,17 +52,30 @@ def main() -> None:
     sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DOUBLEBUFFER, 1)
     sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_DEPTH_SIZE, 24)
     sdl2.SDL_GL_SetAttribute(sdl2.SDL_GL_STENCIL_SIZE, 8)
-    window_flags = sdl2.SDL_WINDOW_OPENGL | sdl2.SDL_WINDOW_RESIZABLE | sdl2.SDL_WINDOW_ALLOW_HIGHDPI
-    window = sdl2.SDL_CreateWindow(b"Dear ImGui SDL2+OpenGL3 example", sdl2.SDL_WINDOWPOS_CENTERED, sdl2.SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags)
+    window_flags = (
+        sdl2.SDL_WINDOW_OPENGL
+        | sdl2.SDL_WINDOW_RESIZABLE
+        | sdl2.SDL_WINDOW_ALLOW_HIGHDPI
+    )
+    window = sdl2.SDL_CreateWindow(
+        b"Dear ImGui SDL2+OpenGL3 example",
+        sdl2.SDL_WINDOWPOS_CENTERED,
+        sdl2.SDL_WINDOWPOS_CENTERED,
+        1280,
+        720,
+        window_flags,
+    )
     gl_context = sdl2.SDL_GL_CreateContext(window)
     sdl2.SDL_GL_MakeCurrent(window, gl_context)
-    sdl2.SDL_GL_SetSwapInterval(1) # Enable vsync
+    sdl2.SDL_GL_SetSwapInterval(1)  # Enable vsync
 
     # Setup Dear ImGui context
     # IMGUI_CHECKVERSION();
     imgui.create_context()
     io = imgui.get_io()
-    io.config_flags |= imgui.ConfigFlags_.nav_enable_keyboard  # Enable Keyboard Controls
+    io.config_flags |= (
+        imgui.ConfigFlags_.nav_enable_keyboard
+    )  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
     io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
     # io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
@@ -149,9 +173,12 @@ def main() -> None:
             imgui.backends.sdl2_process_event(event_address)
             if event.type == sdl2.SDL_QUIT:
                 done = True
-            if (event.type == sdl2.SDL_WINDOWEVENT and event.window.event == sdl2.SDL_WINDOWEVENT_CLOSE and event.window.windowID == sdl2.SDL_GetWindowID(window)):
+            if (
+                event.type == sdl2.SDL_WINDOWEVENT
+                and event.window.event == sdl2.SDL_WINDOWEVENT_CLOSE
+                and event.window.windowID == sdl2.SDL_GetWindowID(window)
+            ):
                 done = True
-
 
         # Start the Dear ImGui frame
         imgui.backends.opengl3_new_frame()
@@ -167,7 +194,9 @@ def main() -> None:
             nonlocal show_demo_window, show_another_window, clear_color, counter, f
             # static float f = 0.0f;
             # static int counter = 0;
-            imgui.begin("Hello, world!")  # Create a window called "Hello, world!" and append into it.
+            imgui.begin(
+                "Hello, world!"
+            )  # Create a window called "Hello, world!" and append into it.
 
             # Demo custom font
             _id = id(custom_font)
@@ -175,14 +204,22 @@ def main() -> None:
             imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
             imgui.pop_font()
 
-            imgui.text("This is some useful text.")  # Display some text (you can use a format strings too)
+            imgui.text(
+                "This is some useful text."
+            )  # Display some text (you can use a format strings too)
             _, show_demo_window = imgui.checkbox(
                 "Demo Window", show_demo_window
             )  # Edit bools storing our window open/close state
-            _, show_another_window = imgui.checkbox("Another Window", show_another_window)
+            _, show_another_window = imgui.checkbox(
+                "Another Window", show_another_window
+            )
 
-            _, f = imgui.slider_float("float", f, 0.0, 1.0)  # Edit 1 float using a slider from 0.0f to 1.0f
-            _, clear_color = imgui.color_edit4("clear color", clear_color)  # Edit 4 floats representing a color
+            _, f = imgui.slider_float(
+                "float", f, 0.0, 1.0
+            )  # Edit 1 float using a slider from 0.0f to 1.0f
+            _, clear_color = imgui.color_edit4(
+                "clear color", clear_color
+            )  # Edit 4 floats representing a color
 
             if imgui.button(
                 "Button"
@@ -215,7 +252,9 @@ def main() -> None:
 
         # Rendering
         imgui.render()
-        GL.glViewport(0, 0, int(imgui.get_io().display_size.x), int(imgui.get_io().display_size.y))
+        GL.glViewport(
+            0, 0, int(imgui.get_io().display_size.x), int(imgui.get_io().display_size.y)
+        )
         GL.glClearColor(
             clear_color[0] * clear_color[3],
             clear_color[1] * clear_color[3],

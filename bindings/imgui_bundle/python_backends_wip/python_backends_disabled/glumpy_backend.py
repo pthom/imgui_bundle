@@ -6,7 +6,7 @@ import ctypes
 from ctypes import *
 from imgui_bundle.python_backends_wip.opengl_backend import BaseOpenGLRenderer
 
-from glumpy import  gloo, gl  # type: ignore
+from glumpy import gloo, gl  # type: ignore
 
 from matplotlib import pyplot as plt  # type: ignore
 
@@ -19,7 +19,7 @@ from imgui_bundle.python_backends_wip import compute_fb_scale
 
 class GlumpyRenderer(BaseOpenGLRenderer):
 
-    """GLumpy backend for pyimgui. The code borrows heavily from the glfw integration. """
+    """GLumpy backend for pyimgui. The code borrows heavily from the glfw integration."""
 
     VERTEX_SHADER_SRC = """
     #version 330
@@ -49,13 +49,13 @@ class GlumpyRenderer(BaseOpenGLRenderer):
     }
     """
 
-    io = None;
-    prog : gloo.Program = None;
+    io = None
+    prog: gloo.Program = None
 
-    def __init__(self, window, attach_callbacks=True ):
+    def __init__(self, window, attach_callbacks=True):
 
-        #self.io is initialized by super-class
-        super(GlumpyRenderer, self).__init__();
+        # self.io is initialized by super-class
+        super(GlumpyRenderer, self).__init__()
 
         self.window = window
 
@@ -67,8 +67,8 @@ class GlumpyRenderer(BaseOpenGLRenderer):
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
         self.io.display_size = glfw.get_framebuffer_size(self.window)
-        #self.io.get_clipboard_text_fn = self._get_clipboard_text
-        #self.io.set_clipboard_text_fn = self._set_clipboard_text
+        # self.io.get_clipboard_text_fn = self._get_clipboard_text
+        # self.io.set_clipboard_text_fn = self._set_clipboard_text
 
         self._map_keys()
         self._gui_time = None
@@ -115,23 +115,17 @@ class GlumpyRenderer(BaseOpenGLRenderer):
             io.keys_down[key] = False
 
         io.key_ctrl = (
-            io.keys_down[glfw.KEY_LEFT_CONTROL] or
-            io.keys_down[glfw.KEY_RIGHT_CONTROL]
+            io.keys_down[glfw.KEY_LEFT_CONTROL] or io.keys_down[glfw.KEY_RIGHT_CONTROL]
         )
 
-        io.key_alt = (
-            io.keys_down[glfw.KEY_LEFT_ALT] or
-            io.keys_down[glfw.KEY_RIGHT_ALT]
-        )
+        io.key_alt = io.keys_down[glfw.KEY_LEFT_ALT] or io.keys_down[glfw.KEY_RIGHT_ALT]
 
         io.key_shift = (
-            io.keys_down[glfw.KEY_LEFT_SHIFT] or
-            io.keys_down[glfw.KEY_RIGHT_SHIFT]
+            io.keys_down[glfw.KEY_LEFT_SHIFT] or io.keys_down[glfw.KEY_RIGHT_SHIFT]
         )
 
         io.key_super = (
-            io.keys_down[glfw.KEY_LEFT_SUPER] or
-            io.keys_down[glfw.KEY_RIGHT_SUPER]
+            io.keys_down[glfw.KEY_LEFT_SUPER] or io.keys_down[glfw.KEY_RIGHT_SUPER]
         )
 
     def char_callback(self, window, char):
@@ -158,7 +152,7 @@ class GlumpyRenderer(BaseOpenGLRenderer):
 
         io.display_size = window_size
         io.display_fb_scale = compute_fb_scale(window_size, fb_size)
-        io.delta_time = 1.0/60
+        io.delta_time = 1.0 / 60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
             io.mouse_pos = glfw.get_cursor_pos(self.window)
@@ -174,44 +168,45 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
-            io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+            io.delta_time = 1.0 / 60.0
+        if io.delta_time <= 0.0:
+            io.delta_time = 1.0 / 1000.0
 
         self._gui_time = current_time
 
-    #called first by super-class constructor after self.io is filled
+    # called first by super-class constructor after self.io is filled
     def _create_device_objects(self):
-        self.prog = gloo.Program( self.VERTEX_SHADER_SRC, self.FRAGMENT_SHADER_SRC, version=330 );
+        self.prog = gloo.Program(
+            self.VERTEX_SHADER_SRC, self.FRAGMENT_SHADER_SRC, version=330
+        )
 
         if False:
-            dtype = [('Color', np.float32, 4),
-                     ('Position', np.float32, 2),
-                     ('UV', np.float32, 2)];
+            dtype = [
+                ("Color", np.float32, 4),
+                ("Position", np.float32, 2),
+                ("UV", np.float32, 2),
+            ]
             v_array = np.zeros(4, dtype).view(gloo.VertexArray)
             # Four colors
-            v_array['Color'] = [ (1,0,0,1), (0,1,0,1), (0,0,1,1), (0,0,0,1) ]
-            v_array['Position'] = [ (-1,-1),   (-1,+1),   (+1,-1),   (+1,+1)   ]
-            v_array['UV'] = [ (0,1),   (0,0),   (1,1),   (1,0)   ]
+            v_array["Color"] = [(1, 0, 0, 1), (0, 1, 0, 1), (0, 0, 1, 1), (0, 0, 0, 1)]
+            v_array["Position"] = [(-1, -1), (-1, +1), (+1, -1), (+1, +1)]
+            v_array["UV"] = [(0, 1), (0, 0), (1, 1), (1, 0)]
 
-            self.prog.bind( v_array );
+            self.prog.bind(v_array)
 
+            unitmat = np.eye(4, dtype=np.float32)
+            self.prog["ProjMtx"] = unitmat
 
-            unitmat = np.eye( 4, dtype=np.float32 );
-            self.prog['ProjMtx'] = unitmat;
-
-
-    #called second by super-class constructor
+    # called second by super-class constructor
     def refresh_font_texture(self):
 
         self.io.fonts.add_font_default()
-        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32();
+        width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
 
-        tex = np.frombuffer( pixels, dtype=np.uint8 ).reshape(height, width,4);
-        self.prog['Texture'] = tex;
+        tex = np.frombuffer(pixels, dtype=np.uint8).reshape(height, width, 4)
+        self.prog["Texture"] = tex
 
-
-    def render( self, draw_data ):
-
+    def render(self, draw_data):
 
         # perf: local for faster access
         io = self.io
@@ -235,7 +230,7 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         last_vertex_array = gl.glGetIntegerv(gl.GL_VERTEX_ARRAY_BINDING)
         last_blend_src = gl.glGetIntegerv(gl.GL_BLEND_SRC)
         last_blend_dst = gl.glGetIntegerv(gl.GL_BLEND_DST)
-        last_blend_equation_rgb = gl. glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
+        last_blend_equation_rgb = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_RGB)
         last_blend_equation_alpha = gl.glGetIntegerv(gl.GL_BLEND_EQUATION_ALPHA)
         last_viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
         last_scissor_box = gl.glGetIntegerv(gl.GL_SCISSOR_BOX)
@@ -250,84 +245,102 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         gl.glDisable(gl.GL_CULL_FACE)
         gl.glDisable(gl.GL_DEPTH_TEST)
         gl.glEnable(gl.GL_SCISSOR_TEST)
-        #gl.glActiveTexture(gl.GL_TEXTURE0)
+        # gl.glActiveTexture(gl.GL_TEXTURE0)
 
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
         ortho_projection = (ctypes.c_float * 16)(
-             2.0/display_width, 0.0,                   0.0, 0.0,
-             0.0,               2.0/-display_height,   0.0, 0.0,
-             0.0,               0.0,                  -1.0, 0.0,
-            -1.0,               1.0,                   0.0, 1.0
+            2.0 / display_width,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            2.0 / -display_height,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            -1.0,
+            0.0,
+            -1.0,
+            1.0,
+            0.0,
+            1.0,
         )
 
-        self.prog["ProjMtx"] = ortho_projection;
+        self.prog["ProjMtx"] = ortho_projection
 
         for commands in draw_data.commands_lists:
 
-
             idx_buffer_offset = 0
 
-            array_type = c_ubyte * commands.vtx_buffer_size * imgui.VERTEX_SIZE;
+            array_type = c_ubyte * commands.vtx_buffer_size * imgui.VERTEX_SIZE
             data_carray = array_type.from_address(commands.vtx_buffer_data)
 
-            if not ( imgui.VERTEX_BUFFER_POS_OFFSET == 0 and \
-                     imgui.VERTEX_BUFFER_UV_OFFSET == 8 and \
-                     imgui.VERTEX_BUFFER_COL_OFFSET == 16 ):
-                log.error("GlumpyRenderer.render(): imgui vertex buffer layout has changed ! notify the developers ..." );
+            if not (
+                imgui.VERTEX_BUFFER_POS_OFFSET == 0
+                and imgui.VERTEX_BUFFER_UV_OFFSET == 8
+                and imgui.VERTEX_BUFFER_COL_OFFSET == 16
+            ):
+                log.error(
+                    "GlumpyRenderer.render(): imgui vertex buffer layout has changed ! notify the developers ..."
+                )
 
-                return;
+                return
 
-            #TODO: this is a bit convoluted; Imgui delivers uint8 colors, but glumpy wants float32's
-            dtype = [('Position', np.float32, 2),
-                     ('UV', np.float32, 2),
-                     ('Color', np.uint8, 4)];
-            vao_content = np.frombuffer( data_carray, dtype=dtype );
+            # TODO: this is a bit convoluted; Imgui delivers uint8 colors, but glumpy wants float32's
+            dtype = [
+                ("Position", np.float32, 2),
+                ("UV", np.float32, 2),
+                ("Color", np.uint8, 4),
+            ]
+            vao_content = np.frombuffer(data_carray, dtype=dtype)
 
-            dtype2 = [('Position', np.float32, 2),
-                     ('UV', np.float32, 2),
-                     ('Color', np.float32, 4)];
-            vao_content_f = np.zeros( vao_content.shape, dtype=dtype2 );
-            for i,val in enumerate(vao_content):
-                vao_content_f[i] = vao_content[i];
-                vao_content_f[i]['Color'] /= 255;
-
+            dtype2 = [
+                ("Position", np.float32, 2),
+                ("UV", np.float32, 2),
+                ("Color", np.float32, 4),
+            ]
+            vao_content_f = np.zeros(vao_content.shape, dtype=dtype2)
+            for i, val in enumerate(vao_content):
+                vao_content_f[i] = vao_content[i]
+                vao_content_f[i]["Color"] /= 255
 
             v_array = vao_content_f.view(gloo.VertexArray)
-            self.prog.bind( v_array );
+            self.prog.bind(v_array)
 
             if imgui.INDEX_SIZE == 1:
-                dtype =np.uint8;
+                dtype = np.uint8
             if imgui.INDEX_SIZE == 2:
-                dtype =np.uint16;
+                dtype = np.uint16
             if imgui.INDEX_SIZE == 4:
-                dtype =np.uint32;
+                dtype = np.uint32
 
             # gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._elements_handle)
             # # todo: check this (sizes)
             # gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER, commands.idx_buffer_size * imgui.INDEX_SIZE, ctypes.c_void_p(commands.idx_buffer_data), gl.GL_STREAM_DRAW)
-            array_type  = c_ubyte * commands.idx_buffer_size * imgui.INDEX_SIZE;
-            data_carray = array_type.from_address(commands.idx_buffer_data);
-            idx_content = np.frombuffer( data_carray, dtype=dtype );
+            array_type = c_ubyte * commands.idx_buffer_size * imgui.INDEX_SIZE
+            data_carray = array_type.from_address(commands.idx_buffer_data)
+            idx_content = np.frombuffer(data_carray, dtype=dtype)
 
             for command in commands.commands:
-
 
                 # TODO: ImGui Images will not work yet, homogenizing texture id
                 # allocation by imgui/glumpy is likely a larger issue
                 #
-                #accessing command.texture_id crashes the prog
+                # accessing command.texture_id crashes the prog
                 #
-                #gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id )
+                # gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id )
 
                 x, y, z, w = command.clip_rect
                 gl.glScissor(int(x), int(fb_height - w), int(z - x), int(w - y))
 
-                idx_array = idx_content[idx_buffer_offset:(idx_buffer_offset+command.elem_count)].view(gloo.IndexBuffer);
-                self.prog.draw( mode = gl.GL_TRIANGLES, indices = idx_array );
+                idx_array = idx_content[
+                    idx_buffer_offset : (idx_buffer_offset + command.elem_count)
+                ].view(gloo.IndexBuffer)
+                self.prog.draw(mode=gl.GL_TRIANGLES, indices=idx_array)
 
-                idx_buffer_offset += command.elem_count;
-
+                idx_buffer_offset += command.elem_count
 
         # restore modified GL state
         gl.glUseProgram(last_program)
@@ -359,11 +372,17 @@ class GlumpyRenderer(BaseOpenGLRenderer):
         else:
             gl.glDisable(gl.GL_SCISSOR_TEST)
 
-        gl.glViewport(last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3])
-        gl.glScissor(last_scissor_box[0], last_scissor_box[1], last_scissor_box[2], last_scissor_box[3])
+        gl.glViewport(
+            last_viewport[0], last_viewport[1], last_viewport[2], last_viewport[3]
+        )
+        gl.glScissor(
+            last_scissor_box[0],
+            last_scissor_box[1],
+            last_scissor_box[2],
+            last_scissor_box[3],
+        )
 
         log.debug("----------------------end---------------------------------")
-
 
     def _invalidate_device_objects(self):
         pass

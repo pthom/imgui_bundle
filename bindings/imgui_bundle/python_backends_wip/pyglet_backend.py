@@ -11,7 +11,10 @@ import pyglet.clock
 
 
 from imgui_bundle.python_backends_wip import compute_fb_scale
-from imgui_bundle.python_backends_wip.opengl_backend import FixedPipelineRenderer, ProgrammablePipelineRenderer
+from imgui_bundle.python_backends_wip.opengl_backend import (
+    FixedPipelineRenderer,
+    ProgrammablePipelineRenderer,
+)
 
 
 class PygletMixin(object):
@@ -49,7 +52,7 @@ class PygletMixin(object):
         imgui.MouseCursor_.resize_ew.value: Window.CURSOR_SIZE_LEFT_RIGHT,
         imgui.MouseCursor_.resize_nesw.value: Window.CURSOR_SIZE_DOWN_LEFT,
         imgui.MouseCursor_.resize_nwse.value: Window.CURSOR_SIZE_DOWN_RIGHT,
-        imgui.MouseCursor_.hand.value: Window.CURSOR_HAND
+        imgui.MouseCursor_.hand.value: Window.CURSOR_HAND,
     }
 
     def __init__(self):
@@ -66,12 +69,16 @@ class PygletMixin(object):
         # It is conceivable that the pyglet version will not be solely
         # determinant of whether we use the fixed or programmable, so do some
         # minor introspection here to check.
-        if hasattr(window, 'get_viewport_size'):
+        if hasattr(window, "get_viewport_size"):
             viewport_size = window.get_viewport_size()
-            self.io.display_framebuffer_scale = compute_fb_scale(window_size, viewport_size)
-        elif hasattr(window, 'get_pixel_ratio'):
-            self.io.display_framebuffer_scale = (window.get_pixel_ratio(),
-                                        window.get_pixel_ratio())
+            self.io.display_framebuffer_scale = compute_fb_scale(
+                window_size, viewport_size
+            )
+        elif hasattr(window, "get_pixel_ratio"):
+            self.io.display_framebuffer_scale = (
+                window.get_pixel_ratio(),
+                window.get_pixel_ratio(),
+            )
         else:
             # Default to 1.0 in this unlikely circumstance
             self.io.display_fb_scale = (1.0, 1.0)
@@ -90,15 +97,17 @@ class PygletMixin(object):
             self.on_resize,
         )
 
-    def _on_mods_change(self, mods, key_pressed = 0):
-        self.io.key_ctrl = mods & key.MOD_CTRL or \
-                            key_pressed in (key.LCTRL, key.RCTRL)
-        self.io.key_super = mods & key.MOD_COMMAND or \
-                            key_pressed in (key.LCOMMAND, key.RCOMMAND)
-        self.io.key_alt = mods & key.MOD_ALT or \
-                            key_pressed in (key.LALT, key.RALT)
-        self.io.key_shift = mods & key.MOD_SHIFT or \
-                            key_pressed in (key.LSHIFT, key.RSHIFT)
+    def _on_mods_change(self, mods, key_pressed=0):
+        self.io.key_ctrl = mods & key.MOD_CTRL or key_pressed in (key.LCTRL, key.RCTRL)
+        self.io.key_super = mods & key.MOD_COMMAND or key_pressed in (
+            key.LCOMMAND,
+            key.RCOMMAND,
+        )
+        self.io.key_alt = mods & key.MOD_ALT or key_pressed in (key.LALT, key.RALT)
+        self.io.key_shift = mods & key.MOD_SHIFT or key_pressed in (
+            key.LSHIFT,
+            key.RSHIFT,
+        )
 
     def _handle_mouse_cursor(self):
         if self.io.config_flags & imgui.ConfigFlags_.no_mouse_cursor_change.value:
@@ -185,9 +194,9 @@ class PygletMixin(object):
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
-            io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0):
-            io.delta_time = 1./ 1000.
+            io.delta_time = 1.0 / 60.0
+        if io.delta_time <= 0.0:
+            io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time
 
 
@@ -204,7 +213,7 @@ class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
 
 
 class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRenderer):
-    def __init__(self, window, attach_callbacks = True):
+    def __init__(self, window, attach_callbacks=True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
         if attach_callbacks:
@@ -217,12 +226,14 @@ class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRender
 
 class PygletRenderer(PygletFixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
-        warnings.warn("PygletRenderer is deprecated; please use either "
-                      "PygletFixedPipelineRenderer (for OpenGL 2.1, pyglet < 2.0) or "
-                      "PygletProgrammablePipelineRenderer (for later versions) or "
-                      "create_renderer(window) to auto-detect.",
-                      DeprecationWarning,
-                      stacklevel=2)
+        warnings.warn(
+            "PygletRenderer is deprecated; please use either "
+            "PygletFixedPipelineRenderer (for OpenGL 2.1, pyglet < 2.0) or "
+            "PygletProgrammablePipelineRenderer (for later versions) or "
+            "create_renderer(window) to auto-detect.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super(PygletRenderer, self).__init__(window, attach_callbacks)
 
 
@@ -235,7 +246,7 @@ def create_renderer(window, attach_callbacks=True):
     # Pyglet < 2.0 has issues with ProgrammablePipeline even when the context
     # is OpenGL 3, so we need to check the pyglet version rather than looking
     # at window.config.major_version to see if we want to use programmable.
-    if LooseVersion(pyglet.version) < LooseVersion('2.0'):
+    if LooseVersion(pyglet.version) < LooseVersion("2.0"):
         return PygletFixedPipelineRenderer(window, attach_callbacks)
     else:
         return PygletProgrammablePipelineRenderer(window, attach_callbacks)

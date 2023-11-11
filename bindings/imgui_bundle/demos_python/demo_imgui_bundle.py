@@ -29,7 +29,9 @@ def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> N
 
 
 def main() -> None:
-    print(f"For information, demos sources are available in {demo_utils.api_demos.demos_python_folder()}")
+    print(
+        f"For information, demos sources are available in {demo_utils.api_demos.demos_python_folder()}"
+    )
 
     hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
     ################################################################################################
@@ -39,7 +41,9 @@ def main() -> None:
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
-    runner_params.app_window_params.window_title = "Dear ImGui Bundle interactive manual"
+    runner_params.app_window_params.window_title = (
+        "Dear ImGui Bundle interactive manual"
+    )
     runner_params.app_window_params.window_geometry.size = (1400, 900)
 
     # Menu bar

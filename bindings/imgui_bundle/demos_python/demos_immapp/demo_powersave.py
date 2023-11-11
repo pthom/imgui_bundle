@@ -17,7 +17,16 @@ the FPS will rise and the animation will be smooth again.
 
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     radius1 = imgui.get_font_size()
-    imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
+    imspinner.spinner_ang_triple(
+        "spinner_arc_fade",
+        radius1,
+        radius1 * 1.5,
+        radius1 * 2.0,
+        2.5,
+        color,
+        color,
+        color,
+    )
 
     imgui.text_wrapped(
         """You can adjust hello_imgui.get_runner_params().fps_idle if you need smoother animations
@@ -30,12 +39,18 @@ the FPS will rise and the animation will be smooth again.
         "runner_params.fpsIdle", runner_params.fps_idling.fps_idle, 0, 60
     )
 
-    imgui.text("You can also set HelloImGui::GetRunnerParams()->fpdIdling.enableIdling.")
-    _, runner_params.fps_idling.enable_idling = imgui.checkbox("Enable Idling", runner_params.fps_idling.enable_idling)
+    imgui.text(
+        "You can also set HelloImGui::GetRunnerParams()->fpdIdling.enableIdling."
+    )
+    _, runner_params.fps_idling.enable_idling = imgui.checkbox(
+        "Enable Idling", runner_params.fps_idling.enable_idling
+    )
 
 
 def main():
-    immapp.run(gui_function=gui, window_title="Power save", window_size=(400, 500), fps_idle=3)
+    immapp.run(
+        gui_function=gui, window_title="Power save", window_size=(400, 500), fps_idle=3
+    )
 
 
 if __name__ == "__main__":

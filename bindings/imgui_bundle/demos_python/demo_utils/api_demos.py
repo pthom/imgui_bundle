@@ -60,7 +60,9 @@ def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.pop_id()
 
 
-def show_python_vs_cpp_and_run(python_gui_function, cpp_code: str, nb_lines: int = 0) -> None:
+def show_python_vs_cpp_and_run(
+    python_gui_function, cpp_code: str, nb_lines: int = 0
+) -> None:
     import inspect
 
     python_code = inspect.getsource(python_gui_function)

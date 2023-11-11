@@ -59,17 +59,24 @@ def my_register_tests():
 
     # Demo 3: a test with a custom GUI and custom variables
     #         which asserts that simulated actions successfully changed the variables values
-    test_custom_gui = imgui.test_engine.register_test(engine, "Demo Tests", "Test custom GUI & vars")
+    test_custom_gui = imgui.test_engine.register_test(
+        engine, "Demo Tests", "Test custom GUI & vars"
+    )
     # Our custom variables container
     class TestVar2:
         my_int = 42
+
     test_var2 = TestVar2()  # our custom variable(s)
+
     def test_custom_gui_func(ctx: imgui.test_engine.TestContext) -> None:
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
-        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value)
+        imgui.begin(
+            "Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value
+        )
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
+
     def test_with_vars_test_func(ctx: imgui.test_engine.TestContext) -> None:
         # Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
         # Optional: reset test_var2 to its startup values
@@ -80,6 +87,7 @@ def my_register_tests():
         CHECK(test_var2.my_int == 42)
         ctx.item_input_value("Slider", 123)
         CHECK(test_var2.my_int == 123)
+
     # let the test call our test function, and also call our custom Gui
     test_custom_gui.test_func = test_with_vars_test_func
     test_custom_gui.gui_func = test_custom_gui_func
@@ -170,8 +178,12 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     test_engine_window = hello_imgui.DockableWindow()
     test_engine_window.label = "Dear ImGui Test Engine"
     test_engine_window.dock_space_name = "TestEngineSpace"
+
     def show_test_engine_windows():
-        imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+        imgui.test_engine.show_test_engine_windows(
+            hello_imgui.get_imgui_test_engine(), None
+        )
+
     test_engine_window.gui_function = show_test_engine_windows
 
     return [my_window, dear_imgui_demo_window, test_engine_window]
@@ -180,11 +192,14 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
 def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore # noqa: F811
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
-    runner_params.imgui_window_params.default_imgui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     runner_params.docking_params.docking_splits = create_default_docking_splits()
     runner_params.docking_params.dockable_windows = create_dockable_windows()
-    runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
+    runner_params.docking_params.layout_condition = (
+        hello_imgui.DockingLayoutCondition.application_start
+    )
 
 
 if __name__ == "__main__":

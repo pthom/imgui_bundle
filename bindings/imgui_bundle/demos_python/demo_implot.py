@@ -34,11 +34,17 @@ def demo_drag_rects():
     state = demo_drag_rects.state
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
-    _, state.flags = imgui.checkbox_flags("NoCursors", state.flags, implot.DragToolFlags_.no_cursors)
+    _, state.flags = imgui.checkbox_flags(
+        "NoCursors", state.flags, implot.DragToolFlags_.no_cursors
+    )
     imgui.same_line()
-    _, state.flags = imgui.checkbox_flags("NoFit", state.flags, implot.DragToolFlags_.no_fit)
+    _, state.flags = imgui.checkbox_flags(
+        "NoFit", state.flags, implot.DragToolFlags_.no_fit
+    )
     imgui.same_line()
-    _, state.flags = imgui.checkbox_flags("NoInput", state.flags, implot.DragToolFlags_.no_inputs)
+    _, state.flags = imgui.checkbox_flags(
+        "NoInput", state.flags, implot.DragToolFlags_.no_inputs
+    )
 
     plot_height = immapp.em_size() * 15
     if implot.begin_plot("##Main", ImVec2(-1, plot_height)):
@@ -47,8 +53,16 @@ def demo_drag_rects():
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
         implot.plot_line("Signal 3", state.x_data, state.y_data3)
-        _, state.rect.x.min, state.rect.y.min, state.rect.x.max, state.rect.y.max, clicked, hovered, held = \
-            implot.drag_rect(
+        (
+            _,
+            state.rect.x.min,
+            state.rect.y.min,
+            state.rect.x.max,
+            state.rect.y.max,
+            clicked,
+            hovered,
+            held,
+        ) = implot.drag_rect(
             0,
             state.rect.x.min,
             state.rect.y.min,
@@ -66,7 +80,11 @@ def demo_drag_rects():
     if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
-            state.rect.x.min, state.rect.x.max, state.rect.y.min, state.rect.y.max, imgui.Cond_.always
+            state.rect.x.min,
+            state.rect.x.max,
+            state.rect.y.min,
+            state.rect.y.max,
+            imgui.Cond_.always,
         )
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
@@ -109,7 +127,11 @@ class MyHeatmapData:
 def demo_heatmap():
     data = demo_heatmap.data
 
-    axis_flags = implot.AxisFlags_.lock | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_tick_marks
+    axis_flags = (
+        implot.AxisFlags_.lock
+        | implot.AxisFlags_.no_grid_lines
+        | implot.AxisFlags_.no_tick_marks
+    )
     cmap = implot.Colormap_.viridis
     implot.push_colormap(cmap)
     imgui.begin_group()
@@ -117,13 +139,34 @@ def demo_heatmap():
     plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
     if implot.begin_plot("Sinc Function", plot_size, plot_flags):
         implot.setup_axes(None, None, axis_flags, axis_flags)
-        implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False)
-        implot.setup_axis_ticks(implot.ImAxis_.y1, 0, 1, data.n_ticks, data.y_ticks, False)
-        implot.plot_heatmap("##heatmap", data.values, data.values.min(), data.values.max(), None, [0, 1], [1, 0], 0)
+        implot.setup_axis_ticks(
+            implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False
+        )
+        implot.setup_axis_ticks(
+            implot.ImAxis_.y1, 0, 1, data.n_ticks, data.y_ticks, False
+        )
+        implot.plot_heatmap(
+            "##heatmap",
+            data.values,
+            data.values.min(),
+            data.values.max(),
+            None,
+            [0, 1],
+            [1, 0],
+            0,
+        )
         implot.end_plot()
     imgui.end_group()
     imgui.same_line()
-    implot.colormap_scale("##heatmap_scale", data.values.min(), data.values.max(), imgui.ImVec2(60, -1), "%g", 0, cmap)
+    implot.colormap_scale(
+        "##heatmap_scale",
+        data.values.min(),
+        data.values.max(),
+        imgui.ImVec2(60, -1),
+        "%g",
+        0,
+        cmap,
+    )
     implot.pop_colormap()
 
 

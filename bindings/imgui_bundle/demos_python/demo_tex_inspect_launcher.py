@@ -26,12 +26,21 @@ def demo_gui():
         imgui.text("Click the button below to launch the demo")
         if imgui.button("Run demo"):
             this_dir = os.path.dirname(__file__)
-            subprocess.Popen([sys.executable, this_dir + "/demos_tex_inspect/demo_tex_inspect_demo_window.py"])
-        demo_utils.show_python_vs_cpp_file("demos_tex_inspect/demo_tex_inspect_demo_window")
+            subprocess.Popen(
+                [
+                    sys.executable,
+                    this_dir + "/demos_tex_inspect/demo_tex_inspect_demo_window.py",
+                ]
+            )
+        demo_utils.show_python_vs_cpp_file(
+            "demos_tex_inspect/demo_tex_inspect_demo_window"
+        )
 
 
 def main():
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True, with_tex_inspect=True)
+    immapp.run(
+        demo_gui, window_size=(1000, 800), with_markdown=True, with_tex_inspect=True
+    )
 
 
 if __name__ == "__main__":

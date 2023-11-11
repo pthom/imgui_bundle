@@ -166,12 +166,18 @@ class DemoNodeEditor:
                     # ed.AcceptNewItem(): return true when user release mouse button.
                     if ed.accept_new_item():
                         # Since we accepted new link, lets add one to our list of links.
-                        link_info = LinkInfo(ed.LinkId(self.next_link_id), input_pin_id, output_pin_id)
+                        link_info = LinkInfo(
+                            ed.LinkId(self.next_link_id), input_pin_id, output_pin_id
+                        )
                         self.next_link_id += 1
                         self.links.append(link_info)
 
                         # Draw new link.
-                        ed.link(self.links[-1].id, self.links[-1].input_id, self.links[-1].output_id)
+                        ed.link(
+                            self.links[-1].id,
+                            self.links[-1].input_id,
+                            self.links[-1].output_id,
+                        )
 
                     # You may choose to reject connection between these nodes
                     # by calling ed.RejectNewItem():. This will allow editor to give
@@ -224,7 +230,12 @@ def main():
     config.settings_file = this_dir + "/demo_node_editor_basic.json"
     from imgui_bundle import immapp
 
-    immapp.run(demo_gui, with_node_editor_config=config, with_markdown=True, window_size=(800, 600))
+    immapp.run(
+        demo_gui,
+        with_node_editor_config=config,
+        with_markdown=True,
+        window_size=(800, 600),
+    )
 
 
 if __name__ == "__main__":

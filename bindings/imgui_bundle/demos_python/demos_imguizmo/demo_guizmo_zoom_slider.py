@@ -14,7 +14,6 @@ import numpy as np
 im_zoom_slider = imguizmo.im_zoom_slider
 
 
-
 def lerp(a: float, b: float, x: float):
     """linear interpolation"""
     return a + (b - a) * x
@@ -39,11 +38,15 @@ def draw_zoomable_grid(
     for x in np.arange(0, 1, 0.05):
         x_win = to_x_window_coord(x)
         if rect_min.x <= x_win < rect_max.x:
-            imgui.get_foreground_draw_list().add_line(ImVec2(x_win, rect_min.y), ImVec2(x_win, rect_max.y), color)
+            imgui.get_foreground_draw_list().add_line(
+                ImVec2(x_win, rect_min.y), ImVec2(x_win, rect_max.y), color
+            )
     for y in np.arange(0, 1, 0.05):
         y_win = to_y_window_coord(y)
         if rect_min.y <= y_win < rect_max.y:
-            imgui.get_foreground_draw_list().add_line(ImVec2(rect_min.x, y_win), ImVec2(rect_max.x, y_win), color)
+            imgui.get_foreground_draw_list().add_line(
+                ImVec2(rect_min.x, y_win), ImVec2(rect_max.x, y_win), color
+            )
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -98,7 +101,10 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         imgui.same_line()
         imgui.push_id(18)
         sliderResult = im_zoom_slider.im_zoom_slider_pure(
-            im_zoom_slider.Range(0.0, 1.0), view_vertical, 0.1, im_zoom_slider.ImGuiZoomSliderFlags_.vertical
+            im_zoom_slider.Range(0.0, 1.0),
+            view_vertical,
+            0.1,
+            im_zoom_slider.ImGuiZoomSliderFlags_.vertical,
         )
         if sliderResult:
             view_vertical = sliderResult.value
@@ -106,12 +112,16 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         if sliderResult and link_zooms:
             avgH = view_horizontal.center()
             lengthV = view_vertical.length()
-            view_horizontal = im_zoom_slider.Range(avgH - lengthV / 2.0, avgH + lengthV / 2.0)
+            view_horizontal = im_zoom_slider.Range(
+                avgH - lengthV / 2.0, avgH + lengthV / 2.0
+            )
         imgui.pop_id()
 
         # Draw the horizontal slider
         imgui.push_id(19)
-        sliderResult = im_zoom_slider.im_zoom_slider_pure(im_zoom_slider.Range(0.0, 1.0), view_horizontal, 0.1)
+        sliderResult = im_zoom_slider.im_zoom_slider_pure(
+            im_zoom_slider.Range(0.0, 1.0), view_horizontal, 0.1
+        )
         if sliderResult:
             view_horizontal = sliderResult.value
 
@@ -119,7 +129,9 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
         if sliderResult and link_zooms:
             avgV = view_vertical.center()
             lengthH = view_horizontal.length()
-            view_horizontal = im_zoom_slider.Range(avgV - lengthH / 2.0, avgV + lengthH / 2.0)
+            view_horizontal = im_zoom_slider.Range(
+                avgV - lengthH / 2.0, avgV + lengthH / 2.0
+            )
         imgui.pop_id()
 
     return gui

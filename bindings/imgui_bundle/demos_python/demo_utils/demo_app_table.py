@@ -30,7 +30,9 @@ class DemoAppTable:
     demo_python_folder: str
     demo_cpp_folder: str
 
-    def __init__(self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str):
+    def __init__(
+        self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str
+    ):
         self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
         self.snippet_cpp.language = immapp.snippets.SnippetLanguage.cpp
@@ -90,11 +92,15 @@ class DemoAppTable:
                     imgui.same_line()
 
                     if imgui.button("Run"):
-                        subprocess.Popen([sys.executable, self._demo_python_file_path(demo_app)])
+                        subprocess.Popen(
+                            [sys.executable, self._demo_python_file_path(demo_app)]
+                        )
 
                 imgui.pop_id()
             imgui.end_table()
         imgui.end_child()
 
         imgui_md.render("**Code for " + self.current_app.demo_file + "**")
-        immapp.snippets.show_side_by_side_snippets(self.snippet_python, self.snippet_cpp, True, True)
+        immapp.snippets.show_side_by_side_snippets(
+            self.snippet_python, self.snippet_cpp, True, True
+        )

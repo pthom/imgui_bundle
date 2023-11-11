@@ -3,15 +3,37 @@ import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
 import enum
-from imgui_bundle.imgui import  internal as internal
+from imgui_bundle.imgui import internal as internal
 from imgui_bundle import imgui as imgui
 from imgui_bundle.imgui import (
-    WindowFlags, TableFlags, PopupFlags, ImVec2, ImVec4, KeyChord, Viewport, ImU64, ImWchar,
-    TableSortSpecs, MouseButton, Key, Dir, SortDirection, Dir_
+    WindowFlags,
+    TableFlags,
+    PopupFlags,
+    ImVec2,
+    ImVec4,
+    KeyChord,
+    Viewport,
+    ImU64,
+    ImWchar,
+    TableSortSpecs,
+    MouseButton,
+    Key,
+    Dir,
+    SortDirection,
+    Dir_,
 )
 from imgui_bundle.imgui.internal import (
-    ItemStatusFlags, DockNode, Axis, Window, ImRect, Context, ItemFlags, LastItemData, TextBuffer,
-    TabBar, InputSource,
+    ItemStatusFlags,
+    DockNode,
+    Axis,
+    Window,
+    ImRect,
+    Context,
+    ItemFlags,
+    LastItemData,
+    TextBuffer,
+    TabBar,
+    InputSource,
 )
 
 ID = int

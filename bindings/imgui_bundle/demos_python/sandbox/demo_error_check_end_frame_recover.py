@@ -7,9 +7,13 @@ from imgui_bundle import hello_imgui, imgui
 def sub_window_gui() -> None:
     imgui.set_next_window_size((600, 200))
     imgui.begin("Sub window")
-    imgui.text_wrapped("The button below will raise an exception which lead to imgui.end() not being called")
+    imgui.text_wrapped(
+        "The button below will raise an exception which lead to imgui.end() not being called"
+    )
 
-    if imgui.button("Raise exception"): # This button raises an exception that bypasses `ìmgui.end()`
+    if imgui.button(
+        "Raise exception"
+    ):  # This button raises an exception that bypasses `ìmgui.end()`
         raise RuntimeError("Argh")
     imgui.end()
 
@@ -33,7 +37,11 @@ def main() -> None:
     runner_params = hello_imgui.RunnerParams()
     runner_params.callbacks.show_gui = gui
 
-    runner_params.callbacks.before_imgui_render = lambda: imgui.internal.error_check_end_frame_recover(my_end_frame_error_callback)
+    runner_params.callbacks.before_imgui_render = (
+        lambda: imgui.internal.error_check_end_frame_recover(
+            my_end_frame_error_callback
+        )
+    )
 
     hello_imgui.run(runner_params)
 

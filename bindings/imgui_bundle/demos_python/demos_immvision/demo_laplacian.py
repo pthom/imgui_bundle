@@ -38,8 +38,12 @@ class LaplacianData:
 
 # Then let's define `gui_laplacian` (a gui that display and manipulates LaplacianData)
 def gui_laplacian(data: LaplacianData):
-    changed1, data.blur_half_size = imgui.slider_int("Blur half size", data.blur_half_size, 1, 10)
-    changed2, data.kernel_half_size = imgui.slider_int("Kernel half size", data.kernel_half_size, 1, 10)
+    changed1, data.blur_half_size = imgui.slider_int(
+        "Blur half size", data.blur_half_size, 1, 10
+    )
+    changed2, data.kernel_half_size = imgui.slider_int(
+        "Kernel half size", data.kernel_half_size, 1, 10
+    )
     changed = changed1 or changed2
     if changed:
         data.update_laplacian()

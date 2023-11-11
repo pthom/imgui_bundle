@@ -7,7 +7,6 @@ from typing import List
 
 from imgui_bundle.imgui import ImTextureID
 
-
 class Path:
     def __init__(self, path: str) -> None:
         pass

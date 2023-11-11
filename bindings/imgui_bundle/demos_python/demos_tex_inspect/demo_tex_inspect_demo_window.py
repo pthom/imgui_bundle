@@ -9,7 +9,12 @@ from imgui_bundle.demos_python.demo_utils.api_demos import demos_assets_folder
 
 def main():
     hello_imgui.set_assets_folder(demos_assets_folder())
-    immapp.run(imgui_tex_inspect.show_demo_window, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000))
+    immapp.run(
+        imgui_tex_inspect.show_demo_window,
+        with_tex_inspect=True,
+        with_markdown=True,
+        window_size=(1200, 1000),
+    )
 
 
 if __name__ == "__main__":

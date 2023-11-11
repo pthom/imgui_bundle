@@ -16,6 +16,7 @@ SdlKey = int
 
 class SDL2Renderer(ProgrammablePipelineRenderer):
     """Basic SDL2 integration implementation."""
+
     key_map: Dict[SdlKey, imgui.Key]
     MOUSE_WHEEL_OFFSET_SCALE = 0.5
 
@@ -35,8 +36,10 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
 
         def get_clipboard_text() -> str:
             return SDL_GetClipboardText()
+
         def set_clipboard_text(text: str) -> None:
             SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
+
         imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
         imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
 
@@ -93,15 +96,15 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
                 elif event.type == SDL_KEYDOWN:
                     io.add_key_event(imgui_key, down=True)
 
-            io.key_shift = ((SDL_GetModState() & KMOD_SHIFT) != 0)
-            io.key_ctrl = ((SDL_GetModState() & KMOD_CTRL) != 0)
-            io.key_alt = ((SDL_GetModState() & KMOD_ALT) != 0)
-            io.key_super = ((SDL_GetModState() & KMOD_GUI) != 0)
+            io.key_shift = (SDL_GetModState() & KMOD_SHIFT) != 0
+            io.key_ctrl = (SDL_GetModState() & KMOD_CTRL) != 0
+            io.key_alt = (SDL_GetModState() & KMOD_ALT) != 0
+            io.key_super = (SDL_GetModState() & KMOD_GUI) != 0
 
             return True
 
         if event.type == SDL_TEXTINPUT:
-            for char in event.text.text.decode('utf-8'):
+            for char in event.text.text.decode("utf-8"):
                 io.add_input_character(ord(char))
             return True
 
@@ -122,9 +125,9 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
-            io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0):
-            io.delta_time = 1./ 1000.
+            io.delta_time = 1.0 / 60.0
+        if io.delta_time <= 0.0:
+            io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time
 
         mx = ctypes.pointer(ctypes.c_int(0))
@@ -136,9 +139,15 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         else:
             io.mouse_pos = -1, -1
 
-        io.mouse_down[0] = self._mouse_pressed[0] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0
-        io.mouse_down[1] = self._mouse_pressed[1] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0
-        io.mouse_down[2] = self._mouse_pressed[2] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0
+        io.mouse_down[0] = (
+            self._mouse_pressed[0] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0
+        )
+        io.mouse_down[1] = (
+            self._mouse_pressed[1] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0
+        )
+        io.mouse_down[2] = (
+            self._mouse_pressed[2] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0
+        )
         self._mouse_pressed = [False, False, False]
 
         io.mouse_wheel = self._mouse_wheel

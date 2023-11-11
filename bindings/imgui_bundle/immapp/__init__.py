@@ -8,7 +8,7 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     run,
     run_with_markdown,
     AddOnsParams,
-    snippets
+    snippets,
 )
 
 from imgui_bundle.immapp import icons_fontawesome
@@ -38,5 +38,5 @@ __all__ = [
     "run_nb",
     "RunnerParams",
     "SimpleRunnerParams",
-    "snippets"
+    "snippets",
 ]

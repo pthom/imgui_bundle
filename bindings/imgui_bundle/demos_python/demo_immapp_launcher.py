@@ -21,17 +21,35 @@ DOC = """
 # This returns a closure function that will later be invoked to run the app
 def make_gui() -> GuiFunction:
     demo_apps = [
-        DemoApp("demo_hello_world", "Hello world demo: how to create an app with ImmApp in a few lines."),
-        DemoApp("demo_assets_addons", "How to use assets, and how to use add-ons (Markdown and ImPlot)"),
+        DemoApp(
+            "demo_hello_world",
+            "Hello world demo: how to create an app with ImmApp in a few lines.",
+        ),
+        DemoApp(
+            "demo_assets_addons",
+            "How to use assets, and how to use add-ons (Markdown and ImPlot)",
+        ),
         DemoApp(
             "demo_docking",
             "How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.",
         ),
-        DemoApp("demo_powersave", "How to have smooth animations, and how spare the CPU when idling"),
-        DemoApp("demo_testengine", "How to use ImGui Test Engine to test and automate your application"),
+        DemoApp(
+            "demo_powersave",
+            "How to have smooth animations, and how spare the CPU when idling",
+        ),
+        DemoApp(
+            "demo_testengine",
+            "How to use ImGui Test Engine to test and automate your application",
+        ),
         DemoApp("demo_custom_font", "How to load custom fonts"),
-        DemoApp("demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"),
-        DemoApp("demo_parametric_curve", "Illustration of the Immediate GUI paradigm, with a simple parametric curve"),
+        DemoApp(
+            "demo_command_palette",
+            "a Sublime Text or VSCode style command palette in ImGui",
+        ),
+        DemoApp(
+            "demo_parametric_curve",
+            "Illustration of the Immediate GUI paradigm, with a simple parametric curve",
+        ),
         DemoApp("haiku_implot_heart", "Share some love for ImGui and ImPlot"),
         DemoApp(
             "imgui_example_glfw_opengl3",
@@ -46,12 +64,17 @@ def make_gui() -> GuiFunction:
             "Python translation of the [SDL2+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_sdl2_opengl3/main.cpp) from Dear ImGui",
         ),
         DemoApp("demo_drag_and_drop", "Drag and drop demo"),
-        DemoApp("demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"),
+        DemoApp(
+            "demo_implot_markdown",
+            "How to quickly run an app that uses implot and/or markdown with ImmApp",
+        ),
     ]
 
     this_dir = os.path.dirname(__file__)
     demo_python_folder = this_dir + "/demos_immapp"
-    demo_cpp_folder = os.path.abspath(demo_python_folder + "/../../demos_cpp/demos_immapp")
+    demo_cpp_folder = os.path.abspath(
+        demo_python_folder + "/../../demos_cpp/demos_immapp"
+    )
     demo_app_table = DemoAppTable(demo_apps, demo_python_folder, demo_cpp_folder)
 
     def gui():

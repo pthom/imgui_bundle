@@ -73,9 +73,9 @@ class PygameRenderer(FixedPipelineRenderer):
             if event.button == 3:
                 io.mouse_down[2] = 0
             if event.button == 4:
-                io.mouse_wheel = .5
+                io.mouse_wheel = 0.5
             if event.button == 5:
-                io.mouse_wheel = -.5
+                io.mouse_wheel = -0.5
             return True
 
         if event.type == pygame.KEYDOWN:
@@ -91,23 +91,23 @@ class PygameRenderer(FixedPipelineRenderer):
 
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
             io.key_ctrl = (
-                io.keys_down[self._custom_key(pygame.K_LCTRL)] or
-                io.keys_down[self._custom_key(pygame.K_RCTRL)]
+                io.keys_down[self._custom_key(pygame.K_LCTRL)]
+                or io.keys_down[self._custom_key(pygame.K_RCTRL)]
             )
 
             io.key_alt = (
-                io.keys_down[self._custom_key(pygame.K_LALT)] or
-                io.keys_down[self._custom_key(pygame.K_RALT)]
+                io.keys_down[self._custom_key(pygame.K_LALT)]
+                or io.keys_down[self._custom_key(pygame.K_RALT)]
             )
 
             io.key_shift = (
-                io.keys_down[self._custom_key(pygame.K_LSHIFT)] or
-                io.keys_down[self._custom_key(pygame.K_RSHIFT)]
+                io.keys_down[self._custom_key(pygame.K_LSHIFT)]
+                or io.keys_down[self._custom_key(pygame.K_RSHIFT)]
             )
 
             io.key_super = (
-                io.keys_down[self._custom_key(pygame.K_LSUPER)] or
                 io.keys_down[self._custom_key(pygame.K_LSUPER)]
+                or io.keys_down[self._custom_key(pygame.K_LSUPER)]
             )
 
             return True
@@ -130,6 +130,7 @@ class PygameRenderer(FixedPipelineRenderer):
             del surface
 
             return True
+
     def process_inputs(self):
         io = imgui.get_io()
 
@@ -138,7 +139,7 @@ class PygameRenderer(FixedPipelineRenderer):
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
-            io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0):
-            io.delta_time = 1./ 1000.
+            io.delta_time = 1.0 / 60.0
+        if io.delta_time <= 0.0:
+            io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time

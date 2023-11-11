@@ -7,16 +7,13 @@ import enum
 from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList
 from imgui_bundle import imgui
 
-
 ImGuiMouseButton = imgui.MouseButton
-
 
 EditorContext = Any
 NodeEditorContext = Any
 
-
 class NodeId:
-    def __init__(self, id: int=0):
+    def __init__(self, id: int = 0):
         pass
     def id(self) -> int:
         pass
@@ -28,9 +25,8 @@ class NodeId:
         """
         pass
 
-
 class LinkId:
-    def __init__(self, id: int=0):
+    def __init__(self, id: int = 0):
         pass
     def id(self) -> int:
         pass
@@ -42,9 +38,8 @@ class LinkId:
         """
         pass
 
-
 class PinId:
-    def __init__(self, id: int=0):
+    def __init__(self, id: int = 0):
         pass
     def id(self) -> int:
         pass
@@ -56,7 +51,6 @@ class PinId:
         """
         pass
 
-
 # Suspends canvas by returning to normal ImGui transformation space.
 # While suspended UI will not be drawn on canvas plane.
 #
@@ -64,6 +58,7 @@ class PinId:
 # must be matched with call to Resume().
 def suspend_editor_canvas() -> None:
     pass
+
 def resume_editor_canvas() -> None:
     pass
 

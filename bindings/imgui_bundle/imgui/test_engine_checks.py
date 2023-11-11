@@ -13,7 +13,7 @@ def _check(result: bool, backtrace_nb: int) -> None:
         line_num,
         imgui.test_engine.TestCheckFlags_.none,
         result,
-        line_code
+        line_code,
     )
 
 

@@ -4,8 +4,8 @@ https://github.com/hnOsmium0001/imgui-command-palette
 from typing import List, Callable
 import enum
 from imgui_bundle.imgui import ImFont, ImU32
-ImGuiCond = int
 
+ImGuiCond = int
 
 VoidFunction = Callable[[], None]
 IntParamFunction = Callable[[int], None]

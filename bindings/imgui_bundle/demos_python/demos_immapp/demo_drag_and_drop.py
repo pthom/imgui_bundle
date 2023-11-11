@@ -25,9 +25,15 @@ class DemoState:
     def __init__(self):
         self.mode = DragMode.Copy
         self.names = [
-            "Bobby", "Beatrice", "Betty",
-            "Brianna", "Barry", "Bernard",
-            "Bibi", "Blaine", "Bryn"
+            "Bobby",
+            "Beatrice",
+            "Betty",
+            "Brianna",
+            "Barry",
+            "Bernard",
+            "Bibi",
+            "Blaine",
+            "Bryn",
         ]
 
 
@@ -45,7 +51,7 @@ def gui_drag_and_drop(state: DemoState) -> None:
         imgui.push_id(n)
         if n % 3 != 0:
             imgui.same_line()
-        imgui.button(state.names[n], immapp.em_to_vec2(5., 5.))
+        imgui.button(state.names[n], immapp.em_to_vec2(5.0, 5.0))
 
         # Our buttons are both drag sources and drag targets here!
         if imgui.begin_drag_drop_source(imgui.DragDropFlags_.none.value):
@@ -73,15 +79,20 @@ def gui_drag_and_drop(state: DemoState) -> None:
                     state.names[n] = state.names[payload_n]
                     state.names[payload_n] = ""
                 elif state.mode == DragMode.Swap:
-                    state.names[n], state.names[payload_n] = state.names[payload_n], state.names[n]
+                    state.names[n], state.names[payload_n] = (
+                        state.names[payload_n],
+                        state.names[n],
+                    )
             imgui.end_drag_drop_target()
         imgui.pop_id()
 
 
 def main() -> None:
     state = DemoState()
+
     def gui():
         gui_drag_and_drop(state)
+
     immapp.run(gui)
 
 

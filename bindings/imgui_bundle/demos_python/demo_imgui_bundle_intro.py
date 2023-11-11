@@ -33,7 +33,9 @@ def automation_show_me_code():
 
 def automation_show_me_immediate_apps():
     engine = hello_imgui.get_imgui_test_engine()
-    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeImmediateApps")
+    automation = imgui.test_engine.register_test(
+        engine, "Automation", "ShowMeImmediateApps"
+    )
 
     def test_open_popup_func(ctx):
         tab_imm_apps_name = "//**/Immediate Apps"
@@ -54,7 +56,9 @@ def automation_show_me_immediate_apps():
 
 def automation_show_me_imgui_test_engine():
     engine = hello_imgui.get_imgui_test_engine()
-    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeImGuiTestEngine")
+    automation = imgui.test_engine.register_test(
+        engine, "Automation", "ShowMeImGuiTestEngine"
+    )
 
     def test_open_popup_func(ctx):
         tab_imm_apps_name = "//**/Immediate Apps"
@@ -73,8 +77,11 @@ def automation_show_me_imgui_test_engine():
 
 
 @immapp.static(
-    automation_show_me_code=None, automation_show_me_immediate_apps=None, automation_show_me_imgui_test_engine=None,
-    was_automation_inited=False)
+    automation_show_me_code=None,
+    automation_show_me_immediate_apps=None,
+    automation_show_me_imgui_test_engine=None,
+    was_automation_inited=False,
+)
 def demo_gui():
     statics = demo_gui
     #
@@ -85,8 +92,12 @@ def demo_gui():
         if not statics.was_automation_inited:
             statics.was_automation_inited = True
             statics.automation_show_me_code = automation_show_me_code()
-            statics.automation_show_me_immediate_apps = automation_show_me_immediate_apps()
-            statics.automation_show_me_imgui_test_engine = automation_show_me_imgui_test_engine()
+            statics.automation_show_me_immediate_apps = (
+                automation_show_me_immediate_apps()
+            )
+            statics.automation_show_me_imgui_test_engine = (
+                automation_show_me_imgui_test_engine()
+            )
 
         # Set automation speed
         engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
@@ -105,17 +116,21 @@ def demo_gui():
         * This interactive manual works best when viewed together with "Dear ImGui Bundle docs"
         """
     )
-    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.))
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
     if imgui.button("Open Dear ImGui Bundle docs"):
         webbrowser.open("https://pthom.github.io/imgui_bundle/")
 
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
-    """)
+    """
+    )
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
         if imgui.button("Show me##demo_code_demo"):
-            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), statics.automation_show_me_code)
+            imgui.test_engine.queue_test(
+                hello_imgui.get_imgui_test_engine(), statics.automation_show_me_code
+            )
 
     imgui_md.render_unindented(
         """
@@ -125,24 +140,38 @@ def demo_gui():
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
         if imgui.button("Show me##demo_imm_apps"):
-            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), statics.automation_show_me_immediate_apps)
+            imgui.test_engine.queue_test(
+                hello_imgui.get_imgui_test_engine(),
+                statics.automation_show_me_immediate_apps,
+            )
 
     if hello_imgui.get_runner_params().use_imgui_test_engine:
-        imgui_md.render_unindented("""
+        imgui_md.render_unindented(
+            """
             * The automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine), which is integrated into ImGui Bundle and available via Python and C++.
-        """)
+        """
+        )
 
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
         if imgui.button("Show me##demo_test_engine"):
-            imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), automation_show_me_imgui_test_engine())
-        imgui_md.render_unindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*")
+            imgui.test_engine.queue_test(
+                hello_imgui.get_imgui_test_engine(),
+                automation_show_me_imgui_test_engine(),
+            )
+        imgui_md.render_unindented(
+            "&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*"
+        )
 
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
-        """)
-    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.))
+        """
+    )
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
     if imgui.button("Open ImGui Manual"):
-        webbrowser.open("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html")
+        webbrowser.open(
+            "https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html"
+        )
 
     # Navigation buttons
     imgui.separator()
@@ -154,10 +183,20 @@ def demo_gui():
     if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btn_size):
         webbrowser.open("https://pthom.github.io/imgui_bundle")
     imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_interactive_manual.png", btn_size):
-        webbrowser.open("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html")
+    if hello_imgui.image_button_from_asset(
+        "images/badge_interactive_manual.png", btn_size
+    ):
+        webbrowser.open(
+            "https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"
+        )
 
-    demo_utils.animate_logo("images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30, "https://github.com/pthom/imgui_bundle")
+    demo_utils.animate_logo(
+        "images/logo_imgui_bundle_512.png",
+        1.0,
+        ImVec2(0.5, 3.0),
+        0.30,
+        "https://github.com/pthom/imgui_bundle",
+    )
 
 
 if __name__ == "__main__":

@@ -16,7 +16,12 @@ def lerp(a, b, x):
 
 # @njit(cache=True, nogil=True, parallel=True)
 def mandelbrot(
-    width: int, height: int, x_center: PreciseFloat, y_center: PreciseFloat, zoom: PreciseFloat, max_iterations: int
+    width: int,
+    height: int,
+    x_center: PreciseFloat,
+    y_center: PreciseFloat,
+    zoom: PreciseFloat,
+    max_iterations: int,
 ) -> NDArray[np.float32]:
     result = np.zeros((height, width), ColorType)
 
@@ -67,8 +72,16 @@ def mandelbrot(
 
 locations = [
     {"coords": [-0.5, 0.0], "name": "Mandelbrot full", "zoom": 1.0},
-    {"coords": [0.27668094779430163, 0.008101875630718678], "name": "Aliens", "zoom": 140210.64691527165},
-    {"coords": [-0.7961073900746515, -0.18324251614029363], "name": "Flowers", "zoom": 12297024368713.648},
+    {
+        "coords": [0.27668094779430163, 0.008101875630718678],
+        "name": "Aliens",
+        "zoom": 140210.64691527165,
+    },
+    {
+        "coords": [-0.7961073900746515, -0.18324251614029363],
+        "name": "Flowers",
+        "zoom": 12297024368713.648,
+    },
 ]
 
 

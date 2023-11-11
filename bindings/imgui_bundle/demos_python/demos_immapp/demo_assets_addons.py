@@ -39,7 +39,13 @@ def demo_assets(app_state: AppState):
     imgui.text("Here are some icons from Font Awesome: ")
     imgui.same_line()
     imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
-    imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+    imgui.text(
+        icons_fontawesome.ICON_FA_INFO
+        + " "
+        + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE
+        + " "
+        + icons_fontawesome.ICON_FA_SAVE
+    )
 
     imgui.text("Here is an image that was loaded from the assets: ")
     imgui.same_line()
@@ -50,7 +56,9 @@ def demo_assets(app_state: AppState):
     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
     hello_imgui.image_from_asset("images/world.jpg", image_size)
 
-    imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**")
+    imgui_md.render(
+        "**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**"
+    )
     show_doc("AssetsDoc")
 
 
@@ -78,7 +86,9 @@ def demo_markdown(app_state: AppState):
     imgui.same_line(hello_imgui.em_size(30.0))
     if imgui.small_button("Edit the fortune markdown"):
         app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
-    _, app_state.markdown_input = imgui.input_text_multiline("##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0))
+    _, app_state.markdown_input = imgui.input_text_multiline(
+        "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
+    )
     imgui_md.render_unindented(app_state.markdown_input)
     imgui.separator()
 
@@ -93,15 +103,24 @@ def demo_plot(app_state: AppState):
 
     imgui.text("Edit Pie Chart values")
     imgui.set_next_item_width(250)
-    _, app_state.plot_data = imgui.drag_float4("Pie Data", app_state.plot_data, 0.01, 0, 1)
+    _, app_state.plot_data = imgui.drag_float4(
+        "Pie Data", app_state.plot_data, 0.01, 0, 1
+    )
 
     # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
     # Below, plot_size is equivalent to the size of 15 lines of text
     plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
 
     if implot.begin_plot("Pie Chart", plot_size):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
-        implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
+        implot.setup_axes(
+            "",
+            "",
+            implot.AxisFlags_.no_decorations.value,
+            implot.AxisFlags_.no_decorations.value,
+        )
+        implot.plot_pie_chart(
+            data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
+        )
         implot.end_plot()
 
     show_doc("PlotDoc")
@@ -145,6 +164,7 @@ def main():
 # // Note: the code below only displays the help messages
 # //
 
+
 def get_doc(which_doc: str) -> str:
     """Return the associated documentation string based on the key."""
 
@@ -168,7 +188,6 @@ def get_doc(which_doc: str) -> str:
 
             *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
         """,
-
         "MarkdownDoc": """
             This markdown string was rendered by calling either:
 
@@ -187,7 +206,6 @@ def get_doc(which_doc: str) -> str:
             This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
             It supports the most common markdown features: emphasis, link, code blocks, etc.
         """,
-
         "PlotDoc": """
             By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
 
@@ -204,7 +222,7 @@ def get_doc(which_doc: str) -> str:
             addons = immapp.AddOnsParams(with_implot=True)
             immapp.run(runner_params, addons);
             ```
-        """
+        """,
     }
 
     return docs[which_doc]
@@ -220,13 +238,17 @@ def show_doc(which_doc):  # noqa: F811
         is_doc_visible[which_doc] = False
 
     imgui.push_id(which_doc)
-    _, is_doc_visible[which_doc] = imgui.checkbox("More info", is_doc_visible[which_doc])
+    _, is_doc_visible[which_doc] = imgui.checkbox(
+        "More info", is_doc_visible[which_doc]
+    )
 
     if is_doc_visible[which_doc]:
         # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
         # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
         imgui_md.render_unindented(get_doc(which_doc))
-        imgui.dummy(hello_imgui.em_to_vec2(1.0, 6.0))  # Assumes 'hello_imgui' is available in your environment
+        imgui.dummy(
+            hello_imgui.em_to_vec2(1.0, 6.0)
+        )  # Assumes 'hello_imgui' is available in your environment
         imgui.separator()
 
     imgui.pop_id()

@@ -15,7 +15,7 @@ GlfwKey = int
 class GlfwRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[GlfwKey, imgui.Key]
 
-    def __init__(self, window, attach_callbacks:bool=True):
+    def __init__(self, window, attach_callbacks: bool = True):
         super(GlfwRenderer, self).__init__()
         self.window = window
 
@@ -30,8 +30,10 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         def get_clipboard_text() -> str:
             return glfw.get_clipboard_string(self.window)
+
         def set_clipboard_text(text: str) -> None:
             glfw.set_clipboard_string(self.window, text)
+
         imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
         imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
 
@@ -113,7 +115,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         io.display_size = window_size
         io.display_framebuffer_scale = compute_fb_scale(window_size, fb_size)
-        io.delta_time = 1.0/60
+        io.delta_time = 1.0 / 60
 
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
             io.mouse_pos = glfw.get_cursor_pos(self.window)
@@ -129,8 +131,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         if self._gui_time:
             self.io.delta_time = current_time - self._gui_time
         else:
-            self.io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0):
-            io.delta_time = 1./ 1000.
+            self.io.delta_time = 1.0 / 60.0
+        if io.delta_time <= 0.0:
+            io.delta_time = 1.0 / 1000.0
 
         self._gui_time = current_time

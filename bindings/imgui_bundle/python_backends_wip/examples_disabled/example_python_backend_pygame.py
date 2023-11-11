@@ -4,7 +4,9 @@
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
-from imgui_bundle.python_backends_wip.python_backends_disabled.pygame_backend import PygameRenderer
+from imgui_bundle.python_backends_wip.python_backends_disabled.pygame_backend import (
+    PygameRenderer,
+)
 import OpenGL.GL as gl  # type: ignore
 import pygame  # type: ignore
 import sys
@@ -61,7 +63,9 @@ def main():
                 imgui.text("Example Text")
                 if imgui.button("Hello"):
                     print("World")
-                _, app_state.text = imgui.input_text_multiline("Edit", app_state.text, imgui.ImVec2(200, 200))
+                _, app_state.text = imgui.input_text_multiline(
+                    "Edit", app_state.text, imgui.ImVec2(200, 200)
+                )
                 _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
             imgui.end()
 

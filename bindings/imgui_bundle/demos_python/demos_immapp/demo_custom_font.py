@@ -15,7 +15,9 @@ def my_load_fonts_via_hello_imgui() -> imgui.ImFont:
 
     # Then we load our custom font
     font_filename = "fonts/Akronim-Regular.ttf"
-    acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(font_filename, 40.0)
+    acronym_font = hello_imgui.load_font_ttf_with_font_awesome_icons(
+        font_filename, 40.0
+    )
     return acronym_font
 
 
@@ -67,7 +69,7 @@ def main() -> None:
     custom_font: imgui.ImFont
 
     def gui() -> None:
-        imgui.push_font(custom_font) # noqa: F821
+        imgui.push_font(custom_font)  # noqa: F821
         imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
         imgui.pop_font()
         imgui.text("Text with standard font")

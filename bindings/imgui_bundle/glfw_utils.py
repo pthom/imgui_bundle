@@ -4,7 +4,6 @@ from typing import cast
 try:
     import glfw  # type: ignore
 
-
     def glfw_window_hello_imgui() -> glfw._GLFWwindow:
         """Return the main glfw window used by HelloImGui (when the backend is GLFW)
         You can use this window to set up additional GLFW callbacks.

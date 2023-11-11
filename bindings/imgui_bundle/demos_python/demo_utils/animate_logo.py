@@ -4,7 +4,9 @@ from imgui_bundle import imgui, hello_imgui, immapp, ImVec4, ImVec2
 ImTextureID = int
 
 
-def draw_transparent_image(texture: ImTextureID, rect: imgui.internal.ImRect, alpha: float):
+def draw_transparent_image(
+    texture: ImTextureID, rect: imgui.internal.ImRect, alpha: float
+):
     alpha_color = imgui.get_color_u32(ImVec4(1.0, 1.0, 1.0, alpha))
     imgui.get_foreground_draw_list().add_image_quad(
         texture,
@@ -21,7 +23,13 @@ def draw_transparent_image(texture: ImTextureID, rect: imgui.internal.ImRect, al
 
 
 @immapp.static(start_time=-1.0, was_idling_restored=False)  # type: ignore
-def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin: ImVec2, final_alpha: float, url: str):
+def animate_logo(
+    logo_file: str,
+    ratio_width_height: float,
+    em_top_right_margin: ImVec2,
+    final_alpha: float,
+    url: str,
+):
     static = animate_logo
     if static.start_time < 0:
         static.start_time = immapp.clock_seconds()
@@ -48,16 +56,29 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
         viewport_min_size = min(viewport_size.x, viewport_size.y)
         vp_center = imgui.get_main_viewport().get_center()
 
-        size0 = ImVec2(viewport_min_size * 0.8, viewport_min_size * 0.8 / ratio_width_height)
+        size0 = ImVec2(
+            viewport_min_size * 0.8, viewport_min_size * 0.8 / ratio_width_height
+        )
         position0 = ImVec2(vp_center.x - size0.x / 2, vp_center.y - size0.y / 2)
-        rect0 = imgui.internal.ImRect(position0, ImVec2(position0.x + size0.x, position0.y + size0.y))
+        rect0 = imgui.internal.ImRect(
+            position0, ImVec2(position0.x + size0.x, position0.y + size0.y)
+        )
         alpha0 = 1.0
 
         em = imgui.get_font_size()
-        size1 = ImVec2(viewport_min_size * 0.12 * ratio_width_height, viewport_min_size * 0.12)
-        position1 = ImVec2(viewport_position.x + viewport_size.x - size1.x, viewport_position.y)
-        position1 = ImVec2(position1.x - em_top_right_margin.x * em, position1.y + em_top_right_margin.y * em)
-        rect1 = imgui.internal.ImRect(position1, ImVec2(position1.x + size1.x, position1.y + size1.y))
+        size1 = ImVec2(
+            viewport_min_size * 0.12 * ratio_width_height, viewport_min_size * 0.12
+        )
+        position1 = ImVec2(
+            viewport_position.x + viewport_size.x - size1.x, viewport_position.y
+        )
+        position1 = ImVec2(
+            position1.x - em_top_right_margin.x * em,
+            position1.y + em_top_right_margin.y * em,
+        )
+        rect1 = imgui.internal.ImRect(
+            position1, ImVec2(position1.x + size1.x, position1.y + size1.y)
+        )
         alpha1 = final_alpha
 
     k_animation: float = 0  # between 0 and 1

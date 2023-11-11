@@ -92,11 +92,15 @@ def load_my_app_settings(app_state: AppState):
          runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
          runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
     """
-    app_state.my_app_settings = string_to_my_app_settings(hello_imgui.load_user_pref("MyAppSettings"))
+    app_state.my_app_settings = string_to_my_app_settings(
+        hello_imgui.load_user_pref("MyAppSettings")
+    )
 
 
 def save_my_app_settings(app_state: AppState):
-    hello_imgui.save_user_pref("MyAppSettings", my_app_settings_to_string(app_state.my_app_settings))
+    hello_imgui.save_user_pref(
+        "MyAppSettings", my_app_settings_to_string(app_state.my_app_settings)
+    )
 
 
 ##########################################################################
@@ -108,16 +112,18 @@ def demo_hide_window():
     imgui.push_font(TITLE_FONT)
     imgui.text("Hide app window")
     imgui.pop_font()
-    imgui.text_wrapped("By clicking the button below, you can hide the window for 3 seconds.")
+    imgui.text_wrapped(
+        "By clicking the button below, you can hide the window for 3 seconds."
+    )
 
     if imgui.button("Hide"):
         demo_hide_window.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
 
-    if demo_hide_window.last_hide_time > 0.:
+    if demo_hide_window.last_hide_time > 0.0:
         now = time.time()
         if now - demo_hide_window.last_hide_time > 3.0:
-            demo_hide_window.last_hide_time = -1.
+            demo_hide_window.last_hide_time = -1.0
             hello_imgui.get_runner_params().app_window_params.hidden = False
 
 
@@ -138,7 +144,9 @@ def demo_show_additional_window():
 
     if imgui.button("Show additional window"):
         runner_params = hello_imgui.get_runner_params()
-        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(window_name)
+        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(
+            window_name
+        )
         if additional_window_ptr:
             # additional_window_ptr.include_in_view_menu = True
             additional_window_ptr.is_visible = True
@@ -153,7 +161,9 @@ def demo_basic_widgets(app_state: AppState):
     # Edit a float using a slider from 0.0 to 1.0
     changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
     if changed:
-        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}")
+        hello_imgui.log(
+            hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}"
+        )
 
     # Buttons return true when clicked (most widgets return true when edited/activated)
     if imgui.button("Button"):
@@ -167,11 +177,17 @@ def demo_user_settings(app_state: AppState):
     imgui.push_font(TITLE_FONT)
     imgui.text("User settings")
     imgui.pop_font()
-    imgui.text_wrapped("The values below are stored in the application settings ini file and restored at startup")
+    imgui.text_wrapped(
+        "The values below are stored in the application settings ini file and restored at startup"
+    )
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.my_app_settings.name = imgui.input_text("Name", app_state.my_app_settings.name)
+    _, app_state.my_app_settings.name = imgui.input_text(
+        "Name", app_state.my_app_settings.name
+    )
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.my_app_settings.value = imgui.slider_int("Value", app_state.my_app_settings.value, 0, 100)
+    _, app_state.my_app_settings.value = imgui.slider_int(
+        "Value", app_state.my_app_settings.value, 0, 100
+    )
 
 
 def demo_rocket(app_state: AppState):
@@ -215,41 +231,62 @@ Most flags are inherited by children dock spaces.
             self.tip = tip
 
     all_flags = [
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_split, "NoSplit", "prevent Dock Nodes from being split"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
-                         "show tab bar only if multiple windows\n" +
-                         "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_over_central_node, "NoDockingInCentralNode",
-                         "prevent docking in central node\n(only works with the main dock space)"),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_docking_split,
+            "NoSplit",
+            "prevent Dock Nodes from being split",
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_resize,
+            "NoResize",
+            "prevent Dock Nodes from being resized",
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.auto_hide_tab_bar,
+            "AutoHideTabBar",
+            "show tab bar only if multiple windows\n"
+            + 'You will need to restore the layout after changing (Menu "View/Restore Layout")',
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_docking_over_central_node,
+            "NoDockingInCentralNode",
+            "prevent docking in central node\n(only works with the main dock space)",
+        ),
         # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
     ]
 
-    main_dock_space_node_flags = hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+    main_dock_space_node_flags = (
+        hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+    )
     for flag_with_info in all_flags:
         _, main_dock_space_node_flags = imgui.checkbox_flags(
-            flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag)
+            flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag
+        )
         if imgui.is_item_hovered():
             imgui.set_tooltip("%s" % flag_with_info.tip)
 
-    hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = main_dock_space_node_flags
+    hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = (
+        main_dock_space_node_flags
+    )
 
 
 def gui_window_layout_customization():
     imgui.push_font(TITLE_FONT)
     imgui.text("Switch between layouts")
     imgui.pop_font()
-    imgui.text("with the menu \"View/Layouts\"")
+    imgui.text('with the menu "View/Layouts"')
     if imgui.is_item_hovered():
-        imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n" +
-                          "and the selected layout is restored at startup")
+        imgui.set_tooltip(
+            "Each layout remembers separately the modifications applied by the user, \n"
+            + "and the selected layout is restored at startup"
+        )
 
     imgui.separator()
 
     imgui.push_font(TITLE_FONT)
     imgui.text("Change the theme")
     imgui.pop_font()
-    imgui.text("with the menu \"View/Theme\"")
+    imgui.text('with the menu "View/Theme"')
     if imgui.is_item_hovered():
         imgui.set_tooltip("The selected theme is remembered and restored at startup")
     imgui.separator()
@@ -405,8 +442,12 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     additional_window.label = "Additional Window"
     additional_window.is_visible = False  # this window is initially hidden,
     additional_window.include_in_view_menu = False  # it is not shown in the view menu,
-    additional_window.remember_is_visible = False  # its visibility is not saved in the settings file,
-    additional_window.dock_space_name = "MiscSpace"  # when shown, it will appear in MiscSpace.
+    additional_window.remember_is_visible = (
+        False  # its visibility is not saved in the settings file,
+    )
+    additional_window.dock_space_name = (
+        "MiscSpace"  # when shown, it will appear in MiscSpace.
+    )
     additional_window.gui_function = lambda: imgui.text("This is the additional window")
 
     dockable_windows = [
@@ -494,7 +535,9 @@ def main():
     #
     # Menu bar
     #
-    runner_params.imgui_window_params.show_menu_bar = True  # We use the default menu of Hello ImGui
+    runner_params.imgui_window_params.show_menu_bar = (
+        True  # We use the default menu of Hello ImGui
+    )
     # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
     runner_params.callbacks.show_menus = show_menu_gui
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
@@ -510,8 +553,9 @@ def main():
     #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.imgui_window_params.default_imgui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
     # in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True

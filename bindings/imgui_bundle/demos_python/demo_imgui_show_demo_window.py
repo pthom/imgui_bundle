@@ -14,13 +14,19 @@ def demo_gui():
     """
     )
     if imgui.button("Open ImGui Manual"):
-        webbrowser.open("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html")
+        webbrowser.open(
+            "https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html"
+        )
 
     imgui.new_line()
     imgui.separator()
     imgui.show_demo_window()
     demo_utils.animate_logo(
-        "images/logo_imgui_600.png", 2.0, ImVec2(1.0, 4.8), 0.45, "https://github.com/ocornut/imgui"
+        "images/logo_imgui_600.png",
+        2.0,
+        ImVec2(1.0, 4.8),
+        0.45,
+        "https://github.com/ocornut/imgui",
     )
 
 

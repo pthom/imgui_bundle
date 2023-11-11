@@ -1,6 +1,15 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, im_cool_bar
+from imgui_bundle import (
+    imgui,
+    hello_imgui,
+    imgui_md,
+    imgui_toggle,
+    ImVec2,
+    immapp,
+    ImVec4,
+    im_cool_bar,
+)
 from imgui_bundle import imgui_command_palette as imcmd
 
 
@@ -101,7 +110,16 @@ def demo_spinner():
     radius1 = imgui.get_font_size() / 2.5
     imgui.text("spinner_ang_triple")
     imgui.same_line()
-    imspinner.spinner_ang_triple("spinner_ang_triple", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
+    imspinner.spinner_ang_triple(
+        "spinner_ang_triple",
+        radius1,
+        radius1 * 1.5,
+        radius1 * 2.0,
+        2.5,
+        color,
+        color,
+        color,
+    )
 
 
 @immapp.static(flag=True)
@@ -116,19 +134,27 @@ def demo_toggle():
     _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
     imgui.same_line()
 
-    _changed, static.flag = imgui_toggle.toggle("Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated)
+    _changed, static.flag = imgui_toggle.toggle(
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
+    )
     imgui.same_line()
 
     toggle_config = imgui_toggle.material_style()
     toggle_config.animation_duration = 0.4
-    _changed, static.flag = imgui_toggle.toggle("Material Style (with slowed anim)", static.flag, config=toggle_config)
-
-    imgui.same_line()
-    _changed, static.flag = imgui_toggle.toggle("iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2))
+    _changed, static.flag = imgui_toggle.toggle(
+        "Material Style (with slowed anim)", static.flag, config=toggle_config
+    )
 
     imgui.same_line()
     _changed, static.flag = imgui_toggle.toggle(
-        "iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True)
+        "iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2)
+    )
+
+    imgui.same_line()
+    _changed, static.flag = imgui_toggle.toggle(
+        "iOS style (light)",
+        static.flag,
+        config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True),
     )
 
 
@@ -167,8 +193,13 @@ def demo_portable_file_dialogs():
     imgui.same_line()
 
     if imgui.button("Open file (multiselect)"):
-        static.open_file_multiselect = pfd.open_file("Select file", options=pfd.opt.multiselect)
-    if static.open_file_multiselect is not None and static.open_file_multiselect.ready():
+        static.open_file_multiselect = pfd.open_file(
+            "Select file", options=pfd.opt.multiselect
+        )
+    if (
+        static.open_file_multiselect is not None
+        and static.open_file_multiselect.ready()
+    ):
         log_result_list(static.open_file_multiselect.result())
         static.open_file_multiselect = None
 
@@ -219,7 +250,9 @@ def demo_imfile_dialog():
         ifd.FileDialog.instance().open("DirectoryOpenDialog", "Open a directory", "")
     imgui.same_line()
     if imgui.button("Save file"):
-        ifd.FileDialog.instance().save("ShaderSaveDialog", "Save a shader", "*.sprj .sprj")
+        ifd.FileDialog.instance().save(
+            "ShaderSaveDialog", "Save a shader", "*.sprj .sprj"
+        )
 
     if len(static.selected_filename) > 0:
         imgui.text(f"Last file selection:\n  {static.selected_filename}")
@@ -247,14 +280,22 @@ def demo_imfile_dialog():
         ifd.FileDialog.instance().close()
 
 
-@immapp.static(was_inited=False, show_command_palette=False, counter=0, command_palette_context=None)
+@immapp.static(
+    was_inited=False,
+    show_command_palette=False,
+    counter=0,
+    command_palette_context=None,
+)
 def demo_command_palette():
     static = demo_command_palette
 
     def init_command_palette():
         static.command_palette_context = imcmd.ContextWrapper()
         highlight_font_color = ImVec4(1.0, 0.0, 0.0, 1.0)
-        imcmd.set_style_color(imcmd.ImCmdTextType.highlight, imgui.color_convert_float4_to_u32(highlight_font_color))
+        imcmd.set_style_color(
+            imcmd.ImCmdTextType.highlight,
+            imgui.color_convert_float4_to_u32(highlight_font_color),
+        )
         # Add theme command: a two steps command, with initial callback + SubsequentCallback
         select_theme_cmd = imcmd.Command()
         select_theme_cmd.name = "Select theme"
@@ -300,7 +341,9 @@ def demo_command_palette():
         static.show_command_palette = not static.show_command_palette
 
     if static.show_command_palette:
-        static.show_command_palette = imcmd.command_palette_window("CommandPalette", True)
+        static.show_command_palette = imcmd.command_palette_window(
+            "CommandPalette", True
+        )
 
     imgui.new_line()
     imgui.text("Press Ctrl+Shift+P to bring up the command palette")
@@ -319,20 +362,29 @@ def demo_cool_bar():
 
         # Optional: add a label on the image
         top_left_corner = imgui.get_item_rect_min()
-        text_pos = (top_left_corner.x + immapp.em_size(1.), top_left_corner.y + immapp.em_size(1.))
+        text_pos = (
+            top_left_corner.x + immapp.em_size(1.0),
+            top_left_corner.y + immapp.em_size(1.0),
+        )
         imgui.get_window_draw_list().add_text(text_pos, 0xFFFFFFFF, label)
 
         return clicked
 
     button_labels = ["A", "B", "C", "D", "E", "F"]
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # ImCoolBar:
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
-        """)
+        """
+    )
 
     cool_bar_config = im_cool_bar.ImCoolBarConfig()
-    cool_bar_config.anchor = ImVec2(0.5, 0.07)  #  position in the window (ratio of window size)
-    if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
+    cool_bar_config.anchor = ImVec2(
+        0.5, 0.07
+    )  #  position in the window (ratio of window size)
+    if im_cool_bar.begin_cool_bar(
+        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config
+    ):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
                 if show_cool_bar_button(label):

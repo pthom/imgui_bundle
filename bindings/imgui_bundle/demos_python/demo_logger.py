@@ -39,6 +39,7 @@ def demo_gui():
             static.idx_fortune += 1
             if static.idx_fortune >= len(fortunes):
                 static.idx_fortune = 0
+
     if not static.added_logs:
         add_logs()
         static.added_logs = True
