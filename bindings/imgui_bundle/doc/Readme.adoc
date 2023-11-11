@@ -64,7 +64,6 @@ image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
 
 
-
 ****
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
@@ -105,7 +104,6 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 // end::motto[]
 
 
-
 === Interactive manual & demo in one click!
 
 :doc_branch: doc
@@ -132,7 +130,6 @@ Click on the animated demonstration below to launch the fully interactive demons
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
-
 
 
 === Batteries included
@@ -217,7 +214,6 @@ image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
 
 
 A big thank you to their authors for their awesome work!
-
 
 === Easily port your code between python and {cpp}
 
@@ -335,7 +331,6 @@ int main(int , char *[]) {
 ====
 
 
-
 [[install-instructions]]
 == Build and install instructions
 
@@ -389,7 +384,6 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_py
 
 
 TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
-
 
 === Install for {cpp}
 
@@ -452,7 +446,6 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_cp
 
 
 TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related code source. It is always {url-demo-imgui-bundle}[available online]
-
 
 [[quickstart]]
 == Quick Start & Examples
@@ -601,7 +594,6 @@ immapp.run(
     # window_restore_previous_geometry==True
 )
 ----
-
 
 :doc_branch: doc
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -977,7 +969,6 @@ Python:
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
 from imgui_bundle.demos_python import demo_utils
 
-from dataclasses import dataclass, field
 import numpy as np
 from typing import Dict, List
 from dataclasses import dataclass, field
@@ -1016,7 +1007,13 @@ def demo_assets(app_state: AppState):
     imgui.text("Here are some icons from Font Awesome: ")
     imgui.same_line()
     imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
-    imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+    imgui.text(
+        icons_fontawesome.ICON_FA_INFO
+        + " "
+        + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE
+        + " "
+        + icons_fontawesome.ICON_FA_SAVE
+    )
 
     imgui.text("Here is an image that was loaded from the assets: ")
     imgui.same_line()
@@ -1027,7 +1024,9 @@ def demo_assets(app_state: AppState):
     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
     hello_imgui.image_from_asset("images/world.jpg", image_size)
 
-    imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+    imgui_md.render(
+        "**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**"
+    )
     show_doc("AssetsDoc")
 
 
@@ -1055,7 +1054,9 @@ def demo_markdown(app_state: AppState):
     imgui.same_line(hello_imgui.em_size(30.0))
     if imgui.small_button("Edit the fortune markdown"):
         app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
-    _, app_state.markdown_input = imgui.input_text_multiline("##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0))
+    _, app_state.markdown_input = imgui.input_text_multiline(
+        "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
+    )
     imgui_md.render_unindented(app_state.markdown_input)
     imgui.separator()
 
@@ -1070,15 +1071,24 @@ def demo_plot(app_state: AppState):
 
     imgui.text("Edit Pie Chart values")
     imgui.set_next_item_width(250)
-    _, app_state.plot_data = imgui.drag_float4("Pie Data", app_state.plot_data, 0.01, 0, 1)
+    _, app_state.plot_data = imgui.drag_float4(
+        "Pie Data", app_state.plot_data, 0.01, 0, 1
+    )
 
     # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
     # Below, plot_size is equivalent to the size of 15 lines of text
     plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
 
     if implot.begin_plot("Pie Chart", plot_size):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
-        implot.plot_pie_chart(data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90)
+        implot.setup_axes(
+            "",
+            "",
+            implot.AxisFlags_.no_decorations.value,
+            implot.AxisFlags_.no_decorations.value,
+        )
+        implot.plot_pie_chart(
+            data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
+        )
         implot.end_plot()
 
     show_doc("PlotDoc")
@@ -1122,6 +1132,7 @@ def main():
 # // Note: the code below only displays the help messages
 # //
 
+
 def get_doc(which_doc: str) -> str:
     """Return the associated documentation string based on the key."""
 
@@ -1145,7 +1156,6 @@ def get_doc(which_doc: str) -> str:
 
             *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
         """,
-
         "MarkdownDoc": """
             This markdown string was rendered by calling either:
 
@@ -1164,7 +1174,6 @@ def get_doc(which_doc: str) -> str:
             This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
             It supports the most common markdown features: emphasis, link, code blocks, etc.
         """,
-
         "PlotDoc": """
             By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
 
@@ -1181,14 +1190,14 @@ def get_doc(which_doc: str) -> str:
             addons = immapp.AddOnsParams(with_implot=True)
             immapp.run(runner_params, addons);
             ```
-        """
+        """,
     }
 
     return docs[which_doc]
 
 
 @immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
-def show_doc(which_doc):
+def show_doc(which_doc):  # noqa: F811
     # Access the 'static' variable
     is_doc_visible = show_doc.is_doc_visible
 
@@ -1197,13 +1206,17 @@ def show_doc(which_doc):
         is_doc_visible[which_doc] = False
 
     imgui.push_id(which_doc)
-    _, is_doc_visible[which_doc] = imgui.checkbox("More info", is_doc_visible[which_doc])
+    _, is_doc_visible[which_doc] = imgui.checkbox(
+        "More info", is_doc_visible[which_doc]
+    )
 
     if is_doc_visible[which_doc]:
         # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
         # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
         imgui_md.render_unindented(get_doc(which_doc))
-        imgui.dummy(hello_imgui.em_to_vec2(1.0, 6.0))  # Assumes 'hello_imgui' is available in your environment
+        imgui.dummy(
+            hello_imgui.em_to_vec2(1.0, 6.0)
+        )  # Assumes 'hello_imgui' is available in your environment
         imgui.separator()
 
     imgui.pop_id()
@@ -1907,11 +1920,15 @@ def load_my_app_settings(app_state: AppState):
          runner_params.callbacks.post_init = lambda: load_user_settings(app_state)
          runner_params.callbacks.before_exit = lambda: save_user_settings(app_state)
     """
-    app_state.my_app_settings = string_to_my_app_settings(hello_imgui.load_user_pref("MyAppSettings"))
+    app_state.my_app_settings = string_to_my_app_settings(
+        hello_imgui.load_user_pref("MyAppSettings")
+    )
 
 
 def save_my_app_settings(app_state: AppState):
-    hello_imgui.save_user_pref("MyAppSettings", my_app_settings_to_string(app_state.my_app_settings))
+    hello_imgui.save_user_pref(
+        "MyAppSettings", my_app_settings_to_string(app_state.my_app_settings)
+    )
 
 
 ##########################################################################
@@ -1923,16 +1940,18 @@ def demo_hide_window():
     imgui.push_font(TITLE_FONT)
     imgui.text("Hide app window")
     imgui.pop_font()
-    imgui.text_wrapped("By clicking the button below, you can hide the window for 3 seconds.")
+    imgui.text_wrapped(
+        "By clicking the button below, you can hide the window for 3 seconds."
+    )
 
     if imgui.button("Hide"):
         demo_hide_window.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
 
-    if demo_hide_window.last_hide_time > 0.:
+    if demo_hide_window.last_hide_time > 0.0:
         now = time.time()
         if now - demo_hide_window.last_hide_time > 3.0:
-            demo_hide_window.last_hide_time = -1.
+            demo_hide_window.last_hide_time = -1.0
             hello_imgui.get_runner_params().app_window_params.hidden = False
 
 
@@ -1953,7 +1972,9 @@ def demo_show_additional_window():
 
     if imgui.button("Show additional window"):
         runner_params = hello_imgui.get_runner_params()
-        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(window_name)
+        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(
+            window_name
+        )
         if additional_window_ptr:
             # additional_window_ptr.include_in_view_menu = True
             additional_window_ptr.is_visible = True
@@ -1968,7 +1989,9 @@ def demo_basic_widgets(app_state: AppState):
     # Edit a float using a slider from 0.0 to 1.0
     changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
     if changed:
-        hello_imgui.log(hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}")
+        hello_imgui.log(
+            hello_imgui.LogLevel.warning, f"state.f was changed to {app_state.f}"
+        )
 
     # Buttons return true when clicked (most widgets return true when edited/activated)
     if imgui.button("Button"):
@@ -1982,11 +2005,17 @@ def demo_user_settings(app_state: AppState):
     imgui.push_font(TITLE_FONT)
     imgui.text("User settings")
     imgui.pop_font()
-    imgui.text_wrapped("The values below are stored in the application settings ini file and restored at startup")
+    imgui.text_wrapped(
+        "The values below are stored in the application settings ini file and restored at startup"
+    )
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.my_app_settings.name = imgui.input_text("Name", app_state.my_app_settings.name)
+    _, app_state.my_app_settings.name = imgui.input_text(
+        "Name", app_state.my_app_settings.name
+    )
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.my_app_settings.value = imgui.slider_int("Value", app_state.my_app_settings.value, 0, 100)
+    _, app_state.my_app_settings.value = imgui.slider_int(
+        "Value", app_state.my_app_settings.value, 0, 100
+    )
 
 
 def demo_rocket(app_state: AppState):
@@ -2030,41 +2059,62 @@ Most flags are inherited by children dock spaces.
             self.tip = tip
 
     all_flags = [
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_split, "NoSplit", "prevent Dock Nodes from being split"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_resize, "NoResize", "prevent Dock Nodes from being resized"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.auto_hide_tab_bar, "AutoHideTabBar",
-                         "show tab bar only if multiple windows\n" +
-                         "You will need to restore the layout after changing (Menu \"View/Restore Layout\")"),
-        DockFlagWithInfo(imgui.DockNodeFlags_.no_docking_over_central_node, "NoDockingInCentralNode",
-                         "prevent docking in central node\n(only works with the main dock space)"),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_docking_split,
+            "NoSplit",
+            "prevent Dock Nodes from being split",
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_resize,
+            "NoResize",
+            "prevent Dock Nodes from being resized",
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.auto_hide_tab_bar,
+            "AutoHideTabBar",
+            "show tab bar only if multiple windows\n"
+            + 'You will need to restore the layout after changing (Menu "View/Restore Layout")',
+        ),
+        DockFlagWithInfo(
+            imgui.DockNodeFlags_.no_docking_over_central_node,
+            "NoDockingInCentralNode",
+            "prevent docking in central node\n(only works with the main dock space)",
+        ),
         # DockFlagWithInfo(imgui.DockNodeFlags_.passthru_central_node, "PassthruCentralNode", "advanced"),
     ]
 
-    main_dock_space_node_flags = hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+    main_dock_space_node_flags = (
+        hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags
+    )
     for flag_with_info in all_flags:
         _, main_dock_space_node_flags = imgui.checkbox_flags(
-            flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag)
+            flag_with_info.label, main_dock_space_node_flags, flag_with_info.flag
+        )
         if imgui.is_item_hovered():
             imgui.set_tooltip("%s" % flag_with_info.tip)
 
-    hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = main_dock_space_node_flags
+    hello_imgui.get_runner_params().docking_params.main_dock_space_node_flags = (
+        main_dock_space_node_flags
+    )
 
 
 def gui_window_layout_customization():
     imgui.push_font(TITLE_FONT)
     imgui.text("Switch between layouts")
     imgui.pop_font()
-    imgui.text("with the menu \"View/Layouts\"")
+    imgui.text('with the menu "View/Layouts"')
     if imgui.is_item_hovered():
-        imgui.set_tooltip("Each layout remembers separately the modifications applied by the user, \n" +
-                          "and the selected layout is restored at startup")
+        imgui.set_tooltip(
+            "Each layout remembers separately the modifications applied by the user, \n"
+            + "and the selected layout is restored at startup"
+        )
 
     imgui.separator()
 
     imgui.push_font(TITLE_FONT)
     imgui.text("Change the theme")
     imgui.pop_font()
-    imgui.text("with the menu \"View/Theme\"")
+    imgui.text('with the menu "View/Theme"')
     if imgui.is_item_hovered():
         imgui.set_tooltip("The selected theme is remembered and restored at startup")
     imgui.separator()
@@ -2220,8 +2270,12 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     additional_window.label = "Additional Window"
     additional_window.is_visible = False  # this window is initially hidden,
     additional_window.include_in_view_menu = False  # it is not shown in the view menu,
-    additional_window.remember_is_visible = False  # its visibility is not saved in the settings file,
-    additional_window.dock_space_name = "MiscSpace"  # when shown, it will appear in MiscSpace.
+    additional_window.remember_is_visible = (
+        False  # its visibility is not saved in the settings file,
+    )
+    additional_window.dock_space_name = (
+        "MiscSpace"  # when shown, it will appear in MiscSpace.
+    )
     additional_window.gui_function = lambda: imgui.text("This is the additional window")
 
     dockable_windows = [
@@ -2309,7 +2363,9 @@ def main():
     #
     # Menu bar
     #
-    runner_params.imgui_window_params.show_menu_bar = True  # We use the default menu of Hello ImGui
+    runner_params.imgui_window_params.show_menu_bar = (
+        True  # We use the default menu of Hello ImGui
+    )
     # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
     runner_params.callbacks.show_menus = show_menu_gui
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
@@ -2325,8 +2381,9 @@ def main():
     #
 
     # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runner_params.imgui_window_params.default_imgui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
     # in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
@@ -2637,6 +2694,7 @@ test_custom_gui = imgui.test_engine.Test
 
 # This function is called at startup and will instantiate the tests
 def my_register_tests():
+    # fmt: off
     global test_open_popup, test_capture_screenshot, test_custom_gui
     engine = hello_imgui.get_imgui_test_engine()
 
@@ -2667,17 +2725,24 @@ def my_register_tests():
 
     # Demo 3: a test with a custom GUI and custom variables
     #         which asserts that simulated actions successfully changed the variables values
-    test_custom_gui = imgui.test_engine.register_test(engine, "Demo Tests", "Test custom GUI & vars")
+    test_custom_gui = imgui.test_engine.register_test(
+        engine, "Demo Tests", "Test custom GUI & vars"
+    )
     # Our custom variables container
     class TestVar2:
         my_int = 42
+
     test_var2 = TestVar2()  # our custom variable(s)
+
     def test_custom_gui_func(ctx: imgui.test_engine.TestContext) -> None:
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
-        imgui.begin("Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value)
+        imgui.begin(
+            "Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value
+        )
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
+
     def test_with_vars_test_func(ctx: imgui.test_engine.TestContext) -> None:
         # Our test, that will perform actions in the custom GUI, and assert that actions do change the custom variables
         # Optional: reset test_var2 to its startup values
@@ -2688,9 +2753,11 @@ def my_register_tests():
         CHECK(test_var2.my_int == 42)
         ctx.item_input_value("Slider", 123)
         CHECK(test_var2.my_int == 123)
+
     # let the test call our test function, and also call our custom Gui
     test_custom_gui.test_func = test_with_vars_test_func
     test_custom_gui.gui_func = test_custom_gui_func
+    # fmt: on
 
 
 # Our application GUI: shows that we can trigger the test manually
@@ -2778,27 +2845,32 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     test_engine_window = hello_imgui.DockableWindow()
     test_engine_window.label = "Dear ImGui Test Engine"
     test_engine_window.dock_space_name = "TestEngineSpace"
+
     def show_test_engine_windows():
-        imgui.test_engine.show_test_engine_windows(hello_imgui.get_imgui_test_engine(), None)
+        imgui.test_engine.show_test_engine_windows(
+            hello_imgui.get_imgui_test_engine(), None
+        )
+
     test_engine_window.gui_function = show_test_engine_windows
 
     return [my_window, dear_imgui_demo_window, test_engine_window]
 
 
-def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore
+def apply_application_layout(runner_params: hello_imgui.RunnerParams) -> None:  # type: ignore # noqa: F811
     # Define the application layout and windows
     runner_params.app_window_params.window_title = "Demo ImGui Test Engine"
-    runner_params.imgui_window_params.default_imgui_window_type = \
+    runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+    )
     runner_params.docking_params.docking_splits = create_default_docking_splits()
     runner_params.docking_params.dockable_windows = create_dockable_windows()
-    runner_params.docking_params.layout_condition = hello_imgui.DockingLayoutCondition.application_start
+    runner_params.docking_params.layout_condition = (
+        hello_imgui.DockingLayoutCondition.application_start
+    )
 
 
 if __name__ == "__main__":
     main()
-
-
 ----
 ====
 
@@ -3012,14 +3084,13 @@ Python:
 import os.path
 
 import numpy as np
-from typing import Any, List
+from typing import Any
 from numpy.typing import NDArray
 from enum import Enum
 import cv2  # type: ignore
 import math
 
 from imgui_bundle import imgui, immvision, immapp, imgui_md
-from imgui_bundle.demos_python.demo_utils.api_demos import *
 from imgui_bundle.demos_python import demo_utils
 
 
@@ -3029,9 +3100,11 @@ ImageFloat = NDArray[np.floating[Any]]
 
 class SobelParams:
     """The parameters for our image processing pipeline"""
+
     class Orientation(Enum):
         Horizontal = 0
         Vertical = 1
+
     blur_size = 1.25
     deriv_order = 1  # order of the derivative
     k_size = 7  # size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)
@@ -3042,7 +3115,9 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     """Our image processing pipeline"""
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_float = gray / 255.0
-    blurred = cv2.GaussianBlur(img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size)
+    blurred = cv2.GaussianBlur(
+        img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size
+    )
 
     good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
 
@@ -3052,7 +3127,9 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     else:
         dx = 0
         dy = params.deriv_order
-    r = cv2.Sobel(blurred, ddepth=cv2.CV_64F, dx=dx, dy=dy, ksize=params.k_size, scale=good_scale)
+    r = cv2.Sobel(
+        blurred, ddepth=cv2.CV_64F, dx=dx, dy=dy, ksize=params.k_size, scale=good_scale
+    )
     return r
 
 
@@ -3073,7 +3150,9 @@ def gui_sobel_params(params: SobelParams) -> bool:
     imgui.text("Deriv order")
     imgui.same_line()
     for deriv_order in (1, 2, 3, 4):
-        c, params.deriv_order = imgui.radio_button(str(deriv_order), params.deriv_order, deriv_order)
+        c, params.deriv_order = imgui.radio_button(
+            str(deriv_order), params.deriv_order, deriv_order
+        )
         if c:
             changed = True
         imgui.same_line()
@@ -3083,11 +3162,15 @@ def gui_sobel_params(params: SobelParams) -> bool:
 
     imgui.text("Orientation")
     imgui.same_line()
-    if imgui.radio_button("Horizontal", params.orientation == SobelParams.Orientation.Horizontal):
+    if imgui.radio_button(
+        "Horizontal", params.orientation == SobelParams.Orientation.Horizontal
+    ):
         changed = True
         params.orientation = SobelParams.Orientation.Horizontal
     imgui.same_line()
-    if imgui.radio_button("Vertical", params.orientation == SobelParams.Orientation.Vertical):
+    if imgui.radio_button(
+        "Vertical", params.orientation == SobelParams.Orientation.Vertical
+    ):
         changed = True
         params.orientation = SobelParams.Orientation.Vertical
 
@@ -3143,12 +3226,18 @@ def demo_gui():
 
     changed = gui_sobel_params(static.app_state.sobel_params)
     if changed:
-        static.app_state.image_sobel = compute_sobel(static.app_state.image, static.app_state.sobel_params)
+        static.app_state.image_sobel = compute_sobel(
+            static.app_state.image, static.app_state.sobel_params
+        )
     static.app_state.immvision_params_sobel.refresh_image = changed
 
-    immvision.image("Original", static.app_state.image, static.app_state.immvision_params)
+    immvision.image(
+        "Original", static.app_state.image, static.app_state.immvision_params
+    )
     imgui.same_line()
-    immvision.image("Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel)
+    immvision.image(
+        "Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel
+    )
 
 
 # The main entry point will run our GUI function
@@ -3629,9 +3718,17 @@ void demo_widgets()
 ----
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome, im_cool_bar
+from imgui_bundle import (
+    imgui,
+    hello_imgui,
+    imgui_md,
+    imgui_toggle,
+    ImVec2,
+    immapp,
+    ImVec4,
+    im_cool_bar,
+)
 from imgui_bundle import imgui_command_palette as imcmd
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 @immapp.static(knob_float_value=0, knob_int_value=0)
@@ -3731,7 +3828,16 @@ def demo_spinner():
     radius1 = imgui.get_font_size() / 2.5
     imgui.text("spinner_ang_triple")
     imgui.same_line()
-    imspinner.spinner_ang_triple("spinner_ang_triple", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
+    imspinner.spinner_ang_triple(
+        "spinner_ang_triple",
+        radius1,
+        radius1 * 1.5,
+        radius1 * 2.0,
+        2.5,
+        color,
+        color,
+        color,
+    )
 
 
 @immapp.static(flag=True)
@@ -3746,19 +3852,27 @@ def demo_toggle():
     _changed, static.flag = imgui_toggle.toggle("Default Toggle", static.flag)
     imgui.same_line()
 
-    _changed, static.flag = imgui_toggle.toggle("Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated)
+    _changed, static.flag = imgui_toggle.toggle(
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
+    )
     imgui.same_line()
 
     toggle_config = imgui_toggle.material_style()
     toggle_config.animation_duration = 0.4
-    _changed, static.flag = imgui_toggle.toggle("Material Style (with slowed anim)", static.flag, config=toggle_config)
-
-    imgui.same_line()
-    _changed, static.flag = imgui_toggle.toggle("iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2))
+    _changed, static.flag = imgui_toggle.toggle(
+        "Material Style (with slowed anim)", static.flag, config=toggle_config
+    )
 
     imgui.same_line()
     _changed, static.flag = imgui_toggle.toggle(
-        "iOS style (light)", static.flag, config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True)
+        "iOS style", static.flag, config=imgui_toggle.ios_style(size_scale=0.2)
+    )
+
+    imgui.same_line()
+    _changed, static.flag = imgui_toggle.toggle(
+        "iOS style (light)",
+        static.flag,
+        config=imgui_toggle.ios_style(size_scale=0.2, light_mode=True),
     )
 
 
@@ -3797,8 +3911,13 @@ def demo_portable_file_dialogs():
     imgui.same_line()
 
     if imgui.button("Open file (multiselect)"):
-        static.open_file_multiselect = pfd.open_file("Select file", options=pfd.opt.multiselect)
-    if static.open_file_multiselect is not None and static.open_file_multiselect.ready():
+        static.open_file_multiselect = pfd.open_file(
+            "Select file", options=pfd.opt.multiselect
+        )
+    if (
+        static.open_file_multiselect is not None
+        and static.open_file_multiselect.ready()
+    ):
         log_result_list(static.open_file_multiselect.result())
         static.open_file_multiselect = None
 
@@ -3849,7 +3968,9 @@ def demo_imfile_dialog():
         ifd.FileDialog.instance().open("DirectoryOpenDialog", "Open a directory", "")
     imgui.same_line()
     if imgui.button("Save file"):
-        ifd.FileDialog.instance().save("ShaderSaveDialog", "Save a shader", "*.sprj .sprj")
+        ifd.FileDialog.instance().save(
+            "ShaderSaveDialog", "Save a shader", "*.sprj .sprj"
+        )
 
     if len(static.selected_filename) > 0:
         imgui.text(f"Last file selection:\n  {static.selected_filename}")
@@ -3877,14 +3998,22 @@ def demo_imfile_dialog():
         ifd.FileDialog.instance().close()
 
 
-@immapp.static(was_inited=False, show_command_palette=False, counter=0, command_palette_context=None)
+@immapp.static(
+    was_inited=False,
+    show_command_palette=False,
+    counter=0,
+    command_palette_context=None,
+)
 def demo_command_palette():
     static = demo_command_palette
 
     def init_command_palette():
         static.command_palette_context = imcmd.ContextWrapper()
         highlight_font_color = ImVec4(1.0, 0.0, 0.0, 1.0)
-        imcmd.set_style_color(imcmd.ImCmdTextType.highlight, imgui.color_convert_float4_to_u32(highlight_font_color))
+        imcmd.set_style_color(
+            imcmd.ImCmdTextType.highlight,
+            imgui.color_convert_float4_to_u32(highlight_font_color),
+        )
         # Add theme command: a two steps command, with initial callback + SubsequentCallback
         select_theme_cmd = imcmd.Command()
         select_theme_cmd.name = "Select theme"
@@ -3930,7 +4059,9 @@ def demo_command_palette():
         static.show_command_palette = not static.show_command_palette
 
     if static.show_command_palette:
-        static.show_command_palette = imcmd.command_palette_window("CommandPalette", True)
+        static.show_command_palette = imcmd.command_palette_window(
+            "CommandPalette", True
+        )
 
     imgui.new_line()
     imgui.text("Press Ctrl+Shift+P to bring up the command palette")
@@ -3949,27 +4080,37 @@ def demo_cool_bar():
 
         # Optional: add a label on the image
         top_left_corner = imgui.get_item_rect_min()
-        text_pos = (top_left_corner.x + immapp.em_size(1.), top_left_corner.y + immapp.em_size(1.))
+        text_pos = (
+            top_left_corner.x + immapp.em_size(1.0),
+            top_left_corner.y + immapp.em_size(1.0),
+        )
         imgui.get_window_draw_list().add_text(text_pos, 0xFFFFFFFF, label)
 
         return clicked
 
     button_labels = ["A", "B", "C", "D", "E", "F"]
-    imgui_md.render_unindented("""
+    imgui_md.render_unindented(
+        """
         # ImCoolBar:
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
-        """)
+        """
+    )
 
-    cool_bar_config = im_cool_bar.ImCoolBarConfig();
-    cool_bar_config.anchor = ImVec2(0.5, 0.07)  #  position in the window (ratio of window size)
-    if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
+    cool_bar_config = im_cool_bar.ImCoolBarConfig()
+    cool_bar_config.anchor = ImVec2(
+        0.5, 0.07
+    )  #  position in the window (ratio of window size)
+    if im_cool_bar.begin_cool_bar(
+        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config
+    ):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
                 if show_cool_bar_button(label):
                     print(f"Clicked {label}")
         im_cool_bar.end_cool_bar()
 
-    imgui.new_line(); imgui.new_line()
+    imgui.new_line()
+    imgui.new_line()
 
 
 def demo_gui():
@@ -4107,7 +4248,7 @@ def demo_gui():
     ]
 
     def add_logs():
-        for i in range(10):
+        for _i in range(10):
             log_level = random.choice(
                 [
                     hello_imgui.LogLevel.debug,
@@ -4120,6 +4261,7 @@ def demo_gui():
             static.idx_fortune += 1
             if static.idx_fortune >= len(fortunes):
                 static.idx_fortune = 0
+
     if not static.added_logs:
         add_logs()
         static.added_logs = True
@@ -4135,7 +4277,7 @@ def demo_gui():
     imgui.separator()
 
     if imgui.button("Add logs"):
-        for i in range(10):
+        for _i in range(10):
             add_logs()
 
     imgui.separator()
@@ -4227,7 +4369,6 @@ void demo_text_edit()
 ----
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 from imgui_bundle.immapp import static
 
 TextEditor = ed.TextEditor
@@ -4405,7 +4546,6 @@ Displays this:
 
 image::{url-doc-images}/immediate_gui_example.png[]
 
-
 === Hello ImGui - Starter pack
 
 :doc_branch: doc
@@ -4581,7 +4721,6 @@ if __name__ == "__main__":
 
 ====
 
-
 === Usage withing jupyter notebook
 
 :doc_branch: doc
@@ -4617,8 +4756,6 @@ link:https://www.youtube.com/watch?v=QQIC7lpHono[40 seconds demo video on Youtub
 ==== API:
 
 link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
-
-
 
 [[folders]]
 == Repository folders structure
