@@ -12,7 +12,7 @@ from imgui_bundle.imgui import *
 # ErrorStringCallback represent a function that accepts a string as a single param (it will contain the error message)
 ErrorStringCallback = Callable[[str], None]
 
-# from imgui_bundle.imgui import
+# fmt: off
 
 """
 // Use your programming IDE "Go to definition" facility on the names of the center columns to find the actual flags/enum lists.
