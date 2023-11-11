@@ -37,7 +37,6 @@ AnyEventCallback = Callable[[Any], None]
 ScreenSize = Tuple[int, int]
 ScreenPosition = Tuple[int, int]
 ImGuiCond_FirstUseEver = Cond_.first_use_ever
-ImGuiDockNodeFlags = DockNodeFlags
 ImGuiDockNodeFlags_None = DockNodeFlags_.none
 ImGuiDockNodeFlags_PassthruCentralNode = DockNodeFlags_.passthru_central_node
 
@@ -1288,9 +1287,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
+        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
     ) -> None:
         pass
     # DockSpaceName initialDock;    /* original C++ signature */
@@ -1302,7 +1301,7 @@ class DockingSplit:
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
     # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
 class DockableWindow:
     """*
@@ -1380,12 +1379,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0.0, 0.0)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0.0, 0.0)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
@@ -1450,7 +1449,7 @@ class DockingParams:
 
     # ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;    /* original C++ signature */
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # Helpers
@@ -1471,7 +1470,7 @@ class DockingParams:
         layout_name: str = "Default",
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
-        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass

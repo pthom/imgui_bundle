@@ -62,6 +62,8 @@ def main():
     # setAssetsFolder & SetAssetsFolder offer the same function
     options.fn_exclude_by_name__regex = r"^setAssetsFolder$"
 
+    options.python_run_black_formatter = True
+
     litgen.write_generated_code_for_file(
         options,
         input_cpp_header_file=input_cpp_header,

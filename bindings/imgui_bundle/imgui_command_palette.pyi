@@ -27,6 +27,11 @@ class ImCmdTextType(enum.Enum):
     highlight = enum.auto() # (= 1)
     count = enum.auto()     # (= 2)
 
+class ImCmdTextFlag(enum.Enum):
+    #/ Whether the text is underlined. Default False.
+    underline = enum.auto() # (= 0)
+    count = enum.auto()     # (= 1)
+
 """ namespace ImCmd"""
 class Command:
     name: str
@@ -48,7 +53,19 @@ def remove_command(name: str) -> None:
     pass
 
 # Styling
+def get_style_flag(type: ImCmdTextType, flag: ImCmdTextFlag) -> bool:
+    pass
+def set_style_flag(
+    type: ImCmdTextType,
+    flag: ImCmdTextFlag,
+    enabled: bool
+    ) -> None:
+    pass
+def get_style_font(type: ImCmdTextType) -> ImFont:
+    pass
 def set_style_font(type: ImCmdTextType, font: ImFont) -> None:
+    pass
+def get_style_color(type: ImCmdTextType) -> ImU32:
     pass
 def set_style_color(type: ImCmdTextType, color: ImU32) -> None:
     pass
