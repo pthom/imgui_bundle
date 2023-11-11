@@ -178,7 +178,14 @@ void py_init_module_implot_internal(py::module& m)
     auto pyClassImPlotColormapData =
         py::class_<ImPlotColormapData>
             (m, "ColormapData", "Colormap data storage")
+        .def_readwrite("keys", &ImPlotColormapData::Keys, "")
+        .def_readwrite("key_counts", &ImPlotColormapData::KeyCounts, "")
+        .def_readwrite("key_offsets", &ImPlotColormapData::KeyOffsets, "")
+        .def_readwrite("tables", &ImPlotColormapData::Tables, "")
+        .def_readwrite("table_sizes", &ImPlotColormapData::TableSizes, "")
+        .def_readwrite("table_offsets", &ImPlotColormapData::TableOffsets, "")
         .def_readwrite("text", &ImPlotColormapData::Text, "")
+        .def_readwrite("text_offsets", &ImPlotColormapData::TextOffsets, "")
         .def_readwrite("map", &ImPlotColormapData::Map, "")
         .def_readwrite("count", &ImPlotColormapData::Count, "")
         .def(py::init<>())
@@ -640,6 +647,7 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("location", &ImPlotLegend::Location, "")
         .def_readwrite("previous_location", &ImPlotLegend::PreviousLocation, "")
         .def_readwrite("scroll", &ImPlotLegend::Scroll, "")
+        .def_readwrite("indices", &ImPlotLegend::Indices, "")
         .def_readwrite("labels", &ImPlotLegend::Labels, "")
         .def_readwrite("rect", &ImPlotLegend::Rect, "")
         .def_readwrite("rect_clamped", &ImPlotLegend::RectClamped, "")
@@ -798,6 +806,8 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("frame_rect", &ImPlotSubplot::FrameRect, "")
         .def_readwrite("grid_rect", &ImPlotSubplot::GridRect, "")
         .def_readwrite("cell_size", &ImPlotSubplot::CellSize, "")
+        .def_readwrite("row_ratios", &ImPlotSubplot::RowRatios, "")
+        .def_readwrite("col_ratios", &ImPlotSubplot::ColRatios, "")
         .def_property("temp_sizes",
             [](ImPlotSubplot &self) -> pybind11::array
             {
@@ -850,14 +860,17 @@ void py_init_module_implot_internal(py::module& m)
         py::class_<ImPlotContext>
             (m, "Context", "Holds state information that must persist between calls to BeginPlot()/EndPlot()")
         .def(py::init<>([](
-        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
+        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
         {
             auto r = std::make_unique<ImPlotContext>();
             r->CTicker = CTicker;
             r->Annotations = Annotations;
             r->Tags = Tags;
             r->Style = Style;
+            r->ColorModifiers = ColorModifiers;
+            r->StyleModifiers = StyleModifiers;
             r->ColormapData = ColormapData;
+            r->TempInt1 = TempInt1;
             r->DigitalPlotItemCnt = DigitalPlotItemCnt;
             r->DigitalPlotOffset = DigitalPlotOffset;
             r->NextPlotData = NextPlotData;
@@ -867,7 +880,7 @@ void py_init_module_implot_internal(py::module& m)
             r->MousePosStringBuilder = MousePosStringBuilder;
             return r;
         })
-        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("style") = ImPlotStyle(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
+        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("style") = ImPlotStyle(), py::arg("color_modifiers") = ImVector<ImGuiColorMod>(), py::arg("style_modifiers") = ImVector<ImGuiStyleMod>(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("temp_int1") = ImVector<int>(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
         )
         .def_readwrite("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_readwrite("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -878,7 +891,10 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("annotations", &ImPlotContext::Annotations, "")
         .def_readwrite("tags", &ImPlotContext::Tags, "")
         .def_readwrite("style", &ImPlotContext::Style, "")
+        .def_readwrite("color_modifiers", &ImPlotContext::ColorModifiers, "")
+        .def_readwrite("style_modifiers", &ImPlotContext::StyleModifiers, "")
         .def_readwrite("colormap_data", &ImPlotContext::ColormapData, "")
+        .def_readwrite("temp_int1", &ImPlotContext::TempInt1, "")
         .def_readwrite("digital_plot_item_cnt", &ImPlotContext::DigitalPlotItemCnt, "")
         .def_readwrite("digital_plot_offset", &ImPlotContext::DigitalPlotOffset, "")
         .def_readwrite("next_plot_data", &ImPlotContext::NextPlotData, "")

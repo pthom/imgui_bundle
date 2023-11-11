@@ -28,6 +28,14 @@ from imgui_bundle.implot import (
     InputMap,
 )
 
+from imgui_bundle.imgui import (
+    ImVector_ImU32,
+    ImVector_float,
+    ImVector_int,
+    ImVector_ColorMod,
+    ImVector_StyleMod
+)
+
 ImGui_Context = imgui.internal.Context
 Colormap = int
 ID = int
@@ -369,8 +377,22 @@ class Time:
 
 class ColormapData:
     """ Colormap data storage"""
+    # ImVector<ImU32> Keys;    /* original C++ signature */
+    keys: ImVector_ImU32
+    # ImVector<int>   KeyCounts;    /* original C++ signature */
+    key_counts: ImVector_int
+    # ImVector<int>   KeyOffsets;    /* original C++ signature */
+    key_offsets: ImVector_int
+    # ImVector<ImU32> Tables;    /* original C++ signature */
+    tables: ImVector_ImU32
+    # ImVector<int>   TableSizes;    /* original C++ signature */
+    table_sizes: ImVector_int
+    # ImVector<int>   TableOffsets;    /* original C++ signature */
+    table_offsets: ImVector_int
     # ImGuiTextBuffer Text;    /* original C++ signature */
     text: TextBuffer
+    # ImVector<int>   TextOffsets;    /* original C++ signature */
+    text_offsets: ImVector_int
     # ImGuiStorage    Map;    /* original C++ signature */
     map: Storage
     # int             Count;    /* original C++ signature */
@@ -1290,6 +1312,8 @@ class Legend:
     previous_location: Location
     # ImVec2            Scroll;    /* original C++ signature */
     scroll: ImVec2
+    # ImVector<int>     Indices;    /* original C++ signature */
+    indices: ImVector_int
     # ImGuiTextBuffer   Labels;    /* original C++ signature */
     labels: TextBuffer
     # ImRect            Rect;    /* original C++ signature */
@@ -1572,6 +1596,10 @@ class Subplot:
     grid_rect: ImRect
     # ImVec2                        CellSize;    /* original C++ signature */
     cell_size: ImVec2
+    # ImVector<float>               RowRatios;    /* original C++ signature */
+    row_ratios: ImVector_float
+    # ImVector<float>               ColRatios;    /* original C++ signature */
+    col_ratios: ImVector_float
     # float                         TempSizes[2];    /* original C++ signature */
     temp_sizes: np.ndarray  # ndarray[type=float, size=2]
     # bool                          FrameHovered;    /* original C++ signature */
@@ -1687,11 +1715,17 @@ class Context:
     # Style and Colormaps
     # ImPlotStyle                 Style;    /* original C++ signature */
     style: Style
+    # ImVector<ImGuiColorMod>     ColorModifiers;    /* original C++ signature */
+    color_modifiers: ImVector_ColorMod
+    # ImVector<ImGuiStyleMod>     StyleModifiers;    /* original C++ signature */
+    style_modifiers: ImVector_StyleMod
     # ImPlotColormapData          ColormapData;    /* original C++ signature */
     colormap_data: ColormapData
 
 
     # Temp data for general use
+    # ImVector<int>      TempInt1;    /* original C++ signature */
+    temp_int1: ImVector_int
 
     # Misc
     # int                DigitalPlotItemCnt;    /* original C++ signature */
@@ -1716,8 +1750,8 @@ class Context:
     current_alignment_h: AlignmentData
     # ImPlotAlignmentData*        CurrentAlignmentV;    /* original C++ signature */
     current_alignment_v: AlignmentData
-    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImPlotColormapData ColormapData = ImPlotColormapData(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer());    /* original C++ signature */
-    def __init__(self, c_ticker: Ticker = Ticker(), annotations: AnnotationCollection = AnnotationCollection(), tags: TagCollection = TagCollection(), style: Style = Style(), colormap_data: ColormapData = ColormapData(), digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: NextPlotData = NextPlotData(), next_item_data: NextItemData = NextItemData(), input_map: InputMap = InputMap(), open_context_this_frame: bool = bool(), mouse_pos_string_builder: TextBuffer = TextBuffer()) -> None:
+    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer());    /* original C++ signature */
+    def __init__(self, c_ticker: Ticker = Ticker(), annotations: AnnotationCollection = AnnotationCollection(), tags: TagCollection = TagCollection(), style: Style = Style(), color_modifiers: ImVector_ColorMod = ImVector_ColorMod(), style_modifiers: ImVector_StyleMod = ImVector_StyleMod(), colormap_data: ColormapData = ColormapData(), temp_int1: ImVector_int = ImVector_int(), digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: NextPlotData = NextPlotData(), next_item_data: NextItemData = NextItemData(), input_map: InputMap = InputMap(), open_context_this_frame: bool = bool(), mouse_pos_string_builder: TextBuffer = TextBuffer()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -2269,9 +2303,12 @@ class Formatter_Time_Data:
         """Auto-generated default constructor with named params"""
         pass
 
-# ------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
 # [SECTION] Locator
-# ------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
+
 
 ####################    </generated_from:implot_internal.h>    ####################
 
