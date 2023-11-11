@@ -176,17 +176,18 @@ class PygletMixin(object):
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
-    
+
     def process_inputs(self):
         io = imgui.get_io()
-        
+
         current_time = pyglet.clock.tick()
 
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
             io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+        if(io.delta_time <= 0.0):
+            io.delta_time = 1./ 1000.
         self._gui_time = current_time
 
 
@@ -194,7 +195,8 @@ class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletFixedPipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
-        if attach_callbacks: self._attach_callbacks(window)
+        if attach_callbacks:
+            self._attach_callbacks(window)
 
     def render(self, draw_data):
         super(PygletFixedPipelineRenderer, self).render(draw_data)
@@ -205,7 +207,8 @@ class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRender
     def __init__(self, window, attach_callbacks = True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
-        if attach_callbacks: self._attach_callbacks(window)
+        if attach_callbacks:
+            self._attach_callbacks(window)
 
     def render(self, draw_data):
         super(PygletProgrammablePipelineRenderer, self).render(draw_data)
@@ -218,7 +221,8 @@ class PygletRenderer(PygletFixedPipelineRenderer):
                       "PygletFixedPipelineRenderer (for OpenGL 2.1, pyglet < 2.0) or "
                       "PygletProgrammablePipelineRenderer (for later versions) or "
                       "create_renderer(window) to auto-detect.",
-                      DeprecationWarning)
+                      DeprecationWarning,
+                      stacklevel=2)
         super(PygletRenderer, self).__init__(window, attach_callbacks)
 
 

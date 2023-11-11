@@ -1,0 +1,5 @@
+select = ["E", "F", "B", "W"]
+
+ignore = [
+    "E501", # Never enforce `E501` (line length violations).
+]

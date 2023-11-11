@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# ruff: noqa: F403, F405
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
@@ -122,7 +123,8 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             io.delta_time = current_time - self._gui_time
         else:
             io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+        if(io.delta_time <= 0.0):
+            io.delta_time = 1./ 1000.
         self._gui_time = current_time
 
         mx = ctypes.pointer(ctypes.c_int(0))

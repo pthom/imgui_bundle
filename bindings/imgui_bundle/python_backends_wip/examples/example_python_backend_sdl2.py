@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+# ruff: noqa: F405, F403
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends_wip.sdl_backend import SDL2Renderer

@@ -63,7 +63,7 @@ class PygameRenderer(FixedPipelineRenderer):
                 io.mouse_down[1] = 1
             if event.button == 3:
                 io.mouse_down[2] = 1
-            return True 
+            return True
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -109,7 +109,7 @@ class PygameRenderer(FixedPipelineRenderer):
                 io.keys_down[self._custom_key(pygame.K_LSUPER)] or
                 io.keys_down[self._custom_key(pygame.K_LSUPER)]
             )
-            
+
             return True
 
         if event.type == pygame.VIDEORESIZE:
@@ -128,16 +128,17 @@ class PygameRenderer(FixedPipelineRenderer):
 
             # delete old surface, it is no longer needed
             del surface
-            
+
             return True
     def process_inputs(self):
         io = imgui.get_io()
-        
+
         current_time = pygame.time.get_ticks() / 1000.0
 
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
             io.delta_time = 1. / 60.
-        if(io.delta_time <= 0.0): io.delta_time = 1./ 1000.
+        if(io.delta_time <= 0.0):
+            io.delta_time = 1./ 1000.
         self._gui_time = current_time
