@@ -28,16 +28,16 @@ from imgui_bundle.im_col32 import IM_COL32
 # (imgui_bundle.glfw_utils will call _set_glfw_pip_search_path automatically)
 from imgui_bundle._glfw_set_search_path import _glfw_set_search_path
 _glfw_set_search_path()
-from imgui_bundle import glfw_utils as glfw_utils
+from imgui_bundle import glfw_utils as glfw_utils  # noqa: E402
 
 # SDL setup:
 # make sure that SDL provided by pip will use our SDL dynamic library.
-from imgui_bundle._sdl_set_set_search_path import _sdl_set_set_search_path
+from imgui_bundle._sdl_set_set_search_path import _sdl_set_set_search_path  # noqa: E402
 _sdl_set_set_search_path()
-from imgui_bundle import sdl_utils as sdl_utils
+from imgui_bundle import sdl_utils as sdl_utils  # noqa: E402
 
 
-import os
+import os  # noqa: E402
 
 THIS_DIR = os.path.dirname(__file__)
 hello_imgui.override_assets_folder(THIS_DIR + "/assets")
@@ -68,4 +68,5 @@ __all__ = [
     "FLT_MAX",
     # Base utilities
     "__version__",
+    "compilation_time"
 ]

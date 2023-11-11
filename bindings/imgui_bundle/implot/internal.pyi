@@ -1,7 +1,7 @@
 """ImPlot: Immediate Mode Plotting for ImGui
 Python bindings for https://github.com/epezent/implot
 """
-
+# ruff: noqa: E741, B008
 from typing import Any, Optional, Tuple, overload
 import numpy as np
 import enum

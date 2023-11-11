@@ -1,7 +1,6 @@
 # Backend API
 # Note: all this code is generated *manually*
 
-from typing import Optional
 from imgui_bundle.imgui import ImDrawData
 
 

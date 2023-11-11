@@ -1,9 +1,8 @@
 """Node editor built using ImGui
 Python bindings for https://github.com/thedmd/imgui-node-editor
 """
-
+# ruff: noqa: B008
 from typing import Any, Optional, overload
-import numpy as np
 import enum
 from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList
 from imgui_bundle import imgui

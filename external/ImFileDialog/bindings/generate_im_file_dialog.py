@@ -9,7 +9,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def main():
+def autogenerate_im_file_dialog():
     print("autogenerate_im_file_dialog")
     input_cpp_header = THIS_DIR + "/../ImFileDialog/ImFileDialog.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_im_file_dialog.cpp"
@@ -24,6 +24,8 @@ def main():
     options.member_exclude_by_name__regex = "CreateTexture|DeleteTexture"
     options.type_replacements.add_last_replacement(r"std.vector<(\w*)>", r"List[\1]")
     options.type_replacements.add_last_replacement(r"time_t", r"int")
+
+    options.postprocess_stub_function = lambda code: code.replace("ifd.FileDialog", "FileDialog")
 
     litgen.write_generated_code_for_file(
         options,

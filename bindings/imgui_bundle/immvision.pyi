@@ -1,7 +1,7 @@
 """immvision: immediate image debugger and insights
 Python bindings for https://github.com/pthom/immvision.git
 """
-
+# ruff: noqa: B008
 from typing import List, Tuple
 import enum
 import numpy as np

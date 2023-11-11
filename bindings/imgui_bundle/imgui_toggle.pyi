@@ -1,17 +1,16 @@
 """A toggle switch widget for Dear ImGui
 Python bindings for https://github.com/cmdwtf/imgui_toggle
 """
-
+# ruff: noqa: B008
 from typing import Tuple, overload
-import numpy as np
 import enum
 
 
-from imgui_bundle.imgui import ImColor, ImVec2, ImVec4
+from imgui_bundle.imgui import ImVec2, ImVec4
 
 ToggleFlags = int
-ToggleFlags_Default = ToggleFlags_.default
-ToggleA11yStyle_Default = ToggleA11yStyle_.default
+ToggleFlags_Default = ToggleFlags_.default  # noqa
+ToggleA11yStyle_Default = ToggleA11yStyle_.default  # noqa
 
 
 # ImGuiToggleConstants: A set of defaults and limits used by ImGuiToggleConfig

@@ -1,4 +1,5 @@
-from typing import Any, List, Tuple, Optional, Callable, overload
+# ruff: noqa: F403, F405, B008
+from typing import Any, Tuple, Optional, Callable, overload
 import enum
 import numpy as np
 

@@ -1,8 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from typing import cast
-
 try:
-    import sdl2  # type: ignore
+    import sdl2  # type: ignore # noqa
 
     # Fixme: the value returned below seem to not work correctly:
     #  SDL accepts them, but wont' do anything when we use them.  Probably some tricky cast required

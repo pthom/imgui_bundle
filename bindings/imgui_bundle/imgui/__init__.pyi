@@ -1,3 +1,4 @@
+# ruff: noqa: B008, E741
 from __future__ import annotations
 import sys
 from typing import List, Any, Optional, Tuple, overload, Iterator, Callable

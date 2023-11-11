@@ -1,6 +1,7 @@
 """Portable GUI dialogs library, C++11, single-header
 https://github.com/samhocevar/portable-file-dialogs
 """
+# ruff: noqa: B008
 import enum
 
 from typing import List

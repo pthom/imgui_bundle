@@ -1,6 +1,7 @@
 """A texture inspector tool for Dear ImGui
 https://github.com/andyborrell/imgui_tex_inspect
 """
+# ruff: noqa: F821, B008
 from typing import overload
 import enum
 

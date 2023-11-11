@@ -39,9 +39,9 @@ Please post your screenshots if you find this little piece of software useful. :
 If you want to contribute, please refer to CONTRIBUTE file.
 
 """
+# ruff: noqa: F821, B008
 from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
-import numpy as np
 import enum
 
 from imgui_bundle.imgui import ImVec2, ImVec4, ImU32

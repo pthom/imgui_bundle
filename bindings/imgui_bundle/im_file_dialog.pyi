@@ -1,9 +1,9 @@
 """ImFileDialog: based on https://github.com/dfranx/ImFileDialog
 Thanks to dfranx (https://github.com/dfranx)
 """
+# ruff: noqa: F821
 from __future__ import annotations
-from typing import List, Any
-import numpy as np
+from typing import List
 
 from imgui_bundle.imgui import ImTextureID
 
@@ -25,7 +25,7 @@ class Path:
 ####################    <generated_from:ImFileDialog.h>    ####################
 class FileDialog:
     @staticmethod
-    def instance() -> ifd.FileDialog:
+    def instance() -> FileDialog:
         pass
     def __init__(self) -> None:
         pass

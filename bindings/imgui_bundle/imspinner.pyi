@@ -1,8 +1,7 @@
 """Spinners for ImGui
 https://github.com/dalerank/imspinner
 """
-
-import numpy as np
+# ruff: noqa: B008
 import enum
 
 from imgui_bundle.imgui import ImColor

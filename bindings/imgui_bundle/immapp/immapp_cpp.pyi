@@ -1,8 +1,7 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle
 """
-
+# ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
-import numpy as np
 import enum
 
 from imgui_bundle import imgui_md, hello_imgui, ImVec2

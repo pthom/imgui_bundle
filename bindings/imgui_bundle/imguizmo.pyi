@@ -1,7 +1,7 @@
 """ImGuizmo: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
 https://github.com/CedricGuillemet/ImGuizmo
 """
-
+# ruff: noqa: F821
 from typing import List, Optional, Any, overload
 from imgui_bundle.imgui import ImVec2, ImVec4
 from imgui_bundle.imgui.internal import ImRect
@@ -12,7 +12,7 @@ from imgui_bundle.imgui import ImU32, ImDrawList
 ImGuiContext = Any
 
 ImGuiZoomSliderFlags = int
-ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none
+ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa
 
 
 Matrix16 = np.ndarray # np.type=float, shape=[4, 4]

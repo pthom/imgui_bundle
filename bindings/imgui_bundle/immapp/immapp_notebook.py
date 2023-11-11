@@ -100,7 +100,7 @@ def run_nb(
             IPython.notebook.kernel.execute("imgui_bundle.JAVASCRIPT_RUN_ID='{run_id}'")
             Jupyter.notebook.execute_cells([cell_idx])
         }}
-        </script>        
+        </script>
         <button onClick="btnClick_{run_id}(this)">Run</button>
         """
         display(HTML(html_code))
@@ -118,7 +118,7 @@ def run_nb(
                 if imgui_bundle.JAVASCRIPT_RUN_ID == run_id:
                     run_app_and_display_thumb()
             else:
-                print(f"imgui_bundle: no JAVASCRIPT_RUN_ID")
+                print("imgui_bundle: no JAVASCRIPT_RUN_ID")
 
     # display_app_with_run_button(run_id)
     run_app_and_display_thumb()

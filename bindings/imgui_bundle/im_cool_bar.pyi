@@ -1,8 +1,7 @@
 """ImCoolbar: A Cool bar for Dear ImGui
 Python bindings for https://github.com/aiekick/ImCoolBar
 """
-
-from typing import overload
+# ruff: noqa: B008
 import enum
 
 from imgui_bundle.imgui import ImVec2, WindowFlags, WindowFlags_

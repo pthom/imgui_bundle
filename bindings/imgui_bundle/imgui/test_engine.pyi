@@ -1,5 +1,6 @@
+# ruff: noqa: B008, F821
 import sys
-from typing import List, Any, Optional, Tuple, Callable, overload, Union
+from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
 import enum
 from imgui_bundle.imgui import  internal as internal
@@ -16,24 +17,24 @@ from imgui_bundle.imgui.internal import (
 ID = int
 Str = str
 Key_None = Key.none
-TestInputType_None = TestInputType.none
+TestInputType_None = TestInputType.none  # noqa
 TestRunFlags = int
 TestCheckFlags = int
 TestFlags = int
 TestOpFlags = int
 TestLogFlags = int
 
-TestVerboseLevel_Warning = TestVerboseLevel.warning
-TestVerboseLevel_Info = TestVerboseLevel.info
-TestOpFlags_None = TestOpFlags_.none
-TestRunFlags_None = TestRunFlags_.none
-TestRunSpeed_Fast = TestRunSpeed.fast
-TestFlags_None = TestFlags_.none
-Dir_None = Dir_.none
-TestActiveFunc_None = TestActiveFunc.none
-TestGroup_Unknown = TestGroup.unknown
-TestStatus_Unknown = TestStatus.unknown
-InputSource_Mouse = InputSource.mouse
+TestVerboseLevel_Warning = TestVerboseLevel.warning  # noqa
+TestVerboseLevel_Info = TestVerboseLevel.info  # noqa
+TestOpFlags_None = TestOpFlags_.none  # noqa
+TestRunFlags_None = TestRunFlags_.none  # noqa
+TestRunSpeed_Fast = TestRunSpeed.fast  # noqa
+TestFlags_None = TestFlags_.none  # noqa
+Dir_None = Dir_.none  # noqa
+TestActiveFunc_None = TestActiveFunc.none  # noqa
+TestGroup_Unknown = TestGroup.unknown  # noqa
+TestStatus_Unknown = TestStatus.unknown  # noqa
+InputSource_Mouse = InputSource.mouse  # noqa
 
 Function_TestRunner = Callable[[TestContext], None]
 Function_TestGui = Callable[[imgui.test_engine.TestContext], None]
@@ -2323,7 +2324,7 @@ def show_test_engine_windows(engine: TestEngine, p_open: bool) -> bool:
 
 # fmt: on
 
-class TestContext:
+class TestContext:  # noqa: F811
     @overload
     def set_ref(self, id: str) -> None:
         pass

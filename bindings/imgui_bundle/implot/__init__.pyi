@@ -1,15 +1,24 @@
 """ImPlot: Immediate Mode Plotting for ImGui
 Python bindings for https://github.com/epezent/implot
 """
-
+# ruff: noqa: B008, F821
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum
 from . import internal as internal
 
 
-from imgui_bundle.imgui import ImVec4
 from imgui_bundle import imgui
+from imgui_bundle.imgui import (
+    ImVec2,
+    ImVec4,
+    MouseButton,
+    ImU32,
+    DragDropFlags,
+    ImDrawList,
+    Cond_,
+)
+
 
 
 ImGui_Context = imgui.internal.Context
@@ -109,18 +118,6 @@ IMPLOT_AUTO_COL = ImVec4(0, 0, 0, -1)
 VoidPtr = Any
 ImTextureID = VoidPtr
 
-
-from imgui_bundle import imgui
-from imgui_bundle.imgui import (
-    ImVec2,
-    ImVec4,
-    MouseButton,
-    ModFlags,
-    ImU32,
-    DragDropFlags,
-    ImDrawList,
-    Cond_,
-)
 
 Cond_None = Cond_.none
 Cond_Always = Cond_.always
