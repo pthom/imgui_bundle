@@ -557,7 +557,7 @@ void py_init_module_imguizmo(py::module& m)
     ////////////////////    <generated_from:Editable.h>    ////////////////////
     auto pyClassEditable_SelectedPoints =
         py::class_<Editable<SelectedPoints>>
-            (m, "EditableSelectedPoints", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+            (m, "Editable_SelectedPoints", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
         .def(py::init<const SelectedPoints &, bool>(),
             py::arg("value"), py::arg("edited") = false)
         .def("__bool__",
@@ -567,7 +567,7 @@ void py_init_module_imguizmo(py::module& m)
         ;
     auto pyClassEditable_int =
         py::class_<Editable<int>>
-            (m, "EditableInt", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+            (m, "Editable_int", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
         .def(py::init<const int &, bool>(),
             py::arg("value"), py::arg("edited") = false)
         .def("__bool__",
@@ -577,7 +577,7 @@ void py_init_module_imguizmo(py::module& m)
         ;
     auto pyClassEditable_Matrix16 =
         py::class_<Editable<Matrix16>>
-            (m, "EditableMatrix16", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+            (m, "Editable_Matrix16", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
         .def(py::init<const Matrix16 &, bool>(),
             py::arg("value"), py::arg("edited") = false)
         .def("__bool__",
@@ -587,7 +587,7 @@ void py_init_module_imguizmo(py::module& m)
         ;
     auto pyClassEditable_Range =
         py::class_<Editable<Range>>
-            (m, "EditableRange", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
+            (m, "Editable_Range", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
         .def(py::init<const Range &, bool>(),
             py::arg("value"), py::arg("edited") = false)
         .def("__bool__",

@@ -33,7 +33,7 @@ SelectedPoints = List[im_curve_edit.EditPoint]
 
 #  ------------------------------------------------------------------------
 #      <template specializations for class Editable>
-class EditableSelectedPoints:
+class Editable_SelectedPoints:  # Python specialization for Editable<SelectedPoints>
     """ Editable: a simple structure to extend ImGui's policy of "returning True when changed",
      by adding with a modified return value to the functions output
     """
@@ -51,7 +51,7 @@ class EditableSelectedPoints:
     edited: bool = False
 
 
-class EditableInt:
+class Editable_int:  # Python specialization for Editable<int>
     """ Editable: a simple structure to extend ImGui's policy of "returning True when changed",
      by adding with a modified return value to the functions output
     """
@@ -69,7 +69,7 @@ class EditableInt:
     edited: bool = False
 
 
-class EditableMatrix16:
+class Editable_Matrix16:  # Python specialization for Editable<Matrix16>
     """ Editable: a simple structure to extend ImGui's policy of "returning True when changed",
      by adding with a modified return value to the functions output
     """
@@ -87,7 +87,7 @@ class EditableMatrix16:
     edited: bool = False
 
 
-class EditableRange:
+class Editable_Range:  # Python specialization for Editable<Range>
     """ Editable: a simple structure to extend ImGui's policy of "returning True when changed",
      by adding with a modified return value to the functions output
     """

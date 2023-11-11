@@ -60,7 +60,7 @@ def main():
     # Process Editable
     options_pure = copy.deepcopy(options)
     options_pure.class_template_options.add_specialization(
-        "Editable", ["SelectedPoints", "int", "Matrix16", "Range"]
+        "Editable", ["SelectedPoints", "int", "Matrix16", "Range"], cpp_synonyms_list_str=[]
     )
     header_file = f"{HEADER_PARENT_DIR}/ImGuizmoPure/Editable.h"
     process_one_file_backup_options(None, header_file, options_pure)
