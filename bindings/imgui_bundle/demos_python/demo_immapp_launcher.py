@@ -5,7 +5,6 @@ from imgui_bundle import imgui_md
 from imgui_bundle import immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, DemoApp
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 DOC = """
@@ -13,7 +12,7 @@ DOC = """
 
 * [HelloImGui](https://github.com/pthom/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
   Link to the [API documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md). Docking layout [documentation](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#docking)
-* [ImApp](https://github.com/pthom/imgui_bundle/blob/dev/bindings/imgui_bundle/immapp/immapp_cpp.pyi) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup. 
+* [ImApp](https://github.com/pthom/imgui_bundle/blob/dev/bindings/imgui_bundle/immapp/immapp_cpp.pyi) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
 
 ## Demo applications (*scroll with the mouse wheel below for more demos*)
     """

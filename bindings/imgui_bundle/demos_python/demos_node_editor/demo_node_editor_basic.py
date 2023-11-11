@@ -5,7 +5,6 @@ from typing import List
 from dataclasses import dataclass
 from imgui_bundle import (
     imgui,
-    imgui_md,
     imgui_node_editor as ed,
 )
 from imgui_bundle.immapp import static, run_anon_block

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 import subprocess
 import sys
 import os
 
-from imgui_bundle import imgui, imgui_color_text_edit as text_edit, imgui_md, ImVec2, immapp, hello_imgui
+from imgui_bundle import imgui, imgui_md, immapp, hello_imgui
 
 
 def _read_code(filepath: str) -> str:

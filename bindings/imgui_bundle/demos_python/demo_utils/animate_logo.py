@@ -42,7 +42,7 @@ def animate_logo(logo_file: str, ratio_width_height: float, em_top_right_margin:
     @immapp.run_anon_block
     def fill_positions():
         nonlocal rect0, rect1, alpha0, alpha1
-        one = ImVec2(1.0, 1.0)
+        ImVec2(1.0, 1.0)
         viewport_size = imgui.get_main_viewport().size
         viewport_position = imgui.get_main_viewport().pos
         viewport_min_size = min(viewport_size.x, viewport_size.y)

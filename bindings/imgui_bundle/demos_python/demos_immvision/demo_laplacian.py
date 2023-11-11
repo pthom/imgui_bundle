@@ -3,7 +3,6 @@
 from imgui_bundle import imgui, immapp, immvision
 from imgui_bundle.demos_python import demo_utils
 import cv2  # type: ignore
-import random as rng
 import numpy as np
 from numpy.typing import NDArray
 

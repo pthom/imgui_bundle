@@ -1,6 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui_md, immapp
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 def example_markdown_string() -> str:
@@ -32,7 +31,7 @@ imgui_md currently supports the following markdown functionality:
 * Tables
 * Block code (using \`\`\`)
 ```
-int answer() 
+int answer()
 {
     return 42;
 }

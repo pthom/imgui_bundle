@@ -51,7 +51,7 @@ def demo_assets(app_state: AppState):
     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
     hello_imgui.image_from_asset("images/world.jpg", image_size)
 
-    imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+    imgui_md.render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**")
     show_doc("AssetsDoc")
 
 

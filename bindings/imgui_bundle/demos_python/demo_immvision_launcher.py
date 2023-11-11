@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, immvision, immapp, imgui_md, imgui_color_text_edit as text_edit
+from imgui_bundle import imgui, immvision, immapp, imgui_md
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
@@ -26,9 +26,9 @@ def demo_gui():
         imgui_md.render_unindented(
             """
     ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
-    
+
     Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
-    
+
     * To install OpenCv standard package:
     ```bash
     pip install opencv-python
@@ -38,7 +38,7 @@ def demo_gui():
     ```bash
     pip install opencv-contrib-python
     ```
-    
+
     To install OpenCv package headless (no cv.imshow, etc., for server installations)
     ```bash
     pip install opencv-python-headless
@@ -51,11 +51,11 @@ def demo_gui():
     imgui_md.render_unindented(
         """
         # ImmVision
-        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger. 
-        It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels. 
-    
-        Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision. 
-    
+        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger.
+        It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
+
+        Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision.
+
         Open the demos below by clicking on their title.
     """
     )

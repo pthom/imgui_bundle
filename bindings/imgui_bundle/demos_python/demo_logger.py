@@ -26,7 +26,7 @@ def demo_gui():
     ]
 
     def add_logs():
-        for i in range(10):
+        for _i in range(10):
             log_level = random.choice(
                 [
                     hello_imgui.LogLevel.debug,
@@ -54,7 +54,7 @@ def demo_gui():
     imgui.separator()
 
     if imgui.button("Add logs"):
-        for i in range(10):
+        for _i in range(10):
             add_logs()
 
     imgui.separator()

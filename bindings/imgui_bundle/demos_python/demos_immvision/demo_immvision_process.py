@@ -1,7 +1,7 @@
 import os.path
 
 import numpy as np
-from typing import Any, List
+from typing import Any
 from numpy.typing import NDArray
 from enum import Enum
 import cv2  # type: ignore
@@ -123,8 +123,8 @@ def demo_gui():
 
     imgui_md.render_unindented(
         """
-        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time. 
-        
+        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
+
         Apply Colormaps to the filtered image in the options tab.
         """
     )

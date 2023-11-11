@@ -1,6 +1,6 @@
 # demo_tex_inspect_simple
 # See equivalent C++ program: demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp
-from imgui_bundle import imgui_tex_inspect, hello_imgui
+from imgui_bundle import imgui_tex_inspect, ImVec2
 from imgui_bundle.demos_python.demo_utils.api_demos import *
 
 

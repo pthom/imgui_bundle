@@ -4,7 +4,6 @@ import math
 import numpy as np
 from numpy.typing import NDArray
 from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 class DemoDragRectState:

@@ -20,7 +20,7 @@ the FPS will rise and the animation will be smooth again.
     imspinner.spinner_ang_triple("spinner_arc_fade", radius1, radius1 * 1.5, radius1 * 2.0, 2.5, color, color, color)
 
     imgui.text_wrapped(
-        f"""You can adjust hello_imgui.get_runner_params().fps_idle if you need smoother animations 
+        """You can adjust hello_imgui.get_runner_params().fps_idle if you need smoother animations
     when the app is idle. A value of 0 means that the refresh will be as fast as possible"""
     )
 

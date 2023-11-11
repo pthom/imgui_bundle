@@ -1,7 +1,7 @@
 import random
 
 import numpy as np
-from imgui_bundle import imgui, immapp, implot, imgui_knobs, hello_imgui
+from imgui_bundle import imgui, immapp, implot, imgui_knobs
 
 
 class Curve:

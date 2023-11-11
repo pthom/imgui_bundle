@@ -1,4 +1,3 @@
-import os.path
 import cv2  # type: ignore
 
 from imgui_bundle import immvision, immapp, imgui_md

@@ -121,7 +121,7 @@ def make_closure_demo_guizmo_curve_edit() -> GuiFunction:
 
         ramp_edit_size = ImVec2(800.0, 400.0)
         ramp_edit_id = 1
-        r = im_curve_edit.edit_pure(ramp_edit, ramp_edit_size, ramp_edit_id)
+        im_curve_edit.edit_pure(ramp_edit, ramp_edit_size, ramp_edit_id)
 
     return gui
 

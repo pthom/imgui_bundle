@@ -1,8 +1,7 @@
 import os
-from typing import Callable, Dict
-from imgui_bundle import immapp, imgui, ImVec2, imgui_md, hello_imgui
+from typing import Callable
+from imgui_bundle import immapp, imgui, imgui_md, hello_imgui
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
-from imgui_bundle import imgui_color_text_edit as text_edit
 
 
 GuiFunction = Callable[[], None]

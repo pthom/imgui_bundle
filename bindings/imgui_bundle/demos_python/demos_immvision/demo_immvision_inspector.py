@@ -6,7 +6,7 @@ import cv2  # type: ignore
 
 
 def fill_inspector():
-    this_dir = os.path.dirname(__file__)
+    os.path.dirname(__file__)
     image_files = ["dmla.jpg", "house.jpg", "tennis.jpg", "world.jpg"]
     for image_file in image_files:
         img = cv2.imread(f"{demo_utils.demos_assets_folder()}/images/{image_file}")

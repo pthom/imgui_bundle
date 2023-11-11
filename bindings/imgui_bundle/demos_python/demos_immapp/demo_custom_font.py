@@ -35,7 +35,7 @@ def my_load_fonts_manually() -> imgui.ImFont:
 
     # Load a font and merge icons into it
     # i. load the font...
-    this_dir = os.path.dirname(__file__)
+    os.path.dirname(__file__)
     font_atlas = imgui.get_io().fonts
     # We need to take into account the global font scale! This is required for macOS retina screens
     font_size_pixel = 40.0 * hello_imgui.dpi_font_loading_factor()

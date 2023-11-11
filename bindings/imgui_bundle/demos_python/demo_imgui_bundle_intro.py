@@ -2,7 +2,6 @@
 import webbrowser
 
 from imgui_bundle import imgui, imgui_md, hello_imgui
-from imgui_bundle.demos_python.demo_utils.api_demos import show_markdown_file
 from imgui_bundle import immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 

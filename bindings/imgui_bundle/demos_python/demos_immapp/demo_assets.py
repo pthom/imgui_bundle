@@ -1,5 +1,4 @@
-import os
-from imgui_bundle import imgui, ImVec2, imgui_md, hello_imgui, immapp
+from imgui_bundle import imgui, imgui_md, hello_imgui, immapp
 from imgui_bundle.demos_python import demo_utils
 
 

@@ -5,7 +5,6 @@
 
 
 import os.path
-import sys
 import platform
 import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui
@@ -244,8 +243,8 @@ def main() -> None:
     imgui.destroy_context()
 
     sdl2.SDL_GL_DeleteContext(gl_context)
-    sdl2.SDL_DestroyWindow(window);
-    sdl2.SDL_Quit();
+    sdl2.SDL_DestroyWindow(window)
+    sdl2.SDL_Quit()
 
 
 if __name__ == "__main__":

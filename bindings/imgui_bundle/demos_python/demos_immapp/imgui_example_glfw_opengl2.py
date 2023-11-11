@@ -6,7 +6,6 @@
 
 import os.path
 import sys
-import platform
 import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui
 

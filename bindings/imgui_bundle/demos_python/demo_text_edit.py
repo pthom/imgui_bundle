@@ -1,6 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 from imgui_bundle.immapp import static
 
 TextEditor = ed.TextEditor
@@ -22,7 +21,7 @@ def demo_gui():
 
     imgui_md.render(
         """
-# ImGuiColorTextEdit: 
+# ImGuiColorTextEdit:
 [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
     """
     )

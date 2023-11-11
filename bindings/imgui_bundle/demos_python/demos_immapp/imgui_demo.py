@@ -7,6 +7,7 @@
 # noqa: E701
 # noqa: E702
 # noqa: E501
+# ruff: noqa: E701, E702
 
 # Help:
 # - Read FAQ at http://dearimgui.com/faq
@@ -2534,8 +2535,8 @@ def show_demo_window_tables():
         return
 
     # Using these as base values to create width/height that are a factor of the size of our font
-    TEXT_BASE_WIDTH = imgui.calc_text_size("A").x
-    TEXT_BASE_HEIGHT = imgui.get_text_line_height_with_spacing()
+    imgui.calc_text_size("A").x
+    imgui.get_text_line_height_with_spacing()
 
     imgui.push_id("Tables")
 
@@ -3197,8 +3198,7 @@ class ImGuiDemoMarkerHighlight_Impl_DemoMarkersRegistry:
     # Set zone boundings for the given line_number
     def _set_zone_boundings_for_line(self, line_number, zone_boundings):
         if self._has_zone_boundings_for_line(line_number):
-            old_boundings = self._get_zone_boundings_for_line(line_number)
-            old_boundings = zone_boundings
+            self._get_zone_boundings_for_line(line_number)
         else:
             self.all_zones_boundings.append(zone_boundings)
 

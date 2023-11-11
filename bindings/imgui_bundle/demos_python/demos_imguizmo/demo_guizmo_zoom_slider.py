@@ -71,11 +71,11 @@ def make_closure_demo_guizmo_zoom_slider() -> GuiFunction:
             You are looking at a zoomable part:
             use the mouse wheel on the sliders,
             or drag their extremities.
-    
+
             Current zoom values:
             {view_horizontal.min=:.2f} {view_horizontal.max=:.2f}
-            {view_vertical.min=:.2f} {view_vertical.max=:.2f} 
-    
+            {view_vertical.min=:.2f} {view_vertical.max=:.2f}
+
             ...now do whatever you want with those values!"""
             )
 

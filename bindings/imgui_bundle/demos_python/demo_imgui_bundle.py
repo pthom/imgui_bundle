@@ -3,7 +3,7 @@ from typing import List, Callable
 from types import ModuleType
 from dataclasses import dataclass
 
-from imgui_bundle import imgui, hello_imgui, immapp, imgui_color_text_edit as ed, imgui_md
+from imgui_bundle import imgui, hello_imgui, immapp
 from imgui_bundle.immapp import static
 from imgui_bundle.demos_python import demo_text_edit
 from imgui_bundle.demos_python import demo_imgui_bundle_intro

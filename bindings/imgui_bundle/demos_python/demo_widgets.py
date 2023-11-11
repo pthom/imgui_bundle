@@ -1,8 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
-from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, icons_fontawesome, im_cool_bar
+from imgui_bundle import imgui, hello_imgui, imgui_md, imgui_toggle, ImVec2, immapp, ImVec4, im_cool_bar
 from imgui_bundle import imgui_command_palette as imcmd
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
 @immapp.static(knob_float_value=0, knob_int_value=0)
@@ -149,7 +148,7 @@ def demo_portable_file_dialogs():
     imgui_md.render_unindented(
         """
         # Portable File Dialogs
-         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs    
+         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs
     """
     )
 
@@ -203,7 +202,7 @@ def demo_imfile_dialog():
     imgui_md.render_unindented(
         """
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.  
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
          *Not (yet) adapted for High DPI resolution under windows*
         """
     )
@@ -331,7 +330,7 @@ def demo_cool_bar():
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
         """)
 
-    cool_bar_config = im_cool_bar.ImCoolBarConfig();
+    cool_bar_config = im_cool_bar.ImCoolBarConfig()
     cool_bar_config.anchor = ImVec2(0.5, 0.07)  #  position in the window (ratio of window size)
     if im_cool_bar.begin_cool_bar("##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config):
         for label in button_labels:
