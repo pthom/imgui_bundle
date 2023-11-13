@@ -2,22 +2,21 @@ cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.0.0")   # Remember to mirror changes to setup.py!
 
 
-###############################################################################
-# imgui_bundle_add_app
-###############################################################################
-# the easiest way to build an app with imgui_bundle is to use
-#     imgui_bundle_add_app(my_app my_file.cpp)
-set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
-list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
-include(imgui_bundle_add_app)
-set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+# About imgui_bundle_add_app: 
+# -----------------------------------------------------------------------------
+# The easiest way to build an app with imgui_bundle is to use
+#
+#     imgui_bundle_add_app(my_app my_file.cpp my_file2.cpp)
+#
+# imgui_bundle_add_app will automaticaly link your app to imgui_bundle, 
+# and will embed the assets folder (for desktop, mobile, and emscripten apps)
 
 
 ###############################################################################
 # Build Options
 ###############################################################################
 # IMGUI_BUNDLE_BUILD_PYTHON: include python support
-# --------------------------------------------------
+# -----------------------------------------------------------------------------
 # (OFF when building the cpp library; ON by default when using pip install.
 #  note: SKBUILD is set to on by pip install / setup.py)
 if(SKBUILD)
@@ -30,7 +29,7 @@ endif()
 
 
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # (OpenCV is required by the optional module immvision.
 #  If IMMVISION_FETCH_OPENCV is ON, we will fetch a build a minimal version of OpenCV.
 if (IMGUI_BUNDLE_BUILD_PYTHON OR EMSCRIPTEN)
@@ -53,12 +52,12 @@ option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable
 
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
-# ----------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
 
 
 # IMGUI_BUNDLE_WITH_SDL: Add SDL backend
-# --------------------------------------
+# -----------------------------------------------------------------------------
 # (HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option)
 if (NOT EMSCRIPTEN)
     option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
@@ -70,7 +69,7 @@ endif()
 
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
-# -------------------------------------
+# -----------------------------------------------------------------------------
 # (ON by default if this is the main project)
 if(PROJECT_IS_TOP_LEVEL)
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" ON)
@@ -78,13 +77,17 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
+# IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES "clone submodules if needed during configure" ON)
+
 # IMGUI_BUNDLE_BUILD_DOC: Build doc
-# ---------------------------------
+# -----------------------------------------------------------------------------
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
 # SANITIZERS:
-# ---------------------------------
+# -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
 if(IMGUI_BUNDLE_BUILD_WITH_ASAN)
     add_compile_options(-fsanitize=address -fsanitize-address-use-after-scope)
@@ -114,13 +117,40 @@ endif()
 
 
 # Automation test (run app in CI)
-# ---------------------------------
+# -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
+
 
 ###############################################################################
 # Main
 ###############################################################################
 
+# clone submodules if not found
+# -----------------------------------------------------------------------------
+if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
+    if(NOT IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES)
+        message(FATAL_ERROR "Please run
+            git submodule update --init
+           ")
+    else()
+        execute_process(
+            COMMAND git submodule update --init
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+            )
+    endif()
+endif()
+
+# imgui_bundle_add_app
+# -----------------------------------------------------------------------------
+# the easiest way to build an app with imgui_bundle is to use
+#     imgui_bundle_add_app(my_app my_file.cpp)
+set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
+list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
+include(imgui_bundle_add_app)
+set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+
+# Main
+# ----------------------------------------------------------------------
 include(cmake/dump_cmake_variables.cmake)
 include(lg_cmake_utils/lg_cmake_utils.cmake)
 set(CMAKE_CXX_STANDARD 17)
@@ -172,34 +202,29 @@ if (EMSCRIPTEN)
 endif()
 
 
-#------------------
 # Sanitizers
-#------------------
+# -----------------------------------------------------------------------------
 #add_compile_options(-fsanitize=address)
 #add_link_options(-fsanitize=address)
 #add_compile_options(-fsanitize=undefined)
 #add_link_options(-fsanitize=undefined)
 
-
-#########################################################################
 # find pybind11
-#########################################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/find_pybind11.cmake)
     find_pybind11()  # provided by cmake/find_pybind11.cmake
 endif()
 
-#########################################################################
 # Main library (imgui_bundle)
-#########################################################################
+# -----------------------------------------------------------------------------
 file(GLOB imgui_bundle_sources src/imgui_bundle/*.cpp src/imgui_bundle/*.h)
 add_library(imgui_bundle STATIC ${imgui_bundle_sources})
 target_include_directories(imgui_bundle PUBLIC src)
 hello_imgui_msvc_target_group_sources(imgui_bundle)
 
-#########################################################################
 # configure imgui_test_engine (*before* adding hello_imgui)
-#########################################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
     set(HELLOIMGUI_FETCH_IMGUI_TEST_ENGINE OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_TEST_ENGINE_SOURCE_DIR
@@ -207,15 +232,13 @@ if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
         CACHE STRING "" FORCE)
 endif()
 
-#########################################################################
 # Build external libraries: this will add imgui, hello_imgui, immapp, implot, etc
-#########################################################################
+# -----------------------------------------------------------------------------
 add_subdirectory(external)
 
 
-#########################################################################
 # Build python bindings
-#########################################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(cmake/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
@@ -226,9 +249,8 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()
 
-####################################################
 # C++ Apps
-####################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_CPP)
     if(IMGUI_BUNDLE_BUILD_DEMOS)
         add_subdirectory(bindings/imgui_bundle/demos_cpp)
@@ -239,31 +261,27 @@ if (IMGUI_BUNDLE_BUILD_CPP)
     endif()
 endif()
 
-####################################################
 # CI Automation
-####################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS)
     add_subdirectory(.github/ci_automation_tests)
 endif()
 
-####################################################
 # Help msvc tidy up its room
-####################################################
+# -----------------------------------------------------------------------------
 if (MSVC)
     hello_imgui_msvc_sort_targets_by_folder(${CMAKE_CURRENT_LIST_DIR})
 endif()
 
-####################################################
 # Doc
-####################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
     add_subdirectory(devel_docs)
 endif()
 
-####################################################
 # Log Immvision status at the end
-####################################################
+# -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: ON")
 else()
