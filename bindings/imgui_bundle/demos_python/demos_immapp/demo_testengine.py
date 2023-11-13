@@ -38,13 +38,13 @@ def my_register_tests():
     def test_open_popup_func(ctx: imgui.test_engine.TestContext) -> None:
         # This is the function that will be called by our test
         ctx.set_ref("Dear ImGui Demo")              # From now on, all actions happen in the "Dear ImGui Demo" window
-        ctx.item_open("Popups & Modal windows")     # Open the "Popups & Modal windows" tree item
-        ctx.item_open("Modals")                     # Open the "Modal" tree item
+        ctx.item_open("**/Popups & Modal windows")     # Open the "Popups & Modal windows" tree item
+        ctx.item_open("**/Modals")                     # Open the "Modal" tree item
         ctx.item_click("**/Delete..")               # Click the "Delete.." button ("**" means: search inside children)
         ctx.item_click("//Delete?/Cancel")          # Click the "Cancel" button:
                                                     #    here, "//"  means "ignore previous set_ref" and search
                                                     #    for the cancel button in the root popup window named "Delete?"
-        ctx.item_close("Popups & Modal windows")    # Close the "Popups & Modal windows" tree item
+        ctx.item_close("**/Popups & Modal windows")    # Close the "Popups & Modal windows" tree item
     # let the test call our function
     test_open_popup.test_func = test_open_popup_func
 
@@ -52,10 +52,10 @@ def my_register_tests():
     test_capture_screenshot = imgui.test_engine.register_test(engine, "Demo Tests", "Capture Screenshot")
     def test_capture_screenshot_func(ctx: imgui.test_engine.TestContext) -> None:
         ctx.set_ref("Dear ImGui Demo")                   # From now on, actions happen in the "Dear ImGui Demo" window
-        ctx.item_open("Widgets")                         # Open the "Widgets", then "Basic" tree item
-        ctx.item_open_all("Basic")
+        ctx.item_open("**/Widgets")                         # Open the "Widgets", then "Basic" tree item
+        ctx.item_open_all("**/Basic")
         ctx.capture_screenshot_window("Dear ImGui Demo") # Capture window and save screenshot
-        ctx.item_close("Widgets")
+        ctx.item_close("**/Widgets")
     test_capture_screenshot.test_func = test_capture_screenshot_func
 
     # Demo 3: a test with a custom GUI and custom variables

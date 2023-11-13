@@ -40,13 +40,13 @@ void MyRegisterTests()
     auto testOpenPopupFunc = [](ImGuiTestContext* ctx) {
         // This is the function that will be called by our test
         ctx->SetRef("Dear ImGui Demo");              // From now on, all actions happen in the "Dear ImGui Demo" window
-        ctx->ItemOpen("Popups & Modal windows");     // Open the "Popups & Modal windows" tree item
-        ctx->ItemOpen("Modals");                     // Open the "Modal" tree item
+        ctx->ItemOpen("**/Popups & Modal windows");     // Open the "Popups & Modal windows" tree item
+        ctx->ItemOpen("**/Modals");                     // Open the "Modal" tree item
         ctx->ItemClick("**/Delete..");               // Click the "Delete.." button ("**" means: search inside children)
         ctx->ItemClick("//Delete?/Cancel");          // Click the "Cancel" button:
         //    here, "//"  means "ignore previous set_ref" and search
         //    for the cancel button in the root popup window named "Delete?"
-        ctx->ItemClose("Popups & Modal windows");    // Close the "Popups & Modal windows" tree item
+        ctx->ItemClose("**/Popups & Modal windows");    // Close the "Popups & Modal windows" tree item
     };
     // Let the test call our function
     testOpenPopup->TestFunc = testOpenPopupFunc;
@@ -56,10 +56,10 @@ void MyRegisterTests()
     auto testCaptureScreenshotFunc = [](ImGuiTestContext* ctx)
     {
         ctx->SetRef("Dear ImGui Demo");                   // From now on, actions happen in the "Dear ImGui Demo" window
-        ctx->ItemOpen("Widgets");                         // Open the "Widgets", then "Basic" tree item
-        ctx->ItemOpenAll("Basic");
+        ctx->ItemOpen("**/Widgets");                         // Open the "Widgets", then "Basic" tree item
+        ctx->ItemOpenAll("**/Basic");
         ctx->CaptureScreenshotWindow("Dear ImGui Demo"); // Capture window and save screenshot
-        ctx->ItemClose("Widgets");
+        ctx->ItemClose("**/Widgets");
     };
     testCaptureScreenshot->TestFunc = testCaptureScreenshotFunc;
 
