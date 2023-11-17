@@ -45,7 +45,7 @@ static int gizmoCount = 1;
 static float camDistance = 8.f;
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 
-float gObjectMatrix[4][16] = {
+static float gObjectMatrix[4][16] = {
     { 1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
         0.f, 0.f, 1.f, 0.f,

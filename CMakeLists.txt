@@ -2,13 +2,13 @@ cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.0.0")   # Remember to mirror changes to setup.py!
 
 
-# About imgui_bundle_add_app: 
+# About imgui_bundle_add_app:
 # -----------------------------------------------------------------------------
 # The easiest way to build an app with imgui_bundle is to use
 #
 #     imgui_bundle_add_app(my_app my_file.cpp my_file2.cpp)
 #
-# imgui_bundle_add_app will automaticaly link your app to imgui_bundle, 
+# imgui_bundle_add_app will automaticaly link your app to imgui_bundle,
 # and will embed the assets folder (for desktop, mobile, and emscripten apps)
 
 
@@ -124,6 +124,9 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 ###############################################################################
 # Main
 ###############################################################################
+
+# Everything is built as a static library in imgui_bundle
+set(BUILD_SHARED_LIBS OFF)
 
 # clone submodules if not found
 # -----------------------------------------------------------------------------

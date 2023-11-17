@@ -60,7 +60,7 @@ std::vector<T> vec_n_first(std::vector<T> const &v, size_t n)
 }
 
 
-std::vector<Matrix16> gObjectMatrix = {
+static std::vector<Matrix16> gObjectMatrix = {
     Matrix16({
         1.f, 0.f, 0.f, 0.f,
         0.f, 1.f, 0.f, 0.f,
