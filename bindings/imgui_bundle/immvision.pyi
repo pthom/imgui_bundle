@@ -480,7 +480,6 @@ def version_info() -> str:  # immvision.h:324
 # IMMVISION_API is a marker for public API functions. IMMVISION_STRUCT_API is a marker for public API structs (in comment lines)
 # Usage of ImmVision as a shared library is not recommended. No guaranty of ABI stability is provided
 
-""" namespace ImmVision"""
 # IMMVISION_API void Inspector_AddImage(    /* original C++ signature */
 #         const cv::Mat& image,
 #         const std::string& legend,

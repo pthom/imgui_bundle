@@ -31,7 +31,6 @@ def set_current_context(ctx_address: int) -> None:
 # ImGuiTexInspect, a texture inspector widget for dear imgui
 
 
-""" namespace ImGuiTexInspect"""
 #-------------------------------------------------------------------------
 # [SECTION] INIT & SHUTDOWN
 #-------------------------------------------------------------------------
@@ -331,7 +330,6 @@ class Transform2D:
 # ImGuiTexInspect, a texture inspector widget for dear imgui
 
 
-"""namespace ImGuiTexInspect"""
 class Texture:
     texture: ImTextureID
     size: ImVec2

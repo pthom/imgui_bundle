@@ -46,7 +46,6 @@ class ImCoolBarFlags_(enum.Enum):
     vertical = enum.auto()   # (= (1 << 0))
     horizontal = enum.auto() # (= (1 << 1))
 
-""" namespace ImGui"""
 
 class ImCoolBarConfig:
     anchor: ImVec2 = ImVec2(-1.0, -1.0)
@@ -68,7 +67,7 @@ def begin_cool_bar(
     v_label: str,
     v_cb_flags: ImCoolBarFlags = ImCoolBarFlags_.vertical,
     v_config: ImCoolBarConfig = ImCoolBarConfig(),
-    v_flags: ImGuiWindowFlags = ImGuiWindowFlags_None
+    v_flags: ImGuiWindowFlags = WindowFlags_.none
     ) -> bool:
     pass
 def end_cool_bar() -> None:

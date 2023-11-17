@@ -551,8 +551,6 @@ class AppWindowParams:
 # Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
 #
 
-""" namespace ImGuiTheme"""
-
 class ImGuiTheme_(enum.Enum):
     # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
     imgui_colors_classic = enum.auto()  # (= 0)
@@ -707,8 +705,6 @@ def darcula(
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_window_params.h continued                                            //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-""" namespace HelloImGui"""
 
 class DefaultImGuiWindowType(enum.Enum):
     """*
@@ -892,7 +888,6 @@ def empty_event_callback() -> AnyEventCallback:
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-""" namespace HelloImGui"""
 # ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());    /* original C++ signature */
 def load_font_ttf(
     font_filename: str,
@@ -1126,7 +1121,6 @@ class RunnerCallbacks:
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-""" namespace HelloImGui"""
 # *
 # @@md#DockingIntro
 #
@@ -1287,9 +1281,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
+        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
     ) -> None:
         pass
     # DockSpaceName initialDock;    /* original C++ signature */
@@ -1301,7 +1295,7 @@ class DockingSplit:
     # float ratio = 0.25f;    /* original C++ signature */
     ratio: float = 0.25
     # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
 
 class DockableWindow:
     """*
@@ -1379,12 +1373,12 @@ class DockableWindow:
     # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_size: ImVec2 = ImVec2(0.0, 0.0)
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     window_position: ImVec2 = ImVec2(0.0, 0.0)
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # bool focusWindowAtNextFrame = false;    /* original C++ signature */
     focus_window_at_next_frame: bool = False
@@ -1449,7 +1443,7 @@ class DockingParams:
 
     # ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;    /* original C++ signature */
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        ImGuiDockNodeFlags_PassthruCentralNode
+        DockNodeFlags_.passthru_central_node
     )
 
     # Helpers
@@ -1470,7 +1464,7 @@ class DockingParams:
         layout_name: str = "Default",
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
-        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1478,8 +1472,6 @@ class DockingParams:
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-""" namespace HelloImGui"""
 
 class BackendPointers:
     """*
@@ -1520,8 +1512,6 @@ class BackendPointers:
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-""" namespace HelloImGui"""
 
 class BackendType(enum.Enum):
     # FirstAvailable,    /* original C++ signature */

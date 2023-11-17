@@ -27,8 +27,6 @@ DefaultScreenSize = (800, 600)
 
 
 ####################    <generated_from:runner.h>    ####################
-""" namespace ImmApp"""
-
 class AddOnsParams:
     """///////////////////////////////////////////////////////////////////////////////////////
 
@@ -185,8 +183,6 @@ def default_node_editor_context() -> NodeEditorContext:
 
 
 ####################    <generated_from:clock.h>    ####################
-""" namespace ImmApp"""
-
 def clock_seconds() -> float:
     """Chronometer in seconds"""
     pass

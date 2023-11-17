@@ -1760,7 +1760,6 @@ class Context:
 # No guarantee of forward compatibility here!
 #-----------------------------------------------------------------------------
 
-""" namespace ImPlot"""
 
 #-----------------------------------------------------------------------------
 # [SECTION] Context Utils

@@ -86,9 +86,6 @@ def resume_editor_canvas() -> None:
 
 # ------------------------------------------------------------------------------
 
-"""------------------------------------------------------------------------------"""
-""" namespace Editor"""
-
 # ------------------------------------------------------------------------------
 
 class PinKind(enum.Enum):  # imgui_node_editor.h:47
@@ -141,7 +138,6 @@ class SaveReasonFlags(enum.Enum):  # imgui_node_editor.h:68
     user = enum.auto()  # (= 0x00000040)
 
 class Config:  # imgui_node_editor.h:91
-
     # std::string             SettingsFile;    /* original C++ signature */
     settings_file: str  # imgui_node_editor.h:95
     # void*                   UserPointer;    /* original C++ signature */
@@ -897,7 +893,9 @@ def get_background_click_button_index() -> ImGuiMouseButton:  # imgui_node_edito
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundDoubleClickButtonIndex();     /* original C++ signature */
-def get_background_double_click_button_index() -> ImGuiMouseButton:  # imgui_node_editor.h:414
+def get_background_double_click_button_index() -> (
+    ImGuiMouseButton
+):  # imgui_node_editor.h:414
     """-1 if none"""
     pass
 
@@ -947,7 +945,9 @@ def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.
 
 ####################    <generated_from:node_editor_default_context.h>    ####################
 # IMGUI_NODE_EDITOR_API NodeEditorContext* DefaultNodeEditorContext_Immapp();    /* original C++ signature */
-def default_node_editor_context_immapp() -> NodeEditorContext:  # node_editor_default_context.h:9
+def default_node_editor_context_immapp() -> (
+    NodeEditorContext
+):  # node_editor_default_context.h:9
     pass
 
 # IMGUI_NODE_EDITOR_API void SuspendNodeEditorCanvas_Immapp();    /* original C++ signature */

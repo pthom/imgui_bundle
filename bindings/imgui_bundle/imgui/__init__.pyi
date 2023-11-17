@@ -481,7 +481,6 @@ class ImVec4:
 # (Note that ImGui:: being a namespace, you can add extra ImGui:: functions in your own separate file. Please don't modify imgui source files!)
 # -----------------------------------------------------------------------------
 
-""" namespace ImGui"""
 # Context creation and access
 # - Each context create its own ImFontAtlas by default. You may instance one yourself and pass it to CreateContext() to share a font atlas between contexts.
 # - DLL users: heaps and globals are not shared across DLL boundaries! You will need to call SetCurrentContext() + SetAllocatorFunctions()

@@ -28,8 +28,6 @@ class ImGuiKnobVariant_(enum.Enum):
     stepped = enum.auto()  # (= 1 << 5)
     space = enum.auto()  # (= 1 << 6)
 
-""" namespace ImGuiKnobs"""
-
 class color_set:
     base: ImColor
     hovered: ImColor
