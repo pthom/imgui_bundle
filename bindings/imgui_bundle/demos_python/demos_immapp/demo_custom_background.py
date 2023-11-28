@@ -204,12 +204,17 @@ def create_full_screen_quad_vao() -> int:
 #
 # ******************************************************************************/
 
-VERTEX_SHADER_SOURCE = """
-#version 330 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexCoord;
+# See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
+# This is an old shader, so it uses GLSL 100
 
-out vec2 TexCoord;
+
+VERTEX_SHADER_SOURCE = """#version 100
+precision mediump float;
+attribute vec3 aPos;
+attribute vec2 aTexCoord;
+
+varying vec2 TexCoord;
+
 
 void main()
 {
@@ -219,8 +224,8 @@ void main()
 """
 
 # See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-FRAGMENT_SHADER_SOURCE = """
-#version 330 core
+FRAGMENT_SHADER_SOURCE = """#version 100
+precision mediump float;
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -228,8 +233,9 @@ FRAGMENT_SHADER_SOURCE = """
  */
 
 
-in vec2 TexCoord;
-out vec4 FragColor;
+varying vec2 TexCoord;
+vec4 FragColor;
+
 
 uniform vec2 iResolution;  // Window resolution
 uniform float iTime;      // Shader elapsed time
@@ -242,8 +248,9 @@ const float EPSILON	= 1e-3;
 #define EPSILON_NRM (0.1 / iResolution.x)
 
 // sea
-//const int ITER_GEOMETRY = 3;
-//const int ITER_FRAGMENT = 5;
+const int ITER_GEOMETRY = 3;
+const int ITER_FRAGMENT = 5;
+
 //const float SEA_HEIGHT = 0.6;
 //const float SEA_CHOPPY = 4.0;
 //const float SEA_SPEED = 0.8;
@@ -251,8 +258,6 @@ const float EPSILON	= 1e-3;
 //const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6)*0.6;
 //const vec3 SEA_BASE = vec3(0.0,0.09,0.18);
 
-uniform int ITER_GEOMETRY;
-uniform int ITER_FRAGMENT;
 uniform float SEA_HEIGHT;
 uniform float SEA_CHOPPY;
 uniform float SEA_SPEED;
@@ -450,6 +455,8 @@ void main()
 
     // Post-processing (adjust as needed)
     FragColor = vec4(pow(color, vec3(0.65)), 1.0);
+
+    gl_FragColor = FragColor;
 }
 
 """
@@ -475,8 +482,6 @@ class AppState:
         # self.shader_program and self.full_screen_quad_vao will be initialized later by init_app_resources_3d()
 
         # Initialize uniforms with their initial values
-        self.uniforms.add_uniform("ITER_GEOMETRY", 3)
-        self.uniforms.add_uniform("ITER_FRAGMENT", 5)
         self.uniforms.add_uniform("SEA_HEIGHT", 0.6)
         self.uniforms.add_uniform("SEA_CHOPPY", 4.0)
         self.uniforms.add_uniform("SEA_SPEED", 0.8)
@@ -543,12 +548,13 @@ def custom_background(app_state: AppState):
 def gui(app_state: AppState):
     """GUI for modifying shader parameters."""
     imgui.set_next_window_pos(hello_imgui.em_to_vec2(0.0, 0.0), imgui.Cond_.appearing)
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 17.0), imgui.Cond_.appearing)
+    imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 14.0), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
     imgui_md.render_unindented("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     """)
+    imgui.separator()
 
     # Modify the uniforms values
     uniforms = app_state.uniforms
@@ -574,14 +580,6 @@ def gui(app_state: AppState):
     value = uniforms.get_uniform_value("SEA_FREQ")
     _, value = imgui.slider_float("SEA_FREQ", value, 0.01, 0.5)
     uniforms.set_uniform_value("SEA_FREQ", value)
-
-    value = uniforms.get_uniform_value("ITER_GEOMETRY")
-    _, value = imgui.slider_int("ITER_GEOMETRY", value, 1, 5)
-    uniforms.set_uniform_value("ITER_GEOMETRY", value)
-
-    value = uniforms.get_uniform_value("ITER_FRAGMENT")
-    _, value = imgui.slider_int("ITER_FRAGMENT", value, 3, 10)
-    uniforms.set_uniform_value("ITER_FRAGMENT", value)
 
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
 

@@ -247,12 +247,16 @@ GLuint CreateFullScreenQuadVAO()
  *
 ******************************************************************************/
 
-const char* GVertexShaderSource = R"(
-#version 330 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexCoord;
+// See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
+// This is an old shader, so it uses GLSL 100
 
-out vec2 TexCoord;
+
+const char* GVertexShaderSource = R"(#version 100
+precision mediump float;
+attribute vec3 aPos;
+attribute vec2 aTexCoord;
+
+varying vec2 TexCoord;
 
 void main()
 {
@@ -263,8 +267,8 @@ void main()
 
 
 // See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-const char* GFragmentShaderSource = R"(
-#version 330 core
+const char* GFragmentShaderSource = R"(#version 100
+precision mediump float;
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -272,8 +276,8 @@ const char* GFragmentShaderSource = R"(
  */
 
 
-in vec2 TexCoord;
-out vec4 FragColor;
+varying vec2 TexCoord;
+vec4 FragColor;
 
 uniform vec2 iResolution;  // Window resolution
 uniform float iTime;      // Shader elapsed time
@@ -286,8 +290,9 @@ const float EPSILON	= 1e-3;
 #define EPSILON_NRM (0.1 / iResolution.x)
 
 // sea
-//const int ITER_GEOMETRY = 3;
-//const int ITER_FRAGMENT = 5;
+const int ITER_GEOMETRY = 3;
+const int ITER_FRAGMENT = 5;
+
 //const float SEA_HEIGHT = 0.6;
 //const float SEA_CHOPPY = 4.0;
 //const float SEA_SPEED = 0.8;
@@ -295,8 +300,6 @@ const float EPSILON	= 1e-3;
 //const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6)*0.6;
 //const vec3 SEA_BASE = vec3(0.0,0.09,0.18);
 
-uniform int ITER_GEOMETRY;
-uniform int ITER_FRAGMENT;
 uniform float SEA_HEIGHT;
 uniform float SEA_CHOPPY;
 uniform float SEA_SPEED;
@@ -494,6 +497,8 @@ void main()
 
     // Post-processing (adjust as needed)
     FragColor = vec4(pow(color, vec3(0.65)), 1.0);
+
+    gl_FragColor = FragColor;
 }
 )";
 
@@ -513,8 +518,6 @@ struct AppState
 
     AppState()
     {
-        Uniforms.AddUniform("ITER_GEOMETRY", 3);
-        Uniforms.AddUniform("ITER_FRAGMENT", 5);
         Uniforms.AddUniform("SEA_HEIGHT", 0.6f);
         Uniforms.AddUniform("SEA_CHOPPY", 4.0f);
         Uniforms.AddUniform("SEA_SPEED", 0.8f);
@@ -594,12 +597,13 @@ void CustomBackground(AppState& appState)
 void Gui(AppState& appState)
 {
     ImGui::SetNextWindowPos(HelloImGui::EmToVec2(0.f, 0.f), ImGuiCond_Appearing);
-    ImGui::SetNextWindowSize(HelloImGui::EmToVec2(31.f, 17.f), ImGuiCond_Appearing);
+    ImGui::SetNextWindowSize(HelloImGui::EmToVec2(31.f, 14.f), ImGuiCond_Appearing);
     ImGui::Begin("Shader parameters");
 
     ImGuiMd::RenderUnindented(R"(
         Shader: \"Seascape\" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     )");
+    ImGui::Separator();
 
     // Modify the uniforms values:
     // Note:
@@ -615,8 +619,6 @@ void Gui(AppState& appState)
 
     ImGui::SliderFloat("SEA_SPEED", &uniforms.UniformValue<float>("SEA_SPEED"), 0.1f, 3.0f);
     ImGui::SliderFloat("SEA_FREQ", &uniforms.UniformValue<float>("SEA_FREQ"), 0.01f, 0.5f);
-    ImGui::SliderInt("ITER_GEOMETRY", &uniforms.UniformValue<int>("ITER_GEOMETRY"), 1, 5);
-    ImGui::SliderInt("ITER_FRAGMENT", &uniforms.UniformValue<int>("ITER_FRAGMENT"), 3, 10);
 
     ImGui::Text("FPS: %.1f", HelloImGui::FrameRate());
 
