@@ -12,7 +12,7 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 |image:{url-demo-images}/demo_testengine.jpg[width=200]
 
 |https://github.com/pthom/hello_imgui.git[Hello ImGui]: cross-platform Gui apps with the simplicity of a "Hello World" app
-|image:{url-demo-images}/demo_docking.jpg[width=200]
+|image:{url-demo-images}/demo_docking.jpg[width=200] image:{url-demo-images}/demo_custom_background.jpg[width=200]
 
 |https://github.com/epezent/implot[ImPlot]: Immediate Mode Plotting
 |image:{url-demo-images}/battery_implot.jpg[width=200]

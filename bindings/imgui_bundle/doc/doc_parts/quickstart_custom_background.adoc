@@ -1,0 +1,20 @@
+include::_utils.adoc[]
+
+=== Custom 3D Background
+
+.Custom 3D Background
+image::{url-demo-images}/demo_custom_background.jpg[width=400]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_custom_background.html[Run this demo in your browser]
+
+TIP: As shown in the screenshot, Hello ImGui is able to display a custom 3D scene in the background. This is done by using a dedicated callback.
+
+This demonstration showcases how to:
+
+- Display a 3D scene in the background via the callback `runnerParams.callbacks.CustomBackground`
+- Load and compile a shader
+- Adjust uniforms in the GUI
+
+Its source code is heavily documented and should be self-explanatory.
+
+* link:{url-demos-cpp}/demos_immapp/demo_custom_background.cpp[Source code in {cpp}]
+* link:{url-demos-python}/demos_immapp/demo_custom_background.py[Source code in Python]

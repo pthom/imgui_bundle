@@ -533,6 +533,8 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="quickstart.html#_complex_layouts_with_docking_windows">Complex layouts with docking windows</a>
 </li>
+<li><a href="quickstart.html#_custom_3d_background">Custom 3D Background</a>
+</li>
 <li><a href="quickstart.html#quickstart_testengine">Test &amp; Automation with ImGui Test Engine</a>
 </li>
 <li><a href="quickstart.html#_display_analyze_images_with_immvision">Display &amp; analyze images with ImmVision</a>
@@ -572,7 +574,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <h3 id="_hello_world">Hello, World</h3>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_hello.jpg" alt="demo hello">
+<img src="doc_images//demo_hello.jpg" alt="demo hello">
 </div>
 <div class="title">Figure 2. Hello World</div>
 </div>
@@ -771,7 +773,7 @@ The typical layout of an assets folder looks like this:</p>
 <h3 id="_demo_using_assets_add_ons">Demo using assets &amp; add-ons</h3>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_assets_addons.jpg" alt="demo assets addons" width="400">
+<img src="doc_images//demo_assets_addons.jpg" alt="demo assets addons" width="400">
 </div>
 <div class="title">Figure 3. Demo assets and add-ons usage</div>
 </div>
@@ -1346,7 +1348,7 @@ The typical layout of an assets folder looks like this:</p>
 <h3 id="_complex_layouts_with_docking_windows">Complex layouts with docking windows</h3>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg" alt="demo docking" width="400">
+<img src="doc_images//demo_docking.jpg" alt="demo docking" width="400">
 </div>
 <div class="title">Figure 4. Complex docking layout</div>
 </div>
@@ -2540,12 +2542,65 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 </details>
 </div>
 <div class="sect2">
+<h3 id="_custom_3d_background">Custom 3D Background</h3>
+<div class="imageblock">
+<div class="content">
+<img src="doc_images//demo_custom_background.jpg" alt="demo custom background" width="400">
+</div>
+<div class="title">Figure 5. Custom 3D Background</div>
+</div>
+<div class="paragraph">
+<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_custom_background.html">Run this demo in your browser</a></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+As shown in the screenshot, Hello ImGui is able to display a custom 3D scene in the background. This is done by using a dedicated callback.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This demonstration showcases how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Display a 3D scene in the background via the callback <code>runnerParams.callbacks.CustomBackground</code></p>
+</li>
+<li>
+<p>Load and compile a shader</p>
+</li>
+<li>
+<p>Adjust uniforms in the GUI</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Its source code is heavily documented and should be self-explanatory.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp">Source code in C&#43;&#43;</a></p>
+</li>
+<li>
+<p><a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py">Source code in Python</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
 <h3 id="quickstart_testengine">Test &amp; Automation with ImGui Test Engine</h3>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_testengine.jpg" alt="demo testengine" width="300">
+<img src="doc_images//demo_testengine.jpg" alt="demo testengine" width="300">
 </div>
-<div class="title">Figure 5. ImmGui Test Engine in action</div>
+<div class="title">Figure 6. ImmGui Test Engine in action</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html">Run this demo in your browser</a></p>
@@ -3038,15 +3093,15 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <h3 id="_display_analyze_images_with_immvision">Display &amp; analyze images with ImmVision</h3>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg" alt="demo immvision process 1" width="400">
+<img src="doc_images//demo_immvision_process_1.jpg" alt="demo immvision process 1" width="400">
 </div>
-<div class="title">Figure 6. Immvision in action</div>
+<div class="title">Figure 7. Immvision in action</div>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg" alt="demo immvision process 2" width="400">
+<img src="doc_images//demo_immvision_process_2.jpg" alt="demo immvision process 2" width="400">
 </div>
-<div class="title">Figure 7. Zooming on the images (with the mouse wheel) to display pixel values</div>
+<div class="title">Figure 8. Zooming on the images (with the mouse wheel) to display pixel values</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html">Run this demo in your browser</a></p>
@@ -3425,9 +3480,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg" alt="demo widgets imgui" width="400">
+<img src="doc_images//demo_widgets_imgui.jpg" alt="demo widgets imgui" width="400">
 </div>
-<div class="title">Figure 8. Dear ImGui widgets</div>
+<div class="title">Figure 9. Dear ImGui widgets</div>
 </div>
 <div class="paragraph">
 <p><a href="https://github.com/ocornut/imgui">Dear ImGui</a> provides <em>lots</em> of widgets by default.</p>
@@ -3441,33 +3496,33 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg" alt="demo widgets knobs" width="400">
+<img src="doc_images//demo_widgets_knobs.jpg" alt="demo widgets knobs" width="400">
 </div>
-<div class="title">Figure 9. Knobs widget</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg" alt="demo widgets toggle" width="400">
-</div>
-<div class="title">Figure 10. Toggle widget</div>
+<div class="title">Figure 10. Knobs widget</div>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg" alt="demo widgets spinners" width="400">
+<img src="doc_images//demo_widgets_toggle.jpg" alt="demo widgets toggle" width="400">
 </div>
-<div class="title">Figure 11. Spinners widget</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_file_dialog.jpg" alt="demo widgets file dialog" width="400">
-</div>
-<div class="title">Figure 12. File dialog</div>
+<div class="title">Figure 11. Toggle widget</div>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg" alt="demo widgets coolbar" width="400">
+<img src="doc_images//demo_widgets_spinners.jpg" alt="demo widgets spinners" width="400">
 </div>
-<div class="title">Figure 13. Cool bar</div>
+<div class="title">Figure 12. Spinners widget</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="doc_images//demo_widgets_file_dialog.jpg" alt="demo widgets file dialog" width="400">
+</div>
+<div class="title">Figure 13. File dialog</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="doc_images//demo_widgets_coolbar.jpg" alt="demo widgets coolbar" width="400">
+</div>
+<div class="title">Figure 14. Cool bar</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html">Try these widgets in your browser</a></p>
@@ -4321,9 +4376,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_logger.jpg" alt="demo widgets logger" width="400">
+<img src="doc_images//demo_widgets_logger.jpg" alt="demo widgets logger" width="400">
 </div>
-<div class="title">Figure 14. Logger</div>
+<div class="title">Figure 15. Logger</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html">Try the logger in your browser</a></p>
@@ -4487,9 +4542,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg" alt="demo widgets editor" width="400">
+<img src="doc_images//demo_widgets_editor.jpg" alt="demo widgets editor" width="400">
 </div>
-<div class="title">Figure 15. Code editor</div>
+<div class="title">Figure 16. Code editor</div>
 </div>
 <div class="paragraph">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html">Try the code editor in your browser</a></p>
@@ -4633,22 +4688,22 @@ Tip: use the interactive manual as an inspiration
 </table>
 </div>
 <div class="paragraph">
-<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immapp_apps.jpg" alt="demo immapp apps" width="400"></span></a></p>
+<p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="doc_images//demo_immapp_apps.jpg" alt="demo immapp apps" width="400"></span></a></p>
 </div>
 <div class="paragraph">
 <p>The <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">interactive manual</a> provides many demos, <em>with easy access to their code</em>. It includes all the examples that are explained here, and many more.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg" alt="demo node editor" width="400">
+<img src="doc_images//demo_node_editor.jpg" alt="demo node editor" width="400">
 </div>
-<div class="title">Figure 16. ImGui Node editor in action</div>
+<div class="title">Figure 17. ImGui Node editor in action</div>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg" alt="demo gizmo" width="400">
+<img src="doc_images//demo_gizmo.jpg" alt="demo gizmo" width="400">
 </div>
-<div class="title">Figure 17. ImGuizmo in action</div>
+<div class="title">Figure 18. ImGuizmo in action</div>
 </div>
 </div>
 </div>
@@ -4659,7 +4714,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-17 22:05:37 +0100
+Last updated 2023-11-28 18:03:40 +0100
 </div>
 </div>
 </body>

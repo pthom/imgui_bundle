@@ -56,7 +56,7 @@ in C++ *and* in Python:
 href="https://github.com/ocornut/imgui.git">Dear ImGui</a> : Bloat-free
 Graphical User interface for C++ with minimal dependencies</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imgui.jpg"
+src="doc_images//demo_widgets_imgui.jpg"
 alt="demo widgets imgui" /></p></td>
 </tr>
 <tr class="even">
@@ -64,33 +64,30 @@ alt="demo widgets imgui" /></p></td>
 href="https://github.com/ocornut/imgui_test_engine">ImGui Test
 Engine</a>: Dear ImGui Tests &amp; Automation Engine</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_testengine.jpg"
-alt="demo testengine" /></p></td>
+src="doc_images//demo_testengine.jpg" alt="demo testengine" /></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/hello_imgui.git">Hello ImGui</a>:
 cross-platform Gui apps with the simplicity of a "Hello World"
 app</p></td>
-<td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_docking.jpg"
-alt="demo docking" /></p></td>
+<td style="text-align: left;"><p><img src="doc_images//demo_docking.jpg"
+alt="demo docking" /> <img src="doc_images//demo_custom_background.jpg"
+alt="demo custom background" /></p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><a
 href="https://github.com/epezent/implot">ImPlot</a>: Immediate Mode
 Plotting</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//battery_implot.jpg"
-alt="battery implot" /></p></td>
+src="doc_images//battery_implot.jpg" alt="battery implot" /></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/CedricGuillemet/ImGuizmo.git">ImGuizmo</a>:
 Immediate mode 3D gizmo for scene editing and other controls based on
 Dear ImGui</p></td>
-<td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_gizmo.jpg"
+<td style="text-align: left;"><p><img src="doc_images//demo_gizmo.jpg"
 alt="demo gizmo" /></p></td>
 </tr>
 <tr class="even">
@@ -98,7 +95,7 @@ alt="demo gizmo" /></p></td>
 href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a>:
 Colorizing text editor for ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_editor.jpg"
+src="doc_images//demo_widgets_editor.jpg"
 alt="demo widgets editor" /></p></td>
 </tr>
 <tr class="odd">
@@ -106,7 +103,7 @@ alt="demo widgets editor" /></p></td>
 href="https://github.com/thedmd/imgui-node-editor">imgui-node-editor</a>:
 Node Editor built using Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_node_editor.jpg"
+src="doc_images//demo_node_editor.jpg"
 alt="demo node editor" /></p></td>
 </tr>
 <tr class="even">
@@ -114,17 +111,16 @@ alt="demo node editor" /></p></td>
 href="https://github.com/mekhontsev/imgui_md.git">imgui_md</a>: Markdown
 renderer for Dear ImGui using MD4C parser</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_md.jpg"
-alt="demo widgets md" /></p></td>
+src="doc_images//demo_widgets_md.jpg" alt="demo widgets md" /></p></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate
 image debugger and insights</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_1.jpg"
+src="doc_images//demo_immvision_process_1.jpg"
 alt="demo immvision process 1" /> <img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_immvision_process_2.jpg"
+src="doc_images//demo_immvision_process_2.jpg"
 alt="demo immvision process 2" /></p></td>
 </tr>
 <tr class="even">
@@ -132,7 +128,7 @@ alt="demo immvision process 2" /></p></td>
 href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>:
 A texture inspector tool for Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_imgui_tex_inspector.jpg"
+src="doc_images//demo_imgui_tex_inspector.jpg"
 alt="demo imgui tex inspector" /></p></td>
 </tr>
 <tr class="odd">
@@ -140,7 +136,7 @@ alt="demo imgui tex inspector" /></p></td>
 href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A
 file dialog library for Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_imfiledialog.jpg"
+src="doc_images//demo_widgets_imfiledialog.jpg"
 alt="demo widgets imfiledialog" /></p></td>
 </tr>
 <tr class="even">
@@ -148,7 +144,7 @@ alt="demo widgets imfiledialog" /></p></td>
 href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>
 <em>OS native</em> file dialogs library (C++11, single-header)</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_portablefiledialogs.jpg"
+src="doc_images//demo_widgets_portablefiledialogs.jpg"
 alt="demo widgets portablefiledialogs" /></p></td>
 </tr>
 <tr class="odd">
@@ -156,7 +152,7 @@ alt="demo widgets portablefiledialogs" /></p></td>
 href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs
 widgets for ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_knobs.jpg"
+src="doc_images//demo_widgets_knobs.jpg"
 alt="demo widgets knobs" /></p></td>
 </tr>
 <tr class="even">
@@ -164,7 +160,7 @@ alt="demo widgets knobs" /></p></td>
 href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice
 spinners for imgui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_spinners.jpg"
+src="doc_images//demo_widgets_spinners.jpg"
 alt="demo widgets spinners" /></p></td>
 </tr>
 <tr class="odd">
@@ -172,7 +168,7 @@ alt="demo widgets spinners" /></p></td>
 href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle
 switch widget for Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_toggle.jpg"
+src="doc_images//demo_widgets_toggle.jpg"
 alt="demo widgets toggle" /></p></td>
 </tr>
 <tr class="even">
@@ -180,7 +176,7 @@ alt="demo widgets toggle" /></p></td>
 href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>: A Cool bar
 for Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_coolbar.jpg"
+src="doc_images//demo_widgets_coolbar.jpg"
 alt="demo widgets coolbar" /></p></td>
 </tr>
 <tr class="odd">
@@ -188,7 +184,7 @@ alt="demo widgets coolbar" /></p></td>
 href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
 A Sublime Text or VSCode style command palette in ImGui</p></td>
 <td style="text-align: left;"><p><img
-src="https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images//demo_widgets_command_palette.jpg"
+src="doc_images//demo_widgets_command_palette.jpg"
 alt="demo widgets command palette" /></p></td>
 </tr>
 </tbody>
