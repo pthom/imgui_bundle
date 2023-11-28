@@ -18,15 +18,14 @@
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 :_badge-sources: {url-doc-images}/badge_view_sources.png
 :_badge-doc: {url-doc-images}/badge_view_docs.png
@@ -53,15 +52,14 @@ TIP: For a more readable version of this document, click on {btn-doc}
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 image:{url-bundle}/workflows/CppLib/badge.svg[]
 image:{url-bundle}/workflows/Pip/badge.svg[]
@@ -96,15 +94,14 @@ Click on the logo for a complete interactive demonstration!
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === About Dear ImGui Bundle
 
@@ -125,15 +122,14 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 Click on the animated demonstration below to launch the fully interactive demonstration.
 
@@ -155,15 +151,14 @@ TIP: This demonstration is also an interactive manual, similar to the online {ur
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 Dear ImGui Bundle includes the following libraries, which are available in {cpp} _and_ in Python:
 
@@ -361,15 +356,14 @@ int main(int , char *[]) {
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 ==== Install from pypi
 
@@ -415,15 +409,14 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 ==== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
@@ -481,15 +474,14 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 First, install Dear ImGui Bundle following the <<install-instructions>>.
 
@@ -505,15 +497,14 @@ Then study the examples below.
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Hello, World
 .Hello World
@@ -632,15 +623,14 @@ immapp.run(
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 [[quickstart_about_assets]]
 === About assets
@@ -694,15 +684,14 @@ You can either:
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Demo using assets & add-ons
 
@@ -1270,15 +1259,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Complex layouts with docking windows
 
@@ -2450,15 +2438,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Custom 3D Background
 
@@ -2489,15 +2476,14 @@ Its source code is heavily documented and should be self-explanatory.
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 [[quickstart_testengine]]
 === Test & Automation with ImGui Test Engine
@@ -2962,15 +2948,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Display & analyze images with ImmVision
 
@@ -3338,15 +3323,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === Widgets, lots of widgets
 
@@ -4519,15 +4503,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 === And many more!
 
@@ -4558,15 +4541,14 @@ image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
 
@@ -4648,15 +4630,14 @@ image::{url-doc-images}/immediate_gui_example.png[]
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
@@ -4708,15 +4689,14 @@ Links:
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 
 
 ImGui Bundle includes a library named ImmApp (which stands for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup
@@ -4829,15 +4809,14 @@ if __name__ == "__main__":
 :url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
 :url-imgui: https://github.com/ocornut/imgui/
 :url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images
 
-//:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/with_test_engine/bindings/imgui_bundle/doc/doc_images/
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-:url-demo-images: doc_images/
-
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+// :url-demo-images: doc_images/
 :notebook-example-image: {url-doc-images}/immapp_notebook_example.jpg
 
 ImmApp adds support for integration inside jupyter notebook: the application will be run in an external window, and a screenshot will be placed on the notebook after execution.
