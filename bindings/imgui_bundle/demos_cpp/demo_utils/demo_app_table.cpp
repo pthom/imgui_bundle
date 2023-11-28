@@ -45,67 +45,116 @@ void DemoAppTable::_SetDemoApp(const DemoApp &demo_app)
     _snippetPython.Code = _ReadCode(_DemoPythonFilePath(demo_app));
 }
 
+void DisplayDemoAppTableWithScrollButtons(
+    std::string windowName,
+    ImVec2 windowSize,
+    std::function<void(void)> gui)
+{
+    // Scroll buttons
+    static bool shallScrollDown = false, shallScrollUp = false;
+    static float scrollDelta = 0.f;
+    static float scrollCurrent = 0.f;
+    static ImVec2 childSize = ImVec2(0.f, 0.f);
+
+    ImGui::BeginChild(windowName.c_str(), windowSize);
+    scrollCurrent = ImGui::GetScrollY();
+    if (shallScrollUp)
+    {
+        ImGui::SetScrollY(scrollCurrent - scrollDelta);
+        shallScrollUp = false;
+    }
+    if (shallScrollDown)
+    {
+        ImGui::SetScrollY(scrollCurrent + scrollDelta);
+        shallScrollDown = false;
+    }
+
+    gui();
+
+    childSize = ImGui::GetCursorPos();
+
+    ImGui::EndChild();
+
+    // Scroll buttons
+    scrollDelta = ImGui::GetItemRectSize().y - HelloImGui::EmSize(0.5f);
+    ImGui::NewLine();
+    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(4.f));
+    ImGui::BeginDisabled(scrollCurrent == 0.f);
+    if (ImGui::ArrowButton("##up", ImGuiDir_Up))
+        shallScrollUp = true;
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(scrollCurrent + scrollDelta > childSize.y -  ImGui::GetItemRectSize().y);
+    if (ImGui::ArrowButton("##down", ImGuiDir_Down))
+        shallScrollDown = true;
+    ImGui::EndDisabled();
+}
+
 void DemoAppTable::Gui()
 {
-    const int tableFlags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame;
-    const int nbColumns = 3;
-    ImGui::BeginChild("TableChild", HelloImGui::EmToVec2(0.f, 8.5f));
-    if (ImGui::BeginTable("Apps", nbColumns, tableFlags))
+    auto fnTableGui = [this]()
     {
-        ImGui::TableSetupColumn("Demo", 0, 0.15f);
-        ImGui::TableSetupColumn("Info", 0, 0.6f);
-        ImGui::TableSetupColumn("Action", 0, 0.1f);
-        // ImGui::TableHeadersRow();
+        const int tableFlags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame;
+        const int nbColumns = 3;
 
-        for (const auto &demoApp: _demoApps)
+        if (ImGui::BeginTable("Apps", nbColumns, tableFlags))
         {
-            ImGui::PushID(demoApp.DemoFile.c_str());
-            ImGui::TableNextRow();
+            ImGui::TableSetupColumn("Demo", 0, 0.15f);
+            ImGui::TableSetupColumn("Info", 0, 0.6f);
+            ImGui::TableSetupColumn("Action", 0, 0.1f);
+            // ImGui::TableHeadersRow();
 
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", demoApp.DemoFile.c_str());
-            ImGui::TableNextColumn();
-
-            ImGuiMd::RenderUnindented(demoApp.Explanation.c_str());
-
-            if (!demoApp.DemoFile.empty())
+            for (const auto &demoApp: _demoApps)
             {
+                ImGui::PushID(demoApp.DemoFile.c_str());
+                ImGui::TableNextRow();
+
                 ImGui::TableNextColumn();
-                if (ImGui::Button("View code"))
-                {
-                    _SetDemoApp(demoApp);
-                }
+                ImGui::Text("%s", demoApp.DemoFile.c_str());
+                ImGui::TableNextColumn();
 
-                ImGui::SameLine();
+                ImGuiMd::RenderUnindented(demoApp.Explanation.c_str());
 
-                // Run button
+                if (!demoApp.DemoFile.empty())
                 {
+                    ImGui::TableNextColumn();
+                    if (ImGui::Button("View code"))
+                    {
+                        _SetDemoApp(demoApp);
+                    }
+
+                    ImGui::SameLine();
+
+                    // Run button
+                    {
 #ifndef __EMSCRIPTEN__
-                    std::string exeFolder = wai_getExecutableFolder_string();
+                        std::string exeFolder = wai_getExecutableFolder_string();
 #else
-                    std::string exeFolder = "./";
+                        std::string exeFolder = "./";
 #endif
 
-                    std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
+                        std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
 #ifdef _WIN32
-                    exeFile += ".exe";
+                        exeFile += ".exe";
 #endif
 
-                    bool exeFound = std::filesystem::exists(exeFile);
+                        bool exeFound = std::filesystem::exists(exeFile);
 #ifdef __EMSCRIPTEN__
-                    exeFound = true;
+                        exeFound = true;
 #endif
 
-                    if (exeFound && ImGui::Button("Run"))
-                        SpawnDemo(demoApp.DemoFile);
+                        if (exeFound && ImGui::Button("Run"))
+                            SpawnDemo(demoApp.DemoFile);
+                    }
                 }
-            }
 
-            ImGui::PopID();
+                ImGui::PopID();
+            }
+            ImGui::EndTable();
         }
-        ImGui::EndTable();
-    }
-    ImGui::EndChild();
+    };
+
+    DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 8.5f), fnTableGui);
 
     ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
     Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);

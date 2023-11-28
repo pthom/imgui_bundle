@@ -4,7 +4,9 @@ import subprocess
 import sys
 import os
 
-from imgui_bundle import imgui, imgui_md, immapp, hello_imgui
+from imgui_bundle import imgui, imgui_md, immapp, hello_imgui, ImVec2
+from typing import Callable
+
 
 
 def _read_code(filepath: str) -> str:
@@ -59,48 +61,90 @@ class DemoAppTable:
         self.snippet_cpp.code = _read_code(self._demo_cpp_file_path(demo_app))
         self.snippet_python.code = _read_code(self._demo_python_file_path(demo_app))
 
-    def gui(self):
-        table_flags = (
-            imgui.TableFlags_.row_bg
-            | imgui.TableFlags_.borders
-            | imgui.TableFlags_.resizable
-            | imgui.TableFlags_.sizing_stretch_same
-        )
-        nb_columns = 3
-        imgui.begin_child("TableChild", hello_imgui.em_to_vec2(0.0, 8.5))
-        if imgui.begin_table("Apps", nb_columns, table_flags):
-            imgui.table_setup_column("Demo", 0, 0.15)
-            imgui.table_setup_column("Info", 0, 0.6)
-            imgui.table_setup_column("Action", 0, 0.1)
-            # imgui.table_headers_row()
+    @immapp.static(
+        shall_scroll_down=False, shall_scroll_up=False,
+        scroll_delta=0.0, scroll_current=0.0, child_size=(0.0, 0.0))
+    def display_demo_app_table_with_scroll_buttons(self, window_name: str, window_size: ImVec2, gui: Callable):
+        statics = DemoAppTable.display_demo_app_table_with_scroll_buttons
 
-            for demo_app in self.demo_apps:
-                imgui.push_id(demo_app.demo_file)
-                imgui.table_next_row()
+        imgui.begin_child(window_name, window_size)
+        statics.scroll_current = imgui.get_scroll_y()
 
-                imgui.table_next_column()
-                imgui.text(demo_app.demo_file + ".py")
-                imgui.table_next_column()
+        if statics.shall_scroll_up:
+            imgui.set_scroll_y(statics.scroll_current - statics.scroll_delta)
+            statics.shall_scroll_up = False
 
-                imgui_md.render_unindented(demo_app.explanation)
+        if statics.shall_scroll_down:
+            imgui.set_scroll_y(statics.scroll_current + statics.scroll_delta)
+            statics.shall_scroll_down = False
 
-                if len(demo_app.demo_file) > 0:
-                    imgui.table_next_column()
-                    if imgui.button("View code"):
-                        self._set_demo_app(demo_app)
+        gui()
 
-                    imgui.same_line()
+        statics.child_size = imgui.get_cursor_pos()
 
-                    if imgui.button("Run"):
-                        subprocess.Popen(
-                            [sys.executable, self._demo_python_file_path(demo_app)]
-                        )
-
-                imgui.pop_id()
-            imgui.end_table()
         imgui.end_child()
 
+        # Scroll buttons
+        statics.scroll_delta = imgui.get_item_rect_size()[1] - hello_imgui.em_size(0.5)
+        imgui.new_line()
+        imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(4.0))
+
+        imgui.begin_disabled(statics.scroll_current == 0.0)
+        if imgui.arrow_button("##up", imgui.Dir_.up):
+            statics.shall_scroll_up = True
+        imgui.end_disabled()
+
+        imgui.same_line()
+        imgui.begin_disabled(statics.scroll_current + statics.scroll_delta > statics.child_size[1] - imgui.get_item_rect_size()[1])
+        if imgui.arrow_button("##down", imgui.Dir_.down):
+            statics.shall_scroll_down = True
+        imgui.end_disabled()
+
+    def gui(self):
+
+        def fn_table_gui():
+            table_flags = (
+                imgui.TableFlags_.row_bg
+                | imgui.TableFlags_.borders
+                | imgui.TableFlags_.resizable
+                | imgui.TableFlags_.sizing_stretch_same
+            )
+            nb_columns = 3
+            if imgui.begin_table("Apps", nb_columns, table_flags):
+                imgui.table_setup_column("Demo", 0, 0.15)
+                imgui.table_setup_column("Info", 0, 0.6)
+                imgui.table_setup_column("Action", 0, 0.1)
+                # imgui.table_headers_row()
+
+                for demo_app in self.demo_apps:
+                    imgui.push_id(demo_app.demo_file)
+                    imgui.table_next_row()
+
+                    imgui.table_next_column()
+                    imgui.text(demo_app.demo_file + ".py")
+                    imgui.table_next_column()
+
+                    imgui_md.render_unindented(demo_app.explanation)
+
+                    if len(demo_app.demo_file) > 0:
+                        imgui.table_next_column()
+                        if imgui.button("View code"):
+                            self._set_demo_app(demo_app)
+
+                        imgui.same_line()
+
+                        if imgui.button("Run"):
+                            subprocess.Popen(
+                                [sys.executable, self._demo_python_file_path(demo_app)]
+                            )
+
+                    imgui.pop_id()
+                imgui.end_table()
+
+        self.display_demo_app_table_with_scroll_buttons(
+            "DemoAppTable", hello_imgui.em_to_vec2(0.0, 8.5), fn_table_gui)
         imgui_md.render("**Code for " + self.current_app.demo_file + "**")
         immapp.snippets.show_side_by_side_snippets(
             self.snippet_python, self.snippet_cpp, True, True
         )
+
