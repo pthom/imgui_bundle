@@ -26,11 +26,12 @@ std::function<void()> makeGui()
             "demo_docking",
             """How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.""",
         },
+        DemoApp{"demo_custom_background", "How to use a custom 3D background"},
+        DemoApp{"demo_custom_font", "How to load custom fonts"},
         DemoApp{
             "demo_powersave", "How to have smooth animations, and how spare the CPU when idling"
         },
         DemoApp{"demo_testengine", "How to use ImGui Test Engine to test and automate your application"},
-        DemoApp{"demo_custom_font", "How to load custom fonts"},
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
         DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
         DemoApp{"haiku_implot_heart", "Share some love for ImGui and ImPlot"},

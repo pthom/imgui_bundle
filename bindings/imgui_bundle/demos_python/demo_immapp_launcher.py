@@ -33,6 +33,8 @@ def make_gui() -> GuiFunction:
             "demo_docking",
             "How to build complex applications layouts, with dockable panels,that can even become independent windows. How to customize the theme.",
         ),
+        DemoApp("demo_custom_background", "How to use a custom 3D background"),
+        DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp(
             "demo_powersave",
             "How to have smooth animations, and how spare the CPU when idling",
@@ -41,7 +43,6 @@ def make_gui() -> GuiFunction:
             "demo_testengine",
             "How to use ImGui Test Engine to test and automate your application",
         ),
-        DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp(
             "demo_command_palette",
             "a Sublime Text or VSCode style command palette in ImGui",
