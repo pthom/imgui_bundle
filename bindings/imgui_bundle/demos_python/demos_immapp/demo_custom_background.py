@@ -605,9 +605,13 @@ def main():
     runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.no_default_window
 
     # Callbacks
+    # post_init is called after the ImGui context is created, and after OpenGL is initialized
     runner_params.callbacks.post_init = lambda: app_state.init_app_resources_3d(VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE)
+    # before_exit is called before the ImGui context is destroyed, and before OpenGL is deinitialized
     runner_params.callbacks.before_exit = lambda: app_state.destroy_app_resources_3d()
+    # show_gui is called every frame, and is used to display the ImGui widgets
     runner_params.callbacks.show_gui = lambda: gui(app_state)
+    # custom_background is called every frame, and is used to display the custom background
     runner_params.callbacks.custom_background = lambda: custom_background(app_state)
 
     # Let's go!
