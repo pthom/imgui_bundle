@@ -295,7 +295,16 @@ def gui_window_layout_customization():
     imgui.separator()
 
 
+def demo_assets():
+    imgui.push_font(TITLE_FONT)
+    imgui.text("Hello")
+    imgui.pop_font()
+    hello_imgui.image_from_asset("images/world.jpg", hello_imgui.em_to_vec2(3.0, 3.0))
+
+
 def gui_window_demo_features(app_state: AppState):
+    demo_assets()
+    imgui.separator()
     demo_basic_widgets(app_state)
     imgui.separator()
     demo_rocket(app_state)
