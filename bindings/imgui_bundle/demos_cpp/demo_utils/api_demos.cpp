@@ -49,23 +49,27 @@ void ChdirBesideAssetsFolder()
     if (findDemoAssets(currentPath.parent_path()))
         return;
 
-    std::filesystem::path exeFolder(wai_getExecutableFolder_string());
 
-#ifdef HELLOIMGUI_INSIDE_APPLE_BUNDLE
-    auto apps_bundles_path = exeFolder / "../../../";
-    if (findDemoAssets(apps_bundles_path))
-        return;
-#endif
+    #ifdef HELLOIMGUI_INSIDE_APPLE_BUNDLE
+    {
+        std::filesystem::path exeFolder(wai_getExecutableFolder_string());
+        auto apps_bundles_path = exeFolder / "../../../";
+        if (findDemoAssets(apps_bundles_path))
+            return;
+    };
+    #endif
 
-#ifndef __EMSCRIPTEN__
+    #ifndef __EMSCRIPTEN__
     // 3. Try to find demo assets in exe folder
-    if (findDemoAssets(exeFolder))
-        return;
-
-    // 4. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
-    if (findDemoAssets(exeFolder.parent_path()))
-        return;
-#endif
+    {
+        std::filesystem::path exeFolder(wai_getExecutableFolder_string());
+        if (findDemoAssets(exeFolder))
+            return;
+        // 4. Try to find demo assets in exe folder parent (for MSVC Debug/ and Release/ folders)
+        if (findDemoAssets(exeFolder.parent_path()))
+            return;
+    }
+    #endif
 
     std::cerr << "Could not find " << DemosAssetsFolder() << " folder!\n";
 }
@@ -151,6 +155,7 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nbLines)
     ShowPythonVsCppCode(python_code.c_str(), cpp_code.c_str(), nbLines);
 }
 
+#ifndef __EMSCRIPTEN__
 std::string DemoExeFile(const std::string& demoName)
 {
 #ifndef HELLOIMGUI_INSIDE_APPLE_BUNDLE
@@ -167,6 +172,7 @@ std::string DemoExeFile(const std::string& demoName)
     return exeFile;
 #endif
 }
+#endif
 
 bool HasDemoExeFile(const std::string& demoName)
 {
