@@ -438,22 +438,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <style>
 pre.pygments .hll { background-color: #ffffcc }
 pre.pygments { background: #f8f8f8; }
-pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-c { color: #3D7B7B; font-style: italic } /* Comment */
 pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
 pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
 pre.pygments .tok-o { color: #666666 } /* Operator */
-pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
-pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
-pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
-pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #9C6500 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
 pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
 pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
-pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gr { color: #E40000 } /* Generic.Error */
 pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
-pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
-pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gi { color: #008400 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #717171 } /* Generic.Output */
 pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
 pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
@@ -466,15 +466,15 @@ pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved *
 pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
 pre.pygments .tok-m { color: #666666 } /* Literal.Number */
 pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
-pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-na { color: #687822 } /* Name.Attribute */
 pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
 pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
 pre.pygments .tok-no { color: #880000 } /* Name.Constant */
 pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
-pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
-pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
 pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
-pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nl { color: #767600 } /* Name.Label */
 pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
 pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
 pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
@@ -491,11 +491,11 @@ pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
 pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
 pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
-pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
 pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
-pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
 pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
-pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-sr { color: #A45A77 } /* Literal.String.Regex */
 pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
 pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
 pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
@@ -622,20 +622,20 @@ The processing of adding a new library from scratch is documented in <a href="bi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>external/ImCoolBar/                        <span class="tok-c1"># Root folder for ImCoolBar</span>
-├── ImCoolBar/                             <span class="tok-c1"># ImCoolBar submodule</span>
-│         ├── CMakeLists.txt               <span class="tok-c1"># ImCoolBar code</span>
-│         ├── ImCoolbar.cpp
-│         ├── ImCoolbar.h
-│         ├── LICENSE
-│         └── README.md
-└── bindings/                               <span class="tok-c1"># Scripts for the bindings generations &amp; bindings</span>
-    ├── generate_imcoolbar.py               <span class="tok-c1"># This script reads ImCoolbar.h and generates:</span>
-    <span class="tok-p">|</span>                                       <span class="tok-c1">#     - binding C++ code in ./pybind_imcoolbar.cpp</span>
-    <span class="tok-p">|</span>                                       <span class="tok-c1">#     - stubs in</span>
-    <span class="tok-p">|</span>                                       <span class="tok-c1">#          bindings/imgui_bundle/im_cool_bar_pyi</span>
-    ├── im_cool_bar.pyi -&gt; ../../../bindings/imgui_bundle/im_cool_bar.pyi   <span class="tok-c1"># this is a symlink!</span>
-    └── pybind_imcoolbar.cpp</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>external/ImCoolBar/<span class="tok-w">                        </span><span class="tok-c1"># Root folder for ImCoolBar</span>
+├──<span class="tok-w"> </span>ImCoolBar/<span class="tok-w">                             </span><span class="tok-c1"># ImCoolBar submodule</span>
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">               </span><span class="tok-c1"># ImCoolBar code</span>
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>ImCoolbar.cpp
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>ImCoolbar.h
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>LICENSE
+│<span class="tok-w">         </span>└──<span class="tok-w"> </span>README.md
+└──<span class="tok-w"> </span>bindings/<span class="tok-w">                               </span><span class="tok-c1"># Scripts for the bindings generations &amp; bindings</span>
+<span class="tok-w">    </span>├──<span class="tok-w"> </span>generate_imcoolbar.py<span class="tok-w">               </span><span class="tok-c1"># This script reads ImCoolbar.h and generates:</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1">#     - binding C++ code in ./pybind_imcoolbar.cpp</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1">#     - stubs in</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1">#          bindings/imgui_bundle/im_cool_bar_pyi</span>
+<span class="tok-w">    </span>├──<span class="tok-w"> </span>im_cool_bar.pyi<span class="tok-w"> </span>-&gt;<span class="tok-w"> </span>../../../bindings/imgui_bundle/im_cool_bar.pyi<span class="tok-w">   </span><span class="tok-c1"># this is a symlink!</span>
+<span class="tok-w">    </span>└──<span class="tok-w"> </span>pybind_imcoolbar.cpp</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -644,11 +644,11 @@ The processing of adding a new library from scratch is documented in <a href="bi
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>imgui_bundle/bindings/imgui_bundle/
-├── im_cool_bar.pyi              <span class="tok-c1"># Location of the stubs</span>
-├── __init__.pyi                 <span class="tok-c1"># Main imgui_bundle stub file, which loads im_cool_bar.pyi</span>
-├── __init__.py                  <span class="tok-c1"># Main imgui_bundle python module which loads</span>
-<span class="tok-p">|</span>                                <span class="tok-c1"># the actual im_cool_bar module</span>
-├── ...</code></pre>
+├──<span class="tok-w"> </span>im_cool_bar.pyi<span class="tok-w">              </span><span class="tok-c1"># Location of the stubs</span>
+├──<span class="tok-w"> </span>__init__.pyi<span class="tok-w">                 </span><span class="tok-c1"># Main imgui_bundle stub file, which loads im_cool_bar.pyi</span>
+├──<span class="tok-w"> </span>__init__.py<span class="tok-w">                  </span><span class="tok-c1"># Main imgui_bundle python module which loads</span>
+<span class="tok-p">|</span><span class="tok-w">                                </span><span class="tok-c1"># the actual im_cool_bar module</span>
+├──<span class="tok-w"> </span>...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -657,9 +657,9 @@ The processing of adding a new library from scratch is documented in <a href="bi
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>imgui_bundle/external/bindings_generation/
-├── autogenerate_all.py          <span class="tok-c1"># This script will call generate_imcoolbar.py (among many others)</span>
-├── all_external_libraries.py    <span class="tok-c1"># ImCoolBar is referenced here</span>
-├── ...</code></pre>
+├──<span class="tok-w"> </span>autogenerate_all.py<span class="tok-w">          </span><span class="tok-c1"># This script will call generate_imcoolbar.py (among many others)</span>
+├──<span class="tok-w"> </span>all_external_libraries.py<span class="tok-w">    </span><span class="tok-c1"># ImCoolBar is referenced here</span>
+├──<span class="tok-w"> </span>...</code></pre>
 </div>
 </div>
 </div>
@@ -693,8 +693,8 @@ All the modifications done in step 1 can be seen in <a href="https://github.com/
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>mkdir external/ImCoolBar
-git submodule add https://github.com/aiekick/ImCoolBar.git external/ImCoolBar/ImCoolBar</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mkdir<span class="tok-w"> </span>external/ImCoolBar
+git<span class="tok-w"> </span>submodule<span class="tok-w"> </span>add<span class="tok-w"> </span>https://github.com/aiekick/ImCoolBar.git<span class="tok-w"> </span>external/ImCoolBar/ImCoolBar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -716,10 +716,10 @@ So, the following actions were done separately:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git submodule add https://github.com/pthom/ImCoolBar.git external/ImCoolBar/ImCoolBar
-<span class="tok-nb">cd</span> external/ImCoolBar/ImCoolBar
-git checkout imgui_bundle
-<span class="tok-nb">cd</span> -</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git<span class="tok-w"> </span>submodule<span class="tok-w"> </span>add<span class="tok-w"> </span>https://github.com/pthom/ImCoolBar.git<span class="tok-w"> </span>external/ImCoolBar/ImCoolBar
+<span class="tok-nb">cd</span><span class="tok-w"> </span>external/ImCoolBar/ImCoolBar
+git<span class="tok-w"> </span>checkout<span class="tok-w"> </span>imgui_bundle
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -730,7 +730,7 @@ git checkout imgui_bundle
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>cp -r external/bindings_generation/bindings_generator_template external/ImCoolBar/bindings</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>cp<span class="tok-w"> </span>-r<span class="tok-w"> </span>external/bindings_generation/bindings_generator_template<span class="tok-w"> </span>external/ImCoolBar/bindings</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -742,10 +742,10 @@ In the example of ImCoolbar, we will rename them as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span> mv external/ImCoolBar/bindings/generate_LIBNAME.py external/ImCoolBar/bindings/generate_imcoolbar.py
-mv external/ImCoolBar/bindings/pybind_LIBNAME.cpp external/ImCoolBar/bindings/pybind_imcoolbar.cpp
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-w"> </span>mv<span class="tok-w"> </span>external/ImCoolBar/bindings/generate_LIBNAME.py<span class="tok-w"> </span>external/ImCoolBar/bindings/generate_imcoolbar.py
+mv<span class="tok-w"> </span>external/ImCoolBar/bindings/pybind_LIBNAME.cpp<span class="tok-w"> </span>external/ImCoolBar/bindings/pybind_imcoolbar.cpp
 <span class="tok-c1"># im_cool_bar will be the final name of the python module: imgui_bundle.im_cool_bar</span>
-mv external/ImCoolBar/bindings/LIBNAME.pyi external/ImCoolBar/bindings/im_cool_bar.pyi</code></pre>
+mv<span class="tok-w"> </span>external/ImCoolBar/bindings/LIBNAME.pyi<span class="tok-w"> </span>external/ImCoolBar/bindings/im_cool_bar.pyi</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -756,10 +756,10 @@ mv external/ImCoolBar/bindings/LIBNAME.pyi external/ImCoolBar/bindings/im_cool_b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>mv external/ImCoolBar/bindings/im_cool_bar.pyi bindings/imgui_bundle/im_cool_bar.pyi
-<span class="tok-nb">cd</span> external/ImCoolBar/bindings/
-ln -s ../../../bindings/imgui_bundle/im_cool_bar.pyi .
-<span class="tok-nb">cd</span> -</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mv<span class="tok-w"> </span>external/ImCoolBar/bindings/im_cool_bar.pyi<span class="tok-w"> </span>bindings/imgui_bundle/im_cool_bar.pyi
+<span class="tok-nb">cd</span><span class="tok-w"> </span>external/ImCoolBar/bindings/
+ln<span class="tok-w"> </span>-s<span class="tok-w"> </span>../../../bindings/imgui_bundle/im_cool_bar.pyi<span class="tok-w"> </span>.
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -771,16 +771,16 @@ ln -s ../../../bindings/imgui_bundle/im_cool_bar.pyi .
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>external/ImCoolBar/
-├── ImCoolBar/                   <span class="tok-c1"># Note that the submodule is inside</span>
-│         ├── CMakeLists.txt     <span class="tok-c1"># external/ImCoolBar/ImCoolBar/ !!!</span>
-│         ├── ImCoolbar.cpp
-│         ├── ImCoolbar.h
-│         ├── LICENSE
-│         └── README.md
-└── bindings/
-    ├── im_cool_bar.pyi              <span class="tok-c1"># We will edit and rename those files later</span>
-    ├── generate_imcoolbar.py -&gt; symlink to ../../../bindings/imgui_bundle/im_cool_bar.pyi
-    └── pybind_imcoolbar.cpp</code></pre>
+├──<span class="tok-w"> </span>ImCoolBar/<span class="tok-w">                   </span><span class="tok-c1"># Note that the submodule is inside</span>
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">     </span><span class="tok-c1"># external/ImCoolBar/ImCoolBar/ !!!</span>
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>ImCoolbar.cpp
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>ImCoolbar.h
+│<span class="tok-w">         </span>├──<span class="tok-w"> </span>LICENSE
+│<span class="tok-w">         </span>└──<span class="tok-w"> </span>README.md
+└──<span class="tok-w"> </span>bindings/
+<span class="tok-w">    </span>├──<span class="tok-w"> </span>im_cool_bar.pyi<span class="tok-w">              </span><span class="tok-c1"># We will edit and rename those files later</span>
+<span class="tok-w">    </span>├──<span class="tok-w"> </span>generate_imcoolbar.py<span class="tok-w"> </span>-&gt;<span class="tok-w"> </span>symlink<span class="tok-w"> </span>to<span class="tok-w"> </span>../../../bindings/imgui_bundle/im_cool_bar.pyi
+<span class="tok-w">    </span>└──<span class="tok-w"> </span>pybind_imcoolbar.cpp</code></pre>
 </div>
 </div>
 <hr>
@@ -824,7 +824,7 @@ Add a cmake directive to compile the new library.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="cmake"><span></span><span class="tok-c"># If the library is &quot;simple&quot; to compile you can use `add_simple_external_library_with_sources`</span>
-<span class="tok-nb">add_simple_external_library_with_sources</span><span class="tok-p">(</span><span class="tok-s">imcoolbar</span> <span class="tok-s">ImCoolBar</span><span class="tok-p">)</span></code></pre>
+<span class="tok-nb">add_simple_external_library_with_sources</span><span class="tok-p">(</span><span class="tok-s">imcoolbar</span><span class="tok-w"> </span><span class="tok-s">ImCoolBar</span><span class="tok-p">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -854,19 +854,19 @@ the script external/bindings_generation/autogenerate_all.py will also regenerate
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// ... Near the start of the file, add a new function declaration</span>
-<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_command_palette</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w"></span>
-<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_implot_internal</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w"></span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_command_palette</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_implot_internal</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span>
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imcoolbar</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">);</span><span class="tok-w">         </span><span class="tok-c1">// added this line</span>
 <span class="tok-c1">//  ...</span>
 
 
-<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_bundle</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">)</span><span class="tok-w"></span>
-<span class="tok-p">{</span><span class="tok-w"></span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">py_init_module_imgui_bundle</span><span class="tok-p">(</span><span class="tok-n">py</span><span class="tok-o">::</span><span class="tok-k">module</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">)</span>
+<span class="tok-p">{</span>
 <span class="tok-w">    </span><span class="tok-c1">// ...</span>
 
 <span class="tok-w">    </span><span class="tok-c1">// At the end of py_init_module_imgui_bundle, register your new python module</span>
 <span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">module_imcooolbar</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">m</span><span class="tok-p">.</span><span class="tok-n">def_submodule</span><span class="tok-p">(</span><span class="tok-s">&quot;im_cool_bar&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// the python module will be known as imgui_bundle.im_cool_bar</span>
-<span class="tok-w">    </span><span class="tok-n">py_init_module_imcoolbar</span><span class="tok-p">(</span><span class="tok-n">module_imcooolbar</span><span class="tok-p">);</span><span class="tok-w"></span></code></pre>
+<span class="tok-w">    </span><span class="tok-n">py_init_module_imcoolbar</span><span class="tok-p">(</span><span class="tok-n">module_imcooolbar</span><span class="tok-p">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -995,7 +995,7 @@ For example, this was added:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>python external/ImCoolBar/bindings/generate_imcoolbar.py</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>python<span class="tok-w"> </span>external/ImCoolBar/bindings/generate_imcoolbar.py</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1086,15 +1086,15 @@ This <a href="https://youtu.be/QeBCxU7tn68">video</a> demonstrates from starts t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span> external/imgui/imgui
-git tag <span class="tok-s2">&quot;bundle_1.0.0-beta1&quot;</span>
-git push fork --tags
-<span class="tok-nb">cd</span> -
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span><span class="tok-w"> </span>external/imgui/imgui
+git<span class="tok-w"> </span>tag<span class="tok-w"> </span><span class="tok-s2">&quot;bundle_1.0.0-beta1&quot;</span>
+git<span class="tok-w"> </span>push<span class="tok-w"> </span>fork<span class="tok-w"> </span>--tags
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-
 
-<span class="tok-nb">cd</span> external/imgui_test_engine/imgui_test_engine
-git tag <span class="tok-s2">&quot;bundle_1.0.0-beta1&quot;</span>
-git push fork --tags
-<span class="tok-nb">cd</span> -</code></pre>
+<span class="tok-nb">cd</span><span class="tok-w"> </span>external/imgui_test_engine/imgui_test_engine
+git<span class="tok-w"> </span>tag<span class="tok-w"> </span><span class="tok-s2">&quot;bundle_1.0.0-beta1&quot;</span>
+git<span class="tok-w"> </span>push<span class="tok-w"> </span>fork<span class="tok-w"> </span>--tags
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1102,16 +1102,16 @@ git push fork --tags
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span> external/imgui/imgui
-git rebase official/docking
-<span class="tok-nb">cd</span> -</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span><span class="tok-w"> </span>external/imgui/imgui
+git<span class="tok-w"> </span>rebase<span class="tok-w"> </span>official/docking
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span> external/imgui_test_engine/imgui_test_engine
-git rebase official/main
-<span class="tok-nb">cd</span> -</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">cd</span><span class="tok-w"> </span>external/imgui_test_engine/imgui_test_engine
+git<span class="tok-w"> </span>rebase<span class="tok-w"> </span>official/main
+<span class="tok-nb">cd</span><span class="tok-w"> </span>-</code></pre>
 </div>
 </div>
 </div>

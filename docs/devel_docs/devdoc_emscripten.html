@@ -438,22 +438,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <style>
 pre.pygments .hll { background-color: #ffffcc }
 pre.pygments { background: #f8f8f8; }
-pre.pygments .tok-c { color: #408080; font-style: italic } /* Comment */
+pre.pygments .tok-c { color: #3D7B7B; font-style: italic } /* Comment */
 pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
 pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
 pre.pygments .tok-o { color: #666666 } /* Operator */
-pre.pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
-pre.pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
-pre.pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
-pre.pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
-pre.pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
-pre.pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
+pre.pygments .tok-ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #9C6500 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
 pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
 pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
-pre.pygments .tok-gr { color: #FF0000 } /* Generic.Error */
+pre.pygments .tok-gr { color: #E40000 } /* Generic.Error */
 pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
-pre.pygments .tok-gi { color: #00A000 } /* Generic.Inserted */
-pre.pygments .tok-go { color: #888888 } /* Generic.Output */
+pre.pygments .tok-gi { color: #008400 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #717171 } /* Generic.Output */
 pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
 pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
 pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
@@ -466,15 +466,15 @@ pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved *
 pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
 pre.pygments .tok-m { color: #666666 } /* Literal.Number */
 pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
-pre.pygments .tok-na { color: #7D9029 } /* Name.Attribute */
+pre.pygments .tok-na { color: #687822 } /* Name.Attribute */
 pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
 pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
 pre.pygments .tok-no { color: #880000 } /* Name.Constant */
 pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
-pre.pygments .tok-ni { color: #999999; font-weight: bold } /* Name.Entity */
-pre.pygments .tok-ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
 pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
-pre.pygments .tok-nl { color: #A0A000 } /* Name.Label */
+pre.pygments .tok-nl { color: #767600 } /* Name.Label */
 pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
 pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
 pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
@@ -491,11 +491,11 @@ pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
 pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
 pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
-pre.pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
 pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
-pre.pygments .tok-si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
 pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
-pre.pygments .tok-sr { color: #BB6688 } /* Literal.String.Regex */
+pre.pygments .tok-sr { color: #A45A77 } /* Literal.String.Regex */
 pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
 pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
 pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
@@ -552,11 +552,11 @@ or use external/hello_imgui/hello_imgui/tools/emscripten/install_emscripten.sh</
 <h3 id="_build_imgui_bundle_for_emscripten">Build imgui_bundle for emscripten</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>mkdir build_ems
-<span class="tok-nb">cd</span> build_ems
-<span class="tok-nb">source</span> ~/emsdk/emsdk_env.sh
-emcmake cmake .. -DCMAKE_BUILD_TYPE<span class="tok-o">=</span>Release  <span class="tok-c1"># This will download a precompiled version of OpenCV4.7.0 for emscripten</span>
-make -j</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>mkdir<span class="tok-w"> </span>build_ems
+<span class="tok-nb">cd</span><span class="tok-w"> </span>build_ems
+<span class="tok-nb">source</span><span class="tok-w"> </span>~/emsdk/emsdk_env.sh
+emcmake<span class="tok-w"> </span>cmake<span class="tok-w"> </span>..<span class="tok-w"> </span>-DCMAKE_BUILD_TYPE<span class="tok-o">=</span>Release<span class="tok-w">  </span><span class="tok-c1"># This will download a precompiled version of OpenCV4.7.0 for emscripten</span>
+make<span class="tok-w"> </span>-j</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -607,40 +607,40 @@ cd ..</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">source</span> ~/emsdk/emsdk_env.sh
-mkdir build
-<span class="tok-nb">cd</span> build
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">source</span><span class="tok-w"> </span>~/emsdk/emsdk_env.sh
+mkdir<span class="tok-w"> </span>build
+<span class="tok-nb">cd</span><span class="tok-w"> </span>build
 
 <span class="tok-nv">EMSDK</span><span class="tok-o">=</span>~/emsdk
 <span class="tok-nv">OPENCV_SRC</span><span class="tok-o">=</span><span class="tok-k">$(</span><span class="tok-nb">pwd</span><span class="tok-k">)</span>/../opencv
 <span class="tok-nv">OPENCV_INSTALL</span><span class="tok-o">=</span><span class="tok-k">$(</span><span class="tok-nb">pwd</span><span class="tok-k">)</span>/../opencv_emscripten_install
 <span class="tok-nv">TOOLCHAIN</span><span class="tok-o">=</span><span class="tok-nv">$EMSDK</span>/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake
-<span class="tok-nv">PYTHON_EXE</span><span class="tok-o">=</span><span class="tok-k">$(</span>which python3<span class="tok-k">)</span>
+<span class="tok-nv">PYTHON_EXE</span><span class="tok-o">=</span><span class="tok-k">$(</span>which<span class="tok-w"> </span>python3<span class="tok-k">)</span>
 
-Manually edit opencv/CMakeList.txt, and add:
-    add_compile_options<span class="tok-o">(</span>-pthread<span class="tok-o">)</span>
-    add_link_options<span class="tok-o">(</span>-pthread<span class="tok-o">)</span>
-
-
-Note: to compile without pthread support,
-    * remove -pthread below
-    * replace *twice* <span class="tok-s2">&quot;-s USE_PTHREADS=1&quot;</span> by <span class="tok-s2">&quot;-s USE_PTHREADS=0&quot;</span>
+Manually<span class="tok-w"> </span>edit<span class="tok-w"> </span>opencv/CMakeList.txt,<span class="tok-w"> </span>and<span class="tok-w"> </span>add:
+<span class="tok-w">    </span>add_compile_options<span class="tok-o">(</span>-pthread<span class="tok-o">)</span>
+<span class="tok-w">    </span>add_link_options<span class="tok-o">(</span>-pthread<span class="tok-o">)</span>
 
 
-cmake <span class="tok-se">\</span>
-../opencv <span class="tok-se">\</span>
--DPYTHON_DEFAULT_EXECUTABLE<span class="tok-o">=</span><span class="tok-nv">$PYTHON_EXE</span> <span class="tok-se">\</span>
--DCMAKE_BUILD_TYPE<span class="tok-o">=</span>Release <span class="tok-se">\</span>
--DCMAKE_INSTALL_PREFIX<span class="tok-o">=</span><span class="tok-nv">$OPENCV_INSTALL</span> <span class="tok-se">\</span>
--DCMAKE_TOOLCHAIN_FILE<span class="tok-o">=</span><span class="tok-nv">$TOOLCHAIN</span> <span class="tok-se">\</span>
+Note:<span class="tok-w"> </span>to<span class="tok-w"> </span>compile<span class="tok-w"> </span>without<span class="tok-w"> </span>pthread<span class="tok-w"> </span>support,
+<span class="tok-w">    </span>*<span class="tok-w"> </span>remove<span class="tok-w"> </span>-pthread<span class="tok-w"> </span>below
+<span class="tok-w">    </span>*<span class="tok-w"> </span>replace<span class="tok-w"> </span>*twice*<span class="tok-w"> </span><span class="tok-s2">&quot;-s USE_PTHREADS=1&quot;</span><span class="tok-w"> </span>by<span class="tok-w"> </span><span class="tok-s2">&quot;-s USE_PTHREADS=0&quot;</span>
+
+
+cmake<span class="tok-w"> </span><span class="tok-se">\</span>
+../opencv<span class="tok-w"> </span><span class="tok-se">\</span>
+-DPYTHON_DEFAULT_EXECUTABLE<span class="tok-o">=</span><span class="tok-nv">$PYTHON_EXE</span><span class="tok-w"> </span><span class="tok-se">\</span>
+-DCMAKE_BUILD_TYPE<span class="tok-o">=</span>Release<span class="tok-w"> </span><span class="tok-se">\</span>
+-DCMAKE_INSTALL_PREFIX<span class="tok-o">=</span><span class="tok-nv">$OPENCV_INSTALL</span><span class="tok-w"> </span><span class="tok-se">\</span>
+-DCMAKE_TOOLCHAIN_FILE<span class="tok-o">=</span><span class="tok-nv">$TOOLCHAIN</span><span class="tok-w"> </span><span class="tok-se">\</span>
 <span class="tok-se">\</span>
--DCPU_BASELINE<span class="tok-o">=</span><span class="tok-s1">&#39;&#39;</span> -DCPU_DISPATCH<span class="tok-o">=</span><span class="tok-s1">&#39;&#39;</span> -DENABLE_PIC<span class="tok-o">=</span>FALSE -DCV_TRACE<span class="tok-o">=</span>OFF -DBUILD_SHARED_LIBS<span class="tok-o">=</span>OFF -DWITH_1394<span class="tok-o">=</span>OFF -DWITH_ADE<span class="tok-o">=</span>OFF -DWITH_VTK<span class="tok-o">=</span>OFF -DWITH_EIGEN<span class="tok-o">=</span>OFF -DWITH_FFMPEG<span class="tok-o">=</span>OFF -DWITH_GSTREAMER<span class="tok-o">=</span>OFF -DWITH_GTK<span class="tok-o">=</span>OFF -DWITH_GTK_2_X<span class="tok-o">=</span>OFF -DWITH_IPP<span class="tok-o">=</span>OFF -DWITH_JASPER<span class="tok-o">=</span>OFF -DWITH_JPEG<span class="tok-o">=</span>ON -DWITH_WEBP<span class="tok-o">=</span>OFF -DWITH_OPENEXR<span class="tok-o">=</span>OFF -DWITH_OPENGL<span class="tok-o">=</span>OFF -DWITH_OPENVX<span class="tok-o">=</span>OFF -DWITH_OPENNI<span class="tok-o">=</span>OFF -DWITH_OPENNI2<span class="tok-o">=</span>OFF -DWITH_PNG<span class="tok-o">=</span>ON -DWITH_TBB<span class="tok-o">=</span>OFF -DWITH_TIFF<span class="tok-o">=</span>OFF -DWITH_V4L<span class="tok-o">=</span>OFF -DWITH_OPENCL<span class="tok-o">=</span>OFF -DWITH_OPENCL_SVM<span class="tok-o">=</span>OFF -DWITH_OPENCLAMDFFT<span class="tok-o">=</span>OFF -DWITH_OPENCLAMDBLAS<span class="tok-o">=</span>OFF -DWITH_GPHOTO2<span class="tok-o">=</span>OFF -DWITH_LAPACK<span class="tok-o">=</span>OFF -DWITH_ITT<span class="tok-o">=</span>OFF -DWITH_QUIRC<span class="tok-o">=</span>ON -DBUILD_ZLIB<span class="tok-o">=</span>ON -DBUILD_opencv_apps<span class="tok-o">=</span>OFF -DBUILD_opencv_calib3d<span class="tok-o">=</span>ON -DBUILD_opencv_dnn<span class="tok-o">=</span>ON -DBUILD_opencv_features2d<span class="tok-o">=</span>ON -DBUILD_opencv_flann<span class="tok-o">=</span>ON -DBUILD_opencv_gapi<span class="tok-o">=</span>OFF -DBUILD_opencv_ml<span class="tok-o">=</span>OFF -DBUILD_opencv_photo<span class="tok-o">=</span>ON -DBUILD_opencv_imgcodecs<span class="tok-o">=</span>ON -DBUILD_opencv_shape<span class="tok-o">=</span>OFF -DBUILD_opencv_videoio<span class="tok-o">=</span>OFF -DBUILD_opencv_videostab<span class="tok-o">=</span>OFF -DBUILD_opencv_highgui<span class="tok-o">=</span>OFF -DBUILD_opencv_superres<span class="tok-o">=</span>OFF -DBUILD_opencv_stitching<span class="tok-o">=</span>OFF -DBUILD_opencv_java<span class="tok-o">=</span>OFF -DBUILD_opencv_js<span class="tok-o">=</span>ON -DBUILD_opencv_python2<span class="tok-o">=</span>OFF -DBUILD_opencv_python3<span class="tok-o">=</span>OFF -DBUILD_EXAMPLES<span class="tok-o">=</span>ON -DBUILD_PACKAGE<span class="tok-o">=</span>OFF -DBUILD_TESTS<span class="tok-o">=</span>ON -DBUILD_PERF_TESTS<span class="tok-o">=</span>ON -DBUILD_DOCS<span class="tok-o">=</span>OFF -DWITH_PTHREADS_PF<span class="tok-o">=</span>OFF -DCV_ENABLE_INTRINSICS<span class="tok-o">=</span>OFF -DBUILD_WASM_INTRIN_TESTS<span class="tok-o">=</span>OFF <span class="tok-se">\</span>
+-DCPU_BASELINE<span class="tok-o">=</span><span class="tok-s1">&#39;&#39;</span><span class="tok-w"> </span>-DCPU_DISPATCH<span class="tok-o">=</span><span class="tok-s1">&#39;&#39;</span><span class="tok-w"> </span>-DENABLE_PIC<span class="tok-o">=</span>FALSE<span class="tok-w"> </span>-DCV_TRACE<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_SHARED_LIBS<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_1394<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_ADE<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_VTK<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_EIGEN<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_FFMPEG<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_GSTREAMER<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_GTK<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_GTK_2_X<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_IPP<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_JASPER<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_JPEG<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DWITH_WEBP<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENEXR<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENGL<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENVX<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENNI<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENNI2<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_PNG<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DWITH_TBB<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_TIFF<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_V4L<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENCL<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENCL_SVM<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENCLAMDFFT<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_OPENCLAMDBLAS<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_GPHOTO2<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_LAPACK<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_ITT<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_QUIRC<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_ZLIB<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_apps<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_calib3d<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_dnn<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_features2d<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_flann<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_gapi<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_ml<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_photo<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_imgcodecs<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_shape<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_videoio<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_videostab<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_highgui<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_superres<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_stitching<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_java<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_js<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_opencv_python2<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_opencv_python3<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_EXAMPLES<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_PACKAGE<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_TESTS<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_PERF_TESTS<span class="tok-o">=</span>ON<span class="tok-w"> </span>-DBUILD_DOCS<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DWITH_PTHREADS_PF<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DCV_ENABLE_INTRINSICS<span class="tok-o">=</span>OFF<span class="tok-w"> </span>-DBUILD_WASM_INTRIN_TESTS<span class="tok-o">=</span>OFF<span class="tok-w"> </span><span class="tok-se">\</span>
 <span class="tok-se">\</span>
-<span class="tok-se">\&quot;</span>-DCMAKE_C_FLAGS<span class="tok-o">=</span><span class="tok-s1">&#39;-pthread -s WASM=1 -s USE_PTHREADS=1 &#39;</span> <span class="tok-se">\&quot;</span>  <span class="tok-se">\&quot;</span>-DCMAKE_CXX_FLAGS<span class="tok-o">=</span><span class="tok-s1">&#39;-pthread -s WASM=1 -s USE_PTHREADS=1 &#39;</span> <span class="tok-se">\&quot;</span>
+<span class="tok-se">\&quot;</span>-DCMAKE_C_FLAGS<span class="tok-o">=</span><span class="tok-s1">&#39;-pthread -s WASM=1 -s USE_PTHREADS=1 &#39;</span><span class="tok-w"> </span><span class="tok-se">\&quot;</span><span class="tok-w">  </span><span class="tok-se">\&quot;</span>-DCMAKE_CXX_FLAGS<span class="tok-o">=</span><span class="tok-s1">&#39;-pthread -s WASM=1 -s USE_PTHREADS=1 &#39;</span><span class="tok-w"> </span><span class="tok-se">\&quot;</span>
 
 
-make -j
-make install</code></pre>
+make<span class="tok-w"> </span>-j
+make<span class="tok-w"> </span>install</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -670,8 +670,8 @@ Change the following values inside get_cmake_cmd():
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">source</span> ~/emsdk/emsdk_env.sh
-python ./opencv/platforms/js/build_js.py build_wasm --build_wasm --emscripten_dir /Users/pascal/emsdk/upstream/emscripten</code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-nb">source</span><span class="tok-w"> </span>~/emsdk/emsdk_env.sh
+python<span class="tok-w"> </span>./opencv/platforms/js/build_js.py<span class="tok-w"> </span>build_wasm<span class="tok-w"> </span>--build_wasm<span class="tok-w"> </span>--emscripten_dir<span class="tok-w"> </span>/Users/pascal/emsdk/upstream/emscripten</code></pre>
 </div>
 </div>
 <div class="paragraph">
