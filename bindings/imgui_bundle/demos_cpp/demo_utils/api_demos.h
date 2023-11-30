@@ -23,6 +23,8 @@ std::string ReadMarkdownDoc(const std::string& doc_file_name);
 void ShowPythonVsCppCode(const std::string& pythonCode, const std::string& cppCode, int nbLines = 0);
 void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines = 0);
 
+std::string DemoExeFile(const std::string& demoName);
+bool HasDemoExeFile(const std::string& demoName);
 bool SpawnDemo(const std::string& demoName);
 void BrowseToUrl(const std::string& url);
 

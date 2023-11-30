@@ -49,9 +49,16 @@ void ChdirBesideAssetsFolder()
     if (findDemoAssets(currentPath.parent_path()))
         return;
 
+    std::filesystem::path exeFolder(wai_getExecutableFolder_string());
+
+#ifdef HELLOIMGUI_INSIDE_APPLE_BUNDLE
+    auto apps_bundles_path = exeFolder / "../../../";
+    if (findDemoAssets(apps_bundles_path))
+        return;
+#endif
+
 #ifndef __EMSCRIPTEN__
     // 3. Try to find demo assets in exe folder
-    std::filesystem::path exeFolder(wai_getExecutableFolder_string());
     if (findDemoAssets(exeFolder))
         return;
 
@@ -144,6 +151,29 @@ void ShowPythonVsCppFile(const char* demo_file_path, int nbLines)
     ShowPythonVsCppCode(python_code.c_str(), cpp_code.c_str(), nbLines);
 }
 
+std::string DemoExeFile(const std::string& demoName)
+{
+#ifndef HELLOIMGUI_INSIDE_APPLE_BUNDLE
+        std::string exeFolder = wai_getExecutableFolder_string();
+        std::string exeFile = exeFolder + "/" + demoName;
+    #ifdef _WIN32
+        exeFile += ".exe";
+    #endif
+        return exeFile;
+#else
+    std::string exeFolder = wai_getExecutableFolder_string();
+    std::string appsBundlesFolder = exeFolder + "/../../../";
+    std::string exeFile = appsBundlesFolder + demoName + ".app/Contents/MacOS/" + demoName;
+    return exeFile;
+#endif
+}
+
+bool HasDemoExeFile(const std::string& demoName)
+{
+    std::string exeFile = DemoExeFile(demoName);
+    return std::filesystem::exists(exeFile);
+}
+
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -163,11 +193,7 @@ bool SpawnDemo(const std::string& demoName)
 
 bool SpawnDemo(const std::string& demoName)
 {
-    std::string exeFolder = wai_getExecutableFolder_string();
-    std::string exeFile = exeFolder + "/" + demoName;
-#ifdef _WIN32
-    exeFile += ".exe";
-#endif
+    std::string exeFile = DemoExeFile(demoName);
 
     if (std::filesystem::exists(exeFile))
     {

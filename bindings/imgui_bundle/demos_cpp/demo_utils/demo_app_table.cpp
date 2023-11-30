@@ -90,6 +90,7 @@ void DisplayDemoAppTableWithScrollButtons(
     ImGui::EndDisabled();
 }
 
+
 void DemoAppTable::Gui()
 {
     auto fnTableGui = [this]()
@@ -127,21 +128,12 @@ void DemoAppTable::Gui()
 
                     // Run button
                     {
-#ifndef __EMSCRIPTEN__
-                        std::string exeFolder = wai_getExecutableFolder_string();
-#else
-                        std::string exeFolder = "./";
-#endif
-
-                        std::string exeFile = exeFolder + "/" + demoApp.DemoFile;
-#ifdef _WIN32
-                        exeFile += ".exe";
-#endif
-
-                        bool exeFound = std::filesystem::exists(exeFile);
-#ifdef __EMSCRIPTEN__
-                        exeFound = true;
-#endif
+                        bool exeFound = false;
+                        #ifdef __EMSCRIPTEN__
+                            exeFound = true;
+                        #else
+                            exeFound = HasDemoExeFile(demoApp.DemoFile);
+                        #endif
 
                         if (exeFound && ImGui::Button("Run"))
                             SpawnDemo(demoApp.DemoFile);

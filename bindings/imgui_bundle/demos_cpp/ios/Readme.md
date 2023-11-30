@@ -1,0 +1,1 @@
+This folder is used by Hello ImGui to set the app icon.
