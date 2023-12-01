@@ -88,6 +88,9 @@ void DisplayDemoAppTableWithScrollButtons(
     if (ImGui::ArrowButton("##down", ImGuiDir_Down))
         shallScrollDown = true;
     ImGui::EndDisabled();
+
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(0.f);
 }
 
 
@@ -146,7 +149,7 @@ void DemoAppTable::Gui()
         }
     };
 
-    DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 8.5f), fnTableGui);
+    DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 9.6f), fnTableGui);
 
     ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
     Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);

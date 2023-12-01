@@ -46,7 +46,7 @@ int main(int, char **)
     HelloImGui::RunnerParams runnerParams;
     // Window size and title
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Bundle interactive manual";
-    runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
+    runnerParams.appWindowParams.windowGeometry.size = {1400, 950};
 
     // Menu bar
     runnerParams.imGuiWindowParams.showMenuBar = true;

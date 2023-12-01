@@ -44,7 +44,7 @@ def main() -> None:
     runner_params.app_window_params.window_title = (
         "Dear ImGui Bundle interactive manual"
     )
-    runner_params.app_window_params.window_geometry.size = (1400, 900)
+    runner_params.app_window_params.window_geometry.size = (1400, 950)
 
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
