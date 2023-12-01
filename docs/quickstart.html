@@ -1667,8 +1667,16 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span>
 <span class="tok-p">}</span>
 
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoAssets</span><span class="tok-p">()</span>
+<span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">gTitleFont</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">3.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">3.f</span><span class="tok-p">));</span>
+<span class="tok-p">}</span>
+
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">GuiWindowDemoFeatures</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
 <span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-n">DemoAssets</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-n">DemoBasicWidgets</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-n">DemoRocket</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);</span>
@@ -2259,7 +2267,16 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
 
 
+<span class="tok-k">def</span> <span class="tok-nf">demo_assets</span><span class="tok-p">():</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">TITLE_FONT</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Hello&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">3.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">))</span>
+
+
 <span class="tok-k">def</span> <span class="tok-nf">gui_window_demo_features</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
+    <span class="tok-n">demo_assets</span><span class="tok-p">()</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
     <span class="tok-n">demo_basic_widgets</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
     <span class="tok-n">demo_rocket</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
@@ -4714,7 +4731,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 18:24:14 +0100
+Last updated 2023-12-02 00:02:42 +0100
 </div>
 </div>
 </body>
