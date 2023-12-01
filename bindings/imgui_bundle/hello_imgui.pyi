@@ -124,8 +124,10 @@ def load_asset_file_data(asset_path: str) -> AssetFileData:
 def free_asset_file_data(asset_file_data: AssetFileData) -> None:
     pass
 
-# std::string AssetFileFullPath(const std::string& assetRelativeFilename);    /* original C++ signature */
-def asset_file_full_path(asset_relative_filename: str) -> str:
+# std::string AssetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true);    /* original C++ signature */
+def asset_file_full_path(
+    asset_relative_filename: str, assert_if_not_found: bool = True
+) -> str:
     """*
     @@md#assetFileFullPath
 
@@ -145,8 +147,11 @@ def asset_file_full_path(asset_relative_filename: str) -> str:
     """
     pass
 
-# inline std::string assetFileFullPath(const std::string& assetRelativeFilename) { return AssetFileFullPath(assetRelativeFilename); }    /* original C++ signature */
-def asset_file_full_path(asset_relative_filename: str) -> str:
+# inline std::string assetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true)    /* original C++ signature */
+#     { return AssetFileFullPath(assetRelativeFilename, assertIfNotFound); }
+def asset_file_full_path(
+    asset_relative_filename: str, assert_if_not_found: bool = True
+) -> str:
     pass
 
 # bool AssetExists(const std::string& assetRelativeFilename);    /* original C++ signature */

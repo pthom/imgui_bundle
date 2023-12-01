@@ -77,8 +77,9 @@ For compatibility with Android and other platforms, prefer to use `LoadAssetFile
 
 @@md
 */
-std::string AssetFileFullPath(const std::string& assetRelativeFilename);
-inline std::string assetFileFullPath(const std::string& assetRelativeFilename) { return AssetFileFullPath(assetRelativeFilename); }
+std::string AssetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true);
+inline std::string assetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true)
+    { return AssetFileFullPath(assetRelativeFilename, assertIfNotFound); }
 
 // Returns true if this asset file exists
 bool AssetExists(const std::string& assetRelativeFilename);
@@ -2487,6 +2488,19 @@ namespace HelloImGui
 
 #include <cstddef>
 #include <cstdint>
+
+#ifdef HELLOIMGUI_USE_SDL_OPENGL3
+    #ifdef _WIN32
+        #ifndef HELLOIMGUI_WIN32_AUTO_WINMAIN
+            // Under Windows, we redefine WinMain ourselves
+            #include <SDL.h>
+        #endif
+    #endif
+     // Let SDL redefine main under iOS
+    #ifdef HELLOIMGUI_IOS
+        #include <SDL.h>
+    #endif
+#endif
 
 struct ImGuiTestEngine;
 
