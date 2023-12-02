@@ -9,6 +9,13 @@ The typical layout of an assets folder looks like this:
 [source,bash]
 ----
 assets/
+    +-- app_settings/                     # Application settings
+    |         +-- icon.png                # This will be the app icon, it should be square
+    |         |                           # and at least 512x512. It will  be converted
+    |         |                           # to the right format, for each platform.
+    |         +-- apple/
+    |         |         └-- Info.plist    # macOS and iOS app settings
+    |         |                          # (or Info.ios.plist + Info.macos.plist)
     +-- fonts/
     |         +-- DroidSans.ttf                       # Default fonts used by HelloImGui to
     |         +-- fontawesome-webfont.ttf             # improve text rendering (esp. on High DPI)
@@ -33,7 +40,10 @@ You can change the assets folder via `HelloImGui::SetAssetsFolder` ({cpp}) or `h
 
 **Where to find the default assets**
 
-Look at the link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] folder which provides them.
+You can link:https://raw.githubusercontent.com/pthom/imgui_bundle/main/assets.zip[download the default assets as a zip file].
+
+Look at the folder link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] to see their content.
+
 
 **Where to place your assets folder**
 

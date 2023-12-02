@@ -273,14 +273,21 @@ endif()
 # Example integration
 # -----------------------------------------------------------------------------
 add_subdirectory(_example_integration)
-option(IMGUI_BUNDLE_ZIP_EXAMPLE_INTEGRATION "Zip example integration" OFF)
-if(IMGUI_BUNDLE_ZIP_EXAMPLE_INTEGRATION)
+option(IMGUI_BUNDLE_CREATE_ZIP_EXAMPLES "Create zip examples" OFF)
+if(IMGUI_BUNDLE_CREATE_ZIP_EXAMPLES)
     # provide a zip file of _example_integration
     add_custom_target(_example_integration_zip ALL
         COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/_example_integration.zip" --format=zip
         _example_integration
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Creating _example_integration.zip"
+        VERBATIM
+        )
+    # provide a zip file of bindings/imgui_bundle/assets
+    add_custom_target(_example_integration_assets_zip ALL
+        COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/assets.zip" --format=zip assets
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_bundle
+        COMMENT "Creating _example_integration_assets.zip"
         VERBATIM
         )
 endif()

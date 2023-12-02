@@ -20,8 +20,11 @@ include::../../demos_cpp/demos_immapp/demo_hello_world.cpp[]
 
 * automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
 * embed the assets (for desktop, mobile, and emscripten apps)
+* add an icon for your app (on desktop and mobile platforms)
 * perform additional customization (app icon and name on mobile platforms, etc)
+
 ====
+
 
 
 ===== Option 1: using imgui_bundle as a submodule
@@ -64,7 +67,7 @@ FetchContent_MakeAvailable(imgui_bundle)
 imgui_bundle_add_app(hello_world hello_world.cpp)
 ----
 
-NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here].
+NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here]. Refer to it if you wish to customize the application icon.
 
 ==== Hello, World in Python
 
