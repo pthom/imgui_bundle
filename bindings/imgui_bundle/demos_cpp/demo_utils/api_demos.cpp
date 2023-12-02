@@ -28,8 +28,10 @@ void ChdirBesideAssetsFolder()
 {
     auto findDemoAssets = [](const std::filesystem::path& path) -> bool
     {
-        if (std::filesystem::is_directory(path / DemosAssetsFolder()))
+        std::filesystem::path candidateAssetsFolder = path / DemosAssetsFolder();
+        if (std::filesystem::is_directory(candidateAssetsFolder))
         {
+            // chdir to the assets folder parent
             std::filesystem::current_path(path);
             if (! std::filesystem::is_directory(DemosAssetsFolder()))
                 throw std::runtime_error("ChdirBesideAssetsFolder => fail setting path");
@@ -53,7 +55,8 @@ void ChdirBesideAssetsFolder()
     #ifdef HELLOIMGUI_INSIDE_APPLE_BUNDLE
     {
         std::filesystem::path exeFolder(wai_getExecutableFolder_string());
-        auto apps_bundles_path = exeFolder / "../../../";
+        auto apps_bundles_path = exeFolder.parent_path().parent_path().parent_path();
+
         if (findDemoAssets(apps_bundles_path))
             return;
     };
