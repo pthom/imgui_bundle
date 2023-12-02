@@ -270,6 +270,21 @@ if (IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS)
     add_subdirectory(.github/ci_automation_tests)
 endif()
 
+# Example integration
+# -----------------------------------------------------------------------------
+add_subdirectory(_example_integration)
+option(IMGUI_BUNDLE_ZIP_EXAMPLE_INTEGRATION "Zip example integration" OFF)
+if(IMGUI_BUNDLE_ZIP_EXAMPLE_INTEGRATION)
+    # provide a zip file of _example_integration
+    add_custom_target(_example_integration_zip ALL
+        COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/_example_integration.zip" --format=zip
+        _example_integration
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Creating _example_integration.zip"
+        VERBATIM
+        )
+endif()
+
 # Help msvc tidy up its room
 # -----------------------------------------------------------------------------
 if (MSVC)

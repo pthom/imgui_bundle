@@ -21,7 +21,7 @@ endif()
 # Build your app
 ##########################################################
 # Call imgui_bundle_add_app
-imgui_bundle_add_app(hello_world hello_world.cpp)
+imgui_bundle_add_app(imgui_bundle_example_integration hello_world.cpp)
 
 # Now you can build your app with
 #     mkdir build && cd build && cmake .. && cmake --build .

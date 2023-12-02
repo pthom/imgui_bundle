@@ -37,6 +37,7 @@ void Gui()
             # Dear ImGui Bundle
             [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui.git), including various useful libraries from its ecosystem.
             It enables to easily create ImGui applications in C++, as well as in Python.
+
             This is an example of markdown widget, with an included image:
 
             ![world.jpg](world.jpg)
@@ -46,6 +47,9 @@ void Gui()
         )");
 
     DemoImplot();
+
+    ImGui::Separator();
+    ImGuiMd::RenderUnindented("*Note: the icon of this application is defined by `assets/app_settings/icon.png`*");
 }
 
 
