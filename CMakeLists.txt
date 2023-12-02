@@ -270,29 +270,11 @@ if (IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS)
     add_subdirectory(.github/ci_automation_tests)
 endif()
 
-# Example integration and default zip (assets + _example_integration)
+# Example integration
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_EXAMPLE_INTEGRATION "Build _example_integration" OFF)
 if(IMGUI_BUNDLE_BUILD_EXAMPLE_INTEGRATION)
     add_subdirectory(_example_integration)
-endif()
-option(IMGUI_BUNDLE_CREATE_ZIP_EXAMPLES "Create zip examples" OFF)
-if(IMGUI_BUNDLE_CREATE_ZIP_EXAMPLES)
-    # provide a zip file of _example_integration
-    add_custom_target(_example_integration_zip ALL
-        COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/_example_integration.zip" --format=zip
-        _example_integration
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Creating _example_integration.zip"
-        VERBATIM
-        )
-    # provide a zip file of bindings/imgui_bundle/assets
-    add_custom_target(_example_integration_assets_zip ALL
-        COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_CURRENT_SOURCE_DIR}/assets.zip" --format=zip assets
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_bundle
-        COMMENT "Creating _example_integration_assets.zip"
-        VERBATIM
-        )
 endif()
 
 # Help msvc tidy up its room
