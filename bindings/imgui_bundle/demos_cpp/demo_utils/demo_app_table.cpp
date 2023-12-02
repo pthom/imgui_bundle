@@ -78,7 +78,7 @@ void DisplayDemoAppTableWithScrollButtons(
     // Scroll buttons
     scrollDelta = ImGui::GetItemRectSize().y - HelloImGui::EmSize(0.5f);
     ImGui::NewLine();
-    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(4.f));
+    ImGui::SameLine(ImGui::GetItemRectSize().x - HelloImGui::EmSize(3.f));
     ImGui::BeginDisabled(scrollCurrent == 0.f);
     if (ImGui::ArrowButton("##up", ImGuiDir_Up))
         shallScrollUp = true;
