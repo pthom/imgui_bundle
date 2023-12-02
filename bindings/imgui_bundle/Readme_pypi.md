@@ -251,7 +251,7 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 Simply run `demo_imgui_bundle`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python).
+[bindings/imgui\_bundle/demos\_python](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python).
 
 Consider `demo_imgui_bundle` as an always available manual for Dear
 ImGui Bundle with lots of examples and related code source.
@@ -262,7 +262,7 @@ ImGui Bundle with lots of examples and related code source.
 
 The easiest way to use Dear ImGui Bundle in an external project is to
 use the example provided in
-[example\_integration](https://github.com/pthom/imgui_bundle/tree/doc/_example_integration).
+[example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
 This folder includes everything you need to set up your own project.
 
 ### Build from source
@@ -296,7 +296,7 @@ If you built ImGuiBundle from source, Simply run
 `build/bin/demo_imgui_bundle`.
 
 The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/).
+[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/).
 
 Consider `demo_imgui_bundle` as a manual with lots of examples and
 related code source. It is always [available

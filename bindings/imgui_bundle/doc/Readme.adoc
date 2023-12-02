@@ -8,7 +8,7 @@
 //     bindings/imgui_bundle/doc/Readme_source.adoc
 /////////////////////////////////////////////////////////////////////////////
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -42,7 +42,7 @@
 
 TIP: For a more readable version of this document, click on {btn-doc}
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -84,7 +84,7 @@ Click on the logo for a complete interactive demonstration!
 [[introduction]]
 == Introduction
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -112,7 +112,7 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 
 === Interactive manual & demo in one click!
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -141,7 +141,7 @@ TIP: This demonstration is also an interactive manual, similar to the online {ur
 
 
 === Batteries included
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -346,7 +346,7 @@ int main(int , char *[]) {
 
 === Install for Python
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -399,7 +399,7 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 
 === Install for {cpp}
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -464,7 +464,7 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 [[quickstart]]
 == Quick Start & Examples
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -487,7 +487,7 @@ First, install Dear ImGui Bundle following the <<install-instructions>>.
 
 Then study the examples below.
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -613,7 +613,7 @@ immapp.run(
 )
 ----
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -674,7 +674,7 @@ You can either:
 * copy it into your execution folder (_{cpp} and python_)
 * place it besides your CMakeLists.txt, and it will be deployed into the execution folder automatically (_{cpp} only_)
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -1249,7 +1249,7 @@ if __name__ == "__main__":
 ----
 ====
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -2445,7 +2445,7 @@ if __name__ == "__main__":
 
 ====
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -2483,7 +2483,7 @@ Its source code is heavily documented and should be self-explanatory.
 * link:{url-demos-cpp}/demos_immapp/demo_custom_background.cpp[Source code in {cpp}]
 * link:{url-demos-python}/demos_immapp/demo_custom_background.py[Source code in Python]
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -2955,7 +2955,7 @@ if __name__ == "__main__":
 ----
 ====
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -3330,7 +3330,7 @@ if __name__ == "__main__":
 ----
 ====
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -4510,7 +4510,7 @@ if __name__ == "__main__":
 ----
 ====
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -4548,7 +4548,7 @@ image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 
 === Dear ImGui - Immediate GUI
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -4637,7 +4637,7 @@ image::{url-doc-images}/immediate_gui_example.png[]
 
 === Hello ImGui - Starter pack
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -4696,7 +4696,7 @@ Links:
 
 === ImmApp - Immediate App
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
@@ -4816,7 +4816,7 @@ if __name__ == "__main__":
 
 === Usage withing jupyter notebook
 
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master

@@ -1,4 +1,4 @@
-:doc_branch: doc
+:doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
 :url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
