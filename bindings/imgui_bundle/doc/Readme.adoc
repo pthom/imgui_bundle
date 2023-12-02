@@ -650,7 +650,7 @@ assets/
     |         |                           # to the right format, for each platform.
     |         +-- apple/
     |         |         └-- Info.plist    # macOS and iOS app settings
-    |         |                          # (or Info.ios.plist + Info.macos.plist)
+    |         |                           # (or Info.ios.plist + Info.macos.plist)
     +-- fonts/
     |         +-- DroidSans.ttf                       # Default fonts used by HelloImGui to
     |         +-- fontawesome-webfont.ttf             # improve text rendering (esp. on High DPI)
