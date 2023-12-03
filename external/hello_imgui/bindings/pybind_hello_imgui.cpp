@@ -89,11 +89,11 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("asset_file_full_path",
         HelloImGui::AssetFileFullPath,
-        py::arg("asset_relative_filename"),
+        py::arg("asset_relative_filename"), py::arg("assert_if_not_found") = true,
         "*\n@@md#assetFileFullPath\n\n`std::string AssetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.\n\nThis works under all platforms __except Android__.\nFor compatibility with Android and other platforms, prefer to use `LoadAssetFileData` whenever possible.\n\n* Under iOS it will give a path in the app bundle (/private/XXX/....)\n* Under emscripten, it will be stored in the virtual filesystem at \"/\"\n* Under Android, assetFileFullPath is *not* implemented, and will throw an error:\n  assets can be compressed under android, and you cannot use standard file operations!\n  Use LoadAssetFileData instead\n\n@@md\n");
 
     m.def("asset_file_full_path",
-        HelloImGui::assetFileFullPath, py::arg("asset_relative_filename"));
+        HelloImGui::assetFileFullPath, py::arg("asset_relative_filename"), py::arg("assert_if_not_found") = true);
 
     m.def("asset_exists",
         HelloImGui::AssetExists,

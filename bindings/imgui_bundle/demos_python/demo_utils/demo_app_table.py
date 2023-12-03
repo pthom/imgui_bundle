@@ -87,7 +87,7 @@ class DemoAppTable:
         # Scroll buttons
         statics.scroll_delta = imgui.get_item_rect_size()[1] - hello_imgui.em_size(0.5)
         imgui.new_line()
-        imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(4.0))
+        imgui.same_line(imgui.get_item_rect_size().x - hello_imgui.em_size(3.0))
 
         imgui.begin_disabled(statics.scroll_current == 0.0)
         if imgui.arrow_button("##up", imgui.Dir_.up):

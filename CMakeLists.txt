@@ -270,6 +270,13 @@ if (IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS)
     add_subdirectory(.github/ci_automation_tests)
 endif()
 
+# Example integration
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_BUILD_EXAMPLE_INTEGRATION "Build _example_integration" OFF)
+if(IMGUI_BUNDLE_BUILD_EXAMPLE_INTEGRATION)
+    add_subdirectory(_example_integration)
+endif()
+
 # Help msvc tidy up its room
 # -----------------------------------------------------------------------------
 if (MSVC)

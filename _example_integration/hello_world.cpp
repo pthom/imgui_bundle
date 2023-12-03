@@ -24,8 +24,8 @@ void DemoImplot()
     ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");
     if (ImPlot::BeginPlot("Plot"))
     {
-        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
-        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+        ImPlot::PlotLine("y1", x.data(), y1.data(), (int)x.size());
+        ImPlot::PlotLine("y2", x.data(), y2.data(), (int)x.size());
         ImPlot::EndPlot();
     }
 }
@@ -37,15 +37,19 @@ void Gui()
             # Dear ImGui Bundle
             [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle for [Dear ImGui](https://github.com/ocornut/imgui.git), including various useful libraries from its ecosystem.
             It enables to easily create ImGui applications in C++, as well as in Python.
+
             This is an example of markdown widget, with an included image:
 
-            ![world.jpg](world.jpg)
+            ![world](images/world.jpg)
 
             ---
             And below is a graph created with ImPlot:
         )");
 
     DemoImplot();
+
+    ImGui::Separator();
+    ImGuiMd::RenderUnindented("*Note: the icon of this application is defined by `assets/app_settings/icon.png`*");
 }
 
 

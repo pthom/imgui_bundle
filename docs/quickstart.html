@@ -584,7 +584,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <div class="sect3">
 <h4 id="_hello_world_in_c">Hello, World in C&#43;&#43;</h4>
 <div class="paragraph">
-<p><em><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp">demo_hello_world.cpp</a></em></p>
+<p><em><a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp">demo_hello_world.cpp</a></em></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -624,6 +624,9 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li>
 <p>embed the assets (for desktop, mobile, and emscripten apps)</p>
+</li>
+<li>
+<p>add an icon for your app (on desktop and mobile platforms)</p>
 </li>
 <li>
 <p>perform additional customization (app icon and name on mobile platforms, etc)</p>
@@ -684,7 +687,7 @@ git<span class="tok-w"> </span>submodule<span class="tok-w"> </span>update<span 
 <div class="title">Note</div>
 </td>
 <td class="content">
-This cmake file is part of a quick start example available <a href="https://github.com/pthom/imgui_bundle/tree/main/_example_integration">here</a>.
+This cmake file is part of a quick start example available <a href="https://github.com/pthom/imgui_bundle/tree/main/_example_integration">here</a>. Refer to it if you wish to customize the application icon.
 </td>
 </tr>
 </table>
@@ -694,7 +697,7 @@ This cmake file is part of a quick start example available <a href="https://gith
 <div class="sect3">
 <h4 id="_hello_world_in_python">Hello, World in Python</h4>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle/tree/doc/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py">demo_hello_world.py</a></p>
+<p><a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py">demo_hello_world.py</a></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -725,6 +728,13 @@ The typical layout of an assets folder looks like this:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>assets/
+<span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                     </span><span class="tok-c1"># Application settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                </span><span class="tok-c1"># This will be the app icon, it should be square</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># and at least 512x512. It will  be converted</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># to the right format, for each platform.</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>apple/
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>└--<span class="tok-w"> </span>Info.plist<span class="tok-w">    </span><span class="tok-c1"># macOS and iOS app settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>fonts/
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">                       </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w">             </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
@@ -750,7 +760,10 @@ The typical layout of an assets folder looks like this:</p>
 <p><strong>Where to find the default assets</strong></p>
 </div>
 <div class="paragraph">
-<p>Look at the <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets">imgui_bundle/bindings/imgui_bundle/assets</a> folder which provides them.</p>
+<p>You can <a href="https://traineq.org/ImGuiBundle/assets.zip">download the default assets as a zip file</a>.</p>
+</div>
+<div class="paragraph">
+<p>Look at the folder <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets">imgui_bundle/bindings/imgui_bundle/assets</a> to see their content.</p>
 </div>
 <div class="paragraph">
 <p><strong>Where to place your assets folder</strong></p>
@@ -4731,7 +4744,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-02 00:02:42 +0100
+Last updated 2023-12-03 22:18:38 +0100
 </div>
 </div>
 </body>
