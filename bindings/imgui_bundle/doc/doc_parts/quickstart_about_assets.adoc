@@ -40,7 +40,7 @@ You can change the assets folder via `HelloImGui::SetAssetsFolder` ({cpp}) or `h
 
 **Where to find the default assets**
 
-You can link:https://raw.githubusercontent.com/pthom/imgui_bundle/main/assets.zip[download the default assets as a zip file].
+You can link:https://traineq.org/ImGuiBundle/assets.zip[download the default assets as a zip file].
 
 Look at the folder link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] to see their content.
 

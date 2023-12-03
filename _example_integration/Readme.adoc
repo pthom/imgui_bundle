@@ -2,7 +2,7 @@
 
 This directory is a *standalone* demonstration on how to easily integrate ImGuiBundle to your own project. This means that you can copy-paste the content folder in your project, and it will build, with no extra step!
 
-link:https://raw.githubusercontent.com/pthom/imgui_bundle/main/_example_integration.zip[Download this folder as a zip file]
+link:https://traineq.org/ImGuiBundle/_example_integration.zip[Download this folder as a zip file]
 
 NOTE: With this simple mode, you do not need to add `ImGui Bundle` as a submodule, or to install it. CMake will automatically fetch it and link your app with it!
 
