@@ -5,7 +5,6 @@ project(imgui_bundle VERSION "1.0.0")   # Remember to mirror changes to setup.py
 # About imgui_bundle_add_app:
 # -----------------------------------------------------------------------------
 # The easiest way to build an app with imgui_bundle is to use
-#
 #     imgui_bundle_add_app(my_app my_file.cpp my_file2.cpp)
 #
 # imgui_bundle_add_app will automaticaly link your app to imgui_bundle,
