@@ -1,3 +1,42 @@
+# v1.1.0
+
+* Added support macOS app bundles
+* hello_imgui_add_app and imgui_bundle.add_app can now accept ASSETS_LOCATION as a parameter e.g `hello_imgui_add_app(my_app file1.cpp file2.cpp ASSETS_LOCATION my_assets)`
+
+* The files in assets/app_settings/ will be used to generate the app icon, and the app settings (for macOS, iOS, Android): see assets/ structure below:
+```
+assets/
+├── world.jpg                         # A custom asset
+├── app_settings/                     # Application settings
+│         ├── icon.png                # This will be the app icon, it should be square
+│         │                           # and at least 512x512. It will  be converted
+│         │                           # to the right format, for each platform.
+│         ├── apple/
+│         │         └── Info.plist    # macOS and iOS app settings
+│         │                          # (or Info.ios.plist + Info.macos.plist)
+├── fonts/
+│         ├── DroidSans.ttf           # Default fonts
+│         └── fontawesome-webfont.ttf #     used by HelloImGui
+│         ├── Roboto
+│         │         ├── Roboto-Bold.ttf        # Font used by Markdown
+│         │         ├── Roboto-BoldItalic.ttf
+│         │         ├── Roboto-Regular.ttf
+│         │         └── Roboto-RegularItalic.ttf
+│         ├── SourceCodePro-Regular.ttf
+├── images
+│         └── markdown_broken_image.png
+```
+
+* Added callback `runnerParams.callbacks.CustomBackground`: display any 3D scene in the background of the app.
+  ![Custom background](bindings/imgui_bundle/doc/doc_images/demo_custom_background.jpg)
+  See https://pthom.github.io/imgui_bundle/quickstart.html#_custom_3d_background
+* Improved ImGui bindings: added bindings for ImDrawData and ImDrawList arrays
+  (see https://github.com/pthom/imgui_bundle/issues/142)
+* Added support backends in full python (à la pyimgui):
+  * see bindings/imgui_bundle/python_backends_wip
+  * see https://github.com/pthom/imgui_bundle/issues/142
+
+
 # v1.0.0-beta1
 ### Added support for ImGui Test Engine
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_testengine.jpg" width=200 />
