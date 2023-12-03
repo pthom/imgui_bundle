@@ -24,8 +24,8 @@ void DemoImplot()
     ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");
     if (ImPlot::BeginPlot("Plot"))
     {
-        ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());
-        ImPlot::PlotLine("y2", x.data(), y2.data(), x.size());
+        ImPlot::PlotLine("y1", x.data(), y1.data(), (int)x.size());
+        ImPlot::PlotLine("y2", x.data(), y2.data(), (int)x.size());
         ImPlot::EndPlot();
     }
 }

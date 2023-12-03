@@ -26,6 +26,10 @@
  *
  */
 
+#ifdef _MSC_VER
+#pragma warning(disable:4267) // 'argument': conversion from 'size_t' to 'int', possible loss of data
+#pragma warning(disable:4244) // 'argument': conversion from '__int64' to 'int', possible loss of data
+#endif
 
 // <Patches on the original source>
 #include "imgui.h"

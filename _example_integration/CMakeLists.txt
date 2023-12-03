@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(helloworld_with_helloimgui)
+project(imgui_bundle_example_integration)
 set(CMAKE_CXX_STANDARD 17)
 
 

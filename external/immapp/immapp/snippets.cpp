@@ -121,7 +121,7 @@ namespace Snippets
 
             int nbVisibleLines = 0;
             if ((snippetData.HeightInLines == 0) && (overrideHeightInLines==0))
-                nbVisibleLines = fplus::count('\n', snippetData.Code) + 1;
+                nbVisibleLines = (int)fplus::count('\n', snippetData.Code) + 1;
             else if (overrideHeightInLines != 0)
                 nbVisibleLines = overrideHeightInLines;
             else
@@ -136,7 +136,7 @@ namespace Snippets
         {
             ImVec2 topLeft = ImGui::GetCursorPos();
             ImVec2 topRight { topLeft.x + editorSize.x, topLeft.y};
-            float textY = topRight.y + lineHeight * 0.2;
+            float textY = topRight.y + (float)lineHeight * 0.2f;
 
             if (! snippetData.DisplayedFilename.empty())
             {
@@ -204,7 +204,7 @@ namespace Snippets
 
     void ShowSideBySideSnippets(const std::vector<SnippetData>& snippets , bool hideIfEmpty, bool equalVisibleLines)
     {
-        int nbSideBySideEditors = snippets.size();
+        int nbSideBySideEditors = (int)snippets.size();
 
         if (hideIfEmpty)
         {
@@ -219,7 +219,7 @@ namespace Snippets
         if (equalVisibleLines)
         {
             auto linesPerSnippets = fplus::transform([](const SnippetData& s) {return fplus::count('\n', s.Code);}, snippets);
-            overrideHeightInLines = fplus::maximum(linesPerSnippets) + 1;
+            overrideHeightInLines = (int)fplus::maximum(linesPerSnippets) + 1;
         }
 
         float editorWidth = _EditorWidth(nbSideBySideEditors);
