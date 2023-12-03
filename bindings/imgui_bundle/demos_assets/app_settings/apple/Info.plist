@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>${HELLO_IMGUI_BUNDLE_IDENTIFIER}</string>
+
+	<key>CFBundleName</key>
+	<string>${HELLO_IMGUI_BUNDLE_NAME}</string>
+
+	<key>CFBundleDisplayName</key>
+	<string>${HELLO_IMGUI_ICON_DISPLAY_NAME}</string>
+
+	<key>CFBundleExecutable</key>
+	<string>${HELLO_IMGUI_BUNDLE_EXECUTABLE}</string>
+
+	<key>CFBundleShortVersionString</key>
+	<string>${HELLO_IMGUI_BUNDLE_VERSION}</string>
+
+	<key>CFBundleVersion</key>
+	<string>${HELLO_IMGUI_BUNDLE_VERSION}</string>
+
+	<key>NSHumanReadableCopyright</key>
+	<string>${HELLO_IMGUI_BUNDLE_COPYRIGHT}</string>
+
+	<key>CFBundleIconFile</key>
+	<string>${HELLO_IMGUI_BUNDLE_ICON_FILE}</string>
+
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Bluetooth is used (by the SDL Library) when using Bluetooth joysticks</string>
+</dict>
+</plist>
