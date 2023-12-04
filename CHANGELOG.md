@@ -38,7 +38,7 @@ assets/
   * see full example with glfw3 + OpenGL3: [bindings/imgui_bundle/python_backends_wip/examples/example_python_backend_glfw3.py](bindings/imgui_bundle/python_backends_wip/examples/example_python_backend_glfw3.py)
   * _Note: ImmApp and Hello ImGui provide advanced support for anti-aliased fonts and HighDPI. This is not provided by python backends: you will have to implement it yourself_
 
-* hello_imgui_add_app and imgui_bundle.add_app can now accept ASSETS_LOCATION as a parameter e.g `hello_imgui_add_app(my_app file1.cpp file2.cpp ASSETS_LOCATION my_assets)`
+* hello_imgui_add_app and imgui_bundle.add_app can now accept ASSETS_LOCATION as a parameter e.g. `hello_imgui_add_app(my_app file1.cpp file2.cpp ASSETS_LOCATION my_assets)`
 
 
 # v1.0.0-beta1
