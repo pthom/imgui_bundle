@@ -4863,6 +4863,271 @@ if __name__ == "__main__":
 
 ====
 
+=== Python: alternative backends
+
+HelloImGui and ImmApp use glfw as a default backend.
+
+If you wish to use a different backend, it is possible to use sdl2 or pyglet, via _pure python backends_.
+
+The link:{url-bundle-doc-tree}/bindings/imgui_bundle/python_backends[python backends] folder contains a set of python backends, that can be used as a replacement for the default glfw backend. This way you will have complete control on your application (they are inspired from link:https://github.com/pyimgui/pyimgui[pyimgui] backends).
+
+NOTE: In this case, you will not benefit from HelloImGui and ImmApp rapid development features (HighDPI support, layout management, automatic idling, etc...).
+
+==== Documentation
+See documentation in the  link:{url-bundle-doc-tree}/bindings/imgui_bundle/python_backends[python backends] folder.
+
+==== Examples
+
+.Example with a pure python sdl2 backend (click to expand)
+[%collapsible]
+====
+[source, cpp]
+----
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# ruff: noqa: F405, F403
+
+from imgui_bundle import imgui
+from imgui_bundle.python_backends.sdl_backend import SDL2Renderer
+import OpenGL.GL as gl  # type: ignore
+from sdl2 import *  # type: ignore
+import ctypes
+import sys
+
+
+class AppState:
+    text: str = """Hello, World\nLorem ipsum, etc.\netc."""
+    text2: str = "Ahh"
+
+
+app_state = AppState()
+
+
+def main():
+    window, gl_context = impl_pysdl2_init()
+    imgui.create_context()
+    impl = SDL2Renderer(window)
+
+    show_custom_window = True
+
+    running = True
+    event = SDL_Event()
+    while running:
+        while SDL_PollEvent(ctypes.byref(event)) != 0:
+            if event.type == SDL_QUIT:
+                running = False
+                break
+            impl.process_event(event)
+        impl.process_inputs()
+
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+
+                clicked_quit, selected_quit = imgui.menu_item(
+                    "Quit", "Cmd+Q", False, True
+                )
+
+                if clicked_quit:
+                    sys.exit(0)
+
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+        if show_custom_window:
+            imgui.set_next_window_size((400, 400))
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Example Text")
+                if imgui.button("Hello"):
+                    print("World")
+                _, app_state.text = imgui.input_text_multiline(
+                    "Edit", app_state.text, imgui.ImVec2(200, 200)
+                )
+                _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
+            imgui.end()
+
+        gl.glClearColor(1.0, 1.0, 1.0, 1)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
+        impl.render(imgui.get_draw_data())
+        SDL_GL_SwapWindow(window)
+
+    impl.shutdown()
+    SDL_GL_DeleteContext(gl_context)
+    SDL_DestroyWindow(window)
+    SDL_Quit()
+
+
+def impl_pysdl2_init():
+    width, height = 1280, 720
+    window_name = "minimal ImGui/SDL2 example"
+
+    if SDL_Init(SDL_INIT_EVERYTHING) < 0:
+        print(
+            "Error: SDL could not initialize! SDL Error: "
+            + SDL_GetError().decode("utf-8")
+        )
+        sys.exit(1)
+
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8)
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1)
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1)
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
+
+    SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
+    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
+
+    window = SDL_CreateWindow(
+        window_name.encode("utf-8"),
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        width,
+        height,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE,
+    )
+
+    if window is None:
+        print(
+            "Error: Window could not be created! SDL Error: "
+            + SDL_GetError().decode("utf-8")
+        )
+        sys.exit(1)
+
+    gl_context = SDL_GL_CreateContext(window)
+    if gl_context is None:
+        print(
+            "Error: Cannot create OpenGL Context! SDL Error: "
+            + SDL_GetError().decode("utf-8")
+        )
+        sys.exit(1)
+
+    SDL_GL_MakeCurrent(window, gl_context)
+    if SDL_GL_SetSwapInterval(1) < 0:
+        print(
+            "Warning: Unable to set VSync! SDL Error: " + SDL_GetError().decode("utf-8")
+        )
+        sys.exit(1)
+
+    return window, gl_context
+
+
+if __name__ == "__main__":
+    main()
+----
+====
+
+.Example with a pure python glfw backend (click to expand)
+[%collapsible]
+====
+[source, cpp]
+----
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
+import OpenGL.GL as gl  # type: ignore
+from imgui_bundle import imgui
+import glfw  # type: ignore
+import sys
+
+
+class AppState:
+    text: str = """Hello, World\nLorem ipsum, etc.\netc."""
+
+
+app_state = AppState()
+
+
+def main():
+    imgui.create_context()
+    window = impl_glfw_init()
+    impl = GlfwRenderer(window)
+
+    show_custom_window = True
+
+    while not glfw.window_should_close(window):
+        glfw.poll_events()
+        impl.process_inputs()
+
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+
+                clicked_quit, selected_quit = imgui.menu_item(
+                    "Quit", "Cmd+Q", False, True
+                )
+
+                if clicked_quit:
+                    sys.exit(0)
+
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+        if show_custom_window:
+            imgui.set_next_window_size((400, 400))
+            is_expand, show_custom_window = imgui.begin("Custom window", True)
+            if is_expand:
+                imgui.text("Example Text")
+                if imgui.button("Hello"):
+                    print("World")
+                _, app_state.text = imgui.input_text_multiline(
+                    "Edit", app_state.text, imgui.ImVec2(200, 200)
+                )
+            imgui.end()
+
+        gl.glClearColor(1.0, 1.0, 1.0, 1)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
+        impl.render(imgui.get_draw_data())
+        glfw.swap_buffers(window)
+
+    impl.shutdown()
+    glfw.terminate()
+
+
+def impl_glfw_init():
+    width, height = 1280, 720
+    window_name = "minimal ImGui/GLFW3 example"
+
+    if not glfw.init():
+        print("Could not initialize OpenGL context")
+        sys.exit(1)
+
+    # OS X supports only forward-compatible core profiles from 3.2
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
+
+    # Create a windowed mode window and its OpenGL context
+    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    glfw.make_context_current(window)
+
+    if not window:
+        glfw.terminate()
+        print("Could not initialize Window")
+        sys.exit(1)
+
+    return window
+
+
+if __name__ == "__main__":
+    main()
+----
+====
+
 === Usage withing jupyter notebook
 
 :doc_branch: main
@@ -4956,6 +5221,7 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 |                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
 |                  |                                       # dynamic library
 |                  +-- glfw_utils.py
+|                  +-- python_backends/                   # Backends implemented in pure python
 |                  +-- py.typed
 |
 |

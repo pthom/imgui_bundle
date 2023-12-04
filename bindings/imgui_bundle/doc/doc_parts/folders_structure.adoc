@@ -55,6 +55,7 @@ endif::[]
 |                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
 |                  |                                       # dynamic library
 |                  +-- glfw_utils.py
+|                  +-- python_backends/                   # Backends implemented in pure python
 |                  +-- py.typed
 |
 |
