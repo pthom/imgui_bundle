@@ -121,30 +121,3 @@ def glfw_char_callback(window_address: int, c: int) -> None:
 
 # def glfw_monitor_callback(monitor: GLFWmonitor, event: int) -> None:
 #     pass
-
-###############################################################################
-# <bindings for imgui_impl_sdl2.h
-###############################################################################
-def sdl2_init_for_opengl(window_address: int, sdl_gl_context_address: int):
-    pass
-
-def sdl2_init_for_vulkan(window_address: int):
-    pass
-
-def sdl2_init_for_d3d(window_address: int):
-    pass
-
-def sdl2_init_for_metal(window_address: int):
-    pass
-
-def sdl2_init_for_sdl_renderer(window_address: int, sdl_renderer_address: int):
-    pass
-
-def sdl2_shutdown():
-    pass
-
-def sdl2_new_frame():
-    pass
-
-def sdl2_process_event(event_address: int):
-    pass

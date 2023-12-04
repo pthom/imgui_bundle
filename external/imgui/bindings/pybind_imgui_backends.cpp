@@ -149,33 +149,33 @@ void py_init_module_imgui_backends(py::module& m)
           }, py::arg("window_address"), py::arg("c"));
 
     //
-    // <bindings for imgui_impl_sdl2.h
+    // <bindings for imgui_impl_sdl2.h: Deprecated: superseded by full python backend
     //
-    m.def("sdl2_init_for_opengl", [](size_t window_address, size_t sdl_gl_context_address) {
-        return ImGui_ImplSDL2_InitForOpenGL((SDL_Window*)window_address, (void *)sdl_gl_context_address);
-    }, py::arg("window_address"), py::arg("sdl_gl_context_address"));
-
-    m.def("sdl2_init_for_vulkan", [](size_t window_address) {
-        return ImGui_ImplSDL2_InitForVulkan((SDL_Window*)window_address);
-    }, py::arg("window_address"));
-
-    m.def("sdl2_init_for_d3d", [](size_t window_address) {
-        return ImGui_ImplSDL2_InitForD3D((SDL_Window*)window_address);
-    }, py::arg("window_address"));
-
-    m.def("sdl2_init_for_metal", [](size_t window_address) {
-        return ImGui_ImplSDL2_InitForMetal((SDL_Window*)window_address);
-    }, py::arg("window_address"));
-
-    m.def("sdl2_init_for_sdl_renderer", [](size_t window_address, size_t sdl_renderer_address) {
-        return ImGui_ImplSDL2_InitForSDLRenderer((SDL_Window*)window_address, (SDL_Renderer *)sdl_renderer_address);
-    }, py::arg("window_address"), py::arg("sdl_renderer_address"));
-
-    m.def("sdl2_shutdown", []() {ImGui_ImplSDL2_Shutdown();} );
-    m.def("sdl2_new_frame", []() {ImGui_ImplSDL2_NewFrame();} );
-
-    m.def("sdl2_process_event", [](size_t event_address) {
-        return ImGui_ImplSDL2_ProcessEvent((const SDL_Event*)event_address);
-    }, py::arg("event_address"));
+    //    m.def("sdl2_init_for_opengl", [](size_t window_address, size_t sdl_gl_context_address) {
+    //        return ImGui_ImplSDL2_InitForOpenGL((SDL_Window*)window_address, (void *)sdl_gl_context_address);
+    //    }, py::arg("window_address"), py::arg("sdl_gl_context_address"));
+    //
+    //    m.def("sdl2_init_for_vulkan", [](size_t window_address) {
+    //        return ImGui_ImplSDL2_InitForVulkan((SDL_Window*)window_address);
+    //    }, py::arg("window_address"));
+    //
+    //    m.def("sdl2_init_for_d3d", [](size_t window_address) {
+    //        return ImGui_ImplSDL2_InitForD3D((SDL_Window*)window_address);
+    //    }, py::arg("window_address"));
+    //
+    //    m.def("sdl2_init_for_metal", [](size_t window_address) {
+    //        return ImGui_ImplSDL2_InitForMetal((SDL_Window*)window_address);
+    //    }, py::arg("window_address"));
+    //
+    //    m.def("sdl2_init_for_sdl_renderer", [](size_t window_address, size_t sdl_renderer_address) {
+    //        return ImGui_ImplSDL2_InitForSDLRenderer((SDL_Window*)window_address, (SDL_Renderer *)sdl_renderer_address);
+    //    }, py::arg("window_address"), py::arg("sdl_renderer_address"));
+    //
+    //    m.def("sdl2_shutdown", []() {ImGui_ImplSDL2_Shutdown();} );
+    //    m.def("sdl2_new_frame", []() {ImGui_ImplSDL2_NewFrame();} );
+    //
+    //    m.def("sdl2_process_event", [](size_t event_address) {
+    //        return ImGui_ImplSDL2_ProcessEvent((const SDL_Event*)event_address);
+    //    }, py::arg("event_address"));
 
 }

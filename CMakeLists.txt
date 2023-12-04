@@ -172,8 +172,8 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
     # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
     set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "" FORCE)
-    # When building python bindings, sdl is always built as a shared library (see cmake/add_sdl.cmake)
-    set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
+    # When building python bindings, sdl is not built (use full python backends instead)
+    set(IMGUI_BUNDLE_WITH_SDL OFF CACHE BOOL "" FORCE)
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE

@@ -31,13 +31,6 @@ from imgui_bundle._glfw_set_search_path import _glfw_set_search_path
 _glfw_set_search_path()
 from imgui_bundle import glfw_utils as glfw_utils  # noqa: E402
 
-# SDL setup:
-# make sure that SDL provided by pip will use our SDL dynamic library.
-from imgui_bundle._sdl_set_set_search_path import _sdl_set_set_search_path  # noqa: E402
-
-_sdl_set_set_search_path()
-from imgui_bundle import sdl_utils as sdl_utils  # noqa: E402
-
 
 import os  # noqa: E402
 

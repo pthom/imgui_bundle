@@ -40,10 +40,6 @@ std::function<void()> makeGui()
             "Python translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python."
         },
         DemoApp{"imgui_example_glfw_opengl2","Python translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"},
-        DemoApp{
-            "imgui_example_sdl2_opengl3",
-            "Python translation of the [SDL2+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_sdl2_opengl3/main.cpp) from Dear ImGui",
-        },
         DemoApp{"demo_drag_and_drop", "Drag and drop demo"},
         DemoApp{"demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"},
     };
