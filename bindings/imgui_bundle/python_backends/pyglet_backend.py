@@ -10,8 +10,8 @@ import pyglet
 import pyglet.clock
 
 
-from imgui_bundle.python_backends_wip import compute_fb_scale
-from imgui_bundle.python_backends_wip.opengl_backend import (
+from imgui_bundle.python_backends import compute_fb_scale
+from imgui_bundle.python_backends.opengl_backend import (
     FixedPipelineRenderer,
     ProgrammablePipelineRenderer,
 )

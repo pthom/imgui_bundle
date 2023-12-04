@@ -4,9 +4,9 @@ from __future__ import absolute_import
 from imgui_bundle import imgui
 import cocos  # type: ignore
 
-from imgui_bundle.python_backends_wip import compute_fb_scale
-from imgui_bundle.python_backends_wip.pyglet_backend import PygletMixin
-from imgui_bundle.python_backends_wip.opengl_backend import FixedPipelineRenderer
+from imgui_bundle.python_backends import compute_fb_scale
+from imgui_bundle.python_backends.pyglet_backend import PygletMixin
+from imgui_bundle.python_backends.opengl_backend import FixedPipelineRenderer
 
 
 class ImguiLayer(PygletMixin, cocos.layer.Layer):

@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 from imgui_bundle import imgui
 
-from imgui_bundle.python_backends_wip.opengl_backend import FixedPipelineRenderer
+from imgui_bundle.python_backends.opengl_backend import FixedPipelineRenderer
 
 import pygame
 import pygame.event

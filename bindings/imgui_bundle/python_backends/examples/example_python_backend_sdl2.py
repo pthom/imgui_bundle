@@ -3,7 +3,7 @@
 # ruff: noqa: F405, F403
 
 from imgui_bundle import imgui
-from imgui_bundle.python_backends_wip.sdl_backend import SDL2Renderer
+from imgui_bundle.python_backends.sdl_backend import SDL2Renderer
 import OpenGL.GL as gl  # type: ignore
 from sdl2 import *  # type: ignore
 import ctypes

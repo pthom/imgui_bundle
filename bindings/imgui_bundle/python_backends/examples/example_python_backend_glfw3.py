@@ -1,44 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import
-
-from imgui_bundle import imgui
-from imgui_bundle.python_backends_wip.python_backends_disabled.pygame_backend import (
-    PygameRenderer,
-)
+from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl  # type: ignore
-import pygame  # type: ignore
+from imgui_bundle import imgui
+import glfw  # type: ignore
 import sys
 
 
 class AppState:
     text: str = """Hello, World\nLorem ipsum, etc.\netc."""
-    text2: str = "Ahh"
 
 
 app_state = AppState()
 
 
 def main():
-    pygame.init()
-    size = 800, 600
-
-    pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
-
     imgui.create_context()
-    impl = PygameRenderer()
-
-    io = imgui.get_io()
-    io.display_size = size
+    window = impl_glfw_init()
+    impl = GlfwRenderer(window)
 
     show_custom_window = True
 
-    while 1:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit(0)
-            impl.process_event(event)
+    while not glfw.window_should_close(window):
+        glfw.poll_events()
         impl.process_inputs()
 
         imgui.new_frame()
@@ -66,17 +51,44 @@ def main():
                 _, app_state.text = imgui.input_text_multiline(
                     "Edit", app_state.text, imgui.ImVec2(200, 200)
                 )
-                _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
             imgui.end()
 
-        # note: cannot use screen.fill((1, 1, 1)) because pygame's screen
-        #       does not support fill() on OpenGL sufraces
-        gl.glClearColor(1, 1, 1, 1)
+        gl.glClearColor(1.0, 1.0, 1.0, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
         imgui.render()
         impl.render(imgui.get_draw_data())
+        glfw.swap_buffers(window)
 
-        pygame.display.flip()
+    impl.shutdown()
+    glfw.terminate()
+
+
+def impl_glfw_init():
+    width, height = 1280, 720
+    window_name = "minimal ImGui/GLFW3 example"
+
+    if not glfw.init():
+        print("Could not initialize OpenGL context")
+        sys.exit(1)
+
+    # OS X supports only forward-compatible core profiles from 3.2
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
+
+    # Create a windowed mode window and its OpenGL context
+    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    glfw.make_context_current(window)
+
+    if not window:
+        glfw.terminate()
+        print("Could not initialize Window")
+        sys.exit(1)
+
+    return window
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from imgui_bundle import imgui
 import glfw  # type: ignore
 
-from imgui_bundle.python_backends_wip import compute_fb_scale
+from imgui_bundle.python_backends import compute_fb_scale
 from .opengl_backend import ProgrammablePipelineRenderer
 
 from typing import Dict

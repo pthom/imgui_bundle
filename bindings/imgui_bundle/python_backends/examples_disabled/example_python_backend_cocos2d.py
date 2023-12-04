@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from imgui_bundle import imgui
 
 from cocos.director import director  # type: ignore
-from imgui_bundle.python_backends_wip.python_backends_disabled.cocos2d_backend import (
+from imgui_bundle.python_backends.python_backends_disabled.cocos2d_backend import (
     ImguiLayer,
 )
 from pyglet import gl  # type: ignore
