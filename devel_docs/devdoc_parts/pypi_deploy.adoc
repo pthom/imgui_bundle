@@ -13,6 +13,7 @@ NOTE: the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), th
 === Build / Mac arm64 via cibuildwheel
 
 ```
+rm -rf _skbuild
 CIBW_ARCHS_MACOS="arm64" pipx run cibuildwheel --platform=macos && say "wheel build finished"
 
 twine upload wheelhouse/*

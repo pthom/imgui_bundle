@@ -160,6 +160,34 @@ list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
 include(imgui_bundle_add_app)
 set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
 
+
+# if building the python package, do some clenaup:
+#   remove .ruff_cache, remove bindings/imgui_bundle/*.so *.dylib *.dll *.pyd
+# -----------------------------------------------------------------------------
+if(SKBUILD)
+    message(STATUS "Cleaning bindings/imgui_bundle before pip build")
+    # Remove all .ruff_cache folders below bindings/imgui_bundle
+    set(bundle_folder ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_bundle)
+    set(ruff_cache_folders
+        ${bundle_folder}/.ruff_cache
+        ${bundle_folder}/demos_python/.ruff_cache
+    )
+    foreach(ruff_cache_folder ${ruff_cache_folders})
+        file(REMOVE_RECURSE ${ruff_cache_folder})
+    endforeach ()
+
+    # Remove all .so, .dylib, .dll, .pyd files below bindings/imgui_bundle
+    file(GLOB_RECURSE bundle_files
+        ${bundle_folder}/*.so
+        ${bundle_folder}/*.dylib
+        ${bundle_folder}/*.dll
+        ${bundle_folder}/*.pyd
+    )
+    foreach(bundle_file ${bundle_files})
+        file(REMOVE ${bundle_file})
+    endforeach ()
+endif()
+
 # Main
 # ----------------------------------------------------------------------
 include(cmake/dump_cmake_variables.cmake)
