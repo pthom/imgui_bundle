@@ -4,11 +4,20 @@ project(imgui_bundle VERSION "1.1.0") # 1.1.0-WIP  # Remember to mirror changes 
 
 # About imgui_bundle_add_app:
 # -----------------------------------------------------------------------------
-# The easiest way to build an app with imgui_bundle is to use
-#     imgui_bundle_add_app(my_app my_file.cpp my_file2.cpp)
+# The easiest way to build an app with imgui_bundle is to use imgui_bundle_add_app.
+# imgui_bundle_add_app is a helper function, similar to cmake's "add_executable"
+# Usage:
+#     imgui_bundle_add_app(app_name file1.cpp file2.cpp ...)
+# Or:
+#     imgui_bundle_add_app(app_name file1.cpp file2.cpp ... ASSETS_LOCATION "path/to/assets")
 #
-# imgui_bundle_add_app will automaticaly link your app to imgui_bundle,
-# and will embed the assets folder (for desktop, mobile, and emscripten apps)
+# (By default, ASSETS_LOCATION is "assets", which means that the assets will be searched in the "assets" folder,
+# relative to the location of the CMakeLists.txt file)
+#
+# Features:
+#     * It will automatically link the target to the required libraries (imgui_bundle, OpenGl, glad, etc)
+#     * It will embed the assets (for desktop, mobile, and emscripten apps)
+#     * It will perform additional customization (app icon and name on mobile platforms, etc)
 
 
 ###############################################################################
