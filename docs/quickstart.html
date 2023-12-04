@@ -730,56 +730,103 @@ The typical layout of an assets folder looks like this:</p>
 <pre class="pygments highlight"><code data-lang="bash"><span></span>assets/
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                     </span><span class="tok-c1"># Application settings</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                </span><span class="tok-c1"># This will be the app icon, it should be square</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># and at least 512x512. It will  be converted</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># and at least 256x256. It will  be converted</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># to the right format, for each platform.</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>apple/
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>└--<span class="tok-w"> </span>Info.plist<span class="tok-w">    </span><span class="tok-c1"># macOS and iOS app settings</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>fonts/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">                       </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w">             </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">           </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w"> </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                             </span><span class="tok-c1"># Optional: fonts for markdown</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>LICENSE.txt
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-Bold.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-BoldItalic.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-Regular.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-RegularItalic.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SourceCodePro-Regular.ttf<span class="tok-w">           </span><span class="tok-c1"># Optional: font / markdown</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                 </span><span class="tok-c1"># Optional: fonts for markdown</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>LICENSE.txt
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-Bold.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-BoldItalic.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-Regular.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-RegularItalic.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SourceCodePro-Regular.ttf<span class="tok-w">  </span><span class="tok-c1"># Optional: font / markdown</span>
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>images/
-<span class="tok-w">              </span>+--<span class="tok-w"> </span>markdown_broken_image.png<span class="tok-w">           </span><span class="tok-c1"># Optional: used for markdown</span>
+<span class="tok-w">              </span>+--<span class="tok-w"> </span>markdown_broken_image.png<span class="tok-w">  </span><span class="tok-c1"># Optional: used for markdown</span>
 <span class="tok-w">              </span><span class="tok-p">|</span>
-<span class="tok-w">              </span>+--<span class="tok-w"> </span>world.jpg<span class="tok-w">                           </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
+<span class="tok-w">              </span>+--<span class="tok-w"> </span>world.jpg<span class="tok-w">                  </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>You can change the assets folder via <code>HelloImGui::SetAssetsFolder</code> (C&#43;&#43;) or <code>hello_imgui.set_assets_folder</code> (python).</p>
 </div>
-<div class="paragraph">
-<p><strong>Where to find the default assets</strong></p>
-</div>
+<div class="sect3">
+<h4 id="_where_to_find_the_default_assets">Where to find the default assets</h4>
 <div class="paragraph">
 <p>You can <a href="https://traineq.org/ImGuiBundle/assets.zip">download the default assets as a zip file</a>.</p>
 </div>
 <div class="paragraph">
 <p>Look at the folder <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets">imgui_bundle/bindings/imgui_bundle/assets</a> to see their content.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_where_to_place_your_assets_folder">Where to place your assets folder</h4>
 <div class="paragraph">
-<p><strong>Where to place your assets folder</strong></p>
+<p><strong>Python</strong></p>
 </div>
 <div class="paragraph">
-<p>You can either:</p>
+<p>Place it into your execution folder (<em>C&#43;&#43; and python</em>), or call <code>hello_imgui.set_assets_folder()</code> at startup.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>copy it into your execution folder (<em>C&#43;&#43; and python</em>)</p>
-</li>
-<li>
-<p>place it besides your CMakeLists.txt, and it will be deployed into the execution folder automatically (<em>C&#43;&#43; only</em>)</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><strong>C&#43;&#43;</strong></p>
+</div>
+<div class="paragraph">
+<p>Place the assets/ folder besides your CMakeLists.txt, and it will be deployed into the execution folder automatically ().</p>
+</div>
+<div class="paragraph">
+<p>When using cmake, you can also specify a custom assets folder via <code>imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")</code></p>
+</div>
+<div class="paragraph">
+<p>You can also call <code>HelloImGui::SetAssetsFolder</code> at startup.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_app_icon">App icon</h4>
+<div class="paragraph">
+<p>The app icon is defined by the file <code>icon.png</code> in the <code>assets/app_settings</code> folder. It should be square and at least 256x256 (but 512x512 is preferred).</p>
+</div>
+<div class="paragraph">
+<p><strong>C&#43;&#43;</strong></p>
+</div>
+<div class="paragraph">
+<p>With C&#43;&#43;, <code>icon.png</code> will define the application icon as well as the window icon. It will be converted to the right format for each platform by CMake (via <code>imgui_bundle_add_app</code>).</p>
+</div>
+<div class="paragraph">
+<p><strong>Python</strong></p>
+</div>
+<div class="paragraph">
+<p>With Python, <code>icon.png</code> will define the <strong>window</strong> icon, on platforms that supports this (i.e. Windows and Linux, but not macOS).</p>
+</div>
+<div class="paragraph">
+<p>It will <strong>not</strong> define the application icon.</p>
+</div>
+<div class="paragraph">
+<p>If you wish to ship an application with a given icon, you should use a tool like <code>pyinstaller</code> to create a standalone executable. See the <a href="https://pyinstaller.readthedocs.io/en/stable/usage.html">pyinstaller documentation</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demo_packaging">this demo</a> for an example showing how to package a python application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_app_settings">App settings</h4>
+<div class="paragraph">
+<p><strong>macOS and iOS, (C&#43;&#43; only)</strong></p>
+</div>
+<div class="paragraph">
+<p>The app settings are defined by the file <code>Info.plist</code> in the <code>assets/app_settings/apple</code> folder.</p>
+</div>
+<div class="paragraph">
+<p>You can copy and edit this <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets/app_settings/apple/Info.plist">example</a> by adding your own settings (replace <code>${HELLO_IMGUI_BUNDLE_XXX}</code> by your own values).</p>
+</div>
+<div class="paragraph">
+<p>You can also specify different settings for macOS and iOS via <code>Info.macos.plist</code> and <code>Info.ios.plist</code></p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4744,7 +4791,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-03 22:18:38 +0100
+Last updated 2023-12-04 16:53:25 +0100
 </div>
 </div>
 </body>

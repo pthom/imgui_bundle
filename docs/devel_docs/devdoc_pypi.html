@@ -575,7 +575,8 @@ the wheel build on an Intel Mac may try and fail to load Intel iPPIcv), this is 
 <h3 id="_build_mac_arm64_via_cibuildwheel">Build / Mac arm64 via cibuildwheel</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code><span></span>CIBW_ARCHS_MACOS=&quot;arm64&quot; pipx run cibuildwheel --platform=macos &amp;&amp; say &quot;wheel build finished&quot;
+<pre class="pygments highlight"><code><span></span>rm -rf _skbuild
+CIBW_ARCHS_MACOS=&quot;arm64&quot; pipx run cibuildwheel --platform=macos &amp;&amp; say &quot;wheel build finished&quot;
 
 twine upload wheelhouse/*</code></pre>
 </div>
@@ -617,7 +618,7 @@ password = &#8230;&#8203;api_token&#8230;&#8203;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-10 12:54:40 +0100
+Last updated 2023-11-30 11:43:32 +0100
 </div>
 </div>
 </body>
