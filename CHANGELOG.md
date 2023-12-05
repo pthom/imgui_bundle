@@ -1,7 +1,13 @@
 # v1.1.0
 
-* Support for Application Icon (multiplatform, i.e. macOS, iOS, Windows, Emscripten, Linux):
-  the file `assets/app_settings/icon.png` will be used to generate the app icon for any platform. See assets/ structure below:
+### 3D
+* Added callback `runnerParams.callbacks.CustomBackground`: display any 3D scene in the background of the app: see [doc](https://pthom.github.io/imgui_bundle/quickstart.html#_custom_3d_background)
+  ![Custom background](bindings/imgui_bundle/doc/doc_images/demo_custom_background.jpg)
+
+### App deployment
+* Added support for macOS application bundles
+* Added option to specify where settings are saved: `RunnerParams.iniFolderType` can be set to: `CurrentFolder`, `AppUserConfigFolder`, `DocumentsFolder`, `HomeFolder`, `TempFolder`, `AppExecutableFolder`.
+* Support for Application Icon: the file `assets/app_settings/icon.png` will be used to generate the window icon (C++, Python), and app icon (C++ only) for any platform. See assets structure below:
 ```
 assets/
 ├── world.jpg                         # A custom asset
@@ -13,31 +19,29 @@ assets/
 │         │         └── Info.plist    # macOS and iOS app settings
 │         │                          # (or Info.ios.plist + Info.macos.plist)
 ├── fonts/
-│         ├── DroidSans.ttf           # Default fonts
-│         └── fontawesome-webfont.ttf #     used by HelloImGui
+│         ├── DroidSans.ttf               # Default fonts
+│         └── fontawesome-webfont.ttf     #     used by HelloImGui
 │         ├── Roboto
-│         │         ├── Roboto-Bold.ttf        # Font used by Markdown
-│         │         ├── Roboto-BoldItalic.ttf
-│         │         ├── Roboto-Regular.ttf
-│         │         └── Roboto-RegularItalic.ttf
+│         │    ├── Roboto-Bold.ttf        # Font used by Markdown
+│         │    ├── Roboto-BoldItalic.ttf
+│         │    ├── Roboto-Regular.ttf
+│         │    └── Roboto-RegularItalic.ttf
 │         ├── SourceCodePro-Regular.ttf
 ├── images
 │         └── markdown_broken_image.png
 ```
-* Added support for macOS application bundles
 
-* Added callback `runnerParams.callbacks.CustomBackground`: display any 3D scene in the background of the app: see [doc](https://pthom.github.io/imgui_bundle/quickstart.html#_custom_3d_background)
-  ![Custom background](bindings/imgui_bundle/doc/doc_images/demo_custom_background.jpg)
 
-* Improved ImGui bindings: added bindings for `ImDrawData` and `ImDrawList` arrays
-  (see https://github.com/pthom/imgui_bundle/issues/142)
-
-* Added initial support for backends in full python (à la pyimgui):
+### Python bindings
+* Added initial support for full python backends:
   * see [bindings/imgui_bundle/python_backends](bindings/imgui_bundle/python_backends)
   * see https://github.com/pthom/imgui_bundle/issues/142
   * see full example with glfw3 + OpenGL3: [bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py](bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py)
   * _Note: ImmApp and Hello ImGui provide advanced support for anti-aliased fonts and HighDPI. This is not provided by python backends: you will have to implement it yourself_
+* Improved ImGui bindings: added bindings for `ImDrawData` and `ImDrawList` arrays
+  (see https://github.com/pthom/imgui_bundle/issues/142)
 
+### CMake
 * hello_imgui_add_app and imgui_bundle.add_app can now accept ASSETS_LOCATION as a parameter e.g. `hello_imgui_add_app(my_app file1.cpp file2.cpp ASSETS_LOCATION my_assets)`
 
 

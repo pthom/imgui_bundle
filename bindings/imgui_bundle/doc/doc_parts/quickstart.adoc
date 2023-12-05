@@ -22,5 +22,3 @@ include::quickstart_testengine.adoc[]
 include::quickstart_immvision.adoc[]
 
 include::quickstart_widgets.adoc[]
-
-include::quickstart_settings.adoc[]

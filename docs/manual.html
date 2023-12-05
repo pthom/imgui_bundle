@@ -533,6 +533,8 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="manual.html#_immapp_immediate_app">ImmApp - Immediate App</a>
 </li>
+<li><a href="manual.html#_application_settings">Application Settings</a>
+</li>
 <li><a href="manual.html#_python_alternative_backends">Python: alternative backends</a>
 </li>
 <li><a href="manual.html#_usage_withing_jupyter_notebook">Usage withing jupyter notebook</a>
@@ -888,6 +890,138 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 </div>
 <div class="sect2">
+<h3 id="_application_settings">Application Settings</h3>
+<div class="sect3">
+<h4 id="_settings_location">Settings location</h4>
+<div class="paragraph">
+<p>By default, the settings are stored in a ini file whose named is derived from the window title (i.e. <code>runnerParams.appWindowParams.windowTitle</code>). This is convenient when developing, but not so much when deploying the app.</p>
+</div>
+<div class="paragraph">
+<p>You can finely define where they are stored by filling <code>runnerParams.iniFolderType</code> and <code>runnerParams.iniFilename</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>runnerParams.iniFolderType</strong></p>
+</div>
+<div class="paragraph">
+<p>Choose between: <code>CurrentFolder</code>,<code>AppUserConfigFolder</code>, <code>AppExecutableFolder</code>,<code>HomeFolder</code>, <code>TempFolder</code> and <code>DocumentsFolder</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Note: AppUserConfigFolder corresponds to <code>&#8230;&#8203;\[Username]\AppData\Roaming</code> under Windows, <code>~/.config</code> under Linux, <code>~/Library/Application Support</code> under macOS or iOS
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>runnerParams.iniFilename</strong></p>
+</div>
+<div class="paragraph">
+<p>This will be the name of the ini file in which the settings will be stored.
+It can include a subfolder, in which case it will be created under the folder defined by runnerParams.iniFolderType.</p>
+</div>
+<div class="paragraph">
+<p>Note: if left empty, the name of the ini file will be derived from <code>appWindowParams.windowTitle</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples</strong></p>
+</div>
+<details>
+<summary class="title">Click to expand the examples</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong>C&#43;&#43; example (extract from <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp">demo_docking.cpp</a>)</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-w">    </span><span class="tok-c1">// By default, HelloImGui will save the settings in the current folder.</span>
+<span class="tok-w">    </span><span class="tok-c1">// This is convenient when developing, but not so much when deploying the app.</span>
+<span class="tok-w">    </span><span class="tok-c1">// You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+<span class="tok-w">    </span><span class="tok-c1">//         CurrentFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppUserConfigFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppExecutableFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         HomeFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         TempFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         DocumentsFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: AppUserConfigFolder is:</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+<span class="tok-w">    </span><span class="tok-c1">//         ~/.config under Linux</span>
+<span class="tok-w">    </span><span class="tok-c1">//         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFolderType</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">IniFolderType</span><span class="tok-o">::</span><span class="tok-n">AppUserConfigFolder</span><span class="tok-p">;</span>
+
+<span class="tok-w">    </span><span class="tok-c1">// runnerParams.iniFilename: this will be the name of the ini file in which the settings</span>
+<span class="tok-w">    </span><span class="tok-c1">// will be stored.</span>
+<span class="tok-w">    </span><span class="tok-c1">// In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+<span class="tok-w">    </span><span class="tok-c1">// by runnerParams.iniFolderType.</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: if iniFilename is left empty, the name of the ini file will be derived</span>
+<span class="tok-w">    </span><span class="tok-c1">// from appWindowParams.windowTitle</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFilename</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking_Demo/Docking_demo.ini&quot;</span><span class="tok-p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Python example (extract from <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py">demo_docking.py</a>)</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-w">    </span><span class="tok-cp"># By default, HelloImGui will save the settings in the current folder.</span>
+<span class="tok-w">    </span><span class="tok-cp"># This is convenient when developing, but not so much when deploying the app.</span>
+<span class="tok-w">    </span><span class="tok-cp"># You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+<span class="tok-w">    </span><span class="tok-cp">#         current_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         app_user_config_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         app_executable_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         home_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         temp_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         documents_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#</span>
+<span class="tok-w">    </span><span class="tok-cp"># Note: app_user_config_folder is:</span>
+<span class="tok-w">    </span><span class="tok-cp">#         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+<span class="tok-w">    </span><span class="tok-cp">#         ~/.config under Linux</span>
+<span class="tok-w">    </span><span class="tok-cp">#         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+<span class="tok-w">    </span><span class="tok-n">runner_params</span><span class="tok-p">.</span><span class="tok-n">ini_folder_type</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">hello_imgui</span><span class="tok-p">.</span><span class="tok-n">IniFolderType</span><span class="tok-p">.</span><span class="tok-n">app_user_config_folder</span>
+
+<span class="tok-w">    </span><span class="tok-cp"># runnerParams.ini_filename: this will be the name of the ini file in which the settings</span>
+<span class="tok-w">    </span><span class="tok-cp"># will be stored.</span>
+<span class="tok-w">    </span><span class="tok-cp"># In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+<span class="tok-w">    </span><span class="tok-cp"># by runnerParams.ini_folder_type.</span>
+<span class="tok-w">    </span><span class="tok-cp">#</span>
+<span class="tok-w">    </span><span class="tok-cp"># Note: if ini_filename is left empty, the name of the ini file will be derived</span>
+<span class="tok-w">    </span><span class="tok-cp"># from app_window_params.window_title</span>
+<span class="tok-w">    </span><span class="tok-n">runner_params</span><span class="tok-p">.</span><span class="tok-n">ini_filename</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking_Demo/Docking_demo.ini&quot;</span></code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect3">
+<h4 id="_settings_content">Settings content</h4>
+<div class="paragraph">
+<p>The settings file contains, standard ImGui settings (window position, size, etc.), as well as additional settings defined by HelloImGui:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Application status: app window location, opened windows, status bar settings, etc. See members named <code>remember_xxx</code> in the <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello Imgui API</a> for a complete list.</p>
+</li>
+<li>
+<p>Settings for each application layout (see <a href="https://www.youtube.com/watch?v=XKxmz__F4ow">video</a> for an example)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_store_custom_settings">Store custom settings</h4>
+<div class="paragraph">
+<p>You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file">related doc</a> for more details.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_python_alternative_backends">Python: alternative backends</h3>
 <div class="paragraph">
 <p>HelloImGui and ImmApp use glfw as a default backend.</p>
@@ -1207,7 +1341,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-05 11:59:31 +0100
+Last updated 2023-12-05 12:14:07 +0100
 </div>
 </div>
 </body>
