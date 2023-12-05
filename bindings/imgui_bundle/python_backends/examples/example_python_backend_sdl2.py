@@ -4,6 +4,9 @@
 # See full python backends implementations here:
 # https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
 
+# You will need to install sdl2:
+#    pip install pysdl2 pysdl2-dll
+
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl_backend import SDL2Renderer
 import OpenGL.GL as gl  # type: ignore

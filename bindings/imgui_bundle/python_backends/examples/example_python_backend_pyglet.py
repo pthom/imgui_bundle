@@ -4,6 +4,9 @@
 # See full python backends implementations here:
 # https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
 
+# You will need to install pyglet:
+#    pip install pyglet
+
 from __future__ import absolute_import
 from imgui_bundle import imgui
 from imgui_bundle.python_backends import pyglet_backend
