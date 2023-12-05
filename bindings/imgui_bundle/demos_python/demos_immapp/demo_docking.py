@@ -574,7 +574,27 @@ def main():
     runner_params.alternative_docking_layouts = create_alternative_layouts(app_state)
 
     #
-    # Part 3: Run the app
+    # Part 3: Where to save the app settings
+    #
+    # By default, HelloImGui will save the settings in the current folder. This is convenient when developing,
+    # but not so much when deploying the app.
+    #     You can tell HelloImGui to save the settings in a specific folder: choose between
+    #         current_folder
+    #         app_user_config_folder
+    #         app_executable_folder
+    #         home_folder
+    #         temp_folder
+    #         documents_folder
+    #
+    #     Note: app_user_config_folder is:
+    #         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    #         ~/.config under Linux
+    #         "~/Library/Application Support" under macOS or iOS
+    runner_params.ini_folder_type = hello_imgui.IniFolderType.app_user_config_folder
+    runner_params.ini_filename = "Docking_Demo/Docking_demo.ini"
+
+    #
+    # Part 4: Run the app
     #
     hello_imgui.run(runner_params)
 

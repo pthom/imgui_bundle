@@ -543,7 +543,30 @@ int main(int, char**)
     // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 
     //###############################################################################################
-    // Part 3: Run the app
+    // Part 3: Where to save the app settings
+    //###############################################################################################
+    // By default, HelloImGui will save the settings in the current folder. This is convenient when developing,
+    // but not so much when deploying the app.
+    //     You can tell HelloImGui to save the settings in a specific folder: choose between
+    //         CurrentFolder
+    //         AppUserConfigFolder
+    //         AppExecutableFolder
+    //         HomeFolder
+    //         TempFolder
+    //         DocumentsFolder
+    //
+    //     Note: AppUserConfigFolder is:
+    //         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    //         ~/.config under Linux
+    //         "~/Library/Application Support" under macOS or iOS
+    runnerParams.iniFolderType = HelloImGui::IniFolderType::AppUserConfigFolder;
+    // This will be the name of the ini file in which the settings will be stored
+    // The subdirectory Docking_Demo will be created under the folder defined by runnerParams.iniFolderType
+    runnerParams.iniFilename = "Docking_Demo/Docking_demo.ini";
+
+
+    //###############################################################################################
+    // Part 4: Run the app
     //###############################################################################################
     HelloImGui::Run(runnerParams); // Note: with ImGuiBundle, it is also possible to use ImmApp::Run(...)
 
