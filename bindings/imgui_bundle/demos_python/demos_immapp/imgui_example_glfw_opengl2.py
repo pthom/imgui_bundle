@@ -1,3 +1,8 @@
+# An example of using Dear ImGui with Glfw in python
+# Here, the backend rendering is implemented in C++: see calls to C++ native functions:
+#   imgui.backends.glfw_xxxx()
+#
+
 # imgui_bundle can be used to run imgui with an almost line by line translation from C++ to python
 #
 # This file a direct adaptation of an imgui example (imgui/examples/example_glfw_opengl2/main.cpp)

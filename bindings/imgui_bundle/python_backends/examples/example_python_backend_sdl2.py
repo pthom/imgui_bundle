@@ -1,6 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# ruff: noqa: F405, F403
+# An example of using Dear ImGui with SDL using a *full python* backend.
+# This mode is inspired from [pyimgui](https://github.com/pyimgui/pyimgui) backends, and is still experimental.
+#
+# See full python backends implementations here:
+# https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl_backend import SDL2Renderer

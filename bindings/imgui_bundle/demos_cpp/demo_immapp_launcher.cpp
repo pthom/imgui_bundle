@@ -35,13 +35,32 @@ std::function<void()> makeGui()
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
         DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
         DemoApp{"haiku_implot_heart", "Share some love for ImGui and ImPlot"},
-        DemoApp{
-            "imgui_example_glfw_opengl3",
-            "Python translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. Demonstrates how to port from C++ to Python."
-        },
-        DemoApp{"imgui_example_glfw_opengl2","Python translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui"},
         DemoApp{"demo_drag_and_drop", "Drag and drop demo"},
         DemoApp{"demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"},
+        DemoApp{
+            "imgui_example_glfw_opengl3",
+            "Python translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
+            "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
+        },
+        DemoApp{
+            "imgui_example_glfw_opengl2",
+            "Python translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui. "
+            "(here, *backend rendering is implemented in C++*)"
+            ,
+        },
+        DemoApp{
+            "example_python_backend_glfw3",
+            "How to use ImGui with GLFW3 using a *full python* backend",
+        },
+        DemoApp{
+            "example_python_backend_sdl2",
+            "How to use ImGui with SDL using a *full python* backend",
+        },
+        DemoApp{
+            "example_python_backend_pyglet",
+            "How to use ImGui with pyglet using a *full python* backend",
+        },
+
     };
 
     DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");
