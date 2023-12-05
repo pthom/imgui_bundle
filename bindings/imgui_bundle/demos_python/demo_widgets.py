@@ -409,6 +409,8 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    from imgui_bundle import immapp
+    from imgui_bundle.demos_python import demo_utils
+    demo_utils.set_hello_imgui_demo_assets_folder()
 
+    from imgui_bundle import immapp
     immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore

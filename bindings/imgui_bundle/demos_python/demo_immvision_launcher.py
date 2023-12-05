@@ -3,9 +3,7 @@ from imgui_bundle import imgui, immvision, immapp, imgui_md
 import importlib.util
 
 HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
-from imgui_bundle.demos_python import (  # noqa: E402
-    demo_utils,
-)  # this will set the assets folder
+from imgui_bundle.demos_python import demo_utils  # noqa: E402
 
 
 HAS_OPENCV = importlib.util.find_spec("cv2") is not None
@@ -24,26 +22,25 @@ def demo_gui():
     elif not HAS_OPENCV:
         imgui_md.render_unindented(
             """
-    ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
+            ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
 
-    Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
+            Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
 
-    * To install OpenCv standard package:
-    ```bash
-    pip install opencv-python
-    ```
+            * To install OpenCv standard package:
+            ```bash
+            pip install opencv-python
+            ```
 
-    * To install OpenCv package with contrib modules
-    ```bash
-    pip install opencv-contrib-python
-    ```
+            * To install OpenCv package with contrib modules
+            ```bash
+            pip install opencv-contrib-python
+            ```
 
-    To install OpenCv package headless (no cv.imshow, etc., for server installations)
-    ```bash
-    pip install opencv-python-headless
-    ```
-
-    """
+            To install OpenCv package headless (no cv.imshow, etc., for server installations)
+            ```bash
+            pip install opencv-python-headless
+            ```
+        """
         )
         return
 
@@ -80,4 +77,5 @@ def main():
 
 
 if __name__ == "__main__":
+    demo_utils.set_hello_imgui_demo_assets_folder()
     main()

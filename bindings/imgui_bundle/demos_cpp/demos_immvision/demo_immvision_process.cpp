@@ -119,11 +119,11 @@ struct AppStateProcess {
         imageSobel = ComputeSobel(image, sobelParams);
 
         immvisionParams = ImmVision::ImageParams();
-        immvisionParams.ImageDisplaySize = cv::Size(350, 0);
+        immvisionParams.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParams.ZoomKey = "z";
 
         immvisionParamsSobel = ImmVision::ImageParams();
-        immvisionParamsSobel.ImageDisplaySize = cv::Size(350, 0);
+        immvisionParamsSobel.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParamsSobel.ZoomKey = "z";
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
@@ -139,7 +139,8 @@ void demo_immvision_process()
     ImGuiMd::RenderUnindented(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
-        Apply Colormaps to the filtered image in the options tab.
+        * Pan and zoom the image with the mouse and the mouse wheel
+        * Apply Colormaps to the filtered image in the options tab.
     )");
     ImGui::Separator();
 

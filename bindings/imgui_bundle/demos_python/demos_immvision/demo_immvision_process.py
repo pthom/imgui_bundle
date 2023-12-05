@@ -113,11 +113,11 @@ class AppState:
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
         self.immvision_params = immvision.ImageParams()
-        self.immvision_params.image_display_size = (350, 0)
+        self.immvision_params.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params.zoom_key = "z"
 
         self.immvision_params_sobel = immvision.ImageParams()
-        self.immvision_params_sobel.image_display_size = (350, 0)
+        self.immvision_params_sobel.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params_sobel.zoom_key = "z"
         self.immvision_params_sobel.show_options_panel = True
 
@@ -136,7 +136,8 @@ def demo_gui():
         """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
-        Apply Colormaps to the filtered image in the options tab.
+        * Pan and zoom the image with the mouse and the mouse wheel
+        * Apply Colormaps to the filtered image in the options tab.
         """
     )
     imgui.separator()
