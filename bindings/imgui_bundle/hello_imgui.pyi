@@ -1538,6 +1538,53 @@ class BackendType(enum.Enum):
     # }
     qt = enum.auto()  # (= 3)
 
+class IniFolderType(enum.Enum):
+    """IniFolderType: "Where to store the ini file for the application settings"
+    Note: RunnerParams contains the following members, which are used to compute the ini file location:
+              iniFolderType                   (IniFolderType::CurrentFolder by default)
+              iniFilename                     (empty string by default)
+              iniFilename_useAppWindowTitle   (True by default: iniFilename is derived from appWindowParams.windowTitle)
+    iniFilename may contain a subfolder (which will be created inside the iniFolderType folder if needed)
+    """
+
+    # CurrentFolder,    /* original C++ signature */
+    # CurrentFolder: the folder where the application is executed
+    # (convenient for development, but not recommended for production)
+    current_folder = enum.auto()  # (= 0)
+
+    # AppUserConfigFolder,    /* original C++ signature */
+    # AppUserConfigFolder:
+    #      AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming under windows)
+    #      ~/.config under Linux
+    #      "~/Library/Application Support" under macOS
+    # (recommended for production, if settings do not need to be easily accessible by the user)
+    app_user_config_folder = enum.auto()  # (= 1)
+
+    # AppExecutableFolder,    /* original C++ signature */
+    # AppExecutableFolder: the folder where the application executable is located
+    # (this may be different from CurrentFolder if the application is launched from a shortcut)
+    # (convenient for development, but not recommended for production)
+    app_executable_folder = enum.auto()  # (= 2)
+
+    # HomeFolder,    /* original C++ signature */
+    # HomeFolder: the user home folder
+    # (recommended for production, if settings need to be easily accessible by the user)
+    home_folder = enum.auto()  # (= 3)
+
+    # DocumentsFolder,    /* original C++ signature */
+    # DocumentsFolder: the user documents folder
+    documents_folder = enum.auto()  # (= 4)
+
+    # TempFolder    /* original C++ signature */
+    # }
+    # TempFolder: the system temp folder
+    temp_folder = enum.auto()  # (= 5)
+
+# std::string IniFolderLocation(IniFolderType iniFolderType);    /* original C++ signature */
+def ini_folder_location(ini_folder_type: IniFolderType) -> str:
+    """Returns the path corresponding to the given IniFolderType"""
+    pass
+
 class FpsIdling:
     """*
      @@md#FpsIdling
@@ -1607,13 +1654,20 @@ class RunnerParams:
     * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
     * `useImGuiTestEngine`: _bool, default=false_.
       Set this to True if you intend to use imgui_test_engine (please read note below)
+
+    * `iniFolderType`: _IniFolderType, default = IniFolderType::CurrentFolder_
+      Sets the folder where imgui will save its params.
+      (possible values are: CurrentFolder, AppUserConfigFolder, DocumentsFolder, HomeFolder, TempFolder, AppExecutableFolder)
+       AppUserConfigFolder is [Home]/AppData/Roaming under Windows, ~/.config under Linux, ~/Library/Application Support"
+       under macOS)
     * `iniFilename`: _string, default = ""_
-      Sets the ini filename under which imgui will save its params. Path is relative to the current app working dir.
-      If empty, then the ini file name will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
-      Note: if appWindowParams.restorePreviousGeometry is True, then HelloImGui will also store the app window size and position into "iniFilename + _appWindow.ini"
+      Sets the ini filename under which imgui will save its params. Its path is relative to the path given by iniFolderType,
+      and can include a subfolder (which will be created if needed).
+      If iniFilename empty, then it will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
     * `iniFilename_useAppWindowTitle`: _bool, default = true_.
-      Shall the iniFilename be derived from appWindowParams.windowTitle if empty
-    * `appShallExit`: _bool, default=false_.
+      Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
+
+     * `appShallExit`: _bool, default=false_.
       During execution, set this to True to exit the app.
       _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
       shall not exit._
@@ -1655,8 +1709,10 @@ class RunnerParams:
     # bool useImGuiTestEngine = false;    /* original C++ signature */
     use_imgui_test_engine: bool = False
 
+    # IniFolderType iniFolderType = IniFolderType::CurrentFolder;    /* original C++ signature */
+    ini_folder_type: IniFolderType = IniFolderType.current_folder
     # std::string iniFilename = "";    /* original C++ signature */
-    ini_filename: str = ""
+    ini_filename: str = ""  # relative to iniFolderType
     # bool iniFilename_useAppWindowTitle = true;    /* original C++ signature */
     ini_filename_use_app_window_title: bool = True
 
@@ -1664,7 +1720,7 @@ class RunnerParams:
     app_shall_exit: bool = False
     # int emscripten_fps = 0;    /* original C++ signature */
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1677,6 +1733,7 @@ class RunnerParams:
         backend_type: BackendType = BackendType.first_available,
         fps_idling: FpsIdling = FpsIdling(),
         use_imgui_test_engine: bool = False,
+        ini_folder_type: IniFolderType = IniFolderType.current_folder,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,
         app_shall_exit: bool = False,
