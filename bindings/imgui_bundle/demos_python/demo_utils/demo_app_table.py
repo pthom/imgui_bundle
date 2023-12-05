@@ -22,6 +22,7 @@ def _read_code(filepath: str) -> str:
 class DemoApp:
     demo_file: str
     explanation: str
+    is_python_backend_demo: bool = False
 
 
 class DemoAppTable:
@@ -31,9 +32,14 @@ class DemoAppTable:
     current_app: DemoApp
     demo_python_folder: str
     demo_cpp_folder: str
+    demo_python_backend_folder: str
 
     def __init__(
-        self, demo_apps: List[DemoApp], demo_python_folder: str, demo_cpp_folder: str
+            self,
+            demo_apps: List[DemoApp],
+            demo_python_folder: str,
+            demo_cpp_folder: str,
+            demo_python_backend_folder: str,
     ):
         self.snippet_cpp = immapp.snippets.SnippetData()
         self.snippet_cpp.displayed_filename = "C++ code"
@@ -48,10 +54,12 @@ class DemoAppTable:
         self.demo_apps = demo_apps
         self.demo_python_folder = demo_python_folder
         self.demo_cpp_folder = demo_cpp_folder
+        self.demo_python_backend_folder = demo_python_backend_folder
         self._set_demo_app(self.demo_apps[0])
 
     def _demo_python_file_path(self, demo_app: DemoApp) -> str:
-        return self.demo_python_folder + "/" + demo_app.demo_file + ".py"
+        folder = self.demo_python_backend_folder if demo_app.is_python_backend_demo else self.demo_python_folder
+        return folder + "/" + demo_app.demo_file + ".py"
 
     def _demo_cpp_file_path(self, demo_app: DemoApp) -> str:
         return self.demo_cpp_folder + "/" + demo_app.demo_file + ".cpp"

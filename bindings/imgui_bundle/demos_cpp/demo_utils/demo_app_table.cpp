@@ -14,8 +14,9 @@ std::string _ReadCode(const std::string& filePath)
 }
 
 DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::string &demoPythonFolder,
-                           const std::string &demoCppFolder)
-    : _demoApps(demoApps), _demoPythonFolder(demoPythonFolder), _demoCppFolder(demoCppFolder)
+                           const std::string &demoCppFolder, const std::string& demoPythonBackendFolder)
+    : _demoApps(demoApps),
+    _demoPythonFolder(demoPythonFolder), _demoCppFolder(demoCppFolder), _demoPythonBackendFolder(demoPythonBackendFolder)
 {
     _snippetCpp.DisplayedFilename = "C++ Code";
     _snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
@@ -30,7 +31,8 @@ DemoAppTable::DemoAppTable(const std::vector<DemoApp> &demoApps, const std::stri
 
 std::string DemoAppTable::_DemoPythonFilePath(const DemoApp &demoApp)
 {
-    return _demoPythonFolder + "/" + demoApp.DemoFile + ".py";
+    std::string folder = demoApp.IsPythonBackendDemo ? _demoPythonBackendFolder : _demoPythonFolder;
+    return folder + "/" + demoApp.DemoFile + ".py";
 }
 
 std::string DemoAppTable::_DemoCppFilePath(const DemoApp &demoApp)

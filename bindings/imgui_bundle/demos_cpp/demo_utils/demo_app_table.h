@@ -8,6 +8,7 @@ struct DemoApp
 {
     std::string DemoFile;
     std::string Explanation;
+    bool IsPythonBackendDemo = false;
 };
 
 
@@ -15,7 +16,7 @@ class DemoAppTable
 {
 public:
     DemoAppTable(const std::vector<DemoApp> &demoApps, const std::string &demoPythonFolder,
-                 const std::string &demo_cpp_folder);
+                 const std::string &demo_cpp_folder, const std::string &demoPythonBackendFolder);
 
     void Gui();
 
@@ -30,4 +31,5 @@ private:
     DemoApp _currentApp;
     std::string _demoPythonFolder;
     std::string _demoCppFolder;
+    std::string _demoPythonBackendFolder;
 };

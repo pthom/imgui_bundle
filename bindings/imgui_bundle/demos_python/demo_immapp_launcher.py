@@ -71,14 +71,17 @@ def make_gui() -> GuiFunction:
         DemoApp(
             "example_python_backend_glfw3",
             "How to use ImGui with GLFW3 using a *full python* backend",
+            is_python_backend_demo=True,
         ),
         DemoApp(
             "example_python_backend_sdl2",
             "How to use ImGui with SDL using a *full python* backend",
+            is_python_backend_demo=True,
         ),
         DemoApp(
             "example_python_backend_pyglet",
             "How to use ImGui with pyglet using a *full python* backend",
+            is_python_backend_demo=True,
         ),
     ]
 
@@ -87,7 +90,10 @@ def make_gui() -> GuiFunction:
     demo_cpp_folder = os.path.abspath(
         demo_python_folder + "/../../demos_cpp/demos_immapp"
     )
-    demo_app_table = DemoAppTable(demo_apps, demo_python_folder, demo_cpp_folder)
+    demo_python_backend_folder = os.path.abspath(
+        demo_python_folder + "/../../python_backends/examples"
+    )
+    demo_app_table = DemoAppTable(demo_apps, demo_python_folder, demo_cpp_folder, demo_python_backend_folder)
 
     def gui():
         nonlocal demo_apps

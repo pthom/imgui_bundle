@@ -51,19 +51,24 @@ std::function<void()> makeGui()
         DemoApp{
             "example_python_backend_glfw3",
             "How to use ImGui with GLFW3 using a *full python* backend",
+            true
         },
         DemoApp{
             "example_python_backend_sdl2",
             "How to use ImGui with SDL using a *full python* backend",
+            true
         },
         DemoApp{
             "example_python_backend_pyglet",
             "How to use ImGui with pyglet using a *full python* backend",
+            true
         },
 
     };
-
-    DemoAppTable demoAppTable(demoApps, DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/");
+    std::string demoPythonBackendFolder = DemoPythonFolder() + + "/../python_backends/examples";
+    DemoAppTable demoAppTable(
+        demoApps,
+        DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/", demoPythonBackendFolder);
     auto gui = [demoAppTable]() mutable
     {
         ImGuiMd::RenderUnindented(DOC);
