@@ -519,9 +519,6 @@ def main():
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
-
-    # Note: by setting the window title, we also set the name of the ini files in which the settings for the user
-    # layout will be stored: Docking_demo.ini
     runner_params.app_window_params.window_title = "Docking demo"
 
     runner_params.imgui_window_params.menu_app_title = "Docking App"
@@ -547,7 +544,7 @@ def main():
     runner_params.imgui_window_params.show_menu_bar = (
         True  # We use the default menu of Hello ImGui
     )
-    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
+    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu & App menu
     runner_params.callbacks.show_menus = show_menu_gui
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
 
@@ -565,8 +562,8 @@ def main():
     runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     )
-    # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
-    # in order to put their content into new native windows
+    # In this demo, we also demonstrate multiple viewports: you can drag windows outside
+    # out the main window in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
     # Set the default layout (this contains the default DockingSplits and DockableWindows)
     runner_params.docking_params = create_default_layout(app_state)
@@ -576,9 +573,10 @@ def main():
     #
     # Part 3: Where to save the app settings
     #
-    # By default, HelloImGui will save the settings in the current folder. This is convenient when developing,
-    # but not so much when deploying the app.
-    #     You can tell HelloImGui to save the settings in a specific folder: choose between
+    # tag::app_settings[]
+    # By default, HelloImGui will save the settings in the current folder.
+    # This is convenient when developing, but not so much when deploying the app.
+    # You can tell HelloImGui to save the settings in a specific folder: choose between
     #         current_folder
     #         app_user_config_folder
     #         app_executable_folder
@@ -586,12 +584,21 @@ def main():
     #         temp_folder
     #         documents_folder
     #
-    #     Note: app_user_config_folder is:
+    # Note: app_user_config_folder is:
     #         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
     #         ~/.config under Linux
     #         "~/Library/Application Support" under macOS or iOS
     runner_params.ini_folder_type = hello_imgui.IniFolderType.app_user_config_folder
+
+    # runnerParams.ini_filename: this will be the name of the ini file in which the settings
+    # will be stored.
+    # In this example, the subdirectory Docking_Demo will be created under the folder defined
+    # by runnerParams.ini_folder_type.
+    #
+    # Note: if ini_filename is left empty, the name of the ini file will be derived
+    # from app_window_params.window_title
     runner_params.ini_filename = "Docking_Demo/Docking_demo.ini"
+    # end::app_settings[]
 
     #
     # Part 4: Run the app

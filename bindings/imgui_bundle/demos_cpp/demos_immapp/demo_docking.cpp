@@ -480,9 +480,9 @@ int main(int, char**)
 {
     ChdirBesideAssetsFolder();
 
-    //###############################################################################################
-    // Part 1: Define the application state, fill the status and menu bars, and load additional font
-    //###############################################################################################
+    //#############################################################################################
+    // Part 1: Define the application state, fill the status and menu bars, load additional font
+    //#############################################################################################
 
     // Our application state
     AppState appState;
@@ -490,10 +490,7 @@ int main(int, char**)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
 
-    // Note: by setting the window title, we also set the name of the ini files in which the settings for the user
-    // layout will be stored: Docking_demo.ini
     runnerParams.appWindowParams.windowTitle = "Docking demo";
-
     runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
@@ -525,9 +522,9 @@ int main(int, char**)
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
-    //###############################################################################################
+    //#############################################################################################
     // Part 2: Define the application layout and windows
-    //###############################################################################################
+    //#############################################################################################
 
     // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
@@ -542,12 +539,13 @@ int main(int, char**)
     //     (otherwise, modifications to the layout applied by the user layout will be remembered)
     // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 
-    //###############################################################################################
+    //#############################################################################################
     // Part 3: Where to save the app settings
-    //###############################################################################################
-    // By default, HelloImGui will save the settings in the current folder. This is convenient when developing,
-    // but not so much when deploying the app.
-    //     You can tell HelloImGui to save the settings in a specific folder: choose between
+    //#############################################################################################
+    // tag::app_settings[]
+    // By default, HelloImGui will save the settings in the current folder.
+    // This is convenient when developing, but not so much when deploying the app.
+    // You can tell HelloImGui to save the settings in a specific folder: choose between
     //         CurrentFolder
     //         AppUserConfigFolder
     //         AppExecutableFolder
@@ -555,19 +553,26 @@ int main(int, char**)
     //         TempFolder
     //         DocumentsFolder
     //
-    //     Note: AppUserConfigFolder is:
+    // Note: AppUserConfigFolder is:
     //         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
     //         ~/.config under Linux
     //         "~/Library/Application Support" under macOS or iOS
     runnerParams.iniFolderType = HelloImGui::IniFolderType::AppUserConfigFolder;
-    // This will be the name of the ini file in which the settings will be stored
-    // The subdirectory Docking_Demo will be created under the folder defined by runnerParams.iniFolderType
+
+    // runnerParams.iniFilename: this will be the name of the ini file in which the settings
+    // will be stored.
+    // In this example, the subdirectory Docking_Demo will be created under the folder defined
+    // by runnerParams.iniFolderType.
+    //
+    // Note: if iniFilename is left empty, the name of the ini file will be derived
+    // from appWindowParams.windowTitle
     runnerParams.iniFilename = "Docking_Demo/Docking_demo.ini";
+    // end::app_settings[]
 
 
-    //###############################################################################################
+    //#############################################################################################
     // Part 4: Run the app
-    //###############################################################################################
+    //#############################################################################################
     HelloImGui::Run(runnerParams); // Note: with ImGuiBundle, it is also possible to use ImmApp::Run(...)
 
 

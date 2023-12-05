@@ -23,4 +23,4 @@ include::quickstart_immvision.adoc[]
 
 include::quickstart_widgets.adoc[]
 
-include::quickstart_other.adoc[]
+include::quickstart_settings.adoc[]

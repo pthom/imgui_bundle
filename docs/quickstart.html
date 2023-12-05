@@ -539,9 +539,9 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="quickstart.html#_display_analyze_images_with_immvision">Display &amp; analyze images with ImmVision</a>
 </li>
-<li><a href="quickstart.html#_widgets_lots_of_widgets">Widgets, lots of widgets</a>
+<li><a href="quickstart.html#_widgets">Widgets</a>
 </li>
-<li><a href="quickstart.html#_and_many_more">And many more!</a>
+<li><a href="quickstart.html#_application_settings">Application Settings</a>
 </li>
 </ul>
 </li>
@@ -863,7 +863,7 @@ The typical layout of an assets folder looks like this:</p>
 <summary class="title">Click to see its source code in C&#43;&#43;</summary>
 <div class="content">
 <div class="paragraph">
-<p>C&#43;&#43;</p>
+<p>(<a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp">view on GitHub</a>)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1137,7 +1137,7 @@ The typical layout of an assets folder looks like this:</p>
 <summary class="title">Click to see its source code in Python</summary>
 <div class="content">
 <div class="paragraph">
-<p>Python:</p>
+<p>(<a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py">view on GitHub</a>)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1948,9 +1948,9 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-p">{</span>
 <span class="tok-w">    </span><span class="tok-n">ChdirBesideAssetsFolder</span><span class="tok-p">();</span>
 
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
-<span class="tok-w">    </span><span class="tok-c1">// Part 1: Define the application state, fill the status and menu bars, and load additional font</span>
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">// Part 1: Define the application state, fill the status and menu bars, load additional font</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 
 <span class="tok-w">    </span><span class="tok-c1">// Our application state</span>
 <span class="tok-w">    </span><span class="tok-n">AppState</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">;</span>
@@ -1958,10 +1958,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-c1">// Hello ImGui params (they hold the settings as well as the Gui callbacks)</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RunnerParams</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">;</span>
 
-<span class="tok-w">    </span><span class="tok-c1">// Note: by setting the window title, we also set the name of the ini files in which the settings for the user</span>
-<span class="tok-w">    </span><span class="tok-c1">// layout will be stored: Docking_demo.ini</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">appWindowParams</span><span class="tok-p">.</span><span class="tok-n">windowTitle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking demo&quot;</span><span class="tok-p">;</span>
-
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">menuAppTitle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking App&quot;</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">appWindowParams</span><span class="tok-p">.</span><span class="tok-n">windowGeometry</span><span class="tok-p">.</span><span class="tok-n">size</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-mi">1000</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">900</span><span class="tok-p">};</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">appWindowParams</span><span class="tok-p">.</span><span class="tok-n">restorePreviousGeometry</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
@@ -1993,9 +1990,9 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">PostInit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w">   </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">LoadMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">BeforeExit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">SaveMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
 
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 <span class="tok-w">    </span><span class="tok-c1">// Part 2: Define the application layout and windows</span>
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 
 <span class="tok-w">    </span><span class="tok-c1">// First, tell HelloImGui that we want full screen dock space (this will create &quot;MainDockSpace&quot;)</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">defaultImGuiWindowType</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DefaultImGuiWindowType</span><span class="tok-o">::</span><span class="tok-n">ProvideFullScreenDockSpace</span><span class="tok-p">;</span>
@@ -2010,9 +2007,40 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-c1">//     (otherwise, modifications to the layout applied by the user layout will be remembered)</span>
 <span class="tok-w">    </span><span class="tok-c1">// runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;</span>
 
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
-<span class="tok-w">    </span><span class="tok-c1">// Part 3: Run the app</span>
-<span class="tok-w">    </span><span class="tok-c1">//###############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">// Part 3: Where to save the app settings</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">// tag::app_settings[]</span>
+<span class="tok-w">    </span><span class="tok-c1">// By default, HelloImGui will save the settings in the current folder.</span>
+<span class="tok-w">    </span><span class="tok-c1">// This is convenient when developing, but not so much when deploying the app.</span>
+<span class="tok-w">    </span><span class="tok-c1">// You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+<span class="tok-w">    </span><span class="tok-c1">//         CurrentFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppUserConfigFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppExecutableFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         HomeFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         TempFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         DocumentsFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: AppUserConfigFolder is:</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+<span class="tok-w">    </span><span class="tok-c1">//         ~/.config under Linux</span>
+<span class="tok-w">    </span><span class="tok-c1">//         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFolderType</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">IniFolderType</span><span class="tok-o">::</span><span class="tok-n">AppUserConfigFolder</span><span class="tok-p">;</span>
+
+<span class="tok-w">    </span><span class="tok-c1">// runnerParams.iniFilename: this will be the name of the ini file in which the settings</span>
+<span class="tok-w">    </span><span class="tok-c1">// will be stored.</span>
+<span class="tok-w">    </span><span class="tok-c1">// In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+<span class="tok-w">    </span><span class="tok-c1">// by runnerParams.iniFolderType.</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: if iniFilename is left empty, the name of the ini file will be derived</span>
+<span class="tok-w">    </span><span class="tok-c1">// from appWindowParams.windowTitle</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFilename</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking_Demo/Docking_demo.ini&quot;</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// end::app_settings[]</span>
+
+
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
+<span class="tok-w">    </span><span class="tok-c1">// Part 4: Run the app</span>
+<span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// Note: with ImGuiBundle, it is also possible to use ImmApp::Run(...)</span>
 
 
@@ -2551,9 +2579,6 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
     <span class="tok-c1"># Hello ImGui params (they hold the settings as well as the Gui callbacks)</span>
     <span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">()</span>
-
-    <span class="tok-c1"># Note: by setting the window title, we also set the name of the ini files in which the settings for the user</span>
-    <span class="tok-c1"># layout will be stored: Docking_demo.ini</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">app_window_params</span><span class="tok-o">.</span><span class="tok-n">window_title</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Docking demo&quot;</span>
 
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">menu_app_title</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Docking App&quot;</span>
@@ -2579,7 +2604,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">show_menu_bar</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
         <span class="tok-kc">True</span>  <span class="tok-c1"># We use the default menu of Hello ImGui</span>
     <span class="tok-p">)</span>
-    <span class="tok-c1"># fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu</span>
+    <span class="tok-c1"># fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu &amp; App menu</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_menus</span> <span class="tok-o">=</span> <span class="tok-n">show_menu_gui</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_app_menu_items</span> <span class="tok-o">=</span> <span class="tok-n">show_app_menu_items</span>
 
@@ -2597,8 +2622,8 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">default_imgui_window_type</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
         <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DefaultImGuiWindowType</span><span class="tok-o">.</span><span class="tok-n">provide_full_screen_dock_space</span>
     <span class="tok-p">)</span>
-    <span class="tok-c1"># In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window</span>
-    <span class="tok-c1"># in order to put their content into new native windows</span>
+    <span class="tok-c1"># In this demo, we also demonstrate multiple viewports: you can drag windows outside</span>
+    <span class="tok-c1"># out the main window in order to put their content into new native windows</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">enable_viewports</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
     <span class="tok-c1"># Set the default layout (this contains the default DockingSplits and DockableWindows)</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">docking_params</span> <span class="tok-o">=</span> <span class="tok-n">create_default_layout</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
@@ -2606,7 +2631,37 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">alternative_docking_layouts</span> <span class="tok-o">=</span> <span class="tok-n">create_alternative_layouts</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
 
     <span class="tok-c1">#</span>
-    <span class="tok-c1"># Part 3: Run the app</span>
+    <span class="tok-c1"># Part 3: Where to save the app settings</span>
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># tag::app_settings[]</span>
+    <span class="tok-c1"># By default, HelloImGui will save the settings in the current folder.</span>
+    <span class="tok-c1"># This is convenient when developing, but not so much when deploying the app.</span>
+    <span class="tok-c1"># You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+    <span class="tok-c1">#         current_folder</span>
+    <span class="tok-c1">#         app_user_config_folder</span>
+    <span class="tok-c1">#         app_executable_folder</span>
+    <span class="tok-c1">#         home_folder</span>
+    <span class="tok-c1">#         temp_folder</span>
+    <span class="tok-c1">#         documents_folder</span>
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># Note: app_user_config_folder is:</span>
+    <span class="tok-c1">#         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+    <span class="tok-c1">#         ~/.config under Linux</span>
+    <span class="tok-c1">#         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">ini_folder_type</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">IniFolderType</span><span class="tok-o">.</span><span class="tok-n">app_user_config_folder</span>
+
+    <span class="tok-c1"># runnerParams.ini_filename: this will be the name of the ini file in which the settings</span>
+    <span class="tok-c1"># will be stored.</span>
+    <span class="tok-c1"># In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+    <span class="tok-c1"># by runnerParams.ini_folder_type.</span>
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># Note: if ini_filename is left empty, the name of the ini file will be derived</span>
+    <span class="tok-c1"># from app_window_params.window_title</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">ini_filename</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Docking_Demo/Docking_demo.ini&quot;</span>
+    <span class="tok-c1"># end::app_settings[]</span>
+
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># Part 4: Run the app</span>
     <span class="tok-c1">#</span>
     <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
 
@@ -3551,10 +3606,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </details>
 </div>
 <div class="sect2">
-<h3 id="_widgets_lots_of_widgets">Widgets, lots of widgets</h3>
-<div class="paragraph">
-<p><strong>Dear ImGui Widgets</strong></p>
-</div>
+<h3 id="_widgets">Widgets</h3>
+<div class="sect3">
+<h4 id="_dear_imgui_widgets">Dear ImGui Widgets</h4>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_imgui.jpg" alt="demo widgets imgui" width="400">
@@ -3568,9 +3622,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <p><a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a> enables you to browse all of them all, while looking at their code.</p>
 </div>
 <hr>
-<div class="paragraph">
-<p><strong>Additional Widgets</strong></p>
 </div>
+<div class="sect3">
+<h4 id="_additional_widgets">Additional Widgets</h4>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_knobs.jpg" alt="demo widgets knobs" width="400">
@@ -4448,9 +4502,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 </details>
 <hr>
-<div class="paragraph">
-<p><strong>Logger</strong></p>
 </div>
+<div class="sect3">
+<h4 id="_logger">Logger</h4>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_logger.jpg" alt="demo widgets logger" width="400">
@@ -4614,9 +4668,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 </details>
 <hr>
-<div class="paragraph">
-<p><strong>Code Editor</strong></p>
 </div>
+<div class="sect3">
+<h4 id="_code_editor">Code Editor</h4>
 <div class="imageblock">
 <div class="content">
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_editor.jpg" alt="demo widgets editor" width="400">
@@ -4750,8 +4804,8 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 </details>
 </div>
-<div class="sect2">
-<h3 id="_and_many_more">And many more!</h3>
+<div class="sect3">
+<h4 id="_and_many_more">And many more!</h4>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -4784,6 +4838,139 @@ Tip: use the interactive manual as an inspiration
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_application_settings">Application Settings</h3>
+<div class="sect3">
+<h4 id="_settings_location">Settings location</h4>
+<div class="paragraph">
+<p>By default, the settings are stored in a ini file whose named is derived from the window title (i.e. <code>runnerParams.appWindowParams.windowTitle</code>). This is convenient when developing, but not so much when deploying the app.</p>
+</div>
+<div class="paragraph">
+<p>You can finely define where they are stored by filling <code>runnerParams.iniFolderType</code> and <code>runnerParams.iniFilename</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>runnerParams.iniFolderType</strong></p>
+</div>
+<div class="paragraph">
+<p>Choose between: <code>CurrentFolder</code>,<code>AppUserConfigFolder</code>, <code>AppExecutableFolder</code>,<code>HomeFolder</code>, <code>TempFolder</code> and <code>DocumentsFolder</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Note: AppUserConfigFolder corresponds to <code>&#8230;&#8203;\[Username]\AppData\Roaming</code> under Windows, <code>~/.config</code> under Linux, <code>~/Library/Application Support</code> under macOS or iOS
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>runnerParams.iniFilename</strong></p>
+</div>
+<div class="paragraph">
+<p>This will be the name of the ini file in which the settings will be stored.
+It can include a subfolder, in which case it will be created under the folder defined by runnerParams.iniFolderType.</p>
+</div>
+<div class="paragraph">
+<p>Note: if left empty, the name of the ini file will be derived from <code>appWindowParams.windowTitle</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Examples</strong></p>
+</div>
+<details>
+<summary class="title">Click to expand the examples</summary>
+<div class="content">
+<div class="paragraph">
+<p><strong>C&#43;&#43; example (extract from <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp">demo_docking.cpp</a>)</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-w">    </span><span class="tok-c1">// By default, HelloImGui will save the settings in the current folder.</span>
+<span class="tok-w">    </span><span class="tok-c1">// This is convenient when developing, but not so much when deploying the app.</span>
+<span class="tok-w">    </span><span class="tok-c1">// You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+<span class="tok-w">    </span><span class="tok-c1">//         CurrentFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppUserConfigFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppExecutableFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         HomeFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         TempFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//         DocumentsFolder</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: AppUserConfigFolder is:</span>
+<span class="tok-w">    </span><span class="tok-c1">//         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+<span class="tok-w">    </span><span class="tok-c1">//         ~/.config under Linux</span>
+<span class="tok-w">    </span><span class="tok-c1">//         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFolderType</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">IniFolderType</span><span class="tok-o">::</span><span class="tok-n">AppUserConfigFolder</span><span class="tok-p">;</span>
+
+<span class="tok-w">    </span><span class="tok-c1">// runnerParams.iniFilename: this will be the name of the ini file in which the settings</span>
+<span class="tok-w">    </span><span class="tok-c1">// will be stored.</span>
+<span class="tok-w">    </span><span class="tok-c1">// In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+<span class="tok-w">    </span><span class="tok-c1">// by runnerParams.iniFolderType.</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: if iniFilename is left empty, the name of the ini file will be derived</span>
+<span class="tok-w">    </span><span class="tok-c1">// from appWindowParams.windowTitle</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">iniFilename</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking_Demo/Docking_demo.ini&quot;</span><span class="tok-p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Python example (extract from <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py">demo_docking.py</a>)</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-w">    </span><span class="tok-cp"># By default, HelloImGui will save the settings in the current folder.</span>
+<span class="tok-w">    </span><span class="tok-cp"># This is convenient when developing, but not so much when deploying the app.</span>
+<span class="tok-w">    </span><span class="tok-cp"># You can tell HelloImGui to save the settings in a specific folder: choose between</span>
+<span class="tok-w">    </span><span class="tok-cp">#         current_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         app_user_config_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         app_executable_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         home_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         temp_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#         documents_folder</span>
+<span class="tok-w">    </span><span class="tok-cp">#</span>
+<span class="tok-w">    </span><span class="tok-cp"># Note: app_user_config_folder is:</span>
+<span class="tok-w">    </span><span class="tok-cp">#         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)</span>
+<span class="tok-w">    </span><span class="tok-cp">#         ~/.config under Linux</span>
+<span class="tok-w">    </span><span class="tok-cp">#         &quot;~/Library/Application Support&quot; under macOS or iOS</span>
+<span class="tok-w">    </span><span class="tok-n">runner_params</span><span class="tok-p">.</span><span class="tok-n">ini_folder_type</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">hello_imgui</span><span class="tok-p">.</span><span class="tok-n">IniFolderType</span><span class="tok-p">.</span><span class="tok-n">app_user_config_folder</span>
+
+<span class="tok-w">    </span><span class="tok-cp"># runnerParams.ini_filename: this will be the name of the ini file in which the settings</span>
+<span class="tok-w">    </span><span class="tok-cp"># will be stored.</span>
+<span class="tok-w">    </span><span class="tok-cp"># In this example, the subdirectory Docking_Demo will be created under the folder defined</span>
+<span class="tok-w">    </span><span class="tok-cp"># by runnerParams.ini_folder_type.</span>
+<span class="tok-w">    </span><span class="tok-cp">#</span>
+<span class="tok-w">    </span><span class="tok-cp"># Note: if ini_filename is left empty, the name of the ini file will be derived</span>
+<span class="tok-w">    </span><span class="tok-cp"># from app_window_params.window_title</span>
+<span class="tok-w">    </span><span class="tok-n">runner_params</span><span class="tok-p">.</span><span class="tok-n">ini_filename</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Docking_Demo/Docking_demo.ini&quot;</span></code></pre>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="sect3">
+<h4 id="_settings_content">Settings content</h4>
+<div class="paragraph">
+<p>The settings file contains, standard ImGui settings (window position, size, etc.), as well as additional settings defined by HelloImGui:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Application status: app window location, opened windows, status bar settings, etc. See members named <code>remember_xxx</code> in the <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello Imgui API</a> for a complete list.</p>
+</li>
+<li>
+<p>Settings for each application layout (see <a href="https://www.youtube.com/watch?v=XKxmz__F4ow">video</a> for an example)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_store_custom_settings">Store custom settings</h4>
+<div class="paragraph">
+<p>You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file">related doc</a> for more details.</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph nav-footer">
 <p>← Previous: <a href="install-instructions.html">Build and install instructions</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="manual.html">Usage instructions</a> →</p>
@@ -4791,7 +4978,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-04 17:33:43 +0100
+Last updated 2023-12-05 11:59:31 +0100
 </div>
 </div>
 </body>

@@ -1,0 +1,54 @@
+include::_utils.adoc[]
+
+=== Application Settings
+
+==== Settings location
+By default, the settings are stored in a ini file whose named is derived from the window title (i.e. `runnerParams.appWindowParams.windowTitle`). This is convenient when developing, but not so much when deploying the app.
+
+You can finely define where they are stored by filling `runnerParams.iniFolderType` and `runnerParams.iniFilename`.
+
+**runnerParams.iniFolderType**
+
+Choose between: `CurrentFolder`,`AppUserConfigFolder`, `AppExecutableFolder`,`HomeFolder`, `TempFolder` and `DocumentsFolder`.
+
+NOTE: Note: AppUserConfigFolder corresponds to `...\[Username]\AppData\Roaming` under Windows, `~/.config` under Linux, `~/Library/Application Support` under macOS or iOS
+
+**runnerParams.iniFilename**
+
+This will be the name of the ini file in which the settings will be stored.
+It can include a subfolder, in which case it will be created under the folder defined by runnerParams.iniFolderType.
+
+Note: if left empty, the name of the ini file will be derived from `appWindowParams.windowTitle`.
+
+**Examples**
+
+.Click to expand the examples
+
+[%collapsible]
+====
+**{cpp} example (extract from link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[demo_docking.cpp])**
+[source, cpp]
+----
+include::../../demos_cpp/demos_immapp/demo_docking.cpp[tag=app_settings]
+----
+
+**Python example (extract from link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[demo_docking.py])**
+[source, cpp]
+----
+include::../../demos_python/demos_immapp/demo_docking.py[tag=app_settings]
+----
+
+====
+
+
+==== Settings content
+
+The settings file contains, standard ImGui settings (window position, size, etc.), as well as additional settings defined by HelloImGui:
+
+* Application status: app window location, opened windows, status bar settings, etc. See members named `remember_xxx` in the link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello Imgui API] for a complete list.
+* Settings for each application layout (see link:https://www.youtube.com/watch?v=XKxmz__F4ow[video] for an example)
+
+
+==== Store custom settings
+
+You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file[related doc] for more details.

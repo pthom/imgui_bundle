@@ -17,9 +17,11 @@ This demonstration source code is heavily documented and should be self-explanat
 
 
 .Click to see its source code in {cpp}
+
 [%collapsible]
 ====
-{cpp}
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[view on GitHub])
+
 [source, cpp]
 ----
 include::../../demos_cpp/demos_immapp/demo_assets_addons.cpp[]
@@ -31,7 +33,8 @@ include::../../demos_cpp/demos_immapp/demo_assets_addons.cpp[]
 .Click to see its source code in Python
 [%collapsible]
 ====
-Python:
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[view on GitHub])
+
 [source, python]
 ----
 include::../../demos_python/demos_immapp/demo_assets_addons.py[]

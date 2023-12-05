@@ -759,9 +759,11 @@ This demonstration source code is heavily documented and should be self-explanat
 
 
 .Click to see its source code in {cpp}
+
 [%collapsible]
 ====
-{cpp}
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[view on GitHub])
+
 [source, cpp]
 ----
 #include "hello_imgui/hello_imgui.h"
@@ -1034,7 +1036,8 @@ void ShowDoc(const std::string& whichDoc)
 .Click to see its source code in Python
 [%collapsible]
 ====
-Python:
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[view on GitHub])
+
 [source, python]
 ----
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
@@ -1826,9 +1829,9 @@ int main(int, char**)
 {
     ChdirBesideAssetsFolder();
 
-    //###############################################################################################
-    // Part 1: Define the application state, fill the status and menu bars, and load additional font
-    //###############################################################################################
+    //#############################################################################################
+    // Part 1: Define the application state, fill the status and menu bars, load additional font
+    //#############################################################################################
 
     // Our application state
     AppState appState;
@@ -1836,10 +1839,7 @@ int main(int, char**)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
 
-    // Note: by setting the window title, we also set the name of the ini files in which the settings for the user
-    // layout will be stored: Docking_demo.ini
     runnerParams.appWindowParams.windowTitle = "Docking demo";
-
     runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
@@ -1871,9 +1871,9 @@ int main(int, char**)
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
-    //###############################################################################################
+    //#############################################################################################
     // Part 2: Define the application layout and windows
-    //###############################################################################################
+    //#############################################################################################
 
     // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
@@ -1888,9 +1888,40 @@ int main(int, char**)
     //     (otherwise, modifications to the layout applied by the user layout will be remembered)
     // runnerParams.dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 
-    //###############################################################################################
-    // Part 3: Run the app
-    //###############################################################################################
+    //#############################################################################################
+    // Part 3: Where to save the app settings
+    //#############################################################################################
+    // tag::app_settings[]
+    // By default, HelloImGui will save the settings in the current folder.
+    // This is convenient when developing, but not so much when deploying the app.
+    // You can tell HelloImGui to save the settings in a specific folder: choose between
+    //         CurrentFolder
+    //         AppUserConfigFolder
+    //         AppExecutableFolder
+    //         HomeFolder
+    //         TempFolder
+    //         DocumentsFolder
+    //
+    // Note: AppUserConfigFolder is:
+    //         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    //         ~/.config under Linux
+    //         "~/Library/Application Support" under macOS or iOS
+    runnerParams.iniFolderType = HelloImGui::IniFolderType::AppUserConfigFolder;
+
+    // runnerParams.iniFilename: this will be the name of the ini file in which the settings
+    // will be stored.
+    // In this example, the subdirectory Docking_Demo will be created under the folder defined
+    // by runnerParams.iniFolderType.
+    //
+    // Note: if iniFilename is left empty, the name of the ini file will be derived
+    // from appWindowParams.windowTitle
+    runnerParams.iniFilename = "Docking_Demo/Docking_demo.ini";
+    // end::app_settings[]
+
+
+    //#############################################################################################
+    // Part 4: Run the app
+    //#############################################################################################
     HelloImGui::Run(runnerParams); // Note: with ImGuiBundle, it is also possible to use ImmApp::Run(...)
 
 
@@ -2428,9 +2459,6 @@ def main():
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
-
-    # Note: by setting the window title, we also set the name of the ini files in which the settings for the user
-    # layout will be stored: Docking_demo.ini
     runner_params.app_window_params.window_title = "Docking demo"
 
     runner_params.imgui_window_params.menu_app_title = "Docking App"
@@ -2456,7 +2484,7 @@ def main():
     runner_params.imgui_window_params.show_menu_bar = (
         True  # We use the default menu of Hello ImGui
     )
-    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu
+    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu & App menu
     runner_params.callbacks.show_menus = show_menu_gui
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
 
@@ -2474,8 +2502,8 @@ def main():
     runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
     )
-    # In this demo, we also demonstrate multiple viewports: you can drag windows outside out the main window
-    # in order to put their content into new native windows
+    # In this demo, we also demonstrate multiple viewports: you can drag windows outside
+    # out the main window in order to put their content into new native windows
     runner_params.imgui_window_params.enable_viewports = True
     # Set the default layout (this contains the default DockingSplits and DockableWindows)
     runner_params.docking_params = create_default_layout(app_state)
@@ -2483,7 +2511,37 @@ def main():
     runner_params.alternative_docking_layouts = create_alternative_layouts(app_state)
 
     #
-    # Part 3: Run the app
+    # Part 3: Where to save the app settings
+    #
+    # tag::app_settings[]
+    # By default, HelloImGui will save the settings in the current folder.
+    # This is convenient when developing, but not so much when deploying the app.
+    # You can tell HelloImGui to save the settings in a specific folder: choose between
+    #         current_folder
+    #         app_user_config_folder
+    #         app_executable_folder
+    #         home_folder
+    #         temp_folder
+    #         documents_folder
+    #
+    # Note: app_user_config_folder is:
+    #         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    #         ~/.config under Linux
+    #         "~/Library/Application Support" under macOS or iOS
+    runner_params.ini_folder_type = hello_imgui.IniFolderType.app_user_config_folder
+
+    # runnerParams.ini_filename: this will be the name of the ini file in which the settings
+    # will be stored.
+    # In this example, the subdirectory Docking_Demo will be created under the folder defined
+    # by runnerParams.ini_folder_type.
+    #
+    # Note: if ini_filename is left empty, the name of the ini file will be derived
+    # from app_window_params.window_title
+    runner_params.ini_filename = "Docking_Demo/Docking_demo.ini"
+    # end::app_settings[]
+
+    #
+    # Part 4: Run the app
     #
     hello_imgui.run(runner_params)
 
@@ -3398,9 +3456,9 @@ if __name__ == "__main__":
 
 // :url-demo-images: doc_images/
 
-=== Widgets, lots of widgets
+=== Widgets
 
-*Dear ImGui Widgets*
+==== Dear ImGui Widgets
 
 .Dear ImGui widgets
 image::{url-demo-images}/demo_widgets_imgui.jpg[width=400]
@@ -3411,7 +3469,7 @@ link:{url-imgui-manual}[ImGui Manual] enables you to browse all of them all, whi
 
 ---
 
-*Additional Widgets*
+==== Additional Widgets
 
 .Knobs widget
 image::{url-demo-images}/demo_widgets_knobs.jpg[width=400]
@@ -4270,7 +4328,7 @@ if __name__ == "__main__":
 
 ---
 
-*Logger*
+==== Logger
 
 .Logger
 image::{url-demo-images}/demo_widgets_logger.jpg[width=400]
@@ -4431,7 +4489,7 @@ if __name__ == "__main__":
 
 ---
 
-*Code Editor*
+==== Code Editor
 
 .Code editor
 image::{url-demo-images}/demo_widgets_editor.jpg[width=400]
@@ -4559,6 +4617,20 @@ if __name__ == "__main__":
 ----
 ====
 
+==== And many more!
+
+TIP: Tip: use the interactive manual as an inspiration
+
+link:{url-demo-imgui-bundle}[image:{url-demo-images}/demo_immapp_apps.jpg[width="400"]]
+
+The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual] provides many demos, _with easy access to their code_. It includes all the examples that are explained here, and many more.
+
+.ImGui Node editor in action
+image::{url-demo-images}/demo_node_editor.jpg[width="400"]
+
+.ImGuizmo in action
+image::{url-demo-images}/demo_gizmo.jpg[width="400"]
+
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -4578,19 +4650,104 @@ if __name__ == "__main__":
 
 // :url-demo-images: doc_images/
 
-=== And many more!
+=== Application Settings
 
-TIP: Tip: use the interactive manual as an inspiration
+==== Settings location
+By default, the settings are stored in a ini file whose named is derived from the window title (i.e. `runnerParams.appWindowParams.windowTitle`). This is convenient when developing, but not so much when deploying the app.
 
-link:{url-demo-imgui-bundle}[image:{url-demo-images}/demo_immapp_apps.jpg[width="400"]]
+You can finely define where they are stored by filling `runnerParams.iniFolderType` and `runnerParams.iniFilename`.
 
-The https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html[interactive manual] provides many demos, _with easy access to their code_. It includes all the examples that are explained here, and many more.
+**runnerParams.iniFolderType**
 
-.ImGui Node editor in action
-image::{url-demo-images}/demo_node_editor.jpg[width="400"]
+Choose between: `CurrentFolder`,`AppUserConfigFolder`, `AppExecutableFolder`,`HomeFolder`, `TempFolder` and `DocumentsFolder`.
 
-.ImGuizmo in action
-image::{url-demo-images}/demo_gizmo.jpg[width="400"]
+NOTE: Note: AppUserConfigFolder corresponds to `...\[Username]\AppData\Roaming` under Windows, `~/.config` under Linux, `~/Library/Application Support` under macOS or iOS
+
+**runnerParams.iniFilename**
+
+This will be the name of the ini file in which the settings will be stored.
+It can include a subfolder, in which case it will be created under the folder defined by runnerParams.iniFolderType.
+
+Note: if left empty, the name of the ini file will be derived from `appWindowParams.windowTitle`.
+
+**Examples**
+
+.Click to expand the examples
+
+[%collapsible]
+====
+**{cpp} example (extract from link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[demo_docking.cpp])**
+[source, cpp]
+----
+    // By default, HelloImGui will save the settings in the current folder.
+    // This is convenient when developing, but not so much when deploying the app.
+    // You can tell HelloImGui to save the settings in a specific folder: choose between
+    //         CurrentFolder
+    //         AppUserConfigFolder
+    //         AppExecutableFolder
+    //         HomeFolder
+    //         TempFolder
+    //         DocumentsFolder
+    //
+    // Note: AppUserConfigFolder is:
+    //         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    //         ~/.config under Linux
+    //         "~/Library/Application Support" under macOS or iOS
+    runnerParams.iniFolderType = HelloImGui::IniFolderType::AppUserConfigFolder;
+
+    // runnerParams.iniFilename: this will be the name of the ini file in which the settings
+    // will be stored.
+    // In this example, the subdirectory Docking_Demo will be created under the folder defined
+    // by runnerParams.iniFolderType.
+    //
+    // Note: if iniFilename is left empty, the name of the ini file will be derived
+    // from appWindowParams.windowTitle
+    runnerParams.iniFilename = "Docking_Demo/Docking_demo.ini";
+----
+
+**Python example (extract from link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[demo_docking.py])**
+[source, cpp]
+----
+    # By default, HelloImGui will save the settings in the current folder.
+    # This is convenient when developing, but not so much when deploying the app.
+    # You can tell HelloImGui to save the settings in a specific folder: choose between
+    #         current_folder
+    #         app_user_config_folder
+    #         app_executable_folder
+    #         home_folder
+    #         temp_folder
+    #         documents_folder
+    #
+    # Note: app_user_config_folder is:
+    #         AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming)
+    #         ~/.config under Linux
+    #         "~/Library/Application Support" under macOS or iOS
+    runner_params.ini_folder_type = hello_imgui.IniFolderType.app_user_config_folder
+
+    # runnerParams.ini_filename: this will be the name of the ini file in which the settings
+    # will be stored.
+    # In this example, the subdirectory Docking_Demo will be created under the folder defined
+    # by runnerParams.ini_folder_type.
+    #
+    # Note: if ini_filename is left empty, the name of the ini file will be derived
+    # from app_window_params.window_title
+    runner_params.ini_filename = "Docking_Demo/Docking_demo.ini"
+----
+
+====
+
+
+==== Settings content
+
+The settings file contains, standard ImGui settings (window position, size, etc.), as well as additional settings defined by HelloImGui:
+
+* Application status: app window location, opened windows, status bar settings, etc. See members named `remember_xxx` in the link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello Imgui API] for a complete list.
+* Settings for each application layout (see link:https://www.youtube.com/watch?v=XKxmz__F4ow[video] for an example)
+
+
+==== Store custom settings
+
+You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file[related doc] for more details.
 
 [[manual]]
 == Usage instructions
