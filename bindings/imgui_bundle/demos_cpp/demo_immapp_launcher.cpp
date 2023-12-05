@@ -39,28 +39,28 @@ std::function<void()> makeGui()
         DemoApp{"demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"},
         DemoApp{
             "imgui_example_glfw_opengl3",
-            "Python translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
+            "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
             "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
         },
         DemoApp{
             "imgui_example_glfw_opengl2",
-            "Python translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui. "
+            "Python: translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui. "
             "(here, *backend rendering is implemented in C++*)"
             ,
         },
         DemoApp{
             "example_python_backend_glfw3",
-            "How to use ImGui with GLFW3 using a *full python* backend",
+            "Python: how to use ImGui with GLFW3 using a *full python* backend",
             true
         },
         DemoApp{
             "example_python_backend_sdl2",
-            "How to use ImGui with SDL using a *full python* backend",
+            "Python: how to use ImGui with SDL using a *full python* backend",
             true
         },
         DemoApp{
             "example_python_backend_pyglet",
-            "How to use ImGui with pyglet using a *full python* backend",
+            "Python: how to use ImGui with pyglet using a *full python* backend",
             true
         },
 

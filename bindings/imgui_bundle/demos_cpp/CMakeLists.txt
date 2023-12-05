@@ -20,12 +20,6 @@ function(add_demo_cpp)
     if (EMSCRIPTEN)
         # Bundle demos_assets
         hello_imgui_bundle_assets_from_folder(${demo_name} ${demos_cpp_folder}/../demos_assets)
-        # Bundle doc, demos_cpp and demos_python sources
-        set(demos_python_folder ${demos_cpp_folder}/../demos_python)
-        set(doc_folder ${demos_cpp_folder}/../doc)
-        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
-        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
-        target_link_options(${demo_name} PRIVATE "SHELL:--preload-file ${doc_folder}@/doc")
     endif()
 endfunction()
 
@@ -98,6 +92,15 @@ endif()
 
 add_this_folder_auto_demos()
 add_this_folder_as_demos_library()
+
+if (EMSCRIPTEN)
+    set(demos_python_folder ${demos_cpp_folder}/../demos_python)
+    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
+    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
+    set(python_backends_folder ${CMAKE_CURRENT_LIST_DIR}/../python_backends)
+    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${python_backends_folder}@/python_backends")
+endif()
+
 
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)

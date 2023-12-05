@@ -136,6 +136,10 @@ void DemoAppTable::Gui()
                         bool exeFound = false;
                         #ifdef __EMSCRIPTEN__
                             exeFound = true;
+                            if (demoApp.IsPythonBackendDemo)
+                                exeFound = false;
+                            if (demoApp.Explanation.find("Python:") == 0)
+                                exeFound = false;
                         #else
                             exeFound = HasDemoExeFile(demoApp.DemoFile);
                         #endif
