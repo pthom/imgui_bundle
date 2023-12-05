@@ -1,8 +1,11 @@
 add_this_folder_demos()
-
-if (UNIX OR (APPLE AND NOT IOS))
-    find_package(OpenGL REQUIRED)
-    target_link_libraries(imgui_example_glfw_opengl3 PUBLIC OpenGL::GL)
+if(EMSCRIPTEN)
+    target_link_libraries(imgui_example_glfw_opengl3 PUBLIC GL)
+else()
+    if (UNIX OR (APPLE AND NOT IOS))
+        find_package(OpenGL REQUIRED)
+        target_link_libraries(imgui_example_glfw_opengl3 PUBLIC OpenGL::GL)
+    endif()
 endif()
 
 if(EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)
