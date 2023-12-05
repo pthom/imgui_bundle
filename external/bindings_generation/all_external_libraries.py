@@ -194,14 +194,6 @@ def lib_portable_file_dialogs() -> ExternalLibrary:
     )
 
 
-def lib_sdl() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="SDL",
-        official_git_url="https://github.com/libsdl-org/SDL.git",
-        official_branch="release-2.26.x",
-        is_published_in_python=False
-    )
-
 # fmt: on
 
 
@@ -227,7 +219,6 @@ ALL_LIBS = [
     lib_implot(),
     lib_imspinner(),
     lib_portable_file_dialogs(),
-    lib_sdl(),
 ]
 
 

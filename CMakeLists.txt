@@ -66,7 +66,8 @@ option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
 
 # IMGUI_BUNDLE_WITH_SDL: Add SDL backend
 # -----------------------------------------------------------------------------
-# (HelloImgui is built by default with glfw backend. Sdl is also supported, and can be added via this option)
+# (HelloImgui is built by default with glfw backend.
+# Sdl is also supported (for C++ only, not python), and can be added via the option IMGUI_BUNDLE_WITH_SDL
 if (NOT EMSCRIPTEN)
     option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
     option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)

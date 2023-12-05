@@ -1,6 +1,5 @@
 include(${CMAKE_CURRENT_LIST_DIR}/add_imgui.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/add_glfw.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/add_sdl.cmake)
 
 ####################################################
 # Build hello_imgui Bound C++ library
@@ -24,11 +23,6 @@ function (add_hello_imgui)
         add_glfw()
     endif()
 
-    # 2.2 Build sdl if required
-    if (IMGUI_BUNDLE_WITH_SDL)
-        add_sdl()
-    endif()
-
     # 3. Configure hello-imgui with the following options:
     #     i. use glfw
     if (IMGUI_BUNDLE_WITH_GLFW)
@@ -37,6 +31,7 @@ function (add_hello_imgui)
     #     ii. use sdl
     if (IMGUI_BUNDLE_WITH_SDL)
         set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_WITH_SDL ON CACHE BOOL "" FORCE) # This will force HelloImGui to download and build SDL2
     endif()
     #     iii. use provided imgui version
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
