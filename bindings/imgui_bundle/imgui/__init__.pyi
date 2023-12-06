@@ -9253,21 +9253,19 @@ class ImDrawList:
         cpu_fine_clip_rect: Optional[ImVec4] = None,
     ) -> None:
         pass
-    # IMGUI_API void  AddPolyline(const ImVec2* points, int num_points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
+    #                                        #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
     def add_polyline(
-        self,
-        points: ImVec2,
-        num_points: int,
-        col: ImU32,
-        flags: ImDrawFlags,
-        thickness: float,
+        self, points: List[ImVec2], col: ImU32, flags: ImDrawFlags, thickness: float
     ) -> None:
         pass
-    # IMGUI_API void  AddConvexPolyFilled(const ImVec2* points, int num_points, ImU32 col);    /* original C++ signature */
-    def add_convex_poly_filled(
-        self, points: ImVec2, num_points: int, col: ImU32
-    ) -> None:
+    # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
+    def add_convex_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
         pass
+    #                                        #endif
+    #
+
     # IMGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0);     /* original C++ signature */
     def add_bezier_cubic(
         self,

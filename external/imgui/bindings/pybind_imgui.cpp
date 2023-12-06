@@ -5770,10 +5770,14 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
         .def("add_text",
             py::overload_cast<const ImFont *, float, const ImVec2 &, ImU32, const char *, const char *, float, const ImVec4 *>(&ImDrawList::AddText), py::arg("font"), py::arg("font_size"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip_rect") = py::none())
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
         .def("add_polyline",
-            &ImDrawList::AddPolyline, py::arg("points"), py::arg("num_points"), py::arg("col"), py::arg("flags"), py::arg("thickness"))
+            py::overload_cast<const std::vector<ImVec2> &, ImU32, ImDrawFlags, float>(&ImDrawList::AddPolyline), py::arg("points"), py::arg("col"), py::arg("flags"), py::arg("thickness"))
         .def("add_convex_poly_filled",
-            &ImDrawList::AddConvexPolyFilled, py::arg("points"), py::arg("num_points"), py::arg("col"))
+            py::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), py::arg("points"), py::arg("col"))
+        // #endif
+        //
         .def("add_bezier_cubic",
             &ImDrawList::AddBezierCubic,
             py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
