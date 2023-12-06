@@ -359,10 +359,10 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::End);
 
     m.def("begin_child",
-        py::overload_cast<const char *, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("window_flags") = 0);
+        py::overload_cast<const char *, const ImVec2 &, ImGuiChildFlags, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("child_flags") = 0, py::arg("window_flags") = 0);
 
     m.def("begin_child",
-        py::overload_cast<ImGuiID, const ImVec2 &, bool, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("border") = false, py::arg("window_flags") = 0);
+        py::overload_cast<ImGuiID, const ImVec2 &, ImGuiChildFlags, ImGuiWindowFlags>(ImGui::BeginChild), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("child_flags") = 0, py::arg("window_flags") = 0);
 
     m.def("end_child",
         ImGui::EndChild);
@@ -381,7 +381,7 @@ void py_init_module_imgui_main(py::module& m)
     m.def("is_window_hovered",
         ImGui::IsWindowHovered,
         py::arg("flags") = 0,
-        "is current window hovered (and typically: not blocked by a popup/modal)? see flags for options. NB: If you are trying to check whether your mouse should be dispatched to imgui or to your app, you should use the 'io.WantCaptureMouse' boolean for that! Please read the FAQ!");
+        "is current window hovered and hoverable (e.g. not blocked by a popup/modal)? See ImGuiHoveredFlags_ for options. IMPORTANT: If you are trying to check whether your mouse should be dispatched to Dear ImGui or to your underlying app, you should not use this function! Use the 'io.WantCaptureMouse' boolean for that! Refer to FAQ entry \"How can I tell whether to dispatch mouse/keyboard to Dear ImGui or my application?\" for details.");
 
     m.def("get_window_draw_list",
         py::overload_cast<>(ImGui::GetWindowDrawList),
@@ -429,7 +429,7 @@ void py_init_module_imgui_main(py::module& m)
             SetNextWindowSizeConstraints_adapt_exclude_params(size_min, size_max, custom_callback_data);
         },
         py::arg("size_min"), py::arg("size_max"), py::arg("custom_callback_data") = py::none(),
-        "set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. Sizes will be rounded down. Use callback to apply non-trivial programmatic constraints.");
+        "set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints.");
 
     m.def("set_next_window_content_size",
         ImGui::SetNextWindowContentSize,
@@ -2242,14 +2242,6 @@ void py_init_module_imgui_main(py::module& m)
     m.def("get_state_storage",
         ImGui::GetStateStorage, pybind11::return_value_policy::reference);
 
-    m.def("begin_child_frame",
-        ImGui::BeginChildFrame,
-        py::arg("id_"), py::arg("size"), py::arg("flags") = 0,
-        "helper to create a child window / scrolling region that looks like a normal widget frame");
-
-    m.def("end_child_frame",
-        ImGui::EndChildFrame, "always call EndChildFrame() regardless of BeginChildFrame() return values (which indicates a collapsed/clipped window)");
-
     m.def("calc_text_size",
         ImGui::CalcTextSize,
         py::arg("text"), py::arg("text_end") = py::none(), py::arg("hide_text_after_double_hash") = false, py::arg("wrap_width") = -1.0f,
@@ -2307,6 +2299,11 @@ void py_init_module_imgui_main(py::module& m)
         py::overload_cast<ImGuiKey>(ImGui::IsKeyReleased),
         py::arg("key"),
         "was key released (went from Down to !Down)?");
+
+    m.def("is_key_chord_pressed",
+        py::overload_cast<ImGuiKeyChord>(ImGui::IsKeyChordPressed),
+        py::arg("key_chord"),
+        "was key chord (mods + key) pressed, e.g. you can pass 'ImGuiMod_Ctrl | ImGuiKey_S' as a key-chord. This doesn't do any routing or focus check, please consider using Shortcut() function instead.");
 
     m.def("get_key_pressed_amount",
         ImGui::GetKeyPressedAmount,
@@ -2484,7 +2481,6 @@ void py_init_module_imgui_main(py::module& m)
         .value("no_bring_to_front_on_focus", ImGuiWindowFlags_NoBringToFrontOnFocus, "Disable bringing window to front when taking focus (e.g. clicking on it or programmatically giving it focus)")
         .value("always_vertical_scrollbar", ImGuiWindowFlags_AlwaysVerticalScrollbar, "Always show vertical scrollbar (even if ContentSize.y < Size.y)")
         .value("always_horizontal_scrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar, "Always show horizontal scrollbar (even if ContentSize.x < Size.x)")
-        .value("always_use_window_padding", ImGuiWindowFlags_AlwaysUseWindowPadding, "Ensure child windows without border uses style.WindowPadding (ignored by default for non-bordered child windows, because more convenient)")
         .value("no_nav_inputs", ImGuiWindowFlags_NoNavInputs, "No gamepad/keyboard navigation within the window")
         .value("no_nav_focus", ImGuiWindowFlags_NoNavFocus, "No focusing toward this window with gamepad/keyboard navigation (e.g. skipped by CTRL+TAB)")
         .value("unsaved_document", ImGuiWindowFlags_UnsavedDocument, "Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.")
@@ -2499,6 +2495,18 @@ void py_init_module_imgui_main(py::module& m)
         .value("modal", ImGuiWindowFlags_Modal, "Don't use! For internal use by BeginPopupModal()")
         .value("child_menu", ImGuiWindowFlags_ChildMenu, "Don't use! For internal use by BeginMenu()")
         .value("dock_node_host", ImGuiWindowFlags_DockNodeHost, "Don't use! For internal use by Begin()/NewFrame()");
+
+
+    py::enum_<ImGuiChildFlags_>(m, "ChildFlags_", py::arithmetic(), " Flags for ImGui::BeginChild()\n (Legacy: bot 0 must always correspond to ImGuiChildFlags_Border to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
+        .value("none", ImGuiChildFlags_None, "")
+        .value("border", ImGuiChildFlags_Border, "Show an outer border and enable WindowPadding. (Important: this is always == 1 == True for legacy reason)")
+        .value("always_use_window_padding", ImGuiChildFlags_AlwaysUseWindowPadding, "Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)")
+        .value("resize_x", ImGuiChildFlags_ResizeX, "Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)")
+        .value("resize_y", ImGuiChildFlags_ResizeY, "Allow resize from bottom border (layout direction). \"")
+        .value("auto_resize_x", ImGuiChildFlags_AutoResizeX, "Enable auto-resizing width. Read \"IMPORTANT: Size measurement\" details above.")
+        .value("auto_resize_y", ImGuiChildFlags_AutoResizeY, "Enable auto-resizing height. Read \"IMPORTANT: Size measurement\" details above.")
+        .value("always_auto_resize", ImGuiChildFlags_AlwaysAutoResize, "Combined with AutoResizeX/AutoResizeY. Always measure size even when child is hidden, always return True, always disable clipping optimization! NOT RECOMMENDED.")
+        .value("frame_style", ImGuiChildFlags_FrameStyle, "Style the child window like a framed item: use FrameBg, FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, ChildRounding, ChildBorderSize, WindowPadding.");
 
 
     py::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags_", py::arithmetic(), " Flags for ImGui::InputText()\n (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)")
@@ -5931,7 +5939,8 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
         .def_readwrite("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
         .def_readwrite("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
-        .def_readwrite("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable.")
+        .def_readwrite("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
+        .def_readwrite("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.")
         .def_readwrite("ellipsis_char", &ImFontConfig::EllipsisChar, "-1       // Explicitly specify unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_readwrite("dst_font", &ImFontConfig::DstFont, "")
         .def(py::init<>())

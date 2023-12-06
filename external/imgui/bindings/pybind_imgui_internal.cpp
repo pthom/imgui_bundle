@@ -961,6 +961,7 @@ void py_init_module_imgui_internal(py::module& m)
         .value("has_focus", ImGuiNextWindowDataFlags_HasFocus, "")
         .value("has_bg_alpha", ImGuiNextWindowDataFlags_HasBgAlpha, "")
         .value("has_scroll", ImGuiNextWindowDataFlags_HasScroll, "")
+        .value("has_child_flags", ImGuiNextWindowDataFlags_HasChildFlags, "")
         .value("has_viewport", ImGuiNextWindowDataFlags_HasViewport, "")
         .value("has_dock", ImGuiNextWindowDataFlags_HasDock, "")
         .value("has_window_class", ImGuiNextWindowDataFlags_HasWindowClass, "");
@@ -979,6 +980,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("size_val", &ImGuiNextWindowData::SizeVal, "")
         .def_readwrite("content_size_val", &ImGuiNextWindowData::ContentSizeVal, "")
         .def_readwrite("scroll_val", &ImGuiNextWindowData::ScrollVal, "")
+        .def_readwrite("child_flags", &ImGuiNextWindowData::ChildFlags, "")
         .def_readwrite("pos_undock", &ImGuiNextWindowData::PosUndock, "")
         .def_readwrite("collapsed_val", &ImGuiNextWindowData::CollapsedVal, "")
         .def_readwrite("size_constraint_rect", &ImGuiNextWindowData::SizeConstraintRect, "")
@@ -1732,6 +1734,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("class_id", &ImGuiWindowSettings::ClassId, "ID of window class if specified")
         .def_readwrite("dock_order", &ImGuiWindowSettings::DockOrder, "Order of the last time the window was visible within its DockNode. This is used to reorder windows that are reappearing on the same frame. Same value between windows that were active and windows that were none are possible.")
         .def_readwrite("collapsed", &ImGuiWindowSettings::Collapsed, "")
+        .def_readwrite("is_child", &ImGuiWindowSettings::IsChild, "")
         .def_readwrite("want_apply", &ImGuiWindowSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
         .def_readwrite("want_delete", &ImGuiWindowSettings::WantDelete, "Set to invalidate/delete the settings entry")
         .def(py::init<>())
@@ -1956,6 +1959,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("wheeling_window", &ImGuiContext::WheelingWindow, "Track the window we started mouse-wheeling on. Until a timer elapse or mouse has moved, generally keep scrolling the same window even if during the course of scrolling the mouse ends up hovering a child window.")
         .def_readwrite("wheeling_window_ref_mouse_pos", &ImGuiContext::WheelingWindowRefMousePos, "")
         .def_readwrite("wheeling_window_start_frame", &ImGuiContext::WheelingWindowStartFrame, "This may be set one frame before WheelingWindow is != None")
+        .def_readwrite("wheeling_window_scrolled_frame", &ImGuiContext::WheelingWindowScrolledFrame, "")
         .def_readwrite("wheeling_window_release_timer", &ImGuiContext::WheelingWindowReleaseTimer, "")
         .def_readwrite("wheeling_window_wheel_remainder", &ImGuiContext::WheelingWindowWheelRemainder, "")
         .def_readwrite("wheeling_axis_avg", &ImGuiContext::WheelingAxisAvg, "")
@@ -2114,6 +2118,8 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("color_edit_saved_color", &ImGuiContext::ColorEditSavedColor, "RGB value with alpha set to 0.")
         .def_readwrite("color_picker_ref", &ImGuiContext::ColorPickerRef, "Initial/reference color at the time of opening the color picker.")
         .def_readwrite("combo_preview_data", &ImGuiContext::ComboPreviewData, "")
+        .def_readwrite("window_resize_border_expected_rect", &ImGuiContext::WindowResizeBorderExpectedRect, "Expected border rect, switch to relative edit if moving")
+        .def_readwrite("window_resize_relative_mode", &ImGuiContext::WindowResizeRelativeMode, "")
         .def_readwrite("slider_grab_click_offset", &ImGuiContext::SliderGrabClickOffset, "")
         .def_readwrite("slider_current_accum", &ImGuiContext::SliderCurrentAccum, "Accumulated slider delta when using navigation controls.")
         .def_readwrite("slider_current_accum_dirty", &ImGuiContext::SliderCurrentAccumDirty, "Has the accumulated slider delta changed since last time we tried to apply it?")
@@ -2272,6 +2278,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("id_", &ImGuiWindow::ID, "== ImHashStr(Name)")
         .def_readwrite("flags", &ImGuiWindow::Flags, "See enum ImGuiWindowFlags_")
         .def_readwrite("flags_previous_frame", &ImGuiWindow::FlagsPreviousFrame, "See enum ImGuiWindowFlags_")
+        .def_readwrite("child_flags", &ImGuiWindow::ChildFlags, "Set when window is a child window. See enum ImGuiChildFlags_")
         .def_readwrite("window_class", &ImGuiWindow::WindowClass, "Advanced users only. Set with SetNextWindowClass()")
         .def_readwrite("viewport", &ImGuiWindow::Viewport, "Always set in Begin(). Inactive windows may have a None value here if their viewport was discarded.")
         .def_readwrite("viewport_id", &ImGuiWindow::ViewportId, "We backup the viewport id (since the viewport may disappear or never be created if the window is inactive)")
@@ -2316,6 +2323,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("is_fallback_window", &ImGuiWindow::IsFallbackWindow, "Set on the \"Debug##Default\" window.")
         .def_readwrite("is_explicit_child", &ImGuiWindow::IsExplicitChild, "Set when passed _ChildWindow, left to False by BeginDocked()")
         .def_readwrite("has_close_button", &ImGuiWindow::HasCloseButton, "Set when the window has a close button (p_open != None)")
+        .def_readwrite("resize_border_hovered", &ImGuiWindow::ResizeBorderHovered, "Current border being hovered for resize (-1: none, otherwise 0-3)")
         .def_readwrite("resize_border_held", &ImGuiWindow::ResizeBorderHeld, "Current border being held for resize (-1: none, otherwise 0-3)")
         .def_readwrite("begin_count", &ImGuiWindow::BeginCount, "Number of Begin() during the current frame (generally 0 or 1, 1+ if appending via multiple Begin/End pairs)")
         .def_readwrite("begin_count_previous_frame", &ImGuiWindow::BeginCountPreviousFrame, "Number of Begin() during the previous frame")
@@ -2656,6 +2664,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("is_sort_specs_dirty", &ImGuiTable::IsSortSpecsDirty, "")
         .def_readwrite("is_using_headers", &ImGuiTable::IsUsingHeaders, "Set when the first row had the ImGuiTableRowFlags_Headers flag.")
         .def_readwrite("is_context_popup_open", &ImGuiTable::IsContextPopupOpen, "Set when default context menu is open (also see: ContextPopupColumn, InstanceInteracted).")
+        .def_readwrite("disable_default_context_menu", &ImGuiTable::DisableDefaultContextMenu, "Disable default context menu contents. You may submit your own using TableBeginContextMenuPopup()/EndPopup()")
         .def_readwrite("is_settings_request_load", &ImGuiTable::IsSettingsRequestLoad, "")
         .def_readwrite("is_settings_dirty", &ImGuiTable::IsSettingsDirty, "Set when table settings have changed and needs to be reported into ImGuiTableSetttings data.")
         .def_readwrite("is_default_display_order", &ImGuiTable::IsDefaultDisplayOrder, "Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)")
@@ -3083,7 +3092,7 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::LogSetNextTextDecoration, py::arg("prefix"), py::arg("suffix"));
 
     m.def("begin_child_ex",
-        ImGui::BeginChildEx, py::arg("name"), py::arg("id_"), py::arg("size_arg"), py::arg("border"), py::arg("window_flags"));
+        ImGui::BeginChildEx, py::arg("name"), py::arg("id_"), py::arg("size_arg"), py::arg("child_flags"), py::arg("window_flags"));
 
     m.def("open_popup_ex",
         py::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::OpenPopupEx), py::arg("id_"), py::arg("popup_flags") = ImGuiPopupFlags_None);
@@ -3343,6 +3352,9 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("is_mouse_released",
         py::overload_cast<ImGuiMouseButton, ImGuiID>(ImGui::IsMouseReleased), py::arg("button"), py::arg("owner_id"));
+
+    m.def("is_mouse_double_clicked",
+        py::overload_cast<ImGuiMouseButton, ImGuiID>(ImGui::IsMouseDoubleClicked), py::arg("button"), py::arg("owner_id"));
 
     m.def("is_key_chord_pressed",
         py::overload_cast<ImGuiKeyChord, ImGuiID, ImGuiInputFlags>(ImGui::IsKeyChordPressed), py::arg("key_chord"), py::arg("owner_id"), py::arg("flags") = 0);
@@ -3643,8 +3655,8 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("table_draw_borders",
         py::overload_cast<ImGuiTable *>(ImGui::TableDrawBorders), py::arg("table"));
 
-    m.def("table_draw_context_menu",
-        py::overload_cast<ImGuiTable *>(ImGui::TableDrawContextMenu), py::arg("table"));
+    m.def("table_draw_default_context_menu",
+        py::overload_cast<ImGuiTable *, ImGuiTableFlags>(ImGui::TableDrawDefaultContextMenu), py::arg("table"), py::arg("flags_for_section_to_display"));
 
     m.def("table_begin_context_menu_popup",
         py::overload_cast<ImGuiTable *>(ImGui::TableBeginContextMenuPopup), py::arg("table"));
