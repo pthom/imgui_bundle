@@ -86,7 +86,7 @@ def main() -> None:
 
     demos = [
         DemoDetails("Dear ImGui Bundle", demo_imgui_bundle_intro),
-        DemoDetails("Dear ImGui Demo", demo_imgui_show_demo_window),
+        DemoDetails("Dear ImGui", demo_imgui_show_demo_window),
         DemoDetails("Immediate Apps", demo_immapp_launcher),
         DemoDetails("Implot", demo_implot),
         DemoDetails("Node Editor", demo_node_editor_launcher),

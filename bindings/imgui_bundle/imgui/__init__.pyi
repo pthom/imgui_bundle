@@ -10506,3 +10506,16 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
+
+
+# API for imgui_demo.cpp (specific to ImGui Bundle)
+def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
+    pass
+def set_imgui_demo_code_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
+    pass
+def set_imgui_demo_marker_is_active(b: bool) -> None:
+    pass
+def get_imgui_demo_marker_is_active() -> bool:
+    pass
+def set_imgui_demo_show_python_code(b: bool) -> None:
+    pass
