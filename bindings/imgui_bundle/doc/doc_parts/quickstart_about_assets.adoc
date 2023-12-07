@@ -9,19 +9,26 @@ The typical layout of an assets folder looks like this:
 [source,bash]
 ----
 assets/
-    +-- app_settings/                     # Application settings
-    |         +-- icon.png                # This will be the app icon, it should be square
-    |         |                           # and at least 256x256. It will  be converted
-    |         |                           # to the right format, for each platform.
+    +-- app_settings/                      # Application settings
+    |         +-- icon.png                 # This will be the app icon, it should be square
+    |         |                            # and at least 256x256. It will  be converted
+    |         |                            # to the right format, for each platform.
     |         +-- apple/
-    |         |         └-- Info.plist    # macOS and iOS app settings
-    |         |                           # (or Info.ios.plist + Info.macos.plist)
+    |         |         +-- Info.plist     # macOS and iOS app settings
+    |         |                            # (or Info.ios.plist + Info.macos.plist)
+    |         +-- emscripten/
+    |            |-- shell.emscripten.html # Emscripten shell file
+    |            |                         #   (this file will be cmake "configured"
+    |            |                         #    to add the name and favicon)
+    |            +-- custom.js             # Any custom file here will be deployed
+    |                                      #   in the emscripten build folder
+
     +-- fonts/
-    |         +-- DroidSans.ttf           # Default fonts used by HelloImGui to
-    |         +-- fontawesome-webfont.ttf # improve text rendering (esp. on High DPI)
-    |         |                           # if absent, a default LowRes font is used.
+    |         +-- DroidSans.ttf            # Default fonts used by HelloImGui to
+    |         +-- fontawesome-webfont.ttf  # improve text rendering (esp. on High DPI)
+    |         |                            # if absent, a default LowRes font is used.
     |         |
-    |         +-- Roboto/                 # Optional: fonts for markdown
+    |         +-- Roboto/                  # Optional: fonts for markdown
     |         |   +-- LICENSE.txt
     |         |   +-- Roboto-Bold.ttf
     |         |   +-- Roboto-BoldItalic.ttf
@@ -34,7 +41,10 @@ assets/
               +-- world.jpg                  # Add anything in the assets folder!
 ----
 
-You can change the assets folder via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
+You can change the assets folder:
+
+* during the execution, via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
+* at compile time, via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")` ({cpp} only)
 
 
 

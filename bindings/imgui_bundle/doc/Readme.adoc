@@ -644,19 +644,26 @@ The typical layout of an assets folder looks like this:
 [source,bash]
 ----
 assets/
-    +-- app_settings/                     # Application settings
-    |         +-- icon.png                # This will be the app icon, it should be square
-    |         |                           # and at least 256x256. It will  be converted
-    |         |                           # to the right format, for each platform.
+    +-- app_settings/                      # Application settings
+    |         +-- icon.png                 # This will be the app icon, it should be square
+    |         |                            # and at least 256x256. It will  be converted
+    |         |                            # to the right format, for each platform.
     |         +-- apple/
-    |         |         └-- Info.plist    # macOS and iOS app settings
-    |         |                           # (or Info.ios.plist + Info.macos.plist)
+    |         |         +-- Info.plist     # macOS and iOS app settings
+    |         |                            # (or Info.ios.plist + Info.macos.plist)
+    |         +-- emscripten/
+    |            |-- shell.emscripten.html # Emscripten shell file
+    |            |                         #   (this file will be cmake "configured"
+    |            |                         #    to add the name and favicon)
+    |            +-- custom.js             # Any custom file here will be deployed
+    |                                      #   in the emscripten build folder
+
     +-- fonts/
-    |         +-- DroidSans.ttf           # Default fonts used by HelloImGui to
-    |         +-- fontawesome-webfont.ttf # improve text rendering (esp. on High DPI)
-    |         |                           # if absent, a default LowRes font is used.
+    |         +-- DroidSans.ttf            # Default fonts used by HelloImGui to
+    |         +-- fontawesome-webfont.ttf  # improve text rendering (esp. on High DPI)
+    |         |                            # if absent, a default LowRes font is used.
     |         |
-    |         +-- Roboto/                 # Optional: fonts for markdown
+    |         +-- Roboto/                  # Optional: fonts for markdown
     |         |   +-- LICENSE.txt
     |         |   +-- Roboto-Bold.ttf
     |         |   +-- Roboto-BoldItalic.ttf
@@ -669,7 +676,10 @@ assets/
               +-- world.jpg                  # Add anything in the assets folder!
 ----
 
-You can change the assets folder via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
+You can change the assets folder:
+
+* during the execution, via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
+* at compile time, via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")` ({cpp} only)
 
 
 
@@ -3226,11 +3236,11 @@ struct AppStateProcess {
         imageSobel = ComputeSobel(image, sobelParams);
 
         immvisionParams = ImmVision::ImageParams();
-        immvisionParams.ImageDisplaySize = cv::Size(350, 0);
+        immvisionParams.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParams.ZoomKey = "z";
 
         immvisionParamsSobel = ImmVision::ImageParams();
-        immvisionParamsSobel.ImageDisplaySize = cv::Size(350, 0);
+        immvisionParamsSobel.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParamsSobel.ZoomKey = "z";
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
@@ -3246,7 +3256,8 @@ void demo_immvision_process()
     ImGuiMd::RenderUnindented(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
-        Apply Colormaps to the filtered image in the options tab.
+        * Pan and zoom the image with the mouse and the mouse wheel
+        * Apply Colormaps to the filtered image in the options tab.
     )");
     ImGui::Separator();
 
@@ -3386,11 +3397,11 @@ class AppState:
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
         self.immvision_params = immvision.ImageParams()
-        self.immvision_params.image_display_size = (350, 0)
+        self.immvision_params.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params.zoom_key = "z"
 
         self.immvision_params_sobel = immvision.ImageParams()
-        self.immvision_params_sobel.image_display_size = (350, 0)
+        self.immvision_params_sobel.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params_sobel.zoom_key = "z"
         self.immvision_params_sobel.show_options_panel = True
 
@@ -3409,7 +3420,8 @@ def demo_gui():
         """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
-        Apply Colormaps to the filtered image in the options tab.
+        * Pan and zoom the image with the mouse and the mouse wheel
+        * Apply Colormaps to the filtered image in the options tab.
         """
     )
     imgui.separator()
@@ -4319,8 +4331,10 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    from imgui_bundle import immapp
+    from imgui_bundle.demos_python import demo_utils
+    demo_utils.set_hello_imgui_demo_assets_folder()
 
+    from imgui_bundle import immapp
     immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
 ----
 ====
@@ -5045,6 +5059,9 @@ See documentation in the  link:{url-bundle-doc-tree}/bindings/imgui_bundle/pytho
 #
 # See full python backends implementations here:
 # https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
+
+# You will need to install sdl2:
+#    pip install pysdl2 pysdl2-dll
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl_backend import SDL2Renderer

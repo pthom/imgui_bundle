@@ -726,19 +726,26 @@ The typical layout of an assets folder looks like this:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>assets/
-<span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                     </span><span class="tok-c1"># Application settings</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                </span><span class="tok-c1"># This will be the app icon, it should be square</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># and at least 256x256. It will  be converted</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># to the right format, for each platform.</span>
+<span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                      </span><span class="tok-c1"># Application settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                 </span><span class="tok-c1"># This will be the app icon, it should be square</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># and at least 256x256. It will  be converted</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># to the right format, for each platform.</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>apple/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>└--<span class="tok-w"> </span>Info.plist<span class="tok-w">    </span><span class="tok-c1"># macOS and iOS app settings</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Info.plist<span class="tok-w">     </span><span class="tok-c1"># macOS and iOS app settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>emscripten/
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span>--<span class="tok-w"> </span>shell.emscripten.html<span class="tok-w"> </span><span class="tok-c1"># Emscripten shell file</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#   (this file will be cmake &quot;configured&quot;</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#    to add the name and favicon)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span>+--<span class="tok-w"> </span>custom.js<span class="tok-w">             </span><span class="tok-c1"># Any custom file here will be deployed</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                      </span><span class="tok-c1">#   in the emscripten build folder</span>
+
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>fonts/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">           </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w"> </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">            </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w">  </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                 </span><span class="tok-c1"># Optional: fonts for markdown</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                  </span><span class="tok-c1"># Optional: fonts for markdown</span>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>LICENSE.txt
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-Bold.ttf
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-BoldItalic.ttf
@@ -752,7 +759,17 @@ The typical layout of an assets folder looks like this:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>You can change the assets folder via <code>HelloImGui::SetAssetsFolder</code> (C&#43;&#43;) or <code>hello_imgui.set_assets_folder</code> (python).</p>
+<p>You can change the assets folder:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>during the execution, via <code>HelloImGui::SetAssetsFolder</code> (C&#43;&#43;) or <code>hello_imgui.set_assets_folder</code> (python).</p>
+</li>
+<li>
+<p>at compile time, via <code>imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")</code> (C&#43;&#43; only)</p>
+</li>
+</ul>
 </div>
 <div class="sect3">
 <h4 id="_where_to_find_the_default_assets">Where to find the default assets</h4>
@@ -3387,11 +3404,11 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">        </span><span class="tok-n">imageSobel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ComputeSobel</span><span class="tok-p">(</span><span class="tok-n">image</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">sobelParams</span><span class="tok-p">);</span>
 
 <span class="tok-w">        </span><span class="tok-n">immvisionParams</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmVision</span><span class="tok-o">::</span><span class="tok-n">ImageParams</span><span class="tok-p">();</span>
-<span class="tok-w">        </span><span class="tok-n">immvisionParams</span><span class="tok-p">.</span><span class="tok-n">ImageDisplaySize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">cv</span><span class="tok-o">::</span><span class="tok-n">Size</span><span class="tok-p">(</span><span class="tok-mi">350</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span>
+<span class="tok-w">        </span><span class="tok-n">immvisionParams</span><span class="tok-p">.</span><span class="tok-n">ImageDisplaySize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">cv</span><span class="tok-o">::</span><span class="tok-n">Size</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">(</span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">22.f</span><span class="tok-p">)),</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">immvisionParams</span><span class="tok-p">.</span><span class="tok-n">ZoomKey</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;z&quot;</span><span class="tok-p">;</span>
 
 <span class="tok-w">        </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImmVision</span><span class="tok-o">::</span><span class="tok-n">ImageParams</span><span class="tok-p">();</span>
-<span class="tok-w">        </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-p">.</span><span class="tok-n">ImageDisplaySize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">cv</span><span class="tok-o">::</span><span class="tok-n">Size</span><span class="tok-p">(</span><span class="tok-mi">350</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span>
+<span class="tok-w">        </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-p">.</span><span class="tok-n">ImageDisplaySize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">cv</span><span class="tok-o">::</span><span class="tok-n">Size</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">(</span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">22.f</span><span class="tok-p">)),</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-p">.</span><span class="tok-n">ZoomKey</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;z&quot;</span><span class="tok-p">;</span>
 <span class="tok-w">        </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-p">.</span><span class="tok-n">ShowOptionsPanel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-p">}</span>
@@ -3407,7 +3424,8 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span>
 <span class="tok-s">        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.</span>
 
-<span class="tok-s">        Apply Colormaps to the filtered image in the options tab.</span>
+<span class="tok-s">        * Pan and zoom the image with the mouse and the mouse wheel</span>
+<span class="tok-s">        * Apply Colormaps to the filtered image in the options tab.</span>
 <span class="tok-s">    </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Separator</span><span class="tok-p">();</span>
 
@@ -3550,11 +3568,11 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image_sobel</span> <span class="tok-o">=</span> <span class="tok-n">compute_sobel</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span><span class="tok-p">)</span>
 
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span> <span class="tok-o">=</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span><span class="tok-p">()</span>
-        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-mi">350</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-nb">int</span><span class="tok-p">(</span><span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mi">22</span><span class="tok-p">)),</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span><span class="tok-o">.</span><span class="tok-n">zoom_key</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;z&quot;</span>
 
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span> <span class="tok-o">=</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span><span class="tok-p">()</span>
-        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-mi">350</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-nb">int</span><span class="tok-p">(</span><span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mi">22</span><span class="tok-p">)),</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">zoom_key</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;z&quot;</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">show_options_panel</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
 
@@ -3573,7 +3591,8 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">        </span><span class="tok-sd">&quot;&quot;&quot;</span>
 <span class="tok-sd">        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.</span>
 
-<span class="tok-sd">        Apply Colormaps to the filtered image in the options tab.</span>
+<span class="tok-sd">        * Pan and zoom the image with the mouse and the mouse wheel</span>
+<span class="tok-sd">        * Apply Colormaps to the filtered image in the options tab.</span>
 <span class="tok-sd">        &quot;&quot;&quot;</span>
     <span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
@@ -4492,8 +4511,10 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
 
 <span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
-    <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">immapp</span>
+    <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
+    <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
 
+    <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">immapp</span>
     <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">))</span>  <span class="tok-c1"># type: ignore</span></code></pre>
 </div>
 </div>
@@ -4844,7 +4865,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-05 16:47:32 +0100
+Last updated 2023-12-07 03:20:02 +0100
 </div>
 </div>
 </body>
