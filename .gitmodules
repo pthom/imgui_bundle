@@ -75,3 +75,6 @@
 [submodule "external/ImCoolBar/ImCoolBar"]
 	path = external/ImCoolBar/ImCoolBar
 	url = https://github.com/pthom/ImCoolBar.git
+[submodule "_example_integration"]
+	path = _example_integration
+	url = https://github.com/pthom/imgui_bundle_template.git
