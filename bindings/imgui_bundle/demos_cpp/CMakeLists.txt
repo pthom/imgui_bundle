@@ -95,8 +95,15 @@ add_this_folder_as_demos_library()
 
 if (EMSCRIPTEN)
     set(demos_python_folder ${demos_cpp_folder}/../demos_python)
+
+    set(imgui_demo_src_folder ${IMGUIBUNDLE_PATH}/external/imgui/imgui/)
+    set(imgui_demo_tmp_folder ${CMAKE_CURRENT_BINARY_DIR}/tmp/imgui_demo_code)
+    file(COPY ${imgui_demo_src_folder}/imgui_demo.cpp DESTINATION ${imgui_demo_tmp_folder})
+    file(COPY ${imgui_demo_src_folder}/imgui_demo.py DESTINATION ${imgui_demo_tmp_folder})
+
     target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
     target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
+    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${imgui_demo_tmp_folder}@code/imgui")
     set(python_backends_folder ${CMAKE_CURRENT_LIST_DIR}/../python_backends)
     target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${python_backends_folder}@/python_backends")
 endif()

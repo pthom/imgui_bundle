@@ -1,4 +1,20 @@
-# Port of imgui_demo.cpp (largely made with ChatGPT)
+# Port of imgui_demo.cpp
+#
+###############################################################################
+#
+#              IMPORTANT
+#  This file is a port of imgui_demo.cpp to Python, using Dear ImGui Bundle.
+#
+#  The port was done once, based on version 1.90 WIP (Oct 2023).
+#  It is not guaranteed to be up-to-date with the latest version of the C++
+#  code, but it should be close enough.
+#
+#  Official source for this file:
+#  https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
+#
+###############################################################################
+
+
 # fmt: off
 # mypy: disable_error_code=attr-defined
 # mypy: disable_error_code=no-untyped-call
