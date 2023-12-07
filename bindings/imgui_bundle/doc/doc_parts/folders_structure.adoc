@@ -13,26 +13,26 @@ endif::[]
 +-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
 +-- Readme_devel.md
 |
-+-- _example_integration/                                   # Demonstrate how to easily use
-|         +-- CMakeLists.txt                                # imgui_bundle in a C++ app
-|         +-- assets/
-|         +-- hello_world.main.cpp
++-- _example_integration/                         # Demonstrate how to easily use
+|         +-- CMakeLists.txt                      # imgui_bundle in a C++ app
+|         +-- assets/                             # (this is a github template available a
+|         +-- hello_world.main.cpp                # https://github.com/pthom/imgui_bundle_template
 |
-+-- imgui_bundle_cmake/                                     # imgui_bundle_add_app() :
-|         |                                                 # a cmake function you can use
-|         +-- imgui_bundle_add_app.cmake                    # to create an app in one line
++-- imgui_bundle_cmake/                           # imgui_bundle_add_app() :
+|         |                                       # a cmake function you can use
+|         +-- imgui_bundle_add_app.cmake          # to create an app in one line
 |
-+-- bindings/                                               # root for the python bindings
++-- bindings/                                     # root for the python bindings
 |         +-- imgui_bundle/
-|                  +-- assets/                              # assets/ folder: you need to
-|                  |                                        # copy this folder
-|                  |                                        # into your app folder if you
-|                  |                                        # intend to use markdown
+|                  +-- assets/                    # assets/ folder: you need to
+|                  |                              # copy this folder
+|                  |                              # into your app folder if you
+|                  |                              # intend to use markdown
 |                  |
-|                  +-- demos_assets/                        # assets used by demos
-|                  +-- demos_cpp/                           # lots of C++ demos
-|                  +-- demos_python/                        # lots of python demos
-|                  +-- imgui/                               # imgui stubs
+|                  +-- demos_assets/              # assets used by demos
+|                  +-- demos_cpp/                 # lots of C++ demos
+|                  +-- demos_python/              # lots of python demos
+|                  +-- imgui/                     # imgui stubs
 |                  |     +-- __init__.pyi
 |                  |     +-- backends.pyi
 |                  |     +-- internal.pyi

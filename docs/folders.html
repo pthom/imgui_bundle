@@ -550,26 +550,26 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 +--<span class="tok-w"> </span>Readme.md<span class="tok-w"> </span>-&gt;<span class="tok-w"> </span>bindings/imgui_bundle/Readme.md<span class="tok-w">           </span><span class="tok-c1"># doc</span>
 +--<span class="tok-w"> </span>Readme_devel.md
 <span class="tok-p">|</span>
-+--<span class="tok-w"> </span>_example_integration/<span class="tok-w">                                   </span><span class="tok-c1"># Demonstrate how to easily use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">                                </span><span class="tok-c1"># imgui_bundle in a C++ app</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>assets/
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>hello_world.main.cpp
++--<span class="tok-w"> </span>_example_integration/<span class="tok-w">                         </span><span class="tok-c1"># Demonstrate how to easily use</span>
+<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">                      </span><span class="tok-c1"># imgui_bundle in a C++ app</span>
+<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                             </span><span class="tok-c1"># (this is a github template available a</span>
+<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>hello_world.main.cpp<span class="tok-w">                </span><span class="tok-c1"># https://github.com/pthom/imgui_bundle_template</span>
 <span class="tok-p">|</span>
-+--<span class="tok-w"> </span>imgui_bundle_cmake/<span class="tok-w">                                     </span><span class="tok-c1"># imgui_bundle_add_app() :</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                 </span><span class="tok-c1"># a cmake function you can use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle_add_app.cmake<span class="tok-w">                    </span><span class="tok-c1"># to create an app in one line</span>
++--<span class="tok-w"> </span>imgui_bundle_cmake/<span class="tok-w">                           </span><span class="tok-c1"># imgui_bundle_add_app() :</span>
+<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># a cmake function you can use</span>
+<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle_add_app.cmake<span class="tok-w">          </span><span class="tok-c1"># to create an app in one line</span>
 <span class="tok-p">|</span>
-+--<span class="tok-w"> </span>bindings/<span class="tok-w">                                               </span><span class="tok-c1"># root for the python bindings</span>
++--<span class="tok-w"> </span>bindings/<span class="tok-w">                                     </span><span class="tok-c1"># root for the python bindings</span>
 <span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle/
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                              </span><span class="tok-c1"># assets/ folder: you need to</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                                        </span><span class="tok-c1"># copy this folder</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                                        </span><span class="tok-c1"># into your app folder if you</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                                        </span><span class="tok-c1"># intend to use markdown</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                    </span><span class="tok-c1"># assets/ folder: you need to</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># copy this folder</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># into your app folder if you</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># intend to use markdown</span>
 <span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_assets/<span class="tok-w">                        </span><span class="tok-c1"># assets used by demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_cpp/<span class="tok-w">                           </span><span class="tok-c1"># lots of C++ demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_python/<span class="tok-w">                        </span><span class="tok-c1"># lots of python demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                               </span><span class="tok-c1"># imgui stubs</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_assets/<span class="tok-w">              </span><span class="tok-c1"># assets used by demos</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_cpp/<span class="tok-w">                 </span><span class="tok-c1"># lots of C++ demos</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_python/<span class="tok-w">              </span><span class="tok-c1"># lots of python demos</span>
+<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                     </span><span class="tok-c1"># imgui stubs</span>
 <span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>__init__.pyi
 <span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>backends.pyi
 <span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>internal.pyi
@@ -653,7 +653,7 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-07 03:20:02 +0100
+Last updated 2023-12-07 19:20:47 +0100
 </div>
 </div>
 </body>

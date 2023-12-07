@@ -67,7 +67,7 @@ FetchContent_MakeAvailable(imgui_bundle)
 imgui_bundle_add_app(hello_world hello_world.cpp)
 ----
 
-NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here]. Refer to it if you wish to customize the application icon.
+NOTE: This cmake file is part of a quick start template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template]. Refer to it if you wish to customize the application icon.
 
 ==== Hello, World in Python
 

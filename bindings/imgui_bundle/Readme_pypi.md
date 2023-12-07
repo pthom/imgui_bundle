@@ -261,9 +261,10 @@ ImGui Bundle with lots of examples and related code source.
 ### Integrate Dear ImGui Bundle in your own project in 5 minutes
 
 The easiest way to use Dear ImGui Bundle in an external project is to
-use the example provided in
-[example\_integration](https://github.com/pthom/imgui_bundle/tree/main/_example_integration).
-This folder includes everything you need to set up your own project.
+use the template available at
+<https://github.com/pthom/imgui_bundle_template>.
+
+This template includes everything you need to set up your own project.
 
 ### Build from source
 

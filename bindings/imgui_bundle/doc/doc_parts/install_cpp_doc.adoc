@@ -4,8 +4,9 @@ include::_utils.adoc[]
 
 ==== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in link:{url-bundle-doc-tree}/_example_integration[example_integration].
-This folder  includes everything you need to set up your own project.
+The easiest way to use Dear ImGui Bundle in an external project is to use the template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template].
+
+This template includes everything you need to set up your own project.
 
 ==== Build from source
 

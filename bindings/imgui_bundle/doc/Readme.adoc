@@ -420,8 +420,9 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 
 ==== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
-The easiest way to use Dear ImGui Bundle in an external project is to use the example provided in link:{url-bundle-doc-tree}/_example_integration[example_integration].
-This folder  includes everything you need to set up your own project.
+The easiest way to use Dear ImGui Bundle in an external project is to use the template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template].
+
+This template includes everything you need to set up your own project.
 
 ==== Build from source
 
@@ -592,7 +593,7 @@ FetchContent_MakeAvailable(imgui_bundle)
 imgui_bundle_add_app(hello_world hello_world.cpp)
 ----
 
-NOTE: This cmake file is part of a quick start example available link:https://github.com/pthom/imgui_bundle/tree/main/_example_integration[here]. Refer to it if you wish to customize the application icon.
+NOTE: This cmake file is part of a quick start template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template]. Refer to it if you wish to customize the application icon.
 
 ==== Hello, World in Python
 
@@ -5358,26 +5359,26 @@ link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 +-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
 +-- Readme_devel.md
 |
-+-- _example_integration/                                   # Demonstrate how to easily use
-|         +-- CMakeLists.txt                                # imgui_bundle in a C++ app
-|         +-- assets/
-|         +-- hello_world.main.cpp
++-- _example_integration/                         # Demonstrate how to easily use
+|         +-- CMakeLists.txt                      # imgui_bundle in a C++ app
+|         +-- assets/                             # (this is a github template available a
+|         +-- hello_world.main.cpp                # https://github.com/pthom/imgui_bundle_template
 |
-+-- imgui_bundle_cmake/                                     # imgui_bundle_add_app() :
-|         |                                                 # a cmake function you can use
-|         +-- imgui_bundle_add_app.cmake                    # to create an app in one line
++-- imgui_bundle_cmake/                           # imgui_bundle_add_app() :
+|         |                                       # a cmake function you can use
+|         +-- imgui_bundle_add_app.cmake          # to create an app in one line
 |
-+-- bindings/                                               # root for the python bindings
++-- bindings/                                     # root for the python bindings
 |         +-- imgui_bundle/
-|                  +-- assets/                              # assets/ folder: you need to
-|                  |                                        # copy this folder
-|                  |                                        # into your app folder if you
-|                  |                                        # intend to use markdown
+|                  +-- assets/                    # assets/ folder: you need to
+|                  |                              # copy this folder
+|                  |                              # into your app folder if you
+|                  |                              # intend to use markdown
 |                  |
-|                  +-- demos_assets/                        # assets used by demos
-|                  +-- demos_cpp/                           # lots of C++ demos
-|                  +-- demos_python/                        # lots of python demos
-|                  +-- imgui/                               # imgui stubs
+|                  +-- demos_assets/              # assets used by demos
+|                  +-- demos_cpp/                 # lots of C++ demos
+|                  +-- demos_python/              # lots of python demos
+|                  +-- imgui/                     # imgui stubs
 |                  |     +-- __init__.pyi
 |                  |     +-- backends.pyi
 |                  |     +-- internal.pyi
