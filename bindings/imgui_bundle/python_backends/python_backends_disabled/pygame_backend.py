@@ -3,50 +3,67 @@ from __future__ import absolute_import
 from imgui_bundle import imgui
 
 from imgui_bundle.python_backends.opengl_backend import FixedPipelineRenderer
+# from imgui_bundle.python_backends.opengl_backend import ProgrammablePipelineRenderer
+
+from typing import Dict
 
 import pygame
 import pygame.event
 import pygame.time
 
+PygameKey = int
+
 
 class PygameRenderer(FixedPipelineRenderer):
+    key_map: Dict[PygameKey, imgui.Key]
+
     def __init__(self):
         super(PygameRenderer, self).__init__()
 
         self._gui_time = None
-        self.custom_key_map = {}
+        self._map_keys()
 
     # def _custom_key(self, key):
     #     # We need to go to custom keycode since imgui only support keycod from 0..512 or -1
-    #     if not key in self.custom_key_map:
-    #         self.custom_key_map[key] = len(self.custom_key_map)
-    #     return self.custom_key_map[key]
+    #     if not key in self.custom_Key.map:
+    #         self.custom_Key.map[key] = len(self.custom_Key.map)
+    #     return self.custom_Key.map[key]
 
-    # def _map_keys(self):
-    #     key_map = self.io.key_map
-    #
-    #     key_map[imgui.KEY_TAB] = self._custom_key(pygame.K_TAB)
-    #     key_map[imgui.KEY_LEFT_ARROW] = self._custom_key(pygame.K_LEFT)
-    #     key_map[imgui.KEY_RIGHT_ARROW] = self._custom_key(pygame.K_RIGHT)
-    #     key_map[imgui.KEY_UP_ARROW] = self._custom_key(pygame.K_UP)
-    #     key_map[imgui.KEY_DOWN_ARROW] = self._custom_key(pygame.K_DOWN)
-    #     key_map[imgui.KEY_PAGE_UP] = self._custom_key(pygame.K_PAGEUP)
-    #     key_map[imgui.KEY_PAGE_DOWN] = self._custom_key(pygame.K_PAGEDOWN)
-    #     key_map[imgui.KEY_HOME] = self._custom_key(pygame.K_HOME)
-    #     key_map[imgui.KEY_END] = self._custom_key(pygame.K_END)
-    #     key_map[imgui.KEY_INSERT] = self._custom_key(pygame.K_INSERT)
-    #     key_map[imgui.KEY_DELETE] = self._custom_key(pygame.K_DELETE)
-    #     key_map[imgui.KEY_BACKSPACE] = self._custom_key(pygame.K_BACKSPACE)
-    #     key_map[imgui.KEY_SPACE] = self._custom_key(pygame.K_SPACE)
-    #     key_map[imgui.KEY_ENTER] = self._custom_key(pygame.K_RETURN)
-    #     key_map[imgui.KEY_ESCAPE] = self._custom_key(pygame.K_ESCAPE)
-    #     key_map[imgui.KEY_PAD_ENTER] = self._custom_key(pygame.K_KP_ENTER)
-    #     key_map[imgui.KEY_A] = self._custom_key(pygame.K_a)
-    #     key_map[imgui.KEY_C] = self._custom_key(pygame.K_c)
-    #     key_map[imgui.KEY_V] = self._custom_key(pygame.K_v)
-    #     key_map[imgui.KEY_X] = self._custom_key(pygame.K_x)
-    #     key_map[imgui.KEY_Y] = self._custom_key(pygame.K_y)
-    #     key_map[imgui.KEY_Z] = self._custom_key(pygame.K_z)
+
+    def _map_keys(self):
+        self.key_map = {
+            pygame.K_LEFT: imgui.Key.left_arrow,
+            pygame.K_RIGHT: imgui.Key.right_arrow,
+            pygame.K_UP: imgui.Key.up_arrow,
+            pygame.K_DOWN: imgui.Key.down_arrow,
+            pygame.K_PAGEUP: imgui.Key.page_up,
+            pygame.K_PAGEDOWN: imgui.Key.page_down,
+            pygame.K_HOME: imgui.Key.home,
+            pygame.K_END: imgui.Key.end,
+            pygame.K_INSERT: imgui.Key.insert,
+            pygame.K_DELETE: imgui.Key.delete,
+            pygame.K_BACKSPACE: imgui.Key.backspace,
+            pygame.K_SPACE: imgui.Key.space,
+            pygame.K_RETURN: imgui.Key.enter,
+            pygame.K_ESCAPE: imgui.Key.escape,
+            pygame.K_KP_ENTER: imgui.Key.keypad_enter,
+
+            pygame.K_LCTRL: imgui.Key.left_ctrl,
+            pygame.K_RCTRL: imgui.Key.right_ctrl,
+            pygame.K_LALT: imgui.Key.left_alt,
+            pygame.K_RALT: imgui.Key.right_alt,
+            pygame.K_RSHIFT: imgui.Key.right_shift,
+            pygame.K_LSHIFT: imgui.Key.left_shift,
+            pygame.K_LSUPER: imgui.Key.left_super,
+            pygame.K_RSUPER: imgui.Key.right_super,
+
+            # pygame.K_a: imgui.Key.a,
+            # pygame.K_c: imgui.Key.c,
+            # pygame.K_v: imgui.Key.v,
+            # pygame.K_x: imgui.Key.x,
+            # pygame.K_y: imgui.Key.y,
+            # pygame.K_z: imgui.Key.z,
+        }
 
     def process_event(self, event):
         # perf: local for faster access
@@ -78,37 +95,18 @@ class PygameRenderer(FixedPipelineRenderer):
                 io.mouse_wheel = -0.5
             return True
 
-        if event.type == pygame.KEYDOWN:
+        processed_special_key = False
+        if event.type in (pygame.KEYDOWN, pygame.KEYUP):
+            is_down = event.type == pygame.KEYDOWN
+            if event.key in self.key_map.keys():
+                io.add_key_event(self.key_map[event.key], down=is_down)
+                processed_special_key = True
+
+        if event.type == pygame.KEYDOWN and not processed_special_key:
             for char in event.unicode:
                 code = ord(char)
                 if 0 < code < 0x10000:
                     io.add_input_character(code)
-            # io.keys_down[self._custom_key(event.key)] = True
-
-        if event.type == pygame.KEYUP:
-            pass
-            # io.keys_down[self._custom_key(event.key)] = False
-
-        if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-            io.key_ctrl = (
-                io.keys_down[self._custom_key(pygame.K_LCTRL)]
-                or io.keys_down[self._custom_key(pygame.K_RCTRL)]
-            )
-
-            io.key_alt = (
-                io.keys_down[self._custom_key(pygame.K_LALT)]
-                or io.keys_down[self._custom_key(pygame.K_RALT)]
-            )
-
-            io.key_shift = (
-                io.keys_down[self._custom_key(pygame.K_LSHIFT)]
-                or io.keys_down[self._custom_key(pygame.K_RSHIFT)]
-            )
-
-            io.key_super = (
-                io.keys_down[self._custom_key(pygame.K_LSUPER)]
-                or io.keys_down[self._custom_key(pygame.K_LSUPER)]
-            )
 
             return True
 
