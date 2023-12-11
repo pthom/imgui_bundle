@@ -1,0 +1,13 @@
+include::_utils.adoc[]
+
+=== Multiplatform C++ applications
+
+When developing C++ applications, Hello ImGui and Dear ImGui Bundle offer an excellent support for multiplatform applications.
+
+See this tutorial video for Hello ImGui:
+
+.10' demo video showcasing multi-platform support and rapid
+video::dArP4lBnOr8[youtube]
+
+
+TIP: The principle with Dear ImGui Bundle is the same, just use the dedicated Dear ImGui Bundle link:https://github.com/pthom/imgui_bundle_template[project template], and use `imgui_bundle_add_app`
