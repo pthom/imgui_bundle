@@ -324,7 +324,9 @@ def status_bar_gui(app_state: AppState):
         imgui.progress_bar(app_state.rocket_progress, hello_imgui.em_to_vec2(7.0, 1.0))  # type: ignore
 
 
-def show_menu_gui():
+def show_menu_gui(runner_params: hello_imgui.RunnerParams):
+    hello_imgui.show_app_menu(runner_params)
+    hello_imgui.show_view_menu(runner_params)
     if imgui.begin_menu("My Menu"):
         clicked, _ = imgui.menu_item("Test me", "", False)
         if clicked:
@@ -541,11 +543,15 @@ def main():
     #
     # Menu bar
     #
-    runner_params.imgui_window_params.show_menu_bar = (
-        True  # We use the default menu of Hello ImGui
-    )
-    # fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu & App menu
-    runner_params.callbacks.show_menus = show_menu_gui
+    # Here, we fully customize the menu bar:
+    # by setting `show_menu_bar` to True, and `show_menu_app` and `show_menu_view` to False,
+    # HelloImGui will display an empty menu bar, which we can fill with our own menu items via the callback `show_menus`
+    runner_params.imgui_window_params.show_menu_bar = True
+    runner_params.imgui_window_params.show_menu_app = False
+    runner_params.imgui_window_params.show_menu_view = False
+    # Inside `show_menus`, we can call `hello_imgui.show_view_menu` and `hello_imgui.show_app_menu` if desired
+    runner_params.callbacks.show_menus = lambda: show_menu_gui(runner_params)
+    # Optional: add items to Hello ImGui default App menu
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
 
     #

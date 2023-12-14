@@ -751,8 +751,10 @@ class ImGuiWindowParams:
         control over what is drawn behind the Gui.
 
       * `showMenuBar`: _bool, default=false_.
-        Show Menu bar on top of imgui main window
-        You can customize the menu via `RunnerCallbacks.ShowMenus()`
+        Show Menu bar on top of imgui main window.
+        In order to fully customize the menu, set showMenuBar to True, and set showMenu_App and showMenu_View params to False.
+        Then, implement the callback `RunnerParams.callbacks.ShowMenus` which can optionally call `HelloImGui::ShowViewMenu`
+        and `HelloImGui::ShowAppMenu`.
 
       * `showMenu_App`: _bool, default=true_.
         If menu bar is shown, include or not the default app menu
@@ -2068,8 +2070,30 @@ def save_user_pref(user_pref_name: str, user_pref_content: str) -> None:
     pass
 
 # std::string LoadUserPref(const std::string& userPrefName);    /* original C++ signature */
-# }
 def load_user_pref(user_pref_name: str) -> str:
+    pass
+
+# *
+# @@md# Menu
+#
+# Hello ImGui provides a default menu and status bar, which you can customize by using the params:
+#        `RunnerParams.imGuiWindowParams.` `showMenuBar` / `showMenu_App` / `showMenu_View`
+#
+# If you want to fully customize the menu:
+#    * set `showMenuBar` to True, then set `showMenu_App` and `showMenu_View` params to False
+#    * implement the callback `RunnerParams.callbacks.ShowMenus`: it can optionally call `ShowViewMenu` and `ShowAppMenu` (see below).
+#
+# * `ShowViewMenu(RunnerParams & runnerParams)`: shows the View menu (where you can select the layout
+#   and docked windows visibility).
+# * `ShowAppMenu(RunnerParams & runnerParams)`: shows the default App menu (including the Quit item)
+# @@md
+#
+# void ShowViewMenu(RunnerParams & runnerParams);    /* original C++ signature */
+def show_view_menu(runner_params: RunnerParams) -> None:
+    pass
+
+# void ShowAppMenu(RunnerParams & runnerParams);    /* original C++ signature */
+def show_app_menu(runner_params: RunnerParams) -> None:
     pass
 
 # <submodule imgui_default_settings>
