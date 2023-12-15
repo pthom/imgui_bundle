@@ -1,3 +1,5 @@
+#ifdef HELLOIMGUI_USE_GLFW_OPENGL3
+
 #ifndef __EMSCRIPTEN__ // to keep the build process simple, this demo is currently disabled with emscripten (although ImGui and Imgui Bundle are perfectly compatible with emscripten)
 
 // Dear ImGui: standalone example application for GLFW + OpenGL 3, using programmable pipeline
@@ -218,4 +220,9 @@ int main(int, char**)
 }
 #else // #ifndef __EMSCRIPTEN__
 int main(int, char**) {}
+#endif
+
+#else // #ifdef HELLOIMGUI_USE_GLFW_OPENGL3
+#include <stdio.h>
+int main() { printf("Glfw not found!"); }
 #endif

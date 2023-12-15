@@ -1,24 +1,24 @@
 ####################################################
 # Build glfw
 ####################################################
-function(add_glfw)
-    set_glfw_build_options_pre_add()
+function(add_glfw_submodule)
+    _set_glfw_build_options_pre_add()
     if (IMGUI_BUNDLE_BUILD_PYTHON)
-        add_glfw_as_python_shared_library()
+        _add_glfw_as_python_shared_library()
     else()
-        add_glfw_as_static_library()
+        _add_glfw_as_static_library()
     endif()
-    set_glfw_build_options_post_add()
+    _set_glfw_build_options_post_add()
 endfunction()
 
-function(set_glfw_build_options_pre_add)
+function(_set_glfw_build_options_pre_add)
     set(GLFW_BUILD_EXAMPLES OFF PARENT_SCOPE)
     set(GLFW_BUILD_TESTS OFF PARENT_SCOPE)
     set(GLFW_BUILD_DOCS OFF PARENT_SCOPE)
     set(GLFW_INSTALL OFF PARENT_SCOPE)
 endfunction()
 
-function(set_glfw_build_options_post_add)
+function(_set_glfw_build_options_post_add)
     if (UNIX AND NOT APPLE)
         # Those are only needed for wheels build using cibuildwheel (cp36-manylinux_x86_64 wheel)
         # See https://bytemeta.vip/repo/glfw/glfw/issues/2139
@@ -28,11 +28,11 @@ function(set_glfw_build_options_post_add)
     endif()
 endfunction()
 
-function(add_glfw_as_static_library)
+function(_add_glfw_as_static_library)
     add_subdirectory(glfw/glfw)
 endfunction()
 
-function(add_glfw_as_python_shared_library)
+function(_add_glfw_as_python_shared_library)
     # Build glfw as a *shared* library:
     #   this is required if we want to be able to use python bindings
     #   for glfw, using https://github.com/FlorianRhiem/pyGLFW

@@ -36,6 +36,49 @@ else()
 endif()
 
 
+# Glfw backend
+# -----------------------------------------------------------------------------
+#
+# The GLFW  backend is activated via IMGUI_BUNDLE_WITH_GLFW. It is activated by default, except under emscripten.
+#
+# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is ON, the system library will be used (via find_package(glfw3))
+#     (this works for C++ exe, but not for python bindings)
+# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is OFF, the library will be built from the submodule external/glfw/glfw
+#     (as a static library for C++ exe, and as a shared library for python bindings)
+#
+if (NOT EMSCRIPTEN)
+    option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
+else()
+    set(IMGUI_BUNDLE_WITH_GLFW OFF)
+endif()
+if (CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
+    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" ON)
+else()
+    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" OFF)
+endif()
+
+
+# SDL Backend
+# -----------------------------------------------------------------------------
+# SDL is activated via IMGUI_BUNDLE_WITH_SDL. It is disabled by default.
+# Notes:
+#   - under emscripten, sdl is the default backend.
+#   - sdl is not available for python bindings (you can use the full python SDL backend instead)
+#
+# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is ON, the system library will be used (via find_package(SDL2))
+# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is OFF, the library will be downloaded at configure time
+if (NOT EMSCRIPTEN)
+    option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
+else()
+    set(IMGUI_BUNDLE_WITH_SDL ON)
+endif()
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" ON)
+else()
+    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" OFF)
+endif()
+
+
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
 # -----------------------------------------------------------------------------
 # (OpenCV is required by the optional module immvision.
@@ -62,19 +105,6 @@ option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable
 # IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
-
-
-# IMGUI_BUNDLE_WITH_SDL: Add SDL backend
-# -----------------------------------------------------------------------------
-# (HelloImgui is built by default with glfw backend.
-# Sdl is also supported (for C++ only, not python), and can be added via the option IMGUI_BUNDLE_WITH_SDL
-if (NOT EMSCRIPTEN)
-    option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
-    option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
-else()
-    set(IMGUI_BUNDLE_WITH_SDL ON)
-    set(IMGUI_BUNDLE_WITH_GLFW OFF)
-endif()
 
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
@@ -151,6 +181,41 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
             )
     endif()
 endif()
+
+# Backends: check availability of glfw and sdl if using system libraries
+# -----------------------------------------------------------------------------
+if (IMGUI_BUNDLE_WITH_GLFW AND IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB)
+    find_package(glfw3)
+    if (NOT glfw3_FOUND)
+        set(glfw_help_msg "
+            you can install glfw via your package manager (apt, pacman, etc).
+            For example, on Ubuntu, you can run:
+                sudo apt install libglfw3-dev
+            On macOS, you can run:
+                brew install glfw
+        ")
+        message(FATAL_ERROR "
+            imgui_bundle: did not find system library for glfw3.
+            ${glfw_help_msg}")
+    endif()
+endif()
+if (IMGUI_BUNDLE_WITH_SDL AND IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB)
+    find_package(SDL2)
+    if (NOT SDL2_FOUND)
+        set(sdl_help_msg "")
+        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+            set(sdl_help_msg "
+                you can install sdl via your package manager (apt, pacman, etc).
+                For example, on Ubuntu, you can run:
+                    sudo apt install libsdl2-dev
+            ")
+        endif()
+        message(FATAL_ERROR "
+            imgui_bundle: did not find system library for SDL2.
+            ${sdl_help_msg}")
+    endif()
+endif()
+
 
 # imgui_bundle_add_app
 # -----------------------------------------------------------------------------
@@ -327,10 +392,30 @@ if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(devel_docs)
 endif()
 
-# Log Immvision status at the end
+
+# Log options at the end
 # -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: ON")
-else()
-    message(STATUS "  IMGUI_BUNDLE_WITH_IMMVISION: OFF")
+# First, adjust variables so that they show correctly
+#
+# IMGUI_BUNDLE_WITH_IMMVISION may be defined in external/immvision/CMakeLists.txt
+if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
+    set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
+# IMGUI_BUNDLE_WITH_GLFW: HelloImGui will use Glfw if no backend is specified
+if (NOT IMGUI_BUNDLE_WITH_GLFW AND NOT IMGUI_BUNDLE_WITH_SDL)
+    set(IMGUI_BUNDLE_WITH_GLFW "OFF (but HelloImGui activated it because no backend was specified)")
+endif()
+
+message(STATUS "imgui_bundle build options:
+    Backends:
+    ==================
+    IMGUI_BUNDLE_WITH_GLFW:        ${IMGUI_BUNDLE_WITH_GLFW} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB})
+    IMGUI_BUNDLE_WITH_SDL:         ${IMGUI_BUNDLE_WITH_SDL} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB})
+    Options:
+    ==================
+    IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
+    IMGUI_BUNDLE_WITH_TEST_ENGINE: ${IMGUI_BUNDLE_WITH_TEST_ENGINE}
+    IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
+    IMGUI_BUNDLE_BUILD_DEMOS:      ${IMGUI_BUNDLE_BUILD_DEMOS}
+    IMGUI_BUNDLE_BUILD_DOC:        ${IMGUI_BUNDLE_BUILD_DOC}
+")

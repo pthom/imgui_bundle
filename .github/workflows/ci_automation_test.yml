@@ -24,11 +24,12 @@ jobs:
         with:
           submodules: true
 
-      - name: install xorg-dev & start Xvfb (ubuntu only)
+      - name: install libglfw3-dev xorg-dev & start Xvfb (ubuntu only)
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
           sudo apt-get update && sudo apt-get install -y xorg-dev
           sudo apt-get install -y xvfb
+          sudo apt-get install -y libglfw3-dev
           Xvfb :99 &
           echo "DISPLAY=:99.0" >> $GITHUB_ENV
 
