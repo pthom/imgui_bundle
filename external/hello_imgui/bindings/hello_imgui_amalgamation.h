@@ -1211,7 +1211,6 @@ namespace HelloImGui
 
 #include <array>
 #include <stddef.h>
-#include <optional>
 
 
 #define ForDim2(dim) for (size_t dim = 0; dim < 2; dim += 1)
@@ -1247,8 +1246,6 @@ namespace HelloImGui
     };
 
 
-    std::string IntPairToString(std::array<int, 2> v);
-    std::optional<std::array<int, 2>> StringToIntPair(const std::string& s);
 
 } // namespace BackendApi
 
@@ -1866,6 +1863,7 @@ struct RunnerCallbacks
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <vector>
 #include <utility>
+#include <optional>
 #include <stdio.h>
 
 namespace HelloImGui

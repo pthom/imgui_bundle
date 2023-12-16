@@ -156,13 +156,6 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    m.def("int_pair_to_string",
-        HelloImGui::IntPairToString, py::arg("v"));
-
-    m.def("string_to_int_pair",
-        HelloImGui::StringToIntPair, py::arg("s"));
-
-
     py::enum_<HelloImGui::FullScreenMode>(m, "FullScreenMode", py::arithmetic(), "")
         .value("no_full_screen", HelloImGui::FullScreenMode::NoFullScreen, "")
         .value("full_screen", HelloImGui::FullScreenMode::FullScreen, "Full screen with specified resolution")

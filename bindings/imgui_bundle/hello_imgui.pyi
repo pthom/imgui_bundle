@@ -314,14 +314,6 @@ class ScreenBounds:
         """Auto-generated default constructor with named params"""
         pass
 
-# std::string IntPairToString(std::array<int, 2> v);    /* original C++ signature */
-def int_pair_to_string(v: List[int]) -> str:
-    pass
-
-# std::optional<std::array<int, 2>> StringToIntPair(const std::string& s);    /* original C++ signature */
-def string_to_int_pair(s: str) -> Optional[List[int]]:
-    pass
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/app_window_params.h continued                                              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
