@@ -5195,6 +5195,14 @@ def main():
                     "Edit", app_state.text, imgui.ImVec2(200, 200)
                 )
                 _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
+
+                io = imgui.get_io()
+                imgui.text(f"""
+                Keyboard modifiers:
+                    {io.key_ctrl=}
+                    {io.key_alt=}
+                    {io.key_shift=}
+                    {io.key_super=}""")
             imgui.end()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)
@@ -5335,6 +5343,13 @@ def main():
                 _, app_state.text = imgui.input_text_multiline(
                     "Edit", app_state.text, imgui.ImVec2(200, 200)
                 )
+                io = imgui.get_io()
+                imgui.text(f"""
+                Keyboard modifiers:
+                    {io.key_ctrl=}
+                    {io.key_alt=}
+                    {io.key_shift=}
+                    {io.key_super=}""")
             imgui.end()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)
@@ -5643,6 +5658,57 @@ void DemoInputTextUpperCase_StdString()
 ----
 
 ****
+
+=== Python context managers:
+
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+// :url-demo-images: doc_images/
+
+In C++, you would write:
+
+[source, cpp]
+----
+ImGui::Begin("My Window")
+ImGui::Text("Hello World");
+ImGui::End(); // ImGui::End() should be called even if ImGui::Begin() returns false
+----
+
+In Python, the module `imgui_ctx` provides a lot of context managers that automatically call `imgui.end()`, `imgui.end_child()`, etc., when the context is exited, so that you can write:
+
+[source, python]
+----
+from imgui_bundle import imgui, imgui_ctx
+
+with imgui_ctx.begin("My Window"): # imgui.end() called automatically
+    imgui.text("Hello World")
+----
+
+Of course, you can choose to use the standard API by using the module `imgui`:
+
+[source, python]
+----
+imgui.begin("My Window")
+imgui.text("Hello World")
+imgui.end()
+----
+
+link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py[see demo_python_context_manager.py]
 
 === Advanced glfw callbacks
 

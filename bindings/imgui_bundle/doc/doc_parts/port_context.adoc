@@ -1,0 +1,33 @@
+=== Python context managers:
+
+include::_utils.adoc[]
+
+In C++, you would write:
+
+[source, cpp]
+----
+ImGui::Begin("My Window")
+ImGui::Text("Hello World");
+ImGui::End(); // ImGui::End() should be called even if ImGui::Begin() returns false
+----
+
+In Python, the module `imgui_ctx` provides a lot of context managers that automatically call `imgui.end()`, `imgui.end_child()`, etc., when the context is exited, so that you can write:
+
+[source, python]
+----
+from imgui_bundle import imgui, imgui_ctx
+
+with imgui_ctx.begin("My Window"): # imgui.end() called automatically
+    imgui.text("Hello World")
+----
+
+Of course, you can choose to use the standard API by using the module `imgui`:
+
+[source, python]
+----
+imgui.begin("My Window")
+imgui.text("Hello World")
+imgui.end()
+----
+
+link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py[see demo_python_context_manager.py]

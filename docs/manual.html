@@ -1125,6 +1125,14 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">                    </span><span class="tok-s">&quot;Edit&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mi">200</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">200</span><span class="tok-p">)</span>
 <span class="tok-w">                </span><span class="tok-p">)</span>
 <span class="tok-w">                </span><span class="tok-n">_</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text2</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s">&quot;Text2&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text2</span><span class="tok-p">)</span>
+
+<span class="tok-w">                </span><span class="tok-n">io</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_io</span><span class="tok-p">()</span>
+<span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-n">f</span><span class="tok-s">&quot;&quot;&quot;</span>
+<span class="tok-w">                </span><span class="tok-n">Keyboard</span><span class="tok-w"> </span><span class="tok-n">modifiers</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_ctrl</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_alt</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_shift</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_super</span><span class="tok-o">=</span><span class="tok-p">}</span><span class="tok-s">&quot;&quot;&quot;)</span>
 <span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">glClearColor</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
@@ -1266,6 +1274,13 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">                </span><span class="tok-n">_</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">input_text_multiline</span><span class="tok-p">(</span>
 <span class="tok-w">                    </span><span class="tok-s">&quot;Edit&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mi">200</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">200</span><span class="tok-p">)</span>
 <span class="tok-w">                </span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-n">io</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_io</span><span class="tok-p">()</span>
+<span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-n">f</span><span class="tok-s">&quot;&quot;&quot;</span>
+<span class="tok-w">                </span><span class="tok-n">Keyboard</span><span class="tok-w"> </span><span class="tok-n">modifiers</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_ctrl</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_alt</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_shift</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_super</span><span class="tok-o">=</span><span class="tok-p">}</span><span class="tok-s">&quot;&quot;&quot;)</span>
 <span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">glClearColor</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
@@ -1349,7 +1364,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-16 16:43:12 +0100
+Last updated 2023-12-16 19:12:59 +0100
 </div>
 </div>
 </body>

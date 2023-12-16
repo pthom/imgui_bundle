@@ -21,41 +21,56 @@ STANDARD_FONT = None
 SOURCE_FONT = None
 
 
-def gui():
-    # Leave some room for the main menu
-    imgui.new_line()
-    imgui.new_line()
+def demo_begin():
+    # Bag for statics variables
+    statics = demo_begin
+    if not hasattr(statics, "opened_window_shortest"):
+        statics.opened_window_shortest = False
+    if not hasattr(statics, "opened_window_expandable"):
+        statics.opened_window_expandable = False
+    if not hasattr(statics, "opened_closable_window"):
+        statics.opened_closable_window = False
 
-    imgui.button("About this demo")
-    if imgui.is_item_hovered():
-        with imgui_ctx.begin_tooltip():
-            imgui.dummy(immapp.em_to_vec2(50, 1))
-            imgui_md.render(DOC)
+    # Checkboxes to open windows
+    _, statics.opened_window_shortest = imgui.checkbox("Open Window - Shortest", statics.opened_window_shortest)
+    _, statics.opened_window_expandable = imgui.checkbox("Open Window - Expandable", statics.opened_window_expandable)
+    _, statics.opened_closable_window = imgui.checkbox("Open Closable Window", statics.opened_closable_window)
 
-    demos = {
-        "Begin/End": demo_begin,
-        "Begin/End Child": demo_begin_child,
-        "Begin/End Menu": demo_menu_bar,
-        "Begin/End Tooltip": demo_begin_tooltip,
-        "Begin/End Popup": demo_begin_popup,
-        "Begin/End Table": demo_begin_table,
-        "Begin/End Tab Bar": demo_begin_tab_bar,
-        "Begin/End Drag and Drop": demo_begin_drag_and_drop,
-        "Begin/End Group": demo_begin_group,
-        "Tree Node": demo_tree_node,
-        "Push/Pop": demo_push_pop,
-    }
+    imgui.set_next_window_size(ImVec2(200, 200), imgui.Cond_.appearing.value)
 
-    for demo_name, demo_fn in demos.items():
-        if imgui.tree_node(demo_name):
-            demo_fn()
-            # Show code of demo_fn
-            imgui.separator_text("Source code")
-            imgui_md.render("```python\n" + inspect.getsource(demo_fn) + "\n```")
+    # Shortest use of imgui_ctx.begin()
+    if statics.opened_window_shortest:
+        with imgui_ctx.begin("Window - Shortest"):
+            imgui.text("Hello!")
 
-            imgui.tree_pop()
+    # Example where we test if the window is expanded
+    if statics.opened_window_expandable:
+        with imgui_ctx.begin("Window - Expandable") as window2:
+            # The test below will return True if the window is expanded
+            # It could also be written:
+            #     if window2.expanded:
+            # It is optional to test this, since the widgets will not be rendered,
+            # if the window is not expanded, but you can exit early if you want.
+            if window2:
+                imgui.text("Hello!")
 
-    demo_main_menu_bar()
+    # Example of a closable window
+    if statics.opened_closable_window:
+        with imgui_ctx.begin("Closable window", statics.opened_closable_window) as window:
+            if window:
+                imgui.text("Hello!")
+            statics.opened_closable_window = window.opened
+
+
+def demo_begin_child():
+    # Example of a child window
+    with imgui_ctx.begin_child("Child Window", ImVec2(200, 20)):
+        imgui.text("This is a child window!")
+
+    # Example of a child window, where we test if the child is expanded
+    with imgui_ctx.begin_child("Child Window Expandable", ImVec2(400, 20)) as child:
+        if child:
+            imgui.text("This is a child window (where we test if it is expanded)!")
 
 
 def demo_push_pop():
@@ -233,56 +248,41 @@ def demo_main_menu_bar():
                 imgui.menu_item_simple("This is a menu item!")
 
 
-def demo_begin_child():
-    # Example of a child window
-    with imgui_ctx.begin_child("Child Window", ImVec2(200, 20)):
-        imgui.text("This is a child window!")
+def gui():
+    # Leave some room for the main menu
+    imgui.new_line()
+    imgui.new_line()
 
-    # Example of a child window, where we test if the child is expanded
-    with imgui_ctx.begin_child("Child Window Expandable", ImVec2(400, 20)) as child:
-        if child:
-            imgui.text("This is a child window (where we test if it is expanded)!")
+    imgui.button("About this demo")
+    if imgui.is_item_hovered():
+        with imgui_ctx.begin_tooltip():
+            imgui.dummy(immapp.em_to_vec2(50, 1))
+            imgui_md.render(DOC)
 
+    demos = {
+        "Begin/End": demo_begin,
+        "Begin/End Child": demo_begin_child,
+        "Begin/End Menu": demo_menu_bar,
+        "Begin/End Tooltip": demo_begin_tooltip,
+        "Begin/End Popup": demo_begin_popup,
+        "Begin/End Table": demo_begin_table,
+        "Begin/End Tab Bar": demo_begin_tab_bar,
+        "Begin/End Drag and Drop": demo_begin_drag_and_drop,
+        "Begin/End Group": demo_begin_group,
+        "Tree Node": demo_tree_node,
+        "Push/Pop": demo_push_pop,
+    }
 
-def demo_begin():
-    # Bag for statics variables
-    statics = demo_begin
-    if not hasattr(statics, "opened_window_shortest"):
-        statics.opened_window_shortest = False
-    if not hasattr(statics, "opened_window_expandable"):
-        statics.opened_window_expandable = False
-    if not hasattr(statics, "opened_closable_window"):
-        statics.opened_closable_window = False
+    for demo_name, demo_fn in demos.items():
+        if imgui.tree_node(demo_name):
+            demo_fn()
+            # Show code of demo_fn
+            imgui.separator_text("Source code")
+            imgui_md.render("```python\n" + inspect.getsource(demo_fn) + "\n```")
 
-    # Checkboxes to open windows
-    _, statics.opened_window_shortest = imgui.checkbox("Open Window - Shortest", statics.opened_window_shortest)
-    _, statics.opened_window_expandable = imgui.checkbox("Open Window - Expandable", statics.opened_window_expandable)
-    _, statics.opened_closable_window = imgui.checkbox("Open Closable Window", statics.opened_closable_window)
+            imgui.tree_pop()
 
-    imgui.set_next_window_size(ImVec2(200, 200), imgui.Cond_.appearing.value)
-
-    # Shortest use of imgui_ctx.begin()
-    if statics.opened_window_shortest:
-        with imgui_ctx.begin("Window - Shortest"):
-            imgui.text("Hello!")
-
-    # Example where we test if the window is expanded
-    if statics.opened_window_expandable:
-        with imgui_ctx.begin("Window - Expandable") as window2:
-            # The test below will return True if the window is expanded
-            # It could also be written:
-            #     if window2.expanded:
-            # It is optional to test this, since the widgets will not be rendered,
-            # if the window is not expanded, but you can exit early if you want.
-            if window2:
-                imgui.text("Hello!")
-
-    # Example of a closable window
-    if statics.opened_closable_window:
-        with imgui_ctx.begin("Closable window", statics.opened_closable_window) as window:
-            if window:
-                imgui.text("Hello!")
-            statics.opened_closable_window = window.opened
+    demo_main_menu_bar()
 
 
 def main():
