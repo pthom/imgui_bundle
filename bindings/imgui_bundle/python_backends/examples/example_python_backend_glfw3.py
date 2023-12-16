@@ -54,6 +54,13 @@ def main():
                 _, app_state.text = imgui.input_text_multiline(
                     "Edit", app_state.text, imgui.ImVec2(200, 200)
                 )
+                io = imgui.get_io()
+                imgui.text(f"""
+                Keyboard modifiers:
+                    {io.key_ctrl=}
+                    {io.key_alt=}
+                    {io.key_shift=}
+                    {io.key_super=}""")
             imgui.end()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)

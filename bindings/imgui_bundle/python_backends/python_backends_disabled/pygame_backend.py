@@ -16,6 +16,7 @@ PygameKey = int
 
 class PygameRenderer(FixedPipelineRenderer):
     key_map: Dict[PygameKey, imgui.Key]
+    modifier_map: Dict[PygameKey, imgui.Key]
 
     def __init__(self):
         super(PygameRenderer, self).__init__()
@@ -65,6 +66,17 @@ class PygameRenderer(FixedPipelineRenderer):
             # pygame.K_z: imgui.Key.z,
         }
 
+        self.modifier_map = {
+            pygame.K_LCTRL: imgui.Key.im_gui_mod_ctrl,
+            pygame.K_RCTRL: imgui.Key.im_gui_mod_ctrl,
+            pygame.K_LSHIFT: imgui.Key.im_gui_mod_shift,
+            pygame.K_RSHIFT: imgui.Key.im_gui_mod_shift,
+            pygame.K_LALT: imgui.Key.im_gui_mod_alt,
+            pygame.K_RALT: imgui.Key.im_gui_mod_alt,
+            pygame.K_LSUPER: imgui.Key.im_gui_mod_super,
+            pygame.K_RSUPER: imgui.Key.im_gui_mod_super,
+        }
+
     def process_event(self, event):
         # perf: local for faster access
         io = self.io
@@ -100,6 +112,9 @@ class PygameRenderer(FixedPipelineRenderer):
             is_down = event.type == pygame.KEYDOWN
             if event.key in self.key_map.keys():
                 io.add_key_event(self.key_map[event.key], down=is_down)
+                processed_special_key = True
+            if event.key in self.modifier_map.keys():
+                io.add_key_event(self.modifier_map[event.key], down=is_down)
                 processed_special_key = True
 
         if event.type == pygame.KEYDOWN and not processed_special_key:

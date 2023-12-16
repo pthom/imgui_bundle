@@ -18,6 +18,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
     """Basic SDL2 integration implementation."""
 
     key_map: Dict[SdlKey, imgui.Key]
+    modifier_map: Dict[SdlKey, imgui.Key]
     MOUSE_WHEEL_OFFSET_SCALE = 0.5
 
     def __init__(self, window):
@@ -71,6 +72,17 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[SDL_SCANCODE_Y] = imgui.Key.y
         key_map[SDL_SCANCODE_Z] = imgui.Key.z
 
+        self.modifier_map = {}
+        self.modifier_map[SDL_SCANCODE_LCTRL] = imgui.Key.im_gui_mod_ctrl
+        self.modifier_map[SDL_SCANCODE_RCTRL] = imgui.Key.im_gui_mod_ctrl
+        self.modifier_map[SDL_SCANCODE_LSHIFT] = imgui.Key.im_gui_mod_shift
+        self.modifier_map[SDL_SCANCODE_RSHIFT] = imgui.Key.im_gui_mod_shift
+        self.modifier_map[SDL_SCANCODE_LALT] = imgui.Key.im_gui_mod_alt
+        self.modifier_map[SDL_SCANCODE_RALT] = imgui.Key.im_gui_mod_alt
+        self.modifier_map[SDL_SCANCODE_LGUI] = imgui.Key.im_gui_mod_super
+        self.modifier_map[SDL_SCANCODE_RGUI] = imgui.Key.im_gui_mod_super
+
+
     def process_event(self, event):
         io = self.io
 
@@ -91,15 +103,12 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             sdl_key = event.key.keysym.scancode
             if sdl_key in self.key_map:
                 imgui_key = self.key_map[sdl_key]
-                if event.type == SDL_KEYUP:
-                    io.add_key_event(imgui_key, down=False)
-                elif event.type == SDL_KEYDOWN:
-                    io.add_key_event(imgui_key, down=True)
+                down = event.type == SDL_KEYDOWN
+                io.add_key_event(imgui_key, down)
 
-            io.key_shift = (SDL_GetModState() & KMOD_SHIFT) != 0
-            io.key_ctrl = (SDL_GetModState() & KMOD_CTRL) != 0
-            io.key_alt = (SDL_GetModState() & KMOD_ALT) != 0
-            io.key_super = (SDL_GetModState() & KMOD_GUI) != 0
+            if sdl_key in self.modifier_map:
+                imgui_key = self.modifier_map[sdl_key]
+                io.add_key_event(imgui_key, event.type == SDL_KEYDOWN)
 
             return True
 

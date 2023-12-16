@@ -61,6 +61,14 @@ def main():
                     "Edit", app_state.text, imgui.ImVec2(200, 200)
                 )
                 _, app_state.text2 = imgui.input_text("Text2", app_state.text2)
+
+                io = imgui.get_io()
+                imgui.text(f"""
+                Keyboard modifiers:
+                    {io.key_ctrl=}
+                    {io.key_alt=}
+                    {io.key_shift=}
+                    {io.key_super=}""")
             imgui.end()
 
     def draw(dt):

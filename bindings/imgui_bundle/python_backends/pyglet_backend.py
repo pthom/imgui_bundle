@@ -18,7 +18,7 @@ from imgui_bundle.python_backends.opengl_backend import (
 
 
 class PygletMixin(object):
-    REVERSE_KEY_MAP = {
+    key_map = {
         key.TAB: imgui.Key.tab,
         key.LEFT: imgui.Key.left_arrow,
         key.RIGHT: imgui.Key.right_arrow,
@@ -41,6 +41,16 @@ class PygletMixin(object):
         key.X: imgui.Key.x,
         key.Y: imgui.Key.y,
         key.Z: imgui.Key.z,
+    }
+    modifier_map = {
+        key.LCTRL: imgui.Key.im_gui_mod_ctrl,
+        key.RCTRL: imgui.Key.im_gui_mod_ctrl,
+        key.LSHIFT: imgui.Key.im_gui_mod_shift,
+        key.RSHIFT: imgui.Key.im_gui_mod_shift,
+        key.LALT: imgui.Key.im_gui_mod_alt,
+        key.RALT: imgui.Key.im_gui_mod_alt,
+        key.LCOMMAND: imgui.Key.im_gui_mod_super,
+        key.RCOMMAND: imgui.Key.im_gui_mod_super,
     }
     _gui_time = None
 
@@ -97,18 +107,6 @@ class PygletMixin(object):
             self.on_resize,
         )
 
-    def _on_mods_change(self, mods, key_pressed=0):
-        self.io.key_ctrl = mods & key.MOD_CTRL or key_pressed in (key.LCTRL, key.RCTRL)
-        self.io.key_super = mods & key.MOD_COMMAND or key_pressed in (
-            key.LCOMMAND,
-            key.RCOMMAND,
-        )
-        self.io.key_alt = mods & key.MOD_ALT or key_pressed in (key.LALT, key.RALT)
-        self.io.key_shift = mods & key.MOD_SHIFT or key_pressed in (
-            key.LSHIFT,
-            key.RSHIFT,
-        )
-
     def _handle_mouse_cursor(self):
         if self.io.config_flags & imgui.ConfigFlags_.no_mouse_cursor_change.value:
             return
@@ -126,17 +124,19 @@ class PygletMixin(object):
     def on_mouse_motion(self, x, y, dx, dy):
         self.io.mouse_pos = x, self.io.display_size.y - y
 
+    def _on_key(self, key_pressed, down):
+        if key_pressed in self.key_map:
+            imgui_key = self.key_map[key_pressed]
+            self.io.add_key_event(imgui_key, down=down)
+
+        if key_pressed in self.modifier_map:
+            imgui_key = self.modifier_map[key_pressed]
+            self.io.add_key_event(imgui_key, down=down)
     def on_key_press(self, key_pressed, mods):
-        if key_pressed in self.REVERSE_KEY_MAP:
-            imgui_key = self.REVERSE_KEY_MAP[key_pressed]
-            self.io.add_key_event(imgui_key, down=True)
-        self._on_mods_change(mods, key_pressed)
+        self._on_key(key_pressed, True)
 
     def on_key_release(self, key_released, mods):
-        if key_released in self.REVERSE_KEY_MAP:
-            imgui_key = self.REVERSE_KEY_MAP[key_released]
-            self.io.add_key_event(imgui_key, down=False)
-        self._on_mods_change(mods)
+        self._on_key(key_released, False)
 
     def on_text(self, text):
         io = imgui.get_io()
