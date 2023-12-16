@@ -1,3 +1,7 @@
+# Note: this backend was adapted to the new ImGui API. However, there are rendering issues with it,
+# probably because it uses an old version of the OpenGL API
+# (FixedPipelineRenderer instead of ProgrammablePipelineRenderer).
+
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
@@ -23,13 +27,6 @@ class PygameRenderer(FixedPipelineRenderer):
 
         self._gui_time = None
         self._map_keys()
-
-    # def _custom_key(self, key):
-    #     # We need to go to custom keycode since imgui only support keycod from 0..512 or -1
-    #     if not key in self.custom_Key.map:
-    #         self.custom_Key.map[key] = len(self.custom_Key.map)
-    #     return self.custom_Key.map[key]
-
 
     def _map_keys(self):
         self.key_map = {
@@ -82,29 +79,18 @@ class PygameRenderer(FixedPipelineRenderer):
         io = self.io
 
         if event.type == pygame.MOUSEMOTION:
-            io.mouse_pos = event.pos
+            io.add_mouse_pos_event(event.pos[0], event.pos[1])
             return True
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                io.mouse_down[0] = 1
-            if event.button == 2:
-                io.mouse_down[1] = 1
-            if event.button == 3:
-                io.mouse_down[2] = 1
+        if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+            down = event.type == pygame.MOUSEBUTTONDOWN
+            imgui_button = event.button - 1
+            io.add_mouse_button_event(imgui_button, down)
             return True
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                io.mouse_down[0] = 0
-            if event.button == 2:
-                io.mouse_down[1] = 0
-            if event.button == 3:
-                io.mouse_down[2] = 0
-            if event.button == 4:
-                io.mouse_wheel = 0.5
-            if event.button == 5:
-                io.mouse_wheel = -0.5
+        if event.type == pygame.MOUSEWHEEL:
+            k = 0.5
+            io.add_mouse_wheel_event(event.x * k, event.y * k)
             return True
 
         processed_special_key = False
@@ -128,7 +114,7 @@ class PygameRenderer(FixedPipelineRenderer):
         if event.type == pygame.VIDEORESIZE:
             surface = pygame.display.get_surface()
             # note: pygame does not modify existing surface upon resize,
-            #       we need to to it ourselves.
+            #       we need to do it ourselves.
             pygame.display.set_mode(
                 (event.w, event.h),
                 flags=surface.get_flags(),

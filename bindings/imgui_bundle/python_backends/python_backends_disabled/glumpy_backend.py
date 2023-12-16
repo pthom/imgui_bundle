@@ -1,3 +1,5 @@
+# Note: this backend was not tested and not adapted to the  new imgui API!
+
 # -*- coding: utf-8 -*-
 # ruff: noqa
 import numpy as np

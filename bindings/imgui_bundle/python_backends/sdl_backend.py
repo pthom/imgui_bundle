@@ -25,7 +25,6 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         super(SDL2Renderer, self).__init__()
         self.window = window
 
-        self._mouse_pressed = [False, False, False]
         self._mouse_wheel = 0.0
         self._gui_time = None
 
@@ -82,21 +81,31 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         self.modifier_map[SDL_SCANCODE_LGUI] = imgui.Key.im_gui_mod_super
         self.modifier_map[SDL_SCANCODE_RGUI] = imgui.Key.im_gui_mod_super
 
-
     def process_event(self, event):
         io = self.io
 
-        if event.type == SDL_MOUSEWHEEL:
-            self._mouse_wheel = event.wheel.y * self.MOUSE_WHEEL_OFFSET_SCALE
+        if event.type == SDL_MOUSEMOTION:
+            if SDL_GetWindowFlags(self.window) & SDL_WINDOW_MOUSE_FOCUS:
+                io.mouse_pos = -1, -1
+            io.mouse_pos = event.motion.x, event.motion.y
             return True
 
-        if event.type == SDL_MOUSEBUTTONDOWN:
+        if event.type == SDL_MOUSEWHEEL:
+            io.add_mouse_wheel_event(
+                event.wheel.x * self.MOUSE_WHEEL_OFFSET_SCALE, event.wheel.y * self.MOUSE_WHEEL_OFFSET_SCALE)
+            return True
+
+        if event.type == SDL_MOUSEBUTTONDOWN or event.type == SDL_MOUSEBUTTONUP:
+            imgui_button = 0
             if event.button.button == SDL_BUTTON_LEFT:
-                self._mouse_pressed[0] = True
-            if event.button.button == SDL_BUTTON_RIGHT:
-                self._mouse_pressed[1] = True
-            if event.button.button == SDL_BUTTON_MIDDLE:
-                self._mouse_pressed[2] = True
+                imgui_button = 0
+            elif event.button.button == SDL_BUTTON_RIGHT:
+                imgui_button = 1
+            elif event.button.button == SDL_BUTTON_MIDDLE:
+                imgui_button = 2
+
+            down = event.type == SDL_MOUSEBUTTONDOWN
+            io.add_mouse_button_event(imgui_button, down)
             return True
 
         if event.type == SDL_KEYUP or event.type == SDL_KEYDOWN:
@@ -139,25 +148,4 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
             io.delta_time = 1.0 / 1000.0
         self._gui_time = current_time
 
-        mx = ctypes.pointer(ctypes.c_int(0))
-        my = ctypes.pointer(ctypes.c_int(0))
-        mouse_mask = SDL_GetMouseState(mx, my)
 
-        if SDL_GetWindowFlags(self.window) & SDL_WINDOW_MOUSE_FOCUS:
-            io.mouse_pos = mx.contents.value, my.contents.value
-        else:
-            io.mouse_pos = -1, -1
-
-        io.mouse_down[0] = (
-            self._mouse_pressed[0] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0
-        )
-        io.mouse_down[1] = (
-            self._mouse_pressed[1] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0
-        )
-        io.mouse_down[2] = (
-            self._mouse_pressed[2] or (mouse_mask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0
-        )
-        self._mouse_pressed = [False, False, False]
-
-        io.mouse_wheel = self._mouse_wheel
-        self._mouse_wheel = 0

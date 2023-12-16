@@ -23,6 +23,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         if attach_callbacks:
             glfw.set_key_callback(self.window, self.keyboard_callback)
             glfw.set_cursor_pos_callback(self.window, self.mouse_callback)
+            glfw.set_mouse_button_callback(self.window, self.mouse_button_callback)
             glfw.set_window_size_callback(self.window, self.resize_callback)
             glfw.set_char_callback(self.window, self.char_callback)
             glfw.set_scroll_callback(self.window, self.scroll_callback)
@@ -89,7 +90,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.modifier_map[glfw.KEY_LEFT_SUPER] = imgui.Key.im_gui_mod_super
         self.modifier_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.im_gui_mod_super
 
-
     def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
         # perf: local for faster access
         io = self.io
@@ -115,11 +115,17 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.display_size = width, height
 
     def mouse_callback(self, *args, **kwargs):
-        pass
+        if glfw.get_window_attrib(self.window, glfw.FOCUSED):
+            mouse_pos = glfw.get_cursor_pos(self.window)
+            self.io.add_mouse_pos_event(mouse_pos[0], mouse_pos[1])
+        else:
+            self.io.add_mouse_pos_event(-1, -1)
+
+    def mouse_button_callback(self, window, button, action, mods):
+        self.io.add_mouse_button_event(button, action == glfw.PRESS)
 
     def scroll_callback(self, window, x_offset, y_offset):
-        self.io.mouse_wheel_horizontal = x_offset
-        self.io.mouse_wheel = y_offset
+        self.io.add_mouse_wheel_event(x_offset, y_offset)
 
     def process_inputs(self):
         io = imgui.get_io()
@@ -130,15 +136,6 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         io.display_size = window_size
         io.display_framebuffer_scale = compute_fb_scale(window_size, fb_size)
         io.delta_time = 1.0 / 60
-
-        if glfw.get_window_attrib(self.window, glfw.FOCUSED):
-            io.mouse_pos = glfw.get_cursor_pos(self.window)
-        else:
-            io.mouse_pos = -1, -1
-
-        io.mouse_down[0] = glfw.get_mouse_button(self.window, 0)
-        io.mouse_down[1] = glfw.get_mouse_button(self.window, 1)
-        io.mouse_down[2] = glfw.get_mouse_button(self.window, 2)
 
         current_time = glfw.get_time()
 

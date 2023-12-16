@@ -121,9 +121,6 @@ class PygletMixin(object):
                 cursor = self.MOUSE_CURSORS.get(mouse_cursor)
                 window.set_mouse_cursor(window.get_system_mouse_cursor(cursor))
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        self.io.mouse_pos = x, self.io.display_size.y - y
-
     def _on_key(self, key_pressed, down):
         if key_pressed in self.key_map:
             imgui_key = self.key_map[key_pressed]
@@ -144,44 +141,27 @@ class PygletMixin(object):
         for char in text:
             io.add_input_character(ord(char))
 
-    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        self.io.mouse_pos = x, self.io.display_size.y - y
-
-        if button == mouse.LEFT:
-            self.io.mouse_down[0] = 1
-
-        if button == mouse.MIDDLE:
-            self.io.mouse_down[1] = 1
-
-        if button == mouse.RIGHT:
-            self.io.mouse_down[2] = 1
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.io.add_mouse_pos_event(x, self.io.display_size.y - y)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        self.io.mouse_pos = x, self.io.display_size.y - y
-
+        imgui_button = 0
         if button == mouse.LEFT:
-            self.io.mouse_down[0] = 1
-
-        if button == mouse.MIDDLE:
-            self.io.mouse_down[1] = 1
-
-        if button == mouse.RIGHT:
-            self.io.mouse_down[2] = 1
+            imgui_button = 0
+        elif button == mouse.RIGHT:
+            imgui_button = 1
+        elif button == mouse.MIDDLE:
+            imgui_button = 2
+        self.io.add_mouse_button_event(imgui_button, True)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        self.io.mouse_pos = x, self.io.display_size.y - y
-
-        if button == mouse.LEFT:
-            self.io.mouse_down[0] = 0
-
-        if button == mouse.MIDDLE:
-            self.io.mouse_down[1] = 0
-
-        if button == mouse.RIGHT:
-            self.io.mouse_down[2] = 0
+        self.io.add_mouse_button_event(button - 1, False)
 
     def on_mouse_scroll(self, x, y, mods, scroll):
-        self.io.mouse_wheel = scroll
+        self.io.add_mouse_wheel_event(0, -scroll)
+
+    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        pass
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
