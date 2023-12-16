@@ -42,6 +42,8 @@ def make_gui() -> GuiFunction:
             "demo_testengine",
             "How to use ImGui Test Engine to test and automate your application",
         ),
+        DemoApp("demo_python_context_manager",
+                "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."),
         DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp(
             "demo_command_palette",
