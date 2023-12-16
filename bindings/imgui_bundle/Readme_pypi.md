@@ -2,16 +2,16 @@
 [official documentation site](https://pthom.github.io/imgui_bundle) for
 Dear ImGui Bundle.*
 
-[![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+[![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 Dear ImGui Bundle: easily create ImGui applications in Python and C++.
 Batteries included!
 
 Click on the logo for a complete interactive demonstration!
 
-[![sources](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
-[![doc](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png)](https://pthom.github.io/imgui_bundle)
-[![manual](https://github.com/pthom/imgui_bundle/raw/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+[![sources](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
+[![doc](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png)](https://pthom.github.io/imgui_bundle)
+[![manual](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 # Introduction
 

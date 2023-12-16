@@ -1778,8 +1778,11 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-p">}</span>
 
 <span class="tok-c1">// The menu gui</span>
-<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowMenuGui</span><span class="tok-p">()</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowMenuGui</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RunnerParams</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">)</span>
 <span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ShowAppMenu</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ShowViewMenu</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">);</span>
+
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">BeginMenu</span><span class="tok-p">(</span><span class="tok-s">&quot;My Menu&quot;</span><span class="tok-p">))</span>
 <span class="tok-w">    </span><span class="tok-p">{</span>
 <span class="tok-w">        </span><span class="tok-kt">bool</span><span class="tok-w"> </span><span class="tok-n">clicked</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">MenuItem</span><span class="tok-p">(</span><span class="tok-s">&quot;Test me&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">);</span>
@@ -1996,9 +1999,15 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-c1">//</span>
 <span class="tok-w">    </span><span class="tok-c1">// Menu bar</span>
 <span class="tok-w">    </span><span class="tok-c1">//</span>
-<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">showMenuBar</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span><span class="tok-w">          </span><span class="tok-c1">// We use the default menu of Hello ImGui</span>
-<span class="tok-w">    </span><span class="tok-c1">// fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu and to the App menu</span>
-<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">ShowMenus</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ShowMenuGui</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// Here, we fully customize the menu bar:</span>
+<span class="tok-w">    </span><span class="tok-c1">// by setting `showMenuBar` to true, and `showMenu_App` and `showMenu_View` to false,</span>
+<span class="tok-w">    </span><span class="tok-c1">// HelloImGui will display an empty menu bar, which we can fill with our own menu items via the callback `ShowMenus`</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">showMenuBar</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">showMenu_App</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">showMenu_View</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// Inside `ShowMenus`, we can call `HelloImGui::ShowViewMenu` and `HelloImGui::ShowAppMenu` if desired</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">ShowMenus</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">runnerParams</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-n">ShowMenuGui</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">);};</span>
+<span class="tok-w">    </span><span class="tok-c1">// Optional: add items to Hello ImGui default App menu</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">ShowAppMenuItems</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ShowAppMenuItems</span><span class="tok-p">;</span>
 
 <span class="tok-w">    </span><span class="tok-c1">//</span>
@@ -2401,7 +2410,9 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">progress_bar</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">rocket_progress</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">7.0</span><span class="tok-p">,</span> <span class="tok-mf">1.0</span><span class="tok-p">))</span>  <span class="tok-c1"># type: ignore</span>
 
 
-<span class="tok-k">def</span> <span class="tok-nf">show_menu_gui</span><span class="tok-p">():</span>
+<span class="tok-k">def</span> <span class="tok-nf">show_menu_gui</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">:</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">):</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">show_app_menu</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">show_view_menu</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">begin_menu</span><span class="tok-p">(</span><span class="tok-s2">&quot;My Menu&quot;</span><span class="tok-p">):</span>
         <span class="tok-n">clicked</span><span class="tok-p">,</span> <span class="tok-n">_</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">menu_item</span><span class="tok-p">(</span><span class="tok-s2">&quot;Test me&quot;</span><span class="tok-p">,</span> <span class="tok-s2">&quot;&quot;</span><span class="tok-p">,</span> <span class="tok-kc">False</span><span class="tok-p">)</span>
         <span class="tok-k">if</span> <span class="tok-n">clicked</span><span class="tok-p">:</span>
@@ -2618,11 +2629,15 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-c1">#</span>
     <span class="tok-c1"># Menu bar</span>
     <span class="tok-c1">#</span>
-    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">show_menu_bar</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
-        <span class="tok-kc">True</span>  <span class="tok-c1"># We use the default menu of Hello ImGui</span>
-    <span class="tok-p">)</span>
-    <span class="tok-c1"># fill callbacks ShowMenuGui and ShowAppMenuItems, to add items to the default menu &amp; App menu</span>
-    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_menus</span> <span class="tok-o">=</span> <span class="tok-n">show_menu_gui</span>
+    <span class="tok-c1"># Here, we fully customize the menu bar:</span>
+    <span class="tok-c1"># by setting `show_menu_bar` to True, and `show_menu_app` and `show_menu_view` to False,</span>
+    <span class="tok-c1"># HelloImGui will display an empty menu bar, which we can fill with our own menu items via the callback `show_menus`</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">show_menu_bar</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">show_menu_app</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">show_menu_view</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
+    <span class="tok-c1"># Inside `show_menus`, we can call `hello_imgui.show_view_menu` and `hello_imgui.show_app_menu` if desired</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_menus</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">show_menu_gui</span><span class="tok-p">(</span><span class="tok-n">runner_params</span><span class="tok-p">)</span>
+    <span class="tok-c1"># Optional: add items to Hello ImGui default App menu</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_app_menu_items</span> <span class="tok-o">=</span> <span class="tok-n">show_app_menu_items</span>
 
     <span class="tok-c1">#</span>
@@ -4894,7 +4909,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-11 10:45:51 +0100
+Last updated 2023-12-16 16:43:12 +0100
 </div>
 </div>
 </body>

@@ -7,12 +7,14 @@ ifdef::env_gh_readme[]
 TIP: For a more readable version of this document, click on {btn-doc}
 
 include::ci_badges.adoc[]
+include::_utils.adoc[]
+include::_badges.adoc[]
 
 endif::[]
 
 
 ****
-:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
 
 ifndef::env_demo_markdown[]
 link:{url-demo-imgui-bundle}[image:{url-logo}["abc", 150]]
@@ -26,4 +28,5 @@ Click on the logo for a complete interactive demonstration!
 endif::[]
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
+
 ****
