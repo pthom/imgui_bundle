@@ -1,5 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
+set(HELLOIMGUI_CMAKE_PATH ${himgui_cmake_path} CACHE STRING "HELLOIMGUI_CMAKE_PATH" FORCE)
 include(${himgui_cmake_path}/hello_imgui_add_app.cmake)
 include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 
