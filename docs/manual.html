@@ -1226,7 +1226,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">glfw_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
-<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui_ctx</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">sys</span>
 
@@ -1281,6 +1281,15 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_alt</span><span class="tok-o">=</span><span class="tok-p">}</span>
 <span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_shift</span><span class="tok-o">=</span><span class="tok-p">}</span>
 <span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_super</span><span class="tok-o">=</span><span class="tok-p">}</span><span class="tok-s">&quot;&quot;&quot;)</span>
+
+<span class="tok-w">                </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s">&quot;Open popup&quot;</span><span class="tok-p">)</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">open_popup</span><span class="tok-p">(</span><span class="tok-s">&quot;my popup&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-n">with</span><span class="tok-w"> </span><span class="tok-n">imgui_ctx</span><span class="tok-p">.</span><span class="tok-n">begin_popup_modal</span><span class="tok-p">(</span><span class="tok-s">&quot;my popup&quot;</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">popup</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">popup</span><span class="tok-p">.</span><span class="tok-n">visible</span><span class="tok-o">:</span>
+<span class="tok-w">                        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello from popup!&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">                        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s">&quot;Close popup&quot;</span><span class="tok-p">)</span><span class="tok-o">:</span>
+<span class="tok-w">                            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">close_current_popup</span><span class="tok-p">()</span>
+
 <span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">glClearColor</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
@@ -1364,7 +1373,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-16 19:12:59 +0100
+Last updated 2023-12-17 16:17:36 +0100
 </div>
 </div>
 </body>

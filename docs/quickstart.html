@@ -728,36 +728,42 @@ The typical layout of an assets folder looks like this:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="bash"><span></span>assets/
-<span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                      </span><span class="tok-c1"># Application settings</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                 </span><span class="tok-c1"># This will be the app icon, it should be square</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># and at least 256x256. It will  be converted</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># to the right format, for each platform.</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>apple/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Info.plist<span class="tok-w">     </span><span class="tok-c1"># macOS and iOS app settings</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>emscripten/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span>--<span class="tok-w"> </span>shell.emscripten.html<span class="tok-w"> </span><span class="tok-c1"># Emscripten shell file</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#   (this file will be cmake &quot;configured&quot;</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#    to add the name and favicon)</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">            </span>+--<span class="tok-w"> </span>custom.js<span class="tok-w">             </span><span class="tok-c1"># Any custom file here will be deployed</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                      </span><span class="tok-c1">#   in the emscripten build folder</span>
+<span class="tok-w">    </span>+--<span class="tok-w"> </span>app_settings/<span class="tok-w">                </span><span class="tok-c1"># Application settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>icon.png<span class="tok-w">                </span><span class="tok-c1"># This will be the app icon, it should be square</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># and at least 256x256. It will  be converted</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># to the right format, for each platform (except Android)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>apple/
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Info.plist<span class="tok-w">    </span><span class="tok-c1"># macOS and iOS app settings</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># (or Info.ios.plist + Info.macos.plist)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>android/<span class="tok-w">                </span><span class="tok-c1"># Android app settings: any file placed here will be deployed</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">   </span><span class="tok-p">|</span>--<span class="tok-w"> </span>AndroidManifest.xml<span class="tok-w"> </span><span class="tok-c1"># (Optional manifest, HelloImGui will generate one if missing)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>res/
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">       </span>+--<span class="tok-w"> </span>mipmap-xxxhdpi/<span class="tok-w"> </span><span class="tok-c1"># Optional icons for different resolutions</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">           </span>+--<span class="tok-w"> </span>...<span class="tok-w">         </span><span class="tok-c1"># Use Android Studio to generate them:</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                           </span><span class="tok-c1"># right click on res/ =&gt; New &gt; Image Asset</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>emscripten/
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">      </span><span class="tok-p">|</span>--<span class="tok-w"> </span>shell.emscripten.html<span class="tok-w"> </span><span class="tok-c1"># Emscripten shell file</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">      </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#   (this file will be cmake &quot;configured&quot;</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">      </span><span class="tok-p">|</span><span class="tok-w">                         </span><span class="tok-c1">#    to add the name and favicon)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">      </span>+--<span class="tok-w"> </span>custom.js<span class="tok-w">             </span><span class="tok-c1"># Any custom file here will be deployed</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                                </span><span class="tok-c1">#   in the emscripten build folder</span>
 
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>fonts/
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">            </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w">  </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                  </span><span class="tok-c1"># Optional: fonts for markdown</span>
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>LICENSE.txt
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-Bold.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-BoldItalic.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-Regular.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">   </span>+--<span class="tok-w"> </span>Roboto-RegularItalic.ttf
-<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SourceCodePro-Regular.ttf<span class="tok-w">  </span><span class="tok-c1"># Optional: font / markdown</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>DroidSans.ttf<span class="tok-w">            </span><span class="tok-c1"># Default fonts used by HelloImGui to</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>fontawesome-webfont.ttf<span class="tok-w">  </span><span class="tok-c1"># improve text rendering (esp. on High DPI)</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">                            </span><span class="tok-c1"># if absent, a default LowRes font is used.</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span><span class="tok-p">|</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">    </span>+--<span class="tok-w"> </span>Roboto/<span class="tok-w">                  </span><span class="tok-c1"># Optional: fonts for markdown</span>
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>LICENSE.txt
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-Bold.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-BoldItalic.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-Regular.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Roboto-RegularItalic.ttf
+<span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SourceCodePro-Regular.ttf
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>images/
-<span class="tok-w">              </span>+--<span class="tok-w"> </span>markdown_broken_image.png<span class="tok-w">  </span><span class="tok-c1"># Optional: used for markdown</span>
-<span class="tok-w">              </span><span class="tok-p">|</span>
-<span class="tok-w">              </span>+--<span class="tok-w"> </span>world.jpg<span class="tok-w">                  </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
+<span class="tok-w">         </span>+--<span class="tok-w"> </span>markdown_broken_image.png<span class="tok-w">  </span><span class="tok-c1"># Optional: used for markdown</span>
+<span class="tok-w">         </span>+--<span class="tok-w"> </span>world.jpg<span class="tok-w">                  </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4909,7 +4915,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-16 19:12:59 +0100
+Last updated 2023-12-17 16:17:36 +0100
 </div>
 </div>
 </body>
