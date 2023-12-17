@@ -522,8 +522,7 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
     runner_params.app_window_params.window_title = "Docking demo"
-
-    runner_params.imgui_window_params.menu_app_title = "Docking App"
+    runner_params.imgui_window_params.menu_app_title = "Docking demo"
     runner_params.app_window_params.window_geometry.size = (1000, 900)
     runner_params.app_window_params.restore_previous_geometry = True
 

@@ -494,7 +494,7 @@ int main(int, char**)
     HelloImGui::RunnerParams runnerParams;
 
     runnerParams.appWindowParams.windowTitle = "Docking demo";
-    runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
+    runnerParams.imGuiWindowParams.menuAppTitle = "Docking demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
 
