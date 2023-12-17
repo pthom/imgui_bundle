@@ -39,14 +39,16 @@ endif()
 # Glfw backend
 # -----------------------------------------------------------------------------
 #
-# The GLFW  backend is activated via IMGUI_BUNDLE_WITH_GLFW. It is activated by default, except under emscripten.
+# The GLFW  backend is activated via IMGUI_BUNDLE_WITH_GLFW
+# It is activated by default on desktop platforms (Windows, Linux, macOS)
+# but disabled under emscripten, android, and ios.
 #
 # If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is ON, the system library will be used (via find_package(glfw3))
 #     (this works for C++ exe, but not for python bindings)
 # If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is OFF, the library will be built from the submodule external/glfw/glfw
 #     (as a static library for C++ exe, and as a shared library for python bindings)
 #
-if (NOT EMSCRIPTEN)
+if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
     option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
 else()
     set(IMGUI_BUNDLE_WITH_GLFW OFF)
@@ -60,18 +62,21 @@ endif()
 
 # SDL Backend
 # -----------------------------------------------------------------------------
-# SDL is activated via IMGUI_BUNDLE_WITH_SDL. It is disabled by default.
+# SDL is activated via IMGUI_BUNDLE_WITH_SDL. It is disabled by default on Windows, Linux, and macOS.
 # Notes:
-#   - under emscripten, sdl is the default backend.
+#   - under emscripten, iOS and Android, sdl is the default backend.
 #   - sdl is not available for python bindings (you can use the full python SDL backend instead)
 #
 # If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is ON, the system library will be used (via find_package(SDL2))
 # If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is OFF, the library will be downloaded at configure time
-if (NOT EMSCRIPTEN)
+if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
     option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
 else()
     set(IMGUI_BUNDLE_WITH_SDL ON)
 endif()
+if (ANDROID OR IOS)
+    set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
+endif ()
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" ON)
 else()
@@ -104,7 +109,11 @@ option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
 # -----------------------------------------------------------------------------
-option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
+if (NOT ANDROID AND NOT IOS)
+    option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
+else()
+    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF)
+endif()
 
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
