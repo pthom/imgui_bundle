@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # noqa
 from imgui_bundle import imgui
 import ctypes
 import numpy as np
@@ -206,7 +206,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
         gl.glViewport(0, 0, int(fb_width), int(fb_height))
 
-        ortho_projection = (ctypes.c_float * 16)(
+        ortho_projection = (ctypes.c_float * 16)(  # noqa
             2.0 / display_width,
             0.0,
             0.0,

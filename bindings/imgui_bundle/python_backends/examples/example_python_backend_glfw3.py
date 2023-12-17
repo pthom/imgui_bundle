@@ -6,7 +6,7 @@
 
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl  # type: ignore
-from imgui_bundle import imgui
+from imgui_bundle import imgui, imgui_ctx
 import glfw  # type: ignore
 import sys
 
@@ -61,6 +61,15 @@ def main():
                     {io.key_alt=}
                     {io.key_shift=}
                     {io.key_super=}""")
+
+                if imgui.button("Open popup"):
+                    imgui.open_popup("my popup")
+                with imgui_ctx.begin_popup_modal("my popup") as popup:
+                    if popup.visible:
+                        imgui.text("Hello from popup!")
+                        if imgui.button("Close popup"):
+                            imgui.close_current_popup()
+
             imgui.end()
 
         gl.glClearColor(1.0, 1.0, 1.0, 1)
