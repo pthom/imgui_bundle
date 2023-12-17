@@ -231,7 +231,6 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glBindVertexArray(self._vao_handle)
 
         for commands in draw_data.cmd_lists:
-            idx_buffer_offset = 0
 
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._vbo_handle)
             # todo: check this (sizes)
@@ -268,10 +267,9 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
                     gl.GL_TRIANGLES,
                     command.elem_count,
                     gltype,
-                    ctypes.c_void_p(idx_buffer_offset),
+                    ctypes.c_void_p(command.idx_offset * imgui.INDEX_SIZE),
                 )
 
-                idx_buffer_offset += command.elem_count * imgui.INDEX_SIZE
 
         # restore modified GL state
         restore_common_gl_state(common_gl_state_tuple)
@@ -381,7 +379,6 @@ class FixedPipelineRenderer(
         gl.glLoadIdentity()
 
         for commands in draw_data.cmd_lists:
-            ptr_idx_buffer = commands.idx_buffer.data_address()
 
             gl.glVertexPointer(
                 2,
@@ -423,10 +420,9 @@ class FixedPipelineRenderer(
                     gl.GL_TRIANGLES,
                     command.elem_count,
                     gltype,
-                    ctypes.c_void_p(ptr_idx_buffer),
+                    ctypes.c_void_p(command.idx_offset * imgui.INDEX_SIZE),
                 )
 
-                ptr_idx_buffer += command.elem_count * imgui.INDEX_SIZE
 
         restore_common_gl_state(common_gl_state_tuple)
 
