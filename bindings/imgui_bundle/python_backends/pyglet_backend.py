@@ -129,6 +129,7 @@ class PygletMixin(object):
         if key_pressed in self.modifier_map:
             imgui_key = self.modifier_map[key_pressed]
             self.io.add_key_event(imgui_key, down=down)
+
     def on_key_press(self, key_pressed, mods):
         self._on_key(key_pressed, True)
 
@@ -155,13 +156,27 @@ class PygletMixin(object):
         self.io.add_mouse_button_event(imgui_button, True)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        self.io.add_mouse_button_event(button - 1, False)
+        imgui_button = 0
+        if button == mouse.LEFT:
+            imgui_button = 0
+        elif button == mouse.RIGHT:
+            imgui_button = 1
+        elif button == mouse.MIDDLE:
+            imgui_button = 2
+        self.io.add_mouse_button_event(imgui_button, False)
 
     def on_mouse_scroll(self, x, y, mods, scroll):
         self.io.add_mouse_wheel_event(0, -scroll)
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        pass
+        self.io.mouse_pos = x, self.io.display_size.y - y
+        if button == mouse.LEFT:
+            imgui_button = 0
+        elif button == mouse.RIGHT:
+            imgui_button = 1
+        elif button == mouse.MIDDLE:
+            imgui_button = 2
+        self.io.add_mouse_button_event(imgui_button, True)
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
