@@ -145,38 +145,27 @@ class PygletMixin(object):
     def on_mouse_motion(self, x, y, dx, dy):
         self.io.add_mouse_pos_event(x, self.io.display_size.y - y)
 
-    def on_mouse_press(self, x, y, button, modifiers):
+    def _on_mouse_button(self, pyglet_button, down):
         imgui_button = 0
-        if button == mouse.LEFT:
+        if pyglet_button == mouse.LEFT:
             imgui_button = 0
-        elif button == mouse.RIGHT:
+        elif pyglet_button == mouse.RIGHT:
             imgui_button = 1
-        elif button == mouse.MIDDLE:
+        elif pyglet_button == mouse.MIDDLE:
             imgui_button = 2
-        self.io.add_mouse_button_event(imgui_button, True)
+        self.io.add_mouse_button_event(imgui_button, down)
+    def on_mouse_press(self, x, y, button, modifiers):
+        self._on_mouse_button(button, True)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        imgui_button = 0
-        if button == mouse.LEFT:
-            imgui_button = 0
-        elif button == mouse.RIGHT:
-            imgui_button = 1
-        elif button == mouse.MIDDLE:
-            imgui_button = 2
-        self.io.add_mouse_button_event(imgui_button, False)
+        self._on_mouse_button(button, False)
+
+    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        self._on_mouse_button(button, True)
+        self.on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_scroll(self, x, y, mods, scroll):
         self.io.add_mouse_wheel_event(0, -scroll)
-
-    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        self.io.mouse_pos = x, self.io.display_size.y - y
-        if button == mouse.LEFT:
-            imgui_button = 0
-        elif button == mouse.RIGHT:
-            imgui_button = 1
-        elif button == mouse.MIDDLE:
-            imgui_button = 2
-        self.io.add_mouse_button_event(imgui_button, True)
 
     def on_resize(self, width, height):
         self.io.display_size = width, height
