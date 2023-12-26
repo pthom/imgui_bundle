@@ -7928,14 +7928,23 @@ class IO:
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
-    ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
-    # const char* IniFilename;    /* original C++ signature */
-    ini_filename: str  # = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions. # (const)
-    # const char* LogFilename;    /* original C++ signature */
-    log_filename: str  # = "imgui_log.txt"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified). # (const)
+    ini_saving_rate: float
+    # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
+
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::string LogFilename;    /* original C++ signature */
+    log_filename: str  # = "imgui_log.txt"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
+    # std::string IniFilename;    /* original C++ signature */
+    ini_filename: str
+    # = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.
+    #                                                #else
+    #
+    #                                                #endif
+    #
+
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
-
     # ImFontAtlas*Fonts;    /* original C++ signature */
     fonts: ImFontAtlas  # <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
     # float       FontGlobalScale;    /* original C++ signature */

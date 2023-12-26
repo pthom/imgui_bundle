@@ -5003,9 +5003,15 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")
         .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")
         .def_readwrite("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
-        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")
-        .def_readonly("ini_filename", &ImGuiIO::IniFilename, "= \"imgui.ini\"    // Path to .ini file (important: default \"imgui.ini\" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.")
-        .def_readonly("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
+        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def_readwrite("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
+        .def_readwrite("ini_filename", &ImGuiIO::IniFilename, "")
+        // #else
+        //
+        // #endif
+        //
         .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
