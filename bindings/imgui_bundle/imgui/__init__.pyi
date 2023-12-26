@@ -246,11 +246,16 @@ typedef void    (*ImGuiMemFreeFunc)(void* ptr, void* user_data);                
     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
 #endif
 """
-InputTextCallback = Any       # These types are C function pointers
-SizeCallback = Any            # and thus are hard to create from python
 MemAllocFunc = Any
 MemFreeFunc = Any
 ImDrawCallback = Any
+
+#using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
+#using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
+InputTextCallback = Callable[[InputTextCallbackData], int]
+SizeCallback = Callable[[SizeCallbackData], None]
+
+
 
 """
 // Helpers macros to generate 32-bit encoded colors
@@ -743,7 +748,10 @@ def set_next_window_size(size: ImVec2, cond: Cond = 0) -> None:
 
 # IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL);     /* original C++ signature */
 def set_next_window_size_constraints(
-    size_min: ImVec2, size_max: ImVec2, custom_callback_data: Optional[Any] = None
+    size_min: ImVec2,
+    size_max: ImVec2,
+    custom_callback: SizeCallback = None,
+    custom_callback_data: Optional[Any] = None,
 ) -> None:
     """set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints."""
     pass
@@ -7930,7 +7938,6 @@ class IO:
     # float       IniSavingRate;    /* original C++ signature */
     ini_saving_rate: float
     # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
-
     #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # std::string LogFilename;    /* original C++ signature */
@@ -10447,7 +10454,11 @@ class PlatformImeData:
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);    /* original C++ signature */
 def input_text(
-    label: str, str: str, flags: InputTextFlags = 0, user_data: Optional[Any] = None
+    label: str,
+    str: str,
+    flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
+    user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass
 
@@ -10457,6 +10468,7 @@ def input_text_multiline(
     str: str,
     size: ImVec2 = ImVec2(0, 0),
     flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass
@@ -10468,6 +10480,7 @@ def input_text_with_hint(
     hint: str,
     str: str,
     flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass

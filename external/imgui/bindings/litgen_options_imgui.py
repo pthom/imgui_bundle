@@ -320,14 +320,15 @@ def litgen_options_imgui(
         [
             #     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
             #     ImDrawCallback  UserCallback;       // 4-8  // If != NULL, call the function instead of rendering the vertices. clip_rect and texture_id will be set normally.
-            r"Callback$",
             r"^TexPixelsAlpha8$",
         ]
     )
 
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
-            # r"^char\s*\*",
+            r"^ImDrawCallback$",
+            r"^ContextHookCallback$",
+            r"^ImGuiContextHookCallback$",
             r"const ImWchar\s*\*",
             r"unsigned char\s*\*",
             r"unsigned int\s*\*",
@@ -391,7 +392,7 @@ def litgen_options_imgui(
 
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
-    options.fn_params_exclude_types__regex = r"Callback$|size_t[ ]*\*"
+    options.fn_params_exclude_types__regex = r"size_t[ ]*\*"
     # Exclude functions that take char or const ImWchar * params
     options.fn_exclude_by_param_type__regex = (
         "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"

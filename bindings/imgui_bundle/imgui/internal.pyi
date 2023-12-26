@@ -1597,6 +1597,8 @@ class NextWindowData:
     collapsed_val: bool
     # ImRect                      SizeConstraintRect;    /* original C++ signature */
     size_constraint_rect: ImRect
+    # ImGuiSizeCallback           SizeCallback;    /* original C++ signature */
+    size_callback: SizeCallback
     # void*                       SizeCallbackUserData;    /* original C++ signature */
     size_callback_user_data: Any
     # float                       BgAlphaVal;    /* original C++ signature */
