@@ -212,11 +212,33 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    auto pyClassEdgeInsets =
+        py::class_<HelloImGui::EdgeInsets>
+            (m, "EdgeInsets", "If there is a notch on the iPhone, you should not display inside these insets")
+        .def(py::init<>([](
+        double top = 0., double left = 0., double bottom = 0., double right = 0.)
+        {
+            auto r = std::make_unique<EdgeInsets>();
+            r->top = top;
+            r->left = left;
+            r->bottom = bottom;
+            r->right = right;
+            return r;
+        })
+        , py::arg("top") = 0., py::arg("left") = 0., py::arg("bottom") = 0., py::arg("right") = 0.
+        )
+        .def_readwrite("top", &EdgeInsets::top, "Typically around 47")
+        .def_readwrite("left", &EdgeInsets::left, "Typically 0")
+        .def_readwrite("bottom", &EdgeInsets::bottom, "Typically around 34")
+        .def_readwrite("right", &EdgeInsets::right, "Typically 0")
+        ;
+
+
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you\ncan show/hide the window with this). Full screen windows cannot be hidden.@@md\n*")
+            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you\ncan show/hide the window with this). Full screen windows cannot be hidden.@@md\n* `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:\n  if there is a notch on the iPhone, you should not display inside these insets.\n  HelloImGui handles this automatically, if handleEdgeInsets is True and\n  if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.\n  (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)\n* `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.\n*")
         .def(py::init<>([](
-        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false)
+        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false, EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true)
         {
             auto r = std::make_unique<AppWindowParams>();
             r->windowTitle = windowTitle;
@@ -225,9 +247,11 @@ void py_init_module_hello_imgui(py::module& m)
             r->borderless = borderless;
             r->resizable = resizable;
             r->hidden = hidden;
+            r->edgeInsets = edgeInsets;
+            r->handleEdgeInsets = handleEdgeInsets;
             return r;
         })
-        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("hidden") = false
+        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("hidden") = false, py::arg("edge_insets") = EdgeInsets(), py::arg("handle_edge_insets") = true
         )
         .def_readwrite("window_title", &AppWindowParams::windowTitle, "")
         .def_readwrite("window_geometry", &AppWindowParams::windowGeometry, "")
@@ -235,6 +259,8 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("borderless", &AppWindowParams::borderless, "")
         .def_readwrite("resizable", &AppWindowParams::resizable, "")
         .def_readwrite("hidden", &AppWindowParams::hidden, "")
+        .def_readwrite("edge_insets", &AppWindowParams::edgeInsets, "")
+        .def_readwrite("handle_edge_insets", &AppWindowParams::handleEdgeInsets, "")
         ;
 
 
@@ -339,7 +365,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::ImGuiWindowParams>
             (m, "ImGuiWindowParams", "*\n@@md#ImGuiWindowParams\n\n__ImGuiWindowParams__ is a struct that defines the ImGui inner windows params\nThese settings affect the imgui inner windows inside the application window.\nIn order to change the application window settings, change the _AppWindowsParams_\n\n Members:\n\n  * `defaultImGuiWindowType`: _DefaultImGuiWindowType, default=ProvideFullScreenWindow_.\n    By default, a full window is provided in the background. You can still\n     add windows on top of it, since the Z-order of this background window is always behind\n\n  * `backgroundColor`: _ImVec4, default=ImVec4(0.45, 0.55, 0.60, 1.00)_.\n    This is the \"clearColor\", visible if defaultImGuiWindowType is not ProvideFullScreenWindow.\n    Alternatively, you can set your own RunnerCallbacks.CustomBackground to have full\n    control over what is drawn behind the Gui.\n\n  * `showMenuBar`: _bool, default=false_.\n    Show Menu bar on top of imgui main window.\n    In order to fully customize the menu, set showMenuBar to True, and set showMenu_App and showMenu_View params to False.\n    Then, implement the callback `RunnerParams.callbacks.ShowMenus` which can optionally call `HelloImGui::ShowViewMenu`\n    and `HelloImGui::ShowAppMenu`.\n\n  * `showMenu_App`: _bool, default=true_.\n    If menu bar is shown, include or not the default app menu\n\n   * `showMenu_App_Quit`: _bool, default=true_.\n    Include or not a \"Quit\" item in the default app menu.\n    Set this to False if you intend to provide your own quit callback with possible user confirmation\n    (and implement it inside RunnerCallbacks.ShowAppMenuItems)\n\n  * `showMenu_View`: _bool, default=true_.\n    If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and\n    set the docked windows and status bar visibility)\n\n  * `showStatusBar`: _bool, default=false_.\n    Flag that enable to show a Status bar at the bottom. You can customize the status bar\n    via RunnerCallbacks.ShowStatus()\n  * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.\n  * `rememberStatusBarSettings`: _bool, default=true_. If set, showStatusBar and showStatus_Fps are stored in the application settings.\n\n  * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.\n    Make windows only movable from the title bar\n\n  * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)\n    If True, you can drag windows outside out the main window in order to put their content into new native windows.\n\n   * `menuAppTitle`: _string, default=\"\"_. Set the title of the App menu. If empty, this menu name will use\n     the \"windowTitle\" from AppWindowParams\n\n  * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.\n    Change the ImGui theme. Several themes are available, you can query the list by calling\n    HelloImGui::AvailableThemes()\n  * `showMenu_View_Themes`: _bool, default=true_.\n    Show theme selection in view menu\n  * `rememberTheme`: _bool, default=true_.\n    Remember selected theme\n@@md\n")
         .def(py::init<>([](
-        HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true)
+        HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true)
         {
             auto r = std::make_unique<ImGuiWindowParams>();
             r->defaultImGuiWindowType = defaultImGuiWindowType;
@@ -359,7 +385,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->rememberTheme = rememberTheme;
             return r;
         })
-        , py::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, py::arg("background_color") = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), py::arg("show_menu_bar") = false, py::arg("show_menu_app") = true, py::arg("show_menu_app_quit") = true, py::arg("show_menu_view") = true, py::arg("show_status_bar") = false, py::arg("show_status_fps") = true, py::arg("remember_status_bar_settings") = true, py::arg("config_windows_move_from_title_bar_only") = true, py::arg("enable_viewports") = false, py::arg("menu_app_title") = "", py::arg("tweaked_theme") = ImGuiTheme::ImGuiTweakedTheme(), py::arg("show_menu_view_themes") = true, py::arg("remember_theme") = true
+        , py::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, py::arg("background_color") = ImVec4(0.f, 0.f, 0.f, 0.f), py::arg("show_menu_bar") = false, py::arg("show_menu_app") = true, py::arg("show_menu_app_quit") = true, py::arg("show_menu_view") = true, py::arg("show_status_bar") = false, py::arg("show_status_fps") = true, py::arg("remember_status_bar_settings") = true, py::arg("config_windows_move_from_title_bar_only") = true, py::arg("enable_viewports") = false, py::arg("menu_app_title") = "", py::arg("tweaked_theme") = ImGuiTheme::ImGuiTweakedTheme(), py::arg("show_menu_view_themes") = true, py::arg("remember_theme") = true
         )
         .def_readwrite("default_imgui_window_type", &ImGuiWindowParams::defaultImGuiWindowType, "")
         .def_readwrite("background_color", &ImGuiWindowParams::backgroundColor, "")

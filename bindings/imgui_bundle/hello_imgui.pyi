@@ -314,6 +314,8 @@ class ScreenBounds:
         """Auto-generated default constructor with named params"""
         pass
 
+# namespace BackendApi
+
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/app_window_params.h continued                                              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -481,6 +483,28 @@ class WindowGeometry:
         """Auto-generated default constructor with named params"""
         pass
 
+class EdgeInsets:
+    """If there is a notch on the iPhone, you should not display inside these insets"""
+
+    # double top = 0.;    /* original C++ signature */
+    top: float = 0.0  # Typically around 47
+    # double left = 0.;    /* original C++ signature */
+    left: float = 0.0  # Typically 0
+    # double bottom = 0.;    /* original C++ signature */
+    bottom: float = 0.0  # Typically around 34
+    # double right = 0.;    /* original C++ signature */
+    right: float = 0.0  # Typically 0
+    # EdgeInsets(double top = 0., double left = 0., double bottom = 0., double right = 0.);    /* original C++ signature */
+    def __init__(
+        self,
+        top: float = 0.0,
+        left: float = 0.0,
+        bottom: float = 0.0,
+        right: float = 0.0,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 class AppWindowParams:
     """*
     @@md#AppWindowParams
@@ -502,6 +526,12 @@ class AppWindowParams:
     creation.
     * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
     can show/hide the window with this). Full screen windows cannot be hidden.@@md
+    * `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
+      if there is a notch on the iPhone, you should not display inside these insets.
+      HelloImGui handles this automatically, if handleEdgeInsets is True and
+      if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
+      (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
+    * `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.
     *
     """
 
@@ -521,7 +551,12 @@ class AppWindowParams:
     resizable: bool = True
     # bool hidden = false;    /* original C++ signature */
     hidden: bool = False
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false);    /* original C++ signature */
+
+    # EdgeInsets edgeInsets;    /* original C++ signature */
+    edge_insets: EdgeInsets
+    # bool       handleEdgeInsets = true;    /* original C++ signature */
+    handle_edge_insets: bool = True
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false, EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -530,6 +565,8 @@ class AppWindowParams:
         borderless: bool = False,
         resizable: bool = True,
         hidden: bool = False,
+        edge_insets: EdgeInsets = EdgeInsets(),
+        handle_edge_insets: bool = True,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -791,8 +828,8 @@ class ImGuiWindowParams:
         DefaultImGuiWindowType.provide_full_screen_window
     )
 
-    # ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);    /* original C++ signature */
-    background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
+    # ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
+    background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
 
     # bool showMenuBar = false;    /* original C++ signature */
     show_menu_bar: bool = False
@@ -825,11 +862,11 @@ class ImGuiWindowParams:
     show_menu_view_themes: bool = True
     # bool rememberTheme = true;    /* original C++ signature */
     remember_theme: bool = True
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true);    /* original C++ signature */
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true);    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
-        background_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00),
+        background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0),
         show_menu_bar: bool = False,
         show_menu_app: bool = True,
         show_menu_app_quit: bool = True,

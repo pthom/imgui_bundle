@@ -4,6 +4,12 @@
 //                       hello_imgui.h                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL_OPENGL3)
+// We need to include SDL, so that it can instantiate its main function under Android
+#include "SDL.h"
+#endif
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1254,7 +1260,9 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
 
 namespace HelloImGui
 {
@@ -1389,6 +1397,16 @@ struct WindowGeometry
 };
 
 
+// If there is a notch on the iPhone, you should not display inside these insets
+struct EdgeInsets
+{
+    double top = 0.;     // Typically around 47
+    double left = 0.;    // Typically 0
+    double bottom = 0.;  // Typically around 34
+    double right = 0.;   // Typically 0
+};
+
+
 /**
 @@md#AppWindowParams
 
@@ -1409,6 +1427,12 @@ creation.
 creation.
 * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
 can show/hide the window with this). Full screen windows cannot be hidden.@@md
+* `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
+  if there is a notch on the iPhone, you should not display inside these insets.
+  HelloImGui handles this automatically, if handleEdgeInsets is true and
+  if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
+  (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
+* `handleEdgeInsets`: _bool, default = true_. iOS only, if true, HelloImGui will handle the edgeInsets.
 **/
 struct AppWindowParams
 {
@@ -1422,6 +1446,9 @@ struct AppWindowParams
     bool borderless = false;
     bool resizable = true;
     bool hidden = false;
+
+    EdgeInsets edgeInsets;
+    bool       handleEdgeInsets = true;
 };
 
 }  // namespace HelloImGui
@@ -1616,7 +1643,7 @@ struct ImGuiWindowParams
 {
     DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow;
 
-    ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
 
     bool showMenuBar = false;
     bool showMenu_App = true;
