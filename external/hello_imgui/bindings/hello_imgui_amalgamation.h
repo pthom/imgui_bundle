@@ -4,6 +4,12 @@
 //                       hello_imgui.h                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL)
+// We need to include SDL, so that it can instantiate its main function under Android
+#include "SDL.h"
+#endif
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1254,7 +1260,9 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
 
 namespace HelloImGui
 {
@@ -1389,6 +1397,16 @@ struct WindowGeometry
 };
 
 
+// If there is a notch on the iPhone, you should not display inside these insets
+struct EdgeInsets
+{
+    double top = 0.;     // Typically around 47
+    double left = 0.;    // Typically 0
+    double bottom = 0.;  // Typically around 34
+    double right = 0.;   // Typically 0
+};
+
+
 /**
 @@md#AppWindowParams
 
@@ -1409,6 +1427,12 @@ creation.
 creation.
 * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
 can show/hide the window with this). Full screen windows cannot be hidden.@@md
+* `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
+  if there is a notch on the iPhone, you should not display inside these insets.
+  HelloImGui handles this automatically, if handleEdgeInsets is true and
+  if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
+  (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
+* `handleEdgeInsets`: _bool, default = true_. iOS only, if true, HelloImGui will handle the edgeInsets.
 **/
 struct AppWindowParams
 {
@@ -1422,6 +1446,9 @@ struct AppWindowParams
     bool borderless = false;
     bool resizable = true;
     bool hidden = false;
+
+    EdgeInsets edgeInsets;
+    bool       handleEdgeInsets = true;
 };
 
 }  // namespace HelloImGui
@@ -1616,7 +1643,7 @@ struct ImGuiWindowParams
 {
     DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow;
 
-    ImVec4 backgroundColor = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
 
     bool showMenuBar = false;
     bool showMenu_App = true;
@@ -2184,6 +2211,9 @@ your application behavior using the selected backend.
 * `sdlGlContext`: _void *, default=nullptr_. Pointer to SDL's GlContext (of type `SDL_GLContext`).
   Only filled if the backend is SDL (or emscripten + sdl)
 
+Note: If using the Metal or Vulkan rendering backend, you can find some interesting pointers inside
+ `src/hello_imgui/internal/backend_impls/rendering_metal.h` and `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`.
+
 @@md
  */
 struct BackendPointers
@@ -2204,12 +2234,12 @@ struct BackendPointers
 namespace HelloImGui
 {
 
+// Windowing backend type (SDL, GLFW)
 enum class BackendType
 {
     FirstAvailable,
     Sdl,
     Glfw,
-    Qt
 };
 
 
@@ -2301,7 +2331,7 @@ struct FpsIdling
    A struct that contains optional pointers to the backend implementations. These pointers will be filled
    when the application starts
 * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
+  Select the wanted Windowing backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
   and available.
 * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
 * `useImGuiTestEngine`: _bool, default=false_.
@@ -2538,7 +2568,7 @@ namespace HelloImGui
 #include <cstddef>
 #include <cstdint>
 
-#ifdef HELLOIMGUI_USE_SDL_OPENGL3
+#ifdef HELLOIMGUI_USE_SDL
     #ifdef _WIN32
         #ifndef HELLOIMGUI_WIN32_AUTO_WINMAIN
             // Under Windows, we redefine WinMain ourselves
