@@ -2275,6 +2275,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiWindow>
             (m, "Window", "Storage for one window")
         .def_readwrite("ctx", &ImGuiWindow::Ctx, "Parent UI context (needs to be set explicitly by parent).")
+        .def_readonly("name", &ImGuiWindow::Name, "Window name, owned by the window.")
         .def_readwrite("id_", &ImGuiWindow::ID, "== ImHashStr(Name)")
         .def_readwrite("flags", &ImGuiWindow::Flags, "See enum ImGuiWindowFlags_")
         .def_readwrite("flags_previous_frame", &ImGuiWindow::FlagsPreviousFrame, "See enum ImGuiWindowFlags_")

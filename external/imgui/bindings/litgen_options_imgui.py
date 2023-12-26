@@ -327,7 +327,7 @@ def litgen_options_imgui(
 
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
-            r"^char\s*\*",
+            # r"^char\s*\*",
             r"const ImWchar\s*\*",
             r"unsigned char\s*\*",
             r"unsigned int\s*\*",
@@ -339,6 +339,10 @@ def litgen_options_imgui(
             r"ImGuiStoragePair",
         ]
     )
+
+    options.member_readonly_by_type__regex = join_string_by_pipe_char([
+        r"^char\s*\*",
+    ])
 
     options.class_exclude_by_name__regex = join_string_by_pipe_char([])
 

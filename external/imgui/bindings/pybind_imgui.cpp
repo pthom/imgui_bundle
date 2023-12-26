@@ -143,6 +143,12 @@ void py_init_module_imgui_main(py::module& m)
     //
     // #ifndef IMGUI_DISABLE
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #else
+    //
+    // #endif
+    //
 
 
     auto pyClassImVec2 =
@@ -5258,6 +5264,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")
         .def_readwrite("event_char", &ImGuiInputTextCallbackData::EventChar, "Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;")
         .def_readwrite("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")
+        .def_readonly("buf", &ImGuiInputTextCallbackData::Buf, "Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!")
         .def_readwrite("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")
         .def_readwrite("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")
         .def_readwrite("buf_dirty", &ImGuiInputTextCallbackData::BufDirty, "Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]")

@@ -797,7 +797,7 @@ class ImDrawListSharedData:
     # ImU8            CircleSegmentCounts[64];    /* original C++ signature */
     circle_segment_counts: np.ndarray  # ndarray[type=ImU8, size=64]  # Precomputed segment count for given radius before we calculate it dynamically (to avoid calculation overhead)
     # const ImVec4*   TexUvLines;    /* original C++ signature */
-    tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas
+    tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas # (const)
 
     # ImDrawListSharedData();    /* original C++ signature */
     def __init__(self) -> None:
@@ -1240,11 +1240,11 @@ class DataTypeInfo:
     # size_t      Size;    /* original C++ signature */
     size: int  # Size in bytes
     # const char* Name;    /* original C++ signature */
-    name: str  # Short descriptive name for the type, for debugging
+    name: str  # Short descriptive name for the type, for debugging # (const)
     # const char* PrintFmt;    /* original C++ signature */
-    print_fmt: str  # Default printf format for the type
+    print_fmt: str  # Default printf format for the type # (const)
     # const char* ScanFmt;    /* original C++ signature */
-    scan_fmt: str  # Default scanf format for the type
+    scan_fmt: str  # Default scanf format for the type # (const)
     # ImGuiDataTypeInfo(size_t Size = size_t());    /* original C++ signature */
     def __init__(self, size: int = int()) -> None:
         """Auto-generated default constructor with named params"""
@@ -2353,7 +2353,7 @@ class TypingSelectRequest:
     # int                     SearchBufferLen;    /* original C++ signature */
     search_buffer_len: int
     # const char*             SearchBuffer;    /* original C++ signature */
-    search_buffer: str  # Search buffer contents (use full string. unless SingleCharMode is set, in which case use SingleCharSize).
+    search_buffer: str  # Search buffer contents (use full string. unless SingleCharMode is set, in which case use SingleCharSize). # (const)
     # bool                    SelectRequest;    /* original C++ signature */
     select_request: bool  # Set when buffer was modified this frame, requesting a selection.
     # bool                    SingleCharMode;    /* original C++ signature */
@@ -2880,7 +2880,7 @@ class WindowSettings:
 
 class SettingsHandler:
     # const char* TypeName;    /* original C++ signature */
-    type_name: str  # Short description stored in .ini file. Disallowed characters: '[' ']'
+    type_name: str  # Short description stored in .ini file. Disallowed characters: '[' ']' # (const)
     # ImGuiID     TypeHash;    /* original C++ signature */
     type_hash: ID  # == ImHashStr(TypeName)
     # void*       UserData;    /* original C++ signature */
@@ -2927,7 +2927,7 @@ class LocEntry:
     # ImGuiLocKey     Key;    /* original C++ signature */
     key: LocKey
     # const char*     Text;    /* original C++ signature */
-    text: str
+    text: str  # (const)
     # ImGuiLocEntry(ImGuiLocKey Key = ImGuiLocKey());    /* original C++ signature */
     def __init__(self, key: LocKey = LocKey()) -> None:
         """Auto-generated default constructor with named params"""
@@ -3620,9 +3620,9 @@ class Context:
     # ImGuiTextBuffer         LogBuffer;    /* original C++ signature */
     log_buffer: TextBuffer  # Accumulation buffer when log to clipboard. This is pointer so our GImGui static constructor doesn't call heap allocators.
     # const char*             LogNextPrefix;    /* original C++ signature */
-    log_next_prefix: str
+    log_next_prefix: str  # (const)
     # const char*             LogNextSuffix;    /* original C++ signature */
-    log_next_suffix: str
+    log_next_suffix: str  # (const)
     # float                   LogLinePosY;    /* original C++ signature */
     log_line_pos_y: float
     # bool                    LogLineFirstItem;    /* original C++ signature */
@@ -3684,7 +3684,7 @@ class Context:
     #     {
     #         IO.Ctx = this;
     #         InputTextState.Ctx = this;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         Initialized = false;
     #         ConfigFlagsCurrFrame = ConfigFlagsLastFrame = ImGuiConfigFlags_None;
     #         FontAtlasOwnedByContext = shared_font_atlas ? false : true;
@@ -3698,10 +3698,10 @@ class Context:
     #         GcCompactAll = false;
     #         TestEngineHookItems = false;
     #         TestEngine = NULL;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         InputEventsNextMouseSource = ImGuiMouseSource_Mouse;
     #         InputEventsNextEventId = 1;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         WindowsActiveCount = 0;
     #         CurrentWindow = NULL;
     #         HoveredWindow = NULL;
@@ -3710,7 +3710,7 @@ class Context:
     #         WheelingWindow = NULL;
     #         WheelingWindowStartFrame = WheelingWindowScrolledFrame = -1;
     #         WheelingWindowReleaseTimer = 0.0f;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         DebugHookIdInfo = 0;
     #         HoveredId = HoveredIdPreviousFrame = 0;
     #         HoveredIdAllowOverlap = false;
@@ -3735,25 +3735,25 @@ class Context:
     #         ActiveIdPreviousFrameWindow = NULL;
     #         LastActiveId = 0;
     #         LastActiveIdTimer = 0.0f;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         ActiveIdUsingNavDirMask = 0x00;
     #         ActiveIdUsingAllKeyboardKeys = false;
     #                                                      #ifndef IMGUI_DISABLE_OBSOLETE_KEYIO
     #         ActiveIdUsingNavInputMask = 0x00;
     #                                                      #endif
-    # // _SRCML_EMPTY_LINE_
+    #
     #         CurrentFocusScopeId = 0;
     #         CurrentItemFlags = ImGuiItemFlags_None;
     #         DebugShowGroupRects = false;
     #         BeginMenuCount = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         CurrentDpiScale = 0.0f;
     #         CurrentViewport = NULL;
     #         MouseViewport = MouseLastHoveredViewport = NULL;
     #         PlatformLastFocusedViewportId = 0;
     #         ViewportCreatedCount = PlatformWindowsCreatedCount = 0;
     #         ViewportFocusedStampCount = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         NavWindow = NULL;
     #         NavId = NavFocusScopeId = NavActivateId = NavActivateDownId = NavActivatePressedId = 0;
     #         NavJustMovedToId = NavJustMovedToFocusScopeId = NavNextActivateId = 0;
@@ -3779,15 +3779,15 @@ class Context:
     #         NavScoringDebugCount = 0;
     #         NavTabbingDir = 0;
     #         NavTabbingCounter = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         ConfigNavWindowingKeyNext = ImGuiMod_Ctrl | ImGuiKey_Tab;
     #         ConfigNavWindowingKeyPrev = ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab;
     #         NavWindowingTarget = NavWindowingTargetAnim = NavWindowingListWindow = NULL;
     #         NavWindowingTimer = NavWindowingHighlightAlpha = 0.0f;
     #         NavWindowingToggleLayer = false;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         DimBgRatio = 0.0f;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         DragDropActive = DragDropWithinSource = DragDropWithinTarget = false;
     #         DragDropSourceFlags = ImGuiDragDropFlags_None;
     #         DragDropSourceFrameCount = -1;
@@ -3799,19 +3799,19 @@ class Context:
     #         DragDropAcceptFrameCount = -1;
     #         DragDropHoldJustPressedId = 0;
     #         memset(DragDropPayloadBufLocal, 0, sizeof(DragDropPayloadBufLocal));
-    # // _SRCML_EMPTY_LINE_
+    #
     #         ClipperTempDataStacked = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         CurrentTable = NULL;
     #         TablesTempDataStacked = 0;
     #         CurrentTabBar = NULL;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         HoverItemDelayId = HoverItemDelayIdPreviousFrame = HoverItemUnlockedStationaryId = HoverWindowUnlockedStationaryId = 0;
     #         HoverItemDelayTimer = HoverItemDelayClearTimer = 0.0f;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         MouseCursor = ImGuiMouseCursor_Arrow;
     #         MouseStationaryTimer = 0.0f;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         TempInputId = 0;
     #         ColorEditOptions = ImGuiColorEditFlags_DefaultOptions_;
     #         ColorEditCurrentID = ColorEditSavedID = 0;
@@ -3829,19 +3829,19 @@ class Context:
     #         DisabledStackSize = 0;
     #         LockMarkEdited = 0;
     #         TooltipOverrideCount = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         PlatformImeData.InputPos = ImVec2(0.0f, 0.0f);
     #         PlatformImeDataPrev.InputPos = ImVec2(-1.0f, -1.0f); // Different to ensure initial submission
     #         PlatformImeViewport = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         DockNodeWindowMenuHandler = NULL;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         SettingsLoaded = false;
     #         SettingsDirtyTimer = 0.0f;
     #         HookIdNext = 0;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         memset(LocalizationTable, 0, sizeof(LocalizationTable));
-    # // _SRCML_EMPTY_LINE_
+    #
     #         LogEnabled = false;
     #         LogType = ImGuiLogType_None;
     #         LogNextPrefix = LogNextSuffix = NULL;
@@ -3850,7 +3850,7 @@ class Context:
     #         LogLineFirstItem = false;
     #         LogDepthRef = 0;
     #         LogDepthToExpand = LogDepthToExpandDefault = 2;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         DebugLogFlags = ImGuiDebugLogFlags_OutputToTTY;
     #         DebugLocateId = 0;
     #         DebugLogClipperAutoDisableFrames = 0;
@@ -3860,7 +3860,7 @@ class Context:
     #         DebugItemPickerMouseButton = ImGuiMouseButton_Left;
     #         DebugItemPickerBreakId = 0;
     #         DebugHoveredDockNode = NULL;
-    # // _SRCML_EMPTY_LINE_
+    #
     #         memset(FramerateSecPerFrame, 0, sizeof(FramerateSecPerFrame));
     #         FramerateSecPerFrameIdx = FramerateSecPerFrameCount = 0;
     #         FramerateSecPerFrameAccum = 0.0f;
@@ -4005,6 +4005,8 @@ class Window:
 
     # ImGuiContext*           Ctx;    /* original C++ signature */
     ctx: Context  # Parent UI context (needs to be set explicitly by parent).
+    # char*                   Name;    /* original C++ signature */
+    name: char  # Window name, owned by the window. # (read-only)
     # ImGuiID                 ID;    /* original C++ signature */
     id_: ID  # == ImHashStr(Name)
     # ImGuiWindowFlags        Flags,     /* original C++ signature */
