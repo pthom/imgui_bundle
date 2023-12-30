@@ -246,11 +246,16 @@ typedef void    (*ImGuiMemFreeFunc)(void* ptr, void* user_data);                
     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
 #endif
 """
-InputTextCallback = Any       # These types are C function pointers
-SizeCallback = Any            # and thus are hard to create from python
 MemAllocFunc = Any
 MemFreeFunc = Any
 ImDrawCallback = Any
+
+#using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
+#using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
+InputTextCallback = Callable[[InputTextCallbackData], int]
+SizeCallback = Callable[[SizeCallbackData], None]
+
+
 
 """
 // Helpers macros to generate 32-bit encoded colors
@@ -429,6 +434,13 @@ INDEX_SIZE: int
 # A single decoded U16 character/code point. We encode them as multi bytes UTF-8 when used in strings.
 
 # Callback and functions types
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# Callback function for ImGui::SetNextWindowSizeConstraints()
+# #else
+#
+# #endif
+#
 
 class ImVec2:
     # float                                   x,     /* original C++ signature */
@@ -736,7 +748,10 @@ def set_next_window_size(size: ImVec2, cond: Cond = 0) -> None:
 
 # IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL);     /* original C++ signature */
 def set_next_window_size_constraints(
-    size_min: ImVec2, size_max: ImVec2, custom_callback_data: Optional[Any] = None
+    size_min: ImVec2,
+    size_max: ImVec2,
+    custom_callback: SizeCallback = None,
+    custom_callback_data: Optional[Any] = None,
 ) -> None:
     """set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints."""
     pass
@@ -7921,14 +7936,22 @@ class IO:
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
-    ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
-    # const char* IniFilename;    /* original C++ signature */
-    ini_filename: str  # = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.
-    # const char* LogFilename;    /* original C++ signature */
+    ini_saving_rate: float
+    # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
+    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::string LogFilename;    /* original C++ signature */
     log_filename: str  # = "imgui_log.txt"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
+    # std::string IniFilename;    /* original C++ signature */
+    ini_filename: str
+    # = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.
+    #                                                #else
+    #
+    #                                                #endif
+    #
+
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
-
     # ImFontAtlas*Fonts;    /* original C++ signature */
     fonts: ImFontAtlas  # <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
     # float       FontGlobalScale;    /* original C++ signature */
@@ -8023,9 +8046,9 @@ class IO:
 
     # Optional: Platform/Renderer backend name (informational only! will be displayed in About Window) + User data for backend/wrappers to store their own stuff.
     # const char* BackendPlatformName;    /* original C++ signature */
-    backend_platform_name: str  # = None
+    backend_platform_name: str  # = None # (const)
     # const char* BackendRendererName;    /* original C++ signature */
-    backend_renderer_name: str  # = None
+    backend_renderer_name: str  # = None # (const)
     # void*       BackendPlatformUserData;    /* original C++ signature */
     backend_platform_user_data: Any  # = None           // User data for platform backend
     # void*       BackendRendererUserData;    /* original C++ signature */
@@ -8298,6 +8321,8 @@ class InputTextCallbackData:
     event_char: ImWchar  # Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;
     # ImGuiKey            EventKey;    /* original C++ signature */
     event_key: Key  # Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]
+    # char*               Buf;    /* original C++ signature */
+    buf: char  # Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer! # (read-only)
     # int                 BufTextLen;    /* original C++ signature */
     buf_text_len: int  # Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()
     # int                 BufSize;    /* original C++ signature */
@@ -8464,7 +8489,7 @@ class TableSortSpecs:
     """
 
     # const ImGuiTableColumnSortSpecs* Specs;    /* original C++ signature */
-    specs: TableColumnSortSpecs  # Pointer to sort spec array.
+    specs: TableColumnSortSpecs  # Pointer to sort spec array. # (const)
     # int                         SpecsCount;    /* original C++ signature */
     specs_count: int  # Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.
     # bool                        SpecsDirty;    /* original C++ signature */
@@ -8533,9 +8558,9 @@ class TextFilter:
         """[Internal]"""
 
         # const char*     b;    /* original C++ signature */
-        b: str
+        b: str  # (const)
         # const char*     e;    /* original C++ signature */
-        e: str
+        e: str  # (const)
 
         # ImGuiTextRange()                                { b = e = NULL; }    /* original C++ signature */
         @overload
@@ -9057,7 +9082,7 @@ class ImDrawList:
     # ImDrawListSharedData*   _Data;    /* original C++ signature */
     _data: ImDrawListSharedData  # Pointer to shared draw data (you can use ImGui::GetDrawListSharedData() to get the one from current ImGui context)
     # const char*             _OwnerName;    /* original C++ signature */
-    _owner_name: str  # Pointer to owner window's name for debugging
+    _owner_name: str  # Pointer to owner window's name for debugging # (const)
     # ImDrawVert*             _VtxWritePtr;    /* original C++ signature */
     _vtx_write_ptr: ImDrawVert  # [Internal] point within VtxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)
     # ImDrawIdx*              _IdxWritePtr;    /* original C++ signature */
@@ -9986,7 +10011,7 @@ class ImFontAtlas:
 
     # [Internal] Font builder
     # const ImFontBuilderIO*      FontBuilderIO;    /* original C++ signature */
-    font_builder_io: ImFontBuilderIO  # Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE).
+    font_builder_io: ImFontBuilderIO  # Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). # (const)
     # unsigned int                FontBuilderFlags;    /* original C++ signature */
     font_builder_flags: int  # Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.
 
@@ -10019,13 +10044,13 @@ class ImFont:
     # ImVector<ImFontGlyph>       Glyphs;    /* original C++ signature */
     glyphs: ImVector_ImFontGlyph  # 12-16 // out //            // All glyphs.
     # const ImFontGlyph*          FallbackGlyph;    /* original C++ signature */
-    fallback_glyph: ImFontGlyph  # 4-8   // out // = FindGlyph(FontFallbackChar)
+    fallback_glyph: ImFontGlyph  # 4-8   // out // = FindGlyph(FontFallbackChar) # (const)
 
     # Members: Cold ~32/40 bytes
     # ImFontAtlas*                ContainerAtlas;    /* original C++ signature */
     container_atlas: ImFontAtlas  # 4-8   // out //            // What we has been loaded into
     # const ImFontConfig*         ConfigData;    /* original C++ signature */
-    config_data: ImFontConfig  # 4-8   // in  //            // Pointer within ContainerAtlas->ConfigData
+    config_data: ImFontConfig  # 4-8   // in  //            // Pointer within ContainerAtlas->ConfigData # (const)
     # short                       ConfigDataCount;    /* original C++ signature */
     config_data_count: int  # 2     // in  // ~ 1        // Number of ImFontConfig involved in creating this font. Bigger than 1 when merging multiple font sources into one ImFont.
     # ImWchar                     FallbackChar;    /* original C++ signature */
@@ -10429,7 +10454,11 @@ class PlatformImeData:
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);    /* original C++ signature */
 def input_text(
-    label: str, str: str, flags: InputTextFlags = 0, user_data: Optional[Any] = None
+    label: str,
+    str: str,
+    flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
+    user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass
 
@@ -10439,6 +10468,7 @@ def input_text_multiline(
     str: str,
     size: ImVec2 = ImVec2(0, 0),
     flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass
@@ -10450,6 +10480,7 @@ def input_text_with_hint(
     hint: str,
     str: str,
     flags: InputTextFlags = 0,
+    callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass

@@ -143,6 +143,12 @@ void py_init_module_imgui_main(py::module& m)
     //
     // #ifndef IMGUI_DISABLE
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #else
+    //
+    // #endif
+    //
 
 
     auto pyClassImVec2 =
@@ -426,16 +432,8 @@ void py_init_module_imgui_main(py::module& m)
         "set next window size. set axis to 0.0 to force an auto-fit on this axis. call before Begin()");
 
     m.def("set_next_window_size_constraints",
-        [](const ImVec2 & size_min, const ImVec2 & size_max, void * custom_callback_data = NULL)
-        {
-            auto SetNextWindowSizeConstraints_adapt_exclude_params = [](const ImVec2 & size_min, const ImVec2 & size_max, void * custom_callback_data = NULL)
-            {
-                ImGui::SetNextWindowSizeConstraints(size_min, size_max, NULL, custom_callback_data);
-            };
-
-            SetNextWindowSizeConstraints_adapt_exclude_params(size_min, size_max, custom_callback_data);
-        },
-        py::arg("size_min"), py::arg("size_max"), py::arg("custom_callback_data") = py::none(),
+        ImGui::SetNextWindowSizeConstraints,
+        py::arg("size_min"), py::arg("size_max"), py::arg("custom_callback") = py::none(), py::arg("custom_callback_data") = py::none(),
         "set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints.");
 
     m.def("set_next_window_content_size",
@@ -4997,9 +4995,15 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")
         .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")
         .def_readwrite("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
-        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")
-        .def_readonly("ini_filename", &ImGuiIO::IniFilename, "= \"imgui.ini\"    // Path to .ini file (important: default \"imgui.ini\" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.")
-        .def_readonly("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
+        .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def_readwrite("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
+        .def_readwrite("ini_filename", &ImGuiIO::IniFilename, "")
+        // #else
+        //
+        // #endif
+        //
         .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
@@ -5258,6 +5262,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")
         .def_readwrite("event_char", &ImGuiInputTextCallbackData::EventChar, "Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;")
         .def_readwrite("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")
+        .def_readonly("buf", &ImGuiInputTextCallbackData::Buf, "Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!")
         .def_readwrite("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")
         .def_readwrite("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")
         .def_readwrite("buf_dirty", &ImGuiInputTextCallbackData::BufDirty, "Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]")
@@ -6289,61 +6294,46 @@ void py_init_module_imgui_main(py::module& m)
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////
     m.def("input_text",
-        [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+        [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputText_adapt_exclude_params = [](const char * label, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
-            {
-                auto lambda_result = ImGui::InputText(label, str, flags, nullptr, user_data);
-                return lambda_result;
-            };
-            auto InputText_adapt_modifiable_immutable_to_return = [&InputText_adapt_exclude_params](const char * label, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+            auto InputText_adapt_modifiable_immutable_to_return = [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
-                bool r = InputText_adapt_exclude_params(label, str_adapt_modifiable, flags, user_data);
+                bool r = ImGui::InputText(label, str_adapt_modifiable, flags, callback, user_data);
                 return std::make_tuple(r, str);
             };
 
-            return InputText_adapt_modifiable_immutable_to_return(label, str, flags, user_data);
-        },     py::arg("label"), py::arg("str"), py::arg("flags") = 0, py::arg("user_data") = py::none());
+            return InputText_adapt_modifiable_immutable_to_return(label, str, flags, callback, user_data);
+        },     py::arg("label"), py::arg("str"), py::arg("flags") = 0, py::arg("callback") = py::none(), py::arg("user_data") = py::none());
 
     m.def("input_text_multiline",
-        [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+        [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputTextMultiline_adapt_exclude_params = [](const char * label, std::string * str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
-            {
-                auto lambda_result = ImGui::InputTextMultiline(label, str, size, flags, nullptr, user_data);
-                return lambda_result;
-            };
-            auto InputTextMultiline_adapt_modifiable_immutable_to_return = [&InputTextMultiline_adapt_exclude_params](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+            auto InputTextMultiline_adapt_modifiable_immutable_to_return = [](const char * label, std::string str, const ImVec2 & size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
-                bool r = InputTextMultiline_adapt_exclude_params(label, str_adapt_modifiable, size, flags, user_data);
+                bool r = ImGui::InputTextMultiline(label, str_adapt_modifiable, size, flags, callback, user_data);
                 return std::make_tuple(r, str);
             };
 
-            return InputTextMultiline_adapt_modifiable_immutable_to_return(label, str, size, flags, user_data);
-        },     py::arg("label"), py::arg("str"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("user_data") = py::none());
+            return InputTextMultiline_adapt_modifiable_immutable_to_return(label, str, size, flags, callback, user_data);
+        },     py::arg("label"), py::arg("str"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("callback") = py::none(), py::arg("user_data") = py::none());
 
     m.def("input_text_with_hint",
-        [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+        [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
-            auto InputTextWithHint_adapt_exclude_params = [](const char * label, const char * hint, std::string * str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> bool
-            {
-                auto lambda_result = ImGui::InputTextWithHint(label, hint, str, flags, nullptr, user_data);
-                return lambda_result;
-            };
-            auto InputTextWithHint_adapt_modifiable_immutable_to_return = [&InputTextWithHint_adapt_exclude_params](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, void * user_data = nullptr) -> std::tuple<bool, std::string>
+            auto InputTextWithHint_adapt_modifiable_immutable_to_return = [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
             {
                 std::string * str_adapt_modifiable = & str;
 
-                bool r = InputTextWithHint_adapt_exclude_params(label, hint, str_adapt_modifiable, flags, user_data);
+                bool r = ImGui::InputTextWithHint(label, hint, str_adapt_modifiable, flags, callback, user_data);
                 return std::make_tuple(r, str);
             };
 
-            return InputTextWithHint_adapt_modifiable_immutable_to_return(label, hint, str, flags, user_data);
-        },     py::arg("label"), py::arg("hint"), py::arg("str"), py::arg("flags") = 0, py::arg("user_data") = py::none());
+            return InputTextWithHint_adapt_modifiable_immutable_to_return(label, hint, str, flags, callback, user_data);
+        },     py::arg("label"), py::arg("hint"), py::arg("str"), py::arg("flags") = 0, py::arg("callback") = py::none(), py::arg("user_data") = py::none());
     ////////////////////    </generated_from:imgui_stdlib.h>    ////////////////////
 
 

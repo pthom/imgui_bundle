@@ -468,7 +468,7 @@ class TestEngineIO:
     # Options: Export
     # While you can manually call ImGuiTestEngine_Export(), registering filename/format here ensure the crash handler will always export if application crash.
     # const char*                 ExportResultsFilename = NULL;    /* original C++ signature */
-    export_results_filename: str = None
+    export_results_filename: str = None  # (const)
 
     # Options: Sanity Checks
     # bool                        CheckDrawDataIntegrity = false;    /* original C++ signature */
@@ -896,7 +896,7 @@ class TestActionFilter:
     # int                     MaxPasses;    /* original C++ signature */
     max_passes: int
     # const int*              MaxItemCountPerDepth;    /* original C++ signature */
-    max_item_count_per_depth: int
+    max_item_count_per_depth: int  # (const)
     # ImGuiItemStatusFlags    RequireAllStatusFlags;    /* original C++ signature */
     require_all_status_flags: ItemStatusFlags
     # ImGuiItemStatusFlags    RequireAnyStatusFlags;    /* original C++ signature */
@@ -2049,10 +2049,10 @@ class TestFindByLabelTask:
     # int                     InSuffixDepth = 0;    /* original C++ signature */
     in_suffix_depth: int = 0  # Number of labels in a path, after unknown base ID (for "hello/**/foo/bar" it would be 2)
     # const char*             InSuffix = NULL;    /* original C++ signature */
-    in_suffix: str = None  # A label string which appears on ID stack after unknown base ID (for "hello/**/foo/bar" it would be "foo/bar")
+    in_suffix: str = None  # A label string which appears on ID stack after unknown base ID (for "hello/**/foo/bar" it would be "foo/bar") # (const)
     # const char*             InSuffixLastItem = NULL;    /* original C++ signature */
     in_suffix_last_item: str = (
-        None  # A last label string (for "hello/**/foo/bar" it would be "bar")
+        None  # A last label string (for "hello/**/foo/bar" it would be "bar") # (const)
     )
     # ImGuiID                 InSuffixLastItemHash = 0;    /* original C++ signature */
     in_suffix_last_item_hash: ID = 0
