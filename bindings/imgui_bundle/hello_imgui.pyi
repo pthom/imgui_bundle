@@ -67,6 +67,112 @@ def EmptyEventCallback() -> AnyEventCallback:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # *
+# @@md#Dpi
+#
+# Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
+# Otherwise, widgets might be misplaced or too small, and font rendering might be blurry or too small.
+#
+#### How to position widgets on a window in a Dpi independent way
+#
+# Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens.
+# Instead you can:
+# * either multiply those values by ImGui::GetFontSize()
+# * or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
+#   as used in CSS: 1em simply correspond to the current font height.
+#
+#
+#### How to load fonts for a crisp font rendering and a correct size
+#
+# HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
+#    `DpiWindowSizeFactor() * 1. / ImGui::GetIO().FontGlobalScale`
+#              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
+#
+# ==> When loading fonts, multiply their size by this factor!
+#
+#### More details on DPI handling with different OS and backends
+#
+# Let's consider screen whose physical pixel resolution is 3600x2000, but which will displayed with a scaling factor of 200%,
+# so that widgets do not look too small on it.
+#
+# The way it is handled depends on the OS:
+# - On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself.
+# - On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000.
+# - On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
+#
+# By default, if using the glfw backend, applications will be Dpi aware under windows.
+# Sdl applications are normally not Dpi aware. However HelloImGui makes them Dpi aware when using the sdl backend.
+#
+#
+#### HelloImGui Dpi aware C++ API
+#
+# `HelloImGui::EmSize()` (C++) and `hello_imgui.em_size()` (Python) return the visible font size on the screen.
+# For reproducible results, even on HighDPI screens, always scale your widgets and windows relatively to this size.
+# It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+#
+# `HelloImGui::EmToVec2(x, y)` (C++) and `hello_imgui.em_to_vec2(x,y)` (Python) return an ImVec2 that you can use
+# to size or place your widgets in a DPI independent way.
+#
+# `HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
+#
+# `HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
+# which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
+# HelloImGui::LoadFontTTF does this by default.
+#
+# `HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
+# default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
+# Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
+# this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
+# @@md
+#
+
+# float EmSize();    /* original C++ signature */
+@overload
+def em_size() -> float:
+    """__HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+    widgets and windows relatively to this size.
+    It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    EmSize() = ImGui::GetFontSize()
+    """
+    pass
+
+# float EmSize(float nbLines);    /* original C++ signature */
+@overload
+def em_size(nb_lines: float) -> float:
+    """__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
+    pass
+
+# __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
+@overload
+def em_to_vec2(x: float, y: float) -> ImVec2:
+    pass
+
+# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
+@overload
+def em_to_vec2(v: ImVec2) -> ImVec2:
+    pass
+
+# float DpiFontLoadingFactor();    /* original C++ signature */
+def dpi_font_loading_factor() -> float:
+    """Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
+    (HelloImGui::LoadFontTTF does this by default)
+    """
+    pass
+
+# float DpiWindowSizeFactor();    /* original C++ signature */
+def dpi_window_size_factor() -> float:
+    """DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+    It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    """
+    pass
+
+# float ImGuiDefaultFontGlobalScale();    /* original C++ signature */
+# }
+def imgui_default_font_global_scale() -> float:
+    """returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`"""
+    pass
+
+# *
 # @@md#AssetsStructure
 #
 # Assets located beside the application CMakeLists are embedded automatically.
@@ -183,6 +289,33 @@ def override_assets_folder(folder: str) -> None:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class LogLevel(enum.Enum):
+    # Debug,    /* original C++ signature */
+    debug = enum.auto()  # (= 0)
+    # Info,    /* original C++ signature */
+    info = enum.auto()  # (= 1)
+    # Warning,    /* original C++ signature */
+    warning = enum.auto()  # (= 2)
+    # Error    /* original C++ signature */
+    #     }
+    error = enum.auto()  # (= 3)
+
+# void Log(LogLevel level, char const* const format, ...);    /* original C++ signature */
+def log(level: LogLevel, format: str) -> None:
+    pass
+
+# void LogClear();    /* original C++ signature */
+def log_clear() -> None:
+    pass
+
+# void LogGui(ImVec2 size=ImVec2(0.f, 0.f));    /* original C++ signature */
+# }
+def log_gui(size: ImVec2 = ImVec2(0.0, 0.0)) -> None:
+    pass
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/icons_font_awesome.h included by hello_imgui.h                             //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # Generated by https://github.com/juliettef/IconFontCppHeaders script
@@ -191,10 +324,6 @@ def override_assets_folder(folder: str) -> None:
 # for use with
 # https://github.com/FortAwesome/Font-Awesome/blob/master/webfonts/fa-solid-900.ttf,
 # https://github.com/FortAwesome/Font-Awesome/blob/master/webfonts/fa-regular-400.ttf,
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/image_gl.h included by hello_imgui.h                                       //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
@@ -206,6 +335,12 @@ def override_assets_folder(folder: str) -> None:
 # * `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`: will display a static image from the assets.
 # * `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`: will display a button using an image from the assets.
 # * `ImTextureID HelloImGui::ImTextureIdFromAsset(const char *assetPath)`: will return a texture ID for an image loaded from the assets.
+# * `ImVec2 HelloImGui::ImageSizeFromAsset(const char *assetPath)`: will return the size of an image loaded from the assets.
+# * `ImVec2 HelloImGui::ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize)`:
+#   Will return the displayed size of an image.
+#   if askedSize.x or askedSize.y is 0, then the corresponding dimension will be computed from the image size, keeping the aspect ratio.
+#   if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit exactly the askedSize, thus potentially changing the aspect ratio.
+#   Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset, so you don't need to call it directly.
 #
 # Images are loaded when first displayed, and then cached (they will be freed just before the application exits).
 #
@@ -222,8 +357,6 @@ def override_assets_folder(folder: str) -> None:
 # ```cpp
 # HelloImGui::ImageFromAsset("my_image.jpg");
 # ```
-#
-# *Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
 #
 # @@md
 #
@@ -255,7 +388,184 @@ def image_button_from_asset(
 def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
     pass
 
+# ImVec2 ImageSizeFromAsset(const char *assetPath);    /* original C++ signature */
+def image_size_from_asset(asset_path: str) -> ImVec2:
+    pass
+
+# ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);    /* original C++ signature */
+def image_proportional_size(asked_size: ImVec2, image_size: ImVec2) -> ImVec2:
+    pass
+
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui.h continued                                                                //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# #include "hello_imgui/image_gl_deprecated.h"
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#
+# Theme tweak utilities for ImGui.
+# Reuse and adaptation of imgui_theme.h and imgui_theme.cpp file is granted for other projects,
+# provided the origin of those files is stated in the copied version
+# Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
+#
+
+class ImGuiTheme_(enum.Enum):
+    # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
+    imgui_colors_classic = enum.auto()  # (= 0)
+    # ImGuiTheme_ImGuiColorsDark,    /* original C++ signature */
+    imgui_colors_dark = enum.auto()  # (= 1)
+    # ImGuiTheme_ImGuiColorsLight,    /* original C++ signature */
+    imgui_colors_light = enum.auto()  # (= 2)
+    # ImGuiTheme_MaterialFlat,    /* original C++ signature */
+    material_flat = enum.auto()  # (= 3)
+    # ImGuiTheme_PhotoshopStyle,    /* original C++ signature */
+    photoshop_style = enum.auto()  # (= 4)
+    # ImGuiTheme_GrayVariations,    /* original C++ signature */
+    gray_variations = enum.auto()  # (= 5)
+    # ImGuiTheme_GrayVariations_Darker,    /* original C++ signature */
+    gray_variations_darker = enum.auto()  # (= 6)
+    # ImGuiTheme_MicrosoftStyle,    /* original C++ signature */
+    microsoft_style = enum.auto()  # (= 7)
+    # ImGuiTheme_Cherry,    /* original C++ signature */
+    cherry = enum.auto()  # (= 8)
+    # ImGuiTheme_Darcula,    /* original C++ signature */
+    darcula = enum.auto()  # (= 9)
+    # ImGuiTheme_DarculaDarker,    /* original C++ signature */
+    darcula_darker = enum.auto()  # (= 10)
+    # ImGuiTheme_LightRounded,    /* original C++ signature */
+    light_rounded = enum.auto()  # (= 11)
+    # ImGuiTheme_SoDark_AccentBlue,    /* original C++ signature */
+    so_dark_accent_blue = enum.auto()  # (= 12)
+    # ImGuiTheme_SoDark_AccentYellow,    /* original C++ signature */
+    so_dark_accent_yellow = enum.auto()  # (= 13)
+    # ImGuiTheme_SoDark_AccentRed,    /* original C++ signature */
+    so_dark_accent_red = enum.auto()  # (= 14)
+    # ImGuiTheme_BlackIsBlack,    /* original C++ signature */
+    black_is_black = enum.auto()  # (= 15)
+    # ImGuiTheme_WhiteIsWhite,    /* original C++ signature */
+    white_is_white = enum.auto()  # (= 16)
+    # ImGuiTheme_Count    /* original C++ signature */
+    #     }
+    count = enum.auto()  # (= 17)
+
+# const char* ImGuiTheme_Name(ImGuiTheme_ theme);    /* original C++ signature */
+def imgui_theme_name(theme: ImGuiTheme_) -> str:
+    pass
+
+# ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);    /* original C++ signature */
+def imgui_theme_from_name(theme_name: str) -> ImGuiTheme_:
+    pass
+
+# ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);    /* original C++ signature */
+def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
+    pass
+
+# void ApplyTheme(ImGuiTheme_ theme);    /* original C++ signature */
+def apply_theme(theme: ImGuiTheme_) -> None:
+    pass
+
+class ImGuiThemeTweaks:
+    # float Rounding = -1.f;    /* original C++ signature */
+    # Common rounding for widgets. If < 0, this is ignored.
+    rounding: float = -1.0
+    # float RoundingScrollbarRatio = 4.f;    /* original C++ signature */
+    # If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)
+    rounding_scrollbar_ratio: float = 4.0
+    # float AlphaMultiplier = -1.f;    /* original C++ signature */
+    # Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
+    alpha_multiplier: float = -1.0
+
+    # float Hue = -1.f;    /* original C++ signature */
+    #
+    # HSV Color tweaks
+    #
+    # Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+    hue: float = -1.0
+    # float SaturationMultiplier = -1.f;    /* original C++ signature */
+    # Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+    saturation_multiplier: float = -1.0
+    # float ValueMultiplierFront = -1.f;    /* original C++ signature */
+    # Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
+    value_multiplier_front: float = -1.0
+    # float ValueMultiplierBg = -1.f;    /* original C++ signature */
+    # Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
+    value_multiplier_bg: float = -1.0
+    # float ValueMultiplierText = -1.f;    /* original C++ signature */
+    # Multiply the value (luminance) of text. If < 0, this is ignored.
+    value_multiplier_text: float = -1.0
+    # float ValueMultiplierFrameBg = -1.f;    /* original C++ signature */
+    # Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
+    # (Background of checkbox, radio button, plot, slider, text input)
+    value_multiplier_frame_bg: float = -1.0
+
+    # ImGuiThemeTweaks() {}    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
+
+class ImGuiTweakedTheme:
+    # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
+    theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
+    # ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();    /* original C++ signature */
+    tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
+    # ImGuiTweakedTheme(ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker, ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks());    /* original C++ signature */
+    def __init__(
+        self,
+        theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
+        tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
+def tweaked_theme_theme_to_style(tweaked_theme: ImGuiTweakedTheme) -> ImGuiStyle:
+    pass
+
+# void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
+def apply_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
+    pass
+
+# bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);    /* original C++ signature */
+def show_theme_tweak_gui(tweaked_theme: ImGuiTweakedTheme) -> bool:
+    """Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns True if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)"""
+    pass
+
+# Some tweakable themes
+# ImGuiStyle SoDark(float hue);    /* original C++ signature */
+def so_dark(hue: float) -> ImGuiStyle:
+    pass
+
+# ImGuiStyle ShadesOfGray(float rounding=0.f, float value_multiplier_front=1.f, float value_multiplier_bg=1.f);    /* original C++ signature */
+def shades_of_gray(
+    rounding: float = 0.0,
+    value_multiplier_front: float = 1.0,
+    value_multiplier_bg: float = 1.0,
+) -> ImGuiStyle:
+    pass
+
+# ImGuiStyle Darcula(    /* original C++ signature */
+#         float rounding=1.f,
+#         float hue=-1.f,
+#         float saturation_multiplier=1.f,
+#         float value_multiplier_front=1.f,
+#         float value_multiplier_bg=1.f,
+#         float alpha_bg_transparency=1.f
+#     );
+def darcula(
+    rounding: float = 1.0,
+    hue: float = -1.0,
+    saturation_multiplier: float = 1.0,
+    value_multiplier_front: float = 1.0,
+    value_multiplier_bg: float = 1.0,
+    alpha_bg_transparency: float = 1.0,
+) -> ImGuiStyle:
+    pass
+
+# namespace ImGuiTheme
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -570,172 +880,6 @@ class AppWindowParams:
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/imgui_theme.h included by hello_imgui/imgui_window_params.h                //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#
-# Theme tweak utilities for ImGui.
-# Reuse and adaptation of imgui_theme.h and imgui_theme.cpp file is granted for other projects,
-# provided the origin of those files is stated in the copied version
-# Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
-#
-
-class ImGuiTheme_(enum.Enum):
-    # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
-    imgui_colors_classic = enum.auto()  # (= 0)
-    # ImGuiTheme_ImGuiColorsDark,    /* original C++ signature */
-    imgui_colors_dark = enum.auto()  # (= 1)
-    # ImGuiTheme_ImGuiColorsLight,    /* original C++ signature */
-    imgui_colors_light = enum.auto()  # (= 2)
-    # ImGuiTheme_MaterialFlat,    /* original C++ signature */
-    material_flat = enum.auto()  # (= 3)
-    # ImGuiTheme_PhotoshopStyle,    /* original C++ signature */
-    photoshop_style = enum.auto()  # (= 4)
-    # ImGuiTheme_GrayVariations,    /* original C++ signature */
-    gray_variations = enum.auto()  # (= 5)
-    # ImGuiTheme_GrayVariations_Darker,    /* original C++ signature */
-    gray_variations_darker = enum.auto()  # (= 6)
-    # ImGuiTheme_MicrosoftStyle,    /* original C++ signature */
-    microsoft_style = enum.auto()  # (= 7)
-    # ImGuiTheme_Cherry,    /* original C++ signature */
-    cherry = enum.auto()  # (= 8)
-    # ImGuiTheme_Darcula,    /* original C++ signature */
-    darcula = enum.auto()  # (= 9)
-    # ImGuiTheme_DarculaDarker,    /* original C++ signature */
-    darcula_darker = enum.auto()  # (= 10)
-    # ImGuiTheme_LightRounded,    /* original C++ signature */
-    light_rounded = enum.auto()  # (= 11)
-    # ImGuiTheme_SoDark_AccentBlue,    /* original C++ signature */
-    so_dark_accent_blue = enum.auto()  # (= 12)
-    # ImGuiTheme_SoDark_AccentYellow,    /* original C++ signature */
-    so_dark_accent_yellow = enum.auto()  # (= 13)
-    # ImGuiTheme_SoDark_AccentRed,    /* original C++ signature */
-    so_dark_accent_red = enum.auto()  # (= 14)
-    # ImGuiTheme_BlackIsBlack,    /* original C++ signature */
-    black_is_black = enum.auto()  # (= 15)
-    # ImGuiTheme_WhiteIsWhite,    /* original C++ signature */
-    white_is_white = enum.auto()  # (= 16)
-    # ImGuiTheme_Count    /* original C++ signature */
-    #     }
-    count = enum.auto()  # (= 17)
-
-# const char* ImGuiTheme_Name(ImGuiTheme_ theme);    /* original C++ signature */
-def imgui_theme_name(theme: ImGuiTheme_) -> str:
-    pass
-
-# ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);    /* original C++ signature */
-def imgui_theme_from_name(theme_name: str) -> ImGuiTheme_:
-    pass
-
-# ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);    /* original C++ signature */
-def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
-    pass
-
-# void ApplyTheme(ImGuiTheme_ theme);    /* original C++ signature */
-def apply_theme(theme: ImGuiTheme_) -> None:
-    pass
-
-class ImGuiThemeTweaks:
-    # float Rounding = -1.f;    /* original C++ signature */
-    # Common rounding for widgets. If < 0, this is ignored.
-    rounding: float = -1.0
-    # float RoundingScrollbarRatio = 4.f;    /* original C++ signature */
-    # If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.)
-    rounding_scrollbar_ratio: float = 4.0
-    # float AlphaMultiplier = -1.f;    /* original C++ signature */
-    # Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
-    alpha_multiplier: float = -1.0
-
-    # float Hue = -1.f;    /* original C++ signature */
-    #
-    # HSV Color tweaks
-    #
-    # Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-    hue: float = -1.0
-    # float SaturationMultiplier = -1.f;    /* original C++ signature */
-    # Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-    saturation_multiplier: float = -1.0
-    # float ValueMultiplierFront = -1.f;    /* original C++ signature */
-    # Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
-    value_multiplier_front: float = -1.0
-    # float ValueMultiplierBg = -1.f;    /* original C++ signature */
-    # Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
-    value_multiplier_bg: float = -1.0
-    # float ValueMultiplierText = -1.f;    /* original C++ signature */
-    # Multiply the value (luminance) of text. If < 0, this is ignored.
-    value_multiplier_text: float = -1.0
-    # float ValueMultiplierFrameBg = -1.f;    /* original C++ signature */
-    # Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
-    # (Background of checkbox, radio button, plot, slider, text input)
-    value_multiplier_frame_bg: float = -1.0
-
-    # ImGuiThemeTweaks() {}    /* original C++ signature */
-    def __init__(self) -> None:
-        pass
-
-class ImGuiTweakedTheme:
-    # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
-    theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
-    # ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();    /* original C++ signature */
-    tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
-    # ImGuiTweakedTheme(ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker, ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks());    /* original C++ signature */
-    def __init__(
-        self,
-        theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
-        tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks(),
-    ) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
-
-# ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
-def tweaked_theme_theme_to_style(tweaked_theme: ImGuiTweakedTheme) -> ImGuiStyle:
-    pass
-
-# void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
-def apply_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
-    pass
-
-# bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);    /* original C++ signature */
-def show_theme_tweak_gui(tweaked_theme: ImGuiTweakedTheme) -> bool:
-    """Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns True if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)"""
-    pass
-
-# Some tweakable themes
-# ImGuiStyle SoDark(float hue);    /* original C++ signature */
-def so_dark(hue: float) -> ImGuiStyle:
-    pass
-
-# ImGuiStyle ShadesOfGray(float rounding=0.f, float value_multiplier_front=1.f, float value_multiplier_bg=1.f);    /* original C++ signature */
-def shades_of_gray(
-    rounding: float = 0.0,
-    value_multiplier_front: float = 1.0,
-    value_multiplier_bg: float = 1.0,
-) -> ImGuiStyle:
-    pass
-
-# ImGuiStyle Darcula(    /* original C++ signature */
-#         float rounding=1.f,
-#         float hue=-1.f,
-#         float saturation_multiplier=1.f,
-#         float value_multiplier_front=1.f,
-#         float value_multiplier_bg=1.f,
-#         float alpha_bg_transparency=1.f
-#     );
-def darcula(
-    rounding: float = 1.0,
-    hue: float = -1.0,
-    saturation_multiplier: float = 1.0,
-    value_multiplier_front: float = 1.0,
-    value_multiplier_bg: float = 1.0,
-    alpha_bg_transparency: float = 1.0,
-) -> ImGuiStyle:
-    pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/imgui_window_params.h continued                                            //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class DefaultImGuiWindowType(enum.Enum):
     """*
@@ -1535,9 +1679,11 @@ class BackendPointers:
     * `sdlGlContext`: _void *, default=nullptr_. Pointer to SDL's GlContext (of type `SDL_GLContext`).
       Only filled if the backend is SDL (or emscripten + sdl)
 
-    Note: If using the Metal or Vulkan rendering backend, you can find some interesting pointers inside
-     `src/hello_imgui/internal/backend_impls/rendering_metal.h` and `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`.
-
+    Note: If using the Metal, Vulkan or DirectX rendering backend, you can find some interesting pointers inside
+     `src/hello_imgui/internal/backend_impls/rendering_metal.h`
+     `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`
+     `src/hello_imgui/internal/backend_impls/rendering_dx11.h`
+     `src/hello_imgui/internal/backend_impls/rendering_dx12.h`
     @@md
 
     """
@@ -1849,144 +1995,8 @@ class SimpleRunnerParams:
         """Auto-generated default constructor with named params"""
         pass
 
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
+# namespace HelloImGui
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class LogLevel(enum.Enum):
-    # Debug,    /* original C++ signature */
-    debug = enum.auto()  # (= 0)
-    # Info,    /* original C++ signature */
-    info = enum.auto()  # (= 1)
-    # Warning,    /* original C++ signature */
-    warning = enum.auto()  # (= 2)
-    # Error    /* original C++ signature */
-    #     }
-    error = enum.auto()  # (= 3)
-
-# void Log(LogLevel level, char const* const format, ...);    /* original C++ signature */
-def log(level: LogLevel, format: str) -> None:
-    pass
-
-# void LogClear();    /* original C++ signature */
-def log_clear() -> None:
-    pass
-
-# void LogGui(ImVec2 size=ImVec2(0.f, 0.f));    /* original C++ signature */
-# }
-def log_gui(size: ImVec2 = ImVec2(0.0, 0.0)) -> None:
-    pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# *
-# @@md#Dpi
-#
-# Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
-# Otherwise, widgets might be misplaced or too small, and font rendering might be blurry or too small.
-#
-#### How to position widgets on a window in a Dpi independent way
-#
-# Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens.
-# Instead you can:
-# * either multiply those values by ImGui::GetFontSize()
-# * or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
-#   as used in CSS: 1em simply correspond to the current font height.
-#
-#
-#### How to load fonts for a crisp font rendering and a correct size
-#
-# HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
-#    `DpiWindowSizeFactor() * 1. / ImGui::GetIO().FontGlobalScale`
-#              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
-#
-# ==> When loading fonts, multiply their size by this factor!
-#
-#### More details on DPI handling with different OS and backends
-#
-# Let's consider screen whose physical pixel resolution is 3600x2000, but which will displayed with a scaling factor of 200%,
-# so that widgets do not look too small on it.
-#
-# The way it is handled depends on the OS:
-# - On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself.
-# - On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000.
-# - On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
-#
-# By default, if using the glfw backend, applications will be Dpi aware under windows.
-# Sdl applications are normally not Dpi aware. However HelloImGui makes them Dpi aware when using the sdl backend.
-#
-#
-#### HelloImGui Dpi aware C++ API
-#
-# `HelloImGui::EmSize()` (C++) and `hello_imgui.em_size()` (Python) return the visible font size on the screen.
-# For reproducible results, even on HighDPI screens, always scale your widgets and windows relatively to this size.
-# It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-#
-# `HelloImGui::EmToVec2(x, y)` (C++) and `hello_imgui.em_to_vec2(x,y)` (Python) return an ImVec2 that you can use
-# to size or place your widgets in a DPI independent way.
-#
-# `HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
-#
-# `HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
-# which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
-# HelloImGui::LoadFontTTF does this by default.
-#
-# `HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
-# default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
-# Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
-# this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
-# @@md
-#
-
-# float EmSize();    /* original C++ signature */
-@overload
-def em_size() -> float:
-    """__HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
-    widgets and windows relatively to this size.
-    It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-    EmSize() = ImGui::GetFontSize()
-    """
-    pass
-
-# float EmSize(float nbLines);    /* original C++ signature */
-@overload
-def em_size(nb_lines: float) -> float:
-    """__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
-    pass
-
-# __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
-@overload
-def em_to_vec2(x: float, y: float) -> ImVec2:
-    pass
-
-# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
-@overload
-def em_to_vec2(v: ImVec2) -> ImVec2:
-    pass
-
-# float DpiFontLoadingFactor();    /* original C++ signature */
-def dpi_font_loading_factor() -> float:
-    """Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-    (HelloImGui::LoadFontTTF does this by default)
-    """
-    pass
-
-# float DpiWindowSizeFactor();    /* original C++ signature */
-def dpi_window_size_factor() -> float:
-    """DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-    It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
-    """
-    pass
-
-# float ImGuiDefaultFontGlobalScale();    /* original C++ signature */
-# }
-def imgui_default_font_global_scale() -> float:
-    """returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`"""
-    pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
