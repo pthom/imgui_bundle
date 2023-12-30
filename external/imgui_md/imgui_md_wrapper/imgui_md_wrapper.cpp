@@ -2,6 +2,7 @@
 #include "imgui_md_wrapper.h"
 
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/image_gl_deprecated.h"
 #include "immapp/snippets.h"
 
 #include "imgui.h"
