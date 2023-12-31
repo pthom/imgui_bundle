@@ -23,6 +23,27 @@ project(imgui_bundle VERSION "1.1.0") # Remember to mirror changes to setup.py!
 ###############################################################################
 # Build Options
 ###############################################################################
+
+# IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES "clone submodules if needed during configure" ON)
+if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
+    if(NOT IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES)
+        message(FATAL_ERROR "Please run
+            git submodule update --init
+           ")
+    else()
+        execute_process(
+            COMMAND git submodule update --init
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        )
+    endif()
+endif()
+# Import a few cmake utility functions from hello_imgui
+include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/hello_imgui_cmake/utils/cache_hello_imgui_paths.cmake)
+include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
+
+
 # IMGUI_BUNDLE_BUILD_PYTHON: include python support
 # -----------------------------------------------------------------------------
 # (OFF when building the cpp library; ON by default when using pip install.
@@ -36,46 +57,53 @@ else()
 endif()
 
 
-# Glfw+OpenGL3 backend
 # -----------------------------------------------------------------------------
+# BACKENDS
+# Backends are defined by a combination of a platform backend (Sdl2, Glfw3),
+# and a renderer backend (OpenGL3, Vulkan, Metal, etc)
 #
-# Activated via -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
-#   - It is activated by default on desktop platforms (Windows, Linux, macOS), but you can deactivate it
-#   - It is activated by default when building the python bindings (and cannot be deactivated)
-#   - It is not available under emscripten, android, and ios.
+# By default, imgui_bundle will use
+# - Glfw+OpenGL3 on desktop platforms (Windows, Linux, macOS):
+#       -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
+# - SDL+OpenGl3 on emscripten, iOS and Android:
+#       -DHELLOIMGUI_USE_SDL_OPENGL3=ON
 #
 # Notes:
+# - For python bindings:
+#       we force the usage of Glfw+OpenGL3 (HELLOIMGUI_USE_GLFW_OPENGL3), but you can use SDL via a pure python backend.
+#       glfw will be built from the submodule external/glfw/glfw
 # - Glfw3 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
 #    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
-# - If (and only if) IMGUI_BUNDLE_BUILD_PYTHON is ON, glfw will be built from the submodule external/glfw/glfw
-if (EMSCRIPTEN OR ANDROID OR IOS)
-    set(HELLOIMGUI_USE_GLFW_OPENGL3 OFF CACHE BOOL "" FORCE)
-elseif(IMGUI_BUNDLE_BUILD_PYTHON)
-    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
-else()
-    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ON)
-endif()
-
-
-# SDL+OpenGl3 Backend
-# -----------------------------------------------------------------------------
-# Activated via -DHELLOIMGUI_USE_SDL_OPENGL3=ON
-#   - It is disabled by default on desktop platforms (Windows, Linux, macOS), but you can activate it
-#   - It is not available when building the python bindings (you can use the full python SDL backend instead)
-#   - It is activated by default under emscripten, iOS and Android (and you cannot change it)
-#
-# Note:
 # - SDL2 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
 #    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
-if (EMSCRIPTEN OR ANDROID OR IOS)
-    set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
-elseif(IMGUI_BUNDLE_BUILD_PYTHON)
-    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
-else()
-    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" OFF)
+# -----------------------------------------------------------------------------
+_him_check_if_no_backend_selected() # may set HELLOIMGUI_NO_BACKEND_SELECTED
+# Select default backend if none selected
+if (HELLOIMGUI_NO_BACKEND_SELECTED)
+    if (EMSCRIPTEN OR ANDROID OR IOS)
+        set(default_use_glfw_opengl3 OFF)
+        set(default_use_sdl_opengl3 ON)
+    else()
+        set(default_use_glfw_opengl3 ON)
+        set(default_use_sdl_opengl3 OFF)
+    endif()
+    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ${default_use_glfw_opengl3})
+    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" ${default_use_sdl_opengl3})
 endif()
+
+# For python bindings, we force the usage of Glfw+OpenGL3
+if(IMGUI_BUNDLE_BUILD_PYTHON)
+    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
+endif()
+
+# -----------------------------------------------------------------------------
+# On desktop platforms, other backends are available: see external/hello_imgui/hello_imgui/CMakelists.txt
+# (For example: HELLOIMGUI_USE_GLFW_METAL, HELLOIMGUI_USE_SDL_METAL, HELLOIMGUI_USE_GLFW_VULKAN, HELLOIMGUI_USE_SDL_VULKAN)
+# The usage of these alternative backends is aimed for experienced users.
+# -----------------------------------------------------------------------------
 
 
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
@@ -119,9 +147,6 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
-# IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
-# -----------------------------------------------------------------------------
-option(IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES "clone submodules if needed during configure" ON)
 
 # IMGUI_BUNDLE_BUILD_DOC: Build doc
 # -----------------------------------------------------------------------------
@@ -178,21 +203,6 @@ if (DEFINED IMGUI_BUNDLE_WITH_SDL)
     message(FATAL_ERROR "IMGUI_BUNDLE_WITH_SDL is deprecated. Please use HELLOIMGUI_USE_SDL_OPENGL3 instead")
 endif()
 
-
-# clone submodules if not found
-# -----------------------------------------------------------------------------
-if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
-    if(NOT IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES)
-        message(FATAL_ERROR "Please run
-            git submodule update --init
-           ")
-    else()
-        execute_process(
-            COMMAND git submodule update --init
-            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-            )
-    endif()
-endif()
 
 
 # imgui_bundle_add_app
