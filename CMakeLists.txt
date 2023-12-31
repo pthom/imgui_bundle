@@ -40,7 +40,6 @@ endif()
 # -----------------------------------------------------------------------------
 #
 # Activated via -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
-# Notes:
 #   - It is activated by default on desktop platforms (Windows, Linux, macOS), but you can deactivate it
 #   - It is activated by default when building the python bindings (and cannot be deactivated)
 #   - It is not available under emscripten, android, and ios.
@@ -62,12 +61,12 @@ endif()
 # SDL+OpenGl3 Backend
 # -----------------------------------------------------------------------------
 # Activated via -DHELLOIMGUI_USE_SDL_OPENGL3=ON
-# Notes:
 #   - It is disabled by default on desktop platforms (Windows, Linux, macOS), but you can activate it
 #   - It is not available when building the python bindings (you can use the full python SDL backend instead)
 #   - It is activated by default under emscripten, iOS and Android (and you cannot change it)
 #
-# SDL2 may be downloaded automatically if not found as a system library:
+# Note:
+# - SDL2 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
 #    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
 if (EMSCRIPTEN OR ANDROID OR IOS)
