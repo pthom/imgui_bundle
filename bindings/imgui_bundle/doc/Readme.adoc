@@ -61,12 +61,24 @@ TIP: For a more readable version of this document, click on {btn-doc}
 
 // :url-demo-images: doc_images/
 
-image:{url-bundle}/workflows/CppLib/badge.svg[]
-image:{url-bundle}/workflows/CppLib_WithBindings/badge.svg[]
-image:{url-bundle}/workflows/Pip/badge.svg[]
-image:{url-bundle}/workflows/Wheels/badge.svg[]
-image:{url-bundle}/workflows/Emscripten/badge.svg[]
 
+
+**{cpp}, OpenGL renderer**
+
+link:https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib.yml[image:{url-bundle}/workflows/CppLib/badge.svg[]]
+link:https://github.com/pthom/imgui_bundle/actions/workflows/emscripten.yml[image:{url-bundle}/workflows/Emscripten/badge.svg[]]
+
+**Python bindings**
+
+link:https://github.com/pthom/imgui_bundle/actions/workflows/pip.yml[image:{url-bundle}/workflows/Pip/badge.svg[]]
+link:https://github.com/pthom/imgui_bundle/actions/workflows/wheels.yml[image:{url-bundle}/workflows/Wheels/badge.svg[]]
+link:https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindings.yml[image:{url-bundle}/workflows/CppLib_WithBindings/badge.svg[]]
+
+**{cpp}, alternative renderers**
+
+link:https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml[image:{url-bundle}/workflows/Metal/badge.svg[]]
+https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml[image:{url-bundle}/workflows/DirectX/badge.svg[]]
+link:https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml[image:{url-bundle}/workflows/Vulkan/badge.svg[]]
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -3594,7 +3606,9 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these 
 #include "imgui-command-palette/imcmd_command_palette.h"
 #include "imgui-knobs/imgui-knobs.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "ImFileDialog/ImFileDialog.h"
+#endif
 #include "imgui_md_wrapper.h"
 #include "ImCoolBar/ImCoolbar.h"
 #include "demo_utils/api_demos.h"
@@ -3813,6 +3827,7 @@ void DemoPortableFileDialogs()
 
 void DemoImFileDialog()
 {
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
     static std::string selectedFilename;
 
     ImGuiMd::RenderUnindented(R"(
@@ -3864,6 +3879,7 @@ void DemoImFileDialog()
             selectedFilename = ifd::FileDialog::Instance().GetResult().string();
         ifd::FileDialog::Instance().Close();
     }
+#endif // #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 }
 
 

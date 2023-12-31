@@ -1,0 +1,51 @@
+name: "Vulkan"
+
+# Test that Vulkan builds work
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+# https://sdk.lunarg.com/sdk/download/1.3.268.0/windows/VulkanSDK-1.3.268.0-Installer.exe
+
+jobs:
+  build:
+    name: Vulkan
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: apt install xorg-dev  libglfw3-dev libsdl2-dev (ubuntu only)
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: sudo apt-get update && sudo apt-get install -y xorg-dev  libglfw3-dev libsdl2-dev
+
+      - name: Install Vulkan Sdk Win
+        if: ${{ matrix.platform == 'windows-latest' }}
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/ocornut/imgui/files/3789205/vulkan-sdk-1.1.121.2.zip" -OutFile vulkan-sdk-1.1.121.2.zip
+          Expand-Archive -Path vulkan-sdk-1.1.121.2.zip
+          echo "VULKAN_SDK=$(pwd)\vulkan-sdk-1.1.121.2\" >>${env:GITHUB_ENV}
+
+      - name: Install Vulkan Sdk macOS
+        if: ${{ matrix.platform == 'macos-latest' }}
+        shell: bash
+        run: |
+          wget -q https://github.com/pthom/hello_imgui/releases/download/v1.0.0/VulkanSDK_1.3.268.1_macos.tgz
+          tar xfz VulkanSDK_1.3.268.1_macos.tgz
+          echo "VULKAN_SDK=$(pwd)/VulkanSDK/1.3.268.1/macOS" >> $GITHUB_ENV
+
+      - name: Build and install
+        shell: bash
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DHELLOIMGUI_USE_GLFW_VULKAN=ON -DHELLOIMGUI_USE_SDL_VULKAN=ON -DCMAKE_BUILD_TYPE=Release;
+          cmake --build . -j 3
