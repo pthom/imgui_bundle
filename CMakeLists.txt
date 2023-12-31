@@ -385,12 +385,10 @@ endif()
 if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
-
+him_get_active_backends(selected_backends)
 message(STATUS "imgui_bundle build options:
-    Backends:
+    Backends: ${selected_backends}
     ==================
-    HELLOIMGUI_USE_GLFW_OPENGL3:   ${HELLOIMGUI_USE_GLFW_OPENGL3}
-    HELLOIMGUI_USE_SDL_OPENGL3:    ${HELLOIMGUI_USE_SDL_OPENGL3}
     Options:
     ==================
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
