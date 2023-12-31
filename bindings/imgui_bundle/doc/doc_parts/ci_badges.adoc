@@ -18,3 +18,4 @@ link:https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindin
 link:https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml[image:{url-bundle}/workflows/Metal/badge.svg[]]
 https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml[image:{url-bundle}/workflows/DirectX/badge.svg[]]
 link:https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml[image:{url-bundle}/workflows/Vulkan/badge.svg[]]
+

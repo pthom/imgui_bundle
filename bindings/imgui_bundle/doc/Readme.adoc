@@ -79,6 +79,8 @@ link:https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindin
 link:https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml[image:{url-bundle}/workflows/Metal/badge.svg[]]
 https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml[image:{url-bundle}/workflows/DirectX/badge.svg[]]
 link:https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml[image:{url-bundle}/workflows/Vulkan/badge.svg[]]
+
+
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -97,6 +99,7 @@ link:https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml[image:{u
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
 // :url-demo-images: doc_images/
+
 :_badge-sources: {url-doc-images}/badge_view_sources.png
 :_badge-doc: {url-doc-images}/badge_view_docs.png
 :_badge-interactive-manual: {url-doc-images}/badge_interactive_manual.png

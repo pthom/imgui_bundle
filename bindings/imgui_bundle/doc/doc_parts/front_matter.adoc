@@ -7,7 +7,9 @@ ifdef::env_gh_readme[]
 TIP: For a more readable version of this document, click on {btn-doc}
 
 include::ci_badges.adoc[]
+
 include::_utils.adoc[]
+
 include::_badges.adoc[]
 
 endif::[]
