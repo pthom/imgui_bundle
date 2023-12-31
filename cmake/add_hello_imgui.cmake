@@ -41,9 +41,9 @@ function (add_hello_imgui)
     add_subdirectory(hello_imgui/hello_imgui)
     target_link_libraries(imgui_bundle PUBLIC hello_imgui)
 
-    if (WIN32 AND IMGUI_BUNDLE_WITH_SDL)
-        target_link_libraries(hello_imgui PUBLIC SDL2main)
-    endif()
+#    if (WIN32 AND IMGUI_BUNDLE_WITH_SDL)
+#        target_link_libraries(hello_imgui PUBLIC SDL2main)
+#    endif()
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
     if (WIN32)
