@@ -56,24 +56,24 @@ else()
 endif()
 
 
-# SDL Backend
+# SDL+OpenGl3 Backend
 # -----------------------------------------------------------------------------
-# SDL is activated via IMGUI_BUNDLE_WITH_SDL. It is disabled by default on Windows, Linux, and macOS.
+# Activated via HELLOIMGUI_USE_SDL_OPENGL3
 # Notes:
-#   - under emscripten, iOS and Android, sdl is the default backend.
-#   - sdl is not available for python bindings (you can use the full python SDL backend instead)
+#   - under emscripten, iOS and Android, this is the default backend (and you cannot change it)
+#   - under windows, linux, and macOS, it is disabled by default, but you can activate it
+#   - not available for python bindings (you can use the full python SDL backend instead)
 #
 # SDL2 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
 #    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
-if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
-    option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
+if (EMSCRIPTEN OR ANDROID OR IOS)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
+elseif(IMGUI_BUNDLE_BUILD_PYTHON)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
 else()
-    set(IMGUI_BUNDLE_WITH_SDL ON)
+    option(HELLOIMGUI_USE_SDL_OPENGL3 "Add SDL+OpenGL3 backend" OFF)
 endif()
-if (ANDROID OR IOS)
-    set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
-endif ()
 
 
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
@@ -233,8 +233,6 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
     # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
     set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "" FORCE)
-    # When building python bindings, sdl is not built (use full python backends instead)
-    set(IMGUI_BUNDLE_WITH_SDL OFF CACHE BOOL "" FORCE)
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
@@ -369,15 +367,12 @@ if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
 # IMGUI_BUNDLE_WITH_GLFW: HelloImGui will use Glfw if no backend is specified
-if (NOT IMGUI_BUNDLE_WITH_GLFW AND NOT IMGUI_BUNDLE_WITH_SDL)
-    set(IMGUI_BUNDLE_WITH_GLFW "OFF (but HelloImGui activated it because no backend was specified)")
-endif()
 
 message(STATUS "imgui_bundle build options:
     Backends:
     ==================
-    IMGUI_BUNDLE_WITH_GLFW:        ${IMGUI_BUNDLE_WITH_GLFW}
-    IMGUI_BUNDLE_WITH_SDL:         ${IMGUI_BUNDLE_WITH_SDL}
+    HELLOIMGUI_USE_GLFW_OPENGL3:   ${HELLOIMGUI_USE_GLFW_OPENGL3}
+    HELLOIMGUI_USE_SDL_OPENGL3:    ${HELLOIMGUI_USE_SDL_OPENGL3}
     Options:
     ==================
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})

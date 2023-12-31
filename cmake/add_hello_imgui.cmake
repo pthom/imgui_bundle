@@ -28,10 +28,6 @@ function (add_hello_imgui)
     if (IMGUI_BUNDLE_WITH_GLFW)
         set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
     endif()
-    #     ii. use sdl
-    if (IMGUI_BUNDLE_WITH_SDL)
-        set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
-    endif()
     #     iii. use provided imgui version
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
@@ -40,10 +36,6 @@ function (add_hello_imgui)
     # 4. Finally, add hello_imgui
     add_subdirectory(hello_imgui/hello_imgui)
     target_link_libraries(imgui_bundle PUBLIC hello_imgui)
-
-#    if (WIN32 AND IMGUI_BUNDLE_WITH_SDL)
-#        target_link_libraries(hello_imgui PUBLIC SDL2main)
-#    endif()
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
     if (WIN32)
