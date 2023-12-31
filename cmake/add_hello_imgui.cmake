@@ -19,16 +19,13 @@ function (add_hello_imgui)
     endif()
 
     # 2. Use glfw submodule for python bindings
+    # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_glfw_submodule()
     endif()
 
     # 3. Configure hello-imgui with the following options:
-    #     i. use glfw
-    if (IMGUI_BUNDLE_WITH_GLFW)
-        set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
-    endif()
-    #     iii. use provided imgui version
+    #     i. use our own imgui submodule
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)

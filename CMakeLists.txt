@@ -36,23 +36,26 @@ else()
 endif()
 
 
-# Glfw backend
+# Glfw+OpenGL3 backend
 # -----------------------------------------------------------------------------
 #
-# The GLFW  backend is activated via IMGUI_BUNDLE_WITH_GLFW
-# It is activated by default on desktop platforms (Windows, Linux, macOS)
-# but disabled under emscripten, android, and ios.
+# Activated via HELLOIMGUI_USE_GLFW_OPENGL3
+# Notes:
+#   - It is activated by default on desktop platforms (Windows, Linux, macOS), but you can deactivate it
+#   - It is activated by default when building the python bindings (and cannot be deactivated)
+#   - It is not available under emscripten, android, and ios.
 #
 # Notes:
 # - Glfw3 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
 #    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
-# - If (and only if) IMGUI_BUNDLE_BUILD_PYTHON is ON, glfw will be built from
-#   the submodule external/glfw/glfw
-if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
-    option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
+# - If (and only if) IMGUI_BUNDLE_BUILD_PYTHON is ON, glfw will be built from the submodule external/glfw/glfw
+if (EMSCRIPTEN OR ANDROID OR IOS)
+    set(HELLOIMGUI_USE_GLFW_OPENGL3 OFF CACHE BOOL "" FORCE)
+elseif(IMGUI_BUNDLE_BUILD_PYTHON)
+    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
 else()
-    set(IMGUI_BUNDLE_WITH_GLFW OFF)
+    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ON)
 endif()
 
 
@@ -60,9 +63,9 @@ endif()
 # -----------------------------------------------------------------------------
 # Activated via HELLOIMGUI_USE_SDL_OPENGL3
 # Notes:
-#   - under emscripten, iOS and Android, this is the default backend (and you cannot change it)
-#   - under windows, linux, and macOS, it is disabled by default, but you can activate it
-#   - not available for python bindings (you can use the full python SDL backend instead)
+#   - It is disabled by default on desktop platforms (Windows, Linux, macOS), but you can activate it
+#   - It is not available when building the python bindings (you can use the full python SDL backend instead)
+#   - It is activated by default under emscripten, iOS and Android (and you cannot change it)
 #
 # SDL2 may be downloaded automatically if not found as a system library:
 #    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
@@ -72,7 +75,7 @@ if (EMSCRIPTEN OR ANDROID OR IOS)
 elseif(IMGUI_BUNDLE_BUILD_PYTHON)
     set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
 else()
-    option(HELLOIMGUI_USE_SDL_OPENGL3 "Add SDL+OpenGL3 backend" OFF)
+    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" OFF)
 endif()
 
 
@@ -231,8 +234,6 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
-    # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
-    set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "" FORCE)
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
@@ -366,7 +367,6 @@ endif()
 if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
-# IMGUI_BUNDLE_WITH_GLFW: HelloImGui will use Glfw if no backend is specified
 
 message(STATUS "imgui_bundle build options:
     Backends:
