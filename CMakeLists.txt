@@ -39,7 +39,7 @@ endif()
 # Glfw+OpenGL3 backend
 # -----------------------------------------------------------------------------
 #
-# Activated via HELLOIMGUI_USE_GLFW_OPENGL3
+# Activated via -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
 # Notes:
 #   - It is activated by default on desktop platforms (Windows, Linux, macOS), but you can deactivate it
 #   - It is activated by default when building the python bindings (and cannot be deactivated)
@@ -61,7 +61,7 @@ endif()
 
 # SDL+OpenGl3 Backend
 # -----------------------------------------------------------------------------
-# Activated via HELLOIMGUI_USE_SDL_OPENGL3
+# Activated via -DHELLOIMGUI_USE_SDL_OPENGL3=ON
 # Notes:
 #   - It is disabled by default on desktop platforms (Windows, Linux, macOS), but you can activate it
 #   - It is not available when building the python bindings (you can use the full python SDL backend instead)
@@ -170,6 +170,15 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 
 # Everything is built as a static library in imgui_bundle
 set(BUILD_SHARED_LIBS OFF)
+
+# Error on deprecated options
+if (DEFINED IMGUI_BUNDLE_WITH_GLFW)
+    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_GLFW is deprecated. Please use HELLOIMGUI_USE_GLFW_OPENGL3 instead")
+endif()
+if (DEFINED IMGUI_BUNDLE_WITH_SDL)
+    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_SDL is deprecated. Please use HELLOIMGUI_USE_SDL_OPENGL3 instead")
+endif()
+
 
 # clone submodules if not found
 # -----------------------------------------------------------------------------
