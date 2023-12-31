@@ -31,8 +31,6 @@ if(HELLOIMGUI_HAS_OPENGL)
         target_compile_definitions(imgui_bundle PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 endif()
-# Build immapp (Immediate App lib, internal to ImGui Bundle)
-add_subdirectory(immapp/immapp)
 # Build implot
 add_simple_external_library_with_sources(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
@@ -51,7 +49,7 @@ target_link_libraries(imgui_node_editor PUBLIC immapp)
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build ImFileDialog
 if(HELLOIMGUI_HAS_OPENGL)
-    target_compile_definitions(immapp PUBLIC IMGUI_BUNDLE_WITH_IMFILEDIALOG)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_IMFILEDIALOG)
     set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
     add_simple_external_library(im_file_dialog ImFileDialog)
     target_sources(im_file_dialog PRIVATE
@@ -88,7 +86,7 @@ add_simple_external_library_with_sources(imguizmo ImGuizmo)
 add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
 # Build imgui_tex_inspect
 if(HELLOIMGUI_HAS_OPENGL)
-    target_compile_definitions(immapp PUBLIC IMGUI_BUNDLE_WITH_TEXT_INSPECT)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_TEXT_INSPECT)
     set(IMGUI_BUNDLE_WITH_TEXT_INSPECT ON CACHE INTERNAL "" FORCE)
     add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
     target_sources(imgui_tex_inspect PRIVATE
@@ -108,3 +106,5 @@ target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 # Add ImCoolBar
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
+# Finally, build immapp (Immediate App lib, internal to ImGui Bundle
+add_subdirectory(immapp/immapp)

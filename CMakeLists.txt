@@ -79,9 +79,9 @@ endif()
 #    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
 #    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
 # -----------------------------------------------------------------------------
-_him_check_if_no_backend_selected() # may set HELLOIMGUI_NO_BACKEND_SELECTED
+_him_check_if_no_backend_selected(no_backend_selected)
 # Select default backend if none selected
-if (HELLOIMGUI_NO_BACKEND_SELECTED)
+if (no_backend_selected)
     if (EMSCRIPTEN OR ANDROID OR IOS)
         set(default_use_glfw_opengl3 OFF)
         set(default_use_sdl_opengl3 ON)
