@@ -43,20 +43,16 @@ endif()
 # It is activated by default on desktop platforms (Windows, Linux, macOS)
 # but disabled under emscripten, android, and ios.
 #
-# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is ON, the system library will be used (via find_package(glfw3))
-#     (this works for C++ exe, but not for python bindings)
-# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is OFF, the library will be built from the submodule external/glfw/glfw
-#     (as a static library for C++ exe, and as a shared library for python bindings)
-#
+# Notes:
+# - Glfw3 may be downloaded automatically if not found as a system library:
+#    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
+#    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
+# - If (and only if) IMGUI_BUNDLE_BUILD_PYTHON is ON, glfw will be built from
+#   the submodule external/glfw/glfw
 if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
     option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
 else()
     set(IMGUI_BUNDLE_WITH_GLFW OFF)
-endif()
-if (CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
-    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" ON)
-else()
-    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" OFF)
 endif()
 
 
@@ -67,8 +63,9 @@ endif()
 #   - under emscripten, iOS and Android, sdl is the default backend.
 #   - sdl is not available for python bindings (you can use the full python SDL backend instead)
 #
-# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is ON, the system library will be used (via find_package(SDL2))
-# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is OFF, the library will be downloaded at configure time
+# SDL2 may be downloaded automatically if not found as a system library:
+#    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
+#    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
 if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
     option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
 else()
@@ -77,11 +74,6 @@ endif()
 if (ANDROID OR IOS)
     set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
 endif ()
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" ON)
-else()
-    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" OFF)
-endif()
 
 
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
@@ -188,40 +180,6 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
             COMMAND git submodule update --init
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
             )
-    endif()
-endif()
-
-# Backends: check availability of glfw and sdl if using system libraries
-# -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_WITH_GLFW AND IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB)
-    find_package(glfw3)
-    if (NOT glfw3_FOUND)
-        set(glfw_help_msg "
-            you can install glfw via your package manager (apt, pacman, etc).
-            For example, on Ubuntu, you can run:
-                sudo apt install libglfw3-dev
-            On macOS, you can run:
-                brew install glfw
-        ")
-        message(FATAL_ERROR "
-            imgui_bundle: did not find system library for glfw3.
-            ${glfw_help_msg}")
-    endif()
-endif()
-if (IMGUI_BUNDLE_WITH_SDL AND IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB)
-    find_package(SDL2)
-    if (NOT SDL2_FOUND)
-        set(sdl_help_msg "")
-        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-            set(sdl_help_msg "
-                you can install sdl via your package manager (apt, pacman, etc).
-                For example, on Ubuntu, you can run:
-                    sudo apt install libsdl2-dev
-            ")
-        endif()
-        message(FATAL_ERROR "
-            imgui_bundle: did not find system library for SDL2.
-            ${sdl_help_msg}")
     endif()
 endif()
 
@@ -418,8 +376,8 @@ endif()
 message(STATUS "imgui_bundle build options:
     Backends:
     ==================
-    IMGUI_BUNDLE_WITH_GLFW:        ${IMGUI_BUNDLE_WITH_GLFW} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB})
-    IMGUI_BUNDLE_WITH_SDL:         ${IMGUI_BUNDLE_WITH_SDL} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB})
+    IMGUI_BUNDLE_WITH_GLFW:        ${IMGUI_BUNDLE_WITH_GLFW}
+    IMGUI_BUNDLE_WITH_SDL:         ${IMGUI_BUNDLE_WITH_SDL}
     Options:
     ==================
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})

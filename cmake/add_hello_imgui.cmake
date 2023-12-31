@@ -18,8 +18,8 @@ function (add_hello_imgui)
         enable_language(OBJC) # See https://gitlab.kitware.com/cmake/cmake/-/issues/24104
     endif()
 
-    # 2. Build glfw if required
-    if (IMGUI_BUNDLE_WITH_GLFW AND NOT IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB)
+    # 2. Use glfw submodule for python bindings
+    if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_glfw_submodule()
     endif()
 
@@ -31,14 +31,8 @@ function (add_hello_imgui)
     #     ii. use sdl
     if (IMGUI_BUNDLE_WITH_SDL)
         set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
-        if (NOT IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB)
-            set(HELLOIMGUI_WITH_SDL ON CACHE BOOL "" FORCE) # This will force HelloImGui to download and build SDL2
-        endif()
     endif()
-    #     iii. set option / system lib
-    set(HELLOIMGUI_USE_GLFW_SYSTEM_LIB ${IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB} CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_USE_SDL_SYSTEM_LIB ${IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB} CACHE BOOL "" FORCE)
-    #     iv. use provided imgui version
+    #     iii. use provided imgui version
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
