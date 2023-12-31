@@ -1,4 +1,4 @@
-name: "CppLib"
+name: "CppLib_WithBindings"
 
 
 on:
@@ -11,12 +11,12 @@ env:
 
 jobs:
   build:
-    name: Cpp Lib
+    name: CppLib_WithBindings
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-2019, macos-latest, ubuntu-latest]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4
@@ -32,10 +32,10 @@ jobs:
 
     # Install conan & pybind11
     - name: install conan and pybind11 (linux and ubuntu)
-      if: ${{ matrix.platform != 'windows-2019' }}
+      if: ${{ matrix.platform != 'windows-latest' }}
       run:  ./ci_scripts/install_conan_pybind11.sh
     - name: install conan and pybind11 (windows)
-      if: ${{ matrix.platform == 'windows-2019' }}
+      if: ${{ matrix.platform == 'windows-latest' }}
       run: |
         python3 -m pip install conan
         conan profile new default --detect
@@ -44,12 +44,6 @@ jobs:
     - name: Build and install
       shell: bash
       run: |
-        # Optional: set IMMVISION_FETCH_OPENCV to OFF to disable OpenCV/Immvision
-        # ------------------------------------------------------------------------------------
-        # export IMMVISION_FETCH_OPENCV=OFF
-        #
-        # cmake and build
-        # ------------------------------------------------------------------------------------
         mkdir build
         cd build
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release

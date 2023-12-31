@@ -36,51 +36,45 @@ else()
 endif()
 
 
-# Glfw backend
+# Glfw+OpenGL3 backend
 # -----------------------------------------------------------------------------
 #
-# The GLFW  backend is activated via IMGUI_BUNDLE_WITH_GLFW
-# It is activated by default on desktop platforms (Windows, Linux, macOS)
-# but disabled under emscripten, android, and ios.
+# Activated via -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
+#   - It is activated by default on desktop platforms (Windows, Linux, macOS), but you can deactivate it
+#   - It is activated by default when building the python bindings (and cannot be deactivated)
+#   - It is not available under emscripten, android, and ios.
 #
-# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is ON, the system library will be used (via find_package(glfw3))
-#     (this works for C++ exe, but not for python bindings)
-# If IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB is OFF, the library will be built from the submodule external/glfw/glfw
-#     (as a static library for C++ exe, and as a shared library for python bindings)
-#
-if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
-    option(IMGUI_BUNDLE_WITH_GLFW "Add GLFW backend" ON)
-else()
-    set(IMGUI_BUNDLE_WITH_GLFW OFF)
-endif()
-if (CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
-    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" ON)
-else()
-    option(IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB "Force usage of GLFW system library" OFF)
-endif()
-
-
-# SDL Backend
-# -----------------------------------------------------------------------------
-# SDL is activated via IMGUI_BUNDLE_WITH_SDL. It is disabled by default on Windows, Linux, and macOS.
 # Notes:
-#   - under emscripten, iOS and Android, sdl is the default backend.
-#   - sdl is not available for python bindings (you can use the full python SDL backend instead)
-#
-# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is ON, the system library will be used (via find_package(SDL2))
-# If IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB is OFF, the library will be downloaded at configure time
-if (NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
-    option(IMGUI_BUNDLE_WITH_SDL "Add SDL backend" OFF)
+# - Glfw3 may be downloaded automatically if not found as a system library:
+#    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
+#    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
+# - If (and only if) IMGUI_BUNDLE_BUILD_PYTHON is ON, glfw will be built from the submodule external/glfw/glfw
+if (EMSCRIPTEN OR ANDROID OR IOS)
+    set(HELLOIMGUI_USE_GLFW_OPENGL3 OFF CACHE BOOL "" FORCE)
+elseif(IMGUI_BUNDLE_BUILD_PYTHON)
+    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
 else()
-    set(IMGUI_BUNDLE_WITH_SDL ON)
+    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ON)
 endif()
-if (ANDROID OR IOS)
-    set(IMGUI_BUNDLE_WITH_SDL ON CACHE BOOL "" FORCE)
-endif ()
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" ON)
+
+
+# SDL+OpenGl3 Backend
+# -----------------------------------------------------------------------------
+# Activated via -DHELLOIMGUI_USE_SDL_OPENGL3=ON
+#   - It is disabled by default on desktop platforms (Windows, Linux, macOS), but you can activate it
+#   - It is not available when building the python bindings (you can use the full python SDL backend instead)
+#   - It is activated by default under emscripten, iOS and Android (and you cannot change it)
+#
+# Note:
+# - SDL2 may be downloaded automatically if not found as a system library:
+#    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
+#    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
+if (EMSCRIPTEN OR ANDROID OR IOS)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 ON CACHE BOOL "" FORCE)
+elseif(IMGUI_BUNDLE_BUILD_PYTHON)
+    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
 else()
-    option(IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB "Force usage of SDL system library" OFF)
+    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" OFF)
 endif()
 
 
@@ -176,6 +170,15 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 # Everything is built as a static library in imgui_bundle
 set(BUILD_SHARED_LIBS OFF)
 
+# Error on deprecated options
+if (DEFINED IMGUI_BUNDLE_WITH_GLFW)
+    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_GLFW is deprecated. Please use HELLOIMGUI_USE_GLFW_OPENGL3 instead")
+endif()
+if (DEFINED IMGUI_BUNDLE_WITH_SDL)
+    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_SDL is deprecated. Please use HELLOIMGUI_USE_SDL_OPENGL3 instead")
+endif()
+
+
 # clone submodules if not found
 # -----------------------------------------------------------------------------
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
@@ -188,40 +191,6 @@ if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
             COMMAND git submodule update --init
             WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
             )
-    endif()
-endif()
-
-# Backends: check availability of glfw and sdl if using system libraries
-# -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_WITH_GLFW AND IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB)
-    find_package(glfw3)
-    if (NOT glfw3_FOUND)
-        set(glfw_help_msg "
-            you can install glfw via your package manager (apt, pacman, etc).
-            For example, on Ubuntu, you can run:
-                sudo apt install libglfw3-dev
-            On macOS, you can run:
-                brew install glfw
-        ")
-        message(FATAL_ERROR "
-            imgui_bundle: did not find system library for glfw3.
-            ${glfw_help_msg}")
-    endif()
-endif()
-if (IMGUI_BUNDLE_WITH_SDL AND IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB)
-    find_package(SDL2)
-    if (NOT SDL2_FOUND)
-        set(sdl_help_msg "")
-        if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-            set(sdl_help_msg "
-                you can install sdl via your package manager (apt, pacman, etc).
-                For example, on Ubuntu, you can run:
-                    sudo apt install libsdl2-dev
-            ")
-        endif()
-        message(FATAL_ERROR "
-            imgui_bundle: did not find system library for SDL2.
-            ${sdl_help_msg}")
     endif()
 endif()
 
@@ -273,10 +242,6 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
-    # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
-    set(IMGUI_BUNDLE_WITH_GLFW ON CACHE BOOL "" FORCE)
-    # When building python bindings, sdl is not built (use full python backends instead)
-    set(IMGUI_BUNDLE_WITH_SDL OFF CACHE BOOL "" FORCE)
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
@@ -410,16 +375,12 @@ endif()
 if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
-# IMGUI_BUNDLE_WITH_GLFW: HelloImGui will use Glfw if no backend is specified
-if (NOT IMGUI_BUNDLE_WITH_GLFW AND NOT IMGUI_BUNDLE_WITH_SDL)
-    set(IMGUI_BUNDLE_WITH_GLFW "OFF (but HelloImGui activated it because no backend was specified)")
-endif()
 
 message(STATUS "imgui_bundle build options:
     Backends:
     ==================
-    IMGUI_BUNDLE_WITH_GLFW:        ${IMGUI_BUNDLE_WITH_GLFW} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_GLFW_SYSTEM_LIB})
-    IMGUI_BUNDLE_WITH_SDL:         ${IMGUI_BUNDLE_WITH_SDL} (USE_SYSTEM_LIB: ${IMGUI_BUNDLE_USE_SDL_SYSTEM_LIB})
+    HELLOIMGUI_USE_GLFW_OPENGL3:   ${HELLOIMGUI_USE_GLFW_OPENGL3}
+    HELLOIMGUI_USE_SDL_OPENGL3:    ${HELLOIMGUI_USE_SDL_OPENGL3}
     Options:
     ==================
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})

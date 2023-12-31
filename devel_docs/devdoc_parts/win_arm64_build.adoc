@@ -6,7 +6,7 @@ Summary (private note for this library author):
 - Cpp: use ARM64 build
 
 ```
-cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DIMGUI_BUNDLE_WITH_SDL=ON
+cmake .. -DOpenCV_DIR=F:/dvp/_opencv/opencv4.6.0_arm64_dll_world -DCMAKE_GENERATOR_PLATFORM=ARM64 -DHELLOIMGUI_USE_SDL_OPENGL3=ON
 ```
 
 - Python: prefer python x64 aka amd64 (because numpy does not work on python arm64)

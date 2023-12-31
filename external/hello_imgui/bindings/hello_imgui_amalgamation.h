@@ -4,12 +4,102 @@
 //                       hello_imgui.h                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL_OPENGL3)
+#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL)
 // We need to include SDL, so that it can instantiate its main function under Android
 #include "SDL.h"
 #endif
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include "imgui.h"
+
+/**
+@@md#Dpi
+
+Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
+Otherwise, widgets might be misplaced or too small, and font rendering might be blurry or too small.
+
+### How to position widgets on a window in a Dpi independent way
+
+Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens.
+Instead you can:
+* either multiply those values by ImGui::GetFontSize()
+* or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
+   as used in CSS: 1em simply correspond to the current font height.
+
+
+### How to load fonts for a crisp font rendering and a correct size
+
+HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
+    `DpiWindowSizeFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
+              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
+
+==> When loading fonts, multiply their size by this factor!
+
+### More details on DPI handling with different OS and backends
+
+Let's consider screen whose physical pixel resolution is 3600x2000, but which will displayed with a scaling factor of 200%,
+ so that widgets do not look too small on it.
+
+The way it is handled depends on the OS:
+- On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself.
+- On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000.
+- On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
+
+By default, if using the glfw backend, applications will be Dpi aware under windows.
+Sdl applications are normally not Dpi aware. However HelloImGui makes them Dpi aware when using the sdl backend.
+
+
+### HelloImGui Dpi aware C++ API
+
+`HelloImGui::EmSize()` (C++) and `hello_imgui.em_size()` (Python) return the visible font size on the screen.
+For reproducible results, even on HighDPI screens, always scale your widgets and windows relatively to this size.
+ It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+
+`HelloImGui::EmToVec2(x, y)` (C++) and `hello_imgui.em_to_vec2(x,y)` (Python) return an ImVec2 that you can use
+ to size or place your widgets in a DPI independent way.
+
+`HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
+
+`HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
+ which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
+ HelloImGui::LoadFontTTF does this by default.
+
+`HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
+ default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
+ Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
+ this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
+@@md
+*/
+
+namespace HelloImGui
+{
+    // __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
+    // widgets and windows relatively to this size.
+    // It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+    // EmSize() = ImGui::GetFontSize()
+    float EmSize();
+
+    // __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
+    float EmSize(float nbLines);
+
+    // __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+    ImVec2 EmToVec2(float x, float y);
+    ImVec2 EmToVec2(ImVec2 v);
+
+    // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
+    // (HelloImGui::LoadFontTTF does this by default)
+    float DpiFontLoadingFactor();
+
+    // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+    // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    float DpiWindowSizeFactor();
+
+    // returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`
+    float ImGuiDefaultFontGlobalScale();
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +195,6 @@ void overrideAssetsFolder(const char* folder); // synonym
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <stdexcept>
 #include <iostream>
-#include "imgui.h"
 
 
 #define HIMG_ERROR(msg) \
@@ -138,6 +227,35 @@ void overrideAssetsFolder(const char* folder); // synonym
 #define HIMG_LOG_VALUE(...) {}
 #define HIMG_LOG_POINTER(value) {}
 #endif
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+@@md#HelloImGui::Log
+
+HelloImGui provides a simple Log utility that is able to collect message and display them with a specific widget.
+
+* __HelloImGui::Log(LogLevel level, char const* const format, ... )__ will log a message (printf like format)
+* __HelloImGui::LogClear()__ will clear the Log list
+* __HelloImGui::LogGui()__ will display the Log widget
+
+@@md
+*/
+namespace HelloImGui
+{
+    enum class LogLevel
+    {
+        Debug,
+        Info,
+        Warning,
+        Error
+    };
+
+    void Log(LogLevel level, char const* const format, ...);
+    void LogClear();
+    void LogGui(ImVec2 size=ImVec2(0.f, 0.f));
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/icons_font_awesome.h included by hello_imgui.h                             //
@@ -1112,54 +1230,6 @@ void overrideAssetsFolder(const char* folder); // synonym
 #define ICON_FA_HAND_SPOCK "\xEF\x89\x99"
 #define ICON_FA_HAND_POINT_UP "\xEF\x82\xA6"
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/image_gl.h included by hello_imgui.h                                       //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef HELLOIMGUI_HAS_OPENGL
-#include <memory>
-
-/**
-@@md#HelloImGui::ImageGl
-
-    Image loading utilities, based on stb_image. They work *only with OpenGL backends*.
-
-    * `ImageGl::ImageGlPtr FactorImage(const char *assetPath)`: will load an image from an asset
-      and return a unique_ptr<ImageGl>, which you can display with the Draw() or DrawButton() methods.
-    * `ImageGl::Draw(...)` and `ImageGl::DrawButton(...)` will draw the image. They have the same
-      behavior as ImGui::Image (except that the size can be inferred from the loaded image size)
-
-    _Note: Since ImageGl is not copiable, it has a private constructor; and you should use it via ImageGlPtr_
-    ```cpp
-    using ImageGlPtr = std::unique_ptr<ImageGl>;
-    ```
-
-@@md
-*/
-namespace HelloImGui
-{
-struct ImageGl;
-using ImageGlPtr = std::unique_ptr<ImageGl>;
-
-struct ImageGl
-{
-private:
-    ImageGl(const char *assetPath);
-public:
-    static ImageGlPtr FactorImage(const char *assetPath);
-    ~ImageGl();
-
-    void Draw(const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1), const ImVec4& tint_col = ImVec4(1,1,1,1), const ImVec4& border_col = ImVec4(0,0,0,0));
-    bool DrawButton(const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0),  const ImVec2& uv1 = ImVec2(1,1), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0), const ImVec4& tint_col = ImVec4(1,1,1,1));    // <0 frame_padding uses default frame padding settings. 0 for no padding
-
-    ImVec2 imageSize;
-    ImTextureID imTextureId;
-};
-
-
-}
-#endif // #ifdef HELLOIMGUI_HAS_OPENGL
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1169,6 +1239,12 @@ public:
 * `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`: will display a static image from the assets.
 * `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`: will display a button using an image from the assets.
 * `ImTextureID HelloImGui::ImTextureIdFromAsset(const char *assetPath)`: will return a texture ID for an image loaded from the assets.
+* `ImVec2 HelloImGui::ImageSizeFromAsset(const char *assetPath)`: will return the size of an image loaded from the assets.
+* `ImVec2 HelloImGui::ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize)`:
+   Will return the displayed size of an image.
+   if askedSize.x or askedSize.y is 0, then the corresponding dimension will be computed from the image size, keeping the aspect ratio.
+   if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit exactly the askedSize, thus potentially changing the aspect ratio.
+   Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset, so you don't need to call it directly.
 
 Images are loaded when first displayed, and then cached (they will be freed just before the application exits).
 
@@ -1186,8 +1262,6 @@ then, you can display "my_image.jpg", using:
 HelloImGui::ImageFromAsset("my_image.jpg");
 ```
 
-*Note: HelloImGui::ImageFromAsset only works with OpenGL backends. It will throw an exception on other backends*
-
 @@md
 */
 
@@ -1196,6 +1270,8 @@ namespace HelloImGui
     void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1), const ImVec4& tint_col = ImVec4(1,1,1,1), const ImVec4& border_col = ImVec4(0,0,0,0));
     bool ImageButtonFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0),  const ImVec2& uv1 = ImVec2(1,1), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0), const ImVec4& tint_col = ImVec4(1,1,1,1));
     ImTextureID ImTextureIdFromAsset(const char *assetPath);
+    ImVec2 ImageSizeFromAsset(const char *assetPath);
+    ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);
 
     namespace internal
     {
@@ -1203,6 +1279,107 @@ namespace HelloImGui
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui.h continued                                                                //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// #include "hello_imgui/image_gl_deprecated.h"
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//
+// Theme tweak utilities for ImGui.
+// Reuse and adaptation of imgui_theme.h and imgui_theme.cpp file is granted for other projects,
+// provided the origin of those files is stated in the copied version
+// Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
+//
+
+namespace ImGuiTheme
+{
+    enum ImGuiTheme_
+    {
+        ImGuiTheme_ImGuiColorsClassic = 0,
+        ImGuiTheme_ImGuiColorsDark,
+        ImGuiTheme_ImGuiColorsLight,
+        ImGuiTheme_MaterialFlat,
+        ImGuiTheme_PhotoshopStyle,
+        ImGuiTheme_GrayVariations,
+        ImGuiTheme_GrayVariations_Darker,
+        ImGuiTheme_MicrosoftStyle,
+        ImGuiTheme_Cherry,
+        ImGuiTheme_Darcula,
+        ImGuiTheme_DarculaDarker,
+        ImGuiTheme_LightRounded,
+        ImGuiTheme_SoDark_AccentBlue,
+        ImGuiTheme_SoDark_AccentYellow,
+        ImGuiTheme_SoDark_AccentRed,
+        ImGuiTheme_BlackIsBlack,
+        ImGuiTheme_WhiteIsWhite,
+        ImGuiTheme_Count
+    };
+    const char* ImGuiTheme_Name(ImGuiTheme_ theme);
+    ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);
+    ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);
+    void ApplyTheme(ImGuiTheme_ theme);
+
+
+    struct ImGuiThemeTweaks
+    {
+        // Common rounding for widgets. If < 0, this is ignored.
+        float Rounding = -1.f;
+        // If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.f)
+        float RoundingScrollbarRatio = 4.f;
+        // Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
+        float AlphaMultiplier = -1.f;
+
+        //
+        // HSV Color tweaks
+        //
+        // Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+        float Hue = -1.f;
+        // Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
+        float SaturationMultiplier = -1.f;
+        // Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
+        float ValueMultiplierFront = -1.f;
+        // Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
+        float ValueMultiplierBg = -1.f;
+        // Multiply the value (luminance) of text. If < 0, this is ignored.
+        float ValueMultiplierText = -1.f;
+        // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
+        // (Background of checkbox, radio button, plot, slider, text input)
+        float ValueMultiplierFrameBg = -1.f;
+
+        ImGuiThemeTweaks() {}
+    };
+
+    struct ImGuiTweakedTheme
+    {
+        ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;
+        ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();
+    };
+
+    ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);
+    void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);
+
+    // Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns true if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)
+    bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);
+
+    // Some tweakable themes
+    ImGuiStyle SoDark(float hue);
+    ImGuiStyle ShadesOfGray(float rounding=0.f, float value_multiplier_front=1.f, float value_multiplier_bg=1.f);
+    ImGuiStyle Darcula(
+        float rounding=1.f,
+        float hue=-1.f,
+        float saturation_multiplier=1.f,
+        float value_multiplier_front=1.f,
+        float value_multiplier_bg=1.f,
+        float alpha_bg_transparency=1.f
+    );
+
+
+} // namespace ImGuiTheme
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1457,106 +1634,6 @@ struct AppWindowParams
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <functional>
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/imgui_theme.h included by hello_imgui/imgui_window_params.h                //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//
-// Theme tweak utilities for ImGui.
-// Reuse and adaptation of imgui_theme.h and imgui_theme.cpp file is granted for other projects,
-// provided the origin of those files is stated in the copied version
-// Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
-//
-
-namespace ImGuiTheme
-{
-    enum ImGuiTheme_
-    {
-        ImGuiTheme_ImGuiColorsClassic = 0,
-        ImGuiTheme_ImGuiColorsDark,
-        ImGuiTheme_ImGuiColorsLight,
-        ImGuiTheme_MaterialFlat,
-        ImGuiTheme_PhotoshopStyle,
-        ImGuiTheme_GrayVariations,
-        ImGuiTheme_GrayVariations_Darker,
-        ImGuiTheme_MicrosoftStyle,
-        ImGuiTheme_Cherry,
-        ImGuiTheme_Darcula,
-        ImGuiTheme_DarculaDarker,
-        ImGuiTheme_LightRounded,
-        ImGuiTheme_SoDark_AccentBlue,
-        ImGuiTheme_SoDark_AccentYellow,
-        ImGuiTheme_SoDark_AccentRed,
-        ImGuiTheme_BlackIsBlack,
-        ImGuiTheme_WhiteIsWhite,
-        ImGuiTheme_Count
-    };
-    const char* ImGuiTheme_Name(ImGuiTheme_ theme);
-    ImGuiTheme_ ImGuiTheme_FromName(const char* themeName);
-    ImGuiStyle ThemeToStyle(ImGuiTheme_ theme);
-    void ApplyTheme(ImGuiTheme_ theme);
-
-
-    struct ImGuiThemeTweaks
-    {
-        // Common rounding for widgets. If < 0, this is ignored.
-        float Rounding = -1.f;
-        // If rounding is applied, scrollbar rounding needs to be adjusted to be visually pleasing in conjunction with other widgets roundings. Only applied if Rounding > 0.f)
-        float RoundingScrollbarRatio = 4.f;
-        // Change the alpha that will be applied to windows, popups, etc. If < 0, this is ignored.
-        float AlphaMultiplier = -1.f;
-
-        //
-        // HSV Color tweaks
-        //
-        // Change the hue of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-        float Hue = -1.f;
-        // Multiply the saturation of all widgets (gray widgets will remain gray, since their saturation is zero). If < 0, this is ignored.
-        float SaturationMultiplier = -1.f;
-        // Multiply the value (luminance) of all front widgets. If < 0, this is ignored.
-        float ValueMultiplierFront = -1.f;
-        // Multiply the value (luminance) of all backgrounds. If < 0, this is ignored.
-        float ValueMultiplierBg = -1.f;
-        // Multiply the value (luminance) of text. If < 0, this is ignored.
-        float ValueMultiplierText = -1.f;
-        // Multiply the value (luminance) of FrameBg. If < 0, this is ignored.
-        // (Background of checkbox, radio button, plot, slider, text input)
-        float ValueMultiplierFrameBg = -1.f;
-
-        ImGuiThemeTweaks() {}
-    };
-
-    struct ImGuiTweakedTheme
-    {
-        ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;
-        ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();
-    };
-
-    ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);
-    void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);
-
-    // Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns true if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)
-    bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);
-
-    // Some tweakable themes
-    ImGuiStyle SoDark(float hue);
-    ImGuiStyle ShadesOfGray(float rounding=0.f, float value_multiplier_front=1.f, float value_multiplier_bg=1.f);
-    ImGuiStyle Darcula(
-        float rounding=1.f,
-        float hue=-1.f,
-        float saturation_multiplier=1.f,
-        float value_multiplier_front=1.f,
-        float value_multiplier_bg=1.f,
-        float alpha_bg_transparency=1.f
-    );
-
-
-} // namespace ImGuiTheme
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/imgui_window_params.h continued                                            //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace HelloImGui
 {
@@ -2211,6 +2288,11 @@ your application behavior using the selected backend.
 * `sdlGlContext`: _void *, default=nullptr_. Pointer to SDL's GlContext (of type `SDL_GLContext`).
   Only filled if the backend is SDL (or emscripten + sdl)
 
+Note: If using the Metal, Vulkan or DirectX rendering backend, you can find some interesting pointers inside
+ `src/hello_imgui/internal/backend_impls/rendering_metal.h`
+ `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`
+ `src/hello_imgui/internal/backend_impls/rendering_dx11.h`
+ `src/hello_imgui/internal/backend_impls/rendering_dx12.h`
 @@md
  */
 struct BackendPointers
@@ -2231,12 +2313,12 @@ struct BackendPointers
 namespace HelloImGui
 {
 
+// Windowing backend type (SDL, GLFW)
 enum class BackendType
 {
     FirstAvailable,
     Sdl,
     Glfw,
-    Qt
 };
 
 
@@ -2328,7 +2410,7 @@ struct FpsIdling
    A struct that contains optional pointers to the backend implementations. These pointers will be filled
    when the application starts
 * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-  Select the wanted backend type between `Sdl`, `Glfw` and `Qt`. Only useful when multiple backend are compiled
+  Select the wanted Windowing backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
   and available.
 * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to false to disable Idling)
 * `useImGuiTestEngine`: _bool, default=false_.
@@ -2440,124 +2522,6 @@ struct SimpleRunnerParams
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-@@md#HelloImGui::Log
-
-HelloImGui provides a simple Log utility that is able to collect message and display them with a specific widget.
-
-* __HelloImGui::Log(LogLevel level, char const* const format, ... )__ will log a message (printf like format)
-* __HelloImGui::LogClear()__ will clear the Log list
-* __HelloImGui::LogGui()__ will display the Log widget
-
-@@md
-*/
-namespace HelloImGui
-{
-    enum class LogLevel
-    {
-        Debug,
-        Info,
-        Warning,
-        Error
-    };
-
-    void Log(LogLevel level, char const* const format, ...);
-    void LogClear();
-    void LogGui(ImVec2 size=ImVec2(0.f, 0.f));
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/dpi_aware.h included by hello_imgui.h                                      //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
-@@md#Dpi
-
-Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
-Otherwise, widgets might be misplaced or too small, and font rendering might be blurry or too small.
-
-### How to position widgets on a window in a Dpi independent way
-
-Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens.
-Instead you can:
-* either multiply those values by ImGui::GetFontSize()
-* or use `HelloImGui::EmToVec2(x, y)` which will do this multiplication for you. Em stand for the `em` measurements,
-   as used in CSS: 1em simply correspond to the current font height.
-
-
-### How to load fonts for a crisp font rendering and a correct size
-
-HelloImGui provides `HelloImGui::DpiFontLoadingFactor()` which corresponds to:
-    `DpiWindowSizeFactor() * 1.f / ImGui::GetIO().FontGlobalScale`
-              where DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, 1 under macOS
-
-==> When loading fonts, multiply their size by this factor!
-
-### More details on DPI handling with different OS and backends
-
-Let's consider screen whose physical pixel resolution is 3600x2000, but which will displayed with a scaling factor of 200%,
- so that widgets do not look too small on it.
-
-The way it is handled depends on the OS:
-- On MacOS, the screen will be seen as having a resolution of 1800x1000, and the OS handles the resizing by itself.
-- On Linux, and on Windows if the application is DPI aware, the screen will be seen as having a resolution of 3600x2000.
-- On Windows if the application is not DPI aware, the screen will be seen as having a resolution of 1800x1000
-
-By default, if using the glfw backend, applications will be Dpi aware under windows.
-Sdl applications are normally not Dpi aware. However HelloImGui makes them Dpi aware when using the sdl backend.
-
-
-### HelloImGui Dpi aware C++ API
-
-`HelloImGui::EmSize()` (C++) and `hello_imgui.em_size()` (Python) return the visible font size on the screen.
-For reproducible results, even on HighDPI screens, always scale your widgets and windows relatively to this size.
- It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-
-`HelloImGui::EmToVec2(x, y)` (C++) and `hello_imgui.em_to_vec2(x,y)` (Python) return an ImVec2 that you can use
- to size or place your widgets in a DPI independent way.
-
-`HelloImGui::EmSize(nbLines)` (C++) and `hello_imgui.em_size(nb_lines)` (Python) return a size corresponding to nbLines text lines
-
-`HelloImGui::DpiFontLoadingFactor()` (C++) and `hello_imgui.dpi_font_loading_factor()` (Python) return a factor by
- which you shall multiply your font sizes when loading fonts manually with _ImGui::GetIO().Fonts->AddFont..._
- HelloImGui::LoadFontTTF does this by default.
-
-`HelloImGui::ImGuiDefaultFontGlobalScale()` (C++) and `hello_imgui.imgui_default_font_global_scale()` (Python) returns the
- default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
- Under windows and linux, this is always 1: no rescaling should be done by ImGui. Under macOS and emscripten,
- this can be < 1 (for example it will be 0.5 if the dpi scaling is 200%)
-@@md
-*/
-
-namespace HelloImGui
-{
-    // __HelloImGui::EmSize()__ returns the visible font size on the screen. For good results on HighDPI screens, always scale your
-    // widgets and windows relatively to this size.
-    // It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).
-    // EmSize() = ImGui::GetFontSize()
-    float EmSize();
-
-    // __HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines
-    float EmSize(float nbLines);
-
-    // __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
-    ImVec2 EmToVec2(float x, float y);
-    ImVec2 EmToVec2(ImVec2 v);
-
-    // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-    // (HelloImGui::LoadFontTTF does this by default)
-    float DpiFontLoadingFactor();
-
-    // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-    // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
-    float DpiWindowSizeFactor();
-
-    // returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`
-    float ImGuiDefaultFontGlobalScale();
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2565,7 +2529,7 @@ namespace HelloImGui
 #include <cstddef>
 #include <cstdint>
 
-#ifdef HELLOIMGUI_USE_SDL_OPENGL3
+#ifdef HELLOIMGUI_USE_SDL
     #ifdef _WIN32
         #ifndef HELLOIMGUI_WIN32_AUTO_WINMAIN
             // Under Windows, we redefine WinMain ourselves

@@ -62,9 +62,11 @@ TIP: For a more readable version of this document, click on {btn-doc}
 // :url-demo-images: doc_images/
 
 image:{url-bundle}/workflows/CppLib/badge.svg[]
+image:{url-bundle}/workflows/CppLib_WithBindings/badge.svg[]
 image:{url-bundle}/workflows/Pip/badge.svg[]
 image:{url-bundle}/workflows/Wheels/badge.svg[]
 image:{url-bundle}/workflows/Emscripten/badge.svg[]
+
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -1886,7 +1888,7 @@ int main(int, char**)
     HelloImGui::RunnerParams runnerParams;
 
     runnerParams.appWindowParams.windowTitle = "Docking demo";
-    runnerParams.imGuiWindowParams.menuAppTitle = "Docking App";
+    runnerParams.imGuiWindowParams.menuAppTitle = "Docking demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
 
@@ -2514,8 +2516,7 @@ def main():
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
     runner_params.app_window_params.window_title = "Docking demo"
-
-    runner_params.imgui_window_params.menu_app_title = "Docking App"
+    runner_params.imgui_window_params.menu_app_title = "Docking demo"
     runner_params.app_window_params.window_geometry.size = (1000, 900)
     runner_params.app_window_params.restore_previous_geometry = True
 
