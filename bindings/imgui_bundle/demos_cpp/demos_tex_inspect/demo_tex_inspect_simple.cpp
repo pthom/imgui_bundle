@@ -1,6 +1,7 @@
 // Demo imgui_tex_inspect
 // See equivalent python program: bindings/imgui_bundle/demos/demos_tex_inspect/demo_tex_inspect.py
 #include "immapp/immapp.h"
+#ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 
 
@@ -46,3 +47,10 @@ int disabled_main()
     );
     return 0;
 }
+
+#else // #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
+void demo_tex_inspect_simple()
+{
+    ImGui::Text("This demo requires IMGUI_BUNDLE_WITH_TEXT_INSPECT to be enabled");
+}
+#endif

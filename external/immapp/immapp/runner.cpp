@@ -1,10 +1,14 @@
 #include "immapp.h"
 
 #include "implot/implot.h"
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "bundle_integration/ImFileDialogTextureHelper.h"
+#endif
 
+#ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
+#endif
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/internal/functional_utils.h"
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
@@ -26,7 +30,10 @@ namespace ImmApp
     {
         std::optional<ax::NodeEditor::EditorContext *> _NodeEditorContext;
         ax::NodeEditor::Config _NodeEditorConfig;
+
+#ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
         ImGuiTexInspect::Context * _ImGuiTextInspect_Context = nullptr;
+#endif
     };
 
     ImmAppContext gImmAppContext;
@@ -62,8 +69,11 @@ namespace ImmApp
                 ImGuiMd::GetFontLoaderFunction());
         }
 
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
         ImFileDialogSetupTextureLoader();
+#endif
 
+#ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
         if (addOnsParams.withTexInspect)
         {
             // Modify post-init: Init ImGuiTexInspect
@@ -92,6 +102,7 @@ namespace ImmApp
                     );
             }
         }
+#endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized

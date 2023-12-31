@@ -102,7 +102,8 @@ endif()
 # -----------------------------------------------------------------------------
 # On desktop platforms, other backends are available: see external/hello_imgui/hello_imgui/CMakelists.txt
 # (For example: HELLOIMGUI_USE_GLFW_METAL, HELLOIMGUI_USE_SDL_METAL, HELLOIMGUI_USE_GLFW_VULKAN, HELLOIMGUI_USE_SDL_VULKAN)
-# The usage of these alternative backends is aimed for experienced users.
+# The usage of these alternative backends is aimed for experienced users,
+# and some widgets may be disabled with those (ImFileDialog, imgui_text_inspect, immvision)
 # -----------------------------------------------------------------------------
 
 

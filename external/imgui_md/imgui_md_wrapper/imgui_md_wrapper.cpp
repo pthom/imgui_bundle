@@ -1,6 +1,10 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper.h"
 
+#ifdef HELLOIMGUI_HAS_OPENGL // Image rendering with markdown only works with OpenGl
+#define CAN_RENDER_IMAGES
+#endif
+
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/image_gl_deprecated.h"
 #include "immapp/snippets.h"
@@ -201,7 +205,10 @@ assets/
             : mFontCollection(options)
         {}
         ImGuiMdFonts::FontCollection mFontCollection;
+
+#ifdef CAN_RENDER_IMAGES
         mutable std::map<std::string, HelloImGui::ImageGlPtr > mLoadedImages;
+#endif
     };
 
 
@@ -218,10 +225,12 @@ assets/
         {
         }
 
+#ifdef CAN_RENDER_IMAGES
         std::map<std::string, HelloImGui::ImageGlPtr >& ImageCache()
         {
             return mMarkdownCollection.mLoadedImages;
         }
+#endif
 
         void Render(const std::string& s)
         {
@@ -409,6 +418,7 @@ assets/
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
+#ifdef CAN_RENDER_IMAGES
         if (!gMarkdownRenderer)
         {
             std::cerr << "Did you initialize ImGuiMd?\n";
@@ -438,6 +448,9 @@ assets/
         r.col_tint = { 1,1,1,1 };
         r.col_border = { 0,0,0,0 };
         return r;
+#else
+        return std::nullopt;
+#endif
     }
 
     ImFont* GetCodeFont()

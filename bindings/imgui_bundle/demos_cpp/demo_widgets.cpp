@@ -11,7 +11,9 @@
 #include "imgui-command-palette/imcmd_command_palette.h"
 #include "imgui-knobs/imgui-knobs.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "ImFileDialog/ImFileDialog.h"
+#endif
 #include "imgui_md_wrapper.h"
 #include "ImCoolBar/ImCoolbar.h"
 #include "demo_utils/api_demos.h"
@@ -230,6 +232,7 @@ void DemoPortableFileDialogs()
 
 void DemoImFileDialog()
 {
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
     static std::string selectedFilename;
 
     ImGuiMd::RenderUnindented(R"(
@@ -281,6 +284,7 @@ void DemoImFileDialog()
             selectedFilename = ifd::FileDialog::Instance().GetResult().string();
         ifd::FileDialog::Instance().Close();
     }
+#endif // #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 }
 
 

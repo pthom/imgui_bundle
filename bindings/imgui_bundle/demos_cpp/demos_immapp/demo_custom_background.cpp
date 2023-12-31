@@ -1,3 +1,4 @@
+#ifdef HELLOIMGUI_HAS_OPENGL
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
@@ -661,3 +662,8 @@ int main(int , char *[])
     ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }
+
+#else // HELLOIMGUI_HAS_OPENGL
+#include <iostream>
+int main(int , char *[]) { std::cerr << "This demo requires OpenGL" << std::endl; return 1; }
+#endif

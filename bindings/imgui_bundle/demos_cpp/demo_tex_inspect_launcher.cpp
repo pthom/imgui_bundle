@@ -7,6 +7,10 @@ void demo_tex_inspect_simple();
 
 void demo_tex_inspect_launcher()
 {
+#ifndef IMGUI_BUNDLE_WITH_TEXT_INSPECT
+    ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuiTexInspect (this requires OpenGl)");
+    return;
+#endif
     ImGuiMd::RenderUnindented(R"(
     # imgui_tex_inspect
     [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui
@@ -28,7 +32,7 @@ void demo_tex_inspect_launcher()
         if (ImGui::Button("Run demo"))
         {
             SpawnDemo("demo_tex_inspect_demo_window");
-            ShowPythonVsCppFile("demos_tex_inspect/demo_tex_inspect_demo_window");
         }
+        ShowPythonVsCppFile("demos_tex_inspect/demo_tex_inspect_demo_window");
     }
 }
