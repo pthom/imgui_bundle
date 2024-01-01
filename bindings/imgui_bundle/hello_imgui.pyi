@@ -1708,7 +1708,7 @@ class BackendPointers:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class BackendType(enum.Enum):
-    """Windowing backend type (SDL, GLFW)"""
+    """Platform backend type (SDL, GLFW)"""
 
     # FirstAvailable,    /* original C++ signature */
     first_available = enum.auto()  # (= 0)
@@ -1829,7 +1829,7 @@ class RunnerParams:
        A struct that contains optional pointers to the backend implementations. These pointers will be filled
        when the application starts
     * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-      Select the wanted Windowing backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
+      Select the wanted platform backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
       and available.
     * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
     * `useImGuiTestEngine`: _bool, default=false_.
