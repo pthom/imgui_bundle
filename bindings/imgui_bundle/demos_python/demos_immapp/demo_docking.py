@@ -2,12 +2,14 @@
 #
 # It demonstrates how to:
 # - set up a complex docking layouts (with several possible layouts):
+# - load additional fonts, possibly colored, and with emojis
+# - display a log window
 # - use the status bar
 # - use default menus (App and view menu), and how to customize them
-# - display a log window
-# - load additional fonts
 # - use a specific application state (instead of using static variables)
 # - save some additional user settings within imgui ini file
+# - use borderless windows, that are movable and resizable
+
 
 from enum import Enum
 import time
@@ -313,9 +315,13 @@ def gui_window_layout_customization(app_state: AppState):
 
 def demo_assets(app_state: AppState):
     imgui.push_font(app_state.title_font)
-    imgui.text("Hello")
+    imgui.text("Image From Assets")
     imgui.pop_font()
-    hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(3.0, 3.0))
+    hello_imgui.begin_group_column()
+    imgui.dummy(hello_imgui.em_to_vec2(0.0, 0.45))
+    imgui.text("Hello")
+    hello_imgui.end_group_column()
+    hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(2.5, 2.5))
 
 
 def demo_fonts(app_state: AppState):

@@ -24,7 +24,7 @@ std::function<void()> makeGui()
         DemoApp{"demo_assets_addons", "How to use assets, and how to use add-ons (Markdown and ImPlot)"},
         DemoApp{
             "demo_docking",
-            """How to build complex applications layouts, with dockable panels, that can even become independent windows. How to customize the theme.""",
+            "Full Demo: complex docking layout, additional fonts (including colored fonts and emojis), log window, status bar, user settings, etc."
         },
         DemoApp{"demo_custom_background", "How to use a custom 3D background"},
         DemoApp{

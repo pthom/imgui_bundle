@@ -6,10 +6,11 @@ It demonstrates how to:
 - use the status bar
 - use default menus (App and view menu), and how to customize them
 - display a log window
-- load additional fonts
+- load additional fonts, possibly colored, and with emojis
 - use a specific application state (instead of using static variables)
 - save some additional user settings within imgui ini file
-*/
+- use borderless windows, that are movable and resizable
+ */
 
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
