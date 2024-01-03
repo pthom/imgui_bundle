@@ -51,6 +51,9 @@ ImGuiStyle = imgui_bundle.imgui.Style
 ImGuiDir_ = imgui_bundle.imgui.Dir_
 ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
 
+# ImWcharPair is used to defined unicode glyph ranges
+ImWcharPair = Tuple[int, int]
+
 def EmptyVoidFunction() -> VoidFunction:
     pass
 
@@ -397,12 +400,6 @@ def image_proportional_size(asked_size: ImVec2, image_size: ImVec2) -> ImVec2:
     pass
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui.h continued                                                                //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# #include "hello_imgui/image_gl_deprecated.h"
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -566,6 +563,126 @@ def darcula(
 
 # namespace ImGuiTheme
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class FontLoadingParams:
+    """Font loading parameters: several options are available (color, merging, range, ...)"""
+
+    # bool adjustSizeToDpi = true;    /* original C++ signature */
+    # if True, the font size will be adjusted automatically to account for HighDPI
+    adjust_size_to_dpi: bool = True
+
+    # bool useFullGlyphRange = false;    /* original C++ signature */
+    # if True, the font will be loaded with the full glyph range
+    use_full_glyph_range: bool = False
+    # bool reduceMemoryUsageIfFullGlyphRange = true;    /* original C++ signature */
+    # if set, fontConfig.GlyphRanges, and fontConfig.OversampleH / fontConfig.OversampleV will be set to 1
+    # when useFullGlyphRange is True (this is useful to save memory)
+    reduce_memory_usage_if_full_glyph_range: bool = True
+
+    # bool mergeToLastFont = false;    /* original C++ signature */
+    # if True, the font will be merged to the last font
+    merge_to_last_font: bool = False
+
+    # bool loadColor = false;    /* original C++ signature */
+    # if True, the font will be loaded using colors (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)
+    load_color: bool = False
+
+    # bool insideAssets = true;    /* original C++ signature */
+    # if True, the font will be loaded using HelloImGui asset system. Otherwise, it will be loaded from the filesystem
+    inside_assets: bool = True
+
+    # std::vector<ImWcharPair> glyphRanges = {};    /* original C++ signature */
+    # the ranges of glyphs to load:
+    #    - if empty, the default glyph range will be used
+    #    - you can specify several ranges
+    # (will be translated and stored as a static ImWChar* inside fontConfig)
+    glyph_ranges: List[ImWcharPair] = List[ImWcharPair]()
+
+    # ImFontConfig fontConfig = ImFontConfig();    /* original C++ signature */
+    # ImGui native font config to use
+    font_config: ImFontConfig = ImFontConfig()
+
+    # if True, the font will be loaded and then FontAwesome icons will be merged to it
+    # (deprecated, use mergeToLastFont instead, and load in two steps)
+    # bool mergeFontAwesome = false;    /* original C++ signature */
+    merge_font_awesome: bool = False
+    # ImFontConfig fontConfigFontAwesome = ImFontConfig();    /* original C++ signature */
+    font_config_font_awesome: ImFontConfig = ImFontConfig()
+    # void blah(bool adjustSizeToDpi = true, bool useFullGlyphRange = false, bool reduceMemoryUsageIfFullGlyphRange = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, std::vector<ImWcharPair> glyphRanges = __srcmlcpp_brace_init__(), ImFontConfig fontConfig = ImFontConfig(), bool mergeFontAwesome = false, ImFontConfig fontConfigFontAwesome = ImFontConfig());    /* original C++ signature */
+    def __init__(
+        self,
+        adjust_size_to_dpi: bool = True,
+        use_full_glyph_range: bool = False,
+        reduce_memory_usage_if_full_glyph_range: bool = True,
+        merge_to_last_font: bool = False,
+        load_color: bool = False,
+        inside_assets: bool = True,
+        glyph_ranges: List[ImWcharPair] = List[ImWcharPair](),
+        font_config: ImFontConfig = ImFontConfig(),
+        merge_font_awesome: bool = False,
+        font_config_font_awesome: ImFontConfig = ImFontConfig(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# ImFont* LoadFont(const std::string & fontFilename, float fontSize, const FontLoadingParams & params = __srcmlcpp_brace_init__());    /* original C++ signature */
+def load_font(
+    font_filename: str,
+    font_size: float,
+    params: FontLoadingParams = FontLoadingParams(),
+) -> ImFont:
+    pass
+
+#
+# Deprecated API below, kept for compatibility (uses LoadFont internally)
+#
+# ImFont* LoadFontTTF(    /* original C++ signature */
+#         const std::string & fontFilename,
+#         float fontSize,
+#         bool useFullGlyphRange = false,
+#         ImFontConfig config = ImFontConfig()
+#         );
+def load_font_ttf(
+    font_filename: str,
+    font_size: float,
+    use_full_glyph_range: bool = False,
+    config: ImFontConfig = ImFontConfig(),
+) -> ImFont:
+    pass
+
+# ImFont* LoadFontTTF_WithFontAwesomeIcons(    /* original C++ signature */
+#         const std::string & fontFilename,
+#         float fontSize,
+#         bool useFullGlyphRange = false,
+#         ImFontConfig configFont = ImFontConfig(),
+#         ImFontConfig configIcons = ImFontConfig()
+#         );
+def load_font_ttf_with_font_awesome_icons(
+    font_filename: str,
+    font_size: float,
+    use_full_glyph_range: bool = False,
+    config_font: ImFontConfig = ImFontConfig(),
+    config_icons: ImFontConfig = ImFontConfig(),
+) -> ImFont:
+    pass
+
+# ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());    /* original C++ signature */
+def merge_font_awesome_to_last_font(
+    font_size: float, config: ImFontConfig = ImFontConfig()
+) -> ImFont:
+    pass
+
+# bool DidCallHelloImGuiLoadFontTTF();    /* original C++ signature */
+# }
+def did_call_hello_imgui_load_font_ttf() -> bool:
+    """indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to
+    account for HighDPI (on macOS and emscripten)
+    """
+    pass
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -830,18 +947,30 @@ class AppWindowParams:
        _Note: on a mobile device, the application will always be full screen._
     * `restorePreviousGeometry`: _bool, default=false_.
       If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
-    * `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at
-    creation.
-    * `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at
-    creation.
+    * `resizable`: _bool, default = false_. Should the window be resizable. This is taken into account at
+      creation.
     * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
-    can show/hide the window with this). Full screen windows cannot be hidden.@@md
+      can show/hide the window with this). Full screen windows cannot be hidden.
+
+    * `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at creation.
+    * `borderlessMovable`: _bool, default = true_. If the window is borderless, should it be movable.
+       If so, a drag zone is displayed at the top of the window when the mouse is over it.
+    * `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.
+       If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.
+    * `borderlessClosable`: _bool, default = false_. If the window is borderless, should it have a close button.
+       If so, a close button is displayed at the top-right of the window when the mouse is over it.
+    * `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2, 0.4, 1., 0.)_.
+       Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,
+       then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)
+
     * `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
       if there is a notch on the iPhone, you should not display inside these insets.
       HelloImGui handles this automatically, if handleEdgeInsets is True and
       if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
       (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
     * `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.
+
+    @@md
     *
     """
 
@@ -855,26 +984,39 @@ class AppWindowParams:
     # if True, then save & restore from last run
     restore_previous_geometry: bool = False
 
-    # bool borderless = false;    /* original C++ signature */
-    borderless: bool = False
     # bool resizable = true;    /* original C++ signature */
     resizable: bool = True
     # bool hidden = false;    /* original C++ signature */
     hidden: bool = False
 
+    # bool   borderless = false;    /* original C++ signature */
+    borderless: bool = False
+    # bool   borderlessMovable = true;    /* original C++ signature */
+    borderless_movable: bool = True
+    # bool   borderlessResizable = true;    /* original C++ signature */
+    borderless_resizable: bool = True
+    # bool   borderlessClosable = true;    /* original C++ signature */
+    borderless_closable: bool = True
+    # ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);    /* original C++ signature */
+    borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3)
+
     # EdgeInsets edgeInsets;    /* original C++ signature */
     edge_insets: EdgeInsets
     # bool       handleEdgeInsets = true;    /* original C++ signature */
     handle_edge_insets: bool = True
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false, EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
         window_geometry: WindowGeometry = WindowGeometry(),
         restore_previous_geometry: bool = False,
-        borderless: bool = False,
         resizable: bool = True,
         hidden: bool = False,
+        borderless: bool = False,
+        borderless_movable: bool = True,
+        borderless_resizable: bool = True,
+        borderless_closable: bool = True,
+        borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3),
         edge_insets: EdgeInsets = EdgeInsets(),
         handle_edge_insets: bool = True,
     ) -> None:
@@ -1032,6 +1174,14 @@ class ImGuiWindowParams:
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/runner_callbacks.h continued                                               //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 # *
 # @@md#VoidFunction_AnyEventCallback
 #
@@ -1062,39 +1212,6 @@ def empty_void_function() -> VoidFunction:
 # inline AnyEventCallback EmptyEventCallback() {return {}; }    /* original C++ signature */
 def empty_event_callback() -> AnyEventCallback:
     pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());    /* original C++ signature */
-def load_font_ttf(
-    font_filename: str,
-    font_size: float,
-    use_full_glyph_range: bool = False,
-    config: ImFontConfig = ImFontConfig(),
-) -> ImFont:
-    pass
-
-# ImFont* LoadFontTTF_WithFontAwesomeIcons(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig configFont = ImFontConfig(), ImFontConfig configIcons = ImFontConfig());    /* original C++ signature */
-def load_font_ttf_with_font_awesome_icons(
-    font_filename: str,
-    font_size: float,
-    use_full_glyph_range: bool = False,
-    config_font: ImFontConfig = ImFontConfig(),
-    config_icons: ImFontConfig = ImFontConfig(),
-) -> ImFont:
-    pass
-
-# ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());    /* original C++ signature */
-def merge_font_awesome_to_last_font(
-    font_size: float, config: ImFontConfig = ImFontConfig()
-) -> ImFont:
-    pass
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/runner_callbacks.h continued                                               //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class MobileCallbacks:
     """*
@@ -1708,7 +1825,7 @@ class BackendPointers:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class BackendType(enum.Enum):
-    """Windowing backend type (SDL, GLFW)"""
+    """Platform backend type (SDL, GLFW)"""
 
     # FirstAvailable,    /* original C++ signature */
     first_available = enum.auto()  # (= 0)
@@ -1829,7 +1946,7 @@ class RunnerParams:
        A struct that contains optional pointers to the backend implementations. These pointers will be filled
        when the application starts
     * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-      Select the wanted Windowing backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
+      Select the wanted platform backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
       and available.
     * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
     * `useImGuiTestEngine`: _bool, default=false_.
@@ -1995,8 +2112,22 @@ class SimpleRunnerParams:
         """Auto-generated default constructor with named params"""
         pass
 
-# namespace HelloImGui
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_widgets.h included by hello_imgui.h                            //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Some additional widgets and utilities for ImGui
+
+# void BeginGroupColumn();     /* original C++ signature */
+def begin_group_column() -> None:
+    """calls ImGui::BeginGroup()"""
+    pass
+
+# void EndGroupColumn();       /* original C++ signature */
+def end_group_column() -> None:
+    """calls ImGui::EndGroup() + ImGui::SameLine()"""
+    pass
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2152,16 +2283,9 @@ class imgui_default_settings:  # Proxy class that introduces typings for the *su
     def setup_default_imgui_config() -> None:
         pass
     # void SetupDefaultImGuiStyle();    /* original C++ signature */
+    #     }
     @staticmethod
     def setup_default_imgui_style() -> None:
-        pass
-    # bool DidCallHelloImGuiLoadFontTTF();    /* original C++ signature */
-    # }
-    @staticmethod
-    def did_call_hello_imgui_load_font_ttf() -> bool:
-        """indicates that fonts were loaded using HelloImGui::LoadFontTTF. In that case, fonts may have been resized to
-        account for HighDPI (on macOS and emscripten)
-        """
         pass
 
 # </submodule imgui_default_settings>

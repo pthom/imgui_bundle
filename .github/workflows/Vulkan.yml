@@ -47,5 +47,5 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -DHELLOIMGUI_USE_GLFW_VULKAN=ON -DHELLOIMGUI_USE_SDL_VULKAN=ON -DCMAKE_BUILD_TYPE=Release;
+          cmake .. -DHELLOIMGUI_USE_GLFW_VULKAN=ON -DHELLOIMGUI_USE_SDL_VULKAN=ON -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON
           cmake --build . -j 3

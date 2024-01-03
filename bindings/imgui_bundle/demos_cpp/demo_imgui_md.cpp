@@ -11,7 +11,7 @@ std::string exampleMarkdownString()
 # Markdown example
 
 Hello World! <br>
-![World](images/world.jpg)
+![World](images/world.png)
 
 ## Acknowledgments
 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
