@@ -299,7 +299,7 @@ def demo_assets():
     imgui.push_font(TITLE_FONT)
     imgui.text("Hello")
     imgui.pop_font()
-    hello_imgui.image_from_asset("images/world.jpg", hello_imgui.em_to_vec2(3.0, 3.0))
+    hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(3.0, 3.0))
 
 
 def gui_window_demo_features(app_state: AppState):

@@ -262,7 +262,7 @@ void GuiWindowLayoutCustomization()
 void DemoAssets()
 {
     ImGui::PushFont(gTitleFont); ImGui::Text("Hello"); ImGui::PopFont();
-    HelloImGui::ImageFromAsset("images/world.jpg", HelloImGui::EmToVec2(3.f, 3.f));
+    HelloImGui::ImageFromAsset("images/world.png", HelloImGui::EmToVec2(3.f, 3.f));
 }
 
 void GuiWindowDemoFeatures(AppState& appState)

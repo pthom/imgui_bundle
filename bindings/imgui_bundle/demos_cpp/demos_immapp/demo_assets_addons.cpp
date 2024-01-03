@@ -50,7 +50,7 @@ void DemoAssets(AppState& appState)
     // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
     //     Below, imageSize is equivalent to the size of 3 lines of text
     ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
-    HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+    HelloImGui::ImageFromAsset("images/world.png", imageSize);
 
     ImGuiMd::Render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
 
@@ -183,14 +183,14 @@ std::string GetDoc(const std::string& whichDoc)
                     ```cpp
                     ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
                     ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
-                    HelloImGui::ImageFromAsset("images/world.jpg", imageSize);
+                    HelloImGui::ImageFromAsset("images/world.png", imageSize);
                     ```
 
                     Python
                     ```python
                     imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
                     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
-                    hello_imgui.image_from_asset("images/world.jpg", image_size)
+                    hello_imgui.image_from_asset("images/world.png", image_size)
                     ```
 
                     *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*

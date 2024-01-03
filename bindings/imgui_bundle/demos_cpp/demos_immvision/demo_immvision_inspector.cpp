@@ -8,7 +8,7 @@
 
 void FillInspector()
 {
-    std::vector<std::string> imagefiles = { "dmla.jpg", "house.jpg", "tennis.jpg", "world.jpg"};
+    std::vector<std::string> imagefiles = { "dmla.jpg", "house.jpg", "tennis.jpg", "world.png"};
     for (auto imageFile: imagefiles)
     {
         cv::Mat img = cv::imread(DemosAssetsFolder() + "/images/" + imageFile);

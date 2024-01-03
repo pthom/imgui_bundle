@@ -13,7 +13,7 @@ imgui_md currently supports the following markdown functionality:
 
 * Images
 
-![World](images/world.jpg)
+![World](images/world.png)
 * Wrapped text
 * Headers
 * *Emphasis* (\*Emphasis\*)

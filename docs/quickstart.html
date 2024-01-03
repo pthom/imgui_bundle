@@ -763,7 +763,7 @@ The typical layout of an assets folder looks like this:</p>
 <span class="tok-w">    </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SourceCodePro-Regular.ttf
 <span class="tok-w">    </span>+--<span class="tok-w"> </span>images/
 <span class="tok-w">         </span>+--<span class="tok-w"> </span>markdown_broken_image.png<span class="tok-w">  </span><span class="tok-c1"># Optional: used for markdown</span>
-<span class="tok-w">         </span>+--<span class="tok-w"> </span>world.jpg<span class="tok-w">                  </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
+<span class="tok-w">         </span>+--<span class="tok-w"> </span>world.png<span class="tok-w">                  </span><span class="tok-c1"># Add anything in the assets folder!</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -942,7 +942,7 @@ The typical layout of an assets folder looks like this:</p>
 <span class="tok-w">    </span><span class="tok-c1">// Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
 <span class="tok-w">    </span><span class="tok-c1">//     Below, imageSize is equivalent to the size of 3 lines of text</span>
 <span class="tok-w">    </span><span class="tok-n">ImVec2</span><span class="tok-w"> </span><span class="tok-n">imageSize</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">3.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">3.f</span><span class="tok-p">);</span>
-<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imageSize</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.png&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imageSize</span><span class="tok-p">);</span>
 
 <span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">Render</span><span class="tok-p">(</span><span class="tok-s">&quot;**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**&quot;</span><span class="tok-p">);</span>
 
@@ -1075,14 +1075,14 @@ The typical layout of an assets folder looks like this:</p>
 <span class="tok-s">                    ```cpp</span>
 <span class="tok-s">                    ImGui::Text(ICON_FA_INFO &quot; &quot; ICON_FA_EXCLAMATION_TRIANGLE &quot; &quot; ICON_FA_SAVE);</span>
 <span class="tok-s">                    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);</span>
-<span class="tok-s">                    HelloImGui::ImageFromAsset(&quot;images/world.jpg&quot;, imageSize);</span>
+<span class="tok-s">                    HelloImGui::ImageFromAsset(&quot;images/world.png&quot;, imageSize);</span>
 <span class="tok-s">                    ```</span>
 
 <span class="tok-s">                    Python</span>
 <span class="tok-s">                    ```python</span>
 <span class="tok-s">                    imgui.text(icons_fontawesome.ICON_FA_INFO + &quot; &quot; + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + &quot; &quot; + icons_fontawesome.ICON_FA_SAVE)</span>
 <span class="tok-s">                    image_size = hello_imgui.em_to_vec2(3.0, 3.0)</span>
-<span class="tok-s">                    hello_imgui.image_from_asset(&quot;images/world.jpg&quot;, image_size)</span>
+<span class="tok-s">                    hello_imgui.image_from_asset(&quot;images/world.png&quot;, image_size)</span>
 <span class="tok-s">                    ```</span>
 
 <span class="tok-s">                    *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*</span>
@@ -1220,7 +1220,7 @@ The typical layout of an assets folder looks like this:</p>
     <span class="tok-c1"># Prefer to specify sizes using the &quot;em&quot; unit: see https://en.wikipedia.org/wiki/Em_(typography)</span>
     <span class="tok-c1"># Below, image_size is equivalent to the size of 3 lines of text</span>
     <span class="tok-n">image_size</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">3.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">)</span>
-    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-n">image_size</span><span class="tok-p">)</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.png&quot;</span><span class="tok-p">,</span> <span class="tok-n">image_size</span><span class="tok-p">)</span>
 
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span>
         <span class="tok-s2">&quot;**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**&quot;</span>
@@ -1342,14 +1342,14 @@ The typical layout of an assets folder looks like this:</p>
 <span class="tok-s2">            ```cpp</span>
 <span class="tok-s2">            ImGui::Text(ICON_FA_INFO &quot; &quot; ICON_FA_EXCLAMATION_TRIANGLE &quot; &quot; ICON_FA_SAVE);</span>
 <span class="tok-s2">            ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);</span>
-<span class="tok-s2">            HelloImGui::ImageFromAsset(&quot;images/world.jpg&quot;, imageSize);</span>
+<span class="tok-s2">            HelloImGui::ImageFromAsset(&quot;images/world.png&quot;, imageSize);</span>
 <span class="tok-s2">            ```</span>
 
 <span class="tok-s2">            Python</span>
 <span class="tok-s2">            ```python</span>
 <span class="tok-s2">            imgui.text(icons_fontawesome.ICON_FA_INFO + &quot; &quot; + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + &quot; &quot; + icons_fontawesome.ICON_FA_SAVE)</span>
 <span class="tok-s2">            image_size = hello_imgui.em_to_vec2(3.0, 3.0)</span>
-<span class="tok-s2">            hello_imgui.image_from_asset(&quot;images/world.jpg&quot;, image_size)</span>
+<span class="tok-s2">            hello_imgui.image_from_asset(&quot;images/world.png&quot;, image_size)</span>
 <span class="tok-s2">            ```</span>
 
 <span class="tok-s2">            *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*</span>
@@ -1753,7 +1753,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">DemoAssets</span><span class="tok-p">()</span>
 <span class="tok-p">{</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">gTitleFont</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
-<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">3.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">3.f</span><span class="tok-p">));</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImageFromAsset</span><span class="tok-p">(</span><span class="tok-s">&quot;images/world.png&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmToVec2</span><span class="tok-p">(</span><span class="tok-mf">3.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">3.f</span><span class="tok-p">));</span>
 <span class="tok-p">}</span>
 
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">GuiWindowDemoFeatures</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
@@ -2391,7 +2391,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">TITLE_FONT</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Hello&quot;</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
-    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.jpg&quot;</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">3.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">))</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/world.png&quot;</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mf">3.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">))</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">gui_window_demo_features</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>

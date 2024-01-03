@@ -4,7 +4,7 @@ from imgui_bundle import imgui, immapp, hello_imgui
 def gui():
     imgui.text("Here is an image that was loaded from the assets: ")
     image_size = hello_imgui.em_to_vec2(26, 0.0)
-    hello_imgui.image_from_asset("images/world.jpg", image_size)
+    hello_imgui.image_from_asset("images/world.png", image_size)
 
 
 def set_assets_folder_if_macos_bundle():

@@ -44,7 +44,7 @@ assets/
     |         +-- SourceCodePro-Regular.ttf
     +-- images/
          +-- markdown_broken_image.png  # Optional: used for markdown
-         +-- world.jpg                  # Add anything in the assets folder!
+         +-- world.png                  # Add anything in the assets folder!
 ----
 
 You can change the assets folder:

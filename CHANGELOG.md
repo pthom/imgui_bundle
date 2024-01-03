@@ -10,7 +10,7 @@
 * Support for Application Icon: the file `assets/app_settings/icon.png` will be used to generate the window icon (C++, Python), and app icon (C++ only) for any platform. See assets structure below:
 ```
 assets/
-├── world.jpg                         # A custom asset
+├── world.png                         # A custom asset
 ├── app_settings/                     # Application settings
 │         ├── icon.png                # This will be the app icon, it should be square
 │         │                           # and at least 512x512. It will  be converted

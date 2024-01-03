@@ -5,12 +5,12 @@ from imgui_bundle.demos_python import demo_utils
 def show_gui():
     # Display Markdown text
     imgui_md.render("Hello, _World_")
-    # Display a static image, taken from assets/images/world.jpg
+    # Display a static image, taken from assets/images/world.png
     # Notes:
     #     * we use EmToVec2 to make sure the Gui render identically on high and low dpi monitors
     #     * we can specify only one dimension, and the image will be scaled proportionally to its size:
     #           in this example, the image height will correspond to 10 text lines
-    hello_imgui.image_from_asset("images/world.jpg", immapp.em_to_vec2(0.0, 10.0))
+    hello_imgui.image_from_asset("images/world.png", immapp.em_to_vec2(0.0, 10.0))
 
     # Display a button
     if imgui.button("Bye"):
