@@ -268,6 +268,64 @@ void py_init_module_hello_imgui(py::module& m)
         ImGuiTheme::Darcula, py::arg("rounding") = 1.f, py::arg("hue") = -1.f, py::arg("saturation_multiplier") = 1.f, py::arg("value_multiplier_front") = 1.f, py::arg("value_multiplier_bg") = 1.f, py::arg("alpha_bg_transparency") = 1.f);
 
 
+    auto pyClassFontLoadingParams =
+        py::class_<HelloImGui::FontLoadingParams>
+            (m, "FontLoadingParams", "Font loading parameters: several options are available (color, merging, range, ...)")
+        .def(py::init<>([](
+        bool adjustSizeToDpi = true, bool useFullGlyphRange = false, bool reduceMemoryUsageIfFullGlyphRange = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, std::vector<ImWcharPair> glyphRanges = {}, ImFontConfig fontConfig = ImFontConfig(), bool mergeFontAwesome = false, ImFontConfig fontConfigFontAwesome = ImFontConfig())
+        {
+            auto r = std::make_unique<FontLoadingParams>();
+            r->adjustSizeToDpi = adjustSizeToDpi;
+            r->useFullGlyphRange = useFullGlyphRange;
+            r->reduceMemoryUsageIfFullGlyphRange = reduceMemoryUsageIfFullGlyphRange;
+            r->mergeToLastFont = mergeToLastFont;
+            r->loadColor = loadColor;
+            r->insideAssets = insideAssets;
+            r->glyphRanges = glyphRanges;
+            r->fontConfig = fontConfig;
+            r->mergeFontAwesome = mergeFontAwesome;
+            r->fontConfigFontAwesome = fontConfigFontAwesome;
+            return r;
+        })
+        , py::arg("adjust_size_to_dpi") = true, py::arg("use_full_glyph_range") = false, py::arg("reduce_memory_usage_if_full_glyph_range") = true, py::arg("merge_to_last_font") = false, py::arg("load_color") = false, py::arg("inside_assets") = true, py::arg("glyph_ranges") = std::vector<ImWcharPair>{}, py::arg("font_config") = ImFontConfig(), py::arg("merge_font_awesome") = false, py::arg("font_config_font_awesome") = ImFontConfig()
+        )
+        .def_readwrite("adjust_size_to_dpi", &FontLoadingParams::adjustSizeToDpi, "if True, the font size will be adjusted automatically to account for HighDPI")
+        .def_readwrite("use_full_glyph_range", &FontLoadingParams::useFullGlyphRange, "if True, the font will be loaded with the full glyph range")
+        .def_readwrite("reduce_memory_usage_if_full_glyph_range", &FontLoadingParams::reduceMemoryUsageIfFullGlyphRange, " if set, fontConfig.GlyphRanges, and fontConfig.OversampleH / fontConfig.OversampleV will be set to 1\n when useFullGlyphRange is True (this is useful to save memory)")
+        .def_readwrite("merge_to_last_font", &FontLoadingParams::mergeToLastFont, "if True, the font will be merged to the last font")
+        .def_readwrite("load_color", &FontLoadingParams::loadColor, "if True, the font will be loaded using colors (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)")
+        .def_readwrite("inside_assets", &FontLoadingParams::insideAssets, "if True, the font will be loaded using HelloImGui asset system. Otherwise, it will be loaded from the filesystem")
+        .def_readwrite("glyph_ranges", &FontLoadingParams::glyphRanges, " the ranges of glyphs to load:\n    - if empty, the default glyph range will be used\n    - you can specify several ranges\n (will be translated and stored as a static ImWChar* inside fontConfig)")
+        .def_readwrite("font_config", &FontLoadingParams::fontConfig, "ImGui native font config to use")
+        .def_readwrite("merge_font_awesome", &FontLoadingParams::mergeFontAwesome, "")
+        .def_readwrite("font_config_font_awesome", &FontLoadingParams::fontConfigFontAwesome, "")
+        ;
+
+
+    m.def("load_font",
+        HelloImGui::LoadFont,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
+        pybind11::return_value_policy::reference);
+
+    m.def("load_font_ttf",
+        HelloImGui::LoadFontTTF,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
+
+    m.def("load_font_ttf_with_font_awesome_icons",
+        HelloImGui::LoadFontTTF_WithFontAwesomeIcons,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config_font") = ImFontConfig(), py::arg("config_icons") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
+
+    m.def("merge_font_awesome_to_last_font",
+        HelloImGui::MergeFontAwesomeToLastFont,
+        py::arg("font_size"), py::arg("config") = ImFontConfig(),
+        pybind11::return_value_policy::reference);
+
+    m.def("did_call_hello_imgui_load_font_ttf",
+        HelloImGui::DidCallHelloImGuiLoadFontTTF, " indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to\n account for HighDPI (on macOS and emscripten)");
+
+
     auto pyClassScreenBounds =
         py::class_<HelloImGui::ScreenBounds>
             (m, "ScreenBounds", "")
@@ -382,29 +440,35 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassAppWindowParams =
         py::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at\ncreation.\n* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you\ncan show/hide the window with this). Full screen windows cannot be hidden.@@md\n* `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:\n  if there is a notch on the iPhone, you should not display inside these insets.\n  HelloImGui handles this automatically, if handleEdgeInsets is True and\n  if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.\n  (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)\n* `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.\n*")
+            (m, "AppWindowParams", "*\n@@md#AppWindowParams\n\n__AppWindowParams__ is a struct that defines the application window display params.\nSee [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)\nfor details.\n\nMembers:\n* `windowTitle`: _string, default=\"\"_. Title of the application window\n* `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._\n* `restorePreviousGeometry`: _bool, default=false_.\n  If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)\n* `resizable`: _bool, default = false_. Should the window be resizable. This is taken into account at\n  creation.\n* `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you\n  can show/hide the window with this). Full screen windows cannot be hidden.\n\n* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at creation.\n* `borderlessMovable`: _bool, default = true_. If the window is borderless, should it be movable.\n   If so, a drag zone is displayed at the top of the window when the mouse is over it.\n* `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.\n   If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.\n* `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2, 0.4, 1., 0.)_.\n   Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,\n   then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)\n\n* `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:\n  if there is a notch on the iPhone, you should not display inside these insets.\n  HelloImGui handles this automatically, if handleEdgeInsets is True and\n  if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.\n  (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)\n* `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.\n\n@@md\n*")
         .def(py::init<>([](
-        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool borderless = false, bool resizable = true, bool hidden = false, EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true)
+        std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true)
         {
             auto r = std::make_unique<AppWindowParams>();
             r->windowTitle = windowTitle;
             r->windowGeometry = windowGeometry;
             r->restorePreviousGeometry = restorePreviousGeometry;
-            r->borderless = borderless;
             r->resizable = resizable;
             r->hidden = hidden;
+            r->borderless = borderless;
+            r->borderlessMovable = borderlessMovable;
+            r->borderlessResizable = borderlessResizable;
+            r->borderlessHighlightColor = borderlessHighlightColor;
             r->edgeInsets = edgeInsets;
             r->handleEdgeInsets = handleEdgeInsets;
             return r;
         })
-        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("borderless") = false, py::arg("resizable") = true, py::arg("hidden") = false, py::arg("edge_insets") = EdgeInsets(), py::arg("handle_edge_insets") = true
+        , py::arg("window_title") = std::string(), py::arg("window_geometry") = WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("resizable") = true, py::arg("hidden") = false, py::arg("borderless") = false, py::arg("borderless_movable") = true, py::arg("borderless_resizable") = true, py::arg("borderless_highlight_color") = ImVec4(0.2f, 0.4f, 1.f, 0.3f), py::arg("edge_insets") = EdgeInsets(), py::arg("handle_edge_insets") = true
         )
         .def_readwrite("window_title", &AppWindowParams::windowTitle, "")
         .def_readwrite("window_geometry", &AppWindowParams::windowGeometry, "")
         .def_readwrite("restore_previous_geometry", &AppWindowParams::restorePreviousGeometry, "if True, then save & restore from last run")
-        .def_readwrite("borderless", &AppWindowParams::borderless, "")
         .def_readwrite("resizable", &AppWindowParams::resizable, "")
         .def_readwrite("hidden", &AppWindowParams::hidden, "")
+        .def_readwrite("borderless", &AppWindowParams::borderless, "")
+        .def_readwrite("borderless_movable", &AppWindowParams::borderlessMovable, "")
+        .def_readwrite("borderless_resizable", &AppWindowParams::borderlessResizable, "")
+        .def_readwrite("borderless_highlight_color", &AppWindowParams::borderlessHighlightColor, "")
         .def_readwrite("edge_insets", &AppWindowParams::edgeInsets, "")
         .def_readwrite("handle_edge_insets", &AppWindowParams::handleEdgeInsets, "")
         ;
@@ -468,22 +532,6 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("empty_event_callback",
         HelloImGui::EmptyEventCallback);
-
-
-    m.def("load_font_ttf",
-        HelloImGui::LoadFontTTF,
-        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
-
-    m.def("load_font_ttf_with_font_awesome_icons",
-        HelloImGui::LoadFontTTF_WithFontAwesomeIcons,
-        py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config_font") = ImFontConfig(), py::arg("config_icons") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
-
-    m.def("merge_font_awesome_to_last_font",
-        HelloImGui::MergeFontAwesomeToLastFont,
-        py::arg("font_size"), py::arg("config") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
 
 
     auto pyClassMobileCallbacks =
@@ -756,6 +804,13 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    m.def("begin_group_column",
+        HelloImGui::BeginGroupColumn, "calls ImGui::BeginGroup()");
+
+    m.def("end_group_column",
+        HelloImGui::EndGroupColumn, "calls ImGui::EndGroup() + ImGui::SameLine()");
+
+
     m.def("run",
         py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run),
         py::arg("runner_params"),
@@ -806,9 +861,6 @@ void py_init_module_hello_imgui(py::module& m)
 
         pyNsImGuiDefaultSettings.def("setup_default_imgui_style",
             HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle);
-
-        pyNsImGuiDefaultSettings.def("did_call_hello_imgui_load_font_ttf",
-            HelloImGui::ImGuiDefaultSettings::DidCallHelloImGuiLoadFontTTF, " indicates that fonts were loaded using HelloImGui::LoadFontTTF. In that case, fonts may have been resized to\n account for HighDPI (on macOS and emscripten)");
     } // </namespace ImGuiDefaultSettings>
     ////////////////////    </generated_from:hello_imgui_amalgamation.h>    ////////////////////
 

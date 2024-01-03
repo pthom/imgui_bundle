@@ -1280,12 +1280,6 @@ namespace HelloImGui
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui.h continued                                                                //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// #include "hello_imgui/image_gl_deprecated.h"
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1381,6 +1375,79 @@ namespace ImGuiTheme
 
 } // namespace ImGuiTheme
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#include <vector>
+#include <array>
+
+namespace HelloImGui
+{
+    using ImWcharPair = std::array<ImWchar, 2>;
+
+    // Font loading parameters: several options are available (color, merging, range, ...)
+    struct FontLoadingParams
+    {
+        // if true, the font size will be adjusted automatically to account for HighDPI
+        bool adjustSizeToDpi = true;
+
+        // if true, the font will be loaded with the full glyph range
+        bool useFullGlyphRange = false;
+        // if set, fontConfig.GlyphRanges, and fontConfig.OversampleH / fontConfig.OversampleV will be set to 1
+        // when useFullGlyphRange is true (this is useful to save memory)
+        bool reduceMemoryUsageIfFullGlyphRange = true;
+
+        // if true, the font will be merged to the last font
+        bool mergeToLastFont = false;
+
+        // if true, the font will be loaded using colors (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)
+        bool loadColor = false;
+
+        // if true, the font will be loaded using HelloImGui asset system. Otherwise, it will be loaded from the filesystem
+        bool insideAssets = true;
+
+        // the ranges of glyphs to load:
+        //    - if empty, the default glyph range will be used
+        //    - you can specify several ranges
+        // (will be translated and stored as a static ImWChar* inside fontConfig)
+        std::vector<ImWcharPair> glyphRanges = {};
+
+        // ImGui native font config to use
+        ImFontConfig fontConfig = ImFontConfig();
+
+        // if true, the font will be loaded and then FontAwesome icons will be merged to it
+        // (deprecated, use mergeToLastFont instead, and load in two steps)
+        bool mergeFontAwesome = false;
+        ImFontConfig fontConfigFontAwesome = ImFontConfig();
+    };
+
+    // Generic font loading function, with many options: see FontLoadingParams and ImFontConfig
+    ImFont* LoadFont(const std::string & fontFilename, float fontSize, const FontLoadingParams & params = {});
+
+
+    //
+    // Deprecated API below, kept for compatibility (uses LoadFont internally)
+    //
+    ImFont* LoadFontTTF(
+        const std::string & fontFilename,
+        float fontSize,
+        bool useFullGlyphRange = false,
+        ImFontConfig config = ImFontConfig()
+        );
+    ImFont* LoadFontTTF_WithFontAwesomeIcons(
+        const std::string & fontFilename,
+        float fontSize,
+        bool useFullGlyphRange = false,
+        ImFontConfig configFont = ImFontConfig(),
+        ImFontConfig configIcons = ImFontConfig()
+        );
+    ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
+
+
+    // indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to
+    // account for HighDPI (on macOS and emscripten)
+    bool DidCallHelloImGuiLoadFontTTF();
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1392,7 +1459,6 @@ namespace ImGuiTheme
 //                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include <array>
 #include <stddef.h>
 
 
@@ -1598,18 +1664,28 @@ Members:
    _Note: on a mobile device, the application will always be full screen._
 * `restorePreviousGeometry`: _bool, default=false_.
   If true, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
-* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at
-creation.
-* `resizable`: _bool, default = false_. Should the window have borders. This is taken into account at
-creation.
+* `resizable`: _bool, default = false_. Should the window be resizable. This is taken into account at
+  creation.
 * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
-can show/hide the window with this). Full screen windows cannot be hidden.@@md
+  can show/hide the window with this). Full screen windows cannot be hidden.
+
+* `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at creation.
+* `borderlessMovable`: _bool, default = true_. If the window is borderless, should it be movable.
+   If so, a drag zone is displayed at the top of the window when the mouse is over it.
+* `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.
+   If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.
+* `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2f, 0.4f, 1.f, 0.f)_.
+   Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,
+   then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6f)
+
 * `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
   if there is a notch on the iPhone, you should not display inside these insets.
   HelloImGui handles this automatically, if handleEdgeInsets is true and
   if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
   (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
 * `handleEdgeInsets`: _bool, default = true_. iOS only, if true, HelloImGui will handle the edgeInsets.
+
+@@md
 **/
 struct AppWindowParams
 {
@@ -1620,9 +1696,13 @@ struct AppWindowParams
     // if true, then save & restore from last run
     bool restorePreviousGeometry = false;
 
-    bool borderless = false;
     bool resizable = true;
     bool hidden = false;
+
+    bool   borderless = false;
+    bool   borderlessMovable = true;
+    bool   borderlessResizable = true;
+    ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
 
     EdgeInsets edgeInsets;
     bool       handleEdgeInsets = true;
@@ -1748,6 +1828,30 @@ struct ImGuiWindowParams
 //                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+namespace HelloImGui
+{
+
+    namespace ImGuiDefaultSettings
+    {
+        // LoadDefaultFont_WithFontAwesome will load from assets/fonts and reverts to the imgui embedded font if not found.
+        void LoadDefaultFont_WithFontAwesomeIcons();
+
+        void SetupDefaultImGuiConfig();
+        void SetupDefaultImGuiStyle();
+    }  // namespace ImGuiDefaultSettings
+
+}  // namespace HelloImGui
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/runner_callbacks.h continued                                               //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 namespace HelloImGui
 {
 
@@ -1776,41 +1880,6 @@ VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunc
 inline VoidFunction EmptyVoidFunction() { return {}; }
 inline AnyEventCallback EmptyEventCallback() {return {}; }
 
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace HelloImGui
-{
-ImFont* LoadFontTTF(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig config = ImFontConfig());
-ImFont* LoadFontTTF_WithFontAwesomeIcons(const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, ImFontConfig configFont = ImFontConfig(), ImFontConfig configIcons = ImFontConfig());
-ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
-
-namespace ImGuiDefaultSettings
-{
-// LoadDefaultFont_WithFontAwesome will load from assets/fonts and reverts to the imgui embedded font if not found.
-void LoadDefaultFont_WithFontAwesomeIcons();
-
-void SetupDefaultImGuiConfig();
-void SetupDefaultImGuiStyle();
-
-// indicates that fonts were loaded using HelloImGui::LoadFontTTF. In that case, fonts may have been resized to
-// account for HighDPI (on macOS and emscripten)
-bool DidCallHelloImGuiLoadFontTTF();
-}  // namespace ImGuiDefaultSettings
-}  // namespace HelloImGui
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//                       hello_imgui/runner_callbacks.h continued                                               //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace HelloImGui
-{
 
 /**
 @@md#MobileCallbacks
@@ -1965,7 +2034,6 @@ struct RunnerCallbacks
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <vector>
 #include <utility>
 #include <optional>
 #include <stdio.h>
@@ -2521,6 +2589,19 @@ struct SimpleRunnerParams
 };
 
 }  // namespace HelloImGui
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/hello_imgui_widgets.h included by hello_imgui.h                            //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Some additional widgets and utilities for ImGui
+
+
+namespace HelloImGui
+{
+    void BeginGroupColumn(); // calls ImGui::BeginGroup()
+    void EndGroupColumn();   // calls ImGui::EndGroup() + ImGui::SameLine()
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui.h continued                                                                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
