@@ -76,7 +76,7 @@ inline std::string _file_short_name(const std::string& filename)
     #endif // __EMSCRIPTEN__
 #endif // IMGUI_BUNDLE_BUILD_PYTHON
 
-#define IMGUI_USE_WCHAR32
+// #define IMGUI_USE_WCHAR32 (already defined by the use of Freetype in HelloImGui)
 
 // Enable 32 bits ImDrawIdx for ImPlot
 #define ImDrawIdx unsigned int
