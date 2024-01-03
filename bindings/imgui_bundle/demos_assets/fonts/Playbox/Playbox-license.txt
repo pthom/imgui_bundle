@@ -1,0 +1,56 @@
+Love them or hate them but font licenses can clear your mind when it comes to using fonts.
+
+This license details what you are allowed - and not allowed - to do with the color font that was provided to you for free, thanks to the generosity of its designer: Matt Lyon www.c8six.com
+
+
+
+** End-User License Agreement **
+
+By downloading and/or installing this font delivered by Fontself during the #ColorFontWeek, you agree to this license. Please take 3 minutes to read it entirely, as it will help you get the best out of this awesome font for your next projects.
+
+In case of any doubt, please contact Fontself at hello@fontself.com
+
+
+** What is allowed **
+
+- Use for personal and commercial work
+- Use for yourself and on behalf of a client
+- Use for desktop, print, web, ebook, video and film projects (this will practically be limited due to the novelty of color fonts, see recommendations below)
+- Use for physical/digital products/services, distributed for free or a fee, only if the font file or the original typeface design are not the main elements of the product (ie. T-shirts, posters, cards, etc.)
+- Embed in a PDF document
+- Embed in a web page, only if you credit its designer
+- It is ok to temporarily handle the font file to your local printer if needed
+- But you cannot give the font to your clients for their logos or communications. You should embed the font in PDFs or flatten the designs if you want to share it with third-parties.
+
+
+** What is NOT allowed **
+(Unless you get an explicit & written permission from its designer)
+
+- Modify the font
+- Sell or share it (even for free)
+- All other forms of distribution: resell, sublicense, transfer, redistribute, repackage with any other product or service
+- Upload, host or include in any online or offline archive, website or collection
+- Install, deliver or provide access to use the font in any app, website or service allowing other people to use or share the font (i.e. online design editors, print on demand services, etc.)
+
+
+** What is recommended **
+
+- Credit the font designer whenever you can (we all appreciate some recognition, don't we ;)
+- Test & validate your production & distribution chains to ensure color fonts will properly be displayed in your projects. Since color font technologies are pretty new, many apps, operating systems, browsers and printers will not display or render the colored glyphs, instead showing black vector shapes or even nothing at all. Color fonts may contain fallback vector glyphs for backward compatibility, so if you want to use color fonts for production projects, do your homework first.
+- Show what you have created with this font: designers love to see what other creatives make with their fonts, so feel free to ping the font designer or even tag your projects with a #ColorFontWeek hashtag so we can all enjoy your cool designs.
+- And if you are a project commissionner, contact the designer, your business will really benefit from extra creativity & talent!
+
+
+** One more thing(s) **
+
+- Except for your right to use this font, all other rights are owned and retained by the font designer
+- Neither the designer nor Fontself guarantee that the font is compatible or fully functional under any production workflow
+- Neither the designer nor Fontself are liable for any damages resulting from the installation or use of the font
+- For more informations on color fonts, their technologies and support across apps, visit www.colorfonts.com
+- To learn about the font creation tool used to craft this font, check Fontself Maker on www.fontself.com
+- And to discover more about the #ColorFontWeek initiative from Adobe and Fontself, read http://blogs.adobe.com/creativecloud/color-font-week-design-in-color/ and visit https://colorfontweek.fontself.com
+
+
+That's about it, if anything is not clear enough or you have any questions please contact Fontself via hello@fontself.com
+
+Enjoy!
