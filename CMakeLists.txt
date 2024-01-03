@@ -138,6 +138,21 @@ else()
     set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF)
 endif()
 
+#------------------------------------------------------------------------------
+# Options / Freetype (this is an option for hello_imgui, reproduced here for convenience)
+#------------------------------------------------------------------------------
+set(freetype_default ON)
+if(ANDROID OR MINGW)
+    # Freetype is not available on Android. The mix SDL + Freetype cause issues (cannot find SDL.h)
+    # Freetype currently fails to build on MinGW
+    set(freetype_default OFF)
+endif()
+# Note: to reduce wasm size, you may want to disable freetype on emscripten.
+option(HELLOIMGUI_USE_FREETYPE "Use freetype for text rendering" ${freetype_default})
+# For python bindings, we force the usage of a static version of freetype
+if(IMGUI_BUNDLE_BUILD_PYTHON AND HELLOIMGUI_USE_FREETYPE)
+    set(HELLOIMGUI_FREETYPE_STATIC ON CACHE BOOL "" FORCE)
+endif()
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
 # -----------------------------------------------------------------------------
@@ -386,12 +401,12 @@ endif()
 if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
 endif()
-him_get_active_backends(selected_backends)
-message(STATUS "imgui_bundle build options:
-    Backends: ${selected_backends}
-    ==================
+him_log_configuration()
+message(STATUS "
+    Dear ImGui Bundle build options:
+    ===========================================================================
     Options:
-    ==================
+    ---------------------------------------------------------------------------
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
     IMGUI_BUNDLE_WITH_TEST_ENGINE: ${IMGUI_BUNDLE_WITH_TEST_ENGINE}
     IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
