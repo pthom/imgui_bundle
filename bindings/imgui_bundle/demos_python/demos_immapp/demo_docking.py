@@ -337,19 +337,19 @@ def demo_fonts(app_state: AppState):
 
     with imgui_ctx.begin_group():
         imgui.push_font(app_state.emoji_font)
-        # (Victory Hand Emoji)
+        # ✌️ (Victory Hand Emoji)
         imgui.text("\U0000270C\U0000FE0F")
         imgui.same_line()
 
-        # (Red Heart Emoji)
+        # ❤️ (Red Heart Emoji)
         imgui.text("\U00002764\U0000FE0F")
         imgui.same_line()
 
-        # (Palm Tree Emoji)
+        # 🌴 (Palm Tree Emoji)
         imgui.text("\U0001F334")
         imgui.same_line()
 
-        # (Rocket Emoji)
+        # 🚀 (Rocket Emoji)
         imgui.text("\U0001F680")
         imgui.pop_font()
 

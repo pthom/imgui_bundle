@@ -20,6 +20,16 @@ It demonstrates how to:
 
 #include <sstream>
 
+// Poor man's fix for C++ late arrival in the unicode party:
+//    - C++17: u8"my string" is of type const char*
+//    - C++20: u8"my string" is of type const char8_t*
+// However, ImGui text functions expect const char*.
+#ifdef __cpp_char8_t
+#define U8_TO_CHAR(x) reinterpret_cast<const char*>(x)
+#else
+#define U8_TO_CHAR(x) x
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 //    Our Application State
 //////////////////////////////////////////////////////////////////////////
@@ -305,20 +315,20 @@ void DemoFonts(AppState& appState)
     {
         ImGui::PushFont(appState.EmojiFont);
         // ✌️ (Victory Hand Emoji)
-        ImGui::Text("\U0000270C\U0000FE0F");
+        ImGui::Text(U8_TO_CHAR(u8"\U0000270C\U0000FE0F"));
         ImGui::SameLine();
 
         // ❤️ (Red Heart Emoji)
-        ImGui::Text("\U00002764\U0000FE0F");
+        ImGui::Text(U8_TO_CHAR(u8"\U00002764\U0000FE0F"));
         ImGui::SameLine();
 
 #ifdef IMGUI_USE_WCHAR32
         // 🌴 (Palm Tree Emoji)
-        ImGui::Text("\U0001F334");
+        ImGui::Text(U8_TO_CHAR(u8"\U0001F334"));
         ImGui::SameLine();
 
         // 🚀 (Rocket Emoji)
-        ImGui::Text("\U0001F680");
+        ImGui::Text(U8_TO_CHAR(u8"\U0001F680"));
         ImGui::SameLine();
 #endif
 
