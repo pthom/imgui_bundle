@@ -1,3 +1,36 @@
+# v1.2.0 (WIP)
+
+### New features
+* HelloImGui: now uses Freetype for font rendering.
+  Added support for Colored font and Emoji fonts
+* update imgui to v1.90-docking
+  _example_integration/ now points to a github [template repo](https://github.com/pthom/imgui_bundle_template)
+* Can fully customize the menu bar (within Hello ImGui)
+* Show python & C++ code in the ImGui Demo window
+
+### Backends
+* Add support for Metal rendering backend (C++ only, macOS only)
+* Add support for Vulkan rendering backend (C++ only, Linux, Windows, macOS)
+* Add support for DirectX11 rendering backend (C++ only, Windows)
+* Add support for DirectX12 rendering backend (C++ only, Windows). Experimental
+* Deprecated CMake options IMGUI_BUNDLE_WITH_GLFW and IMGUI_BUNDLE_WITH_SDL
+  (use HELLOIMGUI_USE_GLFW_OPENGL3 and HELLOIMGUI_USE_SDL_OPENGL3 instead)
+
+### iOS
+* Add LaunchScreen.storyboard for iOS: apps are now full screen
+* Add support for EdgeInsets (handle safe area on iOS, i.e. the notch)
+
+### Android
+* Hello ImGui now compatible with Android (including assets, app icon, etc.)
+
+### Python
+* Added bindings for imgui AddPolyline / AddConvexPolyFilled
+* Added bindings for imgui IniFileName and LogFilename, WindowName
+* Added bindings for ImGuiInputTextCallback and ImGuiSizeCallback
+* Added python context manager for imgui.begin / imgui.end, etc (lots)
+* Python backends: use new ImGui mouse API. Corrected pygame backend keymap
+
+
 # v1.1.0
 
 ### 3D
