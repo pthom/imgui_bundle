@@ -1674,6 +1674,8 @@ Members:
    If so, a drag zone is displayed at the top of the window when the mouse is over it.
 * `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.
    If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.
+* `borderlessClosable`: _bool, default = false_. If the window is borderless, should it have a close button.
+   If so, a close button is displayed at the top-right of the window when the mouse is over it.
 * `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2f, 0.4f, 1.f, 0.f)_.
    Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,
    then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6f)
@@ -1702,7 +1704,9 @@ struct AppWindowParams
     bool   borderless = false;
     bool   borderlessMovable = true;
     bool   borderlessResizable = true;
+    bool   borderlessClosable = true;
     ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
+
 
     EdgeInsets edgeInsets;
     bool       handleEdgeInsets = true;

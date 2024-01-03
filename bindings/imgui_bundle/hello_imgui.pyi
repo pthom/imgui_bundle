@@ -957,6 +957,8 @@ class AppWindowParams:
        If so, a drag zone is displayed at the top of the window when the mouse is over it.
     * `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.
        If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.
+    * `borderlessClosable`: _bool, default = false_. If the window is borderless, should it have a close button.
+       If so, a close button is displayed at the top-right of the window when the mouse is over it.
     * `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2, 0.4, 1., 0.)_.
        Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,
        then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)
@@ -993,6 +995,8 @@ class AppWindowParams:
     borderless_movable: bool = True
     # bool   borderlessResizable = true;    /* original C++ signature */
     borderless_resizable: bool = True
+    # bool   borderlessClosable = true;    /* original C++ signature */
+    borderless_closable: bool = True
     # ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);    /* original C++ signature */
     borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3)
 
@@ -1000,7 +1004,7 @@ class AppWindowParams:
     edge_insets: EdgeInsets
     # bool       handleEdgeInsets = true;    /* original C++ signature */
     handle_edge_insets: bool = True
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1011,6 +1015,7 @@ class AppWindowParams:
         borderless: bool = False,
         borderless_movable: bool = True,
         borderless_resizable: bool = True,
+        borderless_closable: bool = True,
         borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3),
         edge_insets: EdgeInsets = EdgeInsets(),
         handle_edge_insets: bool = True,
