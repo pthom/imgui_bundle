@@ -58,7 +58,8 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     // First, load the default font (the default font should be loaded first)
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
     // Then load the title font
-    appState.TitleFont = HelloImGui::LoadFontTTF("fonts/DroidSans.ttf", 18.f);
+    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
+
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
     fontLoadingParamsEmoji.useFullGlyphRange = true;
     appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
@@ -595,13 +596,14 @@ int main(int, char**)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
 
-    runnerParams.appWindowParams.windowTitle = "Docking demo";
+    runnerParams.appWindowParams.windowTitle = "Docking Demo";
     runnerParams.imGuiWindowParams.menuAppTitle = "Docking Demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
     runnerParams.appWindowParams.borderless = true;
     runnerParams.appWindowParams.borderlessMovable = true;
     runnerParams.appWindowParams.borderlessResizable = true;
+    runnerParams.appWindowParams.borderlessClosable = true;
 
     // Set LoadAdditionalFonts callback
     runnerParams.callbacks.LoadAdditionalFonts = [&appState]() { LoadFonts(appState); };

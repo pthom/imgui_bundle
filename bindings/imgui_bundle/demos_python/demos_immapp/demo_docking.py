@@ -12,7 +12,7 @@
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -40,6 +40,10 @@ class AppState:
     rocket_state: RocketState
     rocket_launch_time: float
 
+    title_font: imgui.ImFont
+    color_font: imgui.ImFont
+    emoji_font: imgui.ImFont
+
     def __init__(self):
         self.f = 0
         self.counter = 0
@@ -52,17 +56,19 @@ class AppState:
 ##########################################################################
 #    Additional fonts handling
 ##########################################################################
-
-TITLE_FONT: imgui.ImFont
-
-
-def load_fonts():  # This is called by runnerParams.callbacks.LoadAdditionalFonts
-    global TITLE_FONT
+def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks.LoadAdditionalFonts
     # First, load the default font (the default font should be loaded first)
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
     # Then load the title font
-    TITLE_FONT = hello_imgui.load_font_ttf("fonts/DroidSans.ttf", 18.0)
+    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
 
+    font_loading_params_emoji = hello_imgui.FontLoadingParams()
+    font_loading_params_emoji.use_full_glyph_range = True
+    app_state.emoji_font = hello_imgui.load_font("fonts/NotoEmoji-Regular.ttf", 24., font_loading_params_emoji)
+
+    font_loading_params_color = hello_imgui.FontLoadingParams()
+    font_loading_params_color.load_color = True
+    app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
 
 ##########################################################################
 #    Save additional settings in the ini file
@@ -107,19 +113,17 @@ def save_my_app_settings(app_state: AppState):
 #    Gui functions used in this demo
 ##########################################################################
 @immapp.static(last_hide_time=1)
-def demo_hide_window():
+def demo_hide_window(app_state: AppState):
     # Display a button that will hide the application window
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Hide app window")
     imgui.pop_font()
-    imgui.text_wrapped(
-        "By clicking the button below, you can hide the window for 3 seconds."
-    )
 
     if imgui.button("Hide"):
         demo_hide_window.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
-
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("By clicking this button, you can hide the window for 3 seconds.")
     if demo_hide_window.last_hide_time > 0.0:
         now = time.time()
         if now - demo_hide_window.last_hide_time > 3.0:
@@ -128,7 +132,7 @@ def demo_hide_window():
 
 
 # Display a button that will show an additional window
-def demo_show_additional_window():
+def demo_show_additional_window(app_state: AppState):
     # Notes:
     #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
     #       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating
@@ -138,7 +142,7 @@ def demo_show_additional_window():
     #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
     window_name = "Additional Window"
 
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Dynamically add window")
     imgui.pop_font()
 
@@ -150,14 +154,16 @@ def demo_show_additional_window():
         if additional_window_ptr:
             # additional_window_ptr.include_in_view_menu = True
             additional_window_ptr.is_visible = True
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("By clicking this button, you can show an additional window")
 
 
 def demo_basic_widgets(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Basic widgets demo")
     imgui.pop_font()
-    imgui.text_wrapped("The widgets below will interact with the log window")
 
+    imgui.begin_group()
     # Edit a float using a slider from 0.0 to 1.0
     changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
     if changed:
@@ -171,15 +177,18 @@ def demo_basic_widgets(app_state: AppState):
         hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
     imgui.same_line()
     imgui.text(f"counter = {app_state.counter}")
+    imgui.end_group()
+
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("These widgets will interact with the log window")
 
 
 def demo_user_settings(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("User settings")
     imgui.pop_font()
-    imgui.text_wrapped(
-        "The values below are stored in the application settings ini file and restored at startup"
-    )
+
+    imgui.begin_group()
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
     _, app_state.my_app_settings.name = imgui.input_text(
         "Name", app_state.my_app_settings.name
@@ -188,13 +197,17 @@ def demo_user_settings(app_state: AppState):
     _, app_state.my_app_settings.value = imgui.slider_int(
         "Value", app_state.my_app_settings.value, 0, 100
     )
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("The values below are stored in the application settings ini file and restored at startup")
 
 
 def demo_rocket(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Rocket demo")
     imgui.pop_font()
-    imgui.text_wrapped("How to show a progress bar in the status bar")
+
+    imgui.begin_group()
     if app_state.rocket_state == RocketState.Init:
         if imgui.button(f"{icons_fontawesome.ICON_FA_ROCKET} Launch rocket"):
             app_state.rocket_launch_time = time.time()
@@ -211,10 +224,13 @@ def demo_rocket(app_state: AppState):
         if imgui.button("Reset Rocket"):
             app_state.rocket_state = RocketState.Init
             app_state.rocket_progress = 0.0
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Look at the status bar after clicking")
 
 
-def demo_docking_flags():
-    imgui.push_font(TITLE_FONT)
+def demo_docking_flags(app_state: AppState):
+    imgui.push_font(app_state.title_font)
     imgui.text("Main dock space node flags")
     imgui.pop_font()
     imgui.text_wrapped(
@@ -270,8 +286,8 @@ Most flags are inherited by children dock spaces.
     )
 
 
-def gui_window_layout_customization():
-    imgui.push_font(TITLE_FONT)
+def gui_window_layout_customization(app_state: AppState):
+    imgui.push_font(app_state.title_font)
     imgui.text("Switch between layouts")
     imgui.pop_font()
     imgui.text('with the menu "View/Layouts"')
@@ -283,7 +299,7 @@ def gui_window_layout_customization():
 
     imgui.separator()
 
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Change the theme")
     imgui.pop_font()
     imgui.text('with the menu "View/Theme"')
@@ -291,19 +307,84 @@ def gui_window_layout_customization():
         imgui.set_tooltip("The selected theme is remembered and restored at startup")
     imgui.separator()
 
-    demo_docking_flags()
+    demo_docking_flags(app_state)
     imgui.separator()
 
 
-def demo_assets():
-    imgui.push_font(TITLE_FONT)
+def demo_assets(app_state: AppState):
+    imgui.push_font(app_state.title_font)
     imgui.text("Hello")
     imgui.pop_font()
     hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(3.0, 3.0))
 
 
+def demo_fonts(app_state: AppState):
+    imgui.push_font(app_state.title_font)
+    imgui.text("Fonts")
+    imgui.pop_font()
+
+    imgui.text_wrapped("Mix icons " + icons_fontawesome.ICON_FA_SMILE + " and text " + icons_fontawesome.ICON_FA_ROCKET)
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with Font Awesome Icons")
+
+    imgui.text("Emojis")
+
+    with imgui_ctx.begin_group():
+        imgui.push_font(app_state.emoji_font)
+        # (Victory Hand Emoji)
+        imgui.text("\U0000270C\U0000FE0F")
+        imgui.same_line()
+
+        # (Red Heart Emoji)
+        imgui.text("\U00002764\U0000FE0F")
+        imgui.same_line()
+
+        # (Palm Tree Emoji)
+        imgui.text("\U0001F334")
+        imgui.same_line()
+
+        # (Rocket Emoji)
+        imgui.text("\U0001F680")
+        imgui.pop_font()
+
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with NotoEmoji font")
+
+    imgui.text("Colored Fonts")
+    imgui.push_font(app_state.color_font)
+    imgui.text("C O L O R !")
+    imgui.pop_font()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with Playbox-FREE.otf font")
+
+
+def demo_themes(app_state: AppState):
+    imgui.push_font(app_state.title_font)
+    imgui.text("Themes")
+    imgui.pop_font()
+
+    tweaked_theme = hello_imgui.get_runner_params().imgui_window_params.tweaked_theme
+
+    imgui.begin_group()
+    button_size = hello_imgui.em_to_vec2(7.0, 0.0)
+    if imgui.button("Cherry", button_size):
+        tweaked_theme.theme = hello_imgui.ImGuiTheme_.cherry
+        hello_imgui.apply_tweaked_theme(tweaked_theme)
+    if imgui.button("DarculaDarker", button_size):
+        tweaked_theme.theme = hello_imgui.ImGuiTheme_.darcula_darker
+        hello_imgui.apply_tweaked_theme(tweaked_theme)
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip(
+            "There are lots of other themes: look at the menu View/Theme\n"
+            "The selected theme is remembered and restored at startup"
+        )
+
+
 def gui_window_demo_features(app_state: AppState):
-    demo_assets()
+    demo_fonts(app_state)
+    imgui.separator()
+    demo_assets(app_state)
     imgui.separator()
     demo_basic_widgets(app_state)
     imgui.separator()
@@ -311,9 +392,11 @@ def gui_window_demo_features(app_state: AppState):
     imgui.separator()
     demo_user_settings(app_state)
     imgui.separator()
-    demo_hide_window()
+    demo_hide_window(app_state)
     imgui.separator()
-    demo_show_additional_window()
+    demo_show_additional_window(app_state)
+    imgui.separator()
+    demo_themes(app_state)
     imgui.separator()
 
 
@@ -433,7 +516,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     layout_customization_window = hello_imgui.DockableWindow()
     layout_customization_window.label = "Layout customization"
     layout_customization_window.dock_space_name = "MainDockSpace"
-    layout_customization_window.gui_function = gui_window_layout_customization
+    layout_customization_window.gui_function = lambda: gui_window_layout_customization(app_state)
 
     # A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
     logs_window = hello_imgui.DockableWindow()
@@ -445,6 +528,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # additional_window is initially not visible (and not mentioned in the view menu).
@@ -521,13 +605,17 @@ def main():
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
-    runner_params.app_window_params.window_title = "Docking demo"
-    runner_params.imgui_window_params.menu_app_title = "Docking demo"
+    runner_params.app_window_params.window_title = "Docking Demo"
+    runner_params.imgui_window_params.menu_app_title = "Docking Demo"
     runner_params.app_window_params.window_geometry.size = (1000, 900)
     runner_params.app_window_params.restore_previous_geometry = True
+    runner_params.app_window_params.borderless = True
+    runner_params.app_window_params.borderless_movable = True
+    runner_params.app_window_params.borderless_resizable = True
+    runner_params.app_window_params.borderless_closable = True
 
     # Set LoadAdditionalFonts callback
-    runner_params.callbacks.load_additional_fonts = load_fonts
+    runner_params.callbacks.load_additional_fonts = lambda: load_fonts(app_state)
 
     #
     # Status bar
