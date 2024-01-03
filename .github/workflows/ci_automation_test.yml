@@ -42,7 +42,7 @@ jobs:
           cd .github/ci_automation_tests
           mkdir build
           cd build
-          cmake ..  -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_WIN32_NO_CONSOLE=OFF -DHELLOIMGUI_WIN32_AUTO_WINMAIN=OFF
+          cmake ..  -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_WIN32_NO_CONSOLE=OFF -DHELLOIMGUI_WIN32_AUTO_WINMAIN=OFF -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON
           cmake --build . -j 3 --config Release
 
       - name: install mesa OpenGL software renderer (windows only)
