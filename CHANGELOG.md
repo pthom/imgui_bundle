@@ -1,4 +1,4 @@
-# v1.2.0
+# v1.2.1
 
 ### New features
 * update imgui to v1.90-docking
