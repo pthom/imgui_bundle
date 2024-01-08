@@ -1,12 +1,14 @@
 # v1.2.0 (WIP)
 
 ### New features
-* HelloImGui: now uses Freetype for font rendering.
-  Added support for Colored font and Emoji fonts
 * update imgui to v1.90-docking
   _example_integration/ now points to a github [template repo](https://github.com/pthom/imgui_bundle_template)
-* Can fully customize the menu bar (within Hello ImGui)
 * Show python & C++ code in the ImGui Demo window
+* Can plot Matplotlib figures in Python
+
+### Hello ImGui
+* now uses Freetype for font rendering. Added support for Colored font and Emoji fonts
+* Can fully customize the menu bar (within Hello ImGui)
 
 ### Backends
 * Add support for Metal rendering backend (C++ only, macOS only)
