@@ -6013,6 +6013,45 @@ It can be used in two steps:
 
 Example: https://github.com/pthom/hello_imgui/issues/33[this issue on macOS] was solved thanks to this.
 
+[[python_specific]]
+== Python specific utilities
+
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+// :url-demo-images: doc_images/
+
+:url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
+
+=== Display Matplotlib plots in ImGui
+
+link:{url-bindings-python}/imgui_fig.py[imgui_fig.py] is a small utility to display Matplotlib plots in ImGui.
+
+See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo_matplotlib.py] for an example.
+
+=== Pure python backends
+
+link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+
+See link:{url-bindings-python}/python_backends/examples[examples] for more information.
+
+
+
+
 [[words_author]]
 == Closing words
 

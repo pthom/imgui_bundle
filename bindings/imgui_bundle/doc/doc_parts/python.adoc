@@ -1,0 +1,21 @@
+[[python_specific]]
+== Python specific utilities
+
+include::_utils.adoc[]
+
+:url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
+
+=== Display Matplotlib plots in ImGui
+
+link:{url-bindings-python}/imgui_fig.py[imgui_fig.py] is a small utility to display Matplotlib plots in ImGui.
+
+See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo_matplotlib.py] for an example.
+
+=== Pure python backends
+
+link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+
+See link:{url-bindings-python}/python_backends/examples[examples] for more information.
+
+
+

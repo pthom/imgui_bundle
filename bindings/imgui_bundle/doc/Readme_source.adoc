@@ -28,6 +28,8 @@ endif::[]
 
 include::doc_parts/port.adoc[]
 
+include::doc_parts/python.adoc[]
+
 include::doc_parts/words_author.adoc[]
 
 ifndef::env_gh_pages[]

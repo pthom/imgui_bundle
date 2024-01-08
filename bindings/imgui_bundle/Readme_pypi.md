@@ -368,7 +368,7 @@ Debugger](https://billbaxter.com/projects/imdebug/), by Bill Baxter.
 
 The MIT License (MIT)
 
-Copyright (c) 2021-2023 Pascal Thomet
+Copyright (c) 2021-2024 Pascal Thomet
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
@@ -424,8 +424,7 @@ The development of the initial version of Dear ImGui Bundle took about
 one year at full time.
 
 The bindings are auto-generated thanks to an advanced parser, so that
-they are easy to keep up to date. I’ll give more information about the
-bindings generator a bit later in 2023.
+they are easy to keep up to date.
 
 Please be tolerant if you find issues! Dear ImGui Bundle is developed
 for free, under a very permissive license, by one main author (and most
