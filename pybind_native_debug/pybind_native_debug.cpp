@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 //This program reads the Python virtual environment path from a configuration file named
 //    pybind_native_debug_venv.txt

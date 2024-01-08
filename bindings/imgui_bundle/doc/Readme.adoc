@@ -3813,7 +3813,7 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these 
 ====
 [source, cpp]
 ----
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
 #include "implot/implot.h"
 #include "imspinner/imspinner.h"
@@ -4670,7 +4670,7 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_logger.html[Try the log
 ====
 [source, cpp]
 ----
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
@@ -4831,7 +4831,7 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_text_edit.html[Try the 
 ====
 [source, cpp]
 ----
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "immapp/immapp.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
@@ -6053,7 +6053,7 @@ Immvision was inspired by https://billbaxter.com/projects/imdebug/[The Image Deb
 ****
 The MIT License (MIT)
 
-Copyright (c) 2021-2023 Pascal Thomet
+Copyright (c) 2021-2024 Pascal Thomet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -6094,7 +6094,7 @@ I also have an inclination for self documenting code, and the doc you are readin
 
 The development of the initial version of Dear ImGui Bundle took about one year at full time.
 
-The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date. I'll give more information about the bindings generator a bit later in 2023.
+The bindings are auto-generated thanks to an advanced parser, so that they are easy to keep up to date.
 
 Please be tolerant if you find issues! Dear ImGui Bundle is developed for free, under a very permissive license, by one main author (and most of its API comes from external libraries).
 

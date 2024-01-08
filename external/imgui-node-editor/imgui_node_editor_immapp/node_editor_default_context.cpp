@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "node_editor_default_context.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
