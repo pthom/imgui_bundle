@@ -1415,10 +1415,11 @@ It demonstrates how to:
 - use the status bar
 - use default menus (App and view menu), and how to customize them
 - display a log window
-- load additional fonts
+- load additional fonts, possibly colored, and with emojis
 - use a specific application state (instead of using static variables)
 - save some additional user settings within imgui ini file
-*/
+- use borderless windows, that are movable and resizable
+ */
 
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
@@ -1427,6 +1428,21 @@ It demonstrates how to:
 #include "demo_utils/api_demos.h"
 
 #include <sstream>
+
+// Poor man's fix for C++ late arrival in the unicode party:
+//    - C++17: u8"my string" is of type const char*
+//    - C++20: u8"my string" is of type const char8_t*
+// However, ImGui text functions expect const char*.
+#ifdef __cpp_char8_t
+#define U8_TO_CHAR(x) reinterpret_cast<const char*>(x)
+#else
+#define U8_TO_CHAR(x) x
+#endif
+// And then, we need to tell gcc to stop validating format string (it gets confused by the u8"" string)
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wformat"
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////
 //    Our Application State
@@ -1453,19 +1469,30 @@ struct AppState
     RocketState rocket_state = RocketState::Init;
 
     MyAppSettings myAppSettings; // This values will be stored in the application settings
+    ImFont* TitleFont = nullptr;
+    ImFont* ColorFont = nullptr;
+    ImFont* EmojiFont = nullptr;
 };
 
 
 //////////////////////////////////////////////////////////////////////////
 //    Additional fonts handling
 //////////////////////////////////////////////////////////////////////////
-ImFont * gTitleFont;
-void LoadFonts() // This is called by runnerParams.callbacks.LoadAdditionalFonts
+void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.LoadAdditionalFonts
 {
     // First, load the default font (the default font should be loaded first)
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
     // Then load the title font
-    gTitleFont = HelloImGui::LoadFontTTF("fonts/DroidSans.ttf", 18.f);
+    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
+
+    HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
+    fontLoadingParamsEmoji.useFullGlyphRange = true;
+    appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
+#ifdef IMGUI_ENABLE_FREETYPE
+    HelloImGui::FontLoadingParams fontLoadingParamsColor;
+    fontLoadingParamsColor.loadColor = true;
+    appState.ColorFont = HelloImGui::LoadFont("fonts/Playbox/Playbox-FREE.otf", 24.f, fontLoadingParamsColor);
+#endif
 }
 
 
@@ -1510,17 +1537,17 @@ void SaveMyAppSettings(const AppState& appState)
 //////////////////////////////////////////////////////////////////////////
 
 // Display a button that will hide the application window
-void DemoHideWindow()
+void DemoHideWindow(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Hide app window"); ImGui::PopFont();
-    ImGui::TextWrapped("By clicking the button below, you can hide the window for 3 seconds.");
-
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Hide app window"); ImGui::PopFont();
     static double lastHideTime = -1.;
     if (ImGui::Button("Hide"))
     {
         lastHideTime =  ImGui::GetTime();
         HelloImGui::GetRunnerParams()->appWindowParams.hidden = true;
     }
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("By clicking this button, you can hide the window for 3 seconds.");
     if (lastHideTime > 0.)
     {
         double now = ImGui::GetTime();
@@ -1533,7 +1560,7 @@ void DemoHideWindow()
 }
 
 // Display a button that will show an additional window
-void DemoShowAdditionalWindow()
+void DemoShowAdditionalWindow(AppState& appState)
 {
     // Notes:
     //     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
@@ -1542,7 +1569,7 @@ void DemoShowAdditionalWindow()
     //           * either make them initially invisible, and exclude them from the view menu (such as shown here)
     //           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
     const char* windowName = "Additional Window";
-    ImGui::PushFont(gTitleFont); ImGui::Text("Dynamically add window"); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Dynamically add window"); ImGui::PopFont();
     if (ImGui::Button("Show additional window"))
     {
         auto additionalWindowPtr = HelloImGui::GetRunnerParams()->dockingParams.dockableWindowOfName(windowName);
@@ -1552,14 +1579,15 @@ void DemoShowAdditionalWindow()
             additionalWindowPtr->isVisible = true;
         }
     }
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("By clicking this button, you can show an additional window");
 }
 
-
-void DemoBasicWidgets(AppState& appState)
+void DemoLogs(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Basic widgets demo"); ImGui::PopFont();
-    ImGui::TextWrapped("The widgets below will interact with the log window");
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Log Demo"); ImGui::PopFont();
 
+    ImGui::BeginGroup();
     // Edit a float using a slider from 0.0f to 1.0f
     bool changed = ImGui::SliderFloat("float", &appState.f, 0.0f, 1.0f);
     if (changed)
@@ -1574,22 +1602,28 @@ void DemoBasicWidgets(AppState& appState)
 
     ImGui::SameLine();
     ImGui::Text("counter = %d", appState.counter);
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("These widgets will interact with the log window");
 }
 
 void DemoUserSettings(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("User settings"); ImGui::PopFont();
-    ImGui::TextWrapped("The values below are stored in the application settings ini file and restored at startup");
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("User settings"); ImGui::PopFont();
+    ImGui::BeginGroup();
     ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
     ImGui::InputText("Name", &appState.myAppSettings.name);
     ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
     ImGui::SliderInt("Value", &appState.myAppSettings.value, 0, 100);
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("The values below are stored in the application settings ini file and restored at startup");
 }
 
 void DemoRocket(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Rocket demo"); ImGui::PopFont();
-    ImGui::TextWrapped("How to show a progress bar in the status bar");
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Status Bar Demo"); ImGui::PopFont();
+    ImGui::BeginGroup();
     if (appState.rocket_state == AppState::RocketState::Init)
     {
         if (ImGui::Button(ICON_FA_ROCKET" Launch rocket"))
@@ -1618,11 +1652,14 @@ void DemoRocket(AppState& appState)
             appState.rocket_progress = 0.f;
         }
     }
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Look at the status bar after clicking");
 }
 
-void DemoDockingFlags()
+void DemoDockingFlags(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Main dock space node flags"); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Main dock space node flags"); ImGui::PopFont();
     ImGui::TextWrapped(R"(
 This will edit the ImGuiDockNodeFlags for "MainDockSpace".
 Most flags are inherited by children dock spaces.
@@ -1644,7 +1681,7 @@ Most flags are inherited by children dock spaces.
         // {ImGuiDockNodeFlags_PassthruCentralNode, "PassthruCentralNode", "advanced"},
     };
     auto & mainDockSpaceNodeFlags = HelloImGui::GetRunnerParams()->dockingParams.mainDockSpaceNodeFlags;
-    for (auto flag: all_flags)
+    for (const auto& flag: all_flags)
     {
         ImGui::CheckboxFlags(flag.label.c_str(), &mainDockSpaceNodeFlags, flag.flag);
         if (ImGui::IsItemHovered())
@@ -1652,41 +1689,122 @@ Most flags are inherited by children dock spaces.
     }
 }
 
-void GuiWindowLayoutCustomization()
+void GuiWindowLayoutCustomization(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Switch between layouts"); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Switch between layouts"); ImGui::PopFont();
     ImGui::Text("with the menu \"View/Layouts\"");
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Each layout remembers separately the modifications applied by the user, \nand the selected layout is restored at startup");
     ImGui::Separator();
-    ImGui::PushFont(gTitleFont); ImGui::Text("Change the theme"); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Change the theme"); ImGui::PopFont();
     ImGui::Text("with the menu \"View/Theme\"");
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("The selected theme is remembered and restored at startup");
     ImGui::Separator();
-    DemoDockingFlags();
+    DemoDockingFlags(appState);
     ImGui::Separator();
 }
 
-void DemoAssets()
+void DemoAssets(AppState& appState)
 {
-    ImGui::PushFont(gTitleFont); ImGui::Text("Hello"); ImGui::PopFont();
-    HelloImGui::ImageFromAsset("images/world.png", HelloImGui::EmToVec2(3.f, 3.f));
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Image From Asset"); ImGui::PopFont();
+    HelloImGui::BeginGroupColumn();
+    ImGui::Dummy(HelloImGui::EmToVec2(0.f, 0.45f));
+    ImGui::Text("Hello");
+    HelloImGui::EndGroupColumn();
+    HelloImGui::ImageFromAsset("images/world.png", HelloImGui::EmToVec2(2.5f, 2.5f));
 }
 
+void DemoFonts(AppState& appState)
+{
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts"); ImGui::PopFont();
+
+    ImGui::TextWrapped("Mix icons " ICON_FA_SMILE " and text " ICON_FA_ROCKET "");
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Example with Font Awesome Icons");
+
+    ImGui::Text("Emojis");
+
+    ImGui::BeginGroup();
+    {
+        ImGui::PushFont(appState.EmojiFont);
+        // ✌️ (Victory Hand Emoji)
+        ImGui::Text(U8_TO_CHAR(u8"\U0000270C\U0000FE0F"));
+        ImGui::SameLine();
+
+        // ❤️ (Red Heart Emoji)
+        ImGui::Text(U8_TO_CHAR(u8"\U00002764\U0000FE0F"));
+        ImGui::SameLine();
+
+#ifdef IMGUI_USE_WCHAR32
+        // 🌴 (Palm Tree Emoji)
+        ImGui::Text(U8_TO_CHAR(u8"\U0001F334"));
+        ImGui::SameLine();
+
+        // 🚀 (Rocket Emoji)
+        ImGui::Text(U8_TO_CHAR(u8"\U0001F680"));
+        ImGui::SameLine();
+#endif
+
+        ImGui::PopFont();
+    }
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Example with NotoEmoji font");
+
+#ifdef IMGUI_ENABLE_FREETYPE
+    ImGui::Text("Colored Fonts");
+    ImGui::PushFont(appState.ColorFont);
+    ImGui::Text("C O L O R !");
+    ImGui::PopFont();
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Example with Playbox-FREE.otf font");
+#endif
+}
+
+void DemoThemes(AppState& appState)
+{
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Themes"); ImGui::PopFont();
+    auto& tweakedTheme = HelloImGui::GetRunnerParams()->imGuiWindowParams.tweakedTheme;
+
+    ImGui::BeginGroup();
+    ImVec2 buttonSize = HelloImGui::EmToVec2(7.f, 0.f);
+    if (ImGui::Button("Cherry", buttonSize))
+    {
+        tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_Cherry;
+        ImGuiTheme::ApplyTweakedTheme(tweakedTheme);
+    }
+    if (ImGui::Button("DarculaDarker", buttonSize))
+    {
+        tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_DarculaDarker;
+        ImGuiTheme::ApplyTweakedTheme(tweakedTheme);
+    }
+    ImGui::EndGroup();
+    if (ImGui::IsItemHovered())
+            ImGui::SetTooltip(
+                "There are lots of other themes: look at the menu View/Theme\n"
+                "The selected theme is remembered and restored at startup"
+            );
+}
+
+// The Gui of the demo feature window
 void GuiWindowDemoFeatures(AppState& appState)
 {
-    DemoAssets();
+    DemoFonts(appState);
     ImGui::Separator();
-    DemoBasicWidgets(appState);
+    DemoAssets(appState);
+    ImGui::Separator();
+    DemoLogs(appState);
     ImGui::Separator();
     DemoRocket(appState);
     ImGui::Separator();
     DemoUserSettings(appState);
     ImGui::Separator();
-    DemoHideWindow();
+    DemoHideWindow(appState);
     ImGui::Separator();
-    DemoShowAdditionalWindow();
+    DemoShowAdditionalWindow(appState);
+    ImGui::Separator();
+    DemoThemes(appState);
     ImGui::Separator();
 }
 
@@ -1815,7 +1933,7 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
     HelloImGui::DockableWindow layoutCustomizationWindow;
     layoutCustomizationWindow.label = "Layout customization";
     layoutCustomizationWindow.dockSpaceName = "MainDockSpace";
-    layoutCustomizationWindow.GuiFunction = GuiWindowLayoutCustomization;
+    layoutCustomizationWindow.GuiFunction = [&appState]() { GuiWindowLayoutCustomization(appState); };
 
     // A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
     HelloImGui::DockableWindow logsWindow;
@@ -1827,6 +1945,7 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
     HelloImGui::DockableWindow dearImGuiDemoWindow;
     dearImGuiDemoWindow.label = "Dear ImGui Demo";
     dearImGuiDemoWindow.dockSpaceName = "MainDockSpace";
+    dearImGuiDemoWindow.imGuiWindowFlags = ImGuiWindowFlags_MenuBar;
     dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
 
     // additionalWindow is initially not visible (and not mentioned in the view menu).
@@ -1847,7 +1966,7 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
         additionalWindow,
     };
     return dockableWindows;
-};
+}
 
 //
 // 3. Define the layouts:
@@ -1882,7 +2001,7 @@ std::vector<HelloImGui::DockingParams> CreateAlternativeLayouts(AppState& appSta
         tabsLayout.dockingSplits = {};
     }
     return {alternativeLayout, tabsLayout};
-};
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -1902,13 +2021,17 @@ int main(int, char**)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
 
-    runnerParams.appWindowParams.windowTitle = "Docking demo";
-    runnerParams.imGuiWindowParams.menuAppTitle = "Docking demo";
+    runnerParams.appWindowParams.windowTitle = "Docking Demo";
+    runnerParams.imGuiWindowParams.menuAppTitle = "Docking Demo";
     runnerParams.appWindowParams.windowGeometry.size = {1000, 900};
     runnerParams.appWindowParams.restorePreviousGeometry = true;
+    runnerParams.appWindowParams.borderless = true;
+    runnerParams.appWindowParams.borderlessMovable = true;
+    runnerParams.appWindowParams.borderlessResizable = true;
+    runnerParams.appWindowParams.borderlessClosable = true;
 
     // Set LoadAdditionalFonts callback
-    runnerParams.callbacks.LoadAdditionalFonts = LoadFonts;
+    runnerParams.callbacks.LoadAdditionalFonts = [&appState]() { LoadFonts(appState); };
 
     //
     // Status bar
@@ -2011,17 +2134,19 @@ Python:
 #
 # It demonstrates how to:
 # - set up a complex docking layouts (with several possible layouts):
+# - load additional fonts, possibly colored, and with emojis
+# - display a log window
 # - use the status bar
 # - use default menus (App and view menu), and how to customize them
-# - display a log window
-# - load additional fonts
 # - use a specific application state (instead of using static variables)
 # - save some additional user settings within imgui ini file
+# - use borderless windows, that are movable and resizable
+
 
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -2049,6 +2174,10 @@ class AppState:
     rocket_state: RocketState
     rocket_launch_time: float
 
+    title_font: imgui.ImFont
+    color_font: imgui.ImFont
+    emoji_font: imgui.ImFont
+
     def __init__(self):
         self.f = 0
         self.counter = 0
@@ -2061,17 +2190,19 @@ class AppState:
 ##########################################################################
 #    Additional fonts handling
 ##########################################################################
-
-TITLE_FONT: imgui.ImFont
-
-
-def load_fonts():  # This is called by runnerParams.callbacks.LoadAdditionalFonts
-    global TITLE_FONT
+def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks.LoadAdditionalFonts
     # First, load the default font (the default font should be loaded first)
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
     # Then load the title font
-    TITLE_FONT = hello_imgui.load_font_ttf("fonts/DroidSans.ttf", 18.0)
+    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
 
+    font_loading_params_emoji = hello_imgui.FontLoadingParams()
+    font_loading_params_emoji.use_full_glyph_range = True
+    app_state.emoji_font = hello_imgui.load_font("fonts/NotoEmoji-Regular.ttf", 24., font_loading_params_emoji)
+
+    font_loading_params_color = hello_imgui.FontLoadingParams()
+    font_loading_params_color.load_color = True
+    app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
 
 ##########################################################################
 #    Save additional settings in the ini file
@@ -2116,19 +2247,17 @@ def save_my_app_settings(app_state: AppState):
 #    Gui functions used in this demo
 ##########################################################################
 @immapp.static(last_hide_time=1)
-def demo_hide_window():
+def demo_hide_window(app_state: AppState):
     # Display a button that will hide the application window
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Hide app window")
     imgui.pop_font()
-    imgui.text_wrapped(
-        "By clicking the button below, you can hide the window for 3 seconds."
-    )
 
     if imgui.button("Hide"):
         demo_hide_window.last_hide_time = time.time()
         hello_imgui.get_runner_params().app_window_params.hidden = True
-
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("By clicking this button, you can hide the window for 3 seconds.")
     if demo_hide_window.last_hide_time > 0.0:
         now = time.time()
         if now - demo_hide_window.last_hide_time > 3.0:
@@ -2137,7 +2266,7 @@ def demo_hide_window():
 
 
 # Display a button that will show an additional window
-def demo_show_additional_window():
+def demo_show_additional_window(app_state: AppState):
     # Notes:
     #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
     #       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating
@@ -2147,7 +2276,7 @@ def demo_show_additional_window():
     #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
     window_name = "Additional Window"
 
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Dynamically add window")
     imgui.pop_font()
 
@@ -2159,14 +2288,16 @@ def demo_show_additional_window():
         if additional_window_ptr:
             # additional_window_ptr.include_in_view_menu = True
             additional_window_ptr.is_visible = True
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("By clicking this button, you can show an additional window")
 
 
 def demo_basic_widgets(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Basic widgets demo")
     imgui.pop_font()
-    imgui.text_wrapped("The widgets below will interact with the log window")
 
+    imgui.begin_group()
     # Edit a float using a slider from 0.0 to 1.0
     changed, app_state.f = imgui.slider_float("float", app_state.f, 0.0, 1.0)
     if changed:
@@ -2180,15 +2311,18 @@ def demo_basic_widgets(app_state: AppState):
         hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
     imgui.same_line()
     imgui.text(f"counter = {app_state.counter}")
+    imgui.end_group()
+
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("These widgets will interact with the log window")
 
 
 def demo_user_settings(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("User settings")
     imgui.pop_font()
-    imgui.text_wrapped(
-        "The values below are stored in the application settings ini file and restored at startup"
-    )
+
+    imgui.begin_group()
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
     _, app_state.my_app_settings.name = imgui.input_text(
         "Name", app_state.my_app_settings.name
@@ -2197,13 +2331,17 @@ def demo_user_settings(app_state: AppState):
     _, app_state.my_app_settings.value = imgui.slider_int(
         "Value", app_state.my_app_settings.value, 0, 100
     )
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("The values below are stored in the application settings ini file and restored at startup")
 
 
 def demo_rocket(app_state: AppState):
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Rocket demo")
     imgui.pop_font()
-    imgui.text_wrapped("How to show a progress bar in the status bar")
+
+    imgui.begin_group()
     if app_state.rocket_state == RocketState.Init:
         if imgui.button(f"{icons_fontawesome.ICON_FA_ROCKET} Launch rocket"):
             app_state.rocket_launch_time = time.time()
@@ -2220,10 +2358,13 @@ def demo_rocket(app_state: AppState):
         if imgui.button("Reset Rocket"):
             app_state.rocket_state = RocketState.Init
             app_state.rocket_progress = 0.0
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Look at the status bar after clicking")
 
 
-def demo_docking_flags():
-    imgui.push_font(TITLE_FONT)
+def demo_docking_flags(app_state: AppState):
+    imgui.push_font(app_state.title_font)
     imgui.text("Main dock space node flags")
     imgui.pop_font()
     imgui.text_wrapped(
@@ -2279,8 +2420,8 @@ Most flags are inherited by children dock spaces.
     )
 
 
-def gui_window_layout_customization():
-    imgui.push_font(TITLE_FONT)
+def gui_window_layout_customization(app_state: AppState):
+    imgui.push_font(app_state.title_font)
     imgui.text("Switch between layouts")
     imgui.pop_font()
     imgui.text('with the menu "View/Layouts"')
@@ -2292,7 +2433,7 @@ def gui_window_layout_customization():
 
     imgui.separator()
 
-    imgui.push_font(TITLE_FONT)
+    imgui.push_font(app_state.title_font)
     imgui.text("Change the theme")
     imgui.pop_font()
     imgui.text('with the menu "View/Theme"')
@@ -2300,19 +2441,88 @@ def gui_window_layout_customization():
         imgui.set_tooltip("The selected theme is remembered and restored at startup")
     imgui.separator()
 
-    demo_docking_flags()
+    demo_docking_flags(app_state)
     imgui.separator()
 
 
-def demo_assets():
-    imgui.push_font(TITLE_FONT)
-    imgui.text("Hello")
+def demo_assets(app_state: AppState):
+    imgui.push_font(app_state.title_font)
+    imgui.text("Image From Assets")
     imgui.pop_font()
-    hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(3.0, 3.0))
+    hello_imgui.begin_group_column()
+    imgui.dummy(hello_imgui.em_to_vec2(0.0, 0.45))
+    imgui.text("Hello")
+    hello_imgui.end_group_column()
+    hello_imgui.image_from_asset("images/world.png", hello_imgui.em_to_vec2(2.5, 2.5))
+
+
+def demo_fonts(app_state: AppState):
+    imgui.push_font(app_state.title_font)
+    imgui.text("Fonts")
+    imgui.pop_font()
+
+    imgui.text_wrapped("Mix icons " + icons_fontawesome.ICON_FA_SMILE + " and text " + icons_fontawesome.ICON_FA_ROCKET)
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with Font Awesome Icons")
+
+    imgui.text("Emojis")
+
+    with imgui_ctx.begin_group():
+        imgui.push_font(app_state.emoji_font)
+        # ✌️ (Victory Hand Emoji)
+        imgui.text("\U0000270C\U0000FE0F")
+        imgui.same_line()
+
+        # ❤️ (Red Heart Emoji)
+        imgui.text("\U00002764\U0000FE0F")
+        imgui.same_line()
+
+        # 🌴 (Palm Tree Emoji)
+        imgui.text("\U0001F334")
+        imgui.same_line()
+
+        # 🚀 (Rocket Emoji)
+        imgui.text("\U0001F680")
+        imgui.pop_font()
+
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with NotoEmoji font")
+
+    imgui.text("Colored Fonts")
+    imgui.push_font(app_state.color_font)
+    imgui.text("C O L O R !")
+    imgui.pop_font()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("Example with Playbox-FREE.otf font")
+
+
+def demo_themes(app_state: AppState):
+    imgui.push_font(app_state.title_font)
+    imgui.text("Themes")
+    imgui.pop_font()
+
+    tweaked_theme = hello_imgui.get_runner_params().imgui_window_params.tweaked_theme
+
+    imgui.begin_group()
+    button_size = hello_imgui.em_to_vec2(7.0, 0.0)
+    if imgui.button("Cherry", button_size):
+        tweaked_theme.theme = hello_imgui.ImGuiTheme_.cherry
+        hello_imgui.apply_tweaked_theme(tweaked_theme)
+    if imgui.button("DarculaDarker", button_size):
+        tweaked_theme.theme = hello_imgui.ImGuiTheme_.darcula_darker
+        hello_imgui.apply_tweaked_theme(tweaked_theme)
+    imgui.end_group()
+    if imgui.is_item_hovered():
+        imgui.set_tooltip(
+            "There are lots of other themes: look at the menu View/Theme\n"
+            "The selected theme is remembered and restored at startup"
+        )
 
 
 def gui_window_demo_features(app_state: AppState):
-    demo_assets()
+    demo_fonts(app_state)
+    imgui.separator()
+    demo_assets(app_state)
     imgui.separator()
     demo_basic_widgets(app_state)
     imgui.separator()
@@ -2320,9 +2530,11 @@ def gui_window_demo_features(app_state: AppState):
     imgui.separator()
     demo_user_settings(app_state)
     imgui.separator()
-    demo_hide_window()
+    demo_hide_window(app_state)
     imgui.separator()
-    demo_show_additional_window()
+    demo_show_additional_window(app_state)
+    imgui.separator()
+    demo_themes(app_state)
     imgui.separator()
 
 
@@ -2442,7 +2654,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     layout_customization_window = hello_imgui.DockableWindow()
     layout_customization_window.label = "Layout customization"
     layout_customization_window.dock_space_name = "MainDockSpace"
-    layout_customization_window.gui_function = gui_window_layout_customization
+    layout_customization_window.gui_function = lambda: gui_window_layout_customization(app_state)
 
     # A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
     logs_window = hello_imgui.DockableWindow()
@@ -2454,6 +2666,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # additional_window is initially not visible (and not mentioned in the view menu).
@@ -2530,13 +2743,17 @@ def main():
 
     # Hello ImGui params (they hold the settings as well as the Gui callbacks)
     runner_params = hello_imgui.RunnerParams()
-    runner_params.app_window_params.window_title = "Docking demo"
-    runner_params.imgui_window_params.menu_app_title = "Docking demo"
+    runner_params.app_window_params.window_title = "Docking Demo"
+    runner_params.imgui_window_params.menu_app_title = "Docking Demo"
     runner_params.app_window_params.window_geometry.size = (1000, 900)
     runner_params.app_window_params.restore_previous_geometry = True
+    runner_params.app_window_params.borderless = True
+    runner_params.app_window_params.borderless_movable = True
+    runner_params.app_window_params.borderless_resizable = True
+    runner_params.app_window_params.borderless_closable = True
 
     # Set LoadAdditionalFonts callback
-    runner_params.callbacks.load_additional_fonts = load_fonts
+    runner_params.callbacks.load_additional_fonts = lambda: load_fonts(app_state)
 
     #
     # Status bar
@@ -4859,24 +5076,40 @@ image::{url-doc-images}/immediate_gui_example.png[]
 
 Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
-==== API
+==== API & Usage
 
-See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]. Also consult the doc on how to build {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications.
+See the "Hello ImGui" https://pthom.github.io/hello_imgui/book/doc_api.html[API doc] and https://pthom.github.io/hello_imgui/book/doc_params.html[Application parameter doc].
 
 ==== Features
 
-* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
-* Advanced layout handling
-* Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
-* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
-* Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
-* Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
-* Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
-* Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
+**Multiplatform utilities**
+
+* Truly multiplatform: Linux, Windows, macOS, iOS, Android, emscripten (with 4 lines of CMake code)
+* Easily embed assets on all platforms (no code required)
+* Customize app settings (icon and app name for mobile platforms, etc.- no code required)
+* Customize application icon on all platforms (including mobile and macOS - no code required)
+
+**Dear ImGui Tweaks**
+
+* Power Save mode: reduce FPS when idling
+* High DPI support: scale UI according to DPI, whatever the platform
+* Advanced layout handling: dockable windows, multiple layouts
+* Window geometry utilities: autosize application window, restore app window position
+* Theme tweaking: extensive list of additional themes
+* Support for movable and resizable borderless windows
+* Advanced font support: icons, emojis and colored fonts
+* Integration with ImGui Test Engine: automate and test your apps
+* Save user settings: window position, layout, opened windows, theme, user defined custom settings
+* Easily add a custom 3D background to your app
+
+**Backends**
+
+* Available platform backends: SDL2, Glfw3
+* Available rendering backends: OpenGL3, Metal, Vulkan, DirectX
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in {cpp} or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
-TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]
+TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://pthom.github.io/hello_imgui/book/doc_params.html[their description]
 
 ==== Advanced layout and theming with Hello ImGui:
 

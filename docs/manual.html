@@ -675,38 +675,79 @@ For each widget, you will see the corresponding demo code (in C&#43;&#43;. Read 
 <p>Dear ImGui Bundle includes <a href="https://github.com/pthom/hello_imgui">Hello ImGui</a>, which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and <a href="https://en.wikipedia.org/wiki/Emscripten">emscripten</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="_api">API</h4>
+<h4 id="_api_usage">API &amp; Usage</h4>
 <div class="paragraph">
-<p>See the "Hello ImGui" <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">API doc</a>. Also consult the doc on how to build <a href="https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h">DPI aware</a> applications.</p>
+<p>See the "Hello ImGui" <a href="https://pthom.github.io/hello_imgui/book/doc_api.html">API doc</a> and <a href="https://pthom.github.io/hello_imgui/book/doc_params.html">Application parameter doc</a>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_features">Features</h4>
+<div class="paragraph">
+<p><strong>Multiplatform utilities</strong></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo <a href="https://traineq.org/HelloImGui_6_Platforms.mp4">video</a></p>
+<p>Truly multiplatform: Linux, Windows, macOS, iOS, Android, emscripten (with 4 lines of CMake code)</p>
 </li>
 <li>
-<p>Advanced layout handling</p>
+<p>Easily embed assets on all platforms (no code required)</p>
 </li>
 <li>
-<p>Power Save mode: reduce FPS when application is idle (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.fpsIdle</a>)</p>
+<p>Customize app settings (icon and app name for mobile platforms, etc.- no code required)</p>
 </li>
 <li>
-<p><a href="https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui/dpi_aware.h">DPI aware</a> applications (widget placement, window size, font loading and scaling)</p>
+<p>Customize application icon on all platforms (including mobile and macOS - no code required)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Dear ImGui Tweaks</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Power Save mode: reduce FPS when idling</p>
 </li>
 <li>
-<p>Theme tweaking (see <a href="https://www.youtube.com/watch?v=4f_-3DDcAZk">demo video</a>, and <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h">API</a> )</p>
+<p>High DPI support: scale UI according to DPI, whatever the platform</p>
 </li>
 <li>
-<p>Window geometry utilities: autosize, restore window position, full screen, etc. (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h">WindowGeometry</a>)</p>
+<p>Advanced layout handling: dockable windows, multiple layouts</p>
 </li>
 <li>
-<p>Multiplatform <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h">assets embedding</a></p>
+<p>Window geometry utilities: autosize application window, restore app window position</p>
 </li>
 <li>
-<p>Switch between Glfw or Sdl backend (see <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h">RunnerParams.backendType</a>)</p>
+<p>Theme tweaking: extensive list of additional themes</p>
+</li>
+<li>
+<p>Support for movable and resizable borderless windows</p>
+</li>
+<li>
+<p>Advanced font support: icons, emojis and colored fonts</p>
+</li>
+<li>
+<p>Integration with ImGui Test Engine: automate and test your apps</p>
+</li>
+<li>
+<p>Save user settings: window position, layout, opened windows, theme, user defined custom settings</p>
+</li>
+<li>
+<p>Easily add a custom 3D background to your app</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Backends</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Available platform backends: SDL2, Glfw3</p>
+</li>
+<li>
+<p>Available rendering backends: OpenGL3, Metal, Vulkan, DirectX</p>
 </li>
 </ul>
 </div>
@@ -729,7 +770,7 @@ The usage of <code>Hello ImGui</code> is optional. You can also build an imgui a
 <div class="title">Tip</div>
 </td>
 <td class="content">
-HelloImGui is fully configurable by POD (plain old data) structures. See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">their description</a>
+HelloImGui is fully configurable by POD (plain old data) structures. See <a href="https://pthom.github.io/hello_imgui/book/doc_params.html">their description</a>
 </td>
 </tr>
 </table>
@@ -786,7 +827,7 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <p>ImGui Bundle includes a library named ImmApp (which stands for Immediate App). ImmApp is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup</p>
 </div>
 <div class="sect3">
-<h4 id="_api_2">API</h4>
+<h4 id="_api">API</h4>
 <div class="paragraph">
 <p><a href="https://github.com/pthom/imgui_bundle/tree/main/external/immapp/immapp/runner.h">C&#43;&#43; API</a></p>
 </div>
@@ -1359,7 +1400,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <p><a href="https://www.youtube.com/watch?v=QQIC7lpHono">40 seconds demo video on Youtube</a></p>
 </div>
 <div class="sect3">
-<h4 id="_api_3">API:</h4>
+<h4 id="_api_2">API:</h4>
 <div class="paragraph">
 <p><a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_notebook.py">immapp/immapp_notebook.py</a></p>
 </div>
@@ -1373,7 +1414,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-31 14:04:27 +0100
+Last updated 2024-01-08 08:03:24 +0100
 </div>
 </div>
 </body>

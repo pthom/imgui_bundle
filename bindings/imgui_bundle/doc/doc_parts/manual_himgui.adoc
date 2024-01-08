@@ -4,24 +4,40 @@ include::_utils.adoc[]
 
 Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
 
-==== API
+==== API & Usage
 
-See the "Hello ImGui" https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[API doc]. Also consult the doc on how to build {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications.
+See the "Hello ImGui" https://pthom.github.io/hello_imgui/book/doc_api.html[API doc] and https://pthom.github.io/hello_imgui/book/doc_params.html[Application parameter doc].
 
 ==== Features
 
-* Full multiplatform support: Windows, Linux, OSX, iOS, Emscripten, Android (poorly supported). See demo https://traineq.org/HelloImGui_6_Platforms.mp4[video]
-* Advanced layout handling
-* Power Save mode: reduce FPS when application is idle (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.fpsIdle])
-* {url-himgui-master-tree}/src/hello_imgui/dpi_aware.h[DPI aware] applications (widget placement, window size, font loading and scaling)
-* Theme tweaking (see https://www.youtube.com/watch?v=4f_-3DDcAZk[demo video], and https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/imgui_theme.h[API] )
-* Window geometry utilities: autosize, restore window position, full screen, etc. (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/app_window_params.h[WindowGeometry])
-* Multiplatform https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_assets.h[assets embedding]
-* Switch between Glfw or Sdl backend (see https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/runner_params.h[RunnerParams.backendType])
+**Multiplatform utilities**
+
+* Truly multiplatform: Linux, Windows, macOS, iOS, Android, emscripten (with 4 lines of CMake code)
+* Easily embed assets on all platforms (no code required)
+* Customize app settings (icon and app name for mobile platforms, etc.- no code required)
+* Customize application icon on all platforms (including mobile and macOS - no code required)
+
+**Dear ImGui Tweaks**
+
+* Power Save mode: reduce FPS when idling
+* High DPI support: scale UI according to DPI, whatever the platform
+* Advanced layout handling: dockable windows, multiple layouts
+* Window geometry utilities: autosize application window, restore app window position
+* Theme tweaking: extensive list of additional themes
+* Support for movable and resizable borderless windows
+* Advanced font support: icons, emojis and colored fonts
+* Integration with ImGui Test Engine: automate and test your apps
+* Save user settings: window position, layout, opened windows, theme, user defined custom settings
+* Easily add a custom 3D background to your app
+
+**Backends**
+
+* Available platform backends: SDL2, Glfw3
+* Available rendering backends: OpenGL3, Metal, Vulkan, DirectX
 
 NOTE: The usage of `Hello ImGui` is optional. You can also build an imgui application from scratch, in {cpp} or in python (see link:{url-bindings-bundle}/demos_python/demos_immapp/imgui_example_glfw_opengl3.py[python example])
 
-TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[their description]
+TIP: HelloImGui is fully configurable by POD (plain old data) structures. See link:https://pthom.github.io/hello_imgui/book/doc_params.html[their description]
 
 ==== Advanced layout and theming with Hello ImGui:
 
