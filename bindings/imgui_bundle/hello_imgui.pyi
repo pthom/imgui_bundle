@@ -72,13 +72,15 @@ def EmptyEventCallback() -> AnyEventCallback:
 # *
 # @@md#DocEmToVec2
 #
-# Special care must be taken in order to correctly handle screen with high DPI (for example, almost all recent laptops screens).
+# Special care must be taken in order to correctly handle screen with high DPI
+# (for example, almost all recent laptops screens).
 #
-# Using ImVec2 with fixed values is *almost always a bad idea* if you intend your application to be used on high DPI screens!
-# Otherwise, widgets might be misplaced or too small on different screens and/or OSes.
+# Using ImVec2 with fixed values is *almost always a bad idea* if you intend your
+# application to be used on high DPI screens!
+# Otherwise, widgets might be misplaced or too small on different screens and/or OS.
 #
-# Instead you should use scale your widgets and windows relatively to the font size, as is done
-# with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+# Instead you should use scale your widgets and windows relatively to the font size,
+# as is done with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
 #
 # @@md
 # *
@@ -153,27 +155,9 @@ def imgui_default_font_global_scale() -> float:
 # @@md
 #
 
+# @@md#LoadAssetFileData
+
 class AssetFileData:
-    """*
-    @@md#LoadAssetFileData
-
-    * `AssetFileData LoadAssetFileData(const char *assetPath)` will load an entire asset file into memory.
-     This works on all platforms, including android.
-     ```cpp
-        struct AssetFileData
-        {
-            None * data = None;
-            size_t dataSize = 0;
-        };
-     ```
-    * `FreeAssetFileData(AssetFileData * assetFileData)` will free the memory.
-      Note: "ImGui::GetIO().Fonts->AddFontFromMemoryTTF" takes ownership of the data
-      and will free the memory for you.
-
-    @@md
-    *
-    """
-
     # void * data = nullptr;    /* original C++ signature */
     data: Any = None
     # size_t dataSize = 0;    /* original C++ signature */
@@ -185,33 +169,66 @@ class AssetFileData:
 
 # AssetFileData LoadAssetFileData(const char *assetPath);    /* original C++ signature */
 def load_asset_file_data(asset_path: str) -> AssetFileData:
+    """LoadAssetFileData(const char *assetPath)`
+    Will load an entire asset file into memory. This works on all platforms,
+    including android.
+    You *have* to call FreeAssetFileData to free the memory, except if you use
+    ImGui::GetIO().Fonts->AddFontFromMemoryTTF, which will take ownership of the
+    data and free it for you.
+    """
     pass
 
 # void FreeAssetFileData(AssetFileData * assetFileData);    /* original C++ signature */
 def free_asset_file_data(asset_file_data: AssetFileData) -> None:
+    """FreeAssetFileData(AssetFileData *)
+    Will free the memory.
+    Note: "ImGui::GetIO().Fonts->AddFontFromMemoryTTF" takes ownership of the data
+    and will free the memory for you.
+    """
     pass
 
-# std::string AssetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true);    /* original C++ signature */
+# @@md
+
+# @@md#assetFileFullPath
+
+# std::string AssetFileFullPath(const std::string& assetRelativeFilename,    /* original C++ signature */
+#                               bool assertIfNotFound = true);
 def asset_file_full_path(
     asset_relative_filename: str, assert_if_not_found: bool = True
 ) -> str:
-    """*
-    @@md#assetFileFullPath
+    """`std::string AssetFileFullPath(const std::string& assetRelativeFilename)`
+    will return the path to assets.
 
-    `std::string AssetFileFullPath(const std::string& assetRelativeFilename)` will return the path to assets.
-
-    This works under all platforms __except Android__.
-    For compatibility with Android and other platforms, prefer to use `LoadAssetFileData` whenever possible.
-
-    * Under iOS it will give a path in the app bundle (/private/XXX/....)
-    * Under emscripten, it will be stored in the virtual filesystem at "/"
-    * Under Android, assetFileFullPath is *not* implemented, and will throw an error:
-      assets can be compressed under android, and you cannot use standard file operations!
-      Use LoadAssetFileData instead
-
-    @@md
-
+    This works under all platforms *except Android*
+    For compatibility with Android and other platforms, prefer to use `LoadAssetFileData`
+    whenever possible.
+       * Under iOS it will give a path in the app bundle (/private/XXX/....)
+       * Under emscripten, it will be stored in the virtual filesystem at "/"
+       * Under Android, assetFileFullPath is *not* implemented, and will throw an error:
+         assets can be compressed under android, and you can't use standard file operations!
+         Use LoadAssetFileData instead
     """
+    pass
+
+# bool AssetExists(const std::string& assetRelativeFilename);    /* original C++ signature */
+def asset_exists(asset_relative_filename: str) -> bool:
+    """Returns True if this asset file exists"""
+    pass
+
+# void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
+@overload
+def set_assets_folder(folder: str) -> None:
+    """Sets the assets folder location
+    (when using this, automatic assets installation on mobile platforms may not work)
+    """
+    pass
+
+# @@md
+
+# void SetAssetsFolder(const char* folder);    /* original C++ signature */
+@overload
+def set_assets_folder(folder: str) -> None:
+    """Legacy API, kept for compatibility"""
     pass
 
 # inline std::string assetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true)    /* original C++ signature */
@@ -221,26 +238,9 @@ def asset_file_full_path(
 ) -> str:
     pass
 
-# bool AssetExists(const std::string& assetRelativeFilename);    /* original C++ signature */
-def asset_exists(asset_relative_filename: str) -> bool:
-    """Returns True if this asset file exists"""
-    pass
-
-# Sets the assets folder location
-# (when using this, automatic assets installation on mobile platforms may not work)
-# void SetAssetsFolder(const char* folder);    /* original C++ signature */
-@overload
-def set_assets_folder(folder: str) -> None:
-    pass
-
-# void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
-@overload
-def set_assets_folder(folder: str) -> None:
-    pass
-
 # void overrideAssetsFolder(const char* folder);     /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
-    """synonym"""
+    """synonym of SetAssetsFolder"""
     pass
 
 # namespace HelloImGui
@@ -290,39 +290,30 @@ def log_gui(size: ImVec2 = ImVec2(0.0, 0.0)) -> None:
 #                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
 # @@md#HelloImGui::ImageFromAsset
+
 #
-# * `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`: will display a static image from the assets.
-# * `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`: will display a button using an image from the assets.
-# * `ImTextureID HelloImGui::ImTextureIdFromAsset(const char *assetPath)`: will return a texture ID for an image loaded from the assets.
-# * `ImVec2 HelloImGui::ImageSizeFromAsset(const char *assetPath)`: will return the size of an image loaded from the assets.
-# * `ImVec2 HelloImGui::ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize)`:
-#   Will return the displayed size of an image.
-#   if askedSize.x or askedSize.y is 0, then the corresponding dimension will be computed from the image size, keeping the aspect ratio.
-#   if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit exactly the askedSize, thus potentially changing the aspect ratio.
-#   Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset, so you don't need to call it directly.
-#
-# Images are loaded when first displayed, and then cached (they will be freed just before the application exits).
+# Images are loaded when first displayed, and then cached
+# (they will be freed just before the application exits).
 #
 # For example, given this files structure:
 # ```
 # ├── CMakeLists.txt
 # ├── assets/
-# │   └── my_image.jpg
+# │         └── my_image.jpg
 # └── my_app.main.cpp
 # ```
 #
 # then, you can display "my_image.jpg", using:
 #
-# ```cpp
-# HelloImGui::ImageFromAsset("my_image.jpg");
-# ```
-#
-# @@md
-#
+#    ```cpp
+#    HelloImGui::ImageFromAsset("my_image.jpg");
+#    ```
 
-# void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1), const ImVec4& tint_col = ImVec4(1,1,1,1), const ImVec4& border_col = ImVec4(0,0,0,0));    /* original C++ signature */
+# void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0),    /* original C++ signature */
+#                     const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+#                     const ImVec4& tint_col = ImVec4(1,1,1,1),
+#                     const ImVec4& border_col = ImVec4(0,0,0,0));
 def image_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -331,9 +322,16 @@ def image_from_asset(
     tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
     border_col: ImVec4 = ImVec4(0, 0, 0, 0),
 ) -> None:
+    """`HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
+    will display a static image from the assets.
+    """
     pass
 
-# bool ImageButtonFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0), const ImVec2& uv0 = ImVec2(0, 0),  const ImVec2& uv1 = ImVec2(1,1), int frame_padding = -1, const ImVec4& bg_col = ImVec4(0,0,0,0), const ImVec4& tint_col = ImVec4(1,1,1,1));    /* original C++ signature */
+# bool ImageButtonFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0),    /* original C++ signature */
+#                           const ImVec2& uv0 = ImVec2(0, 0),  const ImVec2& uv1 = ImVec2(1,1),
+#                           int frame_padding = -1,
+#                           const ImVec4& bg_col = ImVec4(0,0,0,0),
+#                           const ImVec4& tint_col = ImVec4(1,1,1,1));
 def image_button_from_asset(
     asset_path: str,
     size: ImVec2 = ImVec2(0, 0),
@@ -343,19 +341,39 @@ def image_button_from_asset(
     bg_col: ImVec4 = ImVec4(0, 0, 0, 0),
     tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
 ) -> bool:
+    """`bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
+    will display a button using an image from the assets.
+    """
     pass
 
 # ImTextureID ImTextureIdFromAsset(const char *assetPath);    /* original C++ signature */
 def im_texture_id_from_asset(asset_path: str) -> ImTextureID:
+    """`ImTextureID HelloImGui::ImTextureIdFromAsset(assetPath)`:
+    will return a texture ID for an image loaded from the assets.
+    """
     pass
 
 # ImVec2 ImageSizeFromAsset(const char *assetPath);    /* original C++ signature */
 def image_size_from_asset(asset_path: str) -> ImVec2:
+    """`ImVec2 HelloImGui::ImageSizeFromAsset(assetPath)`:
+    will return the size of an image loaded from the assets.
+    """
     pass
 
 # ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);    /* original C++ signature */
 def image_proportional_size(asked_size: ImVec2, image_size: ImVec2) -> ImVec2:
+    """`ImVec2 HelloImGui::ImageProportionalSize(askedSize, imageSize)`:
+    will return the displayed size of an image.
+       - if askedSize.x or askedSize.y is 0, then the corresponding dimension
+         will be computed from the image size, keeping the aspect ratio.
+       - if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit
+         exactly the askedSize, thus potentially changing the aspect ratio.
+    Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset,
+          so you don't need to call it directly.
+    """
     pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
@@ -768,116 +786,109 @@ class WindowSizeMeasureMode(enum.Enum):
     relative_to96_ppi = enum.auto()  # (= 1)
 
 class WindowGeometry:
-    """*
-    @@md#WindowGeometry
+    """@@md#WindowGeometry
 
-    __WindowGeometry__ is a struct that defines the window geometry.
-
-    Members:
-    * `size`: _int[2], default="{800, 600}"_. Size of the application window
-      used if fullScreenMode==NoFullScreen and sizeAuto==False
-    * `sizeAuto`: _bool, default=false_
-      If True, adapt the app window size to the presented widgets.
-      After the first frame was displayed, HelloImGui will measure its size,
-      and the backend application window will be resized. As a consequence, the application window size may
-      vary between the first and the second frame.
-
-    * `fullScreenMode`: _FullScreenMode, default=NoFullScreen_.
-       You can choose between several full screen modes:
-       ```cpp
-            NoFullScreen,
-            FullScreen,                    // Full screen with specified resolution
-            FullScreenDesktopResolution,   // Full screen with current desktop mode & resolution
-            FullMonitorWorkArea            // Fake full screen, maximized window on the selected monitor
-        ```
-    * `positionMode`: _WindowPositionMode, default = OsDefault_.
-       You can choose between several window position modes:
-       ```cpp
-            OsDefault,
-            MonitorCenter,
-            FromCoords,
-        ```
-    * `monitorIdx`: _int, default = 0_.
-      used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
-    * `windowSizeState`: _WindowSizeState, default=Standard_
-       You can choose between several window size states:
-       ```cpp
-            Standard,
-            Minimized,
-            Maximized
-        ```
-    * `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
-      how the window size is specified:
-      * RelativeTo96Ppi enables to give screen size that are independant from the screen density.
-         For example, a window size expressed as 800x600 will correspond to a size
-            - 800x600 (in screen coords) if the monitor dpi is 96
-            - 1600x120 (in screen coords) if the monitor dpi is 192
-          (this works with Glfw. With SDL, it only works under windows)
-      * ScreenCoords: measure window size in screen coords
-        (Note: screen coordinates might differ from real pixels on high dpi screen)
-
-    * `resizeAppWindowAtNextFrame`: _bool_, default=False;
-      If you set this to flag to True at any point during the execution, the application window
-      will then try to resize based on its content on the next displayed frame,
-      and this flag will subsequently be set to False.
-      Example:
-      ```cpp
-      // Will resize the app window at next displayed frame
-      HelloImGui::GetRunnerParams()->appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = True;
-      ```
-      Note: this flag is intended to be used during execution, not at startup (use sizeAuto at startup).
-    @@md
-    *
+    WindowGeometry is a struct that defines the window geometry.
     """
 
+    # --------------- Window Size ------------------
+
     # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
-    # used if fullScreenMode==NoFullScreen and sizeAuto==False. Value=(800, 600)
+    # Size of the application window
+    # used if fullScreenMode==NoFullScreen and sizeAuto==False. Default=(800, 600)
     size: ScreenSize = DefaultWindowSize
 
     # bool sizeAuto = false;    /* original C++ signature */
+    # If sizeAuto=True, adapt the app window size to the presented widgets.
+    # After the first frame was displayed, HelloImGui will measure its size, and the
+    # application window will be resized.
+    # As a consequence, the application window may change between the 1st and 2nd frame.
     # If True, adapt the app window size to the presented widgets. This is done at startup
     size_auto: bool = False
 
-    # FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;    /* original C++ signature */
-    full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen
-
-    # WindowPositionMode positionMode = WindowPositionMode::OsDefault;    /* original C++ signature */
-    position_mode: WindowPositionMode = WindowPositionMode.os_default
-
-    # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
-    # used if windowPositionMode==FromCoords, default=(40, 40)
-    position: ScreenPosition = DefaultScreenPosition
-
-    # int monitorIdx = 0;    /* original C++ signature */
-    # used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
-    monitor_idx: int = 0
-
     # WindowSizeState windowSizeState = WindowSizeState::Standard;    /* original C++ signature */
+    # `windowSizeState`: _WindowSizeState, default=Standard_
+    #  You can choose between several window size states:
+    #      Standard,
+    #      Minimized,
+    #      Maximized
     window_size_state: WindowSizeState = WindowSizeState.standard
 
     # WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi;    /* original C++ signature */
+    # `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi
+    # Define how the window size is specified:
+    #      * RelativeTo96Ppi enables to give a screen size whose physical result
+    #      (in millimeters) is independent of the screen density.
+    #         For example, a window size expressed as 800x600 will correspond to a size
+    #            - 800x600 (in screen coords) if the monitor dpi is 96
+    #            - 1600x120 (in screen coords) if the monitor dpi is 192
+    #          (this works with Glfw. With SDL, it only works under windows)
+    #      * ScreenCoords: measure window size in screen coords
+    #        (Note: screen coordinates might differ from real pixels on high dpi screen)
     window_size_measure_mode: WindowSizeMeasureMode = (
         WindowSizeMeasureMode.relative_to96_ppi
     )
 
+    # --------------- Position ------------------
+
+    # WindowPositionMode positionMode = WindowPositionMode::OsDefault;    /* original C++ signature */
+    # `positionMode`: you can choose between several window position modes:
+    #      OsDefault,
+    #      MonitorCenter,
+    #      FromCoords,
+    position_mode: WindowPositionMode = WindowPositionMode.os_default
+
+    # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
+    # `position`: used if windowPositionMode==FromCoords, default=(40, 40)
+    position: ScreenPosition = DefaultScreenPosition
+
+    # int monitorIdx = 0;    /* original C++ signature */
+    # `monitorIdx`: index of the monitor to use, default=0
+    #  used if positionMode==MonitorCenter or if fullScreenMode!=NoFullScreen
+    monitor_idx: int = 0
+
+    # --------------- Full screen ------------------
+
+    # FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen;    /* original C++ signature */
+    # `fullScreenMode`: you can choose between several full screen modes:
+    #      NoFullScreen,
+    #      FullScreen,                  // Full screen with specified resolution
+    #      FullScreenDesktopResolution, // Full screen with current desktop mode & resolution
+    #      FullMonitorWorkArea          // Fake full screen (maximized window) on the selected monitor
+    full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen
+
+    # --------------- Auto Resize ------------------
+
     # bool resizeAppWindowAtNextFrame = false;    /* original C++ signature */
-    # If True, the application window will try to resize based on its content on the next displayed frame
+    # `resizeAppWindowAtNextFrame`: _bool_, default=False;
+    #  If you set this to flag to True at any point during the execution, the application
+    #  window will then try to resize based on its content on the next displayed frame,
+    #  and this flag will subsequently be set to False.
+    #  Example:
+    #   ```cpp
+    # // Will resize the app window at next displayed frame
+    #   HelloImGui::GetRunnerParams()->appWindowParams.windowGeometry.resizeAppWindowAtNextFrame = True;
+    #   ```
+    #  Note: this flag is intended to be used during execution, not at startup
+    #  (use sizeAuto at startup).
     resize_app_window_at_next_frame: bool = False
-    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi, bool resizeAppWindowAtNextFrame = false);    /* original C++ signature */
+    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, bool resizeAppWindowAtNextFrame = false);    /* original C++ signature */
     def __init__(
         self,
         size: ScreenSize = DefaultWindowSize,
         size_auto: bool = False,
-        full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen,
+        window_size_state: WindowSizeState = WindowSizeState.standard,
+        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi,
         position_mode: WindowPositionMode = WindowPositionMode.os_default,
         position: ScreenPosition = DefaultScreenPosition,
         monitor_idx: int = 0,
-        window_size_state: WindowSizeState = WindowSizeState.standard,
-        window_size_measure_mode: WindowSizeMeasureMode = WindowSizeMeasureMode.relative_to96_ppi,
+        full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen,
         resize_app_window_at_next_frame: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+# @@md
 
 class EdgeInsets:
     """If there is a notch on the iPhone, you should not display inside these insets"""
@@ -902,76 +913,82 @@ class EdgeInsets:
         pass
 
 class AppWindowParams:
-    """*
-    @@md#AppWindowParams
+    """@@md#AppWindowParams
 
-    __AppWindowParams__ is a struct that defines the application window display params.
-    See [doc_src/hello_imgui_diagram.png](https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png)
-    for details.
-
-    Members:
-    * `windowTitle`: _string, default=""_. Title of the application window
-    * `windowGeometry`: _WindowGeometry_
-      Enables to precisely set the window geometry (position, monitor, size, full screen, fake full screen, etc.)
-       _Note: on a mobile device, the application will always be full screen._
-    * `restorePreviousGeometry`: _bool, default=false_.
-      If True, then save & restore windowGeometry from last run (the geometry will be written in imgui_app_window.ini)
-    * `resizable`: _bool, default = false_. Should the window be resizable. This is taken into account at
-      creation.
-    * `hidden`: _bool, default = false_. Should the window be hidden. This is taken into account dynamically (you
-      can show/hide the window with this). Full screen windows cannot be hidden.
-
-    * `borderless`: _bool, default = false_. Should the window have borders. This is taken into account at creation.
-    * `borderlessMovable`: _bool, default = true_. If the window is borderless, should it be movable.
-       If so, a drag zone is displayed at the top of the window when the mouse is over it.
-    * `borderlessResizable`: _bool, default = true_. If the window is borderless, should it be resizable.
-       If so, a drag zone is displayed at the bottom-right of the window when the mouse is over it.
-    * `borderlessClosable`: _bool, default = false_. If the window is borderless, should it have a close button.
-       If so, a close button is displayed at the top-right of the window when the mouse is over it.
-    * `borderlessHighlightColor`: _ImVec4, default = ImVec4(0.2, 0.4, 1., 0.)_.
-       Color of the highlight displayed on resize/move zones. If borderlessHighlightColor.w==0,
-       then the highlightColor will be automatically set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)
-
-    * `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui:
-      if there is a notch on the iPhone, you should not display inside these insets.
-      HelloImGui handles this automatically, if handleEdgeInsets is True and
-      if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
-      (warning, these values are updated only after a few frames, they are typically 0 for the first 4 frames)
-    * `handleEdgeInsets`: _bool, default = true_. iOS only, if True, HelloImGui will handle the edgeInsets.
-
-    @@md
-    *
+     AppWindowParams is a struct that defines the application window display params.
+    See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png
+     for details.
     """
 
+    # --------------- Standard params ------------------
+
     # std::string windowTitle;    /* original C++ signature */
+    # `windowTitle`: _string, default=""_. Title of the application window
     window_title: str
 
     # WindowGeometry windowGeometry;    /* original C++ signature */
+    # `windowGeometry`: _WindowGeometry_
+    #  Enables to precisely set the window geometry (position, monitor, size,
+    #  full screen, fake full screen, etc.)
+    #   _Note: on a mobile device, the application will always be full screen._
     window_geometry: WindowGeometry
 
     # bool restorePreviousGeometry = false;    /* original C++ signature */
-    # if True, then save & restore from last run
+    # `restorePreviousGeometry`: _bool, default=false_.
+    # If True, then save & restore windowGeometry from last run (the geometry
+    # will be written in imgui_app_window.ini)
     restore_previous_geometry: bool = False
 
     # bool resizable = true;    /* original C++ signature */
+    # `resizable`: _bool, default = false_. Should the window be resizable.
+    # This is taken into account at creation.
     resizable: bool = True
     # bool hidden = false;    /* original C++ signature */
+    # `hidden`: _bool, default = false_. Should the window be hidden.
+    # This is taken into account dynamically (you can show/hide the window with this).
+    # Full screen windows cannot be hidden.
     hidden: bool = False
 
+    # --------------- Borderless window params ------------------
+
     # bool   borderless = false;    /* original C++ signature */
+    # `borderless`: _bool, default = false_. Should the window have borders.
+    # This is taken into account at creation.
     borderless: bool = False
     # bool   borderlessMovable = true;    /* original C++ signature */
+    # `borderlessMovable`: if the window is borderless, should it be movable.
+    #   If so, a drag zone is displayed at the top of the window when the mouse is over it.
     borderless_movable: bool = True
     # bool   borderlessResizable = true;    /* original C++ signature */
+    # `borderlessResizable`: if the window is borderless, should it be resizable.
+    #  If so, a drag zone is displayed at the bottom-right of the window
+    #  when the mouse is over it.
     borderless_resizable: bool = True
     # bool   borderlessClosable = true;    /* original C++ signature */
+    # `borderlessClosable`: if the window is borderless, should it have a close button.
+    #  If so, a close button is displayed at the top-right of the window
+    #  when the mouse is over it.
     borderless_closable: bool = True
     # ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);    /* original C++ signature */
+    # `borderlessHighlightColor`:
+    #   Color of the highlight displayed on resize/move zones.
+    #   If borderlessHighlightColor.w==0, then the highlightColor will be automatically
+    #   set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)
     borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3)
 
+    # --------------- iOS Notch ------------------
+
     # EdgeInsets edgeInsets;    /* original C++ signature */
+    # `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui.
+    # If there is a notch on the iPhone, you should not display inside these insets.
+    # HelloImGui handles this automatically, if handleEdgeInsets is True and
+    # if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.
+    # (warning, these values are updated only after a few frames,
+    #  they are typically 0 for the first 4 frames)
     edge_insets: EdgeInsets
     # bool       handleEdgeInsets = true;    /* original C++ signature */
+    # `handleEdgeInsets`: _bool, default = true_. iOS only.
+    # If True, HelloImGui will handle the edgeInsets on iOS.
     handle_edge_insets: bool = True
     # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
     def __init__(
@@ -992,152 +1009,171 @@ class AppWindowParams:
         """Auto-generated default constructor with named params"""
         pass
 
+# @@md
+
 class DefaultImGuiWindowType(enum.Enum):
-    """*
-    @@md#DefaultImGuiWindowType
-
-    __DefaultImGuiWindowType__ is an enum class that defines whether or not a full screen background window is provided.
-
-     Values:
-      * _ProvideFullScreenWindow_: a full window is provided in the background
-      * _ProvideFullScreenDockSpace_: a full screen dockspace is provided in the background
-      * _NoDefaultWindow_: No default window is provided (except for ImGui's default "debug" window)
-
-    @@md
-
+    """@@md#DefaultImGuiWindowType
+    `DefaultImGuiWindowType` is an enum class that defines whether a full screen background
+    window is provided or not
     """
 
     # ProvideFullScreenWindow,    /* original C++ signature */
+    # `ProvideFullScreenWindow`: a full window is provided in the background
     provide_full_screen_window = enum.auto()  # (= 0)
     # ProvideFullScreenDockSpace,    /* original C++ signature */
+    # `ProvideFullScreenDockSpace`: a full screen dockspace is provided in the background
     provide_full_screen_dock_space = enum.auto()  # (= 1)
     # NoDefaultWindow    /* original C++ signature */
     # }
+    # `NoDefaultWindow`: No default window is provided
+    # (except for ImGui's default "debug" window)
     no_default_window = enum.auto()  # (= 2)
 
+# @@md
+
+# @@md#ImGuiWindowParams
+
 class ImGuiWindowParams:
-    """*
-    @@md#ImGuiWindowParams
-
-    __ImGuiWindowParams__ is a struct that defines the ImGui inner windows params
+    """`ImGuiWindowParams` is a struct that defines the ImGui inner windows params
     These settings affect the imgui inner windows inside the application window.
-    In order to change the application window settings, change the _AppWindowsParams_
-
-     Members:
-
-      * `defaultImGuiWindowType`: _DefaultImGuiWindowType, default=ProvideFullScreenWindow_.
-        By default, a full window is provided in the background. You can still
-         add windows on top of it, since the Z-order of this background window is always behind
-
-      * `backgroundColor`: _ImVec4, default=ImVec4(0.45, 0.55, 0.60, 1.00)_.
-        This is the "clearColor", visible if defaultImGuiWindowType is not ProvideFullScreenWindow.
-        Alternatively, you can set your own RunnerCallbacks.CustomBackground to have full
-        control over what is drawn behind the Gui.
-
-      * `showMenuBar`: _bool, default=false_.
-        Show Menu bar on top of imgui main window.
-        In order to fully customize the menu, set showMenuBar to True, and set showMenu_App and showMenu_View params to False.
-        Then, implement the callback `RunnerParams.callbacks.ShowMenus` which can optionally call `HelloImGui::ShowViewMenu`
-        and `HelloImGui::ShowAppMenu`.
-
-      * `showMenu_App`: _bool, default=true_.
-        If menu bar is shown, include or not the default app menu
-
-       * `showMenu_App_Quit`: _bool, default=true_.
-        Include or not a "Quit" item in the default app menu.
-        Set this to False if you intend to provide your own quit callback with possible user confirmation
-        (and implement it inside RunnerCallbacks.ShowAppMenuItems)
-
-      * `showMenu_View`: _bool, default=true_.
-        If menu bar is shown, include or not the default _View_ menu, that enables to change the layout and
-        set the docked windows and status bar visibility)
-
-      * `showStatusBar`: _bool, default=false_.
-        Flag that enable to show a Status bar at the bottom. You can customize the status bar
-        via RunnerCallbacks.ShowStatus()
-      * `showStatus_Fps`: _bool, default=true_. If set, display the FPS in the status bar.
-      * `rememberStatusBarSettings`: _bool, default=true_. If set, showStatusBar and showStatus_Fps are stored in the application settings.
-
-      * `configWindowsMoveFromTitleBarOnly`: _bool, default=true_.
-        Make windows only movable from the title bar
-
-      * `enableViewports`: _bool, default=false_. Enable multiple viewports (i.e multiple native windows)
-        If True, you can drag windows outside out the main window in order to put their content into new native windows.
-
-       * `menuAppTitle`: _string, default=""_. Set the title of the App menu. If empty, this menu name will use
-         the "windowTitle" from AppWindowParams
-
-      * `tweakedTheme`: _ImGuiTheme::ImGuiTweakedTheme_.
-        Change the ImGui theme. Several themes are available, you can query the list by calling
-        HelloImGui::AvailableThemes()
-      * `showMenu_View_Themes`: _bool, default=true_.
-        Show theme selection in view menu
-      * `rememberTheme`: _bool, default=true_.
-        Remember selected theme
-    @@md
-
+    In order to change the application window settings, change the `AppWindowsParams`
     """
 
-    # DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow;    /* original C++ signature */
+    # ------------ Main Options  -------------------------------------------------------
+
+    # DefaultImGuiWindowType defaultImGuiWindowType =    /* original C++ signature */
+    #         DefaultImGuiWindowType::ProvideFullScreenWindow;
+    # defaultImGuiWindowType: (enum DefaultImGuiWindowType)
+    # Choose between:
+    #    - ProvideFullScreenWindow (default)
+    #      a full window is provided in the background
+    #      You can still add windows on top of it, since the Z-order
+    #      of this background window is always behind
+    #    - ProvideFullScreenDockSpace:
+    #      a full screen dockspace is provided in the background
+    #      (use this if you intend to use docking)
+    #    - NoDefaultWindow:
+    #      no default window is provided
     default_imgui_window_type: DefaultImGuiWindowType = (
         DefaultImGuiWindowType.provide_full_screen_window
     )
 
-    # ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
-    background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
-
-    # bool showMenuBar = false;    /* original C++ signature */
-    show_menu_bar: bool = False
-    # bool showMenu_App = true;    /* original C++ signature */
-    show_menu_app: bool = True
-    # bool showMenu_App_Quit = true;    /* original C++ signature */
-    show_menu_app_quit: bool = True
-    # bool showMenu_View = true;    /* original C++ signature */
-    show_menu_view: bool = True
-
-    # bool showStatusBar = false;    /* original C++ signature */
-    show_status_bar: bool = False
-    # bool showStatus_Fps = true;    /* original C++ signature */
-    show_status_fps: bool = True
-    # bool rememberStatusBarSettings = true;    /* original C++ signature */
-    remember_status_bar_settings: bool = True
-
-    # bool configWindowsMoveFromTitleBarOnly = true;    /* original C++ signature */
-    config_windows_move_from_title_bar_only: bool = True
-
     # bool enableViewports = false;    /* original C++ signature */
+    # enableViewports: Enable multiple viewports (i.e. multiple native windows)
+    # If True, you can drag windows outside the main window,
+    # in order to put their content into new native windows.
     enable_viewports: bool = False
 
+    # bool configWindowsMoveFromTitleBarOnly = true;    /* original C++ signature */
+    # Make windows only movable from the title bar
+    config_windows_move_from_title_bar_only: bool = True
+
+    # ------------ Menus & Status bar --------------------------------------------------
+
     # std::string menuAppTitle = "";    /* original C++ signature */
+    # Set the title of the App menu. If empty, the menu name will use
+    # the "windowTitle" from AppWindowParams//
     menu_app_title: str = ""
 
-    # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
-    tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
+    # bool showMenuBar = false;    /* original C++ signature */
+    # Show Menu bar on top of imgui main window.
+    # In order to fully customize the menu, set showMenuBar to True, and set showMenu_App
+    # and showMenu_View params to False. Then, implement the callback
+    # `RunnerParams.callbacks.ShowMenus`
+    # which can optionally call `HelloImGui::ShowViewMenu` and `HelloImGui::ShowAppMenu`.
+    show_menu_bar: bool = False
+
+    # bool showMenu_App = true;    /* original C++ signature */
+    #  If menu bar is shown, include or not the default app menu
+    show_menu_app: bool = True
+
+    # bool showMenu_App_Quit = true;    /* original C++ signature */
+    # Include or not a "Quit" item in the default app menu.
+    # Set this to False if you intend to provide your own quit callback
+    # with possible user confirmation
+    # (and implement it inside RunnerCallbacks.ShowAppMenuItems)
+    show_menu_app_quit: bool = True
+
+    # bool showMenu_View = true;    /* original C++ signature */
+    # If menu bar is shown, include or not the default _View_ menu, that enables
+    # to change the layout and set the docked windows and status bar visibility)
+    show_menu_view: bool = True
+
     # bool showMenu_View_Themes = true;    /* original C++ signature */
+    # Show theme selection in view menu
     show_menu_view_themes: bool = True
     # bool rememberTheme = true;    /* original C++ signature */
+    # `rememberTheme`: _bool, default=true_. Remember selected theme
     remember_theme: bool = True
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f), bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, bool configWindowsMoveFromTitleBarOnly = true, bool enableViewports = false, std::string menuAppTitle = "", ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), bool showMenu_View_Themes = true, bool rememberTheme = true);    /* original C++ signature */
+
+    # bool showStatusBar = false;    /* original C++ signature */
+    # Flag that enable to show a Status bar at the bottom. You can customize
+    # the status bar via RunnerCallbacks.ShowStatus()
+    show_status_bar: bool = False
+
+    # bool showStatus_Fps = true;    /* original C++ signature */
+    # If set, display the FPS in the status bar.
+    show_status_fps: bool = True
+    # bool rememberStatusBarSettings = true;    /* original C++ signature */
+    # If set, showStatusBar and showStatus_Fps are stored in the application settings.
+    remember_status_bar_settings: bool = True
+
+    # ------------ Change the dockspace or background window size -----------------------
+
+    # If defaultImGuiWindowType = ProvideFullScreenWindow or ProvideFullScreenDockSpace,
+    # you can set the position and size of the background window:
+    #    - fullScreenWindow_MarginTopLeft is the window position
+    #    - fullScreenWindow_MarginBottomRight is the margin between
+    #      the "application window" bottom right corner
+    #      and the "imgui background window" bottom right corner
+    # Important note:
+    #     In order to be Dpi aware, those sizes are in *em units*, not in pixels,
+    #     i.e. in multiples of the font size! (See HelloImGui::EmToVec2)
+    # ImVec2 fullScreenWindow_MarginTopLeft     = ImVec2(0.f, 0.f);    /* original C++ signature */
+    full_screen_window_margin_top_left: ImVec2 = ImVec2(0.0, 0.0)
+    # ImVec2 fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);    /* original C++ signature */
+    full_screen_window_margin_bottom_right: ImVec2 = ImVec2(0.0, 0.0)
+
+    # ------------ Theme ---------------------------------------------------------------
+
+    # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
+    # tweakedTheme: (enum ImGuiTheme::ImGuiTweakedTheme)
+    # Changes the ImGui theme. Several themes are available, you can query the list
+    # by calling HelloImGui::AvailableThemes()
+    tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
+
+    # ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
+    # backgroundColor:
+    # This is the "clearColor", visible if defaultImGuiWindowType!=ProvideFullScreenWindow.
+    # Alternatively, you can set your own RunnerCallbacks.CustomBackground to have full
+    # control over what is drawn behind the Gui.
+    background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
+
+    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, bool enableViewports = false, bool configWindowsMoveFromTitleBarOnly = true, std::string menuAppTitle = "", bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showMenu_View_Themes = true, bool rememberTheme = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, ImVec2 fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f), ImVec2 fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f), ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f));    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
-        background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0),
+        enable_viewports: bool = False,
+        config_windows_move_from_title_bar_only: bool = True,
+        menu_app_title: str = "",
         show_menu_bar: bool = False,
         show_menu_app: bool = True,
         show_menu_app_quit: bool = True,
         show_menu_view: bool = True,
+        show_menu_view_themes: bool = True,
+        remember_theme: bool = True,
         show_status_bar: bool = False,
         show_status_fps: bool = True,
         remember_status_bar_settings: bool = True,
-        config_windows_move_from_title_bar_only: bool = True,
-        enable_viewports: bool = False,
-        menu_app_title: str = "",
+        full_screen_window_margin_top_left: ImVec2 = ImVec2(0.0, 0.0),
+        full_screen_window_margin_bottom_right: ImVec2 = ImVec2(0.0, 0.0),
         tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme(),
-        show_menu_view_themes: bool = True,
-        remember_theme: bool = True,
+        background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0),
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
@@ -1183,37 +1219,36 @@ def empty_event_callback() -> AnyEventCallback:
     pass
 
 class MobileCallbacks:
-    """*
-    @@md#MobileCallbacks
+    """@@md#MobileCallbacks
 
-    **MobileCallbacks** is a struct that contains callbacks that are called by the application
-     when running under "Android, iOS and WinRT".
-     These events are specific to mobile and embedded devices that have different requirements
-     than your usual desktop application. These events must be handled quickly,
-     since often the OS needs an immediate response and will terminate your process shortly
-     after sending the event if you do not handle them apprpriately.
-
-     Note: on mobile devices, it is not possible to "Quit" an application, it can only be put on Pause.
-
-     * `OnDestroy`: _VoidFunction, default=empty_. The application is being terminated by the OS.
-     * `OnLowMemory`: _VoidFunction, default=empty_. The application is low on memory, free memory if possible.
-     * `OnPause`: _VoidFunction, default=empty_. The application is about to enter the background.
-     * `OnResume`: _VoidFunction, default=empty_. The application is has come to foreground and is now interactive.
-
-     Note: 'OnPause' and 'OnResume' are called twice consecutively under iOS (before and after entering background
-     or foreground).
-
-    @@md
-
+    MobileCallbacks is a struct that contains callbacks that are called by the application
+    when running under "Android, iOS and WinRT".
+    These events are specific to mobile and embedded devices that have different
+    requirements from your usual desktop application.
+    These events must be handled quickly, since often the OS needs an immediate response
+    and will terminate your process shortly after sending the event
+    if you do not handle them appropriately.
+    On mobile devices, it is not possible to "Quit" an application,
+    it can only be put on Pause.
     """
 
     # VoidFunction OnDestroy = EmptyVoidFunction();    /* original C++ signature */
+    # `OnDestroy`: The application is being terminated by the OS.
     on_destroy: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction OnLowMemory = EmptyVoidFunction();    /* original C++ signature */
+    # `OnLowMemory`: _VoidFunction, default=empty_.
+    # When the application is low on memory, free memory if possible.
     on_low_memory: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction OnPause = EmptyVoidFunction();    /* original C++ signature */
+    # `OnPause`: The application is about to enter the background.
     on_pause: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction OnResume = EmptyVoidFunction();    /* original C++ signature */
+    # `OnResume`: The application came to foreground and is now interactive.
+    # Note: 'OnPause' and 'OnResume' are called twice consecutively under iOS
+    # (before and after entering background or foreground).
     on_resume: VoidFunction = EmptyVoidFunction()
     # MobileCallbacks(VoidFunction OnDestroy = EmptyVoidFunction(), VoidFunction OnLowMemory = EmptyVoidFunction(), VoidFunction OnPause = EmptyVoidFunction(), VoidFunction OnResume = EmptyVoidFunction());    /* original C++ signature */
     def __init__(
@@ -1226,142 +1261,139 @@ class MobileCallbacks:
         """Auto-generated default constructor with named params"""
         pass
 
+# @@md
+
 class RunnerCallbacks:
-    """*
-     @@md#RunnerCallbacks
+    """@@md#RunnerCallbacks
 
-     **RunnerCallbacks** is a struct that contains the callbacks that are called by the application
-
-     _Members_
-
-    * `ShowGui`: *VoidFunction, default=empty*.
-      Fill it with a function that will add your widgets.
-
-    * `ShowMenus`: *VoidFunction, default=empty*.
-       A function that will render your menus. Fill it with a function that will add ImGui menus by calling:
-       _ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()_
-
-       _Notes:_
-       * you do not need to call _ImGui::BeginMenuBar_ and _ImGui::EndMenuBar_
-       * Some default menus can be provided: see _ImGuiWindowParams_ options
-          (_showMenuBar, showMenu_App_QuitAbout, showMenu_View_)
-
-    * `ShowAppMenuItems`: *VoidFunction, default=empty*.
-      A function that will render items that will be placed in the App menu.
-      They will be placed before the "Quit" MenuItem, which is added automatically by HelloImGui.
-      This will be displayed only if ImGuiWindowParams.showMenu_App is True
-
-    * `ShowStatus`: *VoidFunction, default=empty*.
-      A function that will add items to the status bar. Use small items (ImGui::Text for example),
-      since the height of the status is 30. Also, remember to call ImGui::SameLine() between items.
-
-    * `PostInit`: *VoidFunction, default=empty*.
-      You can here add a function that will be called once after OpenGL and ImGui are inited, but before
-      the backend callback are initialized.
-      If you, for instance, want to add your own glfw callbacks, you should use this function to do so."
-
-    * `BeforeExit`: *VoidFunction, default=empty*.
-      You can here add a function that will be called once before exiting (when OpenGL and ImGui are
-      still inited)
-
-    * `BeforeExit_PostCleanup`: *VoidFunction, default=empty*.
-      You can here add a function that will be called once before exiting (after OpenGL and ImGui have been deinited)
-
-    * `PreNewFrame`: *VoidFunction, default=empty*.
-      You can here add a function that will be called at each frame, and before the call to ImGui::NewFrame().
-      It is a good place to dynamically add new fonts, or dynamically add new dockable windows.
-
-    * `BeforeImGuiRender`: *VoidFunction, default=empty*.
-      You can here add a function that will be called at each frame, after the user Gui code,
-      and just before the call to ImGui::Render() (which will also call ImGui::EndFrame()).
-
-    * `AfterSwap`: *VoidFunction, default=empty*.
-      You can here add a function that will be called at each frame, after the Gui was rendered
-      and swapped to the screen.
-
-    * `CustomBackground`: *VoidFunction, default=empty*.
-      By default, the background is cleared using ImGuiWindowParams.backgroundColor. If set, this function
-      instead gives you full control over the background that is drawn behind the Gui. An example use case
-      is if you have a 3D application like a mesh editor, or game, and just want the Gui to be drawn on top
-      of that content.
-
-    * `AnyBackendEventCallback`: *AnyBackendCallback, default=empty*.
-      Callbacks for events from a specific backend. _Only implemented for SDL, where the event
-      will be of type 'SDL_Event *'_
-      This callback should return True if the event was handled and shall not be processed further.
-      Note: in the case of GLFW, you should use register them in `PostInit`
-
-    * `LoadAdditionalFonts`: *VoidFunction, default=_LoadDefaultFont_WithFontAwesome*.
-      A function that is called once, when fonts are ready to be loaded.
-      By default, _LoadDefaultFont_WithFontAwesome_ is called but you can copy and customize it.
-      (LoadDefaultFont_WithFontAwesome will load from assets/fonts/ but reverts to the ImGui embedded font if not found)
-
-    * `SetupImGuiConfig`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
-      If needed, change ImGui config via SetupImGuiConfig (enable docking, gamepad, etc)
-
-    * `SetupImGuiStyle`: *VoidFunction, default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
-      If needed, setup your own style by providing your own SetupImGuiStyle callback
-
-    * `RegisterTests`: *VoidFunction, default=empty*.
-      A function that is called once ImGuiTestEngine is ready to be filled with tests and automations definitions.
-
-    * `mobileCallbacks`: *_MobileCallbacks_*. Callbacks that are called by the application
-      when running under "Android, iOS and WinRT".
-    Notes:
-      * 'mobileCallbacks' is present only if the target device is a mobile device (iOS, Android).
-        Use `#ifdef HELLOIMGUI_MOBILEDEVICE` to detect this.
-      * These events are currently handled only with SDL backend.
-
-    @@md
+    RunnerCallbacks is a struct that contains the callbacks
+    that are called by the application
 
     """
 
+    # --------------- GUI Callbacks -------------------
+
     # VoidFunction ShowGui = EmptyVoidFunction();    /* original C++ signature */
+    # `ShowGui`: Fill it with a function that will add your widgets.
     show_gui: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction ShowMenus = EmptyVoidFunction();    /* original C++ signature */
+    # `ShowMenus`: Fill it with a function that will add ImGui menus by calling:
+    #       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()
+    #   Notes:
+    #   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar
+    #   * Some default menus can be provided:
+    #     see ImGuiWindowParams options:
+    #         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_
     show_menus: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction ShowAppMenuItems = EmptyVoidFunction();    /* original C++ signature */
+    # `ShowAppMenuItems`: A function that will render items that will be placed
+    # in the App menu. They will be placed before the "Quit" MenuItem,
+    # which is added automatically by HelloImGui.
+    #  This will be displayed only if ImGuiWindowParams.showMenu_App is True
     show_app_menu_items: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction ShowStatus = EmptyVoidFunction();    /* original C++ signature */
+    # `ShowStatus`: A function that will add items to the status bar.
+    #  Use small items (ImGui::Text for example), since the height of the status is 30.
+    #  Also, remember to call ImGui::SameLine() between items.
     show_status: VoidFunction = EmptyVoidFunction()
 
+    # --------------- Startup sequence callbacks -------------------
+
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
+    # `PostInit`: You can here add a function that will be called once after OpenGL
+    #  and ImGui are inited, but before the backend callback are initialized.
+    #  If you, for instance, want to add your own glfw callbacks,
+    #  you should use this function to do so.
     post_init: VoidFunction = EmptyVoidFunction()
-    # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
-    before_exit: VoidFunction = EmptyVoidFunction()
-    # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
-    before_exit_post_cleanup: VoidFunction = EmptyVoidFunction()
 
-    # VoidFunction PreNewFrame = EmptyVoidFunction();    /* original C++ signature */
-    pre_new_frame: VoidFunction = EmptyVoidFunction()
-    # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
-    before_imgui_render: VoidFunction = EmptyVoidFunction()
-    # VoidFunction AfterSwap = EmptyVoidFunction();    /* original C++ signature */
-    after_swap: VoidFunction = EmptyVoidFunction()
-
-    # VoidFunction CustomBackground = EmptyVoidFunction();    /* original C++ signature */
-    custom_background: VoidFunction = EmptyVoidFunction()
-
-    # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
-    any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
-
-    # VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);    /* original C++ signature */
+    # VoidFunction LoadAdditionalFonts =    /* original C++ signature */
+    #         (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
+    # `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
+    #  A function that is called once, when fonts are ready to be loaded.
+    #  By default, _LoadDefaultFont_WithFontAwesome_ is called,
+    #  but you can copy and customize it.
+    #  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/
+    #  but reverts to the ImGui embedded font if not found)
     load_additional_fonts: VoidFunction = (VoidFunction)(
         ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
     )
-    # VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);    /* original C++ signature */
+
+    # VoidFunction SetupImGuiConfig =    /* original C++ signature */
+    #         (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);
+    # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
+    #  If needed, change ImGui config via SetupImGuiConfig
+    #  (enable docking, gamepad, etc)
     setup_imgui_config: VoidFunction = (VoidFunction)(
         ImGuiDefaultSettings.SetupDefaultImGuiConfig
     )
-    # VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);    /* original C++ signature */
+
+    # VoidFunction SetupImGuiStyle =    /* original C++ signature */
+    #         (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);
+    # `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
+    #  If needed, set your own style by providing your own SetupImGuiStyle callback
     setup_imgui_style: VoidFunction = (VoidFunction)(
         ImGuiDefaultSettings.SetupDefaultImGuiStyle
     )
 
     # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
+    # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
+    # to be filled with tests and automations definitions.
     register_tests: VoidFunction = EmptyVoidFunction()
 
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction());    /* original C++ signature */
+    # --------------- Exit sequence callbacks -------------------
+
+    # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
+    # `BeforeExit`: You can here add a function that will be called once before exiting
+    #  (when OpenGL and ImGui are still inited)
+    before_exit: VoidFunction = EmptyVoidFunction()
+
+    # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
+    # `BeforeExit_PostCleanup`: You can here add a function that will be called once
+    # before exiting (after OpenGL and ImGui have been stopped)
+    before_exit_post_cleanup: VoidFunction = EmptyVoidFunction()
+
+    # --------------- Callbacks in the render loop -------------------
+
+    # VoidFunction PreNewFrame = EmptyVoidFunction();    /* original C++ signature */
+    # `PreNewFrame`: You can here add a function that will be called at each frame,
+    #  and before the call to ImGui::NewFrame().
+    #  It is a good place to dynamically add new fonts, or new dockable windows.
+    pre_new_frame: VoidFunction = EmptyVoidFunction()
+
+    # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
+    # `BeforeImGuiRender`: You can here add a function that will be called at each frame,
+    #  after the user Gui code, and just before the call to
+    #  ImGui::Render() (which will also call ImGui::EndFrame()).
+    before_imgui_render: VoidFunction = EmptyVoidFunction()
+
+    # VoidFunction AfterSwap = EmptyVoidFunction();    /* original C++ signature */
+    # `AfterSwap`: You can here add a function that will be called at each frame,
+    #  after the Gui was rendered and swapped to the screen.
+    after_swap: VoidFunction = EmptyVoidFunction()
+
+    # VoidFunction CustomBackground = EmptyVoidFunction();    /* original C++ signature */
+    # `CustomBackground`:
+    #  By default, the background is cleared using ImGuiWindowParams.backgroundColor.
+    #  If set, this function gives you full control over the background that is drawn
+    #  behind the Gui. An example use case is if you have a 3D application
+    #  like a mesh editor, or game, and just want the Gui to be drawn
+    #  on top of that content.
+    custom_background: VoidFunction = EmptyVoidFunction()
+
+    # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
+    # `AnyBackendEventCallback`:
+    #  Callbacks for events from a specific backend. _Only implemented for SDL.
+    #  where the event will be of type 'SDL_Event *'_
+    #  This callback should return True if the event was handled
+    #  and shall not be processed further.
+    #  Note: in the case of GLFW, you should use register them in `PostInit`
+    any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
+
+    # --------------- Mobile callbacks -------------------
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1369,13 +1401,6 @@ class RunnerCallbacks:
         show_app_menu_items: VoidFunction = EmptyVoidFunction(),
         show_status: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
-        before_exit: VoidFunction = EmptyVoidFunction(),
-        before_exit_post_cleanup: VoidFunction = EmptyVoidFunction(),
-        pre_new_frame: VoidFunction = EmptyVoidFunction(),
-        before_imgui_render: VoidFunction = EmptyVoidFunction(),
-        after_swap: VoidFunction = EmptyVoidFunction(),
-        custom_background: VoidFunction = EmptyVoidFunction(),
-        any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
         load_additional_fonts: VoidFunction = (VoidFunction)(
             ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
         ),
@@ -1386,9 +1411,18 @@ class RunnerCallbacks:
             ImGuiDefaultSettings.SetupDefaultImGuiStyle
         ),
         register_tests: VoidFunction = EmptyVoidFunction(),
+        before_exit: VoidFunction = EmptyVoidFunction(),
+        before_exit_post_cleanup: VoidFunction = EmptyVoidFunction(),
+        pre_new_frame: VoidFunction = EmptyVoidFunction(),
+        before_imgui_render: VoidFunction = EmptyVoidFunction(),
+        after_swap: VoidFunction = EmptyVoidFunction(),
+        custom_background: VoidFunction = EmptyVoidFunction(),
+        any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+# @@md
 
 # namespace HelloImGui
 
@@ -1399,15 +1433,18 @@ class RunnerCallbacks:
 # *
 # @@md#DockingIntro
 #
-# HelloImGui makes it easy to use dockable windows (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
+# HelloImGui makes it easy to use dockable windows
+# (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
 #
-# You can define several layouts and switch between them:  each layout which will remember the user modifications and the list of opened windows
+# You can define several layouts and switch between them:  each layout which will remember
+# the user modifications and the list of opened windows
 #
-# HelloImGui will then provide a "View" menu with options to show/hide the dockable windows, restore the default layout, switch between layouts, etc.
+# HelloImGui will then provide a "View" menu with options to show/hide the dockable windows,
+# restore the default layout, switch between layouts, etc.
 #
 #![demo docking](https://traineq.org/ImGuiBundle/HelloImGuiLayout.gif)
 #
-# * Source for this example: [src/hello_imgui_demos/hello_imgui_demodocking](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_imgui_demodocking)
+# * Source for this example: https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_imgui_demodocking
 # * [Video explanation on YouTube](https://www.youtube.com/watch?v=XKxmz__F4ow) (5 minutes)
 #
 #
@@ -1416,8 +1453,12 @@ class RunnerCallbacks:
 # struct RunnerParams
 # {
 #    ...
-#    DockingParams dockingParams;                            // default layout of the application
-#    std::vector<DockingParams> alternativeDockingLayouts;   // optional alternative layouts
+#    // default layout of the application
+#    DockingParams dockingParams;
+#
+#    // optional alternative layouts
+#    std::vector<DockingParams> alternativeDockingLayouts;
+#
 #    ...
 # };
 # ```
@@ -1427,9 +1468,17 @@ class RunnerCallbacks:
 # ```cpp
 # struct DockingParams
 # {
-#    std::string layoutName = "Default";          // displayed name of the layout
-#    std::vector<DockingSplit> dockingSplits;     // list of splits (which define spaces where the windows will be placed)
-#    std::vector<DockableWindow> dockableWindows; // list of windows (with their gui code, and specifying in which space they will be placed)
+#    // displayed name of the layout
+#    std::string layoutName = "Default";
+#
+#    // list of splits
+#    // (which define spaces where the windows will be placed)
+#    std::vector<DockingSplit> dockingSplits;
+#
+#    // list of windows
+#    // (with their gui code, and specifying in which space they will be placed)
+#    std::vector<DockableWindow> dockableWindows;
+#
 #    ...
 # };
 # ```
@@ -1449,7 +1498,8 @@ class RunnerCallbacks:
 # ```cpp
 # std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
 # {
-#    //     Here, we want to split "MainDockSpace" (which is provided automatically) into three zones, like this:
+#    //   Here, we want to split "MainDockSpace" (which is provided automatically)
+#    //   into three zones, like this:
 #    //    ___________________________________________
 #    //    |        |                                |
 #    //    | Command|                                |
@@ -1470,7 +1520,8 @@ class RunnerCallbacks:
 #    splitMainMisc.direction = ImGuiDir_Down;
 #    splitMainMisc.ratio = 0.25;
 #
-#    // Then, add a space to the left which occupies a column whose width is 25% of the app width
+#    // Then, add a space to the left which occupies a column
+#    // whose width is 25% of the app width
 #    HelloImGui::DockingSplit splitMainCommand;
 #    splitMainCommand.initialDock = "MainDockSpace";
 #    splitMainCommand.newDock = "CommandSpace";
@@ -1487,13 +1538,15 @@ class RunnerCallbacks:
 # ```cpp
 # std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState)
 # {
-#    // A Command panel named "Commands" will be placed in "CommandSpace". Its Gui is provided calls "CommandGui"
+#    // A Command panel named "Commands" will be placed in "CommandSpace".
+#    // Its Gui is provided calls "CommandGui"
 #    HelloImGui::DockableWindow commandsWindow;
 #    commandsWindow.label = "Commands";
 #    commandsWindow.dockSpaceName = "CommandSpace";
 #    commandsWindow.GuiFunction = [&] { CommandGui(appState); };
 #
-#    // A Log window named "Logs" will be placed in "MiscSpace". It uses the HelloImGui logger gui
+#    // A Log window named "Logs" will be placed in "MiscSpace".
+#    // It uses the HelloImGui logger gui
 #    HelloImGui::DockableWindow logsWindow;
 #    logsWindow.label = "Logs";
 #    logsWindow.dockSpaceName = "MiscSpace";
@@ -1522,36 +1575,49 @@ class RunnerCallbacks:
 
 # ***************************************************************************
 
+# @@md#DockingSplit
+
 class DockingSplit:
-    """*
-    @@md#DockingSplit
-
-    **DockingSplit** is a struct that defines the way the docking splits should be applied on the screen
-    in order to create new Dock Spaces. _DockingParams_ contains a _vector[DockingSplit]_,
+    """DockingSplit is a struct that defines the way the docking splits should
+    be applied on the screen in order to create new Dock Spaces.
+    DockingParams contains a
+        vector<DockingSplit>
     in order to partition the screen at your will.
-
-    _Members:_
-
-    * `initialDock`: _DockSpaceName (aka string)_
-
-        id of the space that should be split.
-        At the start, there is only one Dock Space named "MainDockSpace".
-        You should start by partitioning this space, in order to create a new dock space.
-
-    * `newDock`: _DockSpaceName (aka string)_. id of the new dock space that will be created.
-    * `direction`: *ImGuiDir_ (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*.
-    Direction where this dock space should be created.
-    * `ratio`: _float, default=0.25_. Ratio of the initialDock size that should be used by the new dock space.
-    * `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*. Flags to apply to the new dock space (enable/disable resizing, splitting, tab bar, etc.)
-
-    @@md
-
     """
+
+    # DockSpaceName initialDock;    /* original C++ signature */
+    # `initialDock`: _DockSpaceName (aka string)_
+    #  id of the space that should be split.
+    #  At the start, there is only one Dock Space named "MainDockSpace".
+    #  You should start by partitioning this space, in order to create a new dock space.
+    initial_dock: DockSpaceName
+
+    # DockSpaceName newDock;    /* original C++ signature */
+    # `newDock`: _DockSpaceName (aka string)_.
+    #  id of the new dock space that will be created.
+    new_dock: DockSpaceName
+
+    # ImGuiDir_ direction;    /* original C++ signature */
+    # `direction`: *ImGuiDir_*
+    #  (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*
+    #  Direction where this dock space should be created.
+    direction: ImGuiDir_
+
+    # float ratio = 0.25f;    /* original C++ signature */
+    # `ratio`: _float, default=0.25_.
+    #  Ratio of the initialDock size that should be used by the new dock space.
+    ratio: float = 0.25
+
+    # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
+    # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
+    #  Flags to apply to the new dock space
+    #  (enable/disable resizing, splitting, tab bar, etc.)
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
     #                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
-    #       : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
+    #         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
     def __init__(
         self,
         initial_dock_: DockSpaceName = "",
@@ -1560,48 +1626,95 @@ class DockingSplit:
         ratio_: float = 0.25,
         node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
     ) -> None:
+        """Constructor"""
         pass
-    # DockSpaceName initialDock;    /* original C++ signature */
-    initial_dock: DockSpaceName
-    # DockSpaceName newDock;    /* original C++ signature */
-    new_dock: DockSpaceName
-    # ImGuiDir_ direction;    /* original C++ signature */
-    direction: ImGuiDir_
-    # float ratio = 0.25f;    /* original C++ signature */
-    ratio: float = 0.25
-    # ImGuiDockNodeFlags nodeFlags = ImGuiDockNodeFlags_None;    /* original C++ signature */
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+
+# @@md
+
+# @@md#DockableWindow
 
 class DockableWindow:
-    """*
-    @@md#DockableWindow
+    """DockableWindow is a struct that represents a window that can be docked."""
 
-    **DockableWindow** is a struct that represents a window that can be docked.
+    # --------------- Main params -------------------
 
-    _Members:_
+    # std::string label;    /* original C++ signature */
+    # `label`: _string_. Title of the window.
+    label: str
 
-    * `label`: _string_. Title of the window.
-    * `dockSpaceName`: _DockSpaceName (aka string)_. Id of the dock space where this window
-       should initially be placed
-    * `GuiFunction`: _VoidFunction_. Any function that will render this window's Gui.
-    * `isVisible`: _bool, default=true_. Flag that indicates whether this window is visible or not.
-    * `rememberIsVisible`: _bool, default=true_. Flag that indicates whether the window visibility should be saved in settings or not.
-    * `canBeClosed`: _bool, default=true_. Flag that indicates whether the user can close this window.
-    * `callBeginEnd`: _bool, default=true_. Flag that indicates whether ImGui::Begin and ImGui::End
-       calls should be added automatically (with the given "label"). Set to False if you want to call
-       ImGui::Begin/End yourself
-    * `includeInViewMenu`: _bool, default=true_. Flag that indicates whether this window should be mentioned
-       in the view menu.
-    * `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_. Window flags, see enum ImGuiWindowFlags_
-    * `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window size (unused if docked)
-    * `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window size.
-    * `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_. Window position (unused if docked)
-    * `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_. When to apply the window position.
-    * `focusWindowAtNextFrame`: _bool, default = false_. If set to True this window will be focused at the next frame.
+    # DockSpaceName dockSpaceName;    /* original C++ signature */
+    # `dockSpaceName`: _DockSpaceName (aka string)_.
+    #  Id of the dock space where this window should initially be placed
+    dock_space_name: DockSpaceName
 
-    @@md
-    *
-    """
+    # VoidFunction GuiFunction = EmptyVoidFunction();    /* original C++ signature */
+    # `GuiFunction`: _VoidFunction_.
+    # Any function that will render this window's Gui
+    gui_function: VoidFunction = EmptyVoidFunction()
+
+    # --------------- Options --------------------------
+
+    # bool isVisible = true;    /* original C++ signature */
+    # `isVisible`: _bool, default=true_.
+    #  Flag that indicates whether this window is visible or not.
+    is_visible: bool = True
+
+    # bool rememberIsVisible = true;    /* original C++ signature */
+    # `rememberIsVisible`: _bool, default=true_.
+    #  Flag that indicates whether the window visibility should be saved in settings.
+    remember_is_visible: bool = True
+
+    # bool canBeClosed = true;    /* original C++ signature */
+    # `canBeClosed`: _bool, default=true_.
+    #  Flag that indicates whether the user can close this window.
+    can_be_closed: bool = True
+
+    # bool callBeginEnd = true;    /* original C++ signature */
+    # `callBeginEnd`: _bool, default=true_.
+    #  Flag that indicates whether ImGui::Begin and ImGui::End
+    #  calls should be added automatically (with the given "label").
+    #  Set to False if you want to call ImGui::Begin/End yourself
+    call_begin_end: bool = True
+
+    # bool includeInViewMenu = true;    /* original C++ signature */
+    # `includeInViewMenu`: _bool, default=true_.
+    #  Flag that indicates whether this window should be mentioned in the view menu.
+    include_in_view_menu: bool = True
+
+    # ImGuiWindowFlags imGuiWindowFlags = 0;    /* original C++ signature */
+    # `imGuiWindowFlags`: _ImGuiWindowFlags, default=0_.
+    #  Window flags, see enum ImGuiWindowFlags_
+    imgui_window_flags: ImGuiWindowFlags = 0
+
+    # --------------- Focus window -----------------------------
+
+    # bool focusWindowAtNextFrame = false;    /* original C++ signature */
+    # `focusWindowAtNextFrame`: _bool, default = false_.
+    #  If set to True this window will be focused at the next frame.
+    focus_window_at_next_frame: bool = False
+
+    # --------------- Size & Position --------------------------
+    #              (only if not docked)
+
+    # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
+    # `windowSize`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
+    #  Window size (unused if docked)
+    window_size: ImVec2 = ImVec2(0.0, 0.0)
+
+    # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
+    # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
+    #  When to apply the window size.
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+
+    # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
+    # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
+    #  Window position (unused if docked)
+    window_position: ImVec2 = ImVec2(0.0, 0.0)
+
+    # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
+    # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
+    #  When to apply the window position.
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -1609,10 +1722,10 @@ class DockableWindow:
     #         const VoidFunction guiFunction_ = EmptyVoidFunction(),
     #         bool isVisible_ = true,
     #         bool canBeClosed_ = true)
-    #     : label(label_), dockSpaceName(dockSpaceName_),
-    #       GuiFunction(guiFunction_),
-    #       isVisible(isVisible_),
-    #       canBeClosed(canBeClosed_) {}
+    #         : label(label_), dockSpaceName(dockSpaceName_),
+    #           GuiFunction(guiFunction_),
+    #           isVisible(isVisible_),
+    #           canBeClosed(canBeClosed_) {}
     def __init__(
         self,
         label_: str = "",
@@ -1621,77 +1734,12 @@ class DockableWindow:
         is_visible_: bool = True,
         can_be_closed_: bool = True,
     ) -> None:
+        """--------------- Constructor ------------------------------
+        Constructor
+        """
         pass
-    # std::string label;    /* original C++ signature */
-    label: str
 
-    # DockSpaceName dockSpaceName;    /* original C++ signature */
-    dock_space_name: DockSpaceName
-
-    # VoidFunction GuiFunction = EmptyVoidFunction();    /* original C++ signature */
-    gui_function: VoidFunction = EmptyVoidFunction()
-
-    # bool isVisible = true;    /* original C++ signature */
-    is_visible: bool = True
-    # bool rememberIsVisible = true;    /* original C++ signature */
-    remember_is_visible: bool = True
-
-    # bool canBeClosed = true;    /* original C++ signature */
-    can_be_closed: bool = True
-    # bool callBeginEnd = true;    /* original C++ signature */
-    call_begin_end: bool = True
-    # bool includeInViewMenu = true;    /* original C++ signature */
-    include_in_view_menu: bool = True
-    # ImGuiWindowFlags imGuiWindowFlags = 0;    /* original C++ signature */
-    imgui_window_flags: ImGuiWindowFlags = 0
-
-    # ImVec2 windowSize = ImVec2(0.f, 0.f);    /* original C++ signature */
-    window_size: ImVec2 = ImVec2(0.0, 0.0)
-    # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
-
-    # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
-    window_position: ImVec2 = ImVec2(0.0, 0.0)
-    # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
-
-    # bool focusWindowAtNextFrame = false;    /* original C++ signature */
-    focus_window_at_next_frame: bool = False
-
-# *
-# @@md#DockingParams
-#
-# **DockingParams** contains all the settings concerning the docking,
-# together _with the Gui functions for the docked windows_.
-#
-# _Members:_
-#
-# * `dockingSplits`: _vector[DockingSplit]_.
-#  Defines the way docking splits should be applied on the screen in order to create new Dock Spaces
-# * `dockableWindows`: _vector[DockableWindow]_.
-#  List of the dockable windows, together with their Gui code
-# * `layoutName`: _string, default="default"_.
-#  Displayed name of the layout. Only used in advanced cases when several layouts are available.
-# * `layoutCondition`: _enum DockingLayoutCondition, default=DockingLayoutCondition::FirstUseEver_.
-#  When to apply the docking layout. Choose between FirstUseEver (apply once, then keep user preference),
-#  ApplicationStart (always reapply at application start), and Never.
-# * `mainDockSpaceNodeFlags`: _ImGuiDockNodeFlags (enum), default=ImGuiDockNodeFlags_PassthruCentralNode_
-#   Flags to apply to the main dock space (enable/disable resizing, splitting, tab bar, etc.).
-#   Most flags are inherited by children dock spaces. You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
-# * `layoutReset`: _bool, default=false_.
-#  Reset layout on next frame, i.e. drop the layout customizations which were applied manually by the user.
-#  (layoutReset will be set to False after applying)
-#
-# _Helpers:_
-#
-# * `DockableWindow * dockableWindowOfName(const std::string & name)`: returns a pointer to a dockable window
-# * `bool focusDockableWindow(const std::string& name)`: will focus a dockable window (and make its tab visible if needed)
-# * `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`: may return the ImGuiID corresponding
-#   to the dockspace with this name.
-#   **Warning**: this will work reliably only if layoutCondition = DockingLayoutCondition::ApplicationStart. In other
-#   cases, the ID may be cached by ImGui himself at the first run, and HelloImGui will *not* know it on subsequent runs!
 # @@md
-#
 
 class DockingLayoutCondition(enum.Enum):
     # FirstUseEver,    /* original C++ signature */
@@ -1702,92 +1750,142 @@ class DockingLayoutCondition(enum.Enum):
     # }
     never = enum.auto()  # (= 2)
 
+# @@md#DockingParams
+
 class DockingParams:
+    """DockingParams contains all the settings concerning the docking:
+    - list of splits
+    - list of dockable windows
+    """
+
+    # --------------- Main params -----------------------------
+
     # std::vector<DockingSplit>   dockingSplits;    /* original C++ signature */
+    # `dockingSplits`: _vector[DockingSplit]_.
+    #  Defines the way docking splits should be applied on the screen
+    #  in order to create new Dock Spaces
     docking_splits: List[DockingSplit]
+
     # std::vector<DockableWindow> dockableWindows;    /* original C++ signature */
+    # `dockableWindows`: _vector[DockableWindow]_.
+    #  List of the dockable windows, together with their Gui code
     dockable_windows: List[DockableWindow]
 
     # std::string layoutName = "Default";    /* original C++ signature */
+    # `layoutName`: _string, default="default"_.
+    #  Displayed name of the layout.
+    #  Only used in advanced cases, when several layouts are available.
     layout_name: str = "Default"
 
-    # DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;    /* original C++ signature */
-    layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever
-    # bool layoutReset = false;    /* original C++ signature */
-    layout_reset: bool = False
+    # --------------- Options -----------------------------
 
     # ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;    /* original C++ signature */
+    # `mainDockSpaceNodeFlags`: _ImGuiDockNodeFlags (enum),
+    #      default=ImGuiDockNodeFlags_PassthruCentralNode_
+    #  Flags to apply to the main dock space
+    #  (enable/disable resizing, splitting, tab bar, etc.).
+    #  Most flags are inherited by children dock spaces.
+    #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
         ImGuiDockNodeFlags_PassthruCentralNode
     )
 
-    # Helpers
+    # --------------- Layout handling -----------------------------
+
+    # DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver;    /* original C++ signature */
+    # `layoutCondition`: _enum DockingLayoutCondition, default=FirstUseEver_.
+    #  When to apply the docking layout. Choose between
+    #      FirstUseEver (apply once, then keep user preference),
+    #      ApplicationStart (always reapply at application start)
+    #      Never
+    layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever
+
+    # bool layoutReset = false;    /* original C++ signature */
+    # `layoutReset`: _bool, default=false_.
+    #  Reset layout on next frame, i.e. drop the layout customizations which were
+    #  applied manually by the user. layoutReset will be reset to False after this.
+    layout_reset: bool = False
+
+    # --------------- Helper Methods -----------------------------
+
     # DockableWindow * dockableWindowOfName(const std::string& name);    /* original C++ signature */
     def dockable_window_of_name(self, name: str) -> DockableWindow:
+        """`DockableWindow * dockableWindowOfName(const std::string & name)`:
+        returns a pointer to a dockable window
+        """
         pass
     # bool focusDockableWindow(const std::string& windowName);    /* original C++ signature */
     def focus_dockable_window(self, window_name: str) -> bool:
+        """`bool focusDockableWindow(const std::string& name)`:
+        will focus a dockable window (and make its tab visible if needed)
+        """
         pass
     # std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);    /* original C++ signature */
     def dock_space_id_from_name(self, dock_space_name: str) -> Optional[ImGuiID]:
+        """`optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`:
+        may return the ImGuiID corresponding to the dockspace with this name.
+        **Warning**: this will work reliably only if
+            layoutCondition = DockingLayoutCondition::ApplicationStart.
+        In other cases, the ID may be cached by ImGui himself at the first run,
+        and HelloImGui will *not* know it on subsequent runs!
+        """
         pass
-    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false, ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode);    /* original C++ signature */
+    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode, DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
     def __init__(
         self,
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
         layout_name: str = "Default",
+        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
-        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class BackendPointers:
-    """*
-     @@md#BackendPointers
+    """@@md#BackendPointers
 
-    **BackendPointers** is a struct that contains optional pointers to the backend implementations (for SDL and GLFW).
+    BackendPointers is a struct that contains optional pointers to the
+    backend implementations (for SDL and GLFW).
 
-    These pointers will be filled when the application starts, and you can use them to customize
-    your application behavior using the selected backend.
+    These pointers will be filled when the application starts, and you can use them
+    to customize your application behavior using the selected backend.
 
-     Members:
-    * `glfwWindow`: _void *, default=nullptr_. Pointer to the main GLFW window (of type `GLFWwindow*`).
-      Only filled if the backend is GLFW.
-    * `sdlWindow`: _void *, default=nullptr_. Pointer to the main SDL window (of type `SDL_Window*`).
-      Only filled if the backend is SDL (or emscripten + sdl)
-    * `sdlGlContext`: _void *, default=nullptr_. Pointer to SDL's GlContext (of type `SDL_GLContext`).
-      Only filled if the backend is SDL (or emscripten + sdl)
-
-    Note: If using the Metal, Vulkan or DirectX rendering backend, you can find some interesting pointers inside
-     `src/hello_imgui/internal/backend_impls/rendering_metal.h`
-     `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`
-     `src/hello_imgui/internal/backend_impls/rendering_dx11.h`
-     `src/hello_imgui/internal/backend_impls/rendering_dx12.h`
-    @@md
-
+    Note: If using the Metal, Vulkan or DirectX rendering backend, you can find
+    some interesting pointers inside
+        `src/hello_imgui/internal/backend_impls/rendering_metal.h`
+        `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`
+        `src/hello_imgui/internal/backend_impls/rendering_dx11.h`
+        `src/hello_imgui/internal/backend_impls/rendering_dx12.h`
     """
 
-    # GLFWwindow*
+    # * `glfwWindow`: Pointer to the main GLFW window (of type `GLFWwindow*`).
+    #  Only filled if the backend is GLFW.
     # void* glfwWindow     = nullptr;    /* original C++ signature */
-    glfw_window: Any = None
+    glfw_window: Any = None  # GLFWwindow*
 
-    # SDL_Window*
+    # * `sdlWindow`: Pointer to the main SDL window (of type `SDL_Window*`).
+    #  Only filled if the backend is SDL (or emscripten + sdl)
     # void* sdlWindow      = nullptr;    /* original C++ signature */
-    sdl_window: Any = None
-    # SDL_GLContext
+    sdl_window: Any = None  # SDL_Window*
+
+    # * `sdlGlContext`: Pointer to SDL's GlContext (of type `SDL_GLContext`).
+    #  Only filled if the backend is SDL (or emscripten + sdl)
     # void* sdlGlContext   = nullptr;    /* original C++ signature */
-    sdl_gl_context: Any = None
+    sdl_gl_context: Any = None  # SDL_GLContext
     # BackendPointers();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
@@ -1804,13 +1902,25 @@ class BackendType(enum.Enum):
     # }
     glfw = enum.auto()  # (= 2)
 
+# @@md#IniFolderType
+
 class IniFolderType(enum.Enum):
-    """IniFolderType: "Where to store the ini file for the application settings"
-    Note: RunnerParams contains the following members, which are used to compute the ini file location:
-              iniFolderType                   (IniFolderType::CurrentFolder by default)
-              iniFilename                     (empty string by default)
-              iniFilename_useAppWindowTitle   (True by default: iniFilename is derived from appWindowParams.windowTitle)
-    iniFilename may contain a subfolder (which will be created inside the iniFolderType folder if needed)
+    """IniFolderType is an enum which describle where is the base path to store
+    the ini file for the application settings.
+
+    You can use IniFolderLocation(iniFolderType) to get the corresponding path.
+
+    RunnerParams contains the following members, which are used to compute
+    the ini file location:
+        iniFolderType           (IniFolderType::CurrentFolder by default)
+        iniFilename             (empty string by default)
+        iniFilename_useAppWindowTitle
+            (True by default: iniFilename is derived from
+             appWindowParams.windowTitle)
+
+    iniFilename may contain a subfolder
+    (which will be created inside the iniFolderType folder if needed)
+
     """
 
     # CurrentFolder,    /* original C++ signature */
@@ -1851,35 +1961,41 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
     """Returns the path corresponding to the given IniFolderType"""
     pass
 
+# @@md
+
 class FpsIdling:
-    """*
-     @@md#FpsIdling
+    """@@md#FpsIdling
 
-    **FpsIdling** is a struct that contains Fps Idling parameters
-
-    * `fpsIdle`: _float, default=9_.
-      ImGui applications can consume a lot of CPU, since they update the screen very frequently.
-      In order to reduce the CPU usage, the FPS is reduced when no user interaction is detected.
-      This is ok most of the time but if you are displaying animated widgets (for example a live video),
-      you may want to ask for a faster refresh: either increase fpsIdle, or set it to 0 for maximum refresh speed
-      (you can change this value during the execution depending on your application refresh needs)
-    * `enableIdling`: _bool, default=true_.
-      Set this to False to disable idling (this can be changed dynamically during execution)
-    * `isIdling`: bool (dynamically updated during execution)
-      This bool will be updated during the application execution, and will be set to True when it is idling.
-    * `rememberEnableIdling`: _bool, default=true_.
-      If True, the last value of enableIdling is restored from the settings at startup.
-    @@md
-
+    FpsIdling is a struct that contains Fps Idling parameters
     """
 
     # float fpsIdle = 9.f;    /* original C++ signature */
+    # `fpsIdle`: _float, default=9_.
+    #  ImGui applications can consume a lot of CPU, since they update the screen
+    #  very frequently. In order to reduce the CPU usage, the FPS is reduced when
+    #  no user interaction is detected.
+    #  This is ok most of the time but if you are displaying animated widgets
+    #  (for example a live video), you may want to ask for a faster refresh:
+    #  either increase fpsIdle, or set it to 0 for maximum refresh speed
+    #  (you can change this value during the execution depending on your application
+    #  refresh needs)
     fps_idle: float = 9.0
+
     # bool  enableIdling = true;    /* original C++ signature */
+    # `enableIdling`: _bool, default=true_.
+    #  Set this to False to disable idling
+    #  (this can be changed dynamically during execution)
     enable_idling: bool = True
+
     # bool  isIdling = false;    /* original C++ signature */
+    # `isIdling`: bool (dynamically updated during execution)
+    #  This bool will be updated during the application execution,
+    #  and will be set to True when it is idling.
     is_idling: bool = False
+
     # bool  rememberEnableIdling = true;    /* original C++ signature */
+    # `rememberEnableIdling`: _bool, default=true_.
+    #  If True, the last value of enableIdling is restored from the settings at startup.
     remember_enable_idling: bool = True
     # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true);    /* original C++ signature */
     def __init__(
@@ -1892,101 +2008,128 @@ class FpsIdling:
         """Auto-generated default constructor with named params"""
         pass
 
+# @@md
+
 class RunnerParams:
-    """*
-     @@md#RunnerParams
+    """@@md#RunnerParams
 
-    **RunnerParams** is a struct that contains all the settings and callbacks needed to run an application.
-
-     Members:
-    * `callbacks`: _see runner_callbacks.h_
-       callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
-    * `appWindowParams`: _see app_window_params.h_
-       application Window Params (position, size, title)
-    * `imGuiWindowParams`: _see imgui_window_params.h_
-       imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc)
-    * `dockingParams`: _see docking_params.h_
-       dockable windows content and layout
-    * `alternativeDockingLayouts`: _vector<DockingParams>, default=empty_
-       List of possible additional layout for the applications. Only used in advanced cases when several layouts are available.
-    * `rememberSelectedAlternativeLayout`: _bool, default=true_
-       Shall the application remember the last selected layout. Only used in advanced cases when several layouts are available.
-    * `backendPointers`: _see backend_pointers.h_
-       A struct that contains optional pointers to the backend implementations. These pointers will be filled
-       when the application starts
-    * `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-      Select the wanted platform backend type between `Sdl`, `Glfw`. Only useful when multiple backend are compiled
-      and available.
-    * `fpsIdling`: _FpsIdling_. Idling parameters (set fpsIdling.enableIdling to False to disable Idling)
-    * `useImGuiTestEngine`: _bool, default=false_.
-      Set this to True if you intend to use imgui_test_engine (please read note below)
-
-    * `iniFolderType`: _IniFolderType, default = IniFolderType::CurrentFolder_
-      Sets the folder where imgui will save its params.
-      (possible values are: CurrentFolder, AppUserConfigFolder, DocumentsFolder, HomeFolder, TempFolder, AppExecutableFolder)
-       AppUserConfigFolder is [Home]/AppData/Roaming under Windows, ~/.config under Linux, ~/Library/Application Support"
-       under macOS)
-    * `iniFilename`: _string, default = ""_
-      Sets the ini filename under which imgui will save its params. Its path is relative to the path given by iniFolderType,
-      and can include a subfolder (which will be created if needed).
-      If iniFilename empty, then it will be derived from appWindowParams.windowTitle (if both are empty, the ini filename will be imgui.ini).
-    * `iniFilename_useAppWindowTitle`: _bool, default = true_.
-      Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
-
-     * `appShallExit`: _bool, default=false_.
-      During execution, set this to True to exit the app.
-      _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android) and under emscripten, since these apps
-      shall not exit._
-    * `emscripten_fps`: _int, default = 0_.
-      Set the application refresh rate (only used on emscripten: 0 stands for "let the app or the browser decide")
-
-    Notes about the use of [Dear ImGui Test & Automation Engine](https://github.com/ocornut/imgui_test_engine):
-    * HelloImGui must be compiled with the option HELLOIMGUI_WITH_TEST_ENGINE (-DHELLOIMGUI_WITH_TEST_ENGINE=ON)
-    * See demo in src/hello_imgui_demos/hello_imgui_demo_test_engine.
-    * imgui_test_engine is subject to a [specific license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)
-      (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses.)
-
-    @@md
+    RunnerParams contains the settings and callbacks needed to run an application.
 
     """
 
+    # --------------- Callbacks and Window params -------------------
+
     # RunnerCallbacks callbacks;    /* original C++ signature */
+    # `callbacks`: _see runner_callbacks.h_
+    # callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.
     callbacks: RunnerCallbacks
+
     # AppWindowParams appWindowParams;    /* original C++ signature */
+    # `appWindowParams`: _see app_window_params.h_
+    # application Window Params (position, size, title)
     app_window_params: AppWindowParams
+
     # ImGuiWindowParams imGuiWindowParams;    /* original C++ signature */
+    # `imGuiWindowParams`: _see imgui_window_params.h_
+    # imgui window params (use docking, showMenuBar, ProvideFullScreenWindow, etc.)
     imgui_window_params: ImGuiWindowParams
 
+    # --------------- Docking -------------------
+
     # DockingParams dockingParams;    /* original C++ signature */
+    # `dockingParams`: _see docking_params.h_
+    # dockable windows content and layout
     docking_params: DockingParams
+
     # std::vector<DockingParams> alternativeDockingLayouts;    /* original C++ signature */
+    # `alternativeDockingLayouts`: _vector<DockingParams>, default=empty_
+    # List of possible additional layout for the applications. Only used in advanced
+    # cases when several layouts are available.
     alternative_docking_layouts: List[DockingParams]
+
     # bool rememberSelectedAlternativeLayout = true;    /* original C++ signature */
+    # `rememberSelectedAlternativeLayout`: _bool, default=true_
+    # Shall the application remember the last selected layout. Only used in advanced
+    # cases when several layouts are available.
     remember_selected_alternative_layout: bool = True
 
+    # --------------- Backends -------------------
+
     # BackendPointers backendPointers;    /* original C++ signature */
+    # `backendPointers`: _see backend_pointers.h_
+    # A struct that contains optional pointers to the backend implementations.
+    # These pointers will be filled when the application starts
     backend_pointers: BackendPointers
     # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
+    # `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
+    # Select the wanted platform backend type between `Sdl`, `Glfw`.
+    # Only useful when multiple backend are compiled and available.
     backend_type: BackendType = BackendType.first_available
 
-    # FpsIdling fpsIdling;    /* original C++ signature */
-    fps_idling: FpsIdling
-
-    # bool useImGuiTestEngine = false;    /* original C++ signature */
-    use_imgui_test_engine: bool = False
+    # --------------- Settings -------------------
 
     # IniFolderType iniFolderType = IniFolderType::CurrentFolder;    /* original C++ signature */
+    # `iniFolderType`: _IniFolderType, default = IniFolderType::CurrentFolder_
+    # Sets the folder where imgui will save its params.
+    # (possible values are:
+    #     CurrentFolder, AppUserConfigFolder, DocumentsFolder,
+    #     HomeFolder, TempFolder, AppExecutableFolder)
+    # AppUserConfigFolder is
+    #     [Home]/AppData/Roaming under Windows,
+    #     ~/.config under Linux,
+    #     ~/Library/Application Support under macOS
     ini_folder_type: IniFolderType = IniFolderType.current_folder
+    # `iniFilename`: _string, default = ""_
+    # Sets the ini filename under which imgui will save its params.
+    # Its path is relative to the path given by iniFolderType, and can include
+    # a subfolder (which will be created if needed).
+    # If iniFilename empty, then it will be derived from
+    # appWindowParams.windowTitle
+    # (if both are empty, the ini filename will be imgui.ini).
     # std::string iniFilename = "";    /* original C++ signature */
     ini_filename: str = ""  # relative to iniFolderType
     # bool iniFilename_useAppWindowTitle = true;    /* original C++ signature */
+    # `iniFilename_useAppWindowTitle`: _bool, default = true_.
+    # Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
     ini_filename_use_app_window_title: bool = True
 
+    # --------------- Exit -------------------
+
     # bool appShallExit = false;    /* original C++ signature */
+    # * `appShallExit`: _bool, default=false_.
+    # During execution, set this to True to exit the app.
+    # _Note: 'appShallExit' has no effect on Mobile Devices (iOS, Android)
+    # and under emscripten, since these apps shall not exit._
     app_shall_exit: bool = False
+
+    # --------------- Idling -------------------
+
+    # FpsIdling fpsIdling;    /* original C++ signature */
+    # `fpsIdling`: _FpsIdling_. Idling parameters
+    # (set fpsIdling.enableIdling to False to disable Idling)
+    fps_idling: FpsIdling
+
+    # --------------- Misc -------------------
+
+    # bool useImGuiTestEngine = false;    /* original C++ signature */
+    # `useImGuiTestEngine`: _bool, default=false_.
+    # Set this to True if you intend to use Dear ImGui Test & Automation Engine
+    #     ( https://github.com/ocornut/imgui_test_engine )
+    # HelloImGui must be compiled with the option -DHELLOIMGUI_WITH_TEST_ENGINE=ON
+    # See demo in src/hello_imgui_demos/hello_imgui_demo_test_engine.
+    # License:
+    # imgui_test_engine is subject to a specific license:
+    #     https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)
+    # (TL;DR: free for individuals, educational, open-source and small businesses uses.
+    #  Paid for larger businesses.)
+    use_imgui_test_engine: bool = False
+
     # int emscripten_fps = 0;    /* original C++ signature */
+    # `emscripten_fps`: _int, default = 0_.
+    # Set the application refresh rate
+    # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -1997,71 +2140,91 @@ class RunnerParams:
         remember_selected_alternative_layout: bool = True,
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
-        fps_idling: FpsIdling = FpsIdling(),
-        use_imgui_test_engine: bool = False,
         ini_folder_type: IniFolderType = IniFolderType.current_folder,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,
         app_shall_exit: bool = False,
+        fps_idling: FpsIdling = FpsIdling(),
+        use_imgui_test_engine: bool = False,
         emscripten_fps: int = 0,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
+# @@md
+
+# @@md#IniIniSettingsLocation
+
+# std::string IniSettingsLocation(const RunnerParams& runnerParams);    /* original C++ signature */
+def ini_settings_location(runner_params: RunnerParams) -> str:
+    """IniSettingsLocation returns the path to the ini file for the application settings."""
+    pass
+
+# bool HasIniSettings(const RunnerParams& runnerParams);    /* original C++ signature */
+def has_ini_settings(runner_params: RunnerParams) -> bool:
+    """HasIniSettings returns True if the ini file for the application settings exists."""
+    pass
+
+# void DeleteIniSettings(const RunnerParams& runnerParams);    /* original C++ signature */
+def delete_ini_settings(runner_params: RunnerParams) -> None:
+    """DeleteIniSettings deletes the ini file for the application settings."""
+    pass
+
+# @@md
+
 class SimpleRunnerParams:
-    """*
-     @@md#SimpleRunnerParams
+    """@@md#SimpleRunnerParams
 
-    **SimpleRunnerParams** is a struct that contains simpler params adapted for simple use cases.
-
-     Members:
-    * `guiFunction`: _VoidFunction_.
-      Function that renders the Gui.
-    * `windowTitle`: _string, default=""_.
-      Title of the application window
-    * `windowSizeAuto`: _bool, default=false_.
-      If True, the size of the window will be computed from its widgets.
-    * `windowRestorePreviousGeometry`: _bool, default=true_.
-      If True, restore the size and position of the window between runs.
-    * `windowSize`: _ScreenSize, default={800, 600}_.
-      Size of the window
-    * `fpsIdle`: _float, default=9_.
-      FPS of the application when idle (set to 0 for full speed).
-
+     SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
     For example, this is sufficient to run an application:
+        ```cpp
+        None MyGui() {
+            ImGui::Text("Hello, world");
+            if (ImGui::Button("Exit"))
+                HelloImGui::GetRunnerParams()->appShallExit = True;
+        }
 
-    ```cpp
-    None MyGui() {
-        ImGui::Text("Hello, world");
-        if (ImGui::Button("Exit"))
-            HelloImGui::GetRunnerParams()->appShallExit = True;
-    }
-
-    int main(){
-        auto params = HelloImGui::SimpleRunnerParams {.guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = "Example"};
-        HelloImGui::Run(params);
-    }
-    ```
-
-    @@md
-
+        int main(){
+            auto params = HelloImGui::SimpleRunnerParams {
+                .guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = "Example"
+            };
+            HelloImGui::Run(params);
+        }
+        ```
     """
 
     # VoidFunction guiFunction = EmptyVoidFunction();    /* original C++ signature */
+    # `guiFunction`: _VoidFunction_.
+    #  Function that renders the Gui.
     gui_function: VoidFunction = EmptyVoidFunction()
     # std::string windowTitle = "";    /* original C++ signature */
+    # `windowTitle`: _string, default=""_.
+    #  Title of the application window
     window_title: str = ""
 
     # bool windowSizeAuto = false;    /* original C++ signature */
+    # `windowSizeAuto`: _bool, default=false_.
+    #  If True, the size of the window will be computed from its widgets.
     window_size_auto: bool = False
+
     # bool windowRestorePreviousGeometry = false;    /* original C++ signature */
+    # `windowRestorePreviousGeometry`: _bool, default=true_.
+    #  If True, restore the size and position of the window between runs.
     window_restore_previous_geometry: bool = False
+
     # ScreenSize windowSize = DefaultWindowSize;    /* original C++ signature */
+    # `windowSize`: _ScreenSize, default={800, 600}_.
+    #  Size of the window
     window_size: ScreenSize = DefaultWindowSize
 
     # float fpsIdle = 9.f;    /* original C++ signature */
+    # `fpsIdle`: _float, default=9_.
+    #  FPS of the application when idle (set to 0 for full speed).
     fps_idle: float = 9.0
+
     # bool  enableIdling = true;    /* original C++ signature */
+    # `enableIdling`: _bool, default=true_.
+    #  Set this to False to disable idling at startup
     enable_idling: bool = True
 
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
@@ -2080,6 +2243,8 @@ class SimpleRunnerParams:
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_widgets.h included by hello_imgui.h                            //
@@ -2100,41 +2265,55 @@ def end_group_column() -> None:
 #                       hello_imgui.h continued                                                                //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# =========================== HelloImGui::Run ==================================
+# *
+# @@md#HelloImGui::Run
+#
+# __HelloImGui::Run()__ will run an application with a single call.
+#
+# Three signatures are provided:
+#
+# * `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
+#  Runs an application whose params and Gui are provided by runnerParams.
+#
+# * `HelloImGui::Run(const SimpleRunnerParams&)`:
+#  Runs an application, using simpler params.
+#
+# * `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`
+#  Runs an application, by providing the Gui function, the window title, etc.
+#
+# Although the API is extremely simple, it is highly customizable, and you can set many options by filling
+# the elements in the `RunnerParams` struct, or in the simpler  `SimpleRunnerParams`.
+#
+# __HelloImGui::GetRunnerParams()__  will return the runnerParams of the current application.
+#
+# @@md
+#
+
 # void Run(RunnerParams &runnerParams);    /* original C++ signature */
 @overload
 def run(runner_params: RunnerParams) -> None:
-    """*
-    @@md#HelloImGui::Run
-
-    __HelloImGui::Run()__ will run an application with a single call.
-
-    Three signatures are provided:
-
-    * `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
-      Runs an application whose params and Gui are provided by runnerParams.
-
-    * `HelloImGui::Run(const SimpleRunnerParams&)`:
-      Runs an application, using simpler params.
-
-    * `HelloImGui::Run(guiFunction, windowTitle, windowSize, windowSizeAuto=False, restoreLastWindowGeometry=False, fpsIdle=10)`
-    @@md
-
+    """`HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
+    Runs an application whose params and Gui are provided by runnerParams.
     """
     pass
 
 # void Run(const SimpleRunnerParams &simpleParams);    /* original C++ signature */
 @overload
 def run(simple_params: SimpleRunnerParams) -> None:
+    """`HelloImGui::Run(const SimpleRunnerParams&)`:
+    Runs an application, using simpler params.
+    """
     pass
 
 # void Run(    /* original C++ signature */
-#         const VoidFunction &guiFunction,
-#         const std::string &windowTitle = "",
-#         bool windowSizeAuto = false,
-#         bool windowRestorePreviousGeometry = false,
-#         const ScreenSize &windowSize = DefaultWindowSize,
-#         float fpsIdle = 10.f
-#     );
+#     const VoidFunction &guiFunction,
+#     const std::string &windowTitle = "",
+#     bool windowSizeAuto = false,
+#     bool windowRestorePreviousGeometry = false,
+#     const ScreenSize &windowSize = DefaultWindowSize,
+#     float fpsIdle = 10.f
+# );
 @overload
 def run(
     gui_function: VoidFunction,
@@ -2144,29 +2323,26 @@ def run(
     window_size: ScreenSize = DefaultWindowSize,
     fps_idle: float = 10.0,
 ) -> None:
+    """Runs an application, by providing the Gui function, the window title, etc."""
     pass
 
-# RunnerParams *GetRunnerParams();    /* original C++ signature */
+# RunnerParams* GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
-    """*
-    @@md#GetRunnerParams
-
-    * `HelloImGui::GetRunnerParams()`:
-      a convenience function that will return the runnerParams of the current application
-
-    * `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
-      May differ from ImGui::GetIO().FrameRate, since one can choose the duration for the calculation of the mean value of the fps
-
-    * `ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance of ImGuiTestEngine that was
-      initialized by HelloImGui (iif ImGui Test Engine is active).
-    @@md
-    *
+    """`GetRunnerParams()`:  a convenience function that will return the runnerParams
+    of the current application
     """
     pass
 
+# ============================== Utility functions ===============================
+
+# @@md#UtilityFunctions
+
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
 def frame_rate(duration_for_mean: float = 0.5) -> float:
-    """Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
+    """`FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
+    May differ from ImGui::GetIO().FrameRate, since one can choose the duration
+    for the calculation of the mean value of the fps
+    Returns the current FrameRate. May differ from ImGui::GetIO().FrameRate,
     since one can choose the duration for the calculation of the mean value of the fps
     (Will only lead to accurate values if you call it at each frame)
     """
@@ -2174,71 +2350,94 @@ def frame_rate(duration_for_mean: float = 0.5) -> float:
 
 # ImGuiTestEngine* GetImGuiTestEngine();    /* original C++ signature */
 def get_imgui_test_engine() -> ImGuiTestEngine:
+    """`ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance
+    of ImGuiTestEngine that was initialized by HelloImGui
+    (iif ImGui Test Engine is active).
+    """
     pass
 
-# *
-# @@md#HelloImGui::Layouts
-#
-# In advanced cases when several layouts are available, you can switch between layouts.
-# (see demo inside [hello_imgui_demodocking.main.cpp](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp))
-#
-# * `SwitchLayout(layoutName)`
-#  Changes the application current layout. Only used in advanced cases when several layouts are available,
-#  i.e. if you filled runnerParams.alternativeDockingLayouts.
-# * `CurrentLayoutName()`: returns the name of the current layout
 # @@md
-#
+
+# ============================== Layout Utils =============================
+
+# @@md#HelloImGui::Layouts
+
+# In advanced cases when several layouts are available, you can switch between layouts.
+# See demo inside
+#     https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp
+
 # void           SwitchLayout(const std::string& layoutName);    /* original C++ signature */
 def switch_layout(layout_name: str) -> None:
+    """`SwitchLayout(layoutName)`
+    Changes the application current layout. Only used in advanced cases
+    when several layouts are available, i.e. if you filled
+        runnerParams.alternativeDockingLayouts.
+    """
     pass
 
 # std::string    CurrentLayoutName();    /* original C++ signature */
 def current_layout_name() -> str:
+    """`CurrentLayoutName()`: returns the name of the current layout"""
     pass
 
-# *
-# @@md#HelloImGui::UserPref
-#
-# You may store additional user settings in the application settings. This is provided as a convenience only,
-# and it is not intended to store large quantities of text data. Use sparingly.
-#
-# * `SaveUserPref(string userPrefName, string userPrefContent)`:
-#  Shall be called in the callback runnerParams.callbacks.BeforeExit
-#
-# * `string LoadUserPref(string& userPrefName)`
-#  Shall be called in the callback runnerParams.callbacks.PostInit
 # @@md
-#
+
+# ============================== User prefs Utils =============================
+
+# @@md#HelloImGui::UserPref
+
+# You may store additional user settings in the application settings.
+# This is provided as a convenience only, and it is not intended to store large
+# quantities of text data. Use sparingly.
+
 # void        SaveUserPref(const std::string& userPrefName, const std::string& userPrefContent);    /* original C++ signature */
 def save_user_pref(user_pref_name: str, user_pref_content: str) -> None:
+    """`SaveUserPref(string userPrefName, string userPrefContent)`:
+    Shall be called in the callback runnerParams.callbacks.BeforeExit
+    """
     pass
 
 # std::string LoadUserPref(const std::string& userPrefName);    /* original C++ signature */
 def load_user_pref(user_pref_name: str) -> str:
+    """`string LoadUserPref(string& userPrefName)`
+    Shall be called in the callback runnerParams.callbacks.PostInit
+    """
     pass
 
+# @@md
+
+# ============================== Menus defaults =============================
+
 # *
-# @@md# Menu
+# @@md#MenuIntro
 #
 # Hello ImGui provides a default menu and status bar, which you can customize by using the params:
 #        `RunnerParams.imGuiWindowParams.` `showMenuBar` / `showMenu_App` / `showMenu_View`
 #
 # If you want to fully customize the menu:
-#    * set `showMenuBar` to True, then set `showMenu_App` and `showMenu_View` params to False
-#    * implement the callback `RunnerParams.callbacks.ShowMenus`: it can optionally call `ShowViewMenu` and `ShowAppMenu` (see below).
+# * set `showMenuBar` to True, then set `showMenu_App` and `showMenu_View` params to False
+# * implement the callback `RunnerParams.callbacks.ShowMenus`:
+#  it can optionally call `ShowViewMenu` and `ShowAppMenu` (see below).
 #
-# * `ShowViewMenu(RunnerParams & runnerParams)`: shows the View menu (where you can select the layout
-#   and docked windows visibility).
-# * `ShowAppMenu(RunnerParams & runnerParams)`: shows the default App menu (including the Quit item)
 # @@md
 #
+# @@md#MenuFunctions
+
 # void ShowViewMenu(RunnerParams & runnerParams);    /* original C++ signature */
 def show_view_menu(runner_params: RunnerParams) -> None:
+    """`ShowViewMenu(RunnerParams & runnerParams)`:
+    shows the View menu (where you can select the layout and docked windows visibility
+    """
     pass
 
 # void ShowAppMenu(RunnerParams & runnerParams);    /* original C++ signature */
 def show_app_menu(runner_params: RunnerParams) -> None:
+    """`ShowAppMenu(RunnerParams & runnerParams)`:
+    shows the default App menu (including the Quit item)
+    """
     pass
+
+# @@md
 
 # <submodule imgui_default_settings>
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
