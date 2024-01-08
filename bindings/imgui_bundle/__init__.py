@@ -17,6 +17,7 @@ from imgui_bundle._imgui_bundle import imgui_command_palette as imgui_command_pa
 from imgui_bundle._imgui_bundle import im_cool_bar as im_cool_bar
 from imgui_bundle import immapp as immapp
 from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
+from imgui_bundle import imgui_fig as imgui_fig
 
 from imgui_bundle._imgui_bundle import __version__, compilation_time
 
