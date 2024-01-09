@@ -2003,11 +2003,13 @@ struct RunnerCallbacks
     //  Also, remember to call ImGui::SameLine() between items.
     VoidFunction ShowStatus = EmptyVoidFunction();
 
-    // EdgesToolbars: A map that contains the definition of toolbars
-    // that can be placed on the edges of the App window
+    // `EdgesToolbars`:
+    // A dict that contains toolbars that can be placed on the edges of the App window
     std::map<EdgeToolbarType, EdgeToolbar> edgesToolbars;
+
+    // `AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window
     void AddEdgeToolbar(EdgeToolbarType edgeToolbarType,
-                        VoidFunction callback,
+                        VoidFunction guiFunction,
                         const EdgeToolbarOptions& options = EdgeToolbarOptions());
 
 

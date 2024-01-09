@@ -1369,18 +1369,20 @@ class RunnerCallbacks:
     show_status: VoidFunction = EmptyVoidFunction()
 
     # std::map<EdgeToolbarType, EdgeToolbar> edgesToolbars;    /* original C++ signature */
-    # EdgesToolbars: A map that contains the definition of toolbars
-    # that can be placed on the edges of the App window
+    # `EdgesToolbars`:
+    # A dict that contains toolbars that can be placed on the edges of the App window
     edges_toolbars: Dict[EdgeToolbarType, EdgeToolbar]
+
     # void AddEdgeToolbar(EdgeToolbarType edgeToolbarType,    /* original C++ signature */
-    #                         VoidFunction callback,
+    #                         VoidFunction guiFunction,
     #                         const EdgeToolbarOptions& options = EdgeToolbarOptions());
     def add_edge_toolbar(
         self,
         edge_toolbar_type: EdgeToolbarType,
-        callback: VoidFunction,
+        gui_function: VoidFunction,
         options: EdgeToolbarOptions = EdgeToolbarOptions(),
     ) -> None:
+        """`AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window"""
         pass
     # --------------- Startup sequence callbacks -------------------
 
