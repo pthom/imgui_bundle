@@ -1,7 +1,7 @@
 import matplotlib
 # Important: before importing pyplot, set the renderer to Tk,
 # so that the figure is not displayed on the screen before we can capture it.
-matplotlib.use('Agg')     #
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx
 import numpy as np
