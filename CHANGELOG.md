@@ -1,36 +1,40 @@
 # v1.2.1
 
-### New features
-* update imgui to v1.90-docking
-  _example_integration/ now points to a github [template repo](https://github.com/pthom/imgui_bundle_template)
-* Show python & C++ code in the ImGui Demo window
-* Can plot Matplotlib figures in Python
-
 ### Hello ImGui
-* now uses Freetype for font rendering. Added support for Colored font and Emoji fonts
-* Can fully customize the menu bar (within Hello ImGui)
+* Added nice [documentation pages](https://pthom.github.io/hello_imgui)
+* Uses [Freetype for font rendering](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/CMakeLists.txt#L96-L106)
+* Improved [Font Loading utility](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/src/hello_imgui/hello_imgui_font.h#L13-L62)
+* Added support for Colored font and Emoji fonts ([Demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html))
+* Can [fully customize the menu bar](https://pthom.github.io/hello_imgui/book/doc_api.html#customize-hello-imgui-menus)
 
 ### Backends
-* Add support for Metal rendering backend (C++ only, macOS only)
-* Add support for Vulkan rendering backend (C++ only, Linux, Windows, macOS)
-* Add support for DirectX11 rendering backend (C++ only, Windows)
-* Add support for DirectX12 rendering backend (C++ only, Windows). Experimental
+* Review [CMake options](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/CMakeLists.txt#L56-L91) for backend selection
+* Add support for [Metal rendering backend](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/rendering_metal.mm) (C++ only, macOS only)
+* Add support for [Vulkan rendering backend](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/rendering_vulkan.cpp) (C++ only, Linux, Windows, macOS)
+* Add support for [DirectX11 rendering backend](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/rendering_dx11.cpp) (C++ only, Windows)
+* Add support for [DirectX12 rendering backend](https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/internal/backend_impls/rendering_dx12.cpp) (C++ only, Windows). Experimental
 * Deprecated CMake options IMGUI_BUNDLE_WITH_GLFW and IMGUI_BUNDLE_WITH_SDL
   (use HELLOIMGUI_USE_GLFW_OPENGL3 and HELLOIMGUI_USE_SDL_OPENGL3 instead)
+* updated imgui to v1.90-docking
 
 ### iOS
-* Add LaunchScreen.storyboard for iOS: apps are now full screen
-* Add support for EdgeInsets (handle safe area on iOS, i.e. the notch)
+* Add [LaunchScreen.storyboard](https://github.com/pthom/hello_imgui_template/tree/0e2b53d96b5de5cfa3ccbf4d3c823a07afcb947b/assets/app_settings/apple/Resources/ios) for iOS: apps are now full screen
+* Add support for EdgeInsets (handle safe area on iOS, i.e. the notch): see [here](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/src/hello_imgui/app_window_params.h#L205-L214) and [here](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/src/hello_imgui/app_window_params.h#L138-L145)
 
 ### Android
-* Hello ImGui now compatible with Android (including assets, app icon, etc.)
+* Hello ImGui now compatible with Android (including assets, app icon, etc.): see instruction [here in the Starter template](https://github.com/pthom/hello_imgui_template#build-for-android) and [here](https://github.com/pthom/hello_imgui_template#assets-folder-structure)
 
 ### Python
-* Added bindings for imgui AddPolyline / AddConvexPolyFilled
-* Added bindings for imgui IniFileName and LogFilename, WindowName
-* Added bindings for ImGuiInputTextCallback and ImGuiSizeCallback
-* Added python context manager for imgui.begin / imgui.end, etc (lots)
-* Python backends: use new ImGui mouse API. Corrected pygame backend keymap
+* Can plot Matplotlib figures in Python: see [demo](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py) and [imgui_fig](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_fig.py)
+* Added [imgui_ctx](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py): python context manager for imgui.begin / imgui.end, etc (lots)
+* Show python & C++ code in the ImGui Demo window (see "Dear ImGui" tab in the [interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html))
+* Added bindings for imgui [AddPolyline / AddConvexPolyFilled](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L9283C23-L9290)
+* Added bindings for imgui [IniFileName and LogFilename](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L7943-L7946), WindowName
+* Added bindings for [ImGuiInputTextCallback](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L10453-L10463) and ImGuiSizeCallback (also see [this](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L255C1-L256))
+* [Python backends](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends): use new ImGui mouse API. Corrected pygame backend keymap
+
+### Bundle
+* Added [starter template repo](https://github.com/pthom/imgui_bundle_template) as quickstart for C++ apps
 
 
 # v1.1.0
