@@ -63,6 +63,7 @@ struct AppState
     ImFont* TitleFont = nullptr;
     ImFont* ColorFont = nullptr;
     ImFont* EmojiFont = nullptr;
+    ImFont* LargeIconFont = nullptr;
 };
 
 
@@ -79,6 +80,10 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
     fontLoadingParamsEmoji.useFullGlyphRange = true;
     appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
+
+    HelloImGui::FontLoadingParams fontLoadingParamsLargeIcon;
+    fontLoadingParamsLargeIcon.useFullGlyphRange = true;
+    appState.LargeIconFont = HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 24.f, fontLoadingParamsLargeIcon);
 #ifdef IMGUI_ENABLE_FREETYPE
     HelloImGui::FontLoadingParams fontLoadingParamsColor;
     fontLoadingParamsColor.loadColor = true;
@@ -433,6 +438,37 @@ void ShowAppMenuItems()
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on A Custom app menu item");
 }
 
+void ShowTopToolbar(AppState& appState)
+{
+    ImGui::PushFont(appState.LargeIconFont);
+    if (ImGui::Button(ICON_FA_POWER_OFF))
+        HelloImGui::GetRunnerParams()->appShallExit = true;
+
+    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(7.f));
+    if (ImGui::Button(ICON_FA_HOME))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Home in the top toolbar");
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_SAVE))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Save in the top toolbar");
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_ADDRESS_BOOK))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Address Book in the top toolbar");
+
+    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(2.f));
+    ImGui::Text(ICON_FA_BATTERY_THREE_QUARTERS);
+    ImGui::PopFont();
+}
+
+void ShowRightToolbar(AppState& appState)
+{
+    ImGui::PushFont(appState.LargeIconFont);
+    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_LEFT))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle left in the right toolbar");
+
+    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_RIGHT))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle right in the right toolbar");
+    ImGui::PopFont();
+}
 
 //////////////////////////////////////////////////////////////////////////
 //    Docking Layouts and Docking windows
@@ -647,6 +683,27 @@ int main(int, char**)
     runnerParams.callbacks.ShowMenus = [&runnerParams]() {ShowMenuGui(runnerParams);};
     // Optional: add items to Hello ImGui default App menu
     runnerParams.callbacks.ShowAppMenuItems = ShowAppMenuItems;
+
+    //
+    // Top and bottom toolbars
+    //
+    // toolbar options
+    HelloImGui::EdgeToolbarOptions edgeToolbarOptions;
+    edgeToolbarOptions.sizeEm = 2.5f;
+    edgeToolbarOptions.WindowBg = ImVec4(0.8, 0.8, 0.8, 0.35f);
+    // top toolbar
+    runnerParams.callbacks.AddEdgeToolbar(
+        HelloImGui::EdgeToolbarType::Top,
+        [&appState]() { ShowTopToolbar(appState); },
+        edgeToolbarOptions
+    );
+    // right toolbar
+    edgeToolbarOptions.WindowBg.w = 0.4f;
+    runnerParams.callbacks.AddEdgeToolbar(
+        HelloImGui::EdgeToolbarType::Right,
+        [&appState]() { ShowRightToolbar(appState); },
+        edgeToolbarOptions
+    );
 
     //
     // Load user settings at callbacks `PostInit` and save them at `BeforeExit`

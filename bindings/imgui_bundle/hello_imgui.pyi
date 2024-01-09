@@ -2,7 +2,7 @@
 https://github.com/pthom/hello_imgui
 """
 # ruff: noqa: F811, B008
-from typing import List, Any, Callable, Tuple, Optional, overload
+from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np
 import enum
 
@@ -1183,6 +1183,8 @@ class ImGuiWindowParams:
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# namespace HelloImGui
+
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h continued                                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1263,6 +1265,72 @@ class MobileCallbacks:
 
 # @@md
 
+# @@md#EdgeToolbar
+
+class EdgeToolbarType(enum.Enum):
+    """EdgeToolbarType: location of an Edge Toolbar"""
+
+    # Top,    /* original C++ signature */
+    top = enum.auto()  # (= 0)
+    # Bottom,    /* original C++ signature */
+    bottom = enum.auto()  # (= 1)
+    # Left,    /* original C++ signature */
+    left = enum.auto()  # (= 2)
+    # Right    /* original C++ signature */
+    # }
+    right = enum.auto()  # (= 3)
+
+class EdgeToolbarOptions:
+    # float sizeEm = 2.5f;    /* original C++ signature */
+    # height or width the top toolbar, in em units
+    # (i.e. multiples of the default font size, to be Dpi aware)
+    size_em: float = 2.5
+
+    # ImVec2 WindowPaddingEm = ImVec2(0.3f, 0.3f);    /* original C++ signature */
+    # Padding inside the window, in em units
+    window_padding_em: ImVec2 = ImVec2(0.3, 0.3)
+
+    # ImVec4 WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
+    # Window background color, only used if WindowBg.w > 0
+    window_bg: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
+    # EdgeToolbarOptions(float sizeEm = 2.5f, ImVec2 WindowPaddingEm = ImVec2(0.3f, 0.3f), ImVec4 WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f));    /* original C++ signature */
+    def __init__(
+        self,
+        size_em: float = 2.5,
+        window_padding_em: ImVec2 = ImVec2(0.3, 0.3),
+        window_bg: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+class EdgeToolbar:
+    """EdgeToolbar :a toolbar that can be placed on the edges of the App window
+    It will be placed in a non-dockable window
+    """
+
+    # VoidFunction ShowToolbar = EmptyVoidFunction();    /* original C++ signature */
+    show_toolbar: VoidFunction = EmptyVoidFunction()
+    # EdgeToolbarOptions options;    /* original C++ signature */
+    options: EdgeToolbarOptions
+    # EdgeToolbar(VoidFunction ShowToolbar = EmptyVoidFunction(), EdgeToolbarOptions options = EdgeToolbarOptions());    /* original C++ signature */
+    def __init__(
+        self,
+        show_toolbar: VoidFunction = EmptyVoidFunction(),
+        options: EdgeToolbarOptions = EdgeToolbarOptions(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# std::vector<EdgeToolbarType> AllEdgeToolbarTypes();    /* original C++ signature */
+def all_edge_toolbar_types() -> List[EdgeToolbarType]:
+    pass
+
+# std::string EdgeToolbarTypeName(EdgeToolbarType e);    /* original C++ signature */
+def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
+    pass
+
+# @@md
+
 class RunnerCallbacks:
     """@@md#RunnerCallbacks
 
@@ -1300,6 +1368,20 @@ class RunnerCallbacks:
     #  Also, remember to call ImGui::SameLine() between items.
     show_status: VoidFunction = EmptyVoidFunction()
 
+    # std::map<EdgeToolbarType, EdgeToolbar> edgesToolbars;    /* original C++ signature */
+    # EdgesToolbars: A map that contains the definition of toolbars
+    # that can be placed on the edges of the App window
+    edges_toolbars: Dict[EdgeToolbarType, EdgeToolbar]
+    # void AddEdgeToolbar(EdgeToolbarType edgeToolbarType,    /* original C++ signature */
+    #                         VoidFunction callback,
+    #                         const EdgeToolbarOptions& options = EdgeToolbarOptions());
+    def add_edge_toolbar(
+        self,
+        edge_toolbar_type: EdgeToolbarType,
+        callback: VoidFunction,
+        options: EdgeToolbarOptions = EdgeToolbarOptions(),
+    ) -> None:
+        pass
     # --------------- Startup sequence callbacks -------------------
 
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */

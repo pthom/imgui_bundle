@@ -581,6 +581,58 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    py::enum_<HelloImGui::EdgeToolbarType>(m, "EdgeToolbarType", py::arithmetic(), "EdgeToolbarType: location of an Edge Toolbar")
+        .value("top", HelloImGui::EdgeToolbarType::Top, "")
+        .value("bottom", HelloImGui::EdgeToolbarType::Bottom, "")
+        .value("left", HelloImGui::EdgeToolbarType::Left, "")
+        .value("right", HelloImGui::EdgeToolbarType::Right, "");
+
+
+    auto pyClassEdgeToolbarOptions =
+        py::class_<HelloImGui::EdgeToolbarOptions>
+            (m, "EdgeToolbarOptions", "")
+        .def(py::init<>([](
+        float sizeEm = 2.5f, ImVec2 WindowPaddingEm = ImVec2(0.3f, 0.3f), ImVec4 WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f))
+        {
+            auto r = std::make_unique<EdgeToolbarOptions>();
+            r->sizeEm = sizeEm;
+            r->WindowPaddingEm = WindowPaddingEm;
+            r->WindowBg = WindowBg;
+            return r;
+        })
+        , py::arg("size_em") = 2.5f, py::arg("window_padding_em") = ImVec2(0.3f, 0.3f), py::arg("window_bg") = ImVec4(0.f, 0.f, 0.f, 0.f)
+        )
+        .def_readwrite("size_em", &EdgeToolbarOptions::sizeEm, " height or width the top toolbar, in em units\n (i.e. multiples of the default font size, to be Dpi aware)")
+        .def_readwrite("window_padding_em", &EdgeToolbarOptions::WindowPaddingEm, "Padding inside the window, in em units")
+        .def_readwrite("window_bg", &EdgeToolbarOptions::WindowBg, "Window background color, only used if WindowBg.w > 0")
+        ;
+
+
+    auto pyClassEdgeToolbar =
+        py::class_<HelloImGui::EdgeToolbar>
+            (m, "EdgeToolbar", " EdgeToolbar :a toolbar that can be placed on the edges of the App window\n It will be placed in a non-dockable window")
+        .def(py::init<>([](
+        VoidFunction ShowToolbar = HelloImGui::EmptyVoidFunction(), EdgeToolbarOptions options = EdgeToolbarOptions())
+        {
+            auto r = std::make_unique<EdgeToolbar>();
+            r->ShowToolbar = ShowToolbar;
+            r->options = options;
+            return r;
+        })
+        , py::arg("show_toolbar") = HelloImGui::EmptyVoidFunction(), py::arg("options") = EdgeToolbarOptions()
+        )
+        .def_readwrite("show_toolbar", &EdgeToolbar::ShowToolbar, "")
+        .def_readwrite("options", &EdgeToolbar::options, "")
+        ;
+
+
+    m.def("all_edge_toolbar_types",
+        HelloImGui::AllEdgeToolbarTypes);
+
+    m.def("edge_toolbar_type_name",
+        HelloImGui::EdgeToolbarTypeName, py::arg("e"));
+
+
     auto pyClassRunnerCallbacks =
         py::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
@@ -612,6 +664,9 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("show_menus", &RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
         .def_readwrite("show_app_menu_items", &RunnerCallbacks::ShowAppMenuItems, " `ShowAppMenuItems`: A function that will render items that will be placed\n in the App menu. They will be placed before the \"Quit\" MenuItem,\n which is added automatically by HelloImGui.\n  This will be displayed only if ImGuiWindowParams.showMenu_App is True")
         .def_readwrite("show_status", &RunnerCallbacks::ShowStatus, " `ShowStatus`: A function that will add items to the status bar.\n  Use small items (ImGui::Text for example), since the height of the status is 30.\n  Also, remember to call ImGui::SameLine() between items.")
+        .def_readwrite("edges_toolbars", &RunnerCallbacks::edgesToolbars, " EdgesToolbars: A map that contains the definition of toolbars\n that can be placed on the edges of the App window")
+        .def("add_edge_toolbar",
+            &RunnerCallbacks::AddEdgeToolbar, py::arg("edge_toolbar_type"), py::arg("callback"), py::arg("options") = HelloImGui::EdgeToolbarOptions())
         .def_readwrite("post_init", &RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  If you, for instance, want to add your own glfw callbacks,\n  you should use this function to do so.")
         .def_readwrite("load_additional_fonts", &RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called once, when fonts are ready to be loaded.\n  By default, _LoadDefaultFont_WithFontAwesome_ is called,\n  but you can copy and customize it.\n  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/\n  but reverts to the ImGui embedded font if not found)")
         .def_readwrite("setup_imgui_config", &RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")

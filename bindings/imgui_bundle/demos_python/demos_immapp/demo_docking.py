@@ -14,7 +14,7 @@
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx, ImVec4
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -45,6 +45,7 @@ class AppState:
     title_font: imgui.ImFont
     color_font: imgui.ImFont
     emoji_font: imgui.ImFont
+    large_icon_font: imgui.ImFont
 
     def __init__(self):
         self.f = 0
@@ -71,6 +72,11 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     font_loading_params_color = hello_imgui.FontLoadingParams()
     font_loading_params_color.load_color = True
     app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
+
+    font_loading_params_large_icon = hello_imgui.FontLoadingParams()
+    font_loading_params_large_icon.use_full_glyph_range = True
+    app_state.large_icon_font = hello_imgui.load_font("fonts/fontawesome-webfont.ttf", 24., font_loading_params_large_icon)
+
 
 ##########################################################################
 #    Save additional settings in the ini file
@@ -429,6 +435,35 @@ def show_app_menu_items():
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
 
 
+def show_top_toolbar(app_state: AppState):
+    imgui.push_font(app_state.large_icon_font)
+    if imgui.button(icons_fontawesome.ICON_FA_POWER_OFF):
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+    imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(7.0))
+    if imgui.button(icons_fontawesome.ICON_FA_HOME):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Home in the top toolbar")
+    imgui.same_line()
+    if imgui.button(icons_fontawesome.ICON_FA_SAVE):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Save in the top toolbar")
+    imgui.same_line()
+    if imgui.button(icons_fontawesome.ICON_FA_ADDRESS_BOOK):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Address Book in the top toolbar")
+
+    imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(2.0))
+    imgui.text(icons_fontawesome.ICON_FA_BATTERY_THREE_QUARTERS)
+    imgui.pop_font()
+
+
+def show_right_toolbar(app_state: AppState):
+    imgui.push_font(app_state.large_icon_font)
+    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_LEFT):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle left in the right toolbar")
+    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_RIGHT):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle right in the right toolbar")
+    imgui.pop_font()
+
+
 ##########################################################################
 #    Docking Layouts and Docking windows
 ##########################################################################
@@ -646,6 +681,27 @@ def main():
     runner_params.callbacks.show_menus = lambda: show_menu_gui(runner_params)
     # Optional: add items to Hello ImGui default App menu
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
+
+    #
+    # Top and bottom toolbars
+    #
+    # toolbar options
+    edge_toolbar_options = hello_imgui.EdgeToolbarOptions()
+    edge_toolbar_options.size_em = 2.5
+    edge_toolbar_options.window_bg = ImVec4(0.8, 0.8, 0.8, 0.35)
+    # top toolbar
+    runner_params.callbacks.add_edge_toolbar(
+        hello_imgui.EdgeToolbarType.top,
+        lambda: show_top_toolbar(app_state),
+        edge_toolbar_options,
+    )
+    # right toolbar
+    edge_toolbar_options.window_bg.w = 0.4
+    runner_params.callbacks.add_edge_toolbar(
+        hello_imgui.EdgeToolbarType.right,
+        lambda: show_right_toolbar(app_state),
+        edge_toolbar_options,
+    )
 
     #
     # Load user settings at callbacks `post_init` and save them at `before_exit`
