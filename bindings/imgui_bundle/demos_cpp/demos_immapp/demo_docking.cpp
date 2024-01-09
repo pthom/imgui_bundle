@@ -654,6 +654,19 @@ int main(int, char**)
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
+    //
+    // Change style
+    //
+    // 1. Change theme
+    auto& tweakedTheme = runnerParams.imGuiWindowParams.tweakedTheme;
+    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
+    tweakedTheme.Tweaks.Rounding = 10.f;
+    // 2. Customize ImGui style at startup
+    runnerParams.callbacks.SetupImGuiStyle = []() {
+        // Reduce spacing between items ((8, 4) by default)
+        ImGui::GetStyle().ItemSpacing = ImVec2(6.f, 4.f);
+    };
+
     //#############################################################################################
     // Part 2: Define the application layout and windows
     //#############################################################################################
