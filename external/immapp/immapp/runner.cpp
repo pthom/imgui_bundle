@@ -15,6 +15,18 @@
 #include "immvision/immvision.h"
 #endif
 
+#ifdef HELLOIMGUI_HAS_OPENGL
+#include "hello_imgui/hello_imgui_include_opengl.h"
+#define NANOVG_GL3_IMPLEMENTATION
+#include "nanovg_gl.h"
+NVGcontext* CreateNvgContext_Gl3()
+{
+    return nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
+}
+#endif
+
+#include "nanovg.h"
+
 #include <chrono>
 #include <cassert>
 
@@ -34,6 +46,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
         ImGuiTexInspect::Context * _ImGuiTextInspect_Context = nullptr;
 #endif
+        NVGcontext* _NvgContext = nullptr;
     };
 
     ImmAppContext gImmAppContext;
@@ -42,6 +55,24 @@ namespace ImmApp
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
     {
         AddOnsParams addOnsParams = addOnsParams_;
+
+        // create nvg context if required
+        #ifdef HELLOIMGUI_HAS_OPENGL
+        if (addOnsParams.withNanoVG)
+        {
+            runnerParams.callbacks.PostInit = HelloImGui::FunctionalUtils::sequence_functions(
+                []() {
+                    gImmAppContext._NvgContext = CreateNvgContext_Gl3();
+                    },
+                runnerParams.callbacks.PostInit
+                );
+            runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
+                runnerParams.callbacks.BeforeExit,
+                []() {
+                    nvgDeleteGL3(gImmAppContext._NvgContext);
+                });
+        }
+        #endif
 
         // create implot context if required
         if (addOnsParams.withImplot)
@@ -110,6 +141,8 @@ namespace ImmApp
             runnerParams.callbacks.BeforeExit,
             ImmVision::ClearTextureCache);
 #endif
+
+
         HelloImGui::Run(runnerParams);
 
         if (addOnsParams.withImplot)
@@ -148,6 +181,7 @@ namespace ImmApp
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withNanoVG,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
@@ -167,6 +201,7 @@ namespace ImmApp
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
         addOnsParams.withMarkdownOptions = withMarkdownOptions;
+        addOnsParams.withNanoVG = withNanoVG;
 
         Run(simpleRunnerParams, addOnsParams);
     }
@@ -185,6 +220,7 @@ namespace ImmApp
         bool withImplot,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withNanoVG,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
@@ -204,6 +240,7 @@ namespace ImmApp
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
         addOnsParams.withMarkdownOptions = withMarkdownOptions;
+        addOnsParams.withNanoVG = withNanoVG;
 
         Run(simpleRunnerParams, addOnsParams);
     }
@@ -233,5 +270,14 @@ namespace ImmApp
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
         return *gImmAppContext._NodeEditorContext;
     }
+
+    NVGcontext * NanoVGContext()
+    {
+        if (!gImmAppContext._NvgContext)
+            throw std::runtime_error("No current NanoVG context\n"
+                                     "    Did you set with_nano_vg when calling ImmApp::Run()?");
+        return gImmAppContext._NvgContext;
+    }
+
 
 } // namespace ImmApp
