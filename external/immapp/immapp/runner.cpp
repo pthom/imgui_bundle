@@ -19,6 +19,7 @@
 #include "hello_imgui/hello_imgui_include_opengl.h"
 #define NANOVG_GL3_IMPLEMENTATION
 #include "nanovg_gl.h"
+#include "nanovg_gl_utils.h"
 NVGcontext* CreateNvgContext_Gl3()
 {
     return nvgCreateGL3(NVG_ANTIALIAS | NVG_STENCIL_STROKES | NVG_DEBUG);
