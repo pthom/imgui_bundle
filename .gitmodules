@@ -78,3 +78,6 @@
 [submodule "_example_integration"]
 	path = _example_integration
 	url = https://github.com/pthom/imgui_bundle_template.git
+[submodule "external/nanovg/nanovg"]
+	path = external/nanovg/nanovg
+	url = https://github.com/pthom/nanovg.git

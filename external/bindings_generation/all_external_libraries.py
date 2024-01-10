@@ -194,6 +194,16 @@ def lib_portable_file_dialogs() -> ExternalLibrary:
     )
 
 
+def lib_nanovg() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="nanovg",
+        official_git_url="https://github.com/memononen/nanovg.git",
+        official_branch="master",
+        fork_git_url="https://github.com/pthom/nanovg.git",
+        fork_branch="imgui_bundle"
+    )
+
+
 # fmt: on
 
 
@@ -219,6 +229,7 @@ ALL_LIBS = [
     lib_implot(),
     lib_imspinner(),
     lib_portable_file_dialogs(),
+    lib_nanovg(),
 ]
 
 

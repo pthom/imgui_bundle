@@ -105,6 +105,14 @@ target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs
 target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 # Add ImCoolBar
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
+# Add nanovg
+set(nanovg_dir ${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
+file(GLOB nanovg_sources ${nanovg_dir}/src/*.c ${nanovg_dir}/src/*.h)
+add_library(nanovg STATIC ${nanovg_sources})
+target_include_directories(nanovg PUBLIC ${nanovg_dir}/src)
+target_link_libraries(imgui_bundle PUBLIC nanovg)
+hello_imgui_msvc_target_group_sources(nanovg)
+
 
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)
