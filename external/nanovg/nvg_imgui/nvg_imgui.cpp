@@ -91,7 +91,15 @@ namespace NvgImgui
         if (clearColor.w > 0.f)
             FillClearColor(clearColor);
 
-        float pixelRatio = ImGui::GetIO().DisplayFramebufferScale.x;
+        // Note:
+        //    - internally, we use NVGLUframebuffer, provided by NanoVG
+        //    - NVGLUframebuffer does not handle pixelRatio
+        //    => using pixelRatio=DisplayFramebufferScale would lead to non anti-aliased rendering
+        //    => you may want to create texture of bigger size and scale down the drawing, in order to
+        //       improve the quality of the rendering
+
+        // float pixelRatio = ImGui::GetIO().DisplayFramebufferScale.x;
+        float pixelRatio = 1.f;
         nvgBeginFrame(vg, texture->Width, texture->Height, pixelRatio);
 
         // Flip the y-axis

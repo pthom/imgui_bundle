@@ -8,6 +8,8 @@
 
 #include "nanovg_demo/nanovg_demo.h"
 
+// On peut modifier CustomBackground durant l'execution
+
 
 struct MyNvgDemo
 {
@@ -64,9 +66,8 @@ int main(int, char**)
     {
         auto vg = ImmApp::NanoVGContext();
         appState.myNvgDemo = std::make_unique<MyNvgDemo>(vg);
-        float scale = ImGui::GetIO().DisplayFramebufferScale.x;
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
-        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(vg, (int)(1000 * scale), (int)(600 * scale), nvgImageFlags);
+        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(vg, 1000, 600, nvgImageFlags);
     };
     runnerParams.callbacks.BeforeExit = [&]()
     {
