@@ -4,10 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#ifdef NANOVG_GLEW
-#  include <GL/glew.h>
-#endif
-#include <GLFW/glfw3.h>
+#include "hello_imgui_include_opengl.h"
 #include "nanovg.h"
 #include "stb_hello_imgui/stb_image_write.h"
 
