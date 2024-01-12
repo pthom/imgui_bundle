@@ -2013,10 +2013,10 @@ struct RunnerCallbacks
     //  you should use this function to do so.
     VoidFunction PostInit = EmptyVoidFunction();
 
-    // `EnqueuePostInit`: Add a function that will be called once after OpenGL
+    // `CallPostInit`: Add a function that will be called once after OpenGL
     // and ImGui are inited, but before the backend callback are initialized.
     // (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
-    void EnqueuePostInit(const VoidFunction& callback);
+    void CallPostInit(const VoidFunction& callback);
 
     // `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
     //  A function that is called once, when fonts are ready to be loaded.
@@ -2052,7 +2052,7 @@ struct RunnerCallbacks
     // `EnqueueBeforeExit`: Add a function that will be called once before exiting
     //  (when OpenGL and ImGui are still inited)
     // (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)
-    void EnqueueBeforeExit(const VoidFunction& callback);
+    void CallBeforeExit(const VoidFunction& callback);
 
     // `BeforeExit_PostCleanup`: You can here add a function that will be called once
     // before exiting (after OpenGL and ImGui have been stopped)

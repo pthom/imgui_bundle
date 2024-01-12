@@ -1379,9 +1379,9 @@ class RunnerCallbacks:
     #  you should use this function to do so.
     post_init: VoidFunction = EmptyVoidFunction()
 
-    # void EnqueuePostInit(const VoidFunction& callback);    /* original C++ signature */
-    def enqueue_post_init(self, callback: VoidFunction) -> None:
-        """`EnqueuePostInit`: Add a function that will be called once after OpenGL
+    # void CallPostInit(const VoidFunction& callback);    /* original C++ signature */
+    def call_post_init(self, callback: VoidFunction) -> None:
+        """`CallPostInit`: Add a function that will be called once after OpenGL
         and ImGui are inited, but before the backend callback are initialized.
         (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
         """
@@ -1427,8 +1427,8 @@ class RunnerCallbacks:
     #  (when OpenGL and ImGui are still inited)
     before_exit: VoidFunction = EmptyVoidFunction()
 
-    # void EnqueueBeforeExit(const VoidFunction& callback);    /* original C++ signature */
-    def enqueue_before_exit(self, callback: VoidFunction) -> None:
+    # void CallBeforeExit(const VoidFunction& callback);    /* original C++ signature */
+    def call_before_exit(self, callback: VoidFunction) -> None:
         """`EnqueueBeforeExit`: Add a function that will be called once before exiting
          (when OpenGL and ImGui are still inited)
         (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)

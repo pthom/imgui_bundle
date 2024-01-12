@@ -672,17 +672,17 @@ void py_init_module_hello_imgui(py::module& m)
             py::arg("edge_toolbar_type"), py::arg("gui_function"), py::arg("options") = HelloImGui::EdgeToolbarOptions(),
             "`AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window")
         .def_readwrite("post_init", &RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  If you, for instance, want to add your own glfw callbacks,\n  you should use this function to do so.")
-        .def("enqueue_post_init",
-            &RunnerCallbacks::EnqueuePostInit,
+        .def("call_post_init",
+            &RunnerCallbacks::CallPostInit,
             py::arg("callback"),
-            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n and ImGui are inited, but before the backend callback are initialized.\n (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
+            " `CallPostInit`: Add a function that will be called once after OpenGL\n and ImGui are inited, but before the backend callback are initialized.\n (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("load_additional_fonts", &RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called once, when fonts are ready to be loaded.\n  By default, _LoadDefaultFont_WithFontAwesome_ is called,\n  but you can copy and customize it.\n  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/\n  but reverts to the ImGui embedded font if not found)")
         .def_readwrite("setup_imgui_config", &RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")
         .def_readwrite("setup_imgui_style", &RunnerCallbacks::SetupImGuiStyle, " `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, set your own style by providing your own SetupImGuiStyle callback")
         .def_readwrite("register_tests", &RunnerCallbacks::RegisterTests, " `RegisterTests`: A function that is called once ImGuiTestEngine is ready\n to be filled with tests and automations definitions.")
         .def_readwrite("before_exit", &RunnerCallbacks::BeforeExit, " `BeforeExit`: You can here add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)")
-        .def("enqueue_before_exit",
-            &RunnerCallbacks::EnqueueBeforeExit,
+        .def("call_before_exit",
+            &RunnerCallbacks::CallBeforeExit,
             py::arg("callback"),
             " `EnqueueBeforeExit`: Add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)\n (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("before_exit_post_cleanup", &RunnerCallbacks::BeforeExit_PostCleanup, " `BeforeExit_PostCleanup`: You can here add a function that will be called once\n before exiting (after OpenGL and ImGui have been stopped)")
