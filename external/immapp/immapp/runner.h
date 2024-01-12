@@ -5,8 +5,6 @@
 
 #include <optional>
 
-// NanoVG
-typedef struct NVGcontext NVGcontext;
 
 namespace ImmApp
 {
@@ -39,9 +37,6 @@ namespace ImmApp
 
         // Set withTexInspect=true if you need to use imgui_tex_inspect
         bool withTexInspect = false;
-
-        // Set withNanoVG=true if you need to use NanoVG
-        bool withNanoVG = false;
 
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
@@ -95,7 +90,6 @@ namespace ImmApp
         bool withMarkdown = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
-        bool withNanoVG = false,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
@@ -114,7 +108,6 @@ namespace ImmApp
         bool withImplot = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
-        bool withNanoVG = false,
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
@@ -146,6 +139,5 @@ namespace ImmApp
     //
     /////////////////////////////////////////////////////////////////////////////////////////
     NodeEditorContext* DefaultNodeEditorContext();
-    NVGcontext * NanoVGContext();
 
 } // namespace ImmApp

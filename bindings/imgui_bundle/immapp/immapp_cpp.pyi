@@ -50,9 +50,6 @@ class AddOnsParams:
     # Set withTexInspect=True if you need to use imgui_tex_inspect
     with_tex_inspect: bool = False
 
-    # Set withNanoVG=True if you need to use NanoVG
-    with_nano_vg: bool = False
-
     # You can tweak NodeEditorConfig (but this is optional)
     with_node_editor_config: Optional[NodeEditorConfig] = None
 
@@ -64,7 +61,6 @@ class AddOnsParams:
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
-        with_nano_vg: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     ) -> None:
@@ -103,7 +99,6 @@ def run(
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
-    with_nano_vg: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
@@ -141,7 +136,6 @@ def run_with_markdown(
     with_implot: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
-    with_nano_vg: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
@@ -177,15 +171,13 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
-# ///////////////////////////////////////////////////////////////////////////////////////
-#
-# Utility for ImGui node editor & NanoVG
-#
-# /////////////////////////////////////////////////////////////////////////////////////
 def default_node_editor_context() -> NodeEditorContext:
-    pass
+    """///////////////////////////////////////////////////////////////////////////////////////
 
-def nano_vg_context() -> NVGcontext:
+     Utility for ImGui node editor & NanoVG
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    """
     pass
 ####################    </generated_from:runner.h>    ####################
 
