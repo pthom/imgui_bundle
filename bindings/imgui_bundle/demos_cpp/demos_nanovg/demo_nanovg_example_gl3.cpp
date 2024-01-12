@@ -41,6 +41,7 @@ struct MyNvgDemo
 struct AppState
 {
     std::unique_ptr<MyNvgDemo> myNvgDemo;
+    NVGcontext * vg;
 
     NvgImgui::NvgFramebufferPtr myFramebuffer;
 
@@ -60,20 +61,20 @@ int main(int, char**)
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.appWindowParams.windowGeometry.size = {1200, 900};
     ImmApp::AddOnsParams addons;
-    addons.withNanoVG = true;
 
-    runnerParams.callbacks.PostInit = [&]()
+    runnerParams.callbacks.CallPostInit([&]()
     {
-        auto vg = ImmApp::NanoVGContext();
-        appState.myNvgDemo = std::make_unique<MyNvgDemo>(vg);
+        appState.vg = NvgImgui::CreateNvgContext(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES | NvgImgui::NVG_DEBUG);
+        appState.myNvgDemo = std::make_unique<MyNvgDemo>(appState.vg);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
-        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(vg, 1000, 600, nvgImageFlags);
-    };
-    runnerParams.callbacks.BeforeExit = [&]()
+        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(appState.vg, 1000, 600, nvgImageFlags);
+    });
+    runnerParams.callbacks.CallBeforeExit([&]()
     {
         appState.myNvgDemo.reset();
         appState.myFramebuffer.reset();
-    };
+        NvgImgui::DeleteNvgContext(appState.vg);
+    });
 
     auto nvgDrawingFunction = [&](float width, float height)
     {
@@ -84,7 +85,7 @@ int main(int, char**)
 
     runnerParams.callbacks.CustomBackground = [&]()
     {
-        NvgImgui::RenderNvgToBackground(ImmApp::NanoVGContext(), nvgDrawingFunction, appState.ClearColor);
+        NvgImgui::RenderNvgToBackground(appState.vg, nvgDrawingFunction, appState.ClearColor);
     };
 
     runnerParams.callbacks.ShowGui = [&]()
@@ -97,7 +98,7 @@ int main(int, char**)
 
         if (appState.DisplayInFrameBuffer)
         {
-            NvgImgui::RenderNvgToFrameBuffer(ImmApp::NanoVGContext(), appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
+            NvgImgui::RenderNvgToFrameBuffer(appState.vg, appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
             ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
         }
 
