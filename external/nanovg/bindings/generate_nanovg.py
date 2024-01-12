@@ -23,6 +23,7 @@ def main():
     options.type_replacements.add_last_replacement("unsigned char", "UChar")
     options.var_names_replacements.add_last_replacement("^NVG_", "")
     options.function_names_replacements.add_last_replacement("^nvg", "")
+    options.class_exclude_by_name__regex = "^NVGcolor$"  # contains a union...
 
     for letter in "abcdefghijklmnopqrstuvwxyz":
         options.type_replacements.add_last_replacement(

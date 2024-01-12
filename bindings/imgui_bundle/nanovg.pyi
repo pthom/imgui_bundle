@@ -7,6 +7,19 @@ OpaquePointer = np.uint64
 Context = OpaquePointer
 UChar = int # a value between 0 and 255
 
+class Color:
+    r: float
+    g: float
+    b: float
+    a: float
+
+    def __init__(self, r:float, g:float, b:float, a:float):
+        pass
+
+    def __init__(self, colors_tuple_4_float: tuple):  # noqa: F811
+        pass
+
+
 # ruff: noqa: B008  # Do not perform function call in argument defaults
 # ruff: noqa: E741  # Ambiguous variable name: `l`
 
@@ -47,11 +60,6 @@ https://github.com/memononen/nanovg
 
 
 
-class Color:
-    # NVGcolor();    /* original C++ signature */
-    def __init__(self) -> None:
-        """Auto-generated default constructor"""
-        pass
 
 class Paint:
     # float xform[6];    /* original C++ signature */
