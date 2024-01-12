@@ -3,12 +3,31 @@
 #include "imgui.h"
 #include <functional>
 #include <memory>
+#include "nanovg.h"
 
 struct NVGcontext;
 
 namespace NvgImgui
 {
     using NvgDrawingFunction = std::function<void(float width, float height)>;
+
+    // Duplicate of NVGcreateFlags in nanovg_gl.h
+    enum NvgCreateFlags {
+        // Flag indicating if geometry based anti-aliasing is used (may not be needed when using MSAA).
+        NVG_ANTIALIAS 		= 1<<0,
+        // Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little
+        // slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.
+        NVG_STENCIL_STROKES	= 1<<1,
+        // Flag indicating that additional debug checks are done.
+        NVG_DEBUG 			= 1<<2,
+    };
+
+    // Creates a NanoVG context, using the current rendering backend (OpenGL, Metal, ...)
+    // Currently, the only supported backend is OpenGL (see NVGcreateFlags_GL)
+    NVGcontext* CreateNvgContext(int flags = 0);
+
+    // Deletes a NanoVG context
+    void DeleteNvgContext(NVGcontext* vg);
 
     // Abstract class to represent a framebuffer that can be used by NanoVG + ImGui
     struct NvgFramebuffer

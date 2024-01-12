@@ -5,7 +5,15 @@
 
 #ifdef HELLOIMGUI_HAS_OPENGL
 #include "hello_imgui_include_opengl.h"
+
+#ifdef HELLOIMGUI_USE_GLES3
+#define NANOVG_GLES3
+#define NANOVG_GLES3_IMPLEMENTATION
+#else
 #define NANOVG_GL3 1
+#define NANOVG_GL3_IMPLEMENTATION
+#endif
+
 #include "nanovg_gl.h"
 #include "nanovg_gl_utils.h"
 #endif
@@ -58,6 +66,28 @@ namespace NvgImgui
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
+
+#ifdef HELLOIMGUI_USE_GLES3
+    NVGcontext* CreateNvgContext(int flags)
+    {
+        return nvgCreateGLES3(flags);
+    }
+
+    void DeleteNvgContext(NVGcontext* vg)
+    {
+        nvgDeleteGLES3(vg);
+    }
+#else
+    NVGcontext* CreateNvgContext(int flags)
+    {
+        return nvgCreateGL3(flags);
+    }
+
+    void DeleteNvgContext(NVGcontext* vg)
+    {
+        nvgDeleteGL3(vg);
+    }
+#endif
 #else
     static void FillClearColor(ImVec4 clearColor)
     {
@@ -69,6 +99,18 @@ namespace NvgImgui
         IM_ASSERT(false && "CreateNvgFramebuffer: Not implemented for this rendering backend!");
         return nullptr;
     }
+
+    NVGcontext CreateNvgContext(int flags)
+    {
+        IM_ASSERT(false && "CreateNvgContext: Not implemented for this rendering backend!");
+        return nullptr;
+    }
+
+    void DeleteNvgContext(NVGcontext* vg)
+    {
+        IM_ASSERT(false && "DeleteNvgContext: Not implemented for this rendering backend!");
+    }
+
 #endif // HELLOIMGUI_HAS_OPENGL
 
 
