@@ -38,7 +38,7 @@ namespace NvgImgui
     void RenderNvgToBackground(
         NVGcontext* vg,
         NvgDrawingFunction nvgDrawingFunction,
-        ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 0.f)
+        ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 1.f)
         );
 
     // Render the given drawing function to the given framebuffer
@@ -47,7 +47,7 @@ namespace NvgImgui
         NVGcontext* vg,
         NvgFramebufferPtr texture,
         NvgDrawingFunction drawFunc,
-        ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 0.f)
+        ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 1.f)
         );
 
 }
