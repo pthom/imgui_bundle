@@ -549,11 +549,13 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    m.def("append_callback",
-        HelloImGui::AppendCallback, py::arg("previous_callback"), py::arg("new_callback"));
-
     m.def("empty_void_function",
         HelloImGui::EmptyVoidFunction);
+
+    m.def("sequence_functions",
+        HelloImGui::SequenceFunctions,
+        py::arg("f1"), py::arg("f2"),
+        "SequenceFunctions: returns a function that will call f1 and f2 in sequence");
 
     m.def("empty_event_callback",
         HelloImGui::EmptyEventCallback);
@@ -670,11 +672,19 @@ void py_init_module_hello_imgui(py::module& m)
             py::arg("edge_toolbar_type"), py::arg("gui_function"), py::arg("options") = HelloImGui::EdgeToolbarOptions(),
             "`AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window")
         .def_readwrite("post_init", &RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  If you, for instance, want to add your own glfw callbacks,\n  you should use this function to do so.")
+        .def("enqueue_post_init",
+            &RunnerCallbacks::EnqueuePostInit,
+            py::arg("callback"),
+            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n and ImGui are inited, but before the backend callback are initialized.\n (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("load_additional_fonts", &RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called once, when fonts are ready to be loaded.\n  By default, _LoadDefaultFont_WithFontAwesome_ is called,\n  but you can copy and customize it.\n  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/\n  but reverts to the ImGui embedded font if not found)")
         .def_readwrite("setup_imgui_config", &RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")
         .def_readwrite("setup_imgui_style", &RunnerCallbacks::SetupImGuiStyle, " `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, set your own style by providing your own SetupImGuiStyle callback")
         .def_readwrite("register_tests", &RunnerCallbacks::RegisterTests, " `RegisterTests`: A function that is called once ImGuiTestEngine is ready\n to be filled with tests and automations definitions.")
         .def_readwrite("before_exit", &RunnerCallbacks::BeforeExit, " `BeforeExit`: You can here add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)")
+        .def("enqueue_before_exit",
+            &RunnerCallbacks::EnqueueBeforeExit,
+            py::arg("callback"),
+            " `EnqueueBeforeExit`: Add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)\n (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("before_exit_post_cleanup", &RunnerCallbacks::BeforeExit_PostCleanup, " `BeforeExit_PostCleanup`: You can here add a function that will be called once\n before exiting (after OpenGL and ImGui have been stopped)")
         .def_readwrite("pre_new_frame", &RunnerCallbacks::PreNewFrame, " `PreNewFrame`: You can here add a function that will be called at each frame,\n  and before the call to ImGui::NewFrame().\n  It is a good place to dynamically add new fonts, or new dockable windows.")
         .def_readwrite("before_imgui_render", &RunnerCallbacks::BeforeImGuiRender, " `BeforeImGuiRender`: You can here add a function that will be called at each frame,\n  after the user Gui code, and just before the call to\n  ImGui::Render() (which will also call ImGui::EndFrame()).")
@@ -682,6 +692,12 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("custom_background", &RunnerCallbacks::CustomBackground, " `CustomBackground`:\n  By default, the background is cleared using ImGuiWindowParams.backgroundColor.\n  If set, this function gives you full control over the background that is drawn\n  behind the Gui. An example use case is if you have a 3D application\n  like a mesh editor, or game, and just want the Gui to be drawn\n  on top of that content.")
         .def_readwrite("any_backend_event_callback", &RunnerCallbacks::AnyBackendEventCallback, " `AnyBackendEventCallback`:\n  Callbacks for events from a specific backend. _Only implemented for SDL.\n  where the event will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled\n  and shall not be processed further.\n  Note: in the case of GLFW, you should use register them in `PostInit`")
         ;
+
+
+    m.def("append_callback",
+        HelloImGui::AppendCallback,
+        py::arg("previous_callback"), py::arg("new_callback"),
+        "AppendCallback: legacy synonym for SequenceFunctions");
 
 
     auto pyClassDockingSplit =
