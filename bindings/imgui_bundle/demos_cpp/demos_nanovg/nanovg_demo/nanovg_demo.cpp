@@ -4,9 +4,9 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-#include "hello_imgui_include_opengl.h"
+
 #include "nanovg.h"
-#include "stb_hello_imgui/stb_image_write.h"
+
 
 
 #ifdef _MSC_VER
@@ -1219,6 +1219,9 @@ static void flipHorizontal(unsigned char* image, int w, int h, int stride)
 	}
 }
 
+#ifdef HELLOIMGUI_HAS_OPENGL
+#include "hello_imgui_include_opengl.h"
+#include "stb_hello_imgui/stb_image_write.h"
 void saveScreenShot(int w, int h, int premult, const char* name)
 {
 	unsigned char* image = (unsigned char*)malloc(w*h*4);
@@ -1233,3 +1236,4 @@ void saveScreenShot(int w, int h, int premult, const char* name)
  	stbi_write_png(name, w, h, 4, image, w*4);
  	free(image);
 }
+#endif // HELLOIMGUI_HAS_OPENGL

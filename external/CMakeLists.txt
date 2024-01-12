@@ -106,17 +106,20 @@ target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 # Add ImCoolBar
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
-# Add nanovg
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
-target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
-target_link_libraries(imgui_bundle PUBLIC nanovg)
-hello_imgui_msvc_target_group_sources(nanovg)
-# Add nvg_imgui
-add_simple_external_library(nvg_imgui nanovg)
-target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
-file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
-target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
-
+# Add nanovg & nvg_imgui
+if(HELLOIMGUI_HAS_OPENGL)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_NANOVG)
+    set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
+    target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
+    target_link_libraries(imgui_bundle PUBLIC nanovg)
+    hello_imgui_msvc_target_group_sources(nanovg)
+    # Add nvg_imgui
+    add_simple_external_library(nvg_imgui nanovg)
+    target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
+    file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
+    target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
+endif()
 
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)
