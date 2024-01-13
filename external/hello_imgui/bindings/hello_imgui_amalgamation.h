@@ -2623,7 +2623,7 @@ struct FpsIdling
 
     // `rememberEnableIdling`: _bool, default=true_.
     //  If true, the last value of enableIdling is restored from the settings at startup.
-    bool  rememberEnableIdling = true;
+    bool  rememberEnableIdling = false;
 };
 // @@md
 

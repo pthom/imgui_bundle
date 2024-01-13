@@ -2084,17 +2084,17 @@ class FpsIdling:
     #  and will be set to True when it is idling.
     is_idling: bool = False
 
-    # bool  rememberEnableIdling = true;    /* original C++ signature */
+    # bool  rememberEnableIdling = false;    /* original C++ signature */
     # `rememberEnableIdling`: _bool, default=true_.
     #  If True, the last value of enableIdling is restored from the settings at startup.
-    remember_enable_idling: bool = True
-    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true);    /* original C++ signature */
+    remember_enable_idling: bool = False
+    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
         enable_idling: bool = True,
         is_idling: bool = False,
-        remember_enable_idling: bool = True,
+        remember_enable_idling: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass

@@ -817,7 +817,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::FpsIdling>
             (m, "FpsIdling", " @@md#FpsIdling\n\n FpsIdling is a struct that contains Fps Idling parameters")
         .def(py::init<>([](
-        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true)
+        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
         {
             auto r = std::make_unique<FpsIdling>();
             r->fpsIdle = fpsIdle;
@@ -826,7 +826,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->rememberEnableIdling = rememberEnableIdling;
             return r;
         })
-        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = true
+        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false
         )
         .def_readwrite("fps_idle", &FpsIdling::fpsIdle, " `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen\n  very frequently. In order to reduce the CPU usage, the FPS is reduced when\n  no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets\n  (for example a live video), you may want to ask for a faster refresh:\n  either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application\n  refresh needs)")
         .def_readwrite("enable_idling", &FpsIdling::enableIdling, " `enableIdling`: _bool, default=true_.\n  Set this to False to disable idling\n  (this can be changed dynamically during execution)")
