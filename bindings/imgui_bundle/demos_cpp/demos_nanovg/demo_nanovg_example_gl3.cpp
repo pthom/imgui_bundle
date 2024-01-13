@@ -43,7 +43,7 @@ struct AppState
     std::unique_ptr<MyNvgDemo> myNvgDemo;
     NVGcontext * vg;
 
-    NvgImgui::NvgFramebufferPtr myFramebuffer;
+    std::unique_ptr<NvgImgui::NvgFramebuffer> myFramebuffer;
 
     ImVec4 ClearColor = ImVec4(0.2f, 0.2f, 0.2f, 1.f);
     bool DisplayInFrameBuffer = false;
@@ -62,14 +62,14 @@ int main(int, char**)
     runnerParams.appWindowParams.windowGeometry.size = {1200, 900};
     ImmApp::AddOnsParams addons;
 
-    runnerParams.callbacks.CallPostInit([&]()
+    runnerParams.callbacks.EnqueuePostInit([&]()
     {
         appState.vg = NvgImgui::CreateNvgContext(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES | NvgImgui::NVG_DEBUG);
         appState.myNvgDemo = std::make_unique<MyNvgDemo>(appState.vg);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
-        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(appState.vg, 1000, 600, nvgImageFlags);
+        appState.myFramebuffer = std::make_unique<NvgImgui::NvgFramebuffer>(appState.vg, 1000, 600, nvgImageFlags);
     });
-    runnerParams.callbacks.CallBeforeExit([&]()
+    runnerParams.callbacks.EnqueueBeforeExit([&]()
     {
         appState.myNvgDemo.reset();
         appState.myFramebuffer.reset();
@@ -98,7 +98,7 @@ int main(int, char**)
 
         if (appState.DisplayInFrameBuffer)
         {
-            NvgImgui::RenderNvgToFrameBuffer(appState.vg, appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
+            NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
             ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
         }
 

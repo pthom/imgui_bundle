@@ -6,9 +6,7 @@
 #include "imgui.h"
 #include "nanovg.h"
 #include "nvg_imgui/nvg_imgui.h"
-
-#include "nanovg_demo/nanovg_demo.h"
-#include "hello_imgui/internal/functional_utils.h"
+#include <math.h>
 
 // On peut modifier CustomBackground durant l'execution
 
@@ -95,18 +93,19 @@ void DrawTextWithGradient(NVGcontext* vg, ImVec2 position, int fontId)
     //nvgStroke(vg); // Apply the stroke
 }
 
+using NvgFramebufferPtr = std::unique_ptr<NvgImgui::NvgFramebuffer>;
 
-void demo_nanovg_heart()
+struct AppStateNvgHeart
 {
-    static NvgImgui::NvgFramebufferPtr nvgFramebuffer;
-    static NVGcontext *vg = nullptr;
-
+    NVGcontext *vg = nullptr;
+    std::unique_ptr<NvgImgui::NvgFramebuffer> nvgFramebuffer;
     int fontId = 0;
-    if (vg == nullptr)
+
+    void Init()
     {
         vg = NvgImgui::CreateNvgContext(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
-        nvgFramebuffer = NvgImgui::CreateNvgFramebuffer(vg, 1000, 600, nvgImageFlags);
+        nvgFramebuffer = std::make_unique<NvgImgui::NvgFramebuffer>(vg, 1000, 600, nvgImageFlags);
 
         // Load the font. You should do this only once and store the font handle if you're calling this multiple times.
         auto fontPath = HelloImGui::AssetFileFullPath("fonts/Roboto/Roboto-Regular.ttf");
@@ -116,115 +115,32 @@ void demo_nanovg_heart()
             return; // Exit if the font cannot be added.
         }
     }
-    HelloImGui::GetRunnerParams()->callbacks.CallBeforeExit([]() {
+
+    void Release()
+    {
         nvgFramebuffer.reset();
         NvgImgui::DeleteNvgContext(vg);
     }
-    );
+};
 
-    NvgImgui::RenderNvgToFrameBuffer(vg, nvgFramebuffer, [&](float width, float height)
+
+void demo_nanovg_heart()
+{
+    static AppStateNvgHeart appState;
+
+    if (appState.vg == nullptr)
+    {
+        appState.Init();
+        HelloImGui::GetRunnerParams()->callbacks.EnqueueBeforeExit([&]() { appState.Release(); });
+    }
+
+
+    NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, [&](float width, float height)
     {
         //DrawHeart(ImmApp::NanoVGContext(), {width / 2.f, height / 2.f}, 200.f, ImGui::GetTime());
-        DrawTextWithGradient(vg, {width / 2.f, height / 2.f}, fontId);
+        DrawTextWithGradient(appState.vg, {width / 2.f, height / 2.f}, appState.fontId);
     });
 
     ImGui::Text("Hello, world!");
-    ImGui::Image(nvgFramebuffer->TextureId, ImVec2(1000, 600));
+    ImGui::Image(appState.nvgFramebuffer->TextureId, ImVec2(1000, 600));
 }
-
-//struct MyNvgDemo
-//{
-//    bool Blowup = false;
-//    DemoData nvgDemoData;
-//    NVGcontext* vg;
-//
-//    MyNvgDemo(NVGcontext* _vg)
-//        : vg(_vg)
-//    {
-//        int status = loadDemoData(vg, &nvgDemoData);
-//        IM_ASSERT((status == 0) && "Could not load demo data!");
-//    }
-//
-//    ~MyNvgDemo()
-//    {
-//        freeDemoData(vg, &nvgDemoData);
-//    }
-//
-//    void Render(float width, float height, int mousex, int mousey, float t)
-//    {
-//        renderDemo(vg, mousex, mousey, width, height, t, Blowup, &nvgDemoData);
-//    }
-//
-//};
-
-
-
-//struct AppState
-//{
-//    std::unique_ptr<MyNvgDemo> myNvgDemo;
-//
-//    NvgImgui::NvgFramebufferPtr myFramebuffer;
-//
-//    ImVec4 ClearColor = ImVec4(0.2f, 0.2f, 0.2f, 1.f);
-//    bool DisplayInFrameBuffer = false;
-//};
-
-
-
-//int kkmain(int, char**)
-//{
-//    ChdirBesideAssetsFolder();
-//
-//    AppState appState;
-//
-//    HelloImGui::RunnerParams runnerParams;
-//    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
-//    runnerParams.appWindowParams.windowGeometry.size = {1200, 900};
-//    ImmApp::AddOnsParams addons;
-//    addons.withNanoVG = true;
-//
-//    runnerParams.callbacks.PostInit = [&]()
-//    {
-//        auto vg = ImmApp::NanoVGContext();
-//        appState.myNvgDemo = std::make_unique<MyNvgDemo>(vg);
-//        int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
-//        appState.myFramebuffer = NvgImgui::CreateNvgFramebuffer(vg, 1000, 600, nvgImageFlags);
-//    };
-//    runnerParams.callbacks.BeforeExit = [&]()
-//    {
-//        appState.myNvgDemo.reset();
-//        appState.myFramebuffer.reset();
-//    };
-//
-//    auto nvgDrawingFunction = [&](float width, float height)
-//    {
-//        double now = ImGui::GetTime();
-//        auto mousePos = ImGui::GetMousePos() - ImGui::GetMainViewport()->Pos;
-//        appState.myNvgDemo->Render(width, height, (int)mousePos.x, (int)mousePos.y, (float)now);
-//    };
-//
-//    runnerParams.callbacks.CustomBackground = [&]()
-//    {
-//        NvgImgui::RenderNvgToBackground(ImmApp::NanoVGContext(), nvgDrawingFunction, appState.ClearColor);
-//    };
-//
-//    runnerParams.callbacks.ShowGui = [&]()
-//    {
-//        ImGui::Begin("My Window!", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-//        ImGui::Checkbox("Display in FrameBuffer", &appState.DisplayInFrameBuffer);
-//        ImGui::Checkbox("Blowup", &appState.myNvgDemo->Blowup);
-//        ImGui::SetNextItemWidth(HelloImGui::EmSize(15.f));
-//        ImGui::ColorEdit4("Clear color", &appState.ClearColor.x);
-//
-//        if (appState.DisplayInFrameBuffer)
-//        {
-//            NvgImgui::RenderNvgToFrameBuffer(ImmApp::NanoVGContext(), appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
-//            ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
-//        }
-//
-//        ImGui::End();
-//    };
-//
-//    ImmApp::Run(runnerParams, addons);
-//    return 0;
-//}

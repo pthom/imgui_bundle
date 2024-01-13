@@ -21,20 +21,32 @@
 namespace NvgImgui
 {
 #ifdef HELLOIMGUI_HAS_OPENGL
-    struct NvgFramebufferGl: public NvgFramebuffer
+    struct NvgFramebuffer::PImpl
     {
         NVGLUframebuffer* fb = nullptr;
         GLint defaultViewport[4];  // To store the default viewport dimensions
+        NvgFramebuffer * _parent = nullptr;
 
-        NvgFramebufferGl(NVGcontext* vg, int width, int height, int nvgImageFlags)
-            : NvgFramebuffer(width, height, nvgImageFlags)
+        PImpl(NvgFramebuffer* parent) : _parent(parent)
         {
-            fb = nvgluCreateFramebuffer(vg, width, height, nvgImageFlags);
-            IM_ASSERT(fb && "Failed to create NVGLU framebuffer");
-            TextureId = (ImTextureID)(intptr_t)fb->texture;
+            AcquireResource();
         }
 
-        ~NvgFramebufferGl() override
+        ~PImpl()
+        {
+            ReleaseResource();
+        }
+
+        void AcquireResource()
+        {
+            if (_parent->vg == nullptr)
+                return;
+            fb = nvgluCreateFramebuffer(_parent->vg, _parent->Width, _parent->Height, _parent->NvgImageFlags);
+            IM_ASSERT(fb && "Failed to create NVGLU framebuffer");
+            _parent->TextureId = (ImTextureID)(intptr_t)fb->texture;
+        }
+
+        void ReleaseResource()
         {
             if (fb) {
                 nvgluDeleteFramebuffer(fb);
@@ -42,24 +54,19 @@ namespace NvgImgui
             }
         }
 
-        void Bind() override
+        void Bind()
         {
             nvgluBindFramebuffer(fb);
             glGetIntegerv(GL_VIEWPORT, defaultViewport);
-            glViewport(0, 0, Width, Height);
+            glViewport(0, 0, _parent->Width, _parent->Height);
         }
 
-        void Unbind() override
+        void Unbind()
         {
             nvgluBindFramebuffer(nullptr);
             glViewport(defaultViewport[0], defaultViewport[1], defaultViewport[2], defaultViewport[3]);
         }
     };
-
-    NvgFramebufferPtr CreateNvgFramebuffer(NVGcontext* vg, int width, int height, int nvImageFlags)
-    {
-        return std::make_shared<NvgFramebufferGl>(vg, width, height, nvImageFlags);
-    }
 
     static void FillClearColor(ImVec4 clearColor)
     {
@@ -114,6 +121,18 @@ namespace NvgImgui
 #endif // HELLOIMGUI_HAS_OPENGL
 
 
+    NvgFramebuffer::NvgFramebuffer(NVGcontext* vg, int width, int height, int nvgImageFlags) // See NVGimageFlags
+        : vg(vg), Width(width), Height(height), NvgImageFlags(nvgImageFlags)
+    {
+        pImpl = new PImpl(this);
+    }
+
+    NvgFramebuffer::~NvgFramebuffer() { delete pImpl; }
+
+    void NvgFramebuffer::Bind() { pImpl->Bind(); }
+    void NvgFramebuffer::Unbind() { pImpl->Unbind(); }
+
+
     void RenderNvgToBackground(NVGcontext* vg, NvgDrawingFunction nvgDrawingFunction, ImVec4 clearColor)
     {
         if (clearColor.w > 0.f)
@@ -127,9 +146,9 @@ namespace NvgImgui
         nvgEndFrame(vg);
     }
 
-    void RenderNvgToFrameBuffer(NVGcontext* vg, NvgFramebufferPtr texture, NvgDrawingFunction drawFunc, ImVec4 clearColor)
+    void RenderNvgToFrameBuffer(NVGcontext* vg, NvgFramebuffer& texture, NvgDrawingFunction drawFunc, ImVec4 clearColor)
     {
-        texture->Bind();
+        texture.Bind();
         if (clearColor.w > 0.f)
             FillClearColor(clearColor);
 
@@ -142,21 +161,21 @@ namespace NvgImgui
 
         // float pixelRatio = ImGui::GetIO().DisplayFramebufferScale.x;
         float pixelRatio = 1.f;
-        nvgBeginFrame(vg, texture->Width, texture->Height, pixelRatio);
+        nvgBeginFrame(vg, texture.Width, texture.Height, pixelRatio);
 
         // Flip the y-axis
         nvgSave(vg); // Save the current state
-        nvgTranslate(vg, 0, texture->Height); // Move the origin to the bottom-left
+        nvgTranslate(vg, 0, texture.Height); // Move the origin to the bottom-left
         nvgScale(vg, 1, -1); // Flip the y-axis
 
         // Perform drawing operations
-        drawFunc(texture->Width, texture->Height);
+        drawFunc(texture.Width, texture.Height);
 
         nvgRestore(vg); // Restore the original state
         nvgEndFrame(vg);
         nvgReset(vg); // Reset any temporary state changes that may have been made
 
-        texture->Unbind();
+        texture.Unbind();
     }
 
 
