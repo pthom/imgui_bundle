@@ -13,7 +13,7 @@ namespace NvgImgui
 
     // Duplicate of NVGcreateFlags in nanovg_gl.h
     enum NvgCreateFlags {
-        // Flag indicating if geometry based anti-aliasing is used (may not be needed when using MSAA).
+        // Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).
         NVG_ANTIALIAS 		= 1<<0,
         // Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little
         // slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.
@@ -22,16 +22,16 @@ namespace NvgImgui
         NVG_DEBUG 			= 1<<2,
     };
 
-    // Creates a NanoVG context, using the current rendering backend (OpenGL, Metal, ...)
-    // Currently, the only supported backend is OpenGL (see NVGcreateFlags_GL)
-    NVGcontext* CreateNvgContext(int flags = 0);
+    // Creates a NanoVG context for OpenGL
+    // This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3
+    NVGcontext* CreateNvgContext_GL(int flags = 0);
 
-    // Deletes a NanoVG context
-    void DeleteNvgContext(NVGcontext* vg);
+    // Deletes a NanoVG context (created with CreateNvgContext_GL)
+    void DeleteNvgContext_GL(NVGcontext* vg);
 
     // NvgFramebuffer: a framebuffer that can be used by NanoVG + ImGui
     // Internally stored inside the renderer backend (e.g. OpenGL)
-    // Note: this class can be instantiated only after a valid renderer backend (e.g. OpenGL) has been created
+    // Note: this class can be instantiated only after a valid renderer backend (OpenGL) has been created
     class NvgFramebuffer
     {
     public:
@@ -40,7 +40,7 @@ namespace NvgImgui
         int NvgImageFlags = 0;
         ImTextureID TextureId = {};
 
-        // Warning: this constructor can be called only after a valid renderer backend (e.g. OpenGL) has been created
+        // Warning: this constructor can be called only after a valid renderer backend (OpenGL) has been created
         // (will call Init())
         NvgFramebuffer(
             NVGcontext *vg,

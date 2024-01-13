@@ -4,30 +4,30 @@
 #include "imgui.h"
 
 #ifdef HELLOIMGUI_HAS_OPENGL
-#include "hello_imgui_include_opengl.h"
+    #include "hello_imgui_include_opengl.h"
 
-#ifdef HELLOIMGUI_USE_GLES3
-#define NANOVG_GLES3
-#define NANOVG_GLES3_IMPLEMENTATION
-#else
-#define NANOVG_GL3 1
-#define NANOVG_GL3_IMPLEMENTATION
+    #ifdef HELLOIMGUI_USE_GLES3
+    #define NANOVG_GLES3
+    #define NANOVG_GLES3_IMPLEMENTATION
+    #else
+    #define NANOVG_GL3 1
+    #define NANOVG_GL3_IMPLEMENTATION
+    #endif
+
+    #include "nanovg_gl.h"
+    #include "nanovg_gl_utils.h"
 #endif
 
-#include "nanovg_gl.h"
-#include "nanovg_gl_utils.h"
-#endif
-
+#ifdef HELLOIMGUI_HAS_OPENGL
 namespace NvgImgui
 {
-#ifdef HELLOIMGUI_HAS_OPENGL
     struct NvgFramebuffer::PImpl
     {
-        NVGLUframebuffer* fb = nullptr;
+        NVGLUframebuffer *fb = nullptr;
         GLint defaultViewport[4];  // To store the default viewport dimensions
-        NvgFramebuffer * _parent = nullptr;
+        NvgFramebuffer *_parent = nullptr;
 
-        PImpl(NvgFramebuffer* parent) : _parent(parent)
+        PImpl(NvgFramebuffer *parent) : _parent(parent)
         {
             AcquireResource();
         }
@@ -43,12 +43,13 @@ namespace NvgImgui
                 return;
             fb = nvgluCreateFramebuffer(_parent->vg, _parent->Width, _parent->Height, _parent->NvgImageFlags);
             IM_ASSERT(fb && "Failed to create NVGLU framebuffer");
-            _parent->TextureId = (ImTextureID)(intptr_t)fb->texture;
+            _parent->TextureId = (ImTextureID) (intptr_t) fb->texture;
         }
 
         void ReleaseResource()
         {
-            if (fb) {
+            if (fb)
+            {
                 nvgluDeleteFramebuffer(fb);
                 fb = nullptr;
             }
@@ -74,28 +75,21 @@ namespace NvgImgui
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-#ifdef HELLOIMGUI_USE_GLES3
-    NVGcontext* CreateNvgContext(int flags)
-    {
-        return nvgCreateGLES3(flags);
-    }
+    #ifdef HELLOIMGUI_USE_GLES3
+    NVGcontext* CreateNvgContext(int flags) { return nvgCreateGLES3(flags); }
+    void DeleteNvgContext(NVGcontext* vg) { nvgDeleteGLES3(vg); }
+    #else
+    NVGcontext *CreateNvgContext_GL(int flags) { return nvgCreateGL3(flags); }
+    void DeleteNvgContext_GL(NVGcontext *vg) { nvgDeleteGL3(vg); }
+    #endif
 
-    void DeleteNvgContext(NVGcontext* vg)
-    {
-        nvgDeleteGLES3(vg);
-    }
-#else
-    NVGcontext* CreateNvgContext(int flags)
-    {
-        return nvgCreateGL3(flags);
-    }
+} // namespace NvgImgui
+#endif // #ifdef HELLOIMGUI_HAS_OPENGL
 
-    void DeleteNvgContext(NVGcontext* vg)
-    {
-        nvgDeleteGL3(vg);
-    }
-#endif
-#else
+
+#ifndef HELLOIMGUI_HAS_OPENGL
+namespace NvgImgui
+{
     static void FillClearColor(ImVec4 clearColor)
     {
         IM_ASSERT(false && "FillClearColor: Not implemented for this rendering backend!");
@@ -117,10 +111,12 @@ namespace NvgImgui
     {
         IM_ASSERT(false && "DeleteNvgContext: Not implemented for this rendering backend!");
     }
+} // namespace NvgImgui
+#endif // #ifndef HELLOIMGUI_HAS_OPENGL
 
-#endif // HELLOIMGUI_HAS_OPENGL
 
-
+namespace NvgImgui
+{
     NvgFramebuffer::NvgFramebuffer(NVGcontext* vg, int width, int height, int nvgImageFlags) // See NVGimageFlags
         : vg(vg), Width(width), Height(height), NvgImageFlags(nvgImageFlags)
     {
@@ -177,6 +173,5 @@ namespace NvgImgui
 
         texture.Unbind();
     }
-
 
 }

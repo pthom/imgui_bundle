@@ -103,7 +103,7 @@ struct AppStateNvgHeart
 
     void Init()
     {
-        vg = NvgImgui::CreateNvgContext(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES);
+        vg = NvgImgui::CreateNvgContext_GL(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
         nvgFramebuffer = std::make_unique<NvgImgui::NvgFramebuffer>(vg, 1000, 600, nvgImageFlags);
 
@@ -119,7 +119,7 @@ struct AppStateNvgHeart
     void Release()
     {
         nvgFramebuffer.reset();
-        NvgImgui::DeleteNvgContext(vg);
+        NvgImgui::DeleteNvgContext_GL(vg);
     }
 };
 

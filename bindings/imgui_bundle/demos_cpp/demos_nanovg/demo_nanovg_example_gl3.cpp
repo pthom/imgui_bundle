@@ -64,7 +64,8 @@ int main(int, char**)
 
     runnerParams.callbacks.EnqueuePostInit([&]()
     {
-        appState.vg = NvgImgui::CreateNvgContext(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES | NvgImgui::NVG_DEBUG);
+        appState.vg = NvgImgui::CreateNvgContext_GL(
+            NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES | NvgImgui::NVG_DEBUG);
         appState.myNvgDemo = std::make_unique<MyNvgDemo>(appState.vg);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
         appState.myFramebuffer = std::make_unique<NvgImgui::NvgFramebuffer>(appState.vg, 1000, 600, nvgImageFlags);
@@ -73,7 +74,7 @@ int main(int, char**)
     {
         appState.myNvgDemo.reset();
         appState.myFramebuffer.reset();
-        NvgImgui::DeleteNvgContext(appState.vg);
+        NvgImgui::DeleteNvgContext_GL(appState.vg);
     });
 
     auto nvgDrawingFunction = [&](float width, float height)
