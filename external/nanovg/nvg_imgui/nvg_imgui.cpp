@@ -7,7 +7,7 @@
     #include "hello_imgui_include_opengl.h"
 
     #ifdef HELLOIMGUI_USE_GLES3
-    #define NANOVG_GLES3
+    // #define NANOVG_GLES3
     #define NANOVG_GLES3_IMPLEMENTATION
     #else
     #define NANOVG_GL3 1
@@ -76,8 +76,8 @@ namespace NvgImgui
     }
 
     #ifdef HELLOIMGUI_USE_GLES3
-    NVGcontext* CreateNvgContext(int flags) { return nvgCreateGLES3(flags); }
-    void DeleteNvgContext(NVGcontext* vg) { nvgDeleteGLES3(vg); }
+    NVGcontext* CreateNvgContext_GL(int flags) { return nvgCreateGLES3(flags); }
+    void DeleteNvgContext_GL(NVGcontext* vg) { nvgDeleteGLES3(vg); }
     #else
     NVGcontext *CreateNvgContext_GL(int flags) { return nvgCreateGL3(flags); }
     void DeleteNvgContext_GL(NVGcontext *vg) { nvgDeleteGL3(vg); }

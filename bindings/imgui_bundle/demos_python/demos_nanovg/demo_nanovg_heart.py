@@ -1,5 +1,3 @@
-# Adaptation of imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_heart.cpp
-
 from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2
 import math
 

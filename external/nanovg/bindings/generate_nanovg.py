@@ -26,7 +26,7 @@ def main():
     options.function_names_replacements.add_last_replacement("^RGBf$", "rgb_f")
     options.class_exclude_by_name__regex = "^NVGcolor$"  # contains a union...
 
-    # The entire nvgText API is very C style, and needs adaptations
+    # The entire nvgText API is oriented around C style strings, and needs adaptations
     options.fn_exclude_by_name__regex = r"^nvgText|^nvgImageSize$"
 
     for letter in string.ascii_lowercase:
