@@ -93,8 +93,6 @@ void DrawScene(NVGcontext* vg, float width, float height)
 };
 
 
-using NvgFramebufferPtr = std::unique_ptr<NvgImgui::NvgFramebuffer>;
-
 struct AppStateNvgHeart
 {
     // Our NanoVG context
@@ -149,7 +147,7 @@ int main(int, char**)
         // Render to our framebuffer
         NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, DrawScene);
         // Use it as a texture for an ImGui button
-        if (ImGui::ImageButton(appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(5.f, 3.f)))
+        if (ImGui::ImageButton("ImgButton", appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(5.f, 3.f)))
             HelloImGui::GetRunnerParams()->appShallExit = true;
 
         ImGui::End();

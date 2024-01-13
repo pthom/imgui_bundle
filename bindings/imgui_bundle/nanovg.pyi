@@ -1,11 +1,15 @@
 import enum
 import numpy as np
-from typing import Any
+from typing import Any, Callable
+
+from imgui_bundle import ImVec4
+from imgui_bundle.imgui import ImTextureID
 
 
 OpaquePointer = np.uint64
 Context = OpaquePointer
 UChar = int # a value between 0 and 255
+NvgDrawingFunction = Callable[[Context, int, int], Any]
 
 class Color:
     r: float
@@ -339,7 +343,7 @@ def rgba(r: UChar, g: UChar, b: UChar, a: UChar) -> Color:
     pass
 
 # NVGcolor nvgRGBAf(float r, float g, float b, float a);    /* original C++ signature */
-def rgb_af(r: float, g: float, b: float, a: float) -> Color:
+def rgba_f(r: float, g: float, b: float, a: float) -> Color:
     """ Returns a color value from red, green, blue and alpha values."""
     pass
 
@@ -1263,5 +1267,129 @@ def debug_dump_path_cache(ctx: Context) -> None:
 
 # #endif
 ####################    </generated_from:nanovg.h>    ####################
+
+
+####################    <generated_from:nvg_imgui.h>    ####################
+
+
+
+
+
+# <submodule nvg_imgui>
+class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_imgui
+    pass  # (This corresponds to a C++ namespace. All method are static!)
+
+    class NvgCreateFlags(enum.Enum):
+        """ Duplicate of NVGcreateFlags in nanovg_gl.h"""
+        # NVG_ANTIALIAS 		= 1<<0,    /* original C++ signature */
+        # Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).
+        antialias = enum.auto()       # (= 1<<0)
+        # NVG_STENCIL_STROKES	= 1<<1,    /* original C++ signature */
+        # Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little
+        # slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.
+        stencil_strokes = enum.auto() # (= 1<<1)
+        # NVG_DEBUG 			= 1<<2,    /* original C++ signature */
+        #     }
+        # Flag indicating that additional debug checks are done.
+        debug = enum.auto()           # (= 1<<2)
+
+    # NVGcontext* CreateNvgContext_GL(int flags = 0);    /* original C++ signature */
+    @staticmethod
+    def create_nvg_context_gl(flags: int = 0) -> Context:
+        """ Creates a NanoVG context for OpenGL
+         This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3
+        """
+        pass
+
+    # void DeleteNvgContext_GL(NVGcontext* vg);    /* original C++ signature */
+    @staticmethod
+    def delete_nvg_context_gl(vg: Context) -> None:
+        """ Deletes a NanoVG context (created with CreateNvgContext_GL)"""
+        pass
+
+    class NvgFramebuffer:
+        """ NvgFramebuffer: a framebuffer that can be used by NanoVG + ImGui
+         Internally stored inside the renderer backend (e.g. OpenGL)
+         Note: this class can be instantiated only after a valid renderer backend (OpenGL) has been created
+        """
+        # NVGcontext *vg = nullptr;    /* original C++ signature */
+        vg: Context = None
+        # int Width = 0,     /* original C++ signature */
+        width: int = 0
+        # Height = 0;    /* original C++ signature */
+        height: int = 0
+        # int NvgImageFlags = 0;    /* original C++ signature */
+        nvg_image_flags: int = 0
+        # ImTextureID TextureId = {};    /* original C++ signature */
+        texture_id: ImTextureID = ImTextureID()
+
+        # Warning: this constructor can be called only after a valid renderer backend (OpenGL) has been created
+        # (will call Init())
+        # NvgFramebuffer(    /* original C++ signature */
+        #             NVGcontext *vg,
+        #             int width, int height,
+        #             int nvgImageFlags
+        #             );
+        def __init__(
+            self,
+            vg: Context,
+            width: int,
+            height: int,
+            nvg_image_flags: int
+            ) -> None:
+            """ See NVGimageFlags"""
+            pass
+
+
+        # void Bind();    /* original C++ signature */
+        def bind(self) -> None:
+            """ Make the framebuffer the current render target"""
+            pass
+
+        # void Unbind();    /* original C++ signature */
+        def unbind(self) -> None:
+            """ Restore the previous render target"""
+            pass
+
+
+
+    # void RenderNvgToBackground(    /* original C++ signature */
+    #         NVGcontext* vg,
+    #         NvgDrawingFunction nvgDrawingFunction,
+    #         ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 1.f)
+    #         );
+    @staticmethod
+    def render_nvg_to_background(
+        vg: Context,
+        nvg_drawing_function: NvgDrawingFunction,
+        clear_color: ImVec4 = ImVec4(0., 0., 0., 1.)
+        ) -> None:
+        """ Render the given drawing function to the background of the application
+         (i.e. the main viewport)
+         If clearColor.w > 0., the background will be cleared with this color
+        """
+        pass
+
+    # void RenderNvgToFrameBuffer(    /* original C++ signature */
+    #         NVGcontext* vg,
+    #         NvgFramebuffer& texture,
+    #         NvgDrawingFunction drawFunc,
+    #         ImVec4 clearColor = ImVec4(0.f, 0.f, 0.f, 1.f)
+    #         );
+    @staticmethod
+    def render_nvg_to_frame_buffer(
+        vg: Context,
+        texture: NvgFramebuffer,
+        draw_func: NvgDrawingFunction,
+        clear_color: ImVec4 = ImVec4(0., 0., 0., 1.)
+        ) -> None:
+        """ Render the given drawing function to the given framebuffer
+         If clearColor.w > 0., the background will be cleared with this color
+        """
+        pass
+
+
+# </submodule nvg_imgui>
+####################    </generated_from:nvg_imgui.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!
