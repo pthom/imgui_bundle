@@ -16,6 +16,7 @@ from imgui_bundle.demos_python import demo_imguizmo_launcher
 from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
+from imgui_bundle.demos_python import demo_nanovg_launcher
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
@@ -94,10 +95,11 @@ def main() -> None:
         DemoDetails("Text Editor", demo_text_edit),
         DemoDetails("Widgets", demo_widgets),
         DemoDetails("ImmVision", demo_immvision_launcher),
-        DemoDetails("imgui_tex_inspect", demo_tex_inspect_launcher),
+        DemoDetails("NanoVG", demo_nanovg_launcher),
         DemoDetails("ImGuizmo", demo_imguizmo_launcher),
         DemoDetails("Themes", demo_themes),
         DemoDetails("Logger", demo_logger),
+        DemoDetails("tex_inspect", demo_tex_inspect_launcher),
     ]
 
     for demo in demos:

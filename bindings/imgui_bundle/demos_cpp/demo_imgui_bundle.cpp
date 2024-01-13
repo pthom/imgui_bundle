@@ -8,6 +8,7 @@
 #include <functional>
 
 void demo_immapp_launcher();
+void demo_nanovg_launcher();
 void demo_text_edit();
 void demo_imgui_bundle_intro();
 void demo_imgui_show_demo_window();
@@ -99,10 +100,11 @@ int main(int, char **)
         DEMO_DETAILS("Text Editor", demo_text_edit),
         DEMO_DETAILS("Widgets", demo_widgets),
         DEMO_DETAILS("ImmVision", demo_immvision_launcher),
-        DEMO_DETAILS("imgui_tex_inspect", demo_tex_inspect_launcher),
+        DEMO_DETAILS("NanoVG", demo_nanovg_launcher),
         DEMO_DETAILS("ImGuizmo", demo_imguizmo_launcher),
         DEMO_DETAILS("Themes", demo_themes),
         DEMO_DETAILS("Logger", demo_logger),
+        DEMO_DETAILS("tex_inspect", demo_tex_inspect_launcher),
     };
 
     for (const auto& demo: demos)

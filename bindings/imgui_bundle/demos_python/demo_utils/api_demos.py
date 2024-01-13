@@ -49,11 +49,13 @@ def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     snippet_cpp.code = cpp_code
     snippet_cpp.displayed_filename = "C++ code"
     snippet_cpp.height_in_lines = nb_lines
+    snippet_cpp.max_height_in_lines = nb_lines
 
     snippet_python: immapp.snippets.SnippetData = immapp.snippets.SnippetData()  # type: ignore
     snippet_python.code = python_code
     snippet_python.displayed_filename = "Python code"
     snippet_python.height_in_lines = nb_lines
+    snippet_python.max_height_in_lines = nb_lines
 
     immapp.snippets.show_side_by_side_snippets(snippet_python, snippet_cpp)
 
