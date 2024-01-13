@@ -1,4 +1,6 @@
-#include "nanovg_demo.h"
+// This is an almost verbatim copy of NanoVG's demo.cpp
+
+#include "demo_nanovg_full_impl.h"
 #include "hello_imgui/hello_imgui_assets.h"
 #include <stdio.h>
 #include <string.h>
@@ -6,7 +8,6 @@
 #include <stdlib.h>
 
 #include "nanovg.h"
-
 
 
 #ifdef _MSC_VER

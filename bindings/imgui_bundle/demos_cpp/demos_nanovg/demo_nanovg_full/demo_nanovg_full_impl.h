@@ -1,3 +1,5 @@
+// This is an almost verbatim copy of NanoVG's demo.h
+
 #ifndef DEMO_H
 #define DEMO_H
 

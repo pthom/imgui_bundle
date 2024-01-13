@@ -6,9 +6,7 @@
 #include "nanovg.h"
 #include "nvg_imgui/nvg_imgui.h"
 
-#include "nanovg_demo/nanovg_demo.h"
-
-// On peut modifier CustomBackground durant l'execution
+#include "demo_nanovg_full/demo_nanovg_full_impl.h"
 
 
 struct MyNvgDemo
@@ -105,6 +103,8 @@ int main(int, char**)
 
         ImGui::End();
     };
+
+    runnerParams.fpsIdling.enableIdling = false;
 
     ImmApp::Run(runnerParams, addons);
     return 0;
