@@ -1,9 +1,7 @@
-#define IMGUI_DEFINE_MATH_OPERATORS
-#include "immapp/immapp.h"
+#include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
 #include "imgui.h"
-#include "nanovg.h"
 #include "nvg_imgui/nvg_imgui.h"
 
 #include "demo_nanovg_full/demo_nanovg_full_impl.h"
@@ -12,7 +10,7 @@
 struct MyNvgDemo
 {
     bool Blowup = false;
-    DemoData nvgDemoData;
+    DemoData nvgDemoData = {};
     NVGcontext* vg;
 
     MyNvgDemo(NVGcontext* _vg)
@@ -39,7 +37,7 @@ struct MyNvgDemo
 struct AppState
 {
     std::unique_ptr<MyNvgDemo> myNvgDemo;
-    NVGcontext * vg;
+    NVGcontext * vg = nullptr;
 
     std::unique_ptr<NvgImgui::NvgFramebuffer> myFramebuffer;
 
@@ -58,7 +56,6 @@ int main(int, char**)
     HelloImGui::RunnerParams runnerParams;
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.appWindowParams.windowGeometry.size = {1200, 900};
-    ImmApp::AddOnsParams addons;
 
     runnerParams.callbacks.EnqueuePostInit([&]()
     {
@@ -78,7 +75,10 @@ int main(int, char**)
     auto nvgDrawingFunction = [&](NVGcontext *vg, float width, float height)
     {
         double now = ImGui::GetTime();
-        auto mousePos = ImGui::GetMousePos() - ImGui::GetMainViewport()->Pos;
+        ImVec2 mousePos(
+            ImGui::GetIO().MousePos.x - ImGui::GetMainViewport()->Pos.x,
+            ImGui::GetIO().MousePos.y - ImGui::GetMainViewport()->Pos.y
+            );
         appState.myNvgDemo->Render(width, height, (int)mousePos.x, (int)mousePos.y, (float)now);
     };
 
@@ -106,6 +106,6 @@ int main(int, char**)
 
     runnerParams.fpsIdling.enableIdling = false;
 
-    ImmApp::Run(runnerParams, addons);
+    HelloImGui::Run(runnerParams);
     return 0;
 }

@@ -879,7 +879,7 @@ void drawParagraph(NVGcontext* vg, float x, float y, float width, float height, 
 	const char* hoverText = "Hover your mouse over the text to see calculated caret position.";
 	float gx,gy;
 	int gutter = 0;
-	const char* boxText = "Testing\nsome multiline\ntext.";
+	// const char* boxText = "Testing\nsome multiline\ntext.";
 	NVG_NOTUSED(height);
 
 	nvgSave(vg);

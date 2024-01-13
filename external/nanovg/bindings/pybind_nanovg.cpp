@@ -6,6 +6,8 @@
 
 #include "nanovg.h"
 #include "nvg_imgui/nvg_imgui.h"
+#include "nvg_imgui/nvg_cpp_text.h"
+
 
 namespace py = pybind11;
 
@@ -278,7 +280,7 @@ void py_init_module_nanovg(py::module& m)
         py::arg("r"), py::arg("g"), py::arg("b"),
         "Returns a color value from red, green, blue values. Alpha will be set to 255 (1.0).");
 
-    m.def("rg_bf",
+    m.def("rgb_f",
         nvgRGBf,
         py::arg("r"), py::arg("g"), py::arg("b"),
         "Returns a color value from red, green, blue values. Alpha will be set to 1.0.");
@@ -499,11 +501,6 @@ void py_init_module_nanovg(py::module& m)
         py::arg("ctx"), py::arg("image"), py::arg("data"),
         "Updates image data specified by image handle.");
 
-    m.def("image_size",
-        nvgImageSize,
-        py::arg("ctx"), py::arg("image"), py::arg("w"), py::arg("h"),
-        "Returns the dimensions of a created image.");
-
     m.def("delete_image",
         nvgDeleteImage,
         py::arg("ctx"), py::arg("image"),
@@ -679,21 +676,6 @@ void py_init_module_nanovg(py::module& m)
         py::arg("ctx"), py::arg("blur"),
         "Sets the blur of current text style.");
 
-    m.def("text_letter_spacing",
-        nvgTextLetterSpacing,
-        py::arg("ctx"), py::arg("spacing"),
-        "Sets the letter spacing of current text style.");
-
-    m.def("text_line_height",
-        nvgTextLineHeight,
-        py::arg("ctx"), py::arg("line_height"),
-        "Sets the proportional line height of current text style. The line height is specified as multiple of font size.");
-
-    m.def("text_align",
-        nvgTextAlign,
-        py::arg("ctx"), py::arg("align"),
-        "Sets the text align of current text style, see NVGalign for options.");
-
     m.def("font_face_id",
         nvgFontFaceId,
         py::arg("ctx"), py::arg("font"),
@@ -703,41 +685,6 @@ void py_init_module_nanovg(py::module& m)
         nvgFontFace,
         py::arg("ctx"), py::arg("font"),
         "Sets the font face based on specified name of current text style.");
-
-    m.def("text",
-        nvgText,
-        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("string"), py::arg("end"),
-        "Draws text string at specified location. If end is specified only the sub-string up to the end is drawn.");
-
-    m.def("text_box",
-        nvgTextBox,
-        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("break_row_width"), py::arg("string"), py::arg("end"),
-        " Draws multi-line text string at specified location wrapped at the specified width. If end is specified only the sub-string up to the end is drawn.\n White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.\n Words longer than the max width are slit at nearest character (i.e. no hyphenation).");
-
-    m.def("text_bounds",
-        nvgTextBounds,
-        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("string"), py::arg("end"), py::arg("bounds"),
-        " Measures the specified text string. Parameter bounds should be a pointer to float[4],\n if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]\n Returns the horizontal advance of the measured text (i.e. where the next character should drawn).\n Measured values are returned in local coordinate space.");
-
-    m.def("text_box_bounds",
-        nvgTextBoxBounds,
-        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("break_row_width"), py::arg("string"), py::arg("end"), py::arg("bounds"),
-        " Measures the specified multi-text string. Parameter bounds should be a pointer to float[4],\n if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]\n Measured values are returned in local coordinate space.");
-
-    m.def("text_glyph_positions",
-        nvgTextGlyphPositions,
-        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("string"), py::arg("end"), py::arg("positions"), py::arg("max_positions"),
-        " Calculates the glyph x positions of the specified text. If end is specified only the sub-string will be used.\n Measured values are returned in local coordinate space.");
-
-    m.def("text_metrics",
-        nvgTextMetrics,
-        py::arg("ctx"), py::arg("ascender"), py::arg("descender"), py::arg("lineh"),
-        " Returns the vertical metrics based on the current text style.\n Measured values are returned in local coordinate space.");
-
-    m.def("text_break_lines",
-        nvgTextBreakLines,
-        py::arg("ctx"), py::arg("string"), py::arg("end"), py::arg("break_row_width"), py::arg("rows"), py::arg("max_rows"),
-        " Breaks the specified text into lines. If end is specified only the sub-string will be used.\n White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.\n Words longer than the max width are slit at nearest character (i.e. no hyphenation).");
 
 
     py::enum_<NVGtexture>(m, "Texture", py::arithmetic(), "\n Internal Render API\n")
@@ -909,6 +856,103 @@ void py_init_module_nanovg(py::module& m)
             " Render the given drawing function to the given framebuffer\n If clearColor.w > 0., the background will be cleared with this color");
     } // </namespace NvgImgui>
     ////////////////////    </generated_from:nvg_imgui.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:nvg_cpp_text.h>    ////////////////////
+    m.def("text",
+        nvgcpp_Text,
+        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("text"),
+        "Draws text string at specified location. If end is specified only the sub-string up to the end is drawn.");
+
+    m.def("text_box",
+        nvgcpp_TextBox,
+        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("break_row_width"), py::arg("text"),
+        " Draws multi-line text string at specified location wrapped at the specified width. If end is specified only the sub-string up to the end is drawn.\n White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.\n Words longer than the max width are split at nearest character (i.e. no hyphenation).");
+
+    m.def("text_bounds",
+        nvgcpp_TextBounds,
+        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("text"),
+        " Measures the specified text string. Parameter bounds should be a pointer to float[4],\n if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]\n Returns the bounds + the horizontal advance of the measured text (i.e. where the next character should drawn)\n Measured values are returned in local coordinate space.");
+
+    m.def("text_box_bounds",
+        nvgcpp_TextBoxBounds,
+        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("break_row_width"), py::arg("text"),
+        " Measures the specified multi-text string. Parameter bounds should be a pointer to float[4],\n if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]\n Measured values are returned in local coordinate space.");
+
+    m.def("text_glyph_positions",
+        nvgcpp_TextGlyphPositions,
+        py::arg("ctx"), py::arg("x"), py::arg("y"), py::arg("text"),
+        " Calculates the glyph x positions of the specified text. If end is specified only the sub-string will be used.\n Measured values are returned in local coordinate space.");
+
+
+    auto pyClassTextMetricsData =
+        py::class_<TextMetricsData>
+            (m, "TextMetricsData", "")
+        .def(py::init<>([](
+        float ascender = float(), float descender = float(), float lineh = float())
+        {
+            auto r = std::make_unique<TextMetricsData>();
+            r->ascender = ascender;
+            r->descender = descender;
+            r->lineh = lineh;
+            return r;
+        })
+        , py::arg("ascender") = float(), py::arg("descender") = float(), py::arg("lineh") = float()
+        )
+        .def_readwrite("ascender", &TextMetricsData::ascender, "")
+        .def_readwrite("descender", &TextMetricsData::descender, "")
+        .def_readwrite("lineh", &TextMetricsData::lineh, "")
+        ;
+
+
+    m.def("text_metrics",
+        nvgcpp_TextMetrics,
+        py::arg("ctx"),
+        " Returns the vertical metrics based on the current text style.\n Measured values are returned in local coordinate space.");
+
+
+    auto pyClassNVGtextRowSimple =
+        py::class_<NVGtextRowSimple>
+            (m, "TextRowSimple", "")
+        .def(py::init<>([](
+        std::string row_text = std::string(), float width = float(), float minx = float(), float maxx = float())
+        {
+            auto r = std::make_unique<NVGtextRowSimple>();
+            r->row_text = row_text;
+            r->width = width;
+            r->minx = minx;
+            r->maxx = maxx;
+            return r;
+        })
+        , py::arg("row_text") = std::string(), py::arg("width") = float(), py::arg("minx") = float(), py::arg("maxx") = float()
+        )
+        .def_readwrite("row_text", &NVGtextRowSimple::row_text, "")
+        .def_readwrite("width", &NVGtextRowSimple::width, "Logical width of the row.")
+        .def_readwrite("minx", &NVGtextRowSimple::minx, "Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.")
+        .def_readwrite("maxx", &NVGtextRowSimple::maxx, "Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.")
+        ;
+
+
+    m.def("text_break_lines",
+        nvgcpp_TextBreakLines,
+        py::arg("ctx"), py::arg("text"), py::arg("break_row_width"),
+        " Breaks the specified text into lines. If end is specified only the sub-string will be used.\n White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.\n Words longer than the max width are split at nearest character (i.e. no hyphenation).");
+
+    m.def("text_align",
+        nvgcpp_TextAlign,
+        py::arg("ctx"), py::arg("align"),
+        "Sets the text align of current text style, see NVGalign for options.");
+
+    m.def("text_line_height",
+        nvgcpp_TextLineHeight,
+        py::arg("ctx"), py::arg("line_height"),
+        "Sets the proportional line height of current text style. The line height is specified as multiple of font size.");
+
+    m.def("image_size",
+        nvgcpp_ImageSize,
+        py::arg("ctx"), py::arg("image"),
+        "Returns the dimensions of a created image.");
+    ////////////////////    </generated_from:nvg_cpp_text.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

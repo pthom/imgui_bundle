@@ -60,7 +60,7 @@ def draw_nano_vg_label(vg: nvg.Context, width: float, height: float):
     nvg.save(vg)
     nvg.rotate(vg, -0.1)
     nvg.fill_color(vg, nvg.rgba(255, 100, 100, 255))
-    nvg.text(vg, 0.5 * width, 0.9 * height, "NanoVG", None)
+    nvg.text(vg, 0.5 * width, 0.9 * height, "NanoVG")
     nvg.restore(vg)
 
 

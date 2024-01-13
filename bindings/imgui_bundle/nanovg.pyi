@@ -1,6 +1,6 @@
 import enum
 import numpy as np
-from typing import Any, Callable
+from typing import Any, Callable, Tuple, List
 
 from imgui_bundle import ImVec4
 from imgui_bundle.imgui import ImTextureID
@@ -10,6 +10,8 @@ OpaquePointer = np.uint64
 Context = OpaquePointer
 UChar = int # a value between 0 and 255
 NvgDrawingFunction = Callable[[Context, int, int], Any]
+
+Bounds = Tuple[float, float, float, float]
 
 class Color:
     r: float
@@ -332,7 +334,7 @@ def rgb(r: UChar, g: UChar, b: UChar) -> Color:
     pass
 
 # NVGcolor nvgRGBf(float r, float g, float b);    /* original C++ signature */
-def rg_bf(r: float, g: float, b: float) -> Color:
+def rgb_f(r: float, g: float, b: float) -> Color:
     """ Returns a color value from red, green, blue values. Alpha will be set to 1.0."""
     pass
 
@@ -657,10 +659,6 @@ def update_image(ctx: Context, image: int, data: UChar) -> None:
     """ Updates image data specified by image handle."""
     pass
 
-# void nvgImageSize(NVGcontext* ctx, int image, int* w, int* h);    /* original C++ signature */
-def image_size(ctx: Context, image: int, w: int, h: int) -> None:
-    """ Returns the dimensions of a created image."""
-    pass
 
 # void nvgDeleteImage(NVGcontext* ctx, int image);    /* original C++ signature */
 def delete_image(ctx: Context, image: int) -> None:
@@ -1036,20 +1034,8 @@ def font_blur(ctx: Context, blur: float) -> None:
     """ Sets the blur of current text style."""
     pass
 
-# void nvgTextLetterSpacing(NVGcontext* ctx, float spacing);    /* original C++ signature */
-def text_letter_spacing(ctx: Context, spacing: float) -> None:
-    """ Sets the letter spacing of current text style."""
-    pass
 
-# void nvgTextLineHeight(NVGcontext* ctx, float lineHeight);    /* original C++ signature */
-def text_line_height(ctx: Context, line_height: float) -> None:
-    """ Sets the proportional line height of current text style. The line height is specified as multiple of font size."""
-    pass
 
-# void nvgTextAlign(NVGcontext* ctx, int align);    /* original C++ signature */
-def text_align(ctx: Context, align: int) -> None:
-    """ Sets the text align of current text style, see NVGalign for options."""
-    pass
 
 # void nvgFontFaceId(NVGcontext* ctx, int font);    /* original C++ signature */
 def font_face_id(ctx: Context, font: int) -> None:
@@ -1061,99 +1047,12 @@ def font_face(ctx: Context, font: str) -> None:
     """ Sets the font face based on specified name of current text style."""
     pass
 
-# float nvgText(NVGcontext* ctx, float x, float y, const char* string, const char* end);    /* original C++ signature */
-def text(ctx: Context, x: float, y: float, string: str, end: str) -> float:
-    """ Draws text string at specified location. If end is specified only the sub-string up to the end is drawn."""
-    pass
 
-# void nvgTextBox(NVGcontext* ctx, float x, float y, float breakRowWidth, const char* string, const char* end);    /* original C++ signature */
-def text_box(
-    ctx: Context,
-    x: float,
-    y: float,
-    break_row_width: float,
-    string: str,
-    end: str
-    ) -> None:
-    """ Draws multi-line text string at specified location wrapped at the specified width. If end is specified only the sub-string up to the end is drawn.
-     White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.
-     Words longer than the max width are slit at nearest character (i.e. no hyphenation).
-    """
-    pass
 
-# float nvgTextBounds(NVGcontext* ctx, float x, float y, const char* string, const char* end, float* bounds);    /* original C++ signature */
-def text_bounds(
-    ctx: Context,
-    x: float,
-    y: float,
-    string: str,
-    end: str,
-    bounds: float
-    ) -> float:
-    """ Measures the specified text string. Parameter bounds should be a pointer to float[4],
-     if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]
-     Returns the horizontal advance of the measured text (i.e. where the next character should drawn).
-     Measured values are returned in local coordinate space.
-    """
-    pass
 
-# void nvgTextBoxBounds(NVGcontext* ctx, float x, float y, float breakRowWidth, const char* string, const char* end, float* bounds);    /* original C++ signature */
-def text_box_bounds(
-    ctx: Context,
-    x: float,
-    y: float,
-    break_row_width: float,
-    string: str,
-    end: str,
-    bounds: float
-    ) -> None:
-    """ Measures the specified multi-text string. Parameter bounds should be a pointer to float[4],
-     if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]
-     Measured values are returned in local coordinate space.
-    """
-    pass
 
-# int nvgTextGlyphPositions(NVGcontext* ctx, float x, float y, const char* string, const char* end, NVGglyphPosition* positions, int maxPositions);    /* original C++ signature */
-def text_glyph_positions(
-    ctx: Context,
-    x: float,
-    y: float,
-    string: str,
-    end: str,
-    positions: GlyphPosition,
-    max_positions: int
-    ) -> int:
-    """ Calculates the glyph x positions of the specified text. If end is specified only the sub-string will be used.
-     Measured values are returned in local coordinate space.
-    """
-    pass
 
-# void nvgTextMetrics(NVGcontext* ctx, float* ascender, float* descender, float* lineh);    /* original C++ signature */
-def text_metrics(
-    ctx: Context,
-    ascender: float,
-    descender: float,
-    lineh: float
-    ) -> None:
-    """ Returns the vertical metrics based on the current text style.
-     Measured values are returned in local coordinate space.
-    """
-    pass
 
-# int nvgTextBreakLines(NVGcontext* ctx, const char* string, const char* end, float breakRowWidth, NVGtextRow* rows, int maxRows);    /* original C++ signature */
-def text_break_lines(
-    ctx: Context,
-    string: str,
-    end: str,
-    break_row_width: float,
-    rows: TextRow,
-    max_rows: int
-    ) -> int:
-    """ Breaks the specified text into lines. If end is specified only the sub-string will be used.
-     White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.
-     Words longer than the max width are slit at nearest character (i.e. no hyphenation).
-    """
-    pass
 
 class Texture(enum.Enum):
     """
@@ -1391,5 +1290,149 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
 
 # </submodule nvg_imgui>
 ####################    </generated_from:nvg_imgui.h>    ####################
+
+
+####################    <generated_from:nvg_cpp_text.h>    ####################
+
+
+
+# C++ Wrappers to NanoVG text functions, to simplify python bindings
+
+# float nvgcpp_Text(NVGcontext* ctx, float x, float y, const std::string& text);    /* original C++ signature */
+def text(ctx: Context, x: float, y: float, text: str) -> float:
+    """ Draws text string at specified location. If end is specified only the sub-string up to the end is drawn."""
+    pass
+
+# void nvgcpp_TextBox(NVGcontext* ctx, float x, float y, float breakRowWidth, const std::string& text);    /* original C++ signature */
+def text_box(
+    ctx: Context,
+    x: float,
+    y: float,
+    break_row_width: float,
+    text: str
+    ) -> None:
+    """ Draws multi-line text string at specified location wrapped at the specified width. If end is specified only the sub-string up to the end is drawn.
+     White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.
+     Words longer than the max width are split at nearest character (i.e. no hyphenation).
+    """
+    pass
+
+
+
+# std::tuple<Bounds, float> nvgcpp_TextBounds(NVGcontext* ctx, float x, float y, const std::string& text);    /* original C++ signature */
+def text_bounds(
+    ctx: Context,
+    x: float,
+    y: float,
+    text: str
+    ) -> Tuple[Bounds, float]:
+    """ Measures the specified text string. Parameter bounds should be a pointer to float[4],
+     if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]
+     Returns the bounds + the horizontal advance of the measured text (i.e. where the next character should drawn)
+     Measured values are returned in local coordinate space.
+    """
+    pass
+
+# Bounds nvgcpp_TextBoxBounds(NVGcontext* ctx, float x, float y, float breakRowWidth, const std::string& text);    /* original C++ signature */
+def text_box_bounds(
+    ctx: Context,
+    x: float,
+    y: float,
+    break_row_width: float,
+    text: str
+    ) -> Bounds:
+    """ Measures the specified multi-text string. Parameter bounds should be a pointer to float[4],
+     if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]
+     Measured values are returned in local coordinate space.
+    """
+    pass
+
+# std::vector<NVGglyphPosition> nvgcpp_TextGlyphPositions(NVGcontext* ctx, float x, float y, const std::string& text);    /* original C++ signature */
+def text_glyph_positions(
+    ctx: Context,
+    x: float,
+    y: float,
+    text: str
+    ) -> List[GlyphPosition]:
+    """ Calculates the glyph x positions of the specified text. If end is specified only the sub-string will be used.
+     Measured values are returned in local coordinate space.
+    """
+    pass
+
+
+class TextMetricsData:
+    # float ascender;    /* original C++ signature */
+    ascender: float
+    # float descender;    /* original C++ signature */
+    descender: float
+    # float lineh;    /* original C++ signature */
+    lineh: float
+    # TextMetricsData(float ascender = float(), float descender = float(), float lineh = float());    /* original C++ signature */
+    def __init__(
+        self,
+        ascender: float = float(),
+        descender: float = float(),
+        lineh: float = float()
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# TextMetricsData nvgcpp_TextMetrics(NVGcontext* ctx);    /* original C++ signature */
+def text_metrics(ctx: Context) -> TextMetricsData:
+    """ Returns the vertical metrics based on the current text style.
+     Measured values are returned in local coordinate space.
+    """
+    pass
+
+
+class TextRowSimple:
+    # std::string row_text;    /* original C++ signature */
+    row_text: str
+    # float width;    /* original C++ signature */
+    width: float  # Logical width of the row.
+    # float minx,     /* original C++ signature */
+    minx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
+    # maxx;    /* original C++ signature */
+    maxx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
+    # NVGtextRowSimple(std::string row_text = std::string(), float width = float(), float minx = float(), float maxx = float());    /* original C++ signature */
+    def __init__(
+        self,
+        row_text: str = "",
+        width: float = float(),
+        minx: float = float(),
+        maxx: float = float()
+        ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+
+# std::vector<NVGtextRowSimple> nvgcpp_TextBreakLines(NVGcontext* ctx, const std::string& text, float breakRowWidth);    /* original C++ signature */
+def text_break_lines(
+    ctx: Context,
+    text: str,
+    break_row_width: float
+    ) -> List[TextRowSimple]:
+    """ Breaks the specified text into lines. If end is specified only the sub-string will be used.
+     White space is stripped at the beginning of the rows, the text is split at word boundaries or when new-line characters are encountered.
+     Words longer than the max width are split at nearest character (i.e. no hyphenation).
+    """
+    pass
+
+# void nvgcpp_TextAlign(NVGcontext* ctx, int align);    /* original C++ signature */
+def text_align(ctx: Context, align: int) -> None:
+    """ Sets the text align of current text style, see NVGalign for options."""
+    pass
+
+# void nvgcpp_TextLineHeight(NVGcontext* ctx, float lineHeight);    /* original C++ signature */
+def text_line_height(ctx: Context, line_height: float) -> None:
+    """ Sets the proportional line height of current text style. The line height is specified as multiple of font size."""
+    pass
+
+
+# std::tuple<int, int> nvgcpp_ImageSize(NVGcontext* ctx, int image);    /* original C++ signature */
+def image_size(ctx: Context, image: int) -> Tuple[int, int]:
+    """ Returns the dimensions of a created image."""
+    pass
+####################    </generated_from:nvg_cpp_text.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!
