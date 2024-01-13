@@ -75,6 +75,13 @@ namespace NvgImgui
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
+    static void UseFullViewport()
+    {
+        ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+        ImVec2 scale = ImGui::GetIO().DisplayFramebufferScale;
+        glViewport(0, 0, (int)(displaySize.x * scale.x), (int)(displaySize.y * scale.y));
+    }
+
     #ifdef HELLOIMGUI_USE_GLES3
     NVGcontext* CreateNvgContext_GL(int flags) { return nvgCreateGLES3(flags); }
     void DeleteNvgContext_GL(NVGcontext* vg) { nvgDeleteGLES3(vg); }
@@ -111,6 +118,12 @@ namespace NvgImgui
     {
         IM_ASSERT(false && "DeleteNvgContext: Not implemented for this rendering backend!");
     }
+
+    static void UseFullViewport()
+    {
+            IM_ASSERT(false && "UseFullViewport: Not implemented for this rendering backend!");
+    }
+
 } // namespace NvgImgui
 #endif // #ifndef HELLOIMGUI_HAS_OPENGL
 
@@ -131,6 +144,8 @@ namespace NvgImgui
 
     void RenderNvgToBackground(NVGcontext* vg, NvgDrawingFunction nvgDrawingFunction, ImVec4 clearColor)
     {
+        UseFullViewport();
+
         if (clearColor.w > 0.f)
             FillClearColor(clearColor);
 

@@ -64,8 +64,25 @@ We are also using goatcounter for simple stats
         },
         canvas: (function() {
             var canvas = document.getElementById('canvas');
-            //canvas.addEventListener("webglcontextlost", function(e) { alert('FIXME: WebGL context lost, please reload the page'); e.preventDefault(); }, false);
-            return canvas;
+            canvas.addEventListener("webglcontextlost", function(e) {
+                alert('WebGL context lost, please reload the page');
+                e.preventDefault();
+            }, false);
+
+            // Explicitly create a WebGL 2 context with stencil buffer enabled.
+            if (typeof WebGL2RenderingContext !== 'undefined') {
+                var gl = canvas.getContext('webgl2', { stencil: true });
+                if (!gl) {
+                    console.error('WebGL 2 not available, falling back to WebGL');
+                    gl = canvas.getContext('webgl', { stencil: true });
+                }
+                if (!gl) {
+                    alert('WebGL not available with stencil buffer');
+                }
+                return canvas;
+            } else {
+                alert('WebGL 2 not supported by this browser');
+            }
         })(),
         setStatus: function(text) {
             console.log("status: " + text);
