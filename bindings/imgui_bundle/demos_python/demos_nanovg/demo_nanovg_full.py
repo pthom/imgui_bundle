@@ -82,10 +82,25 @@ def main():
 
     def gui():
         imgui.begin("My Window!", None, imgui.WindowFlags_.always_auto_resize.value)
-        _, app_state.display_in_frame_buffer = imgui.checkbox("Display in framebuffer", app_state.display_in_frame_buffer)
+
+        imgui.button("?##Note")
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("This is the complete NanoVG demo, ported to ImGui Bundle (C++ and Python)\n"
+                               "It displays fake widgets, as a way to display NanoVG drawing capabilities.\n"
+                               "However, those widgets are not interactive.\n")
+
         _, app_state.myNvgDemo.blowup = imgui.checkbox("Blowup", app_state.myNvgDemo.blowup)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("When checked, apply a simple transform to the drawing")
+
+        _, app_state.display_in_frame_buffer = imgui.checkbox("Display in framebuffer", app_state.display_in_frame_buffer)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("When checked, the drawing is also rendered to a framebuffer, and displayed as a texture.")
+
         imgui.set_next_item_width(hello_imgui.em_size(15))
         _, app_state.clear_color = imgui.color_edit4("Clear Color", app_state.clear_color)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip("Background color of the drawing")
 
         if app_state.display_in_frame_buffer:
             clear_color_vec4 = ImVec4(*app_state.clear_color)

@@ -90,10 +90,25 @@ int main(int, char**)
     runnerParams.callbacks.ShowGui = [&]()
     {
         ImGui::Begin("My Window!", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Checkbox("Display in FrameBuffer", &appState.DisplayInFrameBuffer);
+
+        ImGui::Button("?##Note");
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("This is the complete NanoVG demo, ported to ImGui Bundle (C++ and Python)\n"
+                              "It displays fake widgets, as a way to display NanoVG drawing capabilities.\n"
+                              "However, those widgets are not interactive.\n");
+
         ImGui::Checkbox("Blowup", &appState.myNvgDemo->Blowup);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("When checked, apply a simple transform to the drawing");
+
+        ImGui::Checkbox("Display in FrameBuffer", &appState.DisplayInFrameBuffer);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("When checked, the drawing is rendered to a FrameBuffer, and the  displayed as a texture");
+
         ImGui::SetNextItemWidth(HelloImGui::EmSize(15.f));
         ImGui::ColorEdit4("Clear color", &appState.ClearColor.x);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Background color of the drawing");
 
         if (appState.DisplayInFrameBuffer)
         {
