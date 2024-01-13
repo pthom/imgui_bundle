@@ -77,7 +77,7 @@ int main(int, char**)
         NvgImgui::DeleteNvgContext_GL(appState.vg);
     });
 
-    auto nvgDrawingFunction = [&](float width, float height)
+    auto nvgDrawingFunction = [&](NVGcontext *vg, float width, float height)
     {
         double now = ImGui::GetTime();
         auto mousePos = ImGui::GetMousePos() - ImGui::GetMainViewport()->Pos;

@@ -9,7 +9,7 @@ struct NVGcontext;
 
 namespace NvgImgui
 {
-    using NvgDrawingFunction = std::function<void(float width, float height)>;
+    using NvgDrawingFunction = std::function<void(NVGcontext* vg, float width, float height)>;
 
     // Duplicate of NVGcreateFlags in nanovg_gl.h
     enum NvgCreateFlags {

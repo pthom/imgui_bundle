@@ -138,7 +138,7 @@ namespace NvgImgui
         float pixelRatio = ImGui::GetIO().DisplayFramebufferScale.x;
 
         nvgBeginFrame(vg, displaySize.x, displaySize.y, pixelRatio);
-        nvgDrawingFunction(displaySize.x, displaySize.y);
+        nvgDrawingFunction(vg, displaySize.x, displaySize.y);
         nvgEndFrame(vg);
     }
 
@@ -165,7 +165,7 @@ namespace NvgImgui
         nvgScale(vg, 1, -1); // Flip the y-axis
 
         // Perform drawing operations
-        drawFunc(texture.Width, texture.Height);
+        drawFunc(vg, texture.Width, texture.Height);
 
         nvgRestore(vg); // Restore the original state
         nvgEndFrame(vg);
