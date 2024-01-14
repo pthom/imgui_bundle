@@ -20,6 +20,7 @@ project(imgui_bundle VERSION "1.2.1") # Remember to mirror changes to setup.py!
 #     * It will perform additional customization (app icon and name on mobile platforms, etc)
 
 
+
 ###############################################################################
 # Build Options
 ###############################################################################
@@ -207,6 +208,13 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 ###############################################################################
 # Main
 ###############################################################################
+
+# Avoid building imgui_bundle twice
+if(TARGET imgui_bundle)
+    message(STATUS "imgui_bundle target already defined!")
+    return()
+endif()
+
 
 # Everything is built as a static library in imgui_bundle
 set(BUILD_SHARED_LIBS OFF)

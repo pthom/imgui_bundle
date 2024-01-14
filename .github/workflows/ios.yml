@@ -1,0 +1,44 @@
+name: "ios"
+
+# Builds _example_integration for iOS simulator
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    name: "ios"
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
+
+
+    - name: CMake
+      run: |
+        cd _example_integration
+        mkdir -p external
+        cd external
+        ln -s ../.. imgui_bundle
+        cd ..
+        mkdir build-ios
+        cd build-ios
+        cmake .. \
+          -GXcode \
+          -DCMAKE_TOOLCHAIN_FILE=../external/imgui_bundle/external/hello_imgui/hello_imgui/hello_imgui_cmake/ios-cmake/ios.toolchain.cmake \
+          -DHELLOIMGUI_USE_SDL_OPENGL3=ON \
+          -DPLATFORM=SIMULATOR64
+
+    - name: Build for simulator
+      working-directory: _example_integration/build-ios
+      run: |
+        xcodebuild -configuration Release -project imgui_bundle_example_integration.xcodeproj -target ALL_BUILD -arch x86_64 -sdk iphonesimulator
