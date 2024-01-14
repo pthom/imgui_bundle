@@ -1,4 +1,4 @@
-=== About Dear ImGui Bundle
+=== Dear ImGui Bundle
 
 include::_utils.adoc[]
 
@@ -7,10 +7,15 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 // end::motto[]
 
 
-=== Support the project
+=== About
 
-Dear ImGui Bundle is a free and open-source project. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
+==== Support the project
+Dear ImGui Bundle is a free and open source project, and its development and maintenance require considerable efforts. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
 
 ////
 link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
 ////
+
+==== License
+
+Dear ImGui Bundle is licensed under the link:https://github.com/pthom/imgui_bundle/blob/main/LICENSE[MIT License]

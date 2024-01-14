@@ -157,7 +157,7 @@ Click on the logo for a complete interactive demonstration!
 
 // :url-demo-images: doc_images/
 
-=== About Dear ImGui Bundle
+=== Dear ImGui Bundle
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -185,13 +185,18 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 // end::motto[]
 
 
-=== Support the project
+=== About
 
-Dear ImGui Bundle is a free and open-source project. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
+==== Support the project
+Dear ImGui Bundle is a free and open source project, and its development and maintenance require considerable efforts. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
 
 ////
 link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
 ////
+
+==== License
+
+Dear ImGui Bundle is licensed under the link:https://github.com/pthom/imgui_bundle/blob/main/LICENSE[MIT License]
 
 
 === Interactive manual & demo in one click!
@@ -226,7 +231,7 @@ image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
 
 
-=== Batteries included
+=== Batteries included - Credits
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}

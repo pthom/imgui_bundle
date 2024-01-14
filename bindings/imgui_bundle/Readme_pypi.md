@@ -15,7 +15,7 @@ Click on the logo for a complete interactive demonstration!
 
 # Introduction
 
-## About Dear ImGui Bundle
+## Dear ImGui Bundle
 
 [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle
 for [Dear ImGui](https://github.com/ocornut/imgui), including various
@@ -24,12 +24,20 @@ applications in C++ and Python, under Windows, macOS, and Linux. It is
 aimed at application developers, researchers, and beginner developers
 who want to quickly get started.
 
-## Support the project
+## About
 
-Dear ImGui Bundle is a free and open-source project. If you like it,
-please consider supporting its development by [making a
+### Support the project
+
+Dear ImGui Bundle is a free and open source project, and its development
+and maintenance require considerable efforts. If you like it, please
+consider supporting its development by [making a
 donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
 Thank you!
+
+### License
+
+Dear ImGui Bundle is licensed under the [MIT
+License](https://github.com/pthom/imgui_bundle/blob/main/LICENSE)
 
 ## Interactive manual & demo in one click!
 
@@ -46,7 +54,7 @@ This demonstration is also an interactive manual, similar to the online
 [ImGui
 Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
-## Batteries included
+## Batteries included - Credits
 
 Dear ImGui Bundle includes the following libraries, which are available
 in C++ *and* in Python:
