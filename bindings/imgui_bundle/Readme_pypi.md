@@ -17,22 +17,35 @@ Click on the logo for a complete interactive demonstration!
 
 ## Dear ImGui Bundle
 
-[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle
-for [Dear ImGui](https://github.com/ocornut/imgui), including various
-powerful libraries from its ecosystem. It enables to easily create ImGui
-applications in C++ and Python, under Windows, macOS, and Linux. It is
-aimed at application developers, researchers, and beginner developers
-who want to quickly get started.
-
-## About
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a
+comprehensive bundle for [Dear ImGui](https://github.com/ocornut/imgui),
+featuring various powerful libraries from its ecosystem. Designed to
+facilitate the creation of applications in C++ and Python across
+Windows, macOS, Linux, iOS, Android, and emscripten (Web apps), it is
+ideal for application developers, and researchers eager to dive into GUI
+development with ease and efficiency. This bundle simplifies the
+process, allowing you to focus on the creative aspects of your projects.
 
 ### Support the project
 
-Dear ImGui Bundle is a free and open source project, and its development
-and maintenance require considerable efforts. If you like it, please
-consider supporting its development by [making a
+Dear ImGui Bundle is a free and open-source project, and its development
+and maintenance require considerable efforts.
+
+If you find it valuable for your work – especially in a commercial
+enterprise or a research setting – please consider supporting its
+development by [making a
 donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
-Thank you!
+Your contributions are greatly appreciated!
+
+For commercial users seeking tailored support or specific enhancements,
+please contact the author by email.
+
+### Contribute
+
+Quality contributions are always welcome! If you’re interested in
+contributing to the project, whether through code, ideas, or feedback,
+please refer to the [development
+documentation](https://pthom.github.io/imgui_bundle/devel_docs/index.html).
 
 ### License
 
@@ -333,12 +346,14 @@ online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 As mentioned in the intro,
 
-[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a bundle
-for [Dear ImGui](https://github.com/ocornut/imgui), including various
-powerful libraries from its ecosystem. It enables to easily create ImGui
-applications in C++ and Python, under Windows, macOS, and Linux. It is
-aimed at application developers, researchers, and beginner developers
-who want to quickly get started.
+[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a
+comprehensive bundle for [Dear ImGui](https://github.com/ocornut/imgui),
+featuring various powerful libraries from its ecosystem. Designed to
+facilitate the creation of applications in C++ and Python across
+Windows, macOS, Linux, iOS, Android, and emscripten (Web apps), it is
+ideal for application developers, and researchers eager to dive into GUI
+development with ease and efficiency. This bundle simplifies the
+process, allowing you to focus on the creative aspects of your projects.
 
 Dear ImGui Bundle aims to make applications prototyping fast and easy,
 in a multiplatform / multi-tooling context. The intent is to reduce the
