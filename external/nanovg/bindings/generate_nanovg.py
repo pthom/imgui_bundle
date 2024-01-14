@@ -17,6 +17,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_NANOVG"
     options.original_signature_flag_show = True
     options.type_replacements.add_last_replacement("unsigned char", "UChar")
     options.var_names_replacements.add_last_replacement("^NVG_", "")
@@ -24,6 +25,7 @@ def main():
     options.function_names_replacements.add_last_replacement("^nvg", "")
     options.function_names_replacements.add_last_replacement("^RGBAf$", "rgba_f")
     options.function_names_replacements.add_last_replacement("^RGBf$", "rgb_f")
+    options.function_names_replacements.add_last_replacement("ImGui", "Imgui")
     options.class_exclude_by_name__regex = "^NVGcolor$"  # contains a union...
 
     # The entire nvgText API is oriented around C style strings, and needs adaptations

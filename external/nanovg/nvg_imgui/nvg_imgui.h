@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
 #include "imgui.h"
 #include <functional>
 #include <memory>
@@ -9,9 +9,14 @@ struct NVGcontext;
 
 namespace NvgImgui
 {
-    using NvgDrawingFunction = std::function<void(NVGcontext* vg, float width, float height)>;
 
-    // Duplicate of NVGcreateFlags in nanovg_gl.h
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    //           NanoVG context creation/deletion
+    //
+    ///////////////////////////////////////////////////////////////////////////
+
+    // Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h
     enum NvgCreateFlags {
         // Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).
         NVG_ANTIALIAS 		= 1<<0,
@@ -20,14 +25,37 @@ namespace NvgImgui
         NVG_STENCIL_STROKES	= 1<<1,
         // Flag indicating that additional debug checks are done.
         NVG_DEBUG 			= 1<<2,
+
+        // Flag indicating if double buffering scheme is used (Metal only!)
+        NVG_DOUBLE_BUFFER = 1 << 12,
+        // Flag indicating if triple buffering scheme is used (Metal only!)
+        NVG_TRIPLE_BUFFER = 1 << 13,
     };
 
+#ifdef HELLOIMGUI_HAS_OPENGL
     // Creates a NanoVG context for OpenGL
     // This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3
     NVGcontext* CreateNvgContext_GL(int flags = 0);
 
     // Deletes a NanoVG context (created with CreateNvgContext_GL)
     void DeleteNvgContext_GL(NVGcontext* vg);
+#endif
+#ifdef HELLOIMGUI_HAS_METAL
+    // For metal, and if you are not using HelloImGui, you need to include
+    // nanovg_mtl.h and use nvgCreateMTL and nvgDeleteMTL
+#endif
+
+    // If using HelloImGui, you can use this function to create a NanoVG context
+    // (it will select the correct function depending on the rendering backend)
+    NVGcontext* CreateNvgContext_HelloImGui(int flags = 0);
+    void DeleteNvgContext_HelloImGui(NVGcontext* vg);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    //           NanoVG framebuffer
+    //
+    ///////////////////////////////////////////////////////////////////////////
 
     // NvgFramebuffer: a framebuffer that can be used by NanoVG + ImGui
     // Internally stored inside the renderer backend (e.g. OpenGL)
@@ -65,6 +93,17 @@ namespace NvgImgui
     };
 
 
+    ///////////////////////////////////////////////////////////////////////////
+    //
+    //                 NanoVG rendering utilities
+    //   (render NanoVG to either ImGui background or to a framebuffer)
+    //
+    ///////////////////////////////////////////////////////////////////////////
+
+    // NvgDrawingFunction: a function that can be used to draw to a NanoVG context
+    // it receives the NanoVG context, and the width and height of the rendering
+    using NvgDrawingFunction = std::function<void(NVGcontext* vg, float width, float height)>;
+
     // Render the given drawing function to the background of the application
     // (i.e. the main viewport)
     // If clearColor.w > 0.f, the background will be cleared with this color
@@ -85,3 +124,4 @@ namespace NvgImgui
 
 }
 
+#endif // #ifdef IMGUI_BUNDLE_WITH_NANOVG

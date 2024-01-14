@@ -807,24 +807,25 @@ void py_init_module_nanovg(py::module& m)
 
 
     ////////////////////    <generated_from:nvg_imgui.h>    ////////////////////
+    // #ifdef IMGUI_BUNDLE_WITH_NANOVG
+    //
+    // #endif
 
     { // <namespace NvgImgui>
         py::module_ pyNsNvgImgui = m.def_submodule("nvg_imgui", "");
-        py::enum_<NvgImgui::NvgCreateFlags>(pyNsNvgImgui, "NvgCreateFlags", py::arithmetic(), "Duplicate of NVGcreateFlags in nanovg_gl.h")
+        py::enum_<NvgImgui::NvgCreateFlags>(pyNsNvgImgui, "NvgCreateFlags", py::arithmetic(), "Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h")
             .value("antialias", NvgImgui::NVG_ANTIALIAS, "Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).")
             .value("stencil_strokes", NvgImgui::NVG_STENCIL_STROKES, " Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little\n slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.")
-            .value("debug", NvgImgui::NVG_DEBUG, "Flag indicating that additional debug checks are done.");
+            .value("debug", NvgImgui::NVG_DEBUG, "Flag indicating that additional debug checks are done.")
+            .value("double_buffer", NvgImgui::NVG_DOUBLE_BUFFER, "Flag indicating if double buffering scheme is used (Metal only!)")
+            .value("triple_buffer", NvgImgui::NVG_TRIPLE_BUFFER, "Flag indicating if triple buffering scheme is used (Metal only!)");
 
 
-        pyNsNvgImgui.def("create_nvg_context_gl",
-            NvgImgui::CreateNvgContext_GL,
-            py::arg("flags") = 0,
-            " Creates a NanoVG context for OpenGL\n This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3");
+        pyNsNvgImgui.def("create_nvg_context_hello_imgui",
+            NvgImgui::CreateNvgContext_HelloImGui, py::arg("flags") = 0);
 
-        pyNsNvgImgui.def("delete_nvg_context_gl",
-            NvgImgui::DeleteNvgContext_GL,
-            py::arg("vg"),
-            "Deletes a NanoVG context (created with CreateNvgContext_GL)");
+        pyNsNvgImgui.def("delete_nvg_context_hello_imgui",
+            NvgImgui::DeleteNvgContext_HelloImGui, py::arg("vg"));
 
 
         auto pyNsNvgImgui_ClassNvgFramebuffer =

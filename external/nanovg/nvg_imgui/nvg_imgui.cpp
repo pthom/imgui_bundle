@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
 #include "nvg_imgui.h"
 
 #include "nanovg.h"
@@ -16,6 +17,11 @@
 
     #include "nanovg_gl.h"
     #include "nanovg_gl_utils.h"
+#endif
+
+#ifdef HELLOIMGUI_HAS_METAL
+#include "nvg_mtl_hello_imgui.h"
+#include "nanovg_mtl.h"
 #endif
 
 #ifdef HELLOIMGUI_HAS_OPENGL
@@ -69,14 +75,16 @@ namespace NvgImgui
         }
     };
 
-    static void FillClearColor(ImVec4 clearColor)
+    static void FillClearColor(NVGcontext *vg, ImVec4 clearColor)
     {
+        (void)vg;
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    static void UseFullViewport()
+    static void UseFullViewport(NVGcontext *vg)
     {
+        (void)vg;
         ImVec2 displaySize = ImGui::GetIO().DisplaySize;
         ImVec2 scale = ImGui::GetIO().DisplayFramebufferScale;
         glViewport(0, 0, (int)(displaySize.x * scale.x), (int)(displaySize.y * scale.y));
@@ -94,38 +102,65 @@ namespace NvgImgui
 #endif // #ifdef HELLOIMGUI_HAS_OPENGL
 
 
-#ifndef HELLOIMGUI_HAS_OPENGL
+#ifdef HELLOIMGUI_HAS_METAL
 namespace NvgImgui
 {
-    static void FillClearColor(ImVec4 clearColor)
+    struct NvgFramebuffer::PImpl
     {
-        IM_ASSERT(false && "FillClearColor: Not implemented for this rendering backend!");
+        MNVGframebuffer *fb = nullptr;
+        // GLint defaultViewport[4];  // To store the default viewport dimensions
+        NvgFramebuffer *_parent = nullptr;
+
+        PImpl(NvgFramebuffer *parent) : _parent(parent)
+        {
+            AcquireResource();
+        }
+
+        ~PImpl()
+        {
+            ReleaseResource();
+        }
+
+        void AcquireResource()
+        {
+            if (_parent->vg == nullptr)
+                return;
+            fb = mnvgCreateFramebuffer(_parent->vg, _parent->Width, _parent->Height, _parent->NvgImageFlags);
+            IM_ASSERT(fb && "Failed to create NVGLU framebuffer");
+            _parent->TextureId = mnvgImageHandle(_parent->vg, fb->image);
+        }
+
+        void ReleaseResource()
+        {
+            if (fb)
+            {
+                mnvgDeleteFramebuffer(fb);
+                fb = nullptr;
+            }
+        }
+
+        void Bind()
+        {
+            mnvgBindFramebuffer(fb);
+        }
+
+        void Unbind()
+        {
+            mnvgBindFramebuffer(nullptr);
+        }
+    };
+
+    static void FillClearColor(NVGcontext* vg, ImVec4 clearColor)
+    {
+        mnvgClearWithColor(vg, nvgRGBAf(clearColor.x, clearColor.y, clearColor.z, clearColor.w));
     }
 
-    NvgFramebufferPtr CreateNvgFramebuffer(NVGcontext* vg, int width, int height, int nvImageFlags)
+    static void UseFullViewport(NVGcontext *vg)
     {
-        IM_ASSERT(false && "CreateNvgFramebuffer: Not implemented for this rendering backend!");
-        return nullptr;
-    }
-
-    NVGcontext CreateNvgContext(int flags)
-    {
-        IM_ASSERT(false && "CreateNvgContext: Not implemented for this rendering backend!");
-        return nullptr;
-    }
-
-    void DeleteNvgContext(NVGcontext* vg)
-    {
-        IM_ASSERT(false && "DeleteNvgContext: Not implemented for this rendering backend!");
-    }
-
-    static void UseFullViewport()
-    {
-            IM_ASSERT(false && "UseFullViewport: Not implemented for this rendering backend!");
     }
 
 } // namespace NvgImgui
-#endif // #ifndef HELLOIMGUI_HAS_OPENGL
+#endif // #ifndef HELLOIMGUI_HAS_METAL
 
 
 namespace NvgImgui
@@ -144,10 +179,14 @@ namespace NvgImgui
 
     void RenderNvgToBackground(NVGcontext* vg, NvgDrawingFunction nvgDrawingFunction, ImVec4 clearColor)
     {
-        UseFullViewport();
+#ifdef HELLOIMGUI_HAS_METAL
+        printf("RenderNvgToBackground works poorly with Metal backend, use RenderNvgToFrameBuffer instead\n");
+        return;
+#endif
+        UseFullViewport(vg);
 
         if (clearColor.w > 0.f)
-            FillClearColor(clearColor);
+            FillClearColor(vg, clearColor);
 
         auto displaySize = ImGui::GetIO().DisplaySize;
         float pixelRatio = ImGui::GetIO().DisplayFramebufferScale.x;
@@ -161,7 +200,7 @@ namespace NvgImgui
     {
         texture.Bind();
         if (clearColor.w > 0.f)
-            FillClearColor(clearColor);
+            FillClearColor(vg, clearColor);
 
         // Note:
         //    - internally, we use NVGLUframebuffer, provided by NanoVG
@@ -174,10 +213,12 @@ namespace NvgImgui
         float pixelRatio = 1.f;
         nvgBeginFrame(vg, texture.Width, texture.Height, pixelRatio);
 
+#ifdef HELLOIMGUI_HAS_OPENGL
         // Flip the y-axis
         nvgSave(vg); // Save the current state
         nvgTranslate(vg, 0, texture.Height); // Move the origin to the bottom-left
         nvgScale(vg, 1, -1); // Flip the y-axis
+#endif
 
         // Perform drawing operations
         drawFunc(vg, texture.Width, texture.Height);
@@ -189,4 +230,29 @@ namespace NvgImgui
         texture.Unbind();
     }
 
+
+    // Context creation for HelloImGui
+    NVGcontext* CreateNvgContext_HelloImGui(int flags)
+    {
+#ifdef HELLOIMGUI_HAS_OPENGL
+        return CreateNvgContext_GL(flags);
+#endif
+#ifdef HELLOIMGUI_HAS_METAL
+        return NvgHelloImGui::CreateNvgContext_Mtl_HelloImGui(flags);
+#endif
+        return nullptr;
+    }
+
+    void DeleteNvgContext_HelloImGui(NVGcontext* vg)
+    {
+#ifdef HELLOIMGUI_HAS_OPENGL
+        DeleteNvgContext_GL(vg);
+#endif
+#ifdef HELLOIMGUI_HAS_METAL
+        NvgHelloImGui::DeleteNvgContext_Mtl_HelloImGui(vg);
+#endif
+    }
+
 }
+
+#endif // #ifdef IMGUI_BUNDLE_WITH_NANOVG

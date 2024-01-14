@@ -1169,17 +1169,25 @@ def debug_dump_path_cache(ctx: Context) -> None:
 
 
 ####################    <generated_from:nvg_imgui.h>    ####################
+# #ifdef IMGUI_BUNDLE_WITH_NANOVG
+#
 
 
 
-
+# #endif
 
 # <submodule nvg_imgui>
 class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_imgui
     pass  # (This corresponds to a C++ namespace. All method are static!)
 
+    #/////////////////////////////////////////////////////////////////////////
+    #
+    #           NanoVG context creation/deletion
+    #
+    #///////////////////////////////////////////////////////////////////////
+
     class NvgCreateFlags(enum.Enum):
-        """ Duplicate of NVGcreateFlags in nanovg_gl.h"""
+        """ Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h"""
         # NVG_ANTIALIAS 		= 1<<0,    /* original C++ signature */
         # Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).
         antialias = enum.auto()       # (= 1<<0)
@@ -1188,23 +1196,35 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         # slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.
         stencil_strokes = enum.auto() # (= 1<<1)
         # NVG_DEBUG 			= 1<<2,    /* original C++ signature */
-        #     }
         # Flag indicating that additional debug checks are done.
         debug = enum.auto()           # (= 1<<2)
 
-    # NVGcontext* CreateNvgContext_GL(int flags = 0);    /* original C++ signature */
+        # NVG_DOUBLE_BUFFER = 1 << 12,    /* original C++ signature */
+        # Flag indicating if double buffering scheme is used (Metal only!)
+        double_buffer = enum.auto()   # (= 1 << 12)
+        # NVG_TRIPLE_BUFFER = 1 << 13,    /* original C++ signature */
+        #     }
+        # Flag indicating if triple buffering scheme is used (Metal only!)
+        triple_buffer = enum.auto()   # (= 1 << 13)
+
+
+    # If using HelloImGui, you can use this function to create a NanoVG context
+    # (it will select the correct function depending on the rendering backend)
+    # NVGcontext* CreateNvgContext_HelloImGui(int flags = 0);    /* original C++ signature */
     @staticmethod
-    def create_nvg_context_gl(flags: int = 0) -> Context:
-        """ Creates a NanoVG context for OpenGL
-         This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3
-        """
+    def create_nvg_context_hello_imgui(flags: int = 0) -> Context:
+        pass
+    # void DeleteNvgContext_HelloImGui(NVGcontext* vg);    /* original C++ signature */
+    @staticmethod
+    def delete_nvg_context_hello_imgui(vg: Context) -> None:
         pass
 
-    # void DeleteNvgContext_GL(NVGcontext* vg);    /* original C++ signature */
-    @staticmethod
-    def delete_nvg_context_gl(vg: Context) -> None:
-        """ Deletes a NanoVG context (created with CreateNvgContext_GL)"""
-        pass
+
+    #/////////////////////////////////////////////////////////////////////////
+    #
+    #           NanoVG framebuffer
+    #
+    #///////////////////////////////////////////////////////////////////////
 
     class NvgFramebuffer:
         """ NvgFramebuffer: a framebuffer that can be used by NanoVG + ImGui
@@ -1250,6 +1270,14 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
             """ Restore the previous render target"""
             pass
 
+
+
+    #/////////////////////////////////////////////////////////////////////////
+    #
+    #                 NanoVG rendering utilities
+    #   (render NanoVG to either ImGui background or to a framebuffer)
+    #
+    #///////////////////////////////////////////////////////////////////////
 
 
     # void RenderNvgToBackground(    /* original C++ signature */

@@ -81,3 +81,6 @@
 [submodule "external/nanovg/nanovg"]
 	path = external/nanovg/nanovg
 	url = https://github.com/pthom/nanovg.git
+[submodule "external/nanovg/MetalNanoVG"]
+	path = external/nanovg/MetalNanoVG
+	url = https://github.com/ollix/MetalNanoVG.git
