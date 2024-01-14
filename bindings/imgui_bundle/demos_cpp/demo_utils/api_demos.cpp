@@ -140,11 +140,13 @@ void ShowPythonVsCppCode(const std::string& pythonCode, const std::string& cppCo
     snippetCpp.DisplayedFilename = "C++ code";
     snippetCpp.Language = Snippets::SnippetLanguage::Cpp;
     snippetCpp.HeightInLines = nbLines;
+    snippetCpp.MaxHeightInLines = nbLines;
 
     snippetPython.Code = pythonCode;
     snippetPython.DisplayedFilename = "Python code";
     snippetPython.Language = Snippets::SnippetLanguage::Python;
     snippetPython.HeightInLines = nbLines;
+    snippetPython.MaxHeightInLines = nbLines;
 
     Snippets::ShowSideBySideSnippets(snippetCpp, snippetPython);
     ImGui::PopID();

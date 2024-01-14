@@ -130,13 +130,22 @@ alt="demo immvision process 2" /></p></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><p><a
+href="https://github.com/memononen/nanovg">NanoVG</a>: Antialiased 2D
+vector drawing library on top of OpenGL for UI and
+visualizations</p></td>
+<td style="text-align: left;"><p><img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/nanovg_full_demo.jpg"
+alt="nanovg full demo" /></p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p><a
 href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>:
 A texture inspector tool for Dear ImGui</p></td>
 <td style="text-align: left;"><p><img
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_imgui_tex_inspector.jpg"
 alt="demo imgui tex inspector" /></p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A
 file dialog library for Dear ImGui</p></td>
@@ -144,7 +153,7 @@ file dialog library for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_imfiledialog.jpg"
 alt="demo widgets imfiledialog" /></p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>
 <em>OS native</em> file dialogs library (C++11, single-header)</p></td>
@@ -152,7 +161,7 @@ href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_portablefiledialogs.jpg"
 alt="demo widgets portablefiledialogs" /></p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><a
 href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs
 widgets for ImGui</p></td>
@@ -160,7 +169,7 @@ widgets for ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_knobs.jpg"
 alt="demo widgets knobs" /></p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice
 spinners for imgui</p></td>
@@ -168,7 +177,7 @@ spinners for imgui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_spinners.jpg"
 alt="demo widgets spinners" /></p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><a
 href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle
 switch widget for Dear ImGui</p></td>
@@ -176,7 +185,7 @@ switch widget for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_toggle.jpg"
 alt="demo widgets toggle" /></p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>: A Cool bar
 for Dear ImGui</p></td>
@@ -184,7 +193,7 @@ for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_coolbar.jpg"
 alt="demo widgets coolbar" /></p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;"><p><a
 href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
 A Sublime Text or VSCode style command palette in ImGui</p></td>

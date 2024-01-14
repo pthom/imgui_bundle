@@ -86,7 +86,6 @@ add_simple_external_library_with_sources(imguizmo ImGuizmo)
 add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
 # Build imgui_tex_inspect
 if(HELLOIMGUI_HAS_OPENGL)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_TEXT_INSPECT)
     set(IMGUI_BUNDLE_WITH_TEXT_INSPECT ON CACHE INTERNAL "" FORCE)
     add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
     target_sources(imgui_tex_inspect PRIVATE
@@ -96,6 +95,7 @@ if(HELLOIMGUI_HAS_OPENGL)
     target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
     target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
     target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
+    target_compile_definitions(imgui_tex_inspect PUBLIC IMGUI_BUNDLE_WITH_TEXT_INSPECT)
     target_include_directories(imgui_tex_inspect PRIVATE hello_imgui/hello_imgui/external/OpenGL_Loaders/glad/include)
     target_link_libraries(imgui_tex_inspect PUBLIC hello_imgui)
 endif()
@@ -105,6 +105,21 @@ target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs
 target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 # Add ImCoolBar
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
+
+# Add nanovg & nvg_imgui
+if(HELLOIMGUI_HAS_OPENGL)
+    add_compile_definitions(IMGUI_BUNDLE_WITH_NANOVG)
+    set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
+    target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
+    target_link_libraries(imgui_bundle PUBLIC nanovg)
+    hello_imgui_msvc_target_group_sources(nanovg)
+    # Add nvg_imgui
+    add_simple_external_library(nvg_imgui nanovg)
+    target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
+    file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
+    target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
+endif()
 
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)

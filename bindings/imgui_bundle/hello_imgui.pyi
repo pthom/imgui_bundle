@@ -1189,36 +1189,22 @@ class ImGuiWindowParams:
 #                       hello_imgui/runner_callbacks.h continued                                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
 # @@md#VoidFunction_AnyEventCallback
-#
-# **VoidFunctionPointer** can hold any None(None) function.
-# ```cpp
-# using VoidFunction = std::function<None(None)>
-# ```
-#
-# **AnyEventCallback** can hold any bool(None *) function.
-#  It is designed to handle callbacks for a specific backend.
-# ```cpp
-# using AnyEventCallback = std::function<bool(None * backendEvent)>
-# ```
-#
-# **AppendCallback** can compose two callbacks. Use this when you want to set a callback and keep the (maybe) preexisting one.
-# @@md
-# *
-# VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunction& newCallback);    /* original C++ signature */
-def append_callback(
-    previous_callback: VoidFunction, new_callback: VoidFunction
-) -> VoidFunction:
-    pass
 
 # inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
 def empty_void_function() -> VoidFunction:
     pass
 
+# VoidFunction SequenceFunctions(const VoidFunction& f1, const VoidFunction& f2);    /* original C++ signature */
+def sequence_functions(f1: VoidFunction, f2: VoidFunction) -> VoidFunction:
+    """SequenceFunctions: returns a function that will call f1 and f2 in sequence"""
+    pass
+
 # inline AnyEventCallback EmptyEventCallback() {return {}; }    /* original C++ signature */
 def empty_event_callback() -> AnyEventCallback:
     pass
+
+# @@md
 
 class MobileCallbacks:
     """@@md#MobileCallbacks
@@ -1393,6 +1379,13 @@ class RunnerCallbacks:
     #  you should use this function to do so.
     post_init: VoidFunction = EmptyVoidFunction()
 
+    # void EnqueuePostInit(const VoidFunction& callback);    /* original C++ signature */
+    def enqueue_post_init(self, callback: VoidFunction) -> None:
+        """`EnqueuePostInit`: Add a function that will be called once after OpenGL
+        and ImGui are inited, but before the backend callback are initialized.
+        (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
+        """
+        pass
     # VoidFunction LoadAdditionalFonts =    /* original C++ signature */
     #         (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
     # `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
@@ -1434,6 +1427,13 @@ class RunnerCallbacks:
     #  (when OpenGL and ImGui are still inited)
     before_exit: VoidFunction = EmptyVoidFunction()
 
+    # void EnqueueBeforeExit(const VoidFunction& callback);    /* original C++ signature */
+    def enqueue_before_exit(self, callback: VoidFunction) -> None:
+        """`EnqueueBeforeExit`: Add a function that will be called once before exiting
+         (when OpenGL and ImGui are still inited)
+        (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)
+        """
+        pass
     # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeExit_PostCleanup`: You can here add a function that will be called once
     # before exiting (after OpenGL and ImGui have been stopped)
@@ -1507,6 +1507,13 @@ class RunnerCallbacks:
         pass
 
 # @@md
+
+# VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunction& newCallback);    /* original C++ signature */
+def append_callback(
+    previous_callback: VoidFunction, new_callback: VoidFunction
+) -> VoidFunction:
+    """AppendCallback: legacy synonym for SequenceFunctions"""
+    pass
 
 # namespace HelloImGui
 
@@ -2077,17 +2084,17 @@ class FpsIdling:
     #  and will be set to True when it is idling.
     is_idling: bool = False
 
-    # bool  rememberEnableIdling = true;    /* original C++ signature */
+    # bool  rememberEnableIdling = false;    /* original C++ signature */
     # `rememberEnableIdling`: _bool, default=true_.
     #  If True, the last value of enableIdling is restored from the settings at startup.
-    remember_enable_idling: bool = True
-    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = true);    /* original C++ signature */
+    remember_enable_idling: bool = False
+    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
         enable_idling: bool = True,
         is_idling: bool = False,
-        remember_enable_idling: bool = True,
+        remember_enable_idling: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass

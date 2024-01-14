@@ -5,6 +5,7 @@
 
 #include <optional>
 
+
 namespace ImmApp
 {
     using NodeEditorConfig = ax::NodeEditor::Config;
@@ -134,7 +135,7 @@ namespace ImmApp
 
     /////////////////////////////////////////////////////////////////////////////////////////
     //
-    // Utility for ImGui node editor
+    // Utility for ImGui node editor & NanoVG
     //
     /////////////////////////////////////////////////////////////////////////////////////////
     NodeEditorContext* DefaultNodeEditorContext();

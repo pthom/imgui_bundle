@@ -17,6 +17,7 @@ from . import imgui_toggle as imgui_toggle
 from . import portable_file_dialogs as portable_file_dialogs
 from .immapp import icons_fontawesome as icons_fontawesome
 from . import im_cool_bar as im_cool_bar
+from . import nanovg as nanovg
 
 from .imgui import ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor
 from .im_col32 import IM_COL32 as IM_COL32

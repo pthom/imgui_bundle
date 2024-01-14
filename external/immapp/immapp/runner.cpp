@@ -64,7 +64,7 @@ namespace ImmApp
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
-            runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::FunctionalUtils::sequence_functions(
+            runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.LoadAdditionalFonts,
                 ImGuiMd::GetFontLoaderFunction());
         }
@@ -83,7 +83,7 @@ namespace ImmApp
                     ImGuiTexInspect::Init();
                     gImmAppContext._ImGuiTextInspect_Context = ImGuiTexInspect::CreateContext();
                 };
-                runnerParams.callbacks.PostInit = HelloImGui::FunctionalUtils::sequence_functions(
+                runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_Init,
                     runnerParams.callbacks.PostInit
                     );
@@ -96,7 +96,7 @@ namespace ImmApp
                     ImGuiTexInspect::DestroyContext(gImmAppContext._ImGuiTextInspect_Context);
                     ImGuiTexInspect::ImplOpenGl3_Shutdown();
                 };
-                runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
+                runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_DeInit,
                     runnerParams.callbacks.BeforeExit
                     );
@@ -106,10 +106,12 @@ namespace ImmApp
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized
-        runnerParams.callbacks.BeforeExit = HelloImGui::FunctionalUtils::sequence_functions(
+        runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.BeforeExit,
             ImmVision::ClearTextureCache);
 #endif
+
+
         HelloImGui::Run(runnerParams);
 
         if (addOnsParams.withImplot)
@@ -233,5 +235,4 @@ namespace ImmApp
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
         return *gImmAppContext._NodeEditorContext;
     }
-
 } // namespace ImmApp

@@ -26,6 +26,7 @@ void py_init_module_portable_file_dialogs(py::module& m);
 void py_init_module_imgui_command_palette(py::module& m);
 void py_init_module_implot_internal(py::module& m);
 void py_init_module_imcoolbar(py::module& m);
+void py_init_module_nanovg(py::module& m);
 
 
 void py_init_module_imgui_bundle(py::module& m)
@@ -99,6 +100,9 @@ void py_init_module_imgui_bundle(py::module& m)
 
     auto module_imcooolbar = m.def_submodule("im_cool_bar");
     py_init_module_imcoolbar(module_imcooolbar);
+
+    auto module_nanovg = m.def_submodule("nanovg");
+    py_init_module_nanovg(module_nanovg);
 }
 
 
