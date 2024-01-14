@@ -1,5 +1,16 @@
 === About Dear ImGui Bundle
 
+include::_utils.adoc[]
+
 // tag::motto[]
 https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in {cpp} and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
 // end::motto[]
+
+
+=== Support the project
+
+Dear ImGui Bundle is a free and open-source project. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
+
+////
+link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
+////

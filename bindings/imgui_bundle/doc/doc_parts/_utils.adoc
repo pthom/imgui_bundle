@@ -15,4 +15,6 @@
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/

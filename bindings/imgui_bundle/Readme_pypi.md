@@ -24,6 +24,13 @@ applications in C++ and Python, under Windows, macOS, and Linux. It is
 aimed at application developers, researchers, and beginner developers
 who want to quickly get started.
 
+## Support the project
+
+Dear ImGui Bundle is a free and open-source project. If you like it,
+please consider supporting its development by [making a
+donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
+Thank you!
+
 ## Interactive manual & demo in one click!
 
 Click on the animated demonstration below to launch the fully

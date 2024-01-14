@@ -25,6 +25,8 @@
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 :_badge-sources: {url-doc-images}/badge_view_sources.png
@@ -58,6 +60,8 @@ TIP: For a more readable version of this document, click on {btn-doc}
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -100,6 +104,8 @@ link:https://github.com/pthom/imgui_bundle/actions/workflows/android.yml[image:{
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -147,13 +153,45 @@ Click on the logo for a complete interactive demonstration!
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 === About Dear ImGui Bundle
 
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
+// :url-demo-images: doc_images/
+
 // tag::motto[]
 https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https://github.com/ocornut/imgui[Dear ImGui], including various powerful libraries from its ecosystem. It enables to easily create ImGui applications in {cpp} and Python, under Windows, macOS, and Linux. It is aimed at application developers, researchers, and beginner developers who want to quickly get started.
 // end::motto[]
+
+
+=== Support the project
+
+Dear ImGui Bundle is a free and open-source project. If you like it, please consider supporting its development by link:{url-donate}[making a donation]. Thank you!
+
+////
+link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
+////
 
 
 === Interactive manual & demo in one click!
@@ -174,6 +212,8 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a bundle for https:/
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -203,6 +243,8 @@ TIP: This demonstration is also an interactive manual, similar to the online {ur
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -412,6 +454,8 @@ int main(int , char *[]) {
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 ==== Install from pypi
@@ -464,6 +508,8 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -531,6 +577,8 @@ TIP: Consider `demo_imgui_bundle` as a manual with lots of examples and related 
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 First, install Dear ImGui Bundle following the <<install-instructions>>.
@@ -553,6 +601,8 @@ Then study the examples below.
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -683,6 +733,8 @@ immapp.run(
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 [[quickstart_about_assets]]
@@ -805,6 +857,8 @@ You can also specify different settings for macOS and iOS via `Info.macos.plist`
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -1383,6 +1437,8 @@ if __name__ == "__main__":
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -3005,6 +3061,8 @@ if __name__ == "__main__":
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 === Multiplatform C++ applications
@@ -3035,6 +3093,8 @@ TIP: The principle with Dear ImGui Bundle is the same, just use the dedicated De
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -3073,6 +3133,8 @@ Its source code is heavily documented and should be self-explanatory.
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -3546,6 +3608,8 @@ if __name__ == "__main__":
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 === Display & analyze images with ImmVision
@@ -3922,6 +3986,8 @@ if __name__ == "__main__":
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -5128,6 +5194,8 @@ image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 Dear ImGui is an implementation of the Immediate Gui paradigm.
@@ -5217,6 +5285,8 @@ image::{url-doc-images}/immediate_gui_example.png[]
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 Dear ImGui Bundle includes https://github.com/pthom/hello_imgui[Hello ImGui], which is itself based on ImGui. "Hello ImGui" can be compared to a starter pack that enables to easily write cross-platform Gui apps for Windows, macOS, Linux,  iOS,  and https://en.wikipedia.org/wiki/Emscripten[emscripten].
@@ -5291,6 +5361,8 @@ Links:
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -5409,6 +5481,8 @@ if __name__ == "__main__":
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
@@ -5827,6 +5901,8 @@ if __name__ == "__main__":
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 :notebook-example-image: {url-doc-images}/immapp_notebook_example.jpg
 
@@ -6091,6 +6167,8 @@ void DemoInputTextUpperCase_StdString()
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
 // :url-demo-images: doc_images/
 
 In C++, you would write:
@@ -6177,6 +6255,8 @@ Example: https://github.com/pthom/hello_imgui/issues/33[this issue on macOS] was
 :url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
 :url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
 // :url-demo-images: doc_images/
 
