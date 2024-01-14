@@ -139,16 +139,20 @@ int main(int, char**)
 
     auto gui = [&]()
     {
+        ImGui::SetNextWindowPos(ImVec2(0.f, 0.f), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(HelloImGui::EmToVec2(10.f, 6.f));
         ImGui::Begin("Hello, NanoVG!");
-
-        ImGui::Text("Click on the image button below to exit");
 
         // Also, render our drawing to a framebuffer, and use it as a texture for an ImGui button
         // Render to our framebuffer
         NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, DrawScene);
-        // Use it as a texture for an ImGui button
-        if (ImGui::ImageButton("ImgButton", appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(5.f, 3.f)))
-            HelloImGui::GetRunnerParams()->appShallExit = true;
+        // Use it as a texture for an ImGui image widget
+        ImGui::Image(appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(5.f, 3.f));
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip(
+                "The application background is rendered by NanoVG.\n"
+                "This image is also rendered by NanoVG, via a framebuffer.\n"
+            );
 
         ImGui::End();
     };

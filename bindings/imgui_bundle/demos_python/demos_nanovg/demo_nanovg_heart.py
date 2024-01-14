@@ -124,16 +124,20 @@ def main():
     runner_params.callbacks.custom_background = custom_background
 
     def gui():
+        imgui.set_next_window_pos(ImVec2(0., 0.), imgui.Cond_.appearing)
+        imgui.set_next_window_size(hello_imgui.em_to_vec2(10., 6.))
         imgui.begin("Hello, NanoVG!")
-
-        imgui.text("Click on the image button below to exit")
 
         # Also, render our drawing to a framebuffer, and use it as a texture for an ImGui button
         # Render to our framebuffer
         nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.nvg_framebuffer, draw_scene)
-        # Use it as a texture for an ImGui button
-        if imgui.image_button("ImgButton", app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(5.0, 3.0)):
-            hello_imgui.get_runner_params().app_shall_exit = True
+        # Use it as a texture for an ImGui image widget
+        imgui.image(app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(5.0, 3.0))
+        if imgui.is_item_hovered():
+            imgui.set_tooltip(
+                "The application background is rendered by NanoVG.\n"
+                "This image is also rendered by NanoVG, via a framebuffer.\n"
+            )
 
         imgui.end()
 
