@@ -238,6 +238,9 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 |image:{url-demo-images}/demo_immvision_process_1.jpg[width=200]
 image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
 
+|https://github.com/memononen/nanovg[NanoVG]: Antialiased 2D vector drawing library on top of OpenGL for UI and visualizations
+|image:{url-demo-images}/nanovg_full_demo.jpg[width=200]
+
 |https://github.com/andyborrell/imgui_tex_inspect[imgui_tex_inspect]: A texture inspector tool for Dear ImGui
 |image:{url-demo-images}/demo_imgui_tex_inspector.jpg[width=200]
 
@@ -1472,6 +1475,7 @@ struct AppState
     ImFont* TitleFont = nullptr;
     ImFont* ColorFont = nullptr;
     ImFont* EmojiFont = nullptr;
+    ImFont* LargeIconFont = nullptr;
 };
 
 
@@ -1488,6 +1492,10 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
     fontLoadingParamsEmoji.useFullGlyphRange = true;
     appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
+
+    HelloImGui::FontLoadingParams fontLoadingParamsLargeIcon;
+    fontLoadingParamsLargeIcon.useFullGlyphRange = true;
+    appState.LargeIconFont = HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 24.f, fontLoadingParamsLargeIcon);
 #ifdef IMGUI_ENABLE_FREETYPE
     HelloImGui::FontLoadingParams fontLoadingParamsColor;
     fontLoadingParamsColor.loadColor = true;
@@ -1842,6 +1850,37 @@ void ShowAppMenuItems()
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on A Custom app menu item");
 }
 
+void ShowTopToolbar(AppState& appState)
+{
+    ImGui::PushFont(appState.LargeIconFont);
+    if (ImGui::Button(ICON_FA_POWER_OFF))
+        HelloImGui::GetRunnerParams()->appShallExit = true;
+
+    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(7.f));
+    if (ImGui::Button(ICON_FA_HOME))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Home in the top toolbar");
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_SAVE))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Save in the top toolbar");
+    ImGui::SameLine();
+    if (ImGui::Button(ICON_FA_ADDRESS_BOOK))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Address Book in the top toolbar");
+
+    ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(2.f));
+    ImGui::Text(ICON_FA_BATTERY_THREE_QUARTERS);
+    ImGui::PopFont();
+}
+
+void ShowRightToolbar(AppState& appState)
+{
+    ImGui::PushFont(appState.LargeIconFont);
+    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_LEFT))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle left in the right toolbar");
+
+    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_RIGHT))
+        HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle right in the right toolbar");
+    ImGui::PopFont();
+}
 
 //////////////////////////////////////////////////////////////////////////
 //    Docking Layouts and Docking windows
@@ -2058,10 +2097,44 @@ int main(int, char**)
     runnerParams.callbacks.ShowAppMenuItems = ShowAppMenuItems;
 
     //
+    // Top and bottom toolbars
+    //
+    // toolbar options
+    HelloImGui::EdgeToolbarOptions edgeToolbarOptions;
+    edgeToolbarOptions.sizeEm = 2.5f;
+    edgeToolbarOptions.WindowBg = ImVec4(0.8, 0.8, 0.8, 0.35f);
+    // top toolbar
+    runnerParams.callbacks.AddEdgeToolbar(
+        HelloImGui::EdgeToolbarType::Top,
+        [&appState]() { ShowTopToolbar(appState); },
+        edgeToolbarOptions
+    );
+    // right toolbar
+    edgeToolbarOptions.WindowBg.w = 0.4f;
+    runnerParams.callbacks.AddEdgeToolbar(
+        HelloImGui::EdgeToolbarType::Right,
+        [&appState]() { ShowRightToolbar(appState); },
+        edgeToolbarOptions
+    );
+
+    //
     // Load user settings at callbacks `PostInit` and save them at `BeforeExit`
     //
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
+
+    //
+    // Change style
+    //
+    // 1. Change theme
+    auto& tweakedTheme = runnerParams.imGuiWindowParams.tweakedTheme;
+    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
+    tweakedTheme.Tweaks.Rounding = 10.f;
+    // 2. Customize ImGui style at startup
+    runnerParams.callbacks.SetupImGuiStyle = []() {
+        // Reduce spacing between items ((8, 4) by default)
+        ImGui::GetStyle().ItemSpacing = ImVec2(6.f, 4.f);
+    };
 
     //#############################################################################################
     // Part 2: Define the application layout and windows
@@ -2146,7 +2219,7 @@ Python:
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx
+from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx, ImVec4
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -2177,6 +2250,7 @@ class AppState:
     title_font: imgui.ImFont
     color_font: imgui.ImFont
     emoji_font: imgui.ImFont
+    large_icon_font: imgui.ImFont
 
     def __init__(self):
         self.f = 0
@@ -2203,6 +2277,11 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     font_loading_params_color = hello_imgui.FontLoadingParams()
     font_loading_params_color.load_color = True
     app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
+
+    font_loading_params_large_icon = hello_imgui.FontLoadingParams()
+    font_loading_params_large_icon.use_full_glyph_range = True
+    app_state.large_icon_font = hello_imgui.load_font("fonts/fontawesome-webfont.ttf", 24., font_loading_params_large_icon)
+
 
 ##########################################################################
 #    Save additional settings in the ini file
@@ -2561,6 +2640,35 @@ def show_app_menu_items():
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on A Custom app menu item")
 
 
+def show_top_toolbar(app_state: AppState):
+    imgui.push_font(app_state.large_icon_font)
+    if imgui.button(icons_fontawesome.ICON_FA_POWER_OFF):
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+    imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(7.0))
+    if imgui.button(icons_fontawesome.ICON_FA_HOME):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Home in the top toolbar")
+    imgui.same_line()
+    if imgui.button(icons_fontawesome.ICON_FA_SAVE):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Save in the top toolbar")
+    imgui.same_line()
+    if imgui.button(icons_fontawesome.ICON_FA_ADDRESS_BOOK):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Address Book in the top toolbar")
+
+    imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(2.0))
+    imgui.text(icons_fontawesome.ICON_FA_BATTERY_THREE_QUARTERS)
+    imgui.pop_font()
+
+
+def show_right_toolbar(app_state: AppState):
+    imgui.push_font(app_state.large_icon_font)
+    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_LEFT):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle left in the right toolbar")
+    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_RIGHT):
+        hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle right in the right toolbar")
+    imgui.pop_font()
+
+
 ##########################################################################
 #    Docking Layouts and Docking windows
 ##########################################################################
@@ -2780,10 +2888,44 @@ def main():
     runner_params.callbacks.show_app_menu_items = show_app_menu_items
 
     #
+    # Top and bottom toolbars
+    #
+    # toolbar options
+    edge_toolbar_options = hello_imgui.EdgeToolbarOptions()
+    edge_toolbar_options.size_em = 2.5
+    edge_toolbar_options.window_bg = ImVec4(0.8, 0.8, 0.8, 0.35)
+    # top toolbar
+    runner_params.callbacks.add_edge_toolbar(
+        hello_imgui.EdgeToolbarType.top,
+        lambda: show_top_toolbar(app_state),
+        edge_toolbar_options,
+    )
+    # right toolbar
+    edge_toolbar_options.window_bg.w = 0.4
+    runner_params.callbacks.add_edge_toolbar(
+        hello_imgui.EdgeToolbarType.right,
+        lambda: show_right_toolbar(app_state),
+        edge_toolbar_options,
+    )
+
+    #
     # Load user settings at callbacks `post_init` and save them at `before_exit`
     #
     runner_params.callbacks.post_init = lambda: load_my_app_settings(app_state)
     runner_params.callbacks.before_exit = lambda: save_my_app_settings(app_state)
+
+    #
+    # Change style
+    #
+    # 1. Change theme
+    tweaked_theme = runner_params.imgui_window_params.tweaked_theme
+    tweaked_theme.theme = hello_imgui.ImGuiTheme_.material_flat
+    tweaked_theme.tweaks.rounding = 10.0
+    # 2. Customize ImGui style at startup
+    def setup_imgui_style():
+        # Reduce spacing between items ((8, 4) by default)
+        imgui.get_style().item_spacing = (6, 4)
+    runner_params.callbacks.setup_imgui_style = setup_imgui_style
 
     #
     # Part 2: Define the application layout and windows

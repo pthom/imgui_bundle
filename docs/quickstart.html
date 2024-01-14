@@ -1556,6 +1556,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">ImFont</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">TitleFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">ImFont</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">ColorFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">ImFont</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">EmojiFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">ImFont</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">LargeIconFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-k">nullptr</span><span class="tok-p">;</span>
 <span class="tok-p">};</span>
 
 
@@ -1572,6 +1573,10 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">FontLoadingParams</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsEmoji</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">fontLoadingParamsEmoji</span><span class="tok-p">.</span><span class="tok-n">useFullGlyphRange</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">EmojiFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LoadFont</span><span class="tok-p">(</span><span class="tok-s">&quot;fonts/NotoEmoji-Regular.ttf&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">24.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsEmoji</span><span class="tok-p">);</span>
+
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">FontLoadingParams</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsLargeIcon</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">fontLoadingParamsLargeIcon</span><span class="tok-p">.</span><span class="tok-n">useFullGlyphRange</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">LargeIconFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LoadFont</span><span class="tok-p">(</span><span class="tok-s">&quot;fonts/fontawesome-webfont.ttf&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">24.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsLargeIcon</span><span class="tok-p">);</span>
 <span class="tok-cp">#ifdef IMGUI_ENABLE_FREETYPE</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">FontLoadingParams</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsColor</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">fontLoadingParamsColor</span><span class="tok-p">.</span><span class="tok-n">loadColor</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
@@ -1926,6 +1931,37 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on A Custom app menu item&quot;</span><span class="tok-p">);</span>
 <span class="tok-p">}</span>
 
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowTopToolbar</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
+<span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">LargeIconFont</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_POWER_OFF</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">appShallExit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetWindowWidth</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">7.f</span><span class="tok-p">));</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_HOME</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on Home in the top toolbar&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_SAVE</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on Save in the top toolbar&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_ADDRESS_BOOK</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on Address Book in the top toolbar&quot;</span><span class="tok-p">);</span>
+
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetWindowWidth</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EmSize</span><span class="tok-p">(</span><span class="tok-mf">2.f</span><span class="tok-p">));</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_BATTERY_THREE_QUARTERS</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
+<span class="tok-p">}</span>
+
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-nf">ShowRightToolbar</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
+<span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">LargeIconFont</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_ARROW_CIRCLE_LEFT</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on Circle left in the right toolbar&quot;</span><span class="tok-p">);</span>
+
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_ARROW_CIRCLE_RIGHT</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">Log</span><span class="tok-p">(</span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LogLevel</span><span class="tok-o">::</span><span class="tok-n">Info</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Clicked on Circle right in the right toolbar&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
+<span class="tok-p">}</span>
 
 <span class="tok-c1">//////////////////////////////////////////////////////////////////////////</span>
 <span class="tok-c1">//    Docking Layouts and Docking windows</span>
@@ -2142,10 +2178,44 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">ShowAppMenuItems</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ShowAppMenuItems</span><span class="tok-p">;</span>
 
 <span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Top and bottom toolbars</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// toolbar options</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EdgeToolbarOptions</span><span class="tok-w"> </span><span class="tok-n">edgeToolbarOptions</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">edgeToolbarOptions</span><span class="tok-p">.</span><span class="tok-n">sizeEm</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">2.5f</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">edgeToolbarOptions</span><span class="tok-p">.</span><span class="tok-n">WindowBg</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec4</span><span class="tok-p">(</span><span class="tok-mf">0.8</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.8</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.8</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.35f</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-c1">// top toolbar</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">AddEdgeToolbar</span><span class="tok-p">(</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EdgeToolbarType</span><span class="tok-o">::</span><span class="tok-n">Top</span><span class="tok-p">,</span>
+<span class="tok-w">        </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ShowTopToolbar</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">},</span>
+<span class="tok-w">        </span><span class="tok-n">edgeToolbarOptions</span>
+<span class="tok-w">    </span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-c1">// right toolbar</span>
+<span class="tok-w">    </span><span class="tok-n">edgeToolbarOptions</span><span class="tok-p">.</span><span class="tok-n">WindowBg</span><span class="tok-p">.</span><span class="tok-n">w</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">0.4f</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">AddEdgeToolbar</span><span class="tok-p">(</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">EdgeToolbarType</span><span class="tok-o">::</span><span class="tok-n">Right</span><span class="tok-p">,</span>
+<span class="tok-w">        </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ShowRightToolbar</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">},</span>
+<span class="tok-w">        </span><span class="tok-n">edgeToolbarOptions</span>
+<span class="tok-w">    </span><span class="tok-p">);</span>
+
+<span class="tok-w">    </span><span class="tok-c1">//</span>
 <span class="tok-w">    </span><span class="tok-c1">// Load user settings at callbacks `PostInit` and save them at `BeforeExit`</span>
 <span class="tok-w">    </span><span class="tok-c1">//</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">PostInit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w">   </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">LoadMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">BeforeExit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">SaveMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
+
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// Change style</span>
+<span class="tok-w">    </span><span class="tok-c1">//</span>
+<span class="tok-w">    </span><span class="tok-c1">// 1. Change theme</span>
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">tweakedTheme</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">tweakedTheme</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Theme</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTheme</span><span class="tok-o">::</span><span class="tok-n">ImGuiTheme_MaterialFlat</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Tweaks</span><span class="tok-p">.</span><span class="tok-n">Rounding</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">10.f</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// 2. Customize ImGui style at startup</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">SetupImGuiStyle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"> </span><span class="tok-p">{</span>
+<span class="tok-w">        </span><span class="tok-c1">// Reduce spacing between items ((8, 4) by default)</span>
+<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetStyle</span><span class="tok-p">().</span><span class="tok-n">ItemSpacing</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">6.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">4.f</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-p">};</span>
 
 <span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 <span class="tok-w">    </span><span class="tok-c1">// Part 2: Define the application layout and windows</span>
@@ -2231,7 +2301,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-kn">from</span> <span class="tok-nn">enum</span> <span class="tok-kn">import</span> <span class="tok-n">Enum</span>
 <span class="tok-kn">import</span> <span class="tok-nn">time</span>
 
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">icons_fontawesome</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_ctx</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">icons_fontawesome</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_ctx</span><span class="tok-p">,</span> <span class="tok-n">ImVec4</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
 <span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">List</span>
 
@@ -2262,6 +2332,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">title_font</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">ImFont</span>
     <span class="tok-n">color_font</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">ImFont</span>
     <span class="tok-n">emoji_font</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">ImFont</span>
+    <span class="tok-n">large_icon_font</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">ImFont</span>
 
     <span class="tok-k">def</span> <span class="tok-fm">__init__</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-p">):</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">f</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
@@ -2288,6 +2359,11 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">font_loading_params_color</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">FontLoadingParams</span><span class="tok-p">()</span>
     <span class="tok-n">font_loading_params_color</span><span class="tok-o">.</span><span class="tok-n">load_color</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
     <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">color_font</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">load_font</span><span class="tok-p">(</span><span class="tok-s2">&quot;fonts/Playbox/Playbox-FREE.otf&quot;</span><span class="tok-p">,</span> <span class="tok-mf">24.</span><span class="tok-p">,</span> <span class="tok-n">font_loading_params_color</span><span class="tok-p">)</span>
+
+    <span class="tok-n">font_loading_params_large_icon</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">FontLoadingParams</span><span class="tok-p">()</span>
+    <span class="tok-n">font_loading_params_large_icon</span><span class="tok-o">.</span><span class="tok-n">use_full_glyph_range</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+    <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">large_icon_font</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">load_font</span><span class="tok-p">(</span><span class="tok-s2">&quot;fonts/fontawesome-webfont.ttf&quot;</span><span class="tok-p">,</span> <span class="tok-mf">24.</span><span class="tok-p">,</span> <span class="tok-n">font_loading_params_large_icon</span><span class="tok-p">)</span>
+
 
 <span class="tok-c1">##########################################################################</span>
 <span class="tok-c1">#    Save additional settings in the ini file</span>
@@ -2646,6 +2722,35 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
         <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on A Custom app menu item&quot;</span><span class="tok-p">)</span>
 
 
+<span class="tok-k">def</span> <span class="tok-nf">show_top_toolbar</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">large_icon_font</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_POWER_OFF</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">app_shall_exit</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_window_width</span><span class="tok-p">()</span> <span class="tok-o">-</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">7.0</span><span class="tok-p">))</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_HOME</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on Home in the top toolbar&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_SAVE</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on Save in the top toolbar&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_ADDRESS_BOOK</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on Address Book in the top toolbar&quot;</span><span class="tok-p">)</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_window_width</span><span class="tok-p">()</span> <span class="tok-o">-</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">2.0</span><span class="tok-p">))</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_BATTERY_THREE_QUARTERS</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">show_right_toolbar</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">large_icon_font</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_ARROW_CIRCLE_LEFT</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on Circle left in the right toolbar&quot;</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_ARROW_CIRCLE_RIGHT</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">log</span><span class="tok-p">(</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">LogLevel</span><span class="tok-o">.</span><span class="tok-n">info</span><span class="tok-p">,</span> <span class="tok-s2">&quot;Clicked on Circle right in the right toolbar&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
+
+
 <span class="tok-c1">##########################################################################</span>
 <span class="tok-c1">#    Docking Layouts and Docking windows</span>
 <span class="tok-c1">##########################################################################</span>
@@ -2865,10 +2970,44 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">show_app_menu_items</span> <span class="tok-o">=</span> <span class="tok-n">show_app_menu_items</span>
 
     <span class="tok-c1">#</span>
+    <span class="tok-c1"># Top and bottom toolbars</span>
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># toolbar options</span>
+    <span class="tok-n">edge_toolbar_options</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">EdgeToolbarOptions</span><span class="tok-p">()</span>
+    <span class="tok-n">edge_toolbar_options</span><span class="tok-o">.</span><span class="tok-n">size_em</span> <span class="tok-o">=</span> <span class="tok-mf">2.5</span>
+    <span class="tok-n">edge_toolbar_options</span><span class="tok-o">.</span><span class="tok-n">window_bg</span> <span class="tok-o">=</span> <span class="tok-n">ImVec4</span><span class="tok-p">(</span><span class="tok-mf">0.8</span><span class="tok-p">,</span> <span class="tok-mf">0.8</span><span class="tok-p">,</span> <span class="tok-mf">0.8</span><span class="tok-p">,</span> <span class="tok-mf">0.35</span><span class="tok-p">)</span>
+    <span class="tok-c1"># top toolbar</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">add_edge_toolbar</span><span class="tok-p">(</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">EdgeToolbarType</span><span class="tok-o">.</span><span class="tok-n">top</span><span class="tok-p">,</span>
+        <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">show_top_toolbar</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">),</span>
+        <span class="tok-n">edge_toolbar_options</span><span class="tok-p">,</span>
+    <span class="tok-p">)</span>
+    <span class="tok-c1"># right toolbar</span>
+    <span class="tok-n">edge_toolbar_options</span><span class="tok-o">.</span><span class="tok-n">window_bg</span><span class="tok-o">.</span><span class="tok-n">w</span> <span class="tok-o">=</span> <span class="tok-mf">0.4</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">add_edge_toolbar</span><span class="tok-p">(</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">EdgeToolbarType</span><span class="tok-o">.</span><span class="tok-n">right</span><span class="tok-p">,</span>
+        <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">show_right_toolbar</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">),</span>
+        <span class="tok-n">edge_toolbar_options</span><span class="tok-p">,</span>
+    <span class="tok-p">)</span>
+
+    <span class="tok-c1">#</span>
     <span class="tok-c1"># Load user settings at callbacks `post_init` and save them at `before_exit`</span>
     <span class="tok-c1">#</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">post_init</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">load_my_app_settings</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">before_exit</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">save_my_app_settings</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
+
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># Change style</span>
+    <span class="tok-c1">#</span>
+    <span class="tok-c1"># 1. Change theme</span>
+    <span class="tok-n">tweaked_theme</span> <span class="tok-o">=</span> <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">tweaked_theme</span>
+    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">theme</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">ImGuiTheme_</span><span class="tok-o">.</span><span class="tok-n">material_flat</span>
+    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">tweaks</span><span class="tok-o">.</span><span class="tok-n">rounding</span> <span class="tok-o">=</span> <span class="tok-mf">10.0</span>
+    <span class="tok-c1"># 2. Customize ImGui style at startup</span>
+    <span class="tok-k">def</span> <span class="tok-nf">setup_imgui_style</span><span class="tok-p">():</span>
+        <span class="tok-c1"># Reduce spacing between items ((8, 4) by default)</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_style</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">item_spacing</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-mi">6</span><span class="tok-p">,</span> <span class="tok-mi">4</span><span class="tok-p">)</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">setup_imgui_style</span> <span class="tok-o">=</span> <span class="tok-n">setup_imgui_style</span>
 
     <span class="tok-c1">#</span>
     <span class="tok-c1"># Part 2: Define the application layout and windows</span>
@@ -5137,7 +5276,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-08 22:15:56 +0100
+Last updated 2024-01-14 01:46:15 +0100
 </div>
 </div>
 </body>
