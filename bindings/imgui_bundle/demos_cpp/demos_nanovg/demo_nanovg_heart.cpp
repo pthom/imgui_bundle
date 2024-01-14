@@ -6,6 +6,14 @@
 #include <math.h>
 
 
+struct DrawingState
+{
+    ImVec4 HeartColor = ImVec4(1.f, 0.f, 0.f, 1.f);
+};
+
+DrawingState gDrawingState;
+
+
 void DrawHeart(NVGcontext* vg, ImVec2 center, float size, float t)
 {
     float x = center.x, y = center.y;
@@ -33,7 +41,10 @@ void DrawHeart(NVGcontext* vg, ImVec2 center, float size, float t)
     }
 
     // Create gradient from top to bottom
-    NVGpaint paint = nvgLinearGradient(vg, 0.f, 1.f, 0.f, -1.f, nvgRGBAf(1, 0, 0, 1), nvgRGBAf(0.2, 0, 0, 1));
+    ImVec4 color = gDrawingState.HeartColor;
+    auto color_full = nvgRGBAf(color.x, color.y, color.z, color.w);
+    auto color_transparent = nvgRGBAf(color.x, color.y, color.z, 0.2f);
+    NVGpaint paint = nvgLinearGradient(vg, 0.f, 1.f, 0.f, -1.f, color_full, color_transparent);
     nvgFillPaint(vg, paint);
     nvgFill(vg);
 
@@ -104,13 +115,13 @@ struct AppStateNvgHeart
     // Our NanoVG context
     NVGcontext *vg = nullptr;
 
-    // A framebuffer, which will be used as a texture for our button
+    // A framebuffer, which will be used as a texture for the ImGui rendering
     std::unique_ptr<NvgImgui::NvgFramebuffer> nvgFramebuffer;
 
     void Init()
     {
         // Instantiate the NanoVG context
-        vg = NvgImgui::CreateNvgContext_GL(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES);
+        vg = NvgImgui::CreateNvgContext_HelloImGui(NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES);
 
         // Create a framebuffer
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
@@ -120,7 +131,7 @@ struct AppStateNvgHeart
     void Release()
     {
         nvgFramebuffer.reset();
-        NvgImgui::DeleteNvgContext_GL(vg);
+        NvgImgui::DeleteNvgContext_HelloImGui(vg);
     }
 };
 
@@ -134,33 +145,15 @@ int main(int, char**)
     runnerParams.callbacks.EnqueuePostInit([&]() { appState.Init(); });
     runnerParams.callbacks.EnqueueBeforeExit([&]() { appState.Release(); });
 
-    // Render our drawing to a custom background:
-    //   (we need to disable the default ImGui window, so that the background is visible)
-    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
-    // CustomBackground is where we can draw our custom background
-    runnerParams.callbacks.CustomBackground = [&](){
-        NvgImgui::RenderNvgToBackground(appState.vg, DrawScene);
-    };
-
 
     auto gui = [&]()
     {
-        ImGui::SetNextWindowPos(ImVec2(0.f, 0.f), ImGuiCond_Appearing);
-        ImGui::SetNextWindowSize(HelloImGui::EmToVec2(10.f, 6.f));
-        ImGui::Begin("Hello, NanoVG!");
-
-        // Also, render our drawing to a framebuffer, and use it as a texture for an ImGui button
-        // Render to our framebuffer
+        ImGui::Text("This image below is rendered by NanoVG, via a framebuffer.");
+        // Render our drawing to a framebuffer, and use it as a texture for ImGui
         NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, DrawScene);
-        // Use it as a texture for an ImGui image widget
-        ImGui::Image(appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(5.f, 3.f));
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip(
-                "The application background is rendered by NanoVG.\n"
-                "This image is also rendered by NanoVG, via a framebuffer.\n"
-            );
+        ImGui::Image(appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(50.f, 30.f));
 
-        ImGui::End();
+        ImGui::ColorEdit4("Heart color", &gDrawingState.HeartColor.x);
     };
     runnerParams.callbacks.ShowGui = gui;
     runnerParams.fpsIdling.enableIdling = false;

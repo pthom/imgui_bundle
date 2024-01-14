@@ -42,7 +42,11 @@ struct AppState
     std::unique_ptr<NvgImgui::NvgFramebuffer> myFramebuffer;
 
     ImVec4 ClearColor = ImVec4(0.2f, 0.2f, 0.2f, 1.f);
+#ifdef HELLOIMGUI_HAS_METAL
+    bool DisplayInFrameBuffer = true;
+#else
     bool DisplayInFrameBuffer = false;
+#endif
 };
 
 
@@ -59,7 +63,7 @@ int main(int, char**)
 
     runnerParams.callbacks.EnqueuePostInit([&]()
     {
-        appState.vg = NvgImgui::CreateNvgContext_GL(
+        appState.vg = NvgImgui::CreateNvgContext_HelloImGui(
             NvgImgui::NVG_ANTIALIAS | NvgImgui::NVG_STENCIL_STROKES); // | NvgImgui::NVG_DEBUG);
         appState.myNvgDemo = std::make_unique<MyNvgDemo>(appState.vg);
         int nvgImageFlags = 0; //NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
@@ -69,7 +73,7 @@ int main(int, char**)
     {
         appState.myNvgDemo.reset();
         appState.myFramebuffer.reset();
-        NvgImgui::DeleteNvgContext_GL(appState.vg);
+        NvgImgui::DeleteNvgContext_HelloImGui(appState.vg);
     });
 
     auto nvgDrawingFunction = [&](NVGcontext *vg, float width, float height)
@@ -82,14 +86,23 @@ int main(int, char**)
         appState.myNvgDemo->Render(width, height, (int)mousePos.x, (int)mousePos.y, (float)now);
     };
 
+#ifndef HELLOIMGUI_HAS_METAL
     runnerParams.callbacks.CustomBackground = [&]()
     {
         NvgImgui::RenderNvgToBackground(appState.vg, nvgDrawingFunction, appState.ClearColor);
     };
+#endif
 
     runnerParams.callbacks.ShowGui = [&]()
     {
+        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Appearing);
         ImGui::Begin("My Window!", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+
+        if (appState.DisplayInFrameBuffer)
+        {
+            NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
+            ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
+        }
 
         ImGui::Button("?##Note");
         if (ImGui::IsItemHovered())
@@ -109,12 +122,6 @@ int main(int, char**)
         ImGui::ColorEdit4("Clear color", &appState.ClearColor.x);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Background color of the drawing");
-
-        if (appState.DisplayInFrameBuffer)
-        {
-            NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
-            ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
-        }
 
         ImGui::End();
     };

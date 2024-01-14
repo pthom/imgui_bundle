@@ -1,7 +1,17 @@
 from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2
 import math
+from typing import List
 
 nvg_imgui = nvg.nvg_imgui
+
+
+class DrawingState:
+    heart_color: List[float]
+
+    def __init__(self):
+        self.heart_color = [1.0, 0.0, 0.0, 1.0]
+
+gDrawingState = DrawingState()
 
 
 def draw_heart(vg: nvg.Context, center: ImVec2, size: float, t: float):
@@ -29,7 +39,10 @@ def draw_heart(vg: nvg.Context, center: ImVec2, size: float, t: float):
     nvg.bezier_to(vg, -0.1, 1.0, 0.0, 0.5, 0.0, 0.4)
 
     # Create gradient from top to bottom
-    paint = nvg.linear_gradient(vg, 0.0, 1.0, 0.0, -1.0, nvg.rgba_f(1, 0, 0, 1), nvg.rgba_f(0.2, 0, 0, 1))
+    color = gDrawingState.heart_color
+    color_full = nvg.rgba_f(color[0], color[1], color[2], color[3])
+    color_transparent = nvg.rgba_f(color[0], color[1], color[2], 0.2)
+    paint = nvg.linear_gradient(vg, 0.0, 1.0, 0.0, -1.0, color_full, color_transparent)
     nvg.fill_paint(vg, paint)
     nvg.fill(vg)
 
@@ -89,12 +102,12 @@ class AppStateNvgHeart:
         # Our NanoVG context
         self.vg = None
 
-        # A framebuffer, which will be used as a texture for our button
+        # A framebuffer, which will be used as a texture for the ImGui rendering
         self.nvg_framebuffer = None
 
     def init(self):
         # Instantiate the NanoVG context
-        self.vg = nvg_imgui.create_nvg_context_gl(nvg_imgui.NvgCreateFlags.antialias | nvg_imgui.NvgCreateFlags.stencil_strokes)
+        self.vg = nvg_imgui.create_nvg_context_hello_imgui(nvg_imgui.NvgCreateFlags.antialias | nvg_imgui.NvgCreateFlags.stencil_strokes)
 
         # Create a framebuffer
         nvg_image_flags = 0  # NVG_IMAGE_FLIPY | NVG_IMAGE_PREMULTIPLIED;
@@ -102,7 +115,7 @@ class AppStateNvgHeart:
 
     def release(self):
         self.nvg_framebuffer = None
-        nvg_imgui.delete_nvg_context_gl(self.vg)
+        nvg_imgui.delete_nvg_context_hello_imgui(self.vg)
 
 
 def main():
@@ -113,33 +126,14 @@ def main():
     runner_params.callbacks.enqueue_post_init(lambda: app_state.init())
     runner_params.callbacks.enqueue_before_exit(lambda: app_state.release())
 
-    # Render our drawing to a custom background:
-    #   (we need to disable the default ImGui window, so that the background is visible)
-    runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.no_default_window
-
-    # CustomBackground is where we can draw our custom background
-    def custom_background():
-        nvg_imgui.render_nvg_to_background(app_state.vg, draw_scene)
-
-    runner_params.callbacks.custom_background = custom_background
-
     def gui():
-        imgui.set_next_window_pos(ImVec2(0., 0.), imgui.Cond_.appearing)
-        imgui.set_next_window_size(hello_imgui.em_to_vec2(10., 6.))
-        imgui.begin("Hello, NanoVG!")
+        imgui.text("This image below is rendered by NanoVG, via a framebuffer.")
 
-        # Also, render our drawing to a framebuffer, and use it as a texture for an ImGui button
-        # Render to our framebuffer
+        # Render our drawing to a framebuffer, and use it as a texture for ImGui
         nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.nvg_framebuffer, draw_scene)
-        # Use it as a texture for an ImGui image widget
-        imgui.image(app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(5.0, 3.0))
-        if imgui.is_item_hovered():
-            imgui.set_tooltip(
-                "The application background is rendered by NanoVG.\n"
-                "This image is also rendered by NanoVG, via a framebuffer.\n"
-            )
+        imgui.image(app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(50, 30))
 
-        imgui.end()
+        _, gDrawingState.heart_color = imgui.color_edit4("Heart color", gDrawingState.heart_color)
 
     runner_params.callbacks.show_gui = gui
     runner_params.fps_idling.enable_idling = False
