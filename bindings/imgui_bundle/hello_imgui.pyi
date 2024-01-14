@@ -1372,11 +1372,17 @@ class RunnerCallbacks:
         pass
     # --------------- Startup sequence callbacks -------------------
 
+    # VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction();    /* original C++ signature */
+    # `PostInit_AddPlatformBackendCallbacks`:
+    #  You can here add a function that will be called once after OpenGL and ImGui are inited,
+    #  but before the platform backend callbacks are initialized.
+    #  If you, want to add your own glfw callbacks, you should use this function to do so
+    #  (and then ImGui will call your callbacks followed by its own callbacks)
+    post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
-    # `PostInit`: You can here add a function that will be called once after OpenGL
-    #  and ImGui are inited, but before the backend callback are initialized.
-    #  If you, for instance, want to add your own glfw callbacks,
-    #  you should use this function to do so.
+    # `PostInit`: You can here add a function that will be called once after everything
+    #  is inited (ImGui, Platform and Renderer Backend)
     post_init: VoidFunction = EmptyVoidFunction()
 
     # void EnqueuePostInit(const VoidFunction& callback);    /* original C++ signature */
@@ -1477,13 +1483,14 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
         show_menus: VoidFunction = EmptyVoidFunction(),
         show_app_menu_items: VoidFunction = EmptyVoidFunction(),
         show_status: VoidFunction = EmptyVoidFunction(),
+        post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
         load_additional_fonts: VoidFunction = (VoidFunction)(
             ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
@@ -1979,6 +1986,51 @@ class BackendPointers:
 # @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/renderer_backend_options.h included by hello_imgui/runner_params.h         //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# @@md#RendererBackendOptions
+
+# bool hasEdrSupport();    /* original C++ signature */
+def has_edr_support() -> bool:
+    """`bool hasEdrSupport()`:
+    Check whether extended dynamic range (EDR), i.e. the ability to reproduce
+    intensities exceeding the standard dynamic range from 0.0-1.0, is supported.
+
+    To leverage EDR support, you need to set `floatBuffer=True` in `RendererBackendOptions`.
+    Only the macOS Metal backend currently supports this.
+
+    This currently returns False on all backends except Metal, where it checks whether
+    this is supported on the current displays.
+    """
+    pass
+
+class RendererBackendOptions:
+    """RendererBackendOptions is a struct that contains options for the renderer backend
+    (Metal, Vulkan, DirectX, OpenGL)
+    """
+
+    # bool requestFloatBuffer = false;    /* original C++ signature */
+    # `requestFloatBuffer`:
+    # Set to True to request a floating-point framebuffer.
+    # Only available on Metal, if your display supports it.
+    # Before setting this to True, first check `hasEdrSupport()`
+    request_float_buffer: bool = False
+    # RendererBackendOptions(bool requestFloatBuffer = false);    /* original C++ signature */
+    def __init__(self, request_float_buffer: bool = False) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# Note:
+# If using Metal, Vulkan or DirectX, you can find interesting pointers inside:
+#     src/hello_imgui/internal/backend_impls/rendering_metal.h
+#     src/hello_imgui/internal/backend_impls/rendering_vulkan.h
+#     src/hello_imgui/internal/backend_impls/rendering_dx11.h
+#     src/hello_imgui/internal/backend_impls/rendering_dx12.h
+
+# @@md
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2151,11 +2203,17 @@ class RunnerParams:
     # A struct that contains optional pointers to the backend implementations.
     # These pointers will be filled when the application starts
     backend_pointers: BackendPointers
+
     # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
     # `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
     # Select the wanted platform backend type between `Sdl`, `Glfw`.
     # Only useful when multiple backend are compiled and available.
     backend_type: BackendType = BackendType.first_available
+
+    # RendererBackendOptions rendererBackendOptions;    /* original C++ signature */
+    # `rendererBackendOptions`: _see renderer_backend_options.h_
+    # Options for the renderer backend
+    renderer_backend_options: RendererBackendOptions
 
     # --------------- Settings -------------------
 
@@ -2220,7 +2278,7 @@ class RunnerParams:
     # Set the application refresh rate
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -2231,6 +2289,7 @@ class RunnerParams:
         remember_selected_alternative_layout: bool = True,
         backend_pointers: BackendPointers = BackendPointers(),
         backend_type: BackendType = BackendType.first_available,
+        renderer_backend_options: RendererBackendOptions = RendererBackendOptions(),
         ini_folder_type: IniFolderType = IniFolderType.current_folder,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,

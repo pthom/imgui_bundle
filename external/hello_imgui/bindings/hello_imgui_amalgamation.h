@@ -2007,15 +2007,21 @@ struct RunnerCallbacks
 
     // --------------- Startup sequence callbacks -------------------
 
-    // `PostInit`: You can here add a function that will be called once after OpenGL
-    //  and ImGui are inited, but before the backend callback are initialized.
-    //  If you, for instance, want to add your own glfw callbacks,
-    //  you should use this function to do so.
+    // `PostInit_AddPlatformBackendCallbacks`:
+    //  You can here add a function that will be called once after OpenGL and ImGui are inited,
+    //  but before the platform backend callbacks are initialized.
+    //  If you, want to add your own glfw callbacks, you should use this function to do so
+    //  (and then ImGui will call your callbacks followed by its own callbacks)
+    VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction();
+
+
+    // `PostInit`: You can here add a function that will be called once after everything
+    //  is inited (ImGui, Platform and Renderer Backend)
     VoidFunction PostInit = EmptyVoidFunction();
 
     // `EnqueuePostInit`: Add a function that will be called once after OpenGL
-    // and ImGui are inited, but before the backend callback are initialized.
-    // (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
+    //  and ImGui are inited, but before the backend callback are initialized.
+    //  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
     void EnqueuePostInit(const VoidFunction& callback);
 
     // `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
@@ -2525,6 +2531,50 @@ struct BackendPointers
 // @@md
 
 }  // namespace HelloImGui
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/renderer_backend_options.h included by hello_imgui/runner_params.h         //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+namespace HelloImGui
+{
+
+// @@md#RendererBackendOptions
+
+// `bool hasEdrSupport()`:
+// Check whether extended dynamic range (EDR), i.e. the ability to reproduce
+// intensities exceeding the standard dynamic range from 0.0-1.0, is supported.
+//
+// To leverage EDR support, you need to set `floatBuffer=true` in `RendererBackendOptions`.
+// Only the macOS Metal backend currently supports this.
+//
+// This currently returns false on all backends except Metal, where it checks whether
+// this is supported on the current displays.
+bool hasEdrSupport();
+
+
+// RendererBackendOptions is a struct that contains options for the renderer backend
+// (Metal, Vulkan, DirectX, OpenGL)
+struct RendererBackendOptions
+{
+    // `requestFloatBuffer`:
+    // Set to true to request a floating-point framebuffer.
+    // Only available on Metal, if your display supports it.
+    // Before setting this to true, first check `hasEdrSupport()`
+    bool requestFloatBuffer = false;
+};
+
+
+// Note:
+// If using Metal, Vulkan or DirectX, you can find interesting pointers inside:
+//     src/hello_imgui/internal/backend_impls/rendering_metal.h
+//     src/hello_imgui/internal/backend_impls/rendering_vulkan.h
+//     src/hello_imgui/internal/backend_impls/rendering_dx11.h
+//     src/hello_imgui/internal/backend_impls/rendering_dx12.h
+
+// @@md
+
+}  // namespace HelloImGui
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h continued                                                  //
@@ -2672,10 +2722,15 @@ struct RunnerParams
     // A struct that contains optional pointers to the backend implementations.
     // These pointers will be filled when the application starts
     BackendPointers backendPointers;
+
     // `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
     // Select the wanted platform backend type between `Sdl`, `Glfw`.
     // Only useful when multiple backend are compiled and available.
     BackendType backendType = BackendType::FirstAvailable;
+
+    // `rendererBackendOptions`: _see renderer_backend_options.h_
+    // Options for the renderer backend
+    RendererBackendOptions rendererBackendOptions;
 
 
     // --------------- Settings -------------------

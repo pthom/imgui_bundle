@@ -639,13 +639,14 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
         .def(py::init<>([](
-        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
+        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
         {
             auto r = std::make_unique<RunnerCallbacks>();
             r->ShowGui = ShowGui;
             r->ShowMenus = ShowMenus;
             r->ShowAppMenuItems = ShowAppMenuItems;
             r->ShowStatus = ShowStatus;
+            r->PostInit_AddPlatformBackendCallbacks = PostInit_AddPlatformBackendCallbacks;
             r->PostInit = PostInit;
             r->LoadAdditionalFonts = LoadAdditionalFonts;
             r->SetupImGuiConfig = SetupImGuiConfig;
@@ -660,7 +661,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->AnyBackendEventCallback = AnyBackendEventCallback;
             return r;
         })
-        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), py::arg("setup_imgui_config") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), py::arg("setup_imgui_style") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
+        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init_add_platform_backend_callbacks") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), py::arg("setup_imgui_config") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), py::arg("setup_imgui_style") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
         )
         .def_readwrite("show_gui", &RunnerCallbacks::ShowGui, "`ShowGui`: Fill it with a function that will add your widgets.")
         .def_readwrite("show_menus", &RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
@@ -671,11 +672,12 @@ void py_init_module_hello_imgui(py::module& m)
             &RunnerCallbacks::AddEdgeToolbar,
             py::arg("edge_toolbar_type"), py::arg("gui_function"), py::arg("options") = HelloImGui::EdgeToolbarOptions(),
             "`AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window")
-        .def_readwrite("post_init", &RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  If you, for instance, want to add your own glfw callbacks,\n  you should use this function to do so.")
+        .def_readwrite("post_init_add_platform_backend_callbacks", &RunnerCallbacks::PostInit_AddPlatformBackendCallbacks, " `PostInit_AddPlatformBackendCallbacks`:\n  You can here add a function that will be called once after OpenGL and ImGui are inited,\n  but before the platform backend callbacks are initialized.\n  If you, want to add your own glfw callbacks, you should use this function to do so\n  (and then ImGui will call your callbacks followed by its own callbacks)")
+        .def_readwrite("post_init", &RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after everything\n  is inited (ImGui, Platform and Renderer Backend)")
         .def("enqueue_post_init",
             &RunnerCallbacks::EnqueuePostInit,
             py::arg("callback"),
-            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n and ImGui are inited, but before the backend callback are initialized.\n (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
+            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("load_additional_fonts", &RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called once, when fonts are ready to be loaded.\n  By default, _LoadDefaultFont_WithFontAwesome_ is called,\n  but you can copy and customize it.\n  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/\n  but reverts to the ImGui embedded font if not found)")
         .def_readwrite("setup_imgui_config", &RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")
         .def_readwrite("setup_imgui_style", &RunnerCallbacks::SetupImGuiStyle, " `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, set your own style by providing your own SetupImGuiStyle callback")
@@ -792,6 +794,26 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    m.def("has_edr_support",
+        HelloImGui::hasEdrSupport, " `bool hasEdrSupport()`:\n Check whether extended dynamic range (EDR), i.e. the ability to reproduce\n intensities exceeding the standard dynamic range from 0.0-1.0, is supported.\n\n To leverage EDR support, you need to set `floatBuffer=True` in `RendererBackendOptions`.\n Only the macOS Metal backend currently supports this.\n\n This currently returns False on all backends except Metal, where it checks whether\n this is supported on the current displays.");
+
+
+    auto pyClassRendererBackendOptions =
+        py::class_<HelloImGui::RendererBackendOptions>
+            (m, "RendererBackendOptions", " RendererBackendOptions is a struct that contains options for the renderer backend\n (Metal, Vulkan, DirectX, OpenGL)")
+        .def(py::init<>([](
+        bool requestFloatBuffer = false)
+        {
+            auto r = std::make_unique<RendererBackendOptions>();
+            r->requestFloatBuffer = requestFloatBuffer;
+            return r;
+        })
+        , py::arg("request_float_buffer") = false
+        )
+        .def_readwrite("request_float_buffer", &RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer.\n Only available on Metal, if your display supports it.\n Before setting this to True, first check `hasEdrSupport()`")
+        ;
+
+
     py::enum_<HelloImGui::BackendType>(m, "BackendType", py::arithmetic(), "Platform backend type (SDL, GLFW)")
         .value("first_available", HelloImGui::BackendType::FirstAvailable, "")
         .value("sdl", HelloImGui::BackendType::Sdl, "")
@@ -839,7 +861,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RunnerParams>
             (m, "RunnerParams", " @@md#RunnerParams\n\n RunnerParams contains the settings and callbacks needed to run an application.\n")
         .def(py::init<>([](
-        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0)
+        RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0)
         {
             auto r = std::make_unique<RunnerParams>();
             r->callbacks = callbacks;
@@ -850,6 +872,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->rememberSelectedAlternativeLayout = rememberSelectedAlternativeLayout;
             r->backendPointers = backendPointers;
             r->backendType = backendType;
+            r->rendererBackendOptions = rendererBackendOptions;
             r->iniFolderType = iniFolderType;
             r->iniFilename = iniFilename;
             r->iniFilename_useAppWindowTitle = iniFilename_useAppWindowTitle;
@@ -859,7 +882,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("alternative_docking_layouts") = std::vector<DockingParams>(), py::arg("remember_selected_alternative_layout") = true, py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("fps_idling") = FpsIdling(), py::arg("use_imgui_test_engine") = false, py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = RunnerCallbacks(), py::arg("app_window_params") = AppWindowParams(), py::arg("imgui_window_params") = ImGuiWindowParams(), py::arg("docking_params") = DockingParams(), py::arg("alternative_docking_layouts") = std::vector<DockingParams>(), py::arg("remember_selected_alternative_layout") = true, py::arg("backend_pointers") = BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("renderer_backend_options") = RendererBackendOptions(), py::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("fps_idling") = FpsIdling(), py::arg("use_imgui_test_engine") = false, py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &RunnerParams::callbacks, " `callbacks`: _see runner_callbacks.h_\n callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.")
         .def_readwrite("app_window_params", &RunnerParams::appWindowParams, " `appWindowParams`: _see app_window_params.h_\n application Window Params (position, size, title)")
@@ -869,6 +892,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("remember_selected_alternative_layout", &RunnerParams::rememberSelectedAlternativeLayout, " `rememberSelectedAlternativeLayout`: _bool, default=true_\n Shall the application remember the last selected layout. Only used in advanced\n cases when several layouts are available.")
         .def_readwrite("backend_pointers", &RunnerParams::backendPointers, " `backendPointers`: _see backend_pointers.h_\n A struct that contains optional pointers to the backend implementations.\n These pointers will be filled when the application starts")
         .def_readwrite("backend_type", &RunnerParams::backendType, " `backendType`: _enum BackendType, default=BackendType::FirstAvailable_\n Select the wanted platform backend type between `Sdl`, `Glfw`.\n Only useful when multiple backend are compiled and available.")
+        .def_readwrite("renderer_backend_options", &RunnerParams::rendererBackendOptions, " `rendererBackendOptions`: _see renderer_backend_options.h_\n Options for the renderer backend")
         .def_readwrite("ini_folder_type", &RunnerParams::iniFolderType, " `iniFolderType`: _IniFolderType, default = IniFolderType::CurrentFolder_\n Sets the folder where imgui will save its params.\n (possible values are:\n     CurrentFolder, AppUserConfigFolder, DocumentsFolder,\n     HomeFolder, TempFolder, AppExecutableFolder)\n AppUserConfigFolder is\n     [Home]/AppData/Roaming under Windows,\n     ~/.config under Linux,\n     ~/Library/Application Support under macOS")
         .def_readwrite("ini_filename", &RunnerParams::iniFilename, "relative to iniFolderType")
         .def_readwrite("ini_filename_use_app_window_title", &RunnerParams::iniFilename_useAppWindowTitle, " `iniFilename_useAppWindowTitle`: _bool, default = true_.\n Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)")
