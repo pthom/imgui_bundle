@@ -52,14 +52,15 @@ void DrawNanoVgLabel(NVGcontext* vg, float width, float height)
     if (fontId == -1)
     {
         // Load the font
+        #ifndef __ANDROID__
+        auto fontPath = HelloImGui::AssetFileFullPath("fonts/Roboto/Roboto-Bold.ttf");
+        fontId = nvgCreateFont(vg, "roboto", fontPath.c_str());
+        #else
+        // On Android, assets are compressed inside the apk, so we need to load them differently
         auto assetData = HelloImGui::LoadAssetFileData("fonts/Roboto/Roboto-Bold.ttf");
         fontId = nvgCreateFontMem(vg, "roboto", (unsigned char*)assetData.data, assetData.dataSize, 0);
         HelloImGui::FreeAssetFileData(&assetData);
-        // Note: you can also load the font from a file like below:
-        //     auto fontPath = HelloImGui::AssetFileFullPath("fonts/Roboto/Roboto-Bold.ttf");
-        //     fontId = nvgCreateFont(vg, "roboto", fontPath.c_str());
-        // (However, this would not work under Android, because assets are not files on this platform)
-
+        #endif
         if (fontId == -1) {
             fprintf(stderr, "Could not add font.\n");
             return; // Exit if the font cannot be added.
