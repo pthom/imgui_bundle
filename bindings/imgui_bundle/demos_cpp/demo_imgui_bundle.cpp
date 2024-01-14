@@ -100,7 +100,9 @@ int main(int, char **)
         DEMO_DETAILS("Text Editor", demo_text_edit),
         DEMO_DETAILS("Widgets", demo_widgets),
         DEMO_DETAILS("ImmVision", demo_immvision_launcher),
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
         DEMO_DETAILS("NanoVG", demo_nanovg_launcher),
+#endif
         DEMO_DETAILS("ImGuizmo", demo_imguizmo_launcher),
         DEMO_DETAILS("Themes", demo_themes),
         DEMO_DETAILS("Logger", demo_logger),

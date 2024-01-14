@@ -108,10 +108,10 @@ add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
 # Add nanovg & nvg_imgui
 if(HELLOIMGUI_HAS_OPENGL)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_NANOVG)
     set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
     target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
+    target_compile_definitions(nanovg PUBLIC IMGUI_BUNDLE_WITH_NANOVG)
     target_link_libraries(imgui_bundle PUBLIC nanovg)
     hello_imgui_msvc_target_group_sources(nanovg)
     # Add nvg_imgui
