@@ -6758,8 +6758,34 @@ def set_next_item_selection_user_data(selection_user_data: SelectionUserData) ->
 # Data type helpers
 
 # InputText
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API bool          InputTextEx(const char* label, const char* hint, std::string* s, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL);    /* original C++ signature */
+def input_text_ex(
+    label: str,
+    hint: str,
+    s: str,
+    size_arg: ImVec2,
+    flags: InputTextFlags,
+    callback: InputTextCallback = None,
+) -> Tuple[bool, str]:
+    pass
+
+# IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, std::string* s, ImGuiInputTextFlags flags);    /* original C++ signature */
+def temp_input_text(
+    bb: ImRect, id_: ID, label: str, s: str, flags: InputTextFlags
+) -> Tuple[bool, str]:
+    pass
+
+# #endif
+#
 # IMGUI_API void          InputTextDeactivateHook(ImGuiID id);    /* original C++ signature */
 def input_text_deactivate_hook(id_: ID) -> None:
+    pass
+
+# inline bool             TempInputIsActive(ImGuiID id)       { ImGuiContext& g = *GImGui; return (g.ActiveId == id && g.TempInputId == id); }    /* original C++ signature */
+def temp_input_is_active(id_: ID) -> bool:
+    """(private API)"""
     pass
 
 # inline ImGuiInputTextState* GetInputTextState(ImGuiID id)   { ImGuiContext& g = *GImGui; return (id != 0 && g.InputTextState.ID == id) ? &g.InputTextState : NULL; }     /* original C++ signature */
@@ -7027,7 +7053,7 @@ class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
 
 
 ####################    <generated_from:imgui_internal_pywrappers.h>    ####################
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 # Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 
 # IMGUI_API std::tuple<ImGuiID, ImGuiID, ImGuiID>       DockBuilderSplitNode_Py(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir);    /* original C++ signature */

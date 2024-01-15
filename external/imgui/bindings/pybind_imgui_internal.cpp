@@ -4024,9 +4024,46 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("set_next_item_selection_user_data",
         ImGui::SetNextItemSelectionUserData, py::arg("selection_user_data"));
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_text_ex",
+        [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
+        {
+            auto InputTextEx_adapt_modifiable_immutable_to_return = [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
+            {
+                std::string * s_adapt_modifiable = & s;
+
+                bool r = ImGui::InputTextEx(label, hint, s_adapt_modifiable, size_arg, flags, callback);
+                return std::make_tuple(r, s);
+            };
+
+            return InputTextEx_adapt_modifiable_immutable_to_return(label, hint, s, size_arg, flags, callback);
+        },     py::arg("label"), py::arg("hint"), py::arg("s"), py::arg("size_arg"), py::arg("flags"), py::arg("callback") = py::none());
+
+    m.def("temp_input_text",
+        [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
+        {
+            auto TempInputText_adapt_modifiable_immutable_to_return = [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
+            {
+                std::string * s_adapt_modifiable = & s;
+
+                bool r = ImGui::TempInputText(bb, id, label, s_adapt_modifiable, flags);
+                return std::make_tuple(r, s);
+            };
+
+            return TempInputText_adapt_modifiable_immutable_to_return(bb, id, label, s, flags);
+        },     py::arg("bb"), py::arg("id_"), py::arg("label"), py::arg("s"), py::arg("flags"));
+    // #endif
+    //
 
     m.def("input_text_deactivate_hook",
         py::overload_cast<ImGuiID>(ImGui::InputTextDeactivateHook), py::arg("id_"));
+
+    m.def("temp_input_is_active",
+        ImGui::TempInputIsActive,
+        py::arg("id_"),
+        "(private API)");
 
     m.def("get_input_text_state",
         ImGui::GetInputTextState,

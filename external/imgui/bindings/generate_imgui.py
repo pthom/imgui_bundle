@@ -119,9 +119,12 @@ def main():
 
 def sandbox():
     code = """
+    IMGUI_API bool          InputTextEx(const char* label, const char* hint, char* buf, int buf_size, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+    // IMGUI_API void          InputTextDeactivateHook(ImGuiID id);
+    // IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, char* buf, int buf_size, ImGuiInputTextFlags flags);
     """
     options_imgui = litgen_options_imgui(
-        ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
+        ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH
     )
     generated_code = litgen.generate_code(options_imgui, code)
     print(generated_code.pydef_code)
