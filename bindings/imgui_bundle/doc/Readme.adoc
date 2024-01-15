@@ -185,29 +185,6 @@ https://github.com/pthom/imgui_bundle[Dear ImGui Bundle] is a comprehensive bund
 // end::motto[]
 
 
-
-==== Support the project
-
-Dear ImGui Bundle is a free and open-source project, and its development and maintenance require considerable efforts.
-
-If you find it valuable for your work – especially in a commercial enterprise or a research setting – please consider supporting its development by link:{url-donate}[making a donation]. Your contributions are greatly appreciated!
-
-For commercial users seeking tailored support or specific enhancements, please contact the author by email.
-
-////
-link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
-////
-
-==== Contribute
-
-Quality contributions are always welcome! If you're interested in contributing to the project, whether through code, ideas, or feedback, please refer to the link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[development documentation].
-
-
-==== License
-
-Dear ImGui Bundle is licensed under the link:https://github.com/pthom/imgui_bundle/blob/main/LICENSE[MIT License]
-
-
 === Interactive manual & demo in one click!
 
 :doc_branch: main
@@ -240,7 +217,7 @@ image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
 
 
-=== Batteries included - Credits
+=== Batteries included
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
 :url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
@@ -445,6 +422,27 @@ int main(int , char *[]) {
 ----
 ====
 
+
+=== Support the project
+
+Dear ImGui Bundle is a free and open-source project, and its development and maintenance require considerable efforts.
+
+If you find it valuable for your work – especially in a commercial enterprise or a research setting – please consider supporting its development by link:{url-donate}[making a donation]. Your contributions are greatly appreciated!
+
+For commercial users seeking tailored support or specific enhancements, please contact the author by email.
+
+////
+link:{url-donate}[image:https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/btn_donate.gif[Donate to support the development of Dear ImGui Bundle]]
+////
+
+==== Contribute
+
+Quality contributions are always welcome! If you're interested in contributing to the project, whether through code, ideas, or feedback, please refer to the link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[development documentation].
+
+
+==== License
+
+Dear ImGui Bundle is licensed under the link:https://github.com/pthom/imgui_bundle/blob/main/LICENSE[MIT License]
 
 [[install-instructions]]
 == Build and install instructions

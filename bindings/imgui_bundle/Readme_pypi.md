@@ -26,32 +26,6 @@ ideal for application developers, and researchers eager to dive into GUI
 development with ease and efficiency. This bundle simplifies the
 process, allowing you to focus on the creative aspects of your projects.
 
-### Support the project
-
-Dear ImGui Bundle is a free and open-source project, and its development
-and maintenance require considerable efforts.
-
-If you find it valuable for your work – especially in a commercial
-enterprise or a research setting – please consider supporting its
-development by [making a
-donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
-Your contributions are greatly appreciated!
-
-For commercial users seeking tailored support or specific enhancements,
-please contact the author by email.
-
-### Contribute
-
-Quality contributions are always welcome! If you’re interested in
-contributing to the project, whether through code, ideas, or feedback,
-please refer to the [development
-documentation](https://pthom.github.io/imgui_bundle/devel_docs/index.html).
-
-### License
-
-Dear ImGui Bundle is licensed under the [MIT
-License](https://github.com/pthom/imgui_bundle/blob/main/LICENSE)
-
 ## Interactive manual & demo in one click!
 
 Click on the animated demonstration below to launch the fully
@@ -67,7 +41,7 @@ This demonstration is also an interactive manual, similar to the online
 [ImGui
 Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
-## Batteries included - Credits
+## Batteries included
 
 Dear ImGui Bundle includes the following libraries, which are available
 in C++ *and* in Python:
@@ -255,6 +229,32 @@ GPT can help you translate between C++ and Python: see [this
 conversation](https://chat.openai.com/share/1e61dfec-c2de-4c2a-8149-24926276bbd5)
 where GPT4 was used to translate code and summarize the differences
 between the C++ and Python APIs.
+
+## Support the project
+
+Dear ImGui Bundle is a free and open-source project, and its development
+and maintenance require considerable efforts.
+
+If you find it valuable for your work – especially in a commercial
+enterprise or a research setting – please consider supporting its
+development by [making a
+donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
+Your contributions are greatly appreciated!
+
+For commercial users seeking tailored support or specific enhancements,
+please contact the author by email.
+
+### Contribute
+
+Quality contributions are always welcome! If you’re interested in
+contributing to the project, whether through code, ideas, or feedback,
+please refer to the [development
+documentation](https://pthom.github.io/imgui_bundle/devel_docs/index.html).
+
+### License
+
+Dear ImGui Bundle is licensed under the [MIT
+License](https://github.com/pthom/imgui_bundle/blob/main/LICENSE)
 
 # Build and install instructions
 

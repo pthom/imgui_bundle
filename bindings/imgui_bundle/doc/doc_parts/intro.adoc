@@ -10,3 +10,5 @@ include::intro_imgui_bundle_demo.adoc[]
 include::intro_batteries_included.adoc[]
 
 include::intro_port_cpp_python.adoc[]
+
+include::intro_support.adoc[]
