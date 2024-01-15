@@ -120,7 +120,7 @@ class TestVerboseLevel(enum.Enum):
     debug = enum.auto()  # (= 4)  # -v4
     # ImGuiTestVerboseLevel_Trace     = 5,    /* original C++ signature */
     trace = enum.auto()  # (= 5)
-    # ImGuiTestVerboseLevel_COUNT     = 6    /* original C++ signature */
+    # ImGuiTestVerboseLevel_COUNT    /* original C++ signature */
     # }
     count = enum.auto()  # (= 6)
 
@@ -138,8 +138,10 @@ class TestStatus(enum.Enum):
     # ImGuiTestStatus_Error       = 3,    /* original C++ signature */
     error = enum.auto()  # (= 3)
     # ImGuiTestStatus_Suspended   = 4,    /* original C++ signature */
-    # }
     suspended = enum.auto()  # (= 4)
+    # ImGuiTestStatus_COUNT    /* original C++ signature */
+    # }
+    count = enum.auto()  # (= 5)
 
 class TestGroup(enum.Enum):
     """Test group: this is mostly used to categorize tests in our testing UI. (Stored in ImGuiTest)"""
@@ -203,19 +205,29 @@ class TestRunFlags_(enum.Enum):
     gui_func_only = enum.auto()  # (= 1 << 1)  # Set when user selects "Run GUI func"
     # ImGuiTestRunFlags_NoSuccessMsg      = 1 << 2,    /* original C++ signature */
     no_success_msg = enum.auto()  # (= 1 << 2)
-    # ImGuiTestRunFlags_NoStopOnError     = 1 << 3,    /* original C++ signature */
-    no_stop_on_error = enum.auto()  # (= 1 << 3)
-    # ImGuiTestRunFlags_NoBreakOnError    = 1 << 4,    /* original C++ signature */
-    no_break_on_error = enum.auto()  # (= 1 << 4)
-    # ImGuiTestRunFlags_EnableRawInputs   = 1 << 5,       /* original C++ signature */
+    # ImGuiTestRunFlags_EnableRawInputs   = 1 << 3,       /* original C++ signature */
     enable_raw_inputs = (
         enum.auto()
-    )  # (= 1 << 5)  # Disable input submission to let test submission raw input event (in order to test e.g. IO queue)
-    # ImGuiTestRunFlags_ManualRun         = 1 << 6,    /* original C++ signature */
-    manual_run = enum.auto()  # (= 1 << 6)
-    # ImGuiTestRunFlags_CommandLine       = 1 << 7    /* original C++ signature */
-    # }
-    command_line = enum.auto()  # (= 1 << 7)
+    )  # (= 1 << 3)  # Disable input submission to let test submission raw input event (in order to test e.g. IO queue)
+    # ImGuiTestRunFlags_RunFromGui        = 1 << 4,       /* original C++ signature */
+    run_from_gui = (
+        enum.auto()
+    )  # (= 1 << 4)  # Test ran manually from GUI, will disable watchdog.
+    # ImGuiTestRunFlags_RunFromCommandLine= 1 << 5,       /* original C++ signature */
+    run_from_command_line = enum.auto()  # (= 1 << 5)  # Test queued from command-line.
+
+    # Flags for ImGuiTestContext::RunChildTest()
+    # ImGuiTestRunFlags_NoError           = 1 << 10,    /* original C++ signature */
+    no_error = enum.auto()  # (= 1 << 10)
+    # ImGuiTestRunFlags_ShareVars         = 1 << 11,      /* original C++ signature */
+    share_vars = (
+        enum.auto()
+    )  # (= 1 << 11)  # Share generic vars and custom vars between child and parent tests (custom vars need to be same type)
+    # ImGuiTestRunFlags_ShareTestContext  = 1 << 12,      /* original C++ signature */
+    share_test_context = (
+        enum.auto()
+    )  # (= 1 << 12)  # Share ImGuiTestContext instead of creating a new one (unsure what purpose this may be useful for yet)
+    # TODO: Add GuiFunc options
 
 # -------------------------------------------------------------------------
 # Functions
@@ -268,6 +280,10 @@ def error(file: str, func: str, line: int, flags: TestCheckFlags, fmt: str) -> b
 
 # IMGUI_API void      ImGuiTestEngine_AssertLog(const char* expr, const char* file, const char* function, int line);    /* original C++ signature */
 def assert_log(expr: str, file: str, function: str, line: int) -> None:
+    pass
+
+# IMGUI_API ImGuiTextBuffer* ImGuiTestEngine_GetTempStringBuilder();    /* original C++ signature */
+def get_temp_string_builder() -> TextBuffer:
     pass
 
 # -------------------------------------------------------------------------
@@ -335,6 +351,10 @@ def try_abort_engine(engine: TestEngine) -> bool:
 
 # IMGUI_API void                ImGuiTestEngine_AbortCurrentTest(ImGuiTestEngine* engine);    /* original C++ signature */
 def abort_current_test(engine: TestEngine) -> None:
+    pass
+
+# IMGUI_API ImGuiTest*          ImGuiTestEngine_FindTestByName(ImGuiTestEngine* engine, const char* category, const char* name);    /* original C++ signature */
+def find_test_by_name(engine: TestEngine, category: str, name: str) -> Test:
     pass
 
 # Functions: Status Queries
@@ -668,6 +688,28 @@ class TestLog:
 
 # Wraps a placement new of a given type (where 'buffer' is the allocated memory)
 
+class TestOutput:
+    """Storage for the output of a test run"""
+
+    # ImGuiTestStatus                 Status = ImGuiTestStatus_Unknown;    /* original C++ signature */
+    status: TestStatus = TestStatus_Unknown
+    # ImGuiTestLog                    Log;    /* original C++ signature */
+    log: TestLog
+    # ImU64                           StartTime = 0;    /* original C++ signature */
+    start_time: ImU64 = 0
+    # ImU64                           EndTime = 0;    /* original C++ signature */
+    end_time: ImU64 = 0
+    # ImGuiTestOutput(ImGuiTestStatus Status = ImGuiTestStatus_Unknown, ImGuiTestLog Log = ImGuiTestLog(), ImU64 StartTime = 0, ImU64 EndTime = 0);    /* original C++ signature */
+    def __init__(
+        self,
+        status: TestStatus = TestStatus_Unknown,
+        log: TestLog = TestLog(),
+        start_time: ImU64 = 0,
+        end_time: ImU64 = 0,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 class Test:
     """Storage for one test"""
 
@@ -687,19 +729,13 @@ class Test:
     # Function_TestRunner    TestFunc = NULL;    /* original C++ signature */
     test_func: Function_TestRunner = None  # Test function
     # void*                           UserData = NULL;    /* original C++ signature */
-    user_data: Any = None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to se this)
+    user_data: Any = None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)
+    # ImVector<ImGuiTestRunTask>    Dependencies;                   // Registered via AddDependencyTest(), ran automatically before our test. This is a simpler wrapper to calling ctx->RunChildTest()
 
-    # Test Status
-    # ImGuiTestStatus                 Status = ImGuiTestStatus_Unknown;    /* original C++ signature */
-    status: TestStatus = TestStatus_Unknown
-    # ImGuiTestLog                    TestLog;    /* original C++ signature */
-    test_log: TestLog
-    # ImU64                           StartTime = 0;    /* original C++ signature */
-    start_time: ImU64 = 0
-    # ImU64                           EndTime = 0;    /* original C++ signature */
-    end_time: ImU64 = 0
-    # int                             GuiFuncLastFrame = -1;    /* original C++ signature */
-    gui_func_last_frame: int = -1
+    # ImGuiTestOutput                 Output;    /* original C++ signature */
+    # Last Test Output/Status
+    # (this is the only part that may change after registration)
+    output: TestOutput
 
     # User variables (which are instantiated when running the test)
     # Setup after test registration with SetVarsDataType<>(), access instance during test with GetVars<>().
@@ -1035,7 +1071,7 @@ class TestGenericVars:
 class TestContext:
     # User variables
     # ImGuiTestGenericVars    GenericVars;    /* original C++ signature */
-    generic_vars: TestGenericVars
+    generic_vars: TestGenericVars  # Generic variables holder for convenience.
     # void*                   UserVars = NULL;    /* original C++ signature */
     user_vars: Any = (
         None  # Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().
@@ -1048,6 +1084,8 @@ class TestContext:
     engine_io: TestEngineIO = None  # Test Engine IO/settings
     # ImGuiTest*              Test = NULL;    /* original C++ signature */
     test: Test = None  # Test currently running
+    # ImGuiTestOutput*        TestOutput = NULL;    /* original C++ signature */
+    test_output: TestOutput = None  # Test output (generally == &Test->Output)
     # ImGuiTestOpFlags        OpFlags = ImGuiTestOpFlags_None;    /* original C++ signature */
     op_flags: TestOpFlags = TestOpFlags_None  # Flags affecting all operation (supported: ImGuiTestOpFlags_NoAutoUncollapse)
     # int                     PerfStressAmount = 0;    /* original C++ signature */
@@ -1109,16 +1147,26 @@ class TestContext:
     # -------------------------------------------------------------------------
 
     # Main control
-    # void        Finish();    /* original C++ signature */
-    def finish(self) -> None:
-        """(private API)"""
-        pass
-    # void        RecoverFromUiContextErrors();    /* original C++ signature */
+    # void            RecoverFromUiContextErrors();    /* original C++ signature */
     def recover_from_ui_context_errors(self) -> None:
         """(private API)"""
         pass
+    # void            Finish(ImGuiTestStatus status = ImGuiTestStatus_Success);                           /* original C++ signature */
+    def finish(self, status: TestStatus = TestStatus_Success) -> None:
+        """(private API)
+
+        Set test status and stop running. Usually called when running test logic from GuiFunc() only.
+        """
+        pass
+    # ImGuiTestStatus RunChildTest(const char* test_name, ImGuiTestRunFlags flags = 0);                   /* original C++ signature */
+    def run_child_test(self, test_name: str, flags: TestRunFlags = 0) -> TestStatus:
+        """(private API)
+
+        [Experimental] Run another test from the current test.
+        """
+        pass
     # Main status queries
-    # bool        IsError() const             { return Test->Status == ImGuiTestStatus_Error || Abort; }    /* original C++ signature */
+    # bool        IsError() const             { return TestOutput->Status == ImGuiTestStatus_Error || Abort; }    /* original C++ signature */
     def is_error(self) -> bool:
         """(private API)"""
         pass
@@ -1144,16 +1192,12 @@ class TestContext:
     def is_gui_func_only(self) -> bool:
         """(private API)"""
         pass
-    # void        SetGuiFuncEnabled(bool v) { if (v) RunFlags &= ~ImGuiTestRunFlags_GuiFuncDisable; else RunFlags |= ImGuiTestRunFlags_GuiFuncDisable; }    /* original C++ signature */
-    def set_gui_func_enabled(self, v: bool) -> None:
-        """(private API)"""
-        pass
-    # Debug Control Flow
-    # bool        SuspendTestFunc(const char* file = NULL, int line = 0);     /* original C++ signature */
+    # Debugging
+    # bool        SuspendTestFunc(const char* file = NULL, int line = 0);                 /* original C++ signature */
     def suspend_test_func(self, file: Optional[str] = None, line: int = 0) -> bool:
         """(private API)
 
-        Generally called via IM_SUSPEND_TESTFUNC
+        [DEBUG] Generally called via IM_SUSPEND_TESTFUNC
         """
         pass
     # Logging
@@ -1247,7 +1291,8 @@ class TestContext:
     # - SetRef("Window"), ItemClick("/Button")    --> click "Window/Button"
     # - SetRef("Window"), ItemClick("//Button")   --> click "/Button"
     # - SetRef("//$FOCUSED"), ItemClick("Button") --> click "Button" in focused window.
-    # Takes multiple frames to complete if specified ref is an item id.
+    # See https://github.com/ocornut/imgui_test_engine/wiki/Named-References about using ImGuiTestRef in all ImGuiTestContext functions.
+    # Note: SetRef() may take multiple frames to complete if specified ref is an item id.
     # void        SetRef(ImGuiTestRef ref);    /* original C++ signature */
     @overload
     def set_ref(self, ref: Union[TestRef, str]) -> None:
@@ -1341,7 +1386,7 @@ class TestContext:
     def get_id(self, ref: Union[TestRef, str], seed_ref: Union[TestRef, str]) -> ID:
         """(private API)"""
         pass
-    # Misc
+    # Miscellaneous helpers
     # ImVec2      GetPosOnVoid(ImGuiViewport* viewport);                                  /* original C++ signature */
     def get_pos_on_void(self, viewport: Viewport) -> ImVec2:
         """(private API)
@@ -1515,6 +1560,10 @@ class TestContext:
     def key_hold(self, key_chord: KeyChord, time: float) -> None:
         """(private API)"""
         pass
+    # void        KeySetEx(ImGuiKeyChord key_chord, bool is_down, float time);    /* original C++ signature */
+    def key_set_ex(self, key_chord: KeyChord, is_down: bool, time: float) -> None:
+        """(private API)"""
+        pass
     # void        KeyChars(const char* chars);                    /* original C++ signature */
     def key_chars(self, chars: str) -> None:
         """(private API)
@@ -1637,7 +1686,8 @@ class TestContext:
         """(private API)"""
         pass
     # Low-level queries
-    # Since 2022/06/25 to faciliate test code and reduce crashes: ItemInfo queries never return a None pointer, instead they return an empty instance (info->IsEmpty(), info->ID == 0).
+    # - ItemInfo queries never returns a None pointer, instead they return an empty instance (info->IsEmpty(), info->ID == 0) and set contexted as errored.
+    # - You can use ImGuiTestOpFlags_NoError to do a query without marking context as errored. This is what ItemExists() does.
     # ImGuiTestItemInfo*  ItemInfo(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def item_info(
         self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None
@@ -1776,7 +1826,7 @@ class TestContext:
     def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2) -> None:
         """(private API)"""
         pass
-    # Helpers for Item/Widget state query
+    # Item/Widgets: Status query
     # bool        ItemExists(ImGuiTestRef ref);    /* original C++ signature */
     def item_exists(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
@@ -1798,7 +1848,8 @@ class TestContext:
     def tab_close(self, ref: Union[TestRef, str]) -> None:
         """(private API)"""
         pass
-    # Helpers for Menus widgets
+    # Helpers for MenuBar and Menus widgets
+    # - e.g. MenuCheck("File/Options/Enable grid");
     # void        MenuAction(ImGuiTestAction action, ImGuiTestRef ref);    /* original C++ signature */
     def menu_action(self, action: TestAction, ref: Union[TestRef, str]) -> None:
         """(private API)"""
@@ -1904,7 +1955,7 @@ class TestContext:
     #                                                  #endif
     #
 
-    # Performances
+    # Performances Measurement (use along with Dear ImGui Perf Tool)
     # void        PerfCalcRef();    /* original C++ signature */
     def perf_calc_ref(self) -> None:
         """(private API)"""
@@ -1963,6 +2014,9 @@ class TestContext:
 # -------------------------------------------------------------------------
 # [SECTION] Testing/Checking macros: IM_CHECK(), IM_ERRORF() etc.
 # -------------------------------------------------------------------------
+
+# Helpers used by IM_CHECK_OP() macros.
+# ImGuiTestEngine_GetTempStringBuilder() returns a shared instance of ImGuiTextBuffer to recycle memory allocations
 
 # We embed every macro in a do {} while(0) statement as a trick to allow using them as regular single statement, e.g. if (XXX) IM_CHECK(A); else IM_CHECK(B)
 # We leave the IM_DEBUG_BREAK() outside of the check function to step out faster when using a debugger. It also has the benefit of being lighter than an IM_ASSERT().
@@ -2218,10 +2272,6 @@ class TestEngine:
     gather_task: TestGatherTask
     # ImGuiTestFindByLabelTask    FindByLabelTask;    /* original C++ signature */
     find_by_label_task: TestFindByLabelTask
-    # void*                       UserDataBuffer = NULL;    /* original C++ signature */
-    user_data_buffer: Any = None
-    # size_t                      UserDataBufferSize = 0;    /* original C++ signature */
-    user_data_buffer_size: int = 0
 
     # ImGuiTestInputs             Inputs;    /* original C++ signature */
     # Inputs
@@ -2303,6 +2353,13 @@ def pass_filter(test: Test, filter: str) -> bool:
     """(private API)"""
     pass
 
+# void                ImGuiTestEngine_RunTest(ImGuiTestEngine* engine, ImGuiTestContext* ctx, ImGuiTest* test, ImGuiTestRunFlags run_flags);    /* original C++ signature */
+def run_test(
+    engine: TestEngine, ctx: TestContext, test: Test, run_flags: TestRunFlags
+) -> None:
+    """(private API)"""
+    pass
+
 # void                ImGuiTestEngine_RebootUiContext(ImGuiTestEngine* engine);    /* original C++ signature */
 def reboot_ui_context(engine: TestEngine) -> None:
     """(private API)"""
@@ -2311,6 +2368,11 @@ def reboot_ui_context(engine: TestEngine) -> None:
 # Screen/Video Capturing
 
 # Helper functions
+# const char*         ImGuiTestEngine_GetStatusName(ImGuiTestStatus v);    /* original C++ signature */
+def get_status_name(v: TestStatus) -> str:
+    """(private API)"""
+    pass
+
 # const char*         ImGuiTestEngine_GetRunSpeedName(ImGuiTestRunSpeed v);    /* original C++ signature */
 def get_run_speed_name(v: TestRunSpeed) -> str:
     """(private API)"""

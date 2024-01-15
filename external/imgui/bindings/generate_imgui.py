@@ -94,6 +94,8 @@ def autogenerate_imgui_test_engine() -> None:
     options = litgen_options_imgui(
         ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH
     )
+    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_appendf_auto"
+
     generator = litgen.LitgenGenerator(options)
     imgui_test_engine_dir = (
         THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"

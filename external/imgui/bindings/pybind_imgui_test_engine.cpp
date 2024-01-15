@@ -59,7 +59,8 @@ void py_init_module_imgui_test_engine(py::module& m)
         .value("queued", ImGuiTestStatus_Queued, "")
         .value("running", ImGuiTestStatus_Running, "")
         .value("error", ImGuiTestStatus_Error, "")
-        .value("suspended", ImGuiTestStatus_Suspended, "");
+        .value("suspended", ImGuiTestStatus_Suspended, "")
+        .value("count", ImGuiTestStatus_COUNT, "");
 
 
     py::enum_<ImGuiTestGroup>(m, "TestGroup", py::arithmetic(), "Test group: this is mostly used to categorize tests in our testing UI. (Stored in ImGuiTest)")
@@ -91,11 +92,12 @@ void py_init_module_imgui_test_engine(py::module& m)
         .value("gui_func_disable", ImGuiTestRunFlags_GuiFuncDisable, "Used internally to temporarily disable the GUI func (at the end of a test, etc)")
         .value("gui_func_only", ImGuiTestRunFlags_GuiFuncOnly, "Set when user selects \"Run GUI func\"")
         .value("no_success_msg", ImGuiTestRunFlags_NoSuccessMsg, "")
-        .value("no_stop_on_error", ImGuiTestRunFlags_NoStopOnError, "")
-        .value("no_break_on_error", ImGuiTestRunFlags_NoBreakOnError, "")
         .value("enable_raw_inputs", ImGuiTestRunFlags_EnableRawInputs, "Disable input submission to let test submission raw input event (in order to test e.g. IO queue)")
-        .value("manual_run", ImGuiTestRunFlags_ManualRun, "")
-        .value("command_line", ImGuiTestRunFlags_CommandLine, "");
+        .value("run_from_gui", ImGuiTestRunFlags_RunFromGui, "Test ran manually from GUI, will disable watchdog.")
+        .value("run_from_command_line", ImGuiTestRunFlags_RunFromCommandLine, "Test queued from command-line.")
+        .value("no_error", ImGuiTestRunFlags_NoError, "")
+        .value("share_vars", ImGuiTestRunFlags_ShareVars, "Share generic vars and custom vars between child and parent tests (custom vars need to be same type)")
+        .value("share_test_context", ImGuiTestRunFlags_ShareTestContext, "Share ImGuiTestContext instead of creating a new one (unsure what purpose this may be useful for yet)");
 
 
     m.def("hook_item_add",
@@ -154,6 +156,9 @@ void py_init_module_imgui_test_engine(py::module& m)
     m.def("assert_log",
         ImGuiTestEngine_AssertLog, py::arg("expr"), py::arg("file"), py::arg("function"), py::arg("line"));
 
+    m.def("get_temp_string_builder",
+        ImGuiTestEngine_GetTempStringBuilder, pybind11::return_value_policy::reference);
+
     m.def("create_context",
         ImGuiTestEngine_CreateContext,
         "Create test engine",
@@ -201,6 +206,11 @@ void py_init_module_imgui_test_engine(py::module& m)
 
     m.def("abort_current_test",
         ImGuiTestEngine_AbortCurrentTest, py::arg("engine"));
+
+    m.def("find_test_by_name",
+        ImGuiTestEngine_FindTestByName,
+        py::arg("engine"), py::arg("category"), py::arg("name"),
+        pybind11::return_value_policy::reference);
 
     m.def("is_test_queue_empty",
         ImGuiTestEngine_IsTestQueueEmpty, py::arg("engine"));
@@ -402,6 +412,28 @@ void py_init_module_imgui_test_engine(py::module& m)
         ;
 
 
+    auto pyClassImGuiTestOutput =
+        py::class_<ImGuiTestOutput>
+            (m, "TestOutput", "Storage for the output of a test run")
+        .def(py::init<>([](
+        ImGuiTestStatus Status = ImGuiTestStatus_Unknown, ImGuiTestLog Log = ImGuiTestLog(), ImU64 StartTime = 0, ImU64 EndTime = 0)
+        {
+            auto r = std::make_unique<ImGuiTestOutput>();
+            r->Status = Status;
+            r->Log = Log;
+            r->StartTime = StartTime;
+            r->EndTime = EndTime;
+            return r;
+        })
+        , py::arg("status") = ImGuiTestStatus_Unknown, py::arg("log") = ImGuiTestLog(), py::arg("start_time") = 0, py::arg("end_time") = 0
+        )
+        .def_readwrite("status", &ImGuiTestOutput::Status, "")
+        .def_readwrite("log", &ImGuiTestOutput::Log, "")
+        .def_readwrite("start_time", &ImGuiTestOutput::StartTime, "")
+        .def_readwrite("end_time", &ImGuiTestOutput::EndTime, "")
+        ;
+
+
     auto pyClassImGuiTest =
         py::class_<ImGuiTest>
             (m, "Test", "Storage for one test")
@@ -412,12 +444,8 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("flags", &ImGuiTest::Flags, "See ImGuiTestFlags_")
         .def_readwrite("gui_func", &ImGuiTest::GuiFunc, "GUI function (optional if your test are running over an existing GUI application)")
         .def_readwrite("test_func", &ImGuiTest::TestFunc, "Test function")
-        .def_readwrite("user_data", &ImGuiTest::UserData, "General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to se this)")
-        .def_readwrite("status", &ImGuiTest::Status, "")
-        .def_readwrite("test_log", &ImGuiTest::TestLog, "")
-        .def_readwrite("start_time", &ImGuiTest::StartTime, "")
-        .def_readwrite("end_time", &ImGuiTest::EndTime, "")
-        .def_readwrite("gui_func_last_frame", &ImGuiTest::GuiFuncLastFrame, "")
+        .def_readwrite("user_data", &ImGuiTest::UserData, "General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)")
+        .def_readwrite("output", &ImGuiTest::Output, " Last Test Output/Status\n (this is the only part that may change after registration)")
         .def_readwrite("vars_size", &ImGuiTest::VarsSize, "")
         .def_readwrite("vars_post_constructor_user_fn", &ImGuiTest::VarsPostConstructorUserFn, "")
         .def(py::init<>(),
@@ -636,11 +664,12 @@ void py_init_module_imgui_test_engine(py::module& m)
         })
         , py::arg("generic_vars") = ImGuiTestGenericVars(), py::arg("op_flags") = ImGuiTestOpFlags_None, py::arg("perf_stress_amount") = 0, py::arg("frame_count") = 0, py::arg("first_test_frame_count") = 0, py::arg("first_gui_frame") = false, py::arg("has_dock") = false, py::arg("run_flags") = ImGuiTestRunFlags_None, py::arg("active_func") = ImGuiTestActiveFunc_None, py::arg("running_time") = 0.0, py::arg("action_depth") = 0, py::arg("capture_counter") = 0, py::arg("error_counter") = 0, py::arg("abort") = false, py::arg("perf_ref_dt") = -1.0, py::arg("perf_iterations") = 400, py::arg("ref_id") = 0, py::arg("ref_window_id") = 0, py::arg("input_mode") = ImGuiInputSource_Mouse, py::arg("clipboard") = ImVector<char>(), py::arg("foreign_windows_to_hide") = ImVector<ImGuiWindow*>(), py::arg("dummy_item_info_null") = ImGuiTestItemInfo(), py::arg("cached_lines_printed_to_tty") = false
         )
-        .def_readwrite("generic_vars", &ImGuiTestContext::GenericVars, "")
+        .def_readwrite("generic_vars", &ImGuiTestContext::GenericVars, "Generic variables holder for convenience.")
         .def_readwrite("user_vars", &ImGuiTestContext::UserVars, "Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().")
         .def_readwrite("ui_context", &ImGuiTestContext::UiContext, "UI context")
         .def_readwrite("engine_io", &ImGuiTestContext::EngineIO, "Test Engine IO/settings")
         .def_readwrite("test", &ImGuiTestContext::Test, "Test currently running")
+        .def_readwrite("test_output", &ImGuiTestContext::TestOutput, "Test output (generally == &Test->Output)")
         .def_readwrite("op_flags", &ImGuiTestContext::OpFlags, "Flags affecting all operation (supported: ImGuiTestOpFlags_NoAutoUncollapse)")
         .def_readwrite("perf_stress_amount", &ImGuiTestContext::PerfStressAmount, "Convenience copy of engine->IO.PerfStressAmount")
         .def_readwrite("frame_count", &ImGuiTestContext::FrameCount, "Test frame count (restarts from zero every time)")
@@ -665,10 +694,16 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("foreign_windows_to_hide", &ImGuiTestContext::ForeignWindowsToHide, "")
         .def_readwrite("dummy_item_info_null", &ImGuiTestContext::DummyItemInfoNull, "Storage for ItemInfoNull()")
         .def_readwrite("cached_lines_printed_to_tty", &ImGuiTestContext::CachedLinesPrintedToTTY, "")
-        .def("finish",
-            &ImGuiTestContext::Finish, "(private API)")
         .def("recover_from_ui_context_errors",
             &ImGuiTestContext::RecoverFromUiContextErrors, "(private API)")
+        .def("finish",
+            &ImGuiTestContext::Finish,
+            py::arg("status") = ImGuiTestStatus_Success,
+            "(private API)\n\n Set test status and stop running. Usually called when running test logic from GuiFunc() only.")
+        .def("run_child_test",
+            &ImGuiTestContext::RunChildTest,
+            py::arg("test_name"), py::arg("flags") = 0,
+            "(private API)\n\n [Experimental] Run another test from the current test.")
         .def("is_error",
             &ImGuiTestContext::IsError, "(private API)")
         .def("is_warm_up_gui_frame",
@@ -679,14 +714,10 @@ void py_init_module_imgui_test_engine(py::module& m)
             &ImGuiTestContext::IsFirstTestFrame, "(private API)\n\n First frame where TestFunc is running (after warm-up frame).")
         .def("is_gui_func_only",
             &ImGuiTestContext::IsGuiFuncOnly, "(private API)")
-        .def("set_gui_func_enabled",
-            &ImGuiTestContext::SetGuiFuncEnabled,
-            py::arg("v"),
-            "(private API)")
         .def("suspend_test_func",
             &ImGuiTestContext::SuspendTestFunc,
             py::arg("file") = py::none(), py::arg("line") = 0,
-            "(private API)\n\n Generally called via IM_SUSPEND_TESTFUNC")
+            "(private API)\n\n [DEBUG] Generally called via IM_SUSPEND_TESTFUNC")
         .def("log_ex",
             [](ImGuiTestContext & self, ImGuiTestVerboseLevel level, ImGuiTestLogFlags flags, const char * fmt)
             {
@@ -971,6 +1002,10 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("key_hold",
             &ImGuiTestContext::KeyHold,
             py::arg("key_chord"), py::arg("time"),
+            "(private API)")
+        .def("key_set_ex",
+            &ImGuiTestContext::KeySetEx,
+            py::arg("key_chord"), py::arg("is_down"), py::arg("time"),
             "(private API)")
         .def("key_chars",
             &ImGuiTestContext::KeyChars,
@@ -1449,8 +1484,6 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("test_context", &ImGuiTestEngine::TestContext, "")
         .def_readwrite("gather_task", &ImGuiTestEngine::GatherTask, "")
         .def_readwrite("find_by_label_task", &ImGuiTestEngine::FindByLabelTask, "")
-        .def_readwrite("user_data_buffer", &ImGuiTestEngine::UserDataBuffer, "")
-        .def_readwrite("user_data_buffer_size", &ImGuiTestEngine::UserDataBufferSize, "")
         .def_readwrite("inputs", &ImGuiTestEngine::Inputs, "Inputs")
         .def_readwrite("abort", &ImGuiTestEngine::Abort, "")
         .def_readwrite("ui_select_and_scroll_to_test", &ImGuiTestEngine::UiSelectAndScrollToTest, "")
@@ -1499,10 +1532,21 @@ void py_init_module_imgui_test_engine(py::module& m)
         py::arg("test"), py::arg("filter"),
         "(private API)");
 
+    m.def("run_test",
+        ImGuiTestEngine_RunTest,
+        py::arg("engine"), py::arg("ctx"), py::arg("test"), py::arg("run_flags"),
+        "(private API)");
+
     m.def("reboot_ui_context",
         ImGuiTestEngine_RebootUiContext,
         py::arg("engine"),
         "(private API)");
+
+    m.def("get_status_name",
+        ImGuiTestEngine_GetStatusName,
+        py::arg("v"),
+        "(private API)",
+        pybind11::return_value_policy::reference);
 
     m.def("get_run_speed_name",
         ImGuiTestEngine_GetRunSpeedName,
