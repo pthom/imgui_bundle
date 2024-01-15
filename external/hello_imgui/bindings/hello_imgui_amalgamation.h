@@ -1723,6 +1723,7 @@ struct AppWindowParams
 namespace HelloImGui
 {
 // @@md#DefaultImGuiWindowType
+
 // `DefaultImGuiWindowType` is an enum class that defines whether a full screen background
 // window is provided or not
 enum class DefaultImGuiWindowType
@@ -1895,7 +1896,7 @@ inline AnyEventCallback EmptyEventCallback() {return {}; }
 
 
 // @@md#MobileCallbacks
-//
+
 // MobileCallbacks is a struct that contains callbacks that are called by the application
 // when running under "Android, iOS and WinRT".
 // These events are specific to mobile and embedded devices that have different
@@ -1964,7 +1965,7 @@ std::string EdgeToolbarTypeName(EdgeToolbarType e);
 
 
 // @@md#RunnerCallbacks
-//
+
 // RunnerCallbacks is a struct that contains the callbacks
 // that are called by the application
 //
@@ -2646,7 +2647,7 @@ std::string IniFolderLocation(IniFolderType iniFolderType);
 
 
 // @@md#FpsIdling
-//
+
 // FpsIdling is a struct that contains Fps Idling parameters
 struct FpsIdling
 {
@@ -2679,7 +2680,7 @@ struct FpsIdling
 
 
 // @@md#RunnerParams
-//
+
 // RunnerParams contains the settings and callbacks needed to run an application.
 //
 struct RunnerParams
@@ -2810,7 +2811,7 @@ void DeleteIniSettings(const RunnerParams& runnerParams);
 
 
 // @@md#SimpleRunnerParams
-//
+
 // SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
 //For example, this is sufficient to run an application:
 //    ```cpp

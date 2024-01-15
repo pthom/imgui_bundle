@@ -1011,9 +1011,10 @@ class AppWindowParams:
 
 # @@md
 
+# @@md#DefaultImGuiWindowType
+
 class DefaultImGuiWindowType(enum.Enum):
-    """@@md#DefaultImGuiWindowType
-    `DefaultImGuiWindowType` is an enum class that defines whether a full screen background
+    """`DefaultImGuiWindowType` is an enum class that defines whether a full screen background
     window is provided or not
     """
 
@@ -1206,10 +1207,10 @@ def empty_event_callback() -> AnyEventCallback:
 
 # @@md
 
-class MobileCallbacks:
-    """@@md#MobileCallbacks
+# @@md#MobileCallbacks
 
-    MobileCallbacks is a struct that contains callbacks that are called by the application
+class MobileCallbacks:
+    """MobileCallbacks is a struct that contains callbacks that are called by the application
     when running under "Android, iOS and WinRT".
     These events are specific to mobile and embedded devices that have different
     requirements from your usual desktop application.
@@ -1317,10 +1318,10 @@ def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
 
 # @@md
 
-class RunnerCallbacks:
-    """@@md#RunnerCallbacks
+# @@md#RunnerCallbacks
 
-    RunnerCallbacks is a struct that contains the callbacks
+class RunnerCallbacks:
+    """RunnerCallbacks is a struct that contains the callbacks
     that are called by the application
 
     """
@@ -2106,11 +2107,10 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # @@md
 
-class FpsIdling:
-    """@@md#FpsIdling
+# @@md#FpsIdling
 
-    FpsIdling is a struct that contains Fps Idling parameters
-    """
+class FpsIdling:
+    """FpsIdling is a struct that contains Fps Idling parameters"""
 
     # float fpsIdle = 9.f;    /* original C++ signature */
     # `fpsIdle`: _float, default=9_.
@@ -2153,12 +2153,10 @@ class FpsIdling:
 
 # @@md
 
+# @@md#RunnerParams
+
 class RunnerParams:
-    """@@md#RunnerParams
-
-    RunnerParams contains the settings and callbacks needed to run an application.
-
-    """
+    """RunnerParams contains the settings and callbacks needed to run an application."""
 
     # --------------- Callbacks and Window params -------------------
 
@@ -2322,10 +2320,10 @@ def delete_ini_settings(runner_params: RunnerParams) -> None:
 
 # @@md
 
-class SimpleRunnerParams:
-    """@@md#SimpleRunnerParams
+# @@md#SimpleRunnerParams
 
-     SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
+class SimpleRunnerParams:
+    """SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
     For example, this is sufficient to run an application:
         ```cpp
         None MyGui() {

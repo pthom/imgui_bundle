@@ -495,7 +495,7 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::DefaultImGuiWindowType>(m, "DefaultImGuiWindowType", py::arithmetic(), " @@md#DefaultImGuiWindowType\n `DefaultImGuiWindowType` is an enum class that defines whether a full screen background\n window is provided or not")
+    py::enum_<HelloImGui::DefaultImGuiWindowType>(m, "DefaultImGuiWindowType", py::arithmetic(), " `DefaultImGuiWindowType` is an enum class that defines whether a full screen background\n window is provided or not")
         .value("provide_full_screen_window", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, "`ProvideFullScreenWindow`: a full window is provided in the background")
         .value("provide_full_screen_dock_space", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace, "`ProvideFullScreenDockSpace`: a full screen dockspace is provided in the background")
         .value("no_default_window", HelloImGui::DefaultImGuiWindowType::NoDefaultWindow, " `NoDefaultWindow`: No default window is provided\n (except for ImGui's default \"debug\" window)");
@@ -563,7 +563,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassMobileCallbacks =
         py::class_<HelloImGui::MobileCallbacks>
-            (m, "MobileCallbacks", " @@md#MobileCallbacks\n\n MobileCallbacks is a struct that contains callbacks that are called by the application\n when running under \"Android, iOS and WinRT\".\n These events are specific to mobile and embedded devices that have different\n requirements from your usual desktop application.\n These events must be handled quickly, since often the OS needs an immediate response\n and will terminate your process shortly after sending the event\n if you do not handle them appropriately.\n On mobile devices, it is not possible to \"Quit\" an application,\n it can only be put on Pause.")
+            (m, "MobileCallbacks", " MobileCallbacks is a struct that contains callbacks that are called by the application\n when running under \"Android, iOS and WinRT\".\n These events are specific to mobile and embedded devices that have different\n requirements from your usual desktop application.\n These events must be handled quickly, since often the OS needs an immediate response\n and will terminate your process shortly after sending the event\n if you do not handle them appropriately.\n On mobile devices, it is not possible to \"Quit\" an application,\n it can only be put on Pause.")
         .def(py::init<>([](
         VoidFunction OnDestroy = HelloImGui::EmptyVoidFunction(), VoidFunction OnLowMemory = HelloImGui::EmptyVoidFunction(), VoidFunction OnPause = HelloImGui::EmptyVoidFunction(), VoidFunction OnResume = HelloImGui::EmptyVoidFunction())
         {
@@ -637,7 +637,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassRunnerCallbacks =
         py::class_<HelloImGui::RunnerCallbacks>
-            (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
+            (m, "RunnerCallbacks", " RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
         .def(py::init<>([](
         VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
         {
@@ -837,7 +837,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassFpsIdling =
         py::class_<HelloImGui::FpsIdling>
-            (m, "FpsIdling", " @@md#FpsIdling\n\n FpsIdling is a struct that contains Fps Idling parameters")
+            (m, "FpsIdling", "FpsIdling is a struct that contains Fps Idling parameters")
         .def(py::init<>([](
         float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
         {
@@ -859,7 +859,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassRunnerParams =
         py::class_<HelloImGui::RunnerParams>
-            (m, "RunnerParams", " @@md#RunnerParams\n\n RunnerParams contains the settings and callbacks needed to run an application.\n")
+            (m, "RunnerParams", " RunnerParams contains the settings and callbacks needed to run an application.\n")
         .def(py::init<>([](
         RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0)
         {
@@ -921,7 +921,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassSimpleRunnerParams =
         py::class_<HelloImGui::SimpleRunnerParams>
-            (m, "SimpleRunnerParams", " @@md#SimpleRunnerParams\n\n SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.\nFor example, this is sufficient to run an application:\n    ```cpp\n    None MyGui() {\n        ImGui::Text(\"Hello, world\");\n        if (ImGui::Button(\"Exit\"))\n            HelloImGui::GetRunnerParams()->appShallExit = True;\n    }\n\n    int main(){\n        auto params = HelloImGui::SimpleRunnerParams {\n            .guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"\n        };\n        HelloImGui::Run(params);\n    }\n    ```")
+            (m, "SimpleRunnerParams", " SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.\nFor example, this is sufficient to run an application:\n    ```cpp\n    None MyGui() {\n        ImGui::Text(\"Hello, world\");\n        if (ImGui::Button(\"Exit\"))\n            HelloImGui::GetRunnerParams()->appShallExit = True;\n    }\n\n    int main(){\n        auto params = HelloImGui::SimpleRunnerParams {\n            .guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"\n        };\n        HelloImGui::Run(params);\n    }\n    ```")
         .def(py::init<>([](
         VoidFunction guiFunction = HelloImGui::EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = HelloImGui::DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true)
         {
