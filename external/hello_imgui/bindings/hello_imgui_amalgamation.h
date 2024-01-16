@@ -2048,6 +2048,10 @@ struct RunnerCallbacks
     // `RegisterTests`: A function that is called once ImGuiTestEngine is ready
     // to be filled with tests and automations definitions.
     VoidFunction RegisterTests = EmptyVoidFunction();
+    // `registerTestsCalled`: will be set to true when RegisterTests was called
+    // (you can set this to false if you want to RegisterTests to be called again
+    //  during the app execution)
+    bool         registerTestsCalled = false;
 
 
     // --------------- Exit sequence callbacks -------------------

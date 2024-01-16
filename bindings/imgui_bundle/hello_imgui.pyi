@@ -1426,6 +1426,11 @@ class RunnerCallbacks:
     # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
     # to be filled with tests and automations definitions.
     register_tests: VoidFunction = EmptyVoidFunction()
+    # bool         registerTestsCalled = false;    /* original C++ signature */
+    # `registerTestsCalled`: will be set to True when RegisterTests was called
+    # (you can set this to False if you want to RegisterTests to be called again
+    #  during the app execution)
+    register_tests_called: bool = False
 
     # --------------- Exit sequence callbacks -------------------
 
@@ -1484,7 +1489,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1503,6 +1508,7 @@ class RunnerCallbacks:
             ImGuiDefaultSettings.SetupDefaultImGuiStyle
         ),
         register_tests: VoidFunction = EmptyVoidFunction(),
+        register_tests_called: bool = False,
         before_exit: VoidFunction = EmptyVoidFunction(),
         before_exit_post_cleanup: VoidFunction = EmptyVoidFunction(),
         pre_new_frame: VoidFunction = EmptyVoidFunction(),
