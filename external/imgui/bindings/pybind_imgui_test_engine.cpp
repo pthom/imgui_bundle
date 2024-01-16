@@ -161,7 +161,7 @@ void py_init_module_imgui_test_engine(py::module& m)
 
     m.def("create_context",
         ImGuiTestEngine_CreateContext,
-        "Create test engine",
+        " ImGuiTestEngine_CreateContext: Create test engine\n Note for python bindings users:\n     Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:\n         ImGui Test Engine uses two different threads (one for the main gui, and one for the scenario runner).\n         Your python code will be called from two separate threads, and this breaks the GIL!\n         HelloImGui and ImmApp handle this well by transferring the GIL between threads (from C++)\n     For gory details, see https://github.com/pthom/imgui_test_engine/blob/imgui_bundle/imgui_test_engine/imgui_te_python_gil.jpg",
         pybind11::return_value_policy::reference);
 
     m.def("destroy_context",
@@ -437,7 +437,10 @@ void py_init_module_imgui_test_engine(py::module& m)
     auto pyClassImGuiTest =
         py::class_<ImGuiTest>
             (m, "Test", "Storage for one test")
+        .def_readwrite("category", &ImGuiTest::Category, "Stored on the stack if len<30")
+        .def_readwrite("name", &ImGuiTest::Name, "Stored on the stack if len<30")
         .def_readwrite("group", &ImGuiTest::Group, "Coarse groups: 'Tests' or 'Perf'")
+        .def_readwrite("source_file", &ImGuiTest::SourceFile, "__FILE__, stored on the stack if len<256")
         .def_readwrite("source_line", &ImGuiTest::SourceLine, "__LINE__")
         .def_readwrite("source_line_end", &ImGuiTest::SourceLineEnd, "Calculated by ImGuiTestEngine_StartCalcSourceLineEnds()")
         .def_readwrite("arg_variant", &ImGuiTest::ArgVariant, "User parameter. Generally we use it to run variations of a same test by sharing GuiFunc/TestFunc")

@@ -1,3 +1,12 @@
+"""ImGui Test Engine python bindings
+
+Note: Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:
+         ImGui Test Engine uses two different threads (one for the main gui, and one for the scenario runner).
+         Your python code will be called from two separate threads, and this breaks the GIL!
+         HelloImGui and ImmApp handle this well by transferring the GIL between threads (from C++)
+     For gory details, see https://github.com/pthom/imgui_test_engine/blob/imgui_bundle/imgui_test_engine/imgui_te_python_gil.jpg
+"""
+
 # ruff: noqa: B008, F821
 import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
@@ -291,9 +300,17 @@ def get_temp_string_builder() -> TextBuffer:
 # -------------------------------------------------------------------------
 
 # Functions: Initialization
-# IMGUI_API ImGuiTestEngine*    ImGuiTestEngine_CreateContext();                                          /* original C++ signature */
+
+# IMGUI_API ImGuiTestEngine*    ImGuiTestEngine_CreateContext();    /* original C++ signature */
 def create_context() -> TestEngine:
-    """Create test engine"""
+    """ImGuiTestEngine_CreateContext: Create test engine
+    Note for python bindings users:
+        Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:
+            ImGui Test Engine uses two different threads (one for the main gui, and one for the scenario runner).
+            Your python code will be called from two separate threads, and this breaks the GIL!
+            HelloImGui and ImmApp handle this well by transferring the GIL between threads (from C++)
+        For gory details, see https://github.com/pthom/imgui_test_engine/blob/imgui_bundle/imgui_test_engine/imgui_te_python_gil.jpg
+    """
     pass
 
 # IMGUI_API void                ImGuiTestEngine_DestroyContext(ImGuiTestEngine* engine);                  /* original C++ signature */
@@ -714,8 +731,14 @@ class Test:
     """Storage for one test"""
 
     # Test Definition
+    # Str30                           Category;    /* original C++ signature */
+    category: Str30  # Stored on the stack if len<30
+    # Str30                           Name;    /* original C++ signature */
+    name: Str30  # Stored on the stack if len<30
     # ImGuiTestGroup                  Group = ImGuiTestGroup_Unknown;    /* original C++ signature */
     group: TestGroup = TestGroup_Unknown  # Coarse groups: 'Tests' or 'Perf'
+    # Str256                          SourceFile;    /* original C++ signature */
+    source_file: Str256  # __FILE__, stored on the stack if len<256
     # int                             SourceLine = 0;    /* original C++ signature */
     source_line: int = 0  # __LINE__
     # int                             SourceLineEnd = 0;    /* original C++ signature */
