@@ -411,6 +411,10 @@ class TextEditor:
         a_cursor: int = -1
         ) -> None:
         pass
+    def get_selection_start(self, a_cursor: int = -1) -> TextEditor.Coordinates:
+        pass
+    def get_selection_end(self, a_cursor: int = -1) -> TextEditor.Coordinates:
+        pass
     @overload
     def set_selection(
         self,

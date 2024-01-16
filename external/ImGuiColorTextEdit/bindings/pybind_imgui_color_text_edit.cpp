@@ -286,6 +286,10 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             &TextEditor::SetSelectionStart, py::arg("a_position"), py::arg("a_cursor") = -1)
         .def("set_selection_end",
             &TextEditor::SetSelectionEnd, py::arg("a_position"), py::arg("a_cursor") = -1)
+        .def("get_selection_start",
+            &TextEditor::GetSelectionStart, py::arg("a_cursor") = -1)
+        .def("get_selection_end",
+            &TextEditor::GetSelectionEnd, py::arg("a_cursor") = -1)
         .def("set_selection",
             py::overload_cast<const TextEditor::Coordinates &, const TextEditor::Coordinates &, TextEditor::SelectionMode, int, bool>(&TextEditor::SetSelection), py::arg("a_start"), py::arg("a_end"), py::arg("a_mode") = TextEditor::SelectionMode::Normal, py::arg("a_cursor") = -1, py::arg("is_spawning_new_cursor") = false)
         .def("set_selection",
