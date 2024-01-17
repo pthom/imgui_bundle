@@ -1,5 +1,14 @@
 include(../cmake/add_simple_library.cmake) # Tooling to build libraries and link them to imgui_bundle
 
+function(_target_force_include target include_file)
+    if (MSVC)
+        target_compile_options(${target} PRIVATE /FI${include_file})
+    else()
+        target_compile_options(${target} PRIVATE -include ${include_file})
+    endif()
+endfunction()
+
+
 # Add fplus
 add_library(fplus INTERFACE)
 target_include_directories(fplus INTERFACE fplus)
@@ -34,7 +43,7 @@ endif()
 # Build implot
 add_simple_external_library_with_sources(implot implot)
 target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
-lg_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
+_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
 lg_disable_warning_exception_in_destructor(implot)
 # Build ImguiColorTextEdit
 add_subdirectory(ImGuiColorTextEdit)
