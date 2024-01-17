@@ -1,6 +1,3 @@
-[submodule "lg_cmake_utils"]
-	path = lg_cmake_utils
-	url = https://github.com/pthom/lg_cmake_utils.git
 [submodule "external/imgui/imgui"]
 	path = external/imgui/imgui
 	url = https://github.com/pthom/imgui.git
