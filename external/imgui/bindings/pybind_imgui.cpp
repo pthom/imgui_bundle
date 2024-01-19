@@ -141,6 +141,10 @@ void py_init_module_imgui_main(py::module& m)
     //
     // #endif
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #endif
+    //
     // #ifndef IMGUI_DISABLE
     //
     // #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -5036,14 +5040,6 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")
         .def_readwrite("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
         .def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def_readwrite("log_filename", &ImGuiIO::LogFilename, "= \"imgui_log.txt\"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).")
-        .def_readwrite("ini_filename", &ImGuiIO::IniFilename, "")
-        // #else
-        //
-        // #endif
-        //
         .def_readwrite("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_readwrite("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")

@@ -355,6 +355,12 @@ INDEX_SIZE: int
 #
 # #endif
 #
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+##define IMGUI_BUNDLE_IMGUI_USE_STRING
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 #
@@ -8003,17 +8009,6 @@ class IO:
     # float       IniSavingRate;    /* original C++ signature */
     ini_saving_rate: float
     # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
-    #                                                #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # std::string LogFilename;    /* original C++ signature */
-    log_filename: str  # = "imgui_log.txt"// Path to .log file (default parameter to ImGui::LogToFile when no file is specified).
-    # std::string IniFilename;    /* original C++ signature */
-    ini_filename: str
-    # = "imgui.ini"    // Path to .ini file (important: default "imgui.ini" is relative to current working dir!). Set None to disable automatic .ini loading/saving or if you want to manually call LoadIniSettingsXXX() / SaveIniSettingsXXX() functions.
-    #                                                #else
-    #
-    #                                                #endif
-    #
 
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
