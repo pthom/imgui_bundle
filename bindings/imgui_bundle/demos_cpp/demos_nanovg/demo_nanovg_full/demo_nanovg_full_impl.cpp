@@ -38,6 +38,8 @@ int isBlack(NVGcolor col)
 	return 0;
 }
 
+static float gRenderRatio = 1.f;
+
 static char* cpToUTF8(int cp, char* str)
 {
 	int n = 0;
@@ -97,7 +99,7 @@ void drawWindow(NVGcontext* vg, const char* title, float x, float y, float w, fl
 	nvgStrokeColor(vg, nvgRGBA(0,0,0,32));
 	nvgStroke(vg);
 
-	nvgFontSize(vg, 15.0f);
+	nvgFontSize(vg, 15.0f*gRenderRatio);
 	nvgFontFace(vg, "sans-bold");
 	nvgTextAlign(vg,NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
 
@@ -114,6 +116,7 @@ void drawWindow(NVGcontext* vg, const char* title, float x, float y, float w, fl
 
 void drawSearchBox(NVGcontext* vg, const char* text, float x, float y, float w, float h)
 {
+    float k = gRenderRatio;
 	NVGpaint bg;
 	char icon[8];
 	float cornerRadius = h/2-1;
@@ -136,7 +139,7 @@ void drawSearchBox(NVGcontext* vg, const char* text, float x, float y, float w, 
 	nvgTextAlign(vg,NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
 	nvgText(vg, x+h*0.55f, y+h*0.55f, cpToUTF8(ICON_SEARCH,icon), NULL);
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f * k);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,32));
 
@@ -167,7 +170,7 @@ void drawDropDown(NVGcontext* vg, const char* text, float x, float y, float w, f
 	nvgStrokeColor(vg, nvgRGBA(0,0,0,48));
 	nvgStroke(vg);
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,160));
 	nvgTextAlign(vg,NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);
@@ -184,7 +187,7 @@ void drawLabel(NVGcontext* vg, const char* text, float x, float y, float w, floa
 {
 	NVG_NOTUSED(w);
 
-	nvgFontSize(vg, 15.0f);
+	nvgFontSize(vg, 15.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,128));
 
@@ -213,7 +216,7 @@ void drawEditBox(NVGcontext* vg, const char* text, float x, float y, float w, fl
 
 	drawEditBoxBase(vg, x,y, w,h);
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,64));
 	nvgTextAlign(vg,NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);
@@ -229,13 +232,13 @@ void drawEditBoxNum(NVGcontext* vg,
 
 	uw = nvgTextBounds(vg, 0,0, units, NULL, NULL);
 
-	nvgFontSize(vg, 15.0f);
+	nvgFontSize(vg, 15.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,64));
 	nvgTextAlign(vg,NVG_ALIGN_RIGHT|NVG_ALIGN_MIDDLE);
 	nvgText(vg, x+w-h*0.3f,y+h*0.5f,units, NULL);
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,128));
 	nvgTextAlign(vg,NVG_ALIGN_RIGHT|NVG_ALIGN_MIDDLE);
@@ -248,7 +251,7 @@ void drawCheckBox(NVGcontext* vg, const char* text, float x, float y, float w, f
 	char icon[8];
 	NVG_NOTUSED(w);
 
-	nvgFontSize(vg, 15.0f);
+	nvgFontSize(vg, 15.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgFillColor(vg, nvgRGBA(255,255,255,160));
 
@@ -261,7 +264,7 @@ void drawCheckBox(NVGcontext* vg, const char* text, float x, float y, float w, f
 	nvgFillPaint(vg, bg);
 	nvgFill(vg);
 
-	nvgFontSize(vg, 33);
+	nvgFontSize(vg, 33 * gRenderRatio);
 	nvgFontFace(vg, "icons");
 	nvgFillColor(vg, nvgRGBA(255,255,255,128));
 	nvgTextAlign(vg,NVG_ALIGN_CENTER|NVG_ALIGN_MIDDLE);
@@ -290,7 +293,7 @@ void drawButton(NVGcontext* vg, int preicon, const char* text, float x, float y,
 	nvgStrokeColor(vg, nvgRGBA(0,0,0,48));
 	nvgStroke(vg);
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f * gRenderRatio);
 	nvgFontFace(vg, "sans-bold");
 	tw = nvgTextBounds(vg, 0,0, text, NULL, NULL);
 	if (preicon != 0) {
@@ -308,7 +311,7 @@ void drawButton(NVGcontext* vg, int preicon, const char* text, float x, float y,
 		nvgText(vg, x+w*0.5f-tw*0.5f-iw*0.75f, y+h*0.5f, cpToUTF8(preicon,icon), NULL);
 	}
 
-	nvgFontSize(vg, 17.0f);
+	nvgFontSize(vg, 17.0f*gRenderRatio);
 	nvgFontFace(vg, "sans-bold");
 	nvgTextAlign(vg,NVG_ALIGN_LEFT|NVG_ALIGN_MIDDLE);
 	nvgFillColor(vg, nvgRGBA(0,0,0,160));
@@ -462,7 +465,7 @@ void drawGraph(NVGcontext* vg, float x, float y, float w, float h, float t)
 	for (i = 1; i < 6; i++)
 		nvgBezierTo(vg, sx[i-1]+dx*0.5f,sy[i-1]+2, sx[i]-dx*0.5f,sy[i]+2, sx[i],sy[i]+2);
 	nvgStrokeColor(vg, nvgRGBA(0,0,0,32));
-	nvgStrokeWidth(vg, 3.0f);
+	nvgStrokeWidth(vg, 3.0f*gRenderRatio);
 	nvgStroke(vg);
 
 	nvgBeginPath(vg);
@@ -493,7 +496,7 @@ void drawGraph(NVGcontext* vg, float x, float y, float w, float h, float t)
 	nvgFillColor(vg, nvgRGBA(220,220,220,255));
 	nvgFill(vg);
 
-	nvgStrokeWidth(vg, 1.0f);
+	nvgStrokeWidth(vg, 1.0f*gRenderRatio);
 }
 
 void drawSpinner(NVGcontext* vg, float cx, float cy, float r, float t)
@@ -524,11 +527,12 @@ void drawSpinner(NVGcontext* vg, float cx, float cy, float r, float t)
 
 void drawThumbnails(NVGcontext* vg, float x, float y, float w, float h, const int* images, int nimages, float t)
 {
+    float k = gRenderRatio;
 	float cornerRadius = 3.0f;
 	NVGpaint shadowPaint, imgPaint, fadePaint;
 	float ix,iy,iw,ih;
-	float thumb = 60.0f;
-	float arry = 30.5f;
+	float thumb = 60.0f * k;
+	float arry = 30.5f * k;
 	int imgw, imgh;
 	float stackh = (nimages/2) * (thumb+10) + 10;
 	int i;
@@ -750,7 +754,7 @@ void drawColorwheel(NVGcontext* vg, float x, float y, float w, float h, float t)
 void drawLines(NVGcontext* vg, float x, float y, float w, float h, float t)
 {
 	int i, j;
-	float pad = 5.0f, s = w/9.0f - pad*2;
+	float pad = 5.0f * gRenderRatio, s = w/9.0f - pad*2;
 	float pts[4*2], fx, fy;
 	int joins[3] = {NVG_MITER, NVG_ROUND, NVG_BEVEL};
 	int caps[3] = {NVG_BUTT, NVG_ROUND, NVG_SQUARE};
@@ -884,7 +888,7 @@ void drawParagraph(NVGcontext* vg, float x, float y, float width, float height, 
 
 	nvgSave(vg);
 
-	nvgFontSize(vg, 15.0f);
+	nvgFontSize(vg, 15.0f * gRenderRatio);
 	nvgFontFace(vg, "sans");
 	nvgTextAlign(vg, NVG_ALIGN_LEFT|NVG_ALIGN_TOP);
 	nvgTextMetrics(vg, NULL, NULL, &lineh);
@@ -954,7 +958,7 @@ void drawParagraph(NVGcontext* vg, float x, float y, float width, float height, 
 
 	y += 20.0f;
 
-	nvgFontSize(vg, 11.0f);
+	nvgFontSize(vg, 11.0f * gRenderRatio);
 	nvgTextAlign(vg, NVG_ALIGN_LEFT|NVG_ALIGN_TOP);
 	nvgTextLineHeight(vg, 1.2f);
 
@@ -991,7 +995,7 @@ void drawWidths(NVGcontext* vg, float x, float y, float width)
 	nvgStrokeColor(vg, nvgRGBA(0,0,0,255));
 
 	for (i = 0; i < 20; i++) {
-		float w = (i+0.5f)*0.1f;
+		float w = (i+0.5f)*0.1f * gRenderRatio;
 		nvgStrokeWidth(vg, w);
 		nvgBeginPath(vg);
 		nvgMoveTo(vg, x,y);
@@ -1070,26 +1074,30 @@ void drawScissor(NVGcontext* vg, float x, float y, float t)
 	nvgRestore(vg);
 }
 
+
 void renderDemo(NVGcontext* vg, float mx, float my, float width, float height,
 				float t, int blowup, DemoData* data)
 {
 	float x,y,popy;
 
-	drawEyes(vg, width - 250, 50, 150, 100, mx, my, t);
-	drawParagraph(vg, width - 450, 50, 150, 100, mx, my);
+    float k = width / 1000.f;
+    gRenderRatio = k;
+
+	drawEyes(vg, width - 250 * k, 50 * k, 150 * k, 100 * k, mx, my, t);
+	drawParagraph(vg, width - 450 * k, 50 * k, 150 * k, 100 * k, mx, my);
 	drawGraph(vg, 0, height/2, width, height/2, t);
-	drawColorwheel(vg, width - 300, height - 300, 250.0f, 250.0f, t);
+	drawColorwheel(vg, width - 300 * k, height - 300 * k, 250.0f * k, 250.0f * k, t);
 
 	// Line joints
-	drawLines(vg, 120, height-50, 600, 50, t);
+	drawLines(vg, 120 * k, height-50 * k, 600 * k, 50 * k, t);
 
 	// Line caps
-	drawWidths(vg, 10, 50, 30);
+	drawWidths(vg, 10 * k, 50 * k, 30 * k);
 
 	// Line caps
-	drawCaps(vg, 10, 300, 30);
+	drawCaps(vg, 10 * k, 300 * k, 30 * k);
 
-	drawScissor(vg, 50, height-80, t);
+	drawScissor(vg, 50 * k, height-80 * k, t);
 
 	nvgSave(vg);
 	if (blowup) {
@@ -1098,37 +1106,37 @@ void renderDemo(NVGcontext* vg, float mx, float my, float width, float height,
 	}
 
 	// Widgets
-	drawWindow(vg, "Widgets `n Stuff", 50, 50, 300, 400);
-	x = 60; y = 95;
-	drawSearchBox(vg, "Search", x,y,280,25);
-	y += 40;
-	drawDropDown(vg, "Effects", x,y,280,28);
-	popy = y + 14;
-	y += 45;
+	drawWindow(vg, "Widgets `n Stuff", 50 * k, 50 * k, 300 * k, 400 * k);
+	x = 60 * k; y = 95 * k;
+	drawSearchBox(vg, "Search", x,y,280 * k,25 * k);
+	y += 40*k;
+	drawDropDown(vg, "Effects", x,y,280 * k,28 * k);
+	popy = y + 14*k;
+	y += 45*k;
 
 	// Form
-	drawLabel(vg, "Login", x,y, 280,20);
-	y += 25;
-	drawEditBox(vg, "Email",  x,y, 280,28);
-	y += 35;
-	drawEditBox(vg, "Password", x,y, 280,28);
-	y += 38;
-	drawCheckBox(vg, "Remember me", x,y, 140,28);
-	drawButton(vg, ICON_LOGIN, "Sign in", x+138, y, 140, 28, nvgRGBA(0,96,128,255));
-	y += 45;
+	drawLabel(vg, "Login", x,y, 280 * k,20 * k);
+	y += 25*k;
+	drawEditBox(vg, "Email",  x,y, 280 * k,28 * k);
+	y += 35*k;
+	drawEditBox(vg, "Password", x,y, 280 * k,28 * k);
+	y += 38*k;
+	drawCheckBox(vg, "Remember me", x,y, 140 * k,28 * k);
+	drawButton(vg, ICON_LOGIN, "Sign in", x+138*k, y, 140*k, 28*k, nvgRGBA(0,96,128,255));
+	y += 45*k;
 
 	// Slider
-	drawLabel(vg, "Diameter", x,y, 280,20);
-	y += 25;
-	drawEditBoxNum(vg, "123.00", "px", x+180,y, 100,28);
-	drawSlider(vg, 0.4f, x,y, 170,28);
-	y += 55;
+	drawLabel(vg, "Diameter", x,y, 280*k,20*k);
+	y += 25*k;
+	drawEditBoxNum(vg, "123.00", "px", x+180*k,y, 100*k,28*k);
+	drawSlider(vg, 0.4f*k, x,y, 170*k,28*k);
+	y += 55*k;
 
-	drawButton(vg, ICON_TRASH, "Delete", x, y, 160, 28, nvgRGBA(128,16,8,255));
-	drawButton(vg, 0, "Cancel", x+170, y, 110, 28, nvgRGBA(0,0,0,0));
+	drawButton(vg, ICON_TRASH, "Delete", x, y, 160*k, 28*k, nvgRGBA(128,16,8,255));
+	drawButton(vg, 0, "Cancel", x+170*k, y, 110*k, 28*k, nvgRGBA(0,0,0,0));
 
 	// Thumbnails box
-	drawThumbnails(vg, 365, popy-30, 160, 300, data->images, 12, t);
+	drawThumbnails(vg, 365*k, popy-30*k, 160*k, 300*k, data->images, 12, t);
 
 	nvgRestore(vg);
 }
