@@ -1,11 +1,30 @@
-# v1.3.0 WIP
+Version numbers are synced between hello_imgui and imgui_bundle.
+
+# v1.3.0
 
 ### New libraries
 * Added [NanoVG](https://github.com/memononen/nanovg): see [python bindings](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/nanovg.pyi), code of [python demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_nanovg), code of [C++ demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_nanovg), online [full demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_nanovg_full.html), online [simple demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_nanovg_heart.html), and [API for integration with ImGui](https://github.com/pthom/imgui_bundle/blob/main/external/nanovg/nvg_imgui/nvg_imgui.h). Works on Linux, Windows, macOS, emscripten, iOS and Android (OpenGL only).
 
-### Hello ImGui
+### Bundle
+* Update imgui to v1.90.1-docking
+* Update implot, imgui_test_engine, imgui-node-editor
 
+### Python
+* Release the Python GIL when rendering: improve multithreading performance (see [#171](https://github.com/pthom/imgui_bundle/issues/171))
+* Fix an issue under Ubuntu where cibuildwheel binary wheels did not work (see [#170](https://github.com/pthom/imgui_bundle/issues/170))
+
+### Hello ImGui
 * Added EdgeToolbars: see [definition](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L72-L102), [callbacks](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L140-L147), [example usage](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp#L694-L714), and [demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
+* Callbacks: add [EnqueuePostInit, EnqueueBeforeExit, PostInit_AddPlatformBackendCallbacks](https://pthom.github.io/hello_imgui/book/doc_params.html#runnercallbacks)
+* Add [renderer_backend_options](https://pthom.github.io/hello_imgui/book/doc_params.html#renderer-backend-options)
+* Add support for Extended Dynamic Range (EDR) on macOS : see [PR](https://github.com/pthom/hello_imgui/pull/89). Added [demo / EDR](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_edr) - Only works with Metal
+* Test Engine: can re-call params.callbacks.RegisterTests
+* rememberEnableIdling default=false (true is too surprising)
+* emscripten: Use webgl2 / GLES3
+
+### Fixes
+* Fix usage of `ShowIdStackTool` without ImGui Test Engine (see [#166](https://github.com/pthom/imgui_bundle/issues/166))
+* ImGuiColorTextEdit: added bindings for GetSelection / Fixed keyboard selection (see [#169](https://github.com/pthom/imgui_bundle/issues/169))
 
 
 # v1.2.1
