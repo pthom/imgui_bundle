@@ -6,7 +6,6 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "imgui_docking_internal_types.h"
 #include "imgui_test_engine/imgui_te_context.h"
 #include "imgui_test_engine/imgui_te_engine.h"
 #include "imgui_test_engine/imgui_te_ui.h"

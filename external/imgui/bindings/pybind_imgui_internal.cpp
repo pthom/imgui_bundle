@@ -7,7 +7,6 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "imgui_docking_internal_types.h"
 #include "imgui_pywrappers/imgui_internal_pywrappers.h"
 
 
@@ -4255,6 +4254,61 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("im_font_atlas_update_config_data_pointers",
         ImFontAtlasUpdateConfigDataPointers, py::arg("atlas"));
+
+
+    py::enum_<ImGuiDockRequestType>(m, "DockRequestType", py::arithmetic(), "")
+        .value("none", ImGuiDockRequestType_None, "")
+        .value("dock", ImGuiDockRequestType_Dock, "")
+        .value("undock", ImGuiDockRequestType_Undock, "")
+        .value("split", ImGuiDockRequestType_Split, "Split is the same as Dock but without a DockPayload");
+
+
+    auto pyClassImGuiDockRequest =
+        py::class_<ImGuiDockRequest>
+            (m, "DockRequest", "")
+        .def_readwrite("type", &ImGuiDockRequest::Type, "")
+        .def_readwrite("dock_target_window", &ImGuiDockRequest::DockTargetWindow, "Destination/Target Window to dock into (may be a loose window or a DockNode, might be None in which case DockTargetNode cannot be None)")
+        .def_readwrite("dock_target_node", &ImGuiDockRequest::DockTargetNode, "Destination/Target Node to dock into")
+        .def_readwrite("dock_payload", &ImGuiDockRequest::DockPayload, "Source/Payload window to dock (may be a loose window or a DockNode), [Optional]")
+        .def_readwrite("dock_split_dir", &ImGuiDockRequest::DockSplitDir, "")
+        .def_readwrite("dock_split_ratio", &ImGuiDockRequest::DockSplitRatio, "")
+        .def_readwrite("dock_split_outer", &ImGuiDockRequest::DockSplitOuter, "")
+        .def_readwrite("undock_target_window", &ImGuiDockRequest::UndockTargetWindow, "")
+        .def_readwrite("undock_target_node", &ImGuiDockRequest::UndockTargetNode, "")
+        .def(py::init<>())
+        ;
+
+
+    auto pyClassImGuiDockPreviewData =
+        py::class_<ImGuiDockPreviewData>
+            (m, "DockPreviewData", "")
+        .def_readwrite("future_node", &ImGuiDockPreviewData::FutureNode, "")
+        .def_readwrite("is_drop_allowed", &ImGuiDockPreviewData::IsDropAllowed, "")
+        .def_readwrite("is_center_available", &ImGuiDockPreviewData::IsCenterAvailable, "")
+        .def_readwrite("is_sides_available", &ImGuiDockPreviewData::IsSidesAvailable, "Hold your breath, grammar freaks..")
+        .def_readwrite("is_split_dir_explicit", &ImGuiDockPreviewData::IsSplitDirExplicit, "Set when hovered the drop rect (vs. implicit SplitDir==None when hovered the window)")
+        .def_readwrite("split_node", &ImGuiDockPreviewData::SplitNode, "")
+        .def_readwrite("split_dir", &ImGuiDockPreviewData::SplitDir, "")
+        .def_readwrite("split_ratio", &ImGuiDockPreviewData::SplitRatio, "")
+        .def(py::init<>())
+        ;
+
+
+    auto pyClassImGuiDockNodeSettings =
+        py::class_<ImGuiDockNodeSettings>
+            (m, "DockNodeSettings", "Persistent Settings data, stored contiguously in SettingsNodes (sizeof() ~32 bytes)")
+        .def_readwrite("id_", &ImGuiDockNodeSettings::ID, "")
+        .def_readwrite("parent_node_id", &ImGuiDockNodeSettings::ParentNodeId, "")
+        .def_readwrite("parent_window_id", &ImGuiDockNodeSettings::ParentWindowId, "")
+        .def_readwrite("selected_tab_id", &ImGuiDockNodeSettings::SelectedTabId, "")
+        .def_readwrite("split_axis", &ImGuiDockNodeSettings::SplitAxis, "")
+        .def_readwrite("depth", &ImGuiDockNodeSettings::Depth, "")
+        .def_readwrite("flags", &ImGuiDockNodeSettings::Flags, "NB: We save individual flags one by one in ascii format (ImGuiDockNodeFlags_SavedFlagsMask_)")
+        .def_readwrite("pos", &ImGuiDockNodeSettings::Pos, "")
+        .def_readwrite("size", &ImGuiDockNodeSettings::Size, "")
+        .def_readwrite("size_ref", &ImGuiDockNodeSettings::SizeRef, "")
+        .def(py::init<>())
+        ;
     // #endif
 
     { // <namespace ImStb>

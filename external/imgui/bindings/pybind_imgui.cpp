@@ -5,9 +5,9 @@
 #include <pybind11/functional.h>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_pywrappers/imgui_pywrappers.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "imgui_docking_internal_types.h"
 
 using uint = unsigned int;
 using uchar = unsigned char;

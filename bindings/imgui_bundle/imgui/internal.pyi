@@ -7132,6 +7132,110 @@ def im_font_atlas_update_config_data_pointers(atlas: ImFontAtlas) -> None:
 
 # -----------------------------------------------------------------------------
 
+# [ADAPT_IMGUI_BUNDLE]: Those struct are needed for the bindings => they are moved from imgui.cpp to imgui_internal.h
+# -----------------------------------------------------------------------------
+# Docking: Internal Types
+# -----------------------------------------------------------------------------
+# - ImGuiDockRequestType
+# - ImGuiDockRequest
+# - ImGuiDockPreviewData
+# - ImGuiDockNodeSettings
+# - ImGuiDockContext
+# -----------------------------------------------------------------------------
+
+class DockRequestType(enum.Enum):
+    # ImGuiDockRequestType_None = 0,    /* original C++ signature */
+    none = enum.auto()  # (= 0)
+    # ImGuiDockRequestType_Dock,    /* original C++ signature */
+    dock = enum.auto()  # (= 1)
+    # ImGuiDockRequestType_Undock,    /* original C++ signature */
+    undock = enum.auto()  # (= 2)
+    # ImGuiDockRequestType_Split                      /* original C++ signature */
+    split = enum.auto()  # (= 3)  # Split is the same as Dock but without a DockPayload
+
+class DockRequest:
+    # ImGuiDockRequestType    Type;    /* original C++ signature */
+    type: DockRequestType
+    # ImGuiWindow*            DockTargetWindow;    /* original C++ signature */
+    dock_target_window: Window  # Destination/Target Window to dock into (may be a loose window or a DockNode, might be None in which case DockTargetNode cannot be None)
+    # ImGuiDockNode*          DockTargetNode;    /* original C++ signature */
+    dock_target_node: DockNode  # Destination/Target Node to dock into
+    # ImGuiWindow*            DockPayload;    /* original C++ signature */
+    dock_payload: Window  # Source/Payload window to dock (may be a loose window or a DockNode), [Optional]
+    # ImGuiDir                DockSplitDir;    /* original C++ signature */
+    dock_split_dir: Dir
+    # float                   DockSplitRatio;    /* original C++ signature */
+    dock_split_ratio: float
+    # bool                    DockSplitOuter;    /* original C++ signature */
+    dock_split_outer: bool
+    # ImGuiWindow*            UndockTargetWindow;    /* original C++ signature */
+    undock_target_window: Window
+    # ImGuiDockNode*          UndockTargetNode;    /* original C++ signature */
+    undock_target_node: DockNode
+
+    # ImGuiDockRequest()    /* original C++ signature */
+    #     {
+    #         Type = ImGuiDockRequestType_None;
+    #         DockTargetWindow = DockPayload = UndockTargetWindow = NULL;
+    #         DockTargetNode = UndockTargetNode = NULL;
+    #         DockSplitDir = ImGuiDir_None;
+    #         DockSplitRatio = 0.5f;
+    #         DockSplitOuter = false;
+    #     }
+    def __init__(self) -> None:
+        pass
+
+class DockPreviewData:
+    # ImGuiDockNode   FutureNode;    /* original C++ signature */
+    future_node: DockNode
+    # bool            IsDropAllowed;    /* original C++ signature */
+    is_drop_allowed: bool
+    # bool            IsCenterAvailable;    /* original C++ signature */
+    is_center_available: bool
+    # bool            IsSidesAvailable;    /* original C++ signature */
+    is_sides_available: bool  # Hold your breath, grammar freaks..
+    # bool            IsSplitDirExplicit;    /* original C++ signature */
+    is_split_dir_explicit: bool  # Set when hovered the drop rect (vs. implicit SplitDir==None when hovered the window)
+    # ImGuiDockNode*  SplitNode;    /* original C++ signature */
+    split_node: DockNode
+    # ImGuiDir        SplitDir;    /* original C++ signature */
+    split_dir: Dir
+    # float           SplitRatio;    /* original C++ signature */
+    split_ratio: float
+
+    # ImGuiDockPreviewData() : FutureNode(0) { IsDropAllowed = IsCenterAvailable = IsSidesAvailable = IsSplitDirExplicit = false; SplitNode = NULL; SplitDir = ImGuiDir_None; SplitRatio = 0.f; for (int n = 0; n < IM_ARRAYSIZE(DropRectsDraw); n++) DropRectsDraw[n] = ImRect(+FLT_MAX, +FLT_MAX, -FLT_MAX, -FLT_MAX); }    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
+
+class DockNodeSettings:
+    """Persistent Settings data, stored contiguously in SettingsNodes (sizeof() ~32 bytes)"""
+
+    # ImGuiID             ID;    /* original C++ signature */
+    id_: ID
+    # ImGuiID             ParentNodeId;    /* original C++ signature */
+    parent_node_id: ID
+    # ImGuiID             ParentWindowId;    /* original C++ signature */
+    parent_window_id: ID
+    # ImGuiID             SelectedTabId;    /* original C++ signature */
+    selected_tab_id: ID
+    # signed char         SplitAxis;    /* original C++ signature */
+    split_axis: int
+    # char                Depth;    /* original C++ signature */
+    depth: int
+    # ImGuiDockNodeFlags  Flags;    /* original C++ signature */
+    flags: DockNodeFlags  # NB: We save individual flags one by one in ascii format (ImGuiDockNodeFlags_SavedFlagsMask_)
+    # ImVec2ih            Pos;    /* original C++ signature */
+    pos: ImVec2ih
+    # ImVec2ih            Size;    /* original C++ signature */
+    size: ImVec2ih
+    # ImVec2ih            SizeRef;    /* original C++ signature */
+    size_ref: ImVec2ih
+    # ImGuiDockNodeSettings() { memset(this, 0, sizeof(*this)); SplitAxis = ImGuiAxis_None; }    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
+
+# [/ADAPT_IMGUI_BUNDLE]
+
 # #endif
 
 # <submodule im_stb>
