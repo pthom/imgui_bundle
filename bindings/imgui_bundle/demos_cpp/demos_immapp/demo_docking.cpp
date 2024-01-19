@@ -690,7 +690,7 @@ int main(int, char**)
     // toolbar options
     HelloImGui::EdgeToolbarOptions edgeToolbarOptions;
     edgeToolbarOptions.sizeEm = 2.5f;
-    edgeToolbarOptions.WindowBg = ImVec4(0.8, 0.8, 0.8, 0.35f);
+    edgeToolbarOptions.WindowBg = ImVec4(0.8f, 0.8f, 0.8f, 0.35f);
     // top toolbar
     runnerParams.callbacks.AddEdgeToolbar(
         HelloImGui::EdgeToolbarType::Top,
