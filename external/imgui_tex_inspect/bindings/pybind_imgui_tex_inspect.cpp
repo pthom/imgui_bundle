@@ -70,7 +70,7 @@ void py_init_module_imgui_tex_inspect(py::module& m)
     auto pyClassSizeIncludingBorder =
         py::class_<ImGuiTexInspect::SizeIncludingBorder>
             (m, "SizeIncludingBorder", "")
-        .def_readwrite("size", &SizeIncludingBorder::Size, "")
+        .def_readwrite("size", &ImGuiTexInspect::SizeIncludingBorder::Size, "")
         .def(py::init<ImVec2>(),
             py::arg("size"))
         ;
@@ -79,7 +79,7 @@ void py_init_module_imgui_tex_inspect(py::module& m)
     auto pyClassSizeExcludingBorder =
         py::class_<ImGuiTexInspect::SizeExcludingBorder>
             (m, "SizeExcludingBorder", "")
-        .def_readwrite("size", &SizeExcludingBorder::size, "")
+        .def_readwrite("size", &ImGuiTexInspect::SizeExcludingBorder::size, "")
         .def(py::init<ImVec2>(),
             py::arg("size"))
         ;
@@ -168,7 +168,7 @@ void py_init_module_imgui_tex_inspect(py::module& m)
         .def(py::init<ImGuiTexInspect::ValueText::Format>(),
             py::arg("format") = ImGuiTexInspect::ValueText::HexString)
         .def("draw_annotation",
-            &ValueText::DrawAnnotation, py::arg("draw_list"), py::arg("texel"), py::arg("texels_to_pixels"), py::arg("value"))
+            &ImGuiTexInspect::ValueText::DrawAnnotation, py::arg("draw_list"), py::arg("texel"), py::arg("texels_to_pixels"), py::arg("value"))
         ;
 
 
@@ -183,16 +183,16 @@ void py_init_module_imgui_tex_inspect(py::module& m)
     } // end of inner classes & enums of Arrow
 
     pyClassArrow
-        .def_readwrite("vector_index_x", &Arrow::VectorIndex_x, "")
-        .def_readwrite("vector_index_y", &Arrow::VectorIndex_y, "")
-        .def_readwrite("line_scale", &Arrow::LineScale, "")
-        .def_readwrite("zero_point", &Arrow::ZeroPoint, "")
+        .def_readwrite("vector_index_x", &ImGuiTexInspect::Arrow::VectorIndex_x, "")
+        .def_readwrite("vector_index_y", &ImGuiTexInspect::Arrow::VectorIndex_y, "")
+        .def_readwrite("line_scale", &ImGuiTexInspect::Arrow::LineScale, "")
+        .def_readwrite("zero_point", &ImGuiTexInspect::Arrow::ZeroPoint, "")
         .def(py::init<int, int, ImVec2>(),
             py::arg("x_vector_index") = 0, py::arg("y_vector_index") = 1, py::arg("line_scale") = ImVec2(1, 1))
         .def("use_preset",
-            &Arrow::UsePreset, py::arg("param_0"))
+            &ImGuiTexInspect::Arrow::UsePreset, py::arg("param_0"))
         .def("draw_annotation",
-            &Arrow::DrawAnnotation, py::arg("draw_list"), py::arg("texel"), py::arg("texels_to_pixels"), py::arg("value"))
+            &ImGuiTexInspect::Arrow::DrawAnnotation, py::arg("draw_list"), py::arg("texel"), py::arg("texels_to_pixels"), py::arg("value"))
         ;
 
 
@@ -202,21 +202,21 @@ void py_init_module_imgui_tex_inspect(py::module& m)
         .def(py::init<>([](
         ImVec2 Scale = ImVec2(), ImVec2 Translate = ImVec2())
         {
-            auto r = std::make_unique<Transform2D>();
+            auto r = std::make_unique<ImGuiTexInspect::Transform2D>();
             r->Scale = Scale;
             r->Translate = Translate;
             return r;
         })
         , py::arg("scale") = ImVec2(), py::arg("translate") = ImVec2()
         )
-        .def_readwrite("scale", &Transform2D::Scale, "")
-        .def_readwrite("translate", &Transform2D::Translate, "")
+        .def_readwrite("scale", &ImGuiTexInspect::Transform2D::Scale, "")
+        .def_readwrite("translate", &ImGuiTexInspect::Transform2D::Translate, "")
         .def("__mul__",
-            &Transform2D::operator*,
+            &ImGuiTexInspect::Transform2D::operator*,
             py::arg("rhs"),
             "Transform a vector by this transform.  Scale is applied first")
         .def("inverse",
-            &Transform2D::Inverse, "Return an inverse transform such that transform.Inverse() * transform * vector == vector")
+            &ImGuiTexInspect::Transform2D::Inverse, "Return an inverse transform such that transform.Inverse() * transform * vector == vector")
         ;
     ////////////////////    </generated_from:imgui_tex_inspect.h>    ////////////////////
 
@@ -228,15 +228,15 @@ void py_init_module_imgui_tex_inspect(py::module& m)
         .def(py::init<>([](
         ImTextureID texture = ImTextureID(), ImVec2 size = ImVec2())
         {
-            auto r = std::make_unique<Texture>();
+            auto r = std::make_unique<ImGuiTexInspect::Texture>();
             r->texture = texture;
             r->size = size;
             return r;
         })
         , py::arg("texture") = ImTextureID(), py::arg("size") = ImVec2()
         )
-        .def_readwrite("texture", &Texture::texture, "")
-        .def_readwrite("size", &Texture::size, "")
+        .def_readwrite("texture", &ImGuiTexInspect::Texture::texture, "")
+        .def_readwrite("size", &ImGuiTexInspect::Texture::size, "")
         ;
 
 

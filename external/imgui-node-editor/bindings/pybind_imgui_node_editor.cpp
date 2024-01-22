@@ -128,15 +128,15 @@ void py_init_module_imgui_node_editor(py::module& m)
     auto pyClassConfig =
         py::class_<ax::NodeEditor::Config>    // imgui_node_editor.h:91
             (m, "Config", "")
-        .def_readwrite("settings_file", &Config::SettingsFile, "")    // imgui_node_editor.h:95
-        .def_readwrite("user_pointer", &Config::UserPointer, "")    // imgui_node_editor.h:102
-        .def_readwrite("canvas_size_mode", &Config::CanvasSizeMode, "")    // imgui_node_editor.h:104
-        .def_readwrite("drag_button_index", &Config::DragButtonIndex, "Mouse button index drag action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:105
-        .def_readwrite("select_button_index", &Config::SelectButtonIndex, "Mouse button index select action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:106
-        .def_readwrite("navigate_button_index", &Config::NavigateButtonIndex, "Mouse button index navigate action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:107
-        .def_readwrite("context_menu_button_index", &Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:108
-        .def_readwrite("enable_smooth_zoom", &Config::EnableSmoothZoom, "")    // imgui_node_editor.h:109
-        .def_readwrite("smooth_zoom_power", &Config::SmoothZoomPower, "")    // imgui_node_editor.h:110
+        .def_readwrite("settings_file", &ax::NodeEditor::Config::SettingsFile, "")    // imgui_node_editor.h:95
+        .def_readwrite("user_pointer", &ax::NodeEditor::Config::UserPointer, "")    // imgui_node_editor.h:102
+        .def_readwrite("canvas_size_mode", &ax::NodeEditor::Config::CanvasSizeMode, "")    // imgui_node_editor.h:104
+        .def_readwrite("drag_button_index", &ax::NodeEditor::Config::DragButtonIndex, "Mouse button index drag action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:105
+        .def_readwrite("select_button_index", &ax::NodeEditor::Config::SelectButtonIndex, "Mouse button index select action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:106
+        .def_readwrite("navigate_button_index", &ax::NodeEditor::Config::NavigateButtonIndex, "Mouse button index navigate action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:107
+        .def_readwrite("context_menu_button_index", &ax::NodeEditor::Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")    // imgui_node_editor.h:108
+        .def_readwrite("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "")    // imgui_node_editor.h:109
+        .def_readwrite("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "")    // imgui_node_editor.h:110
         .def(py::init<>())    // imgui_node_editor.h:112
         ;
 
@@ -198,33 +198,33 @@ void py_init_module_imgui_node_editor(py::module& m)
     auto pyClassStyle =
         py::class_<ax::NodeEditor::Style>    // imgui_node_editor.h:197
             (m, "Style", "")
-        .def_readwrite("node_padding", &Style::NodePadding, "")    // imgui_node_editor.h:199
-        .def_readwrite("node_rounding", &Style::NodeRounding, "")    // imgui_node_editor.h:200
-        .def_readwrite("node_border_width", &Style::NodeBorderWidth, "")    // imgui_node_editor.h:201
-        .def_readwrite("hovered_node_border_width", &Style::HoveredNodeBorderWidth, "")    // imgui_node_editor.h:202
-        .def_readwrite("hover_node_border_offset", &Style::HoverNodeBorderOffset, "")    // imgui_node_editor.h:203
-        .def_readwrite("selected_node_border_width", &Style::SelectedNodeBorderWidth, "")    // imgui_node_editor.h:204
-        .def_readwrite("selected_node_border_offset", &Style::SelectedNodeBorderOffset, "")    // imgui_node_editor.h:205
-        .def_readwrite("pin_rounding", &Style::PinRounding, "")    // imgui_node_editor.h:206
-        .def_readwrite("pin_border_width", &Style::PinBorderWidth, "")    // imgui_node_editor.h:207
-        .def_readwrite("link_strength", &Style::LinkStrength, "")    // imgui_node_editor.h:208
-        .def_readwrite("source_direction", &Style::SourceDirection, "")    // imgui_node_editor.h:209
-        .def_readwrite("target_direction", &Style::TargetDirection, "")    // imgui_node_editor.h:210
-        .def_readwrite("scroll_duration", &Style::ScrollDuration, "")    // imgui_node_editor.h:211
-        .def_readwrite("flow_marker_distance", &Style::FlowMarkerDistance, "")    // imgui_node_editor.h:212
-        .def_readwrite("flow_speed", &Style::FlowSpeed, "")    // imgui_node_editor.h:213
-        .def_readwrite("flow_duration", &Style::FlowDuration, "")    // imgui_node_editor.h:214
-        .def_readwrite("pivot_alignment", &Style::PivotAlignment, "")    // imgui_node_editor.h:215
-        .def_readwrite("pivot_size", &Style::PivotSize, "")    // imgui_node_editor.h:216
-        .def_readwrite("pivot_scale", &Style::PivotScale, "")    // imgui_node_editor.h:217
-        .def_readwrite("pin_corners", &Style::PinCorners, "")    // imgui_node_editor.h:218
-        .def_readwrite("pin_radius", &Style::PinRadius, "")    // imgui_node_editor.h:219
-        .def_readwrite("pin_arrow_size", &Style::PinArrowSize, "")    // imgui_node_editor.h:220
-        .def_readwrite("pin_arrow_width", &Style::PinArrowWidth, "")    // imgui_node_editor.h:221
-        .def_readwrite("group_rounding", &Style::GroupRounding, "")    // imgui_node_editor.h:222
-        .def_readwrite("group_border_width", &Style::GroupBorderWidth, "")    // imgui_node_editor.h:223
-        .def_readwrite("highlight_connected_links", &Style::HighlightConnectedLinks, "")    // imgui_node_editor.h:224
-        .def_readwrite("snap_link_to_pin_dir", &Style::SnapLinkToPinDir, "when True link will start on the line defined by pin direction")    // imgui_node_editor.h:225
+        .def_readwrite("node_padding", &ax::NodeEditor::Style::NodePadding, "")    // imgui_node_editor.h:199
+        .def_readwrite("node_rounding", &ax::NodeEditor::Style::NodeRounding, "")    // imgui_node_editor.h:200
+        .def_readwrite("node_border_width", &ax::NodeEditor::Style::NodeBorderWidth, "")    // imgui_node_editor.h:201
+        .def_readwrite("hovered_node_border_width", &ax::NodeEditor::Style::HoveredNodeBorderWidth, "")    // imgui_node_editor.h:202
+        .def_readwrite("hover_node_border_offset", &ax::NodeEditor::Style::HoverNodeBorderOffset, "")    // imgui_node_editor.h:203
+        .def_readwrite("selected_node_border_width", &ax::NodeEditor::Style::SelectedNodeBorderWidth, "")    // imgui_node_editor.h:204
+        .def_readwrite("selected_node_border_offset", &ax::NodeEditor::Style::SelectedNodeBorderOffset, "")    // imgui_node_editor.h:205
+        .def_readwrite("pin_rounding", &ax::NodeEditor::Style::PinRounding, "")    // imgui_node_editor.h:206
+        .def_readwrite("pin_border_width", &ax::NodeEditor::Style::PinBorderWidth, "")    // imgui_node_editor.h:207
+        .def_readwrite("link_strength", &ax::NodeEditor::Style::LinkStrength, "")    // imgui_node_editor.h:208
+        .def_readwrite("source_direction", &ax::NodeEditor::Style::SourceDirection, "")    // imgui_node_editor.h:209
+        .def_readwrite("target_direction", &ax::NodeEditor::Style::TargetDirection, "")    // imgui_node_editor.h:210
+        .def_readwrite("scroll_duration", &ax::NodeEditor::Style::ScrollDuration, "")    // imgui_node_editor.h:211
+        .def_readwrite("flow_marker_distance", &ax::NodeEditor::Style::FlowMarkerDistance, "")    // imgui_node_editor.h:212
+        .def_readwrite("flow_speed", &ax::NodeEditor::Style::FlowSpeed, "")    // imgui_node_editor.h:213
+        .def_readwrite("flow_duration", &ax::NodeEditor::Style::FlowDuration, "")    // imgui_node_editor.h:214
+        .def_readwrite("pivot_alignment", &ax::NodeEditor::Style::PivotAlignment, "")    // imgui_node_editor.h:215
+        .def_readwrite("pivot_size", &ax::NodeEditor::Style::PivotSize, "")    // imgui_node_editor.h:216
+        .def_readwrite("pivot_scale", &ax::NodeEditor::Style::PivotScale, "")    // imgui_node_editor.h:217
+        .def_readwrite("pin_corners", &ax::NodeEditor::Style::PinCorners, "")    // imgui_node_editor.h:218
+        .def_readwrite("pin_radius", &ax::NodeEditor::Style::PinRadius, "")    // imgui_node_editor.h:219
+        .def_readwrite("pin_arrow_size", &ax::NodeEditor::Style::PinArrowSize, "")    // imgui_node_editor.h:220
+        .def_readwrite("pin_arrow_width", &ax::NodeEditor::Style::PinArrowWidth, "")    // imgui_node_editor.h:221
+        .def_readwrite("group_rounding", &ax::NodeEditor::Style::GroupRounding, "")    // imgui_node_editor.h:222
+        .def_readwrite("group_border_width", &ax::NodeEditor::Style::GroupBorderWidth, "")    // imgui_node_editor.h:223
+        .def_readwrite("highlight_connected_links", &ax::NodeEditor::Style::HighlightConnectedLinks, "")    // imgui_node_editor.h:224
+        .def_readwrite("snap_link_to_pin_dir", &ax::NodeEditor::Style::SnapLinkToPinDir, "when True link will start on the line defined by pin direction")    // imgui_node_editor.h:225
         .def(py::init<>())    // imgui_node_editor.h:228
         ;
 

@@ -1293,16 +1293,16 @@ void py_init_module_implot_internal(py::module& m)
         .def(py::init<>([](
         ImPlotTime Time = ImPlotTime(), ImPlotDateTimeSpec Spec = ImPlotDateTimeSpec())
         {
-            auto r = std::make_unique<Formatter_Time_Data>();
+            auto r = std::make_unique<ImPlot::Formatter_Time_Data>();
             r->Time = Time;
             r->Spec = Spec;
             return r;
         })
         , py::arg("time") = ImPlotTime(), py::arg("spec") = ImPlotDateTimeSpec()
         )
-        .def_readwrite("time", &Formatter_Time_Data::Time, "")
-        .def_readwrite("spec", &Formatter_Time_Data::Spec, "")
-        .def_readwrite("user_formatter_data", &Formatter_Time_Data::UserFormatterData, "")
+        .def_readwrite("time", &ImPlot::Formatter_Time_Data::Time, "")
+        .def_readwrite("spec", &ImPlot::Formatter_Time_Data::Spec, "")
+        .def_readwrite("user_formatter_data", &ImPlot::Formatter_Time_Data::UserFormatterData, "")
         ;
     ////////////////////    </generated_from:implot_internal.h>    ////////////////////
 

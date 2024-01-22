@@ -43,9 +43,9 @@ void py_init_module_imgui_knobs(py::module& m)
     auto pyClasscolor_set =
         py::class_<ImGuiKnobs::color_set>
             (m, "color_set", "")
-        .def_readwrite("base", &color_set::base, "")
-        .def_readwrite("hovered", &color_set::hovered, "")
-        .def_readwrite("active", &color_set::active, "")
+        .def_readwrite("base", &ImGuiKnobs::color_set::base, "")
+        .def_readwrite("hovered", &ImGuiKnobs::color_set::hovered, "")
+        .def_readwrite("active", &ImGuiKnobs::color_set::active, "")
         .def(py::init<ImColor, ImColor, ImColor>(),
             py::arg("base"), py::arg("hovered"), py::arg("active"))
         .def(py::init<ImColor>(),

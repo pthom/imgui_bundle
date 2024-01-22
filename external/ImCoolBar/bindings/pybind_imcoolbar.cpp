@@ -32,11 +32,11 @@ void py_init_module_imcoolbar(py::module& m)
     auto pyClassImCoolBarConfig =
         py::class_<ImGui::ImCoolBarConfig>
             (m, "ImCoolBarConfig", "")
-        .def_readwrite("anchor", &ImCoolBarConfig::anchor, "")
-        .def_readwrite("normal_size", &ImCoolBarConfig::normal_size, "")
-        .def_readwrite("hovered_size", &ImCoolBarConfig::hovered_size, "")
-        .def_readwrite("anim_step", &ImCoolBarConfig::anim_step, "")
-        .def_readwrite("effect_strength", &ImCoolBarConfig::effect_strength, "")
+        .def_readwrite("anchor", &ImGui::ImCoolBarConfig::anchor, "")
+        .def_readwrite("normal_size", &ImGui::ImCoolBarConfig::normal_size, "")
+        .def_readwrite("hovered_size", &ImGui::ImCoolBarConfig::hovered_size, "")
+        .def_readwrite("anim_step", &ImGui::ImCoolBarConfig::anim_step, "")
+        .def_readwrite("effect_strength", &ImGui::ImCoolBarConfig::effect_strength, "")
         .def(py::init<const ImVec2, const float &, const float &, const float &, const float &>(),
             py::arg("v_anchor") = ImVec2(-1.0f, -1.0f), py::arg("v_normal_size") = 40.0f, py::arg("v_hovered_size") = 60.0f, py::arg("v_anim_step") = 0.15f, py::arg("v_effect_strength") = 0.5f,
             "//")

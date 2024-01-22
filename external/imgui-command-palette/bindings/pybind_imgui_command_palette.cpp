@@ -36,10 +36,10 @@ void py_init_module_imgui_command_palette(py::module& m)
         py::class_<ImCmd::Command>
             (m, "Command", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("name", &Command::Name, "")
-        .def_readwrite("initial_callback", &Command::InitialCallback, "")
-        .def_readwrite("subsequent_callback", &Command::SubsequentCallback, "")
-        .def_readwrite("terminating_callback", &Command::TerminatingCallback, "")
+        .def_readwrite("name", &ImCmd::Command::Name, "")
+        .def_readwrite("initial_callback", &ImCmd::Command::InitialCallback, "")
+        .def_readwrite("subsequent_callback", &ImCmd::Command::SubsequentCallback, "")
+        .def_readwrite("terminating_callback", &ImCmd::Command::TerminatingCallback, "")
         ;
 
 

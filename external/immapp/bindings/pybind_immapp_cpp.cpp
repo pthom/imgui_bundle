@@ -55,7 +55,7 @@ void py_init_module_immapp_cpp(py::module& m)
         .def(py::init<>([](
         bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
         {
-            auto r = std::make_unique<AddOnsParams>();
+            auto r = std::make_unique<ImmApp::AddOnsParams>();
             r->withImplot = withImplot;
             r->withMarkdown = withMarkdown;
             r->withNodeEditor = withNodeEditor;
@@ -66,12 +66,12 @@ void py_init_module_immapp_cpp(py::module& m)
         })
         , py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none()
         )
-        .def_readwrite("with_implot", &AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
-        .def_readwrite("with_markdown", &AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
-        .def_readwrite("with_node_editor", &AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
-        .def_readwrite("with_tex_inspect", &AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
-        .def_readwrite("with_node_editor_config", &AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
-        .def_readwrite("with_markdown_options", &AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
+        .def_readwrite("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
+        .def_readwrite("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
+        .def_readwrite("with_node_editor", &ImmApp::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
+        .def_readwrite("with_tex_inspect", &ImmApp::AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
+        .def_readwrite("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
+        .def_readwrite("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
         ;
 
 

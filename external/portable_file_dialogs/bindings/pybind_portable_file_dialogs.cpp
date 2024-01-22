@@ -66,9 +66,9 @@ void py_init_module_portable_file_dialogs(py::module& m)
         .def(py::init<const std::string &, const std::string &, pfd::icon>(),
             py::arg("title"), py::arg("message"), py::arg("_icon") = pfd::icon::info)
         .def("ready",
-            &notify::ready, py::arg("timeout") = default_wait_timeout)
+            &pfd::notify::ready, py::arg("timeout") = default_wait_timeout)
         .def("kill",
-            &notify::kill)
+            &pfd::notify::kill)
         ;
 
 
@@ -78,11 +78,11 @@ void py_init_module_portable_file_dialogs(py::module& m)
         .def(py::init<const std::string &, const std::string &, pfd::choice, pfd::icon>(),
             py::arg("title"), py::arg("text"), py::arg("_choice") = pfd::choice::ok_cancel, py::arg("_icon") = pfd::icon::info)
         .def("result",
-            &message::result)
+            &pfd::message::result)
         .def("ready",
-            &message::ready, py::arg("timeout") = default_wait_timeout)
+            &pfd::message::ready, py::arg("timeout") = default_wait_timeout)
         .def("kill",
-            &message::kill)
+            &pfd::message::kill)
         ;
 
 
@@ -96,11 +96,11 @@ void py_init_module_portable_file_dialogs(py::module& m)
         .def(py::init<const std::string &, const std::string &, const std::vector<std::string> &, pfd::opt>(),
             py::arg("title"), py::arg("default_path") = "", py::arg("filters") = pfd::all_files_filter(), py::arg("options") = pfd::opt::none)
         .def("ready",
-            &open_file::ready, py::arg("timeout") = default_wait_timeout)
+            &pfd::open_file::ready, py::arg("timeout") = default_wait_timeout)
         .def("kill",
-            &open_file::kill)
+            &pfd::open_file::kill)
         .def("result",
-            &open_file::result)
+            &pfd::open_file::result)
         ;
 
 
@@ -110,11 +110,11 @@ void py_init_module_portable_file_dialogs(py::module& m)
         .def(py::init<const std::string &, const std::string &, const std::vector<std::string> &, pfd::opt>(),
             py::arg("title"), py::arg("default_path") = "", py::arg("filters") = pfd::all_files_filter(), py::arg("options") = pfd::opt::none)
         .def("ready",
-            &save_file::ready, py::arg("timeout") = default_wait_timeout)
+            &pfd::save_file::ready, py::arg("timeout") = default_wait_timeout)
         .def("kill",
-            &save_file::kill)
+            &pfd::save_file::kill)
         .def("result",
-            &save_file::result)
+            &pfd::save_file::result)
         ;
 
 
@@ -124,11 +124,11 @@ void py_init_module_portable_file_dialogs(py::module& m)
         .def(py::init<const std::string &, const std::string &, pfd::opt>(),
             py::arg("title"), py::arg("default_path") = "", py::arg("options") = pfd::opt::none)
         .def("ready",
-            &select_folder::ready, py::arg("timeout") = default_wait_timeout)
+            &pfd::select_folder::ready, py::arg("timeout") = default_wait_timeout)
         .def("kill",
-            &select_folder::kill)
+            &pfd::select_folder::kill)
         .def("result",
-            &select_folder::result)
+            &pfd::select_folder::result)
         ;
     ////////////////////    </generated_from:portable_file_dialogs_simplified.h>    ////////////////////
 

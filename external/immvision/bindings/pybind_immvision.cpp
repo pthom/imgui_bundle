@@ -54,7 +54,7 @@ void py_init_module_immvision(py::module& m)
         .def(py::init<>([](
         ImmVision::ColorMapStatsTypeId ColorMapStatsType = ColorMapStatsTypeId(), double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
         {
-            auto r = std::make_unique<ColormapScaleFromStatsData>();
+            auto r = std::make_unique<ImmVision::ColormapScaleFromStatsData>();
             r->ColorMapStatsType = ColorMapStatsType;
             r->NbSigmas = NbSigmas;
             r->UseStatsMin = UseStatsMin;
@@ -63,10 +63,10 @@ void py_init_module_immvision(py::module& m)
         })
         , py::arg("color_map_stats_type") = ColorMapStatsTypeId(), py::arg("nb_sigmas") = 1.5, py::arg("use_stats_min") = false, py::arg("use_stats_max") = false
         )
-        .def_readwrite("color_map_stats_type", &ColormapScaleFromStatsData::ColorMapStatsType, "Are we using the stats on the full image, the visible ROI, or are we using Min/Max values")    // immvision.h:37
-        .def_readwrite("nb_sigmas", &ColormapScaleFromStatsData::NbSigmas, "If stats active (either on ROI or on Image), how many sigmas around the mean should the Colormap be applied")    // immvision.h:40
-        .def_readwrite("use_stats_min", &ColormapScaleFromStatsData::UseStatsMin, "If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMin will be calculated from the matrix min value instead of a sigma based value")    // immvision.h:43
-        .def_readwrite("use_stats_max", &ColormapScaleFromStatsData::UseStatsMax, "If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMax will be calculated from the matrix min value instead of a sigma based value")    // immvision.h:45
+        .def_readwrite("color_map_stats_type", &ImmVision::ColormapScaleFromStatsData::ColorMapStatsType, "Are we using the stats on the full image, the visible ROI, or are we using Min/Max values")    // immvision.h:37
+        .def_readwrite("nb_sigmas", &ImmVision::ColormapScaleFromStatsData::NbSigmas, "If stats active (either on ROI or on Image), how many sigmas around the mean should the Colormap be applied")    // immvision.h:40
+        .def_readwrite("use_stats_min", &ImmVision::ColormapScaleFromStatsData::UseStatsMin, "If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMin will be calculated from the matrix min value instead of a sigma based value")    // immvision.h:43
+        .def_readwrite("use_stats_max", &ImmVision::ColormapScaleFromStatsData::UseStatsMax, "If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMax will be calculated from the matrix min value instead of a sigma based value")    // immvision.h:45
         ;
 
 
@@ -74,9 +74,9 @@ void py_init_module_immvision(py::module& m)
         py::class_<ImmVision::ColormapSettingsData>    // immvision.h:50
             (m, "ColormapSettingsData", " Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)\n\nIMMVISION_API_STRUCT")
         .def(py::init<>([](
-        std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., ColormapScaleFromStatsData ColormapScaleFromStats = ColormapScaleFromStatsData(), std::string internal_ColormapHovered = "")
+        std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., ImmVision::ColormapScaleFromStatsData ColormapScaleFromStats = ImmVision::ColormapScaleFromStatsData(), std::string internal_ColormapHovered = "")
         {
-            auto r = std::make_unique<ColormapSettingsData>();
+            auto r = std::make_unique<ImmVision::ColormapSettingsData>();
             r->Colormap = Colormap;
             r->ColormapScaleMin = ColormapScaleMin;
             r->ColormapScaleMax = ColormapScaleMax;
@@ -84,13 +84,13 @@ void py_init_module_immvision(py::module& m)
             r->internal_ColormapHovered = internal_ColormapHovered;
             return r;
         })
-        , py::arg("colormap") = "None", py::arg("colormap_scale_min") = 0., py::arg("colormap_scale_max") = 1., py::arg("colormap_scale_from_stats") = ColormapScaleFromStatsData(), py::arg("internal_colormap_hovered") = ""
+        , py::arg("colormap") = "None", py::arg("colormap_scale_min") = 0., py::arg("colormap_scale_max") = 1., py::arg("colormap_scale_from_stats") = ImmVision::ColormapScaleFromStatsData(), py::arg("internal_colormap_hovered") = ""
         )
-        .def_readwrite("colormap", &ColormapSettingsData::Colormap, " Colormap, see available Colormaps with AvailableColormaps()\n Work only with 1 channel matrices, i.e len(shape)==2")    // immvision.h:54
-        .def_readwrite("colormap_scale_min", &ColormapSettingsData::ColormapScaleMin, "")    // immvision.h:61
-        .def_readwrite("colormap_scale_max", &ColormapSettingsData::ColormapScaleMax, "")    // immvision.h:62
-        .def_readwrite("colormap_scale_from_stats", &ColormapSettingsData::ColormapScaleFromStats, " If ColormapScaleFromStats.ActiveOnFullImage or ColormapScaleFromStats.ActiveOnROI,\n then ColormapScaleMin/Max are ignored, and the scaling is done according to the image stats.\n ColormapScaleFromStats.ActiveOnFullImage is True by default")    // immvision.h:67
-        .def_readwrite("internal_colormap_hovered", &ColormapSettingsData::internal_ColormapHovered, "Internal value: stores the name of the Colormap that is hovered by the mouse")    // immvision.h:71
+        .def_readwrite("colormap", &ImmVision::ColormapSettingsData::Colormap, " Colormap, see available Colormaps with AvailableColormaps()\n Work only with 1 channel matrices, i.e len(shape)==2")    // immvision.h:54
+        .def_readwrite("colormap_scale_min", &ImmVision::ColormapSettingsData::ColormapScaleMin, "")    // immvision.h:61
+        .def_readwrite("colormap_scale_max", &ImmVision::ColormapSettingsData::ColormapScaleMax, "")    // immvision.h:62
+        .def_readwrite("colormap_scale_from_stats", &ImmVision::ColormapSettingsData::ColormapScaleFromStats, " If ColormapScaleFromStats.ActiveOnFullImage or ColormapScaleFromStats.ActiveOnROI,\n then ColormapScaleMin/Max are ignored, and the scaling is done according to the image stats.\n ColormapScaleFromStats.ActiveOnFullImage is True by default")    // immvision.h:67
+        .def_readwrite("internal_colormap_hovered", &ImmVision::ColormapSettingsData::internal_ColormapHovered, "Internal value: stores the name of the Colormap that is hovered by the mouse")    // immvision.h:71
         ;
 
 
@@ -100,7 +100,7 @@ void py_init_module_immvision(py::module& m)
         .def(py::init<>([](
         bool IsMouseHovering = false, cv::Point2d MousePosition = cv::Point2d(-1., -1.), cv::Point MousePosition_Displayed = cv::Point(-1, -1))
         {
-            auto r = std::make_unique<MouseInformation>();
+            auto r = std::make_unique<ImmVision::MouseInformation>();
             r->IsMouseHovering = IsMouseHovering;
             r->MousePosition = MousePosition;
             r->MousePosition_Displayed = MousePosition_Displayed;
@@ -108,9 +108,9 @@ void py_init_module_immvision(py::module& m)
         })
         , py::arg("is_mouse_hovering") = false, py::arg("mouse_position") = cv::Point2d(-1., -1.), py::arg("mouse_position_displayed") = cv::Point(-1, -1)
         )
-        .def_readwrite("is_mouse_hovering", &MouseInformation::IsMouseHovering, "Is the mouse hovering the image")    // immvision.h:79
-        .def_readwrite("mouse_position", &MouseInformation::MousePosition, " Mouse position in the original image/matrix\n This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image")    // immvision.h:83
-        .def_readwrite("mouse_position_displayed", &MouseInformation::MousePosition_Displayed, " Mouse position in the displayed portion of the image (the original image can be zoomed,\n and only show a subset if it may be shown).\n This position is given with integer coordinates, and will be (-1, -1) if the mouse is not hovering the image")    // immvision.h:87
+        .def_readwrite("is_mouse_hovering", &ImmVision::MouseInformation::IsMouseHovering, "Is the mouse hovering the image")    // immvision.h:79
+        .def_readwrite("mouse_position", &ImmVision::MouseInformation::MousePosition, " Mouse position in the original image/matrix\n This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image")    // immvision.h:83
+        .def_readwrite("mouse_position_displayed", &ImmVision::MouseInformation::MousePosition_Displayed, " Mouse position in the displayed portion of the image (the original image can be zoomed,\n and only show a subset if it may be shown).\n This position is given with integer coordinates, and will be (-1, -1) if the mouse is not hovering the image")    // immvision.h:87
         ;
 
 
@@ -118,9 +118,9 @@ void py_init_module_immvision(py::module& m)
         py::class_<ImmVision::ImageParams>    // immvision.h:96
             (m, "ImageParams", " Set of display parameters and options for an Image\n\nIMMVISION_API_STRUCT")
         .def(py::init<>([](
-        bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation())
+        bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ImmVision::ColormapSettingsData ColormapSettings = ImmVision::ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, ImmVision::MouseInformation MouseInfo = ImmVision::MouseInformation())
         {
-            auto r = std::make_unique<ImageParams>();
+            auto r = std::make_unique<ImmVision::ImageParams>();
             r->RefreshImage = RefreshImage;
             r->ImageDisplaySize = ImageDisplaySize;
             r->ZoomPanMatrix = ZoomPanMatrix;
@@ -147,32 +147,32 @@ void py_init_module_immvision(py::module& m)
             r->MouseInfo = MouseInfo;
             return r;
         })
-        , py::arg("refresh_image") = false, py::arg("image_display_size") = cv::Size(), py::arg("zoom_pan_matrix") = cv::Matx33d::eye(), py::arg("zoom_key") = "", py::arg("colormap_settings") = ColormapSettingsData(), py::arg("colormap_key") = "", py::arg("pan_with_mouse") = true, py::arg("zoom_with_mouse_wheel") = true, py::arg("is_color_order_bgr") = true, py::arg("selected_channel") = -1, py::arg("show_school_paper_background") = true, py::arg("show_alpha_channel_checkerboard") = true, py::arg("show_grid") = true, py::arg("draw_values_on_zoomed_pixels") = true, py::arg("show_image_info") = true, py::arg("show_pixel_info") = true, py::arg("show_zoom_buttons") = true, py::arg("show_options_panel") = false, py::arg("show_options_in_tooltip") = false, py::arg("show_options_button") = true, py::arg("watched_pixels") = std::vector<cv::Point>(), py::arg("add_watched_pixel_on_double_click") = true, py::arg("highlight_watched_pixels") = true, py::arg("mouse_info") = MouseInformation()
+        , py::arg("refresh_image") = false, py::arg("image_display_size") = cv::Size(), py::arg("zoom_pan_matrix") = cv::Matx33d::eye(), py::arg("zoom_key") = "", py::arg("colormap_settings") = ImmVision::ColormapSettingsData(), py::arg("colormap_key") = "", py::arg("pan_with_mouse") = true, py::arg("zoom_with_mouse_wheel") = true, py::arg("is_color_order_bgr") = true, py::arg("selected_channel") = -1, py::arg("show_school_paper_background") = true, py::arg("show_alpha_channel_checkerboard") = true, py::arg("show_grid") = true, py::arg("draw_values_on_zoomed_pixels") = true, py::arg("show_image_info") = true, py::arg("show_pixel_info") = true, py::arg("show_zoom_buttons") = true, py::arg("show_options_panel") = false, py::arg("show_options_in_tooltip") = false, py::arg("show_options_button") = true, py::arg("watched_pixels") = std::vector<cv::Point>(), py::arg("add_watched_pixel_on_double_click") = true, py::arg("highlight_watched_pixels") = true, py::arg("mouse_info") = ImmVision::MouseInformation()
         )
-        .def_readwrite("refresh_image", &ImageParams::RefreshImage, " Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed\n (for example, for live video images)")    // immvision.h:111
-        .def_readwrite("image_display_size", &ImageParams::ImageDisplaySize, " Size of the displayed image (can be different from the matrix size)\n If you specify only the width or height (e.g (300, 0), then the other dimension\n will be calculated automatically, respecting the original image w/h ratio.")    // immvision.h:120
-        .def_readwrite("zoom_pan_matrix", &ImageParams::ZoomPanMatrix, "ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point")    // immvision.h:127
-        .def_readwrite("zoom_key", &ImageParams::ZoomKey, "If displaying several images, those with the same ZoomKey will zoom and pan together")    // immvision.h:129
-        .def_readwrite("colormap_settings", &ImageParams::ColormapSettings, "\n Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)\n\n ColormapSettings stores all the parameter concerning the Colormap")    // immvision.h:135
-        .def_readwrite("colormap_key", &ImageParams::ColormapKey, "If displaying several images, those with the same ColormapKey will adjust together")    // immvision.h:137
-        .def_readwrite("pan_with_mouse", &ImageParams::PanWithMouse, "")    // immvision.h:142
-        .def_readwrite("zoom_with_mouse_wheel", &ImageParams::ZoomWithMouseWheel, "")    // immvision.h:143
-        .def_readwrite("is_color_order_bgr", &ImageParams::IsColorOrderBGR, "Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)")    // immvision.h:146
-        .def_readwrite("selected_channel", &ImageParams::SelectedChannel, "\n Image display options\n\n if SelectedChannel >= 0 then only this channel is displayed")    // immvision.h:152
-        .def_readwrite("show_school_paper_background", &ImageParams::ShowSchoolPaperBackground, "Show a \"school paper\" background grid")    // immvision.h:154
-        .def_readwrite("show_alpha_channel_checkerboard", &ImageParams::ShowAlphaChannelCheckerboard, "show a checkerboard behind transparent portions of 4 channels RGBA images")    // immvision.h:156
-        .def_readwrite("show_grid", &ImageParams::ShowGrid, "Grid displayed when the zoom is high")    // immvision.h:158
-        .def_readwrite("draw_values_on_zoomed_pixels", &ImageParams::DrawValuesOnZoomedPixels, "Pixel values show when the zoom is high")    // immvision.h:160
-        .def_readwrite("show_image_info", &ImageParams::ShowImageInfo, "\n Image display options\n\n Show matrix type and size")    // immvision.h:166
-        .def_readwrite("show_pixel_info", &ImageParams::ShowPixelInfo, "Show pixel values")    // immvision.h:168
-        .def_readwrite("show_zoom_buttons", &ImageParams::ShowZoomButtons, "Show buttons that enable to zoom in/out (the mouse wheel also zoom)")    // immvision.h:170
-        .def_readwrite("show_options_panel", &ImageParams::ShowOptionsPanel, "Open the options panel")    // immvision.h:172
-        .def_readwrite("show_options_in_tooltip", &ImageParams::ShowOptionsInTooltip, "If set to True, then the option panel will be displayed in a transient tooltip window")    // immvision.h:174
-        .def_readwrite("show_options_button", &ImageParams::ShowOptionsButton, "If set to False, then the Options button will not be displayed")    // immvision.h:176
-        .def_readwrite("watched_pixels", &ImageParams::WatchedPixels, "\n Watched Pixels\n\n List of Watched Pixel coordinates")    // immvision.h:182
-        .def_readwrite("add_watched_pixel_on_double_click", &ImageParams::AddWatchedPixelOnDoubleClick, "Shall we add a watched pixel on double click")    // immvision.h:184
-        .def_readwrite("highlight_watched_pixels", &ImageParams::HighlightWatchedPixels, "Shall the watched pixels be drawn on the image")    // immvision.h:186
-        .def_readwrite("mouse_info", &ImageParams::MouseInfo, "Mouse position information. These values are filled after displaying an image")    // immvision.h:189
+        .def_readwrite("refresh_image", &ImmVision::ImageParams::RefreshImage, " Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed\n (for example, for live video images)")    // immvision.h:111
+        .def_readwrite("image_display_size", &ImmVision::ImageParams::ImageDisplaySize, " Size of the displayed image (can be different from the matrix size)\n If you specify only the width or height (e.g (300, 0), then the other dimension\n will be calculated automatically, respecting the original image w/h ratio.")    // immvision.h:120
+        .def_readwrite("zoom_pan_matrix", &ImmVision::ImageParams::ZoomPanMatrix, "ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point")    // immvision.h:127
+        .def_readwrite("zoom_key", &ImmVision::ImageParams::ZoomKey, "If displaying several images, those with the same ZoomKey will zoom and pan together")    // immvision.h:129
+        .def_readwrite("colormap_settings", &ImmVision::ImageParams::ColormapSettings, "\n Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)\n\n ColormapSettings stores all the parameter concerning the Colormap")    // immvision.h:135
+        .def_readwrite("colormap_key", &ImmVision::ImageParams::ColormapKey, "If displaying several images, those with the same ColormapKey will adjust together")    // immvision.h:137
+        .def_readwrite("pan_with_mouse", &ImmVision::ImageParams::PanWithMouse, "")    // immvision.h:142
+        .def_readwrite("zoom_with_mouse_wheel", &ImmVision::ImageParams::ZoomWithMouseWheel, "")    // immvision.h:143
+        .def_readwrite("is_color_order_bgr", &ImmVision::ImageParams::IsColorOrderBGR, "Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)")    // immvision.h:146
+        .def_readwrite("selected_channel", &ImmVision::ImageParams::SelectedChannel, "\n Image display options\n\n if SelectedChannel >= 0 then only this channel is displayed")    // immvision.h:152
+        .def_readwrite("show_school_paper_background", &ImmVision::ImageParams::ShowSchoolPaperBackground, "Show a \"school paper\" background grid")    // immvision.h:154
+        .def_readwrite("show_alpha_channel_checkerboard", &ImmVision::ImageParams::ShowAlphaChannelCheckerboard, "show a checkerboard behind transparent portions of 4 channels RGBA images")    // immvision.h:156
+        .def_readwrite("show_grid", &ImmVision::ImageParams::ShowGrid, "Grid displayed when the zoom is high")    // immvision.h:158
+        .def_readwrite("draw_values_on_zoomed_pixels", &ImmVision::ImageParams::DrawValuesOnZoomedPixels, "Pixel values show when the zoom is high")    // immvision.h:160
+        .def_readwrite("show_image_info", &ImmVision::ImageParams::ShowImageInfo, "\n Image display options\n\n Show matrix type and size")    // immvision.h:166
+        .def_readwrite("show_pixel_info", &ImmVision::ImageParams::ShowPixelInfo, "Show pixel values")    // immvision.h:168
+        .def_readwrite("show_zoom_buttons", &ImmVision::ImageParams::ShowZoomButtons, "Show buttons that enable to zoom in/out (the mouse wheel also zoom)")    // immvision.h:170
+        .def_readwrite("show_options_panel", &ImmVision::ImageParams::ShowOptionsPanel, "Open the options panel")    // immvision.h:172
+        .def_readwrite("show_options_in_tooltip", &ImmVision::ImageParams::ShowOptionsInTooltip, "If set to True, then the option panel will be displayed in a transient tooltip window")    // immvision.h:174
+        .def_readwrite("show_options_button", &ImmVision::ImageParams::ShowOptionsButton, "If set to False, then the Options button will not be displayed")    // immvision.h:176
+        .def_readwrite("watched_pixels", &ImmVision::ImageParams::WatchedPixels, "\n Watched Pixels\n\n List of Watched Pixel coordinates")    // immvision.h:182
+        .def_readwrite("add_watched_pixel_on_double_click", &ImmVision::ImageParams::AddWatchedPixelOnDoubleClick, "Shall we add a watched pixel on double click")    // immvision.h:184
+        .def_readwrite("highlight_watched_pixels", &ImmVision::ImageParams::HighlightWatchedPixels, "Shall the watched pixels be drawn on the image")    // immvision.h:186
+        .def_readwrite("mouse_info", &ImmVision::ImageParams::MouseInfo, "Mouse position information. These values are filled after displaying an image")    // immvision.h:189
         ;
 
 

@@ -25,10 +25,10 @@ void py_init_module_imgui_md(py::module& m)
         py::class_<ImGuiMd::MarkdownFontOptions>
             (m, "MarkdownFontOptions", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("font_base_path", &MarkdownFontOptions::fontBasePath, "")
-        .def_readwrite("max_header_level", &MarkdownFontOptions::maxHeaderLevel, "")
-        .def_readwrite("size_diff_between_levels", &MarkdownFontOptions::sizeDiffBetweenLevels, "")
-        .def_readwrite("regular_size", &MarkdownFontOptions::regularSize, "")
+        .def_readwrite("font_base_path", &ImGuiMd::MarkdownFontOptions::fontBasePath, "")
+        .def_readwrite("max_header_level", &ImGuiMd::MarkdownFontOptions::maxHeaderLevel, "")
+        .def_readwrite("size_diff_between_levels", &ImGuiMd::MarkdownFontOptions::sizeDiffBetweenLevels, "")
+        .def_readwrite("regular_size", &ImGuiMd::MarkdownFontOptions::regularSize, "")
         ;
 
 
@@ -36,12 +36,12 @@ void py_init_module_imgui_md(py::module& m)
         py::class_<ImGuiMd::MarkdownImage>
             (m, "MarkdownImage", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("texture_id", &MarkdownImage::texture_id, "")
-        .def_readwrite("size", &MarkdownImage::size, "")
-        .def_readwrite("uv0", &MarkdownImage::uv0, "")
-        .def_readwrite("uv1", &MarkdownImage::uv1, "")
-        .def_readwrite("col_tint", &MarkdownImage::col_tint, "")
-        .def_readwrite("col_border", &MarkdownImage::col_border, "")
+        .def_readwrite("texture_id", &ImGuiMd::MarkdownImage::texture_id, "")
+        .def_readwrite("size", &ImGuiMd::MarkdownImage::size, "")
+        .def_readwrite("uv0", &ImGuiMd::MarkdownImage::uv0, "")
+        .def_readwrite("uv1", &ImGuiMd::MarkdownImage::uv1, "")
+        .def_readwrite("col_tint", &ImGuiMd::MarkdownImage::col_tint, "")
+        .def_readwrite("col_border", &ImGuiMd::MarkdownImage::col_border, "")
         ;
 
 
@@ -56,9 +56,9 @@ void py_init_module_imgui_md(py::module& m)
         py::class_<ImGuiMd::MarkdownCallbacks>
             (m, "MarkdownCallbacks", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("on_open_link", &MarkdownCallbacks::OnOpenLink, "The default version will open the link in a browser iif it starts with \"http\"")
-        .def_readwrite("on_image", &MarkdownCallbacks::OnImage, "The default version will load the image as a cached texture and display it")
-        .def_readwrite("on_html_div", &MarkdownCallbacks::OnHtmlDiv, " OnHtmlDiv does nothing by default, by you could write:\n     In  C++:\n        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)\n        {\n            if (divClass == \"red\")\n            {\n                if (e)\n                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));\n                else\n                    ImGui::PopStyleColor();\n            }\n        };")
+        .def_readwrite("on_open_link", &ImGuiMd::MarkdownCallbacks::OnOpenLink, "The default version will open the link in a browser iif it starts with \"http\"")
+        .def_readwrite("on_image", &ImGuiMd::MarkdownCallbacks::OnImage, "The default version will load the image as a cached texture and display it")
+        .def_readwrite("on_html_div", &ImGuiMd::MarkdownCallbacks::OnHtmlDiv, " OnHtmlDiv does nothing by default, by you could write:\n     In  C++:\n        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)\n        {\n            if (divClass == \"red\")\n            {\n                if (e)\n                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));\n                else\n                    ImGui::PopStyleColor();\n            }\n        };")
         ;
 
 
@@ -66,8 +66,8 @@ void py_init_module_imgui_md(py::module& m)
         py::class_<ImGuiMd::MarkdownOptions>
             (m, "MarkdownOptions", "")
         .def(py::init<>()) // implicit default constructor
-        .def_readwrite("font_options", &MarkdownOptions::fontOptions, "")
-        .def_readwrite("callbacks", &MarkdownOptions::callbacks, "")
+        .def_readwrite("font_options", &ImGuiMd::MarkdownOptions::fontOptions, "")
+        .def_readwrite("callbacks", &ImGuiMd::MarkdownOptions::callbacks, "")
         ;
 
 
