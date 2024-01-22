@@ -34,7 +34,7 @@ def main():
     options.python_run_black_formatter = True
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
-    options.namespaces_root = ["ax::NodeEditor"]
+    options.namespaces_root = ["ax", "NodeEditor", "ax::NodeEditor"]
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
     options.type_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
