@@ -149,7 +149,6 @@ cython_debug/
 # macOS
 .DS_Store
 
-_USE_PYTHON_SRCML_CALLER_MODULE
 _skbuild/
 _imgui_bundle_opencv_packages/
 imgui.ini
