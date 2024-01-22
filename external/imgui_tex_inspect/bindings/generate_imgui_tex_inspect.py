@@ -18,7 +18,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "ImGuiTexInspect"
+    options.namespaces_root = ["ImGuiTexInspect"]
     options.namespace_names_replacements.add_last_replacement("ImGui", "Imgui")
     options.srcmlcpp_options.ignored_warning_parts = ["CurrentInspector_SetColorMatrix"]
     options.fn_exclude_by_name__regex = join_string_by_pipe_char(

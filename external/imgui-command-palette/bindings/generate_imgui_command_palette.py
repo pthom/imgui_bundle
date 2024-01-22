@@ -16,7 +16,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "ImCmd"
+    options.namespaces_root = ["ImCmd"]
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.python_run_black_formatter = False
     options.struct_create_default_named_ctor__regex = ""

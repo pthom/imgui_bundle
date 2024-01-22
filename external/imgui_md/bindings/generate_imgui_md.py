@@ -17,7 +17,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "ImGuiMd"
+    options.namespaces_root = ["ImGuiMd"]
     options.python_run_black_formatter = True
     options.value_replacements.add_last_replacement(
         "OnOpenLink_Default", "on_open_link_default"

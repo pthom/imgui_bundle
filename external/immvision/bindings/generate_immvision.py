@@ -20,7 +20,7 @@ def main():
     options = litgen.LitgenOptions()
     options.original_signature_flag_show = True
     options.original_location_flag_show = True
-    options.namespace_root__regex = "ImmVision"
+    options.namespaces_root = ["ImmVision"]
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
     options.python_run_black_formatter = True
 

@@ -19,7 +19,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "ImGuiKnobs"
+    options.namespaces_root = ["ImGuiKnobs"]
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.python_run_black_formatter = True
 

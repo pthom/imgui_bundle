@@ -146,7 +146,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "pfd"
+    options.namespaces_root = ["pfd"]
     options.namespace_exclude__regex = ""
     options.python_run_black_formatter = True
 

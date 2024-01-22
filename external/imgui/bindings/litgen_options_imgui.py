@@ -215,7 +215,7 @@ def litgen_options_imgui(
 
     options.cpp_indent_size = 4
 
-    options.namespace_root__regex = "^ImGui$"
+    options.namespaces_root = ["ImGui"]
 
     options.type_replacements = cpp_to_python.standard_type_replacements()
     options.type_replacements.merge_replacements(

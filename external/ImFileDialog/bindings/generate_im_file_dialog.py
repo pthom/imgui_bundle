@@ -18,7 +18,7 @@ def autogenerate_im_file_dialog():
     # Configure options
     options = litgen.LitgenOptions()
     options.python_run_black_formatter = True
-    options.namespace_root__regex = "^ifd$"
+    options.namespaces_root = ["ifd"]
     options.fn_return_force_policy_reference_for_references__regex = "^Instance$"
     options.type_replacements.add_first_replacement("std::filesystem::path", "Path")
     options.member_exclude_by_name__regex = "CreateTexture|DeleteTexture"

@@ -26,7 +26,7 @@ def main():
     options.srcmlcpp_options.flag_show_progress = False
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False
-    options.namespace_root__regex = "ImGui"
+    options.namespaces_root = ["ImGui"]
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.python_run_black_formatter = True
     options.struct_create_default_named_ctor__regex = ""

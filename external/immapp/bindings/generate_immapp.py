@@ -18,7 +18,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.namespace_root__regex = "ImmApp"
+    options.namespaces_root = ["ImmApp"]
     options.python_run_black_formatter = True
     options.srcmlcpp_options.ignored_warnings.append(
         "Block elements of type decl_stmt are not supported in python conversion"
