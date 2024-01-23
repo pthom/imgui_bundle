@@ -3,6 +3,7 @@ https://github.com/dalerank/imspinner
 """
 # ruff: noqa: B008
 import enum
+import math
 
 from imgui_bundle.imgui import ImColor
 
@@ -423,7 +424,7 @@ def spinner_ing_yang(
     color_i: ImColor = ImColor(0xffffffff),
     color_y: ImColor = ImColor(0xffffffff),
     speed: float = 2.8,
-    angle: float = IM_PI * 0.7
+    angle: float = math.pi * 0.7
     ) -> None:
     pass
 

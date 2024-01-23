@@ -24,6 +24,8 @@ def main():
     # pybind11 stubbornly fails on perfect encapsulation. See https://github.com/pybind/pybind11/issues/2770
     options.fn_exclude_by_name__regex = "Context$"
 
+    options.postprocess_stub_before_black_function = lambda s: s.replace("Callable[[int selected_option], None]", "Callable[[int], None]")
+
     generator = litgen.LitgenGenerator(options)
 
     generator.process_cpp_file(

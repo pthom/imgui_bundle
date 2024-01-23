@@ -27,6 +27,7 @@ def main():
         "unhandled tag template",
     ]
     # options.python_run_black_formatter = True
+    options.postprocess_stub_before_black_function = lambda s: s.replace("IM_PI  0.7", "math.pi * 0.7")
 
     litgen.write_generated_code_for_file(
         options,

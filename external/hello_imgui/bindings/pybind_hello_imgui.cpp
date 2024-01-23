@@ -44,7 +44,7 @@ py::array_t<uint8_t> FinalAppWindowScreenshot()
 
 void py_init_module_hello_imgui(py::module& m)
 {
-    using namespace HelloImGui;
+    // using namespace HelloImGui;
     //using namespace ImGuiTheme;
     using ImWcharPair = std::array<ImWchar, 2>;
     using ScreenPosition = std::array<int, 2>;
@@ -52,7 +52,6 @@ void py_init_module_hello_imgui(py::module& m)
     using VoidFunction = std::function<void(void)>;
     using AnyEventCallback = std::function<bool(void * backendEvent)>;
     using DockSpaceName = std::string;
-
 
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
@@ -329,8 +328,8 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("load_font",
-        LoadFont,
-        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = FontLoadingParams{},
+        HelloImGui::LoadFont,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
         pybind11::return_value_policy::reference);
 
     m.def("load_font_ttf",

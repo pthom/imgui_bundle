@@ -1393,34 +1393,27 @@ class RunnerCallbacks:
         (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
         """
         pass
-    # VoidFunction LoadAdditionalFonts =    /* original C++ signature */
-    #         (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
+    # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;    /* original C++ signature */
     # `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
     #  A function that is called once, when fonts are ready to be loaded.
     #  By default, _LoadDefaultFont_WithFontAwesome_ is called,
     #  but you can copy and customize it.
     #  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/
     #  but reverts to the ImGui embedded font if not found)
-    load_additional_fonts: VoidFunction = (VoidFunction)(
+    load_additional_fonts: VoidFunction = (
         ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
     )
 
-    # VoidFunction SetupImGuiConfig =    /* original C++ signature */
-    #         (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);
+    # VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig;    /* original C++ signature */
     # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, change ImGui config via SetupImGuiConfig
     #  (enable docking, gamepad, etc)
-    setup_imgui_config: VoidFunction = (VoidFunction)(
-        ImGuiDefaultSettings.SetupDefaultImGuiConfig
-    )
+    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig
 
-    # VoidFunction SetupImGuiStyle =    /* original C++ signature */
-    #         (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);
+    # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle;    /* original C++ signature */
     # `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, set your own style by providing your own SetupImGuiStyle callback
-    setup_imgui_style: VoidFunction = (VoidFunction)(
-        ImGuiDefaultSettings.SetupDefaultImGuiStyle
-    )
+    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle
 
     # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
     # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
@@ -1489,7 +1482,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1498,15 +1491,9 @@ class RunnerCallbacks:
         show_status: VoidFunction = EmptyVoidFunction(),
         post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
-        load_additional_fonts: VoidFunction = (VoidFunction)(
-            ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
-        ),
-        setup_imgui_config: VoidFunction = (VoidFunction)(
-            ImGuiDefaultSettings.SetupDefaultImGuiConfig
-        ),
-        setup_imgui_style: VoidFunction = (VoidFunction)(
-            ImGuiDefaultSettings.SetupDefaultImGuiStyle
-        ),
+        load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons,
+        setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig,
+        setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle,
         register_tests: VoidFunction = EmptyVoidFunction(),
         register_tests_called: bool = False,
         before_exit: VoidFunction = EmptyVoidFunction(),

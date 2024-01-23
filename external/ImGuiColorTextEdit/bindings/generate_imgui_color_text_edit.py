@@ -24,6 +24,7 @@ def main():
     ]
     options.member_exclude_by_type__regex = "Callback$|^char$"
     options.fn_return_force_policy_reference_for_references__regex = ".*"
+    options.postprocess_stub_before_black_function = lambda s: s.replace("Optional[std.unordered_set<int>]", "Optional[Set[int]]")
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(MAIN_DIR + "/ImGuiColorTextEdit/TextEditor.h")

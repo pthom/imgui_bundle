@@ -320,7 +320,7 @@ class TextEditor:
     def on_line_deleted(
         self,
         a_line_index: int,
-        a_handled_cursors: Optional[Set] = None
+        a_handled_cursors: Optional[Set[int]] = None
         ) -> None:
         pass
     def on_lines_deleted(
