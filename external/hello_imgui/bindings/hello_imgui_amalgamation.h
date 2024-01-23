@@ -2031,19 +2031,16 @@ struct RunnerCallbacks
     //  but you can copy and customize it.
     //  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/
     //  but reverts to the ImGui embedded font if not found)
-    VoidFunction LoadAdditionalFonts =
-        (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons);
+    VoidFunction LoadAdditionalFonts = (VoidFunction)ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;
 
     // `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     //  If needed, change ImGui config via SetupImGuiConfig
     //  (enable docking, gamepad, etc)
-    VoidFunction SetupImGuiConfig =
-        (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig);
+    VoidFunction SetupImGuiConfig = (VoidFunction)ImGuiDefaultSettings::SetupDefaultImGuiConfig;
 
     // `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     //  If needed, set your own style by providing your own SetupImGuiStyle callback
-    VoidFunction SetupImGuiStyle =
-        (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle);
+    VoidFunction SetupImGuiStyle = (VoidFunction)ImGuiDefaultSettings::SetupDefaultImGuiStyle;
 
     // `RegisterTests`: A function that is called once ImGuiTestEngine is ready
     // to be filled with tests and automations definitions.

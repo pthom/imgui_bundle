@@ -201,7 +201,7 @@ void py_init_module_immapp_cpp(py::module& m)
             py::overload_cast<const Snippets::SnippetData &, const Snippets::SnippetData &, bool, bool>(Snippets::ShowSideBySideSnippets), py::arg("snippet1"), py::arg("snippet2"), py::arg("hide_if_empty") = true, py::arg("equal_visible_lines") = true);
 
         pyNsSnippets.def("show_side_by_side_snippets",
-            py::overload_cast<const std::vector<SnippetData> &, bool, bool>(Snippets::ShowSideBySideSnippets), py::arg("snippets"), py::arg("hide_if_empty") = true, py::arg("equal_visible_lines") = true);
+            py::overload_cast<const std::vector<Snippets::SnippetData> &, bool, bool>(Snippets::ShowSideBySideSnippets), py::arg("snippets"), py::arg("hide_if_empty") = true, py::arg("equal_visible_lines") = true);
     } // </namespace Snippets>
     ////////////////////    </generated_from:snippets.h>    ////////////////////
 

@@ -64,6 +64,8 @@ def main():
 
     options.python_run_black_formatter = True
 
+    options.postprocess_stub_before_black_function = lambda code: code.replace("(VoidFunction)", "")
+
     litgen.write_generated_code_for_file(
         options,
         input_cpp_header_file=input_cpp_header,

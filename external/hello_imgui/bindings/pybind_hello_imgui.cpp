@@ -46,6 +46,13 @@ void py_init_module_hello_imgui(py::module& m)
 {
     using namespace HelloImGui;
     //using namespace ImGuiTheme;
+    using ImWcharPair = std::array<ImWchar, 2>;
+    using ScreenPosition = std::array<int, 2>;
+    using ScreenSize = std::array<int, 2>;
+    using VoidFunction = std::function<void(void)>;
+    using AnyEventCallback = std::function<bool(void * backendEvent)>;
+    using DockSpaceName = std::string;
+
 
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
@@ -322,8 +329,8 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("load_font",
-        HelloImGui::LoadFont,
-        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
+        LoadFont,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = FontLoadingParams{},
         pybind11::return_value_policy::reference);
 
     m.def("load_font_ttf",
@@ -639,7 +646,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", " RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
         .def(py::init<>([](
-        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), VoidFunction SetupImGuiConfig = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), VoidFunction SetupImGuiStyle = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
+        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, VoidFunction SetupImGuiConfig = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
         {
             auto r = std::make_unique<HelloImGui::RunnerCallbacks>();
             r->ShowGui = ShowGui;
@@ -662,7 +669,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->AnyBackendEventCallback = AnyBackendEventCallback;
             return r;
         })
-        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init_add_platform_backend_callbacks") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)(ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons), py::arg("setup_imgui_config") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiConfig), py::arg("setup_imgui_style") = (VoidFunction)(ImGuiDefaultSettings::SetupDefaultImGuiStyle), py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("register_tests_called") = false, py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
+        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init_add_platform_backend_callbacks") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, py::arg("setup_imgui_config") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, py::arg("setup_imgui_style") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("register_tests_called") = false, py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
         )
         .def_readwrite("show_gui", &HelloImGui::RunnerCallbacks::ShowGui, "`ShowGui`: Fill it with a function that will add your widgets.")
         .def_readwrite("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
@@ -751,7 +758,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::DockingParams>
             (m, "DockingParams", " DockingParams contains all the settings concerning the docking:\n     - list of splits\n     - list of dockable windows")
         .def(py::init<>([](
-        std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode, HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
+        std::vector<HelloImGui::DockingSplit> dockingSplits = std::vector<HelloImGui::DockingSplit>(), std::vector<HelloImGui::DockableWindow> dockableWindows = std::vector<HelloImGui::DockableWindow>(), std::string layoutName = "Default", ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode, HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
         {
             auto r = std::make_unique<HelloImGui::DockingParams>();
             r->dockingSplits = dockingSplits;
@@ -762,7 +769,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->layoutReset = layoutReset;
             return r;
         })
-        , py::arg("docking_splits") = std::vector<DockingSplit>(), py::arg("dockable_windows") = std::vector<DockableWindow>(), py::arg("layout_name") = "Default", py::arg("main_dock_space_node_flags") = ImGuiDockNodeFlags_PassthruCentralNode, py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
+        , py::arg("docking_splits") = std::vector<HelloImGui::DockingSplit>(), py::arg("dockable_windows") = std::vector<HelloImGui::DockableWindow>(), py::arg("layout_name") = "Default", py::arg("main_dock_space_node_flags") = ImGuiDockNodeFlags_PassthruCentralNode, py::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, py::arg("layout_reset") = false
         )
         .def_readwrite("docking_splits", &HelloImGui::DockingParams::dockingSplits, " `dockingSplits`: _vector[DockingSplit]_.\n  Defines the way docking splits should be applied on the screen\n  in order to create new Dock Spaces")
         .def_readwrite("dockable_windows", &HelloImGui::DockingParams::dockableWindows, " `dockableWindows`: _vector[DockableWindow]_.\n  List of the dockable windows, together with their Gui code")
@@ -863,7 +870,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RunnerParams>
             (m, "RunnerParams", " RunnerParams contains the settings and callbacks needed to run an application.\n")
         .def(py::init<>([](
-        HelloImGui::RunnerCallbacks callbacks = HelloImGui::RunnerCallbacks(), HelloImGui::AppWindowParams appWindowParams = HelloImGui::AppWindowParams(), HelloImGui::ImGuiWindowParams imGuiWindowParams = HelloImGui::ImGuiWindowParams(), HelloImGui::DockingParams dockingParams = HelloImGui::DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, HelloImGui::BackendPointers backendPointers = HelloImGui::BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, HelloImGui::RendererBackendOptions rendererBackendOptions = HelloImGui::RendererBackendOptions(), HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, HelloImGui::FpsIdling fpsIdling = HelloImGui::FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0)
+        HelloImGui::RunnerCallbacks callbacks = HelloImGui::RunnerCallbacks(), HelloImGui::AppWindowParams appWindowParams = HelloImGui::AppWindowParams(), HelloImGui::ImGuiWindowParams imGuiWindowParams = HelloImGui::ImGuiWindowParams(), HelloImGui::DockingParams dockingParams = HelloImGui::DockingParams(), std::vector<HelloImGui::DockingParams> alternativeDockingLayouts = std::vector<HelloImGui::DockingParams>(), bool rememberSelectedAlternativeLayout = true, HelloImGui::BackendPointers backendPointers = HelloImGui::BackendPointers(), HelloImGui::BackendType backendType = HelloImGui::BackendType::FirstAvailable, HelloImGui::RendererBackendOptions rendererBackendOptions = HelloImGui::RendererBackendOptions(), HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, HelloImGui::FpsIdling fpsIdling = HelloImGui::FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0)
         {
             auto r = std::make_unique<HelloImGui::RunnerParams>();
             r->callbacks = callbacks;
@@ -884,7 +891,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->emscripten_fps = emscripten_fps;
             return r;
         })
-        , py::arg("callbacks") = HelloImGui::RunnerCallbacks(), py::arg("app_window_params") = HelloImGui::AppWindowParams(), py::arg("imgui_window_params") = HelloImGui::ImGuiWindowParams(), py::arg("docking_params") = HelloImGui::DockingParams(), py::arg("alternative_docking_layouts") = std::vector<DockingParams>(), py::arg("remember_selected_alternative_layout") = true, py::arg("backend_pointers") = HelloImGui::BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("renderer_backend_options") = HelloImGui::RendererBackendOptions(), py::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("fps_idling") = HelloImGui::FpsIdling(), py::arg("use_imgui_test_engine") = false, py::arg("emscripten_fps") = 0
+        , py::arg("callbacks") = HelloImGui::RunnerCallbacks(), py::arg("app_window_params") = HelloImGui::AppWindowParams(), py::arg("imgui_window_params") = HelloImGui::ImGuiWindowParams(), py::arg("docking_params") = HelloImGui::DockingParams(), py::arg("alternative_docking_layouts") = std::vector<HelloImGui::DockingParams>(), py::arg("remember_selected_alternative_layout") = true, py::arg("backend_pointers") = HelloImGui::BackendPointers(), py::arg("backend_type") = HelloImGui::BackendType::FirstAvailable, py::arg("renderer_backend_options") = HelloImGui::RendererBackendOptions(), py::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, py::arg("ini_filename") = "", py::arg("ini_filename_use_app_window_title") = true, py::arg("app_shall_exit") = false, py::arg("fps_idling") = HelloImGui::FpsIdling(), py::arg("use_imgui_test_engine") = false, py::arg("emscripten_fps") = 0
         )
         .def_readwrite("callbacks", &HelloImGui::RunnerParams::callbacks, " `callbacks`: _see runner_callbacks.h_\n callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.")
         .def_readwrite("app_window_params", &HelloImGui::RunnerParams::appWindowParams, " `appWindowParams`: _see app_window_params.h_\n application Window Params (position, size, title)")

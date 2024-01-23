@@ -62,7 +62,7 @@ class ColormapScaleFromStatsData:  # immvision.h:34
     # If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMax will be calculated from the matrix min value instead of a sigma based value
     use_stats_max: bool = False  # immvision.h:45
     # ColormapScaleFromStatsData(ColorMapStatsTypeId ColorMapStatsType = ColorMapStatsTypeId.from_full_image, double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false);    /* original C++ signature */
-    def __init__(  # Line:3
+    def __init__(  # Line:4
         self,
         color_map_stats_type: ColorMapStatsTypeId = ColorMapStatsTypeId.from_full_image,
         nb_sigmas: float = 1.5,
@@ -105,7 +105,7 @@ class ColormapSettingsData:  # immvision.h:50
     # Internal value: stores the name of the Colormap that is hovered by the mouse
     internal_colormap_hovered: str = ""  # immvision.h:71
     # ColormapSettingsData(std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., ColormapScaleFromStatsData ColormapScaleFromStats = ColormapScaleFromStatsData(), std::string internal_ColormapHovered = "");    /* original C++ signature */
-    def __init__(  # Line:3
+    def __init__(  # Line:4
         self,
         colormap: str = "None",
         colormap_scale_min: float = 0.0,
@@ -140,7 +140,7 @@ class MouseInformation:  # immvision.h:76
     # Note: you can query ImGui::IsMouseDown(mouse_button) (c++) or imgui.is_mouse_down(mouse_button) (Python)
     #
     # MouseInformation(bool IsMouseHovering = false, cv::Point2d MousePosition = cv::Point2d(-1., -1.), cv::Point MousePosition_Displayed = cv::Point(-1, -1));    /* original C++ signature */
-    def __init__(  # Line:3
+    def __init__(  # Line:4
         self,
         is_mouse_hovering: bool = False,
         mouse_position: Point2d = (-1.0, -1.0),
@@ -273,7 +273,7 @@ class ImageParams:  # immvision.h:96
     mouse_info: MouseInformation = MouseInformation()  # immvision.h:189
 
     # ImageParams(bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
-    def __init__(  # Line:3
+    def __init__(  # Line:4
         self,
         refresh_image: bool = False,
         image_display_size: Size = (0, 0),

@@ -52,7 +52,7 @@ void py_init_module_immvision(py::module& m)
         py::class_<ImmVision::ColormapScaleFromStatsData>    // immvision.h:34
             (m, "ColormapScaleFromStatsData", " Scale the Colormap according to the Image  stats\n\nIMMVISION_API_STRUCT")
         .def(py::init<>([](
-        ImmVision::ColorMapStatsTypeId ColorMapStatsType = ColorMapStatsTypeId(), double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
+        ImmVision::ColorMapStatsTypeId ColorMapStatsType = ImmVision::ColorMapStatsTypeId(), double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
         {
             auto r = std::make_unique<ImmVision::ColormapScaleFromStatsData>();
             r->ColorMapStatsType = ColorMapStatsType;
@@ -61,7 +61,7 @@ void py_init_module_immvision(py::module& m)
             r->UseStatsMax = UseStatsMax;
             return r;
         })
-        , py::arg("color_map_stats_type") = ColorMapStatsTypeId(), py::arg("nb_sigmas") = 1.5, py::arg("use_stats_min") = false, py::arg("use_stats_max") = false
+        , py::arg("color_map_stats_type") = ImmVision::ColorMapStatsTypeId(), py::arg("nb_sigmas") = 1.5, py::arg("use_stats_min") = false, py::arg("use_stats_max") = false
         )
         .def_readwrite("color_map_stats_type", &ImmVision::ColormapScaleFromStatsData::ColorMapStatsType, "Are we using the stats on the full image, the visible ROI, or are we using Min/Max values")    // immvision.h:37
         .def_readwrite("nb_sigmas", &ImmVision::ColormapScaleFromStatsData::NbSigmas, "If stats active (either on ROI or on Image), how many sigmas around the mean should the Colormap be applied")    // immvision.h:40
