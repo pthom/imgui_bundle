@@ -4,7 +4,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(__file__) + "/..")
-from bindings_generation import all_external_libraries
+from bindings_generation import all_external_libraries  # noqa: E402
 
 
 def autogenerate_all():
@@ -32,8 +32,7 @@ set(external_dir ${IMGUIBUNDLE_PATH}/external)
 
 set(all_pybind_files
 _FILELIST_
-    )
-    """
+    )"""
     filelist = "\n".join(pybind_files)
 
     cmake_content = cmake_template.replace("_FILELIST_", filelist)
