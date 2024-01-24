@@ -36,6 +36,8 @@ def main():
             "NVG" + letter, letter.upper()
         )
 
+    options.srcmlcpp_options.ignored_warning_parts.append("C style function pointers are poorly supported")
+
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(THIS_DIR + "/../nanovg/src/nanovg.h")
     generator.process_cpp_file(THIS_DIR + "/../nvg_imgui/nvg_imgui.h")

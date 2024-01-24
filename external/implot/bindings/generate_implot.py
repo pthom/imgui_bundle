@@ -60,6 +60,8 @@ def autogenerate_implot_internal() -> None:
     options.member_exclude_by_type__regex += "|^ImPlotTransform$|^ImPlotFormatter$|^tm$"
     options.fn_force_lambda__regex += "|^GetText$"
 
+    options.srcmlcpp_options.ignored_warning_parts.append("Excluding template type ImVector")
+
     litgen.write_generated_code_for_file(
         options,
         input_cpp_header_file=CPP_HEADERS_DIR + "/implot_internal.h",
