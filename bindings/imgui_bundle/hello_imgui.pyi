@@ -6,7 +6,6 @@ from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np
 import enum
 
-from imgui_bundle import hello_imgui as HelloImGui
 from imgui_bundle.imgui.internal import DockNodeFlags_, DockNodeFlags
 from imgui_bundle.imgui import (
     ImVec2,
@@ -714,11 +713,11 @@ class ScreenBounds:
         pass
     # ScreenBounds EnsureWindowFitsThisMonitor(ScreenBounds windowBoundsOriginal) const;    /* original C++ signature */
     def ensure_window_fits_this_monitor(
-        self, window_bounds_original: HelloImGui.ScreenBounds
-    ) -> HelloImGui.ScreenBounds:
+        self, window_bounds_original: ScreenBounds
+    ) -> ScreenBounds:
         pass
     # bool operator==(const ScreenBounds& other) const;    /* original C++ signature */
-    def __eq__(self, other: HelloImGui.ScreenBounds) -> bool:
+    def __eq__(self, other: ScreenBounds) -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(

@@ -281,7 +281,7 @@ class Arrow:
         line_scale: ImVec2 = ImVec2(1, 1)
         ) -> None:
         pass
-    def use_preset(self, param_0: Arrow.Preset) -> ImGuiTexInspect.Arrow:
+    def use_preset(self, param_0: Arrow.Preset) -> Arrow:
         pass
     def draw_annotation(
         self,
@@ -304,7 +304,7 @@ class Transform2D:
         """ Transform a vector by this transform.  Scale is applied first"""
         pass
 
-    def inverse(self) -> ImGuiTexInspect.Transform2D:
+    def inverse(self) -> Transform2D:
         """ Return an inverse transform such that transform.Inverse() * transform * vector == vector"""
         pass
     def __init__(
