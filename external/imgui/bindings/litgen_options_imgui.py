@@ -257,6 +257,7 @@ def litgen_options_imgui(
     options.original_signature_flag_show = True
 
     options.python_run_black_formatter = True
+    options.python_black_formatter_line_length = 120
 
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False
