@@ -304,11 +304,7 @@ def global_composite_operation(ctx: Context, op: int) -> None:
     pass
 
 # void nvgGlobalCompositeBlendFunc(NVGcontext* ctx, int sfactor, int dfactor);    /* original C++ signature */
-def global_composite_blend_func(
-    ctx: Context,
-    sfactor: int,
-    dfactor: int
-    ) -> None:
+def global_composite_blend_func(ctx: Context, sfactor: int, dfactor: int) -> None:
     """ Sets the composite operation with custom pixel arithmetic. The parameters should be one of NVGblendFactor."""
     pass
 
@@ -630,12 +626,7 @@ def create_image(ctx: Context, filename: str, image_flags: int) -> int:
     pass
 
 # int nvgCreateImageMem(NVGcontext* ctx, int imageFlags, unsigned char* data, int ndata);    /* original C++ signature */
-def create_image_mem(
-    ctx: Context,
-    image_flags: int,
-    data: UChar,
-    ndata: int
-    ) -> int:
+def create_image_mem(ctx: Context, image_flags: int, data: UChar, ndata: int) -> int:
     """ Creates image by loading it from the specified chunk of memory.
      Returns handle to the image.
     """
@@ -758,13 +749,7 @@ def scissor(ctx: Context, x: float, y: float, w: float, h: float) -> None:
     pass
 
 # void nvgIntersectScissor(NVGcontext* ctx, float x, float y, float w, float h);    /* original C++ signature */
-def intersect_scissor(
-    ctx: Context,
-    x: float,
-    y: float,
-    w: float,
-    h: float
-    ) -> None:
+def intersect_scissor(ctx: Context, x: float, y: float, w: float, h: float) -> None:
     """ Intersects current scissor rectangle with the specified rectangle.
      The scissor rectangle is transformed by the current transform.
      Note: in case the rotation of previous scissor rect differs from
@@ -1001,11 +986,7 @@ def find_font(ctx: Context, name: str) -> int:
     pass
 
 # int nvgAddFallbackFontId(NVGcontext* ctx, int baseFont, int fallbackFont);    /* original C++ signature */
-def add_fallback_font_id(
-    ctx: Context,
-    base_font: int,
-    fallback_font: int
-    ) -> int:
+def add_fallback_font_id(ctx: Context, base_font: int, fallback_font: int) -> int:
     """ Adds a fallback font by handle."""
     pass
 
@@ -1249,13 +1230,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         #             int width, int height,
         #             int nvgImageFlags
         #             );
-        def __init__(
-            self,
-            vg: Context,
-            width: int,
-            height: int,
-            nvg_image_flags: int
-            ) -> None:
+        def __init__(self, vg: Context, width: int, height: int, nvg_image_flags: int) -> None:
             """ See NVGimageFlags"""
             pass
 
@@ -1348,12 +1323,7 @@ def text_box(
 
 
 # std::tuple<Bounds, float> nvgcpp_TextBounds(NVGcontext* ctx, float x, float y, const std::string& text);    /* original C++ signature */
-def text_bounds(
-    ctx: Context,
-    x: float,
-    y: float,
-    text: str
-    ) -> Tuple[Bounds, float]:
+def text_bounds(ctx: Context, x: float, y: float, text: str) -> Tuple[Bounds, float]:
     """ Measures the specified text string. Parameter bounds should be a pointer to float[4],
      if the bounding box of the text should be returned. The bounds value are [xmin,ymin, xmax,ymax]
      Returns the bounds + the horizontal advance of the measured text (i.e. where the next character should drawn)

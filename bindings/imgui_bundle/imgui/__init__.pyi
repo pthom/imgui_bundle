@@ -1,7 +1,15 @@
 # ruff: noqa: B008, E741
 from __future__ import annotations
 import sys
-from typing import List, Any, Optional, Tuple, overload, Iterator, Callable
+from typing import (
+    List,
+    Any,
+    Optional,
+    Tuple,
+    overload,
+    Iterator,
+    Callable,
+)
 import numpy as np
 import enum
 from . import internal as internal
@@ -49,7 +57,9 @@ uint = int
 uchar = int
 char = int
 
-def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
+def font_atlas_get_tex_data_as_rgba32(
+    font_atlas: ImFontAtlas,
+) -> np.ndarray:
     """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
     This is also available as a method of ImFont: ImFontAtlas.get_tex_data_as_rgba32()
     """
@@ -58,7 +68,6 @@ def font_atlas_get_tex_data_as_rgba32(font_atlas: ImFontAtlas) -> np.ndarray:
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
-# fmt: off
 """
 // Forward declarations
 struct ImDrawChannel;               // Temporary storage to output draw commands out of order, used by ImDrawListSplitter and ImDrawList::ChannelsSplit()
@@ -137,44 +146,44 @@ typedef int ImGuiTreeNodeFlags;     // -> enum ImGuiTreeNodeFlags_   // Flags: f
 typedef int ImGuiViewportFlags;     // -> enum ImGuiViewportFlags_   // Flags: for ImGuiViewport
 typedef int ImGuiWindowFlags;       // -> enum ImGuiWindowFlags_     // Flags: for Begin(), BeginChild()
 """
-Col = int               # -> enum Col_             # Enum: A color identifier for styling
-Cond = int              # -> enum Cond_            # Enum: A condition for many Set*() functions
-DataType = int          # -> enum DataType_        # Enum: A primary data type
-Dir = int               # -> enum Dir_             # Enum: A cardinal direction
-NavInput = int          # -> enum NavInput_        # Enum: An input identifier for navigation
-MouseButton = int       # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
-MouseCursor = int       # -> enum MouseCursor_     # Enum: A mouse cursor identifier
-SortDirection = int     # -> enum SortDirection_   # Enum: A sorting direction (ascending or descending)
-StyleVar = int          # -> enum StyleVar_        # Enum: A variable identifier for styling
-TableBgTarget = int     # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
-ImDrawFlags = int            # -> enum ImDrawFlags_          # Flags: for ImDrawList functions
-ImDrawListFlags = int        # -> enum ImDrawListFlags_      # Flags: for ImDrawList instance
-ImFontAtlasFlags = int       # -> enum ImFontAtlasFlags_     # Flags: for ImFontAtlas build
-BackendFlags = int      # -> enum BackendFlags_    # Flags: for io.BackendFlags
-ButtonFlags = int       # -> enum ButtonFlags_     # Flags: for InvisibleButton()
-ColorEditFlags = int    # -> enum ColorEditFlags_  # Flags: for ColorEdit4(), ColorPicker4() etc.
-ConfigFlags = int       # -> enum ConfigFlags_     # Flags: for io.ConfigFlags
-ComboFlags = int        # -> enum ComboFlags_      # Flags: for BeginCombo()
-DockNodeFlags = int     # -> enum DockNodeFlags_   // Flags: for DockSpace()
-DragDropFlags = int     # -> enum DragDropFlags_   # Flags: for BeginDragDropSource(), AcceptDragDropPayload()
-FocusedFlags = int      # -> enum FocusedFlags_    # Flags: for IsWindowFocused()
-HoveredFlags = int      # -> enum HoveredFlags_    # Flags: for IsItemHovered(), IsWindowHovered() etc.
-InputTextFlags = int    # -> enum InputTextFlags_  # Flags: for InputText(), InputTextMultiline()
-ModFlags = int          # -> enum ModFlags_        # Flags: for io.KeyMods (Ctrl/Shift/Alt/Super)
-PopupFlags = int        # -> enum PopupFlags_      # Flags: for OpenPopup*(), BeginPopupContext*(), IsPopupOpen()
-SelectableFlags = int   # -> enum SelectableFlags_ # Flags: for Selectable()
-SliderFlags = int       # -> enum SliderFlags_     # Flags: for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
-TabBarFlags = int       # -> enum TabBarFlags_     # Flags: for BeginTabBar()
-TabItemFlags = int      # -> enum TabItemFlags_    # Flags: for BeginTabItem()
-TableFlags = int        # -> enum TableFlags_      # Flags: For BeginTable()
+Col = int  # -> enum Col_             # Enum: A color identifier for styling
+Cond = int  # -> enum Cond_            # Enum: A condition for many Set*() functions
+DataType = int  # -> enum DataType_        # Enum: A primary data type
+Dir = int  # -> enum Dir_             # Enum: A cardinal direction
+NavInput = int  # -> enum NavInput_        # Enum: An input identifier for navigation
+MouseButton = int  # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
+MouseCursor = int  # -> enum MouseCursor_     # Enum: A mouse cursor identifier
+SortDirection = int  # -> enum SortDirection_   # Enum: A sorting direction (ascending or descending)
+StyleVar = int  # -> enum StyleVar_        # Enum: A variable identifier for styling
+TableBgTarget = int  # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
+ImDrawFlags = int  # -> enum ImDrawFlags_          # Flags: for ImDrawList functions
+ImDrawListFlags = int  # -> enum ImDrawListFlags_      # Flags: for ImDrawList instance
+ImFontAtlasFlags = int  # -> enum ImFontAtlasFlags_     # Flags: for ImFontAtlas build
+BackendFlags = int  # -> enum BackendFlags_    # Flags: for io.BackendFlags
+ButtonFlags = int  # -> enum ButtonFlags_     # Flags: for InvisibleButton()
+ColorEditFlags = int  # -> enum ColorEditFlags_  # Flags: for ColorEdit4(), ColorPicker4() etc.
+ConfigFlags = int  # -> enum ConfigFlags_     # Flags: for io.ConfigFlags
+ComboFlags = int  # -> enum ComboFlags_      # Flags: for BeginCombo()
+DockNodeFlags = int  # -> enum DockNodeFlags_   // Flags: for DockSpace()
+DragDropFlags = int  # -> enum DragDropFlags_   # Flags: for BeginDragDropSource(), AcceptDragDropPayload()
+FocusedFlags = int  # -> enum FocusedFlags_    # Flags: for IsWindowFocused()
+HoveredFlags = int  # -> enum HoveredFlags_    # Flags: for IsItemHovered(), IsWindowHovered() etc.
+InputTextFlags = int  # -> enum InputTextFlags_  # Flags: for InputText(), InputTextMultiline()
+ModFlags = int  # -> enum ModFlags_        # Flags: for io.KeyMods (Ctrl/Shift/Alt/Super)
+PopupFlags = int  # -> enum PopupFlags_      # Flags: for OpenPopup*(), BeginPopupContext*(), IsPopupOpen()
+SelectableFlags = int  # -> enum SelectableFlags_ # Flags: for Selectable()
+SliderFlags = int  # -> enum SliderFlags_     # Flags: for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
+TabBarFlags = int  # -> enum TabBarFlags_     # Flags: for BeginTabBar()
+TabItemFlags = int  # -> enum TabItemFlags_    # Flags: for BeginTabItem()
+TableFlags = int  # -> enum TableFlags_      # Flags: For BeginTable()
 TableColumnFlags = int  # -> enum TableColumnFlags_# Flags: For TableSetupColumn()
-TableRowFlags = int     # -> enum TableRowFlags_   # Flags: For TableNextRow()
-TreeNodeFlags = int     # -> enum TreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
-ViewportFlags = int     # -> enum ViewportFlags_   # Flags: for ImGuiViewport
-WindowFlags = int       # -> enum WindowFlags_     # Flags: for Begin(), BeginChild()
-ToggleFlags = int       # -> enum ToggleFlags_
-ChildFlags  = int       # -> enum ChildFlags_
-KeyChord = ModFlags     # == int. We generally use ImGuiKeyChord to mean "a ImGuiKey or-ed with any number of ImGuiMod_XXX value", but you may store only mods in there.
+TableRowFlags = int  # -> enum TableRowFlags_   # Flags: For TableNextRow()
+TreeNodeFlags = int  # -> enum TreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
+ViewportFlags = int  # -> enum ViewportFlags_   # Flags: for ImGuiViewport
+WindowFlags = int  # -> enum WindowFlags_     # Flags: for Begin(), BeginChild()
+ToggleFlags = int  # -> enum ToggleFlags_
+ChildFlags = int  # -> enum ChildFlags_
+KeyChord = ModFlags  # == int. We generally use ImGuiKeyChord to mean "a ImGuiKey or-ed with any number of ImGuiMod_XXX value", but you may store only mods in there.
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
@@ -209,9 +218,9 @@ typedef signed   long long  ImS64;  // 64-bit signed integer
 typedef unsigned long long  ImU64;  // 64-bit unsigned integer
 """
 # Scalar data types
-ID = int# A unique ID used by widgets (typically the result of hashing a stack of string)
-ImS8 = int   # 8-bit integer
-ImU8 = int   # 8-bit integer
+ID = int  # A unique ID used by widgets (typically the result of hashing a stack of string)
+ImS8 = int  # 8-bit integer
+ImU8 = int  # 8-bit integer
 ImS16 = int  # 16-bit integer
 ImU16 = int  # 16-bit integer
 ImS32 = int  # 32-bit integer == int
@@ -250,12 +259,10 @@ MemAllocFunc = Any
 MemFreeFunc = Any
 ImDrawCallback = Any
 
-#using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
-#using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
+# using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
+# using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
 InputTextCallback = Callable[[InputTextCallbackData], int]
 SizeCallback = Callable[[SizeCallbackData], None]
-
-
 
 """
 // Helpers macros to generate 32-bit encoded colors
@@ -286,12 +293,7 @@ IM_COL32_B_SHIFT = 16
 IM_COL32_A_SHIFT = 24
 
 def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
-    r = (
-        (a << IM_COL32_A_SHIFT)
-        | (b << IM_COL32_B_SHIFT)
-        | (g << IM_COL32_G_SHIFT)
-        | (r << IM_COL32_R_SHIFT)
-    )
+    r = (a << IM_COL32_A_SHIFT) | (b << IM_COL32_B_SHIFT) | (g << IM_COL32_G_SHIFT) | (r << IM_COL32_R_SHIFT)
     return r
 
 IM_COL32_WHITE = IM_COL32(255, 255, 255, 255)
@@ -312,9 +314,6 @@ VERTEX_BUFFER_POS_OFFSET: int
 VERTEX_BUFFER_UV_OFFSET: int
 VERTEX_BUFFER_COL_OFFSET: int
 INDEX_SIZE: int
-
-# Disable black formatter
-# fmt: off
 
 ##################################################
 #    AUTO GENERATED CODE BELOW
@@ -633,9 +632,7 @@ def style_colors_classic(dst: Optional[Style] = None) -> None:
 #    BeginXXX function returned True. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 # - Note that the bottom of window stack always contains a window called "Debug".
 # IMGUI_API bool          Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);    /* original C++ signature */
-def begin(
-    name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0
-) -> Tuple[bool, Optional[bool]]:
+def begin(name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0) -> Tuple[bool, Optional[bool]]:
     pass
 
 # IMGUI_API void          End();    /* original C++ signature */
@@ -663,20 +660,14 @@ def end() -> None:
 # IMGUI_API bool          BeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    str_id: str,
-    size: ImVec2 = ImVec2(0, 0),
-    child_flags: ChildFlags = 0,
-    window_flags: WindowFlags = 0,
+    str_id: str, size: ImVec2 = ImVec2(0, 0), child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
     pass
 
 # IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    id_: ID,
-    size: ImVec2 = ImVec2(0, 0),
-    child_flags: ChildFlags = 0,
-    window_flags: WindowFlags = 0,
+    id_: ID, size: ImVec2 = ImVec2(0, 0), child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
     pass
 
@@ -742,9 +733,7 @@ def get_window_viewport() -> Viewport:
 # Window manipulation
 # - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
 # IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0));     /* original C++ signature */
-def set_next_window_pos(
-    pos: ImVec2, cond: Cond = 0, pivot: ImVec2 = ImVec2(0, 0)
-) -> None:
+def set_next_window_pos(pos: ImVec2, cond: Cond = 0, pivot: ImVec2 = ImVec2(0, 0)) -> None:
     """set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc."""
     pass
 
@@ -755,10 +744,7 @@ def set_next_window_size(size: ImVec2, cond: Cond = 0) -> None:
 
 # IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL);     /* original C++ signature */
 def set_next_window_size_constraints(
-    size_min: ImVec2,
-    size_max: ImVec2,
-    custom_callback: SizeCallback = None,
-    custom_callback_data: Optional[Any] = None,
+    size_min: ImVec2, size_max: ImVec2, custom_callback: SizeCallback = None, custom_callback_data: Optional[Any] = None
 ) -> None:
     """set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints."""
     pass
@@ -1322,9 +1308,7 @@ def radio_button(label: str, v: int, v_button: int) -> Tuple[bool, int]:
 
 # IMGUI_API void          ProgressBar(float fraction, const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), const char* overlay = NULL);    /* original C++ signature */
 def progress_bar(
-    fraction: float,
-    size_arg: ImVec2 = ImVec2(-sys.float_info.min, 0),
-    overlay: Optional[str] = None,
+    fraction: float, size_arg: ImVec2 = ImVec2(-sys.float_info.min, 0), overlay: Optional[str] = None
 ) -> None:
     pass
 
@@ -1374,18 +1358,13 @@ def end_combo() -> None:
 
 # IMGUI_API bool          Combo(const char* label, int* current_item, const char* const items[], int items_count, int popup_max_height_in_items = -1);    /* original C++ signature */
 @overload
-def combo(
-    label: str, current_item: int, items: List[str], popup_max_height_in_items: int = -1
-) -> Tuple[bool, int]:
+def combo(label: str, current_item: int, items: List[str], popup_max_height_in_items: int = -1) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          Combo(const char* label, int* current_item, const char* items_separated_by_zeros, int popup_max_height_in_items = -1);          /* original C++ signature */
 @overload
 def combo(
-    label: str,
-    current_item: int,
-    items_separated_by_zeros: str,
-    popup_max_height_in_items: int = -1,
+    label: str, current_item: int, items_separated_by_zeros: str, popup_max_height_in_items: int = -1
 ) -> Tuple[bool, int]:
     """Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0" """
     pass
@@ -1467,13 +1446,7 @@ def drag_float_range2(
 
 # IMGUI_API bool          DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d", ImGuiSliderFlags flags = 0);      /* original C++ signature */
 def drag_int(
-    label: str,
-    v: int,
-    v_speed: float = 1.0,
-    v_min: int = 0,
-    v_max: int = 0,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, v: int, v_speed: float = 1.0, v_min: int = 0, v_max: int = 0, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, int]:
     """If v_min >= v_max we have no bound"""
     pass
@@ -1563,46 +1536,26 @@ def drag_scalar_n(
 #   If you get a warning converting a float to ImGuiSliderFlags, read https://github.com/ocornut/imgui/issues/3361
 # IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);         /* original C++ signature */
 def slider_float(
-    label: str,
-    v: float,
-    v_min: float,
-    v_max: float,
-    format: str = "%.3",
-    flags: SliderFlags = 0,
+    label: str, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, float]:
     """adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display."""
     pass
 
 # IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float2(
-    label: str,
-    v: List[float],
-    v_min: float,
-    v_max: float,
-    format: str = "%.3",
-    flags: SliderFlags = 0,
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float3(
-    label: str,
-    v: List[float],
-    v_min: float,
-    v_max: float,
-    format: str = "%.3",
-    flags: SliderFlags = 0,
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float4(
-    label: str,
-    v: List[float],
-    v_min: float,
-    v_max: float,
-    format: str = "%.3",
-    flags: SliderFlags = 0,
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
@@ -1619,45 +1572,25 @@ def slider_angle(
 
 # IMGUI_API bool          SliderInt(const char* label, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_int(
-    label: str,
-    v: int,
-    v_min: int,
-    v_max: int,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, v: int, v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          SliderInt2(const char* label, int v[2], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_int2(
-    label: str,
-    v: List[int],
-    v_min: int,
-    v_max: int,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, v: List[int], v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, List[int]]:
     pass
 
 # IMGUI_API bool          SliderInt3(const char* label, int v[3], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_int3(
-    label: str,
-    v: List[int],
-    v_min: int,
-    v_max: int,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, v: List[int], v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, List[int]]:
     pass
 
 # IMGUI_API bool          SliderInt4(const char* label, int v[4], int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_int4(
-    label: str,
-    v: List[int],
-    v_min: int,
-    v_max: int,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, v: List[int], v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, List[int]]:
     pass
 
@@ -1688,25 +1621,13 @@ def slider_scalar_n(
 
 # IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_float(
-    label: str,
-    size: ImVec2,
-    v: float,
-    v_min: float,
-    v_max: float,
-    format: str = "%.3",
-    flags: SliderFlags = 0,
+    label: str, size: ImVec2, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
 # IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_int(
-    label: str,
-    size: ImVec2,
-    v: int,
-    v_min: int,
-    v_max: int,
-    format: str = "%d",
-    flags: SliderFlags = 0,
+    label: str, size: ImVec2, v: int, v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, int]:
     pass
 
@@ -1728,12 +1649,7 @@ def v_slider_scalar(
 # - Most of the ImGuiInputTextFlags flags are only useful for InputText() and not for InputFloatX, InputIntX, InputDouble etc.
 # IMGUI_API bool          InputFloat(const char* label, float* v, float step = 0.0f, float step_fast = 0.0f, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float(
-    label: str,
-    v: float,
-    step: float = 0.0,
-    step_fast: float = 0.0,
-    format: str = "%.3",
-    flags: InputTextFlags = 0,
+    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.3", flags: InputTextFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
@@ -1756,37 +1672,24 @@ def input_float4(
     pass
 
 # IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-def input_int(
-    label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = 0
-) -> Tuple[bool, int]:
+def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = 0) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-def input_int2(
-    label: str, v: List[int], flags: InputTextFlags = 0
-) -> Tuple[bool, List[int]]:
+def input_int2(label: str, v: List[int], flags: InputTextFlags = 0) -> Tuple[bool, List[int]]:
     pass
 
 # IMGUI_API bool          InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-def input_int3(
-    label: str, v: List[int], flags: InputTextFlags = 0
-) -> Tuple[bool, List[int]]:
+def input_int3(label: str, v: List[int], flags: InputTextFlags = 0) -> Tuple[bool, List[int]]:
     pass
 
 # IMGUI_API bool          InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-def input_int4(
-    label: str, v: List[int], flags: InputTextFlags = 0
-) -> Tuple[bool, List[int]]:
+def input_int4(label: str, v: List[int], flags: InputTextFlags = 0) -> Tuple[bool, List[int]]:
     pass
 
 # IMGUI_API bool          InputDouble(const char* label, double* v, double step = 0.0, double step_fast = 0.0, const char* format = "%.6f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_double(
-    label: str,
-    v: float,
-    step: float = 0.0,
-    step_fast: float = 0.0,
-    format: str = "%.6",
-    flags: InputTextFlags = 0,
+    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.6", flags: InputTextFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
@@ -1819,36 +1722,25 @@ def input_scalar_n(
 # - Note that in C++ a 'float v[X]' function argument is the _same_ as 'float* v', the array syntax is just a way to document the number of elements that are expected to be accessible.
 # - You can pass the address of a first float element out of a contiguous structure, e.g. &myvector.x
 # IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-def color_edit3(
-    label: str, col: List[float], flags: ColorEditFlags = 0
-) -> Tuple[bool, List[float]]:
+def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-def color_edit4(
-    label: str, col: List[float], flags: ColorEditFlags = 0
-) -> Tuple[bool, List[float]]:
+def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-def color_picker3(
-    label: str, col: List[float], flags: ColorEditFlags = 0
-) -> Tuple[bool, List[float]]:
+def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
 def color_picker4(
-    label: str,
-    col: List[float],
-    flags: ColorEditFlags = 0,
-    ref_col: Optional[float] = None,
+    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
 ) -> Tuple[bool, List[float]]:
     pass
 
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
-def color_button(
-    desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: ImVec2 = ImVec2(0, 0)
-) -> bool:
+def color_button(desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: ImVec2 = ImVec2(0, 0)) -> bool:
     """display a color square/button, hover for details, return True when pressed."""
     pass
 
@@ -1921,9 +1813,7 @@ def collapsing_header(label: str, flags: TreeNodeFlags = 0) -> bool:
 
 # IMGUI_API bool          CollapsingHeader(const char* label, bool* p_visible, ImGuiTreeNodeFlags flags = 0);     /* original C++ signature */
 @overload
-def collapsing_header(
-    label: str, p_visible: bool, flags: TreeNodeFlags = 0
-) -> Tuple[bool, bool]:
+def collapsing_header(label: str, p_visible: bool, flags: TreeNodeFlags = 0) -> Tuple[bool, bool]:
     """when 'p_visible != None': if '*p_visible==True' display an additional small close button on upper right of the header which will set the bool to False when clicked, if '*p_visible==False' don't display the header."""
     pass
 
@@ -1939,10 +1829,7 @@ def set_next_item_open(is_open: bool, cond: Cond = 0) -> None:
 # - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
 # IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
 def selectable(
-    label: str,
-    p_selected: bool,
-    flags: SelectableFlags = 0,
-    size: ImVec2 = ImVec2(0, 0),
+    label: str, p_selected: bool, flags: SelectableFlags = 0, size: ImVec2 = ImVec2(0, 0)
 ) -> Tuple[bool, bool]:
     """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
     pass
@@ -1966,9 +1853,7 @@ def end_list_box() -> None:
     pass
 
 # IMGUI_API bool          ListBox(const char* label, int* current_item, const char* const items[], int items_count, int height_in_items = -1);    /* original C++ signature */
-def list_box(
-    label: str, current_item: int, items: List[str], height_in_items: int = -1
-) -> Tuple[bool, int]:
+def list_box(label: str, current_item: int, items: List[str], height_in_items: int = -1) -> Tuple[bool, int]:
     pass
 
 # Widgets: Data Plotting
@@ -2061,21 +1946,14 @@ def end_menu() -> None:
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # inline bool          MenuItemSimple(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true) { return MenuItem(label, shortcut, selected, enabled); }    /* original C++ signature */
-def menu_item_simple(
-    label: str,
-    shortcut: Optional[str] = None,
-    selected: bool = False,
-    enabled: bool = True,
-) -> bool:
+def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool = False, enabled: bool = True) -> bool:
     """(private API)"""
     pass
 
 # #endif
 #
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */
-def menu_item(
-    label: str, shortcut: str, p_selected: bool, enabled: bool = True
-) -> Tuple[bool, bool]:
+def menu_item(label: str, shortcut: str, p_selected: bool, enabled: bool = True) -> Tuple[bool, bool]:
     """return True when activated + toggle (*p_selected) if p_selected != None"""
     pass
 
@@ -2129,9 +2007,7 @@ def begin_popup(str_id: str, flags: WindowFlags = 0) -> bool:
     pass
 
 # IMGUI_API bool          BeginPopupModal(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);     /* original C++ signature */
-def begin_popup_modal(
-    name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0
-) -> Tuple[bool, Optional[bool]]:
+def begin_popup_modal(name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0) -> Tuple[bool, Optional[bool]]:
     """return True if the modal is open, and you can start outputting to it."""
     pass
 
@@ -2161,9 +2037,7 @@ def open_popup(id_: ID, popup_flags: PopupFlags = 0) -> None:
     pass
 
 # IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);       /* original C++ signature */
-def open_popup_on_item_click(
-    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
-) -> None:
+def open_popup_on_item_click(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> None:
     """helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
     pass
 
@@ -2178,23 +2052,17 @@ def close_current_popup() -> None:
 #  - IMPORTANT: Notice that BeginPopupContextXXX takes ImGuiPopupFlags just like OpenPopup() and unlike BeginPopup(). For full consistency, we may add ImGuiWindowFlags to the BeginPopupContextXXX functions in the future.
 #  - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
 # IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
-def begin_popup_context_item(
-    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
-) -> bool:
+def begin_popup_context_item(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
     """open+begin popup when clicked on last item. Use str_id==None to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!"""
     pass
 
 # IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);    /* original C++ signature */
-def begin_popup_context_window(
-    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
-) -> bool:
+def begin_popup_context_window(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
     """open+begin popup when clicked on current window."""
     pass
 
 # IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
-def begin_popup_context_void(
-    str_id: Optional[str] = None, popup_flags: PopupFlags = 1
-) -> bool:
+def begin_popup_context_void(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
     """open+begin popup when clicked in None (where there are no windows)."""
     pass
 
@@ -2230,11 +2098,7 @@ def is_popup_open(str_id: str, flags: PopupFlags = 0) -> bool:
 # - 5. Call EndTable()
 # IMGUI_API bool          BeginTable(const char* str_id, int column, ImGuiTableFlags flags = 0, const ImVec2& outer_size = ImVec2(0.0f, 0.0f), float inner_width = 0.0f);    /* original C++ signature */
 def begin_table(
-    str_id: str,
-    column: int,
-    flags: TableFlags = 0,
-    outer_size: ImVec2 = ImVec2(0.0, 0.0),
-    inner_width: float = 0.0,
+    str_id: str, column: int, flags: TableFlags = 0, outer_size: ImVec2 = ImVec2(0.0, 0.0), inner_width: float = 0.0
 ) -> bool:
     pass
 
@@ -2268,10 +2132,7 @@ def table_set_column_index(column_n: int) -> bool:
 # - Use TableSetupScrollFreeze() to lock columns/rows so they stay visible when scrolled.
 # IMGUI_API void          TableSetupColumn(const char* label, ImGuiTableColumnFlags flags = 0, float init_width_or_weight = 0.0f, ImGuiID user_id = 0);    /* original C++ signature */
 def table_setup_column(
-    label: str,
-    flags: TableColumnFlags = 0,
-    init_width_or_weight: float = 0.0,
-    user_id: ID = 0,
+    label: str, flags: TableColumnFlags = 0, init_width_or_weight: float = 0.0, user_id: ID = 0
 ) -> None:
     pass
 
@@ -2394,9 +2255,7 @@ def end_tab_bar() -> None:
     pass
 
 # IMGUI_API bool          BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
-def begin_tab_item(
-    label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0
-) -> Tuple[bool, Optional[bool]]:
+def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0) -> Tuple[bool, Optional[bool]]:
     """create a Tab. Returns True if the Tab is selected."""
     pass
 
@@ -2430,18 +2289,13 @@ def set_tab_item_closed(tab_or_docked_window_label: str) -> None:
 #   e.g. if you have multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly.
 # IMGUI_API ImGuiID       DockSpace(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space(
-    id_: ID,
-    size: ImVec2 = ImVec2(0, 0),
-    flags: DockNodeFlags = 0,
-    window_class: Optional[WindowClass] = None,
+    id_: ID, size: ImVec2 = ImVec2(0, 0), flags: DockNodeFlags = 0, window_class: Optional[WindowClass] = None
 ) -> ID:
     pass
 
 # IMGUI_API ImGuiID       DockSpaceOverViewport(const ImGuiViewport* viewport = NULL, ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space_over_viewport(
-    viewport: Optional[Viewport] = None,
-    flags: DockNodeFlags = 0,
-    window_class: Optional[WindowClass] = None,
+    viewport: Optional[Viewport] = None, flags: DockNodeFlags = 0, window_class: Optional[WindowClass] = None
 ) -> ID:
     pass
 
@@ -2541,9 +2395,7 @@ def end_disabled() -> None:
 # Clipping
 # - Mouse hovering is affected by ImGui::PushClipRect() calls, unlike direct calls to ImDrawList::PushClipRect() which are render only.
 # IMGUI_API void          PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect);    /* original C++ signature */
-def push_clip_rect(
-    clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool
-) -> None:
+def push_clip_rect(clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool) -> None:
     pass
 
 # IMGUI_API void          PopClipRect();    /* original C++ signature */
@@ -2734,10 +2586,7 @@ def get_state_storage() -> Storage:
 
 # IMGUI_API ImVec2        CalcTextSize(const char* text, const char* text_end = NULL, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);    /* original C++ signature */
 def calc_text_size(
-    text: str,
-    text_end: Optional[str] = None,
-    hide_text_after_double_hash: bool = False,
-    wrap_width: float = -1.0,
+    text: str, text_end: Optional[str] = None, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0
 ) -> ImVec2:
     """Text Utilities"""
     pass
@@ -2863,9 +2712,7 @@ def is_mouse_dragging(button: MouseButton, lock_threshold: float = -1.0) -> bool
     pass
 
 # IMGUI_API ImVec2        GetMouseDragDelta(ImGuiMouseButton button = 0, float lock_threshold = -1.0f);       /* original C++ signature */
-def get_mouse_drag_delta(
-    button: MouseButton = 0, lock_threshold: float = -1.0
-) -> ImVec2:
+def get_mouse_drag_delta(button: MouseButton = 0, lock_threshold: float = -1.0) -> ImVec2:
     """return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (if lock_threshold < -1.0, uses io.MouseDraggingThreshold)"""
     pass
 
@@ -2934,13 +2781,7 @@ def debug_flash_style_color(idx: Col) -> None:
 
 # IMGUI_API bool          DebugCheckVersionAndDataLayout(const char* version_str, size_t sz_io, size_t sz_style, size_t sz_vec2, size_t sz_vec4, size_t sz_drawvert, size_t sz_drawidx);     /* original C++ signature */
 def debug_check_version_and_data_layout(
-    version_str: str,
-    sz_io: int,
-    sz_style: int,
-    sz_vec2: int,
-    sz_vec4: int,
-    sz_drawvert: int,
-    sz_drawidx: int,
+    version_str: str, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int
 ) -> bool:
     """This is called by IMGUI_CHECKVERSION() macro."""
     pass
@@ -2999,9 +2840,7 @@ class WindowFlags_(enum.Enum):
     # ImGuiWindowFlags_NoTitleBar             = 1 << 0,       /* original C++ signature */
     no_title_bar = enum.auto()  # (= 1 << 0)  # Disable title-bar
     # ImGuiWindowFlags_NoResize               = 1 << 1,       /* original C++ signature */
-    no_resize = (
-        enum.auto()
-    )  # (= 1 << 1)  # Disable user resizing with the lower-right grip
+    no_resize = enum.auto()  # (= 1 << 1)  # Disable user resizing with the lower-right grip
     # ImGuiWindowFlags_NoMove                 = 1 << 2,       /* original C++ signature */
     no_move = enum.auto()  # (= 1 << 2)  # Disable user moving the window
     # ImGuiWindowFlags_NoScrollbar            = 1 << 3,       /* original C++ signature */
@@ -3017,21 +2856,15 @@ class WindowFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 5)  # Disable user collapsing window by double-clicking on it. Also referred to as Window Menu Button (e.g. within a docking node).
     # ImGuiWindowFlags_AlwaysAutoResize       = 1 << 6,       /* original C++ signature */
-    always_auto_resize = (
-        enum.auto()
-    )  # (= 1 << 6)  # Resize every window to its content every frame
+    always_auto_resize = enum.auto()  # (= 1 << 6)  # Resize every window to its content every frame
     # ImGuiWindowFlags_NoBackground           = 1 << 7,       /* original C++ signature */
     no_background = (
         enum.auto()
     )  # (= 1 << 7)  # Disable drawing background color (WindowBg, etc.) and outside border. Similar as using SetNextWindowBgAlpha(0.0).
     # ImGuiWindowFlags_NoSavedSettings        = 1 << 8,       /* original C++ signature */
-    no_saved_settings = (
-        enum.auto()
-    )  # (= 1 << 8)  # Never load/save settings in .ini file
+    no_saved_settings = enum.auto()  # (= 1 << 8)  # Never load/save settings in .ini file
     # ImGuiWindowFlags_NoMouseInputs          = 1 << 9,       /* original C++ signature */
-    no_mouse_inputs = (
-        enum.auto()
-    )  # (= 1 << 9)  # Disable catching mouse, hovering test with pass through.
+    no_mouse_inputs = enum.auto()  # (= 1 << 9)  # Disable catching mouse, hovering test with pass through.
     # ImGuiWindowFlags_MenuBar                = 1 << 10,      /* original C++ signature */
     menu_bar = enum.auto()  # (= 1 << 10)  # Has a menu-bar
     # ImGuiWindowFlags_HorizontalScrollbar    = 1 << 11,      /* original C++ signature */
@@ -3055,9 +2888,7 @@ class WindowFlags_(enum.Enum):
         enum.auto()
     )  # (= 1<< 15)  # Always show horizontal scrollbar (even if ContentSize.x < Size.x)
     # ImGuiWindowFlags_NoNavInputs            = 1 << 16,      /* original C++ signature */
-    no_nav_inputs = (
-        enum.auto()
-    )  # (= 1 << 16)  # No gamepad/keyboard navigation within the window
+    no_nav_inputs = enum.auto()  # (= 1 << 16)  # No gamepad/keyboard navigation within the window
     # ImGuiWindowFlags_NoNavFocus             = 1 << 17,      /* original C++ signature */
     no_nav_focus = (
         enum.auto()
@@ -3075,9 +2906,7 @@ class WindowFlags_(enum.Enum):
         enum.auto()
     )  # (= WindowFlags_NoTitleBar | WindowFlags_NoResize | WindowFlags_NoScrollbar | WindowFlags_NoCollapse)
     # ImGuiWindowFlags_NoInputs               = ImGuiWindowFlags_NoMouseInputs | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoNavFocus,    /* original C++ signature */
-    no_inputs = (
-        enum.auto()
-    )  # (= WindowFlags_NoMouseInputs | WindowFlags_NoNavInputs | WindowFlags_NoNavFocus)
+    no_inputs = enum.auto()  # (= WindowFlags_NoMouseInputs | WindowFlags_NoNavInputs | WindowFlags_NoNavFocus)
 
     # [Internal]
     # ImGuiWindowFlags_NavFlattened           = 1 << 23,      /* original C++ signature */
@@ -3085,27 +2914,17 @@ class WindowFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 23)  # [BETA] On child window: share focus scope, allow gamepad/keyboard navigation to cross over parent border to this child or between sibling child windows.
     # ImGuiWindowFlags_ChildWindow            = 1 << 24,      /* original C++ signature */
-    child_window = (
-        enum.auto()
-    )  # (= 1 << 24)  # Don't use! For internal use by BeginChild()
+    child_window = enum.auto()  # (= 1 << 24)  # Don't use! For internal use by BeginChild()
     # ImGuiWindowFlags_Tooltip                = 1 << 25,      /* original C++ signature */
-    tooltip = (
-        enum.auto()
-    )  # (= 1 << 25)  # Don't use! For internal use by BeginTooltip()
+    tooltip = enum.auto()  # (= 1 << 25)  # Don't use! For internal use by BeginTooltip()
     # ImGuiWindowFlags_Popup                  = 1 << 26,      /* original C++ signature */
     popup = enum.auto()  # (= 1 << 26)  # Don't use! For internal use by BeginPopup()
     # ImGuiWindowFlags_Modal                  = 1 << 27,      /* original C++ signature */
-    modal = (
-        enum.auto()
-    )  # (= 1 << 27)  # Don't use! For internal use by BeginPopupModal()
+    modal = enum.auto()  # (= 1 << 27)  # Don't use! For internal use by BeginPopupModal()
     # ImGuiWindowFlags_ChildMenu              = 1 << 28,      /* original C++ signature */
-    child_menu = (
-        enum.auto()
-    )  # (= 1 << 28)  # Don't use! For internal use by BeginMenu()
+    child_menu = enum.auto()  # (= 1 << 28)  # Don't use! For internal use by BeginMenu()
     # ImGuiWindowFlags_DockNodeHost           = 1 << 29,      /* original C++ signature */
-    dock_node_host = (
-        enum.auto()
-    )  # (= 1 << 29)  # Don't use! For internal use by Begin()/NewFrame()
+    dock_node_host = enum.auto()  # (= 1 << 29)  # Don't use! For internal use by Begin()/NewFrame()
 
     # Obsolete names
 
@@ -3136,9 +2955,7 @@ class ChildFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 2)  # Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)
     # ImGuiChildFlags_ResizeY                 = 1 << 3,       /* original C++ signature */
-    resize_y = (
-        enum.auto()
-    )  # (= 1 << 3)  # Allow resize from bottom border (layout direction). "
+    resize_y = enum.auto()  # (= 1 << 3)  # Allow resize from bottom border (layout direction). "
     # ImGuiChildFlags_AutoResizeX             = 1 << 4,       /* original C++ signature */
     auto_resize_x = (
         enum.auto()
@@ -3172,21 +2989,15 @@ class InputTextFlags_(enum.Enum):
     # ImGuiInputTextFlags_CharsNoBlank        = 1 << 3,       /* original C++ signature */
     chars_no_blank = enum.auto()  # (= 1 << 3)  # Filter out spaces, tabs
     # ImGuiInputTextFlags_AutoSelectAll       = 1 << 4,       /* original C++ signature */
-    auto_select_all = (
-        enum.auto()
-    )  # (= 1 << 4)  # Select entire text when first taking mouse focus
+    auto_select_all = enum.auto()  # (= 1 << 4)  # Select entire text when first taking mouse focus
     # ImGuiInputTextFlags_EnterReturnsTrue    = 1 << 5,       /* original C++ signature */
     enter_returns_true = (
         enum.auto()
     )  # (= 1 << 5)  # Return 'True' when Enter is pressed (as opposed to every time the value was modified). Consider looking at the IsItemDeactivatedAfterEdit() function.
     # ImGuiInputTextFlags_CallbackCompletion  = 1 << 6,       /* original C++ signature */
-    callback_completion = (
-        enum.auto()
-    )  # (= 1 << 6)  # Callback on pressing TAB (for completion handling)
+    callback_completion = enum.auto()  # (= 1 << 6)  # Callback on pressing TAB (for completion handling)
     # ImGuiInputTextFlags_CallbackHistory     = 1 << 7,       /* original C++ signature */
-    callback_history = (
-        enum.auto()
-    )  # (= 1 << 7)  # Callback on pressing Up/Down arrows (for history handling)
+    callback_history = enum.auto()  # (= 1 << 7)  # Callback on pressing Up/Down arrows (for history handling)
     # ImGuiInputTextFlags_CallbackAlways      = 1 << 8,       /* original C++ signature */
     callback_always = (
         enum.auto()
@@ -3196,33 +3007,25 @@ class InputTextFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 9)  # Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.
     # ImGuiInputTextFlags_AllowTabInput       = 1 << 10,      /* original C++ signature */
-    allow_tab_input = (
-        enum.auto()
-    )  # (= 1 << 10)  # Pressing TAB input a '\t' character into the text field
+    allow_tab_input = enum.auto()  # (= 1 << 10)  # Pressing TAB input a '\t' character into the text field
     # ImGuiInputTextFlags_CtrlEnterForNewLine = 1 << 11,      /* original C++ signature */
     ctrl_enter_for_new_line = (
         enum.auto()
     )  # (= 1 << 11)  # In multi-line mode, unfocus with Enter, add new line with Ctrl+Enter (default is opposite: unfocus with Ctrl+Enter, add line with Enter).
     # ImGuiInputTextFlags_NoHorizontalScroll  = 1 << 12,      /* original C++ signature */
-    no_horizontal_scroll = (
-        enum.auto()
-    )  # (= 1 << 12)  # Disable following the cursor horizontally
+    no_horizontal_scroll = enum.auto()  # (= 1 << 12)  # Disable following the cursor horizontally
     # ImGuiInputTextFlags_AlwaysOverwrite     = 1 << 13,      /* original C++ signature */
     always_overwrite = enum.auto()  # (= 1 << 13)  # Overwrite mode
     # ImGuiInputTextFlags_ReadOnly            = 1 << 14,      /* original C++ signature */
     read_only = enum.auto()  # (= 1 << 14)  # Read-only mode
     # ImGuiInputTextFlags_Password            = 1 << 15,      /* original C++ signature */
-    password = (
-        enum.auto()
-    )  # (= 1 << 15)  # Password mode, display all characters as '*'
+    password = enum.auto()  # (= 1 << 15)  # Password mode, display all characters as '*'
     # ImGuiInputTextFlags_NoUndoRedo          = 1 << 16,      /* original C++ signature */
     no_undo_redo = (
         enum.auto()
     )  # (= 1 << 16)  # Disable undo/redo. Note that input text owns the text data while active, if you want to provide your own undo/redo stack you need e.g. to call ClearActiveID().
     # ImGuiInputTextFlags_CharsScientific     = 1 << 17,      /* original C++ signature */
-    chars_scientific = (
-        enum.auto()
-    )  # (= 1 << 17)  # Allow 0123456789.+-*/eE (Scientific notation input)
+    chars_scientific = enum.auto()  # (= 1 << 17)  # Allow 0123456789.+-*/eE (Scientific notation input)
     # ImGuiInputTextFlags_CallbackResize      = 1 << 18,      /* original C++ signature */
     callback_resize = (
         enum.auto()
@@ -3247,13 +3050,9 @@ class TreeNodeFlags_(enum.Enum):
     # ImGuiTreeNodeFlags_Selected             = 1 << 0,       /* original C++ signature */
     selected = enum.auto()  # (= 1 << 0)  # Draw as selected
     # ImGuiTreeNodeFlags_Framed               = 1 << 1,       /* original C++ signature */
-    framed = (
-        enum.auto()
-    )  # (= 1 << 1)  # Draw frame with background (e.g. for CollapsingHeader)
+    framed = enum.auto()  # (= 1 << 1)  # Draw frame with background (e.g. for CollapsingHeader)
     # ImGuiTreeNodeFlags_AllowOverlap         = 1 << 2,       /* original C++ signature */
-    allow_overlap = (
-        enum.auto()
-    )  # (= 1 << 2)  # Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = enum.auto()  # (= 1 << 2)  # Hit testing to allow subsequent widgets to overlap this one
     # ImGuiTreeNodeFlags_NoTreePushOnOpen     = 1 << 3,       /* original C++ signature */
     no_tree_push_on_open = (
         enum.auto()
@@ -3271,9 +3070,7 @@ class TreeNodeFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 7)  # Only open when clicking on the arrow part. If ImGuiTreeNodeFlags_OpenOnDoubleClick is also set, single-click arrow or double-click all box to open.
     # ImGuiTreeNodeFlags_Leaf                 = 1 << 8,       /* original C++ signature */
-    leaf = (
-        enum.auto()
-    )  # (= 1 << 8)  # No collapsing, no arrow (use as a convenience for leaf nodes).
+    leaf = enum.auto()  # (= 1 << 8)  # No collapsing, no arrow (use as a convenience for leaf nodes).
     # ImGuiTreeNodeFlags_Bullet               = 1 << 9,       /* original C++ signature */
     bullet = (
         enum.auto()
@@ -3342,9 +3139,7 @@ class PopupFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 6)  # For BeginPopupContextWindow(): don't return True when hovering items, only when hovering empty space
     # ImGuiPopupFlags_AnyPopupId              = 1 << 7,       /* original C++ signature */
-    any_popup_id = (
-        enum.auto()
-    )  # (= 1 << 7)  # For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.
+    any_popup_id = enum.auto()  # (= 1 << 7)  # For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.
     # ImGuiPopupFlags_AnyPopupLevel           = 1 << 8,       /* original C++ signature */
     any_popup_level = (
         enum.auto()
@@ -3359,23 +3154,17 @@ class SelectableFlags_(enum.Enum):
     # ImGuiSelectableFlags_None               = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiSelectableFlags_DontClosePopups    = 1 << 0,       /* original C++ signature */
-    dont_close_popups = (
-        enum.auto()
-    )  # (= 1 << 0)  # Clicking this doesn't close parent popup window
+    dont_close_popups = enum.auto()  # (= 1 << 0)  # Clicking this doesn't close parent popup window
     # ImGuiSelectableFlags_SpanAllColumns     = 1 << 1,       /* original C++ signature */
     span_all_columns = (
         enum.auto()
     )  # (= 1 << 1)  # Frame will span all columns of its container table (text will still fit in current column)
     # ImGuiSelectableFlags_AllowDoubleClick   = 1 << 2,       /* original C++ signature */
-    allow_double_click = (
-        enum.auto()
-    )  # (= 1 << 2)  # Generate press events on double clicks too
+    allow_double_click = enum.auto()  # (= 1 << 2)  # Generate press events on double clicks too
     # ImGuiSelectableFlags_Disabled           = 1 << 3,       /* original C++ signature */
     disabled = enum.auto()  # (= 1 << 3)  # Cannot be selected, display grayed out text
     # ImGuiSelectableFlags_AllowOverlap       = 1 << 4,       /* original C++ signature */
-    allow_overlap = (
-        enum.auto()
-    )  # (= 1 << 4)  # (WIP) Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = enum.auto()  # (= 1 << 4)  # (WIP) Hit testing to allow subsequent widgets to overlap this one
 
 class ComboFlags_(enum.Enum):
     """Flags for ImGui::BeginCombo()"""
@@ -3383,9 +3172,7 @@ class ComboFlags_(enum.Enum):
     # ImGuiComboFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiComboFlags_PopupAlignLeft          = 1 << 0,       /* original C++ signature */
-    popup_align_left = (
-        enum.auto()
-    )  # (= 1 << 0)  # Align the popup toward the left by default
+    popup_align_left = enum.auto()  # (= 1 << 0)  # Align the popup toward the left by default
     # ImGuiComboFlags_HeightSmall             = 1 << 1,       /* original C++ signature */
     height_small = (
         enum.auto()
@@ -3397,15 +3184,11 @@ class ComboFlags_(enum.Enum):
     # ImGuiComboFlags_HeightLargest           = 1 << 4,       /* original C++ signature */
     height_largest = enum.auto()  # (= 1 << 4)  # As many fitting items as possible
     # ImGuiComboFlags_NoArrowButton           = 1 << 5,       /* original C++ signature */
-    no_arrow_button = (
-        enum.auto()
-    )  # (= 1 << 5)  # Display on the preview box without the square arrow button
+    no_arrow_button = enum.auto()  # (= 1 << 5)  # Display on the preview box without the square arrow button
     # ImGuiComboFlags_NoPreview               = 1 << 6,       /* original C++ signature */
     no_preview = enum.auto()  # (= 1 << 6)  # Display only a square arrow button
     # ImGuiComboFlags_WidthFitPreview         = 1 << 7,       /* original C++ signature */
-    width_fit_preview = (
-        enum.auto()
-    )  # (= 1 << 7)  # Width dynamically calculated from preview contents
+    width_fit_preview = enum.auto()  # (= 1 << 7)  # Width dynamically calculated from preview contents
     # ImGuiComboFlags_HeightMask_             = ImGuiComboFlags_HeightSmall | ImGuiComboFlags_HeightRegular | ImGuiComboFlags_HeightLarge | ImGuiComboFlags_HeightLargest,    /* original C++ signature */
     # }
     height_mask_ = (
@@ -3422,13 +3205,9 @@ class TabBarFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 0)  # Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
     # ImGuiTabBarFlags_AutoSelectNewTabs              = 1 << 1,       /* original C++ signature */
-    auto_select_new_tabs = (
-        enum.auto()
-    )  # (= 1 << 1)  # Automatically select new tabs when they appear
+    auto_select_new_tabs = enum.auto()  # (= 1 << 1)  # Automatically select new tabs when they appear
     # ImGuiTabBarFlags_TabListPopupButton             = 1 << 2,       /* original C++ signature */
-    tab_list_popup_button = (
-        enum.auto()
-    )  # (= 1 << 2)  # Disable buttons to open the tab list popup
+    tab_list_popup_button = enum.auto()  # (= 1 << 2)  # Disable buttons to open the tab list popup
     # ImGuiTabBarFlags_NoCloseWithMiddleMouseButton   = 1 << 3,       /* original C++ signature */
     no_close_with_middle_mouse_button = (
         enum.auto()
@@ -3440,17 +3219,11 @@ class TabBarFlags_(enum.Enum):
     # ImGuiTabBarFlags_NoTooltip                      = 1 << 5,       /* original C++ signature */
     no_tooltip = enum.auto()  # (= 1 << 5)  # Disable tooltips when hovering a tab
     # ImGuiTabBarFlags_FittingPolicyResizeDown        = 1 << 6,       /* original C++ signature */
-    fitting_policy_resize_down = (
-        enum.auto()
-    )  # (= 1 << 6)  # Resize tabs when they don't fit
+    fitting_policy_resize_down = enum.auto()  # (= 1 << 6)  # Resize tabs when they don't fit
     # ImGuiTabBarFlags_FittingPolicyScroll            = 1 << 7,       /* original C++ signature */
-    fitting_policy_scroll = (
-        enum.auto()
-    )  # (= 1 << 7)  # Add scroll buttons when tabs don't fit
+    fitting_policy_scroll = enum.auto()  # (= 1 << 7)  # Add scroll buttons when tabs don't fit
     # ImGuiTabBarFlags_FittingPolicyMask_             = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_FittingPolicyScroll,    /* original C++ signature */
-    fitting_policy_mask_ = (
-        enum.auto()
-    )  # (= TabBarFlags_FittingPolicyResizeDown | TabBarFlags_FittingPolicyScroll)
+    fitting_policy_mask_ = enum.auto()  # (= TabBarFlags_FittingPolicyResizeDown | TabBarFlags_FittingPolicyScroll)
     # ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyResizeDown,    /* original C++ signature */
     # }
     fitting_policy_default_ = enum.auto()  # (= TabBarFlags_FittingPolicyResizeDown)
@@ -3473,15 +3246,11 @@ class TabItemFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 2)  # Disable behavior of closing tabs (that are submitted with p_open != None) with middle mouse button. You may handle this behavior manually on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = False.
     # ImGuiTabItemFlags_NoPushId                      = 1 << 3,       /* original C++ signature */
-    no_push_id = (
-        enum.auto()
-    )  # (= 1 << 3)  # Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()
+    no_push_id = enum.auto()  # (= 1 << 3)  # Don't call PushID()/PopID() on BeginTabItem()/EndTabItem()
     # ImGuiTabItemFlags_NoTooltip                     = 1 << 4,       /* original C++ signature */
     no_tooltip = enum.auto()  # (= 1 << 4)  # Disable tooltip for the given tab
     # ImGuiTabItemFlags_NoReorder                     = 1 << 5,       /* original C++ signature */
-    no_reorder = (
-        enum.auto()
-    )  # (= 1 << 5)  # Disable reordering this tab or having another tab cross over this tab
+    no_reorder = enum.auto()  # (= 1 << 5)  # Disable reordering this tab or having another tab cross over this tab
     # ImGuiTabItemFlags_Leading                       = 1 << 6,       /* original C++ signature */
     leading = (
         enum.auto()
@@ -3501,13 +3270,9 @@ class FocusedFlags_(enum.Enum):
     # ImGuiFocusedFlags_None                          = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiFocusedFlags_ChildWindows                  = 1 << 0,       /* original C++ signature */
-    child_windows = (
-        enum.auto()
-    )  # (= 1 << 0)  # Return True if any children of the window is focused
+    child_windows = enum.auto()  # (= 1 << 0)  # Return True if any children of the window is focused
     # ImGuiFocusedFlags_RootWindow                    = 1 << 1,       /* original C++ signature */
-    root_window = (
-        enum.auto()
-    )  # (= 1 << 1)  # Test from root window (top most parent of the current hierarchy)
+    root_window = enum.auto()  # (= 1 << 1)  # Test from root window (top most parent of the current hierarchy)
     # ImGuiFocusedFlags_AnyWindow                     = 1 << 2,       /* original C++ signature */
     any_window = (
         enum.auto()
@@ -3522,9 +3287,7 @@ class FocusedFlags_(enum.Enum):
     )  # (= 1 << 4)  # Consider docking hierarchy (treat dockspace host as parent of docked window) (when used with _ChildWindows or _RootWindow)
     # ImGuiFocusedFlags_RootAndChildWindows           = ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_ChildWindows,    /* original C++ signature */
     # }
-    root_and_child_windows = (
-        enum.auto()
-    )  # (= FocusedFlags_RootWindow | FocusedFlags_ChildWindows)
+    root_and_child_windows = enum.auto()  # (= FocusedFlags_RootWindow | FocusedFlags_ChildWindows)
 
 class HoveredFlags_(enum.Enum):
     """Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()
@@ -3545,9 +3308,7 @@ class HoveredFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 1)  # IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)
     # ImGuiHoveredFlags_AnyWindow                     = 1 << 2,       /* original C++ signature */
-    any_window = (
-        enum.auto()
-    )  # (= 1 << 2)  # IsWindowHovered() only: Return True if any window is hovered
+    any_window = enum.auto()  # (= 1 << 2)  # IsWindowHovered() only: Return True if any window is hovered
     # ImGuiHoveredFlags_NoPopupHierarchy              = 1 << 3,       /* original C++ signature */
     no_popup_hierarchy = (
         enum.auto()
@@ -3574,9 +3335,7 @@ class HoveredFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 9)  # IsItemHovered() only: Return True even if the position is obstructed or overlapped by another window.
     # ImGuiHoveredFlags_AllowWhenDisabled             = 1 << 10,      /* original C++ signature */
-    allow_when_disabled = (
-        enum.auto()
-    )  # (= 1 << 10)  # IsItemHovered() only: Return True even if the item is disabled
+    allow_when_disabled = enum.auto()  # (= 1 << 10)  # IsItemHovered() only: Return True even if the item is disabled
     # ImGuiHoveredFlags_NoNavOverride                 = 1 << 11,      /* original C++ signature */
     no_nav_override = (
         enum.auto()
@@ -3590,9 +3349,7 @@ class HoveredFlags_(enum.Enum):
         enum.auto()
     )  # (= HoveredFlags_AllowWhenBlockedByPopup | HoveredFlags_AllowWhenBlockedByActiveItem | HoveredFlags_AllowWhenOverlapped)
     # ImGuiHoveredFlags_RootAndChildWindows           = ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_ChildWindows,    /* original C++ signature */
-    root_and_child_windows = (
-        enum.auto()
-    )  # (= HoveredFlags_RootWindow | HoveredFlags_ChildWindows)
+    root_and_child_windows = enum.auto()  # (= HoveredFlags_RootWindow | HoveredFlags_ChildWindows)
 
     # Tooltips mode
     # - typically used in IsItemHovered() + SetTooltip() sequence.
@@ -3651,9 +3408,7 @@ class DockNodeFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 3)  #       // Enable passthru dockspace: 1) DockSpace() will render a ImGuiCol_WindowBg background covering everything excepted the Central Node when empty. Meaning the host window should probably use SetNextWindowBgAlpha(0.0) prior to Begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background. See demo for details.
     # ImGuiDockNodeFlags_NoDockingSplit               = 1 << 4,       /* original C++ signature */
-    no_docking_split = (
-        enum.auto()
-    )  # (= 1 << 4)  #       // Disable other windows/nodes from splitting this node.
+    no_docking_split = enum.auto()  # (= 1 << 4)  #       // Disable other windows/nodes from splitting this node.
     # ImGuiDockNodeFlags_NoResize                     = 1 << 5,       /* original C++ signature */
     no_resize = (
         enum.auto()
@@ -3968,9 +3723,7 @@ class Key(enum.Enum):
     # ImGuiKey_LeftBracket,           /* original C++ signature */
     left_bracket = enum.auto()  # (= 603)  # [
     # ImGuiKey_Backslash,             /* original C++ signature */
-    backslash = (
-        enum.auto()
-    )  # (= 604)  # \ (this text inhibit multiline comment caused by backslash)
+    backslash = enum.auto()  # (= 604)  # \ (this text inhibit multiline comment caused by backslash)
     # ImGuiKey_RightBracket,          /* original C++ signature */
     right_bracket = enum.auto()  # (= 605)  # ]
     # ImGuiKey_GraveAccent,           /* original C++ signature */
@@ -4020,18 +3773,14 @@ class Key(enum.Enum):
     # ImGuiKey_KeypadEqual,    /* original C++ signature */
     keypad_equal = enum.auto()  # (= 628)
     # ImGuiKey_AppBack,                   /* original C++ signature */
-    app_back = (
-        enum.auto()
-    )  # (= 629)  # Available on some keyboard/mouses. Often referred as "Browser Back"
+    app_back = enum.auto()  # (= 629)  # Available on some keyboard/mouses. Often referred as "Browser Back"
     # ImGuiKey_AppForward,    /* original C++ signature */
     app_forward = enum.auto()  # (= 630)
 
     # Gamepad (some of those are analog values, 0.0 to 1.0)                          // NAVIGATION ACTION
     # (download controller mapping PNG/PSD at http://dearimgui.com/controls_sheets)
     # ImGuiKey_GamepadStart,              /* original C++ signature */
-    gamepad_start = (
-        enum.auto()
-    )  # (= 631)  # Menu (Xbox)      + (Switch)   Start/Options (PS)
+    gamepad_start = enum.auto()  # (= 631)  # Menu (Xbox)      + (Switch)   Start/Options (PS)
     # ImGuiKey_GamepadBack,               /* original C++ signature */
     gamepad_back = enum.auto()  # (= 632)  # View (Xbox)      - (Switch)   Share (PS)
     # ImGuiKey_GamepadFaceLeft,           /* original C++ signature */
@@ -4075,13 +3824,9 @@ class Key(enum.Enum):
         enum.auto()
     )  # (= 642)  # R Bumper (Xbox)  R (Switch)   R1 (PS)            // Tweak Faster / Focus Next (in Windowing mode)
     # ImGuiKey_GamepadL2,                 /* original C++ signature */
-    gamepad_l2 = (
-        enum.auto()
-    )  # (= 643)  # L Trig. (Xbox)   ZL (Switch)  L2 (PS) [Analog]
+    gamepad_l2 = enum.auto()  # (= 643)  # L Trig. (Xbox)   ZL (Switch)  L2 (PS) [Analog]
     # ImGuiKey_GamepadR2,                 /* original C++ signature */
-    gamepad_r2 = (
-        enum.auto()
-    )  # (= 644)  # R Trig. (Xbox)   ZR (Switch)  R2 (PS) [Analog]
+    gamepad_r2 = enum.auto()  # (= 644)  # R Trig. (Xbox)   ZR (Switch)  R2 (PS) [Analog]
     # ImGuiKey_GamepadL3,                 /* original C++ signature */
     gamepad_l3 = enum.auto()  # (= 645)  # L Stick (Xbox)   L3 (Switch)  L3 (PS)
     # ImGuiKey_GamepadR3,                 /* original C++ signature */
@@ -4159,9 +3904,7 @@ class Key(enum.Enum):
     # ImGuiMod_Super                  = 1 << 15,     /* original C++ signature */
     im_gui_mod_super = enum.auto()  # (= 1 << 15)  # Cmd/Super/Windows
     # ImGuiMod_Shortcut               = 1 << 11,     /* original C++ signature */
-    im_gui_mod_shortcut = (
-        enum.auto()
-    )  # (= 1 << 11)  # Alias for Ctrl (non-macOS) _or_ Super (macOS).
+    im_gui_mod_shortcut = enum.auto()  # (= 1 << 11)  # Alias for Ctrl (non-macOS) _or_ Super (macOS).
     # ImGuiMod_Mask_                  = 0xF800,      /* original C++ signature */
     im_gui_mod_mask_ = enum.auto()  # (= 0xF800)  # 5-bits
 
@@ -4228,9 +3971,7 @@ class ConfigFlags_(enum.Enum):
     # ImGuiConfigFlags_IsSRGB                 = 1 << 20,      /* original C++ signature */
     is_srgb = enum.auto()  # (= 1 << 20)  # Application is SRGB-aware.
     # ImGuiConfigFlags_IsTouchScreen          = 1 << 21,      /* original C++ signature */
-    is_touch_screen = (
-        enum.auto()
-    )  # (= 1 << 21)  # Application is using a touch screen instead of a mouse.
+    is_touch_screen = enum.auto()  # (= 1 << 21)  # Application is using a touch screen instead of a mouse.
 
 class BackendFlags_(enum.Enum):
     """Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend."""
@@ -4238,9 +3979,7 @@ class BackendFlags_(enum.Enum):
     # ImGuiBackendFlags_None                  = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiBackendFlags_HasGamepad            = 1 << 0,       /* original C++ signature */
-    has_gamepad = (
-        enum.auto()
-    )  # (= 1 << 0)  # Backend Platform supports gamepad and currently has one connected.
+    has_gamepad = enum.auto()  # (= 1 << 0)  # Backend Platform supports gamepad and currently has one connected.
     # ImGuiBackendFlags_HasMouseCursors       = 1 << 1,       /* original C++ signature */
     has_mouse_cursors = (
         enum.auto()
@@ -4256,17 +3995,13 @@ class BackendFlags_(enum.Enum):
 
     # [BETA] Viewports
     # ImGuiBackendFlags_PlatformHasViewports  = 1 << 10,      /* original C++ signature */
-    platform_has_viewports = (
-        enum.auto()
-    )  # (= 1 << 10)  # Backend Platform supports multiple viewports.
+    platform_has_viewports = enum.auto()  # (= 1 << 10)  # Backend Platform supports multiple viewports.
     # ImGuiBackendFlags_HasMouseHoveredViewport=1 << 11,      /* original C++ signature */
     has_mouse_hovered_viewport = (
         enum.auto()
     )  # (= 1 << 11)  # Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.
     # ImGuiBackendFlags_RendererHasViewports  = 1 << 12,      /* original C++ signature */
-    renderer_has_viewports = (
-        enum.auto()
-    )  # (= 1 << 12)  # Backend Renderer supports multiple viewports.
+    renderer_has_viewports = enum.auto()  # (= 1 << 12)  # Backend Renderer supports multiple viewports.
 
 class Col_(enum.Enum):
     """Enumeration for PushStyleColor() / PopStyleColor()"""
@@ -4286,9 +4021,7 @@ class Col_(enum.Enum):
     # ImGuiCol_BorderShadow,    /* original C++ signature */
     border_shadow = enum.auto()  # (= 6)
     # ImGuiCol_FrameBg,                   /* original C++ signature */
-    frame_bg = (
-        enum.auto()
-    )  # (= 7)  # Background of checkbox, radio button, plot, slider, text input
+    frame_bg = enum.auto()  # (= 7)  # Background of checkbox, radio button, plot, slider, text input
     # ImGuiCol_FrameBgHovered,    /* original C++ signature */
     frame_bg_hovered = enum.auto()  # (= 8)
     # ImGuiCol_FrameBgActive,    /* original C++ signature */
@@ -4322,9 +4055,7 @@ class Col_(enum.Enum):
     # ImGuiCol_ButtonActive,    /* original C++ signature */
     button_active = enum.auto()  # (= 23)
     # ImGuiCol_Header,                    /* original C++ signature */
-    header = (
-        enum.auto()
-    )  # (= 24)  # Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
+    header = enum.auto()  # (= 24)  # Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
     # ImGuiCol_HeaderHovered,    /* original C++ signature */
     header_hovered = enum.auto()  # (= 25)
     # ImGuiCol_HeaderActive,    /* original C++ signature */
@@ -4336,9 +4067,7 @@ class Col_(enum.Enum):
     # ImGuiCol_SeparatorActive,    /* original C++ signature */
     separator_active = enum.auto()  # (= 29)
     # ImGuiCol_ResizeGrip,                /* original C++ signature */
-    resize_grip = (
-        enum.auto()
-    )  # (= 30)  # Resize grip in lower-right and lower-left corners of windows.
+    resize_grip = enum.auto()  # (= 30)  # Resize grip in lower-right and lower-left corners of windows.
     # ImGuiCol_ResizeGripHovered,    /* original C++ signature */
     resize_grip_hovered = enum.auto()  # (= 31)
     # ImGuiCol_ResizeGripActive,    /* original C++ signature */
@@ -4354,9 +4083,7 @@ class Col_(enum.Enum):
     # ImGuiCol_TabUnfocusedActive,    /* original C++ signature */
     tab_unfocused_active = enum.auto()  # (= 37)
     # ImGuiCol_DockingPreview,            /* original C++ signature */
-    docking_preview = (
-        enum.auto()
-    )  # (= 38)  # Preview overlay color when about to docking something
+    docking_preview = enum.auto()  # (= 38)  # Preview overlay color when about to docking something
     # ImGuiCol_DockingEmptyBg,            /* original C++ signature */
     docking_empty_bg = (
         enum.auto()
@@ -4372,13 +4099,9 @@ class Col_(enum.Enum):
     # ImGuiCol_TableHeaderBg,             /* original C++ signature */
     table_header_bg = enum.auto()  # (= 44)  # Table header background
     # ImGuiCol_TableBorderStrong,         /* original C++ signature */
-    table_border_strong = (
-        enum.auto()
-    )  # (= 45)  # Table outer and header borders (prefer using Alpha=1.0 here)
+    table_border_strong = enum.auto()  # (= 45)  # Table outer and header borders (prefer using Alpha=1.0 here)
     # ImGuiCol_TableBorderLight,          /* original C++ signature */
-    table_border_light = (
-        enum.auto()
-    )  # (= 46)  # Table inner borders (prefer using Alpha=1.0 here)
+    table_border_light = enum.auto()  # (= 46)  # Table inner borders (prefer using Alpha=1.0 here)
     # ImGuiCol_TableRowBg,                /* original C++ signature */
     table_row_bg = enum.auto()  # (= 47)  # Table row background (even rows)
     # ImGuiCol_TableRowBgAlt,             /* original C++ signature */
@@ -4390,9 +4113,7 @@ class Col_(enum.Enum):
     # ImGuiCol_NavHighlight,              /* original C++ signature */
     nav_highlight = enum.auto()  # (= 51)  # Gamepad/keyboard: current highlighted item
     # ImGuiCol_NavWindowingHighlight,     /* original C++ signature */
-    nav_windowing_highlight = (
-        enum.auto()
-    )  # (= 52)  # Highlight window when using CTRL+TAB
+    nav_windowing_highlight = enum.auto()  # (= 52)  # Highlight window when using CTRL+TAB
     # ImGuiCol_NavWindowingDimBg,         /* original C++ signature */
     nav_windowing_dim_bg = (
         enum.auto()
@@ -4486,9 +4207,7 @@ class ButtonFlags_(enum.Enum):
     # ImGuiButtonFlags_None                   = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiButtonFlags_MouseButtonLeft        = 1 << 0,       /* original C++ signature */
-    mouse_button_left = (
-        enum.auto()
-    )  # (= 1 << 0)  # React on left mouse button (default)
+    mouse_button_left = enum.auto()  # (= 1 << 0)  # React on left mouse button (default)
     # ImGuiButtonFlags_MouseButtonRight       = 1 << 1,       /* original C++ signature */
     mouse_button_right = enum.auto()  # (= 1 << 1)  # React on right mouse button
     # ImGuiButtonFlags_MouseButtonMiddle      = 1 << 2,       /* original C++ signature */
@@ -4513,9 +4232,7 @@ class ColorEditFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 1)  #              // ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).
     # ImGuiColorEditFlags_NoPicker        = 1 << 2,       /* original C++ signature */
-    no_picker = (
-        enum.auto()
-    )  # (= 1 << 2)  #              // ColorEdit: disable picker when clicking on color square.
+    no_picker = enum.auto()  # (= 1 << 2)  #              // ColorEdit: disable picker when clicking on color square.
     # ImGuiColorEditFlags_NoOptions       = 1 << 3,       /* original C++ signature */
     no_options = (
         enum.auto()
@@ -4545,9 +4262,7 @@ class ColorEditFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 9)  #              // ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
     # ImGuiColorEditFlags_NoBorder        = 1 << 10,      /* original C++ signature */
-    no_border = (
-        enum.auto()
-    )  # (= 1 << 10)  #              // ColorButton: disable border (which is enforced by default)
+    no_border = enum.auto()  # (= 1 << 10)  #              // ColorButton: disable border (which is enforced by default)
 
     # User Options (right-click on widget to change some of them).
     # ImGuiColorEditFlags_AlphaBar        = 1 << 16,      /* original C++ signature */
@@ -4583,13 +4298,9 @@ class ColorEditFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 24)  # [DataType]   // ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers.
     # ImGuiColorEditFlags_PickerHueBar    = 1 << 25,      /* original C++ signature */
-    picker_hue_bar = (
-        enum.auto()
-    )  # (= 1 << 25)  # [Picker]     // ColorPicker: bar for Hue, rectangle for Sat/Value.
+    picker_hue_bar = enum.auto()  # (= 1 << 25)  # [Picker]     // ColorPicker: bar for Hue, rectangle for Sat/Value.
     # ImGuiColorEditFlags_PickerHueWheel  = 1 << 26,      /* original C++ signature */
-    picker_hue_wheel = (
-        enum.auto()
-    )  # (= 1 << 26)  # [Picker]     // ColorPicker: wheel for Hue, triangle for Sat/Value.
+    picker_hue_wheel = enum.auto()  # (= 1 << 26)  # [Picker]     // ColorPicker: wheel for Hue, triangle for Sat/Value.
     # ImGuiColorEditFlags_InputRGB        = 1 << 27,      /* original C++ signature */
     input_rgb = (
         enum.auto()
@@ -4608,15 +4319,11 @@ class ColorEditFlags_(enum.Enum):
 
     # [Internal] Masks
     # ImGuiColorEditFlags_DisplayMask_    = ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_DisplayHex,    /* original C++ signature */
-    display_mask_ = (
-        enum.auto()
-    )  # (= ColorEditFlags_DisplayRGB | ColorEditFlags_DisplayHSV | ColorEditFlags_DisplayHex)
+    display_mask_ = enum.auto()  # (= ColorEditFlags_DisplayRGB | ColorEditFlags_DisplayHSV | ColorEditFlags_DisplayHex)
     # ImGuiColorEditFlags_DataTypeMask_   = ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_Float,    /* original C++ signature */
     data_type_mask_ = enum.auto()  # (= ColorEditFlags_Uint8 | ColorEditFlags_Float)
     # ImGuiColorEditFlags_PickerMask_     = ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_PickerHueBar,    /* original C++ signature */
-    picker_mask_ = (
-        enum.auto()
-    )  # (= ColorEditFlags_PickerHueWheel | ColorEditFlags_PickerHueBar)
+    picker_mask_ = enum.auto()  # (= ColorEditFlags_PickerHueWheel | ColorEditFlags_PickerHueBar)
     # ImGuiColorEditFlags_InputMask_      = ImGuiColorEditFlags_InputRGB | ImGuiColorEditFlags_InputHSV,    /* original C++ signature */
     input_mask_ = enum.auto()  # (= ColorEditFlags_InputRGB | ColorEditFlags_InputHSV)
 
@@ -4688,21 +4395,13 @@ class MouseCursor_(enum.Enum):
     # ImGuiMouseCursor_ResizeEW,              /* original C++ signature */
     resize_ew = enum.auto()  # (= 4)  # When hovering over a vertical border or a column
     # ImGuiMouseCursor_ResizeNESW,            /* original C++ signature */
-    resize_nesw = (
-        enum.auto()
-    )  # (= 5)  # When hovering over the bottom-left corner of a window
+    resize_nesw = enum.auto()  # (= 5)  # When hovering over the bottom-left corner of a window
     # ImGuiMouseCursor_ResizeNWSE,            /* original C++ signature */
-    resize_nwse = (
-        enum.auto()
-    )  # (= 6)  # When hovering over the bottom-right corner of a window
+    resize_nwse = enum.auto()  # (= 6)  # When hovering over the bottom-right corner of a window
     # ImGuiMouseCursor_Hand,                  /* original C++ signature */
-    hand = (
-        enum.auto()
-    )  # (= 7)  # (Unused by Dear ImGui functions. Use for e.g. hyperlinks)
+    hand = enum.auto()  # (= 7)  # (Unused by Dear ImGui functions. Use for e.g. hyperlinks)
     # ImGuiMouseCursor_NotAllowed,            /* original C++ signature */
-    not_allowed = (
-        enum.auto()
-    )  # (= 8)  # When hovering something with disallowed interaction. Usually a crossed circle.
+    not_allowed = enum.auto()  # (= 8)  # When hovering something with disallowed interaction. Usually a crossed circle.
     # ImGuiMouseCursor_COUNT    /* original C++ signature */
     # }
     count = enum.auto()  # (= 9)
@@ -4735,17 +4434,11 @@ class Cond_(enum.Enum):
     """
 
     # ImGuiCond_None          = 0,            /* original C++ signature */
-    none = (
-        enum.auto()
-    )  # (= 0)  # No condition (always set the variable), same as _Always
+    none = enum.auto()  # (= 0)  # No condition (always set the variable), same as _Always
     # ImGuiCond_Always        = 1 << 0,       /* original C++ signature */
-    always = (
-        enum.auto()
-    )  # (= 1 << 0)  # No condition (always set the variable), same as _None
+    always = enum.auto()  # (= 1 << 0)  # No condition (always set the variable), same as _None
     # ImGuiCond_Once          = 1 << 1,       /* original C++ signature */
-    once = (
-        enum.auto()
-    )  # (= 1 << 1)  # Set the variable once per runtime session (only the first call will succeed)
+    once = enum.auto()  # (= 1 << 1)  # Set the variable once per runtime session (only the first call will succeed)
     # ImGuiCond_FirstUseEver  = 1 << 2,       /* original C++ signature */
     first_use_ever = (
         enum.auto()
@@ -4794,9 +4487,7 @@ class TableFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 1)  # Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
     # ImGuiTableFlags_Hideable                   = 1 << 2,       /* original C++ signature */
-    hideable = (
-        enum.auto()
-    )  # (= 1 << 2)  # Enable hiding/disabling columns in context menu.
+    hideable = enum.auto()  # (= 1 << 2)  # Enable hiding/disabling columns in context menu.
     # ImGuiTableFlags_Sortable                   = 1 << 3,       /* original C++ signature */
     sortable = (
         enum.auto()
@@ -4817,37 +4508,21 @@ class TableFlags_(enum.Enum):
     # ImGuiTableFlags_BordersInnerH              = 1 << 7,       /* original C++ signature */
     borders_inner_h = enum.auto()  # (= 1 << 7)  # Draw horizontal borders between rows.
     # ImGuiTableFlags_BordersOuterH              = 1 << 8,       /* original C++ signature */
-    borders_outer_h = (
-        enum.auto()
-    )  # (= 1 << 8)  # Draw horizontal borders at the top and bottom.
+    borders_outer_h = enum.auto()  # (= 1 << 8)  # Draw horizontal borders at the top and bottom.
     # ImGuiTableFlags_BordersInnerV              = 1 << 9,       /* original C++ signature */
-    borders_inner_v = (
-        enum.auto()
-    )  # (= 1 << 9)  # Draw vertical borders between columns.
+    borders_inner_v = enum.auto()  # (= 1 << 9)  # Draw vertical borders between columns.
     # ImGuiTableFlags_BordersOuterV              = 1 << 10,      /* original C++ signature */
-    borders_outer_v = (
-        enum.auto()
-    )  # (= 1 << 10)  # Draw vertical borders on the left and right sides.
+    borders_outer_v = enum.auto()  # (= 1 << 10)  # Draw vertical borders on the left and right sides.
     # ImGuiTableFlags_BordersH                   = ImGuiTableFlags_BordersInnerH | ImGuiTableFlags_BordersOuterH,     /* original C++ signature */
-    borders_h = (
-        enum.auto()
-    )  # (= TableFlags_BordersInnerH | TableFlags_BordersOuterH)  # Draw horizontal borders.
+    borders_h = enum.auto()  # (= TableFlags_BordersInnerH | TableFlags_BordersOuterH)  # Draw horizontal borders.
     # ImGuiTableFlags_BordersV                   = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersOuterV,     /* original C++ signature */
-    borders_v = (
-        enum.auto()
-    )  # (= TableFlags_BordersInnerV | TableFlags_BordersOuterV)  # Draw vertical borders.
+    borders_v = enum.auto()  # (= TableFlags_BordersInnerV | TableFlags_BordersOuterV)  # Draw vertical borders.
     # ImGuiTableFlags_BordersInner               = ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_BordersInnerH,     /* original C++ signature */
-    borders_inner = (
-        enum.auto()
-    )  # (= TableFlags_BordersInnerV | TableFlags_BordersInnerH)  # Draw inner borders.
+    borders_inner = enum.auto()  # (= TableFlags_BordersInnerV | TableFlags_BordersInnerH)  # Draw inner borders.
     # ImGuiTableFlags_BordersOuter               = ImGuiTableFlags_BordersOuterV | ImGuiTableFlags_BordersOuterH,     /* original C++ signature */
-    borders_outer = (
-        enum.auto()
-    )  # (= TableFlags_BordersOuterV | TableFlags_BordersOuterH)  # Draw outer borders.
+    borders_outer = enum.auto()  # (= TableFlags_BordersOuterV | TableFlags_BordersOuterH)  # Draw outer borders.
     # ImGuiTableFlags_Borders                    = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersOuter,       /* original C++ signature */
-    borders = (
-        enum.auto()
-    )  # (= TableFlags_BordersInner | TableFlags_BordersOuter)  # Draw all borders.
+    borders = enum.auto()  # (= TableFlags_BordersInner | TableFlags_BordersOuter)  # Draw all borders.
     # ImGuiTableFlags_NoBordersInBody            = 1 << 11,      /* original C++ signature */
     no_borders_in_body = (
         enum.auto()
@@ -4901,9 +4576,7 @@ class TableFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 21)  # Default if BordersOuterV is on. Enable outermost padding. Generally desirable if you have headers.
     # ImGuiTableFlags_NoPadOuterX                = 1 << 22,      /* original C++ signature */
-    no_pad_outer_x = (
-        enum.auto()
-    )  # (= 1 << 22)  # Default if BordersOuterV is off. Disable outermost padding.
+    no_pad_outer_x = enum.auto()  # (= 1 << 22)  # Default if BordersOuterV is off. Disable outermost padding.
     # ImGuiTableFlags_NoPadInnerX                = 1 << 23,      /* original C++ signature */
     no_pad_inner_x = (
         enum.auto()
@@ -4978,21 +4651,15 @@ class TableColumnFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 9)  # Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).
     # ImGuiTableColumnFlags_NoSortAscending       = 1 << 10,      /* original C++ signature */
-    no_sort_ascending = (
-        enum.auto()
-    )  # (= 1 << 10)  # Disable ability to sort in the ascending direction.
+    no_sort_ascending = enum.auto()  # (= 1 << 10)  # Disable ability to sort in the ascending direction.
     # ImGuiTableColumnFlags_NoSortDescending      = 1 << 11,      /* original C++ signature */
-    no_sort_descending = (
-        enum.auto()
-    )  # (= 1 << 11)  # Disable ability to sort in the descending direction.
+    no_sort_descending = enum.auto()  # (= 1 << 11)  # Disable ability to sort in the descending direction.
     # ImGuiTableColumnFlags_NoHeaderLabel         = 1 << 12,      /* original C++ signature */
     no_header_label = (
         enum.auto()
     )  # (= 1 << 12)  # TableHeadersRow() will not submit horizontal label for this column. Convenient for some small columns. Name will still appear in context menu or in angled headers.
     # ImGuiTableColumnFlags_NoHeaderWidth         = 1 << 13,      /* original C++ signature */
-    no_header_width = (
-        enum.auto()
-    )  # (= 1 << 13)  # Disable header text width contribution to automatic column width.
+    no_header_width = enum.auto()  # (= 1 << 13)  # Disable header text width contribution to automatic column width.
     # ImGuiTableColumnFlags_PreferSortAscending   = 1 << 14,      /* original C++ signature */
     prefer_sort_ascending = (
         enum.auto()
@@ -5002,9 +4669,7 @@ class TableColumnFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 15)  # Make the initial sort direction Descending when first sorting on this column.
     # ImGuiTableColumnFlags_IndentEnable          = 1 << 16,      /* original C++ signature */
-    indent_enable = (
-        enum.auto()
-    )  # (= 1 << 16)  # Use current Indent value when entering cell (default for column 0).
+    indent_enable = enum.auto()  # (= 1 << 16)  # Use current Indent value when entering cell (default for column 0).
     # ImGuiTableColumnFlags_IndentDisable         = 1 << 17,      /* original C++ signature */
     indent_disable = (
         enum.auto()
@@ -5020,25 +4685,17 @@ class TableColumnFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 24)  # Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.
     # ImGuiTableColumnFlags_IsVisible             = 1 << 25,      /* original C++ signature */
-    is_visible = (
-        enum.auto()
-    )  # (= 1 << 25)  # Status: is visible == is enabled AND not clipped by scrolling.
+    is_visible = enum.auto()  # (= 1 << 25)  # Status: is visible == is enabled AND not clipped by scrolling.
     # ImGuiTableColumnFlags_IsSorted              = 1 << 26,      /* original C++ signature */
-    is_sorted = (
-        enum.auto()
-    )  # (= 1 << 26)  # Status: is currently part of the sort specs
+    is_sorted = enum.auto()  # (= 1 << 26)  # Status: is currently part of the sort specs
     # ImGuiTableColumnFlags_IsHovered             = 1 << 27,      /* original C++ signature */
     is_hovered = enum.auto()  # (= 1 << 27)  # Status: is hovered by mouse
 
     # [Internal] Combinations and masks
     # ImGuiTableColumnFlags_WidthMask_            = ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_WidthFixed,    /* original C++ signature */
-    width_mask_ = (
-        enum.auto()
-    )  # (= TableColumnFlags_WidthStretch | TableColumnFlags_WidthFixed)
+    width_mask_ = enum.auto()  # (= TableColumnFlags_WidthStretch | TableColumnFlags_WidthFixed)
     # ImGuiTableColumnFlags_IndentMask_           = ImGuiTableColumnFlags_IndentEnable | ImGuiTableColumnFlags_IndentDisable,    /* original C++ signature */
-    indent_mask_ = (
-        enum.auto()
-    )  # (= TableColumnFlags_IndentEnable | TableColumnFlags_IndentDisable)
+    indent_mask_ = enum.auto()  # (= TableColumnFlags_IndentEnable | TableColumnFlags_IndentDisable)
     # ImGuiTableColumnFlags_StatusMask_           = ImGuiTableColumnFlags_IsEnabled | ImGuiTableColumnFlags_IsVisible | ImGuiTableColumnFlags_IsSorted | ImGuiTableColumnFlags_IsHovered,    /* original C++ signature */
     status_mask_ = (
         enum.auto()
@@ -5077,9 +4734,7 @@ class TableBgTarget_(enum.Enum):
         enum.auto()
     )  # (= 1)  # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
     # ImGuiTableBgTarget_RowBg1                   = 2,            /* original C++ signature */
-    row_bg1 = (
-        enum.auto()
-    )  # (= 2)  # Set row background color 1 (generally used for selection marking)
+    row_bg1 = enum.auto()  # (= 2)  # Set row background color 1 (generally used for selection marking)
     # ImGuiTableBgTarget_CellBg                   = 3,            /* original C++ signature */
     cell_bg = enum.auto()  # (= 3)  # Set cell background color (top-most color)
 
@@ -8203,11 +7858,7 @@ class IO:
         pass
     # IMGUI_API void  SetKeyEventNativeData(ImGuiKey key, int native_keycode, int native_scancode, int native_legacy_index = -1);     /* original C++ signature */
     def set_key_event_native_data(
-        self,
-        key: Key,
-        native_keycode: int,
-        native_scancode: int,
-        native_legacy_index: int = -1,
+        self, key: Key, native_keycode: int, native_scancode: int, native_legacy_index: int = -1
     ) -> None:
         """[Optional] Specify index for legacy <1.87 IsKeyXXX() functions with native indices + specify native keycode, scancode."""
         pass
@@ -8442,10 +8093,7 @@ class SizeCallbackData:
     desired_size: ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.
     # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
-        self,
-        pos: ImVec2 = ImVec2(),
-        current_size: ImVec2 = ImVec2(),
-        desired_size: ImVec2 = ImVec2(),
+        self, pos: ImVec2 = ImVec2(), current_size: ImVec2 = ImVec2(), desired_size: ImVec2 = ImVec2()
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -8904,9 +8552,7 @@ class ImDrawVert:
     # ImU32   col;    /* original C++ signature */
     col: ImU32
     # ImDrawVert(ImVec2 pos = ImVec2(), ImVec2 uv = ImVec2(), ImU32 col = ImU32());    /* original C++ signature */
-    def __init__(
-        self, pos: ImVec2 = ImVec2(), uv: ImVec2 = ImVec2(), col: ImU32 = ImU32()
-    ) -> None:
+    def __init__(self, pos: ImVec2 = ImVec2(), uv: ImVec2 = ImVec2(), col: ImU32 = ImU32()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -8925,9 +8571,7 @@ class ImDrawCmdHeader:
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int
     # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
-    def __init__(
-        self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()
-    ) -> None:
+    def __init__(self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -9014,17 +8658,13 @@ class ImDrawFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 8)  # AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!
     # ImDrawFlags_RoundCornersTop             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,    /* original C++ signature */
-    round_corners_top = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right)
+    round_corners_top = enum.auto()  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right)
     # ImDrawFlags_RoundCornersBottom          = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,    /* original C++ signature */
     round_corners_bottom = (
         enum.auto()
     )  # (= ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_bottom_right)
     # ImDrawFlags_RoundCornersLeft            = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersTopLeft,    /* original C++ signature */
-    round_corners_left = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_top_left)
+    round_corners_left = enum.auto()  # (= ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_top_left)
     # ImDrawFlags_RoundCornersRight           = ImDrawFlags_RoundCornersBottomRight | ImDrawFlags_RoundCornersTopRight,    /* original C++ signature */
     round_corners_right = (
         enum.auto()
@@ -9039,9 +8679,7 @@ class ImDrawFlags_(enum.Enum):
     )  # (= ImDrawFlags_.round_corners_all)  # Default to ALL corners if none of the _RoundCornersXX flags are specified.
     # ImDrawFlags_RoundCornersMask_           = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone,    /* original C++ signature */
     # }
-    round_corners_mask_ = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_all | ImDrawFlags_.round_corners_none)
+    round_corners_mask_ = enum.auto()  # (= ImDrawFlags_.round_corners_all | ImDrawFlags_.round_corners_none)
 
 class ImDrawListFlags_(enum.Enum):
     """Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.
@@ -9119,10 +8757,7 @@ class ImDrawList:
         pass
     # IMGUI_API void  PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect = false);      /* original C++ signature */
     def push_clip_rect(
-        self,
-        clip_rect_min: ImVec2,
-        clip_rect_max: ImVec2,
-        intersect_with_current_clip_rect: bool = False,
+        self, clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool = False
     ) -> None:
         """Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::PushClipRect() to affect logic (hit-testing and widget culling)"""
         pass
@@ -9154,9 +8789,7 @@ class ImDrawList:
     #   In future versions we will use textures to provide cheaper and higher-quality circles.
     #   Use AddNgon() and AddNgonFilled() functions if you need to guarantee a specific number of sides.
     # IMGUI_API void  AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_line(
-        self, p1: ImVec2, p2: ImVec2, col: ImU32, thickness: float = 1.0
-    ) -> None:
+    def add_line(self, p1: ImVec2, p2: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, float thickness = 1.0f);       /* original C++ signature */
     def add_rect(
@@ -9172,12 +8805,7 @@ class ImDrawList:
         pass
     # IMGUI_API void  AddRectFilled(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0);                         /* original C++ signature */
     def add_rect_filled(
-        self,
-        p_min: ImVec2,
-        p_max: ImVec2,
-        col: ImU32,
-        rounding: float = 0.0,
-        flags: ImDrawFlags = 0,
+        self, p_min: ImVec2, p_max: ImVec2, col: ImU32, rounding: float = 0.0, flags: ImDrawFlags = 0
     ) -> None:
         """a: upper-left, b: lower-right (== upper-left + size)"""
         pass
@@ -9193,60 +8821,30 @@ class ImDrawList:
     ) -> None:
         pass
     # IMGUI_API void  AddQuad(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_quad(
-        self,
-        p1: ImVec2,
-        p2: ImVec2,
-        p3: ImVec2,
-        p4: ImVec2,
-        col: ImU32,
-        thickness: float = 1.0,
-    ) -> None:
+    def add_quad(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddQuadFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col);    /* original C++ signature */
-    def add_quad_filled(
-        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32
-    ) -> None:
+    def add_quad_filled(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32) -> None:
         pass
     # IMGUI_API void  AddTriangle(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_triangle(
-        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: float = 1.0
-    ) -> None:
+    def add_triangle(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddTriangleFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col);    /* original C++ signature */
-    def add_triangle_filled(
-        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32
-    ) -> None:
+    def add_triangle_filled(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32) -> None:
         pass
     # IMGUI_API void  AddCircle(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
     def add_circle(
-        self,
-        center: ImVec2,
-        radius: float,
-        col: ImU32,
-        num_segments: int = 0,
-        thickness: float = 1.0,
+        self, center: ImVec2, radius: float, col: ImU32, num_segments: int = 0, thickness: float = 1.0
     ) -> None:
         pass
     # IMGUI_API void  AddCircleFilled(const ImVec2& center, float radius, ImU32 col, int num_segments = 0);    /* original C++ signature */
-    def add_circle_filled(
-        self, center: ImVec2, radius: float, col: ImU32, num_segments: int = 0
-    ) -> None:
+    def add_circle_filled(self, center: ImVec2, radius: float, col: ImU32, num_segments: int = 0) -> None:
         pass
     # IMGUI_API void  AddNgon(const ImVec2& center, float radius, ImU32 col, int num_segments, float thickness = 1.0f);    /* original C++ signature */
-    def add_ngon(
-        self,
-        center: ImVec2,
-        radius: float,
-        col: ImU32,
-        num_segments: int,
-        thickness: float = 1.0,
-    ) -> None:
+    def add_ngon(self, center: ImVec2, radius: float, col: ImU32, num_segments: int, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddNgonFilled(const ImVec2& center, float radius, ImU32 col, int num_segments);    /* original C++ signature */
-    def add_ngon_filled(
-        self, center: ImVec2, radius: float, col: ImU32, num_segments: int
-    ) -> None:
+    def add_ngon_filled(self, center: ImVec2, radius: float, col: ImU32, num_segments: int) -> None:
         pass
     # IMGUI_API void  AddEllipse(const ImVec2& center, float radius_x, float radius_y, ImU32 col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
     def add_ellipse(
@@ -9262,20 +8860,12 @@ class ImDrawList:
         pass
     # IMGUI_API void  AddEllipseFilled(const ImVec2& center, float radius_x, float radius_y, ImU32 col, float rot = 0.0f, int num_segments = 0);    /* original C++ signature */
     def add_ellipse_filled(
-        self,
-        center: ImVec2,
-        radius_x: float,
-        radius_y: float,
-        col: ImU32,
-        rot: float = 0.0,
-        num_segments: int = 0,
+        self, center: ImVec2, radius_x: float, radius_y: float, col: ImU32, rot: float = 0.0, num_segments: int = 0
     ) -> None:
         pass
     # IMGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
     @overload
-    def add_text(
-        self, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None
-    ) -> None:
+    def add_text(self, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
         pass
     # IMGUI_API void  AddText(const ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL);    /* original C++ signature */
     @overload
@@ -9294,9 +8884,7 @@ class ImDrawList:
     #                                        #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
-    def add_polyline(
-        self, points: List[ImVec2], col: ImU32, flags: ImDrawFlags, thickness: float
-    ) -> None:
+    def add_polyline(self, points: List[ImVec2], col: ImU32, flags: ImDrawFlags, thickness: float) -> None:
         pass
     # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
     def add_convex_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
@@ -9306,26 +8894,13 @@ class ImDrawList:
 
     # IMGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0);     /* original C++ signature */
     def add_bezier_cubic(
-        self,
-        p1: ImVec2,
-        p2: ImVec2,
-        p3: ImVec2,
-        p4: ImVec2,
-        col: ImU32,
-        thickness: float,
-        num_segments: int = 0,
+        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: float, num_segments: int = 0
     ) -> None:
         """Cubic Bezier (4 control points)"""
         pass
     # IMGUI_API void  AddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness, int num_segments = 0);                   /* original C++ signature */
     def add_bezier_quadratic(
-        self,
-        p1: ImVec2,
-        p2: ImVec2,
-        p3: ImVec2,
-        col: ImU32,
-        thickness: float,
-        num_segments: int = 0,
+        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: float, num_segments: int = 0
     ) -> None:
         """Quadratic Bezier (3 control points)"""
         pass
@@ -9391,25 +8966,14 @@ class ImDrawList:
         """(private API)"""
         pass
     # inline    void  PathStroke(ImU32 col, ImDrawFlags flags = 0, float thickness = 1.0f) { AddPolyline(_Path.Data, _Path.Size, col, flags, thickness); _Path.Size = 0; }    /* original C++ signature */
-    def path_stroke(
-        self, col: ImU32, flags: ImDrawFlags = 0, thickness: float = 1.0
-    ) -> None:
+    def path_stroke(self, col: ImU32, flags: ImDrawFlags = 0, thickness: float = 1.0) -> None:
         """(private API)"""
         pass
     # IMGUI_API void  PathArcTo(const ImVec2& center, float radius, float a_min, float a_max, int num_segments = 0);    /* original C++ signature */
-    def path_arc_to(
-        self,
-        center: ImVec2,
-        radius: float,
-        a_min: float,
-        a_max: float,
-        num_segments: int = 0,
-    ) -> None:
+    def path_arc_to(self, center: ImVec2, radius: float, a_min: float, a_max: float, num_segments: int = 0) -> None:
         pass
     # IMGUI_API void  PathArcToFast(const ImVec2& center, float radius, int a_min_of_12, int a_max_of_12);                    /* original C++ signature */
-    def path_arc_to_fast(
-        self, center: ImVec2, radius: float, a_min_of_12: int, a_max_of_12: int
-    ) -> None:
+    def path_arc_to_fast(self, center: ImVec2, radius: float, a_min_of_12: int, a_max_of_12: int) -> None:
         """Use precomputed angles for a 12 steps circle"""
         pass
     # IMGUI_API void  PathEllipticalArcTo(const ImVec2& center, float radius_x, float radius_y, float rot, float a_min, float a_max, int num_segments = 0);     /* original C++ signature */
@@ -9426,25 +8990,15 @@ class ImDrawList:
         """Ellipse"""
         pass
     # IMGUI_API void  PathBezierCubicCurveTo(const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, int num_segments = 0);     /* original C++ signature */
-    def path_bezier_cubic_curve_to(
-        self, p2: ImVec2, p3: ImVec2, p4: ImVec2, num_segments: int = 0
-    ) -> None:
+    def path_bezier_cubic_curve_to(self, p2: ImVec2, p3: ImVec2, p4: ImVec2, num_segments: int = 0) -> None:
         """Cubic Bezier (4 control points)"""
         pass
     # IMGUI_API void  PathBezierQuadraticCurveTo(const ImVec2& p2, const ImVec2& p3, int num_segments = 0);                   /* original C++ signature */
-    def path_bezier_quadratic_curve_to(
-        self, p2: ImVec2, p3: ImVec2, num_segments: int = 0
-    ) -> None:
+    def path_bezier_quadratic_curve_to(self, p2: ImVec2, p3: ImVec2, num_segments: int = 0) -> None:
         """Quadratic Bezier (3 control points)"""
         pass
     # IMGUI_API void  PathRect(const ImVec2& rect_min, const ImVec2& rect_max, float rounding = 0.0f, ImDrawFlags flags = 0);    /* original C++ signature */
-    def path_rect(
-        self,
-        rect_min: ImVec2,
-        rect_max: ImVec2,
-        rounding: float = 0.0,
-        flags: ImDrawFlags = 0,
-    ) -> None:
+    def path_rect(self, rect_min: ImVec2, rect_max: ImVec2, rounding: float = 0.0, flags: ImDrawFlags = 0) -> None:
         pass
     # Advanced
     # IMGUI_API void  AddCallback(ImDrawCallback callback, void* callback_data);      /* original C++ signature */
@@ -9491,9 +9045,7 @@ class ImDrawList:
         """Axis aligned rectangle (composed of two triangles)"""
         pass
     # IMGUI_API void  PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col);    /* original C++ signature */
-    def prim_rect_uv(
-        self, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, col: ImU32
-    ) -> None:
+    def prim_rect_uv(self, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, col: ImU32) -> None:
         pass
     # IMGUI_API void  PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col);    /* original C++ signature */
     def prim_quad_uv(
@@ -9555,23 +9107,11 @@ class ImDrawList:
         pass
     # IMGUI_API void  _PathArcToFastEx(const ImVec2& center, float radius, int a_min_sample, int a_max_sample, int a_step);    /* original C++ signature */
     def _path_arc_to_fast_ex(
-        self,
-        center: ImVec2,
-        radius: float,
-        a_min_sample: int,
-        a_max_sample: int,
-        a_step: int,
+        self, center: ImVec2, radius: float, a_min_sample: int, a_max_sample: int, a_step: int
     ) -> None:
         pass
     # IMGUI_API void  _PathArcToN(const ImVec2& center, float radius, float a_min, float a_max, int num_segments);    /* original C++ signature */
-    def _path_arc_to_n(
-        self,
-        center: ImVec2,
-        radius: float,
-        a_min: float,
-        a_max: float,
-        num_segments: int,
-    ) -> None:
+    def _path_arc_to_n(self, center: ImVec2, radius: float, a_min: float, a_max: float, num_segments: int) -> None:
         pass
 
 class ImDrawData:
@@ -9784,9 +9324,7 @@ class ImFontAtlasFlags_(enum.Enum):
     # ImFontAtlasFlags_None               = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImFontAtlasFlags_NoPowerOfTwoHeight = 1 << 0,       /* original C++ signature */
-    no_power_of_two_height = (
-        enum.auto()
-    )  # (= 1 << 0)  # Don't round the height to next power of two
+    no_power_of_two_height = enum.auto()  # (= 1 << 0)  # Don't round the height to next power of two
     # ImFontAtlasFlags_NoMouseCursors     = 1 << 1,       /* original C++ signature */
     no_mouse_cursors = (
         enum.auto()
@@ -9955,13 +9493,7 @@ class ImFontAtlas:
         pass
     # IMGUI_API int               AddCustomRectFontGlyph(ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2& offset = ImVec2(0, 0));    /* original C++ signature */
     def add_custom_rect_font_glyph(
-        self,
-        font: ImFont,
-        id_: ImWchar,
-        width: int,
-        height: int,
-        advance_x: float,
-        offset: ImVec2 = ImVec2(0, 0),
+        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: ImVec2 = ImVec2(0, 0)
     ) -> int:
         pass
     # ImFontAtlasCustomRect*      GetCustomRectByIndex(int index) { IM_ASSERT(index >= 0); return &CustomRects[index]; }    /* original C++ signature */
@@ -9970,18 +9502,11 @@ class ImFontAtlas:
         pass
     # [Internal]
     # IMGUI_API void              CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;    /* original C++ signature */
-    def calc_custom_rect_uv(
-        self, rect: ImFontAtlasCustomRect, out_uv_min: ImVec2, out_uv_max: ImVec2
-    ) -> None:
+    def calc_custom_rect_uv(self, rect: ImFontAtlasCustomRect, out_uv_min: ImVec2, out_uv_max: ImVec2) -> None:
         pass
     # IMGUI_API bool              GetMouseCursorTexData(ImGuiMouseCursor cursor, ImVec2* out_offset, ImVec2* out_size, ImVec2 out_uv_border[2], ImVec2 out_uv_fill[2]);    /* original C++ signature */
     def get_mouse_cursor_tex_data(
-        self,
-        cursor: MouseCursor,
-        out_offset: ImVec2,
-        out_size: ImVec2,
-        out_uv_border: ImVec2,
-        out_uv_fill: ImVec2,
+        self, cursor: MouseCursor, out_offset: ImVec2, out_size: ImVec2, out_uv_border: ImVec2, out_uv_fill: ImVec2
     ) -> bool:
         pass
     # -------------------------------------------
@@ -10112,14 +9637,10 @@ class ImFont:
     # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
     # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
     # IMGUI_API const char*       CalcWordWrapPositionA(float scale, const char* text, const char* text_end, float wrap_width) const;    /* original C++ signature */
-    def calc_word_wrap_position_a(
-        self, scale: float, text: str, text_end: str, wrap_width: float
-    ) -> str:
+    def calc_word_wrap_position_a(self, scale: float, text: str, text_end: str, wrap_width: float) -> str:
         pass
     # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c) const;    /* original C++ signature */
-    def render_char(
-        self, draw_list: ImDrawList, size: float, pos: ImVec2, col: ImU32, c: ImWchar
-    ) -> None:
+    def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2, col: ImU32, c: ImWchar) -> None:
         pass
     # IMGUI_API void              RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f, bool cpu_fine_clip = false) const;    /* original C++ signature */
     def render_text(
@@ -10162,9 +9683,7 @@ class ImFont:
     ) -> None:
         pass
     # IMGUI_API void              AddRemapChar(ImWchar dst, ImWchar src, bool overwrite_dst = true);     /* original C++ signature */
-    def add_remap_char(
-        self, dst: ImWchar, src: ImWchar, overwrite_dst: bool = True
-    ) -> None:
+    def add_remap_char(self, dst: ImWchar, src: ImWchar, overwrite_dst: bool = True) -> None:
         """Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built."""
         pass
     # IMGUI_API void              SetGlyphVisible(ImWchar c, bool visible);    /* original C++ signature */
@@ -10186,9 +9705,7 @@ class ViewportFlags_(enum.Enum):
     # ImGuiViewportFlags_IsPlatformWindow         = 1 << 0,       /* original C++ signature */
     is_platform_window = enum.auto()  # (= 1 << 0)  # Represent a Platform Window
     # ImGuiViewportFlags_IsPlatformMonitor        = 1 << 1,       /* original C++ signature */
-    is_platform_monitor = (
-        enum.auto()
-    )  # (= 1 << 1)  # Represent a Platform Monitor (unused yet)
+    is_platform_monitor = enum.auto()  # (= 1 << 1)  # Represent a Platform Monitor (unused yet)
     # ImGuiViewportFlags_OwnedByApp               = 1 << 2,       /* original C++ signature */
     owned_by_app = (
         enum.auto()
@@ -10202,13 +9719,9 @@ class ViewportFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 4)  # Platform Window: Disable platform task bar icon (generally set on popups/tooltips, or all windows if ImGuiConfigFlags_ViewportsNoTaskBarIcon is set)
     # ImGuiViewportFlags_NoFocusOnAppearing       = 1 << 5,       /* original C++ signature */
-    no_focus_on_appearing = (
-        enum.auto()
-    )  # (= 1 << 5)  # Platform Window: Don't take focus when created.
+    no_focus_on_appearing = enum.auto()  # (= 1 << 5)  # Platform Window: Don't take focus when created.
     # ImGuiViewportFlags_NoFocusOnClick           = 1 << 6,       /* original C++ signature */
-    no_focus_on_click = (
-        enum.auto()
-    )  # (= 1 << 6)  # Platform Window: Don't take focus when clicked on.
+    no_focus_on_click = enum.auto()  # (= 1 << 6)  # Platform Window: Don't take focus when clicked on.
     # ImGuiViewportFlags_NoInputs                 = 1 << 7,       /* original C++ signature */
     no_inputs = (
         enum.auto()
@@ -10222,9 +9735,7 @@ class ViewportFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 9)  # Platform Window: Avoid merging this window into another host window. This can only be set via ImGuiWindowClass viewport flags override (because we need to now ahead if we are going to create a viewport in the first place!).
     # ImGuiViewportFlags_TopMost                  = 1 << 10,      /* original C++ signature */
-    top_most = (
-        enum.auto()
-    )  # (= 1 << 10)  # Platform Window: Display on top (for tooltips only).
+    top_most = enum.auto()  # (= 1 << 10)  # Platform Window: Display on top (for tooltips only).
     # ImGuiViewportFlags_CanHostOtherWindows      = 1 << 11,      /* original C++ signature */
     can_host_other_windows = (
         enum.auto()
@@ -10453,7 +9964,6 @@ class PlatformImeData:
 # #endif
 ####################    </generated_from:imgui.h>    ####################
 
-
 ####################    <generated_from:imgui_stdlib.h>    ####################
 # dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)
 # This is also an example of how you may wrap your own similar types.
@@ -10468,11 +9978,7 @@ class PlatformImeData:
 # Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
 # IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);    /* original C++ signature */
 def input_text(
-    label: str,
-    str: str,
-    flags: InputTextFlags = 0,
-    callback: InputTextCallback = None,
-    user_data: Optional[Any] = None,
+    label: str, str: str, flags: InputTextFlags = 0, callback: InputTextCallback = None, user_data: Optional[Any] = None
 ) -> Tuple[bool, str]:
     pass
 
@@ -10498,8 +10004,8 @@ def input_text_with_hint(
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
     pass
-####################    </generated_from:imgui_stdlib.h>    ####################
 
+####################    </generated_from:imgui_stdlib.h>    ####################
 
 ####################    <generated_from:imgui_pywrappers.h>    ####################
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
@@ -10532,35 +10038,35 @@ def set_drag_drop_payload_py_id(type: str, data_id: PayloadId, cond: Cond = 0) -
     pass
 
 # IMGUI_API std::optional<ImGuiPayload_PyId>   AcceptDragDropPayload_PyId(const char* type, ImGuiDragDropFlags flags = 0);    /* original C++ signature */
-def accept_drag_drop_payload_py_id(
-    type: str, flags: DragDropFlags = 0
-) -> Optional[Payload_PyId]:
+def accept_drag_drop_payload_py_id(type: str, flags: DragDropFlags = 0) -> Optional[Payload_PyId]:
     pass
 
 # IMGUI_API std::optional<ImGuiPayload_PyId>   GetDragDropPayload_PyId();    /* original C++ signature */
 # }
 def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
     pass
+
 ####################    </generated_from:imgui_pywrappers.h>    ####################
 
 # </litgen_stub>
-
-# fmt: on
 
 ##################################################
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
 
-
 # API for imgui_demo.cpp (specific to ImGui Bundle)
 def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
     pass
+
 def set_imgui_demo_code_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
     pass
+
 def set_imgui_demo_marker_is_active(b: bool) -> None:
     pass
+
 def get_imgui_demo_marker_is_active() -> bool:
     pass
+
 def set_imgui_demo_show_python_code(b: bool) -> None:
     pass
