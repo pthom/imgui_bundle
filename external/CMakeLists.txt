@@ -18,6 +18,10 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(fplus INTERFACE -Wno-psabi)  # "note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1"
 endif()
 
+
+###############################################################################
+# Build ImGui & Hello ImGui
+###############################################################################
 # Build imgui + hello_imgui
 include(../cmake/add_hello_imgui.cmake)
 add_hello_imgui()
@@ -35,6 +39,12 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     target_link_libraries(imgui_pywrappers PUBLIC pybind11::pybind11)
 endif()
 
+
+###############################################################################
+# "Big" libraries, which can be disabled individually, for C++
+#     see options IMGUI_BUNDLE_DISABLE_XXX.
+#     (those options will fail for python bindings)
+###############################################################################
 # Build immvision
 option(IMGUI_BUNDLE_DISABLE_IMMVISION "Disable immvision" OFF)
 if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
@@ -57,9 +67,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     set(IMGUI_BUNDLE_WITH_IMPLOT ON CACHE INTERNAL "" FORCE)
 endif()
 
-# Build ImguiColorTextEdit
-add_subdirectory(ImGuiColorTextEdit)
-
 # Build imgui-node-editor
 option(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR "Disable imgui-node-editor" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
@@ -72,9 +79,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
     target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     set(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR ON CACHE INTERNAL "" FORCE)
 endif()
-
-# Build imgui-knobs
-add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 
 # Build ImFileDialog
 option(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG "Disable ImFileDialog" OFF)
@@ -94,30 +98,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
         set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
     endif()
 endif()
-
-# Build imspinner
-add_simple_external_library_with_sources(imspinner imspinner)
-
-# Build imgui_toggle
-add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
-
-# Build imgui_command_palette
-add_simple_external_library_with_sources(imgui_command_palette imgui-command-palette)
-
-# Build imgui_md
-add_simple_external_library(imgui_md imgui_md)
-target_sources(imgui_md PRIVATE
-    imgui_md/imgui_md/imgui_md.cpp
-    imgui_md/imgui_md/imgui_md.h
-    imgui_md/md4c/src/md4c.c
-    imgui_md/md4c/src/md4c.h
-    imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
-    imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
-    )
-target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
-target_include_directories(imgui_md PUBLIC imgui_md/imgui_md_wrapper)
-target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
-hello_imgui_msvc_target_group_sources(imgui_md)
 
 # Build ImGuizmo
 option(IMGUI_BUNDLE_DISABLE_IMGUIZMO "Disable ImGuizmo" OFF)
@@ -149,14 +129,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT)
         set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT ON CACHE INTERNAL "" FORCE)
     endif()
 endif()
-
-# Add portable_file_dialogs
-add_library(portable_file_dialogs INTERFACE)
-target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
-target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
-
-# Add ImCoolBar
-add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
 # Add nanovg & nvg_imgui
 option(IMGUI_BUNDLE_DISABLE_NANOVG "Disable nanovg" OFF)
@@ -197,9 +169,53 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
     endif()
 endif()
 
+
+###############################################################################
+# Core libraries, used everywhere in the demos
+# (can not be disabled)
+###############################################################################
+# Build ImguiColorTextEdit
+add_subdirectory(ImGuiColorTextEdit)
+# Build imgui_md
+add_simple_external_library(imgui_md imgui_md)
+target_sources(imgui_md PRIVATE
+    imgui_md/imgui_md/imgui_md.cpp
+    imgui_md/imgui_md/imgui_md.h
+    imgui_md/md4c/src/md4c.c
+    imgui_md/md4c/src/md4c.h
+    imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
+    imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
+)
+target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
+target_include_directories(imgui_md PUBLIC imgui_md/imgui_md_wrapper)
+target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
+hello_imgui_msvc_target_group_sources(imgui_md)
+
+
+###############################################################################
+# Lightweight widget libraries
+###############################################################################
+# Build imgui-knobs
+add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
+# Build imspinner
+add_simple_external_library_with_sources(imspinner imspinner)
+# Build imgui_toggle
+add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
+# Build imgui_command_palette
+add_simple_external_library_with_sources(imgui_command_palette imgui-command-palette)
+# Add ImCoolBar
+add_simple_external_library_with_sources(imcoolbar ImCoolBar)
+# Add portable_file_dialogs
+add_library(portable_file_dialogs INTERFACE)
+target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
+target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+
+
+###############################################################################
+# immapp (Core Library)
+###############################################################################
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)
-
 # And add info about the active libraries
 target_link_libraries(imgui_bundle PUBLIC imgui_bundle_active_libs)
 target_link_libraries(immapp PUBLIC imgui_bundle_active_libs)
