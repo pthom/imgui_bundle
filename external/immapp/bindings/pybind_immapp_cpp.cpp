@@ -49,6 +49,18 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
     ////////////////////    <generated_from:runner.h>    ////////////////////
+    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    //
+    // #endif
+    //
+
+
+    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    //
+    // #endif
+    //
+
+
     auto pyClassAddOnsParams =
         py::class_<ImmApp::AddOnsParams>
             (m, "AddOnsParams", "///////////////////////////////////////////////////////////////////////////////////////\n\n AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)\n to be initialized at startup.\n\n/////////////////////////////////////////////////////////////////////////////////////")
@@ -70,7 +82,11 @@ void py_init_module_immapp_cpp(py::module& m)
         .def_readwrite("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
         .def_readwrite("with_node_editor", &ImmApp::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
         .def_readwrite("with_tex_inspect", &ImmApp::AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
+        // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+        //
         .def_readwrite("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
+        // #endif
+        //
         .def_readwrite("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
         ;
 
@@ -104,9 +120,13 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("em_to_vec2",
         py::overload_cast<ImVec2>(ImmApp::EmToVec2), py::arg("v"));
+    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    //
 
     m.def("default_node_editor_context",
-        ImmApp::DefaultNodeEditorContext, "///////////////////////////////////////////////////////////////////////////////////////\n\n Utility for ImGui node editor & NanoVG\n\n/////////////////////////////////////////////////////////////////////////////////////");
+        ImmApp::DefaultNodeEditorContext);
+    // #endif
+    // }
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
