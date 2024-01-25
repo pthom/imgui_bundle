@@ -34,13 +34,15 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
         )
     target_link_libraries(imgui_pywrappers PUBLIC pybind11::pybind11)
 endif()
+
 # Build immvision
-if(HELLOIMGUI_HAS_OPENGL)
+option(IMGUI_BUNDLE_DISABLE_IMMVISION "Disable immvision" OFF)
+if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         target_link_libraries(imgui_bundle PUBLIC immvision)
         hello_imgui_msvc_target_group_sources(immvision)
-        target_compile_definitions(imgui_bundle PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
+        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 endif()
 
