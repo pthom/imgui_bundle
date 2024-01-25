@@ -77,18 +77,22 @@ endif()
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 
 # Build ImFileDialog
-if(HELLOIMGUI_HAS_OPENGL)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_IMFILEDIALOG)
-    set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
-    add_simple_external_library(im_file_dialog ImFileDialog)
-    target_sources(im_file_dialog PRIVATE
-        ImFileDialog/ImFileDialog/ImFileDialog.cpp
-        ImFileDialog/ImFileDialog/ImFileDialog.h
-    )
-    add_additional_sources_to_external_library(im_file_dialog ImFileDialog bundle_integration)
-    target_include_directories(im_file_dialog PRIVATE hello_imgui/hello_imgui/src/hello_imgui/internal)
-    target_include_directories(im_file_dialog PRIVATE imgui)
-    target_link_libraries(im_file_dialog PRIVATE hello_imgui)
+option(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG "Disable ImFileDialog" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
+    if(HELLOIMGUI_HAS_OPENGL)
+        add_simple_external_library(im_file_dialog ImFileDialog)
+        target_sources(im_file_dialog PRIVATE
+            ImFileDialog/ImFileDialog/ImFileDialog.cpp
+            ImFileDialog/ImFileDialog/ImFileDialog.h
+        )
+        add_additional_sources_to_external_library(im_file_dialog ImFileDialog bundle_integration)
+        target_include_directories(im_file_dialog PRIVATE hello_imgui/hello_imgui/src/hello_imgui/internal)
+        target_include_directories(im_file_dialog PRIVATE imgui)
+        target_link_libraries(im_file_dialog PRIVATE hello_imgui)
+
+        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMFILEDIALOG)
+        set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
+    endif()
 endif()
 
 # Build imspinner
