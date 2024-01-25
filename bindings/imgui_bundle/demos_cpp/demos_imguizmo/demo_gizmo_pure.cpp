@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
 // Demo ImGuizmo (only the 3D gizmo)
 // See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_pure.py
 
@@ -525,4 +526,11 @@ int main(int, char**)
     ImmApp::Run(runnerParams);
     return 0;
 }
+#endif
+
+#else // #ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+#include <cstdio>
+int main(int, char **) { printf("This demo requires ImGuizmo\n"); return 0; }
+#endif
 #endif

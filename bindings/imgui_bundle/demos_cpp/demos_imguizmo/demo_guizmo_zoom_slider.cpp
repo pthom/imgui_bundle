@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
 // Demo zoom slider with ImGuizmo
 // See equivalent python program: demos/litgen/imgui_bundle/bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_zoom_slider.py
 
@@ -139,3 +140,8 @@ void demo_guizmo_zoom_slider()
 
     ImGui::EndChild();
 }
+
+#else // IMGUI_BUNDLE_WITH_IMGUIZMO
+#include "imgui.h"
+void demo_guizmo_zoom_slider() { ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuizmo"); }
+#endif // IMGUI_BUNDLE_WITH_IMGUIZMO

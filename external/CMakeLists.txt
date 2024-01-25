@@ -120,8 +120,14 @@ target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus im
 hello_imgui_msvc_target_group_sources(imgui_md)
 
 # Build ImGuizmo
-add_simple_external_library_with_sources(imguizmo ImGuizmo)
-add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
+option(IMGUI_BUNDLE_DISABLE_IMGUIZMO "Disable ImGuizmo" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_IMGUIZMO)
+    add_simple_external_library_with_sources(imguizmo ImGuizmo)
+    add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
+
+    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUIZMO)
+    set(IMGUI_BUNDLE_WITH_IMGUIZMO ON CACHE INTERNAL "" FORCE)
+endif()
 
 # Build imgui_tex_inspect
 option(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT "Disable imgui_tex_inspect" OFF)
