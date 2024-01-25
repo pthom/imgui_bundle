@@ -32,7 +32,7 @@ function (add_hello_imgui)
 
     # 4. Finally, add hello_imgui
     add_subdirectory(hello_imgui/hello_imgui)
-    target_link_libraries(imgui_bundle PUBLIC hello_imgui)
+    target_link_libraries(imgui_bundle INTERFACE hello_imgui)
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
     if (WIN32)

@@ -8,8 +8,6 @@ function(_target_force_include target include_file)
     endif()
 endfunction()
 
-# A fake target to group info about active libraries
-add_library(imgui_bundle_active_libs INTERFACE)
 
 # Add fplus
 add_library(fplus INTERFACE)
@@ -50,9 +48,9 @@ option(IMGUI_BUNDLE_DISABLE_IMMVISION "Disable immvision" OFF)
 if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        target_link_libraries(imgui_bundle PUBLIC immvision)
+        target_link_libraries(imgui_bundle INTERFACE immvision)
         hello_imgui_msvc_target_group_sources(immvision)
-        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 endif()
 
@@ -63,7 +61,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
     _target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
     lg_disable_warning_exception_in_destructor(implot)
-    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMPLOT)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMPLOT)
     set(IMGUI_BUNDLE_WITH_IMPLOT ON CACHE INTERNAL "" FORCE)
 endif()
 
@@ -76,7 +74,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
         imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
         )
     target_link_libraries(imgui_node_editor PUBLIC immapp)
-    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     set(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR ON CACHE INTERNAL "" FORCE)
 endif()
 
@@ -94,7 +92,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
         target_include_directories(im_file_dialog PRIVATE imgui)
         target_link_libraries(im_file_dialog PRIVATE hello_imgui)
 
-        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMFILEDIALOG)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMFILEDIALOG)
         set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
     endif()
 endif()
@@ -105,7 +103,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUIZMO)
     add_simple_external_library_with_sources(imguizmo ImGuizmo)
     add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
 
-    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUIZMO)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUIZMO)
     set(IMGUI_BUNDLE_WITH_IMGUIZMO ON CACHE INTERNAL "" FORCE)
 endif()
 
@@ -125,7 +123,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT)
         target_include_directories(imgui_tex_inspect PRIVATE hello_imgui/hello_imgui/external/OpenGL_Loaders/glad/include)
         target_link_libraries(imgui_tex_inspect PUBLIC hello_imgui)
 
-        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT)
         set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT ON CACHE INTERNAL "" FORCE)
     endif()
 endif()
@@ -142,7 +140,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
         add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
         target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
         target_compile_definitions(nanovg PUBLIC IMGUI_BUNDLE_WITH_NANOVG)
-        target_link_libraries(imgui_bundle PUBLIC nanovg)
+        target_link_libraries(imgui_bundle INTERFACE nanovg)
         hello_imgui_msvc_target_group_sources(nanovg)
 
         # Add support for metal
@@ -164,7 +162,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
         endif()
         target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
 
-        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_NANOVG)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_NANOVG)
         set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
     endif()
 endif()
@@ -208,7 +206,7 @@ add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 # Add portable_file_dialogs
 add_library(portable_file_dialogs INTERFACE)
 target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
-target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+target_link_libraries(imgui_bundle INTERFACE portable_file_dialogs)
 
 
 ###############################################################################
@@ -217,5 +215,4 @@ target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)
 # And add info about the active libraries
-target_link_libraries(imgui_bundle PUBLIC imgui_bundle_active_libs)
-target_link_libraries(immapp PUBLIC imgui_bundle_active_libs)
+target_link_libraries(immapp PUBLIC imgui_bundle)
