@@ -1,6 +1,8 @@
 #pragma once
 #include "hello_imgui/hello_imgui.h"
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor.h"
+#endif
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 
 #include <optional>
@@ -8,8 +10,10 @@
 
 namespace ImmApp
 {
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     using NodeEditorConfig = ax::NodeEditor::Config;
     using NodeEditorContext = ax::NodeEditor::EditorContext;
+#endif
 
     using VoidFunction = std::function<void(void)>;
 
@@ -38,8 +42,10 @@ namespace ImmApp
         // Set withTexInspect=true if you need to use imgui_tex_inspect
         bool withTexInspect = false;
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
+#endif
 
         // You can tweak MarkdownOptions (but this is optional)
         std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt;
@@ -90,7 +96,9 @@ namespace ImmApp
         bool withMarkdown = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+#endif
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
 
@@ -108,7 +116,9 @@ namespace ImmApp
         bool withImplot = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+#endif
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
 
@@ -138,6 +148,7 @@ namespace ImmApp
     // Utility for ImGui node editor & NanoVG
     //
     /////////////////////////////////////////////////////////////////////////////////////////
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     NodeEditorContext* DefaultNodeEditorContext();
-
+#endif
 } // namespace ImmApp

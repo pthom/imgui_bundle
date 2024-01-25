@@ -54,20 +54,28 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     _target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
     lg_disable_warning_exception_in_destructor(implot)
     target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMPLOT)
+    set(IMGUI_BUNDLE_WITH_IMPLOT ON CACHE INTERNAL "" FORCE)
 endif()
 
 # Build ImguiColorTextEdit
 add_subdirectory(ImGuiColorTextEdit)
 
 # Build imgui-node-editor
-add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
-target_sources(imgui_node_editor PRIVATE
-    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
-    imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
-    )
-target_link_libraries(imgui_node_editor PUBLIC immapp)
+option(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR "Disable imgui-node-editor" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
+    add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
+    target_sources(imgui_node_editor PRIVATE
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
+        )
+    target_link_libraries(imgui_node_editor PUBLIC immapp)
+    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+    set(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR ON CACHE INTERNAL "" FORCE)
+endif()
+
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
+
 # Build ImFileDialog
 if(HELLOIMGUI_HAS_OPENGL)
     add_compile_definitions(IMGUI_BUNDLE_WITH_IMFILEDIALOG)
@@ -82,12 +90,16 @@ if(HELLOIMGUI_HAS_OPENGL)
     target_include_directories(im_file_dialog PRIVATE imgui)
     target_link_libraries(im_file_dialog PRIVATE hello_imgui)
 endif()
+
 # Build imspinner
 add_simple_external_library_with_sources(imspinner imspinner)
+
 # Build imgui_toggle
 add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
+
 # Build imgui_command_palette
 add_simple_external_library_with_sources(imgui_command_palette imgui-command-palette)
+
 # Build imgui_md
 add_simple_external_library(imgui_md imgui_md)
 target_sources(imgui_md PRIVATE
@@ -102,9 +114,11 @@ target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
 target_include_directories(imgui_md PUBLIC imgui_md/imgui_md_wrapper)
 target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
 hello_imgui_msvc_target_group_sources(imgui_md)
+
 # Build ImGuizmo
 add_simple_external_library_with_sources(imguizmo ImGuizmo)
 add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
+
 # Build imgui_tex_inspect
 if(HELLOIMGUI_HAS_OPENGL)
     set(IMGUI_BUNDLE_WITH_TEXT_INSPECT ON CACHE INTERNAL "" FORCE)
@@ -120,10 +134,12 @@ if(HELLOIMGUI_HAS_OPENGL)
     target_include_directories(imgui_tex_inspect PRIVATE hello_imgui/hello_imgui/external/OpenGL_Loaders/glad/include)
     target_link_libraries(imgui_tex_inspect PUBLIC hello_imgui)
 endif()
+
 # Add portable_file_dialogs
 add_library(portable_file_dialogs INTERFACE)
 target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
 target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
+
 # Add ImCoolBar
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 

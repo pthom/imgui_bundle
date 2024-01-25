@@ -30,8 +30,10 @@ namespace ImmApp
 
     struct ImmAppContext
     {
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         std::optional<ax::NodeEditor::EditorContext *> _NodeEditorContext;
         ax::NodeEditor::Config _NodeEditorConfig;
+#endif
 
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
         ImGuiTexInspect::Context * _ImGuiTextInspect_Context = nullptr;
@@ -51,6 +53,7 @@ namespace ImmApp
             ImPlot::CreateContext();
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         // create imgui_node_editor context if required
         if (addOnsParams.withNodeEditor || addOnsParams.withNodeEditorConfig.has_value())
         {
@@ -60,6 +63,7 @@ namespace ImmApp
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
             ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
         }
+#endif
 
         // load markdown fonts if needed
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
@@ -123,12 +127,14 @@ namespace ImmApp
             ImPlot::DestroyContext();
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         if (addOnsParams.withNodeEditor)
         {
             assert(gImmAppContext._NodeEditorContext.has_value());
             ax::NodeEditor::DestroyEditor(*gImmAppContext._NodeEditorContext);
             gImmAppContext._NodeEditorContext = std::nullopt;
         }
+#endif
 
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
             ImGuiMd::DeInitializeMarkdown();
@@ -156,7 +162,9 @@ namespace ImmApp
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
+#endif
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
     {
@@ -173,7 +181,9 @@ namespace ImmApp
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
+#endif
         addOnsParams.withMarkdownOptions = withMarkdownOptions;
 
         Run(simpleRunnerParams, addOnsParams);
@@ -193,7 +203,9 @@ namespace ImmApp
         bool withImplot,
         bool withNodeEditor,
         bool withTexInspect,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
+#endif
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
     {
@@ -210,7 +222,9 @@ namespace ImmApp
         addOnsParams.withMarkdown = true;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
+#endif
         addOnsParams.withMarkdownOptions = withMarkdownOptions;
 
         Run(simpleRunnerParams, addOnsParams);
@@ -234,6 +248,7 @@ namespace ImmApp
     }
 
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext()
     {
         if (!gImmAppContext._NodeEditorContext.has_value())
@@ -241,4 +256,5 @@ namespace ImmApp
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
         return *gImmAppContext._NodeEditorContext;
     }
+#endif
 } // namespace ImmApp

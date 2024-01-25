@@ -1,5 +1,5 @@
 // Adapted from https://github.com/thedmd/imgui-node-editor/blob/master/examples/basic-interaction-example/basic-interaction-example.cpp
-
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "hello_imgui/hello_imgui.h"
 
 # include <imgui.h>
@@ -223,4 +223,11 @@ int main(int , char *[])
     HelloImGui::Run(runnerParams);
     return 0;
 }
+#endif
+
+#else
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+#include <cstdio>
+int main(int , char *[]) { printf("This demo requires imgui_node_editor\n"); return 0; }
+#endif
 #endif
