@@ -124,19 +124,24 @@ add_simple_external_library_with_sources(imguizmo ImGuizmo)
 add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
 
 # Build imgui_tex_inspect
-if(HELLOIMGUI_HAS_OPENGL)
-    set(IMGUI_BUNDLE_WITH_TEXT_INSPECT ON CACHE INTERNAL "" FORCE)
-    add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
-    target_sources(imgui_tex_inspect PRIVATE
-        imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
-        imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.h
-    )
-    target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
-    target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
-    target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
-    target_compile_definitions(imgui_tex_inspect PUBLIC IMGUI_BUNDLE_WITH_TEXT_INSPECT)
-    target_include_directories(imgui_tex_inspect PRIVATE hello_imgui/hello_imgui/external/OpenGL_Loaders/glad/include)
-    target_link_libraries(imgui_tex_inspect PUBLIC hello_imgui)
+option(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT "Disable imgui_tex_inspect" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT)
+    if(HELLOIMGUI_HAS_OPENGL)
+        add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
+        target_sources(imgui_tex_inspect PRIVATE
+            imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.cpp
+            imgui_tex_inspect/imgui_tex_inspect/backends/tex_inspect_opengl.h
+        )
+        target_include_directories(imgui_tex_inspect PRIVATE imgui_tex_inspect/imgui_tex_inspect)
+        target_include_directories(imgui_tex_inspect PRIVATE imgui/imgui/backends)
+        target_compile_definitions(imgui_tex_inspect PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
+        target_compile_definitions(imgui_tex_inspect PUBLIC IMGUI_BUNDLE_WITH_TEXT_INSPECT)
+        target_include_directories(imgui_tex_inspect PRIVATE hello_imgui/hello_imgui/external/OpenGL_Loaders/glad/include)
+        target_link_libraries(imgui_tex_inspect PUBLIC hello_imgui)
+
+        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT)
+        set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT ON CACHE INTERNAL "" FORCE)
+    endif()
 endif()
 
 # Add portable_file_dialogs
