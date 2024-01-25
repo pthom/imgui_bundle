@@ -159,39 +159,42 @@ target_link_libraries(imgui_bundle PUBLIC portable_file_dialogs)
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 
 # Add nanovg & nvg_imgui
-if(HELLOIMGUI_HAS_OPENGL OR HELLOIMGUI_HAS_METAL)
-    set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
+option(IMGUI_BUNDLE_DISABLE_NANOVG "Disable nanovg" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
+    if(HELLOIMGUI_HAS_OPENGL OR HELLOIMGUI_HAS_METAL)
+        if(HELLOIMGUI_HAS_METAL)
+            enable_language(OBJC)
+        endif()
 
-    if(HELLOIMGUI_HAS_METAL)
-        enable_language(OBJC)
+        # Add nanovg
+        add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
+        target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
+        target_compile_definitions(nanovg PUBLIC IMGUI_BUNDLE_WITH_NANOVG)
+        target_link_libraries(imgui_bundle PUBLIC nanovg)
+        hello_imgui_msvc_target_group_sources(nanovg)
+
+        # Add support for metal
+        if(HELLOIMGUI_HAS_METAL)
+            target_sources(nanovg PRIVATE nanovg/MetalNanoVG/src/nanovg_mtl.m nanovg/MetalNanoVG/src/nanovg_mtl.h)
+            target_link_libraries(nanovg PUBLIC "-framework Metal" "-framework QuartzCore")
+            target_include_directories(nanovg PUBLIC nanovg/MetalNanoVG/src)
+        endif()
+
+        # Add nvg_imgui
+        add_simple_external_library(nvg_imgui nanovg)
+        target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
+        file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
+        if (HELLOIMGUI_HAS_METAL)
+            set(nvg_imgui_sources ${nvg_imgui_sources}
+                nanovg/nvg_imgui/nvg_mtl_hello_imgui.mm
+                nanovg/nvg_imgui/nvg_mtl_hello_imgui.h
+            )
+        endif()
+        target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
+
+        target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_NANOVG)
+        set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
     endif()
-
-    # Add nanovg
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
-    target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
-    target_compile_definitions(nanovg PUBLIC IMGUI_BUNDLE_WITH_NANOVG)
-    target_link_libraries(imgui_bundle PUBLIC nanovg)
-    hello_imgui_msvc_target_group_sources(nanovg)
-
-    # Add support for metal
-    if(HELLOIMGUI_HAS_METAL)
-        target_sources(nanovg PRIVATE nanovg/MetalNanoVG/src/nanovg_mtl.m nanovg/MetalNanoVG/src/nanovg_mtl.h)
-        target_link_libraries(nanovg PUBLIC "-framework Metal" "-framework QuartzCore")
-        target_include_directories(nanovg PUBLIC nanovg/MetalNanoVG/src)
-    endif()
-
-    # Add nvg_imgui
-    add_simple_external_library(nvg_imgui nanovg)
-    target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
-    file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
-    if (HELLOIMGUI_HAS_METAL)
-        set(nvg_imgui_sources ${nvg_imgui_sources}
-            nanovg/nvg_imgui/nvg_mtl_hello_imgui.mm
-            nanovg/nvg_imgui/nvg_mtl_hello_imgui.h
-        )
-    endif()
-    target_sources(nvg_imgui PRIVATE ${nvg_imgui_sources})
-
 endif()
 
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
