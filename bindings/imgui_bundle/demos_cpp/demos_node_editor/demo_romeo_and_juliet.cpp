@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui.h"
 
@@ -108,3 +109,8 @@ void demo_romeo_and_juliet()
         link.Draw();
     ed::End();
 }
+
+#else // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#include "imgui.h"
+void demo_romeo_and_juliet() { ImGui::Text("This demo requires ImGui Node Editor\n"); }
+#endif

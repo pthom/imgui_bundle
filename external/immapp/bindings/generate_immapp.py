@@ -23,6 +23,7 @@ def main():
     options.srcmlcpp_options.ignored_warnings.append(
         "Block elements of type decl_stmt are not supported in python conversion"
     )
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR"
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")

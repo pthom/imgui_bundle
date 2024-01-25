@@ -75,7 +75,7 @@ function(add_this_folder_as_demos_library)
     get_filename_component(folder_name "${CMAKE_CURRENT_LIST_DIR}" NAME_WE)
     set(demos_library_name ${folder_name})
     add_library(${demos_library_name} ${sources})
-    target_link_libraries(${demos_library_name} imgui_bundle)
+    target_link_libraries(${demos_library_name} PRIVATE imgui_bundle)
     target_compile_definitions(${demos_library_name} PRIVATE IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY)
 endfunction()
 

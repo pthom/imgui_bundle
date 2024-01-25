@@ -1,4 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include <vector>
 #include <cmath>
 #include "implot/implot.h"
@@ -112,3 +113,8 @@ void demo_implot()
     if (ImGui::CollapsingHeader("Heatmap"))
         DemoHeatmap();
 }
+
+#else // IMGUI_BUNDLE_WITH_IMPLOT
+#include "imgui.h"
+void demo_implot() { ImGui::Text("Dear ImGui Bundle was compiled without support for ImPlot"); }
+#endif

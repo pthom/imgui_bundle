@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
 // Demo gradient with ImGuizmo
 // See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/Wrapper/demo_guizmo_gradient.py
 // Hum... I don't get the point of this widget
@@ -84,3 +85,8 @@ struct MyGradient: public ImGradient::DelegateStl
         I'm not sure about the purpose of this widget.
         You can drag squares, and double click to add some more)");
 }
+
+#else // #ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
+#include "imgui.h"
+void demo_guizmo_gradient() { ImGui::Text("This demo requires ImGuizmo."); }
+#endif // IMGUI_BUNDLE_WITH_IMGUIZMO

@@ -1,6 +1,6 @@
 // Demo curve editing with ImGuizmo
 // See equivalent python program: bindings/imgui_bundle/demos/demos_imguizmo/demo_guizmo_curve_edit.py
-
+#ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
 #include "demo_utils/api_demos.h"
 
 #include "imgui.h"
@@ -125,3 +125,8 @@ void demo_guizmo_curve_edit()
     unsigned int rampEditId = 1;
     ImCurveEdit::Edit(rampEdit, rampEditSize, rampEditId);
 }
+
+#else // IMGUI_BUNDLE_WITH_IMGUIZMO
+#include "imgui.h"
+void demo_guizmo_curve_edit() { ImGui::Text("This demo requires ImGuizmo\n"); }
+#endif

@@ -24,6 +24,15 @@ DefaultScreenSize = (800, 600)
 ####################    </generated_from:immapp.h>    ####################
 
 ####################    <generated_from:runner.h>    ####################
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#
+# #endif
+#
+
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#
+# #endif
+#
 
 class AddOnsParams:
     """///////////////////////////////////////////////////////////////////////////////////////
@@ -48,8 +57,12 @@ class AddOnsParams:
     # Set withTexInspect=True if you need to use imgui_tex_inspect
     with_tex_inspect: bool = False
 
+    # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    #
     # You can tweak NodeEditorConfig (but this is optional)
     with_node_editor_config: Optional[NodeEditorConfig] = None
+    # #endif
+    #
 
     # You can tweak MarkdownOptions (but this is optional)
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None
@@ -169,14 +182,18 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
 def em_to_vec2(v: ImVec2) -> ImVec2:
     pass
 
+# ///////////////////////////////////////////////////////////////////////////////////////
+#
+# Utility for ImGui node editor & NanoVG
+#
+# /////////////////////////////////////////////////////////////////////////////////////
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#
 def default_node_editor_context() -> NodeEditorContext:
-    """///////////////////////////////////////////////////////////////////////////////////////
-
-     Utility for ImGui node editor & NanoVG
-
-    /////////////////////////////////////////////////////////////////////////////////////
-    """
     pass
+
+# #endif
+# }
 
 ####################    </generated_from:runner.h>    ####################
 

@@ -24,6 +24,7 @@ project(imgui_bundle VERSION "1.3.0") # Remember to mirror changes to setup.py!
 ###############################################################################
 # Build Options
 ###############################################################################
+# (note: options to disable some libraries are available in external/CMakeLists.txt)
 
 # IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
 # -----------------------------------------------------------------------------
@@ -329,12 +330,9 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     find_pybind11()  # provided by cmake/find_pybind11.cmake
 endif()
 
-# Main library (imgui_bundle)
+# Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
-file(GLOB imgui_bundle_sources src/imgui_bundle/*.cpp src/imgui_bundle/*.h)
-add_library(imgui_bundle STATIC ${imgui_bundle_sources})
-target_include_directories(imgui_bundle PUBLIC src)
-hello_imgui_msvc_target_group_sources(imgui_bundle)
+add_library(imgui_bundle INTERFACE)
 
 # configure imgui_test_engine (*before* adding hello_imgui)
 # -----------------------------------------------------------------------------

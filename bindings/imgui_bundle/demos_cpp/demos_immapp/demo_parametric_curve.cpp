@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "immapp/immapp.h"
 #include "implot/implot.h"
 #include "imgui-knobs/imgui-knobs.h"
@@ -71,3 +72,7 @@ int main()
     ImmApp::Run(params, addOns);
     return 0;
 }
+#else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include <cstdio>
+int main(int , char *[]) { printf("This demo requires ImPlot\n"); return 0; }
+#endif
