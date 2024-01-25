@@ -1,7 +1,9 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
+#endif
 #include "immapp/code_utils.h"
 #include "demo_utils/api_demos.h"
 #include <vector>
@@ -91,6 +93,7 @@ void DemoMarkdown(AppState& appState)
 }
 
 
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 // A demo showcasing the usage of ImPlot
 void DemoPlot(AppState& appState)
 {
@@ -122,6 +125,9 @@ void DemoPlot(AppState& appState)
 
     ShowDoc("PlotDoc");
 }
+#else
+void DemoPlot(AppState& appState) {}
+#endif
 
 
 // Our main function

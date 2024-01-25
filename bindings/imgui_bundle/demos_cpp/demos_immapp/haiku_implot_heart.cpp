@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "imgui.h"
 #include "implot/implot.h"
 #include "imgui-knobs/imgui-knobs.h"
@@ -50,3 +51,8 @@ int main(int , char *[]) {
         /*fpsIdle=*/ 25.f, /*withImplot=*/true);
     return 0;
 }
+
+#else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include <cstdio>
+int main(int , char *[]) { printf("This demo requires ImPlot\n"); return 0; }
+#endif

@@ -1,6 +1,8 @@
 #include "immapp.h"
 
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
+#endif
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "bundle_integration/ImFileDialogTextureHelper.h"
 #endif
@@ -44,8 +46,10 @@ namespace ImmApp
         AddOnsParams addOnsParams = addOnsParams_;
 
         // create implot context if required
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
             ImPlot::CreateContext();
+#endif
 
         // create imgui_node_editor context if required
         if (addOnsParams.withNodeEditor || addOnsParams.withNodeEditorConfig.has_value())
@@ -114,8 +118,10 @@ namespace ImmApp
 
         HelloImGui::Run(runnerParams);
 
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
             ImPlot::DestroyContext();
+#endif
 
         if (addOnsParams.withNodeEditor)
         {

@@ -8,6 +8,8 @@ function(_target_force_include target include_file)
     endif()
 endfunction()
 
+# A fake target to group info about active libraries
+add_library(imgui_bundle_active_libs INTERFACE)
 
 # Add fplus
 add_library(fplus INTERFACE)
@@ -22,6 +24,7 @@ add_hello_imgui()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     target_compile_definitions(imgui PUBLIC IMGUI_BUNDLE_BUILD_PYTHON)
 endif()
+
 # Add imgui_pywrappers
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_simple_external_library(imgui_pywrappers imgui/imgui_pywrappers)
@@ -40,13 +43,20 @@ if(HELLOIMGUI_HAS_OPENGL)
         target_compile_definitions(imgui_bundle PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 endif()
+
 # Build implot
-add_simple_external_library_with_sources(implot implot)
-target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
-_target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
-lg_disable_warning_exception_in_destructor(implot)
+option(IMGUI_BUNDLE_DISABLE_IMPLOT "Disable implot" OFF)
+if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
+    add_simple_external_library_with_sources(implot implot)
+    target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
+    _target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
+    lg_disable_warning_exception_in_destructor(implot)
+    target_compile_definitions(imgui_bundle_active_libs INTERFACE IMGUI_BUNDLE_WITH_IMPLOT)
+endif()
+
 # Build ImguiColorTextEdit
 add_subdirectory(ImGuiColorTextEdit)
+
 # Build imgui-node-editor
 add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 target_sources(imgui_node_editor PRIVATE
@@ -153,3 +163,7 @@ endif()
 
 # Finally, build immapp (Immediate App lib, internal to ImGui Bundle
 add_subdirectory(immapp/immapp)
+
+# And add info about the active libraries
+target_link_libraries(imgui_bundle PUBLIC imgui_bundle_active_libs)
+target_link_libraries(immapp PUBLIC imgui_bundle_active_libs)

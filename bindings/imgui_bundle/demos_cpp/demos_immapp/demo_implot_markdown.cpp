@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "implot/implot.h"
@@ -38,3 +39,7 @@ int main(int, char**)
 
     return 0;
 }
+#else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include <cstdio>
+int main(int, char**) { std::printf("This demo requires ImPlot.\n"); }
+#endif
