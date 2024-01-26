@@ -1,35 +1,11 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-
-//This program reads the Python virtual environment path from a configuration file named
-//    pybind_native_debug_venv.txt
-//This file should be placed next to this C++ file, and must contain a single line that specifies the path
-//to the Python virtual environment.
-//
-//Example of 'pybind_native_debug_venv.txt' content:
-//
-///home/me/venv
-
 #include <pybind11/embed.h>
 #include <optional>
 #include <iostream>
-#include <fstream>
 #include <filesystem>
 
+// This file relies on VENV_PATH to be set as a compile definition by CMake.
 
 namespace py = pybind11;
-
-
-// read pybind_native_debug_venv.txt
-std::string read_venv_path_from_file(const std::filesystem::path& file_path)
-{
-    std::ifstream file_stream(file_path);
-    if (!file_stream)
-        throw std::runtime_error("Could not open the venv path file.");
-
-    std::string venv_path;
-    std::getline(file_stream, venv_path);
-    return venv_path;
-}
 
 
 // Search for the 'site-packages' directory within the venv
@@ -76,10 +52,10 @@ int main()
 
     // Initialize python path with the virtual environment
     auto this_dir = std::filesystem::path(__FILE__).parent_path();
-    std::string venv_path = read_venv_path_from_file(this_dir / "pybind_native_debug_venv.txt");
+    std::string venv_path = VENV_PATH; // VENV_PATH is set by CMake
     initialize_python_with_venv(venv_path);
 
-    // Add path to imgui_bundle bindings (in pip editable development mode)
+    // Add path to src/python_bindings (in pip editable development mode)
     auto bundle_bindings_dir = this_dir.parent_path() / "bindings";
     add_python_path(bundle_bindings_dir.string());
 
@@ -87,5 +63,20 @@ int main()
     add_python_path(this_dir.string());
 
     // Run pybind_native_debug.py
-    py::exec("import pybind_native_debug");
+    try
+    {
+        py::exec("import pybind_native_debug");
+    }
+    catch (pybind11::error_already_set &e)
+    {
+        std::cout << "Python exception details:\n";
+        std::cout << "- Type: " << py::str(e.type()).cast<std::string>() << "\n";
+        std::cout << "- Value: " << py::str(e.value()).cast<std::string>() << "\n";
+        if(e.trace())
+            std::cout << "- Traceback: " << py::str(e.trace()).cast<std::string>() << "\n";
+        else
+            std::cout << "- Traceback: None\n";
+        e.restore();
+        PyErr_Print();  // This line requires Python.h to be included
+    }
 }
