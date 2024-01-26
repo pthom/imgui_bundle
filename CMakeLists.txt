@@ -216,6 +216,12 @@ if(TARGET imgui_bundle)
     return()
 endif()
 
+# use ccache if present
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
+endif(CCACHE_FOUND)
+
 
 # Everything is built as a static library in imgui_bundle
 set(BUILD_SHARED_LIBS OFF)
