@@ -367,6 +367,7 @@ if __name__ == "__main__":
 {cpp}
 [source, cpp]
 ----
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "imgui.h"
 #include "implot/implot.h"
 #include "imgui-knobs/imgui-knobs.h"
@@ -419,6 +420,11 @@ int main(int , char *[]) {
         /*fpsIdle=*/ 25.f, /*withImplot=*/true);
     return 0;
 }
+
+#else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include <cstdio>
+int main(int , char *[]) { printf("This demo requires ImPlot\n"); return 0; }
+#endif
 ----
 ====
 
@@ -901,7 +907,9 @@ This demonstration source code is heavily documented and should be self-explanat
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
+#endif
 #include "immapp/code_utils.h"
 #include "demo_utils/api_demos.h"
 #include <vector>
@@ -991,6 +999,7 @@ void DemoMarkdown(AppState& appState)
 }
 
 
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 // A demo showcasing the usage of ImPlot
 void DemoPlot(AppState& appState)
 {
@@ -1022,6 +1031,9 @@ void DemoPlot(AppState& appState)
 
     ShowDoc("PlotDoc");
 }
+#else
+void DemoPlot(AppState& appState) {}
+#endif
 
 
 // Our main function
@@ -2173,7 +2185,7 @@ int main(int, char**)
     // toolbar options
     HelloImGui::EdgeToolbarOptions edgeToolbarOptions;
     edgeToolbarOptions.sizeEm = 2.5f;
-    edgeToolbarOptions.WindowBg = ImVec4(0.8, 0.8, 0.8, 0.35f);
+    edgeToolbarOptions.WindowBg = ImVec4(0.8f, 0.8f, 0.8f, 0.35f);
     // top toolbar
     runnerParams.callbacks.AddEdgeToolbar(
         HelloImGui::EdgeToolbarType::Top,
@@ -4038,7 +4050,6 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these 
 ----
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
-#include "implot/implot.h"
 #include "imspinner/imspinner.h"
 #include "imgui_toggle/imgui_toggle.h"
 #include "imgui_toggle/imgui_toggle_presets.h"
@@ -5402,6 +5413,7 @@ The example program below demonstrates how to run an application which will use 
 {cpp}
 [source, cpp]
 ----
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "implot/implot.h"
@@ -5442,6 +5454,10 @@ int main(int, char**)
 
     return 0;
 }
+#else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include <cstdio>
+int main(int, char**) { std::printf("This demo requires ImPlot.\n"); }
+#endif
 ----
 
 Python:
