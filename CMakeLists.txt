@@ -109,6 +109,19 @@ endif()
 # -----------------------------------------------------------------------------
 
 
+# Some included libraries can be disabled individually
+# This works only in C++ (not in python)
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_DISABLE_NANOVG "Disable nanovg" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT "Disable imgui_tex_inspect" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMGUIZMO "Disable ImGuizmo" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG "Disable ImFileDialog" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR "Disable imgui-node-editor" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMPLOT "Disable implot" OFF)
+option(IMGUI_BUNDLE_DISABLE_IMMVISION "Disable immvision" OFF)
+
+
+
 # IMMVISION_FETCH_OPENCV: fetch OpenCV automatically during configure
 # -----------------------------------------------------------------------------
 # (OpenCV is required by the optional module immvision.

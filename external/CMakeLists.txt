@@ -44,7 +44,6 @@ endif()
 #     (those options will fail for python bindings)
 ###############################################################################
 # Build immvision
-option(IMGUI_BUNDLE_DISABLE_IMMVISION "Disable immvision" OFF)
 if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
@@ -55,7 +54,6 @@ if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
 endif()
 
 # Build implot
-option(IMGUI_BUNDLE_DISABLE_IMPLOT "Disable implot" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     add_simple_external_library_with_sources(implot implot)
     target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
@@ -66,7 +64,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
 endif()
 
 # Build imgui-node-editor
-option(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR "Disable imgui-node-editor" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
     add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
     target_sources(imgui_node_editor PRIVATE
@@ -79,7 +76,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
 endif()
 
 # Build ImFileDialog
-option(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG "Disable ImFileDialog" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
     if(HELLOIMGUI_HAS_OPENGL)
         add_simple_external_library(im_file_dialog ImFileDialog)
@@ -98,7 +94,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
 endif()
 
 # Build ImGuizmo
-option(IMGUI_BUNDLE_DISABLE_IMGUIZMO "Disable ImGuizmo" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMGUIZMO)
     add_simple_external_library_with_sources(imguizmo ImGuizmo)
     add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
@@ -108,7 +103,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUIZMO)
 endif()
 
 # Build imgui_tex_inspect
-option(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT "Disable imgui_tex_inspect" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT)
     if(HELLOIMGUI_HAS_OPENGL)
         add_simple_external_library_with_sources(imgui_tex_inspect imgui_tex_inspect)
@@ -129,7 +123,6 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT)
 endif()
 
 # Add nanovg & nvg_imgui
-option(IMGUI_BUNDLE_DISABLE_NANOVG "Disable nanovg" OFF)
 if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
     if(HELLOIMGUI_HAS_OPENGL OR HELLOIMGUI_HAS_METAL)
         if(HELLOIMGUI_HAS_METAL)
