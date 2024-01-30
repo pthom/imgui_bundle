@@ -1,5 +1,6 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle
 """
+
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
 import enum
@@ -215,9 +216,11 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
     @staticmethod
     def unindent(code: str, is_markdown: bool) -> str:
         pass
+
     @staticmethod
     def unindent_code(code: str) -> str:
         pass
+
     @staticmethod
     def unindent_markdown(code: str) -> str:
         pass
@@ -249,6 +252,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         light = enum.auto()  # (= 1)
         retro_blue = enum.auto()  # (= 2)
         mariana = enum.auto()  # (= 3)
+
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
         """DefaultSnippetLanguage will be Cpp or Python if using python bindings."""
@@ -266,7 +270,9 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         displayed_filename: str = ""  # Displayed on top of the editor
 
         height_in_lines: int = 0  # Number of visible lines in the editor
-        max_height_in_lines: int = 40  # If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
+        max_height_in_lines: int = (
+            40  # If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
+        )
 
         read_only: bool = False  # Snippets are read-only by default
 
@@ -292,11 +298,13 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         ) -> None:
             """Auto-generated default constructor with named params"""
             pass
+
     @staticmethod
     def show_code_snippet(
         snippet_data: SnippetData, width: float = 0.0, override_height_in_lines: int = 0
     ) -> None:
         pass
+
     @staticmethod
     @overload
     def show_side_by_side_snippets(
@@ -306,6 +314,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         equal_visible_lines: bool = True,
     ) -> None:
         pass
+
     @staticmethod
     @overload
     def show_side_by_side_snippets(

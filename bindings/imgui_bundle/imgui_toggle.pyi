@@ -1,6 +1,7 @@
 """A toggle switch widget for Dear ImGui
 Python bindings for https://github.com/cmdwtf/imgui_toggle
 """
+
 # ruff: noqa: B008
 from typing import Tuple, overload
 import enum

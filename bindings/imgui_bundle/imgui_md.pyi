@@ -1,6 +1,7 @@
 """Markdown for ImGui
 Python bindings for https://github.com/mekhontsev/imgui_md (with an additional custom wrapper)
 """
+
 # ruff: noqa: B008
 from typing import Optional, Callable
 from imgui_bundle.imgui import ImTextureID, ImVec2, ImVec4, ImFont

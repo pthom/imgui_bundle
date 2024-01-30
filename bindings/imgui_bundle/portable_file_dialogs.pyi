@@ -1,6 +1,7 @@
 """Portable GUI dialogs library, C++11, single-header
 https://github.com/samhocevar/portable-file-dialogs
 """
+
 # ruff: noqa: B008
 import enum
 
@@ -57,8 +58,10 @@ class notify:
 
     def __init__(self, title: str, message: str, _icon: icon = icon.info) -> None:
         pass
+
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
+
     def kill(self) -> bool:
         pass
 
@@ -76,10 +79,13 @@ class message:
         _icon: icon = icon.info,
     ) -> None:
         pass
+
     def result(self) -> button:
         pass
+
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
+
     def kill(self) -> bool:
         pass
 
@@ -100,10 +106,13 @@ class open_file:
         options: opt = opt.none,
     ) -> None:
         pass
+
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
+
     def kill(self) -> bool:
         pass
+
     def result(self) -> List[str]:
         pass
 
@@ -116,10 +125,13 @@ class save_file:
         options: opt = opt.none,
     ) -> None:
         pass
+
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
+
     def kill(self) -> bool:
         pass
+
     def result(self) -> str:
         pass
 
@@ -128,10 +140,13 @@ class select_folder:
         self, title: str, default_path: str = "", options: opt = opt.none
     ) -> None:
         pass
+
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
+
     def kill(self) -> bool:
         pass
+
     def result(self) -> str:
         pass
 

@@ -416,7 +416,9 @@ class TestEngineIO:
     # bool                        ConfigRestoreFocusAfterTests = true;    /* original C++ signature */
     config_restore_focus_after_tests: bool = True  # Restore focus back after running tests
     # bool                        ConfigCaptureEnabled = true;    /* original C++ signature */
-    config_capture_enabled: bool = True  # Master enable flags for capturing and saving captures. Disable to avoid e.g. lengthy saving of large PNG files.
+    config_capture_enabled: bool = (
+        True  # Master enable flags for capturing and saving captures. Disable to avoid e.g. lengthy saving of large PNG files.
+    )
     # bool                        ConfigCaptureOnError = false;    /* original C++ signature */
     config_capture_on_error: bool = False
     # bool                        ConfigNoThrottle = false;    /* original C++ signature */
@@ -432,7 +434,9 @@ class TestEngineIO:
     # float                       MouseSpeed = 600.0f;    /* original C++ signature */
     mouse_speed: float = 600.0  # Mouse speed (pixel/second) when not running in fast mode
     # float                       MouseWobble = 0.25f;    /* original C++ signature */
-    mouse_wobble: float = 0.25  # (0.0..1.0) How much wobble to apply to the mouse (pixels per pixel of move distance) when not running in fast mode
+    mouse_wobble: float = (
+        0.25  # (0.0..1.0) How much wobble to apply to the mouse (pixels per pixel of move distance) when not running in fast mode
+    )
     # float                       ScrollSpeed = 1400.0f;    /* original C++ signature */
     scroll_speed: float = 1400.0  # Scroll speed (pixel/second) when not running in fast mode
     # float                       TypingSpeed = 20.0f;    /* original C++ signature */
@@ -704,7 +708,9 @@ class Test:
     # Function_TestRunner    TestFunc = NULL;    /* original C++ signature */
     test_func: Function_TestRunner = None  # Test function
     # void*                           UserData = NULL;    /* original C++ signature */
-    user_data: Any = None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)
+    user_data: Any = (
+        None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)
+    )
     # ImVector<ImGuiTestRunTask>    Dependencies;                   // Registered via AddDependencyTest(), ran automatically before our test. This is a simpler wrapper to calling ctx->RunChildTest()
 
     # ImGuiTestOutput                 Output;    /* original C++ signature */
@@ -1063,7 +1069,9 @@ class TestContext:
     # int                     FrameCount = 0;    /* original C++ signature */
     frame_count: int = 0  # Test frame count (restarts from zero every time)
     # int                     FirstTestFrameCount = 0;    /* original C++ signature */
-    first_test_frame_count: int = 0  # First frame where TestFunc is running (after warm-up frame). This is generally -1 or 0 depending on whether we have warm up enabled
+    first_test_frame_count: int = (
+        0  # First frame where TestFunc is running (after warm-up frame). This is generally -1 or 0 depending on whether we have warm up enabled
+    )
     # bool                    FirstGuiFrame = false;    /* original C++ signature */
     first_gui_frame: bool = False
     # bool                    HasDock = false;    /* original C++ signature */
@@ -2022,7 +2030,9 @@ class TestFindByLabelTask:
     # int                     InSuffixDepth = 0;    /* original C++ signature */
     in_suffix_depth: int = 0  # Number of labels in a path, after unknown base ID (for "hello/**/foo/bar" it would be 2)
     # const char*             InSuffix = NULL;    /* original C++ signature */
-    in_suffix: str = None  # A label string which appears on ID stack after unknown base ID (for "hello/**/foo/bar" it would be "foo/bar") # (const)
+    in_suffix: str = (
+        None  # A label string which appears on ID stack after unknown base ID (for "hello/**/foo/bar" it would be "foo/bar") # (const)
+    )
     # const char*             InSuffixLastItem = NULL;    /* original C++ signature */
     in_suffix_last_item: str = None  # A last label string (for "hello/**/foo/bar" it would be "bar") # (const)
     # ImGuiID                 InSuffixLastItemHash = 0;    /* original C++ signature */

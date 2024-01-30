@@ -788,7 +788,9 @@ class ImDrawListSharedData:
     # float           ArcFastRadiusCutoff;    /* original C++ signature */
     arc_fast_radius_cutoff: float  # Cutoff radius after which arc drawing will fallback to slower PathArcTo()
     # ImU8            CircleSegmentCounts[64];    /* original C++ signature */
-    circle_segment_counts: np.ndarray  # ndarray[type=ImU8, size=64]  # Precomputed segment count for given radius before we calculate it dynamically (to avoid calculation overhead)
+    circle_segment_counts: (
+        np.ndarray
+    )  # ndarray[type=ImU8, size=64]  # Precomputed segment count for given radius before we calculate it dynamically (to avoid calculation overhead)
     # const ImVec4*   TexUvLines;    /* original C++ signature */
     tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas # (const)
 
@@ -1332,7 +1334,9 @@ class MenuColumns:
     # ImU16       OffsetMark;    /* original C++ signature */
     offset_mark: ImU16
     # ImU16       Widths[4];    /* original C++ signature */
-    widths: np.ndarray  # ndarray[type=ImU16, size=4]  # Width of:   Icon, Label, Shortcut, Mark  (accumulators for current frame)
+    widths: (
+        np.ndarray
+    )  # ndarray[type=ImU16, size=4]  # Width of:   Icon, Label, Shortcut, Mark  (accumulators for current frame)
 
     # ImGuiMenuColumns() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1396,11 +1400,15 @@ class InputTextState:
     # bool                    CursorFollow;    /* original C++ signature */
     cursor_follow: bool  # set when we want scrolling to follow the current cursor position (not always!)
     # bool                    SelectedAllMouseLock;    /* original C++ signature */
-    selected_all_mouse_lock: bool  # after a double-click to select all, we ignore further mouse drags to update selection
+    selected_all_mouse_lock: (
+        bool  # after a double-click to select all, we ignore further mouse drags to update selection
+    )
     # bool                    Edited;    /* original C++ signature */
     edited: bool  # edited this frame
     # ImGuiInputTextFlags     Flags;    /* original C++ signature */
-    flags: InputTextFlags  # copy of InputText() flags. may be used to check if e.g. ImGuiInputTextFlags_Password is set.
+    flags: (
+        InputTextFlags  # copy of InputText() flags. may be used to check if e.g. ImGuiInputTextFlags_Password is set.
+    )
 
     # ImGuiInputTextState()                   { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1624,7 +1632,9 @@ class LastItemData:
     # ImRect                  DisplayRect;    /* original C++ signature */
     display_rect: ImRect  # Display rectangle (ONLY VALID IF ImGuiItemStatusFlags_HasDisplayRect is set)
     # ImRect                  ClipRect;    /* original C++ signature */
-    clip_rect: ImRect  # Clip rectangle at the time of submitting item (ONLY VALID IF ImGuiItemStatusFlags_HasClipRect is set)
+    clip_rect: (
+        ImRect  # Clip rectangle at the time of submitting item (ONLY VALID IF ImGuiItemStatusFlags_HasClipRect is set)
+    )
 
     # ImGuiLastItemData()     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -1908,7 +1918,9 @@ class KeyOwnerData:
     # ImGuiID     OwnerNext;    /* original C++ signature */
     owner_next: ID
     # bool        LockThisFrame;    /* original C++ signature */
-    lock_this_frame: bool  # Reading this key requires explicit owner id (until end of frame). Set by ImGuiInputFlags_LockThisFrame.
+    lock_this_frame: (
+        bool  # Reading this key requires explicit owner id (until end of frame). Set by ImGuiInputFlags_LockThisFrame.
+    )
     # bool        LockUntilRelease;    /* original C++ signature */
     lock_until_release: bool  # Reading this key requires explicit owner id (until key is released). Set by ImGuiInputFlags_LockUntilRelease. When this is True LockThisFrame is always True as well.
 
@@ -2320,7 +2332,9 @@ class TypingSelectState:
     # float           LastRequestTime = 0.0f;    /* original C++ signature */
     last_request_time: float = 0.0
     # bool            SingleCharModeLock = false;    /* original C++ signature */
-    single_char_mode_lock: bool = False  # After a certain single char repeat count we lock into SingleCharMode. Two benefits: 1) buffer never fill, 2) we can provide an immediate SingleChar mode without timer elapsing.
+    single_char_mode_lock: bool = (
+        False  # After a certain single char repeat count we lock into SingleCharMode. Two benefits: 1) buffer never fill, 2) we can provide an immediate SingleChar mode without timer elapsing.
+    )
 
     # ImGuiTypingSelectState() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -2521,7 +2535,9 @@ class DockNode:
     # ImGuiID                 ID;    /* original C++ signature */
     id_: ID
     # ImGuiDockNodeFlags      SharedFlags;    /* original C++ signature */
-    shared_flags: DockNodeFlags  # (Write) Flags shared by all nodes of a same dockspace hierarchy (inherited from the root node)
+    shared_flags: (
+        DockNodeFlags  # (Write) Flags shared by all nodes of a same dockspace hierarchy (inherited from the root node)
+    )
     # ImGuiDockNodeFlags      LocalFlags;    /* original C++ signature */
     local_flags: DockNodeFlags  # (Write) Flags specific to this node
     # ImGuiDockNodeFlags      LocalFlagsInWindows;    /* original C++ signature */
@@ -2566,7 +2582,9 @@ class DockNode:
     # int                     LastFrameFocused;    /* original C++ signature */
     last_frame_focused: int  # Last frame number the node was focused.
     # ImGuiID                 LastFocusedNodeId;    /* original C++ signature */
-    last_focused_node_id: ID  # [Root node only] Which of our child docking node (any ancestor in the hierarchy) was last focused.
+    last_focused_node_id: (
+        ID  # [Root node only] Which of our child docking node (any ancestor in the hierarchy) was last focused.
+    )
     # ImGuiID                 SelectedTabId;    /* original C++ signature */
     selected_tab_id: ID  # [Leaf node only] Which of our tab/window is selected.
     # ImGuiID                 WantCloseTabId;    /* original C++ signature */
@@ -2702,7 +2720,9 @@ class ViewportP:
     # short               PlatformMonitor;    /* original C++ signature */
     platform_monitor: int
     # int                 BgFgDrawListsLastFrame[2];    /* original C++ signature */
-    bg_fg_draw_lists_last_frame: np.ndarray  # ndarray[type=int, size=2]  # Last frame number the background (0) and foreground (1) draw lists were used
+    bg_fg_draw_lists_last_frame: (
+        np.ndarray
+    )  # ndarray[type=int, size=2]  # Last frame number the background (0) and foreground (1) draw lists were used
     # ImDrawData          DrawDataP;    /* original C++ signature */
     draw_data_p: ImDrawData
     # ImDrawDataBuilder   DrawDataBuilder;    /* original C++ signature */
@@ -2790,7 +2810,9 @@ class WindowSettings:
     # bool        IsChild;    /* original C++ signature */
     is_child: bool
     # bool        WantApply;    /* original C++ signature */
-    want_apply: bool  # Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)
+    want_apply: (
+        bool  # Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)
+    )
     # bool        WantDelete;    /* original C++ signature */
     want_delete: bool  # Set to invalidate/delete the settings entry
 
@@ -3075,7 +3097,9 @@ class Context:
     # bool                    WithinFrameScope;    /* original C++ signature */
     within_frame_scope: bool  # Set by NewFrame(), cleared by EndFrame()
     # bool                    WithinFrameScopeWithImplicitWindow;    /* original C++ signature */
-    within_frame_scope_with_implicit_window: bool  # Set by NewFrame(), cleared by EndFrame() when the implicit debug window has been pushed
+    within_frame_scope_with_implicit_window: (
+        bool  # Set by NewFrame(), cleared by EndFrame() when the implicit debug window has been pushed
+    )
     # bool                    WithinEndChild;    /* original C++ signature */
     within_end_child: bool  # Set within EndChild()
     # bool                    GcCompactAll;    /* original C++ signature */
@@ -3153,7 +3177,9 @@ class Context:
     # ImGuiID                 ActiveId;    /* original C++ signature */
     active_id: ID  # Active widget
     # ImGuiID                 ActiveIdIsAlive;    /* original C++ signature */
-    active_id_is_alive: ID  # Active widget has been seen this frame (we can't use a bool as the ActiveId may change within the frame)
+    active_id_is_alive: (
+        ID  # Active widget has been seen this frame (we can't use a bool as the ActiveId may change within the frame)
+    )
     # float                   ActiveIdTimer;    /* original C++ signature */
     active_id_timer: float
     # bool                    ActiveIdIsJustActivated;    /* original C++ signature */
@@ -3165,11 +3191,15 @@ class Context:
     # bool                    ActiveIdHasBeenPressedBefore;    /* original C++ signature */
     active_id_has_been_pressed_before: bool  # Track whether the active id led to a press (this is to allow changing between PressOnClick and PressOnRelease without pressing twice). Used by range_select branch.
     # bool                    ActiveIdHasBeenEditedBefore;    /* original C++ signature */
-    active_id_has_been_edited_before: bool  # Was the value associated to the widget Edited over the course of the Active state.
+    active_id_has_been_edited_before: (
+        bool  # Was the value associated to the widget Edited over the course of the Active state.
+    )
     # bool                    ActiveIdHasBeenEditedThisFrame;    /* original C++ signature */
     active_id_has_been_edited_this_frame: bool
     # ImVec2                  ActiveIdClickOffset;    /* original C++ signature */
-    active_id_click_offset: ImVec2  # Clicked offset from upper-left corner, if applicable (currently only set by ButtonBehavior)
+    active_id_click_offset: (
+        ImVec2  # Clicked offset from upper-left corner, if applicable (currently only set by ButtonBehavior)
+    )
     # ImGuiWindow*            ActiveIdWindow;    /* original C++ signature */
     active_id_window: Window
     # ImGuiInputSource        ActiveIdSource;    /* original C++ signature */
@@ -3187,16 +3217,22 @@ class Context:
     # ImGuiID                 LastActiveId;    /* original C++ signature */
     last_active_id: ID  # Store the last non-zero ActiveId, useful for animation.
     # float                   LastActiveIdTimer;    /* original C++ signature */
-    last_active_id_timer: float  # Store the last non-zero ActiveId timer since the beginning of activation, useful for animation.
+    last_active_id_timer: (
+        float  # Store the last non-zero ActiveId timer since the beginning of activation, useful for animation.
+    )
 
     # [EXPERIMENTAL] Key/Input Ownership + Shortcut Routing system
     # - The idea is that instead of "eating" a given key, we can link to an owner.
     # - Input query can then read input by specifying ImGuiKeyOwner_Any (== 0), ImGuiKeyOwner_None (== -1) or a custom ID.
     # - Routing is requested ahead of time for a given chord (Key + Mods) and granted in NewFrame().
     # double                  LastKeyModsChangeTime;    /* original C++ signature */
-    last_key_mods_change_time: float  # Record the last time key mods changed (affect repeat delay when using shortcut logic)
+    last_key_mods_change_time: (
+        float  # Record the last time key mods changed (affect repeat delay when using shortcut logic)
+    )
     # double                  LastKeyModsChangeFromNoneTime;    /* original C++ signature */
-    last_key_mods_change_from_none_time: float  # Record the last time key mods changed away from being 0 (affect repeat delay when using shortcut logic)
+    last_key_mods_change_from_none_time: (
+        float  # Record the last time key mods changed away from being 0 (affect repeat delay when using shortcut logic)
+    )
     # double                  LastKeyboardKeyPressTime;    /* original C++ signature */
     last_keyboard_key_press_time: float  # Record the last time a keyboard key (ignore mouse/gamepad ones) was pressed.
     # ImGuiKeyRoutingTable    KeysRoutingTable;    /* original C++ signature */
@@ -3235,7 +3271,9 @@ class Context:
     # ImVector<ImFont*>           FontStack;    /* original C++ signature */
     font_stack: ImVector_ImFont_ptr  # Stack for PushFont()/PopFont() - inherited by Begin()
     # ImVector<ImGuiID>           FocusScopeStack;    /* original C++ signature */
-    focus_scope_stack: ImVector_ID  # Stack for PushFocusScope()/PopFocusScope() - inherited by BeginChild(), pushed into by Begin()
+    focus_scope_stack: (
+        ImVector_ID  # Stack for PushFocusScope()/PopFocusScope() - inherited by BeginChild(), pushed into by Begin()
+    )
     # ImVector<ImGuiItemFlags>    ItemFlagsStack;    /* original C++ signature */
     item_flags_stack: ImVector_ItemFlags  # Stack for PushItemFlag()/PopItemFlag() - inherited by Begin()
     # ImVector<ImGuiGroupData>    GroupStack;    /* original C++ signature */
@@ -3256,7 +3294,9 @@ class Context:
     # float                   CurrentDpiScale;    /* original C++ signature */
     current_dpi_scale: float  # == CurrentViewport->DpiScale
     # ImGuiViewportP*         CurrentViewport;    /* original C++ signature */
-    current_viewport: ViewportP  # We track changes of viewport (happening in Begin) so we can call Platform_OnChangedViewport()
+    current_viewport: (
+        ViewportP  # We track changes of viewport (happening in Begin) so we can call Platform_OnChangedViewport()
+    )
     # ImGuiViewportP*         MouseViewport;    /* original C++ signature */
     mouse_viewport: ViewportP
     # ImGuiViewportP*         MouseLastHoveredViewport;    /* original C++ signature */
@@ -3264,13 +3304,17 @@ class Context:
     # ImGuiID                 PlatformLastFocusedViewportId;    /* original C++ signature */
     platform_last_focused_viewport_id: ID
     # ImGuiPlatformMonitor    FallbackMonitor;    /* original C++ signature */
-    fallback_monitor: PlatformMonitor  # Virtual monitor used as fallback if backend doesn't provide monitor information.
+    fallback_monitor: (
+        PlatformMonitor  # Virtual monitor used as fallback if backend doesn't provide monitor information.
+    )
     # int                     ViewportCreatedCount;    /* original C++ signature */
     viewport_created_count: int  # Unique sequential creation counter (mostly for testing/debugging)
     # int                     PlatformWindowsCreatedCount;    /* original C++ signature */
     platform_windows_created_count: int  # Unique sequential creation counter (mostly for testing/debugging)
     # int                     ViewportFocusedStampCount;    /* original C++ signature */
-    viewport_focused_stamp_count: int  # Every time the front-most window changes, we stamp its viewport with an incrementing counter
+    viewport_focused_stamp_count: (
+        int  # Every time the front-most window changes, we stamp its viewport with an incrementing counter
+    )
 
     # Gamepad/keyboard Navigation
     # ImGuiWindow*            NavWindow;    /* original C++ signature */
@@ -3290,7 +3334,9 @@ class Context:
     # ImGuiID                 NavJustMovedToId;    /* original C++ signature */
     nav_just_moved_to_id: ID  # Just navigated to this id (result of a successfully MoveRequest).
     # ImGuiID                 NavJustMovedToFocusScopeId;    /* original C++ signature */
-    nav_just_moved_to_focus_scope_id: ID  # Just navigated to this focus scope id (result of a successfully MoveRequest).
+    nav_just_moved_to_focus_scope_id: (
+        ID  # Just navigated to this focus scope id (result of a successfully MoveRequest).
+    )
     # ImGuiKeyChord           NavJustMovedToKeyMods;    /* original C++ signature */
     nav_just_moved_to_key_mods: KeyChord
     # ImGuiID                 NavNextActivateId;    /* original C++ signature */
@@ -3298,7 +3344,9 @@ class Context:
     # ImGuiActivateFlags      NavNextActivateFlags;    /* original C++ signature */
     nav_next_activate_flags: ActivateFlags
     # ImGuiInputSource        NavInputSource;    /* original C++ signature */
-    nav_input_source: InputSource  # Keyboard or Gamepad mode? THIS CAN ONLY BE ImGuiInputSource_Keyboard or ImGuiInputSource_Mouse
+    nav_input_source: (
+        InputSource  # Keyboard or Gamepad mode? THIS CAN ONLY BE ImGuiInputSource_Keyboard or ImGuiInputSource_Mouse
+    )
     # ImGuiNavLayer           NavLayer;    /* original C++ signature */
     nav_layer: NavLayer  # Layer we are navigating on. For now the system is hard-coded for 0=main contents and 1=menu/title bar, may expose layers later.
     # ImGuiSelectionUserData  NavLastValidSelectionUserData;    /* original C++ signature */
@@ -3310,7 +3358,9 @@ class Context:
     # bool                    NavDisableHighlight;    /* original C++ signature */
     nav_disable_highlight: bool  # When user starts using mouse, we hide gamepad/keyboard highlight (NB: but they are still available, which is why NavDisableHighlight isn't always != NavDisableMouseHover)
     # bool                    NavDisableMouseHover;    /* original C++ signature */
-    nav_disable_mouse_hover: bool  # When user starts using gamepad/keyboard, we hide mouse hovering highlight until mouse is touched again.
+    nav_disable_mouse_hover: (
+        bool  # When user starts using gamepad/keyboard, we hide mouse hovering highlight until mouse is touched again.
+    )
 
     # Navigation: Init & Move Requests
     # bool                    NavAnyRequest;    /* original C++ signature */
@@ -3320,7 +3370,9 @@ class Context:
     # bool                    NavInitRequestFromMove;    /* original C++ signature */
     nav_init_request_from_move: bool
     # ImGuiNavItemData        NavInitResult;    /* original C++ signature */
-    nav_init_result: NavItemData  # Init request result (first item of the window, or one for which SetItemDefaultFocus() was called)
+    nav_init_result: (
+        NavItemData  # Init request result (first item of the window, or one for which SetItemDefaultFocus() was called)
+    )
     # bool                    NavMoveSubmitted;    /* original C++ signature */
     nav_move_submitted: bool  # Move request submitted, will process result on next NewFrame()
     # bool                    NavMoveScoringItems;    /* original C++ signature */
@@ -3400,7 +3452,9 @@ class Context:
     # ImGuiPayload            DragDropPayload;    /* original C++ signature */
     drag_drop_payload: Payload
     # ImRect                  DragDropTargetRect;    /* original C++ signature */
-    drag_drop_target_rect: ImRect  # Store rectangle of current target candidate (we favor small targets when overlapping)
+    drag_drop_target_rect: (
+        ImRect  # Store rectangle of current target candidate (we favor small targets when overlapping)
+    )
     # ImRect                  DragDropTargetClipRect;    /* original C++ signature */
     drag_drop_target_clip_rect: ImRect  # Store ClipRect at the time of item's drawing
     # ImGuiID                 DragDropTargetId;    /* original C++ signature */
@@ -3408,17 +3462,23 @@ class Context:
     # ImGuiDragDropFlags      DragDropAcceptFlags;    /* original C++ signature */
     drag_drop_accept_flags: DragDropFlags
     # float                   DragDropAcceptIdCurrRectSurface;    /* original C++ signature */
-    drag_drop_accept_id_curr_rect_surface: float  # Target item surface (we resolve overlapping targets by prioritizing the smaller surface)
+    drag_drop_accept_id_curr_rect_surface: (
+        float  # Target item surface (we resolve overlapping targets by prioritizing the smaller surface)
+    )
     # ImGuiID                 DragDropAcceptIdCurr;    /* original C++ signature */
     drag_drop_accept_id_curr: ID  # Target item id (set at the time of accepting the payload)
     # ImGuiID                 DragDropAcceptIdPrev;    /* original C++ signature */
-    drag_drop_accept_id_prev: ID  # Target item id from previous frame (we need to store this to allow for overlapping drag and drop targets)
+    drag_drop_accept_id_prev: (
+        ID  # Target item id from previous frame (we need to store this to allow for overlapping drag and drop targets)
+    )
     # int                     DragDropAcceptFrameCount;    /* original C++ signature */
     drag_drop_accept_frame_count: int  # Last time a target expressed a desire to accept the source
     # ImGuiID                 DragDropHoldJustPressedId;    /* original C++ signature */
     drag_drop_hold_just_pressed_id: ID  # Set when holding a payload just made ButtonBehavior() return a press.
     # ImVector<uchar> DragDropPayloadBufHeap;    /* original C++ signature */
-    drag_drop_payload_buf_heap: ImVector_uchar  # We don't expose the ImVector<> directly, ImGuiPayload only holds pointer+size
+    drag_drop_payload_buf_heap: (
+        ImVector_uchar  # We don't expose the ImVector<> directly, ImGuiPayload only holds pointer+size
+    )
 
     # Clipper
     # int                             ClipperTempDataStacked;    /* original C++ signature */
@@ -3434,7 +3494,9 @@ class Context:
     # int                             TablesTempDataStacked;    /* original C++ signature */
     tables_temp_data_stacked: int  # Temporary table data size (because we leave previous instances undestructed, we generally don't use TablesTempData.Size)
     # ImVector<ImGuiTableTempData>    TablesTempData;    /* original C++ signature */
-    tables_temp_data: ImVector_TableTempData  # Temporary table data (buffers reused/shared across instances, support nesting)
+    tables_temp_data: (
+        ImVector_TableTempData  # Temporary table data (buffers reused/shared across instances, support nesting)
+    )
     # ImVector<float>                 TablesLastTimeActive;    /* original C++ signature */
     tables_last_time_active: ImVector_float  # Last used timestamp of each tables (SOA, for efficient GC)
     # ImVector<ImDrawChannel>         DrawChannelsTempMergeBuffer;    /* original C++ signature */
@@ -3456,11 +3518,17 @@ class Context:
     # float                   HoverItemDelayTimer;    /* original C++ signature */
     hover_item_delay_timer: float  # Currently used by IsItemHovered()
     # float                   HoverItemDelayClearTimer;    /* original C++ signature */
-    hover_item_delay_clear_timer: float  # Currently used by IsItemHovered(): grace time before g.TooltipHoverTimer gets cleared.
+    hover_item_delay_clear_timer: (
+        float  # Currently used by IsItemHovered(): grace time before g.TooltipHoverTimer gets cleared.
+    )
     # ImGuiID                 HoverItemUnlockedStationaryId;    /* original C++ signature */
-    hover_item_unlocked_stationary_id: ID  # Mouse has once been stationary on this item. Only reset after departing the item.
+    hover_item_unlocked_stationary_id: (
+        ID  # Mouse has once been stationary on this item. Only reset after departing the item.
+    )
     # ImGuiID                 HoverWindowUnlockedStationaryId;    /* original C++ signature */
-    hover_window_unlocked_stationary_id: ID  # Mouse has once been stationary on this window. Only reset after departing the window.
+    hover_window_unlocked_stationary_id: (
+        ID  # Mouse has once been stationary on this window. Only reset after departing the window.
+    )
 
     # Mouse state
     # ImGuiMouseCursor        MouseCursor;    /* original C++ signature */
@@ -3482,11 +3550,15 @@ class Context:
     # ImGuiColorEditFlags     ColorEditOptions;    /* original C++ signature */
     color_edit_options: ColorEditFlags  # Store user options for color edit widgets
     # ImGuiID                 ColorEditCurrentID;    /* original C++ signature */
-    color_edit_current_id: ID  # Set temporarily while inside of the parent-most ColorEdit4/ColorPicker4 (because they call each others).
+    color_edit_current_id: (
+        ID  # Set temporarily while inside of the parent-most ColorEdit4/ColorPicker4 (because they call each others).
+    )
     # ImGuiID                 ColorEditSavedID;    /* original C++ signature */
     color_edit_saved_id: ID  # ID we are saving/restoring HS for
     # float                   ColorEditSavedHue;    /* original C++ signature */
-    color_edit_saved_hue: float  # Backup of last Hue associated to LastColor, so we can restore Hue in lossy RGB<>HSV round trips
+    color_edit_saved_hue: (
+        float  # Backup of last Hue associated to LastColor, so we can restore Hue in lossy RGB<>HSV round trips
+    )
     # float                   ColorEditSavedSat;    /* original C++ signature */
     color_edit_saved_sat: float  # Backup of last Saturation associated to LastColor, so we can restore Saturation in lossy RGB<>HSV round trips
     # ImU32                   ColorEditSavedColor;    /* original C++ signature */
@@ -3512,7 +3584,9 @@ class Context:
     # float                   DragSpeedDefaultRatio;    /* original C++ signature */
     drag_speed_default_ratio: float  # If speed == 0.0, uses (max-min) * DragSpeedDefaultRatio
     # float                   ScrollbarClickDeltaToGrabCenter;    /* original C++ signature */
-    scrollbar_click_delta_to_grab_center: float  # Distance between mouse and center of grab box, normalized in parent space. Use storage?
+    scrollbar_click_delta_to_grab_center: (
+        float  # Distance between mouse and center of grab box, normalized in parent space. Use storage?
+    )
     # float                   DisabledAlphaBackup;    /* original C++ signature */
     disabled_alpha_backup: float  # Backup for style.Alpha for BeginDisabled()
     # short                   DisabledStackSize;    /* original C++ signature */
@@ -3575,7 +3649,9 @@ class Context:
     # int                     LogDepthToExpand;    /* original C++ signature */
     log_depth_to_expand: int
     # int                     LogDepthToExpandDefault;    /* original C++ signature */
-    log_depth_to_expand_default: int  # Default/stored value for LogDepthMaxExpand if not specified in the LogXXX function call.
+    log_depth_to_expand_default: (
+        int  # Default/stored value for LogDepthMaxExpand if not specified in the LogXXX function call.
+    )
 
     # Debug Tools
     # ImGuiDebugLogFlags      DebugLogFlags;    /* original C++ signature */
@@ -3617,7 +3693,9 @@ class Context:
 
     # Misc
     # float                   FramerateSecPerFrame[60];    /* original C++ signature */
-    framerate_sec_per_frame: np.ndarray  # ndarray[type=float, size=60]  # Calculate estimate of framerate for user over the last 60 frames..
+    framerate_sec_per_frame: (
+        np.ndarray
+    )  # ndarray[type=float, size=60]  # Calculate estimate of framerate for user over the last 60 frames..
     # int                     FramerateSecPerFrameIdx;    /* original C++ signature */
     framerate_sec_per_frame_idx: int
     # int                     FramerateSecPerFrameCount;    /* original C++ signature */
@@ -3900,7 +3978,9 @@ class WindowTempData:
     # int                     TreeDepth;    /* original C++ signature */
     tree_depth: int  # Current tree depth.
     # ImU32                   TreeJumpToParentOnPopMask;    /* original C++ signature */
-    tree_jump_to_parent_on_pop_mask: ImU32  # Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.
+    tree_jump_to_parent_on_pop_mask: (
+        ImU32  # Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.
+    )
     # ImVector<ImGuiWindow*>  ChildWindows;    /* original C++ signature */
     child_windows: ImVector_Window_ptr
     # ImGuiStorage*           StateStorage;    /* original C++ signature */
@@ -3983,9 +4063,13 @@ class Window:
     # ImGuiWindowClass        WindowClass;    /* original C++ signature */
     window_class: WindowClass  # Advanced users only. Set with SetNextWindowClass()
     # ImGuiViewportP*         Viewport;    /* original C++ signature */
-    viewport: ViewportP  # Always set in Begin(). Inactive windows may have a None value here if their viewport was discarded.
+    viewport: (
+        ViewportP  # Always set in Begin(). Inactive windows may have a None value here if their viewport was discarded.
+    )
     # ImGuiID                 ViewportId;    /* original C++ signature */
-    viewport_id: ID  # We backup the viewport id (since the viewport may disappear or never be created if the window is inactive)
+    viewport_id: (
+        ID  # We backup the viewport id (since the viewport may disappear or never be created if the window is inactive)
+    )
     # ImVec2                  ViewportPos;    /* original C++ signature */
     viewport_pos: ImVec2  # We backup the viewport position (since the viewport may disappear or never be created if the window is inactive)
     # int                     ViewportAllowPlatformMonitorExtend;    /* original C++ signature */
@@ -4001,7 +4085,9 @@ class Window:
     # ImVec2                  ContentSizeIdeal;    /* original C++ signature */
     content_size_ideal: ImVec2
     # ImVec2                  ContentSizeExplicit;    /* original C++ signature */
-    content_size_explicit: ImVec2  # Size of contents/scrollable client area explicitly request by the user via SetNextWindowContentSize().
+    content_size_explicit: (
+        ImVec2  # Size of contents/scrollable client area explicitly request by the user via SetNextWindowContentSize().
+    )
     # ImVec2                  WindowPadding;    /* original C++ signature */
     window_padding: ImVec2  # Window padding at the time of Begin().
     # float                   WindowRounding;    /* original C++ signature */
@@ -4027,7 +4113,9 @@ class Window:
     # ImGuiID                 TabId;    /* original C++ signature */
     tab_id: ID  # == window->GetID("#TAB")
     # ImGuiID                 ChildId;    /* original C++ signature */
-    child_id: ID  # ID of corresponding item in parent window (for navigation to return from child window to parent window)
+    child_id: (
+        ID  # ID of corresponding item in parent window (for navigation to return from child window to parent window)
+    )
     # ImVec2                  Scroll;    /* original C++ signature */
     scroll: ImVec2
     # ImVec2                  ScrollMax;    /* original C++ signature */
@@ -4035,7 +4123,9 @@ class Window:
     # ImVec2                  ScrollTarget;    /* original C++ signature */
     scroll_target: ImVec2  # target scroll position. stored as cursor position with scrolling canceled out, so the highest point is always 0.0. (FLT_MAX for no change)
     # ImVec2                  ScrollTargetCenterRatio;    /* original C++ signature */
-    scroll_target_center_ratio: ImVec2  # 0.0 = scroll so that target position is at top, 0.5 = scroll so that target position is centered
+    scroll_target_center_ratio: (
+        ImVec2  # 0.0 = scroll so that target position is at top, 0.5 = scroll so that target position is centered
+    )
     # ImVec2                  ScrollTargetEdgeSnapDist;    /* original C++ signature */
     scroll_target_edge_snap_dist: ImVec2  # 0.0 = no snapping, >0.0 snapping threshold
     # ImVec2                  ScrollbarSizes;    /* original C++ signature */
@@ -4077,7 +4167,9 @@ class Window:
     # short                   BeginCountPreviousFrame;    /* original C++ signature */
     begin_count_previous_frame: int  # Number of Begin() during the previous frame
     # short                   BeginOrderWithinParent;    /* original C++ signature */
-    begin_order_within_parent: int  # Begin() order within immediate parent window, if we are a child window. Otherwise 0.
+    begin_order_within_parent: (
+        int  # Begin() order within immediate parent window, if we are a child window. Otherwise 0.
+    )
     # short                   BeginOrderWithinContext;    /* original C++ signature */
     begin_order_within_context: int  # Begin() order within entire imgui context. This is mostly used for debugging submission order related issues.
     # short                   FocusOrder;    /* original C++ signature */
@@ -4095,7 +4187,9 @@ class Window:
     # ImS8                    HiddenFramesCanSkipItems;    /* original C++ signature */
     hidden_frames_can_skip_items: ImS8  # Hide the window for N frames
     # ImS8                    HiddenFramesCannotSkipItems;    /* original C++ signature */
-    hidden_frames_cannot_skip_items: ImS8  # Hide the window for N frames while allowing items to be submitted so we can measure their size
+    hidden_frames_cannot_skip_items: (
+        ImS8  # Hide the window for N frames while allowing items to be submitted so we can measure their size
+    )
     # ImS8                    HiddenFramesForRenderOnly;    /* original C++ signature */
     hidden_frames_for_render_only: ImS8  # Hide the window until frame N at Render() time only
     # ImS8                    DisableInputsFrames;    /* original C++ signature */
@@ -4117,7 +4211,9 @@ class Window:
     # ImRect                  InnerRect;    /* original C++ signature */
     inner_rect: ImRect  # Inner rectangle (omit title bar, menu bar, scroll bar)
     # ImRect                  InnerClipRect;    /* original C++ signature */
-    inner_clip_rect: ImRect  # == InnerRect shrunk by WindowPadding*0.5 on each side, clipped within viewport or parent clip rect.
+    inner_clip_rect: (
+        ImRect  # == InnerRect shrunk by WindowPadding*0.5 on each side, clipped within viewport or parent clip rect.
+    )
     # ImRect                  WorkRect;    /* original C++ signature */
     work_rect: ImRect  # Initially covers the whole scrolling region. Reduced by containers e.g columns/tables when active. Shrunk by WindowPadding*1.0 on each side. This is meant to replace ContentRegionRect over time (from 1.71+ onward).
     # ImRect                  ParentWorkRect;    /* original C++ signature */
@@ -4148,24 +4244,34 @@ class Window:
     # float                   FontDpiScale;    /* original C++ signature */
     font_dpi_scale: float
     # int                     SettingsOffset;    /* original C++ signature */
-    settings_offset: int  # Offset into SettingsWindows[] (offsets are always valid as we only grow the array from the back)
+    settings_offset: (
+        int  # Offset into SettingsWindows[] (offsets are always valid as we only grow the array from the back)
+    )
 
     # ImDrawList*             DrawList;    /* original C++ signature */
     draw_list: ImDrawList  # == &DrawListInst (for backward compatibility reason with code using imgui_internal.h we keep this a pointer)
     # ImDrawList              DrawListInst;    /* original C++ signature */
     draw_list_inst: ImDrawList
     # ImGuiWindow*            ParentWindow;    /* original C++ signature */
-    parent_window: Window  # If we are a child _or_ popup _or_ docked window, this is pointing to our parent. Otherwise None.
+    parent_window: (
+        Window  # If we are a child _or_ popup _or_ docked window, this is pointing to our parent. Otherwise None.
+    )
     # ImGuiWindow*            ParentWindowInBeginStack;    /* original C++ signature */
     parent_window_in_begin_stack: Window
     # ImGuiWindow*            RootWindow;    /* original C++ signature */
     root_window: Window  # Point to ourself or first ancestor that is not a child window. Doesn't cross through popups/dock nodes.
     # ImGuiWindow*            RootWindowPopupTree;    /* original C++ signature */
-    root_window_popup_tree: Window  # Point to ourself or first ancestor that is not a child window. Cross through popups parent<>child.
+    root_window_popup_tree: (
+        Window  # Point to ourself or first ancestor that is not a child window. Cross through popups parent<>child.
+    )
     # ImGuiWindow*            RootWindowDockTree;    /* original C++ signature */
-    root_window_dock_tree: Window  # Point to ourself or first ancestor that is not a child window. Cross through dock nodes.
+    root_window_dock_tree: (
+        Window  # Point to ourself or first ancestor that is not a child window. Cross through dock nodes.
+    )
     # ImGuiWindow*            RootWindowForTitleBarHighlight;    /* original C++ signature */
-    root_window_for_title_bar_highlight: Window  # Point to ourself or first ancestor which will display TitleBgActive color when this window is active.
+    root_window_for_title_bar_highlight: (
+        Window  # Point to ourself or first ancestor which will display TitleBgActive color when this window is active.
+    )
     # ImGuiWindow*            RootWindowForNav;    /* original C++ signature */
     root_window_for_nav: Window  # Point to ourself or first ancestor which doesn't have the NavFlattened flag.
 
@@ -4293,7 +4399,9 @@ class TabItem:
     # int                 LastFrameVisible;    /* original C++ signature */
     last_frame_visible: int
     # int                 LastFrameSelected;    /* original C++ signature */
-    last_frame_selected: int  # This allows us to infer an ordered list of the last activated tabs with little maintenance
+    last_frame_selected: (
+        int  # This allows us to infer an ordered list of the last activated tabs with little maintenance
+    )
     # float               Offset;    /* original C++ signature */
     offset: float  # Position relative to beginning of tab
     # float               Width;    /* original C++ signature */
@@ -4417,7 +4525,9 @@ class TableColumn:
     # float                   StretchWeight;    /* original C++ signature */
     stretch_weight: float  # Master width weight when (Flags & _WidthStretch). Often around ~1.0 initially.
     # float                   InitStretchWeightOrWidth;    /* original C++ signature */
-    init_stretch_weight_or_width: float  # Value passed to TableSetupColumn(). For Width it is a content width (_without padding_).
+    init_stretch_weight_or_width: (
+        float  # Value passed to TableSetupColumn(). For Width it is a content width (_without padding_).
+    )
     # ImRect                  ClipRect;    /* original C++ signature */
     clip_rect: ImRect  # Clipping rectangle for the column
     # ImGuiID                 UserID;    /* original C++ signature */
@@ -4429,7 +4539,9 @@ class TableColumn:
     # float                   ItemWidth;    /* original C++ signature */
     item_width: float  # Current item width for the column, preserved across rows
     # float                   ContentMaxXFrozen;    /* original C++ signature */
-    content_max_x_frozen: float  # Contents maximum position for frozen rows (apart from headers), from which we can infer content width.
+    content_max_x_frozen: (
+        float  # Contents maximum position for frozen rows (apart from headers), from which we can infer content width.
+    )
     # float                   ContentMaxXUnfrozen;    /* original C++ signature */
     content_max_x_unfrozen: float
     # float                   ContentMaxXHeadersUsed;    /* original C++ signature */
@@ -4443,9 +4555,13 @@ class TableColumn:
     # ImGuiTableColumnIdx     IndexWithinEnabledSet;    /* original C++ signature */
     index_within_enabled_set: TableColumnIdx  # Index within enabled/visible set (<= IndexToDisplayOrder)
     # ImGuiTableColumnIdx     PrevEnabledColumn;    /* original C++ signature */
-    prev_enabled_column: TableColumnIdx  # Index of prev enabled/visible column within Columns[], -1 if first enabled/visible column
+    prev_enabled_column: (
+        TableColumnIdx  # Index of prev enabled/visible column within Columns[], -1 if first enabled/visible column
+    )
     # ImGuiTableColumnIdx     NextEnabledColumn;    /* original C++ signature */
-    next_enabled_column: TableColumnIdx  # Index of next enabled/visible column within Columns[], -1 if last enabled/visible column
+    next_enabled_column: (
+        TableColumnIdx  # Index of next enabled/visible column within Columns[], -1 if last enabled/visible column
+    )
     # ImGuiTableColumnIdx     SortOrder;    /* original C++ signature */
     sort_order: TableColumnIdx  # Index of this column within sort specs, -1 if not sorting on this column, 0 for single-sort, may be >0 on multi-sort
     # ImGuiTableDrawChannelIdx DrawChannelCurrent;    /* original C++ signature */
@@ -4457,7 +4573,9 @@ class TableColumn:
     # bool                    IsEnabled;    /* original C++ signature */
     is_enabled: bool  # IsUserEnabled && (Flags & ImGuiTableColumnFlags_Disabled) == 0
     # bool                    IsUserEnabled;    /* original C++ signature */
-    is_user_enabled: bool  # Is the column not marked Hidden by the user? (unrelated to being off view, e.g. clipped by scrolling).
+    is_user_enabled: (
+        bool  # Is the column not marked Hidden by the user? (unrelated to being off view, e.g. clipped by scrolling).
+    )
     # bool                    IsUserEnabledNextFrame;    /* original C++ signature */
     is_user_enabled_next_frame: bool
     # bool                    IsVisibleX;    /* original C++ signature */
@@ -4543,7 +4661,9 @@ class Table:
     # ImGuiTableTempData*         TempData;    /* original C++ signature */
     temp_data: TableTempData  # Transient data while table is active. Point within g.CurrentTableStack[]
     # ImGuiTableFlags             SettingsLoadedFlags;    /* original C++ signature */
-    settings_loaded_flags: TableFlags  # Which data were loaded from the .ini file (e.g. when order is not altered we won't save order)
+    settings_loaded_flags: (
+        TableFlags  # Which data were loaded from the .ini file (e.g. when order is not altered we won't save order)
+    )
     # int                         SettingsOffset;    /* original C++ signature */
     settings_offset: int  # Offset in g.SettingsTables
     # int                         LastFrameActive;    /* original C++ signature */
@@ -4615,7 +4735,9 @@ class Table:
     # ImRect                      OuterRect;    /* original C++ signature */
     outer_rect: ImRect  # Note: for non-scrolling table, OuterRect.Max.y is often FLT_MAX until EndTable(), unless a height has been specified in BeginTable().
     # ImRect                      InnerRect;    /* original C++ signature */
-    inner_rect: ImRect  # InnerRect but without decoration. As with OuterRect, for non-scrolling tables, InnerRect.Max.y is
+    inner_rect: (
+        ImRect  # InnerRect but without decoration. As with OuterRect, for non-scrolling tables, InnerRect.Max.y is
+    )
     # ImRect                      WorkRect;    /* original C++ signature */
     work_rect: ImRect
     # ImRect                      InnerClipRect;    /* original C++ signature */
@@ -4629,7 +4751,9 @@ class Table:
     # ImRect                      HostClipRect;    /* original C++ signature */
     host_clip_rect: ImRect  # This is used to check if we can eventually merge our columns draw calls into the current draw call of the current window.
     # ImRect                      HostBackupInnerClipRect;    /* original C++ signature */
-    host_backup_inner_clip_rect: ImRect  # Backup of InnerWindow->ClipRect during PushTableBackground()/PopTableBackground()
+    host_backup_inner_clip_rect: (
+        ImRect  # Backup of InnerWindow->ClipRect during PushTableBackground()/PopTableBackground()
+    )
     # ImGuiWindow*                OuterWindow;    /* original C++ signature */
     outer_window: Window  # Parent window for the table
     # ImGuiWindow*                InnerWindow;    /* original C++ signature */
@@ -4685,15 +4809,21 @@ class Table:
     # ImGuiTableColumnIdx         RightMostStretchedColumn;    /* original C++ signature */
     right_most_stretched_column: TableColumnIdx  # Index of right-most stretched column.
     # ImGuiTableColumnIdx         ContextPopupColumn;    /* original C++ signature */
-    context_popup_column: TableColumnIdx  # Column right-clicked on, of -1 if opening context menu from a neutral/empty spot
+    context_popup_column: (
+        TableColumnIdx  # Column right-clicked on, of -1 if opening context menu from a neutral/empty spot
+    )
     # ImGuiTableColumnIdx         FreezeRowsRequest;    /* original C++ signature */
     freeze_rows_request: TableColumnIdx  # Requested frozen rows count
     # ImGuiTableColumnIdx         FreezeRowsCount;    /* original C++ signature */
-    freeze_rows_count: TableColumnIdx  # Actual frozen row count (== FreezeRowsRequest, or == 0 when no scrolling offset)
+    freeze_rows_count: (
+        TableColumnIdx  # Actual frozen row count (== FreezeRowsRequest, or == 0 when no scrolling offset)
+    )
     # ImGuiTableColumnIdx         FreezeColumnsRequest;    /* original C++ signature */
     freeze_columns_request: TableColumnIdx  # Requested frozen columns count
     # ImGuiTableColumnIdx         FreezeColumnsCount;    /* original C++ signature */
-    freeze_columns_count: TableColumnIdx  # Actual frozen columns count (== FreezeColumnsRequest, or == 0 when no scrolling offset)
+    freeze_columns_count: (
+        TableColumnIdx  # Actual frozen columns count (== FreezeColumnsRequest, or == 0 when no scrolling offset)
+    )
     # ImGuiTableColumnIdx         RowCellDataCurrent;    /* original C++ signature */
     row_cell_data_current: TableColumnIdx  # Index of current RowCellData[] entry in current row
     # ImGuiTableDrawChannelIdx    DummyDrawChannel;    /* original C++ signature */
@@ -4713,15 +4843,21 @@ class Table:
     # bool                        IsUsingHeaders;    /* original C++ signature */
     is_using_headers: bool  # Set when the first row had the ImGuiTableRowFlags_Headers flag.
     # bool                        IsContextPopupOpen;    /* original C++ signature */
-    is_context_popup_open: bool  # Set when default context menu is open (also see: ContextPopupColumn, InstanceInteracted).
+    is_context_popup_open: (
+        bool  # Set when default context menu is open (also see: ContextPopupColumn, InstanceInteracted).
+    )
     # bool                        DisableDefaultContextMenu;    /* original C++ signature */
     disable_default_context_menu: bool  # Disable default context menu contents. You may submit your own using TableBeginContextMenuPopup()/EndPopup()
     # bool                        IsSettingsRequestLoad;    /* original C++ signature */
     is_settings_request_load: bool
     # bool                        IsSettingsDirty;    /* original C++ signature */
-    is_settings_dirty: bool  # Set when table settings have changed and needs to be reported into ImGuiTableSetttings data.
+    is_settings_dirty: (
+        bool  # Set when table settings have changed and needs to be reported into ImGuiTableSetttings data.
+    )
     # bool                        IsDefaultDisplayOrder;    /* original C++ signature */
-    is_default_display_order: bool  # Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)
+    is_default_display_order: (
+        bool  # Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)
+    )
     # bool                        IsResetAllRequest;    /* original C++ signature */
     is_reset_all_request: bool
     # bool                        IsResetDisplayOrderRequest;    /* original C++ signature */
@@ -4828,7 +4964,9 @@ class TableSettings:
     # ImGuiTableColumnIdx         ColumnsCountMax;    /* original C++ signature */
     columns_count_max: TableColumnIdx  # Maximum number of columns this settings instance can store, we can recycle a settings instance with lower number of columns but not higher
     # bool                        WantApply;    /* original C++ signature */
-    want_apply: bool  # Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)
+    want_apply: (
+        bool  # Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)
+    )
 
     # ImGuiTableSettings()        { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:

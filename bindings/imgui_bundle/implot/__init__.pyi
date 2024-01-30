@@ -1,6 +1,7 @@
 """ImPlot: Immediate Mode Plotting for ImGui
 Python bindings for https://github.com/epezent/implot
 """
+
 # ruff: noqa: B008, F821
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
@@ -963,7 +964,9 @@ class Style:
     # ImVec2  MinorGridSize;    /* original C++ signature */
     minor_grid_size: ImVec2  # = 1,1     line thickness of minor grid lines
     # ImVec2  PlotPadding;    /* original C++ signature */
-    plot_padding: ImVec2  # = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    plot_padding: (
+        ImVec2  # = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    )
     # ImVec2  LabelPadding;    /* original C++ signature */
     label_padding: ImVec2  # = 5,5     padding between axes labels, tick labels, and plot edge
     # ImVec2  LegendPadding;    /* original C++ signature */
@@ -988,7 +991,9 @@ class Style:
     colormap: Colormap  # The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.
     # settings/flags
     # bool    UseLocalTime;    /* original C++ signature */
-    use_local_time: bool  # = False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled
+    use_local_time: (
+        bool  # = False,  axis labels will be formatted for your timezone when ImPlotAxisFlag_Time is enabled
+    )
     # bool    UseISO8601;    /* original C++ signature */
     use_iso8601: bool  # = False,  dates will be formatted according to ISO 8601 where applicable (e.g. YYYY-MM-DD, YYYY-MM, --MM-DD, etc.)
     # bool    Use24HourClock;    /* original C++ signature */
@@ -1025,7 +1030,9 @@ class InputMap:
     # int              ZoomMod;    /* original C++ signature */
     zoom_mod: int  # none   optional modifier that must be held for scroll wheel zooming
     # float            ZoomRate;    /* original C++ signature */
-    zoom_rate: float  # 0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert
+    zoom_rate: (
+        float  # 0.1   zoom rate for scroll (e.g. 0.1 = 10% plot range every scroll click); make negative to invert
+    )
     # IMPLOT_API ImPlotInputMap();    /* original C++ signature */
     def __init__(self) -> None:
         pass

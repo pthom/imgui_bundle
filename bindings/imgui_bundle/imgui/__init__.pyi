@@ -4750,7 +4750,9 @@ class TableSortSpecs:
     # int                         SpecsCount;    /* original C++ signature */
     specs_count: int  # Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.
     # bool                        SpecsDirty;    /* original C++ signature */
-    specs_dirty: bool  # Set to True when specs have changed since last time! Use this to sort again, then clear the flag.
+    specs_dirty: (
+        bool  # Set to True when specs have changed since last time! Use this to sort again, then clear the flag.
+    )
 
     # ImGuiTableSortSpecs()       { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -4883,8 +4885,10 @@ class ImVector_int:  # Python specialization for ImVector<int>
     def push_front(self, v: int) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[int]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -4949,8 +4953,10 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
     def push_front(self, v: uint) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[uint]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5015,8 +5021,10 @@ class ImVector_float:  # Python specialization for ImVector<float>
     def push_front(self, v: float) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[float]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5081,8 +5089,10 @@ class ImVector_char:  # Python specialization for ImVector<char>
     def push_front(self, v: str) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[char]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5147,8 +5157,10 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
     def push_front(self, v: uchar) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[uchar]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5213,8 +5225,10 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
     def push_front(self, v: ImDrawCmd) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImDrawCmd]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5279,8 +5293,10 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
     def push_front(self, v: ImDrawChannel) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImDrawChannel]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5345,8 +5361,10 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
     def push_front(self, v: ImDrawVert) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImDrawVert]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5411,8 +5429,10 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
     def push_front(self, v: ImVec4) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImVec4]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5477,8 +5497,10 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
     def push_front(self, v: ImVec2) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImVec2]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5543,8 +5565,10 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
     def push_front(self, v: ImDrawList) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImDrawList]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5609,8 +5633,10 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     def push_front(self, v: ImFont) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImFont]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5675,8 +5701,10 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     def push_front(self, v: ImFontGlyph) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImFontGlyph]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5741,8 +5769,10 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
     def push_front(self, v: PlatformMonitor) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[PlatformMonitor]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5807,8 +5837,10 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
     def push_front(self, v: Viewport) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[Viewport]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5873,8 +5905,10 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
     def push_front(self, v: Window) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[Window]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -5939,8 +5973,10 @@ class ImVector_ImFontAtlasCustomRect:  # Python specialization for ImVector<ImFo
     def push_front(self, v: ImFontAtlasCustomRect) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImFontAtlasCustomRect]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6005,8 +6041,10 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     def push_front(self, v: ImFontConfig) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImFontConfig]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6071,8 +6109,10 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
     def push_front(self, v: ImRect) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ImRect]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6137,8 +6177,10 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
     def push_front(self, v: ColorMod) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ColorMod]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6203,8 +6245,10 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
     def push_front(self, v: GroupData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[GroupData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6269,8 +6313,10 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
     def push_front(self, v: PopupData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[PopupData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6335,8 +6381,10 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
     def push_front(self, v: ViewportP) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ViewportP]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6401,8 +6449,10 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
     def push_front(self, v: InputEvent) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[InputEvent]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6467,8 +6517,10 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
     def push_front(self, v: WindowStackData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[WindowStackData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6533,8 +6585,10 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
     def push_front(self, v: TableColumnSortSpecs) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[TableColumnSortSpecs]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6599,8 +6653,10 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
     def push_front(self, v: TableInstanceData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[TableInstanceData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6665,8 +6721,10 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
     def push_front(self, v: TableTempData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[TableTempData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6731,8 +6789,10 @@ class ImVector_NavTreeNodeData:  # Python specialization for ImVector<ImGuiNavTr
     def push_front(self, v: NavTreeNodeData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[NavTreeNodeData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6797,8 +6857,10 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
     def push_front(self, v: PtrOrIndex) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[PtrOrIndex]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6863,8 +6925,10 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
     def push_front(self, v: SettingsHandler) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[SettingsHandler]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6929,8 +6993,10 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
     def push_front(self, v: ShrinkWidthItem) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ShrinkWidthItem]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -6995,8 +7061,10 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
     def push_front(self, v: StackLevelInfo) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[StackLevelInfo]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7061,8 +7129,10 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
     def push_front(self, v: TabItem) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[TabItem]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7127,8 +7197,10 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
     def push_front(self, v: KeyRoutingData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[KeyRoutingData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7193,8 +7265,10 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
     def push_front(self, v: ListClipperData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ListClipperData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7259,8 +7333,10 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
     def push_front(self, v: ListClipperRange) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[ListClipperRange]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7325,8 +7401,10 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
     def push_front(self, v: OldColumnData) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[OldColumnData]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7391,8 +7469,10 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
     def push_front(self, v: OldColumns) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[OldColumns]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7457,8 +7537,10 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
     def push_front(self, v: StyleMod) -> None:
         """(private API)"""
         pass
+
     def __iter__(self) -> Iterator[StyleMod]:
         pass
+
     def __len__(self) -> int:
         pass
 
@@ -7491,7 +7573,9 @@ class Style:
     # float       Alpha;    /* original C++ signature */
     alpha: float  # Global alpha applies to everything in Dear ImGui.
     # float       DisabledAlpha;    /* original C++ signature */
-    disabled_alpha: float  # Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
+    disabled_alpha: (
+        float  # Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
+    )
     # ImVec2      WindowPadding;    /* original C++ signature */
     window_padding: ImVec2  # Padding within a window.
     # float       WindowRounding;    /* original C++ signature */
@@ -7501,9 +7585,13 @@ class Style:
     # ImVec2      WindowMinSize;    /* original C++ signature */
     window_min_size: ImVec2  # Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().
     # ImVec2      WindowTitleAlign;    /* original C++ signature */
-    window_title_align: ImVec2  # Alignment for title bar text. Defaults to (0.0,0.5) for left-aligned,vertically centered.
+    window_title_align: (
+        ImVec2  # Alignment for title bar text. Defaults to (0.0,0.5) for left-aligned,vertically centered.
+    )
     # ImGuiDir    WindowMenuButtonPosition;    /* original C++ signature */
-    window_menu_button_position: Dir  # Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
+    window_menu_button_position: (
+        Dir  # Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
+    )
     # float       ChildRounding;    /* original C++ signature */
     child_rounding: float  # Radius of child window corners rounding. Set to 0.0 to have rectangular windows.
     # float       ChildBorderSize;    /* original C++ signature */
@@ -7515,7 +7603,9 @@ class Style:
     # ImVec2      FramePadding;    /* original C++ signature */
     frame_padding: ImVec2  # Padding within a framed rectangle (used by most widgets).
     # float       FrameRounding;    /* original C++ signature */
-    frame_rounding: float  # Radius of frame corners rounding. Set to 0.0 to have rectangular frame (used by most widgets).
+    frame_rounding: (
+        float  # Radius of frame corners rounding. Set to 0.0 to have rectangular frame (used by most widgets).
+    )
     # float       FrameBorderSize;    /* original C++ signature */
     frame_border_size: float  # Thickness of border around frames. Generally set to 0.0 or 1.0. (Other values are not well tested and more CPU/GPU costly).
     # ImVec2      ItemSpacing;    /* original C++ signature */
@@ -7527,7 +7617,9 @@ class Style:
     # ImVec2      TouchExtraPadding;    /* original C++ signature */
     touch_extra_padding: ImVec2  # Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
     # float       IndentSpacing;    /* original C++ signature */
-    indent_spacing: float  # Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
+    indent_spacing: (
+        float  # Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
+    )
     # float       ColumnsMinSpacing;    /* original C++ signature */
     columns_min_spacing: float  # Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
     # float       ScrollbarSize;    /* original C++ signature */
@@ -7539,7 +7631,9 @@ class Style:
     # float       GrabRounding;    /* original C++ signature */
     grab_rounding: float  # Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.
     # float       LogSliderDeadzone;    /* original C++ signature */
-    log_slider_deadzone: float  # The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
+    log_slider_deadzone: (
+        float  # The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
+    )
     # float       TabRounding;    /* original C++ signature */
     tab_rounding: float  # Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.
     # float       TabBorderSize;    /* original C++ signature */
@@ -7549,17 +7643,25 @@ class Style:
     # float       TabBarBorderSize;    /* original C++ signature */
     tab_bar_border_size: float  # Thickness of tab-bar separator, which takes on the tab active color to denote focus.
     # float       TableAngledHeadersAngle;    /* original C++ signature */
-    table_angled_headers_angle: float  # Angle of angled headers (supported values range from -50.0 degrees to +50.0 degrees).
+    table_angled_headers_angle: (
+        float  # Angle of angled headers (supported values range from -50.0 degrees to +50.0 degrees).
+    )
     # ImGuiDir    ColorButtonPosition;    /* original C++ signature */
-    color_button_position: Dir  # Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
+    color_button_position: (
+        Dir  # Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
+    )
     # ImVec2      ButtonTextAlign;    /* original C++ signature */
-    button_text_align: ImVec2  # Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).
+    button_text_align: (
+        ImVec2  # Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).
+    )
     # ImVec2      SelectableTextAlign;    /* original C++ signature */
     selectable_text_align: ImVec2  # Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
     # float       SeparatorTextBorderSize;    /* original C++ signature */
     separator_text_border_size: float  # Thickkness of border in SeparatorText()
     # ImVec2      SeparatorTextAlign;    /* original C++ signature */
-    separator_text_align: ImVec2  # Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).
+    separator_text_align: (
+        ImVec2  # Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).
+    )
     # ImVec2      SeparatorTextPadding;    /* original C++ signature */
     separator_text_padding: ImVec2  # Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.
     # ImVec2      DisplayWindowPadding;    /* original C++ signature */
@@ -7584,9 +7686,13 @@ class Style:
     # Behaviors
     # (It is possible to modify those fields mid-frame if specific behavior need it, unlike e.g. configuration fields in ImGuiIO)
     # float             HoverStationaryDelay;    /* original C++ signature */
-    hover_stationary_delay: float  # Delay for IsItemHovered(ImGuiHoveredFlags_Stationary). Time required to consider mouse stationary.
+    hover_stationary_delay: (
+        float  # Delay for IsItemHovered(ImGuiHoveredFlags_Stationary). Time required to consider mouse stationary.
+    )
     # float             HoverDelayShort;    /* original C++ signature */
-    hover_delay_short: float  # Delay for IsItemHovered(ImGuiHoveredFlags_DelayShort). Usually used along with HoverStationaryDelay.
+    hover_delay_short: (
+        float  # Delay for IsItemHovered(ImGuiHoveredFlags_DelayShort). Usually used along with HoverStationaryDelay.
+    )
     # float             HoverDelayNormal;    /* original C++ signature */
     hover_delay_normal: float  # Delay for IsItemHovered(ImGuiHoveredFlags_DelayNormal). "
     # ImGuiHoveredFlags HoverFlagsForTooltipMouse;    /* original C++ signature */
@@ -7668,7 +7774,9 @@ class IO:
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
     # ImFontAtlas*Fonts;    /* original C++ signature */
-    fonts: ImFontAtlas  # <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
+    fonts: (
+        ImFontAtlas  # <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
+    )
     # float       FontGlobalScale;    /* original C++ signature */
     font_global_scale: float  # = 1.0           // Global scale all fonts
     # bool        FontAllowUserScaling;    /* original C++ signature */
@@ -7706,9 +7814,13 @@ class IO:
     # bool        ConfigInputTrickleEventQueue;    /* original C++ signature */
     config_input_trickle_event_queue: bool  # = True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.
     # bool        ConfigInputTextCursorBlink;    /* original C++ signature */
-    config_input_text_cursor_blink: bool  # = True           // Enable blinking cursor (optional as some users consider it to be distracting).
+    config_input_text_cursor_blink: (
+        bool  # = True           // Enable blinking cursor (optional as some users consider it to be distracting).
+    )
     # bool        ConfigInputTextEnterKeepActive;    /* original C++ signature */
-    config_input_text_enter_keep_active: bool  # = False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).
+    config_input_text_enter_keep_active: (
+        bool  # = False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).
+    )
     # bool        ConfigDragClickToInputText;    /* original C++ signature */
     config_drag_click_to_input_text: bool  # = False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.
     # bool        ConfigWindowsResizeFromEdges;    /* original C++ signature */
@@ -7723,7 +7835,9 @@ class IO:
     # float       MouseDoubleClickTime;    /* original C++ signature */
     mouse_double_click_time: float  # = 0.30          // Time for a double-click, in seconds.
     # float       MouseDoubleClickMaxDist;    /* original C++ signature */
-    mouse_double_click_max_dist: float  # = 6.0           // Distance threshold to stay in to validate a double-click, in pixels.
+    mouse_double_click_max_dist: (
+        float  # = 6.0           // Distance threshold to stay in to validate a double-click, in pixels.
+    )
     # float       MouseDragThreshold;    /* original C++ signature */
     mouse_drag_threshold: float  # = 6.0           // Distance threshold before considering we are dragging.
     # float       KeyRepeatDelay;    /* original C++ signature */
@@ -7926,7 +8040,9 @@ class IO:
     # ImVec2      MousePos;    /* original C++ signature */
     mouse_pos: ImVec2  # Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)
     # bool        MouseDown[5];    /* original C++ signature */
-    mouse_down: np.ndarray  # ndarray[type=bool, size=5]  # Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.
+    mouse_down: (
+        np.ndarray
+    )  # ndarray[type=bool, size=5]  # Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.
     # float       MouseWheel;    /* original C++ signature */
     mouse_wheel: float  # Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold SHIFT to turn vertical scroll into horizontal scroll.
     # float       MouseWheelH;    /* original C++ signature */
@@ -7952,29 +8068,47 @@ class IO:
     # ImVec2      MousePosPrev;    /* original C++ signature */
     mouse_pos_prev: ImVec2  # Previous mouse position (note that MouseDelta is not necessary == MousePos-MousePosPrev, in case either position is invalid)
     # double      MouseClickedTime[5];    /* original C++ signature */
-    mouse_clicked_time: np.ndarray  # ndarray[type=double, size=5]  # Time of last click (used to figure out double-click)
+    mouse_clicked_time: (
+        np.ndarray
+    )  # ndarray[type=double, size=5]  # Time of last click (used to figure out double-click)
     # bool        MouseClicked[5];    /* original C++ signature */
-    mouse_clicked: np.ndarray  # ndarray[type=bool, size=5]  # Mouse button went from !Down to Down (same as MouseClickedCount[x] != 0)
+    mouse_clicked: (
+        np.ndarray
+    )  # ndarray[type=bool, size=5]  # Mouse button went from !Down to Down (same as MouseClickedCount[x] != 0)
     # bool        MouseDoubleClicked[5];    /* original C++ signature */
-    mouse_double_clicked: np.ndarray  # ndarray[type=bool, size=5]  # Has mouse button been double-clicked? (same as MouseClickedCount[x] == 2)
+    mouse_double_clicked: (
+        np.ndarray
+    )  # ndarray[type=bool, size=5]  # Has mouse button been double-clicked? (same as MouseClickedCount[x] == 2)
     # ImU16       MouseClickedCount[5];    /* original C++ signature */
-    mouse_clicked_count: np.ndarray  # ndarray[type=ImU16, size=5]  # == 0 (not clicked), == 1 (same as MouseClicked[]), == 2 (double-clicked), == 3 (triple-clicked) etc. when going from !Down to Down
+    mouse_clicked_count: (
+        np.ndarray
+    )  # ndarray[type=ImU16, size=5]  # == 0 (not clicked), == 1 (same as MouseClicked[]), == 2 (double-clicked), == 3 (triple-clicked) etc. when going from !Down to Down
     # ImU16       MouseClickedLastCount[5];    /* original C++ signature */
-    mouse_clicked_last_count: np.ndarray  # ndarray[type=ImU16, size=5]  # Count successive number of clicks. Stays valid after mouse release. Reset after another click is done.
+    mouse_clicked_last_count: (
+        np.ndarray
+    )  # ndarray[type=ImU16, size=5]  # Count successive number of clicks. Stays valid after mouse release. Reset after another click is done.
     # bool        MouseReleased[5];    /* original C++ signature */
     mouse_released: np.ndarray  # ndarray[type=bool, size=5]  # Mouse button went from Down to !Down
     # bool        MouseDownOwned[5];    /* original C++ signature */
-    mouse_down_owned: np.ndarray  # ndarray[type=bool, size=5]  # Track if button was clicked inside a dear imgui window or over None blocked by a popup. We don't request mouse capture from the application if click started outside ImGui bounds.
+    mouse_down_owned: (
+        np.ndarray
+    )  # ndarray[type=bool, size=5]  # Track if button was clicked inside a dear imgui window or over None blocked by a popup. We don't request mouse capture from the application if click started outside ImGui bounds.
     # bool        MouseDownOwnedUnlessPopupClose[5];    /* original C++ signature */
-    mouse_down_owned_unless_popup_close: np.ndarray  # ndarray[type=bool, size=5]  # Track if button was clicked inside a dear imgui window.
+    mouse_down_owned_unless_popup_close: (
+        np.ndarray
+    )  # ndarray[type=bool, size=5]  # Track if button was clicked inside a dear imgui window.
     # bool        MouseWheelRequestAxisSwap;    /* original C++ signature */
     mouse_wheel_request_axis_swap: bool  # On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.
     # float       MouseDownDuration[5];    /* original C++ signature */
-    mouse_down_duration: np.ndarray  # ndarray[type=float, size=5]  # Duration the mouse button has been down (0.0 == just clicked)
+    mouse_down_duration: (
+        np.ndarray
+    )  # ndarray[type=float, size=5]  # Duration the mouse button has been down (0.0 == just clicked)
     # float       MouseDownDurationPrev[5];    /* original C++ signature */
     mouse_down_duration_prev: np.ndarray  # ndarray[type=float, size=5]  # Previous time the mouse button has been down
     # float       MouseDragMaxDistanceSqr[5];    /* original C++ signature */
-    mouse_drag_max_distance_sqr: np.ndarray  # ndarray[type=float, size=5]  # Squared maximum distance of how much mouse has traveled from the clicking point (used for moving thresholds)
+    mouse_drag_max_distance_sqr: (
+        np.ndarray
+    )  # ndarray[type=float, size=5]  # Squared maximum distance of how much mouse has traveled from the clicking point (used for moving thresholds)
     # float       PenPressure;    /* original C++ signature */
     pen_pressure: float  # Touch/Pen pressure (0.0 to 1.0, should be >0.0 only when MouseDown[0] == True). Helper storage currently unused by Dear ImGui.
     # bool        AppFocusLost;    /* original C++ signature */
@@ -7984,7 +8118,9 @@ class IO:
     # ImS8        BackendUsingLegacyKeyArrays;    /* original C++ signature */
     backend_using_legacy_key_arrays: ImS8  # -1: unknown, 0: using AddKeyEvent(), 1: using legacy io.KeysDown[]
     # bool        BackendUsingLegacyNavInputArray;    /* original C++ signature */
-    backend_using_legacy_nav_input_array: bool  # 0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly
+    backend_using_legacy_nav_input_array: (
+        bool  # 0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly
+    )
     # ImWchar16   InputQueueSurrogate;    /* original C++ signature */
     input_queue_surrogate: ImWchar16  # For AddInputCharacterUTF16()
     # ImVector<ImWchar> InputQueueCharacters;    /* original C++ signature */
@@ -8090,7 +8226,9 @@ class SizeCallbackData:
     # ImVec2  CurrentSize;    /* original C++ signature */
     current_size: ImVec2  # Read-only.   Current window size.
     # ImVec2  DesiredSize;    /* original C++ signature */
-    desired_size: ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.
+    desired_size: (
+        ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.
+    )
     # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
         self, pos: ImVec2 = ImVec2(), current_size: ImVec2 = ImVec2(), desired_size: ImVec2 = ImVec2()
@@ -8109,7 +8247,9 @@ class WindowClass:
     """
 
     # ImGuiID             ClassId;    /* original C++ signature */
-    class_id: ID  # User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.
+    class_id: (
+        ID  # User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.
+    )
     # ImGuiID             ParentViewportId;    /* original C++ signature */
     parent_viewport_id: ID  # Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.
     # ImGuiViewportFlags  ViewportFlagsOverrideSet;    /* original C++ signature */
@@ -8235,6 +8375,7 @@ class TextFilter:
         def empty(self) -> bool:
             """(private API)"""
             pass
+
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int
 
@@ -8319,6 +8460,7 @@ class Storage:
         @overload
         def __init__(self, _key: ID, _val: Any) -> None:
             pass
+
     # void                Clear() { Data.clear(); }    /* original C++ signature */
     def clear(self) -> None:
         """- Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)
@@ -8719,7 +8861,9 @@ class ImDrawList:
 
     # This is what you have to render
     # ImVector<ImDrawCmd>     CmdBuffer;    /* original C++ signature */
-    cmd_buffer: ImVector_ImDrawCmd  # Draw commands. Typically 1 command = 1 GPU draw call, unless the command is a callback.
+    cmd_buffer: (
+        ImVector_ImDrawCmd  # Draw commands. Typically 1 command = 1 GPU draw call, unless the command is a callback.
+    )
     # ImVector<ImDrawIdx>     IdxBuffer;    /* original C++ signature */
     idx_buffer: ImVector_ImDrawIdx  # Index buffer. Each command consume ImDrawCmd::ElemCount of those
     # ImVector<ImDrawVert>    VtxBuffer;    /* original C++ signature */
@@ -8745,7 +8889,9 @@ class ImDrawList:
     # ImVector<ImVec2>        _Path;    /* original C++ signature */
     _path: ImVector_ImVec2  # [Internal] current path building
     # ImDrawCmdHeader         _CmdHeader;    /* original C++ signature */
-    _cmd_header: ImDrawCmdHeader  # [Internal] template of active commands. Fields should match those of CmdBuffer.back().
+    _cmd_header: (
+        ImDrawCmdHeader  # [Internal] template of active commands. Fields should match those of CmdBuffer.back().
+    )
     # ImDrawListSplitter      _Splitter;    /* original C++ signature */
     _splitter: ImDrawListSplitter  # [Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)
     # float                   _FringeScale;    /* original C++ signature */
@@ -9137,7 +9283,9 @@ class ImDrawData:
     # ImVec2              FramebufferScale;    /* original C++ signature */
     framebuffer_scale: ImVec2  # Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.
     # ImGuiViewport*      OwnerViewport;    /* original C++ signature */
-    owner_viewport: Viewport  # Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).
+    owner_viewport: (
+        Viewport  # Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).
+    )
 
     # ImDrawData()    { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -9169,7 +9317,9 @@ class ImFontConfig:
     # int             FontDataSize;    /* original C++ signature */
     font_data_size: int  #          // TTF/OTF data size
     # bool            FontDataOwnedByAtlas;    /* original C++ signature */
-    font_data_owned_by_atlas: bool  # True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).
+    font_data_owned_by_atlas: (
+        bool  # True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).
+    )
     # int             FontNo;    /* original C++ signature */
     font_no: int  # 0        // Index of font within TTF/OTF file
     # float           SizePixels;    /* original C++ signature */
@@ -9181,7 +9331,9 @@ class ImFontConfig:
     # bool            PixelSnapH;    /* original C++ signature */
     pixel_snap_h: bool  # False    // Align every glyph to pixel boundary. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.
     # ImVec2          GlyphExtraSpacing;    /* original C++ signature */
-    glyph_extra_spacing: ImVec2  # 0, 0     // Extra spacing (in pixels) between glyphs. Only X axis is supported for now.
+    glyph_extra_spacing: (
+        ImVec2  # 0, 0     // Extra spacing (in pixels) between glyphs. Only X axis is supported for now.
+    )
     # ImVec2          GlyphOffset;    /* original C++ signature */
     glyph_offset: ImVec2  # 0, 0     // Offset all glyphs from this font input.
     # float           GlyphMinAdvanceX;    /* original C++ signature */

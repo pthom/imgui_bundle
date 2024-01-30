@@ -37,6 +37,7 @@ class color_set:
     @overload
     def __init__(self, base: ImColor, hovered: ImColor, active: ImColor) -> None:
         pass
+
     @overload
     def __init__(self, color: ImColor) -> None:
         pass

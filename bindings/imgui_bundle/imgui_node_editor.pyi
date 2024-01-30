@@ -1,6 +1,7 @@
 """Node editor built using ImGui
 Python bindings for https://github.com/thedmd/imgui-node-editor
 """
+
 # ruff: noqa: B008
 from typing import Any, Optional, overload
 import enum
@@ -15,8 +16,10 @@ NodeEditorContext = Any
 class NodeId:
     def __init__(self, id: int = 0):
         pass
+
     def id(self) -> int:
         pass
+
     @staticmethod
     def create() -> NodeId:
         """Creates a new NodeId with a unique id
@@ -28,8 +31,10 @@ class NodeId:
 class LinkId:
     def __init__(self, id: int = 0):
         pass
+
     def id(self) -> int:
         pass
+
     @staticmethod
     def create() -> LinkId:
         """Creates a new LinkId with a unique id
@@ -41,8 +46,10 @@ class LinkId:
 class PinId:
     def __init__(self, id: int = 0):
         pass
+
     def id(self) -> int:
         pass
+
     @staticmethod
     def create() -> PinId:
         """Creates a new NodeId with a unique id
@@ -137,6 +144,7 @@ class SaveReasonFlags(enum.Enum):  # imgui_node_editor.h:68
     user = enum.auto()  # (= 0x00000040)
 
 class Config:  # imgui_node_editor.h:91
+
     # std::string             SettingsFile;    /* original C++ signature */
     settings_file: str  # imgui_node_editor.h:95
     # void*                   UserPointer;    /* original C++ signature */

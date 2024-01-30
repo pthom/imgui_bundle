@@ -1,6 +1,7 @@
 """Hello, Dear ImGui: cross-platform Gui apps for Windows / Mac / Linux / iOS / Android / Emscripten with the simplicity of a "Hello World" app
 https://github.com/pthom/hello_imgui
 """
+
 # ruff: noqa: F811, B008
 from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np
