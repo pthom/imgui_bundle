@@ -21,7 +21,6 @@ project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyp
 #     * It will perform additional customization (app icon and name on mobile platforms, etc)
 
 
-
 ###############################################################################
 # Build Options
 ###############################################################################
@@ -221,6 +220,37 @@ endif()
 # Automation test (run app in CI)
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
+
+
+# -----------------------------------------------------------------------------
+# How to build offline
+# -----------------------------------------------------------------------------
+# By default, imgui_bundle and hello_imgui will download and build the required
+# libraries automatically, if they cannot be found via cmake's find_package:
+#   glfw3, lunasvg, freetype, opencv
+# C++ library, install requirements via vcpkg
+# --------------------------------------------
+# To build offline, you can for example pre-install the required libraries with vcpkg:
+#
+#    git clone https://github.com/microsoft/vcpkg
+#    ./vcpkg/bootstrap-vcpkg.sh
+#    ./vcpkg/vcpkg install opencv freetype glfw3 lunasvg
+#    export CMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+#    mkdir build && cd build
+#    cmake ..
+#
+# Note: under windows, you could specify a static triplet (x64-windows-static):
+#     ./vcpkg/vcpkg install opencv:x64-windows-static freetype:x64-windows-static glfw3:x64-windows-static lunasvg:x64-windows-static
+#
+# Pip package
+# -----------
+# To build the pip package offline, you will additionally need to download
+# the pip wheels for the build system, and tell pip to use them:
+#
+#    mkdir pip_wheels && cd pip_wheels
+#    pip download scikit_build_core pybind11 pip pyproject_metadata pathspec
+#    cd ..
+#    pip install -v . --no-index --find-links=pip_wheels
 
 
 ###############################################################################
