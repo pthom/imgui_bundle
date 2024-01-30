@@ -151,6 +151,7 @@ cython_debug/
 
 _skbuild/
 _imgui_bundle_opencv_packages/
+_bundle_symlinks/
 imgui.ini
 pypi_info_token.md
 MANIFEST.in
