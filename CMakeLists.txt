@@ -288,7 +288,7 @@ endif()
 # Main
 # ----------------------------------------------------------------------
 include(cmake/dump_cmake_variables.cmake)
-include(litgen_cmake/litgen_setup_module.cmake)
+include(imgui_bundle_cmake/litgen_setup_module.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
 # if build python binding, add definitions and use SDL + GLFW
