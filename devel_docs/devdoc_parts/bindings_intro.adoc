@@ -7,7 +7,6 @@ The generator in itself is located in link:https://github.com/pthom/litgen/tree/
 
 ==== Installing the generator
 
-**Step 1: install the generator and the required libraries**
 
 You will need to install the following python packages (see requirements-dev.txt):
 
@@ -24,7 +23,7 @@ pytest
 
 `litgen` (aka "Literate Generator") is the package provided by srcmlcpp that will generate the python bindings.
 
-Its source code is available link:https://github.com/pthom/litgen/tree/main/packages/litgen[here].
+Its source code is available link:https://github.com/pthom/litgen/tree/main/src/litgen[here].
 
 It is heavily configurable by link:https://github.com/pthom/litgen/blob/main/packages/litgen/options.py[a wide range of options].
 
