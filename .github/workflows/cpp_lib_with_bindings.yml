@@ -23,21 +23,30 @@ jobs:
       with:
         submodules: true
 
-#    - name: Setup interactive tmate session
-#      if: ${{ matrix.platform == 'ubuntu-latest' }}
-#      uses: mxschmitt/action-tmate@v3
-
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
 
-    - name: install pybind11
-      run: |
-        pip install pybind11
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
-    - name: Build and install
+    - name: Build and install (*nixes)
+      if: ${{ matrix.platform != 'windows-latest' }}
       shell: bash
       run: |
-        mkdir build
-        cd build
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install pybind11
+        mkdir build && cd build
+        cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release -j 3
+
+    - name: Build and install (Windows)
+      if: ${{ matrix.platform == 'windows-latest' }}
+      shell: bash
+      run: |
+        python3 -m venv venv
+        source venv/Scripts/activate # only difference from *nixes...
+        pip install pybind11
+        mkdir build && cd build
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release -j 3

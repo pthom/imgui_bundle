@@ -228,9 +228,11 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 # By default, imgui_bundle and hello_imgui will download and build the required
 # libraries automatically, if they cannot be found via cmake's find_package:
 #   glfw3, lunasvg, freetype, opencv
+# To build offline, you can for example pre-install the required libraries with vcpkg,
+# see below:
+#
 # C++ library, install requirements via vcpkg
 # --------------------------------------------
-# To build offline, you can for example pre-install the required libraries with vcpkg:
 #
 #    git clone https://github.com/microsoft/vcpkg
 #    ./vcpkg/bootstrap-vcpkg.sh
