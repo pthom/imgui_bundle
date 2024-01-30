@@ -252,10 +252,10 @@ endif()
 # -----------------------------------------------------------------------------
 # the easiest way to build an app with imgui_bundle is to use
 #     imgui_bundle_add_app(my_app my_file.cpp)
-set(IMGUIBUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
-list(APPEND CMAKE_MODULE_PATH "${IMGUIBUNDLE_CMAKE_PATH}")
+set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
+list(APPEND CMAKE_MODULE_PATH "${IMGUI_BUNDLE_CMAKE_PATH}")
 include(imgui_bundle_add_app)
-set(IMGUIBUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
 
 
 # if building the python package, do some clenaup:
@@ -287,8 +287,7 @@ endif()
 
 # Main
 # ----------------------------------------------------------------------
-include(cmake/dump_cmake_variables.cmake)
-include(imgui_bundle_cmake/litgen_setup_module.cmake)
+include(imgui_bundle_cmake/internal/litgen_setup_module.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
 # if build python binding, add definitions and use SDL + GLFW
@@ -344,7 +343,7 @@ endif()
 # find pybind11
 # -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
-    include(cmake/find_pybind11.cmake)
+    include(imgui_bundle_cmake/internal/find_pybind11.cmake)
     find_pybind11()  # provided by cmake/find_pybind11.cmake
 endif()
 
@@ -369,7 +368,7 @@ add_subdirectory(external)
 # Build python bindings
 # -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
-    include(cmake/add_imgui_bundle_bindings.cmake)
+    include(imgui_bundle_cmake/internal/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
 
     if (IMGUI_BUNDLE_WITH_TEST_ENGINE)

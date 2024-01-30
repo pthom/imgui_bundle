@@ -1,4 +1,4 @@
-set(IMGUIBUNDLE_EXTERNAL_PATH ${IMGUIBUNDLE_PATH}/external CACHE STRING "" FORCE)
+set(IMGUIBUNDLE_EXTERNAL_PATH ${IMGUI_BUNDLE_PATH}/external CACHE STRING "" FORCE)
 
 
 ####################################################

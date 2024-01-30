@@ -11,7 +11,7 @@ endfunction()
 
 
 function(add_imgui_bundle_bindings)
-    set(bindings_main_folder ${IMGUIBUNDLE_PATH}/external/bindings_generation/cpp/)
+    set(bindings_main_folder ${IMGUI_BUNDLE_PATH}/external/bindings_generation/cpp/)
     include(${bindings_main_folder}/all_pybind_files.cmake)
 
     #########################################################################
@@ -29,7 +29,7 @@ function(add_imgui_bundle_bindings)
     pybind11_add_module(${python_native_module_name} ${python_module_sources})
     target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
-    litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUIBUNDLE_PATH}/bindings)
+    litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
     # add cvnp for immvision
     if (IMGUI_BUNDLE_WITH_IMMVISION)

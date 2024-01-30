@@ -1,4 +1,4 @@
-include(../cmake/add_simple_library.cmake) # Tooling to build libraries and link them to imgui_bundle
+include(../imgui_bundle_cmake/internal/add_simple_library.cmake) # Tooling to build libraries and link them to imgui_bundle
 
 function(_target_force_include target include_file)
     if (MSVC)
@@ -21,7 +21,7 @@ endif()
 # Build ImGui & Hello ImGui
 ###############################################################################
 # Build imgui + hello_imgui
-include(../cmake/add_hello_imgui.cmake)
+include(../imgui_bundle_cmake/internal/add_hello_imgui.cmake)
 add_hello_imgui()
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     target_compile_definitions(imgui PUBLIC IMGUI_BUNDLE_BUILD_PYTHON)
@@ -57,7 +57,7 @@ endif()
 if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     add_simple_external_library_with_sources(implot implot)
     target_compile_definitions(implot PRIVATE "IMPLOT_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
-    _target_force_include(implot ${CMAKE_CURRENT_LIST_DIR}/../cmake/imgui_bundle_config.h)
+    _target_force_include(implot ${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h)
     lg_disable_warning_exception_in_destructor(implot)
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMPLOT)
     set(IMGUI_BUNDLE_WITH_IMPLOT ON CACHE INTERNAL "" FORCE)

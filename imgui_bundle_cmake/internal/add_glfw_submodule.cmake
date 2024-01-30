@@ -52,11 +52,11 @@ function(_add_glfw_as_python_shared_library)
         glfw_deploy_editable
         ALL
         COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUIBUNDLE_PATH}/bindings/imgui_bundle/$<TARGET_FILE_NAME:glfw>
+            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/$<TARGET_FILE_NAME:glfw>
         COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUIBUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.dylib
+            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.dylib
         COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUIBUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.so
+            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.so
         DEPENDS glfw
     )
 
