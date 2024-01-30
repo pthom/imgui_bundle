@@ -551,7 +551,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("full_screen_window_margin_top_left", &HelloImGui::ImGuiWindowParams::fullScreenWindow_MarginTopLeft, "")
         .def_readwrite("full_screen_window_margin_bottom_right", &HelloImGui::ImGuiWindowParams::fullScreenWindow_MarginBottomRight, "")
         .def_readwrite("tweaked_theme", &HelloImGui::ImGuiWindowParams::tweakedTheme, " tweakedTheme: (enum ImGuiTheme::ImGuiTweakedTheme)\n Changes the ImGui theme. Several themes are available, you can query the list\n by calling HelloImGui::AvailableThemes()")
-        .def_readwrite("background_color", &HelloImGui::ImGuiWindowParams::backgroundColor, " backgroundColor:\n This is the \"clearColor\", visible if defaultImGuiWindowType!=ProvideFullScreenWindow.\n Alternatively, you can set your own RunnerCallbacks.CustomBackground to have full\n control over what is drawn behind the Gui.")
+        .def_readwrite("background_color", &HelloImGui::ImGuiWindowParams::backgroundColor, " backgroundColor:\n This is the \"clearColor\", i.e. the app window background color, is visible *only if*\n    runnerParams.imGuiWindowParams.defaultImGuiWindowType = NoDefaultWindow\n Alternatively, you can set your own RunnerCallbacks.CustomBackground to have full\n control over what is drawn behind the Gui.")
         ;
 
 
