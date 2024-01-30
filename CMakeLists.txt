@@ -49,6 +49,7 @@ include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
 # -----------------------------------------------------------------------------
 # (OFF when building the cpp library; ON by default when using pip install.
 #  note: SKBUILD is set to on by pip install / setup.py)
+# Note: when building python bindings *and* C++, you may have to set -DPython_EXECUTABLE=/path/to/python
 if(SKBUILD)
     set(IMGUI_BUNDLE_BUILD_PYTHON ON)
     set(IMGUI_BUNDLE_BUILD_CPP OFF)
@@ -343,8 +344,8 @@ endif()
 # find pybind11
 # -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
-    include(imgui_bundle_cmake/internal/find_pybind11.cmake)
-    find_pybind11()  # provided by cmake/find_pybind11.cmake
+    include(imgui_bundle_cmake/internal/litgen_setup_module.cmake)
+    litgen_find_pybind11()  # provided by cmake/find_pybind11.cmake
 endif()
 
 # Fake main library (imgui_bundle is just an interface to define common options)
