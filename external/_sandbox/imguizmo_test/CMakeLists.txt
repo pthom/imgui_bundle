@@ -1,3 +1,0 @@
-include(hello_imgui_add_app)
-hello_imgui_add_app(imguizmo_test imguizmo_test.main.cpp)
-target_link_libraries(imguizmo_test PRIVATE imgui_bundle glad)

@@ -386,7 +386,6 @@ if (IMGUI_BUNDLE_BUILD_CPP)
     endif()
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_subdirectory(pybind_native_debug)
-        add_subdirectory(external/_sandbox)
     endif()
 endif()
 
