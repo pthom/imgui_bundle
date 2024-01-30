@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyproject.toml!
 
 
+# -----------------------------------------------------------------------------
 # About imgui_bundle_add_app:
 # -----------------------------------------------------------------------------
 # The easiest way to build an app with imgui_bundle is to use imgui_bundle_add_app.
