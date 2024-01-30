@@ -164,3 +164,4 @@ poub/
 /wheelhouse/
 /.idea/
 v3*/
+vcpkg*/

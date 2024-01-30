@@ -79,7 +79,7 @@ function(litgen_setup_module
 )
     target_link_libraries(${python_native_module_name} PRIVATE ${bound_library})
 
-    # Set python_native_module_name install path to "." (required by skbuild)
+    # Set python_native_module_name install path to ${python_module_name} (required by skbuild)
     install(TARGETS ${python_native_module_name} DESTINATION ${python_module_name})
 
     # Set VERSION_INFO macro to the project version defined in CMakeLists.txt (absolutely optional)

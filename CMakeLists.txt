@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(imgui_bundle VERSION "1.3.0") # Remember to mirror changes to setup.py!
+project(imgui_bundle VERSION "1.3.0") # Remember to mirror changes to pyproject.toml!
 
 
 # About imgui_bundle_add_app:
@@ -227,6 +227,11 @@ option(IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS "Build CI automation tests" OFF)
 if(TARGET imgui_bundle)
     message(STATUS "imgui_bundle target already defined!")
     return()
+endif()
+
+# if building the python package, set install folder to anything but /usr/local
+if(SKBUILD)
+    set(CMAKE_INSTALL_PREFIX "_tmp_imgui_bundle_skbuild")
 endif()
 
 # use ccache if present
