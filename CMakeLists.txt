@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(imgui_bundle VERSION "1.3.0") # Remember to mirror changes to pyproject.toml!
+project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyproject.toml!
 
 
 # About imgui_bundle_add_app:
@@ -166,7 +166,10 @@ endif()
 option(HELLOIMGUI_USE_FREETYPE "Use freetype for text rendering" ${freetype_default})
 # For python bindings, we force the usage of a static version of freetype
 if(IMGUI_BUNDLE_BUILD_PYTHON AND HELLOIMGUI_USE_FREETYPE)
-    set(HELLOIMGUI_FREETYPE_STATIC ON CACHE BOOL "" FORCE)
+    # if using vcpkg, we suppose it uses the static version of freetype
+    if(NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg")
+        set(HELLOIMGUI_FREETYPE_STATIC ON CACHE BOOL "" FORCE)
+    endif()
 endif()
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
