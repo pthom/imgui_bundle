@@ -44,21 +44,24 @@ function(_add_glfw_as_python_shared_library)
     # (inside add_imgui_bundle_bindings)
     add_subdirectory(glfw/glfw)
     # glfw dynamic lib will be in the same folder as imgui_bundle
-    install(TARGETS glfw DESTINATION .)
+    install(TARGETS glfw DESTINATION imgui_bundle)
+
     # deploy glfw for editable mode:
     #    usually relies on the presence of symlinks: for example libglfw.3.dylib points to libglfw.3.4.dylib
     #    below, we emulate those symlinks by creating copies of the dynamic library
-    add_custom_target(
-        glfw_deploy_editable
-        ALL
-        COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/$<TARGET_FILE_NAME:glfw>
-        COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.dylib
-        COMMAND
-            ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.so
-        DEPENDS glfw
-    )
+    if (IMGUI_BUNDLE_BUILD_PYTHON AND NOT SKBUILD)
+        add_custom_target(
+            glfw_deploy_editable
+            ALL
+            COMMAND
+                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/$<TARGET_FILE_NAME:glfw>
+            COMMAND
+                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.dylib
+            COMMAND
+                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.so
+            DEPENDS glfw
+        )
+    endif()
 
 
     set(BUILD_SHARED_LIBS OFF)
