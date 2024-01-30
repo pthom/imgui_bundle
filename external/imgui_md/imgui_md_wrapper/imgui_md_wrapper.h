@@ -56,12 +56,24 @@ namespace ImGuiMd
         //        {
         //            if (divClass == "red")
         //            {
-        //                if (e)
+        //                if (openingDiv)
         //                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
         //                else
         //                    ImGui::PopStyleColor();
         //            }
         //        };
+        //     In  Python:
+        //        def on_html_div(div_class: str, opening_div: bool) -> None:
+        //            if div_class == 'red':
+        //                if opening_div:
+        //                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)
+        //                else:
+        //                    imgui.pop_style_color()
+        //        md_options = imgui_md.MarkdownOptions()
+        //        md_options.callbacks.on_html_div = on_html_div
+        //        immapp.run(
+        //            gui_function=gui, with_markdown_options=md_options #, more options here
+        //        )
         HtmlDivFunction OnHtmlDiv;
     };
 
@@ -86,7 +98,7 @@ namespace ImGuiMd
     //        imgui_md.initialize_markdown()
     //        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
     //
-    //        hello_imgui.run(runnerParams)
+    //        hello_imgui.run(runner_params)
     void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
     void DeInitializeMarkdown();
 
