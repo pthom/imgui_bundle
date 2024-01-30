@@ -12,11 +12,15 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+
+
 [tool.isort]
 profile = "black"
 
 
-
+#####################################
+# Wheels options
+#####################################
 [tool.cibuildwheel]
 build-verbosity = 1
 
@@ -28,9 +32,9 @@ test-requires = "pytest"
 test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
 
 
-#####################################
+#------------------------------------
 # macos wheels options
-#####################################
+#------------------------------------
 [tool.cibuildwheel.macos]
 # identify whether this is a M1 or intel
 before-build = "uname -a"
@@ -55,9 +59,9 @@ environment = { MACOSX_DEPLOYMENT_TARGET="11.0" }
 # => mac arm61 will need to be built and uploaded from an M1 mac
 archs = ["x86_64"]
 
-#####################################
+#------------------------------------
 # linux wheels options
-#####################################
+#------------------------------------
 [tool.cibuildwheel.linux]
 skip = ["*i686"]
 test-skip = ["cp311-musllinux_x86_64"] #  opencv-python not yet available there
@@ -86,9 +90,9 @@ before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libX
 select = "*-musllinux*"
 before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
 
-#####################################
+#------------------------------------
 # windows wheels options
-#####################################
+#------------------------------------
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
 
