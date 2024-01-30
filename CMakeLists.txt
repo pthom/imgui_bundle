@@ -24,7 +24,6 @@ project(imgui_bundle VERSION "1.3.0") # Remember to mirror changes to setup.py!
 ###############################################################################
 # Build Options
 ###############################################################################
-# (note: options to disable some libraries are available in external/CMakeLists.txt)
 
 # IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
 # -----------------------------------------------------------------------------
