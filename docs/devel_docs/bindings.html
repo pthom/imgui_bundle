@@ -557,24 +557,16 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <div class="sect3">
 <h4 id="_installing_the_generator">Installing the generator</h4>
 <div class="paragraph">
-<p><strong>Step 1: install srcML</strong></p>
-</div>
-<div class="paragraph">
-<p>Get and install srcML from its <a href="http://www.srcml.org/#download">official site</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Step 2: install the generator and the required libraries</strong></p>
-</div>
-<div class="paragraph">
 <p>You will need to install the following python packages (see requirements-dev.txt):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>litgen @ git+https://github.com/pthom/litgen
-black
+<pre>black
+litgen @ git+https://github.com/pthom/litgen
 mypy
-pytest
-opencv-contrib-python</pre>
+opencv-contrib-python
+pybind11
+pytest</pre>
 </div>
 </div>
 </div>
@@ -584,7 +576,7 @@ opencv-contrib-python</pre>
 <p><code>litgen</code> (aka "Literate Generator") is the package provided by srcmlcpp that will generate the python bindings.</p>
 </div>
 <div class="paragraph">
-<p>Its source code is available <a href="https://github.com/pthom/litgen/tree/main/packages/litgen">here</a>.</p>
+<p>Its source code is available <a href="https://github.com/pthom/litgen/tree/main/src/litgen">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>It is heavily configurable by <a href="https://github.com/pthom/litgen/blob/main/packages/litgen/options.py">a wide range of options</a>.</p>
