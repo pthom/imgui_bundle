@@ -30,16 +30,9 @@ jobs:
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
 
-    # Install conan & pybind11
-    - name: install conan and pybind11 (linux and ubuntu)
-      if: ${{ matrix.platform != 'windows-latest' }}
-      run:  ./ci_scripts/install_conan_pybind11.sh
-    - name: install conan and pybind11 (windows)
-      if: ${{ matrix.platform == 'windows-latest' }}
+    - name: install pybind11
       run: |
-        python3 -m pip install conan
-        conan profile new default --detect
-        python3 -m pip install pybind11
+        pip install pybind11
 
     - name: Build and install
       shell: bash
