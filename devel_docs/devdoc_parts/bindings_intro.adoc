@@ -7,20 +7,17 @@ The generator in itself is located in link:https://github.com/pthom/litgen/tree/
 
 ==== Installing the generator
 
-**Step 1: install srcML**
-
-Get and install srcML from its link:http://www.srcml.org/#download[official site].
-
-**Step 2: install the generator and the required libraries**
+**Step 1: install the generator and the required libraries**
 
 You will need to install the following python packages (see requirements-dev.txt):
 
 ----
-litgen @ git+https://github.com/pthom/litgen
 black
+litgen @ git+https://github.com/pthom/litgen
 mypy
-pytest
 opencv-contrib-python
+pybind11
+pytest
 ----
 
 ==== Quick information about the generator
