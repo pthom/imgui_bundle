@@ -3,7 +3,7 @@
 
 The bindings are generated automatically thanks to a sophisticated generator, which is based on link:https://www.srcml.org[srcML].
 
-The generator in itself is located in link:https://github.com/pthom/litgen/tree/main/packages/litgen[the litgen module] provided by link:https://github.com/pthom/litgen[litgen].
+The generator in itself is located in link:https://github.com/pthom/litgen/tree/main/src/litgen[the litgen module] provided by link:https://github.com/pthom/litgen[litgen].
 
 ==== Installing the generator
 
@@ -21,11 +21,11 @@ pytest
 
 ==== Quick information about the generator
 
-`litgen` (aka "Literate Generator") is the package provided by srcmlcpp that will generate the python bindings.
+`litgen` (aka "Literate Generator") is the package that will generate the python bindings.
 
 Its source code is available link:https://github.com/pthom/litgen/tree/main/src/litgen[here].
 
-It is heavily configurable by link:https://github.com/pthom/litgen/blob/main/packages/litgen/options.py[a wide range of options].
+It is heavily configurable by link:https://github.com/pthom/litgen/blob/main/src/litgen/options.py[a wide range of options].
 
 See for examples the link:https://github.com/pthom/imgui_bundle/blob/main/external/imgui/bindings/litgen_options_imgui.py[specific options for imgui bindings generation].
 
