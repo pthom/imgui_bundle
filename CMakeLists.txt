@@ -187,6 +187,12 @@ endif()
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
+# Options / Install
+# By default, hello_imgui install its targets only if it is the top level project
+#------------------------------------------------------------------------------
+option(IMGUI_BUNDLE_INSTALL "Install imgui_bundle" ${PROJECT_IS_TOP_LEVEL})
+
+
 # SANITIZERS:
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
@@ -264,6 +270,10 @@ if(TARGET imgui_bundle)
     message(STATUS "imgui_bundle target already defined!")
     return()
 endif()
+
+# Reset installable dependencies at startup
+include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
+ibd_reset_installable_dependencies()
 
 # if building the python package, set install folder to anything but /usr/local
 if(SKBUILD)
@@ -392,6 +402,7 @@ endif()
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
 add_library(imgui_bundle INTERFACE)
+ibd_add_installable_dependency(imgui_bundle)
 
 # configure imgui_test_engine (*before* adding hello_imgui)
 # -----------------------------------------------------------------------------
@@ -455,6 +466,46 @@ if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
     add_subdirectory(devel_docs)
 endif()
+
+#------------------------------------------------------------------------------
+# CMake shenanigans so that find_package(imgui-bundle CONFIG REQUIRED) works
+#------------------------------------------------------------------------------
+# These elements are mainly used to build a vcpkg compatible package.
+# Important note:
+#     - the CMake package is named imgui-bundle (with a "-")
+#     - the CMake target is named imgui_bundle (with a "_")
+# To link with imgui_bundle, you need to use:
+#     find_package(imgui-bundle CONFIG REQUIRED)
+#     target_link_libraries(your_target PRIVATE imgui-bundle::imgui_bundle)  # note the variation "-" vs "_"
+# However, the simplest use is:
+#     find_package(imgui-bundle CONFIG REQUIRED)
+#     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
+#------------------------------------------------------------------------------
+if(PROJECT_IS_TOP_LEVEL)
+    # inspired from https://iamsorush.com/posts/cpp-cmake-config/
+    message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
+    install(TARGETS ${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}
+        EXPORT imgui-bundle-targets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
+
+    install(EXPORT imgui-bundle-targets
+        FILE imgui-bundle-targets.cmake
+        NAMESPACE imgui-bundle::
+        DESTINATION lib/cmake/imgui_bundle)
+
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        "imgui-bundleConfigVersion.cmake"
+        VERSION ${imgui_bundle_VERSION}
+        COMPATIBILITY AnyNewerVersion)
+
+    install(FILES "imgui_bundle_cmake/imgui-bundleConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui-bundleConfig.cmake"
+        DESTINATION lib/cmake/imgui_bundle)
+endif()
+
 
 
 # Log options at the end
