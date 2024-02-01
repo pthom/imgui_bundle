@@ -5,7 +5,7 @@
 #include "imgui.h"
 
 #ifdef HELLOIMGUI_HAS_OPENGL
-    #include "hello_imgui_include_opengl.h"
+    #include "hello_imgui/hello_imgui_include_opengl.h"
 
     #ifdef HELLOIMGUI_USE_GLES3
     // #define NANOVG_GLES3

@@ -1229,8 +1229,8 @@ static void flipHorizontal(unsigned char* image, int w, int h, int stride)
 }
 
 #ifdef HELLOIMGUI_HAS_OPENGL
-#include "hello_imgui_include_opengl.h"
-#include "stb_hello_imgui/stb_image_write.h"
+#include "hello_imgui/hello_imgui_include_opengl.h"
+#include "stb_image_write.h"
 void saveScreenShot(int w, int h, int premult, const char* name)
 {
 	unsigned char* image = (unsigned char*)malloc(w*h*4);

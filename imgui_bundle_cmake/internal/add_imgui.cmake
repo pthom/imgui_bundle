@@ -25,7 +25,13 @@ function(add_imgui imgui_dir)
             # For python bindings we add opengl2 backend
             target_sources(imgui PRIVATE ${imgui_dir}/backends/imgui_impl_opengl2.cpp ${imgui_dir}/backends/imgui_impl_opengl2.h)
         endif()
-        target_include_directories(imgui PUBLIC ${imgui_dir} ${imgui_dir}/..)
+        set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir})
+        target_include_directories(imgui PUBLIC
+            $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}/backends>
+            $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}/misc/cpp>
+            $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}/misc/freetype>
+        )
         target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG="${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h")
         lg_disable_warning_exception_in_destructor(imgui)
         if(PROJECT_IS_TOP_LEVEL AND NOT SKBUILD)

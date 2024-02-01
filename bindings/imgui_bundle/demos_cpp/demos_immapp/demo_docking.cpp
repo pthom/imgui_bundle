@@ -14,7 +14,7 @@ It demonstrates how to:
 
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
-#include "imgui/misc/cpp/imgui_stdlib.h"
+#include "imgui_stdlib.h"
 #include "imgui_internal.h"
 #include "demo_utils/api_demos.h"
 

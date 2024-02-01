@@ -853,7 +853,8 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#ifdef IMGUI_BUNDLE_WITH_IMPLOT</span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_md_wrapper/imgui_md_wrapper.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;implot/implot.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;demo_utils/api_demos.h&quot;</span>
@@ -892,7 +893,11 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <span class="tok-w">    </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">(</span><span class="tok-n">runnerParams</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">addons</span><span class="tok-p">);</span>
 
 <span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-p">;</span>
-<span class="tok-p">}</span></code></pre>
+<span class="tok-p">}</span>
+<span class="tok-cp">#else </span><span class="tok-c1">// #ifdef IMGUI_BUNDLE_WITH_IMPLOT</span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&lt;cstdio&gt;</span>
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">printf</span><span class="tok-p">(</span><span class="tok-s">&quot;This demo requires ImPlot.</span><span class="tok-se">\n</span><span class="tok-s">&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">}</span>
+<span class="tok-cp">#endif</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1416,7 +1421,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-15 08:43:35 +0100
+Last updated 2024-02-01 00:57:30 +0100
 </div>
 </div>
 </body>

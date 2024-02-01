@@ -6,7 +6,7 @@
 
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/hello_imgui_screenshot.h"
-#include "imgui/imgui_internal.h"
+#include "imgui_internal.h"
 #include "imgui_test_engine/imgui_te_engine.h"
 #include "imgui_test_engine/imgui_te_internal.h"
 

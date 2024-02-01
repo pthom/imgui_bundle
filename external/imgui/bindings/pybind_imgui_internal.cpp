@@ -7,7 +7,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "imgui_pywrappers/imgui_internal_pywrappers.h"
+#include "imgui_internal_pywrappers.h"
 
 
 namespace py = pybind11;

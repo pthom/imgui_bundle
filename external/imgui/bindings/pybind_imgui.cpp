@@ -6,7 +6,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "imgui_pywrappers/imgui_pywrappers.h"
+#include "imgui_pywrappers.h"
 #include "misc/cpp/imgui_stdlib.h"
 
 using uint = unsigned int;

@@ -1,7 +1,7 @@
 // This demo show how we can call ImGui::ErrorCheckEndFrameRecover()
 // to recover from errors originating when ImGui::End() is not called (for example when an exception is raised)
 
-#include "hello_imgui.h"
+#include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 #include "imgui_internal.h"
 
