@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyproject.toml!
 
+# imgui_bundle_build_lib contains the main logic to build imgui_bundle
+set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
+include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 
 # -----------------------------------------------------------------------------
 # About imgui_bundle_add_app:
@@ -192,7 +195,6 @@ option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 #------------------------------------------------------------------------------
 option(IMGUI_BUNDLE_INSTALL "Install imgui_bundle" ${PROJECT_IS_TOP_LEVEL})
 
-
 # SANITIZERS:
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
@@ -272,7 +274,6 @@ if(TARGET imgui_bundle)
 endif()
 
 # Reset installable dependencies at startup
-include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 ibd_reset_installable_dependencies()
 
 # if building the python package, set install folder to anything but /usr/local
@@ -300,14 +301,7 @@ endif()
 
 
 
-# imgui_bundle_add_app
-# -----------------------------------------------------------------------------
-# the easiest way to build an app with imgui_bundle is to use
-#     imgui_bundle_add_app(my_app my_file.cpp)
-set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
-list(APPEND CMAKE_MODULE_PATH "${IMGUI_BUNDLE_CMAKE_PATH}")
-include(imgui_bundle_add_app)
-set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
+ibd_include_imgui_bundle_add_app()
 
 
 # if building the python package, do some clenaup:
@@ -481,7 +475,7 @@ endif()
 #     find_package(imgui-bundle CONFIG REQUIRED)
 #     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
 #------------------------------------------------------------------------------
-if(PROJECT_IS_TOP_LEVEL)
+if(IMGUI_BUNDLE_INSTALL_NOPE)
     # inspired from https://iamsorush.com/posts/cpp-cmake-config/
     message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
     install(TARGETS ${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}

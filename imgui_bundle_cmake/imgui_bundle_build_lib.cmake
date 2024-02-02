@@ -1,3 +1,5 @@
+set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
+
 
 
 ###################################################################################################
@@ -10,4 +12,14 @@ endfunction()
 
 function(ibd_reset_installable_dependencies)
     set(IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES "" CACHE INTERNAL "" FORCE)
+endfunction()
+
+###################################################################################################
+# Misc
+###################################################################################################
+
+# make imgui_bundle_add_app available
+function(ibd_include_imgui_bundle_add_app)
+    list(APPEND CMAKE_MODULE_PATH "${IMGUI_BUNDLE_CMAKE_PATH}")
+    include(imgui_bundle_add_app)
 endfunction()
