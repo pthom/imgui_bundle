@@ -176,8 +176,15 @@ option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
 # Options / Install
 # By default, hello_imgui install its targets only if it is the top level project
+# and only if it is not building the python package
+# (the python package will install different elements)
 #------------------------------------------------------------------------------
-option(IMGUI_BUNDLE_INSTALL "Install imgui_bundle" ${PROJECT_IS_TOP_LEVEL})
+if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
+    set(imgui_bundle_install_cpp_default ON)
+else()
+    set(imgui_bundle_install_cpp_default OFF)
+endif()
+option(IMGUI_BUNDLE_INSTALL_CPP "Install imgui_bundle" ${imgui_bundle_install_cpp_default})
 
 # Sanitizers options (see imgui_bundle_build_lib.cmake)
 # -----------------------------------------------------------------------------
@@ -292,7 +299,11 @@ endif()
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
 add_library(imgui_bundle INTERFACE)
-ibd_add_installable_dependency(imgui_bundle)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(DIRECTORY imgui_bundle_cmake DESTINATION share/imgui-bundle)
+    install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui-bundle)
+    ibd_add_installable_dependency(imgui_bundle)
+endif()
 
 # configure imgui_test_engine (*before* adding hello_imgui)
 # -----------------------------------------------------------------------------
@@ -371,7 +382,7 @@ endif()
 #     find_package(imgui-bundle CONFIG REQUIRED)
 #     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
 #------------------------------------------------------------------------------
-if(IMGUI_BUNDLE_INSTALL_NOPE)
+if(IMGUI_BUNDLE_INSTALL_CPP)
     # inspired from https://iamsorush.com/posts/cpp-cmake-config/
     message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
     install(TARGETS ${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}
@@ -392,7 +403,7 @@ if(IMGUI_BUNDLE_INSTALL_NOPE)
         VERSION ${imgui_bundle_VERSION}
         COMPATIBILITY AnyNewerVersion)
 
-    install(FILES "imgui_bundle_cmake/imgui-bundleConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui-bundleConfig.cmake"
+    install(FILES "imgui_bundle_cmake/imgui-bundleConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui-bundleConfigVersion.cmake"
         DESTINATION lib/cmake/imgui_bundle)
 endif()
 

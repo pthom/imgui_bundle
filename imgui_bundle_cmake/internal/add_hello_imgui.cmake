@@ -31,8 +31,14 @@ function (add_hello_imgui)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
 
     # 4. Finally, add hello_imgui
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        set(HELLOIMGUI_INSTALL ON CACHE BOOL "" FORCE)
+    endif()
     add_subdirectory(hello_imgui/hello_imgui)
     target_link_libraries(imgui_bundle INTERFACE hello_imgui)
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        ibd_add_installable_dependency(hello_imgui)
+    endif()
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
     if (WIN32)
