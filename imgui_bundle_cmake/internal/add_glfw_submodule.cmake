@@ -1,16 +1,6 @@
 ####################################################
-# Build glfw
+# Build glfw as a shared library for python
 ####################################################
-function(add_glfw_submodule)
-    _set_glfw_build_options_pre_add()
-    if (IMGUI_BUNDLE_BUILD_PYTHON)
-        _add_glfw_as_python_shared_library()
-    else()
-        _add_glfw_as_static_library()
-    endif()
-    _set_glfw_build_options_post_add()
-endfunction()
-
 function(_set_glfw_build_options_pre_add)
     set(GLFW_BUILD_EXAMPLES OFF PARENT_SCOPE)
     set(GLFW_BUILD_TESTS OFF PARENT_SCOPE)
@@ -28,15 +18,11 @@ function(_set_glfw_build_options_post_add)
     endif()
 endfunction()
 
-function(_add_glfw_as_static_library)
-    add_subdirectory(glfw/glfw)
-endfunction()
-
-
-function(_add_glfw_as_python_shared_library)
+function(add_glfw_as_python_shared_library)
     # Build glfw as a *shared* library:
     #   this is required if we want to be able to use python bindings
     #   for glfw, using https://github.com/FlorianRhiem/pyGLFW
+    _set_glfw_build_options_pre_add()
     set(BUILD_SHARED_LIBS ON)
 
     # Note: the rpath is set by a call to
@@ -62,7 +48,6 @@ function(_add_glfw_as_python_shared_library)
             DEPENDS glfw
         )
     endif()
-
-
     set(BUILD_SHARED_LIBS OFF)
+    _set_glfw_build_options_post_add()
 endfunction()
