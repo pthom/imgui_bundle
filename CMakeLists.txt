@@ -392,6 +392,9 @@ endif()
 #     find_package(imgui-bundle CONFIG REQUIRED)
 #     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
 #------------------------------------------------------------------------------
+if(IMGUI_BUNDLE_INSTALL_CPP AND IMGUI_BUNDLE_BUILD_PYTHON)
+    message(FATAL_ERROR "IMGUI_BUNDLE_INSTALL_CPP is incompatible with IMGUI_BUNDLE_BUILD_PYTHON")
+endif()
 if(IMGUI_BUNDLE_INSTALL_CPP)
     # inspired from https://iamsorush.com/posts/cpp-cmake-config/
     message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
