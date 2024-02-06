@@ -10,9 +10,12 @@ function(add_simple_external_library lib_target_name lib_folder)
     target_link_libraries(${lib_target_name} PUBLIC imgui)
 
     set(lib_parent_folder ${IMGUIBUNDLE_EXTERNAL_PATH}/${lib_folder})
-    target_include_directories(${lib_target_name} PUBLIC ${lib_parent_folder})
-    # message(FATAL_ERROR "    target_include_directories(${lib_target_name} PUBLIC ${lib_parent_folder})")
+    target_include_directories(${lib_target_name} PUBLIC $<BUILD_INTERFACE:${lib_parent_folder}>)
     target_link_libraries(imgui_bundle INTERFACE ${lib_target_name})
+
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        ibd_add_installable_dependency(${lib_target_name})
+    endif()
 endfunction()
 
 function(add_simple_external_library_with_sources lib_target_name lib_folder)
@@ -22,8 +25,13 @@ function(add_simple_external_library_with_sources lib_target_name lib_folder)
     set(lib_inner_folder ${IMGUIBUNDLE_EXTERNAL_PATH}/${lib_folder}/${lib_folder})
     file(GLOB lib_sources ${lib_inner_folder}/*.cpp ${lib_inner_folder}/*.h)
 
-    target_sources(${lib_target_name}  PRIVATE ${lib_sources})
+    target_sources(${lib_target_name} PRIVATE ${lib_sources})
     hello_imgui_msvc_target_group_sources(${lib_target_name})
+
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        file(GLOB lib_headers ${lib_inner_folder}/*.h)
+        install(FILES ${lib_headers} DESTINATION include/${lib_folder})
+    endif()
 endfunction()
 
 

@@ -5285,6 +5285,10 @@ void py_init_module_imgui_main(py::module& m)
             &ImGuiIO::SetIniFilename, py::arg("filename"))
         .def("set_log_filename",
             &ImGuiIO::SetLogFilename, py::arg("filename"))
+        .def("get_ini_filename",
+            &ImGuiIO::GetIniFilename)
+        .def("get_log_filename",
+            &ImGuiIO::GetLogFilename)
         // #endif
         //
         ;

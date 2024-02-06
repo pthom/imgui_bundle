@@ -69,6 +69,85 @@ def EmptyEventCallback() -> AnyEventCallback:
 #                       hello_imgui.h                                                                          //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# @@md#DpiAwareParams
+
+class DpiAwareParams:
+    """
+    Hello ImGui will try its best to automatically handle DPI scaling for you.
+    It does this by setting two values:
+
+    - `dpiWindowSizeFactor`:
+           factor by which window size should be multiplied
+
+    - `fontRenderingScale`:
+        factor by which fonts glyphs should be scaled at rendering time
+        (typically 1 on windows, and 0.5 on macOS retina screens)
+
+       By default, Hello ImGui will compute them automatically,
+       when dpiWindowSizeFactor and fontRenderingScale are set to 0.
+
+    How to set those values manually:
+    ---------------------------------
+    If it fails (i.e. your window and/or fonts are too big or too small),
+    you may set them manually:
+       (1) Either by setting them programmatically in your application
+           (set their values in `runnerParams.dpiAwareParams`)
+       (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
+          (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+    Note: if several methods are used, the order of priority is (1) > (2)
+
+    Example content of a ini file:
+    ------------------------------
+        [DpiAwareParams]
+        dpiWindowSizeFactor=2
+        fontRenderingScale=0.5
+
+    """
+
+    # float dpiWindowSizeFactor = 0.0f;    /* original C++ signature */
+    # `dpiWindowSizeFactor`
+    #        factor by which window size should be multiplied to get a similar
+    #        visible size on different OSes.
+    #  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,
+    #  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.
+    #
+    #  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will
+    #  look similar whatever the OS and the screen DPI.
+    #  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window
+    #
+    #  Hello ImGui does its best to compute it on all OSes.
+    #  However, if it fails you may set its value manually.
+    #  If it is set to 0, Hello ImGui will compute it automatically,
+    #  and the resulting value will be stored in `dpiWindowSizeFactor`.
+    dpi_window_size_factor: float = 0.0
+
+    # float fontRenderingScale = 0.0f;    /* original C++ signature */
+    # `fontRenderingScale`
+    #     factor (that is either 1 or < 1.) by which fonts glyphs should be
+    #     scaled at rendering time.
+    #     On macOS retina screens, it will be 0.5, since macOS APIs hide
+    #     the real resolution of the screen.
+    font_rendering_scale: float = 0.0
+
+    # float DpiFontLoadingFactor() { return dpiWindowSizeFactor / fontRenderingScale;}    /* original C++ signature */
+    def dpi_font_loading_factor(self) -> float:
+        """`dpiFontLoadingFactor`
+        factor by which font size should be multiplied at loading time to get a similar
+        visible size on different OSes.
+        The size will be equivalent to a size given for a 96 PPI screen
+        """
+        pass
+    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f);    /* original C++ signature */
+    def __init__(
+        self, dpi_window_size_factor: float = 0.0, font_rendering_scale: float = 0.0
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# ----------------------------------------------------------------------------
+
+# @@md
+
 # *
 # @@md#DocEmToVec2
 #
@@ -112,6 +191,8 @@ def em_size(nb_lines: float) -> float:
     pass
 
 # @@md
+
+# ----------------------------------------------------------------------------
 
 # float DpiFontLoadingFactor();    /* original C++ signature */
 def dpi_font_loading_factor() -> float:
@@ -941,7 +1022,7 @@ class AppWindowParams:
     """@@md#AppWindowParams
 
      AppWindowParams is a struct that defines the application window display params.
-    See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png
+    See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg
      for details.
     """
 
@@ -2054,16 +2135,50 @@ class RendererBackendOptions:
 #                       hello_imgui/runner_params.h continued                                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class BackendType(enum.Enum):
-    """Platform backend type (SDL, GLFW)"""
+# #define HELLOIMGUI_DISABLE_OBSOLETE_BACKEND
+
+# --------------------------------------------------------------------------------------------------------------------
+
+# @@md#BackendType
+
+# You can select the platform backend type (SDL, GLFW) and the rendering backend type
+# via RunnerParams.backendType and RunnerParams.renderingBackendType.
+
+class PlatformBackendType(enum.Enum):
+    """Platform backend type (SDL, GLFW)
+    They are listed in the order of preference when FirstAvailable is selected.
+    """
 
     # FirstAvailable,    /* original C++ signature */
     first_available = enum.auto()  # (= 0)
-    # Sdl,    /* original C++ signature */
-    sdl = enum.auto()  # (= 1)
     # Glfw,    /* original C++ signature */
+    glfw = enum.auto()  # (= 1)
+    # Sdl,    /* original C++ signature */
     # }
-    glfw = enum.auto()  # (= 2)
+    sdl = enum.auto()  # (= 2)
+
+class RendererBackendType(enum.Enum):
+    """Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
+    They are listed in the order of preference when FirstAvailable is selected.
+    """
+
+    # FirstAvailable,    /* original C++ signature */
+    first_available = enum.auto()  # (= 0)
+    # OpenGL3,    /* original C++ signature */
+    open_gl3 = enum.auto()  # (= 1)
+    # Metal,    /* original C++ signature */
+    metal = enum.auto()  # (= 2)
+    # Vulkan,    /* original C++ signature */
+    vulkan = enum.auto()  # (= 3)
+    # DirectX11,    /* original C++ signature */
+    direct_x11 = enum.auto()  # (= 4)
+    # DirectX12,    /* original C++ signature */
+    # }
+    direct_x12 = enum.auto()  # (= 5)
+
+# @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 # @@md#IniFolderType
 
@@ -2126,6 +2241,8 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # @@md
 
+# --------------------------------------------------------------------------------------------------------------------
+
 # @@md#FpsIdling
 
 class FpsIdling:
@@ -2145,7 +2262,7 @@ class FpsIdling:
 
     # bool  enableIdling = true;    /* original C++ signature */
     # `enableIdling`: _bool, default=true_.
-    #  Set this to False to disable idling
+    #  Disable idling by setting this to False.
     #  (this can be changed dynamically during execution)
     enable_idling: bool = True
 
@@ -2171,6 +2288,8 @@ class FpsIdling:
         pass
 
 # @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 # @@md#RunnerParams
 
@@ -2221,16 +2340,25 @@ class RunnerParams:
     # These pointers will be filled when the application starts
     backend_pointers: BackendPointers
 
-    # BackendType backendType = BackendType::FirstAvailable;    /* original C++ signature */
-    # `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-    # Select the wanted platform backend type between `Sdl`, `Glfw`.
-    # Only useful when multiple backend are compiled and available.
-    backend_type: BackendType = BackendType.first_available
-
     # RendererBackendOptions rendererBackendOptions;    /* original C++ signature */
     # `rendererBackendOptions`: _see renderer_backend_options.h_
     # Options for the renderer backend
     renderer_backend_options: RendererBackendOptions
+
+    # PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable;    /* original C++ signature */
+    # `backendType`: _enum BackendType, default=PlatformBackendType::FirstAvailable_
+    # Select the wanted platform backend type between `Sdl`, `Glfw`.
+    # if `FirstAvailable`, Glfw will be preferred over Sdl when both are available.
+    # Only useful when multiple backend are compiled and available.
+    # (for compatibility with older versions, you can use BackendType instead of PlatformBackendType)
+    platform_backend_type: PlatformBackendType = PlatformBackendType.first_available
+
+    # RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable;    /* original C++ signature */
+    # `renderingBackendType`: _enum RenderingBackendType, default=RenderingBackendType::FirstAvailable_
+    # Select the wanted rendering backend type between `OpenGL3`, `Metal`, `Vulkan`, `DirectX11`, `DirectX12`.
+    # if `FirstAvailable`, it will be selected in the order of preference mentioned above.
+    # Only useful when multiple rendering backend are compiled and available.
+    renderer_backend_type: RendererBackendType = RendererBackendType.first_available
 
     # --------------- Settings -------------------
 
@@ -2275,6 +2403,12 @@ class RunnerParams:
     # (set fpsIdling.enableIdling to False to disable Idling)
     fps_idling: FpsIdling
 
+    # DpiAwareParams dpiAwareParams;    /* original C++ signature */
+    # --------------- DPI Handling -----------
+    # Hello ImGui will try its best to automatically handle DPI scaling for you.
+    # If it fails, look at DpiAwareParams (and the corresponding Ini file settings)
+    dpi_aware_params: DpiAwareParams
+
     # --------------- Misc -------------------
 
     # bool useImGuiTestEngine = false;    /* original C++ signature */
@@ -2295,7 +2429,9 @@ class RunnerParams:
     # Set the application refresh rate
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), BackendType backendType = BackendType::FirstAvailable, RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
+
+    # --------------- Legacy -------------------`
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: RunnerCallbacks = RunnerCallbacks(),
@@ -2305,13 +2441,15 @@ class RunnerParams:
         alternative_docking_layouts: List[DockingParams] = List[DockingParams](),
         remember_selected_alternative_layout: bool = True,
         backend_pointers: BackendPointers = BackendPointers(),
-        backend_type: BackendType = BackendType.first_available,
         renderer_backend_options: RendererBackendOptions = RendererBackendOptions(),
+        platform_backend_type: PlatformBackendType = PlatformBackendType.first_available,
+        renderer_backend_type: RendererBackendType = RendererBackendType.first_available,
         ini_folder_type: IniFolderType = IniFolderType.current_folder,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,
         app_shall_exit: bool = False,
         fps_idling: FpsIdling = FpsIdling(),
+        dpi_aware_params: DpiAwareParams = DpiAwareParams(),
         use_imgui_test_engine: bool = False,
         emscripten_fps: int = 0,
     ) -> None:
@@ -2338,6 +2476,8 @@ def delete_ini_settings(runner_params: RunnerParams) -> None:
     pass
 
 # @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 # @@md#SimpleRunnerParams
 
@@ -2391,7 +2531,9 @@ class SimpleRunnerParams:
 
     # bool  enableIdling = true;    /* original C++ signature */
     # `enableIdling`: _bool, default=true_.
-    #  Set this to False to disable idling at startup
+    #  Disable idling at startup by setting this to False
+    #  When running, use:
+    #      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = False;
     enable_idling: bool = True
 
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
@@ -2520,6 +2662,16 @@ def get_imgui_test_engine() -> ImGuiTestEngine:
     """`ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance
     of ImGuiTestEngine that was initialized by HelloImGui
     (iif ImGui Test Engine is active).
+    """
+    pass
+
+# std::string GetBackendDescription();    /* original C++ signature */
+def get_backend_description() -> str:
+    """`GetBackendDescription()`: returns a string with the backend info
+    Could be for example:
+        "Glfw - OpenGL3"
+        "Glfw - Metal"
+        "Sdl - Vulkan"
     """
     pass
 

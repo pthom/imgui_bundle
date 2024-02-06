@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyproject.toml!
 
+# imgui_bundle_build_lib contains the main logic to build imgui_bundle
+set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
+include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 
 # -----------------------------------------------------------------------------
 # About imgui_bundle_add_app:
@@ -28,21 +31,52 @@ project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyp
 # IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES: clone submodules if needed during configure
 # -----------------------------------------------------------------------------
 option(IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES "clone submodules if needed during configure" ON)
-if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/external/imgui/imgui/imgui.h)
-    if(NOT IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES)
-        message(FATAL_ERROR "Please run
-            git submodule update --init
-           ")
-    else()
-        execute_process(
-            COMMAND git submodule update --init
-            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-        )
-    endif()
-endif()
+ibd_clone_submodules_if_needed()
+
 # Import a few cmake utility functions from hello_imgui
 include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/hello_imgui_cmake/utils/cache_hello_imgui_paths.cmake)
 include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
+
+
+# Backends
+# -----------------------------------------------------------------------------
+# <Backends> # do not remove this line (used by the script that generates the documentation)
+# (this part is a direct copy from HelloImGui CmakeList, reproduced here for convenience)
+# You need to select at least two backends:
+#
+#     - At least one (or more) rendering backend (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
+#       Make your choice according to your needs and your target platforms, between:
+#          -DHELLOIMGUI_HAS_OPENGL3=ON    # This is the recommended choice, especially for beginners
+#          -DHELLOIMGUI_HAS_METAL=ON      # Apple only, advanced users only
+#          -DHELLOIMGUI_HAS_VULKAN=ON     # Advanced users only
+#          -DHELLOIMGUI_HAS_DIRECTX11=ON  # Windows only, still experimental
+#          -DHELLOIMGUI_HAS_DIRECTX12=ON  # Windows only, advanced users only, still experimental
+#
+#     - At least one (or more) platform backend (SDL2, Glfw3):
+#      Make your choice according to your needs and your target platforms, between:
+#          -DHELLOIMGUI_USE_SDL2=ON
+#          -DHELLOIMGUI_USE_GLFW3=ON
+#
+# If you make no choice, the default will be selected:
+#     HELLOIMGUI_USE_GLFW3 + HELLOIMGUI_HAS_OPENGL3
+#
+# Note about rendering backends:
+#   OpenGL3 is the recommended choice as a starting point, especially for beginners.
+#   Vulkan, Metal, and DirectX11, DirectX12 do work, but you may need to customize the rendering code inside HelloImGui:
+#   see src/hello_imgui/internal/backend_impls/rendering_xxxx.[h,cpp]
+#   (using those backends probably implies that you want to heavily customize the rendering code)
+#
+################################################################################
+# Platform backends:
+option(HELLOIMGUI_USE_GLFW3 "Use Glfw3 as a platform backend" OFF)
+option(HELLOIMGUI_USE_SDL2 "Use Sdl2 as a platform backend" OFF)
+# Rendering backends
+option(HELLOIMGUI_HAS_OPENGL3 "Use OpenGL3 as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_METAL "Use Metal as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_VULKAN "Use Vulkan as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_DIRECTX11 "Use DirectX11 as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_DIRECTX12 "Use DirectX12 as a rendering backend" OFF)
+# </Backends>  # do not remove this line (used by the script that generates the documentation)
 
 
 # IMGUI_BUNDLE_BUILD_PYTHON: include python support
@@ -58,47 +92,16 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
-
-# -----------------------------------------------------------------------------
-# BACKENDS
-# Backends are defined by a combination of a platform backend (Sdl2, Glfw3),
-# and a renderer backend (OpenGL3, Vulkan, Metal, etc)
-#
-# By default, imgui_bundle will use
-# - Glfw+OpenGL3 on desktop platforms (Windows, Linux, macOS):
-#       -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
-# - SDL+OpenGl3 on emscripten, iOS and Android:
-#       -DHELLOIMGUI_USE_SDL_OPENGL3=ON
-#
-# Notes:
-# - For python bindings:
-#       we force the usage of Glfw+OpenGL3 (HELLOIMGUI_USE_GLFW_OPENGL3), but you can use SDL via a pure python backend.
-#       glfw will be built from the submodule external/glfw/glfw
-# - Glfw3 may be downloaded automatically if not found as a system library:
-#    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
-#    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
-# - SDL2 may be downloaded automatically if not found as a system library:
-#    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
-#    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
-# -----------------------------------------------------------------------------
-_him_check_if_no_backend_selected(no_backend_selected)
-# Select default backend if none selected
-if (no_backend_selected)
-    if (EMSCRIPTEN OR ANDROID OR IOS)
-        set(default_use_glfw_opengl3 OFF)
-        set(default_use_sdl_opengl3 ON)
-    else()
-        set(default_use_glfw_opengl3 ON)
-        set(default_use_sdl_opengl3 OFF)
-    endif()
-    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ${default_use_glfw_opengl3})
-    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" ${default_use_sdl_opengl3})
-endif()
-
 # For python bindings, we force the usage of Glfw+OpenGL3
 if(IMGUI_BUNDLE_BUILD_PYTHON)
-    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
+
+    set(HELLOIMGUI_USE_SDL2 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_METAL OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_VULKAN OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_DIRECTX11 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_DIRECTX12 OFF CACHE BOOL "" FORCE)
 endif()
 
 # -----------------------------------------------------------------------------
@@ -164,13 +167,7 @@ if(ANDROID OR MINGW)
 endif()
 # Note: to reduce wasm size, you may want to disable freetype on emscripten.
 option(HELLOIMGUI_USE_FREETYPE "Use freetype for text rendering" ${freetype_default})
-# For python bindings, we force the usage of a static version of freetype
-if(IMGUI_BUNDLE_BUILD_PYTHON AND HELLOIMGUI_USE_FREETYPE)
-    # if using vcpkg, we suppose it uses the static version of freetype
-    if(NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg")
-        set(HELLOIMGUI_FREETYPE_STATIC ON CACHE BOOL "" FORCE)
-    endif()
-endif()
+ibd_force_freetype_static_for_python()
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
 # -----------------------------------------------------------------------------
@@ -187,35 +184,21 @@ endif()
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 
-# SANITIZERS:
-# -----------------------------------------------------------------------------
-option(IMGUI_BUNDLE_BUILD_WITH_ASAN "Build ImGui Bundle with address sanitizer" OFF)
-if(IMGUI_BUNDLE_BUILD_WITH_ASAN)
-    add_compile_options(-fsanitize=address -fsanitize-address-use-after-scope)
-    add_link_options(-fsanitize=address -fsanitize-address-use-after-scope)
+# Options / Install
+# By default, hello_imgui install its targets only if it is the top level project
+# and only if it is not building the python package
+# (the python package will install different elements)
+#------------------------------------------------------------------------------
+if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
+    set(imgui_bundle_install_cpp_default OFF)
+else()
+    set(imgui_bundle_install_cpp_default OFF)
 endif()
-option(IMGUI_BUNDLE_BUILD_WITH_TSAN "Build ImGui Bundle with thread sanitizer" OFF)
-if(IMGUI_BUNDLE_BUILD_WITH_TSAN)
-    add_compile_options(-fsanitize=thread)
-    add_link_options(-fsanitize=thread)
-endif()
-option(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER "Build ImGui Bundle with memory sanitizer" OFF)
-if(IMGUI_BUNDLE_BUILD_WITH_MEMORY_SANITIZER)
-    add_compile_options(-fsanitize=memory)
-    add_link_options(-fsanitize=memory)
-endif()
-option(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER "Build ImGui Bundle with undefined behavior sanitizer" OFF)
-if(IMGUI_BUNDLE_BUILD_WITH_UB_SANITIZER)
-    add_compile_options(-fsanitize=undefined)
-    add_link_options(-fsanitize=undefined)
-endif()
-# Also see scan-build (clang static analyzer). No bugs reported on 2023-10-21
-#     brew install llvm
-#     mkdir build_llvm && cd llvm
-#     export PATH=/opt/homebrew/opt/llvm/bin:$PATH
-#     cmake .. -DIMMVISION_FETCH_OPENCV=ON
-#     scan-build make -j
+option(IMGUI_BUNDLE_INSTALL_CPP "Install imgui_bundle" ${imgui_bundle_install_cpp_default})
 
+# Sanitizers options (see imgui_bundle_build_lib.cmake)
+# -----------------------------------------------------------------------------
+ibd_add_sanitizer_options()
 
 # Automation test (run app in CI)
 # -----------------------------------------------------------------------------
@@ -265,6 +248,9 @@ if(TARGET imgui_bundle)
     return()
 endif()
 
+# Reset installable dependencies at startup
+ibd_reset_installable_dependencies()
+
 # if building the python package, set install folder to anything but /usr/local
 if(SKBUILD)
     set(CMAKE_INSTALL_PREFIX "_tmp_imgui_bundle_skbuild")
@@ -281,51 +267,11 @@ endif(CCACHE_FOUND)
 set(BUILD_SHARED_LIBS OFF)
 
 # Error on deprecated options
-if (DEFINED IMGUI_BUNDLE_WITH_GLFW)
-    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_GLFW is deprecated. Please use HELLOIMGUI_USE_GLFW_OPENGL3 instead")
-endif()
-if (DEFINED IMGUI_BUNDLE_WITH_SDL)
-    message(FATAL_ERROR "IMGUI_BUNDLE_WITH_SDL is deprecated. Please use HELLOIMGUI_USE_SDL_OPENGL3 instead")
-endif()
-
-
-
-# imgui_bundle_add_app
-# -----------------------------------------------------------------------------
-# the easiest way to build an app with imgui_bundle is to use
-#     imgui_bundle_add_app(my_app my_file.cpp)
-set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imgui_bundle_cmake CACHE STRING "" FORCE)
-list(APPEND CMAKE_MODULE_PATH "${IMGUI_BUNDLE_CMAKE_PATH}")
-include(imgui_bundle_add_app)
-set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "" FORCE)
-
-
-# if building the python package, do some clenaup:
-#   remove .ruff_cache, remove bindings/imgui_bundle/*.so *.dylib *.dll *.pyd
-# -----------------------------------------------------------------------------
-if(SKBUILD)
-    message(STATUS "Cleaning bindings/imgui_bundle before pip build")
-    # Remove all .ruff_cache folders below bindings/imgui_bundle
-    set(bundle_folder ${CMAKE_CURRENT_SOURCE_DIR}/bindings/imgui_bundle)
-    set(ruff_cache_folders
-        ${bundle_folder}/.ruff_cache
-        ${bundle_folder}/demos_python/.ruff_cache
-    )
-    foreach(ruff_cache_folder ${ruff_cache_folders})
-        file(REMOVE_RECURSE ${ruff_cache_folder})
-    endforeach ()
-
-    # Remove all .so, .dylib, .dll, .pyd files below bindings/imgui_bundle
-    file(GLOB_RECURSE bundle_files
-        ${bundle_folder}/*.so
-        ${bundle_folder}/*.dylib
-        ${bundle_folder}/*.dll
-        ${bundle_folder}/*.pyd
-    )
-    foreach(bundle_file ${bundle_files})
-        file(REMOVE ${bundle_file})
-    endforeach ()
-endif()
+ibd_shout_on_deprecated_options()
+# Add the imgui_bundle_add_app cmake helper
+ibd_include_imgui_bundle_add_app()
+# if building the python package, do some cleanup:
+ibd_clean_bindings_imgui_bundle_before_pip_build()
 
 # Main
 # ----------------------------------------------------------------------
@@ -349,38 +295,9 @@ endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
-    add_compile_definitions(EMSCRIPTEN)
-    # enable assertions in emscripten (IM_ASSERT will log and terminate on error)
-    add_link_options(-sASSERTIONS)
-
-    # If  building emscripten and building demos, we need to activate multithreading support (for ImGuiTestEngine)
-    if (IMGUI_BUNDLE_BUILD_DEMOS)
-        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
-        set(HELLOIMGUI_EMSCRIPTEN_PTHREAD_ALLOW_MEMORY_GROWTH ON CACHE BOOL "" FORCE)
-        add_link_options(-Wno-pthreads-mem-growth)
-    endif()
-    if (HELLOIMGUI_EMSCRIPTEN_PTHREAD)
-        add_compile_options(-pthread)
-        add_link_options(-pthread)
-        set(IMMVISION_OPENCV_EMSCRIPTEN_WITH_PTHREAD ON CACHE BOOL "" FORCE)
-    endif()
-
-    # Exceptions handlings: by default in emscripten, exception do not work!
-    # Our program should not use them, but during development, it is possible to activate them temporarily)
-    #add_compile_options(-sNO_DISABLE_EXCEPTION_CATCHING)
-    #add_link_options(-sNO_DISABLE_EXCEPTION_CATCHING)
-    # This would enable exception to be handled by wasm (and thus may be faster)
-    #add_compile_options(-fwasm-exceptions)
-    #add_link_options(-fwasm-exceptions)
+    ibd_add_emscripten_otions()
 endif()
 
-
-# Sanitizers
-# -----------------------------------------------------------------------------
-#add_compile_options(-fsanitize=address)
-#add_link_options(-fsanitize=address)
-#add_compile_options(-fsanitize=undefined)
-#add_link_options(-fsanitize=undefined)
 
 # find pybind11
 # -----------------------------------------------------------------------------
@@ -392,6 +309,11 @@ endif()
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
 add_library(imgui_bundle INTERFACE)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(DIRECTORY imgui_bundle_cmake DESTINATION share/imgui-bundle)
+    install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui-bundle)
+    ibd_add_installable_dependency(imgui_bundle)
+endif()
 
 # configure imgui_test_engine (*before* adding hello_imgui)
 # -----------------------------------------------------------------------------
@@ -455,6 +377,46 @@ if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
     add_subdirectory(devel_docs)
 endif()
+
+#------------------------------------------------------------------------------
+# CMake shenanigans so that find_package(imgui-bundle CONFIG REQUIRED) works
+#------------------------------------------------------------------------------
+# These elements are mainly used to build a vcpkg compatible package.
+# Important note:
+#     - the CMake package is named imgui-bundle (with a "-")
+#     - the CMake target is named imgui_bundle (with a "_")
+# To link with imgui_bundle, you need to use:
+#     find_package(imgui-bundle CONFIG REQUIRED)
+#     target_link_libraries(your_target PRIVATE imgui-bundle::imgui_bundle)  # note the variation "-" vs "_"
+# However, the simplest use is:
+#     find_package(imgui-bundle CONFIG REQUIRED)
+#     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
+#------------------------------------------------------------------------------
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    # inspired from https://iamsorush.com/posts/cpp-cmake-config/
+    message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
+    install(TARGETS ${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}
+        EXPORT imgui-bundle-targets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include)
+
+    install(EXPORT imgui-bundle-targets
+        FILE imgui-bundle-targets.cmake
+        NAMESPACE imgui-bundle::
+        DESTINATION lib/cmake/imgui_bundle)
+
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        "imgui-bundleConfigVersion.cmake"
+        VERSION ${imgui_bundle_VERSION}
+        COMPATIBILITY AnyNewerVersion)
+
+    install(FILES "imgui_bundle_cmake/imgui-bundleConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui-bundleConfigVersion.cmake"
+        DESTINATION lib/cmake/imgui_bundle)
+endif()
+
 
 
 # Log options at the end

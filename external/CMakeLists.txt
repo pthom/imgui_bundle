@@ -1,3 +1,4 @@
+include(../imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 include(../imgui_bundle_cmake/internal/add_simple_library.cmake) # Tooling to build libraries and link them to imgui_bundle
 
 function(_target_force_include target include_file)
@@ -11,9 +12,13 @@ endfunction()
 
 # Add fplus
 add_library(fplus INTERFACE)
-target_include_directories(fplus INTERFACE fplus)
+target_include_directories(fplus INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/fplus>)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(fplus INTERFACE -Wno-psabi)  # "note: parameter passing for argument of type ‘std::pair<double, double>’ when C++17 is enabled changed to match C++14 in GCC 10.1"
+endif()
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(DIRECTORY fplus/fplus DESTINATION include)
+    ibd_add_installable_dependency(fplus)
 endif()
 
 
@@ -50,6 +55,19 @@ if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
         target_link_libraries(imgui_bundle INTERFACE immvision)
         hello_imgui_msvc_target_group_sources(immvision)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
+
+        if(IMGUI_BUNDLE_INSTALL_CPP)
+            set(immvision_src_dir ${CMAKE_CURRENT_LIST_DIR}/immvision/immvision/src)
+            FILE(GLOB immvision_headers ${immvision_src_dir}/immvision/*.h)
+            install(FILES ${immvision_headers} DESTINATION include/immvision)
+            ibd_add_installable_dependency(immvision)
+            if(TARGET immvision_gl_loader)
+                ibd_add_installable_dependency(immvision_gl_loader)
+            endif()
+            if(TARGET glad_imm)
+                ibd_add_installable_dependency(glad_imm)
+            endif()
+        endif()
     endif()
 endif()
 
@@ -90,6 +108,10 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMFILEDIALOG)
 
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMFILEDIALOG)
         set(IMGUI_BUNDLE_WITH_IMFILEDIALOG ON CACHE INTERNAL "" FORCE)
+
+        if(IMGUI_BUNDLE_INSTALL_CPP)
+            install(FILES ImFileDialog/ImFileDialog/ImFileDialog.h DESTINATION include/ImFileDialog)
+        endif()
     endif()
 endif()
 
@@ -131,6 +153,11 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
 
         # Add nanovg
         add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg)
+        # fix include for nanovg
+        set_target_properties(nanovg PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nanovg/nanovg/src>  # wonderfully terse, isn't it?
+        )
+
         target_compile_definitions(nanovg PUBLIC NANOVG_INSIDE_IMGUI_BUNDLE)
         target_compile_definitions(nanovg PUBLIC IMGUI_BUNDLE_WITH_NANOVG)
         target_link_libraries(imgui_bundle INTERFACE nanovg)
@@ -140,7 +167,7 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
         if(HELLOIMGUI_HAS_METAL)
             target_sources(nanovg PRIVATE nanovg/MetalNanoVG/src/nanovg_mtl.m nanovg/MetalNanoVG/src/nanovg_mtl.h)
             target_link_libraries(nanovg PUBLIC "-framework Metal" "-framework QuartzCore")
-            target_include_directories(nanovg PUBLIC nanovg/MetalNanoVG/src)
+            target_include_directories(nanovg PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nanovg/MetalNanoVG/src>)
         endif()
 
         # Add nvg_imgui
@@ -157,6 +184,15 @@ if(NOT IMGUI_BUNDLE_DISABLE_NANOVG)
 
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_NANOVG)
         set(IMGUI_BUNDLE_WITH_NANOVG ON CACHE INTERNAL "" FORCE)
+
+        if(IMGUI_BUNDLE_INSTALL_CPP)
+            set(nanovg_headers nanovg/nanovg/src/nanovg.h nanovg/nanovg/src/nanovg_gl.h nanovg/nanovg/src/nanovg_gl_utils.h)
+            install(FILES ${nanovg_headers} DESTINATION include)
+            if(HELLOIMGUI_HAS_METAL)
+                install(FILES nanovg/MetalNanoVG/src/nanovg_mtl.h DESTINATION include)
+            endif()
+            ibd_add_installable_dependency(nanovg)
+        endif()
     endif()
 endif()
 
@@ -177,10 +213,13 @@ target_sources(imgui_md PRIVATE
     imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
     imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
 )
-target_include_directories(imgui_md PUBLIC imgui_md/md4c/src)
-target_include_directories(imgui_md PUBLIC imgui_md/imgui_md_wrapper)
+target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/md4c/src>)
+target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/imgui_md_wrapper>)
 target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
 hello_imgui_msvc_target_group_sources(imgui_md)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h DESTINATION include/imgui_md_wrapper)
+endif()
 
 
 ###############################################################################
@@ -198,8 +237,12 @@ add_simple_external_library_with_sources(imgui_command_palette imgui-command-pal
 add_simple_external_library_with_sources(imcoolbar ImCoolBar)
 # Add portable_file_dialogs
 add_library(portable_file_dialogs INTERFACE)
-target_include_directories(portable_file_dialogs INTERFACE portable_file_dialogs)
+target_include_directories(portable_file_dialogs INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/portable_file_dialogs>)
 target_link_libraries(imgui_bundle INTERFACE portable_file_dialogs)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(FILES portable_file_dialogs/portable_file_dialogs/portable_file_dialogs.h DESTINATION include/portable_file_dialogs)
+    ibd_add_installable_dependency(portable_file_dialogs)
+endif()
 
 
 ###############################################################################

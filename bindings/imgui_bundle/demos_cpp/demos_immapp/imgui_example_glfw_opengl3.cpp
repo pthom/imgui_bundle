@@ -1,4 +1,4 @@
-#ifdef HELLOIMGUI_USE_GLFW_OPENGL3
+#if defined(HELLOIMGUI_HAS_OPENGL3) && defined(HELLOIMGUI_USE_GLFW3)
 
 #ifndef __EMSCRIPTEN__ // to keep the build process simple, this demo is currently disabled with emscripten (although ImGui and Imgui Bundle are perfectly compatible with emscripten)
 
@@ -222,7 +222,7 @@ int main(int, char**)
 int main(int, char**) {}
 #endif
 
-#else // #ifdef HELLOIMGUI_USE_GLFW_OPENGL3
+#else // #if defined(HELLOIMGUI_HAS_OPENGL3) && defined(HELLOIMGUI_USE_GLFW3)
 #include <stdio.h>
 int main() { printf("Glfw not found!"); }
 #endif
