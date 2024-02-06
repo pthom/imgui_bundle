@@ -38,6 +38,47 @@ include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/hello_imgui_c
 include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
 
 
+# Backends
+# -----------------------------------------------------------------------------
+# <Backends> # do not remove this line (used by the script that generates the documentation)
+# (this part is a direct copy from HelloImGui CmakeList, reproduced here for convenience)
+# You need to select at least two backends:
+#
+#     - At least one (or more) rendering backend (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
+#       Make your choice according to your needs and your target platforms, between:
+#          -DHELLOIMGUI_HAS_OPENGL3=ON    # This is the recommended choice, especially for beginners
+#          -DHELLOIMGUI_HAS_METAL=ON      # Apple only, advanced users only
+#          -DHELLOIMGUI_HAS_VULKAN=ON     # Advanced users only
+#          -DHELLOIMGUI_HAS_DIRECTX11=ON  # Windows only, still experimental
+#          -DHELLOIMGUI_HAS_DIRECTX12=ON  # Windows only, advanced users only, still experimental
+#
+#     - At least one (or more) platform backend (SDL2, Glfw3):
+#      Make your choice according to your needs and your target platforms, between:
+#          -DHELLOIMGUI_USE_SDL2=ON
+#          -DHELLOIMGUI_USE_GLFW3=ON
+#
+# If you make no choice, the default will be selected:
+#     HELLOIMGUI_USE_GLFW3 + HELLOIMGUI_HAS_OPENGL3
+#
+# Note about rendering backends:
+#   OpenGL3 is the recommended choice as a starting point, especially for beginners.
+#   Vulkan, Metal, and DirectX11, DirectX12 do work, but you may need to customize the rendering code inside HelloImGui:
+#   see src/hello_imgui/internal/backend_impls/rendering_xxxx.[h,cpp]
+#   (using those backends probably implies that you want to heavily customize the rendering code)
+#
+################################################################################
+# Platform backends:
+option(HELLOIMGUI_USE_GLFW3 "Use Glfw3 as a platform backend" OFF)
+option(HELLOIMGUI_USE_SDL2 "Use Sdl2 as a platform backend" OFF)
+# Rendering backends
+option(HELLOIMGUI_HAS_OPENGL3 "Use OpenGL3 as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_METAL "Use Metal as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_VULKAN "Use Vulkan as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_DIRECTX11 "Use DirectX11 as a rendering backend" OFF)
+option(HELLOIMGUI_HAS_DIRECTX12 "Use DirectX12 as a rendering backend" OFF)
+# </Backends>  # do not remove this line (used by the script that generates the documentation)
+
+
 # IMGUI_BUNDLE_BUILD_PYTHON: include python support
 # -----------------------------------------------------------------------------
 # (OFF when building the cpp library; ON by default when using pip install.
@@ -51,47 +92,16 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
-
-# -----------------------------------------------------------------------------
-# BACKENDS
-# Backends are defined by a combination of a platform backend (Sdl2, Glfw3),
-# and a renderer backend (OpenGL3, Vulkan, Metal, etc)
-#
-# By default, imgui_bundle will use
-# - Glfw+OpenGL3 on desktop platforms (Windows, Linux, macOS):
-#       -DHELLOIMGUI_USE_GLFW_OPENGL3=ON
-# - SDL+OpenGl3 on emscripten, iOS and Android:
-#       -DHELLOIMGUI_USE_SDL_OPENGL3=ON
-#
-# Notes:
-# - For python bindings:
-#       we force the usage of Glfw+OpenGL3 (HELLOIMGUI_USE_GLFW_OPENGL3), but you can use SDL via a pure python backend.
-#       glfw will be built from the submodule external/glfw/glfw
-# - Glfw3 may be downloaded automatically if not found as a system library:
-#    set HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED to OFF to disable this behavior
-#    (HELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED is OFF by default under Linux)
-# - SDL2 may be downloaded automatically if not found as a system library:
-#    set HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED to OFF to disable this behavior.
-#    (HELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED is OFF by default under Linux)
-# -----------------------------------------------------------------------------
-_him_check_if_no_backend_selected(no_backend_selected)
-# Select default backend if none selected
-if (no_backend_selected)
-    if (EMSCRIPTEN OR ANDROID OR IOS)
-        set(default_use_glfw_opengl3 OFF)
-        set(default_use_sdl_opengl3 ON)
-    else()
-        set(default_use_glfw_opengl3 ON)
-        set(default_use_sdl_opengl3 OFF)
-    endif()
-    option(HELLOIMGUI_USE_GLFW_OPENGL3 "Use GLFW+OpenGL3 backend" ${default_use_glfw_opengl3})
-    option(HELLOIMGUI_USE_SDL_OPENGL3 "Use SDL+OpenGL3 backend" ${default_use_sdl_opengl3})
-endif()
-
 # For python bindings, we force the usage of Glfw+OpenGL3
 if(IMGUI_BUNDLE_BUILD_PYTHON)
-    set(HELLOIMGUI_USE_GLFW_OPENGL3 ON CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_USE_SDL_OPENGL3 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
+
+    set(HELLOIMGUI_USE_SDL2 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_METAL OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_VULKAN OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_DIRECTX11 OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_HAS_DIRECTX12 OFF CACHE BOOL "" FORCE)
 endif()
 
 # -----------------------------------------------------------------------------
