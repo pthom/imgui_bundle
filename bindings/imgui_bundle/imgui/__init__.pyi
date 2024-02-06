@@ -8139,6 +8139,12 @@ class IO:
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
         pass
+    # IMGUI_API std::string GetIniFilename();    /* original C++ signature */
+    def get_ini_filename(self) -> str:
+        pass
+    # IMGUI_API std::string GetLogFilename();    /* original C++ signature */
+    def get_log_filename(self) -> str:
+        pass
     #                                                #endif
     #
     # [/ADAPT_IMGUI_BUNDLE]
