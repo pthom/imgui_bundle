@@ -190,7 +190,7 @@ option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
 # (the python package will install different elements)
 #------------------------------------------------------------------------------
 if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
-    set(imgui_bundle_install_cpp_default OFF)
+    set(imgui_bundle_install_cpp_default ON)
 else()
     set(imgui_bundle_install_cpp_default OFF)
 endif()
