@@ -4,7 +4,7 @@
 //                       hello_imgui.h                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL)
+#if defined(__ANDROID__) && defined(HELLOIMGUI_USE_SDL2)
 // We need to include SDL, so that it can instantiate its main function under Android
 #include "SDL.h"
 #endif
@@ -17,6 +17,74 @@
 
 namespace HelloImGui
 {
+// @@md#DpiAwareParams
+
+//
+// Hello ImGui will try its best to automatically handle DPI scaling for you.
+// It does this by setting two values:
+//
+// - `dpiWindowSizeFactor`:
+//        factor by which window size should be multiplied
+//
+// - `fontRenderingScale`:
+//     factor by which fonts glyphs should be scaled at rendering time
+//     (typically 1 on windows, and 0.5 on macOS retina screens)
+//
+//    By default, Hello ImGui will compute them automatically,
+//    when dpiWindowSizeFactor and fontRenderingScale are set to 0.
+//
+// How to set those values manually:
+// ---------------------------------
+// If it fails (i.e. your window and/or fonts are too big or too small),
+// you may set them manually:
+//    (1) Either by setting them programmatically in your application
+//        (set their values in `runnerParams.dpiAwareParams`)
+//    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
+//       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+// Note: if several methods are used, the order of priority is (1) > (2)
+//
+// Example content of a ini file:
+// ------------------------------
+//     [DpiAwareParams]
+//     dpiWindowSizeFactor=2
+//     fontRenderingScale=0.5
+//
+struct DpiAwareParams
+{
+    // `dpiWindowSizeFactor`
+    //        factor by which window size should be multiplied to get a similar
+    //        visible size on different OSes.
+    //  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,
+    //  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.
+    //
+    //  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will
+    //  look similar whatever the OS and the screen DPI.
+    //  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window
+    //
+    //  Hello ImGui does its best to compute it on all OSes.
+    //  However, if it fails you may set its value manually.
+    //  If it is set to 0, Hello ImGui will compute it automatically,
+    //  and the resulting value will be stored in `dpiWindowSizeFactor`.
+    float dpiWindowSizeFactor = 0.0f;
+
+    // `fontRenderingScale`
+    //     factor (that is either 1 or < 1.) by which fonts glyphs should be
+    //     scaled at rendering time.
+    //     On macOS retina screens, it will be 0.5, since macOS APIs hide
+    //     the real resolution of the screen.
+    float fontRenderingScale = 0.0f;
+
+    // `dpiFontLoadingFactor`
+    //      factor by which font size should be multiplied at loading time to get a similar
+    //      visible size on different OSes.
+    //      The size will be equivalent to a size given for a 96 PPI screen
+    float DpiFontLoadingFactor() { return dpiWindowSizeFactor / fontRenderingScale;};
+};
+
+// ----------------------------------------------------------------------------
+
+// @@md
+
 /**
 @@md#DocEmToVec2
 
@@ -49,6 +117,11 @@ float EmSize(float nbLines);
 } // namespace HelloImGui
 
 
+// ----------------------------------------------------------------------------
+
+//
+// Legacy API, you should use RunnerParams.dpAwareParams instead
+//
 namespace HelloImGui
 {
 // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
@@ -1689,7 +1762,7 @@ struct EdgeInsets
 // @@md#AppWindowParams
 //
 // AppWindowParams is a struct that defines the application window display params.
-//See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.png
+//See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg
 // for details.
 struct AppWindowParams
 {
@@ -2620,23 +2693,51 @@ struct RendererBackendOptions
 // @@md
 
 }  // namespace HelloImGui
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h continued                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// #define HELLOIMGUI_DISABLE_OBSOLETE_BACKEND
+
 namespace HelloImGui
 {
 
+// --------------------------------------------------------------------------------------------------------------------
+
+// @@md#BackendType
+
+// You can select the platform backend type (SDL, GLFW) and the rendering backend type
+// via RunnerParams.backendType and RunnerParams.renderingBackendType.
+
 // Platform backend type (SDL, GLFW)
-enum class BackendType
+// They are listed in the order of preference when FirstAvailable is selected.
+enum class PlatformBackendType
 {
     FirstAvailable,
-    Sdl,
     Glfw,
+    Sdl,
 };
+
+#ifndef HELLOIMGUI_DISABLE_OBSOLETE_BACKEND
+using BackendType = PlatformBackendType; // for backward compatibility
+#endif
+
+// Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
+// They are listed in the order of preference when FirstAvailable is selected.
+enum class RendererBackendType
+{
+    FirstAvailable,
+    OpenGL3,
+    Metal,
+    Vulkan,
+    DirectX11,
+    DirectX12,
+};
+
+// @@md
+
+// --------------------------------------------------------------------------------------------------------------------
 
 // @@md#IniFolderType
 
@@ -2690,6 +2791,7 @@ std::string IniFolderLocation(IniFolderType iniFolderType);
 
 // @@md
 
+// --------------------------------------------------------------------------------------------------------------------
 
 // @@md#FpsIdling
 
@@ -2708,7 +2810,7 @@ struct FpsIdling
     float fpsIdle = 9.f;
 
     // `enableIdling`: _bool, default=true_.
-    //  Set this to false to disable idling
+    //  Disable idling by setting this to false.
     //  (this can be changed dynamically during execution)
     bool  enableIdling = true;
 
@@ -2723,6 +2825,7 @@ struct FpsIdling
 };
 // @@md
 
+// --------------------------------------------------------------------------------------------------------------------
 
 // @@md#RunnerParams
 
@@ -2769,14 +2872,23 @@ struct RunnerParams
     // These pointers will be filled when the application starts
     BackendPointers backendPointers;
 
-    // `backendType`: _enum BackendType, default=BackendType::FirstAvailable_
-    // Select the wanted platform backend type between `Sdl`, `Glfw`.
-    // Only useful when multiple backend are compiled and available.
-    BackendType backendType = BackendType::FirstAvailable;
-
     // `rendererBackendOptions`: _see renderer_backend_options.h_
     // Options for the renderer backend
     RendererBackendOptions rendererBackendOptions;
+
+    // `backendType`: _enum BackendType, default=PlatformBackendType::FirstAvailable_
+    // Select the wanted platform backend type between `Sdl`, `Glfw`.
+    // if `FirstAvailable`, Glfw will be preferred over Sdl when both are available.
+    // Only useful when multiple backend are compiled and available.
+    // (for compatibility with older versions, you can use BackendType instead of PlatformBackendType)
+    PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable;
+
+    // `renderingBackendType`: _enum RenderingBackendType, default=RenderingBackendType::FirstAvailable_
+    // Select the wanted rendering backend type between `OpenGL3`, `Metal`, `Vulkan`, `DirectX11`, `DirectX12`.
+    // if `FirstAvailable`, it will be selected in the order of preference mentioned above.
+    // Only useful when multiple rendering backend are compiled and available.
+    RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable;
+
 
 
     // --------------- Settings -------------------
@@ -2818,6 +2930,10 @@ struct RunnerParams
     // (set fpsIdling.enableIdling to false to disable Idling)
     FpsIdling fpsIdling;
 
+    // --------------- DPI Handling -----------
+    // Hello ImGui will try its best to automatically handle DPI scaling for you.
+    // If it fails, look at DpiAwareParams (and the corresponding Ini file settings)
+    DpiAwareParams dpiAwareParams;
 
     // --------------- Misc -------------------
 
@@ -2837,6 +2953,11 @@ struct RunnerParams
     // Set the application refresh rate
     // (only used on emscripten: 0 stands for "let the app or the browser decide")
     int emscripten_fps = 0;
+
+    // --------------- Legacy -------------------`
+#ifndef HELLOIMGUI_DISABLE_OBSOLETE_BACKEND
+    PlatformBackendType& backendType = platformBackendType; // a synonym, for backward compatibility
+#endif
 };
 // @@md
 
@@ -2854,6 +2975,7 @@ void DeleteIniSettings(const RunnerParams& runnerParams);
 
 // @@md
 
+// --------------------------------------------------------------------------------------------------------------------
 
 // @@md#SimpleRunnerParams
 
@@ -2899,7 +3021,9 @@ struct SimpleRunnerParams
     float fpsIdle = 9.f;
 
     // `enableIdling`: _bool, default=true_.
-    //  Set this to false to disable idling at startup
+    //  Disable idling at startup by setting this to false
+    //  When running, use:
+    //      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
     bool  enableIdling = true;
 
     RunnerParams ToRunnerParams() const;
@@ -2928,7 +3052,7 @@ namespace HelloImGui
 #include <cstddef>
 #include <cstdint>
 
-#ifdef HELLOIMGUI_USE_SDL
+#ifdef HELLOIMGUI_USE_SDL2
     #ifdef _WIN32
         #ifndef HELLOIMGUI_WIN32_AUTO_WINMAIN
             // Under Windows, we redefine WinMain ourselves
@@ -3013,6 +3137,14 @@ float FrameRate(float durationForMean = 0.5f);
 //  of ImGuiTestEngine that was initialized by HelloImGui
 //  (iif ImGui Test Engine is active).
 ImGuiTestEngine* GetImGuiTestEngine();
+
+// `GetBackendDescription()`: returns a string with the backend info
+// Could be for example:
+//     "Glfw - OpenGL3"
+//     "Glfw - Metal"
+//     "Sdl - Vulkan"
+std::string GetBackendDescription();
+
 // @@md
 
 
