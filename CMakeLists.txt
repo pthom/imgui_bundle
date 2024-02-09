@@ -253,7 +253,7 @@ ibd_reset_installable_dependencies()
 
 # if building the python package, set install folder to anything but /usr/local
 if(SKBUILD)
-    set(CMAKE_INSTALL_PREFIX "_tmp_imgui_bundle_skbuild")
+    set(CMAKE_INSTALL_PREFIX "imgui_bundle/install_overdue")
 endif()
 
 # use ccache if present
