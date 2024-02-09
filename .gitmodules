@@ -26,10 +26,6 @@
 	path = external/imgui_md/imgui_md
 	url = https://github.com/pthom/imgui_md.git
 	branch = imgui_bundle
-[submodule "external/md4c/md4c"]
-	path = external/md4c/md4c
-	url = https://github.com/mity/md4c
-	branch = master
 [submodule "external/imgui_tex_inspect/imgui_tex_inspect"]
 	path = external/imgui_tex_inspect/imgui_tex_inspect
 	url = https://github.com/pthom/imgui_tex_inspect.git
