@@ -2135,14 +2135,12 @@ class RendererBackendOptions:
 #                       hello_imgui/runner_params.h continued                                                  //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# #define HELLOIMGUI_DISABLE_OBSOLETE_BACKEND
-
 # --------------------------------------------------------------------------------------------------------------------
 
-# @@md#BackendType
+# @@md#PlatformBackendType
 
 # You can select the platform backend type (SDL, GLFW) and the rendering backend type
-# via RunnerParams.backendType and RunnerParams.renderingBackendType.
+# via RunnerParams.platformBackendType and RunnerParams.renderingBackendType.
 
 class PlatformBackendType(enum.Enum):
     """Platform backend type (SDL, GLFW)
@@ -2346,11 +2344,10 @@ class RunnerParams:
     renderer_backend_options: RendererBackendOptions
 
     # PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable;    /* original C++ signature */
-    # `backendType`: _enum BackendType, default=PlatformBackendType::FirstAvailable_
+    # `platformBackendType`: _enum PlatformBackendType, default=PlatformBackendType::FirstAvailable_
     # Select the wanted platform backend type between `Sdl`, `Glfw`.
     # if `FirstAvailable`, Glfw will be preferred over Sdl when both are available.
     # Only useful when multiple backend are compiled and available.
-    # (for compatibility with older versions, you can use BackendType instead of PlatformBackendType)
     platform_backend_type: PlatformBackendType = PlatformBackendType.first_available
 
     # RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable;    /* original C++ signature */
@@ -2429,8 +2426,6 @@ class RunnerParams:
     # Set the application refresh rate
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
-
-    # --------------- Legacy -------------------`
     # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
