@@ -4,7 +4,7 @@
 #include "nanovg.h"
 #include "imgui.h"
 
-#ifdef HELLOIMGUI_HAS_OPENGL
+#ifdef HAS_NVG_OPENGL
     #include "hello_imgui/hello_imgui_include_opengl.h"
 
     #ifdef HELLOIMGUI_USE_GLES3
@@ -19,12 +19,13 @@
     #include "nanovg_gl_utils.h"
 #endif
 
-#ifdef HELLOIMGUI_HAS_METAL
-#include "nvg_mtl_hello_imgui.h"
-#include "nanovg_mtl.h"
+#ifdef HAS_NVG_METAL
+    #include "nvg_mtl_hello_imgui.h"
+    #include "nanovg_mtl.h"
 #endif
 
-#ifdef HELLOIMGUI_HAS_OPENGL
+
+#ifdef HAS_NVG_OPENGL
 namespace NvgImgui
 {
     struct NvgFramebuffer::PImpl
@@ -99,10 +100,10 @@ namespace NvgImgui
     #endif
 
 } // namespace NvgImgui
-#endif // #ifdef HELLOIMGUI_HAS_OPENGL
+#endif // #ifdef HAS_NVG_OPENGL
 
 
-#ifdef HELLOIMGUI_HAS_METAL
+#ifdef HAS_NVG_METAL
 namespace NvgImgui
 {
     struct NvgFramebuffer::PImpl
@@ -160,7 +161,7 @@ namespace NvgImgui
     }
 
 } // namespace NvgImgui
-#endif // #ifndef HELLOIMGUI_HAS_METAL
+#endif // #ifndef HAS_NVG_METAL
 
 
 namespace NvgImgui
@@ -179,7 +180,7 @@ namespace NvgImgui
 
     void RenderNvgToBackground(NVGcontext* vg, NvgDrawingFunction nvgDrawingFunction, ImVec4 clearColor)
     {
-#ifdef HELLOIMGUI_HAS_METAL
+#ifdef HAS_NVG_METAL
         printf("RenderNvgToBackground works poorly with Metal backend, use RenderNvgToFrameBuffer instead\n");
         return;
 #endif
@@ -213,7 +214,7 @@ namespace NvgImgui
         float pixelRatio = 1.f;
         nvgBeginFrame(vg, texture.Width, texture.Height, pixelRatio);
 
-#ifdef HELLOIMGUI_HAS_OPENGL
+#ifdef HAS_NVG_OPENGL
         // Flip the y-axis
         nvgSave(vg); // Save the current state
         nvgTranslate(vg, 0, texture.Height); // Move the origin to the bottom-left
@@ -234,10 +235,10 @@ namespace NvgImgui
     // Context creation for HelloImGui
     NVGcontext* CreateNvgContext_HelloImGui(int flags)
     {
-#ifdef HELLOIMGUI_HAS_OPENGL
+#ifdef HAS_NVG_OPENGL
         return CreateNvgContext_GL(flags);
 #endif
-#ifdef HELLOIMGUI_HAS_METAL
+#ifdef HAS_NVG_METAL
         return NvgHelloImGui::CreateNvgContext_Mtl_HelloImGui(flags);
 #endif
         return nullptr;
@@ -245,10 +246,10 @@ namespace NvgImgui
 
     void DeleteNvgContext_HelloImGui(NVGcontext* vg)
     {
-#ifdef HELLOIMGUI_HAS_OPENGL
+#ifdef HAS_NVG_OPENGL
         DeleteNvgContext_GL(vg);
 #endif
-#ifdef HELLOIMGUI_HAS_METAL
+#ifdef HAS_NVG_METAL
         NvgHelloImGui::DeleteNvgContext_Mtl_HelloImGui(vg);
 #endif
     }

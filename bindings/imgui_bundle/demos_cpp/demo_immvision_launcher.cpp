@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
+#include "hello_imgui/hello_imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_utils/api_demos.h"
 
@@ -20,6 +21,12 @@ void demo_immvision_process();
 
 void demo_immvision_launcher()
 {
+    if (HelloImGui::GetRunnerParams()->rendererBackendType != HelloImGui::RendererBackendType::OpenGL3)
+    {
+        ImGui::Text("ImmVision is only supported with OpenGL renderer");
+        return;
+    }
+
     ImGuiMd::RenderUnindented(R"(
         # ImmVision
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger.

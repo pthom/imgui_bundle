@@ -1,5 +1,14 @@
 #pragma once
 #ifdef IMGUI_BUNDLE_WITH_NANOVG
+
+#if defined(HELLOIMGUI_HAS_OPENGL)
+#define HAS_NVG_OPENGL
+#endif
+#if defined(HELLOIMGUI_HAS_METAL) && !defined(HELLOIMGUI_HAS_OPENGL)
+#define HAS_NVG_METAL
+#endif
+
+
 #include "imgui.h"
 #include <functional>
 #include <memory>
@@ -32,7 +41,7 @@ namespace NvgImgui
         NVG_TRIPLE_BUFFER = 1 << 13,
     };
 
-#ifdef HELLOIMGUI_HAS_OPENGL
+#ifdef HAS_NVG_OPENGL
     // Creates a NanoVG context for OpenGL
     // This is just a wrapper that will call either nvgCreateGL3 or nvgCreateGLES3
     NVGcontext* CreateNvgContext_GL(int flags = 0);
@@ -40,7 +49,7 @@ namespace NvgImgui
     // Deletes a NanoVG context (created with CreateNvgContext_GL)
     void DeleteNvgContext_GL(NVGcontext* vg);
 #endif
-#ifdef HELLOIMGUI_HAS_METAL
+#ifdef HAS_NVG_METAL
     // For metal, and if you are not using HelloImGui, you need to include
     // nanovg_mtl.h and use nvgCreateMTL and nvgDeleteMTL
 #endif

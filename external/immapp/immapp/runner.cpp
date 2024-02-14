@@ -82,7 +82,7 @@ namespace ImmApp
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
-        if (addOnsParams.withTexInspect)
+        if (addOnsParams.withTexInspect && runnerParams.rendererBackendType == HelloImGui::RendererBackendType::OpenGL3)
         {
             // Modify post-init: Init ImGuiTexInspect
             {

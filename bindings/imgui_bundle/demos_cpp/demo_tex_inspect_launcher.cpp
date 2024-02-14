@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
 void demo_tex_inspect_simple();
@@ -11,6 +12,12 @@ void demo_tex_inspect_launcher()
     ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuiTexInspect (this requires OpenGl)");
     return;
 #endif
+    if (HelloImGui::GetRunnerParams()->rendererBackendType != HelloImGui::RendererBackendType::OpenGL3)
+    {
+        ImGui::Text("ImGuiTexInspect is only supported with OpenGL renderer");
+        return;
+    }
+
     ImGuiMd::RenderUnindented(R"(
     # imgui_tex_inspect
     [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui
