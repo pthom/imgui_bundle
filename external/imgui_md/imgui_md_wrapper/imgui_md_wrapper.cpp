@@ -6,7 +6,6 @@
 #endif
 
 #include "hello_imgui/hello_imgui.h"
-#include "hello_imgui/internal/image_gl_deprecated.h"
 #include "immapp/snippets.h"
 
 #include "imgui.h"
@@ -207,7 +206,7 @@ assets/
         ImGuiMdFonts::FontCollection mFontCollection;
 
 #ifdef CAN_RENDER_IMAGES
-        mutable std::map<std::string, HelloImGui::ImageGlPtr > mLoadedImages;
+        mutable std::map<std::string, HelloImGui::ImageAndSize > mLoadedImages;
 #endif
     };
 
@@ -226,7 +225,7 @@ assets/
         }
 
 #ifdef CAN_RENDER_IMAGES
-        std::map<std::string, HelloImGui::ImageGlPtr >& ImageCache()
+        std::map<std::string, HelloImGui::ImageAndSize >& ImageCache()
         {
             return mMarkdownCollection.mLoadedImages;
         }
@@ -430,19 +429,19 @@ assets/
         {
             std::string errorImage = "images/markdown_broken_image.png";
             if (HelloImGui::AssetExists(image_path))
-                imageCache[image_path] = HelloImGui::ImageGl::FactorImage(image_path.c_str());
+                imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
             else if (HelloImGui::AssetExists(errorImage))
-                    imageCache[image_path] = HelloImGui::ImageGl::FactorImage(errorImage.c_str());
+                    imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
             else
                 return std::nullopt;
         }
 
-        auto imageGl = imageCache.at(image_path).get();
+        const auto& imageInfo = imageCache.at(image_path);
 
         MarkdownImage r;
 
-        r.texture_id = imageGl->imTextureId;
-        r.size = imageGl->imageSize;
+        r.texture_id = imageInfo.textureId;
+        r.size = imageInfo.size;
         r.uv0 = { 0,0 };
         r.uv1 = {1,1};
         r.col_tint = { 1,1,1,1 };
