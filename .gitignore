@@ -159,7 +159,6 @@ MANIFEST.in
 .vscode/settings.json
 /_icons_test/
 _logos_brainstorm/
-/*.json
 poub/
 /wheelhouse/
 /.idea/

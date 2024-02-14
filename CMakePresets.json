@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default",
+      "description": "Build with default settings (opengl3 and glfw)",
+      "cacheVariables": {
+        "HELLOIMGUI_USE_GLFW3": "ON",
+        "HELLOIMGUI_HAS_OPENGL3": "ON"
+      }
+    },
+    {
+      "name": "default_sdl",
+      "description": "Build with opengl3 and sdl",
+      "cacheVariables": {
+        "HELLOIMGUI_USE_SDL2": "ON",
+        "HELLOIMGUI_HAS_OPENGL3": "ON"
+      }
+    },
+    {
+      "name": "all_cpp_options",
+      "description": "Build with all options, platform and renderer backends, except metal",
+      "cacheVariables": {
+        "IMGUI_BUNDLE_BUILD_DEMOS": "ON",
+        "IMGUI_BUNDLE_BUILD_DOC": "ON",
+        "HELLOIMGUI_BUILD_DOCS": "ON",
+        "HELLOIMGUI_BUILD_DEMOS": "ON",
+        "HELLOIMGUI_BUILD_TESTS": "ON",
+        "IMMVISION_BUILD_ALL_IN_ONE": "ON",
+        "IMMVISION_FETCH_OPENCV": "ON",
+        "IMGUI_BUNDLE_WITH_TEST_ENGINE": "ON",
+        "IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS": "ON",
+        "IMGUI_BUNDLE_BUILD_EXAMPLE_INTEGRATION": "ON",
+        "IMGUI_BUNDLE_BUILD_PYTHON": "OFF",
+        "IMGUI_BUNDLE_INSTALL_CPP": "ON",
+        "HELLOIMGUI_USE_SDL2": "ON",
+        "HELLOIMGUI_USE_GLFW3": "ON",
+        "HELLOIMGUI_HAS_OPENGL3": "ON",
+        "HELLOIMGUI_HAS_METAL": "OFF",
+        "HELLOIMGUI_HAS_VULKAN": "ON",
+        "HELLOIMGUI_HAS_DIRECTX11": "ON",
+        "HELLOIMGUI_HAS_DIRECTX12": "ON"
+      }
+    },
+    {
+      "name": "python_bindings",
+        "description": "Build with python bindings",
+        "cacheVariables": {
+          "IMGUI_BUNDLE_BUILD_PYTHON": "ON"
+        }
+    }
+  ]
+}
