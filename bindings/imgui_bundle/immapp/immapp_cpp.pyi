@@ -193,6 +193,21 @@ def em_to_vec2(v: ImVec2) -> ImVec2:
 def default_node_editor_context() -> NodeEditorContext:
     pass
 
+def default_node_editor_config() -> NodeEditorConfig:
+    pass
+
+def node_editor_settings_location(runner_params: HelloImGui.RunnerParams) -> str:
+    """NodeEditorSettingsLocation returns the path to the json file for the node editor settings."""
+    pass
+
+def has_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> bool:
+    """HasNodeEditorSettings returns True if the json file for the node editor settings exists."""
+    pass
+
+def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
+    """DeleteNodeEditorSettings deletes the json file for the node editor settings."""
+    pass
+
 # #endif
 # }
 

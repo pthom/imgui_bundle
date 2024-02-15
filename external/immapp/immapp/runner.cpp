@@ -19,6 +19,7 @@
 
 #include <chrono>
 #include <cassert>
+#include <filesystem>
 
 
 // Private API used by ImGuiTexInspect (not mentioned in headers!)
@@ -59,7 +60,13 @@ namespace ImmApp
         {
             addOnsParams.withNodeEditor = true;
             if (addOnsParams.withNodeEditorConfig.has_value())
+            {
                 gImmAppContext._NodeEditorConfig = addOnsParams.withNodeEditorConfig.value();
+            }
+            else
+            {
+                gImmAppContext._NodeEditorConfig.SettingsFile = NodeEditorSettingsLocation(runnerParams);
+            }
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
             ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
         }
@@ -256,5 +263,44 @@ namespace ImmApp
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
         return *gImmAppContext._NodeEditorContext;
     }
+
+    ax::NodeEditor::Config* DefaultNodeEditorConfig()
+    {
+        return &gImmAppContext._NodeEditorConfig;
+    }
+
+    // NodeEditorSettingsLocation returns the path to the json file for the node editor settings.
+    std::string NodeEditorSettingsLocation(const HelloImGui::RunnerParams& runnerParams)
+    {
+        std::string iniLocation = HelloImGui::IniSettingsLocation(runnerParams);
+        // iniLocation is of the form path/to/your/app.ini
+        // => we replace it with path/to/your/app_node_editor.json
+        std::string jsonLocation = iniLocation;
+        jsonLocation.replace(jsonLocation.size() - 4, 4, ".node_editor.json");
+        return jsonLocation;
+    }
+
+
+    // HasNodeEditorSettings returns true if the json file for the node editor settings exists.
+    bool HasNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams)
+    {
+        std::string filename = NodeEditorSettingsLocation(runnerParams);
+        if (filename.empty())
+            return false;
+        return std::filesystem::exists(filename);
+    }
+
+    // DeleteNodeEditorSettings deletes the json file for the node editor settings.
+    void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams)
+    {
+        std::string filename = IniSettingsLocation(runnerParams);
+        if (filename.empty())
+            return;
+        if (!std::filesystem::exists(filename))
+            return;
+        bool success = std::filesystem::remove(filename);
+        IM_ASSERT(success && "Failed to delete ini file %s");
+    }
+
 #endif
 } // namespace ImmApp

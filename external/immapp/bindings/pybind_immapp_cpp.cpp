@@ -125,6 +125,24 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("default_node_editor_context",
         ImmApp::DefaultNodeEditorContext);
+
+    m.def("default_node_editor_config",
+        ImmApp::DefaultNodeEditorConfig);
+
+    m.def("node_editor_settings_location",
+        ImmApp::NodeEditorSettingsLocation,
+        py::arg("runner_params"),
+        "NodeEditorSettingsLocation returns the path to the json file for the node editor settings.");
+
+    m.def("has_node_editor_settings",
+        ImmApp::HasNodeEditorSettings,
+        py::arg("runner_params"),
+        "HasNodeEditorSettings returns True if the json file for the node editor settings exists.");
+
+    m.def("delete_node_editor_settings",
+        ImmApp::DeleteNodeEditorSettings,
+        py::arg("runner_params"),
+        "DeleteNodeEditorSettings deletes the json file for the node editor settings.");
     // #endif
     // }
     ////////////////////    </generated_from:runner.h>    ////////////////////

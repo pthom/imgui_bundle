@@ -150,5 +150,16 @@ namespace ImmApp
     /////////////////////////////////////////////////////////////////////////////////////////
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     NodeEditorContext* DefaultNodeEditorContext();
+    NodeEditorConfig* DefaultNodeEditorConfig();
+
+    // NodeEditorSettingsLocation returns the path to the json file for the node editor settings.
+    std::string NodeEditorSettingsLocation(const HelloImGui::RunnerParams& runnerParams);
+
+    // HasNodeEditorSettings returns true if the json file for the node editor settings exists.
+    bool HasNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams);
+
+    // DeleteNodeEditorSettings deletes the json file for the node editor settings.
+    void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams);
+
 #endif
 } // namespace ImmApp
