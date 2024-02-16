@@ -8,8 +8,6 @@ THIS_DIR = os.path.dirname(__file__)
 PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
-CPP_HEADERS_DIR = THIS_DIR + "/../immvision/src_all_in_one/immvision"
-
 
 def main():
     print("autogenerate_immvision")
@@ -23,6 +21,7 @@ def main():
     options.namespaces_root = ["ImmVision"]
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
     options.python_run_black_formatter = True
+    options.fn_exclude_non_api = False
 
     def post_process_stub(code: str):
         r = (
@@ -37,6 +36,7 @@ def main():
             .replace("List[cv.Point]", "List[Point]")
             .replace("List[cv.Point]", "List[Point]")
             .replace("cv.Size", "Size")
+            .replace("cv.Scalar", "Scalar")
             .replace("Point2d = ()", "Point2d = (0, 0)")
             .replace(" = Size()", " = (0, 0)")
         )
@@ -45,7 +45,10 @@ def main():
     options.postprocess_stub_function = post_process_stub
 
     generator = litgen.LitgenGenerator(options)
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/immvision.h")
+    all_in_one_include = THIS_DIR + "/../immvision/src_all_in_one/immvision/immvision.h"
+    generator.process_cpp_file(all_in_one_include)
+    cv_drawing_utils_h = THIS_DIR + "/../immvision/src/immvision/internal/cv/cv_drawing_utils.h"
+    generator.process_cpp_file(cv_drawing_utils_h)
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

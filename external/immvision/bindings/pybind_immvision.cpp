@@ -10,6 +10,7 @@ void py_init_module_immvision(pybind11::module& m)
 #else
 
 #include "immvision/immvision.h"
+#include "immvision/internal/cv/cv_drawing_utils.h"
 #include "opencv2/core/core.hpp"
 #include "cvnp/cvnp.h"
 
@@ -198,7 +199,7 @@ void py_init_module_immvision(py::module& m)
     m.def("image_display",    // immvision.h:297
         ImmVision::ImageDisplay,
         py::arg("label_id"), py::arg("mat"), py::arg("image_display_size") = cv::Size(), py::arg("refresh_image") = false, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
-        " Only, display the image, with no decoration, and no user interaction (by default)\n\n Parameters:\n :param label\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param Mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n");
+        " Only, display the image, with no decoration, and no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n");
 
     m.def("available_colormaps",    // immvision.h:309
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
@@ -224,6 +225,132 @@ void py_init_module_immvision(py::module& m)
     m.def("inspector_clear_images",    // immvision.h:357
         ImmVision::Inspector_ClearImages);
     ////////////////////    </generated_from:immvision.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:cv_drawing_utils.h>    ////////////////////
+
+    { // <namespace CvDrawingUtils>
+        py::module_ pyNsCvDrawingUtils = m.def_submodule("cv_drawing_utils", "namespace CvDrawingUtils");
+        py::enum_<ImmVision::CvDrawingUtils::Colors>(pyNsCvDrawingUtils, "Colors", py::arithmetic(), "")    // cv_drawing_utils.h:9
+            .value("black", ImmVision::CvDrawingUtils::Colors::Black, "")
+            .value("red", ImmVision::CvDrawingUtils::Colors::Red, "")
+            .value("green", ImmVision::CvDrawingUtils::Colors::Green, "")
+            .value("blue", ImmVision::CvDrawingUtils::Colors::Blue, "")
+            .value("white", ImmVision::CvDrawingUtils::Colors::White, "")
+            .value("yellow", ImmVision::CvDrawingUtils::Colors::Yellow, "")
+            .value("cyan", ImmVision::CvDrawingUtils::Colors::Cyan, "")
+            .value("violet", ImmVision::CvDrawingUtils::Colors::Violet, "")
+            .value("orange", ImmVision::CvDrawingUtils::Colors::Orange, "");
+
+
+        pyNsCvDrawingUtils.def("colors_to_scalar",    // cv_drawing_utils.h:22
+            ImmVision::CvDrawingUtils::ColorsToScalar,
+            py::arg("value"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("black",    // cv_drawing_utils.h:24
+            ImmVision::CvDrawingUtils::Black, "(private API)");
+
+        pyNsCvDrawingUtils.def("red",    // cv_drawing_utils.h:27
+            ImmVision::CvDrawingUtils::Red, "(private API)");
+
+        pyNsCvDrawingUtils.def("green",    // cv_drawing_utils.h:30
+            ImmVision::CvDrawingUtils::Green, "(private API)");
+
+        pyNsCvDrawingUtils.def("blue",    // cv_drawing_utils.h:33
+            ImmVision::CvDrawingUtils::Blue, "(private API)");
+
+        pyNsCvDrawingUtils.def("white",    // cv_drawing_utils.h:36
+            ImmVision::CvDrawingUtils::White, "(private API)");
+
+        pyNsCvDrawingUtils.def("yellow",    // cv_drawing_utils.h:39
+            ImmVision::CvDrawingUtils::Yellow, "(private API)");
+
+        pyNsCvDrawingUtils.def("cyan",    // cv_drawing_utils.h:42
+            ImmVision::CvDrawingUtils::Cyan, "(private API)");
+
+        pyNsCvDrawingUtils.def("violet",    // cv_drawing_utils.h:45
+            ImmVision::CvDrawingUtils::Violet, "(private API)");
+
+        pyNsCvDrawingUtils.def("orange",    // cv_drawing_utils.h:48
+            ImmVision::CvDrawingUtils::Orange, "(private API)");
+
+        pyNsCvDrawingUtils.def("line",    // cv_drawing_utils.h:52
+            ImmVision::CvDrawingUtils::line,
+            py::arg("image"), py::arg("a"), py::arg("b"), py::arg("color"), py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("ellipse",    // cv_drawing_utils.h:58
+            ImmVision::CvDrawingUtils::ellipse,
+            py::arg("image"), py::arg("center"), py::arg("size"), py::arg("color"), py::arg("angle") = 0., py::arg("start_angle") = 0., py::arg("end_angle") = 360., py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("circle",    // cv_drawing_utils.h:67
+            ImmVision::CvDrawingUtils::circle,
+            py::arg("image"), py::arg("center"), py::arg("radius"), py::arg("color"), py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("rectangle",    // cv_drawing_utils.h:73
+            ImmVision::CvDrawingUtils::rectangle,
+            py::arg("image"), py::arg("pt1"), py::arg("pt2"), py::arg("color"), py::arg("fill") = false, py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("rectangle_size",    // cv_drawing_utils.h:81
+            ImmVision::CvDrawingUtils::rectangle_size,
+            py::arg("img"), py::arg("pt"), py::arg("size"), py::arg("color"), py::arg("fill") = false, py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("text",    // cv_drawing_utils.h:88
+            ImmVision::CvDrawingUtils::text,
+            py::arg("img"), py::arg("position"), py::arg("msg"), py::arg("color"), py::arg("center_around_point") = false, py::arg("add_cartouche") = false, py::arg("font_scale") = 0.4, py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("cross_hole",    // cv_drawing_utils.h:97
+            ImmVision::CvDrawingUtils::cross_hole,
+            py::arg("img"), py::arg("position"), py::arg("color"), py::arg("size") = 2., py::arg("size_hole") = 2., py::arg("thickness") = 1,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("draw_named_feature",    // cv_drawing_utils.h:104
+            ImmVision::CvDrawingUtils::draw_named_feature,
+            py::arg("img"), py::arg("position"), py::arg("name"), py::arg("color"), py::arg("add_cartouche") = false, py::arg("size") = 3., py::arg("size_hole") = 2., py::arg("thickness") = 1, py::arg("font_scale") = 0.4,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("draw_transparent_pixel",    // cv_drawing_utils.h:114
+            ImmVision::CvDrawingUtils::draw_transparent_pixel,
+            py::arg("img_rgba"), py::arg("position"), py::arg("color"), py::arg("alpha"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("draw_grid",    // cv_drawing_utils.h:121
+            ImmVision::CvDrawingUtils::draw_grid,
+            py::arg("img_rgba"), py::arg("line_color"), py::arg("alpha"), py::arg("x_spacing"), py::arg("y_spacing"), py::arg("x_start"), py::arg("y_start"), py::arg("x_end"), py::arg("y_end"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("stack_images_vertically",    // cv_drawing_utils.h:130
+            ImmVision::CvDrawingUtils::stack_images_vertically,
+            py::arg("img1"), py::arg("img2"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("stack_images_horizontally",    // cv_drawing_utils.h:131
+            ImmVision::CvDrawingUtils::stack_images_horizontally,
+            py::arg("img1"), py::arg("img2"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("make_alpha_channel_checkerboard_image",    // cv_drawing_utils.h:133
+            ImmVision::CvDrawingUtils::make_alpha_channel_checkerboard_image,
+            py::arg("size"), py::arg("square_size") = 30,
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("overlay_alpha_image_precise",    // cv_drawing_utils.h:138
+            ImmVision::CvDrawingUtils::overlay_alpha_image_precise,
+            py::arg("background_rgb_or_rgba"), py::arg("overlay_rgba"), py::arg("alpha"),
+            "(private API)");
+
+        pyNsCvDrawingUtils.def("converted_to_rgba_image",    // cv_drawing_utils.h:141
+            ImmVision::CvDrawingUtils::converted_to_rgba_image,
+            py::arg("input_mat"), py::arg("is_bgr_or_bgra"),
+            "(private API)");
+    } // </namespace CvDrawingUtils>
+    ////////////////////    </generated_from:cv_drawing_utils.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
