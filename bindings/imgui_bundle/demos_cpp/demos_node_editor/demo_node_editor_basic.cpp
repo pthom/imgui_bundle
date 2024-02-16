@@ -218,7 +218,7 @@ int main(int , char *[])
     runnerParams.callbacks.ShowGui = [&] { example.OnFrame(); };
     runnerParams.callbacks.PostInit = [&] { example.OnStart(); };
     runnerParams.callbacks.BeforeExit = [&] { example.OnStop(); };
-    runnerParams.appWindowParams.windowTitle = "imgui node editor";
+    runnerParams.appWindowParams.windowTitle = "demo_node_editor_basic";
     runnerParams.appWindowParams.windowGeometry.size = {1200, 800};
     HelloImGui::Run(runnerParams);
     return 0;
