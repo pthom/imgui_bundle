@@ -26,6 +26,9 @@ def main():
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR"
     options.srcmlcpp_options.ignored_warning_parts += ["unhandled tag endif", "unhandled tag ifdef"]
 
+    options.fn_return_force_policy_reference_for_references__regex = r".*"
+    options.fn_return_force_policy_reference_for_pointers__regex = r".*"
+
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")

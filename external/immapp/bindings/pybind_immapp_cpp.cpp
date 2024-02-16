@@ -124,10 +124,10 @@ void py_init_module_immapp_cpp(py::module& m)
     //
 
     m.def("default_node_editor_context",
-        ImmApp::DefaultNodeEditorContext);
+        ImmApp::DefaultNodeEditorContext, pybind11::return_value_policy::reference);
 
     m.def("default_node_editor_config",
-        ImmApp::DefaultNodeEditorConfig);
+        ImmApp::DefaultNodeEditorConfig, pybind11::return_value_policy::reference);
 
     m.def("node_editor_settings_location",
         ImmApp::NodeEditorSettingsLocation,

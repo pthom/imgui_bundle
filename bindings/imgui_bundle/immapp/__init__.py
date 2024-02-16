@@ -2,7 +2,14 @@
 from imgui_bundle._imgui_bundle import immapp_cpp as immapp_cpp  # type: ignore
 from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     clock_seconds,
+
     default_node_editor_context,
+    default_node_editor_config,
+
+    delete_node_editor_settings,
+    has_node_editor_settings,
+    node_editor_settings_location,
+
     em_size,
     em_to_vec2,
     run,
@@ -27,6 +34,10 @@ from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
 __all__ = [
     "clock_seconds",
     "default_node_editor_context",
+    "default_node_editor_config",
+    "delete_node_editor_settings",
+    "has_node_editor_settings",
+    "node_editor_settings_location",
     "em_size",
     "em_to_vec2",
     "run",
