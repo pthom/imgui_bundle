@@ -257,7 +257,6 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext()
     {
-        printf("Allo???\n");
         if (!gImmAppContext._NodeEditorContext.has_value())
             throw std::runtime_error("No current node editor context\n"
                                      "    Did you set with_node_editor_config when calling ImmApp::Run()?");
