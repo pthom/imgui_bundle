@@ -686,6 +686,10 @@ def push_id(str_id: str) -> _WithPushID:
     return _WithPushID(str_id)
 
 
+def push_obj_id(obj: Any) -> _WithPushID:
+    return _WithPushID(str(id(obj)))
+
+
 class _WithPushFont:
     _enter_callback: _EnterCallback = None
 
