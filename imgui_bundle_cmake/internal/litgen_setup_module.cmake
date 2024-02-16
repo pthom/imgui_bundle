@@ -94,4 +94,24 @@ function(litgen_setup_module
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${python_native_module_name}> ${python_native_module_editable_location}
         DEPENDS ${python_native_module_name}
     )
+
+    # Also copy the python module to the site-packages folder (for editable mode)
+    # Ask python for site-packages folder
+    execute_process(
+        COMMAND "${Python_EXECUTABLE}" -c "import site; print(site.getsitepackages()[0])"
+        OUTPUT_VARIABLE python_site_packages
+        OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT
+        RESULT_VARIABLE _result_python_site_packages
+    )
+    if(NOT _result_python_site_packages EQUAL 0)
+        message(FATAL_ERROR "Failed to get python site-packages folder")
+    endif()
+    set(python_native_module_editable_location_site_packages ${python_site_packages}/${python_module_name}/$<TARGET_FILE_NAME:${python_native_module_name}>)
+    add_custom_target(
+        ${python_module_name}_deploy_editable_site_packages
+        ALL
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${python_native_module_name}> ${python_native_module_editable_location_site_packages}
+        DEPENDS ${python_native_module_name})
+    # message(STATUS "Python native module will be copied to ${python_native_module_editable_location_site_packages}")
+
 endfunction()
