@@ -6005,6 +6005,29 @@ def dock_builder_set_node_pos(node_id: ID, pos: ImVec2) -> None:
 def dock_builder_set_node_size(node_id: ID, size: ImVec2) -> None:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+class DockBuilderSplitNodeResult:
+    # ImGuiID id_at_dir;    /* original C++ signature */
+    id_at_dir: ID
+    # ImGuiID id_at_opposite_dir;    /* original C++ signature */
+    id_at_opposite_dir: ID
+    # DockBuilderSplitNodeResult(ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID());    /* original C++ signature */
+    def __init__(self, id_at_dir: ID = ID(), id_at_opposite_dir: ID = ID()) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# IMGUI_API DockBuilderSplitNodeResult DockBuilderSplitNode(    /* original C++ signature */
+#         ImGuiID node_id,
+#         ImGuiDir split_dir,
+#         float size_ratio_for_node_at_dir);
+def dock_builder_split_node(
+    node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: float
+) -> DockBuilderSplitNodeResult:
+    pass
+
+# #endif
+#
 # IMGUI_API void          DockBuilderCopyNode(ImGuiID src_node_id, ImGuiID dst_node_id, ImVector<ImGuiID>* out_node_remap_pairs);    /* original C++ signature */
 def dock_builder_copy_node(src_node_id: ID, dst_node_id: ID, out_node_remap_pairs: ImVector_ID) -> None:
     pass

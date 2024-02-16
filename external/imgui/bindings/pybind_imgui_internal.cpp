@@ -3543,6 +3543,41 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("dock_builder_set_node_size",
         ImGui::DockBuilderSetNodeSize, py::arg("node_id"), py::arg("size"));
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+
+    auto pyClassDockBuilderSplitNodeResult =
+        py::class_<ImGui::DockBuilderSplitNodeResult>
+            (m, "DockBuilderSplitNodeResult", "")
+        .def(py::init<>([](
+        ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID())
+        {
+            auto r = std::make_unique<ImGui::DockBuilderSplitNodeResult>();
+            r->id_at_dir = id_at_dir;
+            r->id_at_opposite_dir = id_at_opposite_dir;
+            return r;
+        })
+        , py::arg("id_at_dir") = ImGuiID(), py::arg("id_at_opposite_dir") = ImGuiID()
+        )
+        .def_readwrite("id_at_dir", &ImGui::DockBuilderSplitNodeResult::id_at_dir, "")
+        .def_readwrite("id_at_opposite_dir", &ImGui::DockBuilderSplitNodeResult::id_at_opposite_dir, "")
+        ;
+
+
+    m.def("dock_builder_split_node",
+        [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
+        {
+            auto DockBuilderSplitNode_adapt_force_lambda = [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
+            {
+                auto lambda_result = ImGui::DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir);
+                return lambda_result;
+            };
+
+            return DockBuilderSplitNode_adapt_force_lambda(node_id, split_dir, size_ratio_for_node_at_dir);
+        },     py::arg("node_id"), py::arg("split_dir"), py::arg("size_ratio_for_node_at_dir"));
+    // #endif
+    //
 
     m.def("dock_builder_copy_node",
         ImGui::DockBuilderCopyNode, py::arg("src_node_id"), py::arg("dst_node_id"), py::arg("out_node_remap_pairs"));
@@ -4319,7 +4354,16 @@ void py_init_module_imgui_internal(py::module& m)
 
     ////////////////////    <generated_from:imgui_internal_pywrappers.h>    ////////////////////
     m.def("dock_builder_split_node_py",
-        ImGui::DockBuilderSplitNode_Py,
+        [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> std::tuple<ImGuiID, ImGuiID, ImGuiID>
+        {
+            auto DockBuilderSplitNode_Py_adapt_force_lambda = [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> std::tuple<ImGuiID, ImGuiID, ImGuiID>
+            {
+                auto lambda_result = ImGui::DockBuilderSplitNode_Py(node_id, split_dir, size_ratio_for_node_at_dir);
+                return lambda_result;
+            };
+
+            return DockBuilderSplitNode_Py_adapt_force_lambda(node_id, split_dir, size_ratio_for_node_at_dir);
+        },
         py::arg("node_id"), py::arg("split_dir"), py::arg("size_ratio_for_node_at_dir"),
         " DockBuilderSplitNode_Py() create 2 child nodes within 1 node. The initial node becomes a parent node.\n This version is an adaptation for the python bindings (the C++ version uses two output parameters for the ID of the child nodes, this version returns a tuple)");
     ////////////////////    </generated_from:imgui_internal_pywrappers.h>    ////////////////////

@@ -312,7 +312,6 @@ def litgen_options_imgui(
             r"SetDragDropPayload^$",
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
-            r"^DockBuilderSplitNode$",
             r"^GetKeyChordName$",
         ]
     )
@@ -383,7 +382,7 @@ def litgen_options_imgui(
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$"]
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
