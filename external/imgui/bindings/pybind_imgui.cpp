@@ -2019,9 +2019,14 @@ void py_init_module_imgui_main(py::module& m)
             };
 
             return BeginTabItem_adapt_modifiable_immutable_to_return(label, p_open, flags);
-        },
-        py::arg("label"), py::arg("p_open") = py::none(), py::arg("flags") = 0,
-        "create a Tab. Returns True if the Tab is selected.");
+        },     py::arg("label"), py::arg("p_open") = py::none(), py::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("begin_tab_item_simple",
+        ImGui::BeginTabItemSimple, py::arg("label"), py::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("end_tab_item",
         ImGui::EndTabItem, "only call EndTabItem() if BeginTabItem() returns True!");

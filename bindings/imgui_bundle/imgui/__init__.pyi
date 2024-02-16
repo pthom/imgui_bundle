@@ -2256,9 +2256,18 @@ def end_tab_bar() -> None:
 
 # IMGUI_API bool          BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0) -> Tuple[bool, Optional[bool]]:
-    """create a Tab. Returns True if the Tab is selected."""
     pass
 
+# create a Tab. Returns True if the Tab is selected.
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API bool          BeginTabItemSimple(const char* label, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
+def begin_tab_item_simple(label: str, flags: TabItemFlags = 0) -> bool:
+    pass
+
+# create a Tab (non-closable). Returns True if the Tab is selected.
+# #endif
+#
 # IMGUI_API void          EndTabItem();                                                           /* original C++ signature */
 def end_tab_item() -> None:
     """only call EndTabItem() if BeginTabItem() returns True!"""
