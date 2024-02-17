@@ -3,27 +3,17 @@
 
 The bindings are generated automatically thanks to a sophisticated generator, which is based on link:https://www.srcml.org[srcML].
 
-The generator in itself is located in link:https://github.com/pthom/litgen/tree/main/src/litgen[the litgen module] provided by link:https://github.com/pthom/litgen[litgen].
+The generator in provided by in link:https://pthom.github.io/litgen/litgen_book/00_00_intro.html[litgen] an automatic python bindings generator, developed by the same author as Dear ImGui Bundle.
 
 ==== Installing the generator
 
-
-You will need to install the following python packages (see requirements-dev.txt):
-
-----
-black
-litgen @ git+https://github.com/pthom/litgen
-mypy
-opencv-contrib-python
-pybind11
-pytest
-----
+See the link:https://pthom.github.io/litgen/litgen_book/01_05_00_install_or_online.html#install-litgen-locally[installation instructions] (do a local installation).
 
 ==== Quick information about the generator
 
 `litgen` (aka "Literate Generator") is the package that will generate the python bindings.
 
-Its source code is available link:https://github.com/pthom/litgen/tree/main/src/litgen[here].
+Its source code is available link:https://github.com/pthom/litgen[here].
 
 It is heavily configurable by link:https://github.com/pthom/litgen/blob/main/src/litgen/options.py[a wide range of options].
 

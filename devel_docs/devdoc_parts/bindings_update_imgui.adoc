@@ -3,9 +3,9 @@
 
 ==== Intro: submodules maintenance
 
-link:../../external/bindings_generation[external/bindings_generation] contains some scripts for  the submodules maintenance.
+link:https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation[external/bindings_generation] contains some scripts for  the submodules maintenance.
 
-See this extract of link:../../external/bindings_generation/all_external_libraries.py[external/bindings_generation/all_external_libraries.py], which shows that imgui and imgui_test_engine are using forks.
+See this extract of link:https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/all_external_libraries.py[external/bindings_generation/all_external_libraries.py], which shows that imgui and imgui_test_engine are using forks.
 
 These forks include small modifications added for compatibility with imgui_bundle (most modifications are small changes to accommodate with python bindings).
 
@@ -37,7 +37,7 @@ By default, all submodules, are in mode "detached head". We need to attach them 
 
 We can use the utilities from external/bindings_generation:
 
-For example, link:../../external/bindings_generation/sandbox.py[external/bindings_generation/sandbox.py] contains this:
+For example, link:https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/sandbox.py[external/bindings_generation/sandbox.py] contains this:
 
 [source, python]
 ----
@@ -91,7 +91,7 @@ cd -
 
 **Run generate_imgui**
 
-We will run link:../../external/imgui/bindings/generate_imgui.py[external/imgui/bindings/generate_imgui.py].
+We will run link:https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py[external/imgui/bindings/generate_imgui.py].
 
 It will generate the python bindings for imgui, imgui_internal and imgui_test_engine.
 

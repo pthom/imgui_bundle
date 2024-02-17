@@ -552,22 +552,12 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <p>The bindings are generated automatically thanks to a sophisticated generator, which is based on <a href="https://www.srcml.org">srcML</a>.</p>
 </div>
 <div class="paragraph">
-<p>The generator in itself is located in <a href="https://github.com/pthom/litgen/tree/main/src/litgen">the litgen module</a> provided by <a href="https://github.com/pthom/litgen">litgen</a>.</p>
+<p>The generator in provided by in <a href="https://pthom.github.io/litgen/litgen_book/00_00_intro.html">litgen</a> an automatic python bindings generator, developed by the same author as Dear ImGui Bundle.</p>
 </div>
 <div class="sect3">
 <h4 id="_installing_the_generator">Installing the generator</h4>
 <div class="paragraph">
-<p>You will need to install the following python packages (see requirements-dev.txt):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>black
-litgen @ git+https://github.com/pthom/litgen
-mypy
-opencv-contrib-python
-pybind11
-pytest</pre>
-</div>
+<p>See the <a href="https://pthom.github.io/litgen/litgen_book/01_05_00_install_or_online.html#install-litgen-locally">installation instructions</a> (do a local installation).</p>
 </div>
 </div>
 <div class="sect3">
@@ -576,7 +566,7 @@ pytest</pre>
 <p><code>litgen</code> (aka "Literate Generator") is the package that will generate the python bindings.</p>
 </div>
 <div class="paragraph">
-<p>Its source code is available <a href="https://github.com/pthom/litgen/tree/main/src/litgen">here</a>.</p>
+<p>Its source code is available <a href="https://github.com/pthom/litgen">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>It is heavily configurable by <a href="https://github.com/pthom/litgen/blob/main/src/litgen/options.py">a wide range of options</a>.</p>
@@ -1011,10 +1001,10 @@ This <a href="https://youtu.be/QeBCxU7tn68">video</a> demonstrates from starts t
 <div class="sect3">
 <h4 id="_intro_submodules_maintenance">Intro: submodules maintenance</h4>
 <div class="paragraph">
-<p><a href="../../external/bindings_generation">external/bindings_generation</a> contains some scripts for  the submodules maintenance.</p>
+<p><a href="https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation">external/bindings_generation</a> contains some scripts for  the submodules maintenance.</p>
 </div>
 <div class="paragraph">
-<p>See this extract of <a href="../../external/bindings_generation/all_external_libraries.py">external/bindings_generation/all_external_libraries.py</a>, which shows that imgui and imgui_test_engine are using forks.</p>
+<p>See this extract of <a href="https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/all_external_libraries.py">external/bindings_generation/all_external_libraries.py</a>, which shows that imgui and imgui_test_engine are using forks.</p>
 </div>
 <div class="paragraph">
 <p>These forks include small modifications added for compatibility with imgui_bundle (most modifications are small changes to accommodate with python bindings).</p>
@@ -1052,7 +1042,7 @@ This <a href="https://youtu.be/QeBCxU7tn68">video</a> demonstrates from starts t
 <p>We can use the utilities from external/bindings_generation:</p>
 </div>
 <div class="paragraph">
-<p>For example, <a href="../../external/bindings_generation/sandbox.py">external/bindings_generation/sandbox.py</a> contains this:</p>
+<p>For example, <a href="https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/sandbox.py">external/bindings_generation/sandbox.py</a> contains this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1113,7 +1103,7 @@ git<span class="tok-w"> </span>rebase<span class="tok-w"> </span>official/main
 <p><strong>Run generate_imgui</strong></p>
 </div>
 <div class="paragraph">
-<p>We will run <a href="../../external/imgui/bindings/generate_imgui.py">external/imgui/bindings/generate_imgui.py</a>.</p>
+<p>We will run <a href="https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py">external/imgui/bindings/generate_imgui.py</a>.</p>
 </div>
 <div class="paragraph">
 <p>It will generate the python bindings for imgui, imgui_internal and imgui_test_engine.</p>
