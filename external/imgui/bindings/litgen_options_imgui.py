@@ -266,9 +266,14 @@ def litgen_options_imgui(
     options.srcmlcpp_options.header_filter_acceptable__regex += (
         "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
     )
-    options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$"
-    )
+
+    # (davidlatwe):
+    #   We are building for original imgui, don't need these at the moment.
+    #
+    # options.srcmlcpp_options.header_filter_acceptable__regex += (
+    #     "|^IMGUI_BUNDLE_PYTHON_API$"
+    # )
+
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
 
