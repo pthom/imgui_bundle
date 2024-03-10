@@ -80,6 +80,10 @@ Function_TestGui = Callable[[imgui.test_engine.TestContext], None]
 # This is the interface that your initial setup (app init, main loop) will mostly be using.
 # Actual tests will mostly use the interface of imgui_te_context.h
 
+# -----------------------------------------------------------------------------
+# Function Pointers
+# -----------------------------------------------------------------------------
+
 # -------------------------------------------------------------------------
 # Forward Declarations
 # -------------------------------------------------------------------------
@@ -524,16 +528,16 @@ class TestEngineIO:
 class TestItemInfo:
     """Information about a given item or window, result of an ItemInfo() or WindowInfo() query"""
 
+    # ImGuiID                     ID = 0;    /* original C++ signature */
+    id_: ID = 0  # Item ID
+    # ImGuiWindow*                Window = NULL;    /* original C++ signature */
+    window: Window = None  # Item Window
     # int                         TimestampMain = -1;    /* original C++ signature */
     timestamp_main: int = -1  # Timestamp of main result (all fields)
     # int                         TimestampStatus = -1;    /* original C++ signature */
     timestamp_status: int = -1  # Timestamp of StatusFlags
-    # ImGuiID                     ID = 0;    /* original C++ signature */
-    id_: ID = 0  # Item ID
     # ImGuiID                     ParentID = 0;    /* original C++ signature */
     parent_id: ID = 0  # Item Parent ID (value at top of the ID stack)
-    # ImGuiWindow*                Window = NULL;    /* original C++ signature */
-    window: Window = None  # Item Window
     # ImRect                      RectFull = ImRect();    /* original C++ signature */
     rect_full: ImRect = ImRect()  # Item Rectangle
     # ImRect                      RectClipped = ImRect();    /* original C++ signature */
@@ -864,7 +868,9 @@ class TestAction(enum.Enum):
     count = enum.auto()  # (= 10)
 
 class TestOpFlags_(enum.Enum):
-    """Generic flags for many ImGuiTestContext functions"""
+    """Generic flags for many ImGuiTestContext functions
+    Some flags are only supported by a handful of functions. Check function headers for list of supported flags.
+    """
 
     # ImGuiTestOpFlags_None               = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -886,19 +892,23 @@ class TestOpFlags_(enum.Enum):
     no_auto_open_full_path = (
         enum.auto()
     )  # (= 1 << 5)  # Disable automatically opening intermediaries (e.g. ItemClick("Hello/OK") will automatically first open "Hello" if "OK" isn't found. Only works if ref is a string path.
-    # ImGuiTestOpFlags_IsSecondAttempt    = 1 << 6,       /* original C++ signature */
-    is_second_attempt = enum.auto()  # (= 1 << 6)  # Used by recursing functions to indicate a second attempt
-    # ImGuiTestOpFlags_MoveToEdgeL        = 1 << 7,       /* original C++ signature */
+    # ImGuiTestOpFlags_NoYield            = 1 << 6,       /* original C++ signature */
+    no_yield = (
+        enum.auto()
+    )  # (= 1 << 6)  # Don't yield (only supported by a few functions), in case you need to manage rigorous per-frame timing.
+    # ImGuiTestOpFlags_IsSecondAttempt    = 1 << 7,       /* original C++ signature */
+    is_second_attempt = enum.auto()  # (= 1 << 7)  # Used by recursing functions to indicate a second attempt
+    # ImGuiTestOpFlags_MoveToEdgeL        = 1 << 8,       /* original C++ signature */
     move_to_edge_l = (
         enum.auto()
-    )  # (= 1 << 7)  # Simple Dumb aiming helpers to test widget that care about clicking position. May need to replace will better functionalities.
-    # ImGuiTestOpFlags_MoveToEdgeR        = 1 << 8,    /* original C++ signature */
-    move_to_edge_r = enum.auto()  # (= 1 << 8)
-    # ImGuiTestOpFlags_MoveToEdgeU        = 1 << 9,    /* original C++ signature */
-    move_to_edge_u = enum.auto()  # (= 1 << 9)
-    # ImGuiTestOpFlags_MoveToEdgeD        = 1 << 10,    /* original C++ signature */
+    )  # (= 1 << 8)  # Simple Dumb aiming helpers to test widget that care about clicking position. May need to replace will better functionalities.
+    # ImGuiTestOpFlags_MoveToEdgeR        = 1 << 9,    /* original C++ signature */
+    move_to_edge_r = enum.auto()  # (= 1 << 9)
+    # ImGuiTestOpFlags_MoveToEdgeU        = 1 << 10,    /* original C++ signature */
+    move_to_edge_u = enum.auto()  # (= 1 << 10)
+    # ImGuiTestOpFlags_MoveToEdgeD        = 1 << 11,    /* original C++ signature */
     # }
-    move_to_edge_d = enum.auto()  # (= 1 << 10)
+    move_to_edge_d = enum.auto()  # (= 1 << 11)
 
 class TestActionFilter:
     """Advanced filtering for ItemActionAll()"""
@@ -977,6 +987,8 @@ class TestGenericVars:
     count: int
     # ImGuiID                 DockId;    /* original C++ signature */
     dock_id: ID
+    # ImGuiID                 OwnerId;    /* original C++ signature */
+    owner_id: ID
     # ImGuiWindowFlags        WindowFlags;    /* original C++ signature */
     window_flags: WindowFlags
     # ImGuiTableFlags         TableFlags;    /* original C++ signature */
@@ -1434,8 +1446,8 @@ class TestContext:
     def mouse_move_to_pos(self, pos: ImVec2) -> None:
         """(private API)"""
         pass
-    # void        MouseTeleportToPos(ImVec2 pos);    /* original C++ signature */
-    def mouse_teleport_to_pos(self, pos: ImVec2) -> None:
+    # void        MouseTeleportToPos(ImVec2 pos, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    def mouse_teleport_to_pos(self, pos: ImVec2, flags: TestOpFlags = TestOpFlags_None) -> None:
         """(private API)"""
         pass
     # void        MouseClick(ImGuiMouseButton button = 0);    /* original C++ signature */

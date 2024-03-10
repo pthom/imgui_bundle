@@ -45,7 +45,7 @@ from .internal import (
     OldColumns,
     StyleMod,
     WindowStackData,
-    FocusScopeData
+    FocusScopeData,
 )
 
 VoidPtr = Any

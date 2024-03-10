@@ -317,11 +317,11 @@ void py_init_module_imgui_test_engine(py::module& m)
     auto pyClassImGuiTestItemInfo =
         py::class_<ImGuiTestItemInfo>
             (m, "TestItemInfo", "Information about a given item or window, result of an ItemInfo() or WindowInfo() query")
+        .def_readwrite("id_", &ImGuiTestItemInfo::ID, "Item ID")
+        .def_readwrite("window", &ImGuiTestItemInfo::Window, "Item Window")
         .def_readwrite("timestamp_main", &ImGuiTestItemInfo::TimestampMain, "Timestamp of main result (all fields)")
         .def_readwrite("timestamp_status", &ImGuiTestItemInfo::TimestampStatus, "Timestamp of StatusFlags")
-        .def_readwrite("id_", &ImGuiTestItemInfo::ID, "Item ID")
         .def_readwrite("parent_id", &ImGuiTestItemInfo::ParentID, "Item Parent ID (value at top of the ID stack)")
-        .def_readwrite("window", &ImGuiTestItemInfo::Window, "Item Window")
         .def_readwrite("rect_full", &ImGuiTestItemInfo::RectFull, "Item Rectangle")
         .def_readwrite("rect_clipped", &ImGuiTestItemInfo::RectClipped, "Item Rectangle (clipped with window->ClipRect at time of item submission)")
         .def_readwrite("in_flags", &ImGuiTestItemInfo::InFlags, "Item flags")
@@ -514,13 +514,14 @@ void py_init_module_imgui_test_engine(py::module& m)
         .value("count", ImGuiTestAction_COUNT, "");
 
 
-    py::enum_<ImGuiTestOpFlags_>(m, "TestOpFlags_", py::arithmetic(), "Generic flags for many ImGuiTestContext functions")
+    py::enum_<ImGuiTestOpFlags_>(m, "TestOpFlags_", py::arithmetic(), " Generic flags for many ImGuiTestContext functions\n Some flags are only supported by a handful of functions. Check function headers for list of supported flags.")
         .value("none", ImGuiTestOpFlags_None, "")
         .value("no_check_hovered_id", ImGuiTestOpFlags_NoCheckHoveredId, "Don't check for HoveredId after aiming for a widget. A few situations may want this: while e.g. dragging or another items prevents hovering, or for items that don't use ItemHoverable()")
         .value("no_error", ImGuiTestOpFlags_NoError, "Don't abort/error e.g. if the item cannot be found or the operation doesn't succeed.")
         .value("no_focus_window", ImGuiTestOpFlags_NoFocusWindow, "Don't focus window when aiming at an item")
         .value("no_auto_uncollapse", ImGuiTestOpFlags_NoAutoUncollapse, "Disable automatically uncollapsing windows (useful when specifically testing Collapsing behaviors)")
         .value("no_auto_open_full_path", ImGuiTestOpFlags_NoAutoOpenFullPath, "Disable automatically opening intermediaries (e.g. ItemClick(\"Hello/OK\") will automatically first open \"Hello\" if \"OK\" isn't found. Only works if ref is a string path.")
+        .value("no_yield", ImGuiTestOpFlags_NoYield, "Don't yield (only supported by a few functions), in case you need to manage rigorous per-frame timing.")
         .value("is_second_attempt", ImGuiTestOpFlags_IsSecondAttempt, "Used by recursing functions to indicate a second attempt")
         .value("move_to_edge_l", ImGuiTestOpFlags_MoveToEdgeL, "Simple Dumb aiming helpers to test widget that care about clicking position. May need to replace will better functionalities.")
         .value("move_to_edge_r", ImGuiTestOpFlags_MoveToEdgeR, "")
@@ -573,6 +574,7 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("step", &ImGuiTestGenericVars::Step, "")
         .def_readwrite("count", &ImGuiTestGenericVars::Count, "")
         .def_readwrite("dock_id", &ImGuiTestGenericVars::DockId, "")
+        .def_readwrite("owner_id", &ImGuiTestGenericVars::OwnerId, "")
         .def_readwrite("window_flags", &ImGuiTestGenericVars::WindowFlags, "")
         .def_readwrite("table_flags", &ImGuiTestGenericVars::TableFlags, "")
         .def_readwrite("popup_flags", &ImGuiTestGenericVars::PopupFlags, "")
@@ -922,7 +924,7 @@ void py_init_module_imgui_test_engine(py::module& m)
             "(private API)")
         .def("mouse_teleport_to_pos",
             &ImGuiTestContext::MouseTeleportToPos,
-            py::arg("pos"),
+            py::arg("pos"), py::arg("flags") = ImGuiTestOpFlags_None,
             "(private API)")
         .def("mouse_click",
             &ImGuiTestContext::MouseClick,
