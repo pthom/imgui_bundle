@@ -92,7 +92,7 @@ namespace ImmApp
         {
             // Modify post-init: Init ImGuiTexInspect
             {
-                auto fn_ImGuiTextInspect_Init = [&runnerParams](){
+                auto fn_ImGuiTextInspect_Init = [&runnerParams, &addOnsParams](){
                     if (runnerParams.rendererBackendType == HelloImGui::RendererBackendType::OpenGL3)
                     {
                         ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
@@ -101,7 +101,8 @@ namespace ImmApp
                     }
                     else
                     {
-                        IM_ASSERT(false && "ImGuiTexInspect is only supported with OpenGL renderer");
+                        addOnsParams.withTexInspect = false;
+                        fprintf(stderr, "ImGuiTexInspect is only supported with OpenGL renderer!");
                     }
                 };
                 runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
@@ -112,10 +113,13 @@ namespace ImmApp
 
             // Modify before-exit: DeInit ImGuiTexInspect
             {
-                auto fn_ImGuiTextInspect_DeInit = [](){
-                    ImGuiTexInspect::Shutdown();
-                    ImGuiTexInspect::DestroyContext(gImmAppContext._ImGuiTextInspect_Context);
-                    ImGuiTexInspect::ImplOpenGl3_Shutdown();
+                auto fn_ImGuiTextInspect_DeInit = [&addOnsParams](){
+                    if (addOnsParams.withTexInspect)
+                    {
+                        ImGuiTexInspect::Shutdown();
+                        ImGuiTexInspect::DestroyContext(gImmAppContext._ImGuiTextInspect_Context);
+                        ImGuiTexInspect::ImplOpenGl3_Shutdown();
+                    }
                 };
                 runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_DeInit,
