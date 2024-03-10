@@ -87,6 +87,7 @@ KeyRoutingIndex = int
 # // [SECTION] Forward declarations
 # // [SECTION] Context pointer
 # // [SECTION] STB libraries includes
+# // [SECTION] Stack Layout includes
 # // [SECTION] Macros
 # // [SECTION] Generic helpers
 # // [SECTION] ImDrawList support
@@ -172,6 +173,10 @@ KeyRoutingIndex = int
 # -------------------------------------------------------------------------
 
 # namespace ImStb
+
+# -------------------------------------------------------------------------
+# [SECTION] Stack Layout includes
+# -------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
 # [SECTION] Macros

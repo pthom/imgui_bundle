@@ -3012,6 +3012,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
         .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
         .value("docking_separator_size", ImGuiStyleVar_DockingSeparatorSize, "float     DockingSeparatorSize")
+        .value("layout_align", ImGuiStyleVar_LayoutAlign, "float     LayoutAlign")
         .value("count", ImGuiStyleVar_COUNT, "");
 
 
@@ -5020,6 +5021,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("scrollbar_rounding", &ImGuiStyle::ScrollbarRounding, "Radius of grab corners for scrollbar.")
         .def_readwrite("grab_min_size", &ImGuiStyle::GrabMinSize, "Minimum width/height of a grab box for slider/scrollbar.")
         .def_readwrite("grab_rounding", &ImGuiStyle::GrabRounding, "Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.")
+        .def_readwrite("layout_align", &ImGuiStyle::LayoutAlign, "Element alignment inside horizontal and vertical layouts (0.0 - left/top, 1.0 - right/bottom, 0.5 - center).")
         .def_readwrite("log_slider_deadzone", &ImGuiStyle::LogSliderDeadzone, "The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.")
         .def_readwrite("tab_rounding", &ImGuiStyle::TabRounding, "Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.")
         .def_readwrite("tab_border_size", &ImGuiStyle::TabBorderSize, "Thickness of border around tabs.")
@@ -6352,6 +6354,54 @@ void py_init_module_imgui_main(py::module& m)
     //
     // #endif
     ////////////////////    </generated_from:imgui.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imgui_stacklayout.h>    ////////////////////
+    // #ifndef IMGUI_DISABLE
+    //
+
+
+    m.def("begin_horizontal",
+        py::overload_cast<const char *, const ImVec2 &, float>(ImGui::BeginHorizontal), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1.0f);
+
+    m.def("begin_horizontal",
+        py::overload_cast<const void *, const ImVec2 &, float>(ImGui::BeginHorizontal), py::arg("ptr_id"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1.0f);
+
+    m.def("begin_horizontal",
+        py::overload_cast<int, const ImVec2 &, float>(ImGui::BeginHorizontal), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1);
+
+    m.def("end_horizontal",
+        ImGui::EndHorizontal);
+
+    m.def("begin_vertical",
+        py::overload_cast<const char *, const ImVec2 &, float>(ImGui::BeginVertical), py::arg("str_id"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1.0f);
+
+    m.def("begin_vertical",
+        py::overload_cast<const void *, const ImVec2 &, float>(ImGui::BeginVertical), py::arg("ptr_id"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1.0f);
+
+    m.def("begin_vertical",
+        py::overload_cast<int, const ImVec2 &, float>(ImGui::BeginVertical), py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("align") = -1);
+
+    m.def("end_vertical",
+        ImGui::EndVertical);
+
+    m.def("spring",
+        ImGui::Spring, py::arg("weight") = 1.0f, py::arg("spacing") = -1.0f);
+
+    m.def("suspend_layout",
+        ImGui::SuspendLayout);
+
+    m.def("resume_layout",
+        ImGui::ResumeLayout);
+    // #endif
+    ////////////////////    </generated_from:imgui_stacklayout.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imgui_stacklayout_internal.h>    ////////////////////
+    // #ifndef IMGUI_DISABLE
+    //
+    // #endif
+    ////////////////////    </generated_from:imgui_stacklayout_internal.h>    ////////////////////
 
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////

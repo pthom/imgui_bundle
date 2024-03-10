@@ -4222,9 +4222,11 @@ class StyleVar_(enum.Enum):
     separator_text_padding = enum.auto()  # (= 28)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,    /* original C++ signature */
     docking_separator_size = enum.auto()  # (= 29)  # float     DockingSeparatorSize
+    # ImGuiStyleVar_LayoutAlign,             /* original C++ signature */
+    layout_align = enum.auto()  # (= 30)  # float     LayoutAlign
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 30)
+    count = enum.auto()  # (= 31)
 
 class ButtonFlags_(enum.Enum):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
@@ -7723,6 +7725,8 @@ class Style:
     grab_min_size: float  # Minimum width/height of a grab box for slider/scrollbar.
     # float       GrabRounding;    /* original C++ signature */
     grab_rounding: float  # Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.
+    # float       LayoutAlign;    /* original C++ signature */
+    layout_align: float  # Element alignment inside horizontal and vertical layouts (0.0 - left/top, 1.0 - right/bottom, 0.5 - center).
     # float       LogSliderDeadzone;    /* original C++ signature */
     log_slider_deadzone: (
         float  # The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
@@ -10229,6 +10233,102 @@ class PlatformImeData:
 
 # #endif
 ####################    </generated_from:imgui.h>    ####################
+
+####################    <generated_from:imgui_stacklayout.h>    ####################
+# dear imgui, v1.86 WIP
+# (stack layout headers)
+
+#
+#
+# Index of this file:
+# // [SECTION] Stack Layout API
+#
+#
+
+# #ifndef IMGUI_DISABLE
+#
+
+# -----------------------------------------------------------------------------
+# [SECTION] Stack Layout API
+# -----------------------------------------------------------------------------
+
+# IMGUI_API void BeginHorizontal(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
+@overload
+def begin_horizontal(str_id: str, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+    pass
+
+# IMGUI_API void BeginHorizontal(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
+@overload
+def begin_horizontal(ptr_id: Any, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+    pass
+
+# IMGUI_API void BeginHorizontal(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
+@overload
+def begin_horizontal(id_: int, size: ImVec2 = ImVec2(0, 0), align: float = -1) -> None:
+    pass
+
+# IMGUI_API void EndHorizontal();    /* original C++ signature */
+def end_horizontal() -> None:
+    pass
+
+# IMGUI_API void BeginVertical(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
+@overload
+def begin_vertical(str_id: str, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+    pass
+
+# IMGUI_API void BeginVertical(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
+@overload
+def begin_vertical(ptr_id: Any, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+    pass
+
+# IMGUI_API void BeginVertical(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
+@overload
+def begin_vertical(id_: int, size: ImVec2 = ImVec2(0, 0), align: float = -1) -> None:
+    pass
+
+# IMGUI_API void EndVertical();    /* original C++ signature */
+def end_vertical() -> None:
+    pass
+
+# IMGUI_API void Spring(float weight = 1.0f, float spacing = -1.0f);    /* original C++ signature */
+def spring(weight: float = 1.0, spacing: float = -1.0) -> None:
+    pass
+
+# IMGUI_API void SuspendLayout();    /* original C++ signature */
+def suspend_layout() -> None:
+    pass
+
+# IMGUI_API void ResumeLayout();    /* original C++ signature */
+def resume_layout() -> None:
+    pass
+
+# namespace ImGui
+
+# #endif
+####################    </generated_from:imgui_stacklayout.h>    ####################
+
+####################    <generated_from:imgui_stacklayout_internal.h>    ####################
+# dear imgui, v1.86 WIP
+# (stack layout headers)
+
+#
+#
+# Index of this file:
+# // [SECTION] Stack Layout Internal API
+#
+#
+
+# #ifndef IMGUI_DISABLE
+#
+
+# -----------------------------------------------------------------------------
+# [SECTION] Stack Layout Internal API
+# -----------------------------------------------------------------------------
+
+# namespace ImGuiInternal
+
+# #endif
+####################    </generated_from:imgui_stacklayout_internal.h>    ####################
 
 ####################    <generated_from:imgui_stdlib.h>    ####################
 # dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)

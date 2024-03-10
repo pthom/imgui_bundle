@@ -47,6 +47,11 @@ def autogenerate_imgui() -> None:
     print("Processing imgui.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui.h")
 
+    print("Processing imgui_stacklayout.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_stacklayout.h")
+    print("Processing imgui_stacklayout_internal.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_stacklayout_internal.h")
+
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(
         ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH
