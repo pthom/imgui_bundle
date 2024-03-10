@@ -659,8 +659,8 @@ void py_init_module_imgui_main(py::module& m)
         "retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList");
 
     m.def("get_color_u32",
-        py::overload_cast<ImU32>(ImGui::GetColorU32),
-        py::arg("col"),
+        py::overload_cast<ImU32, float>(ImGui::GetColorU32),
+        py::arg("col"), py::arg("alpha_mul") = 1.0f,
         "retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList");
 
     m.def("get_style_color_vec4",
@@ -2446,6 +2446,9 @@ void py_init_module_imgui_main(py::module& m)
     m.def("debug_flash_style_color",
         ImGui::DebugFlashStyleColor, py::arg("idx"));
 
+    m.def("debug_start_item_picker",
+        ImGui::DebugStartItemPicker);
+
     m.def("debug_check_version_and_data_layout",
         ImGui::DebugCheckVersionAndDataLayout,
         py::arg("version_str"), py::arg("sz_io"), py::arg("sz_style"), py::arg("sz_vec2"), py::arg("sz_vec4"), py::arg("sz_drawvert"), py::arg("sz_drawidx"),
@@ -2514,9 +2517,9 @@ void py_init_module_imgui_main(py::module& m)
         .value("dock_node_host", ImGuiWindowFlags_DockNodeHost, "Don't use! For internal use by Begin()/NewFrame()");
 
 
-    py::enum_<ImGuiChildFlags_>(m, "ChildFlags_", py::arithmetic(), " Flags for ImGui::BeginChild()\n (Legacy: bot 0 must always correspond to ImGuiChildFlags_Border to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
+    py::enum_<ImGuiChildFlags_>(m, "ChildFlags_", py::arithmetic(), " Flags for ImGui::BeginChild()\n (Legacy: bit 0 must always correspond to ImGuiChildFlags_Border to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
         .value("none", ImGuiChildFlags_None, "")
-        .value("border", ImGuiChildFlags_Border, "Show an outer border and enable WindowPadding. (Important: this is always == 1 == True for legacy reason)")
+        .value("border", ImGuiChildFlags_Border, "Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == True for legacy reason)")
         .value("always_use_window_padding", ImGuiChildFlags_AlwaysUseWindowPadding, "Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)")
         .value("resize_x", ImGuiChildFlags_ResizeX, "Allow resize from right border (layout direction). Enable .ini saving (unless ImGuiWindowFlags_NoSavedSettings passed to window flags)")
         .value("resize_y", ImGuiChildFlags_ResizeY, "Allow resize from bottom border (layout direction). \"")
@@ -2571,13 +2574,14 @@ void py_init_module_imgui_main(py::module& m)
         .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 15,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible");
 
 
-    py::enum_<ImGuiPopupFlags_>(m, "PopupFlags_", py::arithmetic(), " Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.\n - To be backward compatible with older API which took an 'int mouse_button = 1' argument, we need to treat\n   small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.\n   It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.\n - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.\n   IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter\n   and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.\n - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).")
+    py::enum_<ImGuiPopupFlags_>(m, "PopupFlags_", py::arithmetic(), " Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.\n - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',\n   we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.\n   It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.\n - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.\n   IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter\n   and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.\n - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).")
         .value("none", ImGuiPopupFlags_None, "")
         .value("mouse_button_left", ImGuiPopupFlags_MouseButtonLeft, "For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)")
         .value("mouse_button_right", ImGuiPopupFlags_MouseButtonRight, "For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)")
         .value("mouse_button_middle", ImGuiPopupFlags_MouseButtonMiddle, "For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)")
         .value("mouse_button_mask_", ImGuiPopupFlags_MouseButtonMask_, "")
         .value("mouse_button_default_", ImGuiPopupFlags_MouseButtonDefault_, "")
+        .value("no_reopen", ImGuiPopupFlags_NoReopen, "For OpenPopup*(), BeginPopupContext*(): don't reopen same popup if already open (won't reposition, won't reinitialize navigation)")
         .value("no_open_over_existing_popup", ImGuiPopupFlags_NoOpenOverExistingPopup, "For OpenPopup*(), BeginPopupContext*(): don't open if there's already a popup at the same level of the popup stack")
         .value("no_open_over_items", ImGuiPopupFlags_NoOpenOverItems, "For BeginPopupContextWindow(): don't return True when hovering items, only when hovering empty space")
         .value("any_popup_id", ImGuiPopupFlags_AnyPopupId, "For IsPopupOpen(): ignore the ImGuiID parameter and test for any popup.")
@@ -3997,6 +4001,49 @@ void py_init_module_imgui_main(py::module& m)
         .def("__iter__", [](const ImVector<ImFontConfig> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFontConfig> &v) { return v.size(); })
         ;
+    auto pyClassImVector_ImGuiFocusScopeData =
+        py::class_<ImVector<ImGuiFocusScopeData>>
+            (m, "ImVector_FocusScopeData", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImGuiFocusScopeData>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiFocusScopeData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiFocusScopeData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiFocusScopeData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiFocusScopeData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiFocusScopeData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiFocusScopeData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiFocusScopeData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiFocusScopeData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiFocusScopeData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiFocusScopeData> &v) { return v.size(); })
+        ;
     auto pyClassImVector_ImRect =
         py::class_<ImVector<ImRect>>
             (m, "ImVector_ImRect", "")
@@ -5355,6 +5402,7 @@ void py_init_module_imgui_main(py::module& m)
             (m, "WindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
         .def_readwrite("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")
         .def_readwrite("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")
+        .def_readwrite("focus_route_parent_window_id", &ImGuiWindowClass::FocusRouteParentWindowId, "ID of parent window for shortcut focus route evaluation, e.g. Shortcut() call from Parent Window will succeed when this window is focused.")
         .def_readwrite("viewport_flags_override_set", &ImGuiWindowClass::ViewportFlagsOverrideSet, "Viewport flags to set when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")
         .def_readwrite("viewport_flags_override_clear", &ImGuiWindowClass::ViewportFlagsOverrideClear, "Viewport flags to clear when a window of this class owns a viewport. This allows you to enforce OS decoration or task bar icon, override the defaults on a per-window basis.")
         .def_readwrite("tab_item_flags_override_set", &ImGuiWindowClass::TabItemFlagsOverrideSet, "[EXPERIMENTAL] TabItem flags to set when a window of this class gets submitted into a dock node tab bar. May use with ImGuiTabItemFlags_Leading or ImGuiTabItemFlags_Trailing.")
@@ -5792,6 +5840,12 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
         .def("add_text",
             py::overload_cast<const ImFont *, float, const ImVec2 &, ImU32, const char *, const char *, float, const ImVec4 *>(&ImDrawList::AddText), py::arg("font"), py::arg("font_size"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip_rect") = py::none())
+        .def("add_bezier_cubic",
+            &ImDrawList::AddBezierCubic,
+            py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
+            "Cubic Bezier (4 control points)")
+        .def("add_bezier_quadratic",
+            &ImDrawList::AddBezierQuadratic, py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_polyline",
@@ -5800,14 +5854,8 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), py::arg("points"), py::arg("col"))
         // #endif
         //
-        .def("add_bezier_cubic",
-            &ImDrawList::AddBezierCubic,
-            py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
-            "Cubic Bezier (4 control points)")
-        .def("add_bezier_quadratic",
-            &ImDrawList::AddBezierQuadratic,
-            py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
-            "Quadratic Bezier (3 control points)")
+        .def("add_concave_poly_filled",
+            &ImDrawList::AddConcavePolyFilled, py::arg("points"), py::arg("num_points"), py::arg("col"))
         .def("add_image",
             &ImDrawList::AddImage, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min") = ImVec2(0, 0), py::arg("uv_max") = ImVec2(1, 1), py::arg("col") = IM_COL32_WHITE)
         .def("add_image_quad",
@@ -5826,6 +5874,10 @@ void py_init_module_imgui_main(py::module& m)
             "(private API)")
         .def("path_fill_convex",
             &ImDrawList::PathFillConvex,
+            py::arg("col"),
+            "(private API)")
+        .def("path_fill_concave",
+            &ImDrawList::PathFillConcave,
             py::arg("col"),
             "(private API)")
         .def("path_stroke",

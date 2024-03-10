@@ -74,6 +74,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiWindow*",
         "ImFontAtlasCustomRect",
         "ImFontConfig",
+        "ImGuiFocusScopeData",
         # from imgui_internal.h
         "ImRect",
         "ImGuiColorMod",
@@ -395,7 +396,7 @@ def litgen_options_imgui(
     options.fn_params_exclude_types__regex = r"size_t[ ]*\*"
     # Exclude functions that take char or const ImWchar * params
     options.fn_exclude_by_param_type__regex = (
-        "^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$"
+        "^char$|^const ImWchar \\*$|^ImGuiErrorLogCallback$"
     )
 
     # Version where we use Boxed types everywhere:
