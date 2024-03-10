@@ -88,14 +88,21 @@ namespace ImmApp
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
-        if (addOnsParams.withTexInspect && runnerParams.rendererBackendType == HelloImGui::RendererBackendType::OpenGL3)
+        if (addOnsParams.withTexInspect)
         {
             // Modify post-init: Init ImGuiTexInspect
             {
-                auto fn_ImGuiTextInspect_Init = [](){
-                    ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
-                    ImGuiTexInspect::Init();
-                    gImmAppContext._ImGuiTextInspect_Context = ImGuiTexInspect::CreateContext();
+                auto fn_ImGuiTextInspect_Init = [&runnerParams](){
+                    if (runnerParams.rendererBackendType == HelloImGui::RendererBackendType::OpenGL3)
+                    {
+                        ImGuiTexInspect::ImplOpenGL3_Init(HelloImGui::GlslVersion().c_str());
+                        ImGuiTexInspect::Init();
+                        gImmAppContext._ImGuiTextInspect_Context = ImGuiTexInspect::CreateContext();
+                    }
+                    else
+                    {
+                        IM_ASSERT(false && "ImGuiTexInspect is only supported with OpenGL renderer");
+                    }
                 };
                 runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_Init,
