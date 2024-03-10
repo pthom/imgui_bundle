@@ -1987,7 +1987,7 @@ def get_location_pos(outer_rect: ImRect, inner_size: ImVec2, location: Location,
 def calc_legend_size(items: ItemGroup, pad: ImVec2, spacing: ImVec2, vertical: bool) -> ImVec2:
     """ Calculates the bounding box size of a legend _before_ clipping."""
     pass
-# IMPLOT_API bool ClampLegendRect(ImRect& legend_rect, const ImRect& outer_rect, const ImVec2& pad);          /* original C++ signature */
+# IMPLOT_API bool ClampLegendRect(ImRect& legend_rect, const ImRect& outer_rect, const ImVec2& pad);    /* original C++ signature */
 def clamp_legend_rect(legend_rect: ImRect, outer_rect: ImRect, pad: ImVec2) -> bool:
     """ Clips calculated legend size"""
     pass
