@@ -22,8 +22,9 @@ void demo_tex_inspect_simple()
         textureSize, flags,
         inspectorSize))
     {
-        ImGuiTexInspect::EndInspectorPanel();
+        // nothing to do here
     }
+    ImGuiTexInspect::EndInspectorPanel(); // Should be called even if BeginInspectorPanel returns false
 }
 
 

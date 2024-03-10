@@ -23,7 +23,8 @@ def demo_gui():
     if imgui_tex_inspect.begin_inspector_panel(
         "Texture Inspector", static.texture_id, texture_size, flags, inspector_size
     ):
-        imgui_tex_inspect.end_inspector_panel()
+        pass # nothing to do here
+    imgui_tex_inspect.end_inspector_panel() # Always call end_inspector_panel() even if begin_inspector_panel() returns false
 
 
 def main():
