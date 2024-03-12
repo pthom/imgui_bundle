@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(imgui_bundle VERSION "1.4.0") # (Beta) Remember to mirror changes to pyproject.toml!
+project(imgui_bundle VERSION "1.5.0") # (WIP) Remember to mirror changes to pyproject.toml!
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
