@@ -1,5 +1,23 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
+# v1.5.0
+
+### Hello ImGui
+#### Add FontAwesome options with support for FontAwesome 4 and FontAwesome 6:
+
+Breaking change: you need to include manually the icons: `#include "hello_imgui/icons_font_awesome_4.h"`
+The default icon font is FontAwesome 4 (for backward compatibility), but v6 includes many more icons
+
+In order to select Font Awesome 6, you need to set the following in your runnerParams:
+```cpp
+ runnerParams.runnerCallbacks.defaultIconFont = hello_imgui::IconFont::FontAwesome6;
+```
+and then include:
+```cpp
+#include "hello_imgui/icons_font_awesome_6.h"
+ ```
+
+
 # v1.3.0
 
 ### New libraries
