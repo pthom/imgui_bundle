@@ -11,6 +11,7 @@ from imgui_bundle import (
     im_cool_bar,
 )
 from imgui_bundle import imgui_command_palette as imcmd
+from imgui_bundle import portable_file_dialogs as pfd
 
 
 @immapp.static(knob_float_value=0, knob_int_value=0)
@@ -164,17 +165,22 @@ def demo_toggle():
     save_file_dialog=None,
     select_folder_dialog=None,
     last_file_selection="",
+    # Messages and Notifications
+    icon_type=pfd.icon.info,
+    message_dialog=None,
+    message_choice_type=pfd.choice.ok,
 )
 def demo_portable_file_dialogs():
+    # from imgui_bundle import portable_file_dialogs as pfd
     static = demo_portable_file_dialogs
 
-    from imgui_bundle import portable_file_dialogs as pfd
 
     imgui.push_id("pfd")
     imgui_md.render_unindented(
         """
         # Portable File Dialogs
-         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs
+         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
+         as well as notifications and messages. They will use the native dialogs and notifications on each platform.
     """
     )
 
@@ -184,6 +190,7 @@ def demo_portable_file_dialogs():
     def log_result_list(whats: List[str]):
         static.last_file_selection = "\n".join(whats)
 
+    imgui.text("      ---   File dialogs   ---")
     if imgui.button("Open file"):
         static.open_file_dialog = pfd.open_file("Select file")
     if static.open_file_dialog is not None and static.open_file_dialog.ready():
@@ -221,6 +228,37 @@ def demo_portable_file_dialogs():
 
     if len(static.last_file_selection) > 0:
         imgui.text(static.last_file_selection)
+
+    imgui.text("      ---   Notifications and messages   ---")
+
+    # icon type
+    imgui.text("Icon type")
+    imgui.same_line()
+    for notification_icon in (pfd.icon.info, pfd.icon.warning, pfd.icon.error):
+        if imgui.radio_button(notification_icon.name, static.icon_type == notification_icon):
+            static.icon_type = notification_icon
+        imgui.same_line()
+    imgui.new_line()
+
+    if imgui.button("Add Notif"):
+        pfd.notify("Notification title", "This is an example notification", static.icon_type)
+
+    # messages
+    imgui.same_line()
+    # 1. Display the message
+    if imgui.button("Add message"):
+        static.message_dialog = pfd.message("Message title", "This is an example message", static.message_choice_type, static.icon_type)
+    # 2. Handle the message result
+    if static.message_dialog is not None and static.message_dialog.ready():
+        print("msg ready: " + str(static.message_dialog.result()))
+        static.message_dialog = None
+    # Optional: Select the message type
+    imgui.same_line()
+    for choice_type in (pfd.choice.ok, pfd.choice.yes_no, pfd.choice.yes_no_cancel, pfd.choice.retry_cancel, pfd.choice.abort_retry_ignore):
+        if imgui.radio_button(choice_type.name, static.message_choice_type == choice_type):
+            static.message_choice_type = choice_type
+        imgui.same_line()
+    imgui.new_line()
 
     imgui.pop_id()
 

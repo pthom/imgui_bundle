@@ -168,9 +168,18 @@ void DemoPortableFileDialogs()
     ImGui::PushID("pfd");
     ImGuiMd::RenderUnindented(R"(
         # Portable File Dialogs
-         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides native file dialogs
+        [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
+        as well as notifications and messages. They will use the native dialogs and notifications on each platform.
     )");
 
+#ifdef __EMSCRIPTEN__
+    ImGuiMd::RenderUnindented(R"(
+        *Note: On Emscripten/Web, only messages dialogs (with an Ok button and an icon) are supported.
+        On Windows, Linux and MacOS, everything is supported.*
+    )");
+#endif
+
+    ImGui::Text("      ---   File dialogs   ---");
     auto logResult = [](std::string what) {
         lastFileSelection = what;
     };
@@ -221,9 +230,62 @@ void DemoPortableFileDialogs()
         selectFolderDialog.reset();
     }
 
-
     if (lastFileSelection.size() > 0)
         ImGui::Text("%s", lastFileSelection.c_str());
+
+
+    ImGui::Text("      ---   Notifications and messages   ---");
+
+    static pfd::icon iconType = pfd::icon::info;
+    static std::optional<pfd::message> messageDialog;
+    static pfd::choice messageChoiceType = pfd::choice::ok;
+
+    // icon type
+    ImGui::Text("Icon type");
+    ImGui::SameLine();
+    std::vector<std::pair<pfd::icon, const char*>> iconTypes = {
+        {pfd::icon::info, "info"},
+        {pfd::icon::warning, "warning"},
+        {pfd::icon::error, "error"},
+    };
+    for (const auto& [notification_icon, name]: iconTypes)
+    {
+        if (ImGui::RadioButton(name, iconType == notification_icon))
+            iconType = notification_icon;
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
+
+    if (ImGui::Button("Add Notif"))
+        pfd::notify("Notification title", "This is an example notification", iconType);
+
+    // messages
+    ImGui::SameLine();
+    // 1. Display the message
+    if (ImGui::Button("Add message"))
+        messageDialog = pfd::message("Message title", "This is an example message", messageChoiceType, iconType);
+    // 2. Handle the message result
+    if (messageDialog.has_value() && messageDialog->ready())
+    {
+        printf("msg ready\n"); // Get the result via messageDialog->result()
+        messageDialog.reset();
+    }
+    // Optional: Select the message type
+    ImGui::SameLine();
+    std::vector<std::pair<pfd::choice, const char*>> choiceTypes = {
+        {pfd::choice::ok, "ok"},
+        {pfd::choice::yes_no, "yes_no"},
+        {pfd::choice::yes_no_cancel, "yes_no_cancel"},
+        {pfd::choice::retry_cancel, "retry_cancel"},
+        {pfd::choice::abort_retry_ignore, "abort_retry_ignore"},
+    };
+    for (const auto& [choice_type, name]: choiceTypes)
+    {
+        if (ImGui::RadioButton(name, messageChoiceType == choice_type))
+            messageChoiceType = choice_type;
+        ImGui::SameLine();
+    }
+    ImGui::NewLine();
 
     ImGui::PopID();
 }
