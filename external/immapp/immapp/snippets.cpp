@@ -1,7 +1,7 @@
 #include "snippets.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui.h"
-#include "hello_imgui/icons_font_awesome.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "immapp/code_utils.h"
 #include "immapp/clock.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"

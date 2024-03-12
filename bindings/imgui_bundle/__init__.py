@@ -17,7 +17,12 @@ from imgui_bundle._imgui_bundle import imgui_command_palette as imgui_command_pa
 from imgui_bundle._imgui_bundle import im_cool_bar as im_cool_bar
 from imgui_bundle._imgui_bundle import nanovg as nanovg
 from imgui_bundle import immapp as immapp
-from imgui_bundle.immapp import icons_fontawesome as icons_fontawesome
+
+# Note: to enable font awesome 6:
+#     runner_params.callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome_4
+from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome  # v4
+from imgui_bundle.immapp import icons_fontawesome_6 as icons_fontawesome_6
 
 # if matplotlib is not installed, we can't import imgui_fig
 try:
@@ -63,6 +68,8 @@ __all__ = [
     "imgui_toggle",
     # Utilities related to ImGui
     "icons_fontawesome",
+    "icons_fontawesome_6",
+    "icons_fontawesome_4",
     # Base ImGui types
     "IM_COL32",
     "ImVec2",

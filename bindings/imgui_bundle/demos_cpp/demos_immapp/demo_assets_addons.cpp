@@ -1,4 +1,5 @@
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "immapp/immapp.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT

@@ -18,7 +18,12 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     snippets,
 )
 
-from imgui_bundle.immapp import icons_fontawesome
+# Note: to enable font awesome 6:
+#     runner_params.callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome_4
+from imgui_bundle.immapp import icons_fontawesome_6 as icons_fontawesome_6
+from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome  # v4
+
 from imgui_bundle.immapp.immapp_utils import (
     static as static,
     run_anon_block as run_anon_block,
@@ -43,7 +48,9 @@ __all__ = [
     "run",
     "run_with_markdown",
     "AddOnsParams",
-    "icons_fontawesome",
+    "icons_fontawesome",  # v4
+    "icons_fontawesome_4",
+    "icons_fontawesome_6",
     "static",
     "run_anon_block",
     "run_nb",

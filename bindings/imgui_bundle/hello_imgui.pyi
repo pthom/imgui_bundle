@@ -358,10 +358,6 @@ def log_gui(size: ImVec2 = ImVec2(0.0, 0.0)) -> None:
     pass
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui.h continued                                                                //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -433,6 +429,26 @@ def image_size_from_asset(asset_path: str) -> ImVec2:
     """`ImVec2 HelloImGui::ImageSizeFromAsset(assetPath)`:
     will return the size of an image loaded from the assets.
     """
+    pass
+
+class ImageAndSize:
+    """`HelloImGui::ImageAndSize HelloImGui::ImageAndSizeFromAsset(assetPath)`:
+    will return the texture ID and the size of an image loaded from the assets.
+    """
+
+    # ImTextureID textureId = ImTextureID(0);    /* original C++ signature */
+    texture_id: ImTextureID = ImTextureID(0)
+    # ImVec2 size = ImVec2(0.f, 0.f);    /* original C++ signature */
+    size: ImVec2 = ImVec2(0.0, 0.0)
+    # ImageAndSize(ImTextureID textureId = ImTextureID(0), ImVec2 size = ImVec2(0.f, 0.f));    /* original C++ signature */
+    def __init__(
+        self, texture_id: ImTextureID = ImTextureID(0), size: ImVec2 = ImVec2(0.0, 0.0)
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# ImageAndSize ImageAndSizeFromAsset(const char *assetPath);    /* original C++ signature */
+def image_and_size_from_asset(asset_path: str) -> ImageAndSize:
     pass
 
 # ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);    /* original C++ signature */
@@ -697,36 +713,6 @@ def load_font(
 ) -> ImFont:
     pass
 
-# Note: if you want to use a more recent version of Font Awesome,
-# ===============================================================
-# see example at src/hello_imgui_demos/hello_imgui_demo_fontawesome6
-#
-# The principle is summarized below:
-# - Download Font_Awesome_6_Free-Solid-900.otf from https://fontawesome.com/download
-# - Download IconsFontAwesome6.h from https://raw.githubusercontent.com/juliettef/IconFontCppHeaders/main/IconsFontAwesome6.h
-#
-#  Code:
-#
-#  // Prevent HelloImGui from loading Font Awesome 4 definitions, since we will load FontAwesome 6
-#    #define HELLOIMGUI_NO_FONT_AWESOME4
-#    #include "hello_imgui/hello_imgui.h"
-#    #include "IconsFontAwesome6.h"
-#
-#    ...
-#
-#  // Load the default font + merge it with Font Awesome 6
-#    HelloImGui::RunnerParams runnerParams;
-#    runnerParams.callbacks.LoadAdditionalFonts = []
-#    {
-#      // Load the default font
-#        HelloImGui::LoadFont("fonts/DroidSans.ttf", 15.0);
-#
-#      // Merge FontAwesome6 with the default font
-#        HelloImGui::FontLoadingParams fontParams;
-#        fontParams.mergeToLastFont = True;
-#        fontParams.useFullGlyphRange = True;
-#        HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 15.0, fontParams);
-#    };
 # @@md
 
 #
@@ -1297,6 +1283,8 @@ class ImGuiWindowParams:
 #                       hello_imgui/runner_callbacks.h continued                                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# --------------------------------------------------------------------------------------------------------------------
+
 # @@md#VoidFunction_AnyEventCallback
 
 # inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
@@ -1313,6 +1301,8 @@ def empty_event_callback() -> AnyEventCallback:
     pass
 
 # @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 # @@md#MobileCallbacks
 
@@ -1358,6 +1348,8 @@ class MobileCallbacks:
         pass
 
 # @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 # @@md#EdgeToolbar
 
@@ -1425,10 +1417,33 @@ def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
 
 # @@md
 
-# @@md#RunnerCallbacks
+# --------------------------------------------------------------------------------------------------------------------
+
+# @@md#DefaultIconFont
+
+class DefaultIconFont(enum.Enum):
+    """HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
+    Breaking change in v1.5.0:
+    - the default icon font is now FontAwesome 6, which includes many more icons.
+    - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
+        #include "hello_imgui/icons_font_awesome_6.h" or #include "hello_imgui/icons_font_awesome_4.h"
+    """
+
+    # NoIcons,    /* original C++ signature */
+    no_icons = enum.auto()  # (= 0)
+    # FontAwesome4,    /* original C++ signature */
+    font_awesome4 = enum.auto()  # (= 1)
+    # FontAwesome6    /* original C++ signature */
+    # }
+    font_awesome6 = enum.auto()  # (= 2)
+
+# @@md
+
+# --------------------------------------------------------------------------------------------------------------------
 
 class RunnerCallbacks:
-    """RunnerCallbacks is a struct that contains the callbacks
+    """@@md#RunnerCallbacks
+    RunnerCallbacks is a struct that contains the callbacks
     that are called by the application
 
     """
@@ -1510,6 +1525,10 @@ class RunnerCallbacks:
     load_additional_fonts: VoidFunction = (
         ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
     )
+    # DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4;    /* original C++ signature */
+    # If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control
+    # which icon font will be loaded by default.
+    default_icon_font: DefaultIconFont = DefaultIconFont.font_awesome4
 
     # VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig;    /* original C++ signature */
     # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
@@ -1589,7 +1608,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1599,6 +1618,7 @@ class RunnerCallbacks:
         post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
         load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons,
+        default_icon_font: DefaultIconFont = DefaultIconFont.font_awesome4,
         setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig,
         setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle,
         register_tests: VoidFunction = EmptyVoidFunction(),

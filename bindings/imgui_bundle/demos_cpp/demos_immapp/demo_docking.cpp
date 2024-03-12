@@ -13,6 +13,7 @@ It demonstrates how to:
  */
 
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_6.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "imgui_internal.h"
@@ -73,18 +74,29 @@ struct AppState
 void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.LoadAdditionalFonts
 {
     // First, load the default font (the default font should be loaded first)
+    // In this example, we instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
+    HelloImGui::GetRunnerParams()->callbacks.defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome6;
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
-    // Then load the title font
-    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
 
+    // Load the title font. Also manually merge FontAwesome icons to it
+    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
+    HelloImGui::FontLoadingParams fontLoadingParamsTitleIcons;
+    fontLoadingParamsTitleIcons.mergeToLastFont = true;
+    fontLoadingParamsTitleIcons.useFullGlyphRange = true;
+    appState.TitleFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 18.f, fontLoadingParamsTitleIcons);
+
+    // Load an Emoji font
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
     fontLoadingParamsEmoji.useFullGlyphRange = true;
     appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
 
+    // Load a large icon font
     HelloImGui::FontLoadingParams fontLoadingParamsLargeIcon;
     fontLoadingParamsLargeIcon.useFullGlyphRange = true;
-    appState.LargeIconFont = HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 24.f, fontLoadingParamsLargeIcon);
+    appState.LargeIconFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 24.f, fontLoadingParamsLargeIcon);
+
 #ifdef IMGUI_ENABLE_FREETYPE
+    // Load a colored font (requires FreeType & lunasvg)
     HelloImGui::FontLoadingParams fontLoadingParamsColor;
     fontLoadingParamsColor.loadColor = true;
     appState.ColorFont = HelloImGui::LoadFont("fonts/Playbox/Playbox-FREE.otf", 24.f, fontLoadingParamsColor);
@@ -313,9 +325,9 @@ void DemoAssets(AppState& appState)
 
 void DemoFonts(AppState& appState)
 {
-    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts"); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts - "  ICON_FA_PEN_NIB); ImGui::PopFont();
 
-    ImGui::TextWrapped("Mix icons " ICON_FA_SMILE " and text " ICON_FA_ROCKET "");
+    ImGui::TextWrapped("Mix icons " ICON_FA_FACE_SMILE " and text " ICON_FA_ROCKET "");
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Example with Font Awesome Icons");
 
@@ -445,10 +457,10 @@ void ShowTopToolbar(AppState& appState)
         HelloImGui::GetRunnerParams()->appShallExit = true;
 
     ImGui::SameLine(ImGui::GetWindowWidth() - HelloImGui::EmSize(7.f));
-    if (ImGui::Button(ICON_FA_HOME))
+    if (ImGui::Button(ICON_FA_HOUSE))
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Home in the top toolbar");
     ImGui::SameLine();
-    if (ImGui::Button(ICON_FA_SAVE))
+    if (ImGui::Button(ICON_FA_FLOPPY_DISK))
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Save in the top toolbar");
     ImGui::SameLine();
     if (ImGui::Button(ICON_FA_ADDRESS_BOOK))
@@ -462,10 +474,10 @@ void ShowTopToolbar(AppState& appState)
 void ShowRightToolbar(AppState& appState)
 {
     ImGui::PushFont(appState.LargeIconFont);
-    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_LEFT))
+    if (ImGui::Button(ICON_FA_CIRCLE_ARROW_LEFT))
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle left in the right toolbar");
 
-    if (ImGui::Button(ICON_FA_ARROW_CIRCLE_RIGHT))
+    if (ImGui::Button(ICON_FA_CIRCLE_ARROW_RIGHT))
         HelloImGui::Log(HelloImGui::LogLevel::Info, "Clicked on Circle right in the right toolbar");
     ImGui::PopFont();
 }

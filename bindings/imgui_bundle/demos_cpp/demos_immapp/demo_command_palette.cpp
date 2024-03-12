@@ -3,7 +3,7 @@
 #include "imgui-command-palette/imcmd_command_palette.h"
 #include "imgui-command-palette-py-wrapper/imgui-command-palette-py-wrapper.h"
 #include "hello_imgui/hello_imgui.h"
-#include "hello_imgui/icons_font_awesome.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "demo_utils/api_demos.h"
 
 struct AppState

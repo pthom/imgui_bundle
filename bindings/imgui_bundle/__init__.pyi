@@ -15,7 +15,13 @@ from . import imgui_command_palette as imgui_command_palette
 from . import immapp as immapp
 from . import imgui_toggle as imgui_toggle
 from . import portable_file_dialogs as portable_file_dialogs
-from .immapp import icons_fontawesome as icons_fontawesome
+
+# Note: to enable font awesome 6:
+#     runner_params.callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+from .immapp import icons_fontawesome_4 as icons_fontawesome_4
+from .immapp import icons_fontawesome_4 as icons_fontawesome  # noqa # (icons_fontawesome is V4)
+from .immapp import icons_fontawesome_6 as icons_fontawesome_6
+
 from . import im_cool_bar as im_cool_bar
 from . import nanovg as nanovg
 

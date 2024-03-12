@@ -216,6 +216,28 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("asset_path"),
         " `ImVec2 HelloImGui::ImageSizeFromAsset(assetPath)`:\n will return the size of an image loaded from the assets.");
 
+
+    auto pyClassImageAndSize =
+        py::class_<HelloImGui::ImageAndSize>
+            (m, "ImageAndSize", " `HelloImGui::ImageAndSize HelloImGui::ImageAndSizeFromAsset(assetPath)`:\n will return the texture ID and the size of an image loaded from the assets.")
+        .def(py::init<>([](
+        ImTextureID textureId = ImTextureID(0), ImVec2 size = ImVec2(0.f, 0.f))
+        {
+            auto r = std::make_unique<HelloImGui::ImageAndSize>();
+            r->textureId = textureId;
+            r->size = size;
+            return r;
+        })
+        , py::arg("texture_id") = ImTextureID(0), py::arg("size") = ImVec2(0.f, 0.f)
+        )
+        .def_readwrite("texture_id", &HelloImGui::ImageAndSize::textureId, "")
+        .def_readwrite("size", &HelloImGui::ImageAndSize::size, "")
+        ;
+
+
+    m.def("image_and_size_from_asset",
+        HelloImGui::ImageAndSizeFromAsset, py::arg("asset_path"));
+
     m.def("image_proportional_size",
         HelloImGui::ImageProportionalSize,
         py::arg("asked_size"), py::arg("image_size"),
@@ -661,11 +683,17 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::EdgeToolbarTypeName, py::arg("e"));
 
 
+    py::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", py::arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n Breaking change in v1.5.0:\n - the default icon font is now FontAwesome 6, which includes many more icons.\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
+        .value("no_icons", HelloImGui::DefaultIconFont::NoIcons, "")
+        .value("font_awesome4", HelloImGui::DefaultIconFont::FontAwesome4, "")
+        .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
+
+
     auto pyClassRunnerCallbacks =
         py::class_<HelloImGui::RunnerCallbacks>
-            (m, "RunnerCallbacks", " RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
+            (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
         .def(py::init<>([](
-        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, VoidFunction SetupImGuiConfig = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
+        VoidFunction ShowGui = HelloImGui::EmptyVoidFunction(), VoidFunction ShowMenus = HelloImGui::EmptyVoidFunction(), VoidFunction ShowAppMenuItems = HelloImGui::EmptyVoidFunction(), VoidFunction ShowStatus = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction(), VoidFunction PostInit = HelloImGui::EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, HelloImGui::DefaultIconFont defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = HelloImGui::EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction(), VoidFunction PreNewFrame = HelloImGui::EmptyVoidFunction(), VoidFunction BeforeImGuiRender = HelloImGui::EmptyVoidFunction(), VoidFunction AfterSwap = HelloImGui::EmptyVoidFunction(), VoidFunction CustomBackground = HelloImGui::EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = HelloImGui::EmptyEventCallback())
         {
             auto r = std::make_unique<HelloImGui::RunnerCallbacks>();
             r->ShowGui = ShowGui;
@@ -675,6 +703,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->PostInit_AddPlatformBackendCallbacks = PostInit_AddPlatformBackendCallbacks;
             r->PostInit = PostInit;
             r->LoadAdditionalFonts = LoadAdditionalFonts;
+            r->defaultIconFont = defaultIconFont;
             r->SetupImGuiConfig = SetupImGuiConfig;
             r->SetupImGuiStyle = SetupImGuiStyle;
             r->RegisterTests = RegisterTests;
@@ -688,7 +717,7 @@ void py_init_module_hello_imgui(py::module& m)
             r->AnyBackendEventCallback = AnyBackendEventCallback;
             return r;
         })
-        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init_add_platform_backend_callbacks") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, py::arg("setup_imgui_config") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, py::arg("setup_imgui_style") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("register_tests_called") = false, py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
+        , py::arg("show_gui") = HelloImGui::EmptyVoidFunction(), py::arg("show_menus") = HelloImGui::EmptyVoidFunction(), py::arg("show_app_menu_items") = HelloImGui::EmptyVoidFunction(), py::arg("show_status") = HelloImGui::EmptyVoidFunction(), py::arg("post_init_add_platform_backend_callbacks") = HelloImGui::EmptyVoidFunction(), py::arg("post_init") = HelloImGui::EmptyVoidFunction(), py::arg("load_additional_fonts") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, py::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, py::arg("setup_imgui_config") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig, py::arg("setup_imgui_style") = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle, py::arg("register_tests") = HelloImGui::EmptyVoidFunction(), py::arg("register_tests_called") = false, py::arg("before_exit") = HelloImGui::EmptyVoidFunction(), py::arg("before_exit_post_cleanup") = HelloImGui::EmptyVoidFunction(), py::arg("pre_new_frame") = HelloImGui::EmptyVoidFunction(), py::arg("before_imgui_render") = HelloImGui::EmptyVoidFunction(), py::arg("after_swap") = HelloImGui::EmptyVoidFunction(), py::arg("custom_background") = HelloImGui::EmptyVoidFunction(), py::arg("any_backend_event_callback") = HelloImGui::EmptyEventCallback()
         )
         .def_readwrite("show_gui", &HelloImGui::RunnerCallbacks::ShowGui, "`ShowGui`: Fill it with a function that will add your widgets.")
         .def_readwrite("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
@@ -706,6 +735,7 @@ void py_init_module_hello_imgui(py::module& m)
             py::arg("callback"),
             " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
         .def_readwrite("load_additional_fonts", &HelloImGui::RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called once, when fonts are ready to be loaded.\n  By default, _LoadDefaultFont_WithFontAwesome_ is called,\n  but you can copy and customize it.\n  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/\n  but reverts to the ImGui embedded font if not found)")
+        .def_readwrite("default_icon_font", &HelloImGui::RunnerCallbacks::defaultIconFont, " If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control\n which icon font will be loaded by default.")
         .def_readwrite("setup_imgui_config", &HelloImGui::RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")
         .def_readwrite("setup_imgui_style", &HelloImGui::RunnerCallbacks::SetupImGuiStyle, " `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, set your own style by providing your own SetupImGuiStyle callback")
         .def_readwrite("register_tests", &HelloImGui::RunnerCallbacks::RegisterTests, " `RegisterTests`: A function that is called once ImGuiTestEngine is ready\n to be filled with tests and automations definitions.")

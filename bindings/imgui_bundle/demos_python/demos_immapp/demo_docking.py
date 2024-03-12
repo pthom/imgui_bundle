@@ -14,7 +14,7 @@
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome, imgui, immapp, imgui_ctx, ImVec4
+from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -61,21 +61,33 @@ class AppState:
 ##########################################################################
 def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks.LoadAdditionalFonts
     # First, load the default font (the default font should be loaded first)
+    # In this example, we instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
+    hello_imgui.get_runner_params().callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
-    # Then load the title font
-    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
 
+    # Load the title font
+    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
+    font_loading_params_title_icons = hello_imgui.FontLoadingParams()
+    font_loading_params_title_icons.merge_to_last_font = True
+    font_loading_params_title_icons.use_full_glyph_range = True
+    app_state.title_font = hello_imgui.load_font("fonts/Font_Awesome_6_Free-Solid-900.otf",
+                                                 18.0, font_loading_params_title_icons)
+
+    # Load the emoji font
     font_loading_params_emoji = hello_imgui.FontLoadingParams()
     font_loading_params_emoji.use_full_glyph_range = True
     app_state.emoji_font = hello_imgui.load_font("fonts/NotoEmoji-Regular.ttf", 24., font_loading_params_emoji)
 
+    # Load a large icon font
+    font_loading_params_large_icon = hello_imgui.FontLoadingParams()
+    font_loading_params_large_icon.use_full_glyph_range = True
+    app_state.large_icon_font = hello_imgui.load_font("fonts/fontawesome-webfont.ttf", 24., font_loading_params_large_icon)
+
+    # Load a colored font
     font_loading_params_color = hello_imgui.FontLoadingParams()
     font_loading_params_color.load_color = True
     app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
 
-    font_loading_params_large_icon = hello_imgui.FontLoadingParams()
-    font_loading_params_large_icon.use_full_glyph_range = True
-    app_state.large_icon_font = hello_imgui.load_font("fonts/fontawesome-webfont.ttf", 24., font_loading_params_large_icon)
 
 
 ##########################################################################
@@ -217,7 +229,7 @@ def demo_rocket(app_state: AppState):
 
     imgui.begin_group()
     if app_state.rocket_state == RocketState.Init:
-        if imgui.button(f"{icons_fontawesome.ICON_FA_ROCKET} Launch rocket"):
+        if imgui.button(f"{icons_fontawesome_6.ICON_FA_ROCKET} Launch rocket"):
             app_state.rocket_launch_time = time.time()
             app_state.rocket_state = RocketState.Preparing
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
@@ -228,7 +240,7 @@ def demo_rocket(app_state: AppState):
             app_state.rocket_state = RocketState.Launched
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
     elif app_state.rocket_state == RocketState.Launched:
-        imgui.text(f"{icons_fontawesome.ICON_FA_ROCKET} Rocket launched")
+        imgui.text(f"{icons_fontawesome_6.ICON_FA_ROCKET} Rocket launched")
         if imgui.button("Reset Rocket"):
             app_state.rocket_state = RocketState.Init
             app_state.rocket_progress = 0.0
@@ -332,10 +344,10 @@ def demo_assets(app_state: AppState):
 
 def demo_fonts(app_state: AppState):
     imgui.push_font(app_state.title_font)
-    imgui.text("Fonts")
+    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_PEN_NIB)
     imgui.pop_font()
 
-    imgui.text_wrapped("Mix icons " + icons_fontawesome.ICON_FA_SMILE + " and text " + icons_fontawesome.ICON_FA_ROCKET)
+    imgui.text_wrapped("Mix icons " + icons_fontawesome_6.ICON_FA_FACE_SMILE + " and text " + icons_fontawesome_6.ICON_FA_ROCKET)
     if imgui.is_item_hovered():
         imgui.set_tooltip("Example with Font Awesome Icons")
 
@@ -437,29 +449,29 @@ def show_app_menu_items():
 
 def show_top_toolbar(app_state: AppState):
     imgui.push_font(app_state.large_icon_font)
-    if imgui.button(icons_fontawesome.ICON_FA_POWER_OFF):
+    if imgui.button(icons_fontawesome_6.ICON_FA_POWER_OFF):
         hello_imgui.get_runner_params().app_shall_exit = True
 
     imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(7.0))
-    if imgui.button(icons_fontawesome.ICON_FA_HOME):
+    if imgui.button(icons_fontawesome_6.ICON_FA_HOUSE):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Home in the top toolbar")
     imgui.same_line()
-    if imgui.button(icons_fontawesome.ICON_FA_SAVE):
+    if imgui.button(icons_fontawesome_6.ICON_FA_FLOPPY_DISK):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Save in the top toolbar")
     imgui.same_line()
-    if imgui.button(icons_fontawesome.ICON_FA_ADDRESS_BOOK):
+    if imgui.button(icons_fontawesome_6.ICON_FA_ADDRESS_BOOK):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Address Book in the top toolbar")
 
     imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(2.0))
-    imgui.text(icons_fontawesome.ICON_FA_BATTERY_THREE_QUARTERS)
+    imgui.text(icons_fontawesome_6.ICON_FA_BATTERY_THREE_QUARTERS)
     imgui.pop_font()
 
 
 def show_right_toolbar(app_state: AppState):
     imgui.push_font(app_state.large_icon_font)
-    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_LEFT):
+    if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_LEFT):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle left in the right toolbar")
-    if imgui.button(icons_fontawesome.ICON_FA_ARROW_CIRCLE_RIGHT):
+    if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_RIGHT):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle right in the right toolbar")
     imgui.pop_font()
 

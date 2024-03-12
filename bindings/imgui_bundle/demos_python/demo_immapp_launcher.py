@@ -44,7 +44,6 @@ def make_gui() -> GuiFunction:
         ),
         DemoApp("demo_python_context_manager",
                 "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."),
-        DemoApp("demo_custom_font", "How to load custom fonts"),
         DemoApp(
             "demo_command_palette",
             "a Sublime Text or VSCode style command palette in ImGui",
