@@ -256,6 +256,12 @@ def litgen_options_imgui(
     options.original_location_flag_show = False
     options.original_signature_flag_show = True
 
+    # For easier C++ code porting, we want
+    # `imgui.ImGuiWindowFlags_MenuBar` instead of
+    # `imgui.WindowFlags_.MenuBar`.
+    options.enum_flag_remove_values_prefix = False
+    options.enum_export_values = True
+
     options.python_run_black_formatter = True
     options.python_black_formatter_line_length = 120
 
