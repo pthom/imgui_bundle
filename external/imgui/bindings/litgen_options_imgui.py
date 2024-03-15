@@ -318,6 +318,16 @@ def litgen_options_imgui(
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
             r"^GetKeyChordName$",
+
+            # Exclude demo stuff
+            r"^ShowDemoWindow$",
+            r"^ShowDebugLogWindow$",
+            r"^ShowIDStackToolWindow$",
+            r"^ShowAboutWindow$",
+            r"^ShowStyleEditor$",
+            r"^ShowStyleSelector$",
+            r"^ShowFontSelector$",
+            r"^ShowUserGuide$",
         ]
     )
 
