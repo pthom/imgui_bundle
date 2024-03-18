@@ -1163,11 +1163,10 @@ struct RunnerCallbacks
     void EnqueuePostInit(const VoidFunction& callback);
 
     // `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
-    //  A function that is called once, when fonts are ready to be loaded.
-    //  By default, _LoadDefaultFont_WithFontAwesome_ is called,
-    //  but you can copy and customize it.
-    //  (LoadDefaultFont_WithFontAwesome will load fonts from assets/fonts/
-    //  but reverts to the ImGui embedded font if not found)
+    //  A function that is called in order to load fonts.
+    // `LoadAdditionalFonts` will be called once, then *set to nullptr*.
+    // If you want to load additional fonts, during the app execution, you can
+    // set LoadAdditionalFonts to a function that will load the additional fonts.
     VoidFunction LoadAdditionalFonts = (VoidFunction)ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;
     // If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control
     // which icon font will be loaded by default.
@@ -1211,7 +1210,7 @@ struct RunnerCallbacks
 
     // `PreNewFrame`: You can here add a function that will be called at each frame,
     //  and before the call to ImGui::NewFrame().
-    //  It is a good place to dynamically add new fonts, or new dockable windows.
+    //  It is a good place to add new dockable windows.
     VoidFunction PreNewFrame = EmptyVoidFunction();
 
     // `BeforeImGuiRender`: You can here add a function that will be called at each frame,
