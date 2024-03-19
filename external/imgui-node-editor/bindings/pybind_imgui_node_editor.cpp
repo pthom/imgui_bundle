@@ -493,108 +493,108 @@ void py_init_module_imgui_node_editor(py::module& m)
     m.def("navigate_to_selection",    // imgui_node_editor.h:390
         ax::NodeEditor::NavigateToSelection, py::arg("zoom_in") = false, py::arg("duration") = -1);
 
-    m.def("show_node_context_menu",    // imgui_node_editor.h:392
+    m.def("show_node_context_menu",    // imgui_node_editor.h:410
         ax::NodeEditor::ShowNodeContextMenu, py::arg("node_id"));
 
-    m.def("show_pin_context_menu",    // imgui_node_editor.h:393
+    m.def("show_pin_context_menu",    // imgui_node_editor.h:411
         ax::NodeEditor::ShowPinContextMenu, py::arg("pin_id"));
 
-    m.def("show_link_context_menu",    // imgui_node_editor.h:394
+    m.def("show_link_context_menu",    // imgui_node_editor.h:412
         ax::NodeEditor::ShowLinkContextMenu, py::arg("link_id"));
 
-    m.def("show_background_context_menu",    // imgui_node_editor.h:395
+    m.def("show_background_context_menu",    // imgui_node_editor.h:413
         ax::NodeEditor::ShowBackgroundContextMenu);
 
-    m.def("enable_shortcuts",    // imgui_node_editor.h:397
+    m.def("enable_shortcuts",    // imgui_node_editor.h:415
         ax::NodeEditor::EnableShortcuts, py::arg("enable"));
 
-    m.def("are_shortcuts_enabled",    // imgui_node_editor.h:398
+    m.def("are_shortcuts_enabled",    // imgui_node_editor.h:416
         ax::NodeEditor::AreShortcutsEnabled);
 
-    m.def("begin_shortcut",    // imgui_node_editor.h:400
+    m.def("begin_shortcut",    // imgui_node_editor.h:418
         ax::NodeEditor::BeginShortcut);
 
-    m.def("accept_cut",    // imgui_node_editor.h:401
+    m.def("accept_cut",    // imgui_node_editor.h:419
         ax::NodeEditor::AcceptCut);
 
-    m.def("accept_copy",    // imgui_node_editor.h:402
+    m.def("accept_copy",    // imgui_node_editor.h:420
         ax::NodeEditor::AcceptCopy);
 
-    m.def("accept_paste",    // imgui_node_editor.h:403
+    m.def("accept_paste",    // imgui_node_editor.h:421
         ax::NodeEditor::AcceptPaste);
 
-    m.def("accept_duplicate",    // imgui_node_editor.h:404
+    m.def("accept_duplicate",    // imgui_node_editor.h:422
         ax::NodeEditor::AcceptDuplicate);
 
-    m.def("accept_create_node",    // imgui_node_editor.h:405
+    m.def("accept_create_node",    // imgui_node_editor.h:423
         ax::NodeEditor::AcceptCreateNode);
 
-    m.def("get_action_context_size",    // imgui_node_editor.h:406
+    m.def("get_action_context_size",    // imgui_node_editor.h:424
         ax::NodeEditor::GetActionContextSize);
 
-    m.def("get_action_context_nodes",    // imgui_node_editor.h:407
+    m.def("get_action_context_nodes",    // imgui_node_editor.h:425
         ax::NodeEditor::GetActionContextNodes, py::arg("nodes"), py::arg("size"));
 
-    m.def("get_action_context_links",    // imgui_node_editor.h:408
+    m.def("get_action_context_links",    // imgui_node_editor.h:426
         ax::NodeEditor::GetActionContextLinks, py::arg("links"), py::arg("size"));
 
-    m.def("end_shortcut",    // imgui_node_editor.h:409
+    m.def("end_shortcut",    // imgui_node_editor.h:427
         ax::NodeEditor::EndShortcut);
 
-    m.def("get_current_zoom",    // imgui_node_editor.h:411
+    m.def("get_current_zoom",    // imgui_node_editor.h:429
         ax::NodeEditor::GetCurrentZoom);
 
-    m.def("get_hovered_node",    // imgui_node_editor.h:413
+    m.def("get_hovered_node",    // imgui_node_editor.h:431
         ax::NodeEditor::GetHoveredNode);
 
-    m.def("get_hovered_pin",    // imgui_node_editor.h:414
+    m.def("get_hovered_pin",    // imgui_node_editor.h:432
         ax::NodeEditor::GetHoveredPin);
 
-    m.def("get_hovered_link",    // imgui_node_editor.h:415
+    m.def("get_hovered_link",    // imgui_node_editor.h:433
         ax::NodeEditor::GetHoveredLink);
 
-    m.def("get_double_clicked_node",    // imgui_node_editor.h:416
+    m.def("get_double_clicked_node",    // imgui_node_editor.h:434
         ax::NodeEditor::GetDoubleClickedNode);
 
-    m.def("get_double_clicked_pin",    // imgui_node_editor.h:417
+    m.def("get_double_clicked_pin",    // imgui_node_editor.h:435
         ax::NodeEditor::GetDoubleClickedPin);
 
-    m.def("get_double_clicked_link",    // imgui_node_editor.h:418
+    m.def("get_double_clicked_link",    // imgui_node_editor.h:436
         ax::NodeEditor::GetDoubleClickedLink);
 
-    m.def("is_background_clicked",    // imgui_node_editor.h:419
+    m.def("is_background_clicked",    // imgui_node_editor.h:437
         ax::NodeEditor::IsBackgroundClicked);
 
-    m.def("is_background_double_clicked",    // imgui_node_editor.h:420
+    m.def("is_background_double_clicked",    // imgui_node_editor.h:438
         ax::NodeEditor::IsBackgroundDoubleClicked);
 
-    m.def("get_background_click_button_index",    // imgui_node_editor.h:421
+    m.def("get_background_click_button_index",    // imgui_node_editor.h:439
         ax::NodeEditor::GetBackgroundClickButtonIndex, "-1 if none");
 
-    m.def("get_background_double_click_button_index",    // imgui_node_editor.h:422
+    m.def("get_background_double_click_button_index",    // imgui_node_editor.h:440
         ax::NodeEditor::GetBackgroundDoubleClickButtonIndex, "-1 if none");
 
-    m.def("get_link_pins",    // imgui_node_editor.h:424
+    m.def("get_link_pins",    // imgui_node_editor.h:442
         ax::NodeEditor::GetLinkPins,
         py::arg("link_id"), py::arg("start_pin_id"), py::arg("end_pin_id"),
         "pass None if particular pin do not interest you");
 
-    m.def("pin_had_any_links",    // imgui_node_editor.h:426
+    m.def("pin_had_any_links",    // imgui_node_editor.h:444
         ax::NodeEditor::PinHadAnyLinks, py::arg("pin_id"));
 
-    m.def("get_screen_size",    // imgui_node_editor.h:428
+    m.def("get_screen_size",    // imgui_node_editor.h:446
         ax::NodeEditor::GetScreenSize);
 
-    m.def("screen_to_canvas",    // imgui_node_editor.h:429
+    m.def("screen_to_canvas",    // imgui_node_editor.h:447
         ax::NodeEditor::ScreenToCanvas, py::arg("pos"));
 
-    m.def("canvas_to_screen",    // imgui_node_editor.h:430
+    m.def("canvas_to_screen",    // imgui_node_editor.h:448
         ax::NodeEditor::CanvasToScreen, py::arg("pos"));
 
-    m.def("get_node_count",    // imgui_node_editor.h:432
+    m.def("get_node_count",    // imgui_node_editor.h:450
         ax::NodeEditor::GetNodeCount, "Returns number of submitted nodes since Begin() call");
 
-    m.def("get_ordered_node_ids",    // imgui_node_editor.h:433
+    m.def("get_ordered_node_ids",    // imgui_node_editor.h:451
         ax::NodeEditor::GetOrderedNodeIds,
         py::arg("nodes"), py::arg("size"),
         "Fills an array with node id's in order they're drawn; up to 'size` elements are set. Returns actual size of filled id's.");

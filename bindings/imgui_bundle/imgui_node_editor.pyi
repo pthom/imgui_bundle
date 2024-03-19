@@ -800,152 +800,170 @@ def navigate_to_selection(
 ) -> None:  # imgui_node_editor.h:390
     pass
 
+# Shows context menu for node, link or background
+# Typical usage (this should happen inside ed::Begin/ed::End block):
+#        ed::Begin();
+#        ... (Show nodes)
+#        ed::Suspend();
+#        if (ed::ShowNodeContextMenu(&contextNodeId))
+#            ImGui::OpenPopup("Node Context Menu");
+#        ed::Resume();
+#        ...
+#        ed::Suspend();
+#        if (ImGui::BeginPopup("Node Context Menu"))
+#        {
+#            ImGui::Text("Node Context Menu, node ID: %d", contextNodeId);
+#            ImGui::EndPopup();
+#        }
+#        ed::Resume();
+#        ...
+#        ed::End();
 # IMGUI_NODE_EDITOR_API bool ShowNodeContextMenu(NodeId* nodeId);    /* original C++ signature */
-def show_node_context_menu(node_id: NodeId) -> bool:  # imgui_node_editor.h:392
+def show_node_context_menu(node_id: NodeId) -> bool:  # imgui_node_editor.h:410
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowPinContextMenu(PinId* pinId);    /* original C++ signature */
-def show_pin_context_menu(pin_id: PinId) -> bool:  # imgui_node_editor.h:393
+def show_pin_context_menu(pin_id: PinId) -> bool:  # imgui_node_editor.h:411
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowLinkContextMenu(LinkId* linkId);    /* original C++ signature */
-def show_link_context_menu(link_id: LinkId) -> bool:  # imgui_node_editor.h:394
+def show_link_context_menu(link_id: LinkId) -> bool:  # imgui_node_editor.h:412
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowBackgroundContextMenu();    /* original C++ signature */
-def show_background_context_menu() -> bool:  # imgui_node_editor.h:395
+def show_background_context_menu() -> bool:  # imgui_node_editor.h:413
     pass
 
 # IMGUI_NODE_EDITOR_API void EnableShortcuts(bool enable);    /* original C++ signature */
-def enable_shortcuts(enable: bool) -> None:  # imgui_node_editor.h:397
+def enable_shortcuts(enable: bool) -> None:  # imgui_node_editor.h:415
     pass
 
 # IMGUI_NODE_EDITOR_API bool AreShortcutsEnabled();    /* original C++ signature */
-def are_shortcuts_enabled() -> bool:  # imgui_node_editor.h:398
+def are_shortcuts_enabled() -> bool:  # imgui_node_editor.h:416
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginShortcut();    /* original C++ signature */
-def begin_shortcut() -> bool:  # imgui_node_editor.h:400
+def begin_shortcut() -> bool:  # imgui_node_editor.h:418
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCut();    /* original C++ signature */
-def accept_cut() -> bool:  # imgui_node_editor.h:401
+def accept_cut() -> bool:  # imgui_node_editor.h:419
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCopy();    /* original C++ signature */
-def accept_copy() -> bool:  # imgui_node_editor.h:402
+def accept_copy() -> bool:  # imgui_node_editor.h:420
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptPaste();    /* original C++ signature */
-def accept_paste() -> bool:  # imgui_node_editor.h:403
+def accept_paste() -> bool:  # imgui_node_editor.h:421
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptDuplicate();    /* original C++ signature */
-def accept_duplicate() -> bool:  # imgui_node_editor.h:404
+def accept_duplicate() -> bool:  # imgui_node_editor.h:422
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCreateNode();    /* original C++ signature */
-def accept_create_node() -> bool:  # imgui_node_editor.h:405
+def accept_create_node() -> bool:  # imgui_node_editor.h:423
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextSize();    /* original C++ signature */
-def get_action_context_size() -> int:  # imgui_node_editor.h:406
+def get_action_context_size() -> int:  # imgui_node_editor.h:424
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextNodes(NodeId* nodes, int size);    /* original C++ signature */
 def get_action_context_nodes(
     nodes: NodeId, size: int
-) -> int:  # imgui_node_editor.h:407
+) -> int:  # imgui_node_editor.h:425
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextLinks(LinkId* links, int size);    /* original C++ signature */
 def get_action_context_links(
     links: LinkId, size: int
-) -> int:  # imgui_node_editor.h:408
+) -> int:  # imgui_node_editor.h:426
     pass
 
 # IMGUI_NODE_EDITOR_API void EndShortcut();    /* original C++ signature */
-def end_shortcut() -> None:  # imgui_node_editor.h:409
+def end_shortcut() -> None:  # imgui_node_editor.h:427
     pass
 
 # IMGUI_NODE_EDITOR_API float GetCurrentZoom();    /* original C++ signature */
-def get_current_zoom() -> float:  # imgui_node_editor.h:411
+def get_current_zoom() -> float:  # imgui_node_editor.h:429
     pass
 
 # IMGUI_NODE_EDITOR_API NodeId GetHoveredNode();    /* original C++ signature */
-def get_hovered_node() -> NodeId:  # imgui_node_editor.h:413
+def get_hovered_node() -> NodeId:  # imgui_node_editor.h:431
     pass
 
 # IMGUI_NODE_EDITOR_API PinId GetHoveredPin();    /* original C++ signature */
-def get_hovered_pin() -> PinId:  # imgui_node_editor.h:414
+def get_hovered_pin() -> PinId:  # imgui_node_editor.h:432
     pass
 
 # IMGUI_NODE_EDITOR_API LinkId GetHoveredLink();    /* original C++ signature */
-def get_hovered_link() -> LinkId:  # imgui_node_editor.h:415
+def get_hovered_link() -> LinkId:  # imgui_node_editor.h:433
     pass
 
 # IMGUI_NODE_EDITOR_API NodeId GetDoubleClickedNode();    /* original C++ signature */
-def get_double_clicked_node() -> NodeId:  # imgui_node_editor.h:416
+def get_double_clicked_node() -> NodeId:  # imgui_node_editor.h:434
     pass
 
 # IMGUI_NODE_EDITOR_API PinId GetDoubleClickedPin();    /* original C++ signature */
-def get_double_clicked_pin() -> PinId:  # imgui_node_editor.h:417
+def get_double_clicked_pin() -> PinId:  # imgui_node_editor.h:435
     pass
 
 # IMGUI_NODE_EDITOR_API LinkId GetDoubleClickedLink();    /* original C++ signature */
-def get_double_clicked_link() -> LinkId:  # imgui_node_editor.h:418
+def get_double_clicked_link() -> LinkId:  # imgui_node_editor.h:436
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsBackgroundClicked();    /* original C++ signature */
-def is_background_clicked() -> bool:  # imgui_node_editor.h:419
+def is_background_clicked() -> bool:  # imgui_node_editor.h:437
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsBackgroundDoubleClicked();    /* original C++ signature */
-def is_background_double_clicked() -> bool:  # imgui_node_editor.h:420
+def is_background_double_clicked() -> bool:  # imgui_node_editor.h:438
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundClickButtonIndex();     /* original C++ signature */
-def get_background_click_button_index() -> ImGuiMouseButton:  # imgui_node_editor.h:421
+def get_background_click_button_index() -> ImGuiMouseButton:  # imgui_node_editor.h:439
     """-1 if none"""
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundDoubleClickButtonIndex();     /* original C++ signature */
 def get_background_double_click_button_index() -> (
     ImGuiMouseButton
-):  # imgui_node_editor.h:422
+):  # imgui_node_editor.h:440
     """-1 if none"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool GetLinkPins(LinkId linkId, PinId* startPinId, PinId* endPinId);     /* original C++ signature */
 def get_link_pins(
     link_id: LinkId, start_pin_id: PinId, end_pin_id: PinId
-) -> bool:  # imgui_node_editor.h:424
+) -> bool:  # imgui_node_editor.h:442
     """pass None if particular pin do not interest you"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool PinHadAnyLinks(PinId pinId);    /* original C++ signature */
-def pin_had_any_links(pin_id: PinId) -> bool:  # imgui_node_editor.h:426
+def pin_had_any_links(pin_id: PinId) -> bool:  # imgui_node_editor.h:444
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetScreenSize();    /* original C++ signature */
-def get_screen_size() -> ImVec2:  # imgui_node_editor.h:428
+def get_screen_size() -> ImVec2:  # imgui_node_editor.h:446
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 ScreenToCanvas(const ImVec2& pos);    /* original C++ signature */
-def screen_to_canvas(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:429
+def screen_to_canvas(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:447
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);    /* original C++ signature */
-def canvas_to_screen(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:430
+def canvas_to_screen(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:448
     pass
 
 # IMGUI_NODE_EDITOR_API int GetNodeCount();                                    /* original C++ signature */
-def get_node_count() -> int:  # imgui_node_editor.h:432
+def get_node_count() -> int:  # imgui_node_editor.h:450
     """Returns number of submitted nodes since Begin() call"""
     pass
 
 # IMGUI_NODE_EDITOR_API int GetOrderedNodeIds(NodeId* nodes, int size);        /* original C++ signature */
-def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.h:433
+def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.h:451
     """Fills an array with node id's in order they're drawn; up to 'size` elements are set. Returns actual size of filled id's."""
     pass
 
