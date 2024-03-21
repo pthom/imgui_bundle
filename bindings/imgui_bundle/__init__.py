@@ -36,6 +36,7 @@ from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, F
 from imgui_bundle.im_col32 import IM_COL32
 
 from imgui_bundle import imgui_ctx as imgui_ctx
+from imgui_bundle import imgui_node_editor_ctx as imgui_node_editor_ctx
 
 # Glfw setup:
 # By importing imgui_bundle.glfw_utils, we make sure that glfw provided by pip will use our glfw dynamic library.
