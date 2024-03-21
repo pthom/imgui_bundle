@@ -623,6 +623,54 @@ def begin_group() -> _BeginEndGroup:
     return _BeginEndGroup()
 
 
+class _BeginHorizontal:
+    # _enter_callback will be called in __enter__. Captures all __init__ arguments.
+    _enter_callback: _EnterCallback = None
+
+    def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
+        if size is None:
+            size = ImVec2(0, 0)
+        self._enter_callback = lambda: imgui.begin_horizontal(str_id, size, align)
+
+    def __enter__(self) -> "_BeginHorizontal":
+        self._enter_callback()
+        return self
+
+    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+        imgui.end_horizontal()
+
+    def __repr__(self) -> str:
+        return "{}".format(self.__class__.__name__)
+
+
+def begin_horizontal(str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> _BeginHorizontal:
+    return _BeginHorizontal(str_id, size, align)
+
+
+class _BeginVertical:
+    # _enter_callback will be called in __enter__. Captures all __init__ arguments.
+    _enter_callback: _EnterCallback = None
+
+    def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
+        if size is None:
+            size = ImVec2(0, 0)
+        self._enter_callback = lambda: imgui.begin_vertical(str_id, size, align)
+
+    def __enter__(self) -> "_BeginVertical":
+        self._enter_callback()
+        return self
+
+    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+        imgui.end_vertical()
+
+    def __repr__(self) -> str:
+        return "{}".format(self.__class__.__name__)
+
+
+def begin_vertical(str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> _BeginVertical:
+    return _BeginVertical(str_id, size, align)
+
+
 class _WithTreeNode:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
