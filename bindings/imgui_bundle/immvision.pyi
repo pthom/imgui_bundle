@@ -307,8 +307,27 @@ class ImageParams:  # immvision.h:96
         """Auto-generated default constructor with named params"""
         pass
 
+# #ifdef IMMVISION_SERIALIZE_JSON
+#
+# IMMVISION_API std::string ImageParamsToJson(const ImageParams& params);    /* original C++ signature */
+def image_params_to_json(params: ImageParams) -> str:  # immvision.h:195
+    pass
+
+# IMMVISION_API void FillImageParamsFromJson(const std::string& json, ImageParams* params);    /* original C++ signature */
+def fill_image_params_from_json(
+    json: str, params: ImageParams
+) -> None:  # immvision.h:196
+    pass
+
+# IMMVISION_API ImageParams ImageParamsFromJson(const std::string& json);    /* original C++ signature */
+def image_params_from_json(json: str) -> ImageParams:  # immvision.h:197
+    pass
+
+# #endif
+#
+
 # IMMVISION_API ImageParams FactorImageParamsDisplayOnly();    /* original C++ signature */
-def factor_image_params_display_only() -> ImageParams:  # immvision.h:196
+def factor_image_params_display_only() -> ImageParams:  # immvision.h:201
     """Create ImageParams that display the image only, with no decoration, and no user interaction"""
     pass
 
@@ -317,7 +336,7 @@ def factor_image_params_display_only() -> ImageParams:  # immvision.h:196
 #                         double zoomRatio,
 #                         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix(  # immvision.h:200
+def make_zoom_pan_matrix(  # immvision.h:205
     zoom_center: Point2d, zoom_ratio: float, displayed_image_size: Size
 ) -> Matx33d:
     """Create a zoom/pan matrix centered around a given point of interest"""
@@ -327,7 +346,7 @@ def make_zoom_pan_matrix(  # immvision.h:200
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_scale_one(  # immvision.h:206
+def make_zoom_pan_matrix_scale_one(  # immvision.h:211
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
@@ -336,13 +355,13 @@ def make_zoom_pan_matrix_scale_one(  # immvision.h:206
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_full_view(  # immvision.h:211
+def make_zoom_pan_matrix_full_view(  # immvision.h:216
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
 
 # IMMVISION_API void Image(const std::string& label, const cv::Mat& mat, ImageParams* params);    /* original C++ signature */
-def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:251
+def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:256
     """Display an image, with full user control: zoom, pan, watch pixels, etc.
 
     :param label
@@ -388,7 +407,7 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:251
 #         bool showOptionsButton = false,
 #         bool isBgrOrBgra = true
 #         );
-def image_display(  # immvision.h:297
+def image_display(  # immvision.h:302
     label_id: str,
     mat: Mat,
     image_display_size: Size = (0, 0),
@@ -443,14 +462,14 @@ def image_display(  # immvision.h:297
     pass
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:309
+def available_colormaps() -> List[str]:  # immvision.h:314
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:316
+def clear_texture_cache() -> None:  # immvision.h:321
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -459,7 +478,7 @@ def clear_texture_cache() -> None:  # immvision.h:316
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:321
+def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:326
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -467,7 +486,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:321
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:324
+def version_info() -> str:  # immvision.h:329
     """Return immvision version info"""
     pass
 
@@ -493,7 +512,7 @@ def version_info() -> str:  # immvision.h:324
 #         double zoomRatio = -1.,
 #         bool isColorOrderBGR = true
 #     );
-def inspector_add_image(  # immvision.h:345
+def inspector_add_image(  # immvision.h:350
     image: Mat,
     legend: str,
     zoom_key: str = "",
@@ -505,11 +524,11 @@ def inspector_add_image(  # immvision.h:345
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:355
+def inspector_show() -> None:  # immvision.h:360
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:357
+def inspector_clear_images() -> None:  # immvision.h:362
     pass
 
 ####################    </generated_from:immvision.h>    ####################

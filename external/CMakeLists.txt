@@ -21,6 +21,14 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
     ibd_add_installable_dependency(fplus)
 endif()
 
+# Add nlohmann_json
+add_library(nlohmann_json INTERFACE)
+target_include_directories(nlohmann_json INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nlohmann_json>)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    install(DIRECTORY nlohmann_json/nlohmann DESTINATION include)
+    ibd_add_installable_dependency(nlohmann_json)
+endif()
+
 
 ###############################################################################
 # Build ImGui & Hello ImGui
@@ -50,8 +58,11 @@ endif()
 ###############################################################################
 # Build immvision
 if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
+    set(IMMVISION_SERIALIZE_JSON ON CACHE INTERNAL "" FORCE)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
+        target_link_libraries(immvision PUBLIC nlohmann_json)
+
         target_link_libraries(imgui_bundle INTERFACE immvision)
         hello_imgui_msvc_target_group_sources(immvision)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)

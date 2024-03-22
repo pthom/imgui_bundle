@@ -20,6 +20,7 @@ def main():
     options.original_location_flag_show = True
     options.namespaces_root = ["ImmVision"]
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
+    options.srcmlcpp_options.header_filter_acceptable__regex = r"IMMVISION_SERIALIZE_JSON"
     options.python_run_black_formatter = True
     options.fn_exclude_non_api = False
 
