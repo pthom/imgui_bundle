@@ -426,6 +426,8 @@ def litgen_options_imgui(
 
     options.fn_params_replace_c_array_modifiable_by_boxed__regex = ""
 
+    options.fn_params_const_char_pointer_with_default_null = False
+
     options.srcmlcpp_options.flag_show_progress = True
 
     _add_imvector_template_options(options)
