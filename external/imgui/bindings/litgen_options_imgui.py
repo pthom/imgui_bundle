@@ -97,6 +97,20 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiOldColumnData",
         "ImGuiOldColumns",
         "ImGuiStyleMod",  # uses union
+
+        # TODO: (davidlatwe) For some unknown reason I get this error when
+        #   I do `import imgui`, module was build with pybind11:
+        #   ```
+        #   ImportError: arg(): could not convert default argument
+        #   '_IdxBuffer: ImVector<unsigned short>' in method
+        #   '<class 'imgui.ImDrawChannel'>.__init__' into a Python object
+        #   (type not registered yet?)
+        #   ```
+        #   And the error was fixed by adding `ImDrawIdx` in this list.
+        #   But since `ImDrawIdx` has been mapped to `uint` in below
+        #   `cpp_synonyms_list_str` so the `pyClassImVector_uint` should kick
+        #   in. But it didn't. Also, the error didn't occur if with nanobind.
+        "ImDrawIdx",
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
