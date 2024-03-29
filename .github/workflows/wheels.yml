@@ -47,7 +47,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: pypa/cibuildwheel@v2.16.5
+    - uses: pypa/cibuildwheel@v2.17.0
 
     - name: Verify clean directory
       run: git diff --exit-code
@@ -77,7 +77,7 @@ jobs:
         merge-multiple: true
         path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.8.12
+    - uses: pypa/gh-action-pypi-publish@v1.8.14
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
