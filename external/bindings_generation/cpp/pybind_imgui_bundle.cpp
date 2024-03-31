@@ -53,23 +53,29 @@ void py_init_module_imgui_bundle(py::module& m)
     auto module_himgui =  m.def_submodule("hello_imgui");
     py_init_module_hello_imgui(module_himgui);
 
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
     auto module_implot =  m.def_submodule("implot");
     py_init_module_implot(module_implot);
 
     auto module_implot_internal = module_implot.def_submodule("internal");
     py_init_module_implot_internal(module_implot_internal);
+#endif
 
     auto module_imgui_color_text_edit =  m.def_submodule("imgui_color_text_edit");
     py_init_module_imgui_color_text_edit(module_imgui_color_text_edit);
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     auto module_imgui_node_editor =  m.def_submodule("imgui_node_editor");
     py_init_module_imgui_node_editor(module_imgui_node_editor);
+#endif
 
     auto module_imgui_knobs =  m.def_submodule("imgui_knobs");
     py_init_module_imgui_knobs(module_imgui_knobs);
 
+#ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 	auto module_im_file_dialog =  m.def_submodule("im_file_dialog");
 	py_init_module_im_file_dialog(module_im_file_dialog);
+#endif
 
     auto module_imspinner =  m.def_submodule("imspinner");
     py_init_module_imspinner(module_imspinner);
@@ -80,11 +86,15 @@ void py_init_module_imgui_bundle(py::module& m)
     auto module_immvision =  m.def_submodule("immvision");
     py_init_module_immvision(module_immvision);
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
     auto module_imguizmo = m.def_submodule("imguizmo");
     py_init_module_imguizmo(module_imguizmo);
+#endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT
     auto module_imgui_tex_inspect = m.def_submodule("imgui_tex_inspect");
     py_init_module_imgui_tex_inspect(module_imgui_tex_inspect);
+#endif
 
     auto module_immapp_cpp = m.def_submodule("immapp_cpp");
     py_init_module_immapp_cpp(module_immapp_cpp);
@@ -101,8 +111,10 @@ void py_init_module_imgui_bundle(py::module& m)
     auto module_imcooolbar = m.def_submodule("im_cool_bar");
     py_init_module_imcoolbar(module_imcooolbar);
 
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
     auto module_nanovg = m.def_submodule("nanovg");
     py_init_module_nanovg(module_nanovg);
+#endif
 }
 
 

@@ -10,9 +10,9 @@
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"
 #include "immapp/immapp_widgets.h"
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 
-namespace py = pybind11;
 
 
 namespace ax
@@ -23,7 +23,10 @@ namespace ax
         struct EditorContext: public Detail::EditorContext {};
     }
 }
+#endif
 
+
+namespace py = pybind11;
 
 
 
