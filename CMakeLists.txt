@@ -1,9 +1,28 @@
 cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.5.2") # Remember to mirror changes to pyproject.toml!
 
+# Hacks for pyodide
+set(HELLOIMGUI_EMSCRIPTEN_PTHREAD OFF CACHE BOOL "" FORCE)
+set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+
+
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
 include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
+
+# Dump all cmake variables
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
+#message(FATAL_ERROR "End of CMake variables")
+#if(EMSCRIPTEN)
+#    message(STATUS "EMSCRIPTEN")
+#else ()
+#    message(STATUS "NOT EMSCRIPTEN")
+#endif()
+#message(FATAL_ERROR "End of CMake variables")
 
 # -----------------------------------------------------------------------------
 # About imgui_bundle_add_app:
@@ -94,6 +113,7 @@ else()
     option(IMGUI_BUNDLE_BUILD_PYTHON "build python bindings" OFF)
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
+
 
 # For python bindings, we force the usage of Glfw+OpenGL3
 if(IMGUI_BUNDLE_BUILD_PYTHON)
@@ -294,9 +314,9 @@ set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "" F
 if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
     add_compile_definitions(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()
-if (NOT IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON)
-    message(FATAL_ERROR "When building python (IMGUI_BUNDLE_BUILD_PYTHON), support for imgui_test_engine (IMGUI_BUNDLE_WITH_TEST_ENGINE) should be ON")
-endif()
+#if (NOT IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON)
+#    message(FATAL_ERROR "When building python (IMGUI_BUNDLE_BUILD_PYTHON), support for imgui_test_engine (IMGUI_BUNDLE_WITH_TEST_ENGINE) should be ON")
+#endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
