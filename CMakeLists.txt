@@ -2,8 +2,16 @@ cmake_minimum_required(VERSION 3.16)
 project(imgui_bundle VERSION "1.5.2") # Remember to mirror changes to pyproject.toml!
 
 # Hacks for pyodide
-set(HELLOIMGUI_EMSCRIPTEN_PTHREAD OFF CACHE BOOL "" FORCE)
-set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+if (SKBUILD AND EMSCRIPTEN)
+    set(BUILD_PYODIDE ON CACHE BOOL "" FORCE)
+endif()
+
+if (BUILD_PYODIDE)
+    set(HELLOIMGUI_EMSCRIPTEN_PTHREAD OFF CACHE BOOL "" FORCE)
+    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_SDL2 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
+endif()
 
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle

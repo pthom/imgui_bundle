@@ -29,10 +29,6 @@ function (add_hello_imgui)
         set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
         add_glfw_as_python_shared_library()
     endif()
-    if (IMGUI_BUNDLE_BUILD_PYTHON AND EMSCRIPTEN)
-        set(HELLOIMGUI_USE_SDL2 ON CACHE BOOL "" FORCE)
-        set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
-    endif()
 
     # 3. Configure hello-imgui with the following options:
     #     i. use our own imgui submodule
