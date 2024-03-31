@@ -165,3 +165,7 @@ poub/
 v3*/
 vcpkg*/
 /fiatlux
+
+# pyodide
+.pyodide-xbuildenv
+pyodide_tests/
