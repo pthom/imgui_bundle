@@ -5,6 +5,7 @@
 #include "immapp/browse_to_url.h"
 #include "demo_utils/animate_logo.h"
 
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 #include "imgui_test_engine/imgui_te_engine.h"
 #include "imgui_test_engine/imgui_te_context.h"
 #include "imgui_test_engine/imgui_te_ui.h"
@@ -80,13 +81,16 @@ ImGuiTest* AutomationShowMeImGuiTestEngine()
     automation->TestFunc = testOpenPopupFunc;
     return automation;
 }
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 
 
 void demo_imgui_bundle_intro()
 {
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
     //
     // Automations
     //
+
     static ImGuiTest *automationShowMeCode = nullptr;
     static ImGuiTest *automationShowMeImmediateApps = nullptr;
     static ImGuiTest *automationShowMeImGuiTestEngine = nullptr;
@@ -107,6 +111,7 @@ void demo_imgui_bundle_intro()
         // Optional: show test engine window
         //ImGuiTestEngine_ShowTestEngineWindows(HelloImGui::GetImGuiTestEngine(), nullptr);
     }
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 
     ImGuiMd::RenderUnindented(R"(
         *Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*
@@ -123,6 +128,7 @@ void demo_imgui_bundle_intro()
     ImGuiMd::RenderUnindented(R"(
         * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
     )");
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
@@ -150,7 +156,7 @@ void demo_imgui_bundle_intro()
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImGuiTestEngine);
         ImGuiMd::RenderUnindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*");
     }
-
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
     ImGuiMd::RenderUnindented(R"(
         * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
     )");

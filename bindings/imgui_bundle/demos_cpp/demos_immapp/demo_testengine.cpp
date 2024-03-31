@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 // A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
 //
 // It demonstrates how to:
@@ -243,3 +244,6 @@ void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
     runnerParams->dockingParams.dockableWindows = CreateDockableWindows();
     runnerParams->dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 }
+#else
+int main(int, const char**) {}
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
