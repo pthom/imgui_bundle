@@ -95,6 +95,7 @@ void MyRegisterTests()
     testCustomGui->GuiFunc = testCustomGuiFunc;
 
     // Demo 4: Write to text field
+#ifndef __EMSCRIPTEN__  // ctx->KeyChars seems to fail with emscripten (undefined symbol: saveSetjmp)
     auto testWrite = IM_REGISTER_TEST(engine, "Demo Tests", "Write to text field");
     auto testWriteFunc = [](ImGuiTestContext* ctx)
     {
@@ -108,6 +109,7 @@ void MyRegisterTests()
         //       However, you need to use KeyChars to input text in the text widgets
     };
     testWrite->TestFunc = testWriteFunc;
+#endif
 }
 
 
