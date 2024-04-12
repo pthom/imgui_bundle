@@ -29,6 +29,8 @@ ImGuiTest* testOpenPopup;
 ImGuiTest* testCaptureScreenshot;
 ImGuiTest* testCustomGui;
 
+bool gShowStackToolWindow = false;
+
 
 // This function is called at startup and will instantiate the tests
 void MyRegisterTests()
@@ -91,12 +93,33 @@ void MyRegisterTests()
     // Let the test call our test function, and also call our custom GUI
     testCustomGui->TestFunc = testWithVarsTestFunc;
     testCustomGui->GuiFunc = testCustomGuiFunc;
+
+    // Demo 4: Write to text field
+    auto testWrite = IM_REGISTER_TEST(engine, "Demo Tests", "Write to text field");
+    auto testWriteFunc = [](ImGuiTestContext* ctx)
+    {
+        ctx->SetRef("Dear ImGui Demo");
+        ctx->ItemOpen("**/Widgets");
+        ctx->ItemOpen("**/Text Input");
+        ctx->ItemOpen("**/Multi-line Text Input");
+        ctx->ItemClick("**/##source");
+        ctx->KeyChars("Hello from test engine!");
+        // Note: ctx.KeyUp/Down/Press also send events that you can process in the GUI
+        //       However, you need to use KeyChars to input text in the text widgets
+    };
+    testWrite->TestFunc = testWriteFunc;
 }
 
 
 // Our application GUI: shows that we can trigger the test manually
 void MyGui()
 {
+    ImGui::Checkbox("Show ID Stack Tool Window", &gShowStackToolWindow);
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("This tool window can help to identify the ID of the widgets (use \"Copy path to clipboard\")");
+    if (gShowStackToolWindow)
+        ImGui::ShowIDStackToolWindow();
+
     ImGuiTestEngine* testEngine = HelloImGui::GetImGuiTestEngine();
     if (ImGui::Button("Run \"Open popup\""))
         ImGuiTestEngine_QueueTest(testEngine, testOpenPopup);

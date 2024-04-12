@@ -26,6 +26,8 @@ test_open_popup: imgui.test_engine.Test
 test_capture_screenshot: imgui.test_engine.Test
 test_custom_gui = imgui.test_engine.Test
 
+g_show_stack_tool_window = False
+
 
 # This function is called at startup and will instantiate the tests
 def my_register_tests():
@@ -94,9 +96,28 @@ def my_register_tests():
     test_custom_gui.gui_func = test_custom_gui_func
     # fmt: on
 
+    # Demo 4: Write to text field
+    test_write = imgui.test_engine.register_test(engine, "Demo Tests", "Write to text field")
+    def test_write_func(ctx: imgui.test_engine.TestContext) -> None:
+        ctx.set_ref("Dear ImGui Demo")
+        ctx.item_open("**/Widgets")
+        ctx.item_open("**/Text Input")
+        ctx.item_open("**/Multi-line Text Input")
+        ctx.item_click("**/##source")
+        ctx.key_chars("Hello from test engine!")
+        # Note: ctx.key_up/down/key_press also send events that you can process in the GUI
+        #       However, you need to use key_chars to input text in the text widgets
+    test_write.test_func = test_write_func
 
 # Our application GUI: shows that we can trigger the test manually
 def my_gui():
+    global g_show_stack_tool_window
+    _, g_show_stack_tool_window = imgui.checkbox("Show ID Stack Tool Window", g_show_stack_tool_window)
+    if imgui.is_item_hovered():
+        imgui.set_tooltip("This tool window can help to identify the ID of the widgets (use \"Copy path to clipboard\")")
+    if g_show_stack_tool_window:
+        imgui.show_id_stack_tool_window()
+
     test_engine = hello_imgui.get_imgui_test_engine()
     if imgui.button('Run "Open popup"'):
         imgui.test_engine.queue_test(test_engine, test_open_popup)
