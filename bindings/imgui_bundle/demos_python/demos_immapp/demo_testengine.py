@@ -27,6 +27,7 @@ test_capture_screenshot: imgui.test_engine.Test
 test_custom_gui = imgui.test_engine.Test
 
 g_show_stack_tool_window = False
+nb_alt_a = 0
 
 
 # This function is called at startup and will instantiate the tests
@@ -109,6 +110,16 @@ def my_register_tests():
         #       However, you need to use key_chars to input text in the text widgets
     test_write.test_func = test_write_func
 
+    # Demo 5: Press Alt+A
+    test_alt_a = imgui.test_engine.register_test(engine, "Demo Tests", "Test key combination (Alt-A)")
+    def test_alt_a_func(ctx: imgui.test_engine.TestContext) -> None:
+        ctx.key_down(imgui.Key.left_alt.value)
+        ctx.key_down(imgui.Key.a.value)
+        ctx.key_up(imgui.Key.a.value)
+        ctx.key_up(imgui.Key.left_alt.value)
+    test_alt_a.test_func = test_alt_a_func
+
+
 # Our application GUI: shows that we can trigger the test manually
 def my_gui():
     global g_show_stack_tool_window
@@ -127,7 +138,8 @@ def my_gui():
         imgui.test_engine.queue_test(test_engine, test_custom_gui)
 
     engine_io = imgui.test_engine.get_io(test_engine)
-    imgui.text("Test speed:")
+    imgui.text("Speed:")
+    imgui.same_line()
     if imgui.button("Fast"):
         engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.fast
     imgui.same_line()
@@ -136,6 +148,12 @@ def my_gui():
     imgui.same_line()
     if imgui.button("Cinematic"):
         engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
+
+    global nb_alt_a
+    if imgui.is_key_down(imgui.Key.left_alt) and imgui.is_key_down(imgui.Key.a):
+        nb_alt_a += 1
+    if nb_alt_a > 0:
+        imgui.text("Alt-A combination was pressed")
 
 
 # Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window

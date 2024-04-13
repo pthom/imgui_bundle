@@ -30,6 +30,7 @@ ImGuiTest* testCaptureScreenshot;
 ImGuiTest* testCustomGui;
 
 bool gShowStackToolWindow = false;
+int nbAltA = 0;
 
 
 // This function is called at startup and will instantiate the tests
@@ -95,7 +96,6 @@ void MyRegisterTests()
     testCustomGui->GuiFunc = testCustomGuiFunc;
 
     // Demo 4: Write to text field
-#ifndef __EMSCRIPTEN__  // ctx->KeyChars seems to fail with emscripten (undefined symbol: saveSetjmp)
     auto testWrite = IM_REGISTER_TEST(engine, "Demo Tests", "Write to text field");
     auto testWriteFunc = [](ImGuiTestContext* ctx)
     {
@@ -109,7 +109,17 @@ void MyRegisterTests()
         //       However, you need to use KeyChars to input text in the text widgets
     };
     testWrite->TestFunc = testWriteFunc;
-#endif
+
+    // Demo 5: Press Alt+A
+    auto testAltA = IM_REGISTER_TEST(engine, "Demo Tests", "Test key combination (Alt-A)");
+    auto testAltAFunc = [](ImGuiTestContext* ctx)
+    {
+        ctx->KeyDown(ImGuiKey_LeftAlt);
+        ctx->KeyDown(ImGuiKey_A);
+        ctx->KeyUp(ImGuiKey_A);
+        ctx->KeyUp(ImGuiKey_LeftAlt);
+    };
+    testAltA->TestFunc = testAltAFunc;
 }
 
 
@@ -131,7 +141,8 @@ void MyGui()
         ImGuiTestEngine_QueueTest(testEngine, testCustomGui);
 
     ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(testEngine);
-    ImGui::Text("Test speed:");
+    ImGui::Text("Speed:");
+    ImGui::SameLine();
     if (ImGui::Button("Fast"))
         engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Fast;
     ImGui::SameLine();
@@ -140,6 +151,11 @@ void MyGui()
     ImGui::SameLine();
     if (ImGui::Button("Cinematic"))
         engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_A) && ImGui::IsKeyDown(ImGuiKey_LeftAlt))
+        nbAltA++;
+    if (nbAltA > 0)
+        ImGui::Text("Alt-A combination was pressed");
 }
 
 // Defined later: helps to define the application layout, display the ImGui Demo, & ImGui Test Engine Window
