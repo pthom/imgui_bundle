@@ -108,7 +108,7 @@ void py_init_module_imgui_backends(py::module& m)
               return ImGui_ImplGlfw_RestoreCallbacks((GLFWwindow*)window_address);
           }, py::arg("window_address"));
 
-    m.def("glfw_restore_callbacks",
+    m.def("glfw_window_focus_callback",
           [](size_t window_address, int focused) {
               return ImGui_ImplGlfw_WindowFocusCallback((GLFWwindow*)window_address, focused);
           }, py::arg("window_address"), py::arg("focused"));
