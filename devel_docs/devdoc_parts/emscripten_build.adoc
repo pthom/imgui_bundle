@@ -39,13 +39,12 @@ Docs and tricks, cf:
 ```
 git clone https://github.com/opencv/opencv.git
 cd opencv
-git checkout 4.7.0
+git checkout 4.9.0
 cd ..
 ```
 
-==== Option1: With cmake command extracted from build_js.py:
+==== Build (with cmake command extracted from build_js.py)
 
-Build this on a linux machine! Too many issues on macOS.
 
 ```bash
 source ~/emsdk/emsdk_env.sh
@@ -68,16 +67,17 @@ Note: to compile without pthread support,
     * replace *twice* "-s USE_PTHREADS=1" by "-s USE_PTHREADS=0"
 
 
-cmake \
-../opencv \
+emcmake cmake \
+-S ../opencv -B . \
 -DPYTHON_DEFAULT_EXECUTABLE=$PYTHON_EXE \
 -DCMAKE_BUILD_TYPE=Release \
 -DCMAKE_INSTALL_PREFIX=$OPENCV_INSTALL \
 -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN \
 \
--DCPU_BASELINE='' -DCPU_DISPATCH='' -DENABLE_PIC=FALSE -DCV_TRACE=OFF -DBUILD_SHARED_LIBS=OFF -DWITH_1394=OFF -DWITH_ADE=OFF -DWITH_VTK=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_IPP=OFF -DWITH_JASPER=OFF -DWITH_JPEG=ON -DWITH_WEBP=OFF -DWITH_OPENEXR=OFF -DWITH_OPENGL=OFF -DWITH_OPENVX=OFF -DWITH_OPENNI=OFF -DWITH_OPENNI2=OFF -DWITH_PNG=ON -DWITH_TBB=OFF -DWITH_TIFF=OFF -DWITH_V4L=OFF -DWITH_OPENCL=OFF -DWITH_OPENCL_SVM=OFF -DWITH_OPENCLAMDFFT=OFF -DWITH_OPENCLAMDBLAS=OFF -DWITH_GPHOTO2=OFF -DWITH_LAPACK=OFF -DWITH_ITT=OFF -DWITH_QUIRC=ON -DBUILD_ZLIB=ON -DBUILD_opencv_apps=OFF -DBUILD_opencv_calib3d=ON -DBUILD_opencv_dnn=ON -DBUILD_opencv_features2d=ON -DBUILD_opencv_flann=ON -DBUILD_opencv_gapi=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_photo=ON -DBUILD_opencv_imgcodecs=ON -DBUILD_opencv_shape=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=ON -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_EXAMPLES=ON -DBUILD_PACKAGE=OFF -DBUILD_TESTS=ON -DBUILD_PERF_TESTS=ON -DBUILD_DOCS=OFF -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
+\"-DCMAKE_C_FLAGS='-pthread -s WASM=1 -s USE_PTHREADS=1 ' \"  \
+\"-DCMAKE_CXX_FLAGS='-pthread -s WASM=1 -s USE_PTHREADS=1 ' \" \
 \
-\"-DCMAKE_C_FLAGS='-pthread -s WASM=1 -s USE_PTHREADS=1 ' \"  \"-DCMAKE_CXX_FLAGS='-pthread -s WASM=1 -s USE_PTHREADS=1 ' \"
+-DCPU_BASELINE='' -DCPU_DISPATCH='' -DENABLE_PIC=FALSE -DCV_TRACE=OFF -DBUILD_SHARED_LIBS=OFF -DWITH_1394=OFF -DWITH_ADE=OFF -DWITH_VTK=OFF -DWITH_EIGEN=OFF -DWITH_FFMPEG=OFF -DWITH_GSTREAMER=OFF -DWITH_GTK=OFF -DWITH_GTK_2_X=OFF -DWITH_IPP=OFF -DWITH_JASPER=OFF -DWITH_JPEG=ON -DWITH_WEBP=OFF -DWITH_OPENEXR=OFF -DWITH_OPENGL=OFF -DWITH_OPENVX=OFF -DWITH_OPENNI=OFF -DWITH_OPENNI2=OFF -DWITH_PNG=ON -DWITH_TBB=OFF -DWITH_TIFF=OFF -DWITH_V4L=OFF -DWITH_OPENCL=OFF -DWITH_OPENCL_SVM=OFF -DWITH_OPENCLAMDFFT=OFF -DWITH_OPENCLAMDBLAS=OFF -DWITH_GPHOTO2=OFF -DWITH_LAPACK=OFF -DWITH_ITT=OFF -DWITH_QUIRC=ON -DBUILD_ZLIB=ON -DBUILD_opencv_apps=OFF -DBUILD_opencv_calib3d=ON -DBUILD_opencv_dnn=ON -DBUILD_opencv_features2d=ON -DBUILD_opencv_flann=ON -DBUILD_opencv_gapi=OFF -DBUILD_opencv_ml=OFF -DBUILD_opencv_photo=ON -DBUILD_opencv_imgcodecs=ON -DBUILD_opencv_shape=OFF -DBUILD_opencv_videoio=OFF -DBUILD_opencv_videostab=OFF -DBUILD_opencv_highgui=OFF -DBUILD_opencv_superres=OFF -DBUILD_opencv_stitching=OFF -DBUILD_opencv_java=OFF -DBUILD_opencv_js=OFF -DBUILD_opencv_python2=OFF -DBUILD_opencv_python3=OFF -DBUILD_EXAMPLES=ON -DBUILD_PACKAGE=OFF -DBUILD_TESTS=ON -DBUILD_PERF_TESTS=ON -DBUILD_DOCS=OFF -DWITH_PTHREADS_PF=OFF -DCV_ENABLE_INTRINSICS=OFF -DBUILD_WASM_INTRIN_TESTS=OFF \
 
 
 make -j
@@ -88,33 +88,8 @@ make install
 ===== Deploy to github
 
 ```
-tar cvfz opencv_4.7_pthread_emscripten_install.tgz opencv_emscripten_install
+tar cvfz opencv_4.9_pthread_emscripten_install.tgz opencv_emscripten_install
 ```
 
 Then upload this to a release archive.
 
-
-==== Option 2 (deprecated): Build by hacking opencv/platforms/js/build_js.py
-
-Edit opencv/platforms/js/build_js.py
-Change the following values inside get_cmake_cmd():
--DBUILD_opencv_imgcodecs=ON
--DWITH_PNG=ON
--DWITH_JPEG=ON
--DCMAKE_INSTALL_PREFIX=..../opencv_install // specify your desired location here
-
-Then run
-```bash
-source ~/emsdk/emsdk_env.sh
-python ./opencv/platforms/js/build_js.py build_wasm --build_wasm --emscripten_dir /Users/pascal/emsdk/upstream/emscripten
-```
-(This will build opencv lib, but will forget to build opencv_imgcodec.a)
-
-Then run
-```
-cd build_wasm/
-make -j
-make install
-```
-
-=> then you can use the install folder (OpenCVConfig.cmake is inside opencv_install/lib/cmake/opencv4/OpenCVConfig.cmake)
