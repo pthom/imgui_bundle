@@ -79,6 +79,6 @@ def litgen_options_implot() -> LitgenOptions:
         ]
     )
 
-    options.fn_params_exclude_names__regex += "|^stride$|^offset$"
+    options.fn_params_exclude_names__regex += "|^stride$"
 
     return options
