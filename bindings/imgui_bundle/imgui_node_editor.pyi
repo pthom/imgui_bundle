@@ -94,7 +94,7 @@ def resume_editor_canvas() -> None:
 
 # ------------------------------------------------------------------------------
 
-class PinKind(enum.Enum):  # imgui_node_editor.h:47
+class PinKind(enum.Enum):
     """------------------------------------------------------------------------------"""
 
     # Input,    /* original C++ signature */
@@ -103,14 +103,14 @@ class PinKind(enum.Enum):  # imgui_node_editor.h:47
     # }
     output = enum.auto()  # (= 1)
 
-class FlowDirection(enum.Enum):  # imgui_node_editor.h:53
+class FlowDirection(enum.Enum):
     # Forward,    /* original C++ signature */
     forward = enum.auto()  # (= 0)
     # Backward    /* original C++ signature */
     # }
     backward = enum.auto()  # (= 1)
 
-class CanvasSizeMode(enum.Enum):  # imgui_node_editor.h:59
+class CanvasSizeMode(enum.Enum):
     # FitVerticalView,            /* original C++ signature */
     fit_vertical_view = (
         enum.auto()
@@ -122,7 +122,7 @@ class CanvasSizeMode(enum.Enum):  # imgui_node_editor.h:59
     # CenterOnly,                 /* original C++ signature */
     center_only = enum.auto()  # (= 2)  # Previous view will be centered on new view
 
-class SaveReasonFlags(enum.Enum):  # imgui_node_editor.h:68
+class SaveReasonFlags(enum.Enum):
     """------------------------------------------------------------------------------"""
 
     # None       = 0x00000000,    /* original C++ signature */
@@ -143,26 +143,28 @@ class SaveReasonFlags(enum.Enum):  # imgui_node_editor.h:68
     # }
     user = enum.auto()  # (= 0x00000040)
 
-class Config:  # imgui_node_editor.h:91
+class Config:
 
     # std::string             SettingsFile;    /* original C++ signature */
-    settings_file: str  # imgui_node_editor.h:95
+    settings_file: str
     # void*                   UserPointer;    /* original C++ signature */
-    user_pointer: Any  # imgui_node_editor.h:102
+    user_pointer: Any
     # CanvasSizeModeAlias     CanvasSizeMode;    /* original C++ signature */
-    canvas_size_mode: CanvasSizeMode  # imgui_node_editor.h:104
+    canvas_size_mode: CanvasSizeMode
     # int                     DragButtonIndex;    /* original C++ signature */
-    drag_button_index: int  # Mouse button index drag action will react to (0-left, 1-right, 2-middle)    # imgui_node_editor.h:105
+    drag_button_index: (
+        int  # Mouse button index drag action will react to (0-left, 1-right, 2-middle)
+    )
     # int                     SelectButtonIndex;    /* original C++ signature */
-    select_button_index: int  # Mouse button index select action will react to (0-left, 1-right, 2-middle)    # imgui_node_editor.h:106
+    select_button_index: int  # Mouse button index select action will react to (0-left, 1-right, 2-middle)
     # int                     NavigateButtonIndex;    /* original C++ signature */
-    navigate_button_index: int  # Mouse button index navigate action will react to (0-left, 1-right, 2-middle)    # imgui_node_editor.h:107
+    navigate_button_index: int  # Mouse button index navigate action will react to (0-left, 1-right, 2-middle)
     # int                     ContextMenuButtonIndex;    /* original C++ signature */
-    context_menu_button_index: int  # Mouse button index context menu action will react to (0-left, 1-right, 2-middle)    # imgui_node_editor.h:108
+    context_menu_button_index: int  # Mouse button index context menu action will react to (0-left, 1-right, 2-middle)
     # bool                    EnableSmoothZoom;    /* original C++ signature */
-    enable_smooth_zoom: bool  # imgui_node_editor.h:109
+    enable_smooth_zoom: bool
     # float                   SmoothZoomPower;    /* original C++ signature */
-    smooth_zoom_power: float  # imgui_node_editor.h:110
+    smooth_zoom_power: float
 
     # Config()    /* original C++ signature */
     #         : SettingsFile("NodeEditor.json")
@@ -180,17 +182,17 @@ class Config:  # imgui_node_editor.h:91
     #         , NavigateButtonIndex(1)
     #         , ContextMenuButtonIndex(1)
     #         , EnableSmoothZoom(true)
-    #                                   # ifdef __APPLE__
+    #                               # ifdef __APPLE__
     #         , SmoothZoomPower(1.1f)
-    #                                   # else
+    #                               # else
     #         , SmoothZoomPower(1.3f)
-    #                                   # endif
+    #                               # endif
     #     {
     #     }
-    def __init__(self) -> None:  # imgui_node_editor.h:112
+    def __init__(self) -> None:
         pass
 
-class StyleColor(enum.Enum):  # imgui_node_editor.h:139
+class StyleColor(enum.Enum):
     """------------------------------------------------------------------------------"""
 
     # StyleColor_Bg,    /* original C++ signature */
@@ -236,7 +238,7 @@ class StyleColor(enum.Enum):  # imgui_node_editor.h:139
     # }
     count = enum.auto()  # (= 19)
 
-class StyleVar(enum.Enum):  # imgui_node_editor.h:164
+class StyleVar(enum.Enum):
     # StyleVar_NodePadding,    /* original C++ signature */
     node_padding = enum.auto()  # (= 0)
     # StyleVar_NodeRounding,    /* original C++ signature */
@@ -296,61 +298,63 @@ class StyleVar(enum.Enum):  # imgui_node_editor.h:164
     # }
     count = enum.auto()  # (= 27)
 
-class Style:  # imgui_node_editor.h:197
+class Style:
     # ImVec4  NodePadding;    /* original C++ signature */
-    node_padding: ImVec4  # imgui_node_editor.h:199
+    node_padding: ImVec4
     # float   NodeRounding;    /* original C++ signature */
-    node_rounding: float  # imgui_node_editor.h:200
+    node_rounding: float
     # float   NodeBorderWidth;    /* original C++ signature */
-    node_border_width: float  # imgui_node_editor.h:201
+    node_border_width: float
     # float   HoveredNodeBorderWidth;    /* original C++ signature */
-    hovered_node_border_width: float  # imgui_node_editor.h:202
+    hovered_node_border_width: float
     # float   HoverNodeBorderOffset;    /* original C++ signature */
-    hover_node_border_offset: float  # imgui_node_editor.h:203
+    hover_node_border_offset: float
     # float   SelectedNodeBorderWidth;    /* original C++ signature */
-    selected_node_border_width: float  # imgui_node_editor.h:204
+    selected_node_border_width: float
     # float   SelectedNodeBorderOffset;    /* original C++ signature */
-    selected_node_border_offset: float  # imgui_node_editor.h:205
+    selected_node_border_offset: float
     # float   PinRounding;    /* original C++ signature */
-    pin_rounding: float  # imgui_node_editor.h:206
+    pin_rounding: float
     # float   PinBorderWidth;    /* original C++ signature */
-    pin_border_width: float  # imgui_node_editor.h:207
+    pin_border_width: float
     # float   LinkStrength;    /* original C++ signature */
-    link_strength: float  # imgui_node_editor.h:208
+    link_strength: float
     # ImVec2  SourceDirection;    /* original C++ signature */
-    source_direction: ImVec2  # imgui_node_editor.h:209
+    source_direction: ImVec2
     # ImVec2  TargetDirection;    /* original C++ signature */
-    target_direction: ImVec2  # imgui_node_editor.h:210
+    target_direction: ImVec2
     # float   ScrollDuration;    /* original C++ signature */
-    scroll_duration: float  # imgui_node_editor.h:211
+    scroll_duration: float
     # float   FlowMarkerDistance;    /* original C++ signature */
-    flow_marker_distance: float  # imgui_node_editor.h:212
+    flow_marker_distance: float
     # float   FlowSpeed;    /* original C++ signature */
-    flow_speed: float  # imgui_node_editor.h:213
+    flow_speed: float
     # float   FlowDuration;    /* original C++ signature */
-    flow_duration: float  # imgui_node_editor.h:214
+    flow_duration: float
     # ImVec2  PivotAlignment;    /* original C++ signature */
-    pivot_alignment: ImVec2  # imgui_node_editor.h:215
+    pivot_alignment: ImVec2
     # ImVec2  PivotSize;    /* original C++ signature */
-    pivot_size: ImVec2  # imgui_node_editor.h:216
+    pivot_size: ImVec2
     # ImVec2  PivotScale;    /* original C++ signature */
-    pivot_scale: ImVec2  # imgui_node_editor.h:217
+    pivot_scale: ImVec2
     # float   PinCorners;    /* original C++ signature */
-    pin_corners: float  # imgui_node_editor.h:218
+    pin_corners: float
     # float   PinRadius;    /* original C++ signature */
-    pin_radius: float  # imgui_node_editor.h:219
+    pin_radius: float
     # float   PinArrowSize;    /* original C++ signature */
-    pin_arrow_size: float  # imgui_node_editor.h:220
+    pin_arrow_size: float
     # float   PinArrowWidth;    /* original C++ signature */
-    pin_arrow_width: float  # imgui_node_editor.h:221
+    pin_arrow_width: float
     # float   GroupRounding;    /* original C++ signature */
-    group_rounding: float  # imgui_node_editor.h:222
+    group_rounding: float
     # float   GroupBorderWidth;    /* original C++ signature */
-    group_border_width: float  # imgui_node_editor.h:223
+    group_border_width: float
     # float   HighlightConnectedLinks;    /* original C++ signature */
-    highlight_connected_links: float  # imgui_node_editor.h:224
+    highlight_connected_links: float
     # float   SnapLinkToPinDir;    /* original C++ signature */
-    snap_link_to_pin_dir: float  # when True link will start on the line defined by pin direction    # imgui_node_editor.h:225
+    snap_link_to_pin_dir: (
+        float  # when True link will start on the line defined by pin direction
+    )
 
     # Style()    /* original C++ signature */
     #     {
@@ -373,11 +377,11 @@ class Style:  # imgui_node_editor.h:197
     #         PivotAlignment           = ImVec2(0.5f, 0.5f);
     #         PivotSize                = ImVec2(0.0f, 0.0f);
     #         PivotScale               = ImVec2(1, 1);
-    #                                     #if IMGUI_VERSION_NUM > 18101
+    #                            #if IMGUI_VERSION_NUM > 18101
     #         PinCorners               = ImDrawFlags_RoundCornersAll;
-    #                                     #else
+    #                            #else
     #         PinCorners               = ImDrawCornerFlags_All;
-    #                                     #endif
+    #                            #endif
     #         PinRadius                = 0.0f;
     #         PinArrowSize             = 0.0f;
     #         PinArrowWidth            = 0.0f;
@@ -406,158 +410,144 @@ class Style:  # imgui_node_editor.h:197
     #         Colors[StyleColor_GroupBg]            = ImColor(  0,   0,   0, 160);
     #         Colors[StyleColor_GroupBorder]        = ImColor(255, 255, 255,  32);
     #     }
-    def __init__(self) -> None:  # imgui_node_editor.h:228
+    def __init__(self) -> None:
         pass
 
 # ------------------------------------------------------------------------------
 # IMGUI_NODE_EDITOR_API void SetCurrentEditor(EditorContext* ctx);    /* original C++ signature */
-def set_current_editor(ctx: EditorContext) -> None:  # imgui_node_editor.h:290
+def set_current_editor(ctx: EditorContext) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API EditorContext* GetCurrentEditor();    /* original C++ signature */
-def get_current_editor() -> EditorContext:  # imgui_node_editor.h:291
+def get_current_editor() -> EditorContext:
     pass
 
 # IMGUI_NODE_EDITOR_API EditorContext* CreateEditor(const Config* config = nullptr);    /* original C++ signature */
-def create_editor(
-    config: Optional[Config] = None,
-) -> EditorContext:  # imgui_node_editor.h:292
+def create_editor(config: Optional[Config] = None) -> EditorContext:
     pass
 
 # IMGUI_NODE_EDITOR_API void DestroyEditor(EditorContext* ctx);    /* original C++ signature */
-def destroy_editor(ctx: EditorContext) -> None:  # imgui_node_editor.h:293
+def destroy_editor(ctx: EditorContext) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API const Config& GetConfig(EditorContext* ctx = nullptr);    /* original C++ signature */
-def get_config(
-    ctx: Optional[EditorContext] = None,
-) -> Config:  # imgui_node_editor.h:294
+def get_config(ctx: Optional[EditorContext] = None) -> Config:
     pass
 
 # IMGUI_NODE_EDITOR_API Style& GetStyle();    /* original C++ signature */
-def get_style() -> Style:  # imgui_node_editor.h:296
+def get_style() -> Style:
     pass
 
 # IMGUI_NODE_EDITOR_API const char* GetStyleColorName(StyleColor colorIndex);    /* original C++ signature */
-def get_style_color_name(color_index: StyleColor) -> str:  # imgui_node_editor.h:297
+def get_style_color_name(color_index: StyleColor) -> str:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleColor(StyleColor colorIndex, const ImVec4& color);    /* original C++ signature */
-def push_style_color(
-    color_index: StyleColor, color: ImVec4
-) -> None:  # imgui_node_editor.h:299
+def push_style_color(color_index: StyleColor, color: ImVec4) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PopStyleColor(int count = 1);    /* original C++ signature */
-def pop_style_color(count: int = 1) -> None:  # imgui_node_editor.h:300
+def pop_style_color(count: int = 1) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, float value);    /* original C++ signature */
 @overload
-def push_style_var(
-    var_index: StyleVar, value: float
-) -> None:  # imgui_node_editor.h:302
+def push_style_var(var_index: StyleVar, value: float) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec2& value);    /* original C++ signature */
 @overload
-def push_style_var(
-    var_index: StyleVar, value: ImVec2
-) -> None:  # imgui_node_editor.h:303
+def push_style_var(var_index: StyleVar, value: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec4& value);    /* original C++ signature */
 @overload
-def push_style_var(
-    var_index: StyleVar, value: ImVec4
-) -> None:  # imgui_node_editor.h:304
+def push_style_var(var_index: StyleVar, value: ImVec4) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PopStyleVar(int count = 1);    /* original C++ signature */
-def pop_style_var(count: int = 1) -> None:  # imgui_node_editor.h:305
+def pop_style_var(count: int = 1) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Begin(const char* id, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
-def begin(id: str, size: ImVec2 = ImVec2(0, 0)) -> None:  # imgui_node_editor.h:307
+def begin(id: str, size: ImVec2 = ImVec2(0, 0)) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void End();    /* original C++ signature */
-def end() -> None:  # imgui_node_editor.h:308
+def end() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void BeginNode(NodeId id);    /* original C++ signature */
-def begin_node(id: NodeId) -> None:  # imgui_node_editor.h:310
+def begin_node(id: NodeId) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void BeginPin(PinId id, PinKind kind);    /* original C++ signature */
-def begin_pin(id: PinId, kind: PinKind) -> None:  # imgui_node_editor.h:311
+def begin_pin(id: PinId, kind: PinKind) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
-def pin_rect(a: ImVec2, b: ImVec2) -> None:  # imgui_node_editor.h:312
+def pin_rect(a: ImVec2, b: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
-def pin_pivot_rect(a: ImVec2, b: ImVec2) -> None:  # imgui_node_editor.h:313
+def pin_pivot_rect(a: ImVec2, b: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotSize(const ImVec2& size);    /* original C++ signature */
-def pin_pivot_size(size: ImVec2) -> None:  # imgui_node_editor.h:314
+def pin_pivot_size(size: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotScale(const ImVec2& scale);    /* original C++ signature */
-def pin_pivot_scale(scale: ImVec2) -> None:  # imgui_node_editor.h:315
+def pin_pivot_scale(scale: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotAlignment(const ImVec2& alignment);    /* original C++ signature */
-def pin_pivot_alignment(alignment: ImVec2) -> None:  # imgui_node_editor.h:316
+def pin_pivot_alignment(alignment: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndPin();    /* original C++ signature */
-def end_pin() -> None:  # imgui_node_editor.h:317
+def end_pin() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Group(const ImVec2& size);    /* original C++ signature */
-def group(size: ImVec2) -> None:  # imgui_node_editor.h:318
+def group(size: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndNode();    /* original C++ signature */
-def end_node() -> None:  # imgui_node_editor.h:319
+def end_node() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginGroupHint(NodeId nodeId);    /* original C++ signature */
-def begin_group_hint(node_id: NodeId) -> bool:  # imgui_node_editor.h:321
+def begin_group_hint(node_id: NodeId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetGroupMin();    /* original C++ signature */
-def get_group_min() -> ImVec2:  # imgui_node_editor.h:322
+def get_group_min() -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetGroupMax();    /* original C++ signature */
-def get_group_max() -> ImVec2:  # imgui_node_editor.h:323
+def get_group_max() -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImDrawList* GetHintForegroundDrawList();    /* original C++ signature */
-def get_hint_foreground_draw_list() -> ImDrawList:  # imgui_node_editor.h:324
+def get_hint_foreground_draw_list() -> ImDrawList:
     pass
 
 # IMGUI_NODE_EDITOR_API ImDrawList* GetHintBackgroundDrawList();    /* original C++ signature */
-def get_hint_background_draw_list() -> ImDrawList:  # imgui_node_editor.h:325
+def get_hint_background_draw_list() -> ImDrawList:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndGroupHint();    /* original C++ signature */
-def end_group_hint() -> None:  # imgui_node_editor.h:326
+def end_group_hint() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API ImDrawList* GetNodeBackgroundDrawList(NodeId nodeId);    /* original C++ signature */
-def get_node_background_draw_list(
-    node_id: NodeId,
-) -> ImDrawList:  # imgui_node_editor.h:329
+def get_node_background_draw_list(node_id: NodeId) -> ImDrawList:
     """TODO: Add a way to manage node background channels"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool Link(LinkId id, PinId startPinId, PinId endPinId, const ImVec4& color = ImVec4(1, 1, 1, 1), float thickness = 1.0f);    /* original C++ signature */
-def link(  # imgui_node_editor.h:331
+def link(
     id: LinkId,
     start_pin_id: PinId,
     end_pin_id: PinId,
@@ -567,237 +557,217 @@ def link(  # imgui_node_editor.h:331
     pass
 
 # IMGUI_NODE_EDITOR_API void Flow(LinkId linkId, FlowDirection direction = FlowDirection::Forward);    /* original C++ signature */
-def flow(
-    link_id: LinkId, direction: FlowDirection = FlowDirection.forward
-) -> None:  # imgui_node_editor.h:333
+def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(1, 1, 1, 1), float thickness = 1.0f);    /* original C++ signature */
-def begin_create(
-    color: ImVec4 = ImVec4(1, 1, 1, 1), thickness: float = 1.0
-) -> bool:  # imgui_node_editor.h:335
+def begin_create(color: ImVec4 = ImVec4(1, 1, 1, 1), thickness: float = 1.0) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId);    /* original C++ signature */
 @overload
-def query_new_link(start_id: PinId, end_id: PinId) -> bool:  # imgui_node_editor.h:336
+def query_new_link(start_id: PinId, end_id: PinId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def query_new_link(  # imgui_node_editor.h:337
+def query_new_link(
     start_id: PinId, end_id: PinId, color: ImVec4, thickness: float = 1.0
 ) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId);    /* original C++ signature */
 @overload
-def query_new_node(pin_id: PinId) -> bool:  # imgui_node_editor.h:338
+def query_new_node(pin_id: PinId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def query_new_node(
-    pin_id: PinId, color: ImVec4, thickness: float = 1.0
-) -> bool:  # imgui_node_editor.h:339
+def query_new_node(pin_id: PinId, color: ImVec4, thickness: float = 1.0) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem();    /* original C++ signature */
 @overload
-def accept_new_item() -> bool:  # imgui_node_editor.h:340
+def accept_new_item() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def accept_new_item(
-    color: ImVec4, thickness: float = 1.0
-) -> bool:  # imgui_node_editor.h:341
+def accept_new_item(color: ImVec4, thickness: float = 1.0) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem();    /* original C++ signature */
 @overload
-def reject_new_item() -> None:  # imgui_node_editor.h:342
+def reject_new_item() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def reject_new_item(
-    color: ImVec4, thickness: float = 1.0
-) -> None:  # imgui_node_editor.h:343
+def reject_new_item(color: ImVec4, thickness: float = 1.0) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndCreate();    /* original C++ signature */
-def end_create() -> None:  # imgui_node_editor.h:344
+def end_create() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginDelete();    /* original C++ signature */
-def begin_delete() -> bool:  # imgui_node_editor.h:346
+def begin_delete() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryDeletedLink(LinkId* linkId, PinId* startId = nullptr, PinId* endId = nullptr);    /* original C++ signature */
-def query_deleted_link(  # imgui_node_editor.h:347
+def query_deleted_link(
     link_id: LinkId, start_id: Optional[PinId] = None, end_id: Optional[PinId] = None
 ) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryDeletedNode(NodeId* nodeId);    /* original C++ signature */
-def query_deleted_node(node_id: NodeId) -> bool:  # imgui_node_editor.h:348
+def query_deleted_node(node_id: NodeId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptDeletedItem(bool deleteDependencies = true);    /* original C++ signature */
-def accept_deleted_item(
-    delete_dependencies: bool = True,
-) -> bool:  # imgui_node_editor.h:349
+def accept_deleted_item(delete_dependencies: bool = True) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectDeletedItem();    /* original C++ signature */
-def reject_deleted_item() -> None:  # imgui_node_editor.h:350
+def reject_deleted_item() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndDelete();    /* original C++ signature */
-def end_delete() -> None:  # imgui_node_editor.h:351
+def end_delete() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SetNodePosition(NodeId nodeId, const ImVec2& editorPosition);    /* original C++ signature */
-def set_node_position(
-    node_id: NodeId, editor_position: ImVec2
-) -> None:  # imgui_node_editor.h:353
+def set_node_position(node_id: NodeId, editor_position: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SetGroupSize(NodeId nodeId, const ImVec2& size);    /* original C++ signature */
-def set_group_size(node_id: NodeId, size: ImVec2) -> None:  # imgui_node_editor.h:354
+def set_group_size(node_id: NodeId, size: ImVec2) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetNodePosition(NodeId nodeId);    /* original C++ signature */
-def get_node_position(node_id: NodeId) -> ImVec2:  # imgui_node_editor.h:355
+def get_node_position(node_id: NodeId) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetNodeSize(NodeId nodeId);    /* original C++ signature */
-def get_node_size(node_id: NodeId) -> ImVec2:  # imgui_node_editor.h:356
+def get_node_size(node_id: NodeId) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API void CenterNodeOnScreen(NodeId nodeId);    /* original C++ signature */
-def center_node_on_screen(node_id: NodeId) -> None:  # imgui_node_editor.h:357
+def center_node_on_screen(node_id: NodeId) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SetNodeZPosition(NodeId nodeId, float z);     /* original C++ signature */
-def set_node_z_position(node_id: NodeId, z: float) -> None:  # imgui_node_editor.h:358
+def set_node_z_position(node_id: NodeId, z: float) -> None:
     """Sets node z position, nodes with higher value are drawn over nodes with lower value"""
     pass
 
 # IMGUI_NODE_EDITOR_API float GetNodeZPosition(NodeId nodeId);     /* original C++ signature */
-def get_node_z_position(node_id: NodeId) -> float:  # imgui_node_editor.h:359
+def get_node_z_position(node_id: NodeId) -> float:
     """Returns node z position, defaults is 0.0"""
     pass
 
 # IMGUI_NODE_EDITOR_API void RestoreNodeState(NodeId nodeId);    /* original C++ signature */
-def restore_node_state(node_id: NodeId) -> None:  # imgui_node_editor.h:361
+def restore_node_state(node_id: NodeId) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Suspend();    /* original C++ signature */
-def suspend() -> None:  # imgui_node_editor.h:363
+def suspend() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Resume();    /* original C++ signature */
-def resume() -> None:  # imgui_node_editor.h:364
+def resume() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsSuspended();    /* original C++ signature */
-def is_suspended() -> bool:  # imgui_node_editor.h:365
+def is_suspended() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsActive();    /* original C++ signature */
-def is_active() -> bool:  # imgui_node_editor.h:367
+def is_active() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasSelectionChanged();    /* original C++ signature */
-def has_selection_changed() -> bool:  # imgui_node_editor.h:369
+def has_selection_changed() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetSelectedObjectCount();    /* original C++ signature */
-def get_selected_object_count() -> int:  # imgui_node_editor.h:370
+def get_selected_object_count() -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetSelectedNodes(NodeId* nodes, int size);    /* original C++ signature */
-def get_selected_nodes(nodes: NodeId, size: int) -> int:  # imgui_node_editor.h:371
+def get_selected_nodes(nodes: NodeId, size: int) -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetSelectedLinks(LinkId* links, int size);    /* original C++ signature */
-def get_selected_links(links: LinkId, size: int) -> int:  # imgui_node_editor.h:372
+def get_selected_links(links: LinkId, size: int) -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsNodeSelected(NodeId nodeId);    /* original C++ signature */
-def is_node_selected(node_id: NodeId) -> bool:  # imgui_node_editor.h:373
+def is_node_selected(node_id: NodeId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsLinkSelected(LinkId linkId);    /* original C++ signature */
-def is_link_selected(link_id: LinkId) -> bool:  # imgui_node_editor.h:374
+def is_link_selected(link_id: LinkId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API void ClearSelection();    /* original C++ signature */
-def clear_selection() -> None:  # imgui_node_editor.h:375
+def clear_selection() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SelectNode(NodeId nodeId, bool append = false);    /* original C++ signature */
-def select_node(
-    node_id: NodeId, append: bool = False
-) -> None:  # imgui_node_editor.h:376
+def select_node(node_id: NodeId, append: bool = False) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SelectLink(LinkId linkId, bool append = false);    /* original C++ signature */
-def select_link(
-    link_id: LinkId, append: bool = False
-) -> None:  # imgui_node_editor.h:377
+def select_link(link_id: LinkId, append: bool = False) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void DeselectNode(NodeId nodeId);    /* original C++ signature */
-def deselect_node(node_id: NodeId) -> None:  # imgui_node_editor.h:378
+def deselect_node(node_id: NodeId) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void DeselectLink(LinkId linkId);    /* original C++ signature */
-def deselect_link(link_id: LinkId) -> None:  # imgui_node_editor.h:379
+def deselect_link(link_id: LinkId) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool DeleteNode(NodeId nodeId);    /* original C++ signature */
-def delete_node(node_id: NodeId) -> bool:  # imgui_node_editor.h:381
+def delete_node(node_id: NodeId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool DeleteLink(LinkId linkId);    /* original C++ signature */
-def delete_link(link_id: LinkId) -> bool:  # imgui_node_editor.h:382
+def delete_link(link_id: LinkId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasAnyLinks(NodeId nodeId);     /* original C++ signature */
 @overload
-def has_any_links(node_id: NodeId) -> bool:  # imgui_node_editor.h:384
+def has_any_links(node_id: NodeId) -> bool:
     """Returns True if node has any link connected"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasAnyLinks(PinId pinId);     /* original C++ signature */
 @overload
-def has_any_links(pin_id: PinId) -> bool:  # imgui_node_editor.h:385
+def has_any_links(pin_id: PinId) -> bool:
     """Return True if pin has any link connected"""
     pass
 
 # IMGUI_NODE_EDITOR_API int BreakLinks(NodeId nodeId);     /* original C++ signature */
 @overload
-def break_links(node_id: NodeId) -> int:  # imgui_node_editor.h:386
+def break_links(node_id: NodeId) -> int:
     """Break all links connected to this node"""
     pass
 
 # IMGUI_NODE_EDITOR_API int BreakLinks(PinId pinId);     /* original C++ signature */
 @overload
-def break_links(pin_id: PinId) -> int:  # imgui_node_editor.h:387
+def break_links(pin_id: PinId) -> int:
     """Break all links connected to this pin"""
     pass
 
 # IMGUI_NODE_EDITOR_API void NavigateToContent(float duration = -1);    /* original C++ signature */
-def navigate_to_content(duration: float = -1) -> None:  # imgui_node_editor.h:389
+def navigate_to_content(duration: float = -1) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void NavigateToSelection(bool zoomIn = false, float duration = -1);    /* original C++ signature */
-def navigate_to_selection(
-    zoom_in: bool = False, duration: float = -1
-) -> None:  # imgui_node_editor.h:390
+def navigate_to_selection(zoom_in: bool = False, duration: float = -1) -> None:
     pass
 
 # Shows context menu for node, link or background
@@ -819,151 +789,143 @@ def navigate_to_selection(
 #        ...
 #        ed::End();
 # IMGUI_NODE_EDITOR_API bool ShowNodeContextMenu(NodeId* nodeId);    /* original C++ signature */
-def show_node_context_menu(node_id: NodeId) -> bool:  # imgui_node_editor.h:410
+def show_node_context_menu(node_id: NodeId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowPinContextMenu(PinId* pinId);    /* original C++ signature */
-def show_pin_context_menu(pin_id: PinId) -> bool:  # imgui_node_editor.h:411
+def show_pin_context_menu(pin_id: PinId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowLinkContextMenu(LinkId* linkId);    /* original C++ signature */
-def show_link_context_menu(link_id: LinkId) -> bool:  # imgui_node_editor.h:412
+def show_link_context_menu(link_id: LinkId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool ShowBackgroundContextMenu();    /* original C++ signature */
-def show_background_context_menu() -> bool:  # imgui_node_editor.h:413
+def show_background_context_menu() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API void EnableShortcuts(bool enable);    /* original C++ signature */
-def enable_shortcuts(enable: bool) -> None:  # imgui_node_editor.h:415
+def enable_shortcuts(enable: bool) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AreShortcutsEnabled();    /* original C++ signature */
-def are_shortcuts_enabled() -> bool:  # imgui_node_editor.h:416
+def are_shortcuts_enabled() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginShortcut();    /* original C++ signature */
-def begin_shortcut() -> bool:  # imgui_node_editor.h:418
+def begin_shortcut() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCut();    /* original C++ signature */
-def accept_cut() -> bool:  # imgui_node_editor.h:419
+def accept_cut() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCopy();    /* original C++ signature */
-def accept_copy() -> bool:  # imgui_node_editor.h:420
+def accept_copy() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptPaste();    /* original C++ signature */
-def accept_paste() -> bool:  # imgui_node_editor.h:421
+def accept_paste() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptDuplicate();    /* original C++ signature */
-def accept_duplicate() -> bool:  # imgui_node_editor.h:422
+def accept_duplicate() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptCreateNode();    /* original C++ signature */
-def accept_create_node() -> bool:  # imgui_node_editor.h:423
+def accept_create_node() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextSize();    /* original C++ signature */
-def get_action_context_size() -> int:  # imgui_node_editor.h:424
+def get_action_context_size() -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextNodes(NodeId* nodes, int size);    /* original C++ signature */
-def get_action_context_nodes(
-    nodes: NodeId, size: int
-) -> int:  # imgui_node_editor.h:425
+def get_action_context_nodes(nodes: NodeId, size: int) -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API int  GetActionContextLinks(LinkId* links, int size);    /* original C++ signature */
-def get_action_context_links(
-    links: LinkId, size: int
-) -> int:  # imgui_node_editor.h:426
+def get_action_context_links(links: LinkId, size: int) -> int:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndShortcut();    /* original C++ signature */
-def end_shortcut() -> None:  # imgui_node_editor.h:427
+def end_shortcut() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API float GetCurrentZoom();    /* original C++ signature */
-def get_current_zoom() -> float:  # imgui_node_editor.h:429
+def get_current_zoom() -> float:
     pass
 
 # IMGUI_NODE_EDITOR_API NodeId GetHoveredNode();    /* original C++ signature */
-def get_hovered_node() -> NodeId:  # imgui_node_editor.h:431
+def get_hovered_node() -> NodeId:
     pass
 
 # IMGUI_NODE_EDITOR_API PinId GetHoveredPin();    /* original C++ signature */
-def get_hovered_pin() -> PinId:  # imgui_node_editor.h:432
+def get_hovered_pin() -> PinId:
     pass
 
 # IMGUI_NODE_EDITOR_API LinkId GetHoveredLink();    /* original C++ signature */
-def get_hovered_link() -> LinkId:  # imgui_node_editor.h:433
+def get_hovered_link() -> LinkId:
     pass
 
 # IMGUI_NODE_EDITOR_API NodeId GetDoubleClickedNode();    /* original C++ signature */
-def get_double_clicked_node() -> NodeId:  # imgui_node_editor.h:434
+def get_double_clicked_node() -> NodeId:
     pass
 
 # IMGUI_NODE_EDITOR_API PinId GetDoubleClickedPin();    /* original C++ signature */
-def get_double_clicked_pin() -> PinId:  # imgui_node_editor.h:435
+def get_double_clicked_pin() -> PinId:
     pass
 
 # IMGUI_NODE_EDITOR_API LinkId GetDoubleClickedLink();    /* original C++ signature */
-def get_double_clicked_link() -> LinkId:  # imgui_node_editor.h:436
+def get_double_clicked_link() -> LinkId:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsBackgroundClicked();    /* original C++ signature */
-def is_background_clicked() -> bool:  # imgui_node_editor.h:437
+def is_background_clicked() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsBackgroundDoubleClicked();    /* original C++ signature */
-def is_background_double_clicked() -> bool:  # imgui_node_editor.h:438
+def is_background_double_clicked() -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundClickButtonIndex();     /* original C++ signature */
-def get_background_click_button_index() -> ImGuiMouseButton:  # imgui_node_editor.h:439
+def get_background_click_button_index() -> ImGuiMouseButton:
     """-1 if none"""
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundDoubleClickButtonIndex();     /* original C++ signature */
-def get_background_double_click_button_index() -> (
-    ImGuiMouseButton
-):  # imgui_node_editor.h:440
+def get_background_double_click_button_index() -> ImGuiMouseButton:
     """-1 if none"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool GetLinkPins(LinkId linkId, PinId* startPinId, PinId* endPinId);     /* original C++ signature */
-def get_link_pins(
-    link_id: LinkId, start_pin_id: PinId, end_pin_id: PinId
-) -> bool:  # imgui_node_editor.h:442
+def get_link_pins(link_id: LinkId, start_pin_id: PinId, end_pin_id: PinId) -> bool:
     """pass None if particular pin do not interest you"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool PinHadAnyLinks(PinId pinId);    /* original C++ signature */
-def pin_had_any_links(pin_id: PinId) -> bool:  # imgui_node_editor.h:444
+def pin_had_any_links(pin_id: PinId) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetScreenSize();    /* original C++ signature */
-def get_screen_size() -> ImVec2:  # imgui_node_editor.h:446
+def get_screen_size() -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 ScreenToCanvas(const ImVec2& pos);    /* original C++ signature */
-def screen_to_canvas(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:447
+def screen_to_canvas(pos: ImVec2) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);    /* original C++ signature */
-def canvas_to_screen(pos: ImVec2) -> ImVec2:  # imgui_node_editor.h:448
+def canvas_to_screen(pos: ImVec2) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API int GetNodeCount();                                    /* original C++ signature */
-def get_node_count() -> int:  # imgui_node_editor.h:450
+def get_node_count() -> int:
     """Returns number of submitted nodes since Begin() call"""
     pass
 
 # IMGUI_NODE_EDITOR_API int GetOrderedNodeIds(NodeId* nodes, int size);        /* original C++ signature */
-def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.h:451
+def get_ordered_node_ids(nodes: NodeId, size: int) -> int:
     """Fills an array with node id's in order they're drawn; up to 'size` elements are set. Returns actual size of filled id's."""
     pass
 
@@ -980,17 +942,15 @@ def get_ordered_node_ids(nodes: NodeId, size: int) -> int:  # imgui_node_editor.
 ####################    <generated_from:node_editor_default_context.h>    ####################
 
 # IMGUI_NODE_EDITOR_API NodeEditorContext* DefaultNodeEditorContext_Immapp();    /* original C++ signature */
-def default_node_editor_context_immapp() -> (
-    NodeEditorContext
-):  # node_editor_default_context.h:9
+def default_node_editor_context_immapp() -> NodeEditorContext:
     pass
 
 # IMGUI_NODE_EDITOR_API void SuspendNodeEditorCanvas_Immapp();    /* original C++ signature */
-def suspend_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:10
+def suspend_node_editor_canvas_immapp() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void ResumeNodeEditorCanvas_Immapp();    /* original C++ signature */
-def resume_node_editor_canvas_immapp() -> None:  # node_editor_default_context.h:11
+def resume_node_editor_canvas_immapp() -> None:
     pass
 
 ####################    </generated_from:node_editor_default_context.h>    ####################
