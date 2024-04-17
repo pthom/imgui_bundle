@@ -356,6 +356,20 @@ class Style:
         float  # when True link will start on the line defined by pin direction
     )
 
+    # [ADAPT_IMGUI_BUNDLE]
+    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # python adapter for Style::Colors[StyleColor_Count]
+    # You can query and modify those values (0 <= idxColor < StyleColor.count)
+    # inline IMGUI_NODE_EDITOR_API ImVec4& Color_(StyleColor idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < StyleColor_Count)); return Colors[idxColor]; }    /* original C++ signature */
+    def color_(self, idx_color: StyleColor) -> ImVec4:
+        pass
+    # inline IMGUI_NODE_EDITOR_API void SetColor_(StyleColor idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < StyleColor_Count)); Colors[idxColor] = color; }    /* original C++ signature */
+    def set_color_(self, idx_color: StyleColor, color: ImVec4) -> None:
+        pass
+    #                            #endif
+    #
+
     # Style()    /* original C++ signature */
     #     {
     #         NodePadding              = ImVec4(8, 8, 8, 8);

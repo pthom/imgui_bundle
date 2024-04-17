@@ -225,6 +225,16 @@ void py_init_module_imgui_node_editor(py::module& m)
         .def_readwrite("group_border_width", &ax::NodeEditor::Style::GroupBorderWidth, "")
         .def_readwrite("highlight_connected_links", &ax::NodeEditor::Style::HighlightConnectedLinks, "")
         .def_readwrite("snap_link_to_pin_dir", &ax::NodeEditor::Style::SnapLinkToPinDir, "when True link will start on the line defined by pin direction")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("color_",
+            &ax::NodeEditor::Style::Color_,
+            py::arg("idx_color"),
+            pybind11::return_value_policy::reference)
+        .def("set_color_",
+            &ax::NodeEditor::Style::SetColor_, py::arg("idx_color"), py::arg("color"))
+        // #endif
+        //
         .def(py::init<>())
         ;
 

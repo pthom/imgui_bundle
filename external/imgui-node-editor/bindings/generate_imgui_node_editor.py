@@ -52,6 +52,9 @@ def main():
             r"^ImVector",
         ]
     )
+    options.srcmlcpp_options.header_filter_acceptable__regex += (
+        "|^IMGUI_BUNDLE_PYTHON_API$"
+    )
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
