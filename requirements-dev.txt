@@ -4,3 +4,4 @@ mypy
 opencv-contrib-python
 pybind11
 pytest
+jupyter-book
