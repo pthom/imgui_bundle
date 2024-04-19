@@ -1,0 +1,57 @@
+[[bindings_pyodide]]
+=== Building a binary package of imgui_bundle for pyodide
+
+link:https://pyodide.org/en/stable/development/building-and-testing-packages.html#building-and-testing-packages-out-of-tree[instructions on pyodide doc site]
+
+==== Install pyodide-build
+
+[source]
+----
+pip install pyodide-build
+----
+
+==== Set up Emscripten
+
+[source,bash]
+----
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+----
+
+[source,bash]
+----
+PYODIDE_EMSCRIPTEN_VERSION=$(pyodide config get emscripten_version)
+./emsdk install ${PYODIDE_EMSCRIPTEN_VERSION}
+./emsdk activate ${PYODIDE_EMSCRIPTEN_VERSION}
+source emsdk_env.sh
+----
+
+==== Build the package  / Bof
+
+The option `--exports pyinit` is important in order to avoid weird errors (see https://github.com/pyodide/pyodide/issues/2711)
+
+[source]
+----
+export CMAKE_EXECUTABLE=$(which cmake)
+pyodide build --exports pyinit
+----
+
+if needed, clean before build
+
+[source]
+----
+rm -rf .pyodide-xbuildenv/
+----
+
+==== Build the package in tree
+See pyodide/packages/imgui_bundle/meta.yaml
+
+[source,bash]
+----
+PYODIDE_PACKAGES="imgui_bundle" make
+----
+
+(you can follow logs in pyodide/packages/imgui_bundle/build.log)
+
+Example with pygame and SDL:
+https://ryanking13.github.io/pyodide-pygame-demo/examples/chimp.html
