@@ -66,6 +66,9 @@ include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
 #   see src/hello_imgui/internal/backend_impls/rendering_xxxx.[h,cpp]
 #   (using those backends probably implies that you want to heavily customize the rendering code)
 #
+# Note for linux:
+# If you want to use glfw and/or sdl, you need to install system-wide, or alternatively pass the following cmake options
+#      -DHELLOIMGUI_DOWNLOAD_GLFW_IF_NEEDED=ON  -DHELLOIMGUI_DOWNLOAD_SDL_IF_NEEDED=ON
 ################################################################################
 # Platform backends:
 option(HELLOIMGUI_USE_GLFW3 "Use Glfw3 as a platform backend" OFF)
