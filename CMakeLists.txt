@@ -26,6 +26,12 @@ if (IMGUI_BUNDLE_BUILD_PYODIDE)
     set(IMGUI_BUNDLE_DISABLE_IMGUIZMO ON CACHE BOOL "" FORCE)
     set(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT ON CACHE BOOL "" FORCE)
     set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
+
+    add_compile_options("-sUSE_SDL=2")
+    add_link_options("-sUSE_SDL=2")
+    # add_compile_options("-sERROR_ON_UNDEFINED_SYMBOLS=1")
+    add_link_options("-sERROR_ON_UNDEFINED_SYMBOLS=1")
+
 endif()
 
 
