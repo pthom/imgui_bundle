@@ -1,9 +1,8 @@
 from imgui_bundle import hello_imgui, imgui
 from time import time
 
-start_time = time()
 
-def gui():
+def gui(start_time: float):
     elapsed = time() - start_time
     imgui.text(f"Hello, world! {elapsed:.1f} elapsed")
     if elapsed > 5.0:
@@ -13,7 +12,8 @@ def gui():
 
 
 def main():
-    hello_imgui.run(gui)
+    start_time = time()
+    hello_imgui.run(lambda: gui(start_time))
 
 
 if __name__ == "__main__":
