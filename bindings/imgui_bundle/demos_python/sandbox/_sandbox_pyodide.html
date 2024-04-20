@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <script src="pyodide.js"></script>
+</head>
+<body>
+    <div class="demo">
+        <div class="demo-header">pygame.examples.chimp</div>
+        <div class="demo-content">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+<script type="text/javascript">
+    async function main(){
+        let pyodide = await loadPyodide();
+        pyodide._api._skip_unwind_fatal_error = true;
+        await pyodide.loadPackage(["numpy"], { checkIntegrity: false })
+        await pyodide.loadPackage(["imgui_bundle"], { checkIntegrity: false })
+        // await pyodide.loadPackage(["pygame-ce"], { checkIntegrity: false })
+
+
+        canvas = document.getElementById("canvas");
+        pyodide.canvas.setCanvas2D(canvas);
+
+        // await pyodide.loadPackage("micropip");
+        // const micropip = pyodide.pyimport("micropip");
+        // await pyodide.loadPackage("imgui_bundle", { checkIntegrity: false });
+        
+        python_code = `
+from imgui_bundle import hello_imgui, imgui
+from time import time
+
+
+def gui(start_time: float):
+    elapsed = time() - start_time
+    imgui.text(f"Hello, world! {elapsed:.1f} elapsed")
+    if elapsed > 5.0:
+        hello_imgui.get_runner_params().app_shall_exit = True
+    if imgui.button("Exit"):
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+
+async def main():
+    start_time = time()
+    hello_imgui.run(lambda: gui(start_time))
+
+
+main()
+`
+
+        pyodide.runPythonAsync(python_code);
+    }
+    main();
+</script>
+</body>
+</html>
