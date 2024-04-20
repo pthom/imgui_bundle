@@ -3890,8 +3890,6 @@ class Context:
     log_enabled: bool  # Currently capturing
     # ImGuiLogType            LogType;    /* original C++ signature */
     log_type: LogType  # Capture target
-    # ImFileHandle            LogFile;    /* original C++ signature */
-    log_file: ImFileHandle  # If != None log to stdout/ file
     # ImGuiTextBuffer         LogBuffer;    /* original C++ signature */
     log_buffer: TextBuffer  # Accumulation buffer when log to clipboard. This is pointer so our GImGui static constructor doesn't call heap allocators.
     # const char*             LogNextPrefix;    /* original C++ signature */
