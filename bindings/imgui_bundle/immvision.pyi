@@ -214,69 +214,73 @@ class ImageParams:  # immvision.h:96
     # bool ZoomWithMouseWheel = true;    /* original C++ signature */
     zoom_with_mouse_wheel: bool = True  # immvision.h:143
 
+    # bool CanResize = true;    /* original C++ signature */
+    # Can the image be resized by the user
+    can_resize: bool = True  # immvision.h:146
+
     # bool IsColorOrderBGR = true;    /* original C++ signature */
     # Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)
-    is_color_order_bgr: bool = True  # immvision.h:146
+    is_color_order_bgr: bool = True  # immvision.h:149
 
     # int  SelectedChannel = -1;    /* original C++ signature */
     #
     # Image display options
     #
     # if SelectedChannel >= 0 then only this channel is displayed
-    selected_channel: int = -1  # immvision.h:152
+    selected_channel: int = -1  # immvision.h:155
     # bool ShowSchoolPaperBackground = true;    /* original C++ signature */
     # Show a "school paper" background grid
-    show_school_paper_background: bool = True  # immvision.h:154
+    show_school_paper_background: bool = True  # immvision.h:157
     # bool ShowAlphaChannelCheckerboard = true;    /* original C++ signature */
     # show a checkerboard behind transparent portions of 4 channels RGBA images
-    show_alpha_channel_checkerboard: bool = True  # immvision.h:156
+    show_alpha_channel_checkerboard: bool = True  # immvision.h:159
     # bool ShowGrid = true;    /* original C++ signature */
     # Grid displayed when the zoom is high
-    show_grid: bool = True  # immvision.h:158
+    show_grid: bool = True  # immvision.h:161
     # bool DrawValuesOnZoomedPixels = true;    /* original C++ signature */
     # Pixel values show when the zoom is high
-    draw_values_on_zoomed_pixels: bool = True  # immvision.h:160
+    draw_values_on_zoomed_pixels: bool = True  # immvision.h:163
 
     # bool ShowImageInfo = true;    /* original C++ signature */
     #
     # Image display options
     #
     # Show matrix type and size
-    show_image_info: bool = True  # immvision.h:166
+    show_image_info: bool = True  # immvision.h:169
     # bool ShowPixelInfo = true;    /* original C++ signature */
     # Show pixel values
-    show_pixel_info: bool = True  # immvision.h:168
+    show_pixel_info: bool = True  # immvision.h:171
     # bool ShowZoomButtons = true;    /* original C++ signature */
     # Show buttons that enable to zoom in/out (the mouse wheel also zoom)
-    show_zoom_buttons: bool = True  # immvision.h:170
+    show_zoom_buttons: bool = True  # immvision.h:173
     # bool ShowOptionsPanel = false;    /* original C++ signature */
     # Open the options panel
-    show_options_panel: bool = False  # immvision.h:172
+    show_options_panel: bool = False  # immvision.h:175
     # bool ShowOptionsInTooltip = false;    /* original C++ signature */
     # If set to True, then the option panel will be displayed in a transient tooltip window
-    show_options_in_tooltip: bool = False  # immvision.h:174
+    show_options_in_tooltip: bool = False  # immvision.h:177
     # bool ShowOptionsButton = true;    /* original C++ signature */
     # If set to False, then the Options button will not be displayed
-    show_options_button: bool = True  # immvision.h:176
+    show_options_button: bool = True  # immvision.h:179
 
     # std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>();    /* original C++ signature */
     #
     # Watched Pixels
     #
     # List of Watched Pixel coordinates
-    watched_pixels: List[Point] = List[Point]()  # immvision.h:182
+    watched_pixels: List[Point] = List[Point]()  # immvision.h:185
     # bool AddWatchedPixelOnDoubleClick = true;    /* original C++ signature */
     # Shall we add a watched pixel on double click
-    add_watched_pixel_on_double_click: bool = True  # immvision.h:184
+    add_watched_pixel_on_double_click: bool = True  # immvision.h:187
     # bool HighlightWatchedPixels = true;    /* original C++ signature */
     # Shall the watched pixels be drawn on the image
-    highlight_watched_pixels: bool = True  # immvision.h:186
+    highlight_watched_pixels: bool = True  # immvision.h:189
 
     # MouseInformation MouseInfo = MouseInformation();    /* original C++ signature */
     # Mouse position information. These values are filled after displaying an image
-    mouse_info: MouseInformation = MouseInformation()  # immvision.h:189
+    mouse_info: MouseInformation = MouseInformation()  # immvision.h:192
 
-    # ImageParams(bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
+    # ImageParams(bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
     def __init__(  # Line:4
         self,
         refresh_image: bool = False,
@@ -287,6 +291,7 @@ class ImageParams:  # immvision.h:96
         colormap_key: str = "",
         pan_with_mouse: bool = True,
         zoom_with_mouse_wheel: bool = True,
+        can_resize: bool = True,
         is_color_order_bgr: bool = True,
         selected_channel: int = -1,
         show_school_paper_background: bool = True,
@@ -310,24 +315,24 @@ class ImageParams:  # immvision.h:96
 # #ifdef IMMVISION_SERIALIZE_JSON
 #
 # IMMVISION_API std::string ImageParamsToJson(const ImageParams& params);    /* original C++ signature */
-def image_params_to_json(params: ImageParams) -> str:  # immvision.h:195
+def image_params_to_json(params: ImageParams) -> str:  # immvision.h:198
     pass
 
 # IMMVISION_API void FillImageParamsFromJson(const std::string& json, ImageParams* params);    /* original C++ signature */
 def fill_image_params_from_json(
     json: str, params: ImageParams
-) -> None:  # immvision.h:196
+) -> None:  # immvision.h:199
     pass
 
 # IMMVISION_API ImageParams ImageParamsFromJson(const std::string& json);    /* original C++ signature */
-def image_params_from_json(json: str) -> ImageParams:  # immvision.h:197
+def image_params_from_json(json: str) -> ImageParams:  # immvision.h:200
     pass
 
 # #endif
 #
 
 # IMMVISION_API ImageParams FactorImageParamsDisplayOnly();    /* original C++ signature */
-def factor_image_params_display_only() -> ImageParams:  # immvision.h:201
+def factor_image_params_display_only() -> ImageParams:  # immvision.h:204
     """Create ImageParams that display the image only, with no decoration, and no user interaction"""
     pass
 
@@ -336,7 +341,7 @@ def factor_image_params_display_only() -> ImageParams:  # immvision.h:201
 #                         double zoomRatio,
 #                         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix(  # immvision.h:205
+def make_zoom_pan_matrix(  # immvision.h:208
     zoom_center: Point2d, zoom_ratio: float, displayed_image_size: Size
 ) -> Matx33d:
     """Create a zoom/pan matrix centered around a given point of interest"""
@@ -346,7 +351,7 @@ def make_zoom_pan_matrix(  # immvision.h:205
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_scale_one(  # immvision.h:211
+def make_zoom_pan_matrix_scale_one(  # immvision.h:214
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
@@ -355,13 +360,13 @@ def make_zoom_pan_matrix_scale_one(  # immvision.h:211
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_full_view(  # immvision.h:216
+def make_zoom_pan_matrix_full_view(  # immvision.h:219
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
 
 # IMMVISION_API void Image(const std::string& label, const cv::Mat& mat, ImageParams* params);    /* original C++ signature */
-def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:256
+def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:259
     """Display an image, with full user control: zoom, pan, watch pixels, etc.
 
     :param label
@@ -407,7 +412,7 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:256
 #         bool showOptionsButton = false,
 #         bool isBgrOrBgra = true
 #         );
-def image_display(  # immvision.h:302
+def image_display(  # immvision.h:305
     label_id: str,
     mat: Mat,
     image_display_size: Size = (0, 0),
@@ -462,14 +467,14 @@ def image_display(  # immvision.h:302
     pass
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:314
+def available_colormaps() -> List[str]:  # immvision.h:317
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:321
+def clear_texture_cache() -> None:  # immvision.h:324
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -478,7 +483,7 @@ def clear_texture_cache() -> None:  # immvision.h:321
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:326
+def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:329
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -486,7 +491,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:326
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:329
+def version_info() -> str:  # immvision.h:332
     """Return immvision version info"""
     pass
 
@@ -512,7 +517,7 @@ def version_info() -> str:  # immvision.h:329
 #         double zoomRatio = -1.,
 #         bool isColorOrderBGR = true
 #     );
-def inspector_add_image(  # immvision.h:350
+def inspector_add_image(  # immvision.h:353
     image: Mat,
     legend: str,
     zoom_key: str = "",
@@ -524,11 +529,11 @@ def inspector_add_image(  # immvision.h:350
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:360
+def inspector_show() -> None:  # immvision.h:363
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:362
+def inspector_clear_images() -> None:  # immvision.h:365
     pass
 
 ####################    </generated_from:immvision.h>    ####################

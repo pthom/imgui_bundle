@@ -119,7 +119,7 @@ void py_init_module_immvision(py::module& m)
         py::class_<ImmVision::ImageParams>    // immvision.h:96
             (m, "ImageParams", " Set of display parameters and options for an Image\n\nIMMVISION_API_STRUCT")
         .def(py::init<>([](
-        bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ImmVision::ColormapSettingsData ColormapSettings = ImmVision::ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, ImmVision::MouseInformation MouseInfo = ImmVision::MouseInformation())
+        bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ImmVision::ColormapSettingsData ColormapSettings = ImmVision::ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, ImmVision::MouseInformation MouseInfo = ImmVision::MouseInformation())
         {
             auto r = std::make_unique<ImmVision::ImageParams>();
             r->RefreshImage = RefreshImage;
@@ -130,6 +130,7 @@ void py_init_module_immvision(py::module& m)
             r->ColormapKey = ColormapKey;
             r->PanWithMouse = PanWithMouse;
             r->ZoomWithMouseWheel = ZoomWithMouseWheel;
+            r->CanResize = CanResize;
             r->IsColorOrderBGR = IsColorOrderBGR;
             r->SelectedChannel = SelectedChannel;
             r->ShowSchoolPaperBackground = ShowSchoolPaperBackground;
@@ -148,7 +149,7 @@ void py_init_module_immvision(py::module& m)
             r->MouseInfo = MouseInfo;
             return r;
         })
-        , py::arg("refresh_image") = false, py::arg("image_display_size") = cv::Size(), py::arg("zoom_pan_matrix") = cv::Matx33d::eye(), py::arg("zoom_key") = "", py::arg("colormap_settings") = ImmVision::ColormapSettingsData(), py::arg("colormap_key") = "", py::arg("pan_with_mouse") = true, py::arg("zoom_with_mouse_wheel") = true, py::arg("is_color_order_bgr") = true, py::arg("selected_channel") = -1, py::arg("show_school_paper_background") = true, py::arg("show_alpha_channel_checkerboard") = true, py::arg("show_grid") = true, py::arg("draw_values_on_zoomed_pixels") = true, py::arg("show_image_info") = true, py::arg("show_pixel_info") = true, py::arg("show_zoom_buttons") = true, py::arg("show_options_panel") = false, py::arg("show_options_in_tooltip") = false, py::arg("show_options_button") = true, py::arg("watched_pixels") = std::vector<cv::Point>(), py::arg("add_watched_pixel_on_double_click") = true, py::arg("highlight_watched_pixels") = true, py::arg("mouse_info") = ImmVision::MouseInformation()
+        , py::arg("refresh_image") = false, py::arg("image_display_size") = cv::Size(), py::arg("zoom_pan_matrix") = cv::Matx33d::eye(), py::arg("zoom_key") = "", py::arg("colormap_settings") = ImmVision::ColormapSettingsData(), py::arg("colormap_key") = "", py::arg("pan_with_mouse") = true, py::arg("zoom_with_mouse_wheel") = true, py::arg("can_resize") = true, py::arg("is_color_order_bgr") = true, py::arg("selected_channel") = -1, py::arg("show_school_paper_background") = true, py::arg("show_alpha_channel_checkerboard") = true, py::arg("show_grid") = true, py::arg("draw_values_on_zoomed_pixels") = true, py::arg("show_image_info") = true, py::arg("show_pixel_info") = true, py::arg("show_zoom_buttons") = true, py::arg("show_options_panel") = false, py::arg("show_options_in_tooltip") = false, py::arg("show_options_button") = true, py::arg("watched_pixels") = std::vector<cv::Point>(), py::arg("add_watched_pixel_on_double_click") = true, py::arg("highlight_watched_pixels") = true, py::arg("mouse_info") = ImmVision::MouseInformation()
         )
         .def_readwrite("refresh_image", &ImmVision::ImageParams::RefreshImage, " Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed\n (for example, for live video images)")    // immvision.h:111
         .def_readwrite("image_display_size", &ImmVision::ImageParams::ImageDisplaySize, " Size of the displayed image (can be different from the matrix size)\n If you specify only the width or height (e.g (300, 0), then the other dimension\n will be calculated automatically, respecting the original image w/h ratio.")    // immvision.h:120
@@ -158,83 +159,84 @@ void py_init_module_immvision(py::module& m)
         .def_readwrite("colormap_key", &ImmVision::ImageParams::ColormapKey, "If displaying several images, those with the same ColormapKey will adjust together")    // immvision.h:137
         .def_readwrite("pan_with_mouse", &ImmVision::ImageParams::PanWithMouse, "")    // immvision.h:142
         .def_readwrite("zoom_with_mouse_wheel", &ImmVision::ImageParams::ZoomWithMouseWheel, "")    // immvision.h:143
-        .def_readwrite("is_color_order_bgr", &ImmVision::ImageParams::IsColorOrderBGR, "Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)")    // immvision.h:146
-        .def_readwrite("selected_channel", &ImmVision::ImageParams::SelectedChannel, "\n Image display options\n\n if SelectedChannel >= 0 then only this channel is displayed")    // immvision.h:152
-        .def_readwrite("show_school_paper_background", &ImmVision::ImageParams::ShowSchoolPaperBackground, "Show a \"school paper\" background grid")    // immvision.h:154
-        .def_readwrite("show_alpha_channel_checkerboard", &ImmVision::ImageParams::ShowAlphaChannelCheckerboard, "show a checkerboard behind transparent portions of 4 channels RGBA images")    // immvision.h:156
-        .def_readwrite("show_grid", &ImmVision::ImageParams::ShowGrid, "Grid displayed when the zoom is high")    // immvision.h:158
-        .def_readwrite("draw_values_on_zoomed_pixels", &ImmVision::ImageParams::DrawValuesOnZoomedPixels, "Pixel values show when the zoom is high")    // immvision.h:160
-        .def_readwrite("show_image_info", &ImmVision::ImageParams::ShowImageInfo, "\n Image display options\n\n Show matrix type and size")    // immvision.h:166
-        .def_readwrite("show_pixel_info", &ImmVision::ImageParams::ShowPixelInfo, "Show pixel values")    // immvision.h:168
-        .def_readwrite("show_zoom_buttons", &ImmVision::ImageParams::ShowZoomButtons, "Show buttons that enable to zoom in/out (the mouse wheel also zoom)")    // immvision.h:170
-        .def_readwrite("show_options_panel", &ImmVision::ImageParams::ShowOptionsPanel, "Open the options panel")    // immvision.h:172
-        .def_readwrite("show_options_in_tooltip", &ImmVision::ImageParams::ShowOptionsInTooltip, "If set to True, then the option panel will be displayed in a transient tooltip window")    // immvision.h:174
-        .def_readwrite("show_options_button", &ImmVision::ImageParams::ShowOptionsButton, "If set to False, then the Options button will not be displayed")    // immvision.h:176
-        .def_readwrite("watched_pixels", &ImmVision::ImageParams::WatchedPixels, "\n Watched Pixels\n\n List of Watched Pixel coordinates")    // immvision.h:182
-        .def_readwrite("add_watched_pixel_on_double_click", &ImmVision::ImageParams::AddWatchedPixelOnDoubleClick, "Shall we add a watched pixel on double click")    // immvision.h:184
-        .def_readwrite("highlight_watched_pixels", &ImmVision::ImageParams::HighlightWatchedPixels, "Shall the watched pixels be drawn on the image")    // immvision.h:186
-        .def_readwrite("mouse_info", &ImmVision::ImageParams::MouseInfo, "Mouse position information. These values are filled after displaying an image")    // immvision.h:189
+        .def_readwrite("can_resize", &ImmVision::ImageParams::CanResize, "Can the image be resized by the user")    // immvision.h:146
+        .def_readwrite("is_color_order_bgr", &ImmVision::ImageParams::IsColorOrderBGR, "Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)")    // immvision.h:149
+        .def_readwrite("selected_channel", &ImmVision::ImageParams::SelectedChannel, "\n Image display options\n\n if SelectedChannel >= 0 then only this channel is displayed")    // immvision.h:155
+        .def_readwrite("show_school_paper_background", &ImmVision::ImageParams::ShowSchoolPaperBackground, "Show a \"school paper\" background grid")    // immvision.h:157
+        .def_readwrite("show_alpha_channel_checkerboard", &ImmVision::ImageParams::ShowAlphaChannelCheckerboard, "show a checkerboard behind transparent portions of 4 channels RGBA images")    // immvision.h:159
+        .def_readwrite("show_grid", &ImmVision::ImageParams::ShowGrid, "Grid displayed when the zoom is high")    // immvision.h:161
+        .def_readwrite("draw_values_on_zoomed_pixels", &ImmVision::ImageParams::DrawValuesOnZoomedPixels, "Pixel values show when the zoom is high")    // immvision.h:163
+        .def_readwrite("show_image_info", &ImmVision::ImageParams::ShowImageInfo, "\n Image display options\n\n Show matrix type and size")    // immvision.h:169
+        .def_readwrite("show_pixel_info", &ImmVision::ImageParams::ShowPixelInfo, "Show pixel values")    // immvision.h:171
+        .def_readwrite("show_zoom_buttons", &ImmVision::ImageParams::ShowZoomButtons, "Show buttons that enable to zoom in/out (the mouse wheel also zoom)")    // immvision.h:173
+        .def_readwrite("show_options_panel", &ImmVision::ImageParams::ShowOptionsPanel, "Open the options panel")    // immvision.h:175
+        .def_readwrite("show_options_in_tooltip", &ImmVision::ImageParams::ShowOptionsInTooltip, "If set to True, then the option panel will be displayed in a transient tooltip window")    // immvision.h:177
+        .def_readwrite("show_options_button", &ImmVision::ImageParams::ShowOptionsButton, "If set to False, then the Options button will not be displayed")    // immvision.h:179
+        .def_readwrite("watched_pixels", &ImmVision::ImageParams::WatchedPixels, "\n Watched Pixels\n\n List of Watched Pixel coordinates")    // immvision.h:185
+        .def_readwrite("add_watched_pixel_on_double_click", &ImmVision::ImageParams::AddWatchedPixelOnDoubleClick, "Shall we add a watched pixel on double click")    // immvision.h:187
+        .def_readwrite("highlight_watched_pixels", &ImmVision::ImageParams::HighlightWatchedPixels, "Shall the watched pixels be drawn on the image")    // immvision.h:189
+        .def_readwrite("mouse_info", &ImmVision::ImageParams::MouseInfo, "Mouse position information. These values are filled after displaying an image")    // immvision.h:192
         ;
     // #ifdef IMMVISION_SERIALIZE_JSON
     //
 
-    m.def("image_params_to_json",    // immvision.h:195
+    m.def("image_params_to_json",    // immvision.h:198
         ImmVision::ImageParamsToJson, py::arg("params"));
 
-    m.def("fill_image_params_from_json",    // immvision.h:196
+    m.def("fill_image_params_from_json",    // immvision.h:199
         ImmVision::FillImageParamsFromJson, py::arg("json"), py::arg("params"));
 
-    m.def("image_params_from_json",    // immvision.h:197
+    m.def("image_params_from_json",    // immvision.h:200
         ImmVision::ImageParamsFromJson, py::arg("json"));
     // #endif
     //
 
-    m.def("factor_image_params_display_only",    // immvision.h:201
+    m.def("factor_image_params_display_only",    // immvision.h:204
         ImmVision::FactorImageParamsDisplayOnly, "Create ImageParams that display the image only, with no decoration, and no user interaction");
 
-    m.def("make_zoom_pan_matrix",    // immvision.h:205
+    m.def("make_zoom_pan_matrix",    // immvision.h:208
         ImmVision::MakeZoomPanMatrix,
         py::arg("zoom_center"), py::arg("zoom_ratio"), py::arg("displayed_image_size"),
         "Create a zoom/pan matrix centered around a given point of interest");
 
-    m.def("make_zoom_pan_matrix_scale_one",    // immvision.h:211
+    m.def("make_zoom_pan_matrix_scale_one",    // immvision.h:214
         ImmVision::MakeZoomPanMatrix_ScaleOne, py::arg("image_size"), py::arg("displayed_image_size"));
 
-    m.def("make_zoom_pan_matrix_full_view",    // immvision.h:216
+    m.def("make_zoom_pan_matrix_full_view",    // immvision.h:219
         ImmVision::MakeZoomPanMatrix_FullView, py::arg("image_size"), py::arg("displayed_image_size"));
 
-    m.def("image",    // immvision.h:256
+    m.def("image",    // immvision.h:259
         ImmVision::Image,
         py::arg("label"), py::arg("mat"), py::arg("params"),
         " Display an image, with full user control: zoom, pan, watch pixels, etc.\n\n :param label\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets *must* have a unique Ids.\n           For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           (you can use ImGui::PushID / ImGui::PopID to circumvent this, or add suffixes with ##)\n\n           If they do, they might not refresh correctly!\n           To circumvent this, you can:\n              - Call `ImGui::PushID(\"some_unique_string\")` at the start of your function,\n                and `ImGui::PopID()` at the end.\n              - Or modify your label like this:\n                  \"MyLabel##some_unique_id\"\n                  (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param mat\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param params\n     Complete options (as modifiable inputs), and outputs (mouse position, watched pixels, etc)\n     @see ImageParams structure.\n     The ImageParams may be modified by this function: you can extract from them\n     the mouse position, watched pixels, etc.\n     Important note:\n         ImageParams is an input-output parameter, passed as a pointer.\n         Its scope should be wide enough so that it is preserved from frame to frame.\n         !! If you cannot zoom/pan in a displayed image, extend the scope of the ImageParams !!\n\n - This function requires that both imgui and OpenGL were initialized.\n   (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
 
-    m.def("image_display",    // immvision.h:302
+    m.def("image_display",    // immvision.h:305
         ImmVision::ImageDisplay,
         py::arg("label_id"), py::arg("mat"), py::arg("image_display_size") = cv::Size(), py::arg("refresh_image") = false, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
         " Only, display the image, with no decoration, and no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n");
 
-    m.def("available_colormaps",    // immvision.h:314
+    m.def("available_colormaps",    // immvision.h:317
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
 
-    m.def("clear_texture_cache",    // immvision.h:321
+    m.def("clear_texture_cache",    // immvision.h:324
         ImmVision::ClearTextureCache, " Clears the internal texture cache of immvision (this is done automatically at exit time)\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
 
-    m.def("get_cached_rgba_image",    // immvision.h:326
+    m.def("get_cached_rgba_image",    // immvision.h:329
         ImmVision::GetCachedRgbaImage,
         py::arg("label"),
         " Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay\n Note: this image must be currently displayed. This function will return the transformed image\n (i.e with ColorMap, Zoom, etc.)");
 
-    m.def("version_info",    // immvision.h:329
+    m.def("version_info",    // immvision.h:332
         ImmVision::VersionInfo, "Return immvision version info");
 
 
-    m.def("inspector_add_image",    // immvision.h:350
+    m.def("inspector_add_image",    // immvision.h:353
         ImmVision::Inspector_AddImage, py::arg("image"), py::arg("legend"), py::arg("zoom_key") = "", py::arg("colormap_key") = "", py::arg("zoom_center") = cv::Point2d(), py::arg("zoom_ratio") = -1., py::arg("is_color_order_bgr") = true);
 
-    m.def("inspector_show",    // immvision.h:360
+    m.def("inspector_show",    // immvision.h:363
         ImmVision::Inspector_Show);
 
-    m.def("inspector_clear_images",    // immvision.h:362
+    m.def("inspector_clear_images",    // immvision.h:365
         ImmVision::Inspector_ClearImages);
     ////////////////////    </generated_from:immvision.h>    ////////////////////
 
