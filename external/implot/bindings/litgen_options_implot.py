@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+import litgen
 from codemanip.code_utils import join_string_by_pipe_char
 
 from litgen.options import LitgenOptions
@@ -15,11 +16,13 @@ def litgen_options_implot() -> LitgenOptions:
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options.namespaces_root = ["ImPlot"]
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT_API|IMPLOT_TMP"
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
 
     options.fn_force_overload__regex = "BeginPlot"
     options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
 
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"
+    options.fn_params_exclude_types__regex += r"|^float\s*\*$"
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
     options.type_replacements.add_first_replacement("ImGuiContext", "ImGui_Context")
@@ -79,6 +82,31 @@ def litgen_options_implot() -> LitgenOptions:
         ]
     )
 
-    options.fn_params_exclude_names__regex += "|^stride$"
-
     return options
+
+
+def sandbox() -> None:
+    options = litgen_options_implot()
+    code = """
+IMPLOT_API bool BeginSubplots(int x,
+                             int rows,
+                             int cols,
+                             const ImVec2& size,
+                             ImPlotSubplotFlags flags = 0,
+                             float* row_ratios        = nullptr,
+                             float* col_ratios        = nullptr);
+    """
+    # issues:
+    #     float * published as float
+    #     exclusion does not work
+    # type_str = "float *"
+    # r = r"ImPlotFormatter|ImPlotTransform|^float\s*\*$"
+    # from codemanip.code_utils import does_match_regex
+    # match = does_match_regex(r, type_str)
+
+    generated_code = litgen.generate_code(options, code)
+    print(generated_code.stub_code)
+
+
+if __name__ == "__main__":
+    sandbox()

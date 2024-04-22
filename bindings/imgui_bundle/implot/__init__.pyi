@@ -170,6 +170,13 @@ Bin_Sturges = Bin_.sturges
 # [SECTION] Demo
 # [SECTION] Obsolete API
 
+# IMGUI_BUNDLE_PYTHON_API is defined when building the python bindings.
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
+
 # -----------------------------------------------------------------------------
 # [SECTION] Macros and Defines
 # -----------------------------------------------------------------------------
@@ -1110,52 +1117,6 @@ def end_plot() -> None:
 # [SECTION] Begin/End Subplots
 # -----------------------------------------------------------------------------
 
-# Starts a subdivided plotting context. If the function returns True,
-# EndSubplots() MUST be called! Call BeginPlot/EndPlot AT MOST [rows*cols]
-# times in  between the begining and end of the subplot context. Plots are
-# added in row major order.
-#
-# Example:
-#
-# if (BeginSubplots("My Subplot",2,3,ImVec2(800,400)) {
-#     for (int i = 0; i < 6; ++i) {
-#         if (BeginPlot(...)) {
-#             ImPlot::PlotLine(...);
-#             ...
-#             EndPlot();
-#         }
-#     }
-#     EndSubplots();
-# }
-#
-# Produces:
-#
-# [0] | [1] | [2]
-# ----|-----|----
-# [3] | [4] | [5]
-#
-# Important notes:
-#
-# - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
-#   collisions or don't want to display a title in the plot, use double hashes
-#   (e.g. "MySubplot##HiddenIdText" or "##NoTitle").
-# - #rows and #cols must be greater than 0.
-# - #size is the size of the entire grid of subplots, not the individual plots
-# - #row_ratios and #col_ratios must have AT LEAST #rows and #cols elements,
-#   respectively. These are the sizes of the rows and columns expressed in ratios.
-#   If the user adjusts the dimensions, the arrays are updated with new ratios.
-#
-# Important notes regarding BeginPlot from inside of BeginSubplots:
-#
-# - The #title_id parameter of _BeginPlot_ (see above) does NOT have to be
-#   unique when called inside of a subplot context. Subplot IDs are hashed
-#   for your convenience so you don't have call PushID or generate unique title
-#   strings. Simply pass an empty string to BeginPlot unless you want to title
-#   each subplot.
-# - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a
-#   subplot context. The actual size of the subplot will be based on the
-#   #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.
-
 # IMPLOT_API bool BeginSubplots(const char* title_id,    /* original C++ signature */
 #                              int rows,
 #                              int cols,
@@ -1163,17 +1124,81 @@ def end_plot() -> None:
 #                              ImPlotSubplotFlags flags = 0,
 #                              float* row_ratios        = nullptr,
 #                              float* col_ratios        = nullptr);
-def begin_subplots(
-    title_id: str,
-    rows: int,
-    cols: int,
-    size: ImVec2,
-    flags: SubplotFlags = 0,
-    row_ratios: Optional[float] = None,
-    col_ratios: Optional[float] = None,
-) -> Tuple[bool, Optional[float], Optional[float]]:
+def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
+    """Starts a subdivided plotting context. If the function returns True,
+    EndSubplots() MUST be called! Call BeginPlot/EndPlot AT MOST [rows*cols]
+    times in  between the begining and end of the subplot context. Plots are
+    added in row major order.
+
+    Example:
+
+    if (BeginSubplots("My Subplot",2,3,ImVec2(800,400)) {
+        for (int i = 0; i < 6; ++i) {
+            if (BeginPlot(...)) {
+                ImPlot::PlotLine(...);
+                ...
+                EndPlot();
+            }
+        }
+        EndSubplots();
+    }
+
+    Produces:
+
+    [0] | [1] | [2]
+    ----|-----|----
+    [3] | [4] | [5]
+
+    Important notes:
+
+    - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
+      collisions or don't want to display a title in the plot, use double hashes
+      (e.g. "MySubplot##HiddenIdText" or "##NoTitle").
+    - #rows and #cols must be greater than 0.
+    - #size is the size of the entire grid of subplots, not the individual plots
+    - #row_ratios and #col_ratios must have AT LEAST #rows and #cols elements,
+      respectively. These are the sizes of the rows and columns expressed in ratios.
+      If the user adjusts the dimensions, the arrays are updated with new ratios.
+
+    Important notes regarding BeginPlot from inside of BeginSubplots:
+
+    - The #title_id parameter of _BeginPlot_ (see above) does NOT have to be
+      unique when called inside of a subplot context. Subplot IDs are hashed
+      for your convenience so you don't have call PushID or generate unique title
+      strings. Simply pass an empty string to BeginPlot unless you want to title
+      each subplot.
+    - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a
+      subplot context. The actual size of the subplot will be based on the
+      #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.
+
+    Note: under python, call begin_subplots_with_ratios instead
+          when you want to specify row and column ratios.
+    """
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+
+# IMPLOT_API inline bool BeginSubplotsWithRatios(const char* title_id,    /* original C++ signature */
+#                               int rows,
+#                               int cols,
+#                               const ImVec2& size,
+#                               ImPlotSubplotFlags flags = 0,
+#                               std::vector<float> row_ratios = std::vector<float>(),
+#                               std::vector<float>  col_ratios = std::vector<float>())
+# {
+#     if (row_ratios.size() != 0)
+#         IM_ASSERT(row_ratios.size() == rows && "row_ratios must have the same number of elements as rows");
+#     if (col_ratios.size() != 0)
+#         IM_ASSERT(col_ratios.size() == cols && "col_ratios must have the same number of elements as cols");
+#     return BeginSubplots(title_id, rows, cols, size, flags, row_ratios.data(), col_ratios.data());
+# }
+def begin_subplots_with_ratios(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
+    """Under python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios."""
+    pass
+
+# #endif
+#
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
 def end_subplots() -> None:
     """Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end
