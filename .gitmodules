@@ -56,7 +56,7 @@
 	branch = master
 [submodule "external/implot/implot"]
 	path = external/implot/implot
-	url = https://github.com/epezent/implot.git
+	url = https://github.com/pthom/implot.git
 	branch = master
 [submodule "external/imgui-command-palette/imgui-command-palette"]
 	path = external/imgui-command-palette/imgui-command-palette
