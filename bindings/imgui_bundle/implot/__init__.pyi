@@ -1397,63 +1397,39 @@ def set_next_axes_to_fit() -> None:
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_line(
-    label_id: str,
-    values: np.ndarray,
-    xscale: float = 1,
-    xstart: float = 0,
-    flags: LineFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: LineFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_line(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: LineFlags = 0, offset: int = 0, stride: int = -1
-) -> None:
+def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: LineFlags = 0, offset: int = 0) -> None:
     pass
 
 # Plots a standard 2D scatter plot. Default marker is ImPlotMarker_Circle.
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_scatter(
-    label_id: str,
-    values: np.ndarray,
-    xscale: float = 1,
-    xstart: float = 0,
-    flags: ScatterFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: ScatterFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_scatter(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: ScatterFlags = 0, offset: int = 0, stride: int = -1
-) -> None:
+def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: ScatterFlags = 0, offset: int = 0) -> None:
     pass
 
 # Plots a a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval [x[i], x[i+1]) has the value y[i]
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_stairs(
-    label_id: str,
-    values: np.ndarray,
-    xscale: float = 1,
-    xstart: float = 0,
-    flags: StairsFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: StairsFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_stairs(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: StairsFlags = 0, offset: int = 0, stride: int = -1
-) -> None:
+def plot_stairs(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: StairsFlags = 0, offset: int = 0) -> None:
     pass
 
 # Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set yref to +/-INFINITY for infinite fill extents.
@@ -1467,33 +1443,20 @@ def plot_shaded(
     xstart: float = 0,
     flags: ShadedFlags = 0,
     offset: int = 0,
-    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_shaded(
-    label_id: str,
-    xs: np.ndarray,
-    ys: np.ndarray,
-    yref: float = 0,
-    flags: ShadedFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, xs: np.ndarray, ys: np.ndarray, yref: float = 0, flags: ShadedFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_shaded(
-    label_id: str,
-    xs: np.ndarray,
-    ys1: np.ndarray,
-    ys2: np.ndarray,
-    flags: ShadedFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, xs: np.ndarray, ys1: np.ndarray, ys2: np.ndarray, flags: ShadedFlags = 0, offset: int = 0
 ) -> None:
     pass
 
@@ -1501,26 +1464,14 @@ def plot_shaded(
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* values, int count, double bar_size=0.67, double shift=0, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_bars(
-    label_id: str,
-    values: np.ndarray,
-    bar_size: float = 0.67,
-    shift: float = 0,
-    flags: BarsFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, values: np.ndarray, bar_size: float = 0.67, shift: float = 0, flags: BarsFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_bars(
-    label_id: str,
-    xs: np.ndarray,
-    ys: np.ndarray,
-    bar_size: float,
-    flags: BarsFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, xs: np.ndarray, ys: np.ndarray, bar_size: float, flags: BarsFlags = 0, offset: int = 0
 ) -> None:
     pass
 
@@ -1540,13 +1491,7 @@ def plot_bar_groups(
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_error_bars(
-    label_id: str,
-    xs: np.ndarray,
-    ys: np.ndarray,
-    err: np.ndarray,
-    flags: ErrorBarsFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, xs: np.ndarray, ys: np.ndarray, err: np.ndarray, flags: ErrorBarsFlags = 0, offset: int = 0
 ) -> None:
     pass
 
@@ -1560,7 +1505,6 @@ def plot_error_bars(
     pos: np.ndarray,
     flags: ErrorBarsFlags = 0,
     offset: int = 0,
-    stride: int = -1,
 ) -> None:
     pass
 
@@ -1575,27 +1519,18 @@ def plot_stems(
     start: float = 0,
     flags: StemsFlags = 0,
     offset: int = 0,
-    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_stems(
-    label_id: str,
-    xs: np.ndarray,
-    ys: np.ndarray,
-    ref: float = 0,
-    flags: StemsFlags = 0,
-    offset: int = 0,
-    stride: int = -1,
+    label_id: str, xs: np.ndarray, ys: np.ndarray, ref: float = 0, flags: StemsFlags = 0, offset: int = 0
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotInfLines(const char* label_id, const T* values, int count, ImPlotInfLinesFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_inf_lines(
-    label_id: str, values: np.ndarray, flags: InfLinesFlags = 0, offset: int = 0, stride: int = -1
-) -> None:
+def plot_inf_lines(label_id: str, values: np.ndarray, flags: InfLinesFlags = 0, offset: int = 0) -> None:
     """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
     pass
 
@@ -1645,9 +1580,7 @@ def plot_histogram2_d(
 
 # Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
 # IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, ImPlotDigitalFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_digital(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0, stride: int = -1
-) -> None:
+def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0) -> None:
     pass
 
 # IMPLOT_API void PlotImage(const char* label_id, ImTextureID user_texture_id, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0=ImVec2(0,0), const ImVec2& uv1=ImVec2(1,1), const ImVec4& tint_col=ImVec4(1,1,1,1), ImPlotImageFlags flags=0);    /* original C++ signature */
