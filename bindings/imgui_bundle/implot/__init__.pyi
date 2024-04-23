@@ -1162,23 +1162,9 @@ def end_plot() -> None:
 # - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a
 #   subplot context. The actual size of the subplot will be based on the
 #   #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.
-#
-# Note: under python, call begin_subplots_with_ratios instead
-#       when you want to specify row and column ratios.
-
-# IMPLOT_API bool BeginSubplots(const char* title_id,    /* original C++ signature */
-#                              int rows,
-#                              int cols,
-#                              const ImVec2& size,
-#                              ImPlotSubplotFlags flags = 0,
-#                              float* row_ratios        = nullptr,
-#                              float* col_ratios        = nullptr);
-def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
-    pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-
 # IMPLOT_API inline bool BeginSubplotsWithRatios(const char* title_id,    /* original C++ signature */
 #                               int rows,
 #                               int cols,
@@ -1193,7 +1179,7 @@ def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: Sub
 #         IM_ASSERT(col_ratios.size() == cols && "col_ratios must have the same number of elements as cols");
 #     return BeginSubplots(title_id, rows, cols, size, flags, row_ratios.data(), col_ratios.data());
 # }
-def begin_subplots_with_ratios(
+def begin_subplots(
     title_id: str,
     rows: int,
     cols: int,
@@ -1202,7 +1188,6 @@ def begin_subplots_with_ratios(
     row_ratios: List[float] = List[float](),
     col_ratios: List[float] = List[float](),
 ) -> bool:
-    """In python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios."""
     pass
 
 # #endif

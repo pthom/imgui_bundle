@@ -21,7 +21,11 @@ def litgen_options_implot() -> LitgenOptions:
     options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
 
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"
+
+    # Patches for wrapping of BeginSubplots (cf https://github.com/pthom/imgui_bundle/issues/207)
     options.fn_params_exclude_types__regex += r"|^float\s*\*$"
+    options.fn_exclude_by_name__regex += "|^BeginSubplots$|"
+    options.function_names_replacements.add_first_replacement("begin_subplots_with_ratios", "begin_subplots")
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
     options.type_replacements.add_first_replacement("ImGuiContext", "ImGui_Context")
@@ -55,7 +59,7 @@ def litgen_options_implot() -> LitgenOptions:
         ]
     )
 
-    options.fn_exclude_by_name__regex = join_string_by_pipe_char(
+    options.fn_exclude_by_name__regex += join_string_by_pipe_char(
         [
             #  Legitimate Excludes
             # Exclude functions whose name end with G, like for example

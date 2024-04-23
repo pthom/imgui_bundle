@@ -589,25 +589,11 @@ void py_init_module_implot(py::module& m)
 
     m.def("end_plot",
         ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
-
-    m.def("begin_subplots",
-        [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
-        {
-            auto BeginSubplots_adapt_exclude_params = [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
-            {
-                auto lambda_result = ImPlot::BeginSubplots(title_id, rows, cols, size, flags, nullptr, nullptr);
-                return lambda_result;
-            };
-
-            return BeginSubplots_adapt_exclude_params(title_id, rows, cols, size, flags);
-        },     py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0);
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
-    m.def("begin_subplots_with_ratios",
-        ImPlot::BeginSubplotsWithRatios,
-        py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = std::vector<float>(), py::arg("col_ratios") = std::vector<float>(),
-        "In python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios.");
+    m.def("begin_subplots",
+        ImPlot::BeginSubplotsWithRatios, py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = std::vector<float>(), py::arg("col_ratios") = std::vector<float>());
     // #endif
     //
 

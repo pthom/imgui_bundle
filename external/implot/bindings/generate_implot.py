@@ -72,13 +72,11 @@ def autogenerate_implot_internal() -> None:
 
 def sandbox():
     code = """
-    IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));
     """
     options = litgen_options_implot()
-    options.fn_params_exclude_names__regex += "|^stride$|^offset$"
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_code(code, "file")
-    print(generator.pydef_code())
+    print(generator.stub_code())
 
 
 def main():
