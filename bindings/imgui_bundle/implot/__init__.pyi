@@ -1173,15 +1173,7 @@ def end_plot() -> None:
 #                              ImPlotSubplotFlags flags = 0,
 #                              float* row_ratios        = nullptr,
 #                              float* col_ratios        = nullptr);
-def begin_subplots(
-    title_id: str,
-    rows: int,
-    cols: int,
-    size: ImVec2,
-    flags: SubplotFlags = 0,
-    row_ratios: Optional[float] = None,
-    col_ratios: Optional[float] = None,
-) -> Tuple[bool, Optional[float], Optional[float]]:
+def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1210,11 +1202,12 @@ def begin_subplots_with_ratios(
     row_ratios: List[float] = List[float](),
     col_ratios: List[float] = List[float](),
 ) -> bool:
-    """Under python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios."""
+    """In python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios."""
     pass
 
 # #endif
 #
+
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
 def end_subplots() -> None:
     """Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end
