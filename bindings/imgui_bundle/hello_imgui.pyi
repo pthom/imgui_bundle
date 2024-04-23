@@ -102,12 +102,16 @@ class DpiAwareParams:
         dpiWindowSizeFactor=2
         fontRenderingScale=0.5
 
+    For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi
+
     """
 
     # float dpiWindowSizeFactor = 0.0f;    /* original C++ signature */
     # `dpiWindowSizeFactor`
-    #        factor by which window size should be multiplied to get a similar
-    #        visible size on different OSes.
+    #     factor by which window size should be multiplied to get a similar
+    #     physical size on different OSes (as if they were all displayed on a 96 PPI screen).
+    #     This affects the size of native app windows,
+    #     but *not* imgui Windows, and *not* the size of widgets and text.
     #  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,
     #  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.
     #
@@ -123,23 +127,39 @@ class DpiAwareParams:
 
     # float fontRenderingScale = 0.0f;    /* original C++ signature */
     # `fontRenderingScale`
-    #     factor (that is either 1 or < 1.) by which fonts glyphs should be
-    #     scaled at rendering time.
-    #     On macOS retina screens, it will be 0.5, since macOS APIs hide
-    #     the real resolution of the screen.
+    #     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.
+    #  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.
+    #  Changing this value will *not* change the visible font size on the screen, however it will
+    #  affect the size of the loaded glyphs.
+    #  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),
+    #  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.
+    #   This leads to a better rendering quality on some platforms.
+    # (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
     font_rendering_scale: float = 0.0
 
-    # float DpiFontLoadingFactor() { return dpiWindowSizeFactor / fontRenderingScale;}    /* original C++ signature */
+    # bool onlyUseFontDpiResponsive = false;    /* original C++ signature */
+    # `onlyUseFontDpiResponsive`
+    # If True, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.
+    # (also for the default font)
+    only_use_font_dpi_responsive: bool = False
+
+    # float DpiFontLoadingFactor() const {    /* original C++ signature */
+    #         float r = dpiWindowSizeFactor / fontRenderingScale;
+    #         return r;
+    #     }
     def dpi_font_loading_factor(self) -> float:
         """`dpiFontLoadingFactor`
-        factor by which font size should be multiplied at loading time to get a similar
-        visible size on different OSes.
+           factor by which font size should be multiplied at loading time to get a similar
+           visible size on different OSes.
         The size will be equivalent to a size given for a 96 PPI screen
         """
         pass
-    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f);    /* original C++ signature */
+    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false);    /* original C++ signature */
     def __init__(
-        self, dpi_window_size_factor: float = 0.0, font_rendering_scale: float = 0.0
+        self,
+        dpi_window_size_factor: float = 0.0,
+        font_rendering_scale: float = 0.0,
+        only_use_font_dpi_responsive: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -215,6 +235,111 @@ def imgui_default_font_global_scale() -> float:
     pass
 
 # namespace HelloImGui
+
+# ----------------------------------------------------------------------------
+#           Handling screens with high DPI
+# ----------------------------------------------------------------------------
+#
+# @@md#HandlingScreenHighDPI
+#
+# _Note: This part is relevant only for more advanced usages. If you use `HelloImGui::LoadFont()`,
+# and always use `HelloImGui::EmToVec2()` to place widgets, you do not need to worry about DPI handling_
+#
+### OS specificities
+#
+# There are several important things to know about high-DPI handling within Hello ImGui and Dear ImGui:
+#
+# 1. (virtual) screen coordinates vs (physical) pixels
+# 2. DisplayFramebufferScale: Frame buffer size vs window size
+# 3. FontGlobalScale: display-time font scaling factor
+# 4. How to load fonts with the correct size
+# 5. How to get similar window sizes on different OSes/DPI
+#
+#
+### Screen coordinates
+#
+# Screen coordinates are the coordinates you use to place and size windows on the screen.
+#
+# **Screen coordinates do not always correspond to physical pixels**
+#
+# - On macOS/iOS retina screens, a screen coordinate corresponds typically
+#  to 2x2 physical pixels (but this may vary if you change the display scaling)
+# - On most Linux distributions, whenever there is a high DPI screen
+#  you can set the display scale. For example if you set the scale to 300%,
+#  then a screen coordinate will correspond to 3x3 physical pixels
+# - On Windows, there are two possible situations:
+#    - If the application is DPI aware, a screen coordinate corresponds to 1x1 physical pixel,
+#      and you can use the full extent of your screen resolution.
+#    - If the application is not DPI aware, a screen coordinate may correspond to 2x2 physical pixels
+#      (if the display scaling is set to 200% for example). However, the rendering of your application
+#      will be blurry and will not use the full extent of your screen resolution.
+#    - Notes:
+#        - Applications created with HelloImGui are DPI aware by default (when using glfw and sdl backends).
+#        - SDL applications are normally not DPI aware. However, HelloImGui makes them DPI aware.
+#
+#
+### DisplayFramebufferScale
+# `DisplayFramebufferScale` is the ratio between the frame buffer size and the window size.
+#
+# The frame buffer size is the size of the internal buffer used by the rendering backend.
+# It might be bigger than the actual window size.
+# `ImVec2 ImGui::GetIO().DisplayFramebufferScale` is a factor by which the frame buffer size is bigger than the window size.
+# It is set by the platform backend after it was initialized, and typically reflects the scaling ratio between
+# physical pixels and screen coordinates.
+#
+# Under windows, it will always be (1,1). Under macOS / linux, it will reflect the current display scaling.
+# It will typically be (2,2) on a macOS retina screen.
+#
+# Notes:
+# - You cannot change DisplayFramebufferScale manually, it will be reset at each new frame, by asking the platform backend.
+#
+#
+### FontGlobalScale
+#
+# `ImGui::GetIO().FontGlobalScale` is a factor by which fonts glyphs should be scaled at rendering time.
+# It is typically 1 on windows, and 0.5 on macOS retina screens.
+#
+#
+### How to load fonts with the correct size
+#
+#### Using HelloImGui (recommended)
+#
+# [`HelloImGui::LoadFont()` and `HelloImGui::LoadFontDpiResponsive`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
+# with the correct size, taking into account the DPI scaling.
+#
+#### Using Dear ImGui
+# `ImGui::GetIO().Fonts->AddFontFromFileTTF()` loads a font with a given size, in *physical pixels*.
+#
+# If for example, DisplayFramebufferScale is (2,2), and you load a font with a size of 16, it will by default be rendered
+# with size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels). This will lead to blurry text.
+# To solve this, you should load your font with a size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels),
+# and set `ImGui::GetIO().FontGlobalScale` to 0.5.
+#
+# Helpers if using `ImGui::GetIO().Fonts->AddFontFromFileTTF()`:
+# - `HelloImGui::ImGuiDefaultFontGlobalScale()` returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
+# - `HelloImGui::DpiFontLoadingFactor()` returns a factor by which you shall multiply your font sizes when loading them.
+#
+#
+### Reproducible physical window sizes (in mm or inches)
+#
+#### Using HelloImGui
+# Simply specify a window size that corresponds to theoretical 96 PPI screen (inside `RunnerParams.appWindowParams.windowGeometry.size`)
+#
+#### Using your own code to create the backend window
+# If you prefer to create the window by yourself, its physical size in millimeters may vary widely,
+# depending on the OS and the current screen DPI setting.
+# Typically under Windows, your window may appear to be very small if your screen is high DPI.
+#
+# To get a similar window size on different OSes/DPI, you should multiply the window size by `HelloImGui::DpiWindowSizeFactor()`.
+#
+# Note: DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under windows and linux, and always 1 under macOS.
+#
+### Fine tune DPI Handling
+#
+# See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc_params.html#dpi-aware-params)
+# for more information on how to fine tune DPI handling when using Hello ImGui.
+# @@md
+#
 
 # *
 # @@md#AssetsStructure
@@ -633,11 +758,19 @@ def darcula(
 #                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# @@md#Fonts
+
+# When loading fonts, use
+#          HelloImGui::LoadFont(..)
+#      or
+#      	HelloImGui::LoadDpiResponsiveFont()
+#
+# Use these functions instead of ImGui::GetIO().Fonts->AddFontFromFileTTF(),
+# because they will automatically adjust the font size to account for HighDPI,
+# and will help you to get consistent font size across different OSes.
+
 class FontLoadingParams:
-    """@@md#Fonts
-
-    When loading fonts, use HelloImGui::LoadFont(fontFilename, fontSize, fontLoadingParams)
-
+    """
     Font loading parameters: several options are available (color, merging, range, ...)
     """
 
@@ -704,13 +837,49 @@ class FontLoadingParams:
         """Auto-generated default constructor with named params"""
         pass
 
-# ImFont* LoadFont(const std::string & fontFilename, float fontSize,    /* original C++ signature */
-#                      const FontLoadingParams & params = __srcmlcpp_brace_init__());
+class FontDpiResponsive:
+    """A font that will be automatically resized to account for changes in DPI
+    Use LoadAdaptiveFont instead of LoadFont to get this behavior.
+    Fonts loaded with LoadAdaptiveFont will be reloaded during execution
+    if ImGui::GetIO().FontGlobalScale is changed.
+    """
+
+    # ImFont* font = nullptr;    /* original C++ signature */
+    font: ImFont = None
+    # std::string fontFilename;    /* original C++ signature */
+    font_filename: str
+    # float fontSize = 0.f;    /* original C++ signature */
+    font_size: float = 0.0
+    # FontLoadingParams fontLoadingParams;    /* original C++ signature */
+    font_loading_params: FontLoadingParams
+    # FontDpiResponsive(std::string fontFilename = std::string(), float fontSize = 0.f, FontLoadingParams fontLoadingParams = FontLoadingParams());    /* original C++ signature */
+    def __init__(
+        self,
+        font_filename: str = "",
+        font_size: float = 0.0,
+        font_loading_params: FontLoadingParams = FontLoadingParams(),
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# ImFont* LoadFont(    /* original C++ signature */
+#         const std::string & fontFilename, float fontSize,
+#         const FontLoadingParams & params = __srcmlcpp_brace_init__());
 def load_font(
     font_filename: str,
     font_size: float,
     params: FontLoadingParams = FontLoadingParams(),
 ) -> ImFont:
+    pass
+
+# FontDpiResponsive* LoadFontDpiResponsive(    /* original C++ signature */
+#         const std::string & fontFilename, float fontSize,
+#         const FontLoadingParams & params = __srcmlcpp_brace_init__());
+def load_font_dpi_responsive(
+    font_filename: str,
+    font_size: float,
+    params: FontLoadingParams = FontLoadingParams(),
+) -> FontDpiResponsive:
     pass
 
 # @@md
@@ -888,6 +1057,8 @@ class WindowGeometry:
     # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
     # Size of the application window
     # used if fullScreenMode==NoFullScreen and sizeAuto==False. Default=(800, 600)
+    # The size will be handled as if it was specified for a 96PPI screen
+    # (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)
     size: ScreenSize = DefaultWindowSize
 
     # bool sizeAuto = false;    /* original C++ signature */
@@ -2106,8 +2277,125 @@ class BackendPointers:
 # @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/remote_params.h included by hello_imgui/runner_params.h                    //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# @@md#RemoteParams
+
+class RemoteParams:
+    """RemoteParams is a struct that contains the settings for displaying the application on a remote device.
+    using https://github.com/sammyfreg/netImgui
+    or using https://github.com/ggerganov/imgui-ws
+    Those features are experimental and not supported with the standard version of HelloImGui,
+    """
+
+    # bool enableRemoting = false;    /* original C++ signature */
+    enable_remoting: bool = False
+
+    #
+    # Params used only by imgui-ws
+    #
+    # int wsPort = 5003;    /* original C++ signature */
+    ws_port: int = 5003
+    # std::string wsHttpRootFolder = "";    /* original C++ signature */
+    ws_http_root_folder: str = (
+        ""  # Optional folder were some additional files can be served
+    )
+    # bool wsProvideIndexHtml = true;    /* original C++ signature */
+    ws_provide_index_html: bool = (
+        True  # If True, will automatically serve a simple index.html file that contains the canvas and the imgui-ws client code
+    )
+
+    #
+    # Params used only by netImgui
+    #
+    # bool exitWhenServerDisconnected = false;    /* original C++ signature */
+    exit_when_server_disconnected: bool = False
+    # double durationMaxDisconnected = 30.0;    /* original C++ signature */
+    duration_max_disconnected: float = 30.0
+    # std::string serverHost = "localhost";    /* original C++ signature */
+    # The server host (if empty, will use "localhost")
+    # The server is the app that simply displays the application on a remote device
+    server_host: str = "localhost"
+    # uint32_t serverPort = 8888;    /* original C++ signature */
+    # The server port (default is 8888)
+    server_port: int = 8888
+    # bool transmitWindowSize = false;    /* original C++ signature */
+    # If True, transmit the window size to the server
+    transmit_window_size: bool = False
+    # RemoteParams(bool enableRemoting = false, int wsPort = 5003, std::string wsHttpRootFolder = "", bool wsProvideIndexHtml = true, bool exitWhenServerDisconnected = false, double durationMaxDisconnected = 30.0, std::string serverHost = "localhost", uint32_t serverPort = 8888, bool transmitWindowSize = false);    /* original C++ signature */
+    def __init__(
+        self,
+        enable_remoting: bool = False,
+        ws_port: int = 5003,
+        ws_http_root_folder: str = "",
+        ws_provide_index_html: bool = True,
+        exit_when_server_disconnected: bool = False,
+        duration_max_disconnected: float = 30.0,
+        server_host: str = "localhost",
+        server_port: int = 8888,
+        transmit_window_size: bool = False,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# @@md
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/renderer_backend_options.h included by hello_imgui/runner_params.h         //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# --------------------------------------------------------------------------------------------------------------------
+
+# @@md#OpenGlOptions
+
+class OpenGlOptions:
+    """OpenGlCallbacks contains advanced callbacks used at the startup of OpenGL.
+    These parameters are reserved for advanced users.
+    By default, Hello ImGui will select reasonable default values, and these parameters are not used.
+    Use at your own risk, as they make break the multi-platform compatibility of your application!
+    All these parameters are platform dependent.
+    For real multiplatform examples, see
+        hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp
+    and
+        hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp
+    """
+
+    # std::string  GlslVersion = "#version 130";    /* original C++ signature */
+    # Could be for example:
+    #    #version 150 on macOS
+    #    #version 130 on Windows
+    #    #version 300es on GLES
+    glsl_version: str = "#version 130"
+
+    # OpenGL 3.3 (these options won't work for GlEs)
+    # int          MajorVersion = 3;    /* original C++ signature */
+    major_version: int = 3
+    # int          MinorVersion = 3;    /* original C++ signature */
+    minor_version: int = 3
+
+    # bool         UseCoreProfile = true;    /* original C++ signature */
+    # OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)
+    use_core_profile: bool = True
+    # bool         UseForwardCompat = true;    /* original C++ signature */
+    # OpenGL Forward Compatibility (required on macOS)
+    use_forward_compat: bool = True
+
+    #    bool         UseGlEs = False;
+    #    int          GlEsMajorVersion = 3;
+    # OpenGlOptions(std::string GlslVersion = "#version 130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true);    /* original C++ signature */
+    def __init__(
+        self,
+        glsl_version: str = "#version 130",
+        major_version: int = 3,
+        minor_version: int = 3,
+        use_core_profile: bool = True,
+        use_forward_compat: bool = True,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# @@md
 
 # @@md#RendererBackendOptions
 
@@ -2136,8 +2424,17 @@ class RendererBackendOptions:
     # Only available on Metal, if your display supports it.
     # Before setting this to True, first check `hasEdrSupport()`
     request_float_buffer: bool = False
-    # RendererBackendOptions(bool requestFloatBuffer = false);    /* original C++ signature */
-    def __init__(self, request_float_buffer: bool = False) -> None:
+
+    # std::optional<OpenGlOptions> openGlOptions = std::nullopt;    /* original C++ signature */
+    # `openGlOptions`:
+    # Advanced options for OpenGL. Use at your own risk.
+    open_gl_options: Optional[OpenGlOptions] = None
+    # RendererBackendOptions(bool requestFloatBuffer = false, std::optional<OpenGlOptions> openGlOptions = std::nullopt);    /* original C++ signature */
+    def __init__(
+        self,
+        request_float_buffer: bool = False,
+        open_gl_options: Optional[OpenGlOptions] = None,
+    ) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -2449,6 +2746,7 @@ class RunnerParams:
     # Set the application refresh rate
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
+
     # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
@@ -2540,6 +2838,8 @@ class SimpleRunnerParams:
     # ScreenSize windowSize = DefaultWindowSize;    /* original C++ signature */
     # `windowSize`: _ScreenSize, default={800, 600}_.
     #  Size of the window
+    # The size will be handled as if it was specified for a 96PPI screen
+    # (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)
     window_size: ScreenSize = DefaultWindowSize
 
     # float fpsIdle = 9.f;    /* original C++ signature */
@@ -2690,6 +2990,13 @@ def get_backend_description() -> str:
         "Glfw - OpenGL3"
         "Glfw - Metal"
         "Sdl - Vulkan"
+    """
+    pass
+
+# void ChangeWindowSize(const ScreenSize &windowSize);    /* original C++ signature */
+def change_window_size(window_size: ScreenSize) -> None:
+    """`ChangeWindowSize(const ScreenSize &windowSize)`: sets the window size
+    (useful if you want to change the window size during execution)
     """
     pass
 

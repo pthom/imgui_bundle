@@ -72,21 +72,23 @@ void py_init_module_hello_imgui(py::module& m)
     ////////////////////    <generated_from:hello_imgui_amalgamation.h>    ////////////////////
     auto pyClassDpiAwareParams =
         py::class_<HelloImGui::DpiAwareParams>
-            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n It does this by setting two values:\n\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n Note: if several methods are used, the order of priority is (1) > (2)\n\n Example content of a ini file:\n ------------------------------\n     [DpiAwareParams]\n     dpiWindowSizeFactor=2\n     fontRenderingScale=0.5\n")
+            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n It does this by setting two values:\n\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n Note: if several methods are used, the order of priority is (1) > (2)\n\n Example content of a ini file:\n ------------------------------\n     [DpiAwareParams]\n     dpiWindowSizeFactor=2\n     fontRenderingScale=0.5\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
         .def(py::init<>([](
-        float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f)
+        float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false)
         {
             auto r = std::make_unique<HelloImGui::DpiAwareParams>();
             r->dpiWindowSizeFactor = dpiWindowSizeFactor;
             r->fontRenderingScale = fontRenderingScale;
+            r->onlyUseFontDpiResponsive = onlyUseFontDpiResponsive;
             return r;
         })
-        , py::arg("dpi_window_size_factor") = 0.0f, py::arg("font_rendering_scale") = 0.0f
+        , py::arg("dpi_window_size_factor") = 0.0f, py::arg("font_rendering_scale") = 0.0f, py::arg("only_use_font_dpi_responsive") = false
         )
-        .def_readwrite("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n        factor by which window size should be multiplied to get a similar\n        visible size on different OSes.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
-        .def_readwrite("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be\n     scaled at rendering time.\n     On macOS retina screens, it will be 0.5, since macOS APIs hide\n     the real resolution of the screen.")
+        .def_readwrite("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
+        .def_readwrite("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.\n  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.\n  Changing this value will *not* change the visible font size on the screen, however it will\n  affect the size of the loaded glyphs.\n  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),\n  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.\n   This leads to a better rendering quality on some platforms.\n (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)")
+        .def_readwrite("only_use_font_dpi_responsive", &HelloImGui::DpiAwareParams::onlyUseFontDpiResponsive, " `onlyUseFontDpiResponsive`\n If True, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.\n (also for the default font)")
         .def("dpi_font_loading_factor",
-            &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `dpiFontLoadingFactor`\n      factor by which font size should be multiplied at loading time to get a similar\n      visible size on different OSes.\n      The size will be equivalent to a size given for a 96 PPI screen")
+            &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `dpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar\n     visible size on different OSes.\n  The size will be equivalent to a size given for a 96 PPI screen")
         ;
 
 
@@ -337,7 +339,7 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassFontLoadingParams =
         py::class_<HelloImGui::FontLoadingParams>
-            (m, "FontLoadingParams", " @@md#Fonts\n\n When loading fonts, use HelloImGui::LoadFont(fontFilename, fontSize, fontLoadingParams)\n\n Font loading parameters: several options are available (color, merging, range, ...)")
+            (m, "FontLoadingParams", "\n Font loading parameters: several options are available (color, merging, range, ...)")
         .def(py::init<>([](
         bool adjustSizeToDpi = true, bool useFullGlyphRange = false, bool reduceMemoryUsageIfFullGlyphRange = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, std::vector<ImWcharPair> glyphRanges = {}, ImFontConfig fontConfig = ImFontConfig(), bool mergeFontAwesome = false, ImFontConfig fontConfigFontAwesome = ImFontConfig())
         {
@@ -369,8 +371,34 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    auto pyClassFontDpiResponsive =
+        py::class_<HelloImGui::FontDpiResponsive>
+            (m, "FontDpiResponsive", " A font that will be automatically resized to account for changes in DPI\n Use LoadAdaptiveFont instead of LoadFont to get this behavior.\n Fonts loaded with LoadAdaptiveFont will be reloaded during execution\n if ImGui::GetIO().FontGlobalScale is changed.")
+        .def(py::init<>([](
+        std::string fontFilename = std::string(), float fontSize = 0.f, HelloImGui::FontLoadingParams fontLoadingParams = HelloImGui::FontLoadingParams())
+        {
+            auto r = std::make_unique<HelloImGui::FontDpiResponsive>();
+            r->fontFilename = fontFilename;
+            r->fontSize = fontSize;
+            r->fontLoadingParams = fontLoadingParams;
+            return r;
+        })
+        , py::arg("font_filename") = std::string(), py::arg("font_size") = 0.f, py::arg("font_loading_params") = HelloImGui::FontLoadingParams()
+        )
+        .def_readwrite("font", &HelloImGui::FontDpiResponsive::font, "")
+        .def_readwrite("font_filename", &HelloImGui::FontDpiResponsive::fontFilename, "")
+        .def_readwrite("font_size", &HelloImGui::FontDpiResponsive::fontSize, "")
+        .def_readwrite("font_loading_params", &HelloImGui::FontDpiResponsive::fontLoadingParams, "")
+        ;
+
+
     m.def("load_font",
         HelloImGui::LoadFont,
+        py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
+        pybind11::return_value_policy::reference);
+
+    m.def("load_font_dpi_responsive",
+        HelloImGui::LoadFontDpiResponsive,
         py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
         pybind11::return_value_policy::reference);
 
@@ -471,7 +499,7 @@ void py_init_module_hello_imgui(py::module& m)
         })
         , py::arg("size") = HelloImGui::DefaultWindowSize, py::arg("size_auto") = false, py::arg("window_size_state") = HelloImGui::WindowSizeState::Standard, py::arg("window_size_measure_mode") = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, py::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, py::arg("position") = HelloImGui::DefaultScreenPosition, py::arg("monitor_idx") = 0, py::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, py::arg("resize_app_window_at_next_frame") = false
         )
-        .def_readwrite("size", &HelloImGui::WindowGeometry::size, " Size of the application window\n used if fullScreenMode==NoFullScreen and sizeAuto==False. Default=(800, 600)")
+        .def_readwrite("size", &HelloImGui::WindowGeometry::size, " Size of the application window\n used if fullScreenMode==NoFullScreen and sizeAuto==False. Default=(800, 600)\n The size will be handled as if it was specified for a 96PPI screen\n (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)")
         .def_readwrite("size_auto", &HelloImGui::WindowGeometry::sizeAuto, " If sizeAuto=True, adapt the app window size to the presented widgets.\n After the first frame was displayed, HelloImGui will measure its size, and the\n application window will be resized.\n As a consequence, the application window may change between the 1st and 2nd frame.\n If True, adapt the app window size to the presented widgets. This is done at startup")
         .def_readwrite("window_size_state", &HelloImGui::WindowGeometry::windowSizeState, " `windowSizeState`: _WindowSizeState, default=Standard_\n  You can choose between several window size states:\n      Standard,\n      Minimized,\n      Maximized")
         .def_readwrite("window_size_measure_mode", &HelloImGui::WindowGeometry::windowSizeMeasureMode, " `windowSizeMeasureMode`: _WindowSizeMeasureMode_, default=RelativeTo96Ppi\n Define how the window size is specified:\n      * RelativeTo96Ppi enables to give a screen size whose physical result\n      (in millimeters) is independent of the screen density.\n         For example, a window size expressed as 800x600 will correspond to a size\n            - 800x600 (in screen coords) if the monitor dpi is 96\n            - 1600x120 (in screen coords) if the monitor dpi is 192\n          (this works with Glfw. With SDL, it only works under windows)\n      * ScreenCoords: measure window size in screen coords\n        (Note: screen coordinates might differ from real pixels on high dpi screen)")
@@ -852,6 +880,62 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
+    auto pyClassRemoteParams =
+        py::class_<HelloImGui::RemoteParams>
+            (m, "RemoteParams", " RemoteParams is a struct that contains the settings for displaying the application on a remote device.\n using https://github.com/sammyfreg/netImgui\n or using https://github.com/ggerganov/imgui-ws\n Those features are experimental and not supported with the standard version of HelloImGui,")
+        .def(py::init<>([](
+        bool enableRemoting = false, int wsPort = 5003, std::string wsHttpRootFolder = "", bool wsProvideIndexHtml = true, bool exitWhenServerDisconnected = false, double durationMaxDisconnected = 30.0, std::string serverHost = "localhost", uint32_t serverPort = 8888, bool transmitWindowSize = false)
+        {
+            auto r = std::make_unique<HelloImGui::RemoteParams>();
+            r->enableRemoting = enableRemoting;
+            r->wsPort = wsPort;
+            r->wsHttpRootFolder = wsHttpRootFolder;
+            r->wsProvideIndexHtml = wsProvideIndexHtml;
+            r->exitWhenServerDisconnected = exitWhenServerDisconnected;
+            r->durationMaxDisconnected = durationMaxDisconnected;
+            r->serverHost = serverHost;
+            r->serverPort = serverPort;
+            r->transmitWindowSize = transmitWindowSize;
+            return r;
+        })
+        , py::arg("enable_remoting") = false, py::arg("ws_port") = 5003, py::arg("ws_http_root_folder") = "", py::arg("ws_provide_index_html") = true, py::arg("exit_when_server_disconnected") = false, py::arg("duration_max_disconnected") = 30.0, py::arg("server_host") = "localhost", py::arg("server_port") = 8888, py::arg("transmit_window_size") = false
+        )
+        .def_readwrite("enable_remoting", &HelloImGui::RemoteParams::enableRemoting, "")
+        .def_readwrite("ws_port", &HelloImGui::RemoteParams::wsPort, "")
+        .def_readwrite("ws_http_root_folder", &HelloImGui::RemoteParams::wsHttpRootFolder, "Optional folder were some additional files can be served")
+        .def_readwrite("ws_provide_index_html", &HelloImGui::RemoteParams::wsProvideIndexHtml, "If True, will automatically serve a simple index.html file that contains the canvas and the imgui-ws client code")
+        .def_readwrite("exit_when_server_disconnected", &HelloImGui::RemoteParams::exitWhenServerDisconnected, "")
+        .def_readwrite("duration_max_disconnected", &HelloImGui::RemoteParams::durationMaxDisconnected, "")
+        .def_readwrite("server_host", &HelloImGui::RemoteParams::serverHost, " The server host (if empty, will use \"localhost\")\n The server is the app that simply displays the application on a remote device")
+        .def_readwrite("server_port", &HelloImGui::RemoteParams::serverPort, "The server port (default is 8888)")
+        .def_readwrite("transmit_window_size", &HelloImGui::RemoteParams::transmitWindowSize, "If True, transmit the window size to the server")
+        ;
+
+
+    auto pyClassOpenGlOptions =
+        py::class_<HelloImGui::OpenGlOptions>
+            (m, "OpenGlOptions", " OpenGlCallbacks contains advanced callbacks used at the startup of OpenGL.\n These parameters are reserved for advanced users.\n By default, Hello ImGui will select reasonable default values, and these parameters are not used.\n Use at your own risk, as they make break the multi-platform compatibility of your application!\n All these parameters are platform dependent.\n For real multiplatform examples, see\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp\n and\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp")
+        .def(py::init<>([](
+        std::string GlslVersion = "#version 130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true)
+        {
+            auto r = std::make_unique<HelloImGui::OpenGlOptions>();
+            r->GlslVersion = GlslVersion;
+            r->MajorVersion = MajorVersion;
+            r->MinorVersion = MinorVersion;
+            r->UseCoreProfile = UseCoreProfile;
+            r->UseForwardCompat = UseForwardCompat;
+            return r;
+        })
+        , py::arg("glsl_version") = "#version 130", py::arg("major_version") = 3, py::arg("minor_version") = 3, py::arg("use_core_profile") = true, py::arg("use_forward_compat") = true
+        )
+        .def_readwrite("glsl_version", &HelloImGui::OpenGlOptions::GlslVersion, " Could be for example:\n    #version 150 on macOS\n    #version 130 on Windows\n    #version 300es on GLES")
+        .def_readwrite("major_version", &HelloImGui::OpenGlOptions::MajorVersion, "")
+        .def_readwrite("minor_version", &HelloImGui::OpenGlOptions::MinorVersion, "")
+        .def_readwrite("use_core_profile", &HelloImGui::OpenGlOptions::UseCoreProfile, "OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)")
+        .def_readwrite("use_forward_compat", &HelloImGui::OpenGlOptions::UseForwardCompat, "OpenGL Forward Compatibility (required on macOS)")
+        ;
+
+
     m.def("has_edr_support",
         HelloImGui::hasEdrSupport, " `bool hasEdrSupport()`:\n Check whether extended dynamic range (EDR), i.e. the ability to reproduce\n intensities exceeding the standard dynamic range from 0.0-1.0, is supported.\n\n To leverage EDR support, you need to set `floatBuffer=True` in `RendererBackendOptions`.\n Only the macOS Metal backend currently supports this.\n\n This currently returns False on all backends except Metal, where it checks whether\n this is supported on the current displays.");
 
@@ -860,15 +944,17 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RendererBackendOptions>
             (m, "RendererBackendOptions", " RendererBackendOptions is a struct that contains options for the renderer backend\n (Metal, Vulkan, DirectX, OpenGL)")
         .def(py::init<>([](
-        bool requestFloatBuffer = false)
+        bool requestFloatBuffer = false, std::optional<HelloImGui::OpenGlOptions> openGlOptions = std::nullopt)
         {
             auto r = std::make_unique<HelloImGui::RendererBackendOptions>();
             r->requestFloatBuffer = requestFloatBuffer;
+            r->openGlOptions = openGlOptions;
             return r;
         })
-        , py::arg("request_float_buffer") = false
+        , py::arg("request_float_buffer") = false, py::arg("open_gl_options") = py::none()
         )
         .def_readwrite("request_float_buffer", &HelloImGui::RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer.\n Only available on Metal, if your display supports it.\n Before setting this to True, first check `hasEdrSupport()`")
+        .def_readwrite("open_gl_options", &HelloImGui::RendererBackendOptions::openGlOptions, " `openGlOptions`:\n Advanced options for OpenGL. Use at your own risk.")
         ;
 
 
@@ -1014,7 +1100,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, " `windowTitle`: _string, default=\"\"_.\n  Title of the application window")
         .def_readwrite("window_size_auto", &HelloImGui::SimpleRunnerParams::windowSizeAuto, " `windowSizeAuto`: _bool, default=false_.\n  If True, the size of the window will be computed from its widgets.")
         .def_readwrite("window_restore_previous_geometry", &HelloImGui::SimpleRunnerParams::windowRestorePreviousGeometry, " `windowRestorePreviousGeometry`: _bool, default=true_.\n  If True, restore the size and position of the window between runs.")
-        .def_readwrite("window_size", &HelloImGui::SimpleRunnerParams::windowSize, " `windowSize`: _ScreenSize, default={800, 600}_.\n  Size of the window")
+        .def_readwrite("window_size", &HelloImGui::SimpleRunnerParams::windowSize, " `windowSize`: _ScreenSize, default={800, 600}_.\n  Size of the window\n The size will be handled as if it was specified for a 96PPI screen\n (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)")
         .def_readwrite("fps_idle", &HelloImGui::SimpleRunnerParams::fpsIdle, " `fpsIdle`: _float, default=9_.\n  FPS of the application when idle (set to 0 for full speed).")
         .def_readwrite("enable_idling", &HelloImGui::SimpleRunnerParams::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling at startup by setting this to False\n  When running, use:\n      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = False;")
         .def("to_runner_params",
@@ -1061,6 +1147,11 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("get_backend_description",
         HelloImGui::GetBackendDescription, " `GetBackendDescription()`: returns a string with the backend info\n Could be for example:\n     \"Glfw - OpenGL3\"\n     \"Glfw - Metal\"\n     \"Sdl - Vulkan\"");
+
+    m.def("change_window_size",
+        HelloImGui::ChangeWindowSize,
+        py::arg("window_size"),
+        " `ChangeWindowSize(const ScreenSize &windowSize)`: sets the window size\n (useful if you want to change the window size during execution)");
 
     m.def("switch_layout",
         HelloImGui::SwitchLayout,
