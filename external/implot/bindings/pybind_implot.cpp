@@ -591,33 +591,29 @@ void py_init_module_implot(py::module& m)
         ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
 
     m.def("begin_subplots",
-        [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
+        [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0, std::optional<float> row_ratios = std::nullopt, std::optional<float> col_ratios = std::nullopt) -> std::tuple<bool, std::optional<float>, std::optional<float>>
         {
-            auto BeginSubplots_adapt_exclude_params = [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
+            auto BeginSubplots_adapt_modifiable_immutable_to_return = [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0, std::optional<float> row_ratios = std::nullopt, std::optional<float> col_ratios = std::nullopt) -> std::tuple<bool, std::optional<float>, std::optional<float>>
             {
-                auto lambda_result = ImPlot::BeginSubplots(title_id, rows, cols, size, flags, nullptr, nullptr);
-                return lambda_result;
+                float * row_ratios_adapt_modifiable = nullptr;
+                if (row_ratios.has_value())
+                    row_ratios_adapt_modifiable = & (*row_ratios);
+                float * col_ratios_adapt_modifiable = nullptr;
+                if (col_ratios.has_value())
+                    col_ratios_adapt_modifiable = & (*col_ratios);
+
+                bool r = ImPlot::BeginSubplots(title_id, rows, cols, size, flags, row_ratios_adapt_modifiable, col_ratios_adapt_modifiable);
+                return std::make_tuple(r, row_ratios, col_ratios);
             };
 
-            return BeginSubplots_adapt_exclude_params(title_id, rows, cols, size, flags);
-        },
-        py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0,
-        " Starts a subdivided plotting context. If the function returns True,\n EndSubplots() MUST be called! Call BeginPlot/EndPlot AT MOST [rows*cols]\n times in  between the begining and end of the subplot context. Plots are\n added in row major order.\n\n Example:\n\n if (BeginSubplots(\"My Subplot\",2,3,ImVec2(800,400)) {\n     for (int i = 0; i < 6; ++i) {\n         if (BeginPlot(...)) {\n             ImPlot::PlotLine(...);\n             ...\n             EndPlot();\n         }\n     }\n     EndSubplots();\n }\n\n Produces:\n\n [0] | [1] | [2]\n ----|-----|----\n [3] | [4] | [5]\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MySubplot##HiddenIdText\" or \"##NoTitle\").\n - #rows and #cols must be greater than 0.\n - #size is the size of the entire grid of subplots, not the individual plots\n - #row_ratios and #col_ratios must have AT LEAST #rows and #cols elements,\n   respectively. These are the sizes of the rows and columns expressed in ratios.\n   If the user adjusts the dimensions, the arrays are updated with new ratios.\n\n Important notes regarding BeginPlot from inside of BeginSubplots:\n\n - The #title_id parameter of _BeginPlot_ (see above) does NOT have to be\n   unique when called inside of a subplot context. Subplot IDs are hashed\n   for your convenience so you don't have call PushID or generate unique title\n   strings. Simply pass an empty string to BeginPlot unless you want to title\n   each subplot.\n - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a\n   subplot context. The actual size of the subplot will be based on the\n   #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.\n\n Note: under python, call begin_subplots_with_ratios instead\n       when you want to specify row and column ratios.");
+            return BeginSubplots_adapt_modifiable_immutable_to_return(title_id, rows, cols, size, flags, row_ratios, col_ratios);
+        },     py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = py::none(), py::arg("col_ratios") = py::none());
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
     m.def("begin_subplots_with_ratios",
-        [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
-        {
-            auto BeginSubplotsWithRatios_adapt_exclude_params = [](const char * title_id, int rows, int cols, const ImVec2 & size, ImPlotSubplotFlags flags = 0) -> bool
-            {
-                auto lambda_result = ImPlot::BeginSubplotsWithRatios(title_id, rows, cols, size, flags, std::vector<float>(), std::vector<float>());
-                return lambda_result;
-            };
-
-            return BeginSubplotsWithRatios_adapt_exclude_params(title_id, rows, cols, size, flags);
-        },
-        py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0,
+        ImPlot::BeginSubplotsWithRatios,
+        py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = std::vector<float>(), py::arg("col_ratios") = std::vector<float>(),
         "Under python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios.");
     // #endif
     //
@@ -731,7 +727,7 @@ void py_init_module_implot(py::module& m)
         ImPlot::SetNextAxesToFit, "Sets all upcoming axes to auto fit to their data.");
 
     m.def("plot_line",
-        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -786,16 +782,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotLine_adapt_exclude_params = [&PlotLine_adapt_c_buffers](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0)
-            {
-                PlotLine_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, -1);
-            };
 
-            PlotLine_adapt_exclude_params(label_id, values, xscale, xstart, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotLine_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_line",
-        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -859,16 +851,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotLine_adapt_exclude_params = [&PlotLine_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0)
-            {
-                PlotLine_adapt_c_buffers(label_id, xs, ys, flags, offset, -1);
-            };
 
-            PlotLine_adapt_exclude_params(label_id, xs, ys, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotLine_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_scatter",
-        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -923,16 +911,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotScatter_adapt_exclude_params = [&PlotScatter_adapt_c_buffers](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0)
-            {
-                PlotScatter_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, -1);
-            };
 
-            PlotScatter_adapt_exclude_params(label_id, values, xscale, xstart, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotScatter_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_scatter",
-        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -996,16 +980,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotScatter_adapt_exclude_params = [&PlotScatter_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0)
-            {
-                PlotScatter_adapt_c_buffers(label_id, xs, ys, flags, offset, -1);
-            };
 
-            PlotScatter_adapt_exclude_params(label_id, xs, ys, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotScatter_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_stairs",
-        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1060,16 +1040,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotStairs_adapt_exclude_params = [&PlotStairs_adapt_c_buffers](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0)
-            {
-                PlotStairs_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, -1);
-            };
 
-            PlotStairs_adapt_exclude_params(label_id, values, xscale, xstart, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotStairs_adapt_c_buffers(label_id, values, xscale, xstart, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_stairs",
-        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1133,16 +1109,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotStairs_adapt_exclude_params = [&PlotStairs_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0)
-            {
-                PlotStairs_adapt_c_buffers(label_id, xs, ys, flags, offset, -1);
-            };
 
-            PlotStairs_adapt_exclude_params(label_id, xs, ys, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotStairs_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_shaded",
-        [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1197,16 +1169,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotShaded_adapt_exclude_params = [&PlotShaded_adapt_c_buffers](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0)
-            {
-                PlotShaded_adapt_c_buffers(label_id, values, yref, xscale, xstart, flags, offset, -1);
-            };
 
-            PlotShaded_adapt_exclude_params(label_id, values, yref, xscale, xstart, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("yref") = 0, py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotShaded_adapt_c_buffers(label_id, values, yref, xscale, xstart, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("yref") = 0, py::arg("xscale") = 1, py::arg("xstart") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_shaded",
-        [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1270,16 +1238,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotShaded_adapt_exclude_params = [&PlotShaded_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0)
-            {
-                PlotShaded_adapt_c_buffers(label_id, xs, ys, yref, flags, offset, -1);
-            };
 
-            PlotShaded_adapt_exclude_params(label_id, xs, ys, yref, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("yref") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotShaded_adapt_c_buffers(label_id, xs, ys, yref, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("yref") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_shaded",
-        [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1352,16 +1316,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys2_type + "') for param ys2");
             };
-            auto PlotShaded_adapt_exclude_params = [&PlotShaded_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0)
-            {
-                PlotShaded_adapt_c_buffers(label_id, xs, ys1, ys2, flags, offset, -1);
-            };
 
-            PlotShaded_adapt_exclude_params(label_id, xs, ys1, ys2, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys1"), py::arg("ys2"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotShaded_adapt_c_buffers(label_id, xs, ys1, ys2, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys1"), py::arg("ys2"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_bars",
-        [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1416,16 +1376,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotBars_adapt_exclude_params = [&PlotBars_adapt_c_buffers](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0)
-            {
-                PlotBars_adapt_c_buffers(label_id, values, bar_size, shift, flags, offset, -1);
-            };
 
-            PlotBars_adapt_exclude_params(label_id, values, bar_size, shift, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("bar_size") = 0.67, py::arg("shift") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotBars_adapt_c_buffers(label_id, values, bar_size, shift, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("bar_size") = 0.67, py::arg("shift") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_bars",
-        [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1489,13 +1445,9 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotBars_adapt_exclude_params = [&PlotBars_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0)
-            {
-                PlotBars_adapt_c_buffers(label_id, xs, ys, bar_size, flags, offset, -1);
-            };
 
-            PlotBars_adapt_exclude_params(label_id, xs, ys, bar_size, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("bar_size"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotBars_adapt_c_buffers(label_id, xs, ys, bar_size, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("bar_size"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_bar_groups",
         [](const std::vector<std::string> & label_ids, const py::array & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
@@ -1563,7 +1515,7 @@ void py_init_module_implot(py::module& m)
         "Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.");
 
     m.def("plot_error_bars",
-        [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1636,16 +1588,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + err_type + "') for param err");
             };
-            auto PlotErrorBars_adapt_exclude_params = [&PlotErrorBars_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0)
-            {
-                PlotErrorBars_adapt_c_buffers(label_id, xs, ys, err, flags, offset, -1);
-            };
 
-            PlotErrorBars_adapt_exclude_params(label_id, xs, ys, err, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("err"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotErrorBars_adapt_c_buffers(label_id, xs, ys, err, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("err"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_error_bars",
-        [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1727,16 +1675,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + pos_type + "') for param pos");
             };
-            auto PlotErrorBars_adapt_exclude_params = [&PlotErrorBars_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0)
-            {
-                PlotErrorBars_adapt_c_buffers(label_id, xs, ys, neg, pos, flags, offset, -1);
-            };
 
-            PlotErrorBars_adapt_exclude_params(label_id, xs, ys, neg, pos, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("neg"), py::arg("pos"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotErrorBars_adapt_c_buffers(label_id, xs, ys, neg, pos, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("neg"), py::arg("pos"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_stems",
-        [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1791,16 +1735,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotStems_adapt_exclude_params = [&PlotStems_adapt_c_buffers](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0)
-            {
-                PlotStems_adapt_c_buffers(label_id, values, ref, scale, start, flags, offset, -1);
-            };
 
-            PlotStems_adapt_exclude_params(label_id, values, ref, scale, start, flags, offset);
-        },     py::arg("label_id"), py::arg("values"), py::arg("ref") = 0, py::arg("scale") = 1, py::arg("start") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotStems_adapt_c_buffers(label_id, values, ref, scale, start, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("values"), py::arg("ref") = 0, py::arg("scale") = 1, py::arg("start") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_stems",
-        [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1864,16 +1804,12 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotStems_adapt_exclude_params = [&PlotStems_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0)
-            {
-                PlotStems_adapt_c_buffers(label_id, xs, ys, ref, flags, offset, -1);
-            };
 
-            PlotStems_adapt_exclude_params(label_id, xs, ys, ref, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("ref") = 0, py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotStems_adapt_c_buffers(label_id, xs, ys, ref, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("ref") = 0, py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_inf_lines",
-        [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotInfLines_adapt_c_buffers = [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -1928,14 +1864,10 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotInfLines_adapt_exclude_params = [&PlotInfLines_adapt_c_buffers](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0)
-            {
-                PlotInfLines_adapt_c_buffers(label_id, values, flags, offset, -1);
-            };
 
-            PlotInfLines_adapt_exclude_params(label_id, values, flags, offset);
+            PlotInfLines_adapt_c_buffers(label_id, values, flags, offset, stride);
         },
-        py::arg("label_id"), py::arg("values"), py::arg("flags") = 0, py::arg("offset") = 0,
+        py::arg("label_id"), py::arg("values"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1,
         "Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).");
 
     m.def("plot_pie_chart",
@@ -2125,7 +2057,7 @@ void py_init_module_implot(py::module& m)
         " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.");
 
     m.def("plot_digital",
-        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0)
+        [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
         {
             auto PlotDigital_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
             {
@@ -2189,13 +2121,9 @@ void py_init_module_implot(py::module& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotDigital_adapt_exclude_params = [&PlotDigital_adapt_c_buffers](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0)
-            {
-                PlotDigital_adapt_c_buffers(label_id, xs, ys, flags, offset, -1);
-            };
 
-            PlotDigital_adapt_exclude_params(label_id, xs, ys, flags, offset);
-        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0);
+            PlotDigital_adapt_c_buffers(label_id, xs, ys, flags, offset, stride);
+        },     py::arg("label_id"), py::arg("xs"), py::arg("ys"), py::arg("flags") = 0, py::arg("offset") = 0, py::arg("stride") = -1);
 
     m.def("plot_image",
         ImPlot::PlotImage,

@@ -1117,6 +1117,55 @@ def end_plot() -> None:
 # [SECTION] Begin/End Subplots
 # -----------------------------------------------------------------------------
 
+# Starts a subdivided plotting context. If the function returns True,
+# EndSubplots() MUST be called! Call BeginPlot/EndPlot AT MOST [rows*cols]
+# times in  between the begining and end of the subplot context. Plots are
+# added in row major order.
+#
+# Example:
+#
+# if (BeginSubplots("My Subplot",2,3,ImVec2(800,400)) {
+#     for (int i = 0; i < 6; ++i) {
+#         if (BeginPlot(...)) {
+#             ImPlot::PlotLine(...);
+#             ...
+#             EndPlot();
+#         }
+#     }
+#     EndSubplots();
+# }
+#
+# Produces:
+#
+# [0] | [1] | [2]
+# ----|-----|----
+# [3] | [4] | [5]
+#
+# Important notes:
+#
+# - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
+#   collisions or don't want to display a title in the plot, use double hashes
+#   (e.g. "MySubplot##HiddenIdText" or "##NoTitle").
+# - #rows and #cols must be greater than 0.
+# - #size is the size of the entire grid of subplots, not the individual plots
+# - #row_ratios and #col_ratios must have AT LEAST #rows and #cols elements,
+#   respectively. These are the sizes of the rows and columns expressed in ratios.
+#   If the user adjusts the dimensions, the arrays are updated with new ratios.
+#
+# Important notes regarding BeginPlot from inside of BeginSubplots:
+#
+# - The #title_id parameter of _BeginPlot_ (see above) does NOT have to be
+#   unique when called inside of a subplot context. Subplot IDs are hashed
+#   for your convenience so you don't have call PushID or generate unique title
+#   strings. Simply pass an empty string to BeginPlot unless you want to title
+#   each subplot.
+# - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a
+#   subplot context. The actual size of the subplot will be based on the
+#   #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.
+#
+# Note: under python, call begin_subplots_with_ratios instead
+#       when you want to specify row and column ratios.
+
 # IMPLOT_API bool BeginSubplots(const char* title_id,    /* original C++ signature */
 #                              int rows,
 #                              int cols,
@@ -1124,56 +1173,15 @@ def end_plot() -> None:
 #                              ImPlotSubplotFlags flags = 0,
 #                              float* row_ratios        = nullptr,
 #                              float* col_ratios        = nullptr);
-def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
-    """Starts a subdivided plotting context. If the function returns True,
-    EndSubplots() MUST be called! Call BeginPlot/EndPlot AT MOST [rows*cols]
-    times in  between the begining and end of the subplot context. Plots are
-    added in row major order.
-
-    Example:
-
-    if (BeginSubplots("My Subplot",2,3,ImVec2(800,400)) {
-        for (int i = 0; i < 6; ++i) {
-            if (BeginPlot(...)) {
-                ImPlot::PlotLine(...);
-                ...
-                EndPlot();
-            }
-        }
-        EndSubplots();
-    }
-
-    Produces:
-
-    [0] | [1] | [2]
-    ----|-----|----
-    [3] | [4] | [5]
-
-    Important notes:
-
-    - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
-      collisions or don't want to display a title in the plot, use double hashes
-      (e.g. "MySubplot##HiddenIdText" or "##NoTitle").
-    - #rows and #cols must be greater than 0.
-    - #size is the size of the entire grid of subplots, not the individual plots
-    - #row_ratios and #col_ratios must have AT LEAST #rows and #cols elements,
-      respectively. These are the sizes of the rows and columns expressed in ratios.
-      If the user adjusts the dimensions, the arrays are updated with new ratios.
-
-    Important notes regarding BeginPlot from inside of BeginSubplots:
-
-    - The #title_id parameter of _BeginPlot_ (see above) does NOT have to be
-      unique when called inside of a subplot context. Subplot IDs are hashed
-      for your convenience so you don't have call PushID or generate unique title
-      strings. Simply pass an empty string to BeginPlot unless you want to title
-      each subplot.
-    - The #size parameter of _BeginPlot_ (see above) is ignored when inside of a
-      subplot context. The actual size of the subplot will be based on the
-      #size value you pass to _BeginSubplots_ and #row/#col_ratios if provided.
-
-    Note: under python, call begin_subplots_with_ratios instead
-          when you want to specify row and column ratios.
-    """
+def begin_subplots(
+    title_id: str,
+    rows: int,
+    cols: int,
+    size: ImVec2,
+    flags: SubplotFlags = 0,
+    row_ratios: Optional[float] = None,
+    col_ratios: Optional[float] = None,
+) -> Tuple[bool, Optional[float], Optional[float]]:
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1193,7 +1201,15 @@ def begin_subplots(title_id: str, rows: int, cols: int, size: ImVec2, flags: Sub
 #         IM_ASSERT(col_ratios.size() == cols && "col_ratios must have the same number of elements as cols");
 #     return BeginSubplots(title_id, rows, cols, size, flags, row_ratios.data(), col_ratios.data());
 # }
-def begin_subplots_with_ratios(title_id: str, rows: int, cols: int, size: ImVec2, flags: SubplotFlags = 0) -> bool:
+def begin_subplots_with_ratios(
+    title_id: str,
+    rows: int,
+    cols: int,
+    size: ImVec2,
+    flags: SubplotFlags = 0,
+    row_ratios: List[float] = List[float](),
+    col_ratios: List[float] = List[float](),
+) -> bool:
     """Under python, call begin_subplots_with_ratios instead of begin_subplots when you want to specify row and column ratios."""
     pass
 
@@ -1403,39 +1419,63 @@ def set_next_axes_to_fit() -> None:
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_line(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: LineFlags = 0, offset: int = 0
+    label_id: str,
+    values: np.ndarray,
+    xscale: float = 1,
+    xstart: float = 0,
+    flags: LineFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: LineFlags = 0, offset: int = 0) -> None:
+def plot_line(
+    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: LineFlags = 0, offset: int = 0, stride: int = -1
+) -> None:
     pass
 
 # Plots a standard 2D scatter plot. Default marker is ImPlotMarker_Circle.
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_scatter(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: ScatterFlags = 0, offset: int = 0
+    label_id: str,
+    values: np.ndarray,
+    xscale: float = 1,
+    xstart: float = 0,
+    flags: ScatterFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: ScatterFlags = 0, offset: int = 0) -> None:
+def plot_scatter(
+    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: ScatterFlags = 0, offset: int = 0, stride: int = -1
+) -> None:
     pass
 
 # Plots a a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval [x[i], x[i+1]) has the value y[i]
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_stairs(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: StairsFlags = 0, offset: int = 0
+    label_id: str,
+    values: np.ndarray,
+    xscale: float = 1,
+    xstart: float = 0,
+    flags: StairsFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
-def plot_stairs(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: StairsFlags = 0, offset: int = 0) -> None:
+def plot_stairs(
+    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: StairsFlags = 0, offset: int = 0, stride: int = -1
+) -> None:
     pass
 
 # Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set yref to +/-INFINITY for infinite fill extents.
@@ -1449,20 +1489,33 @@ def plot_shaded(
     xstart: float = 0,
     flags: ShadedFlags = 0,
     offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_shaded(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, yref: float = 0, flags: ShadedFlags = 0, offset: int = 0
+    label_id: str,
+    xs: np.ndarray,
+    ys: np.ndarray,
+    yref: float = 0,
+    flags: ShadedFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_shaded(
-    label_id: str, xs: np.ndarray, ys1: np.ndarray, ys2: np.ndarray, flags: ShadedFlags = 0, offset: int = 0
+    label_id: str,
+    xs: np.ndarray,
+    ys1: np.ndarray,
+    ys2: np.ndarray,
+    flags: ShadedFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
@@ -1470,14 +1523,26 @@ def plot_shaded(
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* values, int count, double bar_size=0.67, double shift=0, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_bars(
-    label_id: str, values: np.ndarray, bar_size: float = 0.67, shift: float = 0, flags: BarsFlags = 0, offset: int = 0
+    label_id: str,
+    values: np.ndarray,
+    bar_size: float = 0.67,
+    shift: float = 0,
+    flags: BarsFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_bars(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, bar_size: float, flags: BarsFlags = 0, offset: int = 0
+    label_id: str,
+    xs: np.ndarray,
+    ys: np.ndarray,
+    bar_size: float,
+    flags: BarsFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
@@ -1497,7 +1562,13 @@ def plot_bar_groups(
 # IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_error_bars(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, err: np.ndarray, flags: ErrorBarsFlags = 0, offset: int = 0
+    label_id: str,
+    xs: np.ndarray,
+    ys: np.ndarray,
+    err: np.ndarray,
+    flags: ErrorBarsFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
@@ -1511,6 +1582,7 @@ def plot_error_bars(
     pos: np.ndarray,
     flags: ErrorBarsFlags = 0,
     offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
@@ -1525,18 +1597,27 @@ def plot_stems(
     start: float = 0,
     flags: StemsFlags = 0,
     offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
 @overload
 def plot_stems(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, ref: float = 0, flags: StemsFlags = 0, offset: int = 0
+    label_id: str,
+    xs: np.ndarray,
+    ys: np.ndarray,
+    ref: float = 0,
+    flags: StemsFlags = 0,
+    offset: int = 0,
+    stride: int = -1,
 ) -> None:
     pass
 
 # IMPLOT_TMP void PlotInfLines(const char* label_id, const T* values, int count, ImPlotInfLinesFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_inf_lines(label_id: str, values: np.ndarray, flags: InfLinesFlags = 0, offset: int = 0) -> None:
+def plot_inf_lines(
+    label_id: str, values: np.ndarray, flags: InfLinesFlags = 0, offset: int = 0, stride: int = -1
+) -> None:
     """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
     pass
 
@@ -1586,7 +1667,9 @@ def plot_histogram2_d(
 
 # Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
 # IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, ImPlotDigitalFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0) -> None:
+def plot_digital(
+    label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0, stride: int = -1
+) -> None:
     pass
 
 # IMPLOT_API void PlotImage(const char* label_id, ImTextureID user_texture_id, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0=ImVec2(0,0), const ImVec2& uv1=ImVec2(1,1), const ImVec4& tint_col=ImVec4(1,1,1,1), ImPlotImageFlags flags=0);    /* original C++ signature */
