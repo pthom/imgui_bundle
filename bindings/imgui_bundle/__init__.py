@@ -46,6 +46,15 @@ from imgui_bundle._glfw_set_search_path import _glfw_set_search_path
 _glfw_set_search_path()
 from imgui_bundle import glfw_utils as glfw_utils  # noqa: E402
 
+# Flag types for ImPlot
+implot.LineFlags = int  # see implot.LineFlags_
+implot.ScatterFlags = int  # see implot.ScatterFlags_
+implot.StairsFlags = int  # see implot.StairsFlags_
+implot.ShadedFlags = int  # see implot.ShadedFlags_
+implot.BarsFlags = int  # see implot.BarsFlags_
+implot.PieChartFlags = int  # see implot.PieChartFlags_
+implot.HistogramFlags = int  # see implot.HistogramFlags_
+
 
 import os  # noqa: E402
 
