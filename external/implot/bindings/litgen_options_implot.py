@@ -29,6 +29,7 @@ def litgen_options_implot() -> LitgenOptions:
     options.function_names_replacements.add_first_replacement("begin_subplots_with_ratios", "begin_subplots")
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
+    options.function_names_replacements.add_first_replacement("plot_histogram2_d", "plot_histogram_2d")
     options.type_replacements.add_first_replacement("ImGuiContext", "ImGui_Context")
 
     options.type_replacements.add_last_replacement(r"ImPlot([A-Z][a-zA-Z0-9]*)", r"\1")

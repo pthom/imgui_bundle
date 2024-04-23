@@ -2033,7 +2033,7 @@ void py_init_module_implot(py::module& m)
         py::arg("label_id"), py::arg("values"), py::arg("bins") = ImPlotBin_Sturges, py::arg("bar_scale") = 1.0, py::arg("range") = ImPlotRange(), py::arg("flags") = 0,
         " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.");
 
-    m.def("plot_histogram2_d",
+    m.def("plot_histogram_2d",
         [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double
         {
             auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double

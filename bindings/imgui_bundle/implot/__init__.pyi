@@ -1564,7 +1564,7 @@ def plot_histogram(
     pass
 
 # IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), ImPlotHistogramFlags flags=0);    /* original C++ signature */
-def plot_histogram2_d(
+def plot_histogram_2d(
     label_id: str,
     xs: np.ndarray,
     ys: np.ndarray,
