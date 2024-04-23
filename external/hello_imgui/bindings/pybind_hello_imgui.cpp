@@ -875,7 +875,8 @@ void py_init_module_hello_imgui(py::module& m)
     py::enum_<HelloImGui::PlatformBackendType>(m, "PlatformBackendType", py::arithmetic(), " Platform backend type (SDL, GLFW)\n They are listed in the order of preference when FirstAvailable is selected.")
         .value("first_available", HelloImGui::PlatformBackendType::FirstAvailable, "")
         .value("glfw", HelloImGui::PlatformBackendType::Glfw, "")
-        .value("sdl", HelloImGui::PlatformBackendType::Sdl, "");
+        .value("sdl", HelloImGui::PlatformBackendType::Sdl, "")
+        .value("null", HelloImGui::PlatformBackendType::Null, "");
 
 
     py::enum_<HelloImGui::RendererBackendType>(m, "RendererBackendType", py::arithmetic(), " Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)\n They are listed in the order of preference when FirstAvailable is selected.")
@@ -884,7 +885,8 @@ void py_init_module_hello_imgui(py::module& m)
         .value("metal", HelloImGui::RendererBackendType::Metal, "")
         .value("vulkan", HelloImGui::RendererBackendType::Vulkan, "")
         .value("direct_x11", HelloImGui::RendererBackendType::DirectX11, "")
-        .value("direct_x12", HelloImGui::RendererBackendType::DirectX12, "");
+        .value("direct_x12", HelloImGui::RendererBackendType::DirectX12, "")
+        .value("null", HelloImGui::RendererBackendType::Null, "");
 
 
     py::enum_<HelloImGui::IniFolderType>(m, "IniFolderType", py::arithmetic(), " IniFolderType is an enum which describle where is the base path to store\n the ini file for the application settings.\n\n You can use IniFolderLocation(iniFolderType) to get the corresponding path.\n\n RunnerParams contains the following members, which are used to compute\n the ini file location:\n     iniFolderType           (IniFolderType::CurrentFolder by default)\n     iniFilename             (empty string by default)\n     iniFilename_useAppWindowTitle\n         (True by default: iniFilename is derived from\n          appWindowParams.windowTitle)\n\n iniFilename may contain a subfolder\n (which will be created inside the iniFolderType folder if needed)\n")

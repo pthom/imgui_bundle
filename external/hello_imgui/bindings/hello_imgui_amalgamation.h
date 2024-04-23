@@ -1737,6 +1737,7 @@ enum class PlatformBackendType
     FirstAvailable,
     Glfw,
     Sdl,
+    Null
 };
 
 // Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
@@ -1749,6 +1750,7 @@ enum class RendererBackendType
     Vulkan,
     DirectX11,
     DirectX12,
+    Null
 };
 
 // @@md

@@ -2171,8 +2171,10 @@ class PlatformBackendType(enum.Enum):
     # Glfw,    /* original C++ signature */
     glfw = enum.auto()  # (= 1)
     # Sdl,    /* original C++ signature */
-    # }
     sdl = enum.auto()  # (= 2)
+    # Null    /* original C++ signature */
+    # }
+    null = enum.auto()  # (= 3)
 
 class RendererBackendType(enum.Enum):
     """Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
@@ -2190,8 +2192,10 @@ class RendererBackendType(enum.Enum):
     # DirectX11,    /* original C++ signature */
     direct_x11 = enum.auto()  # (= 4)
     # DirectX12,    /* original C++ signature */
-    # }
     direct_x12 = enum.auto()  # (= 5)
+    # Null    /* original C++ signature */
+    # }
+    null = enum.auto()  # (= 6)
 
 # @@md
 
