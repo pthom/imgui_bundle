@@ -1873,7 +1873,7 @@ namespace HelloImGui
 
 // @@md#OpenGlOptions
 
-// OpenGlCallbacks contains advanced callbacks used at the startup of OpenGL.
+// OpenGlOptions contains advanced options used at the startup of OpenGL.
 // These parameters are reserved for advanced users.
 // By default, Hello ImGui will select reasonable default values, and these parameters are not used.
 // Use at your own risk, as they make break the multi-platform compatibility of your application!
@@ -1882,13 +1882,31 @@ namespace HelloImGui
 //     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp
 // and
 //     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp
+//
+// How to set those values manually:
+// ---------------------------------
+// you may set them manually:
+//    (1) Either by setting them programmatically in your application
+//        (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)
+//    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
+//       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+// Note: if several methods are used, the order of priority is (1) > (2)
+//
+// Example content of a ini file:
+// ------------------------------
+//    [OpenGlOptions]
+//    GlslVersion = 130
+//    MajorVersion = 3
+//    MinorVersion = 2
+//    UseCoreProfile = true
+//    UseForwardCompat = false
 struct OpenGlOptions
 {
     // Could be for example:
-    //    #version 150 on macOS
-    //    #version 130 on Windows
-    //    #version 300es on GLES
-    std::string  GlslVersion = "#version 130";
+    //    "150" on macOS
+    //    "130" on Windows
+    //    "300es" on GLES
+    std::string  GlslVersion = "130";
 
     // OpenGL 3.3 (these options won't work for GlEs)
     int          MajorVersion = 3;
@@ -1898,9 +1916,6 @@ struct OpenGlOptions
     bool         UseCoreProfile = true;
     // OpenGL Forward Compatibility (required on macOS)
     bool         UseForwardCompat = true;
-
-    //    bool         UseGlEs = false;
-    //    int          GlEsMajorVersion = 3;
 };
 
 // @@md

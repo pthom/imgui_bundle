@@ -914,9 +914,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassOpenGlOptions =
         py::class_<HelloImGui::OpenGlOptions>
-            (m, "OpenGlOptions", " OpenGlCallbacks contains advanced callbacks used at the startup of OpenGL.\n These parameters are reserved for advanced users.\n By default, Hello ImGui will select reasonable default values, and these parameters are not used.\n Use at your own risk, as they make break the multi-platform compatibility of your application!\n All these parameters are platform dependent.\n For real multiplatform examples, see\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp\n and\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp")
+            (m, "OpenGlOptions", " OpenGlOptions contains advanced options used at the startup of OpenGL.\n These parameters are reserved for advanced users.\n By default, Hello ImGui will select reasonable default values, and these parameters are not used.\n Use at your own risk, as they make break the multi-platform compatibility of your application!\n All these parameters are platform dependent.\n For real multiplatform examples, see\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp\n and\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp\n\n How to set those values manually:\n ---------------------------------\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n Note: if several methods are used, the order of priority is (1) > (2)\n\n Example content of a ini file:\n ------------------------------\n    [OpenGlOptions]\n    GlslVersion = 130\n    MajorVersion = 3\n    MinorVersion = 2\n    UseCoreProfile = True\n    UseForwardCompat = False")
         .def(py::init<>([](
-        std::string GlslVersion = "#version 130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true)
+        std::string GlslVersion = "130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true)
         {
             auto r = std::make_unique<HelloImGui::OpenGlOptions>();
             r->GlslVersion = GlslVersion;
@@ -926,9 +926,9 @@ void py_init_module_hello_imgui(py::module& m)
             r->UseForwardCompat = UseForwardCompat;
             return r;
         })
-        , py::arg("glsl_version") = "#version 130", py::arg("major_version") = 3, py::arg("minor_version") = 3, py::arg("use_core_profile") = true, py::arg("use_forward_compat") = true
+        , py::arg("glsl_version") = "130", py::arg("major_version") = 3, py::arg("minor_version") = 3, py::arg("use_core_profile") = true, py::arg("use_forward_compat") = true
         )
-        .def_readwrite("glsl_version", &HelloImGui::OpenGlOptions::GlslVersion, " Could be for example:\n    #version 150 on macOS\n    #version 130 on Windows\n    #version 300es on GLES")
+        .def_readwrite("glsl_version", &HelloImGui::OpenGlOptions::GlslVersion, " Could be for example:\n    \"150\" on macOS\n    \"130\" on Windows\n    \"300es\" on GLES")
         .def_readwrite("major_version", &HelloImGui::OpenGlOptions::MajorVersion, "")
         .def_readwrite("minor_version", &HelloImGui::OpenGlOptions::MinorVersion, "")
         .def_readwrite("use_core_profile", &HelloImGui::OpenGlOptions::UseCoreProfile, "OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)")
