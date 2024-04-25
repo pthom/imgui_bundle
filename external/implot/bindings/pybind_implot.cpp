@@ -592,8 +592,27 @@ void py_init_module_implot(py::module& m)
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
+
+    auto pyClassSubplotsRowColRatios =
+        py::class_<ImPlot::SubplotsRowColRatios>
+            (m, "SubplotsRowColRatios", "")
+        .def(py::init<>([](
+        std::vector<float> row_ratios = std::vector<float>(), std::vector<float> col_ratios = std::vector<float>())
+        {
+            auto r = std::make_unique<ImPlot::SubplotsRowColRatios>();
+            r->row_ratios = row_ratios;
+            r->col_ratios = col_ratios;
+            return r;
+        })
+        , py::arg("row_ratios") = std::vector<float>(), py::arg("col_ratios") = std::vector<float>()
+        )
+        .def_readwrite("row_ratios", &ImPlot::SubplotsRowColRatios::row_ratios, "")
+        .def_readwrite("col_ratios", &ImPlot::SubplotsRowColRatios::col_ratios, "")
+        ;
+
+
     m.def("begin_subplots",
-        ImPlot::BeginSubplotsWithRatios, py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_ratios") = std::vector<float>(), py::arg("col_ratios") = std::vector<float>());
+        ImPlot::BeginSubplotsWithRatios, py::arg("title_id"), py::arg("rows"), py::arg("cols"), py::arg("size"), py::arg("flags") = 0, py::arg("row_col_ratios") = py::none());
     // #endif
     //
 

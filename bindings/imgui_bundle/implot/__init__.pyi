@@ -1165,19 +1165,26 @@ def end_plot() -> None:
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+class SubplotsRowColRatios:
+    # std::vector<float> row_ratios;    /* original C++ signature */
+    row_ratios: List[float]
+    # std::vector<float> col_ratios;    /* original C++ signature */
+    col_ratios: List[float]
+    # SubplotsRowColRatios(std::vector<float> row_ratios = std::vector<float>(), std::vector<float> col_ratios = std::vector<float>());    /* original C++ signature */
+    def __init__(self, row_ratios: List[float] = List[float](), col_ratios: List[float] = List[float]()) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 # IMPLOT_API inline bool BeginSubplotsWithRatios(const char* title_id,    /* original C++ signature */
 #                               int rows,
 #                               int cols,
 #                               const ImVec2& size,
 #                               ImPlotSubplotFlags flags = 0,
-#                               std::vector<float> row_ratios = std::vector<float>(),
-#                               std::vector<float>  col_ratios = std::vector<float>())
+#                               SubplotsRowColRatios* row_col_ratios = nullptr)
 # {
-#     if (row_ratios.size() != 0)
-#         IM_ASSERT(row_ratios.size() == rows && "row_ratios must have the same number of elements as rows");
-#     if (col_ratios.size() != 0)
-#         IM_ASSERT(col_ratios.size() == cols && "col_ratios must have the same number of elements as cols");
-#     return BeginSubplots(title_id, rows, cols, size, flags, row_ratios.data(), col_ratios.data());
+#     if (row_col_ratios == nullptr)
+#         return BeginSubplots(title_id, rows, cols, size, flags, nullptr , nullptr);
+#     return BeginSubplots(title_id, rows, cols, size, flags, row_col_ratios->row_ratios.data(), row_col_ratios->col_ratios.data());
 # }
 def begin_subplots(
     title_id: str,
@@ -1185,8 +1192,7 @@ def begin_subplots(
     cols: int,
     size: ImVec2,
     flags: SubplotFlags = 0,
-    row_ratios: List[float] = List[float](),
-    col_ratios: List[float] = List[float](),
+    row_col_ratios: Optional[SubplotsRowColRatios] = None,
 ) -> bool:
     pass
 
