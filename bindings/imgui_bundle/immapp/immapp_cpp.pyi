@@ -24,6 +24,32 @@ DefaultScreenSize = (800, 600)
 ####################    <generated_from:immapp.h>    ####################
 ####################    </generated_from:immapp.h>    ####################
 
+####################    <generated_from:immapp_widgets.h>    ####################
+
+# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
+# but they enable to make the plot content draggable inside a node
+def begin_plot_in_node_editor(
+    title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: ImPlotFlags = 0
+) -> bool:
+    pass
+
+def end_plot_in_node_editor() -> None:
+    pass
+
+def show_resizable_plot_in_node_editor(
+    title_id: str,
+    size: ImVec2,
+    plot_function: VoidFunction,
+    flags: ImPlotFlags = 0,
+    resize_handle_size_em: float = 1.0,
+) -> ImVec2:
+    """ShowResizablePlotInNodeEditor: shows a resizable plot inside a node
+    Returns the new size of the plot
+    """
+    pass
+
+####################    </generated_from:immapp_widgets.h>    ####################
+
 ####################    <generated_from:runner.h>    ####################
 # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #

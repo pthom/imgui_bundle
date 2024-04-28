@@ -16,6 +16,10 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     run_with_markdown,
     AddOnsParams,
     snippets,
+
+    begin_plot_in_node_editor,
+    end_plot_in_node_editor,
+    show_resizable_plot_in_node_editor,
 )
 
 # Note: to enable font awesome 6:
@@ -57,4 +61,7 @@ __all__ = [
     "RunnerParams",
     "SimpleRunnerParams",
     "snippets",
+    "begin_plot_in_node_editor",
+    "end_plot_in_node_editor",
+    "show_resizable_plot_in_node_editor",
 ]

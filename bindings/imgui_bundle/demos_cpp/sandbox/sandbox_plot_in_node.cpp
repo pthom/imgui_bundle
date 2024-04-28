@@ -1,8 +1,4 @@
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
-#include <unordered_map>
-#include <functional>
-
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "implot/implot.h"
 #include "immapp/runner.h"
@@ -32,7 +28,7 @@ void gui()
     ed::BeginNode(ed::NodeId(1));
     ImGui::Text("Hello");
     ImGui::Text("World");
-    ImmApp::ShowResizablePlotInNodeEditor("My Plot", &plotSize, myPlotFunction);
+    plotSize = ImmApp::ShowResizablePlotInNodeEditor("My Plot", plotSize, myPlotFunction);
     ed::EndNode();
     ed::End();
 }
