@@ -4,6 +4,8 @@ from .immapp_cpp import (
     default_node_editor_context as default_node_editor_context,
     em_size as em_size,
     em_to_vec2 as em_to_vec2,
+    pixels_to_em as pixels_to_em,
+    pixel_size_to_em as pixel_size_to_em,
     run as run,
     run_with_markdown as run_with_markdown,
     AddOnsParams as AddOnsParams,

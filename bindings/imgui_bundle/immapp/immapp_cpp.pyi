@@ -201,12 +201,21 @@ def em_size(nb_lines: float) -> float:
     pass
 
 # EmToVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+# (pass sizes that are proportional to the font height)
 @overload
 def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 
 @overload
 def em_to_vec2(v: ImVec2) -> ImVec2:
+    pass
+
+def pixels_to_em(pixels: ImVec2) -> ImVec2:
+    """PixelsToEm() converts a Vec2 in pixels to a Vec2 in em"""
+    pass
+
+def pixel_size_to_em(pixel_size: float) -> float:
+    """PixelSizeToEm() converts a size in pixels to a size in em"""
     pass
 
 # ///////////////////////////////////////////////////////////////////////////////////////

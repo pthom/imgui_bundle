@@ -135,6 +135,16 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("em_to_vec2",
         py::overload_cast<ImVec2>(ImmApp::EmToVec2), py::arg("v"));
+
+    m.def("pixels_to_em",
+        ImmApp::PixelsToEm,
+        py::arg("pixels"),
+        "PixelsToEm() converts a Vec2 in pixels to a Vec2 in em");
+
+    m.def("pixel_size_to_em",
+        ImmApp::PixelSizeToEm,
+        py::arg("pixel_size"),
+        "PixelSizeToEm() converts a size in pixels to a size in em");
     // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     //
 

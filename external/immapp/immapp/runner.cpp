@@ -264,6 +264,16 @@ namespace ImmApp
         return HelloImGui::EmSize(nbLines);
     }
 
+    ImVec2 PixelsToEm(ImVec2 pixels)
+    {
+        return HelloImGui::PixelsToEm(pixels);
+    }
+
+    float  PixelSizeToEm(float pixelSize)
+    {
+        return HelloImGui::PixelSizeToEm(pixelSize);
+    }
+
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext()

@@ -12,6 +12,9 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
 
     em_size,
     em_to_vec2,
+    pixels_to_em,
+    pixel_size_to_em,
+
     run,
     run_with_markdown,
     AddOnsParams,
@@ -49,6 +52,8 @@ __all__ = [
     "node_editor_settings_location",
     "em_size",
     "em_to_vec2",
+    "pixels_to_em",
+    "pixel_size_to_em",
     "run",
     "run_with_markdown",
     "AddOnsParams",

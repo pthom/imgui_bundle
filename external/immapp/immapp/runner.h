@@ -139,9 +139,14 @@ namespace ImmApp
     float EmSize(float nbLines);
 
     // EmToVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
+    // (pass sizes that are proportional to the font height)
     ImVec2 EmToVec2(float x, float y);
     ImVec2 EmToVec2(ImVec2 v);
 
+    // PixelsToEm() converts a Vec2 in pixels to a Vec2 in em
+    ImVec2 PixelsToEm(ImVec2 pixels);
+    // PixelSizeToEm() converts a size in pixels to a size in em
+    float  PixelSizeToEm(float pixelSize);
 
     /////////////////////////////////////////////////////////////////////////////////////////
     //
