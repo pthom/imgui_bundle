@@ -860,7 +860,7 @@ void py_init_module_implot_internal(py::module& m)
         py::class_<ImPlotContext>
             (m, "Context", "Holds state information that must persist between calls to BeginPlot()/EndPlot()")
         .def(py::init<>([](
-        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer())
+        ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer(), bool CanDragPlotInNodeEditor = false)
         {
             auto r = std::make_unique<ImPlotContext>();
             r->CTicker = CTicker;
@@ -878,9 +878,10 @@ void py_init_module_implot_internal(py::module& m)
             r->InputMap = InputMap;
             r->OpenContextThisFrame = OpenContextThisFrame;
             r->MousePosStringBuilder = MousePosStringBuilder;
+            r->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
             return r;
         })
-        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("style") = ImPlotStyle(), py::arg("color_modifiers") = ImVector<ImGuiColorMod>(), py::arg("style_modifiers") = ImVector<ImGuiStyleMod>(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("temp_int1") = ImVector<int>(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer()
+        , py::arg("c_ticker") = ImPlotTicker(), py::arg("annotations") = ImPlotAnnotationCollection(), py::arg("tags") = ImPlotTagCollection(), py::arg("style") = ImPlotStyle(), py::arg("color_modifiers") = ImVector<ImGuiColorMod>(), py::arg("style_modifiers") = ImVector<ImGuiStyleMod>(), py::arg("colormap_data") = ImPlotColormapData(), py::arg("temp_int1") = ImVector<int>(), py::arg("digital_plot_item_cnt") = int(), py::arg("digital_plot_offset") = int(), py::arg("next_plot_data") = ImPlotNextPlotData(), py::arg("next_item_data") = ImPlotNextItemData(), py::arg("input_map") = ImPlotInputMap(), py::arg("open_context_this_frame") = bool(), py::arg("mouse_pos_string_builder") = ImGuiTextBuffer(), py::arg("can_drag_plot_in_node_editor") = false
         )
         .def_readwrite("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_readwrite("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -905,6 +906,7 @@ void py_init_module_implot_internal(py::module& m)
         .def_readwrite("sort_items", &ImPlotContext::SortItems, "")
         .def_readwrite("current_alignment_h", &ImPlotContext::CurrentAlignmentH, "")
         .def_readwrite("current_alignment_v", &ImPlotContext::CurrentAlignmentV, "")
+        .def_readwrite("can_drag_plot_in_node_editor", &ImPlotContext::CanDragPlotInNodeEditor, "Specific to ImGui Bundle, when used inside imgui-node-editor")
         ;
 
 
