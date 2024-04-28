@@ -10,6 +10,9 @@ from .immapp_cpp import (
     run_with_markdown as run_with_markdown,
     AddOnsParams as AddOnsParams,
     snippets as snippets,
+    begin_plot_in_node_editor as begin_plot_in_node_editor,
+    end_plot_in_node_editor as end_plot_in_node_editor,
+    show_resizable_plot_in_node_editor as show_resizable_plot_in_node_editor,
 )
 from .immapp_utils import (
     static as static,

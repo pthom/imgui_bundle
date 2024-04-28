@@ -4,7 +4,6 @@
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
 import enum
-
 from imgui_bundle import imgui_md, hello_imgui, ImVec2
 from imgui_bundle.imgui_node_editor import (
     Config as NodeEditorConfig,
@@ -12,6 +11,7 @@ from imgui_bundle.imgui_node_editor import (
 )
 from imgui_bundle.hello_imgui import DefaultWindowSize
 
+ImPlotFlags = int # see implot.Flags_
 ImGuiMd = imgui_md
 HelloImGui = hello_imgui
 
