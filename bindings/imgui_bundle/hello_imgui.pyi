@@ -2906,14 +2906,14 @@ def end_group_column() -> None:
 # ImVec2 WidgetWithResizeHandle(    /* original C++ signature */
 #         VoidFunction widgetGuiFunction,
 #         float handleSizeEm = 1.0f,
-#         std::optional<VoidFunction> onItemHovered = std::nullopt,
-#         std::optional<VoidFunction> onItemResized = std::nullopt
+#         std::optional<VoidFunction> onItemResized = std::nullopt,
+#         std::optional<VoidFunction> onItemHovered = std::nullopt
 #         );
 def widget_with_resize_handle(
     widget_gui_function: VoidFunction,
     handle_size_em: float = 1.0,
-    on_item_hovered: Optional[VoidFunction] = None,
     on_item_resized: Optional[VoidFunction] = None,
+    on_item_hovered: Optional[VoidFunction] = None,
 ) -> ImVec2:
     """WidgetWithResizeHandle: adds a resize handle to a widget
     Example usage with ImPlot:

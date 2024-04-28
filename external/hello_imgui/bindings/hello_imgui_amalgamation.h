@@ -2329,8 +2329,8 @@ namespace HelloImGui
     ImVec2 WidgetWithResizeHandle(
         VoidFunction widgetGuiFunction,
         float handleSizeEm = 1.0f,
-        std::optional<VoidFunction> onItemHovered = std::nullopt,
-        std::optional<VoidFunction> onItemResized = std::nullopt
+        std::optional<VoidFunction> onItemResized = std::nullopt,
+        std::optional<VoidFunction> onItemHovered = std::nullopt
         );
 
 }
