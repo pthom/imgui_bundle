@@ -2093,7 +2093,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2901,6 +2901,35 @@ def begin_group_column() -> None:
 # void EndGroupColumn();       /* original C++ signature */
 def end_group_column() -> None:
     """calls ImGui::EndGroup() + ImGui::SameLine()"""
+    pass
+
+# ImVec2 WidgetWithResizeHandle(    /* original C++ signature */
+#         VoidFunction widgetGuiFunction,
+#         float handleSizeEm = 1.0f,
+#         std::optional<VoidFunction> onItemHovered = std::nullopt,
+#         std::optional<VoidFunction> onItemResized = std::nullopt
+#         );
+def widget_with_resize_handle(
+    widget_gui_function: VoidFunction,
+    handle_size_em: float = 1.0,
+    on_item_hovered: Optional[VoidFunction] = None,
+    on_item_resized: Optional[VoidFunction] = None,
+) -> ImVec2:
+    """WidgetWithResizeHandle: adds a resize handle to a widget
+    Example usage with ImPlot:
+           None gui()
+           {
+               static ImVec2 widget_size(200, 200);
+               auto myWidgetFunction = []()
+               {
+                   if (ImPlot::BeginPlot("My Plot", widget_size)) {
+                       ImPlot::PlotLine("My Line", x.data(), y.data(), 1000);
+                       ImPlot::EndPlot();
+                   }
+               };
+               widget_size = widget_with_resize_handle(myWidgetFunction);
+           }
+    """
     pass
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

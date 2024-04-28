@@ -1114,6 +1114,11 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("end_group_column",
         HelloImGui::EndGroupColumn, "calls ImGui::EndGroup() + ImGui::SameLine()");
 
+    m.def("widget_with_resize_handle",
+        HelloImGui::WidgetWithResizeHandle,
+        py::arg("widget_gui_function"), py::arg("handle_size_em") = 1.0f, py::arg("on_item_hovered") = py::none(), py::arg("on_item_resized") = py::none(),
+        " WidgetWithResizeHandle: adds a resize handle to a widget\n Example usage with ImPlot:\n        None gui()\n        {\n            static ImVec2 widget_size(200, 200);\n            auto myWidgetFunction = []()\n            {\n                if (ImPlot::BeginPlot(\"My Plot\", widget_size)) {\n                    ImPlot::PlotLine(\"My Line\", x.data(), y.data(), 1000);\n                    ImPlot::EndPlot();\n                }\n            };\n            widget_size = widget_with_resize_handle(myWidgetFunction);\n        }");
+
 
     m.def("run",
         py::overload_cast<HelloImGui::RunnerParams &>(HelloImGui::Run),
