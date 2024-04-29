@@ -11,7 +11,7 @@ from imgui_bundle.imgui_node_editor import (
 )
 from imgui_bundle.hello_imgui import DefaultWindowSize
 
-ImPlotFlags = int # see implot.Flags_
+ImPlotFlags = int  # see implot.Flags_
 ImGuiMd = imgui_md
 HelloImGui = hello_imgui
 
@@ -38,13 +38,25 @@ def end_plot_in_node_editor() -> None:
 
 def show_resizable_plot_in_node_editor(
     title_id: str,
-    size: ImVec2,
+    size_pixels: ImVec2,
     plot_function: VoidFunction,
     flags: ImPlotFlags = 0,
     resize_handle_size_em: float = 1.0,
 ) -> ImVec2:
     """ShowResizablePlotInNodeEditor: shows a resizable plot inside a node
     Returns the new size of the plot
+    """
+    pass
+
+def show_resizable_plot_in_node_editor_em(
+    title_id: str,
+    size_em: ImVec2,
+    plot_function: VoidFunction,
+    flags: ImPlotFlags = 0,
+    resize_handle_size_em: float = 1.0,
+) -> ImVec2:
+    """ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node
+    Returns the new size of the plot. Units are in em.
     """
     pass
 

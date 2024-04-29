@@ -1,6 +1,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp_widgets.h"
-#include "hello_imgui/hello_imgui_widgets.h"
+#include "hello_imgui/hello_imgui.h"
 #include "implot/implot.h"
 #include "implot/implot_internal.h"
 #include "imgui-node-editor/imgui_node_editor.h"
@@ -35,7 +35,7 @@ namespace ImmApp
     // Will return true if the plot is visible
     ImVec2 ShowResizablePlotInNodeEditor(
         const char* title_id,        // plot title
-        const ImVec2& size,          // plot size (will be updated if resized by the user)
+        const ImVec2& size_pixels,          // plot size (will be updated if resized by the user)
         VoidFunction plotFunction,   // your function to draw the plot
         ImPlotFlags flags,
         float resizeHandleSizeEm
@@ -47,7 +47,7 @@ namespace ImmApp
         // Prepare function to be called by HelloImGui::WidgetWithResizeHandle
         auto widgetFunction = [&]()
         {
-            visible = BeginPlotInNodeEditor(title_id, size, flags);
+            visible = BeginPlotInNodeEditor(title_id, size_pixels, flags);
             if (visible)
             {
                 plotFunction();
@@ -61,6 +61,20 @@ namespace ImmApp
             DisableUserInputInNodeEditor,
             DisableUserInputInNodeEditor);
         return new_size;
+    }
+
+    ImVec2 ShowResizablePlotInNodeEditor_Em(
+        const char* title_id,
+        const ImVec2& size_em,
+        VoidFunction plotFunction,
+        ImPlotFlags flags,
+        float resizeHandleSizeEm
+    )
+    {
+        ImVec2 size_pixels = HelloImGui::EmToVec2(size_em);
+        ImVec2 new_size_pixels = ShowResizablePlotInNodeEditor(title_id, size_pixels, plotFunction, flags, resizeHandleSizeEm);
+        ImVec2 new_size_em = HelloImGui::PixelsToEm(new_size_pixels);
+        return new_size_em;
     }
 
 }

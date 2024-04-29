@@ -1,7 +1,7 @@
 from imgui_bundle import imgui, implot, immapp, ImVec2, ImVec4, imgui_node_editor as ed
 
 x_pos = 5.0
-plot_size = ImVec2(200, 200)
+plot_size = ImVec2(20, 10)
 
 
 def gui():
@@ -19,7 +19,7 @@ def gui():
     ed.begin_node(ed.NodeId(1))
     imgui.text("Hello")
     imgui.text("World")
-    plot_size = immapp.show_resizable_plot_in_node_editor("My Plot", plot_size, my_plot_function)
+    plot_size = immapp.show_resizable_plot_in_node_editor_em("My Plot", plot_size, my_plot_function)
     ed.end_node()
     ed.end()
 

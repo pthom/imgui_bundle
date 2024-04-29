@@ -58,8 +58,13 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("show_resizable_plot_in_node_editor",
         ImmApp::ShowResizablePlotInNodeEditor,
-        py::arg("title_id"), py::arg("size"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
+        py::arg("title_id"), py::arg("size_pixels"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
         " ShowResizablePlotInNodeEditor: shows a resizable plot inside a node\n Returns the new size of the plot");
+
+    m.def("show_resizable_plot_in_node_editor_em",
+        ImmApp::ShowResizablePlotInNodeEditor_Em,
+        py::arg("title_id"), py::arg("size_em"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
+        " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
     ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
 
 

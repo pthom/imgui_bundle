@@ -13,6 +13,7 @@ from .immapp_cpp import (
     begin_plot_in_node_editor as begin_plot_in_node_editor,
     end_plot_in_node_editor as end_plot_in_node_editor,
     show_resizable_plot_in_node_editor as show_resizable_plot_in_node_editor,
+    show_resizable_plot_in_node_editor_em as show_resizable_plot_in_node_editor_em,
 )
 from .immapp_utils import (
     static as static,
