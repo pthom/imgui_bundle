@@ -425,7 +425,6 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
 endif()
 
 
-
 # Log options at the end
 # -----------------------------------------------------------------------------
 # First, adjust variables so that they show correctly
