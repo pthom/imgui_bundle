@@ -3,6 +3,7 @@
 #include "implot/implot.h"
 #include "immapp/runner.h"
 #include "immapp/immapp_widgets.h"
+#include <cmath>
 
 
 namespace ed = ax::NodeEditor;
@@ -18,7 +19,7 @@ void gui()
         static std::vector<float> x(1000), y(1000);
         for (int i = 0; i < 1000; ++i) {
             x[i] = i * 0.01f;
-            y[i] = std::sin(x[i]);
+            y[i] = sin(x[i]);
         }
         ImPlot::PlotLine("My Line", x.data(), y.data(), 1000);
         ImPlot::DragLineX(0, &xPos, ImVec4(1, 1, 0, 1));
