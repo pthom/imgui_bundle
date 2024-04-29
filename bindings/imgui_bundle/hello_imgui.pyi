@@ -212,6 +212,16 @@ def em_size(nb_lines: float) -> float:
 
 # @@md
 
+# ImVec2 PixelsToEm(ImVec2 pixels);    /* original C++ signature */
+def pixels_to_em(pixels: ImVec2) -> ImVec2:
+    """__HelloImGui::PixelToEm()__ converts a Vec2 in pixels coord to a Vec2 in em units"""
+    pass
+
+# float  PixelSizeToEm(float pixelSize);    /* original C++ signature */
+def pixel_size_to_em(pixel_size: float) -> float:
+    """__HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units"""
+    pass
+
 # ----------------------------------------------------------------------------
 
 # float DpiFontLoadingFactor();    /* original C++ signature */
@@ -2276,10 +2286,6 @@ class BackendPointers:
 
 # @@md
 
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/remote_params.h included by hello_imgui/runner_params.h                    //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 # @@md#RemoteParams
 
 class RemoteParams:
@@ -2593,6 +2599,11 @@ class FpsIdling:
     #  refresh needs)
     fps_idle: float = 9.0
 
+    # float timeActiveAfterLastEvent = 3.f;    /* original C++ signature */
+    # `timeActiveAfterLastEvent`: _float, default=3._.
+    #  Time in seconds after the last event before the application is considered idling.
+    time_active_after_last_event: float = 3.0
+
     # bool  enableIdling = true;    /* original C++ signature */
     # `enableIdling`: _bool, default=true_.
     #  Disable idling by setting this to False.
@@ -2609,10 +2620,11 @@ class FpsIdling:
     # `rememberEnableIdling`: _bool, default=true_.
     #  If True, the last value of enableIdling is restored from the settings at startup.
     remember_enable_idling: bool = False
-    # FpsIdling(float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
+    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
+        time_active_after_last_event: float = 3.0,
         enable_idling: bool = True,
         is_idling: bool = False,
         remember_enable_idling: bool = False,

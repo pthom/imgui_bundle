@@ -106,6 +106,16 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("nb_lines"),
         "__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines");
 
+    m.def("pixels_to_em",
+        HelloImGui::PixelsToEm,
+        py::arg("pixels"),
+        "__HelloImGui::PixelToEm()__ converts a Vec2 in pixels coord to a Vec2 in em units");
+
+    m.def("pixel_size_to_em",
+        HelloImGui::PixelSizeToEm,
+        py::arg("pixel_size"),
+        "__HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units");
+
 
     m.def("dpi_font_loading_factor",
         HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
@@ -994,18 +1004,20 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::FpsIdling>
             (m, "FpsIdling", "FpsIdling is a struct that contains Fps Idling parameters")
         .def(py::init<>([](
-        float fpsIdle = 9.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
+        float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
         {
             auto r = std::make_unique<HelloImGui::FpsIdling>();
             r->fpsIdle = fpsIdle;
+            r->timeActiveAfterLastEvent = timeActiveAfterLastEvent;
             r->enableIdling = enableIdling;
             r->isIdling = isIdling;
             r->rememberEnableIdling = rememberEnableIdling;
             return r;
         })
-        , py::arg("fps_idle") = 9.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false
+        , py::arg("fps_idle") = 9.f, py::arg("time_active_after_last_event") = 3.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false
         )
         .def_readwrite("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen\n  very frequently. In order to reduce the CPU usage, the FPS is reduced when\n  no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets\n  (for example a live video), you may want to ask for a faster refresh:\n  either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application\n  refresh needs)")
+        .def_readwrite("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default=3._.\n  Time in seconds after the last event before the application is considered idling.")
         .def_readwrite("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling by setting this to False.\n  (this can be changed dynamically during execution)")
         .def_readwrite("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution,\n  and will be set to True when it is idling.")
         .def_readwrite("remember_enable_idling", &HelloImGui::FpsIdling::rememberEnableIdling, " `rememberEnableIdling`: _bool, default=true_.\n  If True, the last value of enableIdling is restored from the settings at startup.")

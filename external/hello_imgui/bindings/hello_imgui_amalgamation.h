@@ -130,6 +130,12 @@ float EmSize();
 float EmSize(float nbLines);
 // @@md
 
+// __HelloImGui::PixelToEm()__ converts a Vec2 in pixels coord to a Vec2 in em units
+ImVec2 PixelsToEm(ImVec2 pixels);
+
+// __HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units
+float  PixelSizeToEm(float pixelSize);
+
 } // namespace HelloImGui
 
 
@@ -2075,6 +2081,10 @@ struct FpsIdling
     //  (you can change this value during the execution depending on your application
     //  refresh needs)
     float fpsIdle = 9.f;
+
+    // `timeActiveAfterLastEvent`: _float, default=3.f_.
+    //  Time in seconds after the last event before the application is considered idling.
+    float timeActiveAfterLastEvent = 3.f;
 
     // `enableIdling`: _bool, default=true_.
     //  Disable idling by setting this to false.
