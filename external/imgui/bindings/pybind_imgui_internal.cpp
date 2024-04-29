@@ -593,7 +593,8 @@ void py_init_module_imgui_internal(py::module& m)
     py::enum_<ImGuiInputTextFlagsPrivate_>(m, "InputTextFlagsPrivate_", py::arithmetic(), "Extend ImGuiInputTextFlags_")
         .value("im_gui_input_text_flags_multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
         .value("im_gui_input_text_flags_no_mark_edited", ImGuiInputTextFlags_NoMarkEdited, "For internal use by functions using InputText() before reformatting data")
-        .value("im_gui_input_text_flags_merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.");
+        .value("im_gui_input_text_flags_merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
+        .value("im_gui_input_text_flags_localize_decimal_point", ImGuiInputTextFlags_LocalizeDecimalPoint, "For internal use by InputScalar() and TempInputScalar()");
 
 
     py::enum_<ImGuiButtonFlagsPrivate_>(m, "ButtonFlagsPrivate_", py::arithmetic(), "Extend ImGuiButtonFlags_")
@@ -1158,7 +1159,6 @@ void py_init_module_imgui_internal(py::module& m)
         .value("mouse", ImGuiInputSource_Mouse, "Note: may be Mouse or TouchScreen or Pen. See io.MouseSource to distinguish them.")
         .value("keyboard", ImGuiInputSource_Keyboard, "")
         .value("gamepad", ImGuiInputSource_Gamepad, "")
-        .value("clipboard", ImGuiInputSource_Clipboard, "Currently only used by InputText()")
         .value("count", ImGuiInputSource_COUNT, "");
 
 
@@ -1455,7 +1455,8 @@ void py_init_module_imgui_internal(py::module& m)
         .value("is_page_move", ImGuiNavMoveFlags_IsPageMove, "Identify a PageDown/PageUp request.")
         .value("activate", ImGuiNavMoveFlags_Activate, "Activate/select target item.")
         .value("no_select", ImGuiNavMoveFlags_NoSelect, "Don't trigger selection by not setting g.NavJustMovedTo")
-        .value("no_set_nav_highlight", ImGuiNavMoveFlags_NoSetNavHighlight, "Do not alter the visible state of keyboard vs mouse nav highlight");
+        .value("no_set_nav_highlight", ImGuiNavMoveFlags_NoSetNavHighlight, "Do not alter the visible state of keyboard vs mouse nav highlight")
+        .value("no_clear_active_id", ImGuiNavMoveFlags_NoClearActiveId, "(Experimental) Do not clear active id when applying move result");
 
 
     py::enum_<ImGuiNavLayer>(m, "NavLayer", py::arithmetic(), "")

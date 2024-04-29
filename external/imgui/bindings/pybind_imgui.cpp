@@ -1683,6 +1683,11 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto PlotLines_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
+                // Check if the array is C-contiguous
+                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
+                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
+                }
+
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
                 py::ssize_t values_count = values.shape()[0];
@@ -1712,6 +1717,11 @@ void py_init_module_imgui_main(py::module& m)
         {
             auto PlotHistogram_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
+                // Check if the array is C-contiguous
+                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
+                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
+                }
+
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
                 py::ssize_t values_count = values.shape()[0];
@@ -2981,7 +2991,7 @@ void py_init_module_imgui_main(py::module& m)
         .value("count", ImGuiCol_COUNT, "");
 
 
-    py::enum_<ImGuiStyleVar_>(m, "StyleVar_", py::arithmetic(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   In Visual Studio IDE: CTRL+comma (\"Edit.GoToAll\") can follow symbols in comments, whereas CTRL+F12 (\"Edit.GoToImplementation\") cannot.\n   With Visual Assist installed: ALT+G (\"VAssistX.GoToImplementation\") can also follow symbols in comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
+    py::enum_<ImGuiStyleVar_>(m, "StyleVar_", py::arithmetic(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   - In Visual Studio: CTRL+comma (\"Edit.GoToAll\") can follow symbols inside comments, whereas CTRL+F12 (\"Edit.GoToImplementation\") cannot.\n   - In Visual Studio w/ Visual Assist installed: ALT+G (\"VAssistX.GoToImplementation\") can also follow symbols inside comments.\n   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
         .value("alpha", ImGuiStyleVar_Alpha, "float     Alpha")
         .value("disabled_alpha", ImGuiStyleVar_DisabledAlpha, "float     DisabledAlpha")
         .value("window_padding", ImGuiStyleVar_WindowPadding, "ImVec2    WindowPadding")
@@ -3005,7 +3015,9 @@ void py_init_module_imgui_main(py::module& m)
         .value("grab_min_size", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
         .value("grab_rounding", ImGuiStyleVar_GrabRounding, "float     GrabRounding")
         .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
+        .value("tab_border_size", ImGuiStyleVar_TabBorderSize, "float     TabBorderSize")
         .value("tab_bar_border_size", ImGuiStyleVar_TabBarBorderSize, "float     TabBarBorderSize")
+        .value("table_angled_headers_angle", ImGuiStyleVar_TableAngledHeadersAngle, "float  TableAngledHeadersAngle")
         .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
         .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
         .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float  SeparatorTextBorderSize")
@@ -5013,7 +5025,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("frame_border_size", &ImGuiStyle::FrameBorderSize, "Thickness of border around frames. Generally set to 0.0 or 1.0. (Other values are not well tested and more CPU/GPU costly).")
         .def_readwrite("item_spacing", &ImGuiStyle::ItemSpacing, "Horizontal and vertical spacing between widgets/lines.")
         .def_readwrite("item_inner_spacing", &ImGuiStyle::ItemInnerSpacing, "Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label).")
-        .def_readwrite("cell_padding", &ImGuiStyle::CellPadding, "Padding within a table cell. CellPadding.y may be altered between different rows.")
+        .def_readwrite("cell_padding", &ImGuiStyle::CellPadding, "Padding within a table cell. Cellpadding.x is locked for entire table. CellPadding.y may be altered between different rows.")
         .def_readwrite("touch_extra_padding", &ImGuiStyle::TouchExtraPadding, "Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!")
         .def_readwrite("indent_spacing", &ImGuiStyle::IndentSpacing, "Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).")
         .def_readwrite("columns_min_spacing", &ImGuiStyle::ColumnsMinSpacing, "Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).")
@@ -5835,9 +5847,9 @@ void py_init_module_imgui_main(py::module& m)
         .def("add_ngon_filled",
             &ImDrawList::AddNgonFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("num_segments"))
         .def("add_ellipse",
-            &ImDrawList::AddEllipse, py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0, py::arg("thickness") = 1.0f)
+            &ImDrawList::AddEllipse, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0, py::arg("thickness") = 1.0f)
         .def("add_ellipse_filled",
-            &ImDrawList::AddEllipseFilled, py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0)
+            &ImDrawList::AddEllipseFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0)
         .def("add_text",
             py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
         .def("add_text",
@@ -5894,7 +5906,7 @@ void py_init_module_imgui_main(py::module& m)
             "Use precomputed angles for a 12 steps circle")
         .def("path_elliptical_arc_to",
             &ImDrawList::PathEllipticalArcTo,
-            py::arg("center"), py::arg("radius_x"), py::arg("radius_y"), py::arg("rot"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0,
+            py::arg("center"), py::arg("radius"), py::arg("rot"), py::arg("a_min"), py::arg("a_max"), py::arg("num_segments") = 0,
             "Ellipse")
         .def("path_bezier_cubic_curve_to",
             &ImDrawList::PathBezierCubicCurveTo,
