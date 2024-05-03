@@ -45,7 +45,16 @@ void py_init_module_imgui_main(py::module_& m) {
     m.def("DockBuilderRemoveNode", ImGui::DockBuilderRemoveNode);
     m.def("DockBuilderAddNode", ImGui::DockBuilderAddNode);
     m.def("DockBuilderSetNodeSize", ImGui::DockBuilderSetNodeSize);
-    m.def("DockBuilderSplitNode", ImGui::DockBuilderSplitNode);
+
+    // We need to return the ID of both left and right sides, since
+    // the same ID cannot be split twice.
+    m.def("DockBuilderSplitNode",
+        [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir, std::optional<int> unused1=0, std::optional<int> unused2=0) {
+            ImGuiID out_id_at_dir;
+            ImGuiID out_id_at_opposite_dir;
+            ImGui::DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir, &out_id_at_dir, &out_id_at_opposite_dir);
+            return py::make_tuple(out_id_at_dir, out_id_at_opposite_dir);
+    });
     m.def("DockBuilderDockWindow", ImGui::DockBuilderDockWindow);
     m.def("DockBuilderFinish", ImGui::DockBuilderFinish);
 
