@@ -80,6 +80,11 @@ Function_TestGui = Callable[[imgui.test_engine.TestContext], None]
 # This is the interface that your initial setup (app init, main loop) will mostly be using.
 # Actual tests will mostly use the interface of imgui_te_context.h
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+
 # -----------------------------------------------------------------------------
 # Function Pointers
 # -----------------------------------------------------------------------------
@@ -463,8 +468,24 @@ class TestEngineIO:
 
     # Options: Export
     # While you can manually call ImGuiTestEngine_Export(), registering filename/format here ensure the crash handler will always export if application crash.
+    # Note: in Python, use export_result_filename_set() to set this value.
     # const char*                 ExportResultsFilename = NULL;    /* original C++ signature */
     export_results_filename: str = None  # (const)
+
+    #                                                     #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # void ExportResultsFilename_Set(const char* filename) {    /* original C++ signature */
+    #         static std::string value;
+    #         value = filename;
+    #         ExportResultsFilename = value.data();
+    #     }
+    def export_results_filename_set(self, filename: str) -> None:
+        """Set ExportResultsFilename from Python
+        (private API)
+        """
+        pass
+    #                                                     #endif
+    #
 
     # Options: Sanity Checks
     # bool                        CheckDrawDataIntegrity = false;    /* original C++ signature */
