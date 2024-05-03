@@ -18,9 +18,18 @@ function (add_hello_imgui)
         enable_language(OBJC) # See https://gitlab.kitware.com/cmake/cmake/-/issues/24104
     endif()
 
-    # 2. Use glfw submodule for python bindings
-    # When building python bindings, glfw is always built as a shared library (see cmake/add_glfw.cmake)
+    # 2. Specific options for python bindings:
+    #    i.   Use Glfw + OpenGL3 backend
+    #    ii.  enable null backend
+    #    iii. Build our own glfw as a shared library (see cmake/add_glfw.cmake)
+    #         (the reason is that we need to deploy this library with the python bindings)
     if (IMGUI_BUNDLE_BUILD_PYTHON)
+        #    i.   Use Opengl3 + glfw backend
+        set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
+        #    ii.  enable null backend
+        set(HELLOIMGUI_USE_NULL ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_HAS_NULL ON CACHE BOOL "" FORCE)
         add_glfw_as_python_shared_library()
     endif()
 
