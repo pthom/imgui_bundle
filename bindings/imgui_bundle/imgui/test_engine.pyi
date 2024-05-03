@@ -139,21 +139,21 @@ class TestVerboseLevel(enum.Enum):
 class TestStatus(enum.Enum):
     """Test status (stored in ImGuiTest)"""
 
-    # ImGuiTestStatus_Unknown     = -1,    /* original C++ signature */
-    unknown = enum.auto()  # (= -1)
-    # ImGuiTestStatus_Success     = 0,    /* original C++ signature */
-    success = enum.auto()  # (= 0)
-    # ImGuiTestStatus_Queued      = 1,    /* original C++ signature */
-    queued = enum.auto()  # (= 1)
-    # ImGuiTestStatus_Running     = 2,    /* original C++ signature */
-    running = enum.auto()  # (= 2)
-    # ImGuiTestStatus_Error       = 3,    /* original C++ signature */
-    error = enum.auto()  # (= 3)
-    # ImGuiTestStatus_Suspended   = 4,    /* original C++ signature */
-    suspended = enum.auto()  # (= 4)
+    # ImGuiTestStatus_Unknown     = 0,    /* original C++ signature */
+    unknown = enum.auto()  # (= 0)
+    # ImGuiTestStatus_Success     = 1,    /* original C++ signature */
+    success = enum.auto()  # (= 1)
+    # ImGuiTestStatus_Queued      = 2,    /* original C++ signature */
+    queued = enum.auto()  # (= 2)
+    # ImGuiTestStatus_Running     = 3,    /* original C++ signature */
+    running = enum.auto()  # (= 3)
+    # ImGuiTestStatus_Error       = 4,    /* original C++ signature */
+    error = enum.auto()  # (= 4)
+    # ImGuiTestStatus_Suspended   = 5,    /* original C++ signature */
+    suspended = enum.auto()  # (= 5)
     # ImGuiTestStatus_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 5)
+    count = enum.auto()  # (= 6)
 
 class TestGroup(enum.Enum):
     """Test group: this is mostly used to categorize tests in our testing UI. (Stored in ImGuiTest)"""
@@ -337,6 +337,10 @@ def register_test(
     engine: TestEngine, category: str, name: str, src_file: Optional[str] = None, src_line: int = 0
 ) -> Test:
     """Prefer calling IM_REGISTER_TEST()"""
+    pass
+
+# IMGUI_API void                ImGuiTestEngine_UnregisterTest(ImGuiTestEngine* engine, ImGuiTest* test);    /* original C++ signature */
+def unregister_test(engine: TestEngine, test: Test) -> None:
     pass
 
 # Functions: Main
@@ -553,10 +557,10 @@ class TestItemInfo:
     id_: ID = 0  # Item ID
     # ImGuiWindow*                Window = NULL;    /* original C++ signature */
     window: Window = None  # Item Window
-    # int                         TimestampMain = -1;    /* original C++ signature */
-    timestamp_main: int = -1  # Timestamp of main result (all fields)
-    # int                         TimestampStatus = -1;    /* original C++ signature */
-    timestamp_status: int = -1  # Timestamp of StatusFlags
+    # int                         TimestampMain;    /* original C++ signature */
+    timestamp_main: int  # Timestamp of main result (all fields)
+    # int                         TimestampStatus;    /* original C++ signature */
+    timestamp_status: int  # Timestamp of StatusFlags
     # ImGuiID                     ParentID = 0;    /* original C++ signature */
     parent_id: ID = 0  # Item Parent ID (value at top of the ID stack)
     # ImRect                      RectFull = ImRect();    /* original C++ signature */
@@ -570,12 +574,8 @@ class TestItemInfo:
         0  # Item Status flags (fully updated for some items only, compare TimestampStatus to FrameCount)
     )
 
-    # ImGuiTestItemInfo()         { RefCount = 0; NavLayer = 0; Depth = 0; }    /* original C++ signature */
+    # ImGuiTestItemInfo()         { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
-        pass
-    # bool                        IsEmpty() const         { return ID == 0; }    /* original C++ signature */
-    def is_empty(self) -> bool:
-        """(private API)"""
         pass
 
 class TestItemList:
@@ -769,6 +769,7 @@ class TestRunTask:
         pass
 
 # -------------------------------------------------------------------------
+
 ####################    </generated_from:imgui_te_engine.h>    ####################
 
 ####################    <generated_from:imgui_te_context.h>    ####################
@@ -847,7 +848,12 @@ class TestRefDesc:
     def c_str(self) -> str:
         """(private API)"""
         pass
-    # ImGuiTestRefDesc(const ImGuiTestRef& ref, const ImGuiTestItemInfo* item);    /* original C++ signature */
+    # ImGuiTestRefDesc(const ImGuiTestRef& ref);    /* original C++ signature */
+    @overload
+    def __init__(self, ref: Union[TestRef, str]) -> None:
+        pass
+    # ImGuiTestRefDesc(const ImGuiTestRef& ref, const ImGuiTestItemInfo& item);    /* original C++ signature */
+    @overload
     def __init__(self, ref: Union[TestRef, str], item: TestItemInfo) -> None:
         pass
 
@@ -1318,7 +1324,7 @@ class TestContext:
         """(private API)"""
         pass
     # Windows
-    # ImGuiTestItemInfo* WindowInfo(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    # ImGuiTestItemInfo WindowInfo(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_info(self, window_ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None) -> TestItemInfo:
         """(private API)"""
         pass
@@ -1677,11 +1683,11 @@ class TestContext:
     # Low-level queries
     # - ItemInfo queries never returns a None pointer, instead they return an empty instance (info->IsEmpty(), info->ID == 0) and set contexted as errored.
     # - You can use ImGuiTestOpFlags_NoError to do a query without marking context as errored. This is what ItemExists() does.
-    # ImGuiTestItemInfo*  ItemInfo(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    # ImGuiTestItemInfo   ItemInfo(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def item_info(self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None) -> TestItemInfo:
         """(private API)"""
         pass
-    # ImGuiTestItemInfo*  ItemInfoOpenFullPath(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    # ImGuiTestItemInfo   ItemInfoOpenFullPath(ImGuiTestRef ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def item_info_open_full_path(self, ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None) -> TestItemInfo:
         """(private API)"""
         pass
@@ -1691,7 +1697,7 @@ class TestContext:
     ) -> ID:
         """(private API)"""
         pass
-    # ImGuiTestItemInfo*  ItemInfoNull();    /* original C++ signature */
+    # ImGuiTestItemInfo   ItemInfoNull() { return ImGuiTestItemInfo(); }    /* original C++ signature */
     def item_info_null(self) -> TestItemInfo:
         """(private API)"""
         pass
@@ -1770,6 +1776,43 @@ class TestContext:
     def item_input_value(self, ref: Union[TestRef, str], str: str) -> None:
         """(private API)"""
         pass
+    # Item/Widgets: Helpers to easily read a value by selecting Slider/Drag/Input text, copying into clipboard and parsing it.
+    # - This requires the item to be selectable (we will later provide helpers that works in more general manner)
+    # - Original clipboard value is restored afterward.
+    # bool        ItemSelectAndReadValue(ImGuiTestRef ref, ImGuiDataType data_type, void* out_data, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    @overload
+    def item_select_and_read_value(
+        self, ref: Union[TestRef, str], data_type: DataType, out_data: Any, flags: TestOpFlags = TestOpFlags_None
+    ) -> bool:
+        """(private API)"""
+        pass
+    # void        ItemSelectAndReadValue(ImGuiTestRef ref, int* out_v);    /* original C++ signature */
+    @overload
+    def item_select_and_read_value(self, ref: Union[TestRef, str], out_v: int) -> int:
+        """(private API)"""
+        pass
+    # void        ItemSelectAndReadValue(ImGuiTestRef ref, float* out_v);    /* original C++ signature */
+    @overload
+    def item_select_and_read_value(self, ref: Union[TestRef, str], out_v: float) -> float:
+        """(private API)"""
+        pass
+    # Item/Widgets: Status query
+    # bool        ItemExists(ImGuiTestRef ref);    /* original C++ signature */
+    def item_exists(self, ref: Union[TestRef, str]) -> bool:
+        """(private API)"""
+        pass
+    # bool        ItemIsChecked(ImGuiTestRef ref);    /* original C++ signature */
+    def item_is_checked(self, ref: Union[TestRef, str]) -> bool:
+        """(private API)"""
+        pass
+    # bool        ItemIsOpened(ImGuiTestRef ref);    /* original C++ signature */
+    def item_is_opened(self, ref: Union[TestRef, str]) -> bool:
+        """(private API)"""
+        pass
+    # void        ItemVerifyCheckedIfAlive(ImGuiTestRef ref, bool checked);    /* original C++ signature */
+    def item_verify_checked_if_alive(self, ref: Union[TestRef, str], checked: bool) -> None:
+        """(private API)"""
+        pass
     # Item/Widgets: Drag and Mouse operations
     # void        ItemHold(ImGuiTestRef ref, float time);    /* original C++ signature */
     def item_hold(self, ref: Union[TestRef, str], time: float) -> None:
@@ -1791,23 +1834,6 @@ class TestContext:
         pass
     # void        ItemDragWithDelta(ImGuiTestRef ref_src, ImVec2 pos_delta);    /* original C++ signature */
     def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2) -> None:
-        """(private API)"""
-        pass
-    # Item/Widgets: Status query
-    # bool        ItemExists(ImGuiTestRef ref);    /* original C++ signature */
-    def item_exists(self, ref: Union[TestRef, str]) -> bool:
-        """(private API)"""
-        pass
-    # bool        ItemIsChecked(ImGuiTestRef ref);    /* original C++ signature */
-    def item_is_checked(self, ref: Union[TestRef, str]) -> bool:
-        """(private API)"""
-        pass
-    # bool        ItemIsOpened(ImGuiTestRef ref);    /* original C++ signature */
-    def item_is_opened(self, ref: Union[TestRef, str]) -> bool:
-        """(private API)"""
-        pass
-    # void        ItemVerifyCheckedIfAlive(ImGuiTestRef ref, bool checked);    /* original C++ signature */
-    def item_verify_checked_if_alive(self, ref: Union[TestRef, str], checked: bool) -> None:
         """(private API)"""
         pass
     # Helpers for Tab Bars widgets
@@ -2221,7 +2247,7 @@ class TestEngine:
         -1.0
     )  # Inject custom delta time into imgui context to simulate clock passing faster than wall clock time.
     # ImGuiTestContext*           TestContext = NULL;    /* original C++ signature */
-    test_context: TestContext = None
+    test_context: TestContext = None  # Running test context
     # ImGuiTestGatherTask         GatherTask;    /* original C++ signature */
     gather_task: TestGatherTask
     # ImGuiTestFindByLabelTask    FindByLabelTask;    /* original C++ signature */

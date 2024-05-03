@@ -200,6 +200,9 @@ void py_init_module_imgui_test_engine(py::module& m)
         "Prefer calling IM_REGISTER_TEST()",
         pybind11::return_value_policy::reference);
 
+    m.def("unregister_test",
+        ImGuiTestEngine_UnregisterTest, py::arg("engine"), py::arg("test"));
+
     m.def("queue_test",
         ImGuiTestEngine_QueueTest, py::arg("engine"), py::arg("test"), py::arg("run_flags") = 0);
 
@@ -341,8 +344,6 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("in_flags", &ImGuiTestItemInfo::InFlags, "Item flags")
         .def_readwrite("status_flags", &ImGuiTestItemInfo::StatusFlags, "Item Status flags (fully updated for some items only, compare TimestampStatus to FrameCount)")
         .def(py::init<>())
-        .def("is_empty",
-            &ImGuiTestItemInfo::IsEmpty, "(private API)")
         ;
 
 
@@ -509,7 +510,9 @@ void py_init_module_imgui_test_engine(py::module& m)
             &ImGuiTestRefDesc::c_str,
             "(private API)",
             pybind11::return_value_policy::reference)
-        .def(py::init<const ImGuiTestRef &, const ImGuiTestItemInfo *>(),
+        .def(py::init<const ImGuiTestRef &>(),
+            py::arg("ref"))
+        .def(py::init<const ImGuiTestRef &, const ImGuiTestItemInfo &>(),
             py::arg("ref"), py::arg("item"))
         ;
 
@@ -843,8 +846,7 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("window_info",
             &ImGuiTestContext::WindowInfo,
             py::arg("window_ref"), py::arg("flags") = ImGuiTestOpFlags_None,
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            "(private API)")
         .def("window_close",
             &ImGuiTestContext::WindowClose,
             py::arg("window_ref"),
@@ -1115,21 +1117,17 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("item_info",
             &ImGuiTestContext::ItemInfo,
             py::arg("ref"), py::arg("flags") = ImGuiTestOpFlags_None,
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            "(private API)")
         .def("item_info_open_full_path",
             &ImGuiTestContext::ItemInfoOpenFullPath,
             py::arg("ref"), py::arg("flags") = ImGuiTestOpFlags_None,
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            "(private API)")
         .def("item_info_handle_wildcard_search",
             &ImGuiTestContext::ItemInfoHandleWildcardSearch,
             py::arg("wildcard_prefix_start"), py::arg("wildcard_prefix_end"), py::arg("wildcard_suffix_start"),
             "(private API)")
         .def("item_info_null",
-            &ImGuiTestContext::ItemInfoNull,
-            "(private API)",
-            pybind11::return_value_policy::reference)
+            &ImGuiTestContext::ItemInfoNull, "(private API)")
         .def("gather_items",
             &ImGuiTestContext::GatherItems,
             py::arg("out_list"), py::arg("parent"), py::arg("depth") = -1,
@@ -1194,6 +1192,56 @@ void py_init_module_imgui_test_engine(py::module& m)
             py::overload_cast<ImGuiTestRef, const char *>(&ImGuiTestContext::ItemInputValue),
             py::arg("ref"), py::arg("str"),
             "(private API)")
+        .def("item_select_and_read_value",
+            py::overload_cast<ImGuiTestRef, ImGuiDataType, void *, ImGuiTestOpFlags>(&ImGuiTestContext::ItemSelectAndReadValue),
+            py::arg("ref"), py::arg("data_type"), py::arg("out_data"), py::arg("flags") = ImGuiTestOpFlags_None,
+            "(private API)")
+        .def("item_select_and_read_value",
+            [](ImGuiTestContext & self, ImGuiTestRef ref, int out_v) -> int
+            {
+                auto ItemSelectAndReadValue_adapt_modifiable_immutable_to_return = [&self](ImGuiTestRef ref, int out_v) -> int
+                {
+                    int * out_v_adapt_modifiable = & out_v;
+
+                    self.ItemSelectAndReadValue(ref, out_v_adapt_modifiable);
+                    return out_v;
+                };
+
+                return ItemSelectAndReadValue_adapt_modifiable_immutable_to_return(ref, out_v);
+            },
+            py::arg("ref"), py::arg("out_v"),
+            "(private API)")
+        .def("item_select_and_read_value",
+            [](ImGuiTestContext & self, ImGuiTestRef ref, float out_v) -> float
+            {
+                auto ItemSelectAndReadValue_adapt_modifiable_immutable_to_return = [&self](ImGuiTestRef ref, float out_v) -> float
+                {
+                    float * out_v_adapt_modifiable = & out_v;
+
+                    self.ItemSelectAndReadValue(ref, out_v_adapt_modifiable);
+                    return out_v;
+                };
+
+                return ItemSelectAndReadValue_adapt_modifiable_immutable_to_return(ref, out_v);
+            },
+            py::arg("ref"), py::arg("out_v"),
+            "(private API)")
+        .def("item_exists",
+            &ImGuiTestContext::ItemExists,
+            py::arg("ref"),
+            "(private API)")
+        .def("item_is_checked",
+            &ImGuiTestContext::ItemIsChecked,
+            py::arg("ref"),
+            "(private API)")
+        .def("item_is_opened",
+            &ImGuiTestContext::ItemIsOpened,
+            py::arg("ref"),
+            "(private API)")
+        .def("item_verify_checked_if_alive",
+            &ImGuiTestContext::ItemVerifyCheckedIfAlive,
+            py::arg("ref"), py::arg("checked"),
+            "(private API)")
         .def("item_hold",
             &ImGuiTestContext::ItemHold,
             py::arg("ref"), py::arg("time"),
@@ -1213,22 +1261,6 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("item_drag_with_delta",
             &ImGuiTestContext::ItemDragWithDelta,
             py::arg("ref_src"), py::arg("pos_delta"),
-            "(private API)")
-        .def("item_exists",
-            &ImGuiTestContext::ItemExists,
-            py::arg("ref"),
-            "(private API)")
-        .def("item_is_checked",
-            &ImGuiTestContext::ItemIsChecked,
-            py::arg("ref"),
-            "(private API)")
-        .def("item_is_opened",
-            &ImGuiTestContext::ItemIsOpened,
-            py::arg("ref"),
-            "(private API)")
-        .def("item_verify_checked_if_alive",
-            &ImGuiTestContext::ItemVerifyCheckedIfAlive,
-            py::arg("ref"), py::arg("checked"),
             "(private API)")
         .def("tab_close",
             &ImGuiTestContext::TabClose,
@@ -1499,7 +1531,7 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def_readwrite("batch_end_time", &ImGuiTestEngine::BatchEndTime, "")
         .def_readwrite("frame_count", &ImGuiTestEngine::FrameCount, "")
         .def_readwrite("override_delta_time", &ImGuiTestEngine::OverrideDeltaTime, "Inject custom delta time into imgui context to simulate clock passing faster than wall clock time.")
-        .def_readwrite("test_context", &ImGuiTestEngine::TestContext, "")
+        .def_readwrite("test_context", &ImGuiTestEngine::TestContext, "Running test context")
         .def_readwrite("gather_task", &ImGuiTestEngine::GatherTask, "")
         .def_readwrite("find_by_label_task", &ImGuiTestEngine::FindByLabelTask, "")
         .def_readwrite("inputs", &ImGuiTestEngine::Inputs, "Inputs")
