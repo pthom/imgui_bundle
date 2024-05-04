@@ -7,7 +7,7 @@ from codemanip.code_replacements import RegexReplacementList
 from codemanip.code_utils import join_string_by_pipe_char
 from srcmlcpp.srcmlcpp_options import WarningType
 
-from litgen.options import LitgenOptions
+from litgen.options import LitgenOptions, BindLibraryType
 
 
 class ImguiOptionsType(Enum):
@@ -195,11 +195,16 @@ def add_imgui_test_engine_options(options: LitgenOptions):
 
 
 def litgen_options_imgui(
-    options_type: ImguiOptionsType, docking_branch: bool
+    options_type: ImguiOptionsType,
+    docking_branch: bool,
+    bind_library: BindLibraryType = BindLibraryType.pybind11,
 ) -> LitgenOptions:
+
     from litgen.internal import cpp_to_python
 
     options = LitgenOptions()
+
+    options.bind_library = bind_library
 
     options.srcmlcpp_options.ignored_warnings = [
         WarningType.LitgenClassMemberSkipBitfield,
@@ -440,8 +445,6 @@ def litgen_options_imgui(
 
     options.fn_params_replace_c_array_modifiable_by_boxed__regex = ""
 
-    options.fn_params_const_char_pointer_with_default_null = False
-
     options.srcmlcpp_options.flag_show_progress = True
 
     _add_imvector_template_options(options)
@@ -455,7 +458,44 @@ def litgen_options_imgui(
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
 
+    if options.bind_library == BindLibraryType.nanobind:
+        options.fn_params_const_char_pointer_with_default_null = True
+        options.postprocess_pydef_function = _nanobind_postprocess
+
     return options
+
+
+def _nanobind_postprocess(code: str):
+    print("Post-processing nanobind code...")
+
+    lines = code.split("\n")
+
+    in_text_buffer_class = False
+    in_text_buffer_delete = False
+
+    new_lines = []
+    for line in lines:
+
+        # error LNK2001: unresolved external symbol "public:
+        #   static char * ImGuiTextBuffer::EmptyString"
+        if "auto pyClassImGuiTextBuffer =" in line:
+            in_text_buffer_class = True
+        if in_text_buffer_class:
+            if '.def("begin",' in line or '.def("c_str",' in line:
+                in_text_buffer_delete = True
+            if '.def("size",' in line:
+                in_text_buffer_delete = False
+            if '.def("append",' in line:
+                in_text_buffer_delete = False
+                in_text_buffer_class = False
+            if in_text_buffer_delete:
+                continue
+
+        line = line.replace(" = NULL", " = nullptr")
+
+        new_lines.append(line)
+
+    return "\n".join(new_lines)
 
 
 def sandbox():

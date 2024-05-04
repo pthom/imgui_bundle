@@ -4,6 +4,7 @@ import time
 from functools import wraps
 
 import litgen
+from litgen import BindLibraryType
 from litgen_options_imgui import (
     litgen_options_imgui,
     ImguiOptionsType,
@@ -30,11 +31,13 @@ def my_time_it(func):
     return wrapper
 
 
-def autogenerate_imgui() -> None:
+def autogenerate_imgui(bind_library=BindLibraryType.pybind11) -> None:
     print("Processing imgui.h")
     # Generate for imgui.h
     options_imgui = litgen_options_imgui(
-        ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
+        ImguiOptionsType.imgui_h,
+        docking_branch=FLAG_DOCKING_BRANCH,
+        bind_library=bind_library,
     )
 
     # Workaround internal compiler error on MSVC:
@@ -49,7 +52,9 @@ def autogenerate_imgui() -> None:
 
     # Generate for imgui_stdlib.h
     options_imgui_stdlib = litgen_options_imgui(
-        ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH
+        ImguiOptionsType.imgui_stdlib_h,
+        docking_branch=FLAG_DOCKING_BRANCH,
+        bind_library=bind_library,
     )
     options_imgui.srcmlcpp_options.flag_quiet = True
 
@@ -65,11 +70,18 @@ def autogenerate_imgui() -> None:
     print("Processing imgui_pywrappers.h")
     generator.process_cpp_file(THIS_DIR + "/../imgui_pywrappers/imgui_pywrappers.h")
 
-    generator.write_generated_code(
-        output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp",
-        # output_cpp_pydef_file=PYDEF_DIR + "/nanobind_imgui.cpp",
-        output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi",
-    )
+    if options_imgui.bind_library == BindLibraryType.pybind11:
+        print("Writing out pybind11 binding...")
+        generator.write_generated_code(
+            output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui.cpp",
+            output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi",
+        )
+    else:
+        print("Writing out nanobind binding...")
+        generator.write_generated_code(
+            output_cpp_pydef_file=PYDEF_DIR + "/nanobind_imgui.cpp",
+            output_stub_pyi_file=STUB_DIR + "/imgui/__init__.pyi",
+        )
 
 
 def autogenerate_imgui_internal() -> None:
