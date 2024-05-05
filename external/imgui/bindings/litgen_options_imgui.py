@@ -287,6 +287,7 @@ def litgen_options_imgui(
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False
 
+    # E.g.: IMGUI_DISABLE_OBSOLETE_FUNCTIONS
     options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_DISABLE$"
     options.srcmlcpp_options.header_filter_acceptable__regex += (
         "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
