@@ -106,6 +106,7 @@ def autogenerate_imgui_test_engine() -> None:
         THIS_DIR + "/../../imgui_test_engine/imgui_test_engine/imgui_test_engine"
     )
     print("Processing imgui_test_engine")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_exporters.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_engine.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_context.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_internal.h")

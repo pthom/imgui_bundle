@@ -13,6 +13,9 @@ def my_register_tests():
     global test_open_metrics, test_capture, test_exit
     engine = hello_imgui.get_imgui_test_engine()
 
+    engine.io.export_results_filename_set("ci_automation_test_app_bundle.xml")
+    engine.io.export_results_format = imgui.test_engine.TestEngineExportFormat.j_unit_xml
+
     # Open Metrics window
     test_open_metrics = imgui.test_engine.register_test(
         engine, "demo_tests", "open_metrics"

@@ -169,13 +169,14 @@ def add_imgui_test_engine_options(options: LitgenOptions):
         "^ImGuiTestEngineHook_", "hook_"
     )
     options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
-    options.member_exclude_by_name__regex += "|Coroutine|^ExportResultsFormat$|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
+    options.member_exclude_by_name__regex += "|Coroutine|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
     options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
     options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
 
     def postprocess_stub(code: str):
         # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
         r = code.replace(": TestRef", ": Union[TestRef, str]")
+        r = r.replace("(TestEngineExportFormat)0", "TestEngineExportFormat.j_unit_xml")
         return r
 
     options.postprocess_stub_function = postprocess_stub
