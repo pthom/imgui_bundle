@@ -27,9 +27,6 @@ function (add_hello_imgui)
         #    i.   Use Opengl3 + glfw backend
         set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
         set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
-        #    ii.  enable null backend
-        set(HELLOIMGUI_USE_NULL ON CACHE BOOL "" FORCE)
-        set(HELLOIMGUI_HAS_NULL ON CACHE BOOL "" FORCE)
         add_glfw_as_python_shared_library()
     endif()
 
