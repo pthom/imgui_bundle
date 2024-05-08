@@ -276,6 +276,8 @@ def litgen_options_imgui(
 
     options.srcmlcpp_options.code_preprocess_function = _preprocess_imgui_code
 
+    options.class_copy__regex = r"^ImVec2$|^ImVec4$|^ImRect$|^ImColor$"
+
     options.fn_exclude_by_name__regex = join_string_by_pipe_char(
         [
             # IMGUI_API void          SetAllocatorFunctions(ImGuiMemAllocFunc alloc_func, ImGuiMemFreeFunc free_func, void* user_data = NULL);

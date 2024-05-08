@@ -413,7 +413,9 @@ void py_init_module_imgui_internal(py::module& m)
             &ImRect::IsInverted, "(private API)")
         .def("to_vec4",
             &ImRect::ToVec4, "(private API)")
-        ;
+        .def("__copy__",  [](const ImRect &self) {
+            return ImRect(self);
+        })    ;
 
 
     m.def("im_bit_array_get_storage_size_in_bytes",

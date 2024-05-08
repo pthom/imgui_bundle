@@ -172,7 +172,9 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
             "(private API)")
-        ;
+        .def("__copy__",  [](const ImVec2 &self) {
+            return ImVec2(self);
+        })    ;
 
 
     auto pyClassImVec4 =
@@ -185,7 +187,9 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float, float, float>(),
             py::arg("_x"), py::arg("_y"), py::arg("_z"), py::arg("_w"))
-        ;
+        .def("__copy__",  [](const ImVec4 &self) {
+            return ImVec4(self);
+        })    ;
 
 
     m.def("create_context",
@@ -5654,7 +5658,9 @@ void py_init_module_imgui_main(py::module& m)
             &ImColor::HSV,
             py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f,
             "(private API)")
-        ;
+        .def("__copy__",  [](const ImColor &self) {
+            return ImColor(self);
+        })    ;
 
 
     auto pyClassImDrawCmd =
