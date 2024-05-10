@@ -24,6 +24,8 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     end_plot_in_node_editor,
     show_resizable_plot_in_node_editor,
     show_resizable_plot_in_node_editor_em,
+    widget_with_resize_handle_in_node_editor,
+    widget_with_resize_handle_in_node_editor_em,
 )
 
 # Note: to enable font awesome 6:
@@ -71,4 +73,6 @@ __all__ = [
     "end_plot_in_node_editor",
     "show_resizable_plot_in_node_editor",
     "show_resizable_plot_in_node_editor_em",
+    "widget_with_resize_handle_in_node_editor",
+    "widget_with_resize_handle_in_node_editor_em",
 ]

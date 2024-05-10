@@ -34,4 +34,18 @@ namespace ImmApp
         float resizeHandleSizeEm=1.0f
     );
 
+    // WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node
+    // Returns the new size of the widget.
+    ImVec2 WidgetWithResizeHandle_InNodeEditor(
+        VoidFunction guiFunction,    // your function to draw the widget
+        float resizeHandleSizeEm=1.0f
+    );
+
+    // WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node
+    // Returns the new size of the widget. Size is in em.
+    ImVec2 WidgetWithResizeHandle_InNodeEditor_Em(
+        VoidFunction guiFunction,    // your function to draw the widget
+        float resizeHandleSizeEm=1.0f
+    );
+
 }
