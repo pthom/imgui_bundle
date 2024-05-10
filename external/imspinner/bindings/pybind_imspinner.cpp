@@ -24,9 +24,9 @@ void py_init_module_imspinner(py::module& m)
     //
 
 
-    m.attr("white") = (const ImColor) {1.f, 1.f, 1.f, 1.f};
-    m.attr("half_white") = (const ImColor) {1.f, 1.f, 1.f, 0.5f};
-    m.attr("red") = (const ImColor) {1.f, 0.f, 0.f, 1.f};
+    m.attr("white") = (const ImColor) ImColor(1.f, 1.f, 1.f, 1.f);
+    m.attr("half_white") = (const ImColor) ImColor(1.f, 1.f, 1.f, 0.5f);
+    m.attr("red") = (const ImColor) ImColor(1.f, 0.f, 0.f, 1.f);
 
 
     py::enum_<ImSpinner::SpinnerTypeT>(m, "SpinnerTypeT", py::arithmetic(), "")
