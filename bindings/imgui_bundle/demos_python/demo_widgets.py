@@ -99,7 +99,7 @@ def demo_spinner():
     color = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
     imgui.text("spinner_moving_dots")
     imgui.same_line()
-    imspinner.spinner_moving_dots("spinner_moving_dots", 3.0, color, 28.0)
+    imspinner.spinner_moving_dots("spinner_moving_dots", 20.0, 4.0, color, 20)
     imgui.same_line()
 
     radius = imgui.get_font_size() / 1.8

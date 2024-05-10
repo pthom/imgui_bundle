@@ -29,6 +29,9 @@ def main():
     # options.python_run_black_formatter = True
     options.postprocess_stub_function = lambda s: s.replace("IM_PI  0.7", "math.pi * 0.7")
 
+    options.globals_vars_include_by_name__regex = r"^PI_|white|red"
+
+
     litgen.write_generated_code_for_file(
         options,
         input_cpp_header_file=input_cpp_header,

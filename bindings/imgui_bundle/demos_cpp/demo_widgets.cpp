@@ -116,7 +116,7 @@ void DemoSpinner()
     ImColor color(0.3f, 0.5f, 0.9f, 1.f);
     ImGui::Text("spinner_moving_dots");
     ImGui::SameLine();
-    ImSpinner::SpinnerMovingDots("spinner_moving_dots", 3.0, color, 28.0);
+    ImSpinner::SpinnerMovingDots("spinner_moving_dots", 20.0, 4.0, color, 20);
     ImGui::SameLine();
 
     float radius = ImGui::GetFontSize() / 1.8f;
