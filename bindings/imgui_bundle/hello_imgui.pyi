@@ -2916,12 +2916,14 @@ def end_group_column() -> None:
     pass
 
 # ImVec2 WidgetWithResizeHandle(    /* original C++ signature */
+#         const char* id,
 #         VoidFunction widgetGuiFunction,
 #         float handleSizeEm = 1.0f,
 #         std::optional<VoidFunction> onItemResized = std::nullopt,
 #         std::optional<VoidFunction> onItemHovered = std::nullopt
 #         );
 def widget_with_resize_handle(
+    id: str,
     widget_gui_function: VoidFunction,
     handle_size_em: float = 1.0,
     on_item_resized: Optional[VoidFunction] = None,
@@ -2939,7 +2941,7 @@ def widget_with_resize_handle(
                        ImPlot::EndPlot();
                    }
                };
-               widget_size = widget_with_resize_handle(myWidgetFunction);
+               widget_size = widget_with_resize_handle("plot", myWidgetFunction);
            }
     """
     pass

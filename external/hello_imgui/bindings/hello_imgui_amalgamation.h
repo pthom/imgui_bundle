@@ -2334,9 +2334,10 @@ namespace HelloImGui
     //                    ImPlot::EndPlot();
     //                }
     //            };
-    //            widget_size = widget_with_resize_handle(myWidgetFunction);
+    //            widget_size = widget_with_resize_handle("plot", myWidgetFunction);
     //        }
     ImVec2 WidgetWithResizeHandle(
+        const char* id,
         VoidFunction widgetGuiFunction,
         float handleSizeEm = 1.0f,
         std::optional<VoidFunction> onItemResized = std::nullopt,
