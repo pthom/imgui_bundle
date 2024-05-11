@@ -13,7 +13,8 @@ namespace ImmApp
     static void DisableUserInputInNodeEditor()
     {
         ax::NodeEditor::Detail::EditorContext *nodeContext = (ax::NodeEditor::Detail::EditorContext *)ed::GetCurrentEditor();
-        nodeContext->DisableUserInputThisFrame();
+        if (nodeContext)
+            nodeContext->DisableUserInputThisFrame();
     }
 
 
