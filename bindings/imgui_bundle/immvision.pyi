@@ -215,7 +215,7 @@ class ImageParams:  # immvision.h:96
     zoom_with_mouse_wheel: bool = True  # immvision.h:143
 
     # bool CanResize = true;    /* original C++ signature */
-    # Can the image be resized by the user
+    # Can the image widget be resized by the user
     can_resize: bool = True  # immvision.h:146
 
     # bool IsColorOrderBGR = true;    /* original C++ signature */
@@ -412,7 +412,7 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:259
 #         bool showOptionsButton = false,
 #         bool isBgrOrBgra = true
 #         );
-def image_display(  # immvision.h:305
+def image_display(  # immvision.h:308
     label_id: str,
     mat: Mat,
     image_display_size: Size = (0, 0),
@@ -440,6 +440,9 @@ def image_display(  # immvision.h:305
         Size of the displayed image (can be different from the mat size)
         If you specify only the width or height (e.g (300, 0), then the other dimension
         will be calculated automatically, respecting the original image w/h ratio.
+        Warning:
+                 if your legend is displayed (i.e. it does not start with "##"),
+                 then the total size of the widget will be larger than the imageDisplaySize.
 
     :param refreshImage:
         images textures are cached. Set to True if your image matrix/buffer has changed
@@ -467,14 +470,14 @@ def image_display(  # immvision.h:305
     pass
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:317
+def available_colormaps() -> List[str]:  # immvision.h:320
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:324
+def clear_texture_cache() -> None:  # immvision.h:327
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -483,7 +486,7 @@ def clear_texture_cache() -> None:  # immvision.h:324
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:329
+def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:332
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -491,7 +494,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:329
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:332
+def version_info() -> str:  # immvision.h:335
     """Return immvision version info"""
     pass
 
@@ -517,7 +520,7 @@ def version_info() -> str:  # immvision.h:332
 #         double zoomRatio = -1.,
 #         bool isColorOrderBGR = true
 #     );
-def inspector_add_image(  # immvision.h:353
+def inspector_add_image(  # immvision.h:356
     image: Mat,
     legend: str,
     zoom_key: str = "",
@@ -529,11 +532,11 @@ def inspector_add_image(  # immvision.h:353
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:363
+def inspector_show() -> None:  # immvision.h:366
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:365
+def inspector_clear_images() -> None:  # immvision.h:368
     pass
 
 ####################    </generated_from:immvision.h>    ####################
