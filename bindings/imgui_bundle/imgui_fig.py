@@ -1,6 +1,9 @@
+"""imgui_fig.fig: Display Matplotlib figures in an ImGui window.
+
+Important: before importing pyplot, set the renderer to Tk,
+so that the figure is not displayed on the screen before we can capture it.
+"""
 import matplotlib
-# Important: before importing pyplot, set the renderer to Tk,
-# so that the figure is not displayed on the screen before we can capture it.
 matplotlib.use('Agg')     #
 import matplotlib.pyplot as plt
 
@@ -8,19 +11,9 @@ import numpy
 import cv2
 import matplotlib
 from imgui_bundle.immapp import static
-from imgui_bundle import immvision
+from imgui_bundle import immvision, ImVec2, imgui
 
-from typing import Tuple
-# from numpy.typing import ArrayLike
-
-
-"""
-Display Matplotlib figures in an ImGui window.
-"""
-
-
-Size = Tuple[int, int]
-Point2d = Tuple[float, float]
+from typing import Dict
 
 
 @static(fig_cache=dict())
@@ -51,23 +44,28 @@ def _fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False)
     return statics.fig_cache[fig_id]
 
 
+_FIG_SIZES_CACHE: Dict[int, ImVec2] = dict()
+
+
 def fig(label_id: str,
         figure: matplotlib.figure.Figure,
-        image_display_size: Size = (0, 0),
+        size: ImVec2 | None = None,
         refresh_image: bool = False,
-        show_options_button: bool = False) -> Point2d:
+        resizable: bool = True,
+        show_options_button: bool = False) -> ImVec2:
     """
     Display a Matplotlib figure in an ImGui window.
 
     Parameters:
     - label_id (str): An identifier for the ImGui image widget.
     - figure (matplotlib.figure.Figure): The Matplotlib figure to display.
-    - image_display_size (Size): Size of the displayed image (width, height).
+    - size (Size): Size of the displayed fig
+                   Will be updated if resizable is True
     - refresh_image (bool): Flag to refresh the image.
     - show_options_button (bool): Flag to show additional options.
 
     Returns:
-    - Point2d: The position of the mouse in the image display.
+    - The position of the mouse in the figure
 
     Important:
         before importing pyplot, set the renderer to Tk,
@@ -79,5 +77,14 @@ def fig(label_id: str,
         ```
     """
     image_rgb = _fig_to_image(figure, refresh_image)
-    mouse_position = immvision.image_display(label_id, image_rgb, image_display_size, refresh_image, show_options_button)
+
+    if size is None:
+        id_ = imgui.get_id(label_id)
+        if id_ not in _FIG_SIZES_CACHE:
+            _FIG_SIZES_CACHE[id_] = ImVec2(0, 0)
+        size = _FIG_SIZES_CACHE[id_]
+
+    mouse_position_tuple = immvision.image_display_resizable(
+        label_id, image_rgb, size, refresh_image, resizable, show_options_button)
+    mouse_position = ImVec2(mouse_position_tuple[0], mouse_position_tuple[1])
     return mouse_position
