@@ -61,7 +61,7 @@ def show_resizable_plot_in_node_editor_em(
     pass
 
 def widget_with_resize_handle_in_node_editor(
-    gui_function: VoidFunction, resize_handle_size_em: float = 1.0
+    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
 ) -> ImVec2:
     """WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node
     Returns the new size of the widget.
@@ -69,7 +69,7 @@ def widget_with_resize_handle_in_node_editor(
     pass
 
 def widget_with_resize_handle_in_node_editor_em(
-    gui_function: VoidFunction, resize_handle_size_em: float = 1.0
+    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
 ) -> ImVec2:
     """WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node
     Returns the new size of the widget. Size is in em.

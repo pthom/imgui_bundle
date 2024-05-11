@@ -56,6 +56,7 @@ namespace ImmApp
         };
 
         ImVec2 new_size = HelloImGui::WidgetWithResizeHandle(
+            title_id,
             widgetFunction,
             resizeHandleSizeEm,
             DisableUserInputInNodeEditor,
@@ -79,27 +80,30 @@ namespace ImmApp
 
 
     ImVec2 WidgetWithResizeHandle_InNodeEditor(
+        const char* id,
         VoidFunction guiFunction, // your function to draw the widget
         float resizeHandleSizeEm
     )
     {
         ImVec2 newSize = HelloImGui::WidgetWithResizeHandle(
+            id,
             std::move(guiFunction),
             resizeHandleSizeEm,
             // We disable the inputs of the node editor when the user is resizing the widget
             // (otherwise the user could drag the node editor nodes while resizing the widget)
-            DisableUserInputInNodeEditor,
             DisableUserInputInNodeEditor
+            //DisableUserInputInNodeEditor
             );
         return newSize;
     }
 
     ImVec2 WidgetWithResizeHandle_InNodeEditor_Em(
+        const char* id,
         VoidFunction guiFunction,    // your function to draw the widget
         float resizeHandleSizeEm
     )
     {
-        ImVec2 new_size_pixels = WidgetWithResizeHandle_InNodeEditor(std::move(guiFunction), resizeHandleSizeEm);
+        ImVec2 new_size_pixels = WidgetWithResizeHandle_InNodeEditor(id, std::move(guiFunction), resizeHandleSizeEm);
         ImVec2 new_size_em = HelloImGui::PixelsToEm(new_size_pixels);
         return new_size_em;
     }

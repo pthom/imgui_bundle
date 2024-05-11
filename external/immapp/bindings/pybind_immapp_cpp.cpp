@@ -68,12 +68,12 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("widget_with_resize_handle_in_node_editor",
         ImmApp::WidgetWithResizeHandle_InNodeEditor,
-        py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
+        py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node\n Returns the new size of the widget.");
 
     m.def("widget_with_resize_handle_in_node_editor_em",
         ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
-        py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
+        py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
     ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
 
