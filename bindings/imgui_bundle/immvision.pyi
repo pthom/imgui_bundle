@@ -474,6 +474,7 @@ def image_display(  # immvision.h:307
 #         const cv::Mat& mat,
 #         ImVec2* size,
 #         bool refreshImage = false,
+#         bool resizable = true,
 #         bool showOptionsButton = false,
 #         bool isBgrOrBgra = true
 #     );
@@ -482,6 +483,7 @@ def image_display_resizable(  # immvision.h:319
     mat: Mat,
     size: ImVec2,
     refresh_image: bool = False,
+    resizable: bool = True,
     show_options_button: bool = False,
     is_bgr_or_bgra: bool = True,
 ) -> Point2d:
@@ -492,14 +494,14 @@ def image_display_resizable(  # immvision.h:319
     pass
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:331
+def available_colormaps() -> List[str]:  # immvision.h:332
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:338
+def clear_texture_cache() -> None:  # immvision.h:339
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -508,7 +510,7 @@ def clear_texture_cache() -> None:  # immvision.h:338
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:343
+def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:344
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -516,7 +518,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:343
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:346
+def version_info() -> str:  # immvision.h:347
     """Return immvision version info"""
     pass
 
@@ -542,7 +544,7 @@ def version_info() -> str:  # immvision.h:346
 #         double zoomRatio = -1.,
 #         bool isColorOrderBGR = true
 #     );
-def inspector_add_image(  # immvision.h:367
+def inspector_add_image(  # immvision.h:368
     image: Mat,
     legend: str,
     zoom_key: str = "",
@@ -554,11 +556,11 @@ def inspector_add_image(  # immvision.h:367
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:377
+def inspector_show() -> None:  # immvision.h:378
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:379
+def inspector_clear_images() -> None:  # immvision.h:380
     pass
 
 ####################    </generated_from:immvision.h>    ####################

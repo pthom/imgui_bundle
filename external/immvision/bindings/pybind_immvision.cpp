@@ -217,31 +217,31 @@ void py_init_module_immvision(py::module& m)
 
     m.def("image_display_resizable",    // immvision.h:319
         ImmVision::ImageDisplayResizable,
-        py::arg("label_id"), py::arg("mat"), py::arg("size"), py::arg("refresh_image") = false, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
+        py::arg("label_id"), py::arg("mat"), py::arg("size"), py::arg("refresh_image") = false, py::arg("resizable") = true, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
         " ImageDisplayResizable: display the image, with no user interaction (by default)\n The image can be resized by the user (and the new size will be stored in the size parameter)\n The label will not be displayed (but it will be used as an id, and must be unique)");
 
-    m.def("available_colormaps",    // immvision.h:331
+    m.def("available_colormaps",    // immvision.h:332
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
 
-    m.def("clear_texture_cache",    // immvision.h:338
+    m.def("clear_texture_cache",    // immvision.h:339
         ImmVision::ClearTextureCache, " Clears the internal texture cache of immvision (this is done automatically at exit time)\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
 
-    m.def("get_cached_rgba_image",    // immvision.h:343
+    m.def("get_cached_rgba_image",    // immvision.h:344
         ImmVision::GetCachedRgbaImage,
         py::arg("label"),
         " Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay\n Note: this image must be currently displayed. This function will return the transformed image\n (i.e with ColorMap, Zoom, etc.)");
 
-    m.def("version_info",    // immvision.h:346
+    m.def("version_info",    // immvision.h:347
         ImmVision::VersionInfo, "Return immvision version info");
 
 
-    m.def("inspector_add_image",    // immvision.h:367
+    m.def("inspector_add_image",    // immvision.h:368
         ImmVision::Inspector_AddImage, py::arg("image"), py::arg("legend"), py::arg("zoom_key") = "", py::arg("colormap_key") = "", py::arg("zoom_center") = cv::Point2d(), py::arg("zoom_ratio") = -1., py::arg("is_color_order_bgr") = true);
 
-    m.def("inspector_show",    // immvision.h:377
+    m.def("inspector_show",    // immvision.h:378
         ImmVision::Inspector_Show);
 
-    m.def("inspector_clear_images",    // immvision.h:379
+    m.def("inspector_clear_images",    // immvision.h:380
         ImmVision::Inspector_ClearImages);
     ////////////////////    </generated_from:immvision.h>    ////////////////////
 
