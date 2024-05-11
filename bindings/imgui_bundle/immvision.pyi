@@ -7,6 +7,7 @@ from typing import List, Tuple, TypeAlias
 import enum
 import numpy as np
 from numpy.typing import NDArray
+from imgui_bundle import ImVec2
 
 import cv2 as cv
 
@@ -412,7 +413,7 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:259
 #         bool showOptionsButton = false,
 #         bool isBgrOrBgra = true
 #         );
-def image_display(  # immvision.h:308
+def image_display(  # immvision.h:307
     label_id: str,
     mat: Mat,
     image_display_size: Size = (0, 0),
@@ -420,7 +421,7 @@ def image_display(  # immvision.h:308
     show_options_button: bool = False,
     is_bgr_or_bgra: bool = True,
 ) -> Point2d:
-    """Only, display the image, with no decoration, and no user interaction (by default)
+    """ImageDisplay: Only, display the image, with no user interaction (by default)
 
     Parameters:
     :param label_id
@@ -432,6 +433,8 @@ def image_display(  # immvision.h:308
               To circumvent this, you can modify your label like this:
                  "MyLabel##some_unique_id"    (the part after "##" will not be displayed but will be part of the id)
            - To display an empty legend, use "##_some_unique_id"
+           - if your legend is displayed (i.e. it does not start with "##"),
+             then the total size of the widget will be larger than the imageDisplaySize.
 
     :param mat:
         An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.
@@ -440,9 +443,6 @@ def image_display(  # immvision.h:308
         Size of the displayed image (can be different from the mat size)
         If you specify only the width or height (e.g (300, 0), then the other dimension
         will be calculated automatically, respecting the original image w/h ratio.
-        Warning:
-                 if your legend is displayed (i.e. it does not start with "##"),
-                 then the total size of the widget will be larger than the imageDisplaySize.
 
     :param refreshImage:
         images textures are cached. Set to True if your image matrix/buffer has changed
@@ -469,15 +469,37 @@ def image_display(  # immvision.h:308
     """
     pass
 
+# IMMVISION_API cv::Point2d ImageDisplayResizable(    /* original C++ signature */
+#         const std::string& label_id,
+#         const cv::Mat& mat,
+#         ImVec2* size,
+#         bool refreshImage = false,
+#         bool showOptionsButton = false,
+#         bool isBgrOrBgra = true
+#     );
+def image_display_resizable(  # immvision.h:319
+    label_id: str,
+    mat: Mat,
+    size: ImVec2,
+    refresh_image: bool = False,
+    show_options_button: bool = False,
+    is_bgr_or_bgra: bool = True,
+) -> Point2d:
+    """ImageDisplayResizable: display the image, with no user interaction (by default)
+    The image can be resized by the user (and the new size will be stored in the size parameter)
+    The label will not be displayed (but it will be used as an id, and must be unique)
+    """
+    pass
+
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:320
+def available_colormaps() -> List[str]:  # immvision.h:331
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:327
+def clear_texture_cache() -> None:  # immvision.h:338
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -486,7 +508,7 @@ def clear_texture_cache() -> None:  # immvision.h:327
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:332
+def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:343
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -494,7 +516,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:332
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:335
+def version_info() -> str:  # immvision.h:346
     """Return immvision version info"""
     pass
 
@@ -520,7 +542,7 @@ def version_info() -> str:  # immvision.h:335
 #         double zoomRatio = -1.,
 #         bool isColorOrderBGR = true
 #     );
-def inspector_add_image(  # immvision.h:356
+def inspector_add_image(  # immvision.h:367
     image: Mat,
     legend: str,
     zoom_key: str = "",
@@ -532,11 +554,11 @@ def inspector_add_image(  # immvision.h:356
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:366
+def inspector_show() -> None:  # immvision.h:377
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:368
+def inspector_clear_images() -> None:  # immvision.h:379
     pass
 
 ####################    </generated_from:immvision.h>    ####################

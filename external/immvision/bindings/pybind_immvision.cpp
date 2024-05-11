@@ -210,33 +210,38 @@ void py_init_module_immvision(py::module& m)
         py::arg("label"), py::arg("mat"), py::arg("params"),
         " Display an image, with full user control: zoom, pan, watch pixels, etc.\n\n :param label\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets *must* have a unique Ids.\n           For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           (you can use ImGui::PushID / ImGui::PopID to circumvent this, or add suffixes with ##)\n\n           If they do, they might not refresh correctly!\n           To circumvent this, you can:\n              - Call `ImGui::PushID(\"some_unique_string\")` at the start of your function,\n                and `ImGui::PopID()` at the end.\n              - Or modify your label like this:\n                  \"MyLabel##some_unique_id\"\n                  (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param mat\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param params\n     Complete options (as modifiable inputs), and outputs (mouse position, watched pixels, etc)\n     @see ImageParams structure.\n     The ImageParams may be modified by this function: you can extract from them\n     the mouse position, watched pixels, etc.\n     Important note:\n         ImageParams is an input-output parameter, passed as a pointer.\n         Its scope should be wide enough so that it is preserved from frame to frame.\n         !! If you cannot zoom/pan in a displayed image, extend the scope of the ImageParams !!\n\n - This function requires that both imgui and OpenGL were initialized.\n   (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
 
-    m.def("image_display",    // immvision.h:308
+    m.def("image_display",    // immvision.h:307
         ImmVision::ImageDisplay,
         py::arg("label_id"), py::arg("mat"), py::arg("image_display_size") = cv::Size(), py::arg("refresh_image") = false, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
-        " Only, display the image, with no decoration, and no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n     Warning:\n              if your legend is displayed (i.e. it does not start with \"##\"),\n              then the total size of the widget will be larger than the imageDisplaySize.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n");
+        " ImageDisplay: Only, display the image, with no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n        - if your legend is displayed (i.e. it does not start with \"##\"),\n          then the total size of the widget will be larger than the imageDisplaySize.\n\n :param mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n");
 
-    m.def("available_colormaps",    // immvision.h:320
+    m.def("image_display_resizable",    // immvision.h:319
+        ImmVision::ImageDisplayResizable,
+        py::arg("label_id"), py::arg("mat"), py::arg("size"), py::arg("refresh_image") = false, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
+        " ImageDisplayResizable: display the image, with no user interaction (by default)\n The image can be resized by the user (and the new size will be stored in the size parameter)\n The label will not be displayed (but it will be used as an id, and must be unique)");
+
+    m.def("available_colormaps",    // immvision.h:331
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
 
-    m.def("clear_texture_cache",    // immvision.h:327
+    m.def("clear_texture_cache",    // immvision.h:338
         ImmVision::ClearTextureCache, " Clears the internal texture cache of immvision (this is done automatically at exit time)\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
 
-    m.def("get_cached_rgba_image",    // immvision.h:332
+    m.def("get_cached_rgba_image",    // immvision.h:343
         ImmVision::GetCachedRgbaImage,
         py::arg("label"),
         " Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay\n Note: this image must be currently displayed. This function will return the transformed image\n (i.e with ColorMap, Zoom, etc.)");
 
-    m.def("version_info",    // immvision.h:335
+    m.def("version_info",    // immvision.h:346
         ImmVision::VersionInfo, "Return immvision version info");
 
 
-    m.def("inspector_add_image",    // immvision.h:356
+    m.def("inspector_add_image",    // immvision.h:367
         ImmVision::Inspector_AddImage, py::arg("image"), py::arg("legend"), py::arg("zoom_key") = "", py::arg("colormap_key") = "", py::arg("zoom_center") = cv::Point2d(), py::arg("zoom_ratio") = -1., py::arg("is_color_order_bgr") = true);
 
-    m.def("inspector_show",    // immvision.h:366
+    m.def("inspector_show",    // immvision.h:377
         ImmVision::Inspector_Show);
 
-    m.def("inspector_clear_images",    // immvision.h:368
+    m.def("inspector_clear_images",    // immvision.h:379
         ImmVision::Inspector_ClearImages);
     ////////////////////    </generated_from:immvision.h>    ////////////////////
 
