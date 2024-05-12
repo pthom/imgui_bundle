@@ -172,6 +172,16 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<size_t>(&ImVec2::operator[]),
             py::arg("idx"),
             "(private API)")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("to_dict",
+            &ImVec2::to_dict, "(private API)")
+        .def_static("from_dict",
+            &ImVec2::from_dict,
+            py::arg("d"),
+            "(private API)")
+        // #endif
+        //
         .def("__copy__",  [](const ImVec2 &self) {
             return ImVec2(self);
         })    ;
@@ -187,6 +197,16 @@ void py_init_module_imgui_main(py::module& m)
         .def(py::init<>())
         .def(py::init<float, float, float, float>(),
             py::arg("_x"), py::arg("_y"), py::arg("_z"), py::arg("_w"))
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("to_dict",
+            &ImVec4::to_dict, "(private API)")
+        .def_static("from_dict",
+            &ImVec4::from_dict,
+            py::arg("d"),
+            "(private API)")
+        // #endif
+        //
         .def("__copy__",  [](const ImVec4 &self) {
             return ImVec4(self);
         })    ;
@@ -5658,6 +5678,16 @@ void py_init_module_imgui_main(py::module& m)
             &ImColor::HSV,
             py::arg("h"), py::arg("s"), py::arg("v"), py::arg("a") = 1.0f,
             "(private API)")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("to_dict",
+            &ImColor::to_dict, "(private API)")
+        .def_static("from_dict",
+            &ImColor::from_dict,
+            py::arg("d"),
+            "(private API)")
+        // #endif
+        //
         .def("__copy__",  [](const ImColor &self) {
             return ImColor(self);
         })    ;
@@ -6544,17 +6574,6 @@ void py_init_module_imgui_main(py::module& m)
         return ImVec2(imv.x, imv.y);
     }), py::arg("xy"));
 
-    // Json serialization for ImVec2
-    pyClassImVec2.def("to_json", [](const ImVec2& self) {
-        py::dict d;
-        d["x"] = self.x;
-        d["y"] = self.y;
-        return d;
-    });
-    pyClassImVec2.def_static("from_json", [](py::dict data) {
-        return ImVec2(data["x"].cast<float>(), data["y"].cast<float>());
-    });
-
     //
     //  Patches to ImVec4
     //
@@ -6612,19 +6631,6 @@ void py_init_module_imgui_main(py::module& m)
     pyClassImVec4.def(py::init([](ImVec4 imv) {
         return ImVec4(imv.x, imv.y, imv.z, imv.w);
     }), py::arg("xyzw"));
-
-    // Json serialization for ImVec4
-    pyClassImVec4.def("to_json", [](const ImVec4& self) {
-        py::dict d;
-        d["x"] = self.x;
-        d["y"] = self.y;
-        d["z"] = self.z;
-        d["w"] = self.w;
-        return d;
-    });
-    pyClassImVec4.def_static("from_json", [](py::dict data) {
-        return ImVec4(data["x"].cast<float>(), data["y"].cast<float>(), data["z"].cast<float>(), data["w"].cast<float>());
-    });
 
     //
     //  Patches to ImColor
@@ -6688,19 +6694,6 @@ void py_init_module_imgui_main(py::module& m)
     pyClassImColor.def(py::init([](ImColor imc) {
         return ImColor(imc.Value.x, imc.Value.y, imc.Value.z, imc.Value.w);
     }), py::arg("rgba"));
-    // Json serialization for ImColor
-    pyClassImColor.def("to_json", [](const ImColor& self) {
-        py::dict d;
-        d["x"] = self.Value.x;
-        d["y"] = self.Value.y;
-        d["z"] = self.Value.z;
-        d["w"] = self.Value.w;
-        return d;
-    });
-    pyClassImColor.def_static("from_json", [](py::dict data) {
-        ImVec4 v = ImVec4(data["x"].cast<float>(), data["y"].cast<float>(), data["z"].cast<float>(), data["w"].cast<float>());
-        return ImColor(v);
-    });
 
     //
     //  Patches to ImFontAtlas

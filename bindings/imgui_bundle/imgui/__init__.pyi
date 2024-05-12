@@ -2,6 +2,7 @@
 from __future__ import annotations
 import sys
 from typing import (
+    Dict,
     List,
     Any,
     Optional,
@@ -483,6 +484,19 @@ class ImVec2:
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::map<std::string, float> to_dict() const { return {{"x", x}, {"y", y}}; }    /* original C++ signature */
+    def to_dict(self) -> Dict[str, float]:
+        """(private API)"""
+        pass
+    # static ImVec2 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && "ImVec2::from_dict dict should contain x and y keys"); return ImVec2(d.at("x"), d.at("y")); }    /* original C++ signature */
+    @staticmethod
+    def from_dict(d: Dict[str, float]) -> ImVec2:
+        """(private API)"""
+        pass
+    # #endif
+    #
 
 class ImVec4:
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
@@ -503,6 +517,19 @@ class ImVec4:
     @overload
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::map<std::string, float> to_dict() const { return {{"x", x}, {"y", y}, {"z", z}, {"w", w}}; }    /* original C++ signature */
+    def to_dict(self) -> Dict[str, float]:
+        """(private API)"""
+        pass
+    # static ImVec4 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && (d.find("z") != d.end()) && (d.find("w") != d.end()) && "ImVec4::from_dict dict should contain x, y, z and w keys"); return ImVec4(d.at("x"), d.at("y"), d.at("z"), d.at("w")); }    /* original C++ signature */
+    @staticmethod
+    def from_dict(d: Dict[str, float]) -> ImVec4:
+        """(private API)"""
+        pass
+    # #endif
+    #
 
 # -----------------------------------------------------------------------------
 # [SECTION] Dear ImGui end-user API functions
@@ -8752,6 +8779,19 @@ class ImColor:
     def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
         """(private API)"""
         pass
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # std::map<std::string, float> to_dict() const { return {{"x", Value.x}, {"y", Value.x}, {"z", Value.x}, {"w", Value.x}}; }    /* original C++ signature */
+    def to_dict(self) -> Dict[str, float]:
+        """(private API)"""
+        pass
+    # static ImVec4 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && (d.find("z") != d.end()) && (d.find("w") != d.end()) && "ImVec4.from_dict() requires a dictionary with keys 'x', 'y', 'z', 'w'"); ImVec4 v = ImVec4(d.at("x"), d.at("y"), d.at("z"), d.at("w")); return ImColor(v); }    /* original C++ signature */
+    @staticmethod
+    def from_dict(d: Dict[str, float]) -> ImVec4:
+        """(private API)"""
+        pass
+    # #endif
+    #
 
 # -----------------------------------------------------------------------------
 # [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
