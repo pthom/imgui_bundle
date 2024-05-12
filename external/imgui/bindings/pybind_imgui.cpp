@@ -6575,6 +6575,64 @@ void py_init_module_imgui_main(py::module& m)
     }), py::arg("xy"));
 
     //
+    // Add math operators to ImVec2
+    //
+    pyClassImVec2.def("__add__", [](const ImVec2& self, const ImVec2& other) -> ImVec2 {
+        return ImVec2(self.x + other.x, self.y + other.y);
+    });
+    pyClassImVec2.def("__sub__", [](const ImVec2& self, const ImVec2& other) -> ImVec2 {
+        return ImVec2(self.x - other.x, self.y - other.y);
+    });
+    pyClassImVec2.def("__mul__", [](const ImVec2& self, float other) -> ImVec2 {
+        return ImVec2(self.x * other, self.y * other);
+    });
+    pyClassImVec2.def("__truediv__", [](const ImVec2& self, float other) -> ImVec2 {
+        return ImVec2(self.x / other, self.y / other);
+    });
+    pyClassImVec2.def("__mul__", [](const ImVec2& self, const ImVec2& other) -> ImVec2 {
+        return ImVec2(self.x * other.x, self.y * other.y);
+    });
+    pyClassImVec2.def("__truediv__", [](const ImVec2& self, const ImVec2& other) -> ImVec2 {
+        return ImVec2(self.x / other.x, self.y / other.y);
+    });
+    // operator *=, +=, -=, /=
+    pyClassImVec2.def("__imul__", [](ImVec2& self, float other) -> ImVec2& {
+        self.x *= other;
+        self.y *= other;
+        return self;
+    });
+    pyClassImVec2.def("__itruediv__", [](ImVec2& self, float other) -> ImVec2& {
+        self.x /= other;
+        self.y /= other;
+        return self;
+    });
+    pyClassImVec2.def("__imul__", [](ImVec2& self, const ImVec2& other) -> ImVec2& {
+        self.x *= other.x;
+        self.y *= other.y;
+        return self;
+    });
+    pyClassImVec2.def("__itruediv__", [](ImVec2& self, const ImVec2& other) -> ImVec2& {
+        self.x /= other.x;
+        self.y /= other.y;
+        return self;
+    });
+    pyClassImVec2.def("__iadd__", [](ImVec2& self, const ImVec2& other) -> ImVec2& {
+        self.x += other.x;
+        self.y += other.y;
+        return self;
+    });
+    pyClassImVec2.def("__isub__", [](ImVec2& self, const ImVec2& other) -> ImVec2& {
+        self.x -= other.x;
+        self.y -= other.y;
+        return self;
+    });
+    // unary operators
+    pyClassImVec2.def("__neg__", [](const ImVec2& self) -> ImVec2 {
+        return ImVec2(-self.x, -self.y);
+    });
+
+
+    //
     //  Patches to ImVec4
     //
     pyClassImVec4.def("__str__", [](const ImVec4& self) -> std::string {
@@ -6631,6 +6689,74 @@ void py_init_module_imgui_main(py::module& m)
     pyClassImVec4.def(py::init([](ImVec4 imv) {
         return ImVec4(imv.x, imv.y, imv.z, imv.w);
     }), py::arg("xyzw"));
+    //
+    // Add math operators to ImVec4
+    //
+    pyClassImVec4.def("__add__", [](const ImVec4& self, const ImVec4& other) -> ImVec4 {
+        return ImVec4(self.x + other.x, self.y + other.y, self.z + other.z, self.w + other.w);
+    });
+    pyClassImVec4.def("__sub__", [](const ImVec4& self, const ImVec4& other) -> ImVec4 {
+        return ImVec4(self.x - other.x, self.y - other.y, self.z - other.z, self.w - other.w);
+    });
+    pyClassImVec4.def("__mul__", [](const ImVec4& self, float other) -> ImVec4 {
+        return ImVec4(self.x * other, self.y * other, self.z * other, self.w * other);
+    });
+    pyClassImVec4.def("__truediv__", [](const ImVec4& self, float other) -> ImVec4 {
+        return ImVec4(self.x / other, self.y / other, self.z / other, self.w / other);
+    });
+    pyClassImVec4.def("__mul__", [](const ImVec4& self, const ImVec4& other) -> ImVec4 {
+        return ImVec4(self.x * other.x, self.y * other.y, self.z * other.z, self.w * other.w);
+    });
+    pyClassImVec4.def("__truediv__", [](const ImVec4& self, const ImVec4& other) -> ImVec4 {
+        return ImVec4(self.x / other.x, self.y / other.y, self.z / other.z, self.w / other.w);
+    });
+    // operator *=, +=, -=, /=
+    pyClassImVec4.def("__imul__", [](ImVec4& self, float other) -> ImVec4& {
+        self.x *= other;
+        self.y *= other;
+        self.z *= other;
+        self.w *= other;
+        return self;
+    });
+    pyClassImVec4.def("__itruediv__", [](ImVec4& self, float other) -> ImVec4& {
+        self.x /= other;
+        self.y /= other;
+        self.z /= other;
+        self.w /= other;
+        return self;
+    });
+    pyClassImVec4.def("__imul__", [](ImVec4& self, const ImVec4& other) -> ImVec4& {
+        self.x *= other.x;
+        self.y *= other.y;
+        self.z *= other.z;
+        self.w *= other.w;
+        return self;
+    });
+    pyClassImVec4.def("__itruediv__", [](ImVec4& self, const ImVec4& other) -> ImVec4& {
+        self.x /= other.x;
+        self.y /= other.y;
+        self.z /= other.z;
+        self.w /= other.w;
+        return self;
+    });
+    pyClassImVec4.def("__iadd__", [](ImVec4& self, const ImVec4& other) -> ImVec4& {
+        self.x += other.x;
+        self.y += other.y;
+        self.z += other.z;
+        self.w += other.w;
+        return self;
+    });
+    pyClassImVec4.def("__isub__", [](ImVec4& self, const ImVec4& other) -> ImVec4& {
+        self.x -= other.x;
+        self.y -= other.y;
+        self.z -= other.z;
+        self.w -= other.w;
+        return self;
+    });
+    // unary operators
+    pyClassImVec4.def("__neg__", [](const ImVec4& self) -> ImVec4 {
+        return ImVec4(-self.x, -self.y, -self.z, -self.w);
+    });
 
     //
     //  Patches to ImColor
