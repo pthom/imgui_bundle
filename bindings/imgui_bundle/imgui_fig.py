@@ -15,7 +15,7 @@ from imgui_bundle import immvision, ImVec2
 
 
 @static(fig_cache=dict())
-def _fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False) -> numpy.ndarray:
+def fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False) -> numpy.ndarray:
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -25,7 +25,7 @@ def _fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False)
     Returns:
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
-    statics = _fig_to_image
+    statics = fig_to_image
     fig_id = id(figure)
     if refresh_image and fig_id in statics.fig_cache:
         del statics.fig_cache[fig_id]
@@ -72,7 +72,7 @@ def fig(label_id: str,
         import matplotlib.pyplot as plt
         ```
     """
-    image_rgb = _fig_to_image(figure, refresh_image)
+    image_rgb = fig_to_image(figure, refresh_image)
 
     mouse_position_tuple = immvision.image_display_resizable(
         label_id, image_rgb, size, refresh_image, resizable, show_options_button)
