@@ -11,9 +11,7 @@ import numpy
 import cv2
 import matplotlib
 from imgui_bundle.immapp import static
-from imgui_bundle import immvision, ImVec2, imgui
-
-from typing import Dict
+from imgui_bundle import immvision, ImVec2
 
 
 @static(fig_cache=dict())
@@ -43,8 +41,6 @@ def _fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False)
         statics.fig_cache[fig_id] = img_rgb
     return statics.fig_cache[fig_id]
 
-
-_FIG_SIZES_CACHE: Dict[int, ImVec2] = dict()
 
 
 def fig(label_id: str,
@@ -77,12 +73,6 @@ def fig(label_id: str,
         ```
     """
     image_rgb = _fig_to_image(figure, refresh_image)
-
-    if size is None:
-        id_ = imgui.get_id(label_id)
-        if id_ not in _FIG_SIZES_CACHE:
-            _FIG_SIZES_CACHE[id_] = ImVec2(0, 0)
-        size = _FIG_SIZES_CACHE[id_]
 
     mouse_position_tuple = immvision.image_display_resizable(
         label_id, image_rgb, size, refresh_image, resizable, show_options_button)
