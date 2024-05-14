@@ -9,12 +9,11 @@
 # - use a specific application state (instead of using static variables)
 # - save some additional user settings within imgui ini file
 # - use borderless windows, that are movable and resizable
-
-
+import json
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4
+from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2
 from imgui_bundle.demos_python import demo_utils
 from typing import List
 
@@ -23,9 +22,16 @@ from typing import List
 #    Our Application State
 ##########################################################################
 class MyAppSettings:
-    name: str = "Test"
+    motto: hello_imgui.InputTextData
     value: int = 10
 
+    def __init__(self):
+        self.motto = hello_imgui.InputTextData(
+            "Hello, Dear ImGui\n"
+            "Unleash your creativity!\n",
+            True, # multiline
+            ImVec2(14.0, 3.0) # initial size (in em)
+        )
 
 class RocketState(Enum):
     Init = 0
@@ -99,16 +105,20 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
 
 # Warning, the save/load function below are quite simplistic!
 def my_app_settings_to_string(settings: MyAppSettings) -> str:
-    r = settings.name + "\n" + str(settings.value)
-    return r
+    as_dict = {}
+    as_dict["motto"] = hello_imgui.input_text_data_to_dict(settings.motto)
+    as_dict["value"] = settings.value
+    return json.dumps(as_dict)
 
 
 def string_to_my_app_settings(s: str) -> MyAppSettings:
     r = MyAppSettings()
-    lines = s.splitlines(False)
-    if len(lines) >= 2:
-        r.name = lines[0]
-        r.value = int(lines[1])
+    try:
+        as_dict = json.loads(s)
+        r.motto = hello_imgui.input_text_data_from_dict(as_dict["motto"])
+        r.value = as_dict["value"]
+    except Exception as e:
+        hello_imgui.log(hello_imgui.LogLevel.error, f"Error while loading user settings: {e}")
     return r
 
 
@@ -209,14 +219,15 @@ def demo_user_settings(app_state: AppState):
     imgui.pop_font()
 
     imgui.begin_group()
-    imgui.set_next_item_width(hello_imgui.em_size(7.0))
-    _, app_state.my_app_settings.name = imgui.input_text(
-        "Name", app_state.my_app_settings.name
-    )
+
     imgui.set_next_item_width(hello_imgui.em_size(7.0))
     _, app_state.my_app_settings.value = imgui.slider_int(
         "Value", app_state.my_app_settings.value, 0, 100
     )
+
+    _ = hello_imgui.input_text_resizable("Motto", app_state.my_app_settings.motto)
+    imgui.text("(this text widget is resizable)")
+
     imgui.end_group()
     if imgui.is_item_hovered():
         imgui.set_tooltip("The values below are stored in the application settings ini file and restored at startup")

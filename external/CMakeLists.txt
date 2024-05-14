@@ -21,14 +21,6 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
     ibd_add_installable_dependency(fplus)
 endif()
 
-# Add nlohmann_json
-add_library(nlohmann_json INTERFACE)
-target_include_directories(nlohmann_json INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nlohmann_json>)
-if(IMGUI_BUNDLE_INSTALL_CPP)
-    install(DIRECTORY nlohmann_json/nlohmann DESTINATION include)
-    ibd_add_installable_dependency(nlohmann_json)
-endif()
-
 
 ###############################################################################
 # Build ImGui & Hello ImGui

@@ -14,6 +14,7 @@ It demonstrates how to:
 
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_6.h"
+#include "nlohmann/json.hpp"
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "imgui_internal.h"
@@ -41,7 +42,12 @@ It demonstrates how to:
 //////////////////////////////////////////////////////////////////////////
 struct MyAppSettings
 {
-    std::string name = "Test";
+    HelloImGui::InputTextData motto = HelloImGui::InputTextData(
+        "Hello, Dear ImGui\n"
+        "Unleash your creativity!\n",
+        true, // multiline
+        ImVec2(14.f, 3.f) // initial size (in em)
+        );
     int value = 10;
 };
 
@@ -114,17 +120,25 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
 // Warning, the save/load function below are quite simplistic!
 std::string MyAppSettingsToString(const MyAppSettings& myAppSettings)
 {
-    std::stringstream ss;
-    ss << myAppSettings.name << "\n";
-    ss << myAppSettings.value;
-    return ss.str();
+    using namespace nlohmann;
+    json j;
+    j["motto"] = HelloImGui::InputTextDataToString(myAppSettings.motto);
+    j["value"] = myAppSettings.value;
+    return j.dump();
 }
 MyAppSettings StringToMyAppSettings(const std::string& s)
 {
-    std::stringstream ss(s);
     MyAppSettings myAppSettings;
-    ss >> myAppSettings.name;
-    ss >> myAppSettings.value;
+    using namespace nlohmann;
+    try {
+        json j = json::parse(s);
+        myAppSettings.motto = HelloImGui::InputTextDataFromString(j["motto"].get<std::string>());
+        myAppSettings.value = j["value"];
+    }
+    catch (json::exception& e)
+    {
+        HelloImGui::Log(HelloImGui::LogLevel::Error, "Error while parsing user settings: %s", e.what());
+    }
     return myAppSettings;
 }
 
@@ -220,9 +234,9 @@ void DemoUserSettings(AppState& appState)
     ImGui::PushFont(appState.TitleFont); ImGui::Text("User settings"); ImGui::PopFont();
     ImGui::BeginGroup();
     ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
-    ImGui::InputText("Name", &appState.myAppSettings.name);
-    ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
     ImGui::SliderInt("Value", &appState.myAppSettings.value, 0, 100);
+    HelloImGui::InputTextResizable("Motto", &appState.myAppSettings.motto);
+    ImGui::Text("(this text widget is resizable)");
     ImGui::EndGroup();
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("The values below are stored in the application settings ini file and restored at startup");

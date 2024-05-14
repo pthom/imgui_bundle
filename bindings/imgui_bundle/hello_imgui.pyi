@@ -54,6 +54,9 @@ ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
 # ImWcharPair is used to defined unicode glyph ranges
 ImWcharPair = Tuple[int, int]
 
+DictTypeInputTextData = dict[str, Any]
+
+
 def EmptyVoidFunction() -> VoidFunction:
     pass
 
@@ -2011,7 +2014,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2021,9 +2024,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
+        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
     ) -> None:
         """Constructor"""
         pass
@@ -2113,7 +2116,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2186,7 +2189,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2235,7 +2238,7 @@ class DockingParams:
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
         layout_name: str = "Default",
-        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
     ) -> None:
@@ -2900,11 +2903,6 @@ class SimpleRunnerParams:
 
 # @@md
 
-# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       hello_imgui/hello_imgui_widgets.h included by hello_imgui.h                            //
-# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-# Some additional widgets and utilities for ImGui
-
 # void BeginGroupColumn();     /* original C++ signature */
 def begin_group_column() -> None:
     """calls ImGui::BeginGroup()"""
@@ -2914,6 +2912,8 @@ def begin_group_column() -> None:
 def end_group_column() -> None:
     """calls ImGui::EndGroup() + ImGui::SameLine()"""
     pass
+
+# @@md#WidgetWithResizeHandle
 
 # ImVec2 WidgetWithResizeHandle(    /* original C++ signature */
 #         const char* id,
@@ -2945,6 +2945,71 @@ def widget_with_resize_handle(
            }
     """
     pass
+
+# @@md
+
+# --------------------------------------------------------------------------------------------
+
+# @@md#InputTextResizable
+
+class InputTextData:
+    """`InputTextResizable`: displays a resizable text input widget
+
+    The `InputTextResizable` widget allows you to create a text input field that can be resized by the user.
+    It supports both single-line and multi-line text input.
+    Note: the size of the widget is expressed in em units.
+    **Usage example:**
+       C++:
+          ```cpp
+        // Somewhere in the application state
+          (static) InputTextData textInput("My text", True, ImVec2(10, 3));
+        // In the GUI function
+          bool changed = InputTextResizable("Label", &textInput);
+          ```
+       Python:
+          ```python
+          # Somewhere in the application state
+          text_input = hello_imgui.InputTextData("My text", multiline=True, size_em=ImVec2(10, 3))
+          # In the GUI function
+          changed, text_input = hello_imgui.InputTextResizable("Label", text_input)
+          ```
+    """
+
+    # std::string Text;    /* original C++ signature */
+    text: str
+    # bool Multiline = false;    /* original C++ signature */
+    multiline: bool = False
+    # ImVec2 SizeEm = ImVec2(0, 0);    /* original C++ signature */
+    size_em: ImVec2 = ImVec2(0, 0)
+
+    # InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em) {}    /* original C++ signature */
+    def __init__(
+        self, text: str = "", multiline: bool = False, size_em: ImVec2 = ImVec2(0, 0)
+    ) -> None:
+        pass
+
+# bool InputTextResizable(const char* label, InputTextData* textInput);    /* original C++ signature */
+def input_text_resizable(label: str, text_input: InputTextData) -> bool:
+    pass
+
+# DictTypeInputTextData InputTextDataToDict(const InputTextData& data);    /* original C++ signature */
+def input_text_data_to_dict(data: InputTextData) -> DictTypeInputTextData:
+    pass
+
+# InputTextData InputTextDataFromDict(const DictTypeInputTextData& dict);    /* original C++ signature */
+def input_text_data_from_dict(dict: DictTypeInputTextData) -> InputTextData:
+    pass
+
+# to/from string
+# std::string InputTextDataToString(const InputTextData& data);    /* original C++ signature */
+def input_text_data_to_string(data: InputTextData) -> str:
+    pass
+
+# InputTextData InputTextDataFromString(const std::string& str);    /* original C++ signature */
+def input_text_data_from_string(str: str) -> InputTextData:
+    pass
+
+# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
