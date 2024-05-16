@@ -128,6 +128,8 @@ std::string MyAppSettingsToString(const MyAppSettings& myAppSettings)
 }
 MyAppSettings StringToMyAppSettings(const std::string& s)
 {
+    if (s.empty())
+        return MyAppSettings();
     MyAppSettings myAppSettings;
     using namespace nlohmann;
     try {
