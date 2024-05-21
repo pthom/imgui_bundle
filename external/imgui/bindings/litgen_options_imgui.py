@@ -383,6 +383,7 @@ def litgen_options_imgui(
             r"^IsMouse",
             r"^AddPolyline",
             r"^AddConvexPolyFilled",
+            r"^AddConcavePolyFilled",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(

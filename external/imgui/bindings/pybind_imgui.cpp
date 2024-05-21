@@ -5902,10 +5902,10 @@ void py_init_module_imgui_main(py::module& m)
             py::overload_cast<const std::vector<ImVec2> &, ImU32, ImDrawFlags, float>(&ImDrawList::AddPolyline), py::arg("points"), py::arg("col"), py::arg("flags"), py::arg("thickness"))
         .def("add_convex_poly_filled",
             py::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), py::arg("points"), py::arg("col"))
+        .def("add_concave_poly_filled",
+            py::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConcavePolyFilled), py::arg("points"), py::arg("col"))
         // #endif
         //
-        .def("add_concave_poly_filled",
-            &ImDrawList::AddConcavePolyFilled, py::arg("points"), py::arg("num_points"), py::arg("col"))
         .def("add_image",
             &ImDrawList::AddImage, py::arg("user_texture_id"), py::arg("p_min"), py::arg("p_max"), py::arg("uv_min") = ImVec2(0, 0), py::arg("uv_max") = ImVec2(1, 1), py::arg("col") = IM_COL32_WHITE)
         .def("add_image_quad",

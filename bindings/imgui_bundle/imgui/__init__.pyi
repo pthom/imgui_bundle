@@ -9206,12 +9206,12 @@ class ImDrawList:
     # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
     def add_convex_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
         pass
+    # IMGUI_API void  AddConcavePolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
+    def add_concave_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
+        pass
     #                                        #endif
     #
 
-    # IMGUI_API void  AddConcavePolyFilled(const ImVec2* points, int num_points, ImU32 col);    /* original C++ signature */
-    def add_concave_poly_filled(self, points: ImVec2, num_points: int, col: ImU32) -> None:
-        pass
     # Image primitives
     # - Read FAQ to understand what ImTextureID is.
     # - "p_min" and "p_max" represent the upper-left and lower-right corners of the rectangle.
