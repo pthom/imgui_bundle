@@ -217,8 +217,8 @@ void py_init_module_immvision(py::module& m)
 
     m.def("image_display_resizable",    // immvision.h:319
         ImmVision::ImageDisplayResizable,
-        py::arg("label_id"), py::arg("mat"), py::arg("size"), py::arg("refresh_image") = false, py::arg("resizable") = true, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
-        " ImageDisplayResizable: display the image, with no user interaction (by default)\n The image can be resized by the user (and the new size will be stored in the size parameter)\n The label will not be displayed (but it will be used as an id, and must be unique)");
+        py::arg("label_id"), py::arg("mat"), py::arg("size") = py::none(), py::arg("refresh_image") = false, py::arg("resizable") = true, py::arg("show_options_button") = false, py::arg("is_bgr_or_bgra") = true,
+        " ImageDisplayResizable: display the image, with no user interaction (by default)\n The image can be resized by the user (and the new size will be stored in the size parameter, if provided)\n The label will not be displayed (but it will be used as an id, and must be unique)");
 
     m.def("available_colormaps",    // immvision.h:332
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");

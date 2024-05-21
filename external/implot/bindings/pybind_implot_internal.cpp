@@ -763,7 +763,7 @@ void py_init_module_implot_internal(py::module& m)
             "(private API)",
             pybind11::return_value_policy::reference)
         .def("x_axis",
-            py::overload_cast<int>(&ImPlotPlot::XAxis),
+            py::overload_cast<int>(&ImPlotPlot::XAxis, py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -773,7 +773,7 @@ void py_init_module_implot_internal(py::module& m)
             "(private API)",
             pybind11::return_value_policy::reference)
         .def("y_axis",
-            py::overload_cast<int>(&ImPlotPlot::YAxis),
+            py::overload_cast<int>(&ImPlotPlot::YAxis, py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)

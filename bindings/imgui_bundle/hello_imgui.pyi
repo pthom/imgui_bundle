@@ -56,7 +56,6 @@ ImWcharPair = Tuple[int, int]
 
 DictTypeInputTextData = dict[str, Any]
 
-
 def EmptyVoidFunction() -> VoidFunction:
     pass
 
@@ -2014,7 +2013,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2024,9 +2023,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir_ = Dir_.down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
+        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
     ) -> None:
         """Constructor"""
         pass
@@ -2106,7 +2105,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2116,7 +2115,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2189,7 +2188,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        ImGuiDockNodeFlags_PassthruCentralNode
+        DockNodeFlags_.passthru_central_node
     )
 
     # --------------- Layout handling -----------------------------
@@ -2238,7 +2237,7 @@ class DockingParams:
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
         layout_name: str = "Default",
-        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
     ) -> None:
@@ -2971,7 +2970,7 @@ class InputTextData:
           # Somewhere in the application state
           text_input = hello_imgui.InputTextData("My text", multiline=True, size_em=ImVec2(10, 3))
           # In the GUI function
-          changed, text_input = hello_imgui.InputTextResizable("Label", text_input)
+          changed = hello_imgui.input_text_resizable("Label", text_input)
           ```
     """
 

@@ -3,7 +3,7 @@ Python bindings for https://github.com/pthom/immvision.git
 """
 
 # ruff: noqa: B008
-from typing import List, Tuple, TypeAlias
+from typing import List, Tuple, TypeAlias, Optional
 import enum
 import numpy as np
 from numpy.typing import NDArray
@@ -472,7 +472,7 @@ def image_display(  # immvision.h:307
 # IMMVISION_API cv::Point2d ImageDisplayResizable(    /* original C++ signature */
 #         const std::string& label_id,
 #         const cv::Mat& mat,
-#         ImVec2* size,
+#         ImVec2* size = nullptr,
 #         bool refreshImage = false,
 #         bool resizable = true,
 #         bool showOptionsButton = false,
@@ -481,14 +481,14 @@ def image_display(  # immvision.h:307
 def image_display_resizable(  # immvision.h:319
     label_id: str,
     mat: Mat,
-    size: ImVec2,
+    size: Optional[ImVec2] = None,
     refresh_image: bool = False,
     resizable: bool = True,
     show_options_button: bool = False,
     is_bgr_or_bgra: bool = True,
 ) -> Point2d:
     """ImageDisplayResizable: display the image, with no user interaction (by default)
-    The image can be resized by the user (and the new size will be stored in the size parameter)
+    The image can be resized by the user (and the new size will be stored in the size parameter, if provided)
     The label will not be displayed (but it will be used as an id, and must be unique)
     """
     pass

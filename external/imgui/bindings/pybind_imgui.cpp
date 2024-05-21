@@ -169,7 +169,7 @@ void py_init_module_imgui_main(py::module& m)
             "(private API)\n\n We very rarely use this [] operator, so the assert overhead is fine.",
             pybind11::return_value_policy::reference)
         .def("__getitem__",
-            py::overload_cast<size_t>(&ImVec2::operator[]),
+            py::overload_cast<size_t>(&ImVec2::operator[], py::const_),
             py::arg("idx"),
             "(private API)")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -3285,7 +3285,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<int>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<int>::operator[]),
+            py::overload_cast<int>(&ImVector<int>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3328,7 +3328,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<uint>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<uint>::operator[]),
+            py::overload_cast<int>(&ImVector<uint>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3371,7 +3371,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<float>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<float>::operator[]),
+            py::overload_cast<int>(&ImVector<float>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3414,7 +3414,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<char>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<char>::operator[]),
+            py::overload_cast<int>(&ImVector<char>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3457,7 +3457,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<uchar>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<uchar>::operator[]),
+            py::overload_cast<int>(&ImVector<uchar>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3500,7 +3500,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImDrawCmd>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImDrawCmd>::operator[]),
+            py::overload_cast<int>(&ImVector<ImDrawCmd>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3543,7 +3543,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImDrawChannel>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImDrawChannel>::operator[]),
+            py::overload_cast<int>(&ImVector<ImDrawChannel>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3586,7 +3586,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImDrawVert>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImDrawVert>::operator[]),
+            py::overload_cast<int>(&ImVector<ImDrawVert>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3629,7 +3629,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImVec4>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImVec4>::operator[]),
+            py::overload_cast<int>(&ImVector<ImVec4>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3672,7 +3672,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImVec2>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImVec2>::operator[]),
+            py::overload_cast<int>(&ImVector<ImVec2>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3715,7 +3715,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImDrawList *>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImDrawList *>::operator[]),
+            py::overload_cast<int>(&ImVector<ImDrawList *>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3758,7 +3758,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImFont *>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImFont *>::operator[]),
+            py::overload_cast<int>(&ImVector<ImFont *>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3801,7 +3801,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImFontGlyph>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImFontGlyph>::operator[]),
+            py::overload_cast<int>(&ImVector<ImFontGlyph>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3844,7 +3844,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiPlatformMonitor>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3887,7 +3887,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiViewport *>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3930,7 +3930,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiWindow *>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -3973,7 +3973,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImFontAtlasCustomRect>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImFontAtlasCustomRect>::operator[]),
+            py::overload_cast<int>(&ImVector<ImFontAtlasCustomRect>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4016,7 +4016,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImFontConfig>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImFontConfig>::operator[]),
+            py::overload_cast<int>(&ImVector<ImFontConfig>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4059,7 +4059,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiFocusScopeData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4102,7 +4102,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImRect>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImRect>::operator[]),
+            py::overload_cast<int>(&ImVector<ImRect>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4145,7 +4145,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiColorMod>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4188,7 +4188,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiGroupData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4231,7 +4231,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiPopupData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4274,7 +4274,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiViewportP *>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4317,7 +4317,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiInputEvent>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4360,7 +4360,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiWindowStackData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4403,7 +4403,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiTableColumnSortSpecs>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4446,7 +4446,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiTableInstanceData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4489,7 +4489,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiTableTempData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4532,7 +4532,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiNavTreeNodeData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiNavTreeNodeData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiNavTreeNodeData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4575,7 +4575,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiPtrOrIndex>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4618,7 +4618,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiSettingsHandler>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4661,7 +4661,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiShrinkWidthItem>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4704,7 +4704,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiStackLevelInfo>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4747,7 +4747,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiTabItem>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4790,7 +4790,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiKeyRoutingData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4833,7 +4833,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiListClipperData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4876,7 +4876,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiListClipperRange>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4919,7 +4919,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiOldColumnData>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -4962,7 +4962,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiOldColumns>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)
@@ -5005,7 +5005,7 @@ void py_init_module_imgui_main(py::module& m)
         .def("size",
             &ImVector<ImGuiStyleMod>::size, "(private API)")
         .def("__getitem__",
-            py::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[]),
+            py::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[], py::const_),
             py::arg("i"),
             "(private API)",
             pybind11::return_value_policy::reference)

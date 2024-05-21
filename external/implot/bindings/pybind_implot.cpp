@@ -413,7 +413,7 @@ void py_init_module_implot(py::module& m)
             "(private API)",
             pybind11::return_value_policy::reference)
         .def("__getitem__",
-            py::overload_cast<size_t>(&ImPlotPoint::operator[]),
+            py::overload_cast<size_t>(&ImPlotPoint::operator[], py::const_),
             py::arg("idx"),
             "(private API)")
         ;
