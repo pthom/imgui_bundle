@@ -17,6 +17,10 @@
 #include "immvision/immvision.h"
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+std::function<void()> FnResetImGuiNodeEditorId; // may be bound from pybind_imgui_node_editor.cpp
+#endif
+
 #include <chrono>
 #include <cassert>
 #include <filesystem>
@@ -64,10 +68,18 @@ namespace ImmApp
 
             // Replace settings file name if default
             if (gImmAppContext._NodeEditorConfig.SettingsFile == "NodeEditor.json")
+            {
                 gImmAppContext._NodeEditorConfig.SettingsFile = NodeEditorSettingsLocation(runnerParams);
+            }
 
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
             ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
+
+            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                FnResetImGuiNodeEditorId,
+                runnerParams.callbacks.BeforeExit
+            );
+
         }
 #endif
 

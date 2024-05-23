@@ -24,15 +24,19 @@ namespace ax
 
 namespace
 {
-    uintptr_t _next_id = 1;
+    uintptr_t _static_next_editor_id = 1;
 
     uintptr_t get_next_id()
     {
-        uintptr_t r = _next_id;
-        ++ _next_id;
+        uintptr_t r = _static_next_editor_id;
+        ++ _static_next_editor_id;
         return r;
     }
 }
+
+
+extern std::function<void()> FnResetImGuiNodeEditorId;
+
 
 PYBIND11_MAKE_OPAQUE(ax::NodeEditor::Detail::EditorContext);
 PYBIND11_MAKE_OPAQUE(ax::NodeEditor::EditorContext);
@@ -50,6 +54,9 @@ void py_init_module_imgui_node_editor(py::module& m)
     using namespace ax::NodeEditor;
     using CanvasSizeModeAlias = ax::NodeEditor::CanvasSizeMode;
 
+    FnResetImGuiNodeEditorId = []() {
+        _static_next_editor_id = 1;
+    };
 
     py::class_<EditorContext>(m, "EditorContext");
 
