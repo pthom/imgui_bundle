@@ -1,21 +1,31 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
-# v1.5.0
+# v1.5.0-rc1
+
+### ImGui:
+* Updated ImGui to v1.90.5-docking
+* Added [support for StackLayout](https://github.com/pthom/imgui/blob/a178a6c98fc877f0d9d4dfd6063bae15d41c14d0/imgui_stacklayout.h) (by @thedmd)
 
 ### Hello ImGui
-#### Add FontAwesome options with support for FontAwesome 4 and FontAwesome 6:
+See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/releases/tag/v1.5.0-rc1)
+* add FontDpiResponsive
+* add OpenGlOptions
+* add null backends
+* Can set OpenGL options in hello_imgui.ini in any parent folder
+* add InputTextResizable & WidgetWithResizeHandle
+* Logger: use less vertical space
 
-Breaking change: you need to include manually the icons: `#include "hello_imgui/icons_font_awesome_4.h"`
-The default icon font is FontAwesome 4 (for backward compatibility), but v6 includes many more icons
+### Libraries
+* immvision:
+  * fixup Custom version of cv::warpAffine for small sizes
+  * ImmVision::Image is now resizable / added ImmVision::ImageDisplayResizable
+* imgui-knobs: can drag knob horizontally or vertically
 
-In order to select Font Awesome 6, you need to set the following in your runnerParams:
-```cpp
- runnerParams.runnerCallbacks.defaultIconFont = hello_imgui::IconFont::FontAwesome6;
-```
-and then include:
-```cpp
-#include "hello_imgui/icons_font_awesome_6.h"
- ```
+### Python
+* imgui_fig is now resizable
+
+### Build
+* Add [CMake options](https://github.com/pthom/imgui_bundle/blob/6b0132a4bf6bfb82b7eb90e15ba3db52b0daa778/CMakeLists.txt#L119-L128) to disable some libraries
 
 
 # v1.3.0
