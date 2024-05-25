@@ -1531,20 +1531,13 @@ void py_init_module_imgui_main(py::module& m)
 
             return ColorPicker3_adapt_modifiable_immutable_to_return(label, col, flags);
         },     py::arg("label"), py::arg("col"), py::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("color_picker4",
-        [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto ColorPicker4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorPicker4(label, col_adapt_modifiable, flags, ref_col);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
-        },     py::arg("label"), py::arg("col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
+        py::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), py::arg("label"), py::arg("col"), py::arg("flags") = 0, py::arg("ref_col") = py::none());
+    // #endif
+    //
 
     m.def("color_button",
         ImGui::ColorButton,

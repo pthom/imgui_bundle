@@ -1769,11 +1769,16 @@ def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tupl
 def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
-# IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
 def color_picker4(
-    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
-) -> Tuple[bool, List[float]]:
+    label: str, col: ImVec4, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4] = None
+) -> Tuple[bool, ImVec4]:
     pass
+
+# #endif
+#
 
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
 def color_button(desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: ImVec2 = ImVec2(0, 0)) -> bool:

@@ -384,6 +384,7 @@ def litgen_options_imgui(
             r"^AddPolyline",
             r"^AddConvexPolyFilled",
             r"^AddConcavePolyFilled",
+            r"^ColorPicker4",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
