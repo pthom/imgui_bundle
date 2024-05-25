@@ -11,11 +11,11 @@ import numpy
 import cv2
 import matplotlib
 from imgui_bundle.immapp import static
-from imgui_bundle import immvision, ImVec2
+from imgui_bundle import immvision, ImVec2, imgui
 
 
-@static(fig_cache=dict())
-def fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False) -> numpy.ndarray:
+@static(fig_image_cache=dict())
+def _fig_to_image(label_id: str, figure: matplotlib.figure.Figure, refresh_image: bool = False) -> numpy.ndarray:
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -25,11 +25,11 @@ def fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False) 
     Returns:
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
-    statics = fig_to_image
-    fig_id = id(figure)
-    if refresh_image and fig_id in statics.fig_cache:
-        del statics.fig_cache[fig_id]
-    if fig_id not in statics.fig_cache:
+    statics = _fig_to_image
+    fig_id = imgui.get_id(label_id)
+    if refresh_image and fig_id in statics.fig_image_cache:
+        del statics.fig_image_cache[fig_id]
+    if fig_id not in statics.fig_image_cache:
         # draw the renderer
         figure.canvas.draw()
         # Get the RGBA buffer from the figure
@@ -38,8 +38,8 @@ def fig_to_image(figure: matplotlib.figure.Figure, refresh_image: bool = False) 
         buf.shape = (h, w, 3)
         img_rgb = cv2.cvtColor(buf, cv2.COLOR_RGB2BGR)
         matplotlib.pyplot.close(figure)
-        statics.fig_cache[fig_id] = img_rgb
-    return statics.fig_cache[fig_id]
+        statics.fig_image_cache[fig_id] = img_rgb
+    return statics.fig_image_cache[fig_id]
 
 
 
@@ -72,7 +72,7 @@ def fig(label_id: str,
         import matplotlib.pyplot as plt
         ```
     """
-    image_rgb = fig_to_image(figure, refresh_image)
+    image_rgb = _fig_to_image(label_id, figure, refresh_image)
 
     mouse_position_tuple = immvision.image_display_resizable(
         label_id, image_rgb, size, refresh_image, resizable, show_options_button)
