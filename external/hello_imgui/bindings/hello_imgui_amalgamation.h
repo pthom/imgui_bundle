@@ -1288,6 +1288,7 @@ struct RunnerCallbacks
     // --------------- GUI Callbacks -------------------
 
     // `ShowGui`: Fill it with a function that will add your widgets.
+    // (ShowGui will be called at each frame, before rendering the Dockable windows, if any)
     VoidFunction ShowGui = EmptyVoidFunction();
 
     // `ShowMenus`: Fill it with a function that will add ImGui menus by calling:
@@ -1406,6 +1407,10 @@ struct RunnerCallbacks
     //  like a mesh editor, or game, and just want the Gui to be drawn
     //  on top of that content.
     VoidFunction CustomBackground = EmptyVoidFunction();
+
+    // `PostRenderDockableWindows`: Fill it with a function that will be called
+    // after the dockable windows are rendered.
+    VoidFunction PostRenderDockableWindows = EmptyVoidFunction();
 
     // `AnyBackendEventCallback`:
     //  Callbacks for events from a specific backend. _Only implemented for SDL.

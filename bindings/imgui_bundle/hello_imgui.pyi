@@ -1661,6 +1661,7 @@ class RunnerCallbacks:
 
     # VoidFunction ShowGui = EmptyVoidFunction();    /* original C++ signature */
     # `ShowGui`: Fill it with a function that will add your widgets.
+    # (ShowGui will be called at each frame, before rendering the Dockable windows, if any)
     show_gui: VoidFunction = EmptyVoidFunction()
 
     # VoidFunction ShowMenus = EmptyVoidFunction();    /* original C++ signature */
@@ -1806,6 +1807,11 @@ class RunnerCallbacks:
     #  on top of that content.
     custom_background: VoidFunction = EmptyVoidFunction()
 
+    # VoidFunction PostRenderDockableWindows = EmptyVoidFunction();    /* original C++ signature */
+    # `PostRenderDockableWindows`: Fill it with a function that will be called
+    # after the dockable windows are rendered.
+    post_render_dockable_windows: VoidFunction = EmptyVoidFunction()
+
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     # `AnyBackendEventCallback`:
     #  Callbacks for events from a specific backend. _Only implemented for SDL.
@@ -1816,7 +1822,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: VoidFunction = EmptyVoidFunction(),
@@ -1837,6 +1843,7 @@ class RunnerCallbacks:
         before_imgui_render: VoidFunction = EmptyVoidFunction(),
         after_swap: VoidFunction = EmptyVoidFunction(),
         custom_background: VoidFunction = EmptyVoidFunction(),
+        post_render_dockable_windows: VoidFunction = EmptyVoidFunction(),
         any_backend_event_callback: AnyEventCallback = EmptyEventCallback(),
     ) -> None:
         """Auto-generated default constructor with named params"""
