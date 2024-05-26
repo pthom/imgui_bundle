@@ -342,6 +342,124 @@ def gui_window_layout_customization(app_state: AppState):
     imgui.separator()
 
 
+def gui_window_alternative_theme(app_state: AppState):
+    # Since this window applies a theme, We need to call "imgui.begin" ourselves so
+    # that we can apply the theme before opening the window.
+    #
+    # In order to obtain this, we applied the following option to the window
+    # that displays this Gui:
+    #     alternative_theme_window.call_begin_end = False
+
+    # emulate C/C++ static variable: we will store some static variables
+    # as attributes of the function
+    statics = gui_window_alternative_theme
+
+    # Apply the theme before opening the window
+    tweaked_theme = hello_imgui.ImGuiTweakedTheme()
+    tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
+    tweaked_theme.tweaks.rounding = 0.0
+    hello_imgui.push_tweaked_theme(tweaked_theme)
+
+    # Open the window
+    window_opened = imgui.begin("Alternative Theme")
+    if window_opened:
+        # Display some widgets
+        imgui.push_font(app_state.title_font)
+        imgui.text("Alternative Theme")
+        imgui.pop_font()
+        imgui.text("This window uses a different theme")
+        imgui.set_item_tooltip("""
+            tweaked_theme = hello_imgui.ImGuiTheme.ImGuiTweakedTheme()
+            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white.value
+            tweaked_theme.tweaks.rounding = 0.0
+            hello_imgui.apply_tweaked_theme(tweaked_theme)
+        """
+        )
+
+        if imgui.collapsing_header("Basic Widgets", imgui.TreeNodeFlags_.default_open.value):
+            if not hasattr(statics, "checked"):
+                statics.checked = True
+            _, statics.checked = imgui.checkbox("Checkbox", statics.checked)
+
+            if imgui.button("Button"):
+                hello_imgui.log(hello_imgui.LogLevel.info, "Button was pressed")
+            imgui.set_item_tooltip("This is a button")
+
+            if not hasattr(statics, "radio"):
+                statics.radio = 0
+            if imgui.radio_button("Radio 1", statics.radio == 0):
+                statics.radio = 0
+            imgui.same_line()
+            if imgui.radio_button("Radio 2", statics.radio == 1):
+                statics.radio = 1
+            imgui.same_line()
+            if imgui.radio_button("Radio 3", statics.radio == 2):
+                statics.radio = 2
+
+            # Haiku
+            # Display a image of the haiku below with Japanese characters
+            # with an informative tooltip
+            haiku_image_height = hello_imgui.em_size(5.0)
+            hello_imgui.image_from_asset("images/haiku.png", ImVec2(0.0, haiku_image_height))
+            imgui.set_item_tooltip("""
+Extract from Wikipedia
+-------------------------------------------------------------------------------
+
+In early 1686, Bashō composed one of his best-remembered haiku:
+
+        furu ike ya / kawazu tobikomu / mizu no oto
+
+   an ancient pond / a frog jumps in / the splash of water
+
+This poem became instantly famous.
+
+-------------------------------------------------------------------------------
+
+This haiku is here rendered as an image, mainly to preserve space,
+because adding a Japanese font to the project would enlarge its size.
+Handling Japanese font is of course possible within ImGui / Hello ImGui!
+            """)
+
+            # Display the haiku text as an InputTextMultiline
+            if not hasattr(statics, "poem"):
+                statics.poem = (
+                    "   Old Pond\n"
+                    "  Frog Leaps In\n"
+                    " Water's Sound\n"
+                    "\n"
+                    "      Matsuo Bashō - 1686"
+                )
+
+            _, statics.poem = imgui.input_text_multiline("##Poem", statics.poem, hello_imgui.em_to_vec2(15.0, 5.5))
+
+            # a popup with a modal window
+            if imgui.button("Open Modal"):
+                imgui.open_popup("MyModal")
+            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize.value)
+            if popup_opened:
+                imgui.text("This is a modal window")
+                if imgui.button("Close"):
+                    imgui.close_current_popup()
+                imgui.end_popup()
+
+            if not hasattr(statics, "text"):
+                statics.text = "Hello, world!"
+            _, statics.text = imgui.input_text("Input text", statics.text)
+
+            if imgui.tree_node("Text Display"):
+                imgui.text("Hello, world!")
+                imgui.text_colored(ImVec4(1.0, 0.5, 0.5, 1.0), "Some text")
+                imgui.text_disabled("Disabled text")
+                imgui.text_wrapped("This is a long text that will be wrapped in the window")
+                imgui.tree_pop()
+
+    # Close the window
+    imgui.end()
+
+    # Restore the theme
+    hello_imgui.pop_tweaked_theme()
+
+
 def demo_assets(app_state: AppState):
     imgui.push_font(app_state.title_font)
     imgui.text("Image From Assets")
@@ -503,9 +621,9 @@ def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
     #    |        |                                |
     #    | Command|                                |
     #    | Space  |    MainDockSpace               |
-    #    |        |                                |
-    #    |        |                                |
-    #    |        |                                |
+    #    |------- |                                |
+    #    |        |--------------------------------|
+    #    |        |       CommandSpace2            |
     #    -------------------------------------------
     #    |     MiscSpace                           |
     #    -------------------------------------------
@@ -530,7 +648,14 @@ def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_command.direction = imgui.Dir_.left
     split_main_command.ratio = 0.25
 
-    splits = [split_main_misc, split_main_command]
+    # Then, add CommandSpace2 below MainDockSpace
+    split_main_command2 = hello_imgui.DockingSplit()
+    split_main_command2.initial_dock = "MainDockSpace"
+    split_main_command2.new_dock = "CommandSpace2"
+    split_main_command2.direction = imgui.Dir_.down
+    split_main_command2.ratio = 0.5
+
+    splits = [split_main_misc, split_main_command, split_main_command2]
     return splits
 
 
@@ -542,10 +667,9 @@ def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
     #    | Space          |    MainDockSpace       |
     #    |                |                        |
     #    -------------------------------------------
-    #    |                                         |
-    #    |                                         |
-    #    |     CommandSpace                        |
-    #    |                                         |
+    #    |                       |                 |
+    #    |                       | Command         |
+    #    |     CommandSpace      | Space2          |
     #    -------------------------------------------
 
     split_main_command = hello_imgui.DockingSplit()
@@ -554,13 +678,19 @@ def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_command.direction = imgui.Dir_.down
     split_main_command.ratio = 0.5
 
+    split_main_command2 = hello_imgui.DockingSplit()
+    split_main_command2.initial_dock = "CommandSpace"
+    split_main_command2.new_dock = "CommandSpace2"
+    split_main_command2.direction = imgui.Dir_.right
+    split_main_command2.ratio = 0.4
+
     split_main_misc = hello_imgui.DockingSplit()
     split_main_misc.initial_dock = "MainDockSpace"
     split_main_misc.new_dock = "MiscSpace"
     split_main_misc.direction = imgui.Dir_.left
     split_main_misc.ratio = 0.5
 
-    splits = [split_main_command, split_main_misc]
+    splits = [split_main_command, split_main_command2, split_main_misc]
     return splits
 
 
@@ -609,12 +739,22 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     )
     additional_window.gui_function = lambda: imgui.text("This is the additional window")
 
+    # alternativeThemeWindow
+    alternative_theme_window = hello_imgui.DockableWindow()
+    # Since this window applies a theme, We need to call "imgui.begin" ourselves so
+    # that we can apply the theme before opening the window.
+    alternative_theme_window.call_begin_end = False
+    alternative_theme_window.label = "Alternative Theme"
+    alternative_theme_window.dock_space_name = "CommandSpace2"
+    alternative_theme_window.gui_function = lambda: gui_window_alternative_theme(app_state)
+
     dockable_windows = [
         features_demo_window,
         layout_customization_window,
         logs_window,
         dear_imgui_demo_window,
         additional_window,
+        alternative_theme_window,
     ]
     return dockable_windows
 

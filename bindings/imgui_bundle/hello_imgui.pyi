@@ -712,13 +712,14 @@ class ImGuiTweakedTheme:
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
     # ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();    /* original C++ signature */
     tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
-    # ImGuiTweakedTheme(ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker, ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks());    /* original C++ signature */
+
+    # ImGuiTweakedTheme(ImGuiTheme_ theme = ImGuiTheme_DarculaDarker, const ImGuiThemeTweaks& tweaks = ImGuiThemeTweaks())    /* original C++ signature */
+    #             : Theme(theme), Tweaks(tweaks) {}
     def __init__(
         self,
         theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
         tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks(),
     ) -> None:
-        """Auto-generated default constructor with named params"""
         pass
 
 # ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
@@ -727,6 +728,31 @@ def tweaked_theme_theme_to_style(tweaked_theme: ImGuiTweakedTheme) -> ImGuiStyle
 
 # void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
 def apply_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
+    pass
+
+# PushTweakedTheme() / PopTweakedTheme()
+# Push and pop a tweaked theme
+#
+# Note: If you want the theme to apply globally to a window, you need to apply it
+#       *before* calling ImGui::Begin
+#
+#     For example, within Hello ImGui, given a dockable window, you should set this option:
+#        myDockableWindow.callBeginEnd = False;
+#     And then:
+#     - call ImGuiTheme::PushTweakedTheme
+#     - call ImGui::Begin
+#     - display your content
+#     - call ImGui::End
+#     - call ImGuiTheme::PopTweakedTheme
+#
+# See demo inside src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp:
+#     look at `GuiWindowAlternativeTheme()`
+# void PushTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);    /* original C++ signature */
+def push_tweaked_theme(tweaked_theme: ImGuiTweakedTheme) -> None:
+    pass
+
+# void PopTweakedTheme();    /* original C++ signature */
+def pop_tweaked_theme() -> None:
     pass
 
 # bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);    /* original C++ signature */

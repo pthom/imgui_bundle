@@ -329,6 +329,113 @@ void GuiWindowLayoutCustomization(AppState& appState)
     ImGui::Separator();
 }
 
+void GuiWindowAlternativeTheme(AppState& appState)
+{
+    // Since this window applies a theme, We need to call "ImGui::Begin" ourselves so
+    // that we can apply the theme before opening the window.
+    //
+    // In order to obtain this, we applied the following option to the window
+    // that displays this Gui:
+    //     alternativeThemeWindow.callBeginEnd = false;
+
+    // Apply the theme before opening the window
+    ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
+    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_WhiteIsWhite;
+    tweakedTheme.Tweaks.Rounding = 0.0f;
+    ImGuiTheme::PushTweakedTheme(tweakedTheme);
+
+    // Open the window
+    bool windowOpened = ImGui::Begin("Alternative Theme");
+    if (windowOpened)
+    {
+        // Display some widgets
+        ImGui::PushFont(appState.TitleFont); ImGui::Text("Alternative Theme"); ImGui::PopFont();
+        ImGui::Text("This window uses a different theme");
+        ImGui::SetItemTooltip("    ImGuiTheme::ImGuiTweakedTheme tweakedTheme;\n"
+                              "    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_WhiteIsWhite;\n"
+                              "    tweakedTheme.Tweaks.Rounding = 0.0f;\n"
+                              "    ImGuiTheme::PushTweakedTheme(tweakedTheme);");
+
+        if (ImGui::CollapsingHeader("Basic Widgets", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            static bool checked = true;
+            ImGui::Checkbox("Checkbox", &checked);
+
+            if (ImGui::Button("Button"))
+                HelloImGui::Log(HelloImGui::LogLevel::Info, "Button was pressed");
+            ImGui::SetItemTooltip("This is a button");
+
+            static int radio = 0;
+            ImGui::RadioButton("Radio 1", &radio, 0); ImGui::SameLine();
+            ImGui::RadioButton("Radio 2", &radio, 1); ImGui::SameLine();
+            ImGui::RadioButton("Radio 3", &radio, 2);
+
+            // Haiku
+            {
+                // Display a image of the haiku below with Japanese characters
+                // with an informative tooltip
+                float haikuImageHeight = HelloImGui::EmSize(5.f);
+                HelloImGui::ImageFromAsset("images/haiku.png", ImVec2(0.f, haikuImageHeight));
+                ImGui::SetItemTooltip(R"(
+Extract from Wikipedia
+-------------------------------------------------------------------------------
+
+In early 1686, Bashō composed one of his best-remembered haiku:
+
+        furu ike ya / kawazu tobikomu / mizu no oto
+
+   an ancient pond / a frog jumps in / the splash of water
+
+This poem became instantly famous.
+
+-------------------------------------------------------------------------------
+
+This haiku is here rendered as an image, mainly to preserve space,
+because adding a Japanese font to the project would enlarge its size.
+Handling Japanese font is of course possible within ImGui / Hello ImGui!
+            )");
+
+                // Display the haiku text as an InputTextMultiline
+                static std::string poem =
+                    "   Old Pond\n"
+                    "  Frog Leaps In\n"
+                    " Water's Sound\n"
+                    "\n"
+                    "      Matsuo Bashō - 1686";
+                ImGui::InputTextMultiline("##Poem", &poem, HelloImGui::EmToVec2(15.f, 5.5f));
+            }
+
+            // A popup with a modal window
+            if (ImGui::Button("Open Modal"))
+                ImGui::OpenPopup("MyModal");
+            if (ImGui::BeginPopupModal("MyModal", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("This is a modal window");
+                if (ImGui::Button("Close"))
+                    ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+            }
+
+            static std::string text = "Hello, world!";
+            ImGui::InputText("Input text", &text);
+
+            if (ImGui::TreeNode("Text Display"))
+            {
+                ImGui::Text("Hello, world!");
+                ImGui::TextColored(ImVec4(1.f, 0.5f, 0.5f, 1.f), "Some text");
+                ImGui::TextDisabled("Disabled text");
+                ImGui::TextWrapped("This is a long text that will be wrapped in the window");
+                ImGui::TreePop();
+            }
+        }
+    }
+    // Close the window
+    ImGui::End();
+
+    // Restore the theme
+    ImGuiTheme::PopTweakedTheme();
+}
+
 void DemoAssets(AppState& appState)
 {
     ImGui::PushFont(appState.TitleFont); ImGui::Text("Image From Asset"); ImGui::PopFont();
@@ -515,9 +622,9 @@ std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
     //    |        |                                |
     //    | Command|                                |
     //    | Space  |    MainDockSpace               |
-    //    |        |                                |
-    //    |        |                                |
-    //    |        |                                |
+    //    |------- |                                |
+    //    |        |--------------------------------|
+    //    |        |       CommandSpace2            |
     //    -------------------------------------------
     //    |     MiscSpace                           |
     //    -------------------------------------------
@@ -538,7 +645,14 @@ std::vector<HelloImGui::DockingSplit> CreateDefaultDockingSplits()
     splitMainCommand.direction = ImGuiDir_Left;
     splitMainCommand.ratio = 0.25f;
 
-    std::vector<HelloImGui::DockingSplit> splits {splitMainMisc, splitMainCommand};
+    // Then, add CommandSpace2 below MainDockSpace
+    HelloImGui::DockingSplit splitMainCommand2;
+    splitMainCommand2.initialDock = "MainDockSpace";
+    splitMainCommand2.newDock = "CommandSpace2";
+    splitMainCommand2.direction = ImGuiDir_Down;
+    splitMainCommand2.ratio = 0.5f;
+
+    std::vector<HelloImGui::DockingSplit> splits {splitMainMisc, splitMainCommand, splitMainCommand2};
     return splits;
 }
 
@@ -551,10 +665,10 @@ std::vector<HelloImGui::DockingSplit> CreateAlternativeDockingSplits()
     //    | Space          |    MainDockSpace       |
     //    |                |                        |
     //    -------------------------------------------
-    //    |                                         |
-    //    |                                         |
-    //    |     CommandSpace                        |
-    //    |                                         |
+    //    |                       |                 |
+    //    |                       | Command         |
+    //    |     CommandSpace      | Space2          |
+    //    |                       |                 |
     //    -------------------------------------------
 
     HelloImGui::DockingSplit splitMainCommand;
@@ -563,13 +677,19 @@ std::vector<HelloImGui::DockingSplit> CreateAlternativeDockingSplits()
     splitMainCommand.direction = ImGuiDir_Down;
     splitMainCommand.ratio = 0.5f;
 
+    HelloImGui::DockingSplit splitMainCommand2;
+    splitMainCommand2.initialDock = "CommandSpace";
+    splitMainCommand2.newDock = "CommandSpace2";
+    splitMainCommand2.direction = ImGuiDir_Right;
+    splitMainCommand2.ratio = 0.4f;
+
     HelloImGui::DockingSplit splitMainMisc;
     splitMainMisc.initialDock = "MainDockSpace";
     splitMainMisc.newDock = "MiscSpace";
     splitMainMisc.direction = ImGuiDir_Left;
     splitMainMisc.ratio = 0.5f;
 
-    std::vector<HelloImGui::DockingSplit> splits {splitMainCommand, splitMainMisc};
+    std::vector<HelloImGui::DockingSplit> splits {splitMainCommand, splitMainCommand2, splitMainMisc};
     return splits;
 }
 
@@ -613,12 +733,22 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
     additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
     additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
 
+    // alternativeThemeWindow
+    HelloImGui::DockableWindow alternativeThemeWindow;
+    // Since this window applies a theme, We need to call "ImGui::Begin" ourselves so
+    // that we can apply the theme before opening the window.
+    alternativeThemeWindow.callBeginEnd = false;
+    alternativeThemeWindow.label = "Alternative Theme";
+    alternativeThemeWindow.dockSpaceName = "CommandSpace2";
+    alternativeThemeWindow.GuiFunction = [&appState]() { GuiWindowAlternativeTheme(appState); };
+
     std::vector<HelloImGui::DockableWindow> dockableWindows {
         featuresDemoWindow,
         layoutCustomizationWindow,
         logsWindow,
         dearImGuiDemoWindow,
         additionalWindow,
+        alternativeThemeWindow
     };
     return dockableWindows;
 }

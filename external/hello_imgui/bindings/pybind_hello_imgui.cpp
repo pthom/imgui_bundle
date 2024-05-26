@@ -311,18 +311,10 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassImGuiTweakedTheme =
         py::class_<ImGuiTheme::ImGuiTweakedTheme>
             (m, "ImGuiTweakedTheme", "")
-        .def(py::init<>([](
-        ImGuiTheme::ImGuiTheme_ Theme = ImGuiTheme::ImGuiTheme_DarculaDarker, ImGuiTheme::ImGuiThemeTweaks Tweaks = ImGuiTheme::ImGuiThemeTweaks())
-        {
-            auto r = std::make_unique<ImGuiTheme::ImGuiTweakedTheme>();
-            r->Theme = Theme;
-            r->Tweaks = Tweaks;
-            return r;
-        })
-        , py::arg("theme") = ImGuiTheme::ImGuiTheme_DarculaDarker, py::arg("tweaks") = ImGuiTheme::ImGuiThemeTweaks()
-        )
         .def_readwrite("theme", &ImGuiTheme::ImGuiTweakedTheme::Theme, "")
         .def_readwrite("tweaks", &ImGuiTheme::ImGuiTweakedTheme::Tweaks, "")
+        .def(py::init<ImGuiTheme::ImGuiTheme_, const ImGuiTheme::ImGuiThemeTweaks &>(),
+            py::arg("theme") = ImGuiTheme::ImGuiTheme_DarculaDarker, py::arg("tweaks") = ImGuiTheme::ImGuiThemeTweaks())
         ;
 
 
@@ -331,6 +323,12 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("apply_tweaked_theme",
         ImGuiTheme::ApplyTweakedTheme, py::arg("tweaked_theme"));
+
+    m.def("push_tweaked_theme",
+        ImGuiTheme::PushTweakedTheme, py::arg("tweaked_theme"));
+
+    m.def("pop_tweaked_theme",
+        ImGuiTheme::PopTweakedTheme);
 
     m.def("show_theme_tweak_gui",
         ImGuiTheme::ShowThemeTweakGui,

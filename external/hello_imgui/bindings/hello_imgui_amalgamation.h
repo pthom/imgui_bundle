@@ -572,10 +572,33 @@ namespace ImGuiTheme
     {
         ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;
         ImGuiThemeTweaks Tweaks = ImGuiThemeTweaks();
+
+        ImGuiTweakedTheme(ImGuiTheme_ theme = ImGuiTheme_DarculaDarker, const ImGuiThemeTweaks& tweaks = ImGuiThemeTweaks())
+            : Theme(theme), Tweaks(tweaks) {}
     };
 
     ImGuiStyle TweakedThemeThemeToStyle(const ImGuiTweakedTheme& tweaked_theme);
     void ApplyTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);
+
+    // PushTweakedTheme() / PopTweakedTheme()
+    // Push and pop a tweaked theme
+    //
+    // Note: If you want the theme to apply globally to a window, you need to apply it
+    //       *before* calling ImGui::Begin
+    //
+    //     For example, within Hello ImGui, given a dockable window, you should set this option:
+    //        myDockableWindow.callBeginEnd = false;
+    //     And then:
+    //     - call ImGuiTheme::PushTweakedTheme
+    //     - call ImGui::Begin
+    //     - display your content
+    //     - call ImGui::End
+    //     - call ImGuiTheme::PopTweakedTheme
+    //
+    // See demo inside src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp:
+    //     look at `GuiWindowAlternativeTheme()`
+    void PushTweakedTheme(const ImGuiTweakedTheme& tweaked_theme);
+    void PopTweakedTheme();
 
     // Show the theme selection listbox, the theme tweak widgets, as well as ImGui::ShowStyleEditor. Returns true if modified (Warning, when using ShowStyleEditor, no info about modification is transmitted)
     bool ShowThemeTweakGui(ImGuiTweakedTheme *tweaked_theme);
