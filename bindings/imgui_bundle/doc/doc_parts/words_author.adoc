@@ -3,11 +3,6 @@
 
 === Who is this project for
 
-As mentioned in the intro,
-****
-include::intro_about.adoc[tag=motto]
-****
-
 Dear ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.
 
 It is well adapted for

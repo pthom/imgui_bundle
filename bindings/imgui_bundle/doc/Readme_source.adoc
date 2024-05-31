@@ -32,6 +32,8 @@ include::doc_parts/python.adoc[]
 
 include::doc_parts/words_author.adoc[]
 
+include::doc_parts/support_project.adoc[]
+
 ifndef::env_gh_pages[]
 == FAQ
 See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]

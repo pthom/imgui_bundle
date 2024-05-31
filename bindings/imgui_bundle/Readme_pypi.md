@@ -4,44 +4,93 @@ Dear ImGui Bundle.*
 
 [![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-Dear ImGui Bundle: easily create ImGui applications in Python and C++.
-Batteries included!
+*Click the bird for a
+the interactive manual!*
 
-Click on the logo for a complete interactive demonstration!
+> Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your
+> first app in 3 lines, batteries included(\*)!
+>
+> *Whether you prefer Python or C++, this pack has you covered, with the
+> same ease in both languages.*
 
 [![sources](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
 [![doc](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png)](https://pthom.github.io/imgui_bundle)
 [![manual](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-# Introduction
+**Key Features**
 
-## Dear ImGui Bundle
+-   **A lot of widgets and libraries:** All of Dear ImGui along with a
+    suite of additional libraries for plotting, node editing, markdown
+    rendering, and much more.
 
-[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a
-comprehensive bundle for [Dear ImGui](https://github.com/ocornut/imgui),
-featuring various powerful libraries from its ecosystem. Designed to
-facilitate the creation of applications in C++ and Python across
-Windows, macOS, Linux, iOS, Android, and emscripten (Web apps), it is
-ideal for application developers, and researchers eager to dive into GUI
-development with ease and efficiency. This bundle simplifies the
-process, allowing you to focus on the creative aspects of your projects.
+-   **Always up-to-date:** The libraries are always very close to the
+    latest version of Dear ImGui. This is also true for Python
+    developers, since the bindings are automatically generated.
 
-## Interactive manual & demo in one click!
+-   **Interactive Demos and Documentation:** Quickly get started with
+    our interactive manual and demos that showcase the capabilities of
+    the pack. Read or copy-paste the source code (Python and C++)
+    directly from the interactive manual!
+
+-   **Cross-platform:** Works on Windows, Linux, macOS, iOS, Android,
+    and WebAssembly!
+
+-   **Easy to use, yet very powerful:** Start your first app in 3 lines.
+    The Immediate Mode GUI (IMGUI) paradigm is simple and powerful,
+    letting you focus on the creative aspects of your projects.
+
+-   **Fast:** Rendering is done via OpenGL (or any other renderer you
+    choose), through native code.
+
+-   **Beautifully documented Python bindings and stubs:** The Python
+    bindings stubs reflect the C++ API and documentation, serving as a
+    reference and aiding autocompletion in your IDE. See for example the
+    [stubs for
+    imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi),
+    and [for
+    hello\_imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
+    (which complete the [hello\_imgui
+    manual](https://pthom.github.io/hello_imgui/book/intro.html)).
+
+For a detailed look at each feature and more information, explore the
+sections listed in the Table of Contents.
+
+**Example code**(\*)
+
+*A hello world example with Dear ImGui Bundle*
+
+![demo
+hello](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_hello.jpg)
+
+*For Python developers*
+
+    from imgui_bundle import imgui, immapp
+    immapp.run(gui_function=lambda: imgui.text("Hello, world!"))
+
+*For C++ developers*
+
+    #include "immapp/immapp.h"
+    #include "imgui.h"
+    int main() {   ImmApp::Run([] {   ImGui::Text("Hello, world!");   });  }
+
+**Interactive Manual**
 
 Click on the animated demonstration below to launch the fully
-interactive demonstration.
+interactive manual.
 
 <figure id="truc">
 <img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif"
 alt="Demo" />
-<figcaption>Dear ImGui Bundle interactive demo</figcaption>
+<figcaption>Dear ImGui Bundle interactive manual</figcaption>
 </figure>
 
 This demonstration is also an interactive manual, similar to the online
 [ImGui
 Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
 
-## Batteries included
+**Table of Contents**
+
+# What’s in the pack?
 
 Dear ImGui Bundle includes the following libraries, which are available
 in C++ *and* in Python:
@@ -208,54 +257,6 @@ alt="demo widgets command palette" /></p></td>
 
 A big thank you to their authors for their awesome work!
 
-## Easily port your code between python and C++
-
-The python bindings are autogenerated via an advanced generator (so that
-keeping them up to date is easy), and closely mirror the original C++
-API, with fully typed bindings.
-
-The original code documentation is meticulously kept inside the python
-stubs. See for example the documentation for
-[imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi)
-,
-[implot](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot.pyi),
-and [hello
-imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
-
-Thanks to this, code completion in your favorite python IDE works like a
-charm, and porting code between Python and C++ becomes easy.
-
-GPT can help you translate between C++ and Python: see [this
-conversation](https://chat.openai.com/share/1e61dfec-c2de-4c2a-8149-24926276bbd5)
-where GPT4 was used to translate code and summarize the differences
-between the C++ and Python APIs.
-
-## Support the project
-
-Dear ImGui Bundle is a free and open-source project, and its development
-and maintenance require considerable efforts.
-
-If you find it valuable for your work – especially in a commercial
-enterprise or a research setting – please consider supporting its
-development by [making a
-donation](https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA).
-Your contributions are greatly appreciated!
-
-For commercial users seeking tailored support or specific enhancements,
-please contact the author by email.
-
-### Contribute
-
-Quality contributions are always welcome! If you’re interested in
-contributing to the project, whether through code, ideas, or feedback,
-please refer to the [development
-documentation](https://pthom.github.io/imgui_bundle/devel_docs/index.html).
-
-### License
-
-Dear ImGui Bundle is licensed under the [MIT
-License](https://github.com/pthom/imgui_bundle/blob/main/LICENSE)
-
 # Build and install instructions
 
 ## Install for Python
@@ -343,17 +344,6 @@ online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 # Closing words
 
 ## Who is this project for
-
-As mentioned in the intro,
-
-[Dear ImGui Bundle](https://github.com/pthom/imgui_bundle) is a
-comprehensive bundle for [Dear ImGui](https://github.com/ocornut/imgui),
-featuring various powerful libraries from its ecosystem. Designed to
-facilitate the creation of applications in C++ and Python across
-Windows, macOS, Linux, iOS, Android, and emscripten (Web apps), it is
-ideal for application developers, and researchers eager to dive into GUI
-development with ease and efficiency. This bundle simplifies the
-process, allowing you to focus on the creative aspects of your projects.
 
 Dear ImGui Bundle aims to make applications prototyping fast and easy,
 in a multiplatform / multi-tooling context. The intent is to reduce the

@@ -435,6 +435,77 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<style>
+pre.pygments .hll { background-color: #ffffcc }
+pre.pygments { background: #f8f8f8; }
+pre.pygments .tok-c { color: #3D7B7B; font-style: italic } /* Comment */
+pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
+pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
+pre.pygments .tok-o { color: #666666 } /* Operator */
+pre.pygments .tok-ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+pre.pygments .tok-cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+pre.pygments .tok-cp { color: #9C6500 } /* Comment.Preproc */
+pre.pygments .tok-cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+pre.pygments .tok-c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+pre.pygments .tok-cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
+pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
+pre.pygments .tok-gr { color: #E40000 } /* Generic.Error */
+pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
+pre.pygments .tok-gi { color: #008400 } /* Generic.Inserted */
+pre.pygments .tok-go { color: #717171 } /* Generic.Output */
+pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
+pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
+pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
+pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
+pre.pygments .tok-m { color: #666666 } /* Literal.Number */
+pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
+pre.pygments .tok-na { color: #687822 } /* Name.Attribute */
+pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
+pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
+pre.pygments .tok-no { color: #880000 } /* Name.Constant */
+pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
+pre.pygments .tok-ni { color: #717171; font-weight: bold } /* Name.Entity */
+pre.pygments .tok-ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
+pre.pygments .tok-nl { color: #767600 } /* Name.Label */
+pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
+pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
+pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
+pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
+pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
+pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
+pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
+pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
+pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
+pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
+pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
+pre.pygments .tok-se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
+pre.pygments .tok-si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
+pre.pygments .tok-sr { color: #A45A77 } /* Literal.String.Regex */
+pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
+pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
+pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
+pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
+pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
+pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
+pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
 <script data-goatcounter="https://pthom-imgui-bundle.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
@@ -448,7 +519,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <p><span class="toc-root toc-current"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
-<li><a href="introduction.html">Introduction</a>
+<li><a href="introduction.html">What&#8217;s in the pack?</a>
 </li>
 <li><a href="install-instructions.html">Build and install instructions</a>
 </li>
@@ -464,6 +535,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="words_author.html">Closing words</a>
 </li>
+<li><a href="support_project.html">Support the project</a>
+</li>
 <li><a href="faq.html">FAQ</a>
 </li>
 <li><a href="devel_docs.html">Developer docs</a>
@@ -476,11 +549,98 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="sidebarblock">
 <div class="content">
-<div class="paragraph">
+<div class="paragraph text-center">
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png" alt="abc" width="150"></span></a></p>
 </div>
+<div class="paragraph text-center">
+<p><em>Click the bird for a<br>
+the interactive manual!</em></p>
+</div>
+<div class="quoteblock">
+<blockquote>
 <div class="paragraph">
-<p>Dear ImGui Bundle: easily create ImGui applications in Python and C&#43;&#43;. Batteries included!</p>
+<p>Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your first app in 3 lines, batteries included(*)!</p>
+</div>
+<div class="paragraph">
+<p><em>Whether you prefer Python or C&#43;&#43;, this pack has you covered, with the same ease in both languages.</em></p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/pthom/imgui_bundle/"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png" alt="sources" width="100"></span></a> <a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" alt="doc" width="81"></span></a> <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" alt="manual" width="137"></span></a></p>
+</div>
+<div class="paragraph">
+<p><strong>Key Features</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>A lot of widgets and libraries:</strong> All of Dear ImGui along with a suite of additional libraries for plotting, node editing, markdown rendering, and much more.</p>
+</li>
+<li>
+<p><strong>Always up-to-date:</strong> The libraries are always very close to the latest version of Dear ImGui. This is also true for Python developers, since the bindings are automatically generated.</p>
+</li>
+<li>
+<p><strong>Interactive Demos and Documentation:</strong> Quickly get started with our interactive manual and demos that showcase the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from the interactive manual!</p>
+</li>
+<li>
+<p><strong>Cross-platform:</strong> Works on Windows, Linux, macOS, iOS, Android, and WebAssembly!</p>
+</li>
+<li>
+<p><strong>Easy to use, yet very powerful:</strong> Start your first app in 3 lines. The Immediate Mode GUI (IMGUI) paradigm is simple and powerful, letting you focus on the creative aspects of your projects.</p>
+</li>
+<li>
+<p><strong>Fast:</strong> Rendering is done via OpenGL (or any other renderer you choose), through native code.</p>
+</li>
+<li>
+<p><strong>Beautifully documented Python bindings and stubs:</strong> The Python bindings stubs reflect the C++ API and documentation, serving as a reference and aiding autocompletion in your IDE. See for example the <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi">stubs for imgui</a>, and <a href="https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi">for hello_imgui</a> (which complete the <a href="https://pthom.github.io/hello_imgui/book/intro.html">hello_imgui manual</a>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a detailed look at each feature and more information, explore the sections listed in the Table of Contents.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Example code</strong>(*)</p>
+</div>
+<div class="paragraph">
+<p><em>A hello world example with Dear ImGui Bundle</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_hello.jpg" alt="demo hello"></span></p>
+</div>
+<div class="paragraph">
+<p><em>For Python developers</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span>
+<span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui_function</span><span class="tok-o">=</span><span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Hello, world!&quot;</span><span class="tok-p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>For C&#43;&#43; developers</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;immapp/immapp.h&quot;</span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui.h&quot;</span>
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-nf">main</span><span class="tok-p">()</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w">   </span><span class="tok-n">ImmApp</span><span class="tok-o">::</span><span class="tok-n">Run</span><span class="tok-p">([]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w">   </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello, world!&quot;</span><span class="tok-p">);</span><span class="tok-w">   </span><span class="tok-p">});</span><span class="tok-w">  </span><span class="tok-p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Interactive Manual</strong></p>
+</div>
+<div class="paragraph">
+<p>Click on the animated demonstration below to launch the fully interactive manual.</p>
+</div>
+<div id="truc" class="imageblock">
+<div class="content">
+<a class="image" href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif" alt="Demo" width="700"></a>
+</div>
+<div class="title">Figure 1. Dear ImGui Bundle interactive manual</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -489,22 +649,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Tip</div>
 </td>
 <td class="content">
-Click on the logo for a complete interactive demonstration!
+This demonstration is also an interactive manual, similar to the online <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><a href="https://github.com/pthom/imgui_bundle/"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png" alt="sources" width="100"></span></a> <a href="https://pthom.github.io/imgui_bundle"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" alt="doc" width="81"></span></a> <a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" alt="manual" width="137"></span></a></p>
-</div>
-</div>
+<p><strong>Table of Contents</strong></p>
 </div>
 </div>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="introduction.html">Introduction</a></p>
+<p><a href="introduction.html">What&#8217;s in the pack?</a></p>
 </li>
 <li>
 <p><a href="install-instructions.html">Build and install instructions</a></p>
@@ -528,6 +686,9 @@ Click on the logo for a complete interactive demonstration!
 <p><a href="words_author.html">Closing words</a></p>
 </li>
 <li>
+<p><a href="support_project.html">Support the project</a></p>
+</li>
+<li>
 <p><a href="faq.html">FAQ</a></p>
 </li>
 <li>
@@ -536,12 +697,12 @@ Click on the logo for a complete interactive demonstration!
 </ul>
 </div>
 <div class="paragraph nav-footer">
-<p>Next: <a href="introduction.html">Introduction</a> →</p>
+<p>Next: <a href="introduction.html">What&#8217;s in the pack?</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-15 08:43:35 +0100
+Last updated 2024-05-31 03:10:57 +0200
 </div>
 </div>
 </body>

@@ -1,4 +1,3 @@
-=== Batteries included
 include::_utils.adoc[]
 
 Dear ImGui Bundle includes the following libraries, which are available in {cpp} _and_ in Python:
