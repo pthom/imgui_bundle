@@ -1135,9 +1135,11 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassInputTextData =
         py::class_<HelloImGui::InputTextData>
             (m, "InputTextData", " `InputTextResizable`: displays a resizable text input widget\n\n The `InputTextResizable` widget allows you to create a text input field that can be resized by the user.\n It supports both single-line and multi-line text input.\n Note: the size of the widget is expressed in em units.\n **Usage example:**\n    C++:\n       ```cpp\n     // Somewhere in the application state\n       (static) InputTextData textInput(\"My text\", True, ImVec2(10, 3));\n     // In the GUI function\n       bool changed = InputTextResizable(\"Label\", &textInput);\n       ```\n    Python:\n       ```python\n       # Somewhere in the application state\n       text_input = hello_imgui.InputTextData(\"My text\", multiline=True, size_em=ImVec2(10, 3))\n       # In the GUI function\n       changed = hello_imgui.input_text_resizable(\"Label\", text_input)\n       ```")
-        .def_readwrite("text", &HelloImGui::InputTextData::Text, "")
-        .def_readwrite("multiline", &HelloImGui::InputTextData::Multiline, "")
-        .def_readwrite("size_em", &HelloImGui::InputTextData::SizeEm, "")
+        .def_readwrite("text", &HelloImGui::InputTextData::Text, "The text edited in the input field")
+        .def_readwrite("hint", &HelloImGui::InputTextData::Hint, " An optional hint displayed when the input field is empty\n (only works for single-line text input)")
+        .def_readwrite("multiline", &HelloImGui::InputTextData::Multiline, "If True, the input field is multi-line")
+        .def_readwrite("resizable", &HelloImGui::InputTextData::Resizable, "If True, the input field is resizable")
+        .def_readwrite("size_em", &HelloImGui::InputTextData::SizeEm, "The size of the input field in em units")
         .def(py::init<const std::string &, bool, ImVec2>(),
             py::arg("text") = "", py::arg("multiline") = false, py::arg("size_em") = ImVec2(0, 0))
         ;

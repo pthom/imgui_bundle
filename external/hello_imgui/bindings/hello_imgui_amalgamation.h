@@ -2403,8 +2403,20 @@ namespace HelloImGui
     //       ```
     struct InputTextData
     {
+        // The text edited in the input field
         std::string Text;
+
+        // An optional hint displayed when the input field is empty
+        // (only works for single-line text input)
+        std::string Hint;
+
+        // If true, the input field is multi-line
         bool Multiline = false;
+
+        // If true, the input field is resizable
+        bool Resizable = true;
+
+        // The size of the input field in em units
         ImVec2 SizeEm = ImVec2(0, 0);
 
         InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em) {}

@@ -3008,10 +3008,24 @@ class InputTextData:
     """
 
     # std::string Text;    /* original C++ signature */
+    # The text edited in the input field
     text: str
+
+    # std::string Hint;    /* original C++ signature */
+    # An optional hint displayed when the input field is empty
+    # (only works for single-line text input)
+    hint: str
+
     # bool Multiline = false;    /* original C++ signature */
+    # If True, the input field is multi-line
     multiline: bool = False
+
+    # bool Resizable = true;    /* original C++ signature */
+    # If True, the input field is resizable
+    resizable: bool = True
+
     # ImVec2 SizeEm = ImVec2(0, 0);    /* original C++ signature */
+    # The size of the input field in em units
     size_em: ImVec2 = ImVec2(0, 0)
 
     # InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em) {}    /* original C++ signature */
