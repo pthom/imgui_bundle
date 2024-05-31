@@ -27,3 +27,12 @@ void ResumeNodeEditorCanvas_Immapp()
     auto context_cast = (ax::NodeEditor::Detail::EditorContext *)context;
     context_cast->Resume();
 }
+
+void DisableUserInputThisFrame()
+{
+    namespace ed = ax::NodeEditor;
+    ed::Detail::EditorContext *nodeContext = (ed::Detail::EditorContext *)ed::GetCurrentEditor();
+    if (nodeContext)
+        nodeContext->DisableUserInputThisFrame();
+}
+
