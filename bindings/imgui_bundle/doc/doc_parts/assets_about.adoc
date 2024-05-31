@@ -1,10 +1,22 @@
 include::_utils.adoc[]
 
-[[quickstart_about_assets]]
-=== About assets
+[[assets_about]]
+== Assets
 
 HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
-The typical layout of an assets folder looks like this:
+
+**This folder stores**
+
+* All the resources (images, fonts, etc.) used by the application. Feel free to add any resources there!
+* The application settings (e.g. the app icon, the app settings for macOS and iOS, etc.)
+
+**Assets folder location**
+
+* **Python**: Place the assets folder in the same folder as the script
+* **{cpp}**: The assets folder should be placed in the same folder as the CMakeLists.txt for the application (the one calling `imgui_bundle_add_app`)
+
+
+**Typical layout of the assets folder**
 
 [source,bash]
 ----
@@ -17,8 +29,8 @@ assets/
     |    |         +-- Info.plist    # macOS and iOS app settings
     |    |                           # (or Info.ios.plist + Info.macos.plist)
     |    |
-    |    +-- android/                # Android app settings: any file placed here will be deployed
-    |    |   |-- AndroidManifest.xml # (Optional manifest, HelloImGui will generate one if missing)
+    |    +-- android/                # Android app settings: files here will be deployed
+    |    |   |-- AndroidManifest.xml # Optional manifest
     |    |   +-- res/
     |    |       +-- mipmap-xxxhdpi/ # Optional icons for different resolutions
     |    |           +-- ...         # Use Android Studio to generate them:
@@ -47,56 +59,39 @@ assets/
          +-- world.png                  # Add anything in the assets folder!
 ----
 
-You can change the assets folder:
+**If needed, change the assets folder location:**
 
-* during the execution, via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
-* at compile time, via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")` ({cpp} only)
+* **Python**: Call `hello_imgui.set_assets_folder()` at startup.
+* **{cpp}**: Call `HelloImGui::SetAssetsFolder` at startup. Or specify its location in CMake via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")`.
 
 
-
-==== Where to find the default assets
+**Where to find the default assets**
 
 You can link:https://traineq.org/ImGuiBundle/assets.zip[download the default assets as a zip file].
 
 Look at the folder link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] to see their content.
 
 
-==== Where to place your assets folder
+include::assets_demo.adoc[]
 
-**Python**
 
-Place it into your execution folder (_{cpp} and python_), or call `hello_imgui.set_assets_folder()` at startup.
 
-**{cpp}**
+=== App icon and app settings ({cpp} only)
 
-Place the assets/ folder besides your CMakeLists.txt, and it will be deployed into the execution folder automatically ().
+_The assets folder is deployed automatically during the build; so that they are available automatically whatever the platform._
 
-When using cmake, you can also specify a custom assets folder via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")`
-
-You can also call `HelloImGui::SetAssetsFolder` at startup.
 
 ==== App icon
-
 The app icon is defined by the file `icon.png` in the `assets/app_settings` folder. It should be square and at least 256x256 (but 512x512 is preferred).
 
-**{cpp}**
+`icon.png` will define the application icon as well as the window icon. It will be converted to the right format for each platform by CMake (via `imgui_bundle_add_app`).
 
-With {cpp}, `icon.png` will define the application icon as well as the window icon. It will be converted to the right format for each platform by CMake (via `imgui_bundle_add_app`).
-
-**Python**
-
-With Python, `icon.png` will define the **window** icon, on platforms that supports this (i.e. Windows and Linux, but not macOS).
-
-It will **not** define the application icon.
-
-If you wish to ship an application with a given icon, you should use a tool like `pyinstaller` to create a standalone executable. See the link:https://pyinstaller.readthedocs.io/en/stable/usage.html[pyinstaller documentation] for more information.
 
 See link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demo_packaging[this demo] for an example showing how to package a python application.
 
-
 ==== App settings
 
-**macOS and iOS, ({cpp} only)**
+**macOS and iOS**
 
 The app settings are defined by the file `Info.plist` in the `assets/app_settings/apple` folder.
 

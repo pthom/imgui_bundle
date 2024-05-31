@@ -1,8 +1,9 @@
-=== Install for Python
+[[install_python]]
+== Install for Python
 
 include::_utils.adoc[]
 
-==== Install from pypi
+=== Install from pypi
 
 [source, bash]
 ----
@@ -13,7 +14,7 @@ pip install opencv-contrib-python # <1>
 
 Note: under windows, you might need to install https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022[msvc redist].
 
-==== Install from source:
+=== Install from source:
 [source, bash]
 ----
 git clone https://github.com/pthom/imgui_bundle.git
@@ -25,7 +26,7 @@ pip install opencv-contrib-python
 <1> Since there are lots of submodules, this might take a few minutes
 <2> The build process might take up to 5 minutes
 
-==== Run the python demo
+=== Run the python demo
 
 Simply run `demo_imgui_bundle`.
 

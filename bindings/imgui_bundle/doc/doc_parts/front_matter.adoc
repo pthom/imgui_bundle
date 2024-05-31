@@ -21,14 +21,14 @@ ifndef::env_demo_markdown[]
 link:{url-demo-imgui-bundle}[image:{url-logo}["abc", 150]]
 [.text-center]
 
-_Click the bird for a +
+_Click the bird for +
 the interactive manual!_
 
 endif::[]
 
-> Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your first app in 3 lines, batteries included(*)!
+> Dear ImGui Bundle: an extensive set of ready-to-use widgets and libraries, based on ImGui. Start your first app in 5 lines of code, or less.
 >
-> _Whether you prefer Python or {cpp}, this pack has you covered, with the same ease in both languages._
+> Whether you prefer Python or {cpp}, this pack has you covered, with the same ease in both languages.
 
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
@@ -56,7 +56,7 @@ For a detailed look at each feature and more information, explore the sections l
 
 ****
 
-**Example code**(*)
+**Example code**
 
 _A hello world example with Dear ImGui Bundle_
 
@@ -85,6 +85,6 @@ Click on the animated demonstration below to launch the fully interactive manual
 [#truc,link={url-demo-imgui-bundle}]
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
-TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
-
+ifdef::env_gh_pages[]
 **Table of Contents**
+endif::[]

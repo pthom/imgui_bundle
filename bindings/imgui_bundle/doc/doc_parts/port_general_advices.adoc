@@ -1,5 +1,4 @@
-=== General advices
-
+==== General advices
 
 
 ImGui is a {cpp} library that was ported to Python. In order to work with it, you will often refer to its https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[manual], which shows example code in {cpp}.
@@ -15,7 +14,7 @@ In order to translate from {cpp} to Python:
    Normally, this variable should be accessed via `demo_radio_button.value`, however the first line of the function adds a synonym named static for more clarity.
    Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.
 
-==== Example:
+**Example**
 
 {cpp}
 [source, cpp]

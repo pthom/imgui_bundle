@@ -1,4 +1,4 @@
-= Dear ImGui Bundle documentation
+= Dear ImGui Bundle
 :toc: left
 :source-highlighter: pygments
 :docinfo: shared
@@ -124,13 +124,13 @@ link:https://github.com/pthom/imgui_bundle/actions/workflows/android.yml[image:{
 link:{url-demo-imgui-bundle}[image:{url-logo}["abc", 150]]
 [.text-center]
 
-_Click the bird for a +
+_Click the bird for +
 the interactive manual!_
 
 
-> Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your first app in 3 lines, batteries included(*)!
+> Dear ImGui Bundle: an extensive set of ready-to-use widgets and libraries, based on ImGui. Start your first app in 5 lines of code, or less.
 >
-> _Whether you prefer Python or {cpp}, this pack has you covered, with the same ease in both languages._
+> Whether you prefer Python or {cpp}, this pack has you covered, with the same ease in both languages.
 
 
 {btn-sources} {btn-doc} {btn-interactive-manual}
@@ -158,7 +158,7 @@ For a detailed look at each feature and more information, explore the sections l
 
 ****
 
-**Example code**(*)
+**Example code**
 
 _A hello world example with Dear ImGui Bundle_
 
@@ -187,9 +187,6 @@ Click on the animated demonstration below to launch the fully interactive manual
 [#truc,link={url-demo-imgui-bundle}]
 image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
-TIP: This demonstration is also an interactive manual, similar to the online {url-imgui-manual}[ImGui Manual]
-
-**Table of Contents**
 
 [[introduction]]
 == What's in the pack?
@@ -240,7 +237,7 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 
 [cols="30,30" grid=none frame=none width=75%]
 |===
-|https://github.com/ocornut/imgui.git[Dear ImGui] : Bloat-free Graphical User interface for {cpp} with minimal dependencies
+|https://github.com/ocornut/imgui.git[Dear ImGui] : Bloat-free Graphical User interface with minimal dependencies
 |image:{url-demo-images}/demo_widgets_imgui.jpg[width=200]
 
 |https://github.com/ocornut/imgui_test_engine[ImGui Test Engine]: Dear ImGui Tests & Automation Engine
@@ -304,10 +301,8 @@ image:{url-demo-images}/demo_immvision_process_2.jpg[width=200]
 
 A big thank you to their authors for their awesome work!
 
-[[install-instructions]]
-== Build and install instructions
-
-=== Install for Python
+[[install_python]]
+== Install for Python
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -330,7 +325,7 @@ A big thank you to their authors for their awesome work!
 
 // :url-demo-images: doc_images/
 
-==== Install from pypi
+=== Install from pypi
 
 [source, bash]
 ----
@@ -341,7 +336,7 @@ pip install opencv-contrib-python # <1>
 
 Note: under windows, you might need to install https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022[msvc redist].
 
-==== Install from source:
+=== Install from source:
 [source, bash]
 ----
 git clone https://github.com/pthom/imgui_bundle.git
@@ -353,7 +348,7 @@ pip install opencv-contrib-python
 <1> Since there are lots of submodules, this might take a few minutes
 <2> The build process might take up to 5 minutes
 
-==== Run the python demo
+=== Run the python demo
 
 Simply run `demo_imgui_bundle`.
 
@@ -362,7 +357,9 @@ The source for the demos can be found inside link:{url-bindings-bundle}/demos_py
 
 TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
 
-=== Install for {cpp}
+[[install_cpp]]
+== Install for {cpp}
+
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -385,13 +382,13 @@ TIP: Consider `demo_imgui_bundle` as an always available manual for Dear ImGui B
 
 // :url-demo-images: doc_images/
 
-==== Integrate Dear ImGui Bundle in your own project in 5 minutes
+=== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
 The easiest way to use Dear ImGui Bundle in an external project is to use the template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template].
 
 This template includes everything you need to set up your own project.
 
-==== Build from source
+=== Build from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -419,7 +416,7 @@ cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 ----
 ****
 
-==== Run the {cpp} demo
+=== Run the {cpp} demo
 
 If you built ImGuiBundle from source, Simply run `build/bin/demo_imgui_bundle`.
 
@@ -478,95 +475,12 @@ Then study the examples below.
 
 // :url-demo-images: doc_images/
 
-=== Hello, World
+=== Hello, World in Python
+
 .Hello World
 image::{url-demo-images}/demo_hello.jpg[]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
 
-==== Hello, World in {cpp}
-
-_link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]_
-[source,cpp]
-----
-#include "immapp/immapp.h"
-#include "imgui.h"
-
-void Gui()
-{
-    ImGui::Text("Hello, world!");
-}
-
-int main(int, char **)
-{
-    ImmApp::Run(
-        Gui,
-        "Hello!",
-        true // window_size_auto
-        // Uncomment the next line to restore window position and size from previous run
-        // , true // windowRestorePreviousGeometry
-    );
-
-    return 0;
-}
-----
-
-===== Build with cmake, using `imgui_bundle_add_app`
-
-====
-`imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
-
-* automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
-* embed the assets (for desktop, mobile, and emscripten apps)
-* add an icon for your app (on desktop and mobile platforms)
-* perform additional customization (app icon and name on mobile platforms, etc)
-
-====
-
-
-
-===== Option 1: using imgui_bundle as a submodule
-
-First, add imgui_bundle as a submodule:
-[source, bash]
-----
-git submodule add https://github.com/pthom/imgui_bundle.git
-cd imgui_bundle
-git submodule update --init --recursive
-----
-
-Then, write a simple CMakeLists file where you add imgui_bundle, then call `imgui_bundle_add_app` to create your application.
-[source,cmake]
-----
-cmake_minimum_required(VERSION 3.20)
-project(imgui_bundle_hello)
-set(CMAKE_CXX_STANDARD 17)
-
-add_subdirectory(imgui_bundle)
-imgui_bundle_add_app(hello_world hello_world.cpp)
-----
-
-
-===== Option 2 : Fetch imgui_bundle during compilation
-
-[source,cmake]
-----
-cmake_minimum_required(VERSION 3.12)
-project(helloworld_with_helloimgui)
-set(CMAKE_CXX_STANDARD 17)
-
-include(FetchContent)
-Set(FETCHCONTENT_QUIET FALSE)
-FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
-FetchContent_MakeAvailable(imgui_bundle)
-# set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
-
-# Build your app
-imgui_bundle_add_app(hello_world hello_world.cpp)
-----
-
-NOTE: This cmake file is part of a quick start template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template]. Refer to it if you wish to customize the application icon.
-
-==== Hello, World in Python
 
 link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
 
@@ -609,696 +523,95 @@ immapp.run(
 
 // :url-demo-images: doc_images/
 
-[[quickstart_about_assets]]
-=== About assets
+=== Hello, World in {cpp}
 
-HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
-The typical layout of an assets folder looks like this:
+.Hello World
+image::{url-demo-images}/demo_hello.jpg[]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
 
-[source,bash]
+
+_link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]_
+[source,cpp]
 ----
-assets/
-    +-- app_settings/                # Application settings
-    |    +-- icon.png                # This will be the app icon, it should be square
-    |    |                           # and at least 256x256. It will  be converted
-    |    |                           # to the right format, for each platform (except Android)
-    |    +-- apple/
-    |    |         +-- Info.plist    # macOS and iOS app settings
-    |    |                           # (or Info.ios.plist + Info.macos.plist)
-    |    |
-    |    +-- android/                # Android app settings: any file placed here will be deployed
-    |    |   |-- AndroidManifest.xml # (Optional manifest, HelloImGui will generate one if missing)
-    |    |   +-- res/
-    |    |       +-- mipmap-xxxhdpi/ # Optional icons for different resolutions
-    |    |           +-- ...         # Use Android Studio to generate them:
-    |    |                           # right click on res/ => New > Image Asset
-    |    +-- emscripten/
-    |      |-- shell.emscripten.html # Emscripten shell file
-    |      |                         #   (this file will be cmake "configured"
-    |      |                         #    to add the name and favicon)
-    |      +-- custom.js             # Any custom file here will be deployed
-    |                                #   in the emscripten build folder
-
-    +-- fonts/
-    |    +-- DroidSans.ttf            # Default fonts used by HelloImGui to
-    |    +-- fontawesome-webfont.ttf  # improve text rendering (esp. on High DPI)
-    |    |                            # if absent, a default LowRes font is used.
-    |    |
-    |    +-- Roboto/                  # Optional: fonts for markdown
-    |         +-- LICENSE.txt
-    |         +-- Roboto-Bold.ttf
-    |         +-- Roboto-BoldItalic.ttf
-    |         +-- Roboto-Regular.ttf
-    |         +-- Roboto-RegularItalic.ttf
-    |         +-- SourceCodePro-Regular.ttf
-    +-- images/
-         +-- markdown_broken_image.png  # Optional: used for markdown
-         +-- world.png                  # Add anything in the assets folder!
-----
-
-You can change the assets folder:
-
-* during the execution, via `HelloImGui::SetAssetsFolder` ({cpp}) or `hello_imgui.set_assets_folder` (python).
-* at compile time, via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")` ({cpp} only)
-
-
-
-==== Where to find the default assets
-
-You can link:https://traineq.org/ImGuiBundle/assets.zip[download the default assets as a zip file].
-
-Look at the folder link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] to see their content.
-
-
-==== Where to place your assets folder
-
-**Python**
-
-Place it into your execution folder (_{cpp} and python_), or call `hello_imgui.set_assets_folder()` at startup.
-
-**{cpp}**
-
-Place the assets/ folder besides your CMakeLists.txt, and it will be deployed into the execution folder automatically ().
-
-When using cmake, you can also specify a custom assets folder via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")`
-
-You can also call `HelloImGui::SetAssetsFolder` at startup.
-
-==== App icon
-
-The app icon is defined by the file `icon.png` in the `assets/app_settings` folder. It should be square and at least 256x256 (but 512x512 is preferred).
-
-**{cpp}**
-
-With {cpp}, `icon.png` will define the application icon as well as the window icon. It will be converted to the right format for each platform by CMake (via `imgui_bundle_add_app`).
-
-**Python**
-
-With Python, `icon.png` will define the **window** icon, on platforms that supports this (i.e. Windows and Linux, but not macOS).
-
-It will **not** define the application icon.
-
-If you wish to ship an application with a given icon, you should use a tool like `pyinstaller` to create a standalone executable. See the link:https://pyinstaller.readthedocs.io/en/stable/usage.html[pyinstaller documentation] for more information.
-
-See link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demo_packaging[this demo] for an example showing how to package a python application.
-
-
-==== App settings
-
-**macOS and iOS, ({cpp} only)**
-
-The app settings are defined by the file `Info.plist` in the `assets/app_settings/apple` folder.
-
-You can copy and edit this link:{url-bundle-doc-tree}/bindings/imgui_bundle/assets/app_settings/apple/Info.plist[example] by adding your own settings (replace `${HELLO_IMGUI_BUNDLE_XXX}` by your own values).
-
-You can also specify different settings for macOS and iOS via `Info.macos.plist` and `Info.ios.plist`
-
-:doc_branch: main
-:url-bundle: https://github.com/pthom/imgui_bundle/
-:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
-:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
-:url-bundle-pages: https://pthom.github.io/imgui_bundle
-:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
-:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
-:url-imgui: https://github.com/ocornut/imgui/
-:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
-
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
-
-:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
-
-:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
-
-// :url-demo-images: doc_images/
-
-=== Demo using assets & add-ons
-
-.Demo assets and add-ons usage
-image::{url-demo-images}/demo_assets_addons.jpg[width=400]
-link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html[Run this demo in your browser]
-
-This demonstration showcases how to:
-
-* Load and use assets (fonts, images, icons, etc.)
-* Use ImPlot to display various types of plots
-* Use markdown to display formatted messages
-
-
-This demonstration source code is heavily documented and should be self-explanatory.
-
-
-.Click to see its source code in {cpp}
-
-[%collapsible]
-====
-(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[view on GitHub])
-
-[source, cpp]
-----
-#include "hello_imgui/hello_imgui.h"
-#include "hello_imgui/icons_font_awesome_4.h"
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
-#ifdef IMGUI_BUNDLE_WITH_IMPLOT
-#include "implot/implot.h"
-#endif
-#include "immapp/code_utils.h"
-#include "demo_utils/api_demos.h"
-#include <vector>
-#include <map>
+#include "imgui.h"
 
-
-// This function displays the help messages that are displayed in this demo application
-void ShowDoc(const std::string& whichDoc);
-
-
-// Your global application state, that will be edited during the execution
-struct AppState
+void Gui()
 {
-    // you can edit the ImPlot pie chart values
-    std::vector<float> PlotData = {0.15f, 0.30f, 0.2f, 0.05f};
-
-    // You can edit a demo markdown string
-    char MarkdownInput[4000] = "*Welcome to the interactive markdown demo!* Try writing some markdown content here.";
-
-    //
-    // Note about AppState:
-    // Inside ImGui demo code, you will often see static variables, such as in this example
-    // ```cpp
-    //     static int value = 10;
-    //     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
-    // ```
-    // In this example, `value` is a static variable whose state is preserved:
-    // it merely acts as a global variable, whose scope is limited to this function.
-    // Global variables should be avoided, and storing the Application State like this is preferable in production code.
-    //
-};
-
-
-// A demo showcasing the assets usage in HelloImGui and ImmApp
-void DemoAssets(AppState& appState)
-{
-    ImGuiMd::Render("# Demo Assets");
-    ImGui::Text("Here are some icons from Font Awesome: ");
-    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
-    ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
-
-
-    ImGui::Text("Here is an image that was loaded from the assets: ");
-    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
-
-    // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    //     Below, imageSize is equivalent to the size of 3 lines of text
-    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
-    HelloImGui::ImageFromAsset("images/world.png", imageSize);
-
-    ImGuiMd::Render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
-
-    ShowDoc("AssetsDoc");
+    ImGui::Text("Hello, world!");
 }
 
-
-// A demo about the usage of the markdown renderer
-void DemoMarkdown(AppState& appState)
+int main(int, char **)
 {
-    std::string markdownDemo = R"(
-        # Demo markdown usage
-
-        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
-
-        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
-
-        2. **Pythonic Wisdom**:
-            > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
-            ```python
-            def explain(thing):
-                return "It's just a " + thing + ". Nothing fancy!"
-            ```
-        )";
-    ImGuiMd::RenderUnindented(markdownDemo);
-
-    // Interactive demo
-    ImGui::Separator();
-    ImGuiMd::Render("*Try it yourself*");
-    ImGui::SameLine(HelloImGui::EmSize(30.f));
-    if (ImGui::SmallButton("Edit the fortune markdown"))
-        strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
-    ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
-    ImGuiMd::RenderUnindented(appState.MarkdownInput);
-    ImGui::Separator();
-
-    ShowDoc("MarkdownDoc");
-}
-
-
-#ifdef IMGUI_BUNDLE_WITH_IMPLOT
-// A demo showcasing the usage of ImPlot
-void DemoPlot(AppState& appState)
-{
-    ImGuiMd::Render("# Demo ImPlot");
-
-    static const char* data_labels[]    = {"Frogs", "Hogs", "Dogs", "Logs"};
-
-    ImGui::Text("Edit Pie Chart values");
-    ImGui::SetNextItemWidth(250);
-    ImGui::DragFloat4("Pie Data", appState.PlotData.data(), 0.01f, 0, 1);
-
-    // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    //     Below, plotSize is equivalent to the size of 1 lines of text
-    ImVec2 plotSize = ImmApp::EmToVec2(15.f, 15.f);
-
-    if (ImPlot::BeginPlot("Pie Chart", plotSize))
-    {
-        ImPlot::SetupAxes("", "", ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-        ImPlot::PlotPieChart(
-            data_labels,
-            appState.PlotData.data(), appState.PlotData.size(), // data and count
-            0.5, 0.5, // pie center position in the plot(x, y). Here, it is centered
-            0.35,      // pie radius relative to plotSize
-            "%.2f",   // fmt
-            90        // angle
-            );
-            ImPlot::EndPlot();
-    }
-
-    ShowDoc("PlotDoc");
-}
-#else
-void DemoPlot(AppState& appState) {}
-#endif
-
-
-// Our main function
-int main(int, char**)
-{
-    // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
-    ChdirBesideAssetsFolder();
-
-    AppState appState;         // Our global appState
-
-    // This is our GUI function:
-    //     it will display the widgets
-    //     it captures the appState, since it can modify it
-    auto gui = [&appState]()
-    {
-        DemoAssets(appState);
-        ImGui::NewLine();
-        DemoMarkdown(appState);
-        ImGui::NewLine();
-        DemoPlot(appState);
-    };
-
-    // Then, we start our application:
-    //     First, we set some RunnerParams, with simple settings
-    HelloImGui::SimpleRunnerParams runnerParams;
-    runnerParams.windowSize = {1000, 1000};
-    //     Here we set our GUI function
-    runnerParams.guiFunction = gui;
-    //     Then, we need to activate two addons: ImPlot and Markdown
-    ImmApp::AddOnsParams addons;
-    addons.withImplot = true;
-    addons.withMarkdown = true;
-    //     And we are ready to go!
-    ImmApp::Run(runnerParams, addons);
+    ImmApp::Run(
+        Gui,
+        "Hello!",
+        true // window_size_auto
+        // Uncomment the next line to restore window position and size from previous run
+        // , true // windowRestorePreviousGeometry
+    );
 
     return 0;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-// End of demo code
-///////////////////////////////////////////////////////////////////////////////
-
-
-//
-// Note: the code below only displays the help messages
-//
-
-std::string GetDoc(const std::string& whichDoc)
-{
-    static std::map<std::string, std::string> docs =
-        {
-            {
-                "AssetsDoc",
-                R"(
-                    The icons and image were shown via this code:
-
-                    C++
-                    ```cpp
-                    ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
-                    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
-                    HelloImGui::ImageFromAsset("images/world.png", imageSize);
-                    ```
-
-                    Python
-                    ```python
-                    imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
-                    image_size = hello_imgui.em_to_vec2(3.0, 3.0)
-                    hello_imgui.image_from_asset("images/world.png", image_size)
-                    ```
-
-                    *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
-                )"
-            },
-            {
-                "MarkdownDoc",
-                R"(
-                This markdown string was rendered by calling either:
-
-                C++
-                ```cpp
-                ImGuiMd::Render(markdown_string);            // render a markdown string
-                ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
-                ```
-
-                Python
-                ```python
-                imgui_md.render(markdown_string);            # render a markdown string
-                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
-                ```
-
-                This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
-                It supports the most common markdown features: emphasis, link, code blocks, etc.
-                )"
-            },
-            {
-                "PlotDoc",
-                R"(
-                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
-
-                Note: in order to use ImPlot, you need to "activate" this add-on, like this:
-
-                C++
-                ```cpp
-                ImmApp::AddOnsParams addons { .withImplot = true };
-                ImmApp::Run(runnerParams, addons);
-                ```
-
-                Python:
-                ```python
-                addons = immapp.AddOnsParams(with_implot=True)
-                immapp.run(runner_params, addons);
-                ```
-                )"
-            },
-        };
-
-    return docs.at(whichDoc);
-}
-
-
-void ShowDoc(const std::string& whichDoc)
-{
-    static std::map<std::string, bool> is_doc_visible;
-    if (is_doc_visible.find(whichDoc) == is_doc_visible.end())
-        is_doc_visible[whichDoc] = false;
-
-    ImGui::PushID(whichDoc.c_str());
-    ImGui::Checkbox("More info", &is_doc_visible[whichDoc]);
-
-    if (is_doc_visible[whichDoc])
-    {
-        ImGuiMd::RenderUnindented(GetDoc(whichDoc));
-        ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
-        ImGui::Separator();
-    }
-    ImGui::PopID();
-}
 ----
 
-====
-
-
-.Click to see its source code in Python
+.{cpp} build instructions (click to expand)
 [%collapsible]
 ====
-(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[view on GitHub])
+**Build with cmake, using `imgui_bundle_add_app`**
 
-[source, python]
+`imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
+
+* automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
+* embed the assets (for desktop, mobile, and emscripten apps)
+* add an icon for your app (on desktop and mobile platforms)
+* perform additional customization (app icon and name on mobile platforms, etc)
+
+**Option 1: using imgui_bundle as a submodule**
+
+First, add imgui_bundle as a submodule:
+[source, bash]
 ----
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
-from imgui_bundle.demos_python import demo_utils
-
-import numpy as np
-from typing import Dict, List
-from dataclasses import dataclass, field
-
-
-def show_doc(which_doc: str):
-    """This function displays the help messages that are displayed in this demo application
-    (implemented later in this file)"""
-    ...
-
-
-@dataclass
-class AppState:
-    """Your global application state, that will be edited during the execution."""
-
-    # you can edit the ImPlot pie chart values
-    plot_data: List[float] = field(default_factory=lambda: [0.15, 0.30, 0.2, 0.05])
-
-    # You can edit a demo markdown string
-    markdown_input: str = "*Welcome to the interactive markdown demo!* Try writing some markdown content here."
-
-    #
-    # Note about AppState:
-    # Inside ImGui demo code, you will often see static variables, such as in this example
-    #     static int value = 10;
-    #     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
-    # In this example, `value` is a static variable whose state is preserved:
-    # it merely acts as a global variable, whose scope is limited to this function.
-    # Global variables should be avoided, and storing the Application State like this is preferable in production code.
-
-
-def demo_assets(app_state: AppState):
-    """A demo showcasing the assets usage in HelloImGui and ImmApp"""
-    imgui_md.render("# Demo Assets")
-
-    imgui.text("Here are some icons from Font Awesome: ")
-    imgui.same_line()
-    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
-    imgui.text(
-        icons_fontawesome.ICON_FA_INFO
-        + " "
-        + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE
-        + " "
-        + icons_fontawesome.ICON_FA_SAVE
-    )
-
-    imgui.text("Here is an image that was loaded from the assets: ")
-    imgui.same_line()
-    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
-
-    # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    # Below, image_size is equivalent to the size of 3 lines of text
-    image_size = hello_imgui.em_to_vec2(3.0, 3.0)
-    hello_imgui.image_from_asset("images/world.png", image_size)
-
-    imgui_md.render(
-        "**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**"
-    )
-    show_doc("AssetsDoc")
-
-
-def demo_markdown(app_state: AppState):
-    """A demo about the usage of the markdown renderer"""
-    markdown_demo = """
-        # Demo markdown usage
-
-        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
-
-        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
-
-        2. **Pythonic Wisdom**:
-            > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
-            ```python
-            def explain(thing):
-                return "It's just a " + thing + ". Nothing fancy!"
-            ```
-    """
-    imgui_md.render_unindented(markdown_demo)
-
-    # Interactive demo
-    imgui.separator()
-    imgui_md.render("*Try it yourself*")
-    imgui.same_line(hello_imgui.em_size(30.0))
-    if imgui.small_button("Edit the fortune markdown"):
-        app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
-    _, app_state.markdown_input = imgui.input_text_multiline(
-        "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
-    )
-    imgui_md.render_unindented(app_state.markdown_input)
-    imgui.separator()
-
-    show_doc("MarkdownDoc")
-
-
-def demo_plot(app_state: AppState):
-    """A demo showcasing the usage of ImPlot"""
-    imgui_md.render("# Demo ImPlot")
-
-    data_labels = ["Frogs", "Hogs", "Dogs", "Logs"]
-
-    imgui.text("Edit Pie Chart values")
-    imgui.set_next_item_width(250)
-    _, app_state.plot_data = imgui.drag_float4(
-        "Pie Data", app_state.plot_data, 0.01, 0, 1
-    )
-
-    # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
-    # Below, plot_size is equivalent to the size of 15 lines of text
-    plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
-
-    if implot.begin_plot("Pie Chart", plot_size):
-        implot.setup_axes(
-            "",
-            "",
-            implot.AxisFlags_.no_decorations.value,
-            implot.AxisFlags_.no_decorations.value,
-        )
-        implot.plot_pie_chart(
-            data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
-        )
-        implot.end_plot()
-
-    show_doc("PlotDoc")
-
-
-def main():
-    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
-    app_state = AppState()  # Initialize our global appState
-
-    # This is our GUI function:
-    # it will display the widgets, and it can modify the app_state
-    def gui():
-        demo_assets(app_state)
-        imgui.new_line()
-        demo_markdown(app_state)
-        imgui.new_line()
-        demo_plot(app_state)
-
-    # Then, we start our application:
-    #     First, we set some RunnerParams, with simple settings
-    runner_params = hello_imgui.SimpleRunnerParams()
-    runner_params.window_size = (1000, 1000)
-    runner_params.gui_function = gui
-    #     We need to activate two addons: ImPlot and Markdown
-    addons = immapp.AddOnsParams()
-    addons.with_implot = True
-    addons.with_markdown = True
-    #     And we are ready to go!
-    immapp.run(runner_params, addons)
-
-
-# ///////////////////////////////////////////////////////////////////////////////
-# // End of demo code
-# ///////////////////////////////////////////////////////////////////////////////
-
-
-# //
-# // Note: the code below only displays the help messages
-# //
-
-
-def get_doc(which_doc: str) -> str:
-    """Return the associated documentation string based on the key."""
-
-    docs: Dict[str, str] = {
-        "AssetsDoc": """
-            The icons and image were shown via this code:
-
-            C++
-            ```cpp
-            ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
-            ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
-            HelloImGui::ImageFromAsset("images/world.png", imageSize);
-            ```
-
-            Python
-            ```python
-            imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
-            image_size = hello_imgui.em_to_vec2(3.0, 3.0)
-            hello_imgui.image_from_asset("images/world.png", image_size)
-            ```
-
-            *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
-        """,
-        "MarkdownDoc": """
-            This markdown string was rendered by calling either:
-
-            C++
-            ```cpp
-            ImGuiMd::Render(markdown_string);            // render a markdown string
-            ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
-            ```
-
-            Python
-            ```python
-            imgui_md.render(markdown_string);            # render a markdown string
-            imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
-            ```
-
-            This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
-            It supports the most common markdown features: emphasis, link, code blocks, etc.
-        """,
-        "PlotDoc": """
-            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
-
-            Note: in order to use ImPlot, you need to "activate" this add-on, like this:
-
-            C++
-            ```cpp
-            ImmApp::AddOnsParams addons { .withImplot = true };
-            ImmApp::Run(runnerParams, addons);
-            ```
-
-            Python:
-            ```python
-            addons = immapp.AddOnsParams(with_implot=True)
-            immapp.run(runner_params, addons);
-            ```
-        """,
-    }
-
-    return docs[which_doc]
-
-
-@immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
-def show_doc(which_doc):  # noqa: F811
-    # Access the 'static' variable
-    is_doc_visible = show_doc.is_doc_visible
-
-    # Check if the doc visibility entry exists, if not, add it
-    if which_doc not in is_doc_visible:
-        is_doc_visible[which_doc] = False
-
-    imgui.push_id(which_doc)
-    _, is_doc_visible[which_doc] = imgui.checkbox(
-        "More info", is_doc_visible[which_doc]
-    )
-
-    if is_doc_visible[which_doc]:
-        # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
-        # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
-        imgui_md.render_unindented(get_doc(which_doc))
-        imgui.dummy(
-            hello_imgui.em_to_vec2(1.0, 6.0)
-        )  # Assumes 'hello_imgui' is available in your environment
-        imgui.separator()
-
-    imgui.pop_id()
-
-
-if __name__ == "__main__":
-    main()
+git submodule add https://github.com/pthom/imgui_bundle.git
+cd imgui_bundle
+git submodule update --init --recursive
 ----
+
+Then, write a simple CMakeLists file where you add imgui_bundle, then call `imgui_bundle_add_app` to create your application.
+[source,cmake]
+----
+cmake_minimum_required(VERSION 3.20)
+project(imgui_bundle_hello)
+set(CMAKE_CXX_STANDARD 17)
+
+add_subdirectory(imgui_bundle)
+imgui_bundle_add_app(hello_world hello_world.cpp)
+----
+
+
+**Option 2 : Fetch imgui_bundle during compilation**
+
+[source,cmake]
+----
+cmake_minimum_required(VERSION 3.12)
+project(helloworld_with_helloimgui)
+set(CMAKE_CXX_STANDARD 17)
+
+include(FetchContent)
+Set(FETCHCONTENT_QUIET FALSE)
+FetchContent_Declare(imgui_bundle GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git GIT_TAG main)
+FetchContent_MakeAvailable(imgui_bundle)
+# set(IMMVISION_FETCH_OPENCV ON) # optional, if you wish to build ImmVision
+
+# Build your app
+imgui_bundle_add_app(hello_world hello_world.cpp)
+----
+
+NOTE: This cmake file is part of a quick start template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template]. Refer to it if you wish to customize the application icon.
+
+
 ====
+
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -3243,39 +2556,6 @@ if __name__ == "__main__":
 ----
 
 ====
-
-:doc_branch: main
-:url-bundle: https://github.com/pthom/imgui_bundle/
-:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
-:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
-:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
-:url-bundle-pages: https://pthom.github.io/imgui_bundle
-:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
-:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
-:url-imgui: https://github.com/ocornut/imgui/
-:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
-:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
-:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
-
-:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
-
-:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
-
-:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
-
-// :url-demo-images: doc_images/
-
-=== Multiplatform C++ applications
-
-When developing C++ applications, Hello ImGui and Dear ImGui Bundle offer an excellent support for multiplatform applications.
-
-See this tutorial video for Hello ImGui:
-
-.10' demo video showcasing multi-platform support and rapid
-video::dArP4lBnOr8[youtube]
-
-
-TIP: The principle with Dear ImGui Bundle is the same, just use the dedicated Dear ImGui Bundle link:https://github.com/pthom/imgui_bundle_template[project template], and use `imgui_bundle_add_app`
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -5551,6 +4831,711 @@ image::{url-demo-images}/demo_node_editor.jpg[width="400"]
 .ImGuizmo in action
 image::{url-demo-images}/demo_gizmo.jpg[width="400"]
 
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
+// :url-demo-images: doc_images/
+
+[[assets_about]]
+== Assets
+
+HelloImGui and ImmApp applications rely on the presence of an `assets` folder.
+
+**This folder stores**
+
+* All the resources (images, fonts, etc.) used by the application. Feel free to add any resources there!
+* The application settings (e.g. the app icon, the app settings for macOS and iOS, etc.)
+
+**Assets folder location**
+
+* **Python**: Place the assets folder in the same folder as the script
+* **{cpp}**: The assets folder should be placed in the same folder as the CMakeLists.txt for the application (the one calling `imgui_bundle_add_app`)
+
+
+**Typical layout of the assets folder**
+
+[source,bash]
+----
+assets/
+    +-- app_settings/                # Application settings
+    |    +-- icon.png                # This will be the app icon, it should be square
+    |    |                           # and at least 256x256. It will  be converted
+    |    |                           # to the right format, for each platform (except Android)
+    |    +-- apple/
+    |    |         +-- Info.plist    # macOS and iOS app settings
+    |    |                           # (or Info.ios.plist + Info.macos.plist)
+    |    |
+    |    +-- android/                # Android app settings: files here will be deployed
+    |    |   |-- AndroidManifest.xml # Optional manifest
+    |    |   +-- res/
+    |    |       +-- mipmap-xxxhdpi/ # Optional icons for different resolutions
+    |    |           +-- ...         # Use Android Studio to generate them:
+    |    |                           # right click on res/ => New > Image Asset
+    |    +-- emscripten/
+    |      |-- shell.emscripten.html # Emscripten shell file
+    |      |                         #   (this file will be cmake "configured"
+    |      |                         #    to add the name and favicon)
+    |      +-- custom.js             # Any custom file here will be deployed
+    |                                #   in the emscripten build folder
+
+    +-- fonts/
+    |    +-- DroidSans.ttf            # Default fonts used by HelloImGui to
+    |    +-- fontawesome-webfont.ttf  # improve text rendering (esp. on High DPI)
+    |    |                            # if absent, a default LowRes font is used.
+    |    |
+    |    +-- Roboto/                  # Optional: fonts for markdown
+    |         +-- LICENSE.txt
+    |         +-- Roboto-Bold.ttf
+    |         +-- Roboto-BoldItalic.ttf
+    |         +-- Roboto-Regular.ttf
+    |         +-- Roboto-RegularItalic.ttf
+    |         +-- SourceCodePro-Regular.ttf
+    +-- images/
+         +-- markdown_broken_image.png  # Optional: used for markdown
+         +-- world.png                  # Add anything in the assets folder!
+----
+
+**If needed, change the assets folder location:**
+
+* **Python**: Call `hello_imgui.set_assets_folder()` at startup.
+* **{cpp}**: Call `HelloImGui::SetAssetsFolder` at startup. Or specify its location in CMake via `imgui_bundle_add_app(app_name file.cpp ASSETS_LOCATION "path/to/assets")`.
+
+
+**Where to find the default assets**
+
+You can link:https://traineq.org/ImGuiBundle/assets.zip[download the default assets as a zip file].
+
+Look at the folder link:https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets[imgui_bundle/bindings/imgui_bundle/assets] to see their content.
+
+
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
+
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
+
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
+
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
+
+// :url-demo-images: doc_images/
+
+=== Demo using assets & add-ons
+
+.Demo assets and add-ons usage
+image::{url-demo-images}/demo_assets_addons.jpg[width=400]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html[Run this demo in your browser]
+
+This demonstration showcases how to:
+
+* Load and use assets (fonts, images, icons, etc.)
+* Use ImPlot to display various types of plots
+* Use markdown to display formatted messages
+
+
+This demonstration source code is heavily documented and should be self-explanatory.
+
+
+.Click to see its source code in {cpp}
+
+[%collapsible]
+====
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp[view on GitHub])
+
+[source, cpp]
+----
+#include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
+#include "immapp/immapp.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include "implot/implot.h"
+#endif
+#include "immapp/code_utils.h"
+#include "demo_utils/api_demos.h"
+#include <vector>
+#include <map>
+
+
+// This function displays the help messages that are displayed in this demo application
+void ShowDoc(const std::string& whichDoc);
+
+
+// Your global application state, that will be edited during the execution
+struct AppState
+{
+    // you can edit the ImPlot pie chart values
+    std::vector<float> PlotData = {0.15f, 0.30f, 0.2f, 0.05f};
+
+    // You can edit a demo markdown string
+    char MarkdownInput[4000] = "*Welcome to the interactive markdown demo!* Try writing some markdown content here.";
+
+    //
+    // Note about AppState:
+    // Inside ImGui demo code, you will often see static variables, such as in this example
+    // ```cpp
+    //     static int value = 10;
+    //     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
+    // ```
+    // In this example, `value` is a static variable whose state is preserved:
+    // it merely acts as a global variable, whose scope is limited to this function.
+    // Global variables should be avoided, and storing the Application State like this is preferable in production code.
+    //
+};
+
+
+// A demo showcasing the assets usage in HelloImGui and ImmApp
+void DemoAssets(AppState& appState)
+{
+    ImGuiMd::Render("# Demo Assets");
+    ImGui::Text("Here are some icons from Font Awesome: ");
+    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+    ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+
+
+    ImGui::Text("Here is an image that was loaded from the assets: ");
+    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+
+    // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+    //     Below, imageSize is equivalent to the size of 3 lines of text
+    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+    HelloImGui::ImageFromAsset("images/world.png", imageSize);
+
+    ImGuiMd::Render("**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**");
+
+    ShowDoc("AssetsDoc");
+}
+
+
+// A demo about the usage of the markdown renderer
+void DemoMarkdown(AppState& appState)
+{
+    std::string markdownDemo = R"(
+        # Demo markdown usage
+
+        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
+
+        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
+
+        2. **Pythonic Wisdom**:
+            > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
+            ```python
+            def explain(thing):
+                return "It's just a " + thing + ". Nothing fancy!"
+            ```
+        )";
+    ImGuiMd::RenderUnindented(markdownDemo);
+
+    // Interactive demo
+    ImGui::Separator();
+    ImGuiMd::Render("*Try it yourself*");
+    ImGui::SameLine(HelloImGui::EmSize(30.f));
+    if (ImGui::SmallButton("Edit the fortune markdown"))
+        strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
+    ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
+    ImGuiMd::RenderUnindented(appState.MarkdownInput);
+    ImGui::Separator();
+
+    ShowDoc("MarkdownDoc");
+}
+
+
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+// A demo showcasing the usage of ImPlot
+void DemoPlot(AppState& appState)
+{
+    ImGuiMd::Render("# Demo ImPlot");
+
+    static const char* data_labels[]    = {"Frogs", "Hogs", "Dogs", "Logs"};
+
+    ImGui::Text("Edit Pie Chart values");
+    ImGui::SetNextItemWidth(250);
+    ImGui::DragFloat4("Pie Data", appState.PlotData.data(), 0.01f, 0, 1);
+
+    // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+    //     Below, plotSize is equivalent to the size of 1 lines of text
+    ImVec2 plotSize = ImmApp::EmToVec2(15.f, 15.f);
+
+    if (ImPlot::BeginPlot("Pie Chart", plotSize))
+    {
+        ImPlot::SetupAxes("", "", ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+        ImPlot::PlotPieChart(
+            data_labels,
+            appState.PlotData.data(), appState.PlotData.size(), // data and count
+            0.5, 0.5, // pie center position in the plot(x, y). Here, it is centered
+            0.35,      // pie radius relative to plotSize
+            "%.2f",   // fmt
+            90        // angle
+            );
+            ImPlot::EndPlot();
+    }
+
+    ShowDoc("PlotDoc");
+}
+#else
+void DemoPlot(AppState& appState) {}
+#endif
+
+
+// Our main function
+int main(int, char**)
+{
+    // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
+    ChdirBesideAssetsFolder();
+
+    AppState appState;         // Our global appState
+
+    // This is our GUI function:
+    //     it will display the widgets
+    //     it captures the appState, since it can modify it
+    auto gui = [&appState]()
+    {
+        DemoAssets(appState);
+        ImGui::NewLine();
+        DemoMarkdown(appState);
+        ImGui::NewLine();
+        DemoPlot(appState);
+    };
+
+    // Then, we start our application:
+    //     First, we set some RunnerParams, with simple settings
+    HelloImGui::SimpleRunnerParams runnerParams;
+    runnerParams.windowSize = {1000, 1000};
+    //     Here we set our GUI function
+    runnerParams.guiFunction = gui;
+    //     Then, we need to activate two addons: ImPlot and Markdown
+    ImmApp::AddOnsParams addons;
+    addons.withImplot = true;
+    addons.withMarkdown = true;
+    //     And we are ready to go!
+    ImmApp::Run(runnerParams, addons);
+
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// End of demo code
+///////////////////////////////////////////////////////////////////////////////
+
+
+//
+// Note: the code below only displays the help messages
+//
+
+std::string GetDoc(const std::string& whichDoc)
+{
+    static std::map<std::string, std::string> docs =
+        {
+            {
+                "AssetsDoc",
+                R"(
+                    The icons and image were shown via this code:
+
+                    C++
+                    ```cpp
+                    ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+                    ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+                    HelloImGui::ImageFromAsset("images/world.png", imageSize);
+                    ```
+
+                    Python
+                    ```python
+                    imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+                    image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+                    hello_imgui.image_from_asset("images/world.png", image_size)
+                    ```
+
+                    *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
+                )"
+            },
+            {
+                "MarkdownDoc",
+                R"(
+                This markdown string was rendered by calling either:
+
+                C++
+                ```cpp
+                ImGuiMd::Render(markdown_string);            // render a markdown string
+                ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                ```
+
+                Python
+                ```python
+                imgui_md.render(markdown_string);            # render a markdown string
+                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+                ```
+
+                This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+                It supports the most common markdown features: emphasis, link, code blocks, etc.
+                )"
+            },
+            {
+                "PlotDoc",
+                R"(
+                By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
+                Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+                C++
+                ```cpp
+                ImmApp::AddOnsParams addons { .withImplot = true };
+                ImmApp::Run(runnerParams, addons);
+                ```
+
+                Python:
+                ```python
+                addons = immapp.AddOnsParams(with_implot=True)
+                immapp.run(runner_params, addons);
+                ```
+                )"
+            },
+        };
+
+    return docs.at(whichDoc);
+}
+
+
+void ShowDoc(const std::string& whichDoc)
+{
+    static std::map<std::string, bool> is_doc_visible;
+    if (is_doc_visible.find(whichDoc) == is_doc_visible.end())
+        is_doc_visible[whichDoc] = false;
+
+    ImGui::PushID(whichDoc.c_str());
+    ImGui::Checkbox("More info", &is_doc_visible[whichDoc]);
+
+    if (is_doc_visible[whichDoc])
+    {
+        ImGuiMd::RenderUnindented(GetDoc(whichDoc));
+        ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
+        ImGui::Separator();
+    }
+    ImGui::PopID();
+}
+----
+
+====
+
+
+.Click to see its source code in Python
+[%collapsible]
+====
+(link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py[view on GitHub])
+
+[source, python]
+----
+from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
+from imgui_bundle.demos_python import demo_utils
+
+import numpy as np
+from typing import Dict, List
+from dataclasses import dataclass, field
+
+
+def show_doc(which_doc: str):
+    """This function displays the help messages that are displayed in this demo application
+    (implemented later in this file)"""
+    ...
+
+
+@dataclass
+class AppState:
+    """Your global application state, that will be edited during the execution."""
+
+    # you can edit the ImPlot pie chart values
+    plot_data: List[float] = field(default_factory=lambda: [0.15, 0.30, 0.2, 0.05])
+
+    # You can edit a demo markdown string
+    markdown_input: str = "*Welcome to the interactive markdown demo!* Try writing some markdown content here."
+
+    #
+    # Note about AppState:
+    # Inside ImGui demo code, you will often see static variables, such as in this example
+    #     static int value = 10;
+    #     bool changed = ImGui::SliderInt("Value", &value, 0, 10);  // edit this variable between 0 and 10
+    # In this example, `value` is a static variable whose state is preserved:
+    # it merely acts as a global variable, whose scope is limited to this function.
+    # Global variables should be avoided, and storing the Application State like this is preferable in production code.
+
+
+def demo_assets(app_state: AppState):
+    """A demo showcasing the assets usage in HelloImGui and ImmApp"""
+    imgui_md.render("# Demo Assets")
+
+    imgui.text("Here are some icons from Font Awesome: ")
+    imgui.same_line()
+    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
+    imgui.text(
+        icons_fontawesome.ICON_FA_INFO
+        + " "
+        + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE
+        + " "
+        + icons_fontawesome.ICON_FA_SAVE
+    )
+
+    imgui.text("Here is an image that was loaded from the assets: ")
+    imgui.same_line()
+    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
+
+    # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+    # Below, image_size is equivalent to the size of 3 lines of text
+    image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+    hello_imgui.image_from_asset("images/world.png", image_size)
+
+    imgui_md.render(
+        "**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**"
+    )
+    show_doc("AssetsDoc")
+
+
+def demo_markdown(app_state: AppState):
+    """A demo about the usage of the markdown renderer"""
+    markdown_demo = """
+        # Demo markdown usage
+
+        Let's ask GPT4 to give us some fun programming fortunes in markdown format:
+
+        1. **Bug Hunt**: In the world of software, the best debugger was, is, and will always be a _good night's sleep_.
+
+        2. **Pythonic Wisdom**:
+            > They say if you can't explain something simply, you don't understand it well enough. Well, here's my Python code for simplicity:
+            ```python
+            def explain(thing):
+                return "It's just a " + thing + ". Nothing fancy!"
+            ```
+    """
+    imgui_md.render_unindented(markdown_demo)
+
+    # Interactive demo
+    imgui.separator()
+    imgui_md.render("*Try it yourself*")
+    imgui.same_line(hello_imgui.em_size(30.0))
+    if imgui.small_button("Edit the fortune markdown"):
+        app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
+    _, app_state.markdown_input = imgui.input_text_multiline(
+        "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
+    )
+    imgui_md.render_unindented(app_state.markdown_input)
+    imgui.separator()
+
+    show_doc("MarkdownDoc")
+
+
+def demo_plot(app_state: AppState):
+    """A demo showcasing the usage of ImPlot"""
+    imgui_md.render("# Demo ImPlot")
+
+    data_labels = ["Frogs", "Hogs", "Dogs", "Logs"]
+
+    imgui.text("Edit Pie Chart values")
+    imgui.set_next_item_width(250)
+    _, app_state.plot_data = imgui.drag_float4(
+        "Pie Data", app_state.plot_data, 0.01, 0, 1
+    )
+
+    # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
+    # Below, plot_size is equivalent to the size of 15 lines of text
+    plot_size = hello_imgui.em_to_vec2(15.0, 15.0)
+
+    if implot.begin_plot("Pie Chart", plot_size):
+        implot.setup_axes(
+            "",
+            "",
+            implot.AxisFlags_.no_decorations.value,
+            implot.AxisFlags_.no_decorations.value,
+        )
+        implot.plot_pie_chart(
+            data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
+        )
+        implot.end_plot()
+
+    show_doc("PlotDoc")
+
+
+def main():
+    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
+    demo_utils.set_hello_imgui_demo_assets_folder()
+
+    app_state = AppState()  # Initialize our global appState
+
+    # This is our GUI function:
+    # it will display the widgets, and it can modify the app_state
+    def gui():
+        demo_assets(app_state)
+        imgui.new_line()
+        demo_markdown(app_state)
+        imgui.new_line()
+        demo_plot(app_state)
+
+    # Then, we start our application:
+    #     First, we set some RunnerParams, with simple settings
+    runner_params = hello_imgui.SimpleRunnerParams()
+    runner_params.window_size = (1000, 1000)
+    runner_params.gui_function = gui
+    #     We need to activate two addons: ImPlot and Markdown
+    addons = immapp.AddOnsParams()
+    addons.with_implot = True
+    addons.with_markdown = True
+    #     And we are ready to go!
+    immapp.run(runner_params, addons)
+
+
+# ///////////////////////////////////////////////////////////////////////////////
+# // End of demo code
+# ///////////////////////////////////////////////////////////////////////////////
+
+
+# //
+# // Note: the code below only displays the help messages
+# //
+
+
+def get_doc(which_doc: str) -> str:
+    """Return the associated documentation string based on the key."""
+
+    docs: Dict[str, str] = {
+        "AssetsDoc": """
+            The icons and image were shown via this code:
+
+            C++
+            ```cpp
+            ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
+            ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
+            HelloImGui::ImageFromAsset("images/world.png", imageSize);
+            ```
+
+            Python
+            ```python
+            imgui.text(icons_fontawesome.ICON_FA_INFO + " " + icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE + " " + icons_fontawesome.ICON_FA_SAVE)
+            image_size = hello_imgui.em_to_vec2(3.0, 3.0)
+            hello_imgui.image_from_asset("images/world.png", image_size)
+            ```
+
+            *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
+        """,
+        "MarkdownDoc": """
+            This markdown string was rendered by calling either:
+
+            C++
+            ```cpp
+            ImGuiMd::Render(markdown_string);            // render a markdown string
+            ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+            ```
+
+            Python
+            ```python
+            imgui_md.render(markdown_string);            # render a markdown string
+            imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+            ```
+
+            This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+            It supports the most common markdown features: emphasis, link, code blocks, etc.
+        """,
+        "PlotDoc": """
+            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+
+            Note: in order to use ImPlot, you need to "activate" this add-on, like this:
+
+            C++
+            ```cpp
+            ImmApp::AddOnsParams addons { .withImplot = true };
+            ImmApp::Run(runnerParams, addons);
+            ```
+
+            Python:
+            ```python
+            addons = immapp.AddOnsParams(with_implot=True)
+            immapp.run(runner_params, addons);
+            ```
+        """,
+    }
+
+    return docs[which_doc]
+
+
+@immapp.static(is_doc_visible={})  # type: ignore # (ignore redef)
+def show_doc(which_doc):  # noqa: F811
+    # Access the 'static' variable
+    is_doc_visible = show_doc.is_doc_visible
+
+    # Check if the doc visibility entry exists, if not, add it
+    if which_doc not in is_doc_visible:
+        is_doc_visible[which_doc] = False
+
+    imgui.push_id(which_doc)
+    _, is_doc_visible[which_doc] = imgui.checkbox(
+        "More info", is_doc_visible[which_doc]
+    )
+
+    if is_doc_visible[which_doc]:
+        # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
+        # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
+        imgui_md.render_unindented(get_doc(which_doc))
+        imgui.dummy(
+            hello_imgui.em_to_vec2(1.0, 6.0)
+        )  # Assumes 'hello_imgui' is available in your environment
+        imgui.separator()
+
+    imgui.pop_id()
+
+
+if __name__ == "__main__":
+    main()
+----
+====
+
+
+
+=== App icon and app settings ({cpp} only)
+
+_The assets folder is deployed automatically during the build; so that they are available automatically whatever the platform._
+
+
+==== App icon
+The app icon is defined by the file `icon.png` in the `assets/app_settings` folder. It should be square and at least 256x256 (but 512x512 is preferred).
+
+`icon.png` will define the application icon as well as the window icon. It will be converted to the right format for each platform by CMake (via `imgui_bundle_add_app`).
+
+
+See link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demo_packaging[this demo] for an example showing how to package a python application.
+
+==== App settings
+
+**macOS and iOS**
+
+The app settings are defined by the file `Info.plist` in the `assets/app_settings/apple` folder.
+
+You can copy and edit this link:{url-bundle-doc-tree}/bindings/imgui_bundle/assets/app_settings/apple/Info.plist[example] by adding your own settings (replace `${HELLO_IMGUI_BUNDLE_XXX}` by your own values).
+
+You can also specify different settings for macOS and iOS via `Info.macos.plist` and `Info.ios.plist`
+
 [[manual]]
 == Usage instructions
 
@@ -6266,7 +6251,7 @@ if __name__ == "__main__":
 ----
 ====
 
-=== Usage withing jupyter notebook
+=== Usage within jupyter notebook
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -6306,231 +6291,31 @@ link:https://www.youtube.com/watch?v=QQIC7lpHono[40 seconds demo video on Youtub
 
 link:{url-bindings-bundle}/immapp/immapp_notebook.py[immapp/immapp_notebook.py]
 
-[[folders]]
-== Repository folders structure
+[[python_specific]]
+== Usage instructions: additional info for Python users
 
-.Click to see a detailed explanation of this repository folder structure.
-[%collapsible]
-====
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
-[source,bash]
-----
-./
-+-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
-+-- Readme_devel.md
-|
-+-- _example_integration/                         # Demonstrate how to easily use
-|         +-- CMakeLists.txt                      # imgui_bundle in a C++ app
-|         +-- assets/                             # (this is a github template available a
-|         +-- hello_world.main.cpp                # https://github.com/pthom/imgui_bundle_template
-|
-+-- imgui_bundle_cmake/                           # imgui_bundle_add_app() :
-|         |                                       # a cmake function you can use
-|         +-- imgui_bundle_add_app.cmake          # to create an app in one line
-|
-+-- bindings/                                     # root for the python bindings
-|         +-- imgui_bundle/
-|                  +-- assets/                    # assets/ folder: you need to
-|                  |                              # copy this folder
-|                  |                              # into your app folder if you
-|                  |                              # intend to use markdown
-|                  |
-|                  +-- demos_assets/              # assets used by demos
-|                  +-- demos_cpp/                 # lots of C++ demos
-|                  +-- demos_python/              # lots of python demos
-|                  +-- imgui/                     # imgui stubs
-|                  |     +-- __init__.pyi
-|                  |     +-- backends.pyi
-|                  |     +-- internal.pyi
-|                  |     +-- py.typed
-|                  +-- implot.pyi                           # implot stubs
-|                  +-- __init__.py
-|                  +-- __init__.pyi
-|                  +-- hello_imgui.pyi
-|                  +-- ...                                  # lots of other libs stubs
-|                  +-- ...
-|                  +-- ...
-|                  +-- immapp/                              # immapp: immediate app
-|                  |        |                               # utilities
-|                  |        +-- __init__.py
-|                  |        +-- __init__.pyi
-|                  |        +-- icons_fontawesome.py
-|                  |        +-- immapp_cpp.pyi
-|                  |        +-- immapp_utils.py
-|                  |        +-- py.typed
-|                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
-|                  |                                       # dynamic library
-|                  +-- glfw_utils.py
-|                  +-- python_backends/                   # Backends implemented in pure python
-|                  +-- py.typed
-|
-|
-+-- cmake/                                                 # Private cmake utilities
-|         +-- add_imgui.cmake
-|         +-- ...
-|
-+-- external/                                              # Root of all bound libraries
-|         +-- CMakeLists.txt
-|         +-- imgui/                                       # ImGui root
-|         |         +-- bindings/                          # ImGui bindings
-|         |         +-- imgui/                             # ImGui submodule
-|         +-- ImGuizmo/
-|         |         +-- bindings/                          # ImGuizmo bindings
-|         |         +-- ImGuizmo/                          # ImGuizmo submodule
-|         |         +-- ImGuizmoPure/                      # Manual wrappers to help
-|         |                                                # bindings generation
-|         |
-|         +-- ... lots of other bound libraries/           # Lots of other bound libraries
-|         |         +-- {lib_name}/
-|         |         +-- bindings/
-|         |
-|         +-- _doc/
-|         |
-|         +-- bindings_generation/                         # Script to generate bindings
-|         |         |                                      # and to facilitate external
-|         |         +-- __init__.py                        # libraries update
-|         |         +-- all_external_libraries.py
-|         |         +-- autogenerate_all.py
-|         |         +-- ...
-|         |
-|         +-- SDL/SDL/                                     # Linked library (without
-|         |                                                # python bindings)
-|         +-- fplus/fplus/                                 # Library without bindings
-|         +-- glfw/glfw                                    # Library without bindings
-|
-+-- lg_cmake_utils/                                        # Cmake utils for bindings
-|         |                                                # generation
-|         +-- lg_cmake_utils.cmake
-|         +-- ...
-|
-+-- pybind_native_debug/
-|         +-- CMakeLists.txt
-|         +-- Readme.md
-|         +-- pybind_native_debug.cpp
-|         +-- pybind_native_debug.py
-|
-+-- src/
-|         +-- imgui_bundle/                               # main cpp library: almost empty,
-                                                          # but linked to all external libraries
-----
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
-====
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-[[porting]]
-== {cpp} / Python porting advices
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
-=== General advices
+// :url-demo-images: doc_images/
 
-
-
-ImGui is a {cpp} library that was ported to Python. In order to work with it, you will often refer to its https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[manual], which shows example code in {cpp}.
-
-In order to translate from {cpp} to Python:
-
-1. Change the function names and parameters' names from `CamelCase` to `snake_case`
-2. Change the way the output are handled.
-    a. in {cpp} `ImGui::RadioButton` modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.
-    b. In python, the (possibly modified) value is transmitted via the return: `imgui.radio_button` returns a `Tuple[bool, str]` which contains `(user_clicked, new_value)`.
-3. if porting some code that uses static variables, use the `@immapp.static` decorator.
-    In this case, this decorator simply adds a variable `value` at  the function scope. It is preserved between calls.
-   Normally, this variable should be accessed via `demo_radio_button.value`, however the first line of the function adds a synonym named static for more clarity.
-   Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.
-
-==== Example:
-
-{cpp}
-[source, cpp]
-----
-void DemoRadioButton()
-{
-    static int value = 0;
-    ImGui::RadioButton("radio a", &value, 0); ImGui::SameLine();
-    ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
-    ImGui::RadioButton("radio c", &value, 2);
-}
-----
-
-Python
-[source, python]
-----
-@immapp.static(value=0)
-def demo_radio_button():
-    static = demo_radio_button
-    clicked, static.value = imgui.radio_button("radio a", static.value, 0)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio b", static.value, 1)
-    imgui.same_line()
-    clicked, static.value = imgui.radio_button("radio c", static.value, 2)
-----
-
-=== Enums and TextInput
-
-In the example below, two differences are important:
-
-==== InputText functions:
-`imgui.input_text` (Python) is equivalent to `ImGui::InputText` ({cpp})
-
-* In {cpp}, it uses two parameters for the text: the text pointer, and its length.
-* In Python, you can simply pass a string, and get back its modified value in the returned tuple.
-
-==== Enums handling:
-
-* `ImGuiInputTextFlags_` ({cpp}) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore).
-* `ImGuiInputTextFlags` ({cpp}) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
-
-You will find many similar enums.
-
-The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).
-
-==== Example
-
-{cpp}
-[source, cpp]
-----
-void DemoInputTextUpperCase()
-{
-    static char text[64] = "";
-    ImGuiInputTextFlags flags = (
-        ImGuiInputTextFlags_CharsUppercase
-        | ImGuiInputTextFlags_CharsNoBlank
-    );
-    /*bool changed = */ ImGui::InputText("Upper case, no spaces", text, 64, flags);
-}
-----
-
-Python
-[source, python]
-----
-@immapp.static(text="")
-def demo_input_text_decimal() -> None:
-    static = demo_input_text_decimal
-    flags:imgui.InputTextFlags = (
-            imgui.InputTextFlags_.chars_uppercase.value
-          | imgui.InputTextFlags_.chars_no_blank.value
-        )
-    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
-----
-
-
-****
-Note: in {cpp}, by using `imgui_stdlib.h`, it is also possible to write:
-
-[source, cpp]
-----
-#include "imgui/misc/cpp/imgui_stdlib.h"
-
-void DemoInputTextUpperCase_StdString()
-{
-    static std::string text;
-    ImGuiInputTextFlags flags = (
-        ImGuiInputTextFlags_CharsUppercase
-        | ImGuiInputTextFlags_CharsNoBlank
-    );
-    /*bool changed = */ ImGui::InputText("Upper case, no spaces", &text, flags);
-}
-----
-
-****
+:url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
 
 === Python context managers:
 
@@ -6585,6 +6370,114 @@ imgui.end()
 
 link:{url-bundle-doc-tree}/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py[see demo_python_context_manager.py]
 
+
+=== Display Matplotlib plots in ImGui
+
+link:{url-bindings-python}/imgui_fig.py[imgui_fig.py] is a small utility to display Matplotlib plots in ImGui.
+
+See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo_matplotlib.py] for an example.
+
+=== Pure python backends
+
+link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+
+See link:{url-bindings-python}/python_backends/examples[examples] for more information.
+
+[[python_port]]
+=== Read the libraries doc as a Python developer
+
+==== General advices
+
+
+ImGui is a {cpp} library that was ported to Python. In order to work with it, you will often refer to its https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html[manual], which shows example code in {cpp}.
+
+In order to translate from {cpp} to Python:
+
+1. Change the function names and parameters' names from `CamelCase` to `snake_case`
+2. Change the way the output are handled.
+    a. in {cpp} `ImGui::RadioButton` modifies its second parameter (which is passed by address) and returns true if the user clicked the radio button.
+    b. In python, the (possibly modified) value is transmitted via the return: `imgui.radio_button` returns a `Tuple[bool, str]` which contains `(user_clicked, new_value)`.
+3. if porting some code that uses static variables, use the `@immapp.static` decorator.
+    In this case, this decorator simply adds a variable `value` at  the function scope. It is preserved between calls.
+   Normally, this variable should be accessed via `demo_radio_button.value`, however the first line of the function adds a synonym named static for more clarity.
+   Do not overuse them! Static variable suffer from almost the same shortcomings as global variables, so you should prefer to modify an application state.
+
+**Example**
+
+{cpp}
+[source, cpp]
+----
+void DemoRadioButton()
+{
+    static int value = 0;
+    ImGui::RadioButton("radio a", &value, 0); ImGui::SameLine();
+    ImGui::RadioButton("radio b", &value, 1); ImGui::SameLine();
+    ImGui::RadioButton("radio c", &value, 2);
+}
+----
+
+Python
+[source, python]
+----
+@immapp.static(value=0)
+def demo_radio_button():
+    static = demo_radio_button
+    clicked, static.value = imgui.radio_button("radio a", static.value, 0)
+    imgui.same_line()
+    clicked, static.value = imgui.radio_button("radio b", static.value, 1)
+    imgui.same_line()
+    clicked, static.value = imgui.radio_button("radio c", static.value, 2)
+----
+
+==== Enums and TextInput
+
+In the example below, two differences are important:
+
+===== InputText functions:
+`imgui.input_text` (Python) is equivalent to `ImGui::InputText` ({cpp})
+
+* In {cpp}, it uses two parameters for the text: the text pointer, and its length.
+* In Python, you can simply pass a string, and get back its modified value in the returned tuple.
+
+===== Enums handling:
+
+* `ImGuiInputTextFlags_` ({cpp}) corresponds to `imgui.InputTextFlags_` (python) and it is an _enum_ (note the trailing underscore).
+* `ImGuiInputTextFlags` ({cpp}) corresponds to `imgui.InputTextFlags` (python) and it is an _int_  (note: no trailing underscore)
+
+You will find many similar enums.
+
+The dichotomy between int and enums, enables you to write flags that are a combinations of values from the enum (see example below).
+
+**Example**
+
+{cpp}
+[source, cpp]
+----
+void DemoInputTextUpperCase()
+{
+    static char text[64] = "";
+    ImGuiInputTextFlags flags = (
+        ImGuiInputTextFlags_CharsUppercase
+        | ImGuiInputTextFlags_CharsNoBlank
+    );
+    /*bool changed = */ ImGui::InputText("Upper case, no spaces", text, 64, flags);
+}
+----
+
+Python
+[source, python]
+----
+@immapp.static(text="")
+def demo_input_text_decimal() -> None:
+    static = demo_input_text_decimal
+    flags:imgui.InputTextFlags = (
+            imgui.InputTextFlags_.chars_uppercase.value
+          | imgui.InputTextFlags_.chars_no_blank.value
+        )
+    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
+----
+
+
 === Advanced glfw callbacks
 
 When using the glfw backend, you can set advanced callbacks on all glfw events.
@@ -6609,19 +6502,8 @@ glfw.set_window_size_callback(window, my_window_size_callback)
 
 CAUTION: It is important to import glfw _after_ imgui_bundle, since - upon import - imgui_bundle informs glfw that it shall use its own version of the glfw dynamic library.
 
-=== Debug native {cpp} in python scripts
-
-ImGui Bundle provides tooling to help you debug the {cpp} side, when you encounter a bug that is difficult to diagnose from Python.
-
-It can be used in two steps:
-
-1. Edit the file `pybind_native_debug/pybind_native_debug.py`. Change its content so that it runs the python code you would like to debug. Make sure it works when you run it as a python script.
-2. Now, debug the {cpp} project `pybind_native_debug` which is defined in the directory `pybind_native_debug/`. This will run your python code from {cpp}, and you can debug the {cpp} side (place breakpoints, watch variables, etc).
-
-Example: https://github.com/pthom/hello_imgui/issues/33[this issue on macOS] was solved thanks to this.
-
-[[python_specific]]
-== Python specific utilities
+[[cpp_specific]]
+== Usage instructions: additional info for {cpp} users
 
 :doc_branch: main
 :url-bundle: https://github.com/pthom/imgui_bundle/
@@ -6646,20 +6528,47 @@ Example: https://github.com/pthom/hello_imgui/issues/33[this issue on macOS] was
 
 :url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
 
-=== Display Matplotlib plots in ImGui
+:doc_branch: main
+:url-bundle: https://github.com/pthom/imgui_bundle/
+:url-bundle-doc-tree: https://github.com/pthom/imgui_bundle/tree/{doc_branch}
+:url-himgui-master-tree: https://github.com/pthom/hello_imgui/tree/master
+:url-bindings-bundle: https://github.com/pthom/imgui_bundle/tree/{doc_branch}/bindings/imgui_bundle
+:url-bundle-pages: https://pthom.github.io/imgui_bundle
+:url-demo-imgui-bundle: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:url-imgui-manual: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:url-imgui: https://github.com/ocornut/imgui/
+:url-logo: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png
+:url-demos-cpp: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp
+:url-demos-python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python
 
-link:{url-bindings-python}/imgui_fig.py[imgui_fig.py] is a small utility to display Matplotlib plots in ImGui.
+:url-doc-images: https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images
 
-See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo_matplotlib.py] for an example.
+:url-demo-images: https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images
 
-=== Pure python backends
+:url-donate: https://www.paypal.com/donate/?hosted_button_id=SHJ68RVDKURZA
 
-link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+// :url-demo-images: doc_images/
 
-See link:{url-bindings-python}/python_backends/examples[examples] for more information.
+=== Multiplatform C++ applications
+
+When developing C++ applications, Hello ImGui and Dear ImGui Bundle offer an excellent support for multiplatform applications.
+
+See this tutorial video for Hello ImGui:
+
+.10' demo video showcasing multi-platform support and rapid
+video::dArP4lBnOr8[youtube]
 
 
+TIP: The principle with Dear ImGui Bundle is the same, just use the dedicated Dear ImGui Bundle link:https://github.com/pthom/imgui_bundle_template[project template], and use `imgui_bundle_add_app`
 
+=== Debug native {cpp} in python scripts
+
+ImGui Bundle provides tooling to help you debug the {cpp} side, when you encounter a bug that is difficult to diagnose from Python.
+
+It can be used in two steps:
+
+1. Edit the file `pybind_native_debug/pybind_native_debug.py`. Change its content so that it runs the python code you would like to debug. Make sure it works when you run it as a python script.
+2. Now, debug the {cpp} project `pybind_native_debug` which is defined in the directory `pybind_native_debug/`. This will run your python code from {cpp}, and you can debug the {cpp} side (place breakpoints, watch variables, etc).
 
 [[words_author]]
 == Closing words
@@ -6781,4 +6690,118 @@ See link:https://pthom.github.io/imgui_bundle/faq.html[FAQ]
 
 [[devel_docs]]
 == Developer docs
+
+=== Developer pages
+
 See link:https://pthom.github.io/imgui_bundle/devel_docs/index.html[developer docs]
+
+
+[[folders]]
+=== Repository folders structure
+
+.Click to see a detailed explanation of this repository folder structure.
+[%collapsible]
+====
+
+[source,bash]
+----
+./
++-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
++-- Readme_devel.md
+|
++-- _example_integration/                         # Demonstrate how to easily use
+|         +-- CMakeLists.txt                      # imgui_bundle in a C++ app
+|         +-- assets/                             # (this is a github template available a
+|         +-- hello_world.main.cpp                # https://github.com/pthom/imgui_bundle_template
+|
++-- imgui_bundle_cmake/                           # imgui_bundle_add_app() :
+|         |                                       # a cmake function you can use
+|         +-- imgui_bundle_add_app.cmake          # to create an app in one line
+|
++-- bindings/                                     # root for the python bindings
+|         +-- imgui_bundle/
+|                  +-- assets/                    # assets/ folder: you need to
+|                  |                              # copy this folder
+|                  |                              # into your app folder if you
+|                  |                              # intend to use markdown
+|                  |
+|                  +-- demos_assets/              # assets used by demos
+|                  +-- demos_cpp/                 # lots of C++ demos
+|                  +-- demos_python/              # lots of python demos
+|                  +-- imgui/                     # imgui stubs
+|                  |     +-- __init__.pyi
+|                  |     +-- backends.pyi
+|                  |     +-- internal.pyi
+|                  |     +-- py.typed
+|                  +-- implot.pyi                           # implot stubs
+|                  +-- __init__.py
+|                  +-- __init__.pyi
+|                  +-- hello_imgui.pyi
+|                  +-- ...                                  # lots of other libs stubs
+|                  +-- ...
+|                  +-- ...
+|                  +-- immapp/                              # immapp: immediate app
+|                  |        |                               # utilities
+|                  |        +-- __init__.py
+|                  |        +-- __init__.pyi
+|                  |        +-- icons_fontawesome.py
+|                  |        +-- immapp_cpp.pyi
+|                  |        +-- immapp_utils.py
+|                  |        +-- py.typed
+|                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
+|                  |                                       # dynamic library
+|                  +-- glfw_utils.py
+|                  +-- python_backends/                   # Backends implemented in pure python
+|                  +-- py.typed
+|
+|
++-- cmake/                                                 # Private cmake utilities
+|         +-- add_imgui.cmake
+|         +-- ...
+|
++-- external/                                              # Root of all bound libraries
+|         +-- CMakeLists.txt
+|         +-- imgui/                                       # ImGui root
+|         |         +-- bindings/                          # ImGui bindings
+|         |         +-- imgui/                             # ImGui submodule
+|         +-- ImGuizmo/
+|         |         +-- bindings/                          # ImGuizmo bindings
+|         |         +-- ImGuizmo/                          # ImGuizmo submodule
+|         |         +-- ImGuizmoPure/                      # Manual wrappers to help
+|         |                                                # bindings generation
+|         |
+|         +-- ... lots of other bound libraries/           # Lots of other bound libraries
+|         |         +-- {lib_name}/
+|         |         +-- bindings/
+|         |
+|         +-- _doc/
+|         |
+|         +-- bindings_generation/                         # Script to generate bindings
+|         |         |                                      # and to facilitate external
+|         |         +-- __init__.py                        # libraries update
+|         |         +-- all_external_libraries.py
+|         |         +-- autogenerate_all.py
+|         |         +-- ...
+|         |
+|         +-- SDL/SDL/                                     # Linked library (without
+|         |                                                # python bindings)
+|         +-- fplus/fplus/                                 # Library without bindings
+|         +-- glfw/glfw                                    # Library without bindings
+|
++-- lg_cmake_utils/                                        # Cmake utils for bindings
+|         |                                                # generation
+|         +-- lg_cmake_utils.cmake
+|         +-- ...
+|
++-- pybind_native_debug/
+|         +-- CMakeLists.txt
+|         +-- Readme.md
+|         +-- pybind_native_debug.cpp
+|         +-- pybind_native_debug.py
+|
++-- src/
+|         +-- imgui_bundle/                               # main cpp library: almost empty,
+                                                          # but linked to all external libraries
+----
+
+====

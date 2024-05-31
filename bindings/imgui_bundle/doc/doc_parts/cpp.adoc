@@ -1,0 +1,10 @@
+[[cpp_specific]]
+== Usage instructions: additional info for {cpp} users
+
+include::_utils.adoc[]
+
+:url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
+
+include::cpp_multiplatform.adoc[]
+
+include::cpp_debug_native.adoc[]

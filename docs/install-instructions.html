@@ -621,17 +621,192 @@ Consider <code>demo_imgui_bundle</code> as an always available manual for Dear I
 </div>
 <div class="sect2">
 <h3 id="_install_for_c">Install for C&#43;&#43;</h3>
-<div class="sect3">
-<h4 id="_integrate_dear_imgui_bundle_in_your_own_project_in_5_minutes">Integrate Dear ImGui Bundle in your own project in 5 minutes</h4>
+<details>
+<summary class="title">Click to expand</summary>
+<div class="content">
+<div class="paragraph">
+<p>Python:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">os.path</span>
+
+<span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
+<span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">Any</span>
+<span class="tok-kn">from</span> <span class="tok-nn">numpy.typing</span> <span class="tok-kn">import</span> <span class="tok-n">NDArray</span>
+<span class="tok-kn">from</span> <span class="tok-nn">enum</span> <span class="tok-kn">import</span> <span class="tok-n">Enum</span>
+<span class="tok-kn">import</span> <span class="tok-nn">cv2</span>  <span class="tok-c1"># type: ignore</span>
+<span class="tok-kn">import</span> <span class="tok-nn">math</span>
+
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immvision</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
+
+
+<span class="tok-n">ImageRgb</span> <span class="tok-o">=</span> <span class="tok-n">NDArray</span><span class="tok-p">[</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">uint8</span><span class="tok-p">]</span>
+<span class="tok-n">ImageFloat</span> <span class="tok-o">=</span> <span class="tok-n">NDArray</span><span class="tok-p">[</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">floating</span><span class="tok-p">[</span><span class="tok-n">Any</span><span class="tok-p">]]</span>
+
+
+<span class="tok-k">class</span> <span class="tok-nc">SobelParams</span><span class="tok-p">:</span>
+<span class="tok-w">    </span><span class="tok-sd">&quot;&quot;&quot;The parameters for our image processing pipeline&quot;&quot;&quot;</span>
+
+    <span class="tok-k">class</span> <span class="tok-nc">Orientation</span><span class="tok-p">(</span><span class="tok-n">Enum</span><span class="tok-p">):</span>
+        <span class="tok-n">Horizontal</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+        <span class="tok-n">Vertical</span> <span class="tok-o">=</span> <span class="tok-mi">1</span>
+
+    <span class="tok-n">blur_size</span> <span class="tok-o">=</span> <span class="tok-mf">1.25</span>
+    <span class="tok-n">deriv_order</span> <span class="tok-o">=</span> <span class="tok-mi">1</span>  <span class="tok-c1"># order of the derivative</span>
+    <span class="tok-n">k_size</span> <span class="tok-o">=</span> <span class="tok-mi">7</span>  <span class="tok-c1"># size of the extended Sobel kernel it must be 1, 3, 5, or 7 (or -1 for Scharr)</span>
+    <span class="tok-n">orientation</span><span class="tok-p">:</span> <span class="tok-n">Orientation</span> <span class="tok-o">=</span> <span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Vertical</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">compute_sobel</span><span class="tok-p">(</span><span class="tok-n">image</span><span class="tok-p">:</span> <span class="tok-n">ImageRgb</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-p">:</span> <span class="tok-n">SobelParams</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-n">ImageFloat</span><span class="tok-p">:</span>
+<span class="tok-w">    </span><span class="tok-sd">&quot;&quot;&quot;Our image processing pipeline&quot;&quot;&quot;</span>
+    <span class="tok-n">gray</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">cvtColor</span><span class="tok-p">(</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">COLOR_BGR2GRAY</span><span class="tok-p">)</span>
+    <span class="tok-n">img_float</span> <span class="tok-o">=</span> <span class="tok-n">gray</span> <span class="tok-o">/</span> <span class="tok-mf">255.0</span>
+    <span class="tok-n">blurred</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">GaussianBlur</span><span class="tok-p">(</span>
+        <span class="tok-n">img_float</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-mi">0</span><span class="tok-p">),</span> <span class="tok-n">sigmaX</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">,</span> <span class="tok-n">sigmaY</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span>
+    <span class="tok-p">)</span>
+
+    <span class="tok-n">good_scale</span> <span class="tok-o">=</span> <span class="tok-mf">1.0</span> <span class="tok-o">/</span> <span class="tok-n">math</span><span class="tok-o">.</span><span class="tok-n">pow</span><span class="tok-p">(</span><span class="tok-mf">2.0</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">k_size</span> <span class="tok-o">-</span> <span class="tok-mi">2</span> <span class="tok-o">*</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span> <span class="tok-o">-</span> <span class="tok-mi">2</span><span class="tok-p">))</span>
+
+    <span class="tok-k">if</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">orientation</span> <span class="tok-o">==</span> <span class="tok-n">SobelParams</span><span class="tok-o">.</span><span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Vertical</span><span class="tok-p">:</span>
+        <span class="tok-n">dx</span> <span class="tok-o">=</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span>
+        <span class="tok-n">dy</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+    <span class="tok-k">else</span><span class="tok-p">:</span>
+        <span class="tok-n">dx</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+        <span class="tok-n">dy</span> <span class="tok-o">=</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span>
+    <span class="tok-n">r</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">Sobel</span><span class="tok-p">(</span>
+        <span class="tok-n">blurred</span><span class="tok-p">,</span> <span class="tok-n">ddepth</span><span class="tok-o">=</span><span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">CV_64F</span><span class="tok-p">,</span> <span class="tok-n">dx</span><span class="tok-o">=</span><span class="tok-n">dx</span><span class="tok-p">,</span> <span class="tok-n">dy</span><span class="tok-o">=</span><span class="tok-n">dy</span><span class="tok-p">,</span> <span class="tok-n">ksize</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">k_size</span><span class="tok-p">,</span> <span class="tok-n">scale</span><span class="tok-o">=</span><span class="tok-n">good_scale</span>
+    <span class="tok-p">)</span>
+    <span class="tok-k">return</span> <span class="tok-n">r</span>
+
+
+<span class="tok-k">def</span> <span class="tok-nf">gui_sobel_params</span><span class="tok-p">(</span><span class="tok-n">params</span><span class="tok-p">:</span> <span class="tok-n">SobelParams</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-nb">bool</span><span class="tok-p">:</span>
+<span class="tok-w">    </span><span class="tok-sd">&quot;&quot;&quot;A GUI to edit the parameters for our image processing pipeline&quot;&quot;&quot;</span>
+    <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
+
+    <span class="tok-c1"># Blur size</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_next_item_width</span><span class="tok-p">(</span><span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">()</span> <span class="tok-o">*</span> <span class="tok-mi">10</span><span class="tok-p">)</span>
+    <span class="tok-n">c</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">slider_float</span><span class="tok-p">(</span><span class="tok-s2">&quot;Blur size&quot;</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">blur_size</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mi">10</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">c</span><span class="tok-p">:</span>
+        <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot; | &quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+
+    <span class="tok-c1"># Deriv order</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Deriv order&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">for</span> <span class="tok-n">deriv_order</span> <span class="tok-ow">in</span> <span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">,</span> <span class="tok-mi">2</span><span class="tok-p">,</span> <span class="tok-mi">3</span><span class="tok-p">,</span> <span class="tok-mi">4</span><span class="tok-p">):</span>
+        <span class="tok-n">c</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span>
+            <span class="tok-nb">str</span><span class="tok-p">(</span><span class="tok-n">deriv_order</span><span class="tok-p">),</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">deriv_order</span><span class="tok-p">,</span> <span class="tok-n">deriv_order</span>
+        <span class="tok-p">)</span>
+        <span class="tok-k">if</span> <span class="tok-n">c</span><span class="tok-p">:</span>
+            <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot; | &quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Orientation&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span>
+        <span class="tok-s2">&quot;Horizontal&quot;</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">orientation</span> <span class="tok-o">==</span> <span class="tok-n">SobelParams</span><span class="tok-o">.</span><span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Horizontal</span>
+    <span class="tok-p">):</span>
+        <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+        <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">orientation</span> <span class="tok-o">=</span> <span class="tok-n">SobelParams</span><span class="tok-o">.</span><span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Horizontal</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">radio_button</span><span class="tok-p">(</span>
+        <span class="tok-s2">&quot;Vertical&quot;</span><span class="tok-p">,</span> <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">orientation</span> <span class="tok-o">==</span> <span class="tok-n">SobelParams</span><span class="tok-o">.</span><span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Vertical</span>
+    <span class="tok-p">):</span>
+        <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+        <span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">orientation</span> <span class="tok-o">=</span> <span class="tok-n">SobelParams</span><span class="tok-o">.</span><span class="tok-n">Orientation</span><span class="tok-o">.</span><span class="tok-n">Vertical</span>
+
+    <span class="tok-k">return</span> <span class="tok-n">changed</span>
+
+
+<span class="tok-c1"># Our Application State contains:</span>
+<span class="tok-c1">#     - the original &amp; processed image (image &amp; imageSobel)</span>
+<span class="tok-c1">#     - our parameters for the processing pipeline (sobelParams)</span>
+<span class="tok-c1">#     - parameters to display the images via ImmVision: they share the same zoom key,</span>
+<span class="tok-c1">#       so that we can move the two image in sync</span>
+<span class="tok-k">class</span> <span class="tok-nc">AppState</span><span class="tok-p">:</span>
+    <span class="tok-n">image</span><span class="tok-p">:</span> <span class="tok-n">ImageRgb</span>
+    <span class="tok-n">image_sobel</span><span class="tok-p">:</span> <span class="tok-n">ImageFloat</span>
+    <span class="tok-n">sobel_params</span><span class="tok-p">:</span> <span class="tok-n">SobelParams</span>
+
+    <span class="tok-n">immvision_params</span><span class="tok-p">:</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span>
+    <span class="tok-n">immvision_params_sobel</span><span class="tok-p">:</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span>
+
+    <span class="tok-k">def</span> <span class="tok-fm">__init__</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-p">,</span> <span class="tok-n">image_file</span><span class="tok-p">:</span> <span class="tok-nb">str</span><span class="tok-p">):</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">imread</span><span class="tok-p">(</span><span class="tok-n">image_file</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span> <span class="tok-o">=</span> <span class="tok-n">SobelParams</span><span class="tok-p">()</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image_sobel</span> <span class="tok-o">=</span> <span class="tok-n">compute_sobel</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span><span class="tok-p">)</span>
+
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span> <span class="tok-o">=</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span><span class="tok-p">()</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-nb">int</span><span class="tok-p">(</span><span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mi">22</span><span class="tok-p">)),</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span><span class="tok-o">.</span><span class="tok-n">zoom_key</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;z&quot;</span>
+
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span> <span class="tok-o">=</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span><span class="tok-p">()</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">image_display_size</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-nb">int</span><span class="tok-p">(</span><span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mi">22</span><span class="tok-p">)),</span> <span class="tok-mi">0</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">zoom_key</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;z&quot;</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">show_options_panel</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+
+
+<span class="tok-c1"># Our GUI function</span>
+<span class="tok-c1">#    (which instantiates a static app state at startup)</span>
+<span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">=</span><span class="tok-kc">None</span><span class="tok-p">)</span>
+<span class="tok-k">def</span> <span class="tok-nf">demo_gui</span><span class="tok-p">():</span>
+    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_gui</span>
+
+    <span class="tok-k">if</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span> <span class="tok-ow">is</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
+        <span class="tok-n">this_dir</span> <span class="tok-o">=</span> <span class="tok-n">os</span><span class="tok-o">.</span><span class="tok-n">path</span><span class="tok-o">.</span><span class="tok-n">dirname</span><span class="tok-p">(</span><span class="tok-vm">__file__</span><span class="tok-p">)</span>
+        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span> <span class="tok-o">=</span> <span class="tok-n">AppState</span><span class="tok-p">(</span><span class="tok-n">this_dir</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;/../../demos_assets/images/house.jpg&quot;</span><span class="tok-p">)</span>
+
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span>
+<span class="tok-w">        </span><span class="tok-sd">&quot;&quot;&quot;</span>
+<span class="tok-sd">        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.</span>
+
+<span class="tok-sd">        * Pan and zoom the image with the mouse and the mouse wheel</span>
+<span class="tok-sd">        * Apply Colormaps to the filtered image in the options tab.</span>
+<span class="tok-sd">        &quot;&quot;&quot;</span>
+    <span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">separator</span><span class="tok-p">()</span>
+
+    <span class="tok-n">changed</span> <span class="tok-o">=</span> <span class="tok-n">gui_sobel_params</span><span class="tok-p">(</span><span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span><span class="tok-p">)</span>
+    <span class="tok-k">if</span> <span class="tok-n">changed</span><span class="tok-p">:</span>
+        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">image_sobel</span> <span class="tok-o">=</span> <span class="tok-n">compute_sobel</span><span class="tok-p">(</span>
+            <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span>
+        <span class="tok-p">)</span>
+    <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span><span class="tok-o">.</span><span class="tok-n">refresh_image</span> <span class="tok-o">=</span> <span class="tok-n">changed</span>
+
+    <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">(</span>
+        <span class="tok-s2">&quot;Original&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">immvision_params</span>
+    <span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">(</span>
+        <span class="tok-s2">&quot;Deriv&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">image_sobel</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">immvision_params_sobel</span>
+    <span class="tok-p">)</span>
+
+
+<span class="tok-c1"># The main entry point will run our GUI function</span>
+<span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
+    <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run_with_markdown</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">))</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>==== Integrate Dear ImGui Bundle in your own project in 5 minutes</p>
+</div>
 <div class="paragraph">
 <p>The easiest way to use Dear ImGui Bundle in an external project is to use the template available at <a href="https://github.com/pthom/imgui_bundle_template">https://github.com/pthom/imgui_bundle_template</a>.</p>
 </div>
 <div class="paragraph">
 <p>This template includes everything you need to set up your own project.</p>
 </div>
+<div class="paragraph">
+<p>==== Build from source</p>
 </div>
-<div class="sect3">
-<h4 id="_build_from_source">Build from source</h4>
 <div class="paragraph">
 <p>If you choose to clone this repo, follow these instructions:</p>
 </div>
@@ -671,9 +846,9 @@ make<span class="tok-w"> </span>-j</code></pre>
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>==== Run the C&#43;&#43; demo</p>
 </div>
-<div class="sect3">
-<h4 id="_run_the_c_demo">Run the C&#43;&#43; demo</h4>
 <div class="paragraph">
 <p>If you built ImGuiBundle from source, Simply run <code>build/bin/demo_imgui_bundle</code>.</p>
 </div>
@@ -693,6 +868,7 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </table>
 </div>
 </div>
+</details>
 </div>
 </div>
 </div>
@@ -702,7 +878,7 @@ Consider <code>demo_imgui_bundle</code> as a manual with lots of examples and re
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-31 03:10:57 +0200
+Last updated 2024-05-31 08:46:40 +0200
 </div>
 </div>
 </body>

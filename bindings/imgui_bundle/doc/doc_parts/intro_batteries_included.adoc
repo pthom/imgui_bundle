@@ -4,7 +4,7 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 
 [cols="30,30" grid=none frame=none width=75%]
 |===
-|https://github.com/ocornut/imgui.git[Dear ImGui] : Bloat-free Graphical User interface for {cpp} with minimal dependencies
+|https://github.com/ocornut/imgui.git[Dear ImGui] : Bloat-free Graphical User interface with minimal dependencies
 |image:{url-demo-images}/demo_widgets_imgui.jpg[width=200]
 
 |https://github.com/ocornut/imgui_test_engine[ImGui Test Engine]: Dear ImGui Tests & Automation Engine

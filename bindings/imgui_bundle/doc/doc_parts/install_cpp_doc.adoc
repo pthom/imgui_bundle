@@ -1,14 +1,16 @@
-=== Install for {cpp}
+[[install_cpp]]
+== Install for {cpp}
+
 
 include::_utils.adoc[]
 
-==== Integrate Dear ImGui Bundle in your own project in 5 minutes
+=== Integrate Dear ImGui Bundle in your own project in 5 minutes
 
 The easiest way to use Dear ImGui Bundle in an external project is to use the template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template].
 
 This template includes everything you need to set up your own project.
 
-==== Build from source
+=== Build from source
 
 If you choose to clone this repo, follow these instructions:
 
@@ -36,7 +38,7 @@ cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
 ----
 ****
 
-==== Run the {cpp} demo
+=== Run the {cpp} demo
 
 If you built ImGuiBundle from source, Simply run `build/bin/demo_imgui_bundle`.
 

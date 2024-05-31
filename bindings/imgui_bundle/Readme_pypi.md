@@ -4,14 +4,15 @@ Dear ImGui Bundle.*
 
 [![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-*Click the bird for a
+*Click the bird for
 the interactive manual!*
 
-> Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your
-> first app in 3 lines, batteries included(\*)!
+> Dear ImGui Bundle: an extensive set of ready-to-use widgets and
+> libraries, based on ImGui. Start your first app in 5 lines of code, or
+> less.
 >
-> *Whether you prefer Python or C++, this pack has you covered, with the
-> same ease in both languages.*
+> Whether you prefer Python or C++, this pack has you covered, with the
+> same ease in both languages.
 
 [![sources](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_sources.png)](https://github.com/pthom/imgui_bundle/)
 [![doc](https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png)](https://pthom.github.io/imgui_bundle)
@@ -55,7 +56,7 @@ the interactive manual!*
 For a detailed look at each feature and more information, explore the
 sections listed in the Table of Contents.
 
-**Example code**(\*)
+**Example code**
 
 *A hello world example with Dear ImGui Bundle*
 
@@ -84,12 +85,6 @@ alt="Demo" />
 <figcaption>Dear ImGui Bundle interactive manual</figcaption>
 </figure>
 
-This demonstration is also an interactive manual, similar to the online
-[ImGui
-Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)
-
-**Table of Contents**
-
 # What’s in the pack?
 
 Dear ImGui Bundle includes the following libraries, which are available
@@ -104,7 +99,7 @@ in C++ *and* in Python:
 <tr class="odd">
 <td style="text-align: left;"><p><a
 href="https://github.com/ocornut/imgui.git">Dear ImGui</a> : Bloat-free
-Graphical User interface for C++ with minimal dependencies</p></td>
+Graphical User interface with minimal dependencies</p></td>
 <td style="text-align: left;"><p><img
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_imgui.jpg"
 alt="demo widgets imgui" /></p></td>
@@ -257,11 +252,9 @@ alt="demo widgets command palette" /></p></td>
 
 A big thank you to their authors for their awesome work!
 
-# Build and install instructions
+# Install for Python
 
-## Install for Python
-
-### Install from pypi
+## Install from pypi
 
     pip install imgui-bundle
     pip install opencv-contrib-python
@@ -272,7 +265,7 @@ A big thank you to their authors for their awesome work!
 Note: under windows, you might need to install [msvc
 redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
 
-### Install from source:
+## Install from source:
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
@@ -284,7 +277,7 @@ redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
 
 -   The build process might take up to 5 minutes
 
-### Run the python demo
+## Run the python demo
 
 Simply run `demo_imgui_bundle`.
 
@@ -293,53 +286,6 @@ The source for the demos can be found inside
 
 Consider `demo_imgui_bundle` as an always available manual for Dear
 ImGui Bundle with lots of examples and related code source.
-
-## Install for C++
-
-### Integrate Dear ImGui Bundle in your own project in 5 minutes
-
-The easiest way to use Dear ImGui Bundle in an external project is to
-use the template available at
-<https://github.com/pthom/imgui_bundle_template>.
-
-This template includes everything you need to set up your own project.
-
-### Build from source
-
-If you choose to clone this repo, follow these instructions:
-
-    git clone https://github.com/pthom/imgui_bundle.git
-    cd imgui_bundle
-    git submodule update --init --recursive
-    mkdir build
-    cd build
-    cmake .. -DIMMVISION_FETCH_OPENCV=ON
-    make -j
-
--   Since there are lots of submodules, this might take a few minutes
-
--   The flag `-DIMMVISION_FETCH_OPENCV=ON` is optional. If set, a
-    minimal version of OpenCV will be downloaded a compiled at this
-    stage (this might require a few minutes)
-
-The `immvision` module will only be built if OpenCV can be found.
-Otherwise, it will be ignored, and no error will be emitted.
-
-If you have an existing OpenCV install, set its path via:
-
-    cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
-
-### Run the C++ demo
-
-If you built ImGuiBundle from source, Simply run
-`build/bin/demo_imgui_bundle`.
-
-The source for the demos can be found inside
-[bindings/imgui\_bundle/demos\_cpp](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/).
-
-Consider `demo_imgui_bundle` as a manual with lots of examples and
-related code source. It is always [available
-online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
 # Closing words
 

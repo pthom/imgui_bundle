@@ -7,15 +7,11 @@ First, install Dear ImGui Bundle following the <<install-instructions>>.
 
 Then study the examples below.
 
-include::quickstart_hello.adoc[]
+include::quickstart_hello_python.adoc[]
 
-include::quickstart_about_assets.adoc[]
-
-include::quickstart_assets_addons.adoc[]
+include::quickstart_hello_cpp.adoc[]
 
 include::quickstart_docking.adoc[]
-
-include::quickstart_multiplatform_cpp.adoc[]
 
 include::quickstart_custom_background.adoc[]
 

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle documentation</title>
+<title>Dear ImGui Bundle</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -515,23 +515,25 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </head>
 <body id="index" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle documentation</h1>
+<h1>Dear ImGui Bundle</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root toc-current"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
+<p><span class="toc-root toc-current"><a href="index.html">Dear ImGui Bundle</a></span></p><ul class="sectlevel1">
 <li><a href="introduction.html">What&#8217;s in the pack?</a>
 </li>
-<li><a href="install-instructions.html">Build and install instructions</a>
+<li><a href="install_python.html">Install for Python</a>
+</li>
+<li><a href="install_cpp.html">Install for C&#43;&#43;</a>
 </li>
 <li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
+<li><a href="assets_about.html">Assets</a>
+</li>
 <li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="folders.html">Repository folders structure</a>
+<li><a href="python_specific.html">Usage instructions: additional info for Python users</a>
 </li>
-<li><a href="porting.html">C&#43;&#43; / Python porting advices</a>
-</li>
-<li><a href="python_specific.html">Python specific utilities</a>
+<li><a href="cpp_specific.html">Usage instructions: additional info for C&#43;&#43; users</a>
 </li>
 <li><a href="words_author.html">Closing words</a>
 </li>
@@ -553,16 +555,16 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <p><a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html"><span class="image"><img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png" alt="abc" width="150"></span></a></p>
 </div>
 <div class="paragraph text-center">
-<p><em>Click the bird for a<br>
+<p><em>Click the bird for<br>
 the interactive manual!</em></p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Dear ImGui Bundle: Ready-to-use widgets and libraries. Start your first app in 3 lines, batteries included(*)!</p>
+<p>Dear ImGui Bundle: an extensive set of ready-to-use widgets and libraries, based on ImGui. Start your first app in 5 lines of code, or less.</p>
 </div>
 <div class="paragraph">
-<p><em>Whether you prefer Python or C&#43;&#43;, this pack has you covered, with the same ease in both languages.</em></p>
+<p>Whether you prefer Python or C&#43;&#43;, this pack has you covered, with the same ease in both languages.</p>
 </div>
 </blockquote>
 </div>
@@ -603,7 +605,7 @@ the interactive manual!</em></p>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Example code</strong>(*)</p>
+<p><strong>Example code</strong></p>
 </div>
 <div class="paragraph">
 <p><em>A hello world example with Dear ImGui Bundle</em></p>
@@ -642,18 +644,6 @@ the interactive manual!</em></p>
 </div>
 <div class="title">Figure 1. Dear ImGui Bundle interactive manual</div>
 </div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-This demonstration is also an interactive manual, similar to the online <a href="https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html">ImGui Manual</a>
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p><strong>Table of Contents</strong></p>
 </div>
@@ -665,22 +655,25 @@ This demonstration is also an interactive manual, similar to the online <a href=
 <p><a href="introduction.html">What&#8217;s in the pack?</a></p>
 </li>
 <li>
-<p><a href="install-instructions.html">Build and install instructions</a></p>
+<p><a href="install_python.html">Install for Python</a></p>
+</li>
+<li>
+<p><a href="install_cpp.html">Install for C&#43;&#43;</a></p>
 </li>
 <li>
 <p><a href="quickstart.html">Quick Start &amp; Examples</a></p>
 </li>
 <li>
+<p><a href="assets_about.html">Assets</a></p>
+</li>
+<li>
 <p><a href="manual.html">Usage instructions</a></p>
 </li>
 <li>
-<p><a href="folders.html">Repository folders structure</a></p>
+<p><a href="python_specific.html">Usage instructions: additional info for Python users</a></p>
 </li>
 <li>
-<p><a href="porting.html">C&#43;&#43; / Python porting advices</a></p>
-</li>
-<li>
-<p><a href="python_specific.html">Python specific utilities</a></p>
+<p><a href="cpp_specific.html">Usage instructions: additional info for C&#43;&#43; users</a></p>
 </li>
 <li>
 <p><a href="words_author.html">Closing words</a></p>
@@ -702,7 +695,7 @@ This demonstration is also an interactive manual, similar to the online <a href=
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-31 03:10:57 +0200
+Last updated 2024-05-31 10:12:57 +0200
 </div>
 </div>
 </body>

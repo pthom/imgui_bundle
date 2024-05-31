@@ -1,0 +1,8 @@
+[[python_port]]
+=== Read the libraries doc as a Python developer
+
+include::port_general_advices.adoc[]
+
+include::port_enums.adoc[]
+
+include::port_glfw_callbacks.adoc[]

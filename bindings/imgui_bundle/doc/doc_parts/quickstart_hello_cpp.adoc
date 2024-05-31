@@ -1,11 +1,11 @@
 include::_utils.adoc[]
 
-=== Hello, World
+=== Hello, World in {cpp}
+
 .Hello World
 image::{url-demo-images}/demo_hello.jpg[]
 link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
 
-==== Hello, World in {cpp}
 
 _link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hello_world.cpp]_
 [source,cpp]
@@ -13,9 +13,11 @@ _link:{url-bindings-bundle}/demos_cpp/demos_immapp/demo_hello_world.cpp[demo_hel
 include::../../demos_cpp/demos_immapp/demo_hello_world.cpp[]
 ----
 
-===== Build with cmake, using `imgui_bundle_add_app`
-
+.{cpp} build instructions (click to expand)
+[%collapsible]
 ====
+**Build with cmake, using `imgui_bundle_add_app`**
+
 `imgui_bundle_add_app` is a cmake command, close to `add_executable`, which will:
 
 * automatically link your app to the required libraries (imgui_bundle, OpenGl, glad, etc)
@@ -23,11 +25,7 @@ include::../../demos_cpp/demos_immapp/demo_hello_world.cpp[]
 * add an icon for your app (on desktop and mobile platforms)
 * perform additional customization (app icon and name on mobile platforms, etc)
 
-====
-
-
-
-===== Option 1: using imgui_bundle as a submodule
+**Option 1: using imgui_bundle as a submodule**
 
 First, add imgui_bundle as a submodule:
 [source, bash]
@@ -49,7 +47,7 @@ imgui_bundle_add_app(hello_world hello_world.cpp)
 ----
 
 
-===== Option 2 : Fetch imgui_bundle during compilation
+**Option 2 : Fetch imgui_bundle during compilation**
 
 [source,cmake]
 ----
@@ -69,11 +67,6 @@ imgui_bundle_add_app(hello_world hello_world.cpp)
 
 NOTE: This cmake file is part of a quick start template available at link:https://github.com/pthom/imgui_bundle_template[https://github.com/pthom/imgui_bundle_template]. Refer to it if you wish to customize the application icon.
 
-==== Hello, World in Python
 
-link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+====
 
-[source,python]
-----
-include::../../demos_python/demos_immapp/demo_hello_world.py[]
-----

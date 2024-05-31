@@ -1,0 +1,15 @@
+include::_utils.adoc[]
+
+=== Hello, World in Python
+
+.Hello World
+image::{url-demo-images}/demo_hello.jpg[]
+link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_hello_world.html[Run this demo in your browser]
+
+
+link:{url-bindings-bundle}/demos_python/demos_immapp/demo_hello_world.py[demo_hello_world.py]
+
+[source,python]
+----
+include::../../demos_python/demos_immapp/demo_hello_world.py[]
+----

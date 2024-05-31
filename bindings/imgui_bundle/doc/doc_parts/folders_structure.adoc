@@ -1,5 +1,5 @@
 [[folders]]
-== Repository folders structure
+=== Repository folders structure
 
 ifndef::env_gh_pages[]
 .Click to see a detailed explanation of this repository folder structure.

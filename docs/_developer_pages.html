@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle</title>
+<title>Dear ImGui Bundle documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -435,77 +435,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
-<style>
-pre.pygments .hll { background-color: #ffffcc }
-pre.pygments { background: #f8f8f8; }
-pre.pygments .tok-c { color: #3D7B7B; font-style: italic } /* Comment */
-pre.pygments .tok-err { border: 1px solid #FF0000 } /* Error */
-pre.pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
-pre.pygments .tok-o { color: #666666 } /* Operator */
-pre.pygments .tok-ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
-pre.pygments .tok-cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
-pre.pygments .tok-cp { color: #9C6500 } /* Comment.Preproc */
-pre.pygments .tok-cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
-pre.pygments .tok-c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
-pre.pygments .tok-cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
-pre.pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
-pre.pygments .tok-ge { font-style: italic } /* Generic.Emph */
-pre.pygments .tok-gr { color: #E40000 } /* Generic.Error */
-pre.pygments .tok-gh { color: #000080; font-weight: bold } /* Generic.Heading */
-pre.pygments .tok-gi { color: #008400 } /* Generic.Inserted */
-pre.pygments .tok-go { color: #717171 } /* Generic.Output */
-pre.pygments .tok-gp { color: #000080; font-weight: bold } /* Generic.Prompt */
-pre.pygments .tok-gs { font-weight: bold } /* Generic.Strong */
-pre.pygments .tok-gu { color: #800080; font-weight: bold } /* Generic.Subheading */
-pre.pygments .tok-gt { color: #0044DD } /* Generic.Traceback */
-pre.pygments .tok-kc { color: #008000; font-weight: bold } /* Keyword.Constant */
-pre.pygments .tok-kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
-pre.pygments .tok-kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
-pre.pygments .tok-kp { color: #008000 } /* Keyword.Pseudo */
-pre.pygments .tok-kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
-pre.pygments .tok-kt { color: #B00040 } /* Keyword.Type */
-pre.pygments .tok-m { color: #666666 } /* Literal.Number */
-pre.pygments .tok-s { color: #BA2121 } /* Literal.String */
-pre.pygments .tok-na { color: #687822 } /* Name.Attribute */
-pre.pygments .tok-nb { color: #008000 } /* Name.Builtin */
-pre.pygments .tok-nc { color: #0000FF; font-weight: bold } /* Name.Class */
-pre.pygments .tok-no { color: #880000 } /* Name.Constant */
-pre.pygments .tok-nd { color: #AA22FF } /* Name.Decorator */
-pre.pygments .tok-ni { color: #717171; font-weight: bold } /* Name.Entity */
-pre.pygments .tok-ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
-pre.pygments .tok-nf { color: #0000FF } /* Name.Function */
-pre.pygments .tok-nl { color: #767600 } /* Name.Label */
-pre.pygments .tok-nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
-pre.pygments .tok-nt { color: #008000; font-weight: bold } /* Name.Tag */
-pre.pygments .tok-nv { color: #19177C } /* Name.Variable */
-pre.pygments .tok-ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
-pre.pygments .tok-w { color: #bbbbbb } /* Text.Whitespace */
-pre.pygments .tok-mb { color: #666666 } /* Literal.Number.Bin */
-pre.pygments .tok-mf { color: #666666 } /* Literal.Number.Float */
-pre.pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
-pre.pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
-pre.pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
-pre.pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
-pre.pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
-pre.pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
-pre.pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
-pre.pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
-pre.pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
-pre.pygments .tok-se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
-pre.pygments .tok-sh { color: #BA2121 } /* Literal.String.Heredoc */
-pre.pygments .tok-si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
-pre.pygments .tok-sx { color: #008000 } /* Literal.String.Other */
-pre.pygments .tok-sr { color: #A45A77 } /* Literal.String.Regex */
-pre.pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
-pre.pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
-pre.pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
-pre.pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
-pre.pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
-pre.pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
-pre.pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
-pre.pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
-pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
-</style>
 <script data-goatcounter="https://pthom-imgui-bundle.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <style>.toc-current{font-weight: bold;} .toc-root{font-family: "Open Sans","DejaVu Sans",sans-serif;
@@ -513,27 +442,25 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="devel_docs" class="article toc2 toc-left">
+<body id="_developer_pages" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle</h1>
+<h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle</a></span></p><ul class="sectlevel1">
+<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
 <li><a href="introduction.html">What&#8217;s in the pack?</a>
 </li>
-<li><a href="install_python.html">Install for Python</a>
+<li><a href="_install_for_python.html">Install for Python</a>
 </li>
-<li><a href="install_cpp.html">Install for C&#43;&#43;</a>
+<li><a href="_install_for_c.html">Install for C&#43;&#43;</a>
 </li>
 <li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="assets_about.html">Assets</a>
+<li><a href="assets_about.html">About assets</a>
 </li>
 <li><a href="manual.html">Usage instructions</a>
 </li>
-<li><a href="python_specific.html">Usage instructions: additional info for Python users</a>
-</li>
-<li><a href="cpp_specific.html">Usage instructions: additional info for C&#43;&#43; users</a>
+<li><a href="python_specific.html">Instructions specific for Python users</a>
 </li>
 <li><a href="words_author.html">Closing words</a>
 </li>
@@ -541,140 +468,29 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="faq.html">FAQ</a>
 </li>
-<li><a href="devel_docs.html"><span class="toc-current">Developer docs</span></a>
-<ul class="sectlevel2">
-<li><a href="devel_docs.html#_developer_pages">Developer pages</a>
+<li><a href="devel_docs.html">Developer docs</a>
 </li>
-<li><a href="devel_docs.html#folders">Repository folders structure</a>
-</li>
-</ul>
+<li><a href="_developer_pages.html"><span class="toc-current">Developer pages</span></a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="devel_docs">Developer docs</h2>
+<h2 id="_developer_pages">Developer pages</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_developer_pages">Developer pages</h3>
 <div class="paragraph">
 <p>See <a href="https://pthom.github.io/imgui_bundle/devel_docs/index.html">developer docs</a></p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="folders">Repository folders structure</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>./
-+--<span class="tok-w"> </span>Readme.md<span class="tok-w"> </span>-&gt;<span class="tok-w"> </span>bindings/imgui_bundle/Readme.md<span class="tok-w">           </span><span class="tok-c1"># doc</span>
-+--<span class="tok-w"> </span>Readme_devel.md
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>_example_integration/<span class="tok-w">                         </span><span class="tok-c1"># Demonstrate how to easily use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">                      </span><span class="tok-c1"># imgui_bundle in a C++ app</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                             </span><span class="tok-c1"># (this is a github template available a</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>hello_world.main.cpp<span class="tok-w">                </span><span class="tok-c1"># https://github.com/pthom/imgui_bundle_template</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>imgui_bundle_cmake/<span class="tok-w">                           </span><span class="tok-c1"># imgui_bundle_add_app() :</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># a cmake function you can use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle_add_app.cmake<span class="tok-w">          </span><span class="tok-c1"># to create an app in one line</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>bindings/<span class="tok-w">                                     </span><span class="tok-c1"># root for the python bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle/
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                    </span><span class="tok-c1"># assets/ folder: you need to</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># copy this folder</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># into your app folder if you</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># intend to use markdown</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_assets/<span class="tok-w">              </span><span class="tok-c1"># assets used by demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_cpp/<span class="tok-w">                 </span><span class="tok-c1"># lots of C++ demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_python/<span class="tok-w">              </span><span class="tok-c1"># lots of python demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                     </span><span class="tok-c1"># imgui stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>backends.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>internal.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>implot.pyi<span class="tok-w">                           </span><span class="tok-c1"># implot stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>__init__.py
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>hello_imgui.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...<span class="tok-w">                                  </span><span class="tok-c1"># lots of other libs stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>immapp/<span class="tok-w">                              </span><span class="tok-c1"># immapp: immediate app</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span><span class="tok-p">|</span><span class="tok-w">                               </span><span class="tok-c1"># utilities</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>__init__.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>icons_fontawesome.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>immapp_cpp.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>immapp_utils.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>_imgui_bundle.cpython-38-darwin.so<span class="tok-w">  </span><span class="tok-c1"># imGui_bundle python</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># dynamic library</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>glfw_utils.py
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>python_backends/<span class="tok-w">                   </span><span class="tok-c1"># Backends implemented in pure python</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>cmake/<span class="tok-w">                                                 </span><span class="tok-c1"># Private cmake utilities</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>add_imgui.cmake
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>external/<span class="tok-w">                                              </span><span class="tok-c1"># Root of all bound libraries</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                                       </span><span class="tok-c1"># ImGui root</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/<span class="tok-w">                          </span><span class="tok-c1"># ImGui bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                             </span><span class="tok-c1"># ImGui submodule</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmo/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/<span class="tok-w">                          </span><span class="tok-c1"># ImGuizmo bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmo/<span class="tok-w">                          </span><span class="tok-c1"># ImGuizmo submodule</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmoPure/<span class="tok-w">                      </span><span class="tok-c1"># Manual wrappers to help</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># bindings generation</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...<span class="tok-w"> </span>lots<span class="tok-w"> </span>of<span class="tok-w"> </span>other<span class="tok-w"> </span>bound<span class="tok-w"> </span>libraries/<span class="tok-w">           </span><span class="tok-c1"># Lots of other bound libraries</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span><span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>_doc/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings_generation/<span class="tok-w">                         </span><span class="tok-c1"># Script to generate bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                      </span><span class="tok-c1"># and to facilitate external</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>__init__.py<span class="tok-w">                        </span><span class="tok-c1"># libraries update</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>all_external_libraries.py
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>autogenerate_all.py
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SDL/SDL/<span class="tok-w">                                     </span><span class="tok-c1"># Linked library (without</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># python bindings)</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fplus/fplus/<span class="tok-w">                                 </span><span class="tok-c1"># Library without bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>glfw/glfw<span class="tok-w">                                    </span><span class="tok-c1"># Library without bindings</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>lg_cmake_utils/<span class="tok-w">                                        </span><span class="tok-c1"># Cmake utils for bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># generation</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>lg_cmake_utils.cmake
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>pybind_native_debug/
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Readme.md
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>pybind_native_debug.cpp
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>pybind_native_debug.py
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>src/
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle/<span class="tok-w">                               </span><span class="tok-c1"># main cpp library: almost empty,</span>
-<span class="tok-w">                                                          </span><span class="tok-c1"># but linked to all external libraries</span></code></pre>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="faq.html">FAQ</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle</a></p>
+<p>← Previous: <a href="devel_docs.html">Developer docs</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a></p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-31 10:12:57 +0200
+Last updated 2024-05-31 09:40:10 +0200
 </div>
 </div>
 </body>

@@ -11,6 +11,6 @@ include::doc_parts/front_matter.adoc[]
 
 include::doc_parts/intro.adoc[]
 
-include::doc_parts/install.adoc[]
+include::doc_parts/install_python_doc.adoc[]
 
 include::doc_parts/words_author.adoc[]

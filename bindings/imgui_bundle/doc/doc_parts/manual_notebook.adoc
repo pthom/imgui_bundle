@@ -1,4 +1,4 @@
-=== Usage withing jupyter notebook
+=== Usage within jupyter notebook
 
 include::_utils.adoc[]
 :notebook-example-image: {url-doc-images}/immapp_notebook_example.jpg

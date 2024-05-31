@@ -1,9 +1,12 @@
 [[python_specific]]
-== Python specific utilities
+== Usage instructions: additional info for Python users
 
 include::_utils.adoc[]
 
 :url-bindings-python: https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
+
+include::port_context.adoc[]
+
 
 === Display Matplotlib plots in ImGui
 
@@ -17,5 +20,4 @@ link:{url-bindings-python}/python_backends[python_backends] contains pure python
 
 See link:{url-bindings-python}/python_backends/examples[examples] for more information.
 
-
-
+include::python_port.adoc[]

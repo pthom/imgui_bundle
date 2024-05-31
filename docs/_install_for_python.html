@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Dear ImGui Bundle</title>
+<title>Dear ImGui Bundle documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -513,27 +513,33 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
              .nav-footer{text-align: center; margin-top: auto;}
              .nav-footer > p > a {white-space: nowrap;}</style>
 </head>
-<body id="devel_docs" class="article toc2 toc-left">
+<body id="_install_for_python" class="article toc2 toc-left">
 <div id="header">
-<h1>Dear ImGui Bundle</h1>
+<h1>Dear ImGui Bundle documentation</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
-<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle</a></span></p><ul class="sectlevel1">
+<p><span class="toc-root"><a href="index.html">Dear ImGui Bundle documentation</a></span></p><ul class="sectlevel1">
 <li><a href="introduction.html">What&#8217;s in the pack?</a>
 </li>
-<li><a href="install_python.html">Install for Python</a>
+<li><a href="_install_for_python.html"><span class="toc-current">Install for Python</span></a>
+<ul class="sectlevel2">
+<li><a href="_install_for_python.html#_install_from_pypi">Install from pypi</a>
 </li>
-<li><a href="install_cpp.html">Install for C&#43;&#43;</a>
+<li><a href="_install_for_python.html#_install_from_source">Install from source:</a>
+</li>
+<li><a href="_install_for_python.html#_run_the_python_demo">Run the python demo</a>
+</li>
+</ul>
+</li>
+<li><a href="_install_for_c.html">Install for C&#43;&#43;</a>
 </li>
 <li><a href="quickstart.html">Quick Start &amp; Examples</a>
 </li>
-<li><a href="assets_about.html">Assets</a>
+<li><a href="assets_about.html">About assets</a>
 </li>
 <li><a href="manual.html">Usage instructions</a>
 </li>
 <li><a href="python_specific.html">Usage instructions: additional info for Python users</a>
-</li>
-<li><a href="cpp_specific.html">Usage instructions: additional info for C&#43;&#43; users</a>
 </li>
 <li><a href="words_author.html">Closing words</a>
 </li>
@@ -541,140 +547,86 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </li>
 <li><a href="faq.html">FAQ</a>
 </li>
-<li><a href="devel_docs.html"><span class="toc-current">Developer docs</span></a>
-<ul class="sectlevel2">
-<li><a href="devel_docs.html#_developer_pages">Developer pages</a>
-</li>
-<li><a href="devel_docs.html#folders">Repository folders structure</a>
-</li>
-</ul>
+<li><a href="devel_docs.html">Developer docs</a>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="devel_docs">Developer docs</h2>
+<h2 id="_install_for_python">Install for Python</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_developer_pages">Developer pages</h3>
+<h3 id="_install_from_pypi">Install from pypi</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span></span>pip<span class="tok-w"> </span>install<span class="tok-w"> </span>imgui-bundle
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span>opencv-contrib-python<span class="tok-w"> </span># <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>in order to run the immvision module, install opencv-python or opencv-contrib-python</p>
+</li>
+</ol>
+</div>
 <div class="paragraph">
-<p>See <a href="https://pthom.github.io/imgui_bundle/devel_docs/index.html">developer docs</a></p>
+<p>Note: under windows, you might need to install <a href="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022">msvc redist</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="folders">Repository folders structure</h3>
+<h3 id="_install_from_source">Install from source:</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>./
-+--<span class="tok-w"> </span>Readme.md<span class="tok-w"> </span>-&gt;<span class="tok-w"> </span>bindings/imgui_bundle/Readme.md<span class="tok-w">           </span><span class="tok-c1"># doc</span>
-+--<span class="tok-w"> </span>Readme_devel.md
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>_example_integration/<span class="tok-w">                         </span><span class="tok-c1"># Demonstrate how to easily use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt<span class="tok-w">                      </span><span class="tok-c1"># imgui_bundle in a C++ app</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                             </span><span class="tok-c1"># (this is a github template available a</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>hello_world.main.cpp<span class="tok-w">                </span><span class="tok-c1"># https://github.com/pthom/imgui_bundle_template</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>imgui_bundle_cmake/<span class="tok-w">                           </span><span class="tok-c1"># imgui_bundle_add_app() :</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># a cmake function you can use</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle_add_app.cmake<span class="tok-w">          </span><span class="tok-c1"># to create an app in one line</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>bindings/<span class="tok-w">                                     </span><span class="tok-c1"># root for the python bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle/
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>assets/<span class="tok-w">                    </span><span class="tok-c1"># assets/ folder: you need to</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># copy this folder</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># into your app folder if you</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                              </span><span class="tok-c1"># intend to use markdown</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_assets/<span class="tok-w">              </span><span class="tok-c1"># assets used by demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_cpp/<span class="tok-w">                 </span><span class="tok-c1"># lots of C++ demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>demos_python/<span class="tok-w">              </span><span class="tok-c1"># lots of python demos</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                     </span><span class="tok-c1"># imgui stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>backends.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>internal.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">     </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>implot.pyi<span class="tok-w">                           </span><span class="tok-c1"># implot stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>__init__.py
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>hello_imgui.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...<span class="tok-w">                                  </span><span class="tok-c1"># lots of other libs stubs</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>immapp/<span class="tok-w">                              </span><span class="tok-c1"># immapp: immediate app</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span><span class="tok-p">|</span><span class="tok-w">                               </span><span class="tok-c1"># utilities</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>__init__.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>__init__.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>icons_fontawesome.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>immapp_cpp.pyi
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>immapp_utils.py
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">        </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>_imgui_bundle.cpython-38-darwin.so<span class="tok-w">  </span><span class="tok-c1"># imGui_bundle python</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span><span class="tok-p">|</span><span class="tok-w">                                       </span><span class="tok-c1"># dynamic library</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>glfw_utils.py
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>python_backends/<span class="tok-w">                   </span><span class="tok-c1"># Backends implemented in pure python</span>
-<span class="tok-p">|</span><span class="tok-w">                  </span>+--<span class="tok-w"> </span>py.typed
-<span class="tok-p">|</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>cmake/<span class="tok-w">                                                 </span><span class="tok-c1"># Private cmake utilities</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>add_imgui.cmake
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>external/<span class="tok-w">                                              </span><span class="tok-c1"># Root of all bound libraries</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                                       </span><span class="tok-c1"># ImGui root</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/<span class="tok-w">                          </span><span class="tok-c1"># ImGui bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui/<span class="tok-w">                             </span><span class="tok-c1"># ImGui submodule</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmo/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/<span class="tok-w">                          </span><span class="tok-c1"># ImGuizmo bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmo/<span class="tok-w">                          </span><span class="tok-c1"># ImGuizmo submodule</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>ImGuizmoPure/<span class="tok-w">                      </span><span class="tok-c1"># Manual wrappers to help</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># bindings generation</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...<span class="tok-w"> </span>lots<span class="tok-w"> </span>of<span class="tok-w"> </span>other<span class="tok-w"> </span>bound<span class="tok-w"> </span>libraries/<span class="tok-w">           </span><span class="tok-c1"># Lots of other bound libraries</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span><span class="tok-o">{</span>lib_name<span class="tok-o">}</span>/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>_doc/
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>bindings_generation/<span class="tok-w">                         </span><span class="tok-c1"># Script to generate bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                      </span><span class="tok-c1"># and to facilitate external</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>__init__.py<span class="tok-w">                        </span><span class="tok-c1"># libraries update</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>all_external_libraries.py
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>autogenerate_all.py
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>SDL/SDL/<span class="tok-w">                                     </span><span class="tok-c1"># Linked library (without</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># python bindings)</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>fplus/fplus/<span class="tok-w">                                 </span><span class="tok-c1"># Library without bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>glfw/glfw<span class="tok-w">                                    </span><span class="tok-c1"># Library without bindings</span>
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>lg_cmake_utils/<span class="tok-w">                                        </span><span class="tok-c1"># Cmake utils for bindings</span>
-<span class="tok-p">|</span><span class="tok-w">         </span><span class="tok-p">|</span><span class="tok-w">                                                </span><span class="tok-c1"># generation</span>
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>lg_cmake_utils.cmake
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>...
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>pybind_native_debug/
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>CMakeLists.txt
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>Readme.md
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>pybind_native_debug.cpp
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>pybind_native_debug.py
-<span class="tok-p">|</span>
-+--<span class="tok-w"> </span>src/
-<span class="tok-p">|</span><span class="tok-w">         </span>+--<span class="tok-w"> </span>imgui_bundle/<span class="tok-w">                               </span><span class="tok-c1"># main cpp library: almost empty,</span>
-<span class="tok-w">                                                          </span><span class="tok-c1"># but linked to all external libraries</span></code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span>git<span class="tok-w"> </span>clone<span class="tok-w"> </span>https://github.com/pthom/imgui_bundle.git
+<span class="tok-nb">cd</span><span class="tok-w"> </span>imgui_bundle
+git<span class="tok-w"> </span>submodule<span class="tok-w"> </span>update<span class="tok-w"> </span>--init<span class="tok-w"> </span>--recursive<span class="tok-w"> </span># <b class="conum">(1)</b>
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span>-v<span class="tok-w"> </span>.<span class="tok-w"> </span># <b class="conum">(2)</b>
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span>opencv-contrib-python</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Since there are lots of submodules, this might take a few minutes</p>
+</li>
+<li>
+<p>The build process might take up to 5 minutes</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_run_the_python_demo">Run the python demo</h3>
+<div class="paragraph">
+<p>Simply run <code>demo_imgui_bundle</code>.</p>
+</div>
+<div class="paragraph">
+<p>The source for the demos can be found inside <a href="https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python">bindings/imgui_bundle/demos_python</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Consider <code>demo_imgui_bundle</code> as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>← Previous: <a href="faq.html">FAQ</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle</a></p>
+<p>← Previous: <a href="introduction.html">What&#8217;s in the pack?</a> | ↑ Up: <a href="index.html">Dear ImGui Bundle documentation</a> | Next: <a href="_install_for_c.html">Install for C&#43;&#43;</a> →</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-31 10:12:57 +0200
+Last updated 2024-05-31 09:49:15 +0200
 </div>
 </div>
 </body>
