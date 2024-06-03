@@ -999,6 +999,13 @@ struct AppWindowParams
     // `handleEdgeInsets`: _bool, default = true_. iOS only.
     // If true, HelloImGui will handle the edgeInsets on iOS.
     bool       handleEdgeInsets = true;
+
+    // ----------------- repaint the window during resize -----------------
+    // Very advanced and reserved for advanced C++ users.
+    // If you set this to true, the window will be repainted during resize.
+    // Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
+    // (This API is not stable, as the name suggests, and this is not supported)
+    bool repaintDuringResize_GotchaReentrantRepaint = false;
 };
 // @@md
 

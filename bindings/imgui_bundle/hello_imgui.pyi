@@ -1291,7 +1291,15 @@ class AppWindowParams:
     # `handleEdgeInsets`: _bool, default = true_. iOS only.
     # If True, HelloImGui will handle the edgeInsets on iOS.
     handle_edge_insets: bool = True
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true);    /* original C++ signature */
+
+    # bool repaintDuringResize_GotchaReentrantRepaint = false;    /* original C++ signature */
+    # ----------------- repaint the window during resize -----------------
+    # Very advanced and reserved for advanced C++ users.
+    # If you set this to True, the window will be repainted during resize.
+    # Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
+    # (This API is not stable, as the name suggests, and this is not supported)
+    repaint_during_resize_gotcha_reentrant_repaint: bool = False
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1306,6 +1314,7 @@ class AppWindowParams:
         borderless_highlight_color: ImVec4 = ImVec4(0.2, 0.4, 1.0, 0.3),
         edge_insets: EdgeInsets = EdgeInsets(),
         handle_edge_insets: bool = True,
+        repaint_during_resize_gotcha_reentrant_repaint: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2046,7 +2055,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2056,9 +2065,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = Dir_.down,
+        direction_: ImGuiDir_ = ImGuiDir_Down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
+        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
     ) -> None:
         """Constructor"""
         pass
@@ -2138,7 +2147,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2148,7 +2157,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2221,7 +2230,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2270,7 +2279,7 @@ class DockingParams:
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
         layout_name: str = "Default",
-        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
     ) -> None:

@@ -545,7 +545,7 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::AppWindowParams>
             (m, "AppWindowParams", " @@md#AppWindowParams\n\n AppWindowParams is a struct that defines the application window display params.\nSee https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg\n for details.")
         .def(py::init<>([](
-        std::string windowTitle = std::string(), HelloImGui::WindowGeometry windowGeometry = HelloImGui::WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), HelloImGui::EdgeInsets edgeInsets = HelloImGui::EdgeInsets(), bool handleEdgeInsets = true)
+        std::string windowTitle = std::string(), HelloImGui::WindowGeometry windowGeometry = HelloImGui::WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), HelloImGui::EdgeInsets edgeInsets = HelloImGui::EdgeInsets(), bool handleEdgeInsets = true, bool repaintDuringResize_GotchaReentrantRepaint = false)
         {
             auto r = std::make_unique<HelloImGui::AppWindowParams>();
             r->windowTitle = windowTitle;
@@ -560,9 +560,10 @@ void py_init_module_hello_imgui(py::module& m)
             r->borderlessHighlightColor = borderlessHighlightColor;
             r->edgeInsets = edgeInsets;
             r->handleEdgeInsets = handleEdgeInsets;
+            r->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
             return r;
         })
-        , py::arg("window_title") = std::string(), py::arg("window_geometry") = HelloImGui::WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("resizable") = true, py::arg("hidden") = false, py::arg("borderless") = false, py::arg("borderless_movable") = true, py::arg("borderless_resizable") = true, py::arg("borderless_closable") = true, py::arg("borderless_highlight_color") = ImVec4(0.2f, 0.4f, 1.f, 0.3f), py::arg("edge_insets") = HelloImGui::EdgeInsets(), py::arg("handle_edge_insets") = true
+        , py::arg("window_title") = std::string(), py::arg("window_geometry") = HelloImGui::WindowGeometry(), py::arg("restore_previous_geometry") = false, py::arg("resizable") = true, py::arg("hidden") = false, py::arg("borderless") = false, py::arg("borderless_movable") = true, py::arg("borderless_resizable") = true, py::arg("borderless_closable") = true, py::arg("borderless_highlight_color") = ImVec4(0.2f, 0.4f, 1.f, 0.3f), py::arg("edge_insets") = HelloImGui::EdgeInsets(), py::arg("handle_edge_insets") = true, py::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
         )
         .def_readwrite("window_title", &HelloImGui::AppWindowParams::windowTitle, "`windowTitle`: _string, default=\"\"_. Title of the application window")
         .def_readwrite("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, " `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size,\n  full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._")
@@ -576,6 +577,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("borderless_highlight_color", &HelloImGui::AppWindowParams::borderlessHighlightColor, " `borderlessHighlightColor`:\n   Color of the highlight displayed on resize/move zones.\n   If borderlessHighlightColor.w==0, then the highlightColor will be automatically\n   set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)")
         .def_readwrite("edge_insets", &HelloImGui::AppWindowParams::edgeInsets, " `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui.\n If there is a notch on the iPhone, you should not display inside these insets.\n HelloImGui handles this automatically, if handleEdgeInsets is True and\n if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.\n (warning, these values are updated only after a few frames,\n  they are typically 0 for the first 4 frames)")
         .def_readwrite("handle_edge_insets", &HelloImGui::AppWindowParams::handleEdgeInsets, " `handleEdgeInsets`: _bool, default = true_. iOS only.\n If True, HelloImGui will handle the edgeInsets on iOS.")
+        .def_readwrite("repaint_during_resize_gotcha_reentrant_repaint", &HelloImGui::AppWindowParams::repaintDuringResize_GotchaReentrantRepaint, " ----------------- repaint the window during resize -----------------\n Very advanced and reserved for advanced C++ users.\n If you set this to True, the window will be repainted during resize.\n Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas\n (This API is not stable, as the name suggests, and this is not supported)")
         ;
 
 
