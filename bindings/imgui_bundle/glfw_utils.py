@@ -16,4 +16,5 @@ try:
         return cast(glfw._GLFWwindow, window_pointer)
 
 except ImportError:
-    print("Warning: could not import glfw")
+    pass
+    # print("Warning: could not import glfw")
