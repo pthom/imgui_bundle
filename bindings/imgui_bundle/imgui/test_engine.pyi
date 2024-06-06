@@ -1340,10 +1340,6 @@ class TestContext:
     def yield_(self, count: int = 1) -> None:
         """(private API)"""
         pass
-    # void        YieldUntil(int frame_count);    /* original C++ signature */
-    def yield_until(self, frame_count: int) -> None:
-        """(private API)"""
-        pass
     # void        Sleep(float time_in_second);                /* original C++ signature */
     def sleep(self, time_in_second: float) -> None:
         """(private API)
@@ -1377,6 +1373,7 @@ class TestContext:
     # - SetRef("//$FOCUSED"), ItemClick("Button") --> click "Button" in focused window.
     # See https://github.com/ocornut/imgui_test_engine/wiki/Named-References about using ImGuiTestRef in all ImGuiTestContext functions.
     # Note: SetRef() may take multiple frames to complete if specified ref is an item id.
+    # Note: SetRef() ignores current reference, so they are always absolute path.
     # void        SetRef(ImGuiTestRef ref);    /* original C++ signature */
     @overload
     def set_ref(self, ref: Union[TestRef, str]) -> None:
@@ -1395,6 +1392,8 @@ class TestContext:
         """(private API)"""
         pass
     # Windows
+    # - Use WindowInfo() to access path to child windows, since the paths are internally mangled.
+    # - SetRef(WindowInfo("Parent/Child")->Window) --> set ref to child window.
     # ImGuiTestItemInfo WindowInfo(ImGuiTestRef window_ref, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
     def window_info(self, window_ref: Union[TestRef, str], flags: TestOpFlags = TestOpFlags_None) -> TestItemInfo:
         """(private API)"""

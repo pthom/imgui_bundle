@@ -98,6 +98,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiOldColumnData",
         "ImGuiOldColumns",
         "ImGuiStyleMod",  # uses union
+        "ImGuiTableHeaderData",  # new in v1.90.7
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
@@ -385,6 +386,7 @@ def litgen_options_imgui(
             r"^AddConvexPolyFilled",
             r"^AddConcavePolyFilled",
             r"^ColorPicker4",
+            r"^Shortcut",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(

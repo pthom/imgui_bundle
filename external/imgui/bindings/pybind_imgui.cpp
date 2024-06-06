@@ -1853,7 +1853,7 @@ void py_init_module_imgui_main(py::module& m)
             SetItemTooltip_adapt_variadic_format(fmt);
         },
         py::arg("fmt"),
-        "set a text-only tooltip if preceeding item was hovered. override any previous call to SetTooltip().");
+        "set a text-only tooltip if preceding item was hovered. override any previous call to SetTooltip().");
 
     m.def("begin_popup",
         py::overload_cast<const char *, ImGuiWindowFlags>(ImGui::BeginPopup),
@@ -2069,10 +2069,10 @@ void py_init_module_imgui_main(py::module& m)
         "notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name.");
 
     m.def("dock_space",
-        ImGui::DockSpace, py::arg("id_"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("window_class") = py::none());
+        ImGui::DockSpace, py::arg("dockspace_id"), py::arg("size") = ImVec2(0, 0), py::arg("flags") = 0, py::arg("window_class") = py::none());
 
     m.def("dock_space_over_viewport",
-        ImGui::DockSpaceOverViewport, py::arg("viewport") = py::none(), py::arg("flags") = 0, py::arg("window_class") = py::none());
+        ImGui::DockSpaceOverViewport, py::arg("dockspace_id") = 0, py::arg("viewport") = py::none(), py::arg("flags") = 0, py::arg("window_class") = py::none());
 
     m.def("set_next_window_dock_id",
         ImGui::SetNextWindowDockID,
@@ -2362,6 +2362,12 @@ void py_init_module_imgui_main(py::module& m)
         py::arg("want_capture_keyboard"),
         "Override io.WantCaptureKeyboard flag next frame (said flag is left for your application to handle, typically when True it instructs your app to ignore inputs). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting \"io.WantCaptureKeyboard = want_capture_keyboard\"; after the next NewFrame() call.");
 
+    m.def("shortcut",
+        py::overload_cast<ImGuiKeyChord, ImGuiInputFlags>(ImGui::Shortcut), py::arg("key_chord"), py::arg("flags") = 0);
+
+    m.def("set_next_item_shortcut",
+        ImGui::SetNextItemShortcut, py::arg("key_chord"), py::arg("flags") = 0);
+
     m.def("is_mouse_down",
         py::overload_cast<ImGuiMouseButton>(ImGui::IsMouseDown),
         py::arg("button"),
@@ -2409,12 +2415,12 @@ void py_init_module_imgui_main(py::module& m)
     m.def("is_mouse_dragging",
         py::overload_cast<ImGuiMouseButton, float>(ImGui::IsMouseDragging),
         py::arg("button"), py::arg("lock_threshold") = -1.0f,
-        "is mouse dragging? (if lock_threshold < -1.0, uses io.MouseDraggingThreshold)");
+        "is mouse dragging? (uses io.MouseDraggingThreshold if lock_threshold < 0.0)");
 
     m.def("get_mouse_drag_delta",
         ImGui::GetMouseDragDelta,
         py::arg("button") = 0, py::arg("lock_threshold") = -1.0f,
-        "return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (if lock_threshold < -1.0, uses io.MouseDraggingThreshold)");
+        "return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0 until the mouse moves past a distance threshold at least once (uses io.MouseDraggingThreshold if lock_threshold < 0.0)");
 
     m.def("reset_mouse_drag_delta",
         ImGui::ResetMouseDragDelta, py::arg("button") = 0);
@@ -2594,11 +2600,12 @@ void py_init_module_imgui_main(py::module& m)
         .value("leaf", ImGuiTreeNodeFlags_Leaf, "No collapsing, no arrow (use as a convenience for leaf nodes).")
         .value("bullet", ImGuiTreeNodeFlags_Bullet, "Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag!")
         .value("frame_padding", ImGuiTreeNodeFlags_FramePadding, "Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding().")
-        .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line. In the future we may refactor the hit system to be front-to-back, allowing natural overlaps and then this can become the default.")
-        .value("span_full_width", ImGuiTreeNodeFlags_SpanFullWidth, "Extend hit box to the left-most and right-most edges (bypass the indented area).")
+        .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode.")
+        .value("span_full_width", ImGuiTreeNodeFlags_SpanFullWidth, "Extend hit box to the left-most and right-most edges (cover the indent area).")
+        .value("span_text_width", ImGuiTreeNodeFlags_SpanTextWidth, "Narrow hit box + narrow hovering highlight, will only cover the label text.")
         .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
         .value("nav_left_jumps_back_here", ImGuiTreeNodeFlags_NavLeftJumpsBackHere, "(WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)")
-        .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 15,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible");
+        .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 16,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible");
 
 
     py::enum_<ImGuiPopupFlags_>(m, "PopupFlags_", py::arithmetic(), " Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.\n - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',\n   we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.\n   It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.\n - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.\n   IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter\n   and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.\n - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).")
@@ -2911,15 +2918,28 @@ void py_init_module_imgui_main(py::module& m)
         .value("reserved_for_mod_super", ImGuiKey_ReservedForModSuper, "")
         .value("count", ImGuiKey_COUNT, "")
         .value("im_gui_mod_none", ImGuiMod_None, "")
-        .value("im_gui_mod_ctrl", ImGuiMod_Ctrl, "Ctrl")
+        .value("im_gui_mod_ctrl", ImGuiMod_Ctrl, "Ctrl (non-macOS), Cmd (macOS)")
         .value("im_gui_mod_shift", ImGuiMod_Shift, "Shift")
         .value("im_gui_mod_alt", ImGuiMod_Alt, "Option/Menu")
-        .value("im_gui_mod_super", ImGuiMod_Super, "Cmd/Super/Windows")
-        .value("im_gui_mod_shortcut", ImGuiMod_Shortcut, "Alias for Ctrl (non-macOS) _or_ Super (macOS).")
-        .value("im_gui_mod_mask_", ImGuiMod_Mask_, "5-bits")
+        .value("im_gui_mod_super", ImGuiMod_Super, "Windows/Super (non-macOS), Ctrl (macOS)")
+        .value("im_gui_mod_mask_", ImGuiMod_Mask_, "4-bits")
         .value("named_key_begin", ImGuiKey_NamedKey_BEGIN, "")
         .value("named_key_end", ImGuiKey_NamedKey_END, "")
         .value("named_key_count", ImGuiKey_NamedKey_COUNT, "");
+
+
+    py::enum_<ImGuiInputFlags_>(m, "InputFlags_", py::arithmetic(), " Flags for Shortcut(), SetNextItemShortcut(),\n (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
+        .value("none", ImGuiInputFlags_None, "")
+        .value("repeat", ImGuiInputFlags_Repeat, "Enable repeat. Return True on successive repeats. Default for legacy IsKeyPressed(). NOT Default for legacy IsMouseClicked(). MUST BE == 1.")
+        .value("route_active", ImGuiInputFlags_RouteActive, "Route to active item only.")
+        .value("route_focused", ImGuiInputFlags_RouteFocused, "Route to windows in the focus stack (DEFAULT). Deep-most focused window takes inputs. Active item takes inputs over deep-most focused window.")
+        .value("route_global", ImGuiInputFlags_RouteGlobal, "Global route (unless a focused window or active item registered the route).")
+        .value("route_always", ImGuiInputFlags_RouteAlways, "Do not register route, poll keys directly.")
+        .value("route_over_focused", ImGuiInputFlags_RouteOverFocused, "Option: global route: higher priority than focused route (unless active item in focused route).")
+        .value("route_over_active", ImGuiInputFlags_RouteOverActive, "Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by InputText will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.")
+        .value("route_unless_bg_focused", ImGuiInputFlags_RouteUnlessBgFocused, "Option: global route: will not be applied if underlying background/None is focused (== no Dear ImGui windows are focused). Useful for overlay applications.")
+        .value("route_from_root_window", ImGuiInputFlags_RouteFromRootWindow, "Option: route evaluated from the point of view of root window rather than current window.")
+        .value("tooltip", ImGuiInputFlags_Tooltip, "Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)");
 
 
     py::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", py::arithmetic(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
@@ -3034,10 +3054,11 @@ void py_init_module_imgui_main(py::module& m)
         .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
         .value("tab_border_size", ImGuiStyleVar_TabBorderSize, "float     TabBorderSize")
         .value("tab_bar_border_size", ImGuiStyleVar_TabBarBorderSize, "float     TabBarBorderSize")
-        .value("table_angled_headers_angle", ImGuiStyleVar_TableAngledHeadersAngle, "float  TableAngledHeadersAngle")
+        .value("table_angled_headers_angle", ImGuiStyleVar_TableAngledHeadersAngle, "float     TableAngledHeadersAngle")
+        .value("table_angled_headers_text_align", ImGuiStyleVar_TableAngledHeadersTextAlign, "ImVec2  TableAngledHeadersTextAlign")
         .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
         .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
-        .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float  SeparatorTextBorderSize")
+        .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float     SeparatorTextBorderSize")
         .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
         .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
         .value("docking_separator_size", ImGuiStyleVar_DockingSeparatorSize, "float     DockingSeparatorSize")
@@ -5020,6 +5041,49 @@ void py_init_module_imgui_main(py::module& m)
         .def("__iter__", [](const ImVector<ImGuiStyleMod> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiStyleMod> &v) { return v.size(); })
         ;
+    auto pyClassImVector_ImGuiTableHeaderData =
+        py::class_<ImVector<ImGuiTableHeaderData>>
+            (m, "ImVector_TableHeaderData", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImGuiTableHeaderData>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(py::init<>())
+        .def(py::init<const ImVector<ImGuiTableHeaderData> &>(),
+            py::arg("src"))
+        .def("clear",
+            &ImVector<ImGuiTableHeaderData>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImGuiTableHeaderData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImGuiTableHeaderData>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImGuiTableHeaderData>::size, "(private API)")
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[], py::const_),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("__getitem__",
+            py::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[]),
+            py::arg("i"),
+            "(private API)",
+            pybind11::return_value_policy::reference)
+        .def("push_back",
+            &ImVector<ImGuiTableHeaderData>::push_back,
+            py::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImGuiTableHeaderData>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImGuiTableHeaderData>::push_front,
+            py::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImGuiTableHeaderData> &v) { return py::make_iterator(v.begin(), v.end()); }, py::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImGuiTableHeaderData> &v) { return v.size(); })
+        ;
 
 
     auto pyClassImGuiStyle =
@@ -5057,6 +5121,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("tab_min_width_for_close_button", &ImGuiStyle::TabMinWidthForCloseButton, "Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0 to always show when hovering, set to FLT_MAX to never show close button unless selected.")
         .def_readwrite("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize, "Thickness of tab-bar separator, which takes on the tab active color to denote focus.")
         .def_readwrite("table_angled_headers_angle", &ImGuiStyle::TableAngledHeadersAngle, "Angle of angled headers (supported values range from -50.0 degrees to +50.0 degrees).")
+        .def_readwrite("table_angled_headers_text_align", &ImGuiStyle::TableAngledHeadersTextAlign, "Alignment of angled headers within the cell")
         .def_readwrite("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_readwrite("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_readwrite("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
@@ -5138,7 +5203,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")
         .def_readwrite("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")
         .def_readwrite("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
-        .def_readwrite("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")
+        .def_readwrite("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // Swap Cmd<>Ctrl keys + OS X style text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")
         .def_readwrite("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
         .def_readwrite("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink, "= True           // Enable blinking cursor (optional as some users consider it to be distracting).")
         .def_readwrite("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).")
@@ -5243,7 +5308,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("metrics_render_indices", &ImGuiIO::MetricsRenderIndices, "Indices output during last call to Render() = number of triangles * 3")
         .def_readwrite("metrics_render_windows", &ImGuiIO::MetricsRenderWindows, "Number of visible windows")
         .def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows, "Number of active windows")
-        .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "")
+        .def_readwrite("mouse_delta", &ImGuiIO::MouseDelta, "Mouse delta. Note that this is zero if either current or previous position are invalid (-FLT_MAX,-FLT_MAX), so a disappearing/reappearing mouse won't have a huge delta.")
         .def_readwrite("ctx", &ImGuiIO::Ctx, "Parent UI context (needs to be set explicitly by parent).")
         .def_readwrite("mouse_pos", &ImGuiIO::MousePos, "Mouse position, in pixels. Set to ImVec2(-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)")
         .def_property("mouse_down",
@@ -5262,7 +5327,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")
         .def_readwrite("key_alt", &ImGuiIO::KeyAlt, "Keyboard modifier down: Alt")
         .def_readwrite("key_super", &ImGuiIO::KeySuper, "Keyboard modifier down: Cmd/Super/Windows")
-        .def_readwrite("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. DOES NOT CONTAINS ImGuiMod_Shortcut which is pretranslated). Read-only, updated by NewFrame()")
+        .def_readwrite("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. Read-only, updated by NewFrame()")
         .def_readwrite("want_capture_mouse_unless_popup_close", &ImGuiIO::WantCaptureMouseUnlessPopupClose, "Alternative to WantCaptureMouse: (WantCaptureMouse == True && WantCaptureMouseUnlessPopupClose == False) when a click over None is expected to close a popup.")
         .def_readwrite("mouse_pos_prev", &ImGuiIO::MousePosPrev, "Previous mouse position (note that MouseDelta is not necessary == MousePos-MousePosPrev, in case either position is invalid)")
         .def_property("mouse_clicked_time",
@@ -5330,6 +5395,7 @@ void py_init_module_imgui_main(py::module& m)
             }, [](ImGuiIO& self) {},
             "Track if button was clicked inside a dear imgui window.")
         .def_readwrite("mouse_wheel_request_axis_swap", &ImGuiIO::MouseWheelRequestAxisSwap, "On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.")
+        .def_readwrite("mouse_ctrl_left_as_right_click", &ImGuiIO::MouseCtrlLeftAsRightClick, "(OSX) Set to True when the current click was a ctrl-click that spawned a simulated right click")
         .def_property("mouse_down_duration",
             [](ImGuiIO &self) -> pybind11::array
             {
@@ -5360,7 +5426,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("backend_using_legacy_key_arrays", &ImGuiIO::BackendUsingLegacyKeyArrays, "-1: unknown, 0: using AddKeyEvent(), 1: using legacy io.KeysDown[]")
         .def_readwrite("backend_using_legacy_nav_input_array", &ImGuiIO::BackendUsingLegacyNavInputArray, "0: using AddKeyAnalogEvent(), 1: writing to legacy io.NavInputs[] directly")
         .def_readwrite("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")
-        .def_readwrite("input_queue_characters", &ImGuiIO::InputQueueCharacters, "Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.")
+        .def_readwrite("input_queue_characters", &ImGuiIO::InputQueueCharacters, "")
         .def(py::init<>())
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
@@ -5819,15 +5885,15 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("flags", &ImDrawList::Flags, "Flags, you may poke into these to adjust anti-aliasing settings per-primitive.")
         .def_readwrite("_vtx_current_idx", &ImDrawList::_VtxCurrentIdx, "[Internal] generally == VtxBuffer.Size unless we are past 64K vertices, in which case this gets reset to 0.")
         .def_readwrite("_data", &ImDrawList::_Data, "Pointer to shared draw data (you can use ImGui::GetDrawListSharedData() to get the one from current ImGui context)")
-        .def_readonly("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
         .def_readwrite("_vtx_write_ptr", &ImDrawList::_VtxWritePtr, "[Internal] point within VtxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")
         .def_readwrite("_idx_write_ptr", &ImDrawList::_IdxWritePtr, "[Internal] point within IdxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")
-        .def_readwrite("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
-        .def_readwrite("_texture_id_stack", &ImDrawList::_TextureIdStack, "[Internal]")
         .def_readwrite("_path", &ImDrawList::_Path, "[Internal] current path building")
         .def_readwrite("_cmd_header", &ImDrawList::_CmdHeader, "[Internal] template of active commands. Fields should match those of CmdBuffer.back().")
         .def_readwrite("_splitter", &ImDrawList::_Splitter, "[Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)")
+        .def_readwrite("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
+        .def_readwrite("_texture_id_stack", &ImDrawList::_TextureIdStack, "[Internal]")
         .def_readwrite("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")
+        .def_readonly("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
         .def(py::init<ImDrawListSharedData *>(),
             py::arg("shared_data"),
             "If you want to create ImDrawList instances, pass them ImGui::GetDrawListSharedData() or create and use your own ImDrawListSharedData (so you can use ImDrawList without ImGui)")

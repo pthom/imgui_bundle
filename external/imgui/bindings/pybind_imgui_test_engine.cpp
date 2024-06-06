@@ -842,10 +842,6 @@ void py_init_module_imgui_test_engine(py::module& m)
             &ImGuiTestContext::Yield,
             py::arg("count") = 1,
             "(private API)")
-        .def("yield_until",
-            &ImGuiTestContext::YieldUntil,
-            py::arg("frame_count"),
-            "(private API)")
         .def("sleep",
             &ImGuiTestContext::Sleep,
             py::arg("time_in_second"),
