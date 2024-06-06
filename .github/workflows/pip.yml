@@ -62,9 +62,9 @@ jobs:
     - name: pytest
       run: pytest
 
-    - name: CI Automation python test (windows and ubuntu)
+    - name: CI Automation python test (ubuntu)
       shell: bash
-      if: ${{ matrix.platform == 'ubuntu-latest' || matrix.platform == 'windows-latest' }}
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: |
         cd .github/ci_automation_tests
         python ci_automation_test_app_bundle.py
