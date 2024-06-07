@@ -2483,10 +2483,6 @@ void py_init_module_imgui_internal(py::module& m)
             py::overload_cast<int>(&ImGuiWindow::GetID),
             py::arg("n"),
             "(private API)")
-        .def("get_id_assert_unique",
-            &ImGuiWindow::GetID_AssertUnique,
-            py::arg("str_id"),
-            "(Specific to ImGui Bundle) Calculate unique ID (hash of whole ID stack + given parameter). Will warn if the ID was already used, and advise to call ImGui::PushID() before")
         .def("get_id_from_rectangle",
             &ImGuiWindow::GetIDFromRectangle,
             py::arg("r_abs"),
