@@ -17,7 +17,6 @@ imgui_ctx provide context managers to simplify the use of functions pairs like
 from imgui_bundle import imgui, ImVec2, ImVec4
 from types import TracebackType
 from typing import Optional, Callable, Any, Type
-import logging
 
 
 ChildFlags = int     # see enum imgui.ChildFlags_
@@ -53,12 +52,8 @@ class _BeginEndChild:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            imgui.end_child()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndChild context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        imgui.end_child()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -94,12 +89,8 @@ class _BeginEnd:
         self.expanded, self.opened = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            imgui.end()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEnd context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        imgui.end()
 
     def __bool__(self) -> bool:
         if self.opened is None:
@@ -141,13 +132,9 @@ class _BeginEndListBox:
         self.opened = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.opened:  # only call end_list_box if begin_list_box was successful
-                imgui.end_list_box()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndListBox context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.opened:  # only call end_list_box if begin_list_box was successful
+            imgui.end_list_box()
 
     def __bool__(self) -> bool:
         return self.opened
@@ -179,13 +166,9 @@ class _BeginEndTooltip:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:
-                imgui.end_tooltip()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndTooltip context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:
+            imgui.end_tooltip()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -218,13 +201,8 @@ class _BeginEndMenuMainBar:
         return self
 
     def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:
-                imgui.end_main_menu_bar()
-        finally:
-            if exc_type is not None:
-                logging.error(
-                    "Exception occurred in _BeginEndMenuMainBar context", exc_info=(exc_type, exc_val, exc_tb))
+        if self.visible:
+            imgui.end_main_menu_bar()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -256,13 +234,9 @@ class _BeginEndMenuBar:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_menu_bar()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndMenuBar context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_menu_bar()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -294,13 +268,9 @@ class _BeginEndMenu:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_menu()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndMenu context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_menu()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -332,13 +302,9 @@ class _BeginEndPopup:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_popup()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndPopup context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_popup()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -370,13 +336,9 @@ class _BeginEndPopupModal:
         self.visible, _ = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_popup()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndPopupModal context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_popup()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -413,13 +375,9 @@ class _BeginEndTable:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_table()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndTable context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_table()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -455,13 +413,9 @@ class _BeginEndTabBar:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:  # only call end_list_box if begin_tooltip was successful
-                imgui.end_tab_bar()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndTabBar context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:  # only call end_list_box if begin_tooltip was successful
+            imgui.end_tab_bar()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -493,13 +447,9 @@ class _BeginEndTabItem:
         self.visible, _ = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:
-                imgui.end_tab_item()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndTabItem context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:
+            imgui.end_tab_item()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -531,14 +481,9 @@ class _BeginEndDragDropSource:
         self.is_dragging = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.is_dragging:
-                imgui.end_drag_drop_source()
-        finally:
-            if exc_type is not None:
-                logging.error(
-                    "Exception occurred in _BeginEndDragDropSource context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.is_dragging:
+            imgui.end_drag_drop_source()
 
     def __bool__(self) -> bool:
         return self.is_dragging
@@ -570,14 +515,9 @@ class _BeginEndDragDropTarget:
         self.is_receiving = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.is_receiving:
-                imgui.end_drag_drop_target()
-        finally:
-            if exc_type is not None:
-                logging.error(
-                    "Exception occurred in _BeginEndDragDropTarget context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.is_receiving:
+            imgui.end_drag_drop_target()
 
     def __bool__(self) -> bool:
         return self.is_receiving
@@ -608,12 +548,8 @@ class _BeginEndGroup:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            imgui.end_group()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginEndGroup context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        imgui.end_group()
 
     def __repr__(self) -> str:
         return "{}".format(self.__class__.__name__)
@@ -636,7 +572,7 @@ class _BeginHorizontal:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.end_horizontal()
 
     def __repr__(self) -> str:
@@ -660,7 +596,7 @@ class _BeginVertical:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.end_vertical()
 
     def __repr__(self) -> str:
@@ -683,13 +619,9 @@ class _WithTreeNode:
         self.visible = self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            if self.visible:
-                imgui.tree_pop()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _WithTreeNode context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:
+            imgui.tree_pop()
 
     def __bool__(self) -> bool:
         return self.visible
@@ -719,12 +651,8 @@ class _WithPushID:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            imgui.pop_id()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _WithPushID context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        imgui.pop_id()
 
     def __repr__(self) -> str:
         return self.__class__.__name__
@@ -748,12 +676,8 @@ class _WithPushFont:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            imgui.pop_font()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _WithPushID context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        imgui.pop_font()
 
     def __repr__(self) -> str:
         return self.__class__.__name__
@@ -773,7 +697,7 @@ class _WithPushStyleColor:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_style_color()
 
     def __repr__(self) -> str:
@@ -794,7 +718,7 @@ class _WithPushStyleVar:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_style_var()
 
     def __repr__(self) -> str:
@@ -815,7 +739,7 @@ class _WithPushItemWidth:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_item_width()
 
     def __repr__(self) -> str:
@@ -836,7 +760,7 @@ class _WithPushTextWrapPos:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_text_wrap_pos()
 
     def __repr__(self) -> str:
@@ -857,7 +781,7 @@ class _WithPushButtonRepeat:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback):
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_button_repeat()
 
     def __repr__(self) -> str:
@@ -879,7 +803,7 @@ class _WithPushClipRect:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback):
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_clip_rect()
 
     def __repr__(self) -> str:
@@ -904,7 +828,7 @@ class _WithPushTabStop:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback):
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         imgui.pop_tab_stop()
 
     def __repr__(self) -> str:

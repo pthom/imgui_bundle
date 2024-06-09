@@ -10,7 +10,6 @@ from imgui_bundle import ImVec2, ImVec4
 from imgui_bundle import imgui_node_editor as ed
 from types import TracebackType
 from typing import Optional, Callable, Any, Type
-import logging
 
 
 OptExceptType = Optional[Type[BaseException]]
@@ -34,12 +33,8 @@ class _Begin:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _Begin context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -60,12 +55,8 @@ class _BeginNode:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_node()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginNode context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_node()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -86,12 +77,8 @@ class _BeginPin:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_pin()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginPin context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_pin()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -112,12 +99,8 @@ class _BeginCreate:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_create()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginCreate context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_create()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -138,12 +121,8 @@ class _BeginDelete:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_delete()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginDelete context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_delete()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -164,12 +143,8 @@ class _BeginGroupHint:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_group_hint()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginGroupHint context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_group_hint()
 
     def __repr__(self):
         return self.__class__.__name__
@@ -190,12 +165,8 @@ class _BeginShortcut:
         self._enter_callback()
         return self
 
-    def __exit__(self, exc_type: OptExceptType, exc_val: OptBaseException, exc_tb: OptTraceback) -> None:
-        try:
-            ed.end_shortcut()
-        finally:
-            if exc_type is not None:
-                logging.error("Exception occurred in _BeginShortcut context", exc_info=(exc_type, exc_val, exc_tb))
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        ed.end_shortcut()
 
     def __repr__(self):
         return self.__class__.__name__
