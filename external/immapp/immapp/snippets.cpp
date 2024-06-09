@@ -82,7 +82,7 @@ namespace Snippets
             width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
 
         auto id = ImGui::GetID(snippetData.Code.c_str());
-        ImGui::PushID(id);
+        ImGui::PushID(&snippetData);
         static std::map<ImGuiID, TextEditor> gEditors;
         static std::map<ImGuiID, double> timeClickCopyButton;
 
