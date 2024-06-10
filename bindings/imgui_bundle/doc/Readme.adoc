@@ -331,8 +331,10 @@ A big thank you to their authors for their awesome work!
 ----
 pip install imgui-bundle
 pip install opencv-contrib-python # <1>
+pip install pyGLM # <2>
 ----
 <1> in order to run the immvision module, install opencv-python or opencv-contrib-python (NB: the headless versions of these packages, such as opencv-python-headless, also work)
+<2> in order to run the demo, install pyGLM
 
 Note: under windows, you might need to install https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022[msvc redist].
 
