@@ -338,6 +338,8 @@ pip install pyGLM # <2>
 
 Note: under windows, you might need to install https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022[msvc redist].
 
+Note: under MacOS, you may run into problems where the binary wheel is not used and pip will try to compile the source distribution. This will fail if you do not have XCode installed and set up. Issue the command `SYSTEM_VERSION_COMPAT=0 pip install --only-binary=:all: imgui_bundle` as a workaround.
+
 === Install from source:
 [source, bash]
 ----
