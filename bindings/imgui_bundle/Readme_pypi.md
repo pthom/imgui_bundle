@@ -257,21 +257,38 @@ A big thank you to their authors for their awesome work!
 ## Install from pypi
 
     pip install imgui-bundle
-    pip install opencv-contrib-python
+    pip install opencv-python
+    pip install pyGLM
 
--   in order to run the immvision module, install opencv-python or
-    opencv-contrib-python
+-   imgui\_bundle: Binary wheels are available for Windows, MacOS and
+    Linux. If a compilation from source is needed, the build process
+    might take up to 5 minutes, and will require an internet connection.
 
-Note: under windows, you might need to install [msvc
-redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
+-   OpenCV: in order to run the immvision module, install opencv-python.
+    The alternative OpenCV versions, such as opencv-python-headless
+    (headless) opencv-contrib-python (with extra modules) also work.
 
-## Install from source:
+-   pyGLM: in order to run the demo, install pyGLM
+
+**Platform notes**
+
+-   *Windows*: Under windows, you might need to install [msvc
+    redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
+
+-   *macOS* : under macOS, if a binary wheel is not available (e.g. for
+    older macOS versions), pip will try to compile from source. This
+    might fail if you do not have XCode installed. In this case, install
+    imgui-bundle with the following command
+    `SYSTEM_VERSION_COMPAT=0 pip install --only-binary=:all: imgui_bundle`
+
+## Install from source
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
     git submodule update --init --recursive
     pip install -v .
-    pip install opencv-contrib-python
+    pip install opencv-python
+    pip install pyGLM
 
 -   Since there are lots of submodules, this might take a few minutes
 
