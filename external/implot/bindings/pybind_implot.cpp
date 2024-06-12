@@ -529,7 +529,7 @@ void py_init_module_implot(py::module& m)
         .def_readwrite("annotation_padding", &ImPlotStyle::AnnotationPadding, "= 2,2     text padding around annotation labels")
         .def_readwrite("fit_padding", &ImPlotStyle::FitPadding, "= 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")
         .def_readwrite("plot_default_size", &ImPlotStyle::PlotDefaultSize, "= 400,300 default size used when ImVec2(0,0) is passed to BeginPlot")
-        .def_readwrite("plot_min_size", &ImPlotStyle::PlotMinSize, "")
+        .def_readwrite("plot_min_size", &ImPlotStyle::PlotMinSize, "= 200,150 minimum size plot frame can be when shrunk")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",
