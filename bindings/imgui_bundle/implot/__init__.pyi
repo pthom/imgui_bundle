@@ -991,8 +991,27 @@ class Style:
     # ImVec2  PlotDefaultSize;    /* original C++ signature */
     plot_default_size: ImVec2  # = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot
     # ImVec2  PlotMinSize;    /* original C++ signature */
-    plot_min_size: ImVec2  # = 200,150 minimum size plot frame can be when shrunk
-    # style colors
+    plot_min_size: ImVec2
+    # = 200,150 minimum size plot frame can be when shrunk
+
+    # [ADAPT_IMGUI_BUNDLE]
+    #                             #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # python adapter for ImPlotStyle::Colors[ImPlotCol_COUNT]
+    # You can query and modify those values (0 <= idxColor < implot.Col_.count)
+
+    # inline IMPLOT_API  ImVec4& Color_(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImPlotCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
+    def color_(self, idx_color: int) -> ImVec4:
+        """Array of styling colors (index from implot.Col_.xxx)"""
+        pass
+    # inline IMPLOT_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImPlotCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
+    def set_color_(self, idx_color: int, color: ImVec4) -> None:
+        """Array of styling colors (index from implot.Col_.xxx)"""
+        pass
+    #                             #endif
+    #
+    # [/ADAPT_IMGUI_BUNDLE]
+
     # colormap
     # ImPlotColormap Colormap;    /* original C++ signature */
     colormap: Colormap  # The current colormap. Set this to either an ImPlotColormap_ enum or an index returned by AddColormap.
