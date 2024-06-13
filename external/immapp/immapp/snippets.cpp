@@ -75,6 +75,19 @@ namespace Snippets
     }
 #endif // #ifdef __EMSCRIPTEN__
 
+    static std::string AddFinalEmptyLineIfMissing(const std::string &s)
+    {
+        if (s.empty())
+            return s;
+        bool hasEmptyLine = (s.back() == '\n');
+        if (hasEmptyLine)
+            return s;
+        else
+        {
+            printf("Adding final empty line last=%c\n", s.back());
+            return s + "\n";
+        }
+    }
 
     void ShowCodeSnippet(const SnippetData& snippetData, float width, int overrideHeightInLines)
     {
@@ -82,7 +95,7 @@ namespace Snippets
             width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
 
         auto id = ImGui::GetID(snippetData.Code.c_str());
-        ImGui::PushID(&snippetData);
+        ImGui::PushID(id);
         static std::map<ImGuiID, TextEditor> gEditors;
         static std::map<ImGuiID, double> timeClickCopyButton;
 
@@ -98,7 +111,9 @@ namespace Snippets
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
             std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;
-            displayedCode += "\n"; // add final empty line, so that the editor shows all
+            if (snippetData.AddFinalEmptyLine)
+                displayedCode = AddFinalEmptyLineIfMissing(displayedCode);
+
             if (editor.GetText() != displayedCode)
                 editor.SetText(displayedCode);
         }
@@ -129,7 +144,7 @@ namespace Snippets
 
             if ((snippetData.MaxHeightInLines > 0) && (nbVisibleLines > snippetData.MaxHeightInLines))
                 nbVisibleLines = snippetData.MaxHeightInLines;
-            editorSize.y = lineHeight * (nbVisibleLines + 1);
+            editorSize.y = lineHeight * (nbVisibleLines);
         }
 
         if (hasTitleLine)

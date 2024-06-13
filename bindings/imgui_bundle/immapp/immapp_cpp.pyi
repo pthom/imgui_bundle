@@ -360,6 +360,10 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             True  # Keep the code indentation, but remove main indentation,
         )
         # so that the displayed code start at column 1
+
+        add_final_empty_line: bool = (
+            False  # Add an empty line at the end of the code if missing
+        )
         def __init__(
             self,
             code: str = "",
@@ -373,6 +377,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             read_only: bool = False,
             border: bool = False,
             de_indent_code: bool = True,
+            add_final_empty_line: bool = False,
         ) -> None:
             """Auto-generated default constructor with named params"""
             pass

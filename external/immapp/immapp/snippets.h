@@ -60,6 +60,8 @@ namespace Snippets
 
         bool DeIndentCode = true;           // Keep the code indentation, but remove main indentation,
                                             // so that the displayed code start at column 1
+
+        bool AddFinalEmptyLine = false;     // Add an empty line at the end of the code if missing
     };
 
 

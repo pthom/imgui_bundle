@@ -240,7 +240,7 @@ void py_init_module_immapp_cpp(py::module& m)
             py::class_<Snippets::SnippetData>
                 (pyNsSnippets, "SnippetData", "")
             .def(py::init<>([](
-            std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true)
+            std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
             {
                 auto r = std::make_unique<Snippets::SnippetData>();
                 r->Code = Code;
@@ -254,9 +254,10 @@ void py_init_module_immapp_cpp(py::module& m)
                 r->ReadOnly = ReadOnly;
                 r->Border = Border;
                 r->DeIndentCode = DeIndentCode;
+                r->AddFinalEmptyLine = AddFinalEmptyLine;
                 return r;
             })
-            , py::arg("code") = "", py::arg("language") = Snippets::DefaultSnippetLanguage(), py::arg("palette") = Snippets::SnippetTheme::Light, py::arg("show_copy_button") = true, py::arg("show_cursor_position") = true, py::arg("displayed_filename") = std::string{}, py::arg("height_in_lines") = 0, py::arg("max_height_in_lines") = 40, py::arg("read_only") = false, py::arg("border") = false, py::arg("de_indent_code") = true
+            , py::arg("code") = "", py::arg("language") = Snippets::DefaultSnippetLanguage(), py::arg("palette") = Snippets::SnippetTheme::Light, py::arg("show_copy_button") = true, py::arg("show_cursor_position") = true, py::arg("displayed_filename") = std::string{}, py::arg("height_in_lines") = 0, py::arg("max_height_in_lines") = 40, py::arg("read_only") = false, py::arg("border") = false, py::arg("de_indent_code") = true, py::arg("add_final_empty_line") = false
             )
             .def_readwrite("code", &Snippets::SnippetData::Code, "")
             .def_readwrite("language", &Snippets::SnippetData::Language, "")
@@ -269,6 +270,7 @@ void py_init_module_immapp_cpp(py::module& m)
             .def_readwrite("read_only", &Snippets::SnippetData::ReadOnly, "Snippets are read-only by default")
             .def_readwrite("border", &Snippets::SnippetData::Border, "Draw a border around the editor")
             .def_readwrite("de_indent_code", &Snippets::SnippetData::DeIndentCode, "Keep the code indentation, but remove main indentation,")
+            .def_readwrite("add_final_empty_line", &Snippets::SnippetData::AddFinalEmptyLine, "Add an empty line at the end of the code if missing")
             ;
 
 
