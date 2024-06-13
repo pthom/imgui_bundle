@@ -6636,6 +6636,12 @@ void py_init_module_imgui_main(py::module& m)
     //
     // Add math operators to ImVec2
     //
+    pyClassImVec2.def("__eq__", [](const ImVec2& self, const ImVec2& other) -> bool {
+        return self.x == other.x && self.y == other.y;
+    });
+    pyClassImVec2.def("__ne__", [](const ImVec2& self, const ImVec2& other) -> bool {
+        return self.x != other.x || self.y != other.y;
+    });
     pyClassImVec2.def("__add__", [](const ImVec2& self, const ImVec2& other) -> ImVec2 {
         return ImVec2(self.x + other.x, self.y + other.y);
     });
@@ -6763,6 +6769,12 @@ void py_init_module_imgui_main(py::module& m)
     //
     // Add math operators to ImVec4
     //
+    pyClassImVec4.def("__eq__", [](const ImVec4& self, const ImVec4& other) -> bool {
+        return self.x == other.x && self.y == other.y && self.z == other.z && self.w == other.w;
+    });
+    pyClassImVec4.def("__ne__", [](const ImVec4& self, const ImVec4& other) -> bool {
+        return self.x != other.x || self.y != other.y || self.z != other.z || self.w != other.w;
+    });
     pyClassImVec4.def("__add__", [](const ImVec4& self, const ImVec4& other) -> ImVec4 {
         return ImVec4(self.x + other.x, self.y + other.y, self.z + other.z, self.w + other.w);
     });
@@ -6917,6 +6929,13 @@ void py_init_module_imgui_main(py::module& m)
             return ImColor(r);
         }
     ));
+    pyClassImColor.def("__eq__", [](const ImColor& self, const ImColor& other) -> bool {
+        return self.Value.x == other.Value.x && self.Value.y == other.Value.y && self.Value.z == other.Value.z && self.Value.w == other.Value.w;
+    });
+    pyClassImColor.def("__ne__", [](const ImColor& self, const ImColor& other) -> bool {
+        return self.Value.x != other.Value.x || self.Value.y != other.Value.y || self.Value.z != other.Value.z || self.Value.w != other.Value.w;
+    });
+
 
     //
     //  Patches to ImFontAtlas
