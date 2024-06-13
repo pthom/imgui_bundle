@@ -63,6 +63,10 @@ def make_gui() -> GuiFunction:
             "Python: display matplotlib figures in an ImGui window (animated or static)",
         ),
         DemoApp(
+            "demo_pydantic",
+            "Python: How to use ImVec2 and ImVec4 with Pydantic",
+        ),
+        DemoApp(
             "imgui_example_glfw_opengl3",
             "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
             "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",

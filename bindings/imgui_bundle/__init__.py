@@ -38,6 +38,9 @@ from imgui_bundle.im_col32 import IM_COL32
 from imgui_bundle import imgui_ctx as imgui_ctx
 from imgui_bundle import imgui_node_editor_ctx as imgui_node_editor_ctx
 
+from imgui_bundle import imgui_pydantic as imgui_pydantic
+from imgui_bundle.imgui_pydantic import ImVec4_Pydantic, ImVec2_Pydantic, ImColor_Pydantic
+
 # Glfw setup:
 # By importing imgui_bundle.glfw_utils, we make sure that glfw provided by pip will use our glfw dynamic library.
 # (imgui_bundle.glfw_utils will call _set_glfw_pip_search_path automatically)
@@ -76,6 +79,8 @@ __all__ = [
     "imgui_color_text_edit",
     "imgui_node_editor",
     "imgui_toggle",
+    "imgui_ctx",
+    "imgui_pydantic",
     # Utilities related to ImGui
     "icons_fontawesome",
     "icons_fontawesome_6",
@@ -87,6 +92,10 @@ __all__ = [
     "ImColor",
     "FLT_MIN",
     "FLT_MAX",
+    # Pydantic types
+    "ImVec4_Pydantic",
+    "ImVec2_Pydantic",
+    "ImColor_Pydantic",
     # Base utilities
     "__version__",
     "compilation_time",

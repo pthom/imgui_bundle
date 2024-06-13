@@ -27,6 +27,7 @@ dependencies = [
     "glfw",
     "PyOpenGL",
     "pillow",
+    "pydantic",
 ]
 
 [project.optional-dependencies]

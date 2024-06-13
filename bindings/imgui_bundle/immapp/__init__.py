@@ -39,7 +39,7 @@ from imgui_bundle.immapp.immapp_utils import (
     run_anon_block as run_anon_block,
 )
 from imgui_bundle.immapp.immapp_notebook import run_nb as run_nb
-
+from imgui_bundle.immapp import immapp_code_utils
 
 from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
     RunnerParams as RunnerParams,
@@ -75,4 +75,5 @@ __all__ = [
     "show_resizable_plot_in_node_editor_em",
     "widget_with_resize_handle_in_node_editor",
     "widget_with_resize_handle_in_node_editor_em",
+    "immapp_code_utils",
 ]
