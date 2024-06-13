@@ -383,6 +383,15 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             pass
 
     @staticmethod
+    def show_editable_code_snippet(
+        label_id: str,
+        snippet_data: SnippetData,
+        width: float = 0.0,
+        override_height_in_lines: int = 0,
+    ) -> bool:
+        pass
+
+    @staticmethod
     def show_code_snippet(
         snippet_data: SnippetData, width: float = 0.0, override_height_in_lines: int = 0
     ) -> None:

@@ -65,6 +65,7 @@ namespace Snippets
     };
 
 
+    bool ShowEditableCodeSnippet(const std::string& label_id, SnippetData* snippetData, float width = 0.f, int overrideHeightInLines = 0);
     void ShowCodeSnippet(const SnippetData& snippetData, float width = 0.f, int overrideHeightInLines = 0);
     void ShowSideBySideSnippets(const SnippetData& snippet1, const SnippetData& snippet2,
                                 bool hideIfEmpty = true, bool equalVisibleLines = true);

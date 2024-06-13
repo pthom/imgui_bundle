@@ -274,6 +274,9 @@ void py_init_module_immapp_cpp(py::module& m)
             ;
 
 
+        pyNsSnippets.def("show_editable_code_snippet",
+            Snippets::ShowEditableCodeSnippet, py::arg("label_id"), py::arg("snippet_data"), py::arg("width") = 0.f, py::arg("override_height_in_lines") = 0);
+
         pyNsSnippets.def("show_code_snippet",
             Snippets::ShowCodeSnippet, py::arg("snippet_data"), py::arg("width") = 0.f, py::arg("override_height_in_lines") = 0);
 

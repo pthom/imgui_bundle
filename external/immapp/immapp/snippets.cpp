@@ -89,13 +89,15 @@ namespace Snippets
         }
     }
 
-    void ShowCodeSnippet(const SnippetData& snippetData, float width, int overrideHeightInLines)
+    bool ShowEditableCodeSnippet(const std::string& label_id, SnippetData* snippetDataPtr, float width, int overrideHeightInLines)
     {
+        SnippetData& snippetData = *snippetDataPtr;
+
         if (width == 0.f)
             width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
 
-        auto id = ImGui::GetID(snippetData.Code.c_str());
-        ImGui::PushID(id);
+        auto id = ImGui::GetID(label_id.c_str());
+        ImGui::PushID(label_id.c_str());
         static std::map<ImGuiID, TextEditor> gEditors;
         static std::map<ImGuiID, double> timeClickCopyButton;
 
@@ -144,7 +146,7 @@ namespace Snippets
 
             if ((snippetData.MaxHeightInLines > 0) && (nbVisibleLines > snippetData.MaxHeightInLines))
                 nbVisibleLines = snippetData.MaxHeightInLines;
-            editorSize.y = lineHeight * (nbVisibleLines);
+            editorSize.y = lineHeight * (float) nbVisibleLines;
         }
 
         if (hasTitleLine)
@@ -198,7 +200,11 @@ namespace Snippets
         }
 
         ImGui::PushFont(ImGuiMd::GetCodeFont());
-        editor.Render(std::to_string(id).c_str(), false, editorSize, snippetData.Border);
+
+        bool changed = editor.Render(std::to_string(id).c_str(), false, editorSize, snippetData.Border);
+        if (changed && !snippetData.ReadOnly)
+            snippetData.Code = editor.GetText();
+
 #ifdef __EMSCRIPTEN__
         _ProcessClipboard_Emscripten(editor);
 #endif
@@ -206,7 +212,19 @@ namespace Snippets
         ImGui::PopFont();
         ImGui::EndGroup();
         ImGui::PopID();
+
+        return changed;
     }
+
+    void ShowCodeSnippet(const SnippetData& snippetData, float width, int overrideHeightInLines)
+    {
+        auto code = snippetData.Code;
+        auto nonConstSnippedData = const_cast<SnippetData&>(snippetData);  // I know...
+        std::string labelId = nonConstSnippedData.Code;
+        ShowEditableCodeSnippet(labelId, &nonConstSnippedData, width, overrideHeightInLines);
+        nonConstSnippedData.Code = code;
+    }
+
 
 
     float _EditorWidth(int nbSideBySideEditors)
