@@ -6690,6 +6690,18 @@ void py_init_module_imgui_main(py::module& m)
         return ImVec2(-self.x, -self.y);
     });
 
+    // Pickle support
+    pyClassImVec2.def(py::pickle(
+        [](const ImVec2 &p) { // __getstate__
+            return py::make_tuple(p.x, p.y);
+        },
+        [](py::tuple t) { // __setstate__
+            if (t.size() != 2)
+                throw std::runtime_error("ImVec2 unpickling failed");
+            ImVec2 r(t[0].cast<float>(), t[1].cast<float>());
+            return r;
+        }
+    ));
 
     //
     //  Patches to ImVec4
@@ -6817,6 +6829,19 @@ void py_init_module_imgui_main(py::module& m)
         return ImVec4(-self.x, -self.y, -self.z, -self.w);
     });
 
+    // Pickle support
+    pyClassImVec4.def(py::pickle(
+        [](const ImVec4 &p) { // __getstate__
+            return py::make_tuple(p.x, p.y, p.z, p.w);
+        },
+        [](py::tuple t) { // __setstate__
+            if (t.size() != 4)
+                throw std::runtime_error("ImVec4 unpickling failed");
+            ImVec4 r(t[0].cast<float>(), t[1].cast<float>(), t[2].cast<float>(), t[3].cast<float>());
+            return r;
+        }
+    ));
+
     //
     //  Patches to ImColor
     //
@@ -6879,6 +6904,19 @@ void py_init_module_imgui_main(py::module& m)
     pyClassImColor.def(py::init([](ImColor imc) {
         return ImColor(imc.Value.x, imc.Value.y, imc.Value.z, imc.Value.w);
     }), py::arg("rgba"));
+
+    // Pickle support
+    pyClassImColor.def(py::pickle(
+        [](const ImColor &p) { // __getstate__
+            return py::make_tuple(p.Value.x, p.Value.y, p.Value.z, p.Value.w);
+        },
+        [](py::tuple t) { // __setstate__
+            if (t.size() != 4)
+                throw std::runtime_error("ImColor unpickling failed");
+            ImVec4 r(t[0].cast<float>(), t[1].cast<float>(), t[2].cast<float>(), t[3].cast<float>());
+            return ImColor(r);
+        }
+    ));
 
     //
     //  Patches to ImFontAtlas
