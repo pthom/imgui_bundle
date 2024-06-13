@@ -39,7 +39,11 @@ from imgui_bundle import imgui_ctx as imgui_ctx
 from imgui_bundle import imgui_node_editor_ctx as imgui_node_editor_ctx
 
 from imgui_bundle import imgui_pydantic as imgui_pydantic
-from imgui_bundle.imgui_pydantic import ImVec4_Pydantic, ImVec2_Pydantic, ImColor_Pydantic
+from imgui_bundle.imgui_pydantic import (
+    ImVec4_Pydantic as ImVec4_Pydantic,
+    ImVec2_Pydantic as ImVec2_Pydantic,
+    ImColor_Pydantic as ImColor_Pydantic,
+)
 
 # Glfw setup:
 # By importing imgui_bundle.glfw_utils, we make sure that glfw provided by pip will use our glfw dynamic library.
