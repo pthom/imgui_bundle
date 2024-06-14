@@ -4427,6 +4427,19 @@ class Window:
     def get_id(self, n: int) -> ID:
         """(private API)"""
         pass
+    # Addition to ImGui Bundle: a version of GetID that warns if the ID was already used
+    # IMGUI_API ImGuiID       GetID_AssertUnique(const char* str_id);      /* original C++ signature */
+    def get_id_assert_unique(self, str_id: str) -> ID:
+        """(Specific to ImGui Bundle) Calculate unique ID (hash of whole ID stack + given parameter). Will warn if the ID was already used, and advise to call ImGui::PushID() before"""
+        pass
+
+    class GetID_AssertUnique_DisableInScope:
+        """Instantiate GetID_AssertUnique_DisableInScope in a function or scope to temporarily disable the check"""
+
+        # GetID_AssertUnique_DisableInScope();    /* original C++ signature */
+        def __init__(self) -> None:
+            pass
+
     # ImGuiID     GetIDFromRectangle(const ImRect& r_abs);    /* original C++ signature */
     def get_id_from_rectangle(self, r_abs: ImRect) -> ID:
         """(private API)"""

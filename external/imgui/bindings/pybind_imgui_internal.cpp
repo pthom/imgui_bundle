@@ -2357,7 +2357,17 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindow =
         py::class_<ImGuiWindow>
-            (m, "Window", "Storage for one window")
+            (m, "Window", "Storage for one window");
+
+    { // inner classes & enums of Window
+        auto pyClassImGuiWindow_ClassGetID_AssertUnique_DisableInScope =
+            py::class_<ImGuiWindow::GetID_AssertUnique_DisableInScope>
+                (pyClassImGuiWindow, "GetID_AssertUnique_DisableInScope", "Instantiate GetID_AssertUnique_DisableInScope in a function or scope to temporarily disable the check")
+            .def(py::init<>())
+            ;
+    } // end of inner classes & enums of Window
+
+    pyClassImGuiWindow
         .def_readwrite("ctx", &ImGuiWindow::Ctx, "Parent UI context (needs to be set explicitly by parent).")
         .def_readonly("name", &ImGuiWindow::Name, "Window name, owned by the window.")
         .def_readwrite("id_", &ImGuiWindow::ID, "== ImHashStr(Name)")
@@ -2483,6 +2493,10 @@ void py_init_module_imgui_internal(py::module& m)
             py::overload_cast<int>(&ImGuiWindow::GetID),
             py::arg("n"),
             "(private API)")
+        .def("get_id_assert_unique",
+            &ImGuiWindow::GetID_AssertUnique,
+            py::arg("str_id"),
+            "(Specific to ImGui Bundle) Calculate unique ID (hash of whole ID stack + given parameter). Will warn if the ID was already used, and advise to call ImGui::PushID() before")
         .def("get_id_from_rectangle",
             &ImGuiWindow::GetIDFromRectangle,
             py::arg("r_abs"),
