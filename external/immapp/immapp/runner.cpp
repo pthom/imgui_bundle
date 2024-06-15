@@ -81,13 +81,23 @@ namespace ImmApp
                 runnerParams.callbacks.BeforeExit
             );
 
-            if (addOnsParams.updateNodeEditorColorsFromImguiColors)
+            // Update node editor colors from imgui colors
+            auto fnUpdateNodeEditorColorsFromImguiColors = [&]
             {
-                runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
-                    runnerParams.callbacks.SetupImGuiStyle,
-                    UpdateNodeEditorColorsFromImguiColors
-                );
-            }
+                if (addOnsParams.updateNodeEditorColorsFromImguiColors)
+                    UpdateNodeEditorColorsFromImguiColors();
+            };
+            // Once at startup
+            runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.SetupImGuiStyle,
+                fnUpdateNodeEditorColorsFromImguiColors
+            );
+            // Once every frame. We choose a relatively unused callback to avoid
+            // situations where a user would forget to chain the callbacks.
+            runnerParams.callbacks.BeforeImGuiRender = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.BeforeImGuiRender,
+                fnUpdateNodeEditorColorsFromImguiColors
+            );
 
         }
 #endif
