@@ -36,3 +36,89 @@ void DisableUserInputThisFrame()
         nodeContext->DisableUserInputThisFrame();
 }
 
+namespace
+{
+    struct Hsv
+    {
+        float h, s, v;
+    };
+
+    static ImVec4 ColorWithAlphaMultiplier(ImVec4 col, float k)
+    {
+        return ImVec4(col.x, col.y, col.z, col.w * k);
+    }
+
+    static ImVec4 ColorValueMultiply(ImVec4 col, float value_multiplier)
+    {
+        float h, s, v;
+        ImGui::ColorConvertRGBtoHSV(col.x, col.y, col.z, h, s, v);
+        v = v * value_multiplier;
+        if (v > 1.0)
+            v = 1.0;
+        ImVec4 r = col;
+        ImGui::ColorConvertHSVtoRGB(h, s, v, r.x, r.y, r.z);
+        return r;
+    }
+
+    static Hsv ColorToHsv(ImVec4 col)
+    {
+        Hsv hsv;
+        ImGui::ColorConvertRGBtoHSV(col.x, col.y, col.z, hsv.h, hsv.s, hsv.v);
+        return hsv;
+    }
+
+    static ImVec4 HsvToColor(Hsv hsv, float alpha = 1.0)
+    {
+        ImVec4 col;
+        ImGui::ColorConvertHSVtoRGB(hsv.h, hsv.s, hsv.v, col.x, col.y, col.z);
+        col.w = alpha;
+        return col;
+    }
+}
+
+
+
+void UpdateNodeEditorStyleFromImguiStyle()
+{
+    using namespace ax::NodeEditor;
+    auto & styleNode = GetStyle();
+    auto & styleIm = ImGui::GetStyle();
+    styleNode.Colors[StyleColor_Bg] = styleIm.Colors[ImGuiCol_WindowBg];
+    styleNode.Colors[StyleColor_Grid] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Border], 0.3);
+
+    auto bgHsv = ColorToHsv(styleNode.Colors[StyleColor_Bg]);
+    bool isDark = bgHsv.v < 0.5;
+
+    constexpr float kHov = 1.25;
+    constexpr float kSel = 1.6;
+    float HovNodeBorder = isDark ? kHov : 1.0 / kHov;
+    float SelNodeBorder = isDark ? kSel : 1.0 / kSel;
+
+    styleNode.Colors[StyleColor_NodeBg] = styleIm.Colors[ImGuiCol_FrameBg];
+    styleNode.Colors[StyleColor_NodeBorder] = styleIm.Colors[ImGuiCol_Border];
+    styleNode.Colors[StyleColor_HovNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabHovered], HovNodeBorder);
+    styleNode.Colors[StyleColor_SelNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabActive], SelNodeBorder);
+
+    styleNode.Colors[StyleColor_NodeSelRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 0.5);
+    styleNode.Colors[StyleColor_NodeSelRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+
+    // Note I do not see a way to set the color of an inactive Link
+    styleNode.Colors[StyleColor_HovLinkBorder] = styleIm.Colors[ImGuiCol_ScrollbarGrabHovered];
+    styleNode.Colors[StyleColor_SelLinkBorder] = styleIm.Colors[ImGuiCol_ScrollbarGrabActive];
+    // StyleColor_HighlightLinkBorder?
+    styleNode.Colors[StyleColor_HighlightLinkBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+
+    // I don't know what this corresponds to.
+    styleNode.Colors[StyleColor_LinkSelRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 0.5);
+    styleNode.Colors[StyleColor_LinkSelRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+
+    styleNode.Colors[StyleColor_PinRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Button], 0.7);
+    styleNode.Colors[StyleColor_PinRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Button], 0.9);
+
+    // Flow is used in rare occasions.
+    styleNode.Colors[StyleColor_Flow] = styleIm.Colors[ImGuiCol_DockingPreview];
+    styleNode.Colors[StyleColor_FlowMarker] = styleIm.Colors[ImGuiCol_DockingPreview];
+
+    styleNode.Colors[StyleColor_GroupBg] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_FrameBg], 0.6);
+    styleNode.Colors[StyleColor_GroupBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_FrameBg], 0.8);
+}
