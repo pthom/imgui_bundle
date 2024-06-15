@@ -78,7 +78,7 @@ namespace
 
 
 
-void UpdateNodeEditorStyleFromImguiStyle()
+void UpdateNodeEditorColorsFromImguiColors()
 {
     using namespace ax::NodeEditor;
     auto & styleNode = GetStyle();

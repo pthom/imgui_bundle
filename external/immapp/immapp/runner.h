@@ -45,6 +45,13 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
+
+        // If true, the node editor colors will be updated from the ImGui colors
+        // (i.e. if using a light theme, the node editor will use a light theme, etc.)
+        // This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.
+        // If you set this to false, you can set the node editor style manually.
+        // (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)
+        bool updateNodeEditorColorsFromImguiColors = true;
 #endif
 
         // You can tweak MarkdownOptions (but this is optional)

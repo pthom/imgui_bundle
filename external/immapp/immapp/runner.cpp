@@ -19,6 +19,7 @@
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 std::function<void()> FnResetImGuiNodeEditorId; // may be bound from pybind_imgui_node_editor.cpp
+void UpdateNodeEditorColorsFromImguiColors();
 #endif
 
 #include <chrono>
@@ -79,6 +80,14 @@ namespace ImmApp
                 FnResetImGuiNodeEditorId,
                 runnerParams.callbacks.BeforeExit
             );
+
+            if (addOnsParams.updateNodeEditorColorsFromImguiColors)
+            {
+                runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
+                    runnerParams.callbacks.SetupImGuiStyle,
+                    UpdateNodeEditorColorsFromImguiColors
+                );
+            }
 
         }
 #endif

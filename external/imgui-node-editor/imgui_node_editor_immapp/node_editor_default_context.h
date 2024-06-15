@@ -12,4 +12,4 @@ IMGUI_NODE_EDITOR_API void ResumeNodeEditorCanvas_Immapp();
 
 IMGUI_NODE_EDITOR_API void DisableUserInputThisFrame();
 
-IMGUI_NODE_EDITOR_API void UpdateNodeEditorStyleFromImguiStyle();
+IMGUI_NODE_EDITOR_API void UpdateNodeEditorColorsFromImguiColors();

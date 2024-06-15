@@ -971,8 +971,8 @@ def resume_node_editor_canvas_immapp() -> None:
 def disable_user_input_this_frame() -> None:
     pass
 
-# IMGUI_NODE_EDITOR_API void UpdateNodeEditorStyleFromImguiStyle();    /* original C++ signature */
-def update_node_editor_style_from_imgui_style() -> None:
+# IMGUI_NODE_EDITOR_API void UpdateNodeEditorColorsFromImguiColors();    /* original C++ signature */
+def update_node_editor_colors_from_imgui_colors() -> None:
     pass
 
 ####################    </generated_from:node_editor_default_context.h>    ####################
