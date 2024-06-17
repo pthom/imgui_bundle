@@ -94,8 +94,27 @@ void UpdateNodeEditorColorsFromImguiColors()
     float HovNodeBorder = isDark ? kHov : 1.0 / kHov;
     float SelNodeBorder = isDark ? kSel : 1.0 / kSel;
 
-    styleNode.Colors[StyleColor_NodeBg] = styleIm.Colors[ImGuiCol_FrameBg];
+    ImVec4 nodeBgColor;
+    {
+        auto frameBgColor = styleIm.Colors[ImGuiCol_FrameBg];
+
+        auto hsvNodeBgColor = ColorToHsv(frameBgColor);
+        if (hsvNodeBgColor.v > 0.5)
+            hsvNodeBgColor.v -= 0.04;
+        else
+            hsvNodeBgColor.v += 0.08;
+
+        hsvNodeBgColor.s -= 0.15;
+        if (hsvNodeBgColor.s < 0.0)
+            hsvNodeBgColor.s = 0.0;
+
+        auto rgbNodeBgColor = HsvToColor(hsvNodeBgColor, 0.95);
+        nodeBgColor = rgbNodeBgColor;
+    }
+
+    styleNode.Colors[StyleColor_NodeBg] = nodeBgColor;
     styleNode.Colors[StyleColor_NodeBorder] = styleIm.Colors[ImGuiCol_Border];
+    styleNode.Colors[StyleColor_NodeBorder].w = 0.4;
     styleNode.Colors[StyleColor_HovNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabHovered], HovNodeBorder);
     styleNode.Colors[StyleColor_SelNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabActive], SelNodeBorder);
 
