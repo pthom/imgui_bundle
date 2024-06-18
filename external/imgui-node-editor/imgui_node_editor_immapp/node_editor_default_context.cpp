@@ -36,6 +36,7 @@ void DisableUserInputThisFrame()
         nodeContext->DisableUserInputThisFrame();
 }
 
+
 namespace
 {
     struct Hsv
