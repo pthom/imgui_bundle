@@ -82,9 +82,9 @@ void UpdateNodeEditorColorsFromImguiColors()
 {
     using namespace ax::NodeEditor;
     auto & styleNode = GetStyle();
-    auto & styleIm = ImGui::GetStyle();
+    const auto & styleIm = ImGui::GetStyle();
     styleNode.Colors[StyleColor_Bg] = styleIm.Colors[ImGuiCol_WindowBg];
-    styleNode.Colors[StyleColor_Grid] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Border], 0.3);
+    styleNode.Colors[StyleColor_Grid] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Border], 0.15);
 
     auto bgHsv = ColorToHsv(styleNode.Colors[StyleColor_Bg]);
     bool isDark = bgHsv.v < 0.5;
@@ -113,8 +113,10 @@ void UpdateNodeEditorColorsFromImguiColors()
     }
 
     styleNode.Colors[StyleColor_NodeBg] = nodeBgColor;
+
     styleNode.Colors[StyleColor_NodeBorder] = styleIm.Colors[ImGuiCol_Border];
-    styleNode.Colors[StyleColor_NodeBorder].w = 0.4;
+    styleNode.Colors[StyleColor_NodeBorder].w = 0.5;
+
     styleNode.Colors[StyleColor_HovNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabHovered], HovNodeBorder);
     styleNode.Colors[StyleColor_SelNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabActive], SelNodeBorder);
 
