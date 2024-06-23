@@ -144,6 +144,7 @@ void py_init_module_imgui_node_editor(py::module& m)
         .def_readwrite("context_menu_button_index", &ax::NodeEditor::Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")
         .def_readwrite("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "")
         .def_readwrite("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "")
+        .def_readwrite("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " [ADAPT_IMGUI_BUNDLE]\n\n By default, ImGui::TextWrapped() and ImGui::Separator(), and ImGui::SliderXXX\n will not work in a Node because they will not respect the node's bounds.\n Instead, they will use the width of the whole window.\n Set ForceWindowContentWidthToNodeWidth to True to fix this (this is disabled by default).")
         .def(py::init<>())
         ;
 

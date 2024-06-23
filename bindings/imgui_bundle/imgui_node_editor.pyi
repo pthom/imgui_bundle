@@ -166,6 +166,15 @@ class Config:
     # float                   SmoothZoomPower;    /* original C++ signature */
     smooth_zoom_power: float
 
+    # bool                    ForceWindowContentWidthToNodeWidth;    /* original C++ signature */
+    # [ADAPT_IMGUI_BUNDLE]
+    #
+    # By default, ImGui::TextWrapped() and ImGui::Separator(), and ImGui::SliderXXX
+    # will not work in a Node because they will not respect the node's bounds.
+    # Instead, they will use the width of the whole window.
+    # Set ForceWindowContentWidthToNodeWidth to True to fix this (this is disabled by default).
+    force_window_content_width_to_node_width: bool
+
     # Config()    /* original C++ signature */
     #         : SettingsFile("NodeEditor.json")
     #         , BeginSaveSession(nullptr)
@@ -187,6 +196,7 @@ class Config:
     #                               # else
     #         , SmoothZoomPower(1.3f)
     #                               # endif
+    #         , ForceWindowContentWidthToNodeWidth(false)
     #     {
     #     }
     def __init__(self) -> None:
