@@ -5,12 +5,12 @@ from imgui_bundle import immapp, hello_imgui
 import imgui_bundle
 
 
-VoidFunction = Callable[[], None]
+GuiFunction = Callable[[], None]
 ScreenSize = Tuple[int, int]
 
 
 def run_nb(
-    gui_function: VoidFunction,
+    gui_function: GuiFunction,
     window_title: str = "",
     window_size_auto: bool = True,
     window_restore_previous_geometry: bool = False,
