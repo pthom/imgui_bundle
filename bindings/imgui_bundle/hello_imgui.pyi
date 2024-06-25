@@ -2566,7 +2566,7 @@ class RendererBackendType(enum.Enum):
 # @@md#IniFolderType
 
 class IniFolderType(enum.Enum):
-    """IniFolderType is an enum which describle where is the base path to store
+    """IniFolderType is an enum which describes where is the base path to store
     the ini file for the application settings.
 
     You can use IniFolderLocation(iniFolderType) to get the corresponding path.
@@ -2589,33 +2589,38 @@ class IniFolderType(enum.Enum):
     # (convenient for development, but not recommended for production)
     current_folder = enum.auto()  # (= 0)
 
+    # AbsolutePath,    /* original C++ signature */
+    # AbsolutePath: an absolute path
+    # (convenient, but not recommended if targeting multiple platforms)
+    absolute_path = enum.auto()  # (= 1)
+
     # AppUserConfigFolder,    /* original C++ signature */
     # AppUserConfigFolder:
     #      AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming under windows)
     #      ~/.config under Linux
     #      "~/Library/Application Support" under macOS
     # (recommended for production, if settings do not need to be easily accessible by the user)
-    app_user_config_folder = enum.auto()  # (= 1)
+    app_user_config_folder = enum.auto()  # (= 2)
 
     # AppExecutableFolder,    /* original C++ signature */
     # AppExecutableFolder: the folder where the application executable is located
     # (this may be different from CurrentFolder if the application is launched from a shortcut)
     # (convenient for development, but not recommended for production)
-    app_executable_folder = enum.auto()  # (= 2)
+    app_executable_folder = enum.auto()  # (= 3)
 
     # HomeFolder,    /* original C++ signature */
     # HomeFolder: the user home folder
     # (recommended for production, if settings need to be easily accessible by the user)
-    home_folder = enum.auto()  # (= 3)
+    home_folder = enum.auto()  # (= 4)
 
     # DocumentsFolder,    /* original C++ signature */
     # DocumentsFolder: the user documents folder
-    documents_folder = enum.auto()  # (= 4)
+    documents_folder = enum.auto()  # (= 5)
 
     # TempFolder    /* original C++ signature */
     # }
     # TempFolder: the system temp folder
-    temp_folder = enum.auto()  # (= 5)
+    temp_folder = enum.auto()  # (= 6)
 
 # std::string IniFolderLocation(IniFolderType iniFolderType);    /* original C++ signature */
 def ini_folder_location(ini_folder_type: IniFolderType) -> str:

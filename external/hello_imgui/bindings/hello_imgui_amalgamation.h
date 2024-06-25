@@ -2049,7 +2049,7 @@ enum class RendererBackendType
 
 // @@md#IniFolderType
 
-// IniFolderType is an enum which describle where is the base path to store
+// IniFolderType is an enum which describes where is the base path to store
 // the ini file for the application settings.
 //
 // You can use IniFolderLocation(iniFolderType) to get the corresponding path.
@@ -2070,6 +2070,10 @@ enum class IniFolderType
     // CurrentFolder: the folder where the application is executed
     // (convenient for development, but not recommended for production)
     CurrentFolder,
+
+    // AbsolutePath: an absolute path
+    // (convenient, but not recommended if targeting multiple platforms)
+    AbsolutePath,
 
     // AppUserConfigFolder:
     //      AppData under Windows (Example: C:\Users\[Username]\AppData\Roaming under windows)
