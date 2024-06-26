@@ -1273,12 +1273,15 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp"># An example of using Dear ImGui with Glfw using a *full python* backend.</span>
 <span class="tok-cp"># This mode is inspired from [pyimgui](https:</span><span class="tok-c1">//github.com/pyimgui/pyimgui) backends, and is still experimental.</span>
 <span class="tok-cp">#</span>
+<span class="tok-cp"># These examples also demonstrate how to use the markdown rendering feature of ImGui Bundle.</span>
+<span class="tok-cp">#</span>
 <span class="tok-cp"># See full python backends implementations here:</span>
 <span class="tok-cp"># https:</span><span class="tok-c1">//github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends</span>
 
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">glfw_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui_ctx</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui_md</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">sys</span>
 
@@ -1290,17 +1293,42 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-n">app_state</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">AppState</span><span class="tok-p">()</span>
 
 
+<span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">init_fonts_and_markdown</span><span class="tok-p">()</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-cp"># Note:</span>
+<span class="tok-w">    </span><span class="tok-cp"># The way font are loaded in this example is a bit tricky.</span>
+<span class="tok-w">    </span><span class="tok-cp"># We are not using imgui.backends.opengl3_XXX anywhere else, because the rendering is done via Python.</span>
+<span class="tok-w">    </span><span class="tok-cp">#</span>
+<span class="tok-w">    </span><span class="tok-cp"># Howver, we will here need to:</span>
+<span class="tok-w">    </span><span class="tok-cp">#     - call imgui.backends.opengl3_init(glsl_version) at startup</span>
+<span class="tok-w">    </span><span class="tok-cp">#     - call imgui.backends.opengl3_new_frame() after loading the fonts, because this is how ImGui</span>
+<span class="tok-w">    </span><span class="tok-cp">#       will load the fonts into a texture (using imgui.get_io().fonts.build() is not enough)</span>
+
+<span class="tok-w">    </span><span class="tok-cp"># We need to initialize the OpenGL backend (so that we can later call opengl3_new_frame)</span>
+<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">backends</span><span class="tok-p">.</span><span class="tok-n">opengl3_init</span><span class="tok-p">(</span><span class="tok-s">&quot;#version 100&quot;</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_io</span><span class="tok-p">().</span><span class="tok-n">fonts</span><span class="tok-p">.</span><span class="tok-n">clear</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-cp"># uncomment to keep using the default hardcoded font, or load your default font here</span>
+<span class="tok-w">    </span><span class="tok-cp"># imgui.get_io().fonts.add_font_default()</span>
+
+<span class="tok-w">    </span><span class="tok-cp"># Load markdown fonts</span>
+<span class="tok-w">    </span><span class="tok-n">imgui_md</span><span class="tok-p">.</span><span class="tok-n">initialize_markdown</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-n">font_loader</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui_md</span><span class="tok-p">.</span><span class="tok-n">get_font_loader_function</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-n">font_loader</span><span class="tok-p">()</span>
+
+<span class="tok-w">    </span><span class="tok-cp"># We need to call this function to load the fonts into a texture</span>
+<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">backends</span><span class="tok-p">.</span><span class="tok-n">opengl3_new_frame</span><span class="tok-p">()</span>
+
+
 <span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">()</span><span class="tok-o">:</span>
 <span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">create_context</span><span class="tok-p">()</span>
 <span class="tok-w">    </span><span class="tok-n">window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">impl_glfw_init</span><span class="tok-p">()</span>
 <span class="tok-w">    </span><span class="tok-n">impl</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">init_fonts_and_markdown</span><span class="tok-p">()</span>
 
 <span class="tok-w">    </span><span class="tok-n">show_custom_window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">True</span>
-
 <span class="tok-w">    </span><span class="tok-k">while</span><span class="tok-w"> </span><span class="tok-n">not</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-p">.</span><span class="tok-n">window_should_close</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span><span class="tok-o">:</span>
 <span class="tok-w">        </span><span class="tok-n">glfw</span><span class="tok-p">.</span><span class="tok-n">poll_events</span><span class="tok-p">()</span>
 <span class="tok-w">        </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">process_inputs</span><span class="tok-p">()</span>
-
 <span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">new_frame</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_main_menu_bar</span><span class="tok-p">()</span><span class="tok-o">:</span>
@@ -1318,8 +1346,14 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-o">:</span>
 <span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">((</span><span class="tok-mi">400</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">400</span><span class="tok-p">))</span>
+
 <span class="tok-w">            </span><span class="tok-n">is_expand</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s">&quot;Custom window&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span>
 <span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">is_expand</span><span class="tok-o">:</span>
+<span class="tok-w">                </span><span class="tok-n">imgui_md</span><span class="tok-p">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-s">&quot;&quot;&quot;</span>
+<span class="tok-w">                </span><span class="tok-cp"># Hello, World</span>
+<span class="tok-w">                </span><span class="tok-n">Here</span><span class="tok-w"> </span><span class="tok-n">is</span><span class="tok-w"> </span><span class="tok-n">some</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-n">markdown</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">text</span><span class="tok-p">.</span>
+<span class="tok-w">                </span><span class="tok-s">&quot;&quot;&quot;)</span>
+
 <span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s">&quot;Example Text&quot;</span><span class="tok-p">)</span>
 <span class="tok-w">                </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello&quot;</span><span class="tok-p">)</span><span class="tok-o">:</span>
 <span class="tok-w">                    </span><span class="tok-n">print</span><span class="tok-p">(</span><span class="tok-s">&quot;World&quot;</span><span class="tok-p">)</span>
@@ -1425,7 +1459,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-11 12:56:34 +0200
+Last updated 2024-06-26 15:08:51 +0200
 </div>
 </div>
 </body>

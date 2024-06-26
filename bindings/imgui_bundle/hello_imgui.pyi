@@ -3143,6 +3143,11 @@ def get_runner_params() -> RunnerParams:
     """
     pass
 
+# bool IsUsingHelloImGui();    /* original C++ signature */
+def is_using_hello_imgui() -> bool:
+    """`IsUsingHelloImGui()`: returns True if the application is using HelloImGui"""
+    pass
+
 # ============================== Utility functions ===============================
 
 # @@md#UtilityFunctions

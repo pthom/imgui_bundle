@@ -1184,6 +1184,9 @@ void py_init_module_hello_imgui(py::module& m)
         " `GetRunnerParams()`:  a convenience function that will return the runnerParams\n of the current application",
         pybind11::return_value_policy::reference);
 
+    m.def("is_using_hello_imgui",
+        HelloImGui::IsUsingHelloImGui, "`IsUsingHelloImGui()`: returns True if the application is using HelloImGui");
+
     m.def("frame_rate",
         HelloImGui::FrameRate,
         py::arg("duration_for_mean") = 0.5f,
