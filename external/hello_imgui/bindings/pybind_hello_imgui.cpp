@@ -345,6 +345,23 @@ void py_init_module_hello_imgui(py::module& m)
         ImGuiTheme::Darcula, py::arg("rounding") = 1.f, py::arg("hue") = -1.f, py::arg("saturation_multiplier") = 1.f, py::arg("value_multiplier_front") = 1.f, py::arg("value_multiplier_bg") = 1.f, py::arg("alpha_bg_transparency") = 1.f);
 
 
+    m.def("show_theme_tweak_gui_window",
+        [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+        {
+            auto ShowThemeTweakGuiWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            {
+                bool * p_open_adapt_modifiable = nullptr;
+                if (p_open.has_value())
+                    p_open_adapt_modifiable = & (*p_open);
+
+                HelloImGui::ShowThemeTweakGuiWindow(p_open_adapt_modifiable);
+                return p_open;
+            };
+
+            return ShowThemeTweakGuiWindow_adapt_modifiable_immutable_to_return(p_open);
+        },     py::arg("p_open") = py::none());
+
+
     auto pyClassFontLoadingParams =
         py::class_<HelloImGui::FontLoadingParams>
             (m, "FontLoadingParams", "\n Font loading parameters: several options are available (color, merging, range, ...)")
