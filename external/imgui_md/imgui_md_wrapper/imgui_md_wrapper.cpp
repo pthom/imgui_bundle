@@ -147,7 +147,7 @@ assets/
 │     │     ├── Roboto-BoldItalic.ttf
 │     │     ├── Roboto-Regular.ttf
 │     │     ├── Roboto-RegularItalic.ttf
-│     ├── SourceCodePro-Regular
+│     ├── Inconsolata-Medium.ttf
 │     └── fontawesome-webfont.ttf
 └── images/
     └── markdown_broken_image.png
@@ -184,7 +184,15 @@ assets/
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
                 mFontCode = HelloImGui::LoadFontTTF(
-                    "fonts/SourceCodePro-Regular.ttf", fontSize);
+                    "fonts/Inconsolata-Medium.ttf",
+                    fontSize);
+                if (mFontCode == nullptr) {
+                    // SourceCodePro-Regular was the old default font for code
+                    // we try to load it, to be nice with older users
+                    mFontCode = HelloImGui::LoadFontTTF(
+                        "fonts/SourceCodePro-Regular.ttf",
+                        fontSize);
+                }
                 if (mFontCode == nullptr) {
                     fprintf(stderr, "%s", error_message.c_str());
                     IM_ASSERT(false);

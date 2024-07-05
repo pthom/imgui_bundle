@@ -297,7 +297,7 @@ def main():
     def load_font():
         global SOURCE_FONT, STANDARD_FONT
         STANDARD_FONT = hello_imgui.load_font_ttf("fonts/DroidSans.ttf", 14.5)
-        SOURCE_FONT = hello_imgui.load_font_ttf("fonts/SourceCodePro-Regular.ttf", 16)
+        SOURCE_FONT = hello_imgui.load_font_ttf("fonts/Inconsolata-Medium.ttf", 16)
     runner_params.callbacks.load_additional_fonts = load_font
 
     immapp.run(runner_params, addons)
