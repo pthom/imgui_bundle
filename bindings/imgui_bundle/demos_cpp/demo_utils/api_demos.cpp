@@ -214,7 +214,7 @@ bool SpawnDemo(const std::string& demoName)
             int system_command_result = system(command_line[0]);
             IM_ASSERT(system_command_result == 0);
         #else
-            subprocess_create(command_line, subprocess_option_no_window, &subprocess);
+            subprocess_create(command_line, subprocess_option_no_window | subprocess_option_inherit_environment, &subprocess);
         #endif
         return true;
     }
