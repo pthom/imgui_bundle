@@ -772,8 +772,8 @@ Do not overuse them! Static variable suffer from almost the same shortcomings as
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">imgui_bundle</span>
-<span class="tok-kn">import</span> <span class="tok-nn">glfw</span>   <span class="tok-c1"># always import glfw *after* imgui_bundle!!!</span>
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">glfw_utils</span><span class="tok-p">,</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">imgui</span>
+<span class="tok-c1"># import glfw   # if you import glfw, do it _after_ imgui_bundle</span>
 
 
 <span class="tok-c1"># define a callback</span>
@@ -781,9 +781,16 @@ Do not overuse them! Static variable suffer from almost the same shortcomings as
     <span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">&quot;Window size changed to </span><span class="tok-si">{</span><span class="tok-n">w</span><span class="tok-si">}</span><span class="tok-s2">x</span><span class="tok-si">{</span><span class="tok-n">h</span><span class="tok-si">}</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
 
 
-<span class="tok-c1"># Get the glfw window used by hello imgui</span>
-<span class="tok-n">window</span> <span class="tok-o">=</span> <span class="tok-n">imgui_bundle</span><span class="tok-o">.</span><span class="tok-n">glfw_utils</span><span class="tok-o">.</span><span class="tok-n">glfw_window_hello_imgui</span><span class="tok-p">()</span>
-<span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">set_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span> <span class="tok-n">my_window_size_callback</span><span class="tok-p">)</span></code></pre>
+<span class="tok-k">def</span> <span class="tok-nf">install_glfw_callbacks</span><span class="tok-p">():</span>
+    <span class="tok-c1"># Get the glfw window used by hello imgui</span>
+    <span class="tok-n">glfw_win</span> <span class="tok-o">=</span> <span class="tok-n">glfw_utils</span><span class="tok-o">.</span><span class="tok-n">glfw_window_hello_imgui</span><span class="tok-p">()</span>
+    <span class="tok-n">glfw_utils</span><span class="tok-o">.</span><span class="tok-n">glfw</span><span class="tok-o">.</span><span class="tok-n">set_window_size_callback</span><span class="tok-p">(</span><span class="tok-n">glfw_win</span><span class="tok-p">,</span> <span class="tok-n">my_window_size_callback</span><span class="tok-p">)</span>
+
+
+<span class="tok-c1"># Install the callback once everything is initialized, for example:</span>
+<span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">RunnerParams</span><span class="tok-p">()</span>
+<span class="tok-c1"># ...</span>
+<span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">post_init</span> <span class="tok-o">=</span> <span class="tok-n">install_glfw_callbacks</span></code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -807,7 +814,7 @@ It is important to import glfw <em>after</em> imgui_bundle, since - upon import 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-26 15:08:51 +0200
+Last updated 2024-07-05 12:09:36 +0200
 </div>
 </div>
 </body>
