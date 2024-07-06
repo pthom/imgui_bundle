@@ -1,28 +1,50 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
-# v1.5.0-rc1
+# v1.5.0
 
 ### ImGui:
 * Updated ImGui to v1.90.5-docking
 * Added [support for StackLayout](https://github.com/pthom/imgui/blob/a178a6c98fc877f0d9d4dfd6063bae15d41c14d0/imgui_stacklayout.h) (by @thedmd)
+* Warn if users reuse an ID (cf https://github.com/ocornut/imgui/issues/7669)
 
 ### Hello ImGui
 See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/releases/tag/v1.5.0-rc1)
 * add FontDpiResponsive
 * add OpenGlOptions
 * add null backends
+* Improved text rendering on windows (via improved antialiasing)
 * Can set OpenGL options in hello_imgui.ini in any parent folder
 * add InputTextResizable & WidgetWithResizeHandle
 * Logger: use less vertical space
+* add Push/PopTweakedTheme (different windows can have different themes)
+* add callback PostRenderDockableWindows
+* Polish Themes
 
 ### Libraries
-* immvision:
+
+#### immvision
   * fixup Custom version of cv::warpAffine for small sizes
   * ImmVision::Image is now resizable / added ImmVision::ImageDisplayResizable
-* imgui-knobs: can drag knob horizontally or vertically
+  * fix icon buttons size
+  * Add option ResizeKeepAspectRatio: when resizing an image, the widget will keep the aspect ratio of the image
+
+#### imgui-knobs
+  * can drag knob horizontally or vertically
+
+#### ImPlot
+  * Add Python binding for colors (cf https://github.com/pthom/imgui_bundle/issues/221)
+
+### imgui-node-editor
+  * Add ForceWindowContentWidthToNodeWidth: ImGui::TextWrapped(), ImGui::Separator(), and ImGui::SliderXXX can now fit inside a Node. See proposed fix to @thedmd here: https://github.com/thedmd/imgui-node-editor/issues/298
+  * The theme of the node editor can be derived and adapted automatically from ImGui Theme (see UpdateNodeEditorColorsFromImguiColors)
 
 ### Python
 * imgui_fig is now resizable
+* Added binding for ColorPicker4
+* Added mathematical operators for ImVec2, ImVec4, ImColor
+* add pickle support for ImVec2, ImVec4, ImColor
+* Add eq operator to ImVec2/4/ImColor bindings
+* add pydantic support for ImVec2, ImVec4, ImColor
 
 ### Build
 * Add [CMake options](https://github.com/pthom/imgui_bundle/blob/6b0132a4bf6bfb82b7eb90e15ba3db52b0daa778/CMakeLists.txt#L119-L128) to disable some libraries
