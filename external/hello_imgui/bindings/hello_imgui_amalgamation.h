@@ -21,8 +21,9 @@ namespace HelloImGui
 
 //
 // Hello ImGui will try its best to automatically handle DPI scaling for you.
-// It does this by setting two values:
 //
+// Parameters to change the scaling behavior:
+// ------------------------------------------
 // - `dpiWindowSizeFactor`:
 //        factor by which window size should be multiplied
 //
@@ -33,21 +34,21 @@ namespace HelloImGui
 //    By default, Hello ImGui will compute them automatically,
 //    when dpiWindowSizeFactor and fontRenderingScale are set to 0.
 //
+// Parameters to improve font rendering quality:
+// ---------------------------------------------
+// - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
+//     Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
+//     If not zero, these values will be used to set the oversampling factor when loading fonts.
+//
+//
 // How to set those values manually:
 // ---------------------------------
 // If it fails (i.e. your window and/or fonts are too big or too small),
 // you may set them manually:
 //    (1) Either by setting them programmatically in your application
 //        (set their values in `runnerParams.dpiAwareParams`)
-//    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
-//       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+//    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info
 // Note: if several methods are used, the order of priority is (1) > (2)
-//
-// Example content of a ini file:
-// ------------------------------
-//     [DpiAwareParams]
-//     dpiWindowSizeFactor=2
-//     fontRenderingScale=0.5
 //
 // For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi
 //
@@ -82,10 +83,22 @@ struct DpiAwareParams
     // (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
     float fontRenderingScale = 0.0f;
 
-	// `onlyUseFontDpiResponsive`
-	// If true, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.
-	// (also for the default font)
-	bool onlyUseFontDpiResponsive = false;
+    // `onlyUseFontDpiResponsive`
+    // If true, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.
+    // (also for the default font)
+    bool onlyUseFontDpiResponsive = false;
+
+    // `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
+    // Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
+    // If not zero, these values will be used to set the oversampling factor when loading fonts.
+    // (i.e. they will be set in ImFontConfig::OversampleH and ImFontConfig::OversampleV)
+    // OversampleH: The difference between 2 and 3 for OversampleH is minimal.
+    //              You can reduce this to 1 for large glyphs save memory.
+    // OversampleV: This is not really useful as we don't use sub-pixel positions on the Y axis.
+    // Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
+    int             fontOversampleH = 0;  // Default is 2 in ImFontConfig
+    int             fontOversampleV = 0;  // Default is 1 in ImFontConfig
+
 
     // `dpiFontLoadingFactor`
     //     factor by which font size should be multiplied at loading time to get a similar
@@ -1941,36 +1954,42 @@ namespace HelloImGui
 //        (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)
 //    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
 //       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+//       See hello_imgui/hello_imgui_example.ini for an example of such a file.
 // Note: if several methods are used, the order of priority is (1) > (2)
 //
-// Example content of a ini file:
-// ------------------------------
-//    [OpenGlOptions]
-//    GlslVersion = 130
-//    MajorVersion = 3
-//    MinorVersion = 2
-//    UseCoreProfile = true
-//    UseForwardCompat = false
 struct OpenGlOptions
 {
     // Could be for example:
     //    "150" on macOS
     //    "130" on Windows
     //    "300es" on GLES
-    std::string  GlslVersion = "130";
+    std::optional<std::string>  GlslVersion =  std::nullopt;
 
     // OpenGL 3.3 (these options won't work for GlEs)
-    int          MajorVersion = 3;
-    int          MinorVersion = 3;
+    std::optional<int>          MajorVersion = std::nullopt;
+    std::optional<int>          MinorVersion = std::nullopt;
 
     // OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)
-    bool         UseCoreProfile = true;
+    std::optional<bool>         UseCoreProfile = std::nullopt;
     // OpenGL Forward Compatibility (required on macOS)
-    bool         UseForwardCompat = true;
+    std::optional<bool>         UseForwardCompat = std::nullopt;
+
+    // `AntiAliasingSamples`
+    // If > 0, this value will be used to set the number of samples used for anti-aliasing.
+    // This is used only when running with Glfw  + OpenGL (which is the default)
+    // Notes:
+    // - we query the maximum number of samples supported by the hardware, via glGetIntegerv(GL_MAX_SAMPLES)
+    // - if you set this value to a non-zero value, it will be used instead of the default value of 8
+    //   (except if it is greater than the maximum supported value, in which case a warning will be issued)
+    // - if you set this value to 0, antialiasing will be disabled
+    //
+    // AntiAliasingSamples has a strong impact on the quality of the text rendering
+    //     - 0: no antialiasing
+    //     - 8: optimal
+    //     - 16: optimal if using imgui-node-editor and you want to render very small text when unzooming
+    std::optional<int> AntiAliasingSamples =  std::nullopt;
 };
-
 // @@md
-
 
 
 // @@md#RendererBackendOptions
@@ -1999,7 +2018,7 @@ struct RendererBackendOptions
 
     // `openGlOptions`:
     // Advanced options for OpenGL. Use at your own risk.
-    std::optional<OpenGlOptions> openGlOptions = std::nullopt;
+    OpenGlOptions openGlOptions;
 };
 
 
@@ -2011,6 +2030,19 @@ struct RendererBackendOptions
 //     src/hello_imgui/internal/backend_impls/rendering_dx12.h
 
 // @@md
+
+
+// (Private structure, not part of the public API)
+// OpenGlOptions after selecting the default platform-dependent values + after applying the user settings
+struct OpenGlOptionsFilled_
+{
+    std::string  GlslVersion =  "150";
+    int          MajorVersion = 3;
+    int          MinorVersion = 3;
+    bool         UseCoreProfile = true;
+    bool         UseForwardCompat = true;
+    int          AntiAliasingSamples = 8;
+};
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

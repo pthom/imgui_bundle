@@ -15,10 +15,10 @@ int main()
     runner_params.platformBackendType = HelloImGui::PlatformBackendType::Glfw;
 
     runner_params.rendererBackendOptions.openGlOptions = HelloImGui::OpenGlOptions();
-    runner_params.rendererBackendOptions.openGlOptions->MajorVersion = 3;
-    runner_params.rendererBackendOptions.openGlOptions->MinorVersion = 2;
-    runner_params.rendererBackendOptions.openGlOptions->GlslVersion = "#version 130";
-    runner_params.rendererBackendOptions.openGlOptions->UseCoreProfile = true;
+    runner_params.rendererBackendOptions.openGlOptions.MajorVersion = 3;
+    runner_params.rendererBackendOptions.openGlOptions.MinorVersion = 2;
+    runner_params.rendererBackendOptions.openGlOptions.GlslVersion = "#version 130";
+    runner_params.rendererBackendOptions.openGlOptions.UseCoreProfile = true;
 
     ImmApp::Run(runner_params);
 }

@@ -72,21 +72,25 @@ void py_init_module_hello_imgui(py::module& m)
     ////////////////////    <generated_from:hello_imgui_amalgamation.h>    ////////////////////
     auto pyClassDpiAwareParams =
         py::class_<HelloImGui::DpiAwareParams>
-            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n It does this by setting two values:\n\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n Note: if several methods are used, the order of priority is (1) > (2)\n\n Example content of a ini file:\n ------------------------------\n     [DpiAwareParams]\n     dpiWindowSizeFactor=2\n     fontRenderingScale=0.5\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
+            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n\n Parameters to change the scaling behavior:\n ------------------------------------------\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n Parameters to improve font rendering quality:\n ---------------------------------------------\n - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters\n     Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.\n     If not zero, these values will be used to set the oversampling factor when loading fonts.\n\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info\n Note: if several methods are used, the order of priority is (1) > (2)\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
         .def(py::init<>([](
-        float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false)
+        float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false, int fontOversampleH = 0, int fontOversampleV = 0)
         {
             auto r = std::make_unique<HelloImGui::DpiAwareParams>();
             r->dpiWindowSizeFactor = dpiWindowSizeFactor;
             r->fontRenderingScale = fontRenderingScale;
             r->onlyUseFontDpiResponsive = onlyUseFontDpiResponsive;
+            r->fontOversampleH = fontOversampleH;
+            r->fontOversampleV = fontOversampleV;
             return r;
         })
-        , py::arg("dpi_window_size_factor") = 0.0f, py::arg("font_rendering_scale") = 0.0f, py::arg("only_use_font_dpi_responsive") = false
+        , py::arg("dpi_window_size_factor") = 0.0f, py::arg("font_rendering_scale") = 0.0f, py::arg("only_use_font_dpi_responsive") = false, py::arg("font_oversample_h") = 0, py::arg("font_oversample_v") = 0
         )
         .def_readwrite("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
         .def_readwrite("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.\n  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.\n  Changing this value will *not* change the visible font size on the screen, however it will\n  affect the size of the loaded glyphs.\n  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),\n  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.\n   This leads to a better rendering quality on some platforms.\n (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)")
         .def_readwrite("only_use_font_dpi_responsive", &HelloImGui::DpiAwareParams::onlyUseFontDpiResponsive, " `onlyUseFontDpiResponsive`\n If True, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.\n (also for the default font)")
+        .def_readwrite("font_oversample_h", &HelloImGui::DpiAwareParams::fontOversampleH, "Default is 2 in ImFontConfig")
+        .def_readwrite("font_oversample_v", &HelloImGui::DpiAwareParams::fontOversampleV, "Default is 1 in ImFontConfig")
         .def("dpi_font_loading_factor",
             &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `dpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar\n     visible size on different OSes.\n  The size will be equivalent to a size given for a 96 PPI screen")
         ;
@@ -943,9 +947,9 @@ void py_init_module_hello_imgui(py::module& m)
 
     auto pyClassOpenGlOptions =
         py::class_<HelloImGui::OpenGlOptions>
-            (m, "OpenGlOptions", " OpenGlOptions contains advanced options used at the startup of OpenGL.\n These parameters are reserved for advanced users.\n By default, Hello ImGui will select reasonable default values, and these parameters are not used.\n Use at your own risk, as they make break the multi-platform compatibility of your application!\n All these parameters are platform dependent.\n For real multiplatform examples, see\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp\n and\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp\n\n How to set those values manually:\n ---------------------------------\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n Note: if several methods are used, the order of priority is (1) > (2)\n\n Example content of a ini file:\n ------------------------------\n    [OpenGlOptions]\n    GlslVersion = 130\n    MajorVersion = 3\n    MinorVersion = 2\n    UseCoreProfile = True\n    UseForwardCompat = False")
+            (m, "OpenGlOptions", " OpenGlOptions contains advanced options used at the startup of OpenGL.\n These parameters are reserved for advanced users.\n By default, Hello ImGui will select reasonable default values, and these parameters are not used.\n Use at your own risk, as they make break the multi-platform compatibility of your application!\n All these parameters are platform dependent.\n For real multiplatform examples, see\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_glfw.cpp\n and\n     hello_imgui/src/hello_imgui/internal/backend_impls/opengl_setup_helper/opengl_setup_sdl.cpp\n\n How to set those values manually:\n ---------------------------------\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)\n    (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.\n       (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)\n       See hello_imgui/hello_imgui_example.ini for an example of such a file.\n Note: if several methods are used, the order of priority is (1) > (2)\n")
         .def(py::init<>([](
-        std::string GlslVersion = "130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true)
+        std::optional<std::string> GlslVersion = std::nullopt, std::optional<int> MajorVersion = std::nullopt, std::optional<int> MinorVersion = std::nullopt, std::optional<bool> UseCoreProfile = std::nullopt, std::optional<bool> UseForwardCompat = std::nullopt, std::optional<int> AntiAliasingSamples = std::nullopt)
         {
             auto r = std::make_unique<HelloImGui::OpenGlOptions>();
             r->GlslVersion = GlslVersion;
@@ -953,15 +957,17 @@ void py_init_module_hello_imgui(py::module& m)
             r->MinorVersion = MinorVersion;
             r->UseCoreProfile = UseCoreProfile;
             r->UseForwardCompat = UseForwardCompat;
+            r->AntiAliasingSamples = AntiAliasingSamples;
             return r;
         })
-        , py::arg("glsl_version") = "130", py::arg("major_version") = 3, py::arg("minor_version") = 3, py::arg("use_core_profile") = true, py::arg("use_forward_compat") = true
+        , py::arg("glsl_version") = py::none(), py::arg("major_version") = py::none(), py::arg("minor_version") = py::none(), py::arg("use_core_profile") = py::none(), py::arg("use_forward_compat") = py::none(), py::arg("anti_aliasing_samples") = py::none()
         )
         .def_readwrite("glsl_version", &HelloImGui::OpenGlOptions::GlslVersion, " Could be for example:\n    \"150\" on macOS\n    \"130\" on Windows\n    \"300es\" on GLES")
         .def_readwrite("major_version", &HelloImGui::OpenGlOptions::MajorVersion, "")
         .def_readwrite("minor_version", &HelloImGui::OpenGlOptions::MinorVersion, "")
         .def_readwrite("use_core_profile", &HelloImGui::OpenGlOptions::UseCoreProfile, "OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)")
         .def_readwrite("use_forward_compat", &HelloImGui::OpenGlOptions::UseForwardCompat, "OpenGL Forward Compatibility (required on macOS)")
+        .def_readwrite("anti_aliasing_samples", &HelloImGui::OpenGlOptions::AntiAliasingSamples, " `AntiAliasingSamples`\n If > 0, this value will be used to set the number of samples used for anti-aliasing.\n This is used only when running with Glfw  + OpenGL (which is the default)\n Notes:\n - we query the maximum number of samples supported by the hardware, via glGetIntegerv(GL_MAX_SAMPLES)\n - if you set this value to a non-zero value, it will be used instead of the default value of 8\n   (except if it is greater than the maximum supported value, in which case a warning will be issued)\n - if you set this value to 0, antialiasing will be disabled\n\n AntiAliasingSamples has a strong impact on the quality of the text rendering\n     - 0: no antialiasing\n     - 8: optimal\n     - 16: optimal if using imgui-node-editor and you want to render very small text when unzooming")
         ;
 
 
@@ -973,17 +979,43 @@ void py_init_module_hello_imgui(py::module& m)
         py::class_<HelloImGui::RendererBackendOptions>
             (m, "RendererBackendOptions", " RendererBackendOptions is a struct that contains options for the renderer backend\n (Metal, Vulkan, DirectX, OpenGL)")
         .def(py::init<>([](
-        bool requestFloatBuffer = false, std::optional<HelloImGui::OpenGlOptions> openGlOptions = std::nullopt)
+        bool requestFloatBuffer = false, HelloImGui::OpenGlOptions openGlOptions = HelloImGui::OpenGlOptions())
         {
             auto r = std::make_unique<HelloImGui::RendererBackendOptions>();
             r->requestFloatBuffer = requestFloatBuffer;
             r->openGlOptions = openGlOptions;
             return r;
         })
-        , py::arg("request_float_buffer") = false, py::arg("open_gl_options") = py::none()
+        , py::arg("request_float_buffer") = false, py::arg("open_gl_options") = HelloImGui::OpenGlOptions()
         )
         .def_readwrite("request_float_buffer", &HelloImGui::RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer.\n Only available on Metal, if your display supports it.\n Before setting this to True, first check `hasEdrSupport()`")
         .def_readwrite("open_gl_options", &HelloImGui::RendererBackendOptions::openGlOptions, " `openGlOptions`:\n Advanced options for OpenGL. Use at your own risk.")
+        ;
+
+
+    auto pyClassOpenGlOptionsFilled_ =
+        py::class_<HelloImGui::OpenGlOptionsFilled_>
+            (m, "OpenGlOptionsFilled_", " (Private structure, not part of the public API)\n OpenGlOptions after selecting the default platform-dependent values + after applying the user settings")
+        .def(py::init<>([](
+        std::string GlslVersion = "150", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true, int AntiAliasingSamples = 8)
+        {
+            auto r = std::make_unique<HelloImGui::OpenGlOptionsFilled_>();
+            r->GlslVersion = GlslVersion;
+            r->MajorVersion = MajorVersion;
+            r->MinorVersion = MinorVersion;
+            r->UseCoreProfile = UseCoreProfile;
+            r->UseForwardCompat = UseForwardCompat;
+            r->AntiAliasingSamples = AntiAliasingSamples;
+            return r;
+        })
+        , py::arg("glsl_version") = "150", py::arg("major_version") = 3, py::arg("minor_version") = 3, py::arg("use_core_profile") = true, py::arg("use_forward_compat") = true, py::arg("anti_aliasing_samples") = 8
+        )
+        .def_readwrite("glsl_version", &HelloImGui::OpenGlOptionsFilled_::GlslVersion, "")
+        .def_readwrite("major_version", &HelloImGui::OpenGlOptionsFilled_::MajorVersion, "")
+        .def_readwrite("minor_version", &HelloImGui::OpenGlOptionsFilled_::MinorVersion, "")
+        .def_readwrite("use_core_profile", &HelloImGui::OpenGlOptionsFilled_::UseCoreProfile, "")
+        .def_readwrite("use_forward_compat", &HelloImGui::OpenGlOptionsFilled_::UseForwardCompat, "")
+        .def_readwrite("anti_aliasing_samples", &HelloImGui::OpenGlOptionsFilled_::AntiAliasingSamples, "")
         ;
 
 

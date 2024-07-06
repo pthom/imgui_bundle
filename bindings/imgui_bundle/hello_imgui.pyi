@@ -76,8 +76,9 @@ def EmptyEventCallback() -> AnyEventCallback:
 class DpiAwareParams:
     """
     Hello ImGui will try its best to automatically handle DPI scaling for you.
-    It does this by setting two values:
 
+    Parameters to change the scaling behavior:
+    ------------------------------------------
     - `dpiWindowSizeFactor`:
            factor by which window size should be multiplied
 
@@ -88,21 +89,21 @@ class DpiAwareParams:
        By default, Hello ImGui will compute them automatically,
        when dpiWindowSizeFactor and fontRenderingScale are set to 0.
 
+    Parameters to improve font rendering quality:
+    ---------------------------------------------
+    - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
+        Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
+        If not zero, these values will be used to set the oversampling factor when loading fonts.
+
+
     How to set those values manually:
     ---------------------------------
     If it fails (i.e. your window and/or fonts are too big or too small),
     you may set them manually:
        (1) Either by setting them programmatically in your application
            (set their values in `runnerParams.dpiAwareParams`)
-       (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
-          (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+       (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info
     Note: if several methods are used, the order of priority is (1) > (2)
-
-    Example content of a ini file:
-    ------------------------------
-        [DpiAwareParams]
-        dpiWindowSizeFactor=2
-        fontRenderingScale=0.5
 
     For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi
 
@@ -145,6 +146,19 @@ class DpiAwareParams:
     # (also for the default font)
     only_use_font_dpi_responsive: bool = False
 
+    # `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
+    # Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
+    # If not zero, these values will be used to set the oversampling factor when loading fonts.
+    # (i.e. they will be set in ImFontConfig::OversampleH and ImFontConfig::OversampleV)
+    # OversampleH: The difference between 2 and 3 for OversampleH is minimal.
+    #              You can reduce this to 1 for large glyphs save memory.
+    # OversampleV: This is not really useful as we don't use sub-pixel positions on the Y axis.
+    # Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
+    # int             fontOversampleH = 0;    /* original C++ signature */
+    font_oversample_h: int = 0  # Default is 2 in ImFontConfig
+    # int             fontOversampleV = 0;    /* original C++ signature */
+    font_oversample_v: int = 0  # Default is 1 in ImFontConfig
+
     # float DpiFontLoadingFactor() const {    /* original C++ signature */
     #         float r = dpiWindowSizeFactor / fontRenderingScale;
     #         return r;
@@ -156,12 +170,14 @@ class DpiAwareParams:
         The size will be equivalent to a size given for a 96 PPI screen
         """
         pass
-    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false);    /* original C++ signature */
+    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false, int fontOversampleH = 0, int fontOversampleV = 0);    /* original C++ signature */
     def __init__(
         self,
         dpi_window_size_factor: float = 0.0,
         font_rendering_scale: float = 0.0,
         only_use_font_dpi_responsive: bool = False,
+        font_oversample_h: int = 0,
+        font_oversample_v: int = 0,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2425,45 +2441,55 @@ class OpenGlOptions:
            (set their values in `runnerParams.rendererBackendOptions.openGlOptions`)
        (2) Either by setting them in a `hello_imgui.ini` file in the current folder, or any of its parent folders.
           (this is useful when you want to set them for a specific app or set of apps, without modifying the app code)
+          See hello_imgui/hello_imgui_example.ini for an example of such a file.
     Note: if several methods are used, the order of priority is (1) > (2)
 
-    Example content of a ini file:
-    ------------------------------
-       [OpenGlOptions]
-       GlslVersion = 130
-       MajorVersion = 3
-       MinorVersion = 2
-       UseCoreProfile = True
-       UseForwardCompat = False
     """
 
-    # std::string  GlslVersion = "130";    /* original C++ signature */
+    # std::optional<std::string>  GlslVersion =  std::nullopt;    /* original C++ signature */
     # Could be for example:
     #    "150" on macOS
     #    "130" on Windows
     #    "300es" on GLES
-    glsl_version: str = "130"
+    glsl_version: Optional[str] = None
 
     # OpenGL 3.3 (these options won't work for GlEs)
-    # int          MajorVersion = 3;    /* original C++ signature */
-    major_version: int = 3
-    # int          MinorVersion = 3;    /* original C++ signature */
-    minor_version: int = 3
+    # std::optional<int>          MajorVersion = std::nullopt;    /* original C++ signature */
+    major_version: Optional[int] = None
+    # std::optional<int>          MinorVersion = std::nullopt;    /* original C++ signature */
+    minor_version: Optional[int] = None
 
-    # bool         UseCoreProfile = true;    /* original C++ signature */
+    # std::optional<bool>         UseCoreProfile = std::nullopt;    /* original C++ signature */
     # OpenGL Core Profile (i.e. only includes the newer, maintained features of OpenGL)
-    use_core_profile: bool = True
-    # bool         UseForwardCompat = true;    /* original C++ signature */
+    use_core_profile: Optional[bool] = None
+    # std::optional<bool>         UseForwardCompat = std::nullopt;    /* original C++ signature */
     # OpenGL Forward Compatibility (required on macOS)
-    use_forward_compat: bool = True
-    # OpenGlOptions(std::string GlslVersion = "130", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true);    /* original C++ signature */
+    use_forward_compat: Optional[bool] = None
+
+    # std::optional<int> AntiAliasingSamples =  std::nullopt;    /* original C++ signature */
+    # `AntiAliasingSamples`
+    # If > 0, this value will be used to set the number of samples used for anti-aliasing.
+    # This is used only when running with Glfw  + OpenGL (which is the default)
+    # Notes:
+    # - we query the maximum number of samples supported by the hardware, via glGetIntegerv(GL_MAX_SAMPLES)
+    # - if you set this value to a non-zero value, it will be used instead of the default value of 8
+    #   (except if it is greater than the maximum supported value, in which case a warning will be issued)
+    # - if you set this value to 0, antialiasing will be disabled
+    #
+    # AntiAliasingSamples has a strong impact on the quality of the text rendering
+    #     - 0: no antialiasing
+    #     - 8: optimal
+    #     - 16: optimal if using imgui-node-editor and you want to render very small text when unzooming
+    anti_aliasing_samples: Optional[int] = None
+    # OpenGlOptions(std::optional<std::string> GlslVersion = std::nullopt, std::optional<int> MajorVersion = std::nullopt, std::optional<int> MinorVersion = std::nullopt, std::optional<bool> UseCoreProfile = std::nullopt, std::optional<bool> UseForwardCompat = std::nullopt, std::optional<int> AntiAliasingSamples = std::nullopt);    /* original C++ signature */
     def __init__(
         self,
-        glsl_version: str = "130",
-        major_version: int = 3,
-        minor_version: int = 3,
-        use_core_profile: bool = True,
-        use_forward_compat: bool = True,
+        glsl_version: Optional[str] = None,
+        major_version: Optional[int] = None,
+        minor_version: Optional[int] = None,
+        use_core_profile: Optional[bool] = None,
+        use_forward_compat: Optional[bool] = None,
+        anti_aliasing_samples: Optional[int] = None,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2498,15 +2524,15 @@ class RendererBackendOptions:
     # Before setting this to True, first check `hasEdrSupport()`
     request_float_buffer: bool = False
 
-    # std::optional<OpenGlOptions> openGlOptions = std::nullopt;    /* original C++ signature */
+    # OpenGlOptions openGlOptions;    /* original C++ signature */
     # `openGlOptions`:
     # Advanced options for OpenGL. Use at your own risk.
-    open_gl_options: Optional[OpenGlOptions] = None
-    # RendererBackendOptions(bool requestFloatBuffer = false, std::optional<OpenGlOptions> openGlOptions = std::nullopt);    /* original C++ signature */
+    open_gl_options: OpenGlOptions
+    # RendererBackendOptions(bool requestFloatBuffer = false, OpenGlOptions openGlOptions = OpenGlOptions());    /* original C++ signature */
     def __init__(
         self,
         request_float_buffer: bool = False,
-        open_gl_options: Optional[OpenGlOptions] = None,
+        open_gl_options: OpenGlOptions = OpenGlOptions(),
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2519,6 +2545,36 @@ class RendererBackendOptions:
 #     src/hello_imgui/internal/backend_impls/rendering_dx12.h
 
 # @@md
+
+class OpenGlOptionsFilled_:
+    """(Private structure, not part of the public API)
+    OpenGlOptions after selecting the default platform-dependent values + after applying the user settings
+    """
+
+    # std::string  GlslVersion =  "150";    /* original C++ signature */
+    glsl_version: str = "150"
+    # int          MajorVersion = 3;    /* original C++ signature */
+    major_version: int = 3
+    # int          MinorVersion = 3;    /* original C++ signature */
+    minor_version: int = 3
+    # bool         UseCoreProfile = true;    /* original C++ signature */
+    use_core_profile: bool = True
+    # bool         UseForwardCompat = true;    /* original C++ signature */
+    use_forward_compat: bool = True
+    # int          AntiAliasingSamples = 8;    /* original C++ signature */
+    anti_aliasing_samples: int = 8
+    # OpenGlOptionsFilled_(std::string GlslVersion = "150", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true, int AntiAliasingSamples = 8);    /* original C++ signature */
+    def __init__(
+        self,
+        glsl_version: str = "150",
+        major_version: int = 3,
+        minor_version: int = 3,
+        use_core_profile: bool = True,
+        use_forward_compat: bool = True,
+        anti_aliasing_samples: int = 8,
+    ) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h continued                                                  //
