@@ -24,6 +24,19 @@ or
 CIBW_ARCHS_MACOS="arm64" CIBW_BUILD="cp311-* cp312-*"  pipx run cibuildwheel --platform=macos
 ```
 
+==== In order to build for Mac OS 11: disable freetype
+1. Inside pyproject.toml, change the following line:
+    environment = { MACOSX_DEPLOYMENT_TARGET="14.0" }
+to
+    environment = { MACOSX_DEPLOYMENT_TARGET="11.0" }
+2. Disable freetype in main CMakeLists.txt, by changing the following line:
+
+   # if(ANDROID OR MINGW)  # Change this line to the following
+   if(ANDROID OR MINGW OR IMGUI_BUNDLE_BUILD_PYTHON)
+      set(freetype_default OFF)
+   endif()
+
+
 === Build and deploy to pypi via twine (obsolete)
 
 ```
