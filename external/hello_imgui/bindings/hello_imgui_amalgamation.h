@@ -648,6 +648,10 @@ namespace HelloImGui
 {
     using ImWcharPair = std::array<ImWchar, 2>;
 
+    // Utility to translate DearImGui common Unicode ranges to ImWcharPair
+    //   (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)
+    std::vector<ImWcharPair> TranslateCommonGlyphRanges(const std::vector<ImWchar> & glyphRanges);
+
     // @@md#Fonts
 
     // When loading fonts, use
@@ -684,11 +688,12 @@ namespace HelloImGui
         // Otherwise, it will be loaded from the filesystem
         bool insideAssets = true;
 
-        // the ranges of glyphs to load:
+        // the ranges of glyphs to load, as a list of pairs of ImWchar
         //    - if empty, the default glyph range will be used
         //    - you can specify several ranges
         //    - intervals bounds are inclusive
-        // (will be translated and stored as a static ImWChar* inside fontConfig)
+        // Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)
+        //       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)
         std::vector<ImWcharPair> glyphRanges = {};
 
         // ImGui native font config to use

@@ -52,6 +52,7 @@ ImGuiDir_ = imgui_bundle.imgui.Dir_
 ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
 
 # ImWcharPair is used to defined unicode glyph ranges
+ImWchar = int
 ImWcharPair = Tuple[int, int]
 
 DictTypeInputTextData = dict[str, Any]
@@ -820,6 +821,13 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 #                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# std::vector<ImWcharPair> TranslateCommonGlyphRanges(const std::vector<ImWchar> & glyphRanges);    /* original C++ signature */
+def translate_common_glyph_ranges(glyph_ranges: List[ImWchar]) -> List[ImWcharPair]:
+    """Utility to translate DearImGui common Unicode ranges to ImWcharPair
+    (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)
+    """
+    pass
+
 # @@md#Fonts
 
 # When loading fonts, use
@@ -864,11 +872,12 @@ class FontLoadingParams:
     inside_assets: bool = True
 
     # std::vector<ImWcharPair> glyphRanges = {};    /* original C++ signature */
-    # the ranges of glyphs to load:
+    # the ranges of glyphs to load, as a list of pairs of ImWchar
     #    - if empty, the default glyph range will be used
     #    - you can specify several ranges
     #    - intervals bounds are inclusive
-    # (will be translated and stored as a static ImWChar* inside fontConfig)
+    # Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)
+    #       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)
     glyph_ranges: List[ImWcharPair] = List[ImWcharPair]()
 
     # ImFontConfig fontConfig = ImFontConfig();    /* original C++ signature */

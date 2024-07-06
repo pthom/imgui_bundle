@@ -366,6 +366,12 @@ void py_init_module_hello_imgui(py::module& m)
         },     py::arg("p_open") = py::none());
 
 
+    m.def("translate_common_glyph_ranges",
+        HelloImGui::TranslateCommonGlyphRanges,
+        py::arg("glyph_ranges"),
+        " Utility to translate DearImGui common Unicode ranges to ImWcharPair\n   (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)");
+
+
     auto pyClassFontLoadingParams =
         py::class_<HelloImGui::FontLoadingParams>
             (m, "FontLoadingParams", "\n Font loading parameters: several options are available (color, merging, range, ...)")
@@ -393,7 +399,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("merge_to_last_font", &HelloImGui::FontLoadingParams::mergeToLastFont, "if True, the font will be merged to the last font")
         .def_readwrite("load_color", &HelloImGui::FontLoadingParams::loadColor, " if True, the font will be loaded using colors\n (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)")
         .def_readwrite("inside_assets", &HelloImGui::FontLoadingParams::insideAssets, " if True, the font will be loaded using HelloImGui asset system.\n Otherwise, it will be loaded from the filesystem")
-        .def_readwrite("glyph_ranges", &HelloImGui::FontLoadingParams::glyphRanges, " the ranges of glyphs to load:\n    - if empty, the default glyph range will be used\n    - you can specify several ranges\n    - intervals bounds are inclusive\n (will be translated and stored as a static ImWChar* inside fontConfig)")
+        .def_readwrite("glyph_ranges", &HelloImGui::FontLoadingParams::glyphRanges, " the ranges of glyphs to load, as a list of pairs of ImWchar\n    - if empty, the default glyph range will be used\n    - you can specify several ranges\n    - intervals bounds are inclusive\n Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)\n       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)")
         .def_readwrite("font_config", &HelloImGui::FontLoadingParams::fontConfig, "ImGui native font config to use")
         .def_readwrite("merge_font_awesome", &HelloImGui::FontLoadingParams::mergeFontAwesome, "")
         .def_readwrite("font_config_font_awesome", &HelloImGui::FontLoadingParams::fontConfigFontAwesome, "")
