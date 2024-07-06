@@ -10,19 +10,18 @@ void demo_immvision_display()
     static cv::Mat bear, tennis;
     static ImmVision::ImageParams params;
 
-    cv::Size imageDisplaySize(0, (int)ImmApp::EmSize(20.f));
+    static ImVec2 imageDisplaySize(0.f, ImmApp::EmSize(20.f));
 
     if (!inited)
     {
         std::string assetsDir = DemosAssetsFolder() + "/images/";
         bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
-        params.ImageDisplaySize = imageDisplaySize;
         tennis = cv::imread(assetsDir + "tennis.jpg");
         inited = true;
     }
 
     ImGuiMd::RenderUnindented("ImmVision::ImageDisplay() will simply display an image");
-    ImmVision::ImageDisplay("Tennis", tennis, imageDisplaySize);
+    ImmVision::ImageDisplayResizable("Tennis", tennis, &imageDisplaySize);
 
     ImGuiMd::RenderUnindented(R"(
         immvision.image() will display an image, while providing lots of visualization options.<br>

@@ -1,28 +1,28 @@
 import cv2  # type: ignore
 
-from imgui_bundle import immvision, immapp, imgui_md
+from imgui_bundle import immvision, immapp, imgui_md, ImVec2
 from imgui_bundle.demos_python import demo_utils
 
 
 @immapp.static(inited=False)
 def demo_gui() -> None:
     statics = demo_gui
-    image_display_size = (0, int(immapp.em_size(15)))
     if not statics.inited:
+        statics.image_display_size = ImVec2(0, immapp.em_size(15))
+
         assets_dir = demo_utils.demos_assets_folder() + "/images/"
         statics.bear = cv2.imread(
             assets_dir + "bear_transparent.png", cv2.IMREAD_UNCHANGED
         )
         statics.params = immvision.ImageParams()
-        statics.params.image_display_size = image_display_size
 
         statics.tennis = cv2.imread(assets_dir + "tennis.jpg")
 
         statics.inited = True
 
     imgui_md.render_unindented("immvision.image_display() will simply display an image")
-    immvision.image_display(
-        "Tennis", statics.tennis, image_display_size=image_display_size
+    immvision.image_display_resizable(
+        "Tennis", statics.tennis, size=statics.image_display_size
     )
 
     imgui_md.render_unindented(
