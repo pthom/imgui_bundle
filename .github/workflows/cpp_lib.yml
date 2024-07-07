@@ -16,17 +16,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-latest]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: true
 
-    - name: Setup interactive tmate session
-      uses: mxschmitt/action-tmate@v3
-      with:
-        detached: true
+#    - name: Setup interactive tmate session
+#      if: ${{ matrix.platform == 'ubuntu-latest' }}
+#      uses: mxschmitt/action-tmate@v3
 
     - name: apt install xorg-dev  libglfw3-dev libsdl2-dev (ubuntu only)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
@@ -37,5 +36,5 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DHELLOIMGUI_USE_GLFW3=ON -DHELLOIMGUI_USE_SDL2=ON  -DHELLOIMGUI_HAS_OPENGL3=ON -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON -DIMMVISION_FETCH_OPENCV=ON -DIMGUI_BUNDLE_WITH_IMMVISION=ON
+        cmake .. -DHELLOIMGUI_USE_GLFW3=ON -DHELLOIMGUI_USE_SDL2=ON  -DHELLOIMGUI_HAS_OPENGL3=ON -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON
         cmake --build . --config Release -j 3
