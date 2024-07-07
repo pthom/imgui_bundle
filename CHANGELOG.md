@@ -3,8 +3,8 @@ Version numbers are synced between hello_imgui and imgui_bundle.
 # v1.5.0
 
 ### ImGui:
-* Updated ImGui to v1.90.5-docking
-* Added [support for StackLayout](https://github.com/pthom/imgui/blob/a178a6c98fc877f0d9d4dfd6063bae15d41c14d0/imgui_stacklayout.h) (by @thedmd)
+* Updated ImGui to v1.90.9-docking
+* Added support for [StackLayout](https://github.com/ocornut/imgui/pull/846): ImGui::BeginHorizontal & ImGui::BeginVertical (by @thedmd)
 * Warn if users reuse an ID (cf https://github.com/ocornut/imgui/issues/7669)
 
 ### Hello ImGui
