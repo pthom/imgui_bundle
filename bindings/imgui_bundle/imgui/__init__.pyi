@@ -152,11 +152,9 @@ typedef int ImGuiWindowFlags;       // -> enum ImGuiWindowFlags_     // Flags: f
 Col = int  # -> enum Col_             # Enum: A color identifier for styling
 Cond = int  # -> enum Cond_            # Enum: A condition for many Set*() functions
 DataType = int  # -> enum DataType_        # Enum: A primary data type
-Dir = int  # -> enum Dir_             # Enum: A cardinal direction
 NavInput = int  # -> enum NavInput_        # Enum: An input identifier for navigation
 MouseButton = int  # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
 MouseCursor = int  # -> enum MouseCursor_     # Enum: A mouse cursor identifier
-SortDirection = int  # -> enum SortDirection_   # Enum: A sorting direction (ascending or descending)
 StyleVar = int  # -> enum StyleVar_        # Enum: A variable identifier for styling
 TableBgTarget = int  # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
 ImDrawFlags = int  # -> enum ImDrawFlags_          # Flags: for ImDrawList functions

@@ -192,13 +192,13 @@ def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_demo = hello_imgui.DockingSplit()
     split_main_demo.initial_dock = "MainDockSpace"
     split_main_demo.new_dock = "ImGuiDemoSpace"
-    split_main_demo.direction = imgui.Dir_.right
+    split_main_demo.direction = imgui.Dir.right
     split_main_demo.ratio = 0.5
 
     split_main_test = hello_imgui.DockingSplit()
     split_main_test.initial_dock = "MainDockSpace"
     split_main_test.new_dock = "TestEngineSpace"
-    split_main_test.direction = imgui.Dir_.down
+    split_main_test.direction = imgui.Dir.down
     split_main_test.ratio = 0.7
 
     return [split_main_demo, split_main_test]

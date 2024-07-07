@@ -408,7 +408,7 @@ def main():
         hello_imgui.DockingSplit(
             initial_dock_="MainDockSpace",
             new_dock_="EditorDock",
-            direction_=imgui.Dir_.left,
+            direction_=imgui.Dir.left,
             ratio_=0.25,
         )
     ]

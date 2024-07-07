@@ -638,21 +638,21 @@ def create_default_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_misc = hello_imgui.DockingSplit()
     split_main_misc.initial_dock = "MainDockSpace"
     split_main_misc.new_dock = "MiscSpace"
-    split_main_misc.direction = imgui.Dir_.down
+    split_main_misc.direction = imgui.Dir.down
     split_main_misc.ratio = 0.25
 
     # Then, add a space to the left which occupies a column whose width is 25% of the app width
     split_main_command = hello_imgui.DockingSplit()
     split_main_command.initial_dock = "MainDockSpace"
     split_main_command.new_dock = "CommandSpace"
-    split_main_command.direction = imgui.Dir_.left
+    split_main_command.direction = imgui.Dir.left
     split_main_command.ratio = 0.25
 
     # Then, add CommandSpace2 below MainDockSpace
     split_main_command2 = hello_imgui.DockingSplit()
     split_main_command2.initial_dock = "MainDockSpace"
     split_main_command2.new_dock = "CommandSpace2"
-    split_main_command2.direction = imgui.Dir_.down
+    split_main_command2.direction = imgui.Dir.down
     split_main_command2.ratio = 0.5
 
     splits = [split_main_misc, split_main_command, split_main_command2]
@@ -675,19 +675,19 @@ def create_alternative_docking_splits() -> List[hello_imgui.DockingSplit]:
     split_main_command = hello_imgui.DockingSplit()
     split_main_command.initial_dock = "MainDockSpace"
     split_main_command.new_dock = "CommandSpace"
-    split_main_command.direction = imgui.Dir_.down
+    split_main_command.direction = imgui.Dir.down
     split_main_command.ratio = 0.5
 
     split_main_command2 = hello_imgui.DockingSplit()
     split_main_command2.initial_dock = "CommandSpace"
     split_main_command2.new_dock = "CommandSpace2"
-    split_main_command2.direction = imgui.Dir_.right
+    split_main_command2.direction = imgui.Dir.right
     split_main_command2.ratio = 0.4
 
     split_main_misc = hello_imgui.DockingSplit()
     split_main_misc.initial_dock = "MainDockSpace"
     split_main_misc.new_dock = "MiscSpace"
-    split_main_misc.direction = imgui.Dir_.left
+    split_main_misc.direction = imgui.Dir.left
     split_main_misc.ratio = 0.5
 
     splits = [split_main_command, split_main_command2, split_main_misc]

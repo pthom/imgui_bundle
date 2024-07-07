@@ -14,7 +14,7 @@ from imgui_bundle.imgui import (
     ImFontConfig,
     ImFont,
     ImTextureID,
-    Dir_,
+    Dir,
     Cond_,
 )
 
@@ -45,10 +45,10 @@ DefaultWindowSize = (800, 600)
 DefaultScreenPosition = (40, 40)
 
 ImGuiCond = imgui_bundle.imgui.Cond
-ImGuiDir_Down = Dir_.down
+ImGuiDir_Down = Dir.down
 ImGuiTheme = imgui_bundle.hello_imgui
 ImGuiStyle = imgui_bundle.imgui.Style
-ImGuiDir_ = imgui_bundle.imgui.Dir_
+ImGuiDir = imgui_bundle.imgui.Dir
 ImGuiWindowFlags = imgui_bundle.imgui.WindowFlags
 
 # ImWcharPair is used to defined unicode glyph ranges
@@ -2073,11 +2073,11 @@ class DockingSplit:
     #  id of the new dock space that will be created.
     new_dock: DockSpaceName
 
-    # ImGuiDir_ direction;    /* original C++ signature */
+    # ImGuiDir direction;    /* original C++ signature */
     # `direction`: *ImGuiDir_*
     #  (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*
     #  Direction where this dock space should be created.
-    direction: ImGuiDir_
+    direction: ImGuiDir
 
     # float ratio = 0.25f;    /* original C++ signature */
     # `ratio`: _float, default=0.25_.
@@ -2091,14 +2091,14 @@ class DockingSplit:
     node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
-    #                  ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
+    #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
     #                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
     #         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
     def __init__(
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir_ = ImGuiDir_Down,
+        direction_: ImGuiDir = ImGuiDir_Down,
         ratio_: float = 0.25,
         node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
     ) -> None:

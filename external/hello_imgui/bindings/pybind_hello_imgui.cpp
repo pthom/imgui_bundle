@@ -835,7 +835,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def_readwrite("direction", &HelloImGui::DockingSplit::direction, " `direction`: *ImGuiDir_*\n  (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*\n  Direction where this dock space should be created.")
         .def_readwrite("ratio", &HelloImGui::DockingSplit::ratio, " `ratio`: _float, default=0.25_.\n  Ratio of the initialDock size that should be used by the new dock space.")
         .def_readwrite("node_flags", &HelloImGui::DockingSplit::nodeFlags, " `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.\n  Flags to apply to the new dock space\n  (enable/disable resizing, splitting, tab bar, etc.)")
-        .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir_, float, ImGuiDockNodeFlags>(),
+        .def(py::init<const DockSpaceName &, const DockSpaceName &, ImGuiDir, float, ImGuiDockNodeFlags>(),
             py::arg("initial_dock_") = "", py::arg("new_dock_") = "", py::arg("direction_") = ImGuiDir_Down, py::arg("ratio_") = 0.25f, py::arg("node_flags_") = ImGuiDockNodeFlags_None,
             "Constructor")
         ;

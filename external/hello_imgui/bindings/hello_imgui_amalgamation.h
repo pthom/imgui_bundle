@@ -1659,7 +1659,7 @@ struct DockingSplit
     // `direction`: *ImGuiDir_*
     //  (enum with ImGuiDir_Down, ImGuiDir_Down, ImGuiDir_Left, ImGuiDir_Right)*
     //  Direction where this dock space should be created.
-    ImGuiDir_ direction;
+    ImGuiDir direction;
 
     // `ratio`: _float, default=0.25f_.
     //  Ratio of the initialDock size that should be used by the new dock space.
@@ -1672,7 +1672,7 @@ struct DockingSplit
 
     // Constructor
     DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",
-                 ImGuiDir_ direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
+                 ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
 };

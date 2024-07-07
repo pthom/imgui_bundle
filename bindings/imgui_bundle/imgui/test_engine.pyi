@@ -29,7 +29,7 @@ from imgui_bundle.imgui import (
     Key,
     Dir,
     SortDirection,
-    Dir_,
+    DataType
 )
 from imgui_bundle.imgui.internal import (
     ItemStatusFlags,
@@ -65,10 +65,16 @@ Dir_None = Dir_.none  # noqa
 TestActiveFunc_None = TestActiveFunc.none  # noqa
 TestGroup_Unknown = TestGroup.unknown  # noqa
 TestStatus_Unknown = TestStatus.unknown  # noqa
+TestStatus_Success = TestStatus.success  # noqa
 InputSource_Mouse = InputSource.mouse  # noqa
 
 Function_TestRunner = Callable[[TestContext], None]
 Function_TestGui = Callable[[imgui.test_engine.TestContext], None]
+
+Str30 = str
+Str256 = str
+ImVector_char = list[int]
+ImVector_Window_ptr = list[Window]
 
 ##################################################
 #    AUTO GENERATED CODE BELOW
@@ -1087,6 +1093,8 @@ class TestGenericVars:
     dock_id: ID
     # ImGuiID                 OwnerId;    /* original C++ signature */
     owner_id: ID
+    # ImVec2                  WindowSize;    /* original C++ signature */
+    window_size: ImVec2
     # ImGuiWindowFlags        WindowFlags;    /* original C++ signature */
     window_flags: WindowFlags
     # ImGuiTableFlags         TableFlags;    /* original C++ signature */
@@ -1107,10 +1115,10 @@ class TestGenericVars:
     width: float
     # ImVec2                  Pos;    /* original C++ signature */
     pos: ImVec2
-    # ImVec2                  Size;    /* original C++ signature */
-    size: ImVec2
     # ImVec2                  Pivot;    /* original C++ signature */
     pivot: ImVec2
+    # ImVec2                  ItemSize;    /* original C++ signature */
+    item_size: ImVec2
     # ImVec4                  Color1,     /* original C++ signature */
     color1: ImVec4
     # Color2;    /* original C++ signature */

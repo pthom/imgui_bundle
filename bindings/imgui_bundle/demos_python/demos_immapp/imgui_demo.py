@@ -635,10 +635,10 @@ def show_demo_window_widgets():
         if not hasattr(static, "counter"): static.counter = 0
         spacing = imgui.get_style().item_inner_spacing.x
         imgui.push_button_repeat(True)
-        if imgui.arrow_button("##left", imgui.Dir_.left.value):
+        if imgui.arrow_button("##left", imgui.Dir.left.value):
             static.counter -= 1
         imgui.same_line(0.0, spacing)
-        if imgui.arrow_button("##right", imgui.Dir_.right.value):
+        if imgui.arrow_button("##right", imgui.Dir.right.value):
             static.counter += 1
         imgui.pop_button_repeat()
         imgui.same_line()
@@ -3271,7 +3271,7 @@ def main():
 
     split = hello_imgui.DockingSplit(
         initial_dock_="MainDockSpace",
-        direction_=imgui.Dir_.left,
+        direction_=imgui.Dir.left,
         ratio_=0.5,
         new_dock_="Dear ImGui Demo"
     )

@@ -98,13 +98,13 @@ class DemoAppTable:
         imgui.same_line(imgui.get_item_rect_size().x - hello_imgui.em_size(3.0))
 
         imgui.begin_disabled(statics.scroll_current == 0.0)
-        if imgui.arrow_button("##up", imgui.Dir_.up):
+        if imgui.arrow_button("##up", imgui.Dir.up):
             statics.shall_scroll_up = True
         imgui.end_disabled()
 
         imgui.same_line()
         imgui.begin_disabled(statics.scroll_current + statics.scroll_delta > statics.child_size[1] - imgui.get_item_rect_size()[1])
-        if imgui.arrow_button("##down", imgui.Dir_.down):
+        if imgui.arrow_button("##down", imgui.Dir.down):
             statics.shall_scroll_down = True
         imgui.end_disabled()
 

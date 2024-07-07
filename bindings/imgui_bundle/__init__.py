@@ -68,6 +68,12 @@ import os  # noqa: E402
 THIS_DIR = os.path.dirname(__file__)
 hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 
+# Patch after imgui v1.90.9, where
+# the enum ImGuiDir_ was renamed to ImGuiDir and ImGuiSortDirection_ was renamed to ImGuiSortDirection
+# this enables old python to continue to work
+imgui.Dir_ = imgui.Dir
+imgui.SortDirection_ = imgui.SortDirection
+
 
 __all__ = [
     # submodules
