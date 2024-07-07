@@ -75,12 +75,6 @@ def make_gui() -> GuiFunction:
             "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
         ),
         DemoApp(
-            "imgui_example_glfw_opengl2",
-            "Python: translation of the [GLFW+OpenGL2 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl2/main.cpp) from Dear ImGui. "
-            "(here, *backend rendering is implemented in C++*)"
-            ,
-        ),
-        DemoApp(
             "example_python_backend_glfw3",
             "Python: how to use ImGui with GLFW3 using a *full python* backend",
             is_python_backend_demo=True,

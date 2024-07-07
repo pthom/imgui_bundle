@@ -229,8 +229,6 @@ def em_size(nb_lines: float) -> float:
     """__HelloImGui::EmSize(nbLines)__ returns a size corresponding to nbLines text lines"""
     pass
 
-# @@md
-
 # ImVec2 PixelsToEm(ImVec2 pixels);    /* original C++ signature */
 def pixels_to_em(pixels: ImVec2) -> ImVec2:
     """__HelloImGui::PixelToEm()__ converts a Vec2 in pixels coord to a Vec2 in em units"""
@@ -239,6 +237,15 @@ def pixels_to_em(pixels: ImVec2) -> ImVec2:
 # float  PixelSizeToEm(float pixelSize);    /* original C++ signature */
 def pixel_size_to_em(pixel_size: float) -> float:
     """__HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units"""
+    pass
+
+# @@md
+
+# DpiAwareParams* GetDpiAwareParams();    /* original C++ signature */
+def get_dpi_aware_params() -> DpiAwareParams:
+    """Returns the current DpiAwareParams, which are used
+    for font loading and window size scaling
+    """
     pass
 
 # ----------------------------------------------------------------------------

@@ -120,6 +120,11 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("pixel_size"),
         "__HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units");
 
+    m.def("get_dpi_aware_params",
+        HelloImGui::GetDpiAwareParams,
+        " Returns the current DpiAwareParams, which are used\n for font loading and window size scaling",
+        pybind11::return_value_policy::reference);
+
 
     m.def("dpi_font_loading_factor",
         HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
