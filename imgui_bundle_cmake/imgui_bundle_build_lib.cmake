@@ -34,6 +34,39 @@ function(ibd_force_freetype_static_for_python)
     endif()
 endfunction()
 
+# Check if freetype is available: ON by default, except on Android and MinGW
+# On MacOS, if building a distributable wheel with cibuilwheel for a version less than 14.0, we disable freetype
+function(ibd_check_freetype_availability result_var)
+    # freetype is available by default
+    set(${result_var} ON PARENT_SCOPE)
+
+    # Except on Android and MinGW
+    # Freetype is not available on Android. The mix SDL + Freetype cause issues (cannot find SDL.h)
+    # Freetype currently fails to build on MinGW
+    if(ANDROID OR MINGW)
+        set(${result_var} OFF PARENT_SCOPE)
+        return()
+    endif()
+
+    # On MacOS, if building a distributable wheel with cibuilwheel for a version less than 14.0, we disable freetype
+    # (we are using dynamic libraries provided by homebrew, and they require a minimum version of MacOS)
+    # Those libraries are zlib, libpng, harfbuzz, brotli, ...
+    if(DEFINED ENV{CIBUILDWHEEL} AND APPLE)
+        if (NOT DEFINED ENV{MACOSX_DEPLOYMENT_TARGET})
+            message(FATAL_ERROR "MACOSX_DEPLOYMENT_TARGET is not set!")
+            return()
+        endif()
+
+        if("$ENV{MACOSX_DEPLOYMENT_TARGET}" VERSION_LESS "14.0")
+            message(STATUS "MACOSX_DEPLOYMENT_TARGET is less than 14.0, freetype willbe disabled")
+            set(${result_var} OFF PARENT_SCOPE)
+        else()
+            set(${result_var} ON PARENT_SCOPE)
+        endif()
+        return()
+    endif()
+endfunction()
+
 function(ibd_add_sanitizer_options)
     # Also see scan-build (clang static analyzer). No bugs reported on 2023-10-21
     #     brew install llvm

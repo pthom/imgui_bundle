@@ -163,12 +163,7 @@ endif()
 #------------------------------------------------------------------------------
 # Options / Freetype (this is an option for hello_imgui, reproduced here for convenience)
 #------------------------------------------------------------------------------
-set(freetype_default ON)
-if(ANDROID OR MINGW)
-    # Freetype is not available on Android. The mix SDL + Freetype cause issues (cannot find SDL.h)
-    # Freetype currently fails to build on MinGW
-    set(freetype_default OFF)
-endif()
+ibd_check_freetype_availability(freetype_default)
 # Note: to reduce wasm size, you may want to disable freetype on emscripten.
 option(HELLOIMGUI_USE_FREETYPE "Use freetype for text rendering" ${freetype_default})
 ibd_force_freetype_static_for_python()
