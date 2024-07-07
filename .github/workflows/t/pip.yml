@@ -16,10 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #platform: [windows-latest, macos-latest, ubuntu-latest]
-        # python-version: ["3.11", "3.12"]
-        platform: [windows-latest]
-        python-version: ["3.12"]
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+        python-version: ["3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -52,8 +50,8 @@ jobs:
         python_dir=$(dirname $(which python))
         cp mesa3d/x64/*.* $python_dir
 
-    - name: Setup interactive tmate session
-      uses: mxschmitt/action-tmate@v3
+#    - name: Setup interactive tmate session
+#      uses: mxschmitt/action-tmate@v3
 
     - name: Build and install
       shell: bash
