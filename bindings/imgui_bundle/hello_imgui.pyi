@@ -821,10 +821,10 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 #                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# std::vector<ImWcharPair> TranslateCommonGlyphRanges(const std::vector<ImWchar> & glyphRanges);    /* original C++ signature */
+# std::vector<ImWcharPair> translate_common_glyph_ranges(const std::vector<ImWchar> & glyphRanges);    /* original C++ signature */
 def translate_common_glyph_ranges(glyph_ranges: List[ImWchar]) -> List[ImWcharPair]:
-    """Utility to translate DearImGui common Unicode ranges to ImWcharPair
-    (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)
+    """Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)
+    (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)
     """
     pass
 

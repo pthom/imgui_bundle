@@ -367,9 +367,9 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("translate_common_glyph_ranges",
-        HelloImGui::TranslateCommonGlyphRanges,
+        HelloImGui::translate_common_glyph_ranges,
         py::arg("glyph_ranges"),
-        " Utility to translate DearImGui common Unicode ranges to ImWcharPair\n   (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)");
+        " Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)\n   (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)");
 
 
     auto pyClassFontLoadingParams =

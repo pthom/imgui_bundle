@@ -648,9 +648,13 @@ namespace HelloImGui
 {
     using ImWcharPair = std::array<ImWchar, 2>;
 
-    // Utility to translate DearImGui common Unicode ranges to ImWcharPair
-    //   (GetGlyphRangesJapanese, GetGlyphRangesChinese, GetGlyphRangesCyrillic, ...)
-    std::vector<ImWcharPair> TranslateCommonGlyphRanges(const std::vector<ImWchar> & glyphRanges);
+    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)
+    //   (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)
+    std::vector<ImWcharPair> translate_common_glyph_ranges(const std::vector<ImWchar> & glyphRanges);
+
+    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (C++)
+    //   (GetGlyphRangesChineseSimplifiedCommon, GetGlyphRangesJapanese, ...)
+    std::vector<ImWcharPair> TranslateCommonGlyphRanges(const ImWchar* glyphRanges);
 
     // @@md#Fonts
 

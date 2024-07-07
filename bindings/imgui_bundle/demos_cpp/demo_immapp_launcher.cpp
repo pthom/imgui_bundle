@@ -29,6 +29,10 @@ std::function<void()> makeGui()
         DemoApp{
             "demo_powersave", "How to have smooth animations, and how spare the CPU when idling"
         },
+        DemoApp{
+            "demo_font_common_glyph_range",
+            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
+        },
         DemoApp{"demo_testengine", "How to use ImGui Test Engine to test and automate your application"},
         DemoApp{"demo_python_context_manager",
                 "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."},
