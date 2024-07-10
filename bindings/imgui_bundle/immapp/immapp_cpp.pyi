@@ -116,6 +116,13 @@ class AddOnsParams:
     #
     # You can tweak NodeEditorConfig (but this is optional)
     with_node_editor_config: Optional[NodeEditorConfig] = None
+
+    # If True, the node editor colors will be updated from the ImGui colors
+    # (i.e. if using a light theme, the node editor will use a light theme, etc.)
+    # This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.
+    # If you set this to False, you can set the node editor style manually.
+    # (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)
+    update_node_editor_colors_from_imgui_colors: bool = True
     # #endif
     #
 
@@ -128,6 +135,7 @@ class AddOnsParams:
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
+        update_node_editor_colors_from_imgui_colors: bool = True,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     ) -> None:
         """Auto-generated default constructor with named params"""

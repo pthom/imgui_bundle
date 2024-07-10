@@ -95,7 +95,7 @@ void py_init_module_immapp_cpp(py::module& m)
         py::class_<ImmApp::AddOnsParams>
             (m, "AddOnsParams", "///////////////////////////////////////////////////////////////////////////////////////\n\n AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)\n to be initialized at startup.\n\n/////////////////////////////////////////////////////////////////////////////////////")
         .def(py::init<>([](
-        bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
+        bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
         {
             auto r = std::make_unique<ImmApp::AddOnsParams>();
             r->withImplot = withImplot;
@@ -103,10 +103,11 @@ void py_init_module_immapp_cpp(py::module& m)
             r->withNodeEditor = withNodeEditor;
             r->withTexInspect = withTexInspect;
             r->withNodeEditorConfig = withNodeEditorConfig;
+            r->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
             r->withMarkdownOptions = withMarkdownOptions;
             return r;
         })
-        , py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none()
+        , py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("update_node_editor_colors_from_imgui_colors") = true, py::arg("with_markdown_options") = py::none()
         )
         .def_readwrite("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
         .def_readwrite("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
@@ -115,6 +116,7 @@ void py_init_module_immapp_cpp(py::module& m)
         // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         //
         .def_readwrite("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
+        .def_readwrite("update_node_editor_colors_from_imgui_colors", &ImmApp::AddOnsParams::updateNodeEditorColorsFromImguiColors, " If True, the node editor colors will be updated from the ImGui colors\n (i.e. if using a light theme, the node editor will use a light theme, etc.)\n This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.\n If you set this to False, you can set the node editor style manually.\n (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)")
         // #endif
         //
         .def_readwrite("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
