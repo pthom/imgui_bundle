@@ -298,6 +298,19 @@ if (EMSCRIPTEN)
 endif()
 
 
+if (WIN32 AND IMGUI_BUNDLE_BUILD_PYTHON)
+    # Windows: workaround against msvc Runtime incompatibilities when using std::mutex::lock
+    # Early 2024, msvcp140.dll was updated, and Python 3.11/3.12 are shipped with their own older version of msvcp140.dll
+    # As a consequence the python library will happily crash at customer site, not bothering to mention
+    # the fact that the loaded version of msvcp140.dll is incompatible...
+    # See:
+    #    https://developercommunity.visualstudio.com/t/Access-violation-in-_Thrd_yield-after-up/10664660
+    #    https://github.com/actions/runner-images/issues/10004
+    #    https://github.com/pthom/imgui_bundle/issues/239#issuecomment-2266683091
+    add_compile_definitions(_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR)
+endif()
+
+
 # find pybind11
 # -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
