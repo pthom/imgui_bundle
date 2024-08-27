@@ -1,3 +1,4 @@
+#if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "imgui.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "implot/implot.h"
@@ -43,3 +44,7 @@ int main(int, char**)
     addons_params.withNodeEditor = true;
     ImmApp::Run(runner_params, addons_params);
 }
+
+#else // #if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+int main(){}
+#endif

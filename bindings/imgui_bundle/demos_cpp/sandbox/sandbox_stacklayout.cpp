@@ -1,3 +1,4 @@
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "imgui.h"
 #include "immapp/immapp.h"
 #include "imgui-node-editor/imgui_node_editor.h"
@@ -55,3 +56,6 @@ int main(int, char**)
     ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }
+#else // #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+int main() {}
+#endif

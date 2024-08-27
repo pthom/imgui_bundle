@@ -1,13 +1,18 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp_widgets.h"
 #include "hello_imgui/hello_imgui.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
 #include "implot/implot_internal.h"
+#endif
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
+#endif
 
 namespace ImmApp
 {
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     namespace ed = ax::NodeEditor;
 
     static void DisableUserInputInNodeEditor()
@@ -16,8 +21,9 @@ namespace ImmApp
         if (nodeContext)
             nodeContext->DisableUserInputThisFrame();
     }
+#endif // #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 
-
+#if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     bool BeginPlotInNodeEditor(const char* title_id, const ImVec2& size, ImPlotFlags flags)
     {
         ImPlot::GetCurrentContext()->CanDragPlotInNodeEditor = true;
@@ -78,8 +84,9 @@ namespace ImmApp
         ImVec2 new_size_em = HelloImGui::PixelsToEm(new_size_pixels);
         return new_size_em;
     }
+#endif // #if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 
-
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     ImVec2 WidgetWithResizeHandle_InNodeEditor(
         const char* id,
         VoidFunction guiFunction, // your function to draw the widget
@@ -108,5 +115,5 @@ namespace ImmApp
         ImVec2 new_size_em = HelloImGui::PixelsToEm(new_size_pixels);
         return new_size_em;
     }
-
+#endif // #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 }

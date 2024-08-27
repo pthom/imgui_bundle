@@ -1,4 +1,4 @@
-#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+#if defined(IMGUI_BUNDLE_WITH_IMMVISION) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 #include "imgui.h"

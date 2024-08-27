@@ -1,6 +1,8 @@
 #pragma once
 #include "imgui.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
+#endif
 
 #include <functional>
 
@@ -9,6 +11,7 @@ namespace ImmApp
 {
     using VoidFunction = std::function<void(void)>;
 
+#if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     // These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
     // but they enable to make the plot content draggable inside a node
     bool BeginPlotInNodeEditor(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);
@@ -33,7 +36,9 @@ namespace ImmApp
         ImPlotFlags flags=0,
         float resizeHandleSizeEm=1.0f
     );
+#endif // #if defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     // WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node
     // Returns the new size of the widget.
     ImVec2 WidgetWithResizeHandle_InNodeEditor(
@@ -49,5 +54,5 @@ namespace ImmApp
         VoidFunction guiFunction,    // your function to draw the widget
         float resizeHandleSizeEm=1.0f
     );
-
+#endif // #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 }

@@ -1,3 +1,4 @@
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "immapp/immapp.h"
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
@@ -93,40 +94,6 @@ int main()
     ImmApp::Run(runnerParams, addonsParams);
     return 0;
 }
-
-/*
-from imgui_bundle import imgui, immapp, hello_imgui, ImVec2, imgui_node_editor as ed
-
-
-# poem = poem.replace("\n", "")
-
-_node_id = ed.NodeId.create()
-
-
-def gui():
-    global poem
-
-    ed.begin("Graph")
-
-    ed.begin_node(_node_id)
-    if imgui.button("O"):
-        imgui.open_popup("expandable_str_popup")
-    if imgui.begin_popup("expandable_str_popup"):
-        ed.suspend()
-        imgui.input_text_multiline("##value_text", poem, ImVec2(0, hello_imgui.em_size(15)))
-        ed.resume()
-        imgui.end_popup()
-
-    ed.end_node()
-
-    ed.end()
-
-    #imgui.input_text_multiline("poem", poem)
-    #imgui.text_wrapped(poem)
-
-
-immapp.run(gui, with_node_editor=True)
-
-
-
- */
+#else // #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+int main(){}
+#endif
