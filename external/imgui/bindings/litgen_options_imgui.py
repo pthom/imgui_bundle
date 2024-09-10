@@ -328,6 +328,7 @@ def litgen_options_imgui(
             #     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
             #     ImDrawCallback  UserCallback;       // 4-8  // If != NULL, call the function instead of rendering the vertices. clip_rect and texture_id will be set normally.
             r"^TexPixelsAlpha8$",
+            r"^Stb$",
         ]
     )
 

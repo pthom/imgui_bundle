@@ -1406,8 +1406,6 @@ class InputTextState:
 
     # ImGuiContext*           Ctx;    /* original C++ signature */
     ctx: Context  # parent UI context (needs to be set explicitly by parent).
-    # ImStbTexteditState*     Stb;    /* original C++ signature */
-    stb: ImStbTexteditState  # State for stb_textedit.h
     # ImGuiID                 ID;    /* original C++ signature */
     id_: ID  # widget id owning the text state
     # int                     CurLenW,     /* original C++ signature */
@@ -4644,19 +4642,6 @@ class Window:
     def get_id_from_pos(self, p_abs: ImVec2) -> ID:
         """(private API)"""
         pass
-    # Addition to ImGui Bundle: a version of GetID that warns if the ID was already used
-    # IMGUI_API ImGuiID       GetID_AssertUnique(const char* str_id);      /* original C++ signature */
-    def get_id_assert_unique(self, str_id: str) -> ID:
-        """(Specific to ImGui Bundle) Calculate unique ID (hash of whole ID stack + given parameter). Will warn if the ID was already used, and advise to call ImGui::PushID() before"""
-        pass
-
-    class GetID_AssertUnique_DisableInScope:
-        """Instantiate GetID_AssertUnique_DisableInScope in a function or scope to temporarily disable the check"""
-
-        # GetID_AssertUnique_DisableInScope();    /* original C++ signature */
-        def __init__(self) -> None:
-            pass
-
     # ImGuiID     GetIDFromRectangle(const ImRect& r_abs);    /* original C++ signature */
     def get_id_from_rectangle(self, r_abs: ImRect) -> ID:
         """(private API)"""

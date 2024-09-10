@@ -906,7 +906,6 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiInputTextState>
             (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def_readwrite("ctx", &ImGuiInputTextState::Ctx, "parent UI context (needs to be set explicitly by parent).")
-        .def_readwrite("stb", &ImGuiInputTextState::Stb, "State for stb_textedit.h")
         .def_readwrite("id_", &ImGuiInputTextState::ID, "widget id owning the text state")
         .def_readwrite("cur_len_w", &ImGuiInputTextState::CurLenW, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")
         .def_readwrite("cur_len_a", &ImGuiInputTextState::CurLenA, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")
@@ -2455,17 +2454,7 @@ void py_init_module_imgui_internal(py::module& m)
 
     auto pyClassImGuiWindow =
         py::class_<ImGuiWindow>
-            (m, "Window", "Storage for one window");
-
-    { // inner classes & enums of Window
-        auto pyClassImGuiWindow_ClassGetID_AssertUnique_DisableInScope =
-            py::class_<ImGuiWindow::GetID_AssertUnique_DisableInScope>
-                (pyClassImGuiWindow, "GetID_AssertUnique_DisableInScope", "Instantiate GetID_AssertUnique_DisableInScope in a function or scope to temporarily disable the check")
-            .def(py::init<>())
-            ;
-    } // end of inner classes & enums of Window
-
-    pyClassImGuiWindow
+            (m, "Window", "Storage for one window")
         .def_readwrite("ctx", &ImGuiWindow::Ctx, "Parent UI context (needs to be set explicitly by parent).")
         .def_readonly("name", &ImGuiWindow::Name, "Window name, owned by the window.")
         .def_readwrite("id_", &ImGuiWindow::ID, "== ImHashStr(Name)")
@@ -2597,10 +2586,6 @@ void py_init_module_imgui_internal(py::module& m)
             &ImGuiWindow::GetIDFromPos,
             py::arg("p_abs"),
             "(private API)")
-        .def("get_id_assert_unique",
-            &ImGuiWindow::GetID_AssertUnique,
-            py::arg("str_id"),
-            "(Specific to ImGui Bundle) Calculate unique ID (hash of whole ID stack + given parameter). Will warn if the ID was already used, and advise to call ImGui::PushID() before")
         .def("get_id_from_rectangle",
             &ImGuiWindow::GetIDFromRectangle,
             py::arg("r_abs"),
