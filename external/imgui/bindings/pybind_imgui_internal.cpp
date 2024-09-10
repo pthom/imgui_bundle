@@ -906,6 +906,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiInputTextState>
             (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def_readwrite("ctx", &ImGuiInputTextState::Ctx, "parent UI context (needs to be set explicitly by parent).")
+        .def_readwrite("stb", &ImGuiInputTextState::Stb, "State for stb_textedit.h")
         .def_readwrite("id_", &ImGuiInputTextState::ID, "widget id owning the text state")
         .def_readwrite("cur_len_w", &ImGuiInputTextState::CurLenW, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")
         .def_readwrite("cur_len_a", &ImGuiInputTextState::CurLenA, "we need to maintain our buffer length in both UTF-8 and wchar format. UTF-8 length is valid even if TextA is not.")
@@ -928,16 +929,12 @@ void py_init_module_imgui_internal(py::module& m)
             &ImGuiInputTextState::ClearText, "(private API)")
         .def("clear_free_memory",
             &ImGuiInputTextState::ClearFreeMemory, "(private API)")
-        .def("get_undo_avail_count",
-            &ImGuiInputTextState::GetUndoAvailCount, "(private API)")
-        .def("get_redo_avail_count",
-            &ImGuiInputTextState::GetRedoAvailCount, "(private API)")
         .def("on_key_pressed",
             &ImGuiInputTextState::OnKeyPressed,
             py::arg("key"),
             "(private API)\n\n Cannot be inline because we call in code in stb_textedit.h implementation")
         .def("cursor_anim_reset",
-            &ImGuiInputTextState::CursorAnimReset, "(private API)\n\n After a user-input the cursor stays on for a while without blinking")
+            &ImGuiInputTextState::CursorAnimReset, "(private API)")
         .def("cursor_clamp",
             &ImGuiInputTextState::CursorClamp, "(private API)")
         .def("has_selection",
@@ -1907,6 +1904,7 @@ void py_init_module_imgui_internal(py::module& m)
         .value("windowing_main_menu_bar", ImGuiLocKey_WindowingMainMenuBar, "")
         .value("windowing_popup", ImGuiLocKey_WindowingPopup, "")
         .value("windowing_untitled", ImGuiLocKey_WindowingUntitled, "")
+        .value("open_link_s", ImGuiLocKey_OpenLink_s, "")
         .value("copy_link", ImGuiLocKey_CopyLink, "")
         .value("docking_hide_tab_bar", ImGuiLocKey_DockingHideTabBar, "")
         .value("docking_hold_shift_to_dock", ImGuiLocKey_DockingHoldShiftToDock, "")
@@ -2116,9 +2114,11 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("wheeling_window_release_timer", &ImGuiContext::WheelingWindowReleaseTimer, "")
         .def_readwrite("wheeling_window_wheel_remainder", &ImGuiContext::WheelingWindowWheelRemainder, "")
         .def_readwrite("wheeling_axis_avg", &ImGuiContext::WheelingAxisAvg, "")
+        .def_readwrite("debug_draw_id_conflicts", &ImGuiContext::DebugDrawIdConflicts, "Set when we detect multiple items with the same identifier")
         .def_readwrite("debug_hook_id_info", &ImGuiContext::DebugHookIdInfo, "Will call core hooks: DebugHookIdInfo() from GetID functions, used by ID Stack Tool [next HoveredId/ActiveId to not pull in an extra cache-line]")
         .def_readwrite("hovered_id", &ImGuiContext::HoveredId, "Hovered widget, filled during the frame")
         .def_readwrite("hovered_id_previous_frame", &ImGuiContext::HoveredIdPreviousFrame, "")
+        .def_readwrite("hovered_id_previous_frame_item_count", &ImGuiContext::HoveredIdPreviousFrameItemCount, "Count numbers of items using the same ID as last frame's hovered id")
         .def_readwrite("hovered_id_timer", &ImGuiContext::HoveredIdTimer, "Measure contiguous hovering time")
         .def_readwrite("hovered_id_not_active_timer", &ImGuiContext::HoveredIdNotActiveTimer, "Measure contiguous hovering time where the item has not been active")
         .def_readwrite("hovered_id_allow_overlap", &ImGuiContext::HoveredIdAllowOverlap, "")

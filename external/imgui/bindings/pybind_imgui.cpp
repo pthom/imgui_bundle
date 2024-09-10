@@ -2589,7 +2589,8 @@ void py_init_module_imgui_main(py::module& m)
         .value("no_nav", ImGuiItemFlags_NoNav, "False    // Disable any form of focusing (keyboard/gamepad directional navigation and SetKeyboardFocusHere() calls).")
         .value("no_nav_default_focus", ImGuiItemFlags_NoNavDefaultFocus, "False    // Disable item being a candidate for default focus (e.g. used by title bar items).")
         .value("button_repeat", ImGuiItemFlags_ButtonRepeat, "False    // Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call IsItemActive() after any button to tell if it is being held.")
-        .value("auto_close_popups", ImGuiItemFlags_AutoClosePopups, "True     // MenuItem()/Selectable() automatically close their parent popup window.");
+        .value("auto_close_popups", ImGuiItemFlags_AutoClosePopups, "True     // MenuItem()/Selectable() automatically close their parent popup window.")
+        .value("allow_duplicate_id", ImGuiItemFlags_AllowDuplicateId, "False    // Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.");
 
 
     py::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags_", py::arithmetic(), " Flags for ImGui::InputText()\n (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)")
@@ -5348,6 +5349,7 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")
         .def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")
         .def_readwrite("config_debug_is_debugger_present", &ImGuiIO::ConfigDebugIsDebuggerPresent, "= False          // Enable various tools calling IM_DEBUG_BREAK().")
+        .def_readwrite("config_debug_highlight_id_conflicts", &ImGuiIO::ConfigDebugHighlightIdConflicts, "= True           // Highlight and show an error message when multiple items have conflicting identifiers.")
         .def_readwrite("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
         .def_readwrite("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
         .def_readwrite("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys()/io.ClearInputMouse() in input processing.")
