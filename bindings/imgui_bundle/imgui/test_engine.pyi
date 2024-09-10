@@ -29,7 +29,7 @@ from imgui_bundle.imgui import (
     Key,
     Dir,
     SortDirection,
-    DataType
+    DataType,
 )
 from imgui_bundle.imgui.internal import (
     ItemStatusFlags,

@@ -221,6 +221,11 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("current"), py::arg("target"), py::arg("speed"),
         "(private API)");
 
+    m.def("im_linear_remap_clamp",
+        ImLinearRemapClamp,
+        py::arg("s0"), py::arg("s1"), py::arg("d0"), py::arg("d1"), py::arg("x"),
+        "(private API)");
+
     m.def("im_mul",
         ImMul,
         py::arg("lhs"), py::arg("rhs"),
@@ -536,6 +541,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("tex_uv_white_pixel", &ImDrawListSharedData::TexUvWhitePixel, "UV of white pixel in the atlas")
         .def_readwrite("font", &ImDrawListSharedData::Font, "Current/default font (optional, for simplified AddText overload)")
         .def_readwrite("font_size", &ImDrawListSharedData::FontSize, "Current/default font size (optional, for simplified AddText overload)")
+        .def_readwrite("font_scale", &ImDrawListSharedData::FontScale, "Current/default font scale (== FontSize / Font->FontSize)")
         .def_readwrite("curve_tessellation_tol", &ImDrawListSharedData::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo()")
         .def_readwrite("circle_segment_max_error", &ImDrawListSharedData::CircleSegmentMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
         .def_readwrite("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
@@ -632,20 +638,16 @@ void py_init_module_imgui_internal(py::module& m)
         .value("im_gui_data_type_id", ImGuiDataType_ID, "");
 
 
-    py::enum_<ImGuiItemFlags_>(m, "ItemFlags_", py::arithmetic(), " Flags used by upcoming items\n - input: PushItemFlag() manipulates g.CurrentItemFlags, ItemAdd() calls may add extra flags.\n - output: stored in g.LastItemData.InFlags\n Current window shared by all windows.\n This is going to be exposed in imgui.h when stabilized enough.")
-        .value("none", ImGuiItemFlags_None, "")
-        .value("no_tab_stop", ImGuiItemFlags_NoTabStop, "False     // Disable keyboard tabbing. This is a \"lighter\" version of ImGuiItemFlags_NoNav.")
-        .value("button_repeat", ImGuiItemFlags_ButtonRepeat, "False     // Button() will return True multiple times based on io.KeyRepeatDelay and io.KeyRepeatRate settings.")
-        .value("disabled", ImGuiItemFlags_Disabled, "False     // Disable interactions but doesn't affect visuals. See BeginDisabled()/EndDisabled(). See github.com/ocornut/imgui/issues/211")
-        .value("no_nav", ImGuiItemFlags_NoNav, "False     // Disable any form of focusing (keyboard/gamepad directional navigation and SetKeyboardFocusHere() calls)")
-        .value("no_nav_default_focus", ImGuiItemFlags_NoNavDefaultFocus, "False     // Disable item being a candidate for default focus (e.g. used by title bar items)")
-        .value("selectable_dont_close_popup", ImGuiItemFlags_SelectableDontClosePopup, "False     // Disable MenuItem/Selectable() automatically closing their popup window")
-        .value("mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
-        .value("read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
-        .value("no_window_hoverable_check", ImGuiItemFlags_NoWindowHoverableCheck, "False     // Disable hoverable check in ItemHoverable()")
-        .value("allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
-        .value("inputable", ImGuiItemFlags_Inputable, "False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.")
-        .value("has_selection_user_data", ImGuiItemFlags_HasSelectionUserData, "False     // Set by SetNextItemSelectionUserData()");
+    py::enum_<ImGuiItemFlagsPrivate_>(m, "ItemFlagsPrivate_", py::arithmetic(), " Extend ImGuiItemFlags\n - input: PushItemFlag() manipulates g.CurrentItemFlags, ItemAdd() calls may add extra flags.\n - output: stored in g.LastItemData.InFlags")
+        .value("im_gui_item_flags_disabled", ImGuiItemFlags_Disabled, "False     // Disable interactions (DOES NOT affect visuals, see BeginDisabled()/EndDisabled() for full disable feature, and github #211).")
+        .value("im_gui_item_flags_read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
+        .value("im_gui_item_flags_mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
+        .value("im_gui_item_flags_no_window_hoverable_check", ImGuiItemFlags_NoWindowHoverableCheck, "False     // Disable hoverable check in ItemHoverable()")
+        .value("im_gui_item_flags_allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
+        .value("im_gui_item_flags_inputable", ImGuiItemFlags_Inputable, "False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.")
+        .value("im_gui_item_flags_has_selection_user_data", ImGuiItemFlags_HasSelectionUserData, "False     // Set by SetNextItemSelectionUserData()")
+        .value("im_gui_item_flags_is_multi_select", ImGuiItemFlags_IsMultiSelect, "False     // Set by SetNextItemSelectionUserData()")
+        .value("im_gui_item_flags_default_", ImGuiItemFlags_Default_, "Please don't change, use PushItemFlag() instead.");
 
 
     py::enum_<ImGuiItemStatusFlags_>(m, "ItemStatusFlags_", py::arithmetic(), " Status flags for an already submitted item\n - output: stored in g.LastItemData.StatusFlags")
@@ -719,8 +721,9 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", py::arithmetic(), "Extend ImGuiTreeNodeFlags_")
-        .value("im_gui_tree_node_flags_clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "")
-        .value("im_gui_tree_node_flags_upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "(FIXME-WIP) Turn Down arrow into an Up arrow, but reversed trees (#6517)");
+        .value("im_gui_tree_node_flags_clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "FIXME-WIP: Hard-coded for CollapsingHeader()")
+        .value("im_gui_tree_node_flags_upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "FIXME-WIP: Turn Down arrow into an Up arrow, but reversed trees (#6517)")
+        .value("im_gui_tree_node_flags_open_on_mask_", ImGuiTreeNodeFlags_OpenOnMask_, "");
 
 
     py::enum_<ImGuiSeparatorFlags_>(m, "SeparatorFlags_", py::arithmetic(), "")
@@ -911,7 +914,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("initial_text_a", &ImGuiInputTextState::InitialTextA, "value to revert to when pressing Escape = backup of end-user buffer at the time of focus (in UTF-8, unaltered)")
         .def_readwrite("text_a_is_valid", &ImGuiInputTextState::TextAIsValid, "temporary UTF8 buffer is not initially valid before we make the widget active (until then we pull the data from user argument)")
         .def_readwrite("buf_capacity_a", &ImGuiInputTextState::BufCapacityA, "end-user buffer capacity")
-        .def_readwrite("scroll_x", &ImGuiInputTextState::ScrollX, "horizontal scrolling/offset")
+        .def_readwrite("scroll", &ImGuiInputTextState::Scroll, "horizontal offset (managed manually) + vertical scrolling (pulled from child window's own Scroll.y)")
         .def_readwrite("cursor_anim", &ImGuiInputTextState::CursorAnim, "timer for cursor blink, reset on every user action so the cursor reappears immediately")
         .def_readwrite("cursor_follow", &ImGuiInputTextState::CursorFollow, "set when we want scrolling to follow the current cursor position (not always!)")
         .def_readwrite("selected_all_mouse_lock", &ImGuiInputTextState::SelectedAllMouseLock, "after a double-click to select all, we ignore further mouse drags to update selection")
@@ -1018,14 +1021,16 @@ void py_init_module_imgui_internal(py::module& m)
         .value("has_width", ImGuiNextItemDataFlags_HasWidth, "")
         .value("has_open", ImGuiNextItemDataFlags_HasOpen, "")
         .value("has_shortcut", ImGuiNextItemDataFlags_HasShortcut, "")
-        .value("has_ref_val", ImGuiNextItemDataFlags_HasRefVal, "");
+        .value("has_ref_val", ImGuiNextItemDataFlags_HasRefVal, "")
+        .value("has_storage_id", ImGuiNextItemDataFlags_HasStorageID, "");
 
 
     auto pyClassImGuiNextItemData =
         py::class_<ImGuiNextItemData>
             (m, "NextItemData", "")
         .def_readwrite("flags", &ImGuiNextItemData::Flags, "")
-        .def_readwrite("item_flags", &ImGuiNextItemData::ItemFlags, "Currently only tested/used for ImGuiItemFlags_AllowOverlap.")
+        .def_readwrite("item_flags", &ImGuiNextItemData::ItemFlags, "Currently only tested/used for ImGuiItemFlags_AllowOverlap and ImGuiItemFlags_HasSelectionUserData.")
+        .def_readwrite("focus_scope_id", &ImGuiNextItemData::FocusScopeId, "Set by SetNextItemSelectionUserData()")
         .def_readwrite("selection_user_data", &ImGuiNextItemData::SelectionUserData, "Set by SetNextItemSelectionUserData() (note that None/0 is a valid value, we use -1 == ImGuiSelectionUserData_Invalid to mark invalid values)")
         .def_readwrite("width", &ImGuiNextItemData::Width, "Set by SetNextItemWidth()")
         .def_readwrite("shortcut", &ImGuiNextItemData::Shortcut, "Set by SetNextItemShortcut()")
@@ -1033,6 +1038,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("open_val", &ImGuiNextItemData::OpenVal, "Set by SetNextItemOpen()")
         .def_readwrite("open_cond", &ImGuiNextItemData::OpenCond, "Set by SetNextItemOpen()")
         .def_readwrite("ref_val", &ImGuiNextItemData::RefVal, "Not exposed yet, for ImGuiInputTextFlags_ParseEmptyAsRefVal")
+        .def_readwrite("storage_id", &ImGuiNextItemData::StorageId, "Set by SetNextItemStorageID()")
         .def(py::init<>())
         .def("clear_flags",
             &ImGuiNextItemData::ClearFlags, "(private API)\n\n Also cleared manually by ItemAdd()!")
@@ -1054,23 +1060,25 @@ void py_init_module_imgui_internal(py::module& m)
         ;
 
 
-    auto pyClassImGuiNavTreeNodeData =
-        py::class_<ImGuiNavTreeNodeData>
-            (m, "NavTreeNodeData", " Store data emitted by TreeNode() for usage by TreePop() to implement ImGuiTreeNodeFlags_NavLeftJumpsBackHere.\n This is the minimum amount of data that we need to perform the equivalent of NavApplyItemToResult() and which we can't infer in TreePop()\n Only stored when the node is a potential candidate for landing on a Left arrow jump.")
+    auto pyClassImGuiTreeNodeStackData =
+        py::class_<ImGuiTreeNodeStackData>
+            (m, "TreeNodeStackData", " Store data emitted by TreeNode() for usage by TreePop()\n - To implement ImGuiTreeNodeFlags_NavLeftJumpsBackHere: store the minimum amount of data\n   which we can't infer in TreePop(), to perform the equivalent of NavApplyItemToResult().\n   Only stored when the node is a potential candidate for landing on a Left arrow jump.")
         .def(py::init<>([](
-        ImGuiID ID = ImGuiID(), ImGuiItemFlags InFlags = ImGuiItemFlags(), ImRect NavRect = ImRect())
+        ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags InFlags = ImGuiItemFlags(), ImRect NavRect = ImRect())
         {
-            auto r = std::make_unique<ImGuiNavTreeNodeData>();
+            auto r = std::make_unique<ImGuiTreeNodeStackData>();
             r->ID = ID;
+            r->TreeFlags = TreeFlags;
             r->InFlags = InFlags;
             r->NavRect = NavRect;
             return r;
         })
-        , py::arg("id_") = ImGuiID(), py::arg("in_flags") = ImGuiItemFlags(), py::arg("nav_rect") = ImRect()
+        , py::arg("id_") = ImGuiID(), py::arg("tree_flags") = ImGuiTreeNodeFlags(), py::arg("in_flags") = ImGuiItemFlags(), py::arg("nav_rect") = ImRect()
         )
-        .def_readwrite("id_", &ImGuiNavTreeNodeData::ID, "")
-        .def_readwrite("in_flags", &ImGuiNavTreeNodeData::InFlags, "")
-        .def_readwrite("nav_rect", &ImGuiNavTreeNodeData::NavRect, "")
+        .def_readwrite("id_", &ImGuiTreeNodeStackData::ID, "")
+        .def_readwrite("tree_flags", &ImGuiTreeNodeStackData::TreeFlags, "")
+        .def_readwrite("in_flags", &ImGuiTreeNodeStackData::InFlags, "Used for nav landing")
+        .def_readwrite("nav_rect", &ImGuiTreeNodeStackData::NavRect, "Used for nav landing")
         ;
 
 
@@ -1612,6 +1620,69 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("splitter", &ImGuiOldColumns::Splitter, "")
         .def(py::init<>())
         ;
+
+
+    auto pyClassImGuiBoxSelectState =
+        py::class_<ImGuiBoxSelectState>
+            (m, "BoxSelectState", "")
+        .def_readwrite("id_", &ImGuiBoxSelectState::ID, "")
+        .def_readwrite("is_active", &ImGuiBoxSelectState::IsActive, "")
+        .def_readwrite("is_starting", &ImGuiBoxSelectState::IsStarting, "")
+        .def_readwrite("is_started_from_void", &ImGuiBoxSelectState::IsStartedFromVoid, "Starting click was not from an item.")
+        .def_readwrite("is_started_set_nav_id_once", &ImGuiBoxSelectState::IsStartedSetNavIdOnce, "")
+        .def_readwrite("request_clear", &ImGuiBoxSelectState::RequestClear, "")
+        .def_readwrite("start_pos_rel", &ImGuiBoxSelectState::StartPosRel, "Start position in window-contents relative space (to support scrolling)")
+        .def_readwrite("end_pos_rel", &ImGuiBoxSelectState::EndPosRel, "End position in window-contents relative space")
+        .def_readwrite("scroll_accum", &ImGuiBoxSelectState::ScrollAccum, "Scrolling accumulator (to behave at high-frame spaces)")
+        .def_readwrite("window", &ImGuiBoxSelectState::Window, "")
+        .def_readwrite("unclip_mode", &ImGuiBoxSelectState::UnclipMode, "(Temp/Transient, here in hot area). Set/cleared by the BeginMultiSelect()/EndMultiSelect() owning active box-select.")
+        .def_readwrite("unclip_rect", &ImGuiBoxSelectState::UnclipRect, "Rectangle where ItemAdd() clipping may be temporarily disabled. Need support by multi-select supporting widgets.")
+        .def_readwrite("box_select_rect_prev", &ImGuiBoxSelectState::BoxSelectRectPrev, "Selection rectangle in absolute coordinates (derived every frame from BoxSelectStartPosRel and MousePos)")
+        .def_readwrite("box_select_rect_curr", &ImGuiBoxSelectState::BoxSelectRectCurr, "")
+        .def(py::init<>())
+        ;
+
+
+    auto pyClassImGuiMultiSelectTempData =
+        py::class_<ImGuiMultiSelectTempData>
+            (m, "MultiSelectTempData", "Temporary storage for multi-select")
+        .def_readwrite("io", &ImGuiMultiSelectTempData::IO, "MUST BE FIRST FIELD. Requests are set and returned by BeginMultiSelect()/EndMultiSelect() + written to by user during the loop.")
+        .def_readwrite("storage", &ImGuiMultiSelectTempData::Storage, "")
+        .def_readwrite("focus_scope_id", &ImGuiMultiSelectTempData::FocusScopeId, "Copied from g.CurrentFocusScopeId (unless another selection scope was pushed manually)")
+        .def_readwrite("flags", &ImGuiMultiSelectTempData::Flags, "")
+        .def_readwrite("scope_rect_min", &ImGuiMultiSelectTempData::ScopeRectMin, "")
+        .def_readwrite("backup_cursor_max_pos", &ImGuiMultiSelectTempData::BackupCursorMaxPos, "")
+        .def_readwrite("last_submitted_item", &ImGuiMultiSelectTempData::LastSubmittedItem, "Copy of last submitted item data, used to merge output ranges.")
+        .def_readwrite("box_select_id", &ImGuiMultiSelectTempData::BoxSelectId, "")
+        .def_readwrite("key_mods", &ImGuiMultiSelectTempData::KeyMods, "")
+        .def_readwrite("loop_request_set_all", &ImGuiMultiSelectTempData::LoopRequestSetAll, "-1: no operation, 0: clear all, 1: select all.")
+        .def_readwrite("is_end_io", &ImGuiMultiSelectTempData::IsEndIO, "Set when switching IO from BeginMultiSelect() to EndMultiSelect() state.")
+        .def_readwrite("is_focused", &ImGuiMultiSelectTempData::IsFocused, "Set if currently focusing the selection scope (any item of the selection). May be used if you have custom shortcut associated to selection.")
+        .def_readwrite("is_keyboard_set_range", &ImGuiMultiSelectTempData::IsKeyboardSetRange, "Set by BeginMultiSelect() when using Shift+Navigation. Because scrolling may be affected we can't afford a frame of lag with Shift+Navigation.")
+        .def_readwrite("nav_id_passed_by", &ImGuiMultiSelectTempData::NavIdPassedBy, "")
+        .def_readwrite("range_src_passed_by", &ImGuiMultiSelectTempData::RangeSrcPassedBy, "Set by the item that matches RangeSrcItem.")
+        .def_readwrite("range_dst_passed_by", &ImGuiMultiSelectTempData::RangeDstPassedBy, "Set by the item that matches NavJustMovedToId when IsSetRange is set.")
+        .def(py::init<>())
+        .def("clear",
+            &ImGuiMultiSelectTempData::Clear, "(private API)\n\n Zero-clear except IO as we preserve IO.Requests[] buffer allocation.")
+        .def("clear_io",
+            &ImGuiMultiSelectTempData::ClearIO, "(private API)")
+        ;
+
+
+    auto pyClassImGuiMultiSelectState =
+        py::class_<ImGuiMultiSelectState>
+            (m, "MultiSelectState", "Persistent storage for multi-select (as long as selection is alive)")
+        .def_readwrite("window", &ImGuiMultiSelectState::Window, "")
+        .def_readwrite("id_", &ImGuiMultiSelectState::ID, "")
+        .def_readwrite("last_frame_active", &ImGuiMultiSelectState::LastFrameActive, "Last used frame-count, for GC.")
+        .def_readwrite("last_selection_size", &ImGuiMultiSelectState::LastSelectionSize, "Set by BeginMultiSelect() based on optional info provided by user. May be -1 if unknown.")
+        .def_readwrite("range_selected", &ImGuiMultiSelectState::RangeSelected, "-1 (don't have) or True/False")
+        .def_readwrite("nav_id_selected", &ImGuiMultiSelectState::NavIdSelected, "-1 (don't have) or True/False")
+        .def_readwrite("range_src_item", &ImGuiMultiSelectState::RangeSrcItem, "")
+        .def_readwrite("nav_id_item", &ImGuiMultiSelectState::NavIdItem, "SetNextItemSelectionUserData() value for NavId (if part of submitted items)")
+        .def(py::init<>())
+        ;
     // #ifdef IMGUI_HAS_DOCK
     //
 
@@ -1766,20 +1837,20 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("last_platform_pos", &ImGuiViewportP::LastPlatformPos, "")
         .def_readwrite("last_platform_size", &ImGuiViewportP::LastPlatformSize, "")
         .def_readwrite("last_renderer_size", &ImGuiViewportP::LastRendererSize, "")
-        .def_readwrite("work_offset_min", &ImGuiViewportP::WorkOffsetMin, "Work Area: Offset from Pos to top-left corner of Work Area. Generally (0,0) or (0,+main_menu_bar_height). Work Area is Full Area but without menu-bars/status-bars (so WorkArea always fit inside Pos/Size!)")
-        .def_readwrite("work_offset_max", &ImGuiViewportP::WorkOffsetMax, "Work Area: Offset from Pos+Size to bottom-right corner of Work Area. Generally (0,0) or (0,-status_bar_height).")
-        .def_readwrite("build_work_offset_min", &ImGuiViewportP::BuildWorkOffsetMin, "Work Area: Offset being built during current frame. Generally >= 0.0.")
-        .def_readwrite("build_work_offset_max", &ImGuiViewportP::BuildWorkOffsetMax, "Work Area: Offset being built during current frame. Generally <= 0.0.")
+        .def_readwrite("work_inset_min", &ImGuiViewportP::WorkInsetMin, "Work Area inset locked for the frame. GetWorkRect() always fits within GetMainRect().")
+        .def_readwrite("work_inset_max", &ImGuiViewportP::WorkInsetMax, "\"")
+        .def_readwrite("build_work_inset_min", &ImGuiViewportP::BuildWorkInsetMin, "Work Area inset accumulator for current frame, to become next frame's WorkInset")
+        .def_readwrite("build_work_inset_max", &ImGuiViewportP::BuildWorkInsetMax, "\"")
         .def(py::init<>())
         .def("clear_request_flags",
             &ImGuiViewportP::ClearRequestFlags, "(private API)")
         .def("calc_work_rect_pos",
             &ImGuiViewportP::CalcWorkRectPos,
-            py::arg("off_min"),
+            py::arg("inset_min"),
             "(private API)")
         .def("calc_work_rect_size",
             &ImGuiViewportP::CalcWorkRectSize,
-            py::arg("off_min"), py::arg("off_max"),
+            py::arg("inset_min"), py::arg("inset_max"),
             "(private API)")
         .def("update_work_rect",
             &ImGuiViewportP::UpdateWorkRect, "(private API)\n\n Update public fields")
@@ -1836,6 +1907,7 @@ void py_init_module_imgui_internal(py::module& m)
         .value("windowing_main_menu_bar", ImGuiLocKey_WindowingMainMenuBar, "")
         .value("windowing_popup", ImGuiLocKey_WindowingPopup, "")
         .value("windowing_untitled", ImGuiLocKey_WindowingUntitled, "")
+        .value("copy_link", ImGuiLocKey_CopyLink, "")
         .value("docking_hide_tab_bar", ImGuiLocKey_DockingHideTabBar, "")
         .value("docking_hold_shift_to_dock", ImGuiLocKey_DockingHoldShiftToDock, "")
         .value("docking_drag_to_undock_or_move_node", ImGuiLocKey_DockingDragToUndockOrMoveNode, "")
@@ -2006,6 +2078,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("font", &ImGuiContext::Font, "(Shortcut) == FontStack.empty() ? IO.Font : FontStack.back()")
         .def_readwrite("font_size", &ImGuiContext::FontSize, "(Shortcut) == FontBaseSize * g.CurrentWindow->FontWindowScale == window->FontSize(). Text height for current window.")
         .def_readwrite("font_base_size", &ImGuiContext::FontBaseSize, "(Shortcut) == IO.FontGlobalScale * Font->Scale * Font->FontSize. Base text height.")
+        .def_readwrite("font_scale", &ImGuiContext::FontScale, "== FontSize / Font->FontSize")
         .def_readwrite("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_readwrite("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
         .def_readwrite("time", &ImGuiContext::Time, "")
@@ -2075,8 +2148,8 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("last_keyboard_key_press_time", &ImGuiContext::LastKeyboardKeyPressTime, "Record the last time a keyboard key (ignore mouse/gamepad ones) was pressed.")
         .def_readwrite("keys_routing_table", &ImGuiContext::KeysRoutingTable, "")
         .def_readwrite("active_id_using_nav_dir_mask", &ImGuiContext::ActiveIdUsingNavDirMask, "Active widget will want to read those nav move requests (e.g. can activate a button and move away from it)")
-        .def_readwrite("active_id_using_all_keyboard_keys", &ImGuiContext::ActiveIdUsingAllKeyboardKeys, "Active widget will want to read all keyboard keys inputs. (FIXME: This is a shortcut for not taking ownership of 100+ keys but perhaps best to not have the inconsistency)")
-        .def_readwrite("debug_break_in_shortcut_routing", &ImGuiContext::DebugBreakInShortcutRouting, "")
+        .def_readwrite("active_id_using_all_keyboard_keys", &ImGuiContext::ActiveIdUsingAllKeyboardKeys, "Active widget will want to read all keyboard keys inputs. (this is a shortcut for not taking ownership of 100+ keys, frequently used by drag operations)")
+        .def_readwrite("debug_break_in_shortcut_routing", &ImGuiContext::DebugBreakInShortcutRouting, "Set to break in SetShortcutRouting()/Shortcut() calls.")
         .def_readwrite("current_focus_scope_id", &ImGuiContext::CurrentFocusScopeId, "Value for currently appending items == g.FocusScopeStack.back(). Not to be mistaken with g.NavFocusScopeId.")
         .def_readwrite("current_item_flags", &ImGuiContext::CurrentItemFlags, "Value for currently appending items == g.ItemFlagsStack.back()")
         .def_readwrite("debug_locate_id", &ImGuiContext::DebugLocateId, "Storage for DebugLocateItemOnHover() feature: this is read by ItemAdd() so we keep it in a hot/cached location")
@@ -2093,7 +2166,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("group_stack", &ImGuiContext::GroupStack, "Stack for BeginGroup()/EndGroup() - not inherited by Begin()")
         .def_readwrite("open_popup_stack", &ImGuiContext::OpenPopupStack, "Which popups are open (persistent)")
         .def_readwrite("begin_popup_stack", &ImGuiContext::BeginPopupStack, "Which level of BeginPopup() we are in (reset every frame)")
-        .def_readwrite("nav_tree_node_stack", &ImGuiContext::NavTreeNodeStack, "Stack for TreeNode() when a NavLeft requested is emitted.")
+        .def_readwrite("tree_node_stack", &ImGuiContext::TreeNodeStack, "Stack for TreeNode()")
         .def_readwrite("viewports", &ImGuiContext::Viewports, "Active viewports (always 1+, and generally 1 unless multi-viewports are enabled). Each viewports hold their copy of ImDrawData.")
         .def_readwrite("current_viewport", &ImGuiContext::CurrentViewport, "We track changes of viewport (happening in Begin) so we can call Platform_OnChangedViewport()")
         .def_readwrite("mouse_viewport", &ImGuiContext::MouseViewport, "")
@@ -2191,6 +2264,10 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("current_tab_bar", &ImGuiContext::CurrentTabBar, "")
         .def_readwrite("current_tab_bar_stack", &ImGuiContext::CurrentTabBarStack, "")
         .def_readwrite("shrink_width_buffer", &ImGuiContext::ShrinkWidthBuffer, "")
+        .def_readwrite("box_select_state", &ImGuiContext::BoxSelectState, "")
+        .def_readwrite("current_multi_select", &ImGuiContext::CurrentMultiSelect, "")
+        .def_readwrite("multi_select_temp_data_stacked", &ImGuiContext::MultiSelectTempDataStacked, "Temporary multi-select data size (because we leave previous instances undestructed, we generally don't use MultiSelectTempData.Size)")
+        .def_readwrite("multi_select_temp_data", &ImGuiContext::MultiSelectTempData, "")
         .def_readwrite("hover_item_delay_id", &ImGuiContext::HoverItemDelayId, "")
         .def_readwrite("hover_item_delay_id_previous_frame", &ImGuiContext::HoverItemDelayIdPreviousFrame, "")
         .def_readwrite("hover_item_delay_timer", &ImGuiContext::HoverItemDelayTimer, "Currently used by IsItemHovered()")
@@ -2233,7 +2310,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("menus_id_submitted_this_frame", &ImGuiContext::MenusIdSubmittedThisFrame, "A list of menu IDs that were rendered at least once")
         .def_readwrite("typing_select_state", &ImGuiContext::TypingSelectState, "State for GetTypingSelectRequest()")
         .def_readwrite("platform_ime_data", &ImGuiContext::PlatformImeData, "Data updated by current frame")
-        .def_readwrite("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data (when changing we will call io.SetPlatformImeDataFn")
+        .def_readwrite("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.")
         .def_readwrite("platform_ime_viewport", &ImGuiContext::PlatformImeViewport, "")
         .def_readwrite("dock_context", &ImGuiContext::DockContext, " Extensions\n FIXME: We could provide an API to register one slot in an array held in ImGuiContext?")
         .def_readwrite("settings_loaded", &ImGuiContext::SettingsLoaded, "")
@@ -2294,7 +2371,7 @@ void py_init_module_imgui_internal(py::module& m)
         py::class_<ImGuiWindowTempData>
             (m, "WindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
         .def(py::init<>([](
-        ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeJumpToParentOnPopMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>())
+        ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>())
         {
             auto r = std::make_unique<ImGuiWindowTempData>();
             r->CursorPos = CursorPos;
@@ -2322,7 +2399,7 @@ void py_init_module_imgui_internal(py::module& m)
             r->MenuBarOffset = MenuBarOffset;
             r->MenuColumns = MenuColumns;
             r->TreeDepth = TreeDepth;
-            r->TreeJumpToParentOnPopMask = TreeJumpToParentOnPopMask;
+            r->TreeHasStackDataDepthMask = TreeHasStackDataDepthMask;
             r->ChildWindows = ChildWindows;
             r->CurrentTableIdx = CurrentTableIdx;
             r->LayoutType = LayoutType;
@@ -2334,7 +2411,7 @@ void py_init_module_imgui_internal(py::module& m)
             r->TextWrapPosStack = TextWrapPosStack;
             return r;
         })
-        , py::arg("cursor_pos") = ImVec2(), py::arg("cursor_pos_prev_line") = ImVec2(), py::arg("cursor_start_pos") = ImVec2(), py::arg("cursor_max_pos") = ImVec2(), py::arg("ideal_max_pos") = ImVec2(), py::arg("curr_line_size") = ImVec2(), py::arg("prev_line_size") = ImVec2(), py::arg("curr_line_text_base_offset") = float(), py::arg("prev_line_text_base_offset") = float(), py::arg("is_same_line") = bool(), py::arg("is_set_pos") = bool(), py::arg("indent") = ImVec1(), py::arg("columns_offset") = ImVec1(), py::arg("group_offset") = ImVec1(), py::arg("cursor_start_pos_lossyness") = ImVec2(), py::arg("nav_layer_current") = ImGuiNavLayer(), py::arg("nav_layers_active_mask") = short(), py::arg("nav_layers_active_mask_next") = short(), py::arg("nav_is_scroll_pushable_x") = bool(), py::arg("nav_hide_highlight_one_frame") = bool(), py::arg("nav_window_has_scroll_y") = bool(), py::arg("menu_bar_appending") = bool(), py::arg("menu_bar_offset") = ImVec2(), py::arg("menu_columns") = ImGuiMenuColumns(), py::arg("tree_depth") = int(), py::arg("tree_jump_to_parent_on_pop_mask") = ImU32(), py::arg("child_windows") = ImVector<ImGuiWindow*>(), py::arg("current_table_idx") = int(), py::arg("layout_type") = ImGuiLayoutType(), py::arg("parent_layout_type") = ImGuiLayoutType(), py::arg("modal_dim_bg_color") = ImU32(), py::arg("item_width") = float(), py::arg("text_wrap_pos") = float(), py::arg("item_width_stack") = ImVector<float>(), py::arg("text_wrap_pos_stack") = ImVector<float>()
+        , py::arg("cursor_pos") = ImVec2(), py::arg("cursor_pos_prev_line") = ImVec2(), py::arg("cursor_start_pos") = ImVec2(), py::arg("cursor_max_pos") = ImVec2(), py::arg("ideal_max_pos") = ImVec2(), py::arg("curr_line_size") = ImVec2(), py::arg("prev_line_size") = ImVec2(), py::arg("curr_line_text_base_offset") = float(), py::arg("prev_line_text_base_offset") = float(), py::arg("is_same_line") = bool(), py::arg("is_set_pos") = bool(), py::arg("indent") = ImVec1(), py::arg("columns_offset") = ImVec1(), py::arg("group_offset") = ImVec1(), py::arg("cursor_start_pos_lossyness") = ImVec2(), py::arg("nav_layer_current") = ImGuiNavLayer(), py::arg("nav_layers_active_mask") = short(), py::arg("nav_layers_active_mask_next") = short(), py::arg("nav_is_scroll_pushable_x") = bool(), py::arg("nav_hide_highlight_one_frame") = bool(), py::arg("nav_window_has_scroll_y") = bool(), py::arg("menu_bar_appending") = bool(), py::arg("menu_bar_offset") = ImVec2(), py::arg("menu_columns") = ImGuiMenuColumns(), py::arg("tree_depth") = int(), py::arg("tree_has_stack_data_depth_mask") = ImU32(), py::arg("child_windows") = ImVector<ImGuiWindow*>(), py::arg("current_table_idx") = int(), py::arg("layout_type") = ImGuiLayoutType(), py::arg("parent_layout_type") = ImGuiLayoutType(), py::arg("modal_dim_bg_color") = ImU32(), py::arg("item_width") = float(), py::arg("text_wrap_pos") = float(), py::arg("item_width_stack") = ImVector<float>(), py::arg("text_wrap_pos_stack") = ImVector<float>()
         )
         .def_readwrite("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")
         .def_readwrite("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")
@@ -2361,7 +2438,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("menu_bar_offset", &ImGuiWindowTempData::MenuBarOffset, "MenuBarOffset.x is sort of equivalent of a per-layer CursorPos.x, saved/restored as we switch to the menu bar. The only situation when MenuBarOffset.y is > 0 if when (SafeAreaPadding.y > FramePadding.y), often used on TVs.")
         .def_readwrite("menu_columns", &ImGuiWindowTempData::MenuColumns, "Simplified columns storage for menu items measurement")
         .def_readwrite("tree_depth", &ImGuiWindowTempData::TreeDepth, "Current tree depth.")
-        .def_readwrite("tree_jump_to_parent_on_pop_mask", &ImGuiWindowTempData::TreeJumpToParentOnPopMask, "Store a copy of !g.NavIdIsAlive for TreeDepth 0..31.. Could be turned into a ImU64 if necessary.")
+        .def_readwrite("tree_has_stack_data_depth_mask", &ImGuiWindowTempData::TreeHasStackDataDepthMask, "Store whether given depth has ImGuiTreeNodeStackData data. Could be turned into a ImU64 if necessary.")
         .def_readwrite("child_windows", &ImGuiWindowTempData::ChildWindows, "")
         .def_readwrite("state_storage", &ImGuiWindowTempData::StateStorage, "Current persistent per-window storage (store e.g. tree node open/close state)")
         .def_readwrite("current_columns", &ImGuiWindowTempData::CurrentColumns, "Current columns set")
@@ -2516,6 +2593,10 @@ void py_init_module_imgui_internal(py::module& m)
             py::overload_cast<int>(&ImGuiWindow::GetID),
             py::arg("n"),
             "(private API)")
+        .def("get_id_from_pos",
+            &ImGuiWindow::GetIDFromPos,
+            py::arg("p_abs"),
+            "(private API)")
         .def("get_id_assert_unique",
             &ImGuiWindow::GetID_AssertUnique,
             py::arg("str_id"),
@@ -2617,6 +2698,7 @@ void py_init_module_imgui_internal(py::module& m)
         .def_readwrite("max_x", &ImGuiTableColumn::MaxX, "")
         .def_readwrite("width_request", &ImGuiTableColumn::WidthRequest, "Master width absolute value when !(Flags & _WidthStretch). When Stretch this is derived every frame from StretchWeight in TableUpdateLayout()")
         .def_readwrite("width_auto", &ImGuiTableColumn::WidthAuto, "Automatic width")
+        .def_readwrite("width_max", &ImGuiTableColumn::WidthMax, "Maximum width (FIXME: overwritten by each instance)")
         .def_readwrite("stretch_weight", &ImGuiTableColumn::StretchWeight, "Master width weight when (Flags & _WidthStretch). Often around ~1.0 initially.")
         .def_readwrite("init_stretch_weight_or_width", &ImGuiTableColumn::InitStretchWeightOrWidth, "Value passed to TableSetupColumn(). For Width it is a content width (_without padding_).")
         .def_readwrite("clip_rect", &ImGuiTableColumn::ClipRect, "Clipping rectangle for the column")
@@ -2943,6 +3025,11 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("window"), py::arg("r"),
         "(private API)");
 
+    m.def("window_pos_abs_to_rel",
+        ImGui::WindowPosAbsToRel,
+        py::arg("window"), py::arg("p"),
+        "(private API)");
+
     m.def("window_pos_rel_to_abs",
         ImGui::WindowPosRelToAbs,
         py::arg("window"), py::arg("p"),
@@ -3211,20 +3298,8 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("push_multi_items_widths",
         ImGui::PushMultiItemsWidths, py::arg("components"), py::arg("width_full"));
 
-    m.def("is_item_toggled_selection",
-        ImGui::IsItemToggledSelection, "Was the last item selection toggled? (after Selectable(), TreeNode() etc. We only returns toggle _event_ in order to handle clipping correctly)");
-
-    m.def("get_content_region_max_abs",
-        ImGui::GetContentRegionMaxAbs);
-
     m.def("shrink_widths",
         ImGui::ShrinkWidths, py::arg("items"), py::arg("count"), py::arg("width_excess"));
-
-    m.def("push_item_flag",
-        ImGui::PushItemFlag, py::arg("option"), py::arg("enabled"));
-
-    m.def("pop_item_flag",
-        ImGui::PopItemFlag);
 
     m.def("get_style_var_info",
         ImGui::GetStyleVarInfo,
@@ -3414,8 +3489,8 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("key"),
         "(private API)");
 
-    m.def("is_mod_key",
-        ImGui::IsModKey,
+    m.def("is_lr_mod_key",
+        ImGui::IsLRModKey,
         py::arg("key"),
         "(private API)");
 
@@ -3493,8 +3568,8 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::SetKeyOwnersForKeyChord, py::arg("key"), py::arg("owner_id"), py::arg("flags") = 0);
 
     m.def("set_item_key_owner",
-        ImGui::SetItemKeyOwner,
-        py::arg("key"), py::arg("flags") = 0,
+        py::overload_cast<ImGuiKey, ImGuiInputFlags>(ImGui::SetItemKeyOwner),
+        py::arg("key"), py::arg("flags"),
         "Set key owner to last item if it is hovered or active. Equivalent to 'if (IsItemHovered() || IsItemActive()) { SetKeyOwner(key, GetItemID());'.");
 
     m.def("test_key_owner",
@@ -3769,6 +3844,59 @@ void py_init_module_imgui_internal(py::module& m)
         py::arg("flags") = ImGuiTypingSelectFlags_None,
         pybind11::return_value_policy::reference);
 
+    m.def("begin_box_select",
+        ImGui::BeginBoxSelect, py::arg("scope_rect"), py::arg("window"), py::arg("box_select_id"), py::arg("ms_flags"));
+
+    m.def("end_box_select",
+        ImGui::EndBoxSelect, py::arg("scope_rect"), py::arg("ms_flags"));
+
+    m.def("multi_select_item_header",
+        [](ImGuiID id, bool p_selected, ImGuiButtonFlags * p_button_flags) -> bool
+        {
+            auto MultiSelectItemHeader_adapt_modifiable_immutable_to_return = [](ImGuiID id, bool p_selected, ImGuiButtonFlags * p_button_flags) -> bool
+            {
+                bool * p_selected_adapt_modifiable = & p_selected;
+
+                ImGui::MultiSelectItemHeader(id, p_selected_adapt_modifiable, p_button_flags);
+                return p_selected;
+            };
+
+            return MultiSelectItemHeader_adapt_modifiable_immutable_to_return(id, p_selected, p_button_flags);
+        },     py::arg("id_"), py::arg("p_selected"), py::arg("p_button_flags"));
+
+    m.def("multi_select_item_footer",
+        [](ImGuiID id, bool p_selected, bool p_pressed) -> std::tuple<bool, bool>
+        {
+            auto MultiSelectItemFooter_adapt_modifiable_immutable_to_return = [](ImGuiID id, bool p_selected, bool p_pressed) -> std::tuple<bool, bool>
+            {
+                bool * p_selected_adapt_modifiable = & p_selected;
+                bool * p_pressed_adapt_modifiable = & p_pressed;
+
+                ImGui::MultiSelectItemFooter(id, p_selected_adapt_modifiable, p_pressed_adapt_modifiable);
+                return std::make_tuple(p_selected, p_pressed);
+            };
+
+            return MultiSelectItemFooter_adapt_modifiable_immutable_to_return(id, p_selected, p_pressed);
+        },     py::arg("id_"), py::arg("p_selected"), py::arg("p_pressed"));
+
+    m.def("multi_select_add_set_all",
+        ImGui::MultiSelectAddSetAll, py::arg("ms"), py::arg("selected"));
+
+    m.def("multi_select_add_set_range",
+        ImGui::MultiSelectAddSetRange, py::arg("ms"), py::arg("selected"), py::arg("range_dir"), py::arg("first_item"), py::arg("last_item"));
+
+    m.def("get_box_select_state",
+        ImGui::GetBoxSelectState,
+        py::arg("id_"),
+        "(private API)",
+        pybind11::return_value_policy::reference);
+
+    m.def("get_multi_select_state",
+        ImGui::GetMultiSelectState,
+        py::arg("id_"),
+        "(private API)",
+        pybind11::return_value_policy::reference);
+
     m.def("set_window_clip_rect_before_set_channel",
         ImGui::SetWindowClipRectBeforeSetChannel, py::arg("window"), py::arg("clip_rect"));
 
@@ -3922,8 +4050,8 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("table_get_column_resize_id",
         py::overload_cast<ImGuiTable *, int, int>(ImGui::TableGetColumnResizeID), py::arg("table"), py::arg("column_n"), py::arg("instance_no") = 0);
 
-    m.def("table_get_max_column_width",
-        py::overload_cast<const ImGuiTable *, int>(ImGui::TableGetMaxColumnWidth), py::arg("table"), py::arg("column_n"));
+    m.def("table_calc_max_column_width",
+        py::overload_cast<const ImGuiTable *, int>(ImGui::TableCalcMaxColumnWidth), py::arg("table"), py::arg("column_n"));
 
     m.def("table_set_column_width_auto_single",
         py::overload_cast<ImGuiTable *, int>(ImGui::TableSetColumnWidthAutoSingle), py::arg("table"), py::arg("column_n"));
@@ -4083,7 +4211,7 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::RenderTextEllipsis, py::arg("draw_list"), py::arg("pos_min"), py::arg("pos_max"), py::arg("clip_max_x"), py::arg("ellipsis_max_x"), py::arg("text"), py::arg("text_end"), py::arg("text_size_if_known"));
 
     m.def("render_frame",
-        ImGui::RenderFrame, py::arg("p_min"), py::arg("p_max"), py::arg("fill_col"), py::arg("border") = true, py::arg("rounding") = 0.0f);
+        ImGui::RenderFrame, py::arg("p_min"), py::arg("p_max"), py::arg("fill_col"), py::arg("borders") = true, py::arg("rounding") = 0.0f);
 
     m.def("render_frame_border",
         ImGui::RenderFrameBorder, py::arg("p_min"), py::arg("p_max"), py::arg("rounding") = 0.0f);
@@ -4221,16 +4349,16 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("tree_push_override_id",
         ImGui::TreePushOverrideID, py::arg("id_"));
 
+    m.def("tree_node_get_open",
+        ImGui::TreeNodeGetOpen, py::arg("storage_id"));
+
     m.def("tree_node_set_open",
-        ImGui::TreeNodeSetOpen, py::arg("id_"), py::arg("open"));
+        ImGui::TreeNodeSetOpen, py::arg("storage_id"), py::arg("open"));
 
     m.def("tree_node_update_next_open",
         ImGui::TreeNodeUpdateNextOpen,
-        py::arg("id_"), py::arg("flags"),
+        py::arg("storage_id"), py::arg("flags"),
         "Return open state. Consume previous SetNextItemOpen() data, if any. May return True when logging.");
-
-    m.def("set_next_item_selection_user_data",
-        ImGui::SetNextItemSelectionUserData, py::arg("selection_user_data"));
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -4307,17 +4435,6 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("gc_awake_transient_window_buffers",
         ImGui::GcAwakeTransientWindowBuffers, py::arg("window"));
-
-    m.def("debug_log",
-        [](const char * fmt)
-        {
-            auto DebugLog_adapt_variadic_format = [](const char * fmt)
-            {
-                ImGui::DebugLog("%s", fmt);
-            };
-
-            DebugLog_adapt_variadic_format(fmt);
-        },     py::arg("fmt"));
 
     m.def("debug_alloc_hook",
         ImGui::DebugAllocHook,
@@ -4413,6 +4530,9 @@ void py_init_module_imgui_internal(py::module& m)
     m.def("debug_node_typing_select_state",
         ImGui::DebugNodeTypingSelectState, py::arg("state"));
 
+    m.def("debug_node_multi_select_state",
+        ImGui::DebugNodeMultiSelectState, py::arg("state"));
+
     m.def("debug_node_window",
         ImGui::DebugNodeWindow, py::arg("window"), py::arg("label"));
 
@@ -4424,6 +4544,9 @@ void py_init_module_imgui_internal(py::module& m)
 
     m.def("debug_node_viewport",
         ImGui::DebugNodeViewport, py::arg("viewport"));
+
+    m.def("debug_node_platform_monitor",
+        ImGui::DebugNodePlatformMonitor, py::arg("monitor"), py::arg("label"), py::arg("idx"));
 
     m.def("debug_render_keyboard_preview",
         ImGui::DebugRenderKeyboardPreview, py::arg("draw_list"));
