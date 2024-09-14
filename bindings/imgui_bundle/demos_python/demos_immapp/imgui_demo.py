@@ -634,13 +634,13 @@ def show_demo_window_widgets():
         IMGUI_DEMO_MARKER("Widgets/Basic/Buttons (Repeating)")
         if not hasattr(static, "counter"): static.counter = 0
         spacing = imgui.get_style().item_inner_spacing.x
-        imgui.push_button_repeat(True)
+        imgui.push_item_flag(imgui.ItemFlags_.button_repeat.value, True)
         if imgui.arrow_button("##left", imgui.Dir.left.value):
             static.counter -= 1
         imgui.same_line(0.0, spacing)
         if imgui.arrow_button("##right", imgui.Dir.right.value):
             static.counter += 1
-        imgui.pop_button_repeat()
+        imgui.pop_item_flag()
         imgui.same_line()
         imgui.text(f"{static.counter}")
 
