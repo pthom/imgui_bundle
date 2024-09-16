@@ -31,7 +31,6 @@ namespace ImGuiMd
         ImVec4	col_border;
     };
 
-
     using VoidFunction = std::function<void(void)>;
     using StringFunction = std::function<void(std::string)>;
     using HtmlDivFunction = std::function<void(const std::string& divClass, bool openingDiv)>;
@@ -112,4 +111,15 @@ namespace ImGuiMd
     void RenderUnindented(const std::string& markdownString);
 
     ImFont* GetCodeFont();
+
+    struct MarkdownFontSpec
+    {
+        bool italic = false;
+        bool bold = false;
+        int headerLevel = 0;
+
+        MarkdownFontSpec(bool italic_ = false, bool bold_ = false, int headerLevel_ = 0) :
+            italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
+    };
+    ImFont* GetFont(const MarkdownFontSpec& fontSpec);
 }

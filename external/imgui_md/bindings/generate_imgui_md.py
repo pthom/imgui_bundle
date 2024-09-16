@@ -26,7 +26,7 @@ def main():
         "OnImage_Default", "on_image_default"
     )
     options.struct_create_default_named_ctor__regex = ""
-    options.fn_return_force_policy_reference_for_pointers__regex = "GetCodeFont"
+    options.fn_return_force_policy_reference_for_pointers__regex = "GetCodeFont|GetFont"
 
     litgen.write_generated_code_for_file(
         options,

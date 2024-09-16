@@ -32,23 +32,26 @@ namespace ImGuiMd
         {
             bool italic = false;
             bool bold = false;
-
-            bool operator==(const MarkdownEmphasis& rhs) const {
-                return (rhs.italic == italic) && (rhs.bold == bold);
-            }
-
-            static std::vector<MarkdownEmphasis> AllEmphasisVariants()
-            {
-                return {
-                    { false, false },
-                    { false, true },
-                    { true, false },
-                    { true, true },
-                };
-            }
-
-            bool IsDefault() { return  (!italic && !bold); }
         };
+        struct MarkdownTextStyle
+        {
+            MarkdownEmphasis markdownEmphasis;
+            int headerLevel = 0;
+        };
+
+        static bool operator==(const MarkdownEmphasis& lhs, const MarkdownEmphasis& rhs) {
+            return (lhs.italic == rhs.italic) && (lhs.bold == rhs.bold);
+        }
+
+        static std::vector<MarkdownEmphasis> AllEmphasisVariants()
+        {
+            return {
+                { false, false },
+                { false, true },
+                { true, false },
+                { true, true },
+            };
+        }
 
 
         float MarkdownFontOptions_FontSize(const MarkdownFontOptions &self, int headerLevel)
@@ -83,18 +86,15 @@ namespace ImGuiMd
             return r;
         }
 
-
-        struct MarkdownTextStyle
+        bool operator==(const MarkdownTextStyle& lhs, const MarkdownTextStyle& rhs)
         {
-            MarkdownEmphasis markdownEmphasis;
-            int headerLevel = 0;
+            return (lhs.markdownEmphasis == rhs.markdownEmphasis) && (lhs.headerLevel == rhs.headerLevel);
+        }
 
-            bool operator==(const MarkdownTextStyle& rhs) const {
-                return (rhs.markdownEmphasis == markdownEmphasis) && (rhs.headerLevel == headerLevel);
-            }
-
-            bool IsDefault() { return (headerLevel == 0) && markdownEmphasis.IsDefault();  }
-        };
+        bool IsDefaultMarkdownTextStyle(const MarkdownTextStyle& style)
+        {
+            return (style.headerLevel == 0) && !style.markdownEmphasis.bold && !style.markdownEmphasis.italic;
+        }
 
 
         class FontCollection
@@ -155,7 +155,7 @@ assets/
 )";
                 for (int header_level = 0; header_level <= mMarkdownFontOptions.maxHeaderLevel; ++header_level)
                 {
-                    for (auto emphasisVariant: MarkdownEmphasis::AllEmphasisVariants())
+                    for (auto emphasisVariant: AllEmphasisVariants())
                     {
                         MarkdownTextStyle markdownTextStyle;
                         markdownTextStyle.markdownEmphasis = emphasisVariant;
@@ -167,7 +167,7 @@ assets/
                         // we shall not load the icons for all the fonts variants, since the font atlas
                         // texture might end up too big to fit in the GPU.
                         ImFont * font;
-                        if (markdownTextStyle.IsDefault())
+                        if (IsDefaultMarkdownTextStyle(markdownTextStyle))
                             font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
                         else
                             font = HelloImGui::LoadFontTTF(fontFile, fontSize);
@@ -252,6 +252,16 @@ assets/
         {
             return mMarkdownCollection.mFontCollection.GetFontCode();
         }
+
+        ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+        {
+            ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
+            markdownTextStyle.headerLevel = fontSpec.headerLevel;
+            markdownTextStyle.markdownEmphasis.bold = fontSpec.bold;
+            markdownTextStyle.markdownEmphasis.italic = fontSpec.italic;
+            return mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+        }
+
 
     private:
         ImFont* get_font() const override
@@ -464,6 +474,12 @@ assets/
     {
         return gMarkdownRenderer->get_font_code();
     }
+
+    ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+    {
+        return gMarkdownRenderer->GetFont(fontSpec);
+    }
+
 
     // Renders a markdown string (after having unindented its main indentation)
     void RenderUnindented(const std::string& markdownString)
