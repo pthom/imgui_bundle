@@ -53,7 +53,7 @@ void py_init_module_immvision(py::module& m)
         py::class_<ImmVision::ColormapScaleFromStatsData>    // immvision.h:34
             (m, "ColormapScaleFromStatsData", " Scale the Colormap according to the Image  stats\n\nIMMVISION_API_STRUCT")
         .def(py::init<>([](
-        ImmVision::ColorMapStatsTypeId ColorMapStatsType = ImmVision::ColorMapStatsTypeId(), double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
+        ImmVision::ColorMapStatsTypeId ColorMapStatsType = ImmVision::ColorMapStatsTypeId::FromFullImage, double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
         {
             auto r = std::make_unique<ImmVision::ColormapScaleFromStatsData>();
             r->ColorMapStatsType = ColorMapStatsType;
@@ -62,7 +62,7 @@ void py_init_module_immvision(py::module& m)
             r->UseStatsMax = UseStatsMax;
             return r;
         })
-        , py::arg("color_map_stats_type") = ImmVision::ColorMapStatsTypeId(), py::arg("nb_sigmas") = 1.5, py::arg("use_stats_min") = false, py::arg("use_stats_max") = false
+        , py::arg("color_map_stats_type") = ImmVision::ColorMapStatsTypeId::FromFullImage, py::arg("nb_sigmas") = 1.5, py::arg("use_stats_min") = false, py::arg("use_stats_max") = false
         )
         .def_readwrite("color_map_stats_type", &ImmVision::ColormapScaleFromStatsData::ColorMapStatsType, "Are we using the stats on the full image, the visible ROI, or are we using Min/Max values")    // immvision.h:37
         .def_readwrite("nb_sigmas", &ImmVision::ColormapScaleFromStatsData::NbSigmas, "If stats active (either on ROI or on Image), how many sigmas around the mean should the Colormap be applied")    // immvision.h:40
@@ -245,6 +245,25 @@ void py_init_module_immvision(py::module& m)
 
     m.def("inspector_clear_images",    // immvision.h:382
         ImmVision::Inspector_ClearImages);
+
+
+    auto pyClassGlTexture =
+        py::class_<ImmVision::GlTexture>    // immvision.h:397
+            (m, "GlTexture", "GlTexture contains an OpenGL texture which can be created or updated from a cv::Mat (C++), or numpy array (Python)")
+        .def(py::init<>(),    // immvision.h:404
+            "Create an empty texture")
+        .def(py::init<const cv::Mat &, bool>(),    // immvision.h:406
+            py::arg("image"), py::arg("is_color_order_bgr"),
+            "Create a texture from an image (cv::Mat in C++, numpy array in Python)")
+        .def("update_from_image",    // immvision.h:423
+            &ImmVision::GlTexture::UpdateFromImage,
+            py::arg("image"), py::arg("is_color_order_bgr"),
+            " Update the texture from a new image (cv::Mat in C++, numpy array in Python).\n(private API)")
+        .def("size_im_vec2",    // immvision.h:425
+            &ImmVision::GlTexture::SizeImVec2, " Returns the size as ImVec2\n(private API)")
+        .def_readwrite("texture_id", &ImmVision::GlTexture::TextureId, "OpenGL texture ID on the GPU")    // immvision.h:433
+        .def_readwrite("size", &ImmVision::GlTexture::Size, "Image size in pixels")    // immvision.h:435
+        ;
     ////////////////////    </generated_from:immvision.h>    ////////////////////
 
 
@@ -368,7 +387,7 @@ void py_init_module_immvision(py::module& m)
 
         pyNsCvDrawingUtils.def("converted_to_rgba_image",    // cv_drawing_utils.h:141
             ImmVision::CvDrawingUtils::converted_to_rgba_image,
-            py::arg("input_mat"), py::arg("is_bgr_or_bgra"),
+            py::arg("input_mat"), py::arg("is_bgr_order"),
             "(private API)");
     } // </namespace CvDrawingUtils>
     ////////////////////    </generated_from:cv_drawing_utils.h>    ////////////////////
