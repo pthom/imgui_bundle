@@ -849,7 +849,7 @@ void py_init_module_hello_imgui(py::module& m)
     auto pyClassDockableWindow =
         py::class_<HelloImGui::DockableWindow>
             (m, "DockableWindow", "DockableWindow is a struct that represents a window that can be docked.")
-        .def_readwrite("label", &HelloImGui::DockableWindow::label, "`label`: _string_. Title of the window.")
+        .def_readwrite("label", &HelloImGui::DockableWindow::label, "`label`: _string_. Title of the window. It should be unique! Use \"##\" to add a unique suffix if needed.")
         .def_readwrite("dock_space_name", &HelloImGui::DockableWindow::dockSpaceName, " `dockSpaceName`: _DockSpaceName (aka string)_.\n  Id of the dock space where this window should initially be placed")
         .def_readwrite("gui_function", &HelloImGui::DockableWindow::GuiFunction, " `GuiFunction`: _VoidFunction_.\n Any function that will render this window's Gui")
         .def_readwrite("is_visible", &HelloImGui::DockableWindow::isVisible, " `isVisible`: _bool, default=true_.\n  Flag that indicates whether this window is visible or not.")
@@ -910,7 +910,7 @@ void py_init_module_hello_imgui(py::module& m)
         .def("dock_space_id_from_name",
             &HelloImGui::DockingParams::dockSpaceIdFromName,
             py::arg("dock_space_name"),
-            " `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`:\n may return the ImGuiID corresponding to the dockspace with this name.\n **Warning**: this will work reliably only if\n     layoutCondition = DockingLayoutCondition::ApplicationStart.\n In other cases, the ID may be cached by ImGui himself at the first run,\n and HelloImGui will *not* know it on subsequent runs!")
+            " `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`:\n returns the ImGuiID corresponding to the dockspace with this name")
         ;
 
 
@@ -1272,6 +1272,16 @@ void py_init_module_hello_imgui(py::module& m)
 
     m.def("current_layout_name",
         HelloImGui::CurrentLayoutName, "`CurrentLayoutName()`: returns the name of the current layout");
+
+    m.def("add_dockable_window",
+        HelloImGui::AddDockableWindow,
+        py::arg("dockable_window"), py::arg("force_dockspace") = false,
+        " `AddDockableWindow()`: will add a dockable window to the current layout.\n Will dock the window to the dockspace it belongs to if forceDockspace is True,\n otherwise will dock it to the last space it was docked to (using saved settings)");
+
+    m.def("remove_dockable_window",
+        HelloImGui::RemoveDockableWindow,
+        py::arg("dockable_window_name"),
+        " `RemoveDockableWindow()`: will remove a dockable window from the current layout.\n (dockableWindowName is the label of the window, as provided in the DockableWindow struct)");
 
     m.def("save_user_pref",
         HelloImGui::SaveUserPref,

@@ -183,28 +183,38 @@ void DemoHideWindow(AppState& appState)
     }
 }
 
-// Display a button that will show an additional window
+// Display a button that will add another dockable window during execution
 void DemoShowAdditionalWindow(AppState& appState)
 {
-    // Notes:
-    //     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
-    //       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating on this vector!)
-    //     - there are two ways to dynamically add windows:
-    //           * either make them initially invisible, and exclude them from the view menu (such as shown here)
-    //           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
-    const char* windowName = "Additional Window";
+    // In order to add a dockable window during execution, you should use
+    //     HelloImGui::AddDockableWindow()
+    // Note: you should not modify manually the content of runnerParams.dockingParams.dockableWindows
+    //       (since HelloImGui is constantly looping on it)
+
     ImGui::PushFont(appState.TitleFont); ImGui::Text("Dynamically add window"); ImGui::PopFont();
+
+    auto currentWindow = ImGui::GetCurrentWindow();
+
+    const char* windowName = "Additional Window";
     if (ImGui::Button("Show additional window"))
     {
-        auto additionalWindowPtr = HelloImGui::GetRunnerParams()->dockingParams.dockableWindowOfName(windowName);
-        if (additionalWindowPtr)
-        {
-            // additionalWindowPtr->includeInViewMenu = true;
-            additionalWindowPtr->isVisible = true;
-        }
+        HelloImGui::DockableWindow additionalWindow;
+        additionalWindow.label = windowName;
+        additionalWindow.includeInViewMenu = false;       // this window is not shown in the view menu,
+        additionalWindow.rememberIsVisible = true;       // its visibility is not saved in the settings file,
+        additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
+        additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
+        HelloImGui::AddDockableWindow(
+            additionalWindow,
+            false  // forceDockspace=false: means that the window will be docked to the last space it was docked to
+                   // i.e. dockSpaceName is ignored if the user previously moved the window to another space
+        );
     }
-    if (ImGui::IsItemHovered())
-        ImGui::SetTooltip("By clicking this button, you can show an additional window");
+    ImGui::SetItemTooltip("By clicking this button, you can show an additional window");
+
+    if (ImGui::Button("Remove additional window"))
+        HelloImGui::RemoveDockableWindow(windowName);
+    ImGui::SetItemTooltip("By clicking this button, you can remove the additional window");
 }
 
 void DemoLogs(AppState& appState)
@@ -723,16 +733,6 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
     dearImGuiDemoWindow.imGuiWindowFlags = ImGuiWindowFlags_MenuBar;
     dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
 
-    // additionalWindow is initially not visible (and not mentioned in the view menu).
-    // it will be opened only if the user chooses to display it
-    HelloImGui::DockableWindow additionalWindow;
-    additionalWindow.label = "Additional Window";
-    additionalWindow.isVisible = false;               // this window is initially hidden,
-    additionalWindow.includeInViewMenu = false;       // it is not shown in the view menu,
-    additionalWindow.rememberIsVisible = false;       // its visibility is not saved in the settings file,
-    additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
-    additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
-
     // alternativeThemeWindow
     HelloImGui::DockableWindow alternativeThemeWindow;
     // Since this window applies a theme, We need to call "ImGui::Begin" ourselves so
@@ -747,7 +747,6 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
         layoutCustomizationWindow,
         logsWindow,
         dearImGuiDemoWindow,
-        additionalWindow,
         alternativeThemeWindow
     };
     return dockableWindows;

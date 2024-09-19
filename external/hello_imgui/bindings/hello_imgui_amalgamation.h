@@ -1692,7 +1692,7 @@ struct DockableWindow
 {
     // --------------- Main params -------------------
 
-    // `label`: _string_. Title of the window.
+    // `label`: _string_. Title of the window. It should be unique! Use "##" to add a unique suffix if needed.
     std::string label;
 
     // `dockSpaceName`: _DockSpaceName (aka string)_.
@@ -1846,11 +1846,7 @@ struct DockingParams
     bool focusDockableWindow(const std::string& windowName);
 
     // `optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName)`:
-    // may return the ImGuiID corresponding to the dockspace with this name.
-    // **Warning**: this will work reliably only if
-    //     layoutCondition = DockingLayoutCondition::ApplicationStart.
-    // In other cases, the ID may be cached by ImGui himself at the first run,
-    // and HelloImGui will *not* know it on subsequent runs!
+    // returns the ImGuiID corresponding to the dockspace with this name
     std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);
 };
 // @@md
@@ -2626,6 +2622,16 @@ void           SwitchLayout(const std::string& layoutName);
 
 // `CurrentLayoutName()`: returns the name of the current layout
 std::string    CurrentLayoutName();
+
+// `AddDockableWindow()`: will add a dockable window to the current layout.
+// Will dock the window to the dockspace it belongs to if forceDockspace is true,
+// otherwise will dock it to the last space it was docked to (using saved settings)
+void AddDockableWindow(const DockableWindow& dockableWindow, bool forceDockspace = false);
+
+// `RemoveDockableWindow()`: will remove a dockable window from the current layout.
+// (dockableWindowName is the label of the window, as provided in the DockableWindow struct)
+void RemoveDockableWindow(const std::string& dockableWindowName);
+
 // @@md
 
 
