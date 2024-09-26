@@ -99,15 +99,15 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
     runnnable_code_cell_result = RunnableCodeCellResult()
 
     with imgui_ctx.push_id(label_id):
-        original_cur_pos = imgui.get_cursor_pos()
+        original_cur_pos = imgui.get_cursor_screen_pos()
         visible_label = label_id if "##" not in label_id else label_id.split("##")[0]
         imgui.separator_text(visible_label)
 
         # Add "Run" button at the end of the separator line
-        cur_pos_after_separator = imgui.get_cursor_pos()
+        cur_pos_after_separator = imgui.get_cursor_screen_pos()
         x_end = imgui.get_item_rect_max().x
         x_end = x_end - hello_imgui.em_size(3.5)
-        imgui.set_cursor_pos(ImVec2(x_end, original_cur_pos.y))
+        imgui.set_cursor_screen_pos(ImVec2(x_end, original_cur_pos.y))
         if imgui.button("Run"):
             code_and_result.result = _execute_and_capture_last_expr(code_and_result.snippet_data.code)
             code_and_result.last_ran_code = code_and_result.snippet_data.code
@@ -115,7 +115,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         if code_and_result.last_ran_code != code_and_result.snippet_data.code:
             imgui.same_line()
             imgui.text("*")
-        imgui.set_cursor_pos(cur_pos_after_separator)
+        imgui.set_cursor_screen_pos(cur_pos_after_separator)
 
         immapp.snippets.show_editable_code_snippet(label_id, code_and_result.snippet_data)
 
