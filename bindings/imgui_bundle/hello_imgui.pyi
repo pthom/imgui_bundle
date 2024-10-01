@@ -2709,6 +2709,26 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # @@md#FpsIdling
 
+class FpsIdlingMode(enum.Enum):
+    """FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.
+    - Sleep: the application will sleep when idling to reduce CPU usage.
+    - EarlyReturn: rendering will return immediately when idling.
+      This is specifically designed for event-driven, and real-time applications.
+      Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.
+    - Auto: use platform-specific default behavior.
+       On most platforms, it will sleep. On Emscripten, `Render()` will return immediately
+       to avoid blocking the main thread.
+    Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.
+    """
+
+    # Sleep,    /* original C++ signature */
+    sleep = enum.auto()  # (= 0)
+    # EarlyReturn,    /* original C++ signature */
+    early_return = enum.auto()  # (= 1)
+    # Auto,    /* original C++ signature */
+    # }
+    auto = enum.auto()  # (= 2)
+
 class FpsIdling:
     """FpsIdling is a struct that contains Fps Idling parameters"""
 
@@ -2745,7 +2765,12 @@ class FpsIdling:
     # `rememberEnableIdling`: _bool, default=true_.
     #  If True, the last value of enableIdling is restored from the settings at startup.
     remember_enable_idling: bool = False
-    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
+
+    # FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto;    /* original C++ signature */
+    # `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.
+    # Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)
+    fps_idling_mode: FpsIdlingMode = FpsIdlingMode.auto
+    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
@@ -2753,6 +2778,7 @@ class FpsIdling:
         enable_idling: bool = True,
         is_idling: bool = False,
         remember_enable_idling: bool = False,
+        fps_idling_mode: FpsIdlingMode = FpsIdlingMode.auto,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -3212,6 +3238,83 @@ def run(
     """Runs an application, by providing the Gui function, the window title, etc."""
     pass
 
+# =========================== HelloImGui::Renderer ==================================
+# @@md#HelloImGui::Renderer
+
+class Renderer:
+    """HelloImGui::Renderer is an alternative to HelloImGui::Run, allowing fine-grained control over the rendering process.
+    - It is customizable like HelloImGui::Run: construct it with `RunnerParams` or `SimpleRunnerParams`
+    - `Render()` will render the application for one frame:
+      Ensure that `Render()` is triggered regularly (e.g., through a loop or other mechanism) to maintain responsiveness.
+      This method must be called on the main thread.
+
+    A typical use case is:
+       ```cpp
+       HelloImGui::RunnerParams runnerParams;
+       runnerParams.callbacks.ShowGui = ...; // your GUI function
+     // Optionally, choose between Sleep, EarlyReturn, or Auto for fps idling mode:
+     // runnerParams.fpsIdling.fpsIdlingMode = HelloImGui::FpsIdlingMode::Sleep; // or EarlyReturn, Auto
+       Renderer renderer(runnerParams); // note: a distinct copy of the `RunnerParams` will be stored inside the HelloImGui::GetRunnerParams()
+       while (! HelloImGui::GetRunnerParams()->appShallExit)
+       {
+           renderer.Render();
+       }
+      ```
+
+    **Notes:**
+     1. Depending on the configuration (`runnerParams.fpsIdling.fpsIdlingMode`), `HelloImGui` may enter an idle state to
+        reduce CPU usage, if no events are received (e.g., no input or interaction).
+        In this case, `Render()` will either sleep or return immediately.
+        By default,
+          - On Emscripten, `Render()` will return immediately to avoid blocking the main thread.
+          - On other platforms, it will sleep
+     2. Only one instance of `Renderer` can exist at a time.
+     3. If constructed with `RunnerParams`, a copy of the `RunnerParams` will be made (which you can access with `GetRunnerParams())`.
+    """
+
+    # Renderer(const RunnerParams& runnerParams);    /* original C++ signature */
+    @overload
+    def __init__(self, runner_params: RunnerParams) -> None:
+        """Initializes with the full customizable `RunnerParams` to set up the application.
+        Nb: a distinct copy of the `RunnerParams` will be made, and you can access it with `GetRunnerParams()`.
+        """
+        pass
+    # Renderer(const SimpleRunnerParams& simpleParams);    /* original C++ signature */
+    @overload
+    def __init__(self, simple_params: SimpleRunnerParams) -> None:
+        """Initializes with SimpleRunnerParams."""
+        pass
+    # Renderer(    /* original C++ signature */
+    #         const VoidFunction &guiFunction,
+    #         const std::string &windowTitle = "",
+    #         bool windowSizeAuto = false,
+    #         bool windowRestorePreviousGeometry = false,
+    #         const ScreenSize &windowSize = DefaultWindowSize,
+    #         float fpsIdle = 10.f
+    #     );
+    @overload
+    def __init__(
+        self,
+        gui_function: VoidFunction,
+        window_title: str = "",
+        window_size_auto: bool = False,
+        window_restore_previous_geometry: bool = False,
+        window_size: ScreenSize = DefaultWindowSize,
+        fps_idle: float = 10.0,
+    ) -> None:
+        """Initializes with a simple GUI function and additional parameters."""
+        pass
+    # void Render();    /* original C++ signature */
+    def render(self) -> None:
+        """Render the current frame (or return immediately if in idle state)."""
+        pass
+
+# @@md
+
+# ============================== Utility functions ===============================
+
+# @@md#UtilityFunctions
+
 # RunnerParams* GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
     """`GetRunnerParams()`:  a convenience function that will return the runnerParams
@@ -3223,10 +3326,6 @@ def get_runner_params() -> RunnerParams:
 def is_using_hello_imgui() -> bool:
     """`IsUsingHelloImGui()`: returns True if the application is using HelloImGui"""
     pass
-
-# ============================== Utility functions ===============================
-
-# @@md#UtilityFunctions
 
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
 def frame_rate(duration_for_mean: float = 0.5) -> float:
