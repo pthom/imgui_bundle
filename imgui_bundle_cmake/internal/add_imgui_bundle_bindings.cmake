@@ -44,21 +44,22 @@ function(add_imgui_bundle_bindings)
         _target_set_rpath(${python_native_module_name} ".")
     endif()
 
-    # if (IMGUI_BUNDLE_BUILD_PYODIDE)
-    #     # 1. Look for a SDL2 package, 2. look for the SDL2 component and 3. fail if none can be found
-    #     find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
+    if (IMGUI_BUNDLE_BUILD_PYODIDE)
+        # Important: SDL2 link notes
+        # ==========================
+        # SDL2 must be linked to this library. For whatever reason, this does not work with find_package.
+        # This has something to do with the fact that this is a SIDE library, with dynamic linking.
+        # Also, libsdl2.a is not in the default search path, so we need to specify the path to it.
 
-    #     # 1. Look for a SDL2 package, 2. Look for the SDL2maincomponent and 3. DO NOT fail when SDL2main is not available
-    #     find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
-    #     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
-    #     if(TARGET SDL2::SDL2main)
-    #         # It has an implicit dependency on SDL2 functions, so it MUST be added before SDL2::SDL2 (or SDL2::SDL2-static)
-    #         target_link_libraries(${python_native_module_name} PRIVATE SDL2::SDL2main)
-    #     endif()
+        # This will not work:
+        # find_package(SDL2 REQUIRED)
+        # target_link_libraries(_daft2 PUBLIC SDL2::SDL2)
 
-    #     # Link to the actual SDL2 library. SDL2::SDL2 is the shared SDL library, SDL2::SDL2-static is the static SDL libarary.
-    #     target_link_libraries(${python_native_module_name} PRIVATE SDL2::SDL2-static)
-    # endif()
+        # instead we link manually libSDL2.a:
+        set(sdl_lib_path ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/lto/)
+        target_link_directories(_imgui_bundle PUBLIC ${sdl_lib_path})
+        target_link_libraries(_imgui_bundle PUBLIC SDL2)
+    endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 endfunction()
