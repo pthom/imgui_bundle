@@ -3,5 +3,6 @@ jupyter-book
 litgen @ git+https://github.com/pthom/litgen
 mypy
 opencv-python
+pre-commit
 pybind11
 pytest
