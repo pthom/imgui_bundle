@@ -789,6 +789,29 @@ std::vector<HelloImGui::DockingParams> CreateAlternativeLayouts(AppState& appSta
 
 
 //////////////////////////////////////////////////////////////////////////
+// Define the app initial theme
+//////////////////////////////////////////////////////////////////////////
+void SetupMyTheme()
+{
+    // Example of theme customization at App startup
+    // This function is called in the callback `SetupImGuiStyle` in order to apply a custom theme:
+    //     runnerParams.callbacks.SetupImGuiStyle = SetupMyTheme;
+
+    // Apply default style
+    HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle();
+    // Create a tweaked theme
+    ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
+    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
+    tweakedTheme.Tweaks.Rounding = 10.0f;
+    // Apply the tweaked theme
+    ImGuiTheme::ApplyTweakedTheme(tweakedTheme); // Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui: ImGuiTheme::PushTweakedTheme(tweakedTheme) / ImGuiTheme::PopTweakedTheme()
+    // Then apply further modifications to ImGui style
+    ImGui::GetStyle().ItemSpacing = ImVec2(6, 4);  // Reduce spacing between items ((8, 4) by default)
+    ImGui::GetStyle().Colors[ImGuiCol_Text] = ImVec4(0.8, 0.8, 0.85, 1.0);  // Change text color
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 //    main(): here, we simply fill RunnerParams, then run the application
 //////////////////////////////////////////////////////////////////////////
 int main(int, char**)
@@ -868,18 +891,8 @@ int main(int, char**)
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
-    //
     // Change style
-    //
-    // 1. Change theme
-    auto& tweakedTheme = runnerParams.imGuiWindowParams.tweakedTheme;
-    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
-    tweakedTheme.Tweaks.Rounding = 10.f;
-    // 2. Customize ImGui style at startup
-    runnerParams.callbacks.SetupImGuiStyle = []() {
-        // Reduce spacing between items ((8, 4) by default)
-        ImGui::GetStyle().ItemSpacing = ImVec2(6.f, 4.f);
-    };
+    runnerParams.callbacks.SetupImGuiStyle = SetupMyTheme;
 
     //#############################################################################################
     // Part 2: Define the application layout and windows

@@ -780,6 +780,27 @@ def create_alternative_layouts(app_state: AppState) -> List[hello_imgui.DockingP
 
 
 ##########################################################################
+#    Define the app initial theme
+##########################################################################
+def setup_my_theme():
+    """Example of theme customization at App startup
+    This function is called in the callback `setup_imgui_style` in order to apply a custom theme:
+        runner_params.callbacks.setup_imgui_style = setup_my_theme()
+    """
+    # Apply default style
+    hello_imgui.imgui_default_settings.setup_default_imgui_style()
+    # Create a tweaked theme
+    tweaked_theme = hello_imgui.ImGuiTweakedTheme()
+    tweaked_theme.theme = hello_imgui.ImGuiTheme_.material_flat
+    tweaked_theme.tweaks.rounding = 10.0
+    # Apply the tweaked theme
+    hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
+    # Then apply further modifications to ImGui style
+    imgui.get_style().item_spacing = (6, 4)  # Reduce spacing between items ((8, 4) by default)
+    imgui.get_style().set_color_(imgui.Col_.text, ImVec4(0.8, 0.8, 0.85, 1.0))  # Change text color
+
+
+##########################################################################
 #    main(): here, we simply fill RunnerParams, then run the application
 ##########################################################################
 def main():
@@ -861,18 +882,8 @@ def main():
     runner_params.callbacks.post_init = lambda: load_my_app_settings(app_state)
     runner_params.callbacks.before_exit = lambda: save_my_app_settings(app_state)
 
-    #
     # Change style
-    #
-    # 1. Change theme
-    tweaked_theme = runner_params.imgui_window_params.tweaked_theme
-    tweaked_theme.theme = hello_imgui.ImGuiTheme_.material_flat
-    tweaked_theme.tweaks.rounding = 10.0
-    # 2. Customize ImGui style at startup
-    def setup_imgui_style():
-        # Reduce spacing between items ((8, 4) by default)
-        imgui.get_style().item_spacing = (6, 4)
-    runner_params.callbacks.setup_imgui_style = setup_imgui_style
+    runner_params.callbacks.setup_imgui_style = setup_my_theme
 
     #
     # Part 2: Define the application layout and windows
