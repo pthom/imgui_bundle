@@ -18,30 +18,30 @@ __all__ = ["__version__", "compilation_time"]
 if _has_submodule("imgui"):
     from imgui_bundle._imgui_bundle import imgui as imgui
     from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # type: ignore # noqa: F401
-	from imgui_bundle import imgui_pydantic as imgui_pydantic
-	from imgui_bundle.imgui_pydantic import (
-	    ImVec4_Pydantic as ImVec4_Pydantic,
-	    ImVec2_Pydantic as ImVec2_Pydantic,
-	    ImColor_Pydantic as ImColor_Pydantic,
-	)
+    from imgui_bundle import imgui_pydantic as imgui_pydantic
+    from imgui_bundle.imgui_pydantic import (
+        ImVec4_Pydantic as ImVec4_Pydantic,
+        ImVec2_Pydantic as ImVec2_Pydantic,
+        ImColor_Pydantic as ImColor_Pydantic,
+    )
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
 
     __all__.extend([
         "imgui",
-		"ImVec2", 
-		"ImVec4", 
-		"ImColor", 
-		"FLT_MIN", 
-		"FLT_MAX", 
+        "ImVec2",
+        "ImVec4",
+        "ImColor",
+        "FLT_MIN",
+        "FLT_MAX",
         "IM_COL32",
         "imgui_ctx",
-	    # Pydantic types
-	    "imgui_pydantic",
-	    "ImVec4_Pydantic",
-	    "ImVec2_Pydantic",
-	    "ImColor_Pydantic",
-	])
+        # Pydantic types
+        "imgui_pydantic",
+        "ImVec4_Pydantic",
+        "ImVec2_Pydantic",
+        "ImColor_Pydantic",
+    ])
 
 
     # Patch after imgui v1.90.9, where
@@ -57,14 +57,14 @@ if _has_submodule("hello_imgui"):
 if _has_submodule("implot"):
     from imgui_bundle._imgui_bundle import implot as implot
     __all__.extend(["implot"])
-	# Flag types for ImPlot
-	implot.LineFlags = int  # see implot.LineFlags_
-	implot.ScatterFlags = int  # see implot.ScatterFlags_
-	implot.StairsFlags = int  # see implot.StairsFlags_
-	implot.ShadedFlags = int  # see implot.ShadedFlags_
-	implot.BarsFlags = int  # see implot.BarsFlags_
-	implot.PieChartFlags = int  # see implot.PieChartFlags_
-	implot.HistogramFlags = int  # see implot.HistogramFlags_
+    # Flag types for ImPlot
+    implot.LineFlags = int  # see implot.LineFlags_
+    implot.ScatterFlags = int  # see implot.ScatterFlags_
+    implot.StairsFlags = int  # see implot.StairsFlags_
+    implot.ShadedFlags = int  # see implot.ShadedFlags_
+    implot.BarsFlags = int  # see implot.BarsFlags_
+    implot.PieChartFlags = int  # see implot.PieChartFlags_
+    implot.HistogramFlags = int  # see implot.HistogramFlags_
 if _has_submodule("imgui_color_text_edit"):
     from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
     __all__.extend(["imgui_color_text_edit"])
@@ -102,7 +102,7 @@ if _has_submodule("portable_file_dialogs"):
 if _has_submodule("imgui_command_palette"):
     from imgui_bundle._imgui_bundle import imgui_command_palette as imgui_command_palette
     __all__.extend(["imgui_command_palette"])
-if _has_submodule("im_cool_bar"):
+if _has_submodule("imcoolbar"):
     from imgui_bundle._imgui_bundle import im_cool_bar as im_cool_bar
     __all__.extend(["im_cool_bar"])
 if _has_submodule("nanovg"):
