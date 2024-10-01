@@ -108,7 +108,7 @@ void demo_implot()
         BrowseToUrl("https://traineq.org/implot_demo/src/implot_demo.html");
     }
     ImGui::NewLine();
-    if (ImGui::CollapsingHeader("Mixed plot", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Mixed plot##2", ImGuiTreeNodeFlags_DefaultOpen))
         DemoMixedPlot();
     if (ImGui::CollapsingHeader("Heatmap"))
         DemoHeatmap();

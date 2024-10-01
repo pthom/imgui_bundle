@@ -186,7 +186,7 @@ def demo_gui():
 
     if imgui.collapsing_header("Drag Rects"):
         demo_drag_rects()
-    if imgui.collapsing_header("Mixed plot", imgui.TreeNodeFlags_.default_open):
+    if imgui.collapsing_header("Mixed plot##2", imgui.TreeNodeFlags_.default_open):
         demo_mixed_plot()
     if imgui.collapsing_header("Heatmap"):
         demo_heatmap()
