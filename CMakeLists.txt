@@ -12,25 +12,37 @@ set(IMGUI_BUNDLE_BUILD_PYODIDE ON CACHE BOOL "" FORCE)
 # set(IMGUI_BUNDLE_BUILD_PYODIDE ON CACHE BOOL "" FORCE) # Fixme
 option(IMGUI_BUNDLE_BUILD_PYODIDE "Build for pyodide" OFF)
 if (IMGUI_BUNDLE_BUILD_PYODIDE)
-    set(HELLOIMGUI_EMSCRIPTEN_PTHREAD OFF CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
+    # No native demos for pyodide
     set(IMGUI_BUNDLE_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_USE_FREETYPE OFF CACHE BOOL "" FORCE)
 
+    # FreeType
+    set(HELLOIMGUI_USE_FREETYPE ON CACHE BOOL "" FORCE)
+
+    # Backend selection
     set(HELLOIMGUI_USE_SDL2 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
 
+    # No test engine for pyodide
+    set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
+    set(IMGUI_BUNDLE_WITH_TEST_ENGINE ON CACHE BOOL "" FORCE)
+    
+    # Disable some features
     set(IMGUI_BUNDLE_DISABLE_IMMVISION ON CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_DISABLE_IMPLOT ON CACHE BOOL "" FORCE)
     set(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG ON CACHE BOOL "" FORCE)
+    # set(IMGUI_BUNDLE_DISABLE_IMPLOT ON CACHE BOOL "" FORCE)
     # set(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR ON CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_DISABLE_IMGUIZMO ON CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT ON CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
+    # set(IMGUI_BUNDLE_DISABLE_IMGUIZMO ON CACHE BOOL "" FORCE)
+    # set(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT ON CACHE BOOL "" FORCE)
+    # set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
 
-    # add_compile_options("-sERROR_ON_UNDEFINED_SYMBOLS=1")
-    # add_link_options("-sERROR_ON_UNDEFINED_SYMBOLS=1")
+    # Try reduce link time for pyodide
+    add_link_options("-flto=auto")  # run link time optimization on several threads (no clear benefit)
+    # add_link_options("-fno-lto")  # disable link time optimization
+    # if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    #     add_compile_options("-O0")
+    #     add_link_options("-O0")
+    # endif()
 endif()
 
 
