@@ -51,6 +51,9 @@ def _preprocess_imgui_code(code: str) -> str:
 
     new_code = new_code.replace("unsigned char", "uchar")
 
+    new_code = new_code.replace("BundleHybridCallback", "std::function")
+    new_code = new_code.replace("BundleHybridStr", "std::string")
+
     return new_code
 
 

@@ -373,7 +373,12 @@ INDEX_SIZE: int
 #
 # [/ADAPT_IMGUI_BUNDLE]
 
-#
+# [ADAPT_IMGUI_BUNDLE] utilities
+# - std::function: switches between function pointer and std::function
+# - std::string: switches between const char* and std::string
+# - BundleHybridToChar: converts std::string to const char*
+# [/ADAPT_IMGUI_BUNDLE] utilities
+
 #
 # Index of this file:
 # // [SECTION] Header mess
@@ -10889,10 +10894,25 @@ class PlatformIO:
 
     # Optional: Access OS clipboard
     # (default to use native Win32 clipboard on Windows, otherwise uses a private clipboard. Override to access OS clipboard on other architectures)
+    # [ADAPT_IMGUI_BUNDLE]
+    # const char* (*Platform_GetClipboardTextFn)(ImGuiContext* ctx);
+    # None        (*Platform_SetClipboardTextFn)(ImGuiContext* ctx, const char* text);
+    # std::function<std::string(ImGuiContext*)> Platform_GetClipboardTextFn;    /* original C++ signature */
+    platform_get_clipboard_text_fn: Callable[[Context], str]
+    # std::function<void(ImGuiContext*, const char*)> Platform_SetClipboardTextFn;    /* original C++ signature */
+    platform_set_clipboard_text_fn: Callable[[Context, str], None]
     # void*       Platform_ClipboardUserData;    /* original C++ signature */
+    # [/ADAPT_IMGUI_BUNDLE]
     platform_clipboard_user_data: Any
 
+    # std::function<bool(ImGuiContext*, const char*)> Platform_OpenInShellFn;    /* original C++ signature */
+    # Optional: Open link/folder/file in OS Shell
+    # (default to use ShellExecuteA() on Windows, system() on Linux/Mac)
+    # [ADAPT_IMGUI_BUNDLE]
+    # bool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);
+    platform_open_in_shell_fn: Callable[[Context, str], bool]
     # void*       Platform_OpenInShellUserData;    /* original C++ signature */
+    # [/ADAPT_IMGUI_BUNDLE]
     platform_open_in_shell_user_data: Any
 
     # void*       Platform_ImeUserData;    /* original C++ signature */
