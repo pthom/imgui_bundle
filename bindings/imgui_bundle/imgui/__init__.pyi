@@ -4096,17 +4096,17 @@ class Key(enum.Enum):
     #   backends tend to interfere and break that equivalence. The safer decision is to relay that ambiguity down to the end-user...
     # - On macOS, we swap Cmd(Super) and Ctrl keys at the time of the io.AddKeyEvent() call.
     # ImGuiMod_None                   = 0,    /* original C++ signature */
-    im_gui_mod_none = enum.auto()  # (= 0)
+    mod_none = enum.auto()  # (= 0)
     # ImGuiMod_Ctrl                   = 1 << 12,     /* original C++ signature */
-    im_gui_mod_ctrl = enum.auto()  # (= 1 << 12)  # Ctrl (non-macOS), Cmd (macOS)
+    mod_ctrl = enum.auto()  # (= 1 << 12)  # Ctrl (non-macOS), Cmd (macOS)
     # ImGuiMod_Shift                  = 1 << 13,     /* original C++ signature */
-    im_gui_mod_shift = enum.auto()  # (= 1 << 13)  # Shift
+    mod_shift = enum.auto()  # (= 1 << 13)  # Shift
     # ImGuiMod_Alt                    = 1 << 14,     /* original C++ signature */
-    im_gui_mod_alt = enum.auto()  # (= 1 << 14)  # Option/Menu
+    mod_alt = enum.auto()  # (= 1 << 14)  # Option/Menu
     # ImGuiMod_Super                  = 1 << 15,     /* original C++ signature */
-    im_gui_mod_super = enum.auto()  # (= 1 << 15)  # Windows/Super (non-macOS), Ctrl (macOS)
+    mod_super = enum.auto()  # (= 1 << 15)  # Windows/Super (non-macOS), Ctrl (macOS)
     # ImGuiMod_Mask_                  = 0xF000,      /* original C++ signature */
-    im_gui_mod_mask_ = enum.auto()  # (= 0xF000)  # 4-bits
+    mod_mask_ = enum.auto()  # (= 0xF000)  # 4-bits
 
     # [Internal] Prior to 1.87 we required user to fill io.KeysDown[512] using their own native index + the io.KeyMap[] array.
     # We are ditching this method but keeping a legacy path for user code doing e.g. IsKeyPressed(MY_NATIVE_KEY_CODE)
