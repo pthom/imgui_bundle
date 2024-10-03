@@ -258,6 +258,12 @@ def litgen_options_imgui(
 
     # options.names_replacements.add_last_replacement(r"(^ImGui)([A-Z])", r"\2")
 
+    # Remove prefixes from enum values, with a specific case for ImGui,
+    # which defines private enums which may extend the public ones:
+    #     enum ImGuiMyFlags_ { ImGuiMyFlags_None = 0,...};  enum ImGuiMyFlagsPrivate_ { ImGuiMyFlags_PrivValue = ...};
+    options.enum_flag_remove_values_prefix = True
+    options.enum_flag_remove_values_prefix_group_private = True
+
     options.python_max_line_length = (
         -1
     )  # in ImGui, the function decls are on *one* line

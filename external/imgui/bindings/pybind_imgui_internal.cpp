@@ -633,21 +633,21 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiDataTypePrivate_>(m, "DataTypePrivate_", py::arithmetic(), "Extend ImGuiDataType_")
-        .value("data_type_string", ImGuiDataType_String, "")
-        .value("data_type_pointer", ImGuiDataType_Pointer, "")
-        .value("data_type_id", ImGuiDataType_ID, "");
+        .value("string", ImGuiDataType_String, "")
+        .value("pointer", ImGuiDataType_Pointer, "")
+        .value("id_", ImGuiDataType_ID, "");
 
 
     py::enum_<ImGuiItemFlagsPrivate_>(m, "ItemFlagsPrivate_", py::arithmetic(), " Extend ImGuiItemFlags\n - input: PushItemFlag() manipulates g.CurrentItemFlags, ItemAdd() calls may add extra flags.\n - output: stored in g.LastItemData.InFlags")
-        .value("item_flags_disabled", ImGuiItemFlags_Disabled, "False     // Disable interactions (DOES NOT affect visuals, see BeginDisabled()/EndDisabled() for full disable feature, and github #211).")
-        .value("item_flags_read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
-        .value("item_flags_mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
-        .value("item_flags_no_window_hoverable_check", ImGuiItemFlags_NoWindowHoverableCheck, "False     // Disable hoverable check in ItemHoverable()")
-        .value("item_flags_allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
-        .value("item_flags_inputable", ImGuiItemFlags_Inputable, "False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.")
-        .value("item_flags_has_selection_user_data", ImGuiItemFlags_HasSelectionUserData, "False     // Set by SetNextItemSelectionUserData()")
-        .value("item_flags_is_multi_select", ImGuiItemFlags_IsMultiSelect, "False     // Set by SetNextItemSelectionUserData()")
-        .value("item_flags_default_", ImGuiItemFlags_Default_, "Please don't change, use PushItemFlag() instead.");
+        .value("disabled", ImGuiItemFlags_Disabled, "False     // Disable interactions (DOES NOT affect visuals, see BeginDisabled()/EndDisabled() for full disable feature, and github #211).")
+        .value("read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
+        .value("mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
+        .value("no_window_hoverable_check", ImGuiItemFlags_NoWindowHoverableCheck, "False     // Disable hoverable check in ItemHoverable()")
+        .value("allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
+        .value("inputable", ImGuiItemFlags_Inputable, "False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.")
+        .value("has_selection_user_data", ImGuiItemFlags_HasSelectionUserData, "False     // Set by SetNextItemSelectionUserData()")
+        .value("is_multi_select", ImGuiItemFlags_IsMultiSelect, "False     // Set by SetNextItemSelectionUserData()")
+        .value("default_", ImGuiItemFlags_Default_, "Please don't change, use PushItemFlag() instead.");
 
 
     py::enum_<ImGuiItemStatusFlags_>(m, "ItemStatusFlags_", py::arithmetic(), " Status flags for an already submitted item\n - output: stored in g.LastItemData.StatusFlags")
@@ -666,47 +666,47 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiHoveredFlagsPrivate_>(m, "HoveredFlagsPrivate_", py::arithmetic(), "Extend ImGuiHoveredFlags_")
-        .value("hovered_flags_delay_mask_", ImGuiHoveredFlags_DelayMask_, "")
-        .value("hovered_flags_allowed_mask_for_is_window_hovered", ImGuiHoveredFlags_AllowedMaskForIsWindowHovered, "")
-        .value("hovered_flags_allowed_mask_for_is_item_hovered", ImGuiHoveredFlags_AllowedMaskForIsItemHovered, "");
+        .value("delay_mask_", ImGuiHoveredFlags_DelayMask_, "")
+        .value("allowed_mask_for_is_window_hovered", ImGuiHoveredFlags_AllowedMaskForIsWindowHovered, "")
+        .value("allowed_mask_for_is_item_hovered", ImGuiHoveredFlags_AllowedMaskForIsItemHovered, "");
 
 
     py::enum_<ImGuiInputTextFlagsPrivate_>(m, "InputTextFlagsPrivate_", py::arithmetic(), "Extend ImGuiInputTextFlags_")
-        .value("input_text_flags_multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
-        .value("input_text_flags_no_mark_edited", ImGuiInputTextFlags_NoMarkEdited, "For internal use by functions using InputText() before reformatting data")
-        .value("input_text_flags_merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
-        .value("input_text_flags_localize_decimal_point", ImGuiInputTextFlags_LocalizeDecimalPoint, "For internal use by InputScalar() and TempInputScalar()");
+        .value("multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
+        .value("no_mark_edited", ImGuiInputTextFlags_NoMarkEdited, "For internal use by functions using InputText() before reformatting data")
+        .value("merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
+        .value("localize_decimal_point", ImGuiInputTextFlags_LocalizeDecimalPoint, "For internal use by InputScalar() and TempInputScalar()");
 
 
     py::enum_<ImGuiButtonFlagsPrivate_>(m, "ButtonFlagsPrivate_", py::arithmetic(), "Extend ImGuiButtonFlags_")
-        .value("button_flags_pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
-        .value("button_flags_pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
-        .value("button_flags_pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
-        .value("button_flags_pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release)")
-        .value("button_flags_pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
-        .value("button_flags_pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
-        .value("button_flags_repeat", ImGuiButtonFlags_Repeat, "hold to repeat")
-        .value("button_flags_flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
-        .value("button_flags_allow_overlap", ImGuiButtonFlags_AllowOverlap, "require previous frame HoveredId to either match id or be null before being usable.")
-        .value("button_flags_dont_close_popups", ImGuiButtonFlags_DontClosePopups, "disable automatically closing parent popup on press // [UNUSED]")
-        .value("button_flags_align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
-        .value("button_flags_no_key_modifiers", ImGuiButtonFlags_NoKeyModifiers, "disable mouse interaction if a key modifier is held")
-        .value("button_flags_no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
-        .value("button_flags_no_nav_focus", ImGuiButtonFlags_NoNavFocus, "don't override navigation focus when activated (FIXME: this is essentially used every time an item uses ImGuiItemFlags_NoNav, but because legacy specs don't requires LastItemData to be set ButtonBehavior(), we can't poll g.LastItemData.InFlags)")
-        .value("button_flags_no_hovered_on_focus", ImGuiButtonFlags_NoHoveredOnFocus, "don't report as hovered when nav focus is on this item")
-        .value("button_flags_no_set_key_owner", ImGuiButtonFlags_NoSetKeyOwner, "don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
-        .value("button_flags_no_test_key_owner", ImGuiButtonFlags_NoTestKeyOwner, "don't test key/input owner when polling the key (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
-        .value("button_flags_pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
-        .value("button_flags_pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
+        .value("pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
+        .value("pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
+        .value("pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
+        .value("pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release)")
+        .value("pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
+        .value("pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
+        .value("repeat", ImGuiButtonFlags_Repeat, "hold to repeat")
+        .value("flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
+        .value("allow_overlap", ImGuiButtonFlags_AllowOverlap, "require previous frame HoveredId to either match id or be null before being usable.")
+        .value("dont_close_popups", ImGuiButtonFlags_DontClosePopups, "disable automatically closing parent popup on press // [UNUSED]")
+        .value("align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
+        .value("no_key_modifiers", ImGuiButtonFlags_NoKeyModifiers, "disable mouse interaction if a key modifier is held")
+        .value("no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
+        .value("no_nav_focus", ImGuiButtonFlags_NoNavFocus, "don't override navigation focus when activated (FIXME: this is essentially used every time an item uses ImGuiItemFlags_NoNav, but because legacy specs don't requires LastItemData to be set ButtonBehavior(), we can't poll g.LastItemData.InFlags)")
+        .value("no_hovered_on_focus", ImGuiButtonFlags_NoHoveredOnFocus, "don't report as hovered when nav focus is on this item")
+        .value("no_set_key_owner", ImGuiButtonFlags_NoSetKeyOwner, "don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
+        .value("no_test_key_owner", ImGuiButtonFlags_NoTestKeyOwner, "don't test key/input owner when polling the key (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
+        .value("pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
+        .value("pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
 
 
     py::enum_<ImGuiComboFlagsPrivate_>(m, "ComboFlagsPrivate_", py::arithmetic(), "Extend ImGuiComboFlags_")
-        .value("combo_flags_custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
+        .value("custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
 
 
     py::enum_<ImGuiSliderFlagsPrivate_>(m, "SliderFlagsPrivate_", py::arithmetic(), "Extend ImGuiSliderFlags_")
-        .value("slider_flags_vertical", ImGuiSliderFlags_Vertical, "Should this slider be orientated vertically?")
-        .value("slider_flags_read_only", ImGuiSliderFlags_ReadOnly, "Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.");
+        .value("vertical", ImGuiSliderFlags_Vertical, "Should this slider be orientated vertically?")
+        .value("read_only", ImGuiSliderFlags_ReadOnly, "Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.");
 
 
     py::enum_<ImGuiSelectableFlagsPrivate_>(m, "SelectableFlagsPrivate_", py::arithmetic(), "Extend ImGuiSelectableFlags_")
@@ -721,9 +721,9 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", py::arithmetic(), "Extend ImGuiTreeNodeFlags_")
-        .value("tree_node_flags_clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "FIXME-WIP: Hard-coded for CollapsingHeader()")
-        .value("tree_node_flags_upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "FIXME-WIP: Turn Down arrow into an Up arrow, but reversed trees (#6517)")
-        .value("tree_node_flags_open_on_mask_", ImGuiTreeNodeFlags_OpenOnMask_, "");
+        .value("clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "FIXME-WIP: Hard-coded for CollapsingHeader()")
+        .value("upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "FIXME-WIP: Turn Down arrow into an Up arrow, but reversed trees (#6517)")
+        .value("open_on_mask_", ImGuiTreeNodeFlags_OpenOnMask_, "");
 
 
     py::enum_<ImGuiSeparatorFlags_>(m, "SeparatorFlags_", py::arithmetic(), "")
@@ -1363,30 +1363,30 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiInputFlagsPrivate_>(m, "InputFlagsPrivate_", py::arithmetic(), " Extend ImGuiInputFlags_\n Flags for extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner()\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
-        .value("input_flags_repeat_rate_default", ImGuiInputFlags_RepeatRateDefault, "Repeat rate: Regular (default)")
-        .value("input_flags_repeat_rate_nav_move", ImGuiInputFlags_RepeatRateNavMove, "Repeat rate: Fast")
-        .value("input_flags_repeat_rate_nav_tweak", ImGuiInputFlags_RepeatRateNavTweak, "Repeat rate: Faster")
-        .value("input_flags_repeat_until_release", ImGuiInputFlags_RepeatUntilRelease, "Stop repeating when released (default for all functions except Shortcut). This only exists to allow overriding Shortcut() default behavior.")
-        .value("input_flags_repeat_until_key_mods_change", ImGuiInputFlags_RepeatUntilKeyModsChange, "Stop repeating when released OR if keyboard mods are changed (default for Shortcut)")
-        .value("input_flags_repeat_until_key_mods_change_from_none", ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone, "Stop repeating when released OR if keyboard mods are leaving the None state. Allows going from Mod+Key to Key by releasing Mod.")
-        .value("input_flags_repeat_until_other_key_press", ImGuiInputFlags_RepeatUntilOtherKeyPress, "Stop repeating when released OR if any other keyboard key is pressed during the repeat")
-        .value("input_flags_lock_this_frame", ImGuiInputFlags_LockThisFrame, "Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared at end of frame.")
-        .value("input_flags_lock_until_release", ImGuiInputFlags_LockUntilRelease, "Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared when the key is released or at end of each frame if key is released.")
-        .value("input_flags_cond_hovered", ImGuiInputFlags_CondHovered, "Only set if item is hovered (default to both)")
-        .value("input_flags_cond_active", ImGuiInputFlags_CondActive, "Only set if item is active (default to both)")
-        .value("input_flags_cond_default_", ImGuiInputFlags_CondDefault_, "")
-        .value("input_flags_repeat_rate_mask_", ImGuiInputFlags_RepeatRateMask_, "")
-        .value("input_flags_repeat_until_mask_", ImGuiInputFlags_RepeatUntilMask_, "")
-        .value("input_flags_repeat_mask_", ImGuiInputFlags_RepeatMask_, "")
-        .value("input_flags_cond_mask_", ImGuiInputFlags_CondMask_, "")
-        .value("input_flags_route_type_mask_", ImGuiInputFlags_RouteTypeMask_, "")
-        .value("input_flags_route_options_mask_", ImGuiInputFlags_RouteOptionsMask_, "")
-        .value("input_flags_supported_by_is_key_pressed", ImGuiInputFlags_SupportedByIsKeyPressed, "")
-        .value("input_flags_supported_by_is_mouse_clicked", ImGuiInputFlags_SupportedByIsMouseClicked, "")
-        .value("input_flags_supported_by_shortcut", ImGuiInputFlags_SupportedByShortcut, "")
-        .value("input_flags_supported_by_set_next_item_shortcut", ImGuiInputFlags_SupportedBySetNextItemShortcut, "")
-        .value("input_flags_supported_by_set_key_owner", ImGuiInputFlags_SupportedBySetKeyOwner, "")
-        .value("input_flags_supported_by_set_item_key_owner", ImGuiInputFlags_SupportedBySetItemKeyOwner, "");
+        .value("repeat_rate_default", ImGuiInputFlags_RepeatRateDefault, "Repeat rate: Regular (default)")
+        .value("repeat_rate_nav_move", ImGuiInputFlags_RepeatRateNavMove, "Repeat rate: Fast")
+        .value("repeat_rate_nav_tweak", ImGuiInputFlags_RepeatRateNavTweak, "Repeat rate: Faster")
+        .value("repeat_until_release", ImGuiInputFlags_RepeatUntilRelease, "Stop repeating when released (default for all functions except Shortcut). This only exists to allow overriding Shortcut() default behavior.")
+        .value("repeat_until_key_mods_change", ImGuiInputFlags_RepeatUntilKeyModsChange, "Stop repeating when released OR if keyboard mods are changed (default for Shortcut)")
+        .value("repeat_until_key_mods_change_from_none", ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone, "Stop repeating when released OR if keyboard mods are leaving the None state. Allows going from Mod+Key to Key by releasing Mod.")
+        .value("repeat_until_other_key_press", ImGuiInputFlags_RepeatUntilOtherKeyPress, "Stop repeating when released OR if any other keyboard key is pressed during the repeat")
+        .value("lock_this_frame", ImGuiInputFlags_LockThisFrame, "Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared at end of frame.")
+        .value("lock_until_release", ImGuiInputFlags_LockUntilRelease, "Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared when the key is released or at end of each frame if key is released.")
+        .value("cond_hovered", ImGuiInputFlags_CondHovered, "Only set if item is hovered (default to both)")
+        .value("cond_active", ImGuiInputFlags_CondActive, "Only set if item is active (default to both)")
+        .value("cond_default_", ImGuiInputFlags_CondDefault_, "")
+        .value("repeat_rate_mask_", ImGuiInputFlags_RepeatRateMask_, "")
+        .value("repeat_until_mask_", ImGuiInputFlags_RepeatUntilMask_, "")
+        .value("repeat_mask_", ImGuiInputFlags_RepeatMask_, "")
+        .value("cond_mask_", ImGuiInputFlags_CondMask_, "")
+        .value("route_type_mask_", ImGuiInputFlags_RouteTypeMask_, "")
+        .value("route_options_mask_", ImGuiInputFlags_RouteOptionsMask_, "")
+        .value("supported_by_is_key_pressed", ImGuiInputFlags_SupportedByIsKeyPressed, "")
+        .value("supported_by_is_mouse_clicked", ImGuiInputFlags_SupportedByIsMouseClicked, "")
+        .value("supported_by_shortcut", ImGuiInputFlags_SupportedByShortcut, "")
+        .value("supported_by_set_next_item_shortcut", ImGuiInputFlags_SupportedBySetNextItemShortcut, "")
+        .value("supported_by_set_key_owner", ImGuiInputFlags_SupportedBySetKeyOwner, "")
+        .value("supported_by_set_item_key_owner", ImGuiInputFlags_SupportedBySetItemKeyOwner, "");
 
 
     auto pyClassImGuiListClipperRange =
@@ -2602,16 +2602,16 @@ void py_init_module_imgui_internal(py::module& m)
 
 
     py::enum_<ImGuiTabBarFlagsPrivate_>(m, "TabBarFlagsPrivate_", py::arithmetic(), "Extend ImGuiTabBarFlags_")
-        .value("tab_bar_flags_dock_node", ImGuiTabBarFlags_DockNode, "Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]")
-        .value("tab_bar_flags_is_focused", ImGuiTabBarFlags_IsFocused, "")
-        .value("tab_bar_flags_save_settings", ImGuiTabBarFlags_SaveSettings, "FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs");
+        .value("dock_node", ImGuiTabBarFlags_DockNode, "Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]")
+        .value("is_focused", ImGuiTabBarFlags_IsFocused, "")
+        .value("save_settings", ImGuiTabBarFlags_SaveSettings, "FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs");
 
 
     py::enum_<ImGuiTabItemFlagsPrivate_>(m, "TabItemFlagsPrivate_", py::arithmetic(), "Extend ImGuiTabItemFlags_")
-        .value("tab_item_flags_section_mask_", ImGuiTabItemFlags_SectionMask_, "")
-        .value("tab_item_flags_no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
-        .value("tab_item_flags_button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
-        .value("tab_item_flags_unsorted", ImGuiTabItemFlags_Unsorted, "[Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.");
+        .value("section_mask_", ImGuiTabItemFlags_SectionMask_, "")
+        .value("no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
+        .value("button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
+        .value("unsorted", ImGuiTabItemFlags_Unsorted, "[Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.");
 
 
     auto pyClassImGuiTabItem =

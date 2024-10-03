@@ -885,12 +885,12 @@ class DataTypePrivate_(enum.Enum):
     """Extend ImGuiDataType_"""
 
     # ImGuiDataType_String = ImGuiDataType_COUNT + 1,    /* original C++ signature */
-    data_type_string = enum.auto()  # (= DataType_COUNT + 1)
+    string = enum.auto()  # (= DataType_COUNT + 1)
     # ImGuiDataType_Pointer,    /* original C++ signature */
-    data_type_pointer = enum.auto()  # (= )
+    pointer = enum.auto()  # (= )
     # ImGuiDataType_ID,    /* original C++ signature */
     # }
-    data_type_id = enum.auto()  # (= )
+    id_ = enum.auto()  # (= )
 
 # -----------------------------------------------------------------------------
 # [SECTION] Widgets support: flags, enums, data structures
@@ -904,42 +904,36 @@ class ItemFlagsPrivate_(enum.Enum):
 
     # Controlled by user
     # ImGuiItemFlags_Disabled                 = 1 << 10,     /* original C++ signature */
-    item_flags_disabled = (
+    disabled = (
         enum.auto()
     )  # (= 1 << 10)  # False     // Disable interactions (DOES NOT affect visuals, see BeginDisabled()/EndDisabled() for full disable feature, and github #211).
     # ImGuiItemFlags_ReadOnly                 = 1 << 11,     /* original C++ signature */
-    item_flags_read_only = (
+    read_only = (
         enum.auto()
     )  # (= 1 << 11)  # False     // [ALPHA] Allow hovering interactions but underlying value is not changed.
     # ImGuiItemFlags_MixedValue               = 1 << 12,     /* original C++ signature */
-    item_flags_mixed_value = (
+    mixed_value = (
         enum.auto()
     )  # (= 1 << 12)  # False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)
     # ImGuiItemFlags_NoWindowHoverableCheck   = 1 << 13,     /* original C++ signature */
-    item_flags_no_window_hoverable_check = (
-        enum.auto()
-    )  # (= 1 << 13)  # False     // Disable hoverable check in ItemHoverable()
+    no_window_hoverable_check = enum.auto()  # (= 1 << 13)  # False     // Disable hoverable check in ItemHoverable()
     # ImGuiItemFlags_AllowOverlap             = 1 << 14,     /* original C++ signature */
-    item_flags_allow_overlap = (
+    allow_overlap = (
         enum.auto()
     )  # (= 1 << 14)  # False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.
 
     # Controlled by widget code
     # ImGuiItemFlags_Inputable                = 1 << 20,     /* original C++ signature */
-    item_flags_inputable = (
+    inputable = (
         enum.auto()
     )  # (= 1 << 20)  # False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.
     # ImGuiItemFlags_HasSelectionUserData     = 1 << 21,     /* original C++ signature */
-    item_flags_has_selection_user_data = (
-        enum.auto()
-    )  # (= 1 << 21)  # False     // Set by SetNextItemSelectionUserData()
+    has_selection_user_data = enum.auto()  # (= 1 << 21)  # False     // Set by SetNextItemSelectionUserData()
     # ImGuiItemFlags_IsMultiSelect            = 1 << 22,     /* original C++ signature */
-    item_flags_is_multi_select = enum.auto()  # (= 1 << 22)  # False     // Set by SetNextItemSelectionUserData()
+    is_multi_select = enum.auto()  # (= 1 << 22)  # False     // Set by SetNextItemSelectionUserData()
 
     # ImGuiItemFlags_Default_                 = ImGuiItemFlags_AutoClosePopups,        /* original C++ signature */
-    item_flags_default_ = (
-        enum.auto()
-    )  # (= ItemFlags_AutoClosePopups)  # Please don't change, use PushItemFlag() instead.
+    default_ = enum.auto()  # (= ItemFlags_AutoClosePopups)  # Please don't change, use PushItemFlag() instead.
 
     # Obsolete
     # ImGuiItemFlags_SelectableDontClosePopup = !ImGuiItemFlags_AutoClosePopups, // Can't have a redirect as we inverted the behavior
@@ -992,16 +986,16 @@ class HoveredFlagsPrivate_(enum.Enum):
     """Extend ImGuiHoveredFlags_"""
 
     # ImGuiHoveredFlags_DelayMask_                    = ImGuiHoveredFlags_DelayNone | ImGuiHoveredFlags_DelayShort | ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay,    /* original C++ signature */
-    hovered_flags_delay_mask_ = (
+    delay_mask_ = (
         enum.auto()
     )  # (= HoveredFlags_DelayNone | HoveredFlags_DelayShort | HoveredFlags_DelayNormal | HoveredFlags_NoSharedDelay)
     # ImGuiHoveredFlags_AllowedMaskForIsWindowHovered = ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_NoPopupHierarchy | ImGuiHoveredFlags_DockHierarchy | ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_Stationary,    /* original C++ signature */
-    hovered_flags_allowed_mask_for_is_window_hovered = (
+    allowed_mask_for_is_window_hovered = (
         enum.auto()
     )  # (= HoveredFlags_ChildWindows | HoveredFlags_RootWindow | HoveredFlags_AnyWindow | HoveredFlags_NoPopupHierarchy | HoveredFlags_DockHierarchy | HoveredFlags_AllowWhenBlockedByPopup | HoveredFlags_AllowWhenBlockedByActiveItem | HoveredFlags_ForTooltip | HoveredFlags_Stationary)
     # ImGuiHoveredFlags_AllowedMaskForIsItemHovered   = ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_AllowWhenOverlapped | ImGuiHoveredFlags_AllowWhenDisabled | ImGuiHoveredFlags_NoNavOverride | ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_Stationary | ImGuiHoveredFlags_DelayMask_,    /* original C++ signature */
     # }
-    hovered_flags_allowed_mask_for_is_item_hovered = (
+    allowed_mask_for_is_item_hovered = (
         enum.auto()
     )  # (= HoveredFlags_AllowWhenBlockedByPopup | HoveredFlags_AllowWhenBlockedByActiveItem | HoveredFlags_AllowWhenOverlapped | HoveredFlags_AllowWhenDisabled | HoveredFlags_NoNavOverride | HoveredFlags_ForTooltip | HoveredFlags_Stationary | HoveredFlags_DelayMask_)
 
@@ -1010,107 +1004,95 @@ class InputTextFlagsPrivate_(enum.Enum):
 
     # [Internal]
     # ImGuiInputTextFlags_Multiline           = 1 << 26,      /* original C++ signature */
-    input_text_flags_multiline = enum.auto()  # (= 1 << 26)  # For internal use by InputTextMultiline()
+    multiline = enum.auto()  # (= 1 << 26)  # For internal use by InputTextMultiline()
     # ImGuiInputTextFlags_NoMarkEdited        = 1 << 27,      /* original C++ signature */
-    input_text_flags_no_mark_edited = (
+    no_mark_edited = (
         enum.auto()
     )  # (= 1 << 27)  # For internal use by functions using InputText() before reformatting data
     # ImGuiInputTextFlags_MergedItem          = 1 << 28,      /* original C++ signature */
-    input_text_flags_merged_item = (
+    merged_item = (
         enum.auto()
     )  # (= 1 << 28)  # For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.
     # ImGuiInputTextFlags_LocalizeDecimalPoint= 1 << 29,      /* original C++ signature */
-    input_text_flags_localize_decimal_point = (
-        enum.auto()
-    )  # (= 1 << 29)  # For internal use by InputScalar() and TempInputScalar()
+    localize_decimal_point = enum.auto()  # (= 1 << 29)  # For internal use by InputScalar() and TempInputScalar()
 
 class ButtonFlagsPrivate_(enum.Enum):
     """Extend ImGuiButtonFlags_"""
 
     # ImGuiButtonFlags_PressedOnClick         = 1 << 4,       /* original C++ signature */
-    button_flags_pressed_on_click = enum.auto()  # (= 1 << 4)  # return True on click (mouse down event)
+    pressed_on_click = enum.auto()  # (= 1 << 4)  # return True on click (mouse down event)
     # ImGuiButtonFlags_PressedOnClickRelease  = 1 << 5,       /* original C++ signature */
-    button_flags_pressed_on_click_release = (
+    pressed_on_click_release = (
         enum.auto()
     )  # (= 1 << 5)  # [Default] return True on click + release on same item <-- this is what the majority of Button are using
     # ImGuiButtonFlags_PressedOnClickReleaseAnywhere = 1 << 6,     /* original C++ signature */
-    button_flags_pressed_on_click_release_anywhere = (
+    pressed_on_click_release_anywhere = (
         enum.auto()
     )  # (= 1 << 6)  # return True on click + release even if the release event is not done while hovering the item
     # ImGuiButtonFlags_PressedOnRelease       = 1 << 7,       /* original C++ signature */
-    button_flags_pressed_on_release = (
-        enum.auto()
-    )  # (= 1 << 7)  # return True on release (default requires click+release)
+    pressed_on_release = enum.auto()  # (= 1 << 7)  # return True on release (default requires click+release)
     # ImGuiButtonFlags_PressedOnDoubleClick   = 1 << 8,       /* original C++ signature */
-    button_flags_pressed_on_double_click = (
-        enum.auto()
-    )  # (= 1 << 8)  # return True on double-click (default requires click+release)
+    pressed_on_double_click = enum.auto()  # (= 1 << 8)  # return True on double-click (default requires click+release)
     # ImGuiButtonFlags_PressedOnDragDropHold  = 1 << 9,       /* original C++ signature */
-    button_flags_pressed_on_drag_drop_hold = (
+    pressed_on_drag_drop_hold = (
         enum.auto()
     )  # (= 1 << 9)  # return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)
     # ImGuiButtonFlags_Repeat                 = 1 << 10,      /* original C++ signature */
-    button_flags_repeat = enum.auto()  # (= 1 << 10)  # hold to repeat
+    repeat = enum.auto()  # (= 1 << 10)  # hold to repeat
     # ImGuiButtonFlags_FlattenChildren        = 1 << 11,      /* original C++ signature */
-    button_flags_flatten_children = (
-        enum.auto()
-    )  # (= 1 << 11)  # allow interactions even if a child window is overlapping
+    flatten_children = enum.auto()  # (= 1 << 11)  # allow interactions even if a child window is overlapping
     # ImGuiButtonFlags_AllowOverlap           = 1 << 12,      /* original C++ signature */
-    button_flags_allow_overlap = (
+    allow_overlap = (
         enum.auto()
     )  # (= 1 << 12)  # require previous frame HoveredId to either match id or be null before being usable.
     # ImGuiButtonFlags_DontClosePopups        = 1 << 13,      /* original C++ signature */
-    button_flags_dont_close_popups = (
-        enum.auto()
-    )  # (= 1 << 13)  # disable automatically closing parent popup on press // [UNUSED]
+    dont_close_popups = enum.auto()  # (= 1 << 13)  # disable automatically closing parent popup on press // [UNUSED]
     # ImGuiButtonFlags_Disabled             = 1 << 14,  // disable interactions -> use BeginDisabled() or ImGuiItemFlags_Disabled
     # ImGuiButtonFlags_AlignTextBaseLine      = 1 << 15,      /* original C++ signature */
-    button_flags_align_text_base_line = (
+    align_text_base_line = (
         enum.auto()
     )  # (= 1 << 15)  # vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine
     # ImGuiButtonFlags_NoKeyModifiers         = 1 << 16,      /* original C++ signature */
-    button_flags_no_key_modifiers = enum.auto()  # (= 1 << 16)  # disable mouse interaction if a key modifier is held
+    no_key_modifiers = enum.auto()  # (= 1 << 16)  # disable mouse interaction if a key modifier is held
     # ImGuiButtonFlags_NoHoldingActiveId      = 1 << 17,      /* original C++ signature */
-    button_flags_no_holding_active_id = (
+    no_holding_active_id = (
         enum.auto()
     )  # (= 1 << 17)  # don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)
     # ImGuiButtonFlags_NoNavFocus             = 1 << 18,      /* original C++ signature */
-    button_flags_no_nav_focus = (
+    no_nav_focus = (
         enum.auto()
     )  # (= 1 << 18)  # don't override navigation focus when activated (FIXME: this is essentially used every time an item uses ImGuiItemFlags_NoNav, but because legacy specs don't requires LastItemData to be set ButtonBehavior(), we can't poll g.LastItemData.InFlags)
     # ImGuiButtonFlags_NoHoveredOnFocus       = 1 << 19,      /* original C++ signature */
-    button_flags_no_hovered_on_focus = (
-        enum.auto()
-    )  # (= 1 << 19)  # don't report as hovered when nav focus is on this item
+    no_hovered_on_focus = enum.auto()  # (= 1 << 19)  # don't report as hovered when nav focus is on this item
     # ImGuiButtonFlags_NoSetKeyOwner          = 1 << 20,      /* original C++ signature */
-    button_flags_no_set_key_owner = (
+    no_set_key_owner = (
         enum.auto()
     )  # (= 1 << 20)  # don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
     # ImGuiButtonFlags_NoTestKeyOwner         = 1 << 21,      /* original C++ signature */
-    button_flags_no_test_key_owner = (
+    no_test_key_owner = (
         enum.auto()
     )  # (= 1 << 21)  # don't test key/input owner when polling the key (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
     # ImGuiButtonFlags_PressedOnMask_         = ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_PressedOnClickRelease | ImGuiButtonFlags_PressedOnClickReleaseAnywhere | ImGuiButtonFlags_PressedOnRelease | ImGuiButtonFlags_PressedOnDoubleClick | ImGuiButtonFlags_PressedOnDragDropHold,    /* original C++ signature */
-    button_flags_pressed_on_mask_ = (
+    pressed_on_mask_ = (
         enum.auto()
     )  # (= ButtonFlags_PressedOnClick | ButtonFlags_PressedOnClickRelease | ButtonFlags_PressedOnClickReleaseAnywhere | ButtonFlags_PressedOnRelease | ButtonFlags_PressedOnDoubleClick | ButtonFlags_PressedOnDragDropHold)
     # ImGuiButtonFlags_PressedOnDefault_      = ImGuiButtonFlags_PressedOnClickRelease,    /* original C++ signature */
     # }
-    button_flags_pressed_on_default_ = enum.auto()  # (= ButtonFlags_PressedOnClickRelease)
+    pressed_on_default_ = enum.auto()  # (= ButtonFlags_PressedOnClickRelease)
 
 class ComboFlagsPrivate_(enum.Enum):
     """Extend ImGuiComboFlags_"""
 
     # ImGuiComboFlags_CustomPreview           = 1 << 20,      /* original C++ signature */
-    combo_flags_custom_preview = enum.auto()  # (= 1 << 20)  # enable BeginComboPreview()
+    custom_preview = enum.auto()  # (= 1 << 20)  # enable BeginComboPreview()
 
 class SliderFlagsPrivate_(enum.Enum):
     """Extend ImGuiSliderFlags_"""
 
     # ImGuiSliderFlags_Vertical               = 1 << 20,      /* original C++ signature */
-    slider_flags_vertical = enum.auto()  # (= 1 << 20)  # Should this slider be orientated vertically?
+    vertical = enum.auto()  # (= 1 << 20)  # Should this slider be orientated vertically?
     # ImGuiSliderFlags_ReadOnly               = 1 << 21,      /* original C++ signature */
-    slider_flags_read_only = (
+    read_only = (
         enum.auto()
     )  # (= 1 << 21)  # Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.
 
@@ -1149,16 +1131,14 @@ class TreeNodeFlagsPrivate_(enum.Enum):
     """Extend ImGuiTreeNodeFlags_"""
 
     # ImGuiTreeNodeFlags_ClipLabelForTrailingButton = 1 << 28,    /* original C++ signature */
-    tree_node_flags_clip_label_for_trailing_button = (
-        enum.auto()
-    )  # (= 1 << 28)  # FIXME-WIP: Hard-coded for CollapsingHeader()
+    clip_label_for_trailing_button = enum.auto()  # (= 1 << 28)  # FIXME-WIP: Hard-coded for CollapsingHeader()
     # ImGuiTreeNodeFlags_UpsideDownArrow            = 1 << 29,    /* original C++ signature */
-    tree_node_flags_upside_down_arrow = (
+    upside_down_arrow = (
         enum.auto()
     )  # (= 1 << 29)  # FIXME-WIP: Turn Down arrow into an Up arrow, but reversed trees (#6517)
     # ImGuiTreeNodeFlags_OpenOnMask_                = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow,    /* original C++ signature */
     # }
-    tree_node_flags_open_on_mask_ = enum.auto()  # (= TreeNodeFlags_OpenOnDoubleClick | TreeNodeFlags_OpenOnArrow)
+    open_on_mask_ = enum.auto()  # (= TreeNodeFlags_OpenOnDoubleClick | TreeNodeFlags_OpenOnArrow)
 
 class SeparatorFlags_(enum.Enum):
     # ImGuiSeparatorFlags_None                    = 0,    /* original C++ signature */
@@ -2039,91 +2019,87 @@ class InputFlagsPrivate_(enum.Enum):
     # Flags for IsKeyPressed(), IsKeyChordPressed(), IsMouseClicked(), Shortcut()
     # - Repeat mode: Repeat rate selection
     # ImGuiInputFlags_RepeatRateDefault           = 1 << 1,       /* original C++ signature */
-    input_flags_repeat_rate_default = enum.auto()  # (= 1 << 1)  # Repeat rate: Regular (default)
+    repeat_rate_default = enum.auto()  # (= 1 << 1)  # Repeat rate: Regular (default)
     # ImGuiInputFlags_RepeatRateNavMove           = 1 << 2,       /* original C++ signature */
-    input_flags_repeat_rate_nav_move = enum.auto()  # (= 1 << 2)  # Repeat rate: Fast
+    repeat_rate_nav_move = enum.auto()  # (= 1 << 2)  # Repeat rate: Fast
     # ImGuiInputFlags_RepeatRateNavTweak          = 1 << 3,       /* original C++ signature */
-    input_flags_repeat_rate_nav_tweak = enum.auto()  # (= 1 << 3)  # Repeat rate: Faster
+    repeat_rate_nav_tweak = enum.auto()  # (= 1 << 3)  # Repeat rate: Faster
     # - Repeat mode: Specify when repeating key pressed can be interrupted.
     # - In theory ImGuiInputFlags_RepeatUntilOtherKeyPress may be a desirable default, but it would break too many behavior so everything is opt-in.
     # ImGuiInputFlags_RepeatUntilRelease          = 1 << 4,       /* original C++ signature */
-    input_flags_repeat_until_release = (
+    repeat_until_release = (
         enum.auto()
     )  # (= 1 << 4)  # Stop repeating when released (default for all functions except Shortcut). This only exists to allow overriding Shortcut() default behavior.
     # ImGuiInputFlags_RepeatUntilKeyModsChange    = 1 << 5,       /* original C++ signature */
-    input_flags_repeat_until_key_mods_change = (
+    repeat_until_key_mods_change = (
         enum.auto()
     )  # (= 1 << 5)  # Stop repeating when released OR if keyboard mods are changed (default for Shortcut)
     # ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone = 1 << 6,      /* original C++ signature */
-    input_flags_repeat_until_key_mods_change_from_none = (
+    repeat_until_key_mods_change_from_none = (
         enum.auto()
     )  # (= 1 << 6)  # Stop repeating when released OR if keyboard mods are leaving the None state. Allows going from Mod+Key to Key by releasing Mod.
     # ImGuiInputFlags_RepeatUntilOtherKeyPress    = 1 << 7,       /* original C++ signature */
-    input_flags_repeat_until_other_key_press = (
+    repeat_until_other_key_press = (
         enum.auto()
     )  # (= 1 << 7)  # Stop repeating when released OR if any other keyboard key is pressed during the repeat
 
     # Flags for SetKeyOwner(), SetItemKeyOwner()
     # - Locking key away from non-input aware code. Locking is useful to make input-owner-aware code steal keys from non-input-owner-aware code. If all code is input-owner-aware locking would never be necessary.
     # ImGuiInputFlags_LockThisFrame               = 1 << 20,      /* original C++ signature */
-    input_flags_lock_this_frame = (
+    lock_this_frame = (
         enum.auto()
     )  # (= 1 << 20)  # Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared at end of frame.
     # ImGuiInputFlags_LockUntilRelease            = 1 << 21,      /* original C++ signature */
-    input_flags_lock_until_release = (
+    lock_until_release = (
         enum.auto()
     )  # (= 1 << 21)  # Further accesses to key data will require EXPLICIT owner ID (ImGuiKeyOwner_Any/0 will NOT accepted for polling). Cleared when the key is released or at end of each frame if key is released.
 
     # - Condition for SetItemKeyOwner()
     # ImGuiInputFlags_CondHovered                 = 1 << 22,      /* original C++ signature */
-    input_flags_cond_hovered = enum.auto()  # (= 1 << 22)  # Only set if item is hovered (default to both)
+    cond_hovered = enum.auto()  # (= 1 << 22)  # Only set if item is hovered (default to both)
     # ImGuiInputFlags_CondActive                  = 1 << 23,      /* original C++ signature */
-    input_flags_cond_active = enum.auto()  # (= 1 << 23)  # Only set if item is active (default to both)
+    cond_active = enum.auto()  # (= 1 << 23)  # Only set if item is active (default to both)
     # ImGuiInputFlags_CondDefault_                = ImGuiInputFlags_CondHovered | ImGuiInputFlags_CondActive,    /* original C++ signature */
-    input_flags_cond_default_ = enum.auto()  # (= InputFlags_CondHovered | InputFlags_CondActive)
+    cond_default_ = enum.auto()  # (= InputFlags_CondHovered | InputFlags_CondActive)
 
     # [Internal] Mask of which function support which flags
     # ImGuiInputFlags_RepeatRateMask_             = ImGuiInputFlags_RepeatRateDefault | ImGuiInputFlags_RepeatRateNavMove | ImGuiInputFlags_RepeatRateNavTweak,    /* original C++ signature */
-    input_flags_repeat_rate_mask_ = (
+    repeat_rate_mask_ = (
         enum.auto()
     )  # (= InputFlags_RepeatRateDefault | InputFlags_RepeatRateNavMove | InputFlags_RepeatRateNavTweak)
     # ImGuiInputFlags_RepeatUntilMask_            = ImGuiInputFlags_RepeatUntilRelease | ImGuiInputFlags_RepeatUntilKeyModsChange | ImGuiInputFlags_RepeatUntilKeyModsChangeFromNone | ImGuiInputFlags_RepeatUntilOtherKeyPress,    /* original C++ signature */
-    input_flags_repeat_until_mask_ = (
+    repeat_until_mask_ = (
         enum.auto()
     )  # (= InputFlags_RepeatUntilRelease | InputFlags_RepeatUntilKeyModsChange | InputFlags_RepeatUntilKeyModsChangeFromNone | InputFlags_RepeatUntilOtherKeyPress)
     # ImGuiInputFlags_RepeatMask_                 = ImGuiInputFlags_Repeat | ImGuiInputFlags_RepeatRateMask_ | ImGuiInputFlags_RepeatUntilMask_,    /* original C++ signature */
-    input_flags_repeat_mask_ = (
-        enum.auto()
-    )  # (= InputFlags_Repeat | InputFlags_RepeatRateMask_ | InputFlags_RepeatUntilMask_)
+    repeat_mask_ = enum.auto()  # (= InputFlags_Repeat | InputFlags_RepeatRateMask_ | InputFlags_RepeatUntilMask_)
     # ImGuiInputFlags_CondMask_                   = ImGuiInputFlags_CondHovered | ImGuiInputFlags_CondActive,    /* original C++ signature */
-    input_flags_cond_mask_ = enum.auto()  # (= InputFlags_CondHovered | InputFlags_CondActive)
+    cond_mask_ = enum.auto()  # (= InputFlags_CondHovered | InputFlags_CondActive)
     # ImGuiInputFlags_RouteTypeMask_              = ImGuiInputFlags_RouteActive | ImGuiInputFlags_RouteFocused | ImGuiInputFlags_RouteGlobal | ImGuiInputFlags_RouteAlways,    /* original C++ signature */
-    input_flags_route_type_mask_ = (
+    route_type_mask_ = (
         enum.auto()
     )  # (= InputFlags_RouteActive | InputFlags_RouteFocused | InputFlags_RouteGlobal | InputFlags_RouteAlways)
     # ImGuiInputFlags_RouteOptionsMask_           = ImGuiInputFlags_RouteOverFocused | ImGuiInputFlags_RouteOverActive | ImGuiInputFlags_RouteUnlessBgFocused | ImGuiInputFlags_RouteFromRootWindow,    /* original C++ signature */
-    input_flags_route_options_mask_ = (
+    route_options_mask_ = (
         enum.auto()
     )  # (= InputFlags_RouteOverFocused | InputFlags_RouteOverActive | InputFlags_RouteUnlessBgFocused | InputFlags_RouteFromRootWindow)
     # ImGuiInputFlags_SupportedByIsKeyPressed     = ImGuiInputFlags_RepeatMask_,    /* original C++ signature */
-    input_flags_supported_by_is_key_pressed = enum.auto()  # (= InputFlags_RepeatMask_)
+    supported_by_is_key_pressed = enum.auto()  # (= InputFlags_RepeatMask_)
     # ImGuiInputFlags_SupportedByIsMouseClicked   = ImGuiInputFlags_Repeat,    /* original C++ signature */
-    input_flags_supported_by_is_mouse_clicked = enum.auto()  # (= InputFlags_Repeat)
+    supported_by_is_mouse_clicked = enum.auto()  # (= InputFlags_Repeat)
     # ImGuiInputFlags_SupportedByShortcut         = ImGuiInputFlags_RepeatMask_ | ImGuiInputFlags_RouteTypeMask_ | ImGuiInputFlags_RouteOptionsMask_,    /* original C++ signature */
-    input_flags_supported_by_shortcut = (
+    supported_by_shortcut = (
         enum.auto()
     )  # (= InputFlags_RepeatMask_ | InputFlags_RouteTypeMask_ | InputFlags_RouteOptionsMask_)
     # ImGuiInputFlags_SupportedBySetNextItemShortcut = ImGuiInputFlags_RepeatMask_ | ImGuiInputFlags_RouteTypeMask_ | ImGuiInputFlags_RouteOptionsMask_ | ImGuiInputFlags_Tooltip,    /* original C++ signature */
-    input_flags_supported_by_set_next_item_shortcut = (
+    supported_by_set_next_item_shortcut = (
         enum.auto()
     )  # (= InputFlags_RepeatMask_ | InputFlags_RouteTypeMask_ | InputFlags_RouteOptionsMask_ | InputFlags_Tooltip)
     # ImGuiInputFlags_SupportedBySetKeyOwner      = ImGuiInputFlags_LockThisFrame | ImGuiInputFlags_LockUntilRelease,    /* original C++ signature */
-    input_flags_supported_by_set_key_owner = enum.auto()  # (= InputFlags_LockThisFrame | InputFlags_LockUntilRelease)
+    supported_by_set_key_owner = enum.auto()  # (= InputFlags_LockThisFrame | InputFlags_LockUntilRelease)
     # ImGuiInputFlags_SupportedBySetItemKeyOwner  = ImGuiInputFlags_SupportedBySetKeyOwner | ImGuiInputFlags_CondMask_,    /* original C++ signature */
     # }
-    input_flags_supported_by_set_item_key_owner = (
-        enum.auto()
-    )  # (= InputFlags_SupportedBySetKeyOwner | InputFlags_CondMask_)
+    supported_by_set_item_key_owner = enum.auto()  # (= InputFlags_SupportedBySetKeyOwner | InputFlags_CondMask_)
 
 # -----------------------------------------------------------------------------
 # [SECTION] Clipper support
@@ -4666,13 +4642,13 @@ class TabBarFlagsPrivate_(enum.Enum):
     """Extend ImGuiTabBarFlags_"""
 
     # ImGuiTabBarFlags_DockNode                   = 1 << 20,      /* original C++ signature */
-    tab_bar_flags_dock_node = (
+    dock_node = (
         enum.auto()
     )  # (= 1 << 20)  # Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]
     # ImGuiTabBarFlags_IsFocused                  = 1 << 21,    /* original C++ signature */
-    tab_bar_flags_is_focused = enum.auto()  # (= 1 << 21)
+    is_focused = enum.auto()  # (= 1 << 21)
     # ImGuiTabBarFlags_SaveSettings               = 1 << 22,      /* original C++ signature */
-    tab_bar_flags_save_settings = (
+    save_settings = (
         enum.auto()
     )  # (= 1 << 22)  # FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs
 
@@ -4680,17 +4656,15 @@ class TabItemFlagsPrivate_(enum.Enum):
     """Extend ImGuiTabItemFlags_"""
 
     # ImGuiTabItemFlags_SectionMask_              = ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_Trailing,    /* original C++ signature */
-    tab_item_flags_section_mask_ = enum.auto()  # (= TabItemFlags_Leading | TabItemFlags_Trailing)
+    section_mask_ = enum.auto()  # (= TabItemFlags_Leading | TabItemFlags_Trailing)
     # ImGuiTabItemFlags_NoCloseButton             = 1 << 20,      /* original C++ signature */
-    tab_item_flags_no_close_button = (
+    no_close_button = (
         enum.auto()
     )  # (= 1 << 20)  # Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)
     # ImGuiTabItemFlags_Button                    = 1 << 21,      /* original C++ signature */
-    tab_item_flags_button = (
-        enum.auto()
-    )  # (= 1 << 21)  # Used by TabItemButton, change the tab item behavior to mimic a button
+    button = enum.auto()  # (= 1 << 21)  # Used by TabItemButton, change the tab item behavior to mimic a button
     # ImGuiTabItemFlags_Unsorted                  = 1 << 22,      /* original C++ signature */
-    tab_item_flags_unsorted = (
+    unsorted = (
         enum.auto()
     )  # (= 1 << 22)  # [Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.
 
