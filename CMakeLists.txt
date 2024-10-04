@@ -246,6 +246,12 @@ if(TARGET imgui_bundle)
     return()
 endif()
 
+# Disable system libraries for python bindings (only if not using vcpkg or conan)
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    ibd_disable_system_libraries_for_python()
+endif()
+
+
 # Reset installable dependencies at startup
 ibd_reset_installable_dependencies()
 
@@ -276,10 +282,11 @@ ibd_clean_bindings_imgui_bundle_before_pip_build()
 include(imgui_bundle_cmake/internal/litgen_setup_module.cmake)
 set(CMAKE_CXX_STANDARD 17)
 
-# if build python binding, add definitions and use SDL + GLFW
+# if build python binding, add preprocessor definitions
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
+    ibd_disable_system_libraries_for_python()
 endif()
 
 # IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE

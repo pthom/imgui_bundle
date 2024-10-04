@@ -34,6 +34,17 @@ function(ibd_force_freetype_static_for_python)
     endif()
 endfunction()
 
+# See https://github.com/pthom/imgui_bundle/issues/261 and https://chatgpt.com/share/66ffb718-6408-8004-be5b-9e74064a8709
+function(ibd_disable_system_libraries_for_python)
+    if(IMGUI_BUNDLE_BUILD_PYTHON AND
+       (NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg" AND NOT DEFINED CONAN_BUILD)  # Not using vcpkg or conan
+       )
+        message(STATUS "ibd_disable_system_libraries_for_python: Disabling system libraries for python bindings")
+        set(CMAKE_FIND_FRAMEWORK NEVER CACHE STRING "" FORCE)
+        set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY CACHE STRING "" FORCE)
+    endif()
+endfunction()
+
 # Check if freetype is available: ON by default, except on Android and MinGW
 # On MacOS, if building a distributable wheel with cibuilwheel for a version less than 14.0, we disable freetype
 function(ibd_check_freetype_availability result_var)
@@ -58,7 +69,7 @@ function(ibd_check_freetype_availability result_var)
         endif()
 
         if("$ENV{MACOSX_DEPLOYMENT_TARGET}" VERSION_LESS "14.0")
-            message(STATUS "MACOSX_DEPLOYMENT_TARGET is less than 14.0, freetype willbe disabled")
+            message(STATUS "MACOSX_DEPLOYMENT_TARGET is less than 14.0, freetype will be disabled")
             set(${result_var} OFF PARENT_SCOPE)
         else()
             set(${result_var} ON PARENT_SCOPE)
