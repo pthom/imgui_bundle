@@ -1,5 +1,3 @@
-import cv2  # type: ignore
-
 from imgui_bundle import immvision, immapp, imgui_md, ImVec2
 from imgui_bundle.demos_python import demo_utils
 
@@ -11,13 +9,12 @@ def demo_gui() -> None:
         statics.image_display_size = ImVec2(0, immapp.em_size(15))
 
         assets_dir = demo_utils.demos_assets_folder() + "/images/"
-        statics.bear = cv2.imread(
-            assets_dir + "bear_transparent.png", cv2.IMREAD_UNCHANGED
-        )
+
+        # Load images as numpy arrays
+        statics.bear = demo_utils.imread_pil(assets_dir + "bear_transparent.png", load_alpha=True)
+        statics.tennis = demo_utils.imread_pil(assets_dir + "tennis.jpg")
+
         statics.params = immvision.ImageParams()
-
-        statics.tennis = cv2.imread(assets_dir + "tennis.jpg")
-
         statics.inited = True
 
     imgui_md.render_unindented("immvision.image_display() will simply display an image")

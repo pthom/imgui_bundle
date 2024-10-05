@@ -2,14 +2,13 @@ import os.path
 
 from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
-import cv2  # type: ignore
 
 
 def fill_inspector():
     os.path.dirname(__file__)
     image_files = ["dmla.jpg", "house.jpg", "tennis.jpg", "world.png"]
     for image_file in image_files:
-        img = cv2.imread(f"{demo_utils.demos_assets_folder()}/images/{image_file}")
+        img = demo_utils.imread_pil(f"{demo_utils.demos_assets_folder()}/images/{image_file}")
         immvision.inspector_add_image(img, legend=image_file)
 
 

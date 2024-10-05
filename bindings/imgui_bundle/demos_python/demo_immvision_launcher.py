@@ -9,39 +9,13 @@ from imgui_bundle.demos_python import demo_utils  # noqa: E402
 HAS_OPENCV = importlib.util.find_spec("cv2") is not None
 
 
-if HAS_IMMVISION and HAS_OPENCV:
+if HAS_IMMVISION:
     from imgui_bundle.demos_python import demos_immvision
 
 
 def demo_gui():
     if not HAS_IMMVISION:
-        imgui.text(
-            "Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenCV)"
-        )
-        return
-    elif not HAS_OPENCV:
-        imgui_md.render_unindented(
-            """
-            ImGui Bundle's ImmVision demos require that one of the [opencv-python pip packages](https://github.com/opencv/opencv-python) is installed and imports successfully.
-
-            Please install *one* and _only one_ of the packages below (copy and paste the desired line into a terminal).
-
-            * To install OpenCv standard package:
-            ```bash
-            pip install opencv-python
-            ```
-
-            * To install OpenCv package with contrib modules
-            ```bash
-            pip install opencv-contrib-python
-            ```
-
-            To install OpenCv package headless (no cv.imshow, etc., for server installations)
-            ```bash
-            pip install opencv-python-headless
-            ```
-        """
-        )
+        imgui.text("Dear ImGui Bundle was compiled without support for ImmVision")
         return
 
     imgui_md.render_unindented(
@@ -65,11 +39,12 @@ def demo_gui():
     if imgui.collapsing_header("Image inspector"):
         demos_immvision.demo_immvision_inspector.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_inspector")
-    if imgui.collapsing_header("Example with image processing"):
-        demos_immvision.demo_immvision_process.demo_gui()
-        demo_utils.show_python_vs_cpp_file(
-            "demos_immvision/demo_immvision_process", nb_lines=40
-        )
+    if HAS_OPENCV:
+        if imgui.collapsing_header("Example with image processing"):
+            demos_immvision.demo_immvision_process.demo_gui()
+            demo_utils.show_python_vs_cpp_file(
+                "demos_immvision/demo_immvision_process", nb_lines=40
+            )
 
 
 def main():

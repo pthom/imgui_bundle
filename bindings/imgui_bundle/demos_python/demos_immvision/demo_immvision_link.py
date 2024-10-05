@@ -1,12 +1,14 @@
 import os.path
-import cv2  # type: ignore
+
+import numpy as np
+
 from imgui_bundle import immvision, immapp, imgui, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
 
 this_dir = os.path.dirname(__file__)
-image = cv2.imread(demo_utils.demos_assets_folder() + "/images/tennis.jpg")
-channels = cv2.split(image)
+image = demo_utils.imread_pil(demo_utils.demos_assets_folder() + "/images/tennis.jpg")
+channels = [np.ascontiguousarray(image[:, :, i]) for i in range(image.shape[2])]
 
 params_rgb = immvision.ImageParams()
 params_rgb.image_display_size = (300, 0)
