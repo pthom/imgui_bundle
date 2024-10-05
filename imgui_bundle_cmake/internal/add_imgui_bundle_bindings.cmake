@@ -83,8 +83,10 @@ function(add_imgui_bundle_bindings)
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 
     # Link with OpenGL (necessary for nanobind)
-    find_package(OpenGL REQUIRED)
-    target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+    if (NOT  EMSCRIPTEN)
+        find_package(OpenGL REQUIRED)
+        target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+    endif()
 
     # Disable optimizations on release build for msvc
     # (leads to compilation times of > 3 hours!!!)
