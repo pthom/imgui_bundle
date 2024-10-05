@@ -1251,6 +1251,24 @@ void py_init_module_hello_imgui(py::module& m)
         py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f,
         "Runs an application, by providing the Gui function, the window title, etc.");
 
+
+    auto pyClassRenderer =
+        py::class_<HelloImGui::Renderer>
+            (m, "Renderer", " HelloImGui::Renderer is an alternative to HelloImGui::Run, allowing fine-grained control over the rendering process.\n - It is customizable like HelloImGui::Run: construct it with `RunnerParams` or `SimpleRunnerParams`\n - `Render()` will render the application for one frame:\n   Ensure that `Render()` is triggered regularly (e.g., through a loop or other mechanism) to maintain responsiveness.\n   This method must be called on the main thread.\n\n A typical use case is:\n    ```cpp\n    HelloImGui::RunnerParams runnerParams;\n    runnerParams.callbacks.ShowGui = ...; // your GUI function\n  // Optionally, choose between Sleep, EarlyReturn, or Auto for fps idling mode:\n  // runnerParams.fpsIdling.fpsIdlingMode = HelloImGui::FpsIdlingMode::Sleep; // or EarlyReturn, Auto\n    Renderer renderer(runnerParams); // note: a distinct copy of the `RunnerParams` will be stored inside the HelloImGui::GetRunnerParams()\n    while (! HelloImGui::GetRunnerParams()->appShallExit)\n    {\n        renderer.Render();\n    }\n   ```\n\n **Notes:**\n  1. Depending on the configuration (`runnerParams.fpsIdling.fpsIdlingMode`), `HelloImGui` may enter an idle state to\n     reduce CPU usage, if no events are received (e.g., no input or interaction).\n     In this case, `Render()` will either sleep or return immediately.\n     By default,\n       - On Emscripten, `Render()` will return immediately to avoid blocking the main thread.\n       - On other platforms, it will sleep\n  2. Only one instance of `Renderer` can exist at a time.\n  3. If constructed with `RunnerParams`, a copy of the `RunnerParams` will be made (which you can access with `GetRunnerParams())`.")
+        .def(py::init<const HelloImGui::RunnerParams &>(),
+            py::arg("runner_params"),
+            " Initializes with the full customizable `RunnerParams` to set up the application.\n Nb: a distinct copy of the `RunnerParams` will be made, and you can access it with `GetRunnerParams()`.")
+        .def(py::init<const HelloImGui::SimpleRunnerParams &>(),
+            py::arg("simple_params"),
+            "Initializes with SimpleRunnerParams.")
+        .def(py::init<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float>(),
+            py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f,
+            "Initializes with a simple GUI function and additional parameters.")
+        .def("render",
+            &HelloImGui::Renderer::Render, "Render the current frame (or return immediately if in idle state).")
+        ;
+
+
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams,
         " `GetRunnerParams()`:  a convenience function that will return the runnerParams\n of the current application",
