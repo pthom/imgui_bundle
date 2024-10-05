@@ -23,7 +23,7 @@ function (add_hello_imgui)
     #    ii.  enable null backend
     #    iii. Build our own glfw as a shared library (see cmake/add_glfw.cmake)
     #         (the reason is that we need to deploy this library with the python bindings)
-    if (IMGUI_BUNDLE_BUILD_PYTHON)
+    if (IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
         #    i.   Use Opengl3 + glfw backend
         set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
         set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)

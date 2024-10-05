@@ -44,5 +44,9 @@ function(add_imgui_bundle_bindings)
         _target_set_rpath(${python_native_module_name} ".")
     endif()
 
+    if (IMGUI_BUNDLE_BUILD_PYODIDE)
+        ibd_pyodide_manually_link_sdl_to_bindings()
+    endif()
+
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 endfunction()
