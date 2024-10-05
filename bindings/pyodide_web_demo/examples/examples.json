@@ -1,0 +1,44 @@
+{
+    "examples": [
+      {
+        "label": "Hello World",
+        "filename": "hello_world.py"
+      },
+      {
+        "label": "A Plot with ImPlot / Drag Rect",
+        "filename": "plot_drag_rect.py"
+      },
+      {
+        "label": "A full demo of Dear ImGui Bundle",
+        "filename": "run_demo_imgui_bundle.py"
+      },
+      {
+        "label": "Animated plot",
+        "filename": "animated_plot.py"
+      },
+      {
+        "label": "Markdown demo",
+        "filename": "markdown_demo.py"
+      },
+      {
+        "label": "Docking demo",
+        "filename": "demo_docking.py"
+      },
+      {
+        "label": "Image processing",
+        "filename": "dem_immvision_process.py"
+      },
+      {
+        "label": "Fiatlight: Toon Edges",
+        "filename": "fl_demo_toon_edges.py"
+      },
+      {
+        "label": "Fiatlight: Word Count",
+        "filename": "fl_word_count.py"
+      },
+      {
+        "label": "Fiatlight: Draw Scatter",
+        "filename": "scatter_fiatlight.py"
+      }
+    ]
+  }

@@ -1,0 +1,46 @@
+# Define the remote folder and user/host as variables
+REMOTE_FOLDER := "/home/pascal/dvp/_Bundle/_Pyodide/pyodide"
+REMOTE_USER_HOST := "pascal@192.168.1.50"
+FIATLIGHT_FOLDER := "../../../fiatlight"
+PROBABL_FOLDER := "../../../fiatlight/_drafts/_probabl_drafts"
+
+default:
+  just --list
+
+
+fiatlight_wheel:
+    cd {{FIATLIGHT_FOLDER}} && python -m build --wheel
+
+scatter_wheel:
+    cd {{PROBABL_FOLDER}}/scatter && python -m build --wheel
+
+
+# Copy the dist folder from the remote machine
+copy_dist: fiatlight_wheel scatter_wheel
+    mkdir -p pyodide_dist
+    mkdir -p pyodide_dist
+    rsync -avz --delete {{REMOTE_USER_HOST}}:{{REMOTE_FOLDER}}/dist/ pyodide_dist/
+    cp {{FIATLIGHT_FOLDER}}/dist/*.whl pyodide_dist/
+    cp {{PROBABL_FOLDER}}/scatter/dist/*.whl pyodide_dist/
+
+
+# Build pyodide dist on a distant computer (this takes up to 15 minutes)
+build_dist:
+    echo "Building on remote machine"
+    echo "==================================="
+    echo "The link is very slow, this takes up to 15 minutes, be patient!"
+    echo ""
+    ssh {{REMOTE_USER_HOST}} \
+    " \
+    source ~/miniforge3/etc/profile.d/conda.sh && \
+    cd {{REMOTE_FOLDER}} && \
+    conda activate pyodide-env && \
+    just pascal-bundle \
+    "
+
+# Run the a webserver on port 8005
+srv:
+    python3 -m http.server 8005
+
+rsync_tq:
+    rsync -avz --delete . pascal@traineq.org:HTML/probabl/
