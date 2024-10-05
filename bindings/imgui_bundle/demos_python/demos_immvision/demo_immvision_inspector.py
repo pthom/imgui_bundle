@@ -3,6 +3,7 @@ import os.path
 from imgui_bundle import immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
+immvision.use_rgb_color_order()
 
 def fill_inspector():
     os.path.dirname(__file__)

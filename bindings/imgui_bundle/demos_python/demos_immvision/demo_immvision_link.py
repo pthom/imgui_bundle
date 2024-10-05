@@ -5,6 +5,7 @@ import numpy as np
 from imgui_bundle import immvision, immapp, imgui, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
+immvision.use_rgb_color_order()
 
 this_dir = os.path.dirname(__file__)
 image = demo_utils.imread_pil(demo_utils.demos_assets_folder() + "/images/tennis.jpg")

@@ -10,6 +10,7 @@ import math
 from imgui_bundle import imgui, immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
+immvision.use_rgb_color_order()
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -108,7 +109,7 @@ class AppState:
     immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
-        self.image = cv2.imread(image_file)
+        self.image = demo_utils.imread_pil(image_file)
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 

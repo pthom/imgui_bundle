@@ -22,6 +22,7 @@ void demo_immvision_inspector()
     static bool inited = false;
     if (!inited)
     {
+        ImmVision::UseBgrColorOrder();
         FillInspector();
         inited = true;
     }

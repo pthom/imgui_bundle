@@ -114,6 +114,7 @@ struct AppStateProcess {
     ImmVision::ImageParams immvisionParamsSobel;
 
     AppStateProcess(const std::string& image_file) {
+        ImmVision::UseBgrColorOrder();
         image = cv::imread(image_file);
         sobelParams = SobelParams();
         imageSobel = ComputeSobel(image, sobelParams);

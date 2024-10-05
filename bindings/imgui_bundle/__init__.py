@@ -1,5 +1,4 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#from imgui_bundle._imgui_bundle import hhh as hhh  # type: ignore
 import os
 from imgui_bundle._imgui_bundle import __bundle_submodules__ # type: ignore
 from imgui_bundle._imgui_bundle import __version__, compilation_time

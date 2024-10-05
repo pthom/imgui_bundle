@@ -38,7 +38,7 @@ ImTextureID: TypeAlias = int
 # IMMVISION_API is a marker for public API functions. IMMVISION_STRUCT_API is a marker for public API structs (in comment lines)
 # Usage of ImmVision as a shared library is not recommended. No guaranty of ABI stability is provided
 
-class ColorMapStatsTypeId(enum.Enum):  # immvision.h:27
+class ColorMapStatsTypeId(enum.Enum):
     """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
 
     # FromFullImage,    /* original C++ signature */
@@ -47,7 +47,22 @@ class ColorMapStatsTypeId(enum.Enum):  # immvision.h:27
     #     }
     from_visible_roi = enum.auto()  # (= 1)
 
-class ColormapScaleFromStatsData:  # immvision.h:34
+# Set the color order for displayed images.
+# You **must** call once at the start of your program:
+#     ImmVision::UseRgbColorOrder() or ImmVision::UseBgrColorOrder() (C++)
+#     immvision.use_rgb_color_order() or immvision.use_bgr_color_order() (Python)
+# (Breaking change - October 2024)
+# void UseRgbColorOrder();    /* original C++ signature */
+def use_rgb_color_order() -> None:
+    """(private API)"""
+    pass
+
+# void UseBgrColorOrder();    /* original C++ signature */
+def use_bgr_color_order() -> None:
+    """(private API)"""
+    pass
+
+class ColormapScaleFromStatsData:
     """Scale the Colormap according to the Image  stats
 
     IMMVISION_API_STRUCT
@@ -55,22 +70,20 @@ class ColormapScaleFromStatsData:  # immvision.h:34
 
     # ColorMapStatsTypeId ColorMapStatsType = ColorMapStatsTypeId::FromFullImage;    /* original C++ signature */
     # Are we using the stats on the full image, the visible ROI, or are we using Min/Max values
-    color_map_stats_type: ColorMapStatsTypeId = (
-        ColorMapStatsTypeId.from_full_image
-    )  # immvision.h:37
+    color_map_stats_type: ColorMapStatsTypeId = ColorMapStatsTypeId.from_full_image
 
     # double NbSigmas = 1.5;    /* original C++ signature */
     # If stats active (either on ROI or on Image), how many sigmas around the mean should the Colormap be applied
-    nb_sigmas: float = 1.5  # immvision.h:40
+    nb_sigmas: float = 1.5
 
     # bool UseStatsMin = false;    /* original C++ signature */
     # If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMin will be calculated from the matrix min value instead of a sigma based value
-    use_stats_min: bool = False  # immvision.h:43
+    use_stats_min: bool = False
     # bool UseStatsMax = false;    /* original C++ signature */
     # If ColorMapScaleType==ColorMapStatsType::FromMinMax, then ColormapScaleMax will be calculated from the matrix min value instead of a sigma based value
-    use_stats_max: bool = False  # immvision.h:45
+    use_stats_max: bool = False
     # ColormapScaleFromStatsData(ColorMapStatsTypeId ColorMapStatsType = ColorMapStatsTypeId::FromFullImage, double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false);    /* original C++ signature */
-    def __init__(  # Line:4
+    def __init__(
         self,
         color_map_stats_type: ColorMapStatsTypeId = ColorMapStatsTypeId.from_full_image,
         nb_sigmas: float = 1.5,
@@ -80,7 +93,7 @@ class ColormapScaleFromStatsData:  # immvision.h:34
         """Auto-generated default constructor with named params"""
         pass
 
-class ColormapSettingsData:  # immvision.h:50
+class ColormapSettingsData:
     """Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)
 
     IMMVISION_API_STRUCT
@@ -89,7 +102,7 @@ class ColormapSettingsData:  # immvision.h:50
     # std::string Colormap = "None";    /* original C++ signature */
     # Colormap, see available Colormaps with AvailableColormaps()
     # Work only with 1 channel matrices, i.e len(shape)==2
-    colormap: str = "None"  # immvision.h:54
+    colormap: str = "None"
 
     # ColormapScaleMin and ColormapScaleMax indicate how the Colormap is applied:
     #     - Values in [ColormapScaleMin, ColomapScaleMax] will use the full colormap.
@@ -97,23 +110,21 @@ class ColormapSettingsData:  # immvision.h:50
     # by default, the initial values are ignored, and they will be updated automatically
     # via the options in ColormapScaleFromStats
     # double ColormapScaleMin = 0.;    /* original C++ signature */
-    colormap_scale_min: float = 0.0  # immvision.h:61
+    colormap_scale_min: float = 0.0
     # double ColormapScaleMax = 1.;    /* original C++ signature */
-    colormap_scale_max: float = 1.0  # immvision.h:62
+    colormap_scale_max: float = 1.0
 
     # ColormapScaleFromStatsData ColormapScaleFromStats = ColormapScaleFromStatsData();    /* original C++ signature */
     # If ColormapScaleFromStats.ActiveOnFullImage or ColormapScaleFromStats.ActiveOnROI,
     # then ColormapScaleMin/Max are ignored, and the scaling is done according to the image stats.
     # ColormapScaleFromStats.ActiveOnFullImage is True by default
-    colormap_scale_from_stats: ColormapScaleFromStatsData = (
-        ColormapScaleFromStatsData()
-    )  # immvision.h:67
+    colormap_scale_from_stats: ColormapScaleFromStatsData = ColormapScaleFromStatsData()
 
     # std::string internal_ColormapHovered = "";    /* original C++ signature */
     # Internal value: stores the name of the Colormap that is hovered by the mouse
-    internal_colormap_hovered: str = ""  # immvision.h:71
+    internal_colormap_hovered: str = ""
     # ColormapSettingsData(std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., ColormapScaleFromStatsData ColormapScaleFromStats = ColormapScaleFromStatsData(), std::string internal_ColormapHovered = "");    /* original C++ signature */
-    def __init__(  # Line:4
+    def __init__(
         self,
         colormap: str = "None",
         colormap_scale_min: float = 0.0,
@@ -124,7 +135,7 @@ class ColormapSettingsData:  # immvision.h:50
         """Auto-generated default constructor with named params"""
         pass
 
-class MouseInformation:  # immvision.h:76
+class MouseInformation:
     """Contains information about the mouse inside an image
 
     IMMVISION_API_STRUCT
@@ -132,23 +143,23 @@ class MouseInformation:  # immvision.h:76
 
     # bool IsMouseHovering = false;    /* original C++ signature */
     # Is the mouse hovering the image
-    is_mouse_hovering: bool = False  # immvision.h:79
+    is_mouse_hovering: bool = False
 
     # cv::Point2d MousePosition = cv::Point2d(-1., -1.);    /* original C++ signature */
     # Mouse position in the original image/matrix
     # This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image
-    mouse_position: Point2d = (-1.0, -1.0)  # immvision.h:83
+    mouse_position: Point2d = (-1.0, -1.0)
     # cv::Point MousePosition_Displayed = cv::Point(-1, -1);    /* original C++ signature */
     # Mouse position in the displayed portion of the image (the original image can be zoomed,
     # and only show a subset if it may be shown).
     # This position is given with integer coordinates, and will be (-1, -1) if the mouse is not hovering the image
-    mouse_position_displayed: Point = (-1, -1)  # immvision.h:87
+    mouse_position_displayed: Point = (-1, -1)
 
     #
     # Note: you can query ImGui::IsMouseDown(mouse_button) (c++) or imgui.is_mouse_down(mouse_button) (Python)
     #
     # MouseInformation(bool IsMouseHovering = false, cv::Point2d MousePosition = cv::Point2d(-1., -1.), cv::Point MousePosition_Displayed = cv::Point(-1, -1));    /* original C++ signature */
-    def __init__(  # Line:4
+    def __init__(
         self,
         is_mouse_hovering: bool = False,
         mouse_position: Point2d = (-1.0, -1.0),
@@ -157,7 +168,7 @@ class MouseInformation:  # immvision.h:76
         """Auto-generated default constructor with named params"""
         pass
 
-class ImageParams:  # immvision.h:96
+class ImageParams:
     """Set of display parameters and options for an Image
 
     IMMVISION_API_STRUCT
@@ -177,7 +188,7 @@ class ImageParams:  # immvision.h:96
     # bool RefreshImage = false;    /* original C++ signature */
     # Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed
     # (for example, for live video images)
-    refresh_image: bool = False  # immvision.h:111
+    refresh_image: bool = False
 
     #
     # Display size and title
@@ -187,7 +198,7 @@ class ImageParams:  # immvision.h:96
     # Size of the displayed image (can be different from the matrix size)
     # If you specify only the width or height (e.g (300, 0), then the other dimension
     # will be calculated automatically, respecting the original image w/h ratio.
-    image_display_size: Size = (0, 0)  # immvision.h:120
+    image_display_size: Size = (0, 0)
 
     #
     # Zoom and Pan (represented by an affine transform matrix, of size 3x3)
@@ -195,100 +206,96 @@ class ImageParams:  # immvision.h:96
 
     # cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye();    /* original C++ signature */
     # ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point
-    zoom_pan_matrix: Matx33d = np.eye(3)  # immvision.h:127
+    zoom_pan_matrix: Matx33d = np.eye(3)
     # std::string ZoomKey = "";    /* original C++ signature */
     # If displaying several images, those with the same ZoomKey will zoom and pan together
-    zoom_key: str = ""  # immvision.h:129
+    zoom_key: str = ""
 
     # ColormapSettingsData ColormapSettings = ColormapSettingsData();    /* original C++ signature */
     #
     # Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)
     #
     # ColormapSettings stores all the parameter concerning the Colormap
-    colormap_settings: ColormapSettingsData = ColormapSettingsData()  # immvision.h:135
+    colormap_settings: ColormapSettingsData = ColormapSettingsData()
     # std::string ColormapKey = "";    /* original C++ signature */
     # If displaying several images, those with the same ColormapKey will adjust together
-    colormap_key: str = ""  # immvision.h:137
+    colormap_key: str = ""
 
     #
     # Zoom and pan with the mouse
     #
     # bool PanWithMouse = true;    /* original C++ signature */
-    pan_with_mouse: bool = True  # immvision.h:142
+    pan_with_mouse: bool = True
     # bool ZoomWithMouseWheel = true;    /* original C++ signature */
-    zoom_with_mouse_wheel: bool = True  # immvision.h:143
+    zoom_with_mouse_wheel: bool = True
 
     # bool CanResize = true;    /* original C++ signature */
     # Can the image widget be resized by the user
-    can_resize: bool = True  # immvision.h:146
+    can_resize: bool = True
     # bool ResizeKeepAspectRatio = true;    /* original C++ signature */
     # Does the widget keep an aspect ratio equal to the image when resized
-    resize_keep_aspect_ratio: bool = True  # immvision.h:148
-
-    # bool IsColorOrderBGR = true;    /* original C++ signature */
-    # Color Order: RGB or RGBA versus BGR or BGRA (Note: by default OpenCV uses BGR and BGRA)
-    is_color_order_bgr: bool = True  # immvision.h:151
+    resize_keep_aspect_ratio: bool = True
 
     # int  SelectedChannel = -1;    /* original C++ signature */
     #
     # Image display options
     #
     # if SelectedChannel >= 0 then only this channel is displayed
-    selected_channel: int = -1  # immvision.h:157
+    selected_channel: int = -1
     # bool ShowSchoolPaperBackground = true;    /* original C++ signature */
     # Show a "school paper" background grid
-    show_school_paper_background: bool = True  # immvision.h:159
+    show_school_paper_background: bool = True
     # bool ShowAlphaChannelCheckerboard = true;    /* original C++ signature */
     # show a checkerboard behind transparent portions of 4 channels RGBA images
-    show_alpha_channel_checkerboard: bool = True  # immvision.h:161
+    show_alpha_channel_checkerboard: bool = True
     # bool ShowGrid = true;    /* original C++ signature */
     # Grid displayed when the zoom is high
-    show_grid: bool = True  # immvision.h:163
+    show_grid: bool = True
     # bool DrawValuesOnZoomedPixels = true;    /* original C++ signature */
     # Pixel values show when the zoom is high
-    draw_values_on_zoomed_pixels: bool = True  # immvision.h:165
+    draw_values_on_zoomed_pixels: bool = True
 
     # bool ShowImageInfo = true;    /* original C++ signature */
     #
     # Image display options
     #
     # Show matrix type and size
-    show_image_info: bool = True  # immvision.h:171
+    show_image_info: bool = True
     # bool ShowPixelInfo = true;    /* original C++ signature */
     # Show pixel values
-    show_pixel_info: bool = True  # immvision.h:173
+    show_pixel_info: bool = True
     # bool ShowZoomButtons = true;    /* original C++ signature */
     # Show buttons that enable to zoom in/out (the mouse wheel also zoom)
-    show_zoom_buttons: bool = True  # immvision.h:175
+    show_zoom_buttons: bool = True
     # bool ShowOptionsPanel = false;    /* original C++ signature */
     # Open the options panel
-    show_options_panel: bool = False  # immvision.h:177
+    show_options_panel: bool = False
     # bool ShowOptionsInTooltip = false;    /* original C++ signature */
     # If set to True, then the option panel will be displayed in a transient tooltip window
-    show_options_in_tooltip: bool = False  # immvision.h:179
+    show_options_in_tooltip: bool = False
     # bool ShowOptionsButton = true;    /* original C++ signature */
     # If set to False, then the Options button will not be displayed
-    show_options_button: bool = True  # immvision.h:181
+    show_options_button: bool = True
 
     # std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>();    /* original C++ signature */
     #
     # Watched Pixels
     #
     # List of Watched Pixel coordinates
-    watched_pixels: List[Point] = List[Point]()  # immvision.h:187
+    watched_pixels: List[Point] = List[Point]()
     # bool AddWatchedPixelOnDoubleClick = true;    /* original C++ signature */
     # Shall we add a watched pixel on double click
-    add_watched_pixel_on_double_click: bool = True  # immvision.h:189
+    add_watched_pixel_on_double_click: bool = True
     # bool HighlightWatchedPixels = true;    /* original C++ signature */
     # Shall the watched pixels be drawn on the image
-    highlight_watched_pixels: bool = True  # immvision.h:191
+    highlight_watched_pixels: bool = True
 
     # MouseInformation MouseInfo = MouseInformation();    /* original C++ signature */
     # Mouse position information. These values are filled after displaying an image
-    mouse_info: MouseInformation = MouseInformation()  # immvision.h:194
+    mouse_info: MouseInformation = MouseInformation()
 
-    # ImageParams(bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, bool IsColorOrderBGR = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
-    def __init__(  # Line:4
+    # ImageParams(bool RefreshImage = false, cv::Size ImageDisplaySize = cv::Size(), cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye(), std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<cv::Point> WatchedPixels = std::vector<cv::Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
+    def __init__(
         self,
         refresh_image: bool = False,
         image_display_size: Size = (0, 0),
@@ -300,7 +307,6 @@ class ImageParams:  # immvision.h:96
         zoom_with_mouse_wheel: bool = True,
         can_resize: bool = True,
         resize_keep_aspect_ratio: bool = True,
-        is_color_order_bgr: bool = True,
         selected_channel: int = -1,
         show_school_paper_background: bool = True,
         show_alpha_channel_checkerboard: bool = True,
@@ -323,24 +329,22 @@ class ImageParams:  # immvision.h:96
 # #ifdef IMMVISION_SERIALIZE_JSON
 #
 # IMMVISION_API std::string ImageParamsToJson(const ImageParams& params);    /* original C++ signature */
-def image_params_to_json(params: ImageParams) -> str:  # immvision.h:200
+def image_params_to_json(params: ImageParams) -> str:
     pass
 
 # IMMVISION_API void FillImageParamsFromJson(const std::string& json, ImageParams* params);    /* original C++ signature */
-def fill_image_params_from_json(
-    json: str, params: ImageParams
-) -> None:  # immvision.h:201
+def fill_image_params_from_json(json: str, params: ImageParams) -> None:
     pass
 
 # IMMVISION_API ImageParams ImageParamsFromJson(const std::string& json);    /* original C++ signature */
-def image_params_from_json(json: str) -> ImageParams:  # immvision.h:202
+def image_params_from_json(json: str) -> ImageParams:
     pass
 
 # #endif
 #
 
 # IMMVISION_API ImageParams FactorImageParamsDisplayOnly();    /* original C++ signature */
-def factor_image_params_display_only() -> ImageParams:  # immvision.h:206
+def factor_image_params_display_only() -> ImageParams:
     """Create ImageParams that display the image only, with no decoration, and no user interaction"""
     pass
 
@@ -349,7 +353,7 @@ def factor_image_params_display_only() -> ImageParams:  # immvision.h:206
 #                         double zoomRatio,
 #                         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix(  # immvision.h:210
+def make_zoom_pan_matrix(
     zoom_center: Point2d, zoom_ratio: float, displayed_image_size: Size
 ) -> Matx33d:
     """Create a zoom/pan matrix centered around a given point of interest"""
@@ -359,7 +363,7 @@ def make_zoom_pan_matrix(  # immvision.h:210
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_scale_one(  # immvision.h:216
+def make_zoom_pan_matrix_scale_one(
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
@@ -368,13 +372,13 @@ def make_zoom_pan_matrix_scale_one(  # immvision.h:216
 #         cv::Size imageSize,
 #         const cv::Size displayedImageSize
 #     );
-def make_zoom_pan_matrix_full_view(  # immvision.h:221
+def make_zoom_pan_matrix_full_view(
     image_size: Size, displayed_image_size: Size
 ) -> Matx33d:
     pass
 
 # IMMVISION_API void Image(const std::string& label, const cv::Mat& mat, ImageParams* params);    /* original C++ signature */
-def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:261
+def image(label: str, mat: Mat, params: ImageParams) -> None:
     """Display an image, with full user control: zoom, pan, watch pixels, etc.
 
     :param label
@@ -417,61 +421,60 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:  # immvision.h:261
 #         const cv::Mat& mat,
 #         const cv::Size& imageDisplaySize = cv::Size(),
 #         bool refreshImage = false,
-#         bool showOptionsButton = false,
-#         bool isBgrOrBgra = true
+#         bool showOptionsButton = false
 #         );
-def image_display(  # immvision.h:309
+def image_display(
     label_id: str,
     mat: Mat,
     image_display_size: Size = (0, 0),
     refresh_image: bool = False,
     show_options_button: bool = False,
-    is_bgr_or_bgra: bool = True,
 ) -> Point2d:
     """ImageDisplay: Only, display the image, with no user interaction (by default)
 
-    Parameters:
-    :param label_id
-        A legend that will be displayed.
-        Important notes:
-            - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.
-              Two widgets (for example) two images *cannot* have the same label or the same id!
-              If they do, they might not refresh correctly!
-              To circumvent this, you can modify your label like this:
-                 "MyLabel##some_unique_id"    (the part after "##" will not be displayed but will be part of the id)
-           - To display an empty legend, use "##_some_unique_id"
-           - if your legend is displayed (i.e. it does not start with "##"),
-             then the total size of the widget will be larger than the imageDisplaySize.
+     Parameters:
+     :param label_id
+         A legend that will be displayed.
+         Important notes:
+             - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.
+               Two widgets (for example) two images *cannot* have the same label or the same id!
+               If they do, they might not refresh correctly!
+               To circumvent this, you can modify your label like this:
+                  "MyLabel##some_unique_id"    (the part after "##" will not be displayed but will be part of the id)
+            - To display an empty legend, use "##_some_unique_id"
+            - if your legend is displayed (i.e. it does not start with "##"),
+              then the total size of the widget will be larger than the imageDisplaySize.
 
-    :param mat:
-        An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.
+     :param mat:
+         An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.
 
-    :param imageDisplaySize:
-        Size of the displayed image (can be different from the mat size)
-        If you specify only the width or height (e.g (300, 0), then the other dimension
-        will be calculated automatically, respecting the original image w/h ratio.
+     :param imageDisplaySize:
+         Size of the displayed image (can be different from the mat size)
+         If you specify only the width or height (e.g (300, 0), then the other dimension
+         will be calculated automatically, respecting the original image w/h ratio.
 
-    :param refreshImage:
-        images textures are cached. Set to True if your image matrix/buffer has changed
-        (for example, for live video images)
+     :param refreshImage:
+         images textures are cached. Set to True if your image matrix/buffer has changed
+         (for example, for live video images)
 
-    :param showOptionsButton:
-        If True, show an option button that opens the option panel.
-        In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.
+     :param showOptionsButton:
+         If True, show an option button that opens the option panel.
+         In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.
 
-    :param isBgrOrBgra:
-        set to True if the color order of the image is BGR or BGRA (as in OpenCV, by default)
+     :param isBgrOrBgra:
+         set to True if the color order of the image is BGR or BGRA (as in OpenCV)
+    .    Breaking change, oct 2024: the default is BGR for C++, RGB for Python!
 
-    :return:
-         The mouse position in `mat` original image coordinates, as double values.
-         (i.e. it does not matter if imageDisplaySize is different from mat.size())
-         It will return (-1., -1.) if the mouse is not hovering the image.
+     :return:
+          The mouse position in `mat` original image coordinates, as double values.
+          (i.e. it does not matter if imageDisplaySize is different from mat.size())
+          It will return (-1., -1.) if the mouse is not hovering the image.
 
-         Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)
-               to query more information about the mouse.
+          Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)
+                to query more information about the mouse.
 
-    Note: this function requires that both imgui and OpenGL were initialized.
-          (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
+     Note: this function requires that both imgui and OpenGL were initialized.
+           (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
 
     """
     pass
@@ -482,17 +485,15 @@ def image_display(  # immvision.h:309
 #         ImVec2* size = nullptr,
 #         bool refreshImage = false,
 #         bool resizable = true,
-#         bool showOptionsButton = false,
-#         bool isBgrOrBgra = true
+#         bool showOptionsButton = false
 #     );
-def image_display_resizable(  # immvision.h:321
+def image_display_resizable(
     label_id: str,
     mat: Mat,
     size: Optional[ImVec2] = None,
     refresh_image: bool = False,
     resizable: bool = True,
     show_options_button: bool = False,
-    is_bgr_or_bgra: bool = True,
 ) -> Point2d:
     """ImageDisplayResizable: display the image, with no user interaction (by default)
     The image can be resized by the user (and the new size will be stored in the size parameter, if provided)
@@ -501,14 +502,14 @@ def image_display_resizable(  # immvision.h:321
     pass
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
-def available_colormaps() -> List[str]:  # immvision.h:334
+def available_colormaps() -> List[str]:
     """Return the list of the available color maps
     Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama
     """
     pass
 
 # IMMVISION_API void ClearTextureCache();    /* original C++ signature */
-def clear_texture_cache() -> None:  # immvision.h:341
+def clear_texture_cache() -> None:
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
@@ -517,7 +518,7 @@ def clear_texture_cache() -> None:  # immvision.h:341
     pass
 
 # IMMVISION_API cv::Mat GetCachedRgbaImage(const std::string& label);    /* original C++ signature */
-def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:346
+def get_cached_rgba_image(label: str) -> cv.Mat:
     """Returns the RGBA image currently displayed by ImmVision::Image or ImmVision::ImageDisplay
     Note: this image must be currently displayed. This function will return the transformed image
     (i.e with ColorMap, Zoom, etc.)
@@ -525,7 +526,7 @@ def get_cached_rgba_image(label: str) -> cv.Mat:  # immvision.h:346
     pass
 
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
-def version_info() -> str:  # immvision.h:349
+def version_info() -> str:
     """Return immvision version info"""
     pass
 
@@ -548,26 +549,24 @@ def version_info() -> str:  # immvision.h:349
 #         const std::string& zoomKey = "",
 #         const std::string& colormapKey = "",
 #         const cv::Point2d & zoomCenter = cv::Point2d(),
-#         double zoomRatio = -1.,
-#         bool isColorOrderBGR = true
+#         double zoomRatio = -1.
 #     );
-def inspector_add_image(  # immvision.h:370
+def inspector_add_image(
     image: Mat,
     legend: str,
     zoom_key: str = "",
     colormap_key: str = "",
     zoom_center: Point2d = (0, 0),
     zoom_ratio: float = -1.0,
-    is_color_order_bgr: bool = True,
 ) -> None:
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */
-def inspector_show() -> None:  # immvision.h:380
+def inspector_show() -> None:
     pass
 
 # IMMVISION_API void Inspector_ClearImages();    /* original C++ signature */
-def inspector_clear_images() -> None:  # immvision.h:382
+def inspector_clear_images() -> None:
     pass
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -578,7 +577,7 @@ def inspector_clear_images() -> None:  # immvision.h:382
 #                       src/immvision/gl_texture.h included by src/immvision/immvision.h                       //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class GlTexture:  # immvision.h:397
+class GlTexture:
     """GlTexture contains an OpenGL texture which can be created or updated from a cv::Mat (C++), or numpy array (Python)"""
 
     #
@@ -587,12 +586,12 @@ class GlTexture:  # immvision.h:397
 
     # GlTexture();    /* original C++ signature */
     @overload
-    def __init__(self) -> None:  # immvision.h:404
+    def __init__(self) -> None:
         """Create an empty texture"""
         pass
     # GlTexture(const cv::Mat& image, bool isColorOrderBGR);    /* original C++ signature */
     @overload
-    def __init__(self, image: Mat, is_color_order_bgr: bool) -> None:  # immvision.h:406
+    def __init__(self, image: Mat, is_color_order_bgr: bool) -> None:
         """Create a texture from an image (cv::Mat in C++, numpy array in Python)"""
         pass
     #
@@ -600,15 +599,13 @@ class GlTexture:  # immvision.h:397
     #
 
     # void UpdateFromImage(const cv::Mat& image, bool isColorOrderBGR);    /* original C++ signature */
-    def update_from_image(
-        self, image: Mat, is_color_order_bgr: bool
-    ) -> None:  # immvision.h:423
+    def update_from_image(self, image: Mat, is_color_order_bgr: bool) -> None:
         """Update the texture from a new image (cv::Mat in C++, numpy array in Python).
         (private API)
         """
         pass
     # ImVec2 SizeImVec2() const;    /* original C++ signature */
-    def size_im_vec2(self) -> ImVec2:  # immvision.h:425
+    def size_im_vec2(self) -> ImVec2:
         """Returns the size as ImVec2
         (private API)
         """
@@ -619,10 +616,10 @@ class GlTexture:  # immvision.h:397
 
     # ImTextureID TextureId;    /* original C++ signature */
     # OpenGL texture ID on the GPU
-    texture_id: ImTextureID  # immvision.h:433
+    texture_id: ImTextureID
     # cv::Size Size;    /* original C++ signature */
     # Image size in pixels
-    size: Size  # immvision.h:435
+    size: Size
 
 ####################    </generated_from:immvision.h>    ####################
 
@@ -633,7 +630,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace CvDrawingUtils"""
 
-    class Colors(enum.Enum):  # cv_drawing_utils.h:9
+    class Colors(enum.Enum):
         # Black,    /* original C++ signature */
         black = enum.auto()  # (= 0)
         # Red,    /* original C++ signature */
@@ -656,61 +653,61 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
 
     # cv::Scalar ColorsToScalar(Colors value);    /* original C++ signature */
     @staticmethod
-    def colors_to_scalar(value: Colors) -> Scalar:  # cv_drawing_utils.h:22
+    def colors_to_scalar(value: Colors) -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Black()    /* original C++ signature */
     #         { return {0, 0, 0, 255}; }
     @staticmethod
-    def black() -> Scalar:  # cv_drawing_utils.h:24
+    def black() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Red()    /* original C++ signature */
     #         { return {0, 0, 255, 255}; }
     @staticmethod
-    def red() -> Scalar:  # cv_drawing_utils.h:27
+    def red() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Green()    /* original C++ signature */
     #         { return {0, 255, 0, 255}; }
     @staticmethod
-    def green() -> Scalar:  # cv_drawing_utils.h:30
+    def green() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Blue()    /* original C++ signature */
     #         { return {255, 0, 0, 255}; }
     @staticmethod
-    def blue() -> Scalar:  # cv_drawing_utils.h:33
+    def blue() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar White()    /* original C++ signature */
     #         { return {255, 255, 255, 255}; }
     @staticmethod
-    def white() -> Scalar:  # cv_drawing_utils.h:36
+    def white() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Yellow()    /* original C++ signature */
     #         { return {0, 255, 255, 255}; }
     @staticmethod
-    def yellow() -> Scalar:  # cv_drawing_utils.h:39
+    def yellow() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Cyan()    /* original C++ signature */
     #         { return {255, 255, 0, 255}; }
     @staticmethod
-    def cyan() -> Scalar:  # cv_drawing_utils.h:42
+    def cyan() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Violet()    /* original C++ signature */
     #         { return {200, 50, 200, 255}; }
     @staticmethod
-    def violet() -> Scalar:  # cv_drawing_utils.h:45
+    def violet() -> Scalar:
         """(private API)"""
         pass
     # inline cv::Scalar Orange()    /* original C++ signature */
     #         { return {255, 128, 0, 255}; }
     @staticmethod
-    def orange() -> Scalar:  # cv_drawing_utils.h:48
+    def orange() -> Scalar:
         """(private API)"""
         pass
     # void line(cv::Mat &image,    /* original C++ signature */
@@ -719,7 +716,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                   cv::Scalar color,
     #                   int thickness = 1);
     @staticmethod
-    def line(  # cv_drawing_utils.h:52
+    def line(
         image: Mat, a: Point2d, b: Point2d, color: Scalar, thickness: int = 1
     ) -> None:
         """(private API)"""
@@ -733,7 +730,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                      double end_angle = 360.,
     #                      int thickness = 1);
     @staticmethod
-    def ellipse(  # cv_drawing_utils.h:58
+    def ellipse(
         image: Mat,
         center: Point2d,
         size: Size2d,
@@ -751,7 +748,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                     cv::Scalar color,
     #                     int thickness = 1);
     @staticmethod
-    def circle(  # cv_drawing_utils.h:67
+    def circle(
         image: Mat, center: Point2d, radius: float, color: Scalar, thickness: int = 1
     ) -> None:
         """(private API)"""
@@ -763,7 +760,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                        bool fill = false,
     #                        int thickness = 1);
     @staticmethod
-    def rectangle(  # cv_drawing_utils.h:73
+    def rectangle(
         image: Mat,
         pt1: Point2d,
         pt2: Point2d,
@@ -780,7 +777,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                             bool fill = false,
     #                             int thickness = 1);
     @staticmethod
-    def rectangle_size(  # cv_drawing_utils.h:81
+    def rectangle_size(
         img: Mat,
         pt: Point2d,
         size: Size2d,
@@ -799,7 +796,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                   double fontScale = 0.4,
     #                   int thickness = 1);
     @staticmethod
-    def text(  # cv_drawing_utils.h:88
+    def text(
         img: Mat,
         position: Point2d,
         msg: str,
@@ -818,7 +815,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                         double size_hole = 2.,
     #                         int thickness = 1);
     @staticmethod
-    def cross_hole(  # cv_drawing_utils.h:97
+    def cross_hole(
         img: Mat,
         position: Point2d,
         color: Scalar,
@@ -838,7 +835,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                                 int thickness = 1,
     #                                 double font_scale = 0.4);
     @staticmethod
-    def draw_named_feature(  # cv_drawing_utils.h:104
+    def draw_named_feature(
         img: Mat,
         position: Point2d,
         name: str,
@@ -858,7 +855,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #             double alpha
     #         );
     @staticmethod
-    def draw_transparent_pixel(  # cv_drawing_utils.h:114
+    def draw_transparent_pixel(
         img_rgba: Mat, position: Point2d, color: Scalar, alpha: float
     ) -> None:
         """(private API)"""
@@ -872,7 +869,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #             double x_end, double y_end
     #         );
     @staticmethod
-    def draw_grid(  # cv_drawing_utils.h:121
+    def draw_grid(
         img_rgba: Mat,
         line_color: Scalar,
         alpha: float,
@@ -887,21 +884,17 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
         pass
     # cv::Mat stack_images_vertically(const cv::Mat &img1, const cv::Mat &img2);    /* original C++ signature */
     @staticmethod
-    def stack_images_vertically(
-        img1: Mat, img2: Mat
-    ) -> cv.Mat:  # cv_drawing_utils.h:130
+    def stack_images_vertically(img1: Mat, img2: Mat) -> cv.Mat:
         """(private API)"""
         pass
     # cv::Mat stack_images_horizontally(const cv::Mat &img1, const cv::Mat &img2);    /* original C++ signature */
     @staticmethod
-    def stack_images_horizontally(
-        img1: Mat, img2: Mat
-    ) -> cv.Mat:  # cv_drawing_utils.h:131
+    def stack_images_horizontally(img1: Mat, img2: Mat) -> cv.Mat:
         """(private API)"""
         pass
     # cv::Mat make_alpha_channel_checkerboard_image(const cv::Size& size, int squareSize = 30);    /* original C++ signature */
     @staticmethod
-    def make_alpha_channel_checkerboard_image(  # cv_drawing_utils.h:133
+    def make_alpha_channel_checkerboard_image(
         size: Size, square_size: int = 30
     ) -> cv.Mat:
         """(private API)"""
@@ -910,16 +903,14 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     #                                               const Image_RGBA &overlay_rgba,
     #                                               double alpha);
     @staticmethod
-    def overlay_alpha_image_precise(  # cv_drawing_utils.h:138
+    def overlay_alpha_image_precise(
         background_rgb_or_rgba: Mat, overlay_rgba: Image_RGBA, alpha: float
     ) -> Image_RGB:
         """(private API)"""
         pass
     # Image_RGBA converted_to_rgba_image(const cv::Mat &inputMat, bool isBgrOrder);    /* original C++ signature */
     @staticmethod
-    def converted_to_rgba_image(
-        input_mat: Mat, is_bgr_order: bool
-    ) -> Image_RGBA:  # cv_drawing_utils.h:141
+    def converted_to_rgba_image(input_mat: Mat, is_bgr_order: bool) -> Image_RGBA:
         """(private API)"""
         pass
 

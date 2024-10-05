@@ -17,7 +17,7 @@ def main():
     # Configure options
     options = litgen.LitgenOptions()
     options.original_signature_flag_show = True
-    options.original_location_flag_show = True
+    options.original_location_flag_show = False
     options.namespaces_root = ["ImmVision"]
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
     options.srcmlcpp_options.header_filter_acceptable__regex = r"IMMVISION_SERIALIZE_JSON"

@@ -1,6 +1,7 @@
 from imgui_bundle import immvision, immapp, imgui_md, ImVec2
 from imgui_bundle.demos_python import demo_utils
 
+immvision.use_rgb_color_order()
 
 @immapp.static(inited=False)
 def demo_gui() -> None:

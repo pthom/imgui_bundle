@@ -13,6 +13,7 @@ void demo_immvision_link()
 
     if (!inited)
     {
+        ImmVision::UseBgrColorOrder();
         image = cv::imread(DemosAssetsFolder() + "/images/tennis.jpg");
         cv::split(image, channels);
 
