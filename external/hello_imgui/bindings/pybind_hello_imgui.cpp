@@ -7,8 +7,12 @@
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/hello_imgui_screenshot.h"
 #include "imgui_internal.h"
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 #include "imgui_test_engine/imgui_te_engine.h"
 #include "imgui_test_engine/imgui_te_internal.h"
+#else
+struct ImGuiTestEngine {};
+#endif
 
 namespace py = pybind11;
 

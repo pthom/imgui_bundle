@@ -1,8 +1,9 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, immvision, immapp, imgui_md
-import importlib.util
-
-HAS_IMMVISION = "immvision_not_available" not in dir(immvision)
+from imgui_bundle import imgui, immapp, imgui_md, has_submodule
+HAS_IMMVISION = has_submodule("immvision")
+if HAS_IMMVISION:
+    from imgui_bundle import immvision  # noqa: F401
+import importlib.util  # noqa: E402
 from imgui_bundle.demos_python import demo_utils  # noqa: E402
 
 

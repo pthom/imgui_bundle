@@ -266,6 +266,9 @@ def demo_portable_file_dialogs():
 @immapp.static(selected_filename="")
 def demo_imfile_dialog():
     static = demo_imfile_dialog  # Access to static variable via static
+    from imgui_bundle import has_submodule
+    if not has_submodule("im_file_dialog"):
+        return
     from imgui_bundle import im_file_dialog as ifd
 
     imgui_md.render_unindented(

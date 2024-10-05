@@ -1,4 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
@@ -2885,3 +2886,4 @@ void py_init_module_implot(py::module& m)
         return ImPlotPoint(ipp.x, ipp.y);
     }), py::arg("implotpoint"));
 }
+#endif // IMGUI_BUNDLE_WITH_IMPLOT

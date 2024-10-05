@@ -1,4 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
@@ -1659,3 +1660,4 @@ void py_init_module_imgui_test_engine(py::module& m)
     py::implicitly_convertible<ImGuiID, ImGuiTestRef>();
     py::implicitly_convertible<const char*, ImGuiTestRef>();
 }
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE

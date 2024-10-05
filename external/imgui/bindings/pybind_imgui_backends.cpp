@@ -76,6 +76,7 @@ void py_init_module_imgui_backends(py::module& m)
     //
     // <bindings for imgui_impl_glfw.h
     //
+#ifdef HELLOIMGUI_USE_GLFW3
     auto glfw_init_for_opengl = [](size_t window_address, bool install_callbacks) {
         return ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)window_address, install_callbacks);
     };
@@ -147,7 +148,9 @@ void py_init_module_imgui_backends(py::module& m)
           [](size_t monitor_address,  int c) {
               return ImGui_ImplGlfw_MonitorCallback((GLFWmonitor*)monitor_address, c);
           }, py::arg("window_address"), py::arg("c"));
+#endif // HELLOIMGUI_USE_GLFW3
 
+#ifdef HELLOIMGUI_USE_SDL2
     //
     // <bindings for imgui_impl_sdl2.h: Deprecated: superseded by full python backend
     //
@@ -177,5 +180,5 @@ void py_init_module_imgui_backends(py::module& m)
     //    m.def("sdl2_process_event", [](size_t event_address) {
     //        return ImGui_ImplSDL2_ProcessEvent((const SDL_Event*)event_address);
     //    }, py::arg("event_address"));
-
+#endif // HELLOIMGUI_USE_SDL2
 }

@@ -10,9 +10,9 @@
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"
 #include "immapp/immapp_widgets.h"
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 
-namespace py = pybind11;
 
 
 namespace ax
@@ -23,7 +23,10 @@ namespace ax
         struct EditorContext: public Detail::EditorContext {};
     }
 }
+#endif
 
+
+namespace py = pybind11;
 
 
 
@@ -50,6 +53,7 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
     ////////////////////    <generated_from:immapp_widgets.h>    ////////////////////
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR) && defined(IMGUI_BUNDLE_WITH_IMPLOT)
     m.def("begin_plot_in_node_editor",
         ImmApp::BeginPlotInNodeEditor, py::arg("title_id"), py::arg("size") = ImVec2(-1,0), py::arg("flags") = 0);
 
@@ -65,7 +69,9 @@ void py_init_module_immapp_cpp(py::module& m)
         ImmApp::ShowResizablePlotInNodeEditor_Em,
         py::arg("title_id"), py::arg("size_em"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
         " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
+#endif // defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR) && defined(IMGUI_BUNDLE_WITH_IMPLOT)
 
+#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     m.def("widget_with_resize_handle_in_node_editor",
         ImmApp::WidgetWithResizeHandle_InNodeEditor,
         py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
@@ -75,6 +81,7 @@ void py_init_module_immapp_cpp(py::module& m)
         ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
         py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
+#endif // defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
 
 
