@@ -258,11 +258,11 @@ void py_init_module_immvision(py::module& m)
         .def(py::init<>(),
             "Create an empty texture")
         .def(py::init<const cv::Mat &, bool>(),
-            py::arg("image"), py::arg("is_color_order_bgr"),
-            "Create a texture from an image (cv::Mat in C++, numpy array in Python)")
+            py::arg("image"), py::arg("is_color_order_bgr") = false,
+            " Create a texture from an image (cv::Mat in C++, numpy array in Python)\n isColorOrderBGR: if True, the image is assumed to be in BGR order (OpenCV default)")
         .def("update_from_image",
             &ImmVision::GlTexture::UpdateFromImage,
-            py::arg("image"), py::arg("is_color_order_bgr"),
+            py::arg("image"), py::arg("is_color_order_bgr") = false,
             " Update the texture from a new image (cv::Mat in C++, numpy array in Python).\n(private API)")
         .def("size_im_vec2",
             &ImmVision::GlTexture::SizeImVec2, " Returns the size as ImVec2\n(private API)")

@@ -589,17 +589,19 @@ class GlTexture:
     def __init__(self) -> None:
         """Create an empty texture"""
         pass
-    # GlTexture(const cv::Mat& image, bool isColorOrderBGR);    /* original C++ signature */
+    # GlTexture(const cv::Mat& image, bool isColorOrderBGR = false);    /* original C++ signature */
     @overload
-    def __init__(self, image: Mat, is_color_order_bgr: bool) -> None:
-        """Create a texture from an image (cv::Mat in C++, numpy array in Python)"""
+    def __init__(self, image: Mat, is_color_order_bgr: bool = False) -> None:
+        """Create a texture from an image (cv::Mat in C++, numpy array in Python)
+        isColorOrderBGR: if True, the image is assumed to be in BGR order (OpenCV default)
+        """
         pass
     #
     # Methods
     #
 
-    # void UpdateFromImage(const cv::Mat& image, bool isColorOrderBGR);    /* original C++ signature */
-    def update_from_image(self, image: Mat, is_color_order_bgr: bool) -> None:
+    # void UpdateFromImage(const cv::Mat& image, bool isColorOrderBGR = false);    /* original C++ signature */
+    def update_from_image(self, image: Mat, is_color_order_bgr: bool = False) -> None:
         """Update the texture from a new image (cv::Mat in C++, numpy array in Python).
         (private API)
         """
