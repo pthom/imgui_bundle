@@ -5,6 +5,10 @@
         "filename": "hello_world.py"
       },
       {
+        "label": "A Plot with ImPlot / Drag Rect",
+        "filename": "plot_drag_rect.py"
+      },
+      {
         "label": "A full demo of Dear ImGui Bundle",
         "filename": "run_demo_imgui_bundle.py"
       },

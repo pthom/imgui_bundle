@@ -1,6 +1,6 @@
 # pyodide_imgui_render.py
 from typing import Callable
-from imgui_bundle import hello_imgui
+from imgui_bundle import hello_imgui, immapp
 from pyodide.ffi import create_proxy
 import js
 import gc
@@ -50,7 +50,7 @@ class HelloImGuiRunnerJs:
     def stop(self):
         """Stops the current rendering loop and tears down the renderer."""
         if self.js_animation_renderer is not None:
-            print("Stopping js_animation_renderer")
+            print("HelloImGuiRunnerJs: Stopping js_animation_renderer")
             self.js_animation_renderer.request_stop()
             self.js_animation_renderer = None
 
@@ -58,30 +58,82 @@ class HelloImGuiRunnerJs:
             hello_imgui.manual_render.tear_down()
             print("HelloImGuiRunnerJs: Renderer torn down successfully.")
         except Exception as e:
-            js.console.error(f"Error during Renderer teardown: {e}")
+            js.console.error(f"HelloImGuiRunnerJs: Error during Renderer teardown: {e}")
         finally:
             # Force garbage collection to free resources
             gc.collect()
 
     def run_overloaded(self, *args, **kwargs):
-        print("run_overloaded")
+        print("HelloImGuiRunnerJs: run_overloaded")
         self.stop()
 
         try:
             if len(args) == 1 and isinstance(args[0], hello_imgui.RunnerParams):
-                print("overload with RunnerParams")
+                print("HelloImGuiRunnerJs: overload with RunnerParams")
                 runner_params = args[0]
                 hello_imgui.manual_render.setup_from_runner_params(runner_params)
             elif len(args) == 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams):
-                print("overload with SimpleRunnerParams")
+                print("HelloImGuiRunnerJs: overload with SimpleRunnerParams")
                 simple_runner_params = args[0]
                 hello_imgui.manual_render.setup_from_simple_runner_params(simple_runner_params)
             elif len(args) == 1 and callable(args[0]):
-                print("overload with callable")
+                print("HelloImGuiRunnerJs: overload with callable")
                 gui_function = args[0]
                 hello_imgui.manual_render.setup_from_gui_function(gui_function, **kwargs)
+            else:
+                raise ValueError("HelloImGuiRunnerJs: Invalid arguments")
         except Exception as e:
-            js.console.error(f"Failed to initialize Renderer: {e}")
+            js.console.error(f"HelloImGuiRunnerJs: Failed to initialize Renderer: {e}")
+            return
+
+        self.js_animation_renderer = JsAnimationRenderer(hello_imgui.manual_render.render)
+        self.js_animation_renderer.start()
+
+
+class ImmAppRunnerJs:
+    """Manages the ManualRender lifecycle and integrates with JsAnimationRenderer."""
+    js_animation_renderer: JsAnimationRenderer | None = None
+
+    def __init__(self):
+        self.js_animation_renderer = None
+
+    def stop(self):
+        """Stops the current rendering loop and tears down the renderer."""
+        if self.js_animation_renderer is not None:
+            print("ImmAppRunnerJs: Stopping js_animation_renderer")
+            self.js_animation_renderer.request_stop()
+            self.js_animation_renderer = None
+
+        try:
+            immapp.manual_render.tear_down()
+            print("ImmAppRunnerJs: HelloImGuiRunnerJs: Renderer torn down successfully.")
+        except Exception as e:
+            js.console.error(f"ImmAppRunnerJs: Error during Renderer teardown: {e}")
+        finally:
+            # Force garbage collection to free resources
+            gc.collect()
+
+    def run_overloaded(self, *args, **kwargs):
+        print("ImmAppRunnerJs: run_overloaded")
+        self.stop()
+
+        try:
+            if len(args) == 1 and isinstance(args[0], hello_imgui.RunnerParams):
+                print("ImmAppRunnerJs: overload with RunnerParams")
+                runner_params = args[0]
+                immapp.manual_render.setup_from_runner_params(runner_params)
+            elif len(args) == 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams):
+                print("ImmAppRunnerJs: overload with SimpleRunnerParams")
+                simple_runner_params = args[0]
+                immapp.manual_render.setup_from_simple_runner_params(simple_runner_params)
+            elif len(args) == 1 and callable(args[0]):
+                print("ImmAppRunnerJs: overload with callable")
+                gui_function = args[0]
+                immapp.manual_render.setup_from_gui_function(gui_function, **kwargs)
+            else:
+                raise ValueError("ImmAppRunnerJs: Invalid arguments")
+        except Exception as e:
+            js.console.error(f"ImmAppRunnerJs: Failed to initialize Renderer: {e}")
             return
 
         self.js_animation_renderer = JsAnimationRenderer(hello_imgui.manual_render.render)
@@ -90,8 +142,11 @@ class HelloImGuiRunnerJs:
 
 
 
-# Instantiate a global runner
+# Instantiate global runners
 _HELLO_IMGUI_RUNNER_JS = HelloImGuiRunnerJs()
+_IMMAPP_RUNNER_JS = ImmAppRunnerJs()
 
 # Monkey patch the hello_imgui.run function to use the js version
 hello_imgui.run = _HELLO_IMGUI_RUNNER_JS.run_overloaded
+# Monkey patch the immapp.run function to use the js version
+immapp.run = _IMMAPP_RUNNER_JS.run_overloaded
