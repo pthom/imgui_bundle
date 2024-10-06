@@ -7,6 +7,7 @@ so that the figure is not displayed on the screen before we can capture it:
 """
 import matplotlib
 matplotlib.use('Agg')  # set the renderer to Tk
+from matplotlib.figure import Figure  # noqa: E402
 import numpy  # noqa: E402
 import cv2  # noqa: E402
 import matplotlib  # noqa: E402
@@ -15,7 +16,7 @@ from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 
 
 @static(fig_image_cache=dict())
-def _fig_to_image(label_id: str, figure: matplotlib.figure.Figure, refresh_image: bool = False) -> numpy.ndarray:
+def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) -> numpy.ndarray:
     """
     Convert a Matplotlib figure to an RGB image.
 
