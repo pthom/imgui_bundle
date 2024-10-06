@@ -71,7 +71,7 @@ await micropip.install('${pkg}')
 }
 
 // Function to run Python code
-async function runPythonCode() {
+async function runEditorPythonCode() {
     if (!pyodide) {
         console.error('Pyodide not loaded yet');
         displayError('Pyodide is still loading. Please wait a moment and try again.');
