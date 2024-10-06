@@ -284,7 +284,79 @@ void py_init_module_immapp_cpp(nb::module_& m)
         nb::arg("runner_params"),
         "DeleteNodeEditorSettings deletes the json file for the node editor settings.");
     // #endif
-    // }
+    //
+
+    { // <namespace ManualRender>
+        nb::module_ pyNsManualRender = m.def_submodule("manual_render", "namespace ManualRender");
+        pyNsManualRender.def("setup_from_runner_params",
+            [](const HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+            {
+                auto SetupFromRunnerParams_adapt_mutable_param_with_default_value = [](const HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+                {
+
+                    const ImmApp::AddOnsParams& addOnsParams_or_default = [&]() -> const ImmApp::AddOnsParams {
+                        if (addOnsParams.has_value())
+                            return addOnsParams.value();
+                        else
+                            return ImmApp::AddOnsParams();
+                    }();
+
+                    ImmApp::ManualRender::SetupFromRunnerParams(runnerParams, addOnsParams_or_default);
+                };
+
+                SetupFromRunnerParams_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
+            },
+            nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.\n---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+
+        pyNsManualRender.def("setup_from_simple_runner_params",
+            [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+            {
+                auto SetupFromSimpleRunnerParams_adapt_mutable_param_with_default_value = [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+                {
+
+                    const ImmApp::AddOnsParams& addOnsParams_or_default = [&]() -> const ImmApp::AddOnsParams {
+                        if (addOnsParams.has_value())
+                            return addOnsParams.value();
+                        else
+                            return ImmApp::AddOnsParams();
+                    }();
+
+                    ImmApp::ManualRender::SetupFromSimpleRunnerParams(simpleParams, addOnsParams_or_default);
+                };
+
+                SetupFromSimpleRunnerParams_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
+            },
+            nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
+            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+
+        pyNsManualRender.def("setup_from_gui_function",
+            [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+            {
+                auto SetupFromGuiFunction_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+                {
+
+                    const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
+                        if (windowSize.has_value())
+                            return windowSize.value();
+                        else
+                            return DefaultWindowSize;
+                    }();
+
+                    ImmApp::ManualRender::SetupFromGuiFunction(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, withImplot, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+                };
+
+                SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+            },
+            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+
+        pyNsManualRender.def("render",
+            ImmApp::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");
+
+        pyNsManualRender.def("tear_down",
+            ImmApp::ManualRender::TearDown, " Tears down the renderer and releases all associated resources.\n This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n After calling `TearDown()`, the InitFromXXX can be called with new parameters.");
+    } // </namespace ManualRender>
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 
