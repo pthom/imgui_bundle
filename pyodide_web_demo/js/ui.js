@@ -18,10 +18,9 @@ function showLoadingModal() {
 
 // Function to hide the loading modal
 function hideLoadingModal() {
-    console.log('Hiding loading modal');
+    // console.log('Hiding loading modal');
     const loadingModal = document.getElementById('loading-modal');
     loadingModal.style.display = 'none';
-    console.log('Hiding loading modal'); // Debug log
 }
 
 // Function to display errors in the error window
