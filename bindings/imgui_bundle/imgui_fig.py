@@ -1,17 +1,17 @@
 """imgui_fig.fig: Display Matplotlib figures in an ImGui window.
 
 Important: before importing pyplot, set the renderer to Tk,
-so that the figure is not displayed on the screen before we can capture it.
+so that the figure is not displayed on the screen before we can capture it:
+    import matplotlib
+    matplotlib.use('Agg')
 """
 import matplotlib
-matplotlib.use('Agg')     #
-import matplotlib.pyplot as plt
-
-import numpy
-import cv2
-import matplotlib
-from imgui_bundle.immapp import static
-from imgui_bundle import immvision, ImVec2, imgui
+matplotlib.use('Agg')  # set the renderer to Tk
+import numpy  # noqa: E402
+import cv2  # noqa: E402
+import matplotlib  # noqa: E402
+from imgui_bundle.immapp import static  # noqa: E402
+from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 
 
 @static(fig_image_cache=dict())
@@ -36,9 +36,12 @@ def _fig_to_image(label_id: str, figure: matplotlib.figure.Figure, refresh_image
         w, h = figure.canvas.get_width_height()
         buf = numpy.fromstring(figure.canvas.tostring_rgb(), dtype=numpy.uint8)
         buf.shape = (h, w, 3)
-        img_rgb = cv2.cvtColor(buf, cv2.COLOR_RGB2BGR)
+        if immvision.is_using_bgr_color_order():
+            img = cv2.cvtColor(buf, cv2.COLOR_RGB2BGR)
+        else:
+            img = buf
         matplotlib.pyplot.close(figure)
-        statics.fig_image_cache[fig_id] = img_rgb
+        statics.fig_image_cache[fig_id] = img
     return statics.fig_image_cache[fig_id]
 
 

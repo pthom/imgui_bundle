@@ -38,15 +38,6 @@ ImTextureID: TypeAlias = int
 # IMMVISION_API is a marker for public API functions. IMMVISION_STRUCT_API is a marker for public API structs (in comment lines)
 # Usage of ImmVision as a shared library is not recommended. No guaranty of ABI stability is provided
 
-class ColorMapStatsTypeId(enum.Enum):
-    """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
-
-    # FromFullImage,    /* original C++ signature */
-    from_full_image = enum.auto()  # (= 0)
-    # FromVisibleROI    /* original C++ signature */
-    #     }
-    from_visible_roi = enum.auto()  # (= 1)
-
 # Set the color order for displayed images.
 # You **must** call once at the start of your program:
 #     ImmVision::UseRgbColorOrder() or ImmVision::UseBgrColorOrder() (C++)
@@ -61,6 +52,29 @@ def use_rgb_color_order() -> None:
 def use_bgr_color_order() -> None:
     """(private API)"""
     pass
+
+# bool IsUsingRgbColorOrder();    /* original C++ signature */
+def is_using_rgb_color_order() -> bool:
+    """Returns True if we are using RGB color order
+    (private API)
+    """
+    pass
+
+# bool IsUsingBgrColorOrder();    /* original C++ signature */
+def is_using_bgr_color_order() -> bool:
+    """Returns True if we are using BGR color order
+    (private API)
+    """
+    pass
+
+class ColorMapStatsTypeId(enum.Enum):
+    """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
+
+    # FromFullImage,    /* original C++ signature */
+    from_full_image = enum.auto()  # (= 0)
+    # FromVisibleROI    /* original C++ signature */
+    #     }
+    from_visible_roi = enum.auto()  # (= 1)
 
 class ColormapScaleFromStatsData:
     """Scale the Colormap according to the Image  stats
