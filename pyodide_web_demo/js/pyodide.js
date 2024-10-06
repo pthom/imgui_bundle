@@ -1,7 +1,7 @@
 // js/pyodide.js
 
 async function load_pyodide_imgui_render() {
-    console.log('Loading pyodide_imgui_render.py');
+    console.log('Loading load_pyodide_imgui_render.py');
     try {
         const response = await fetch('py_imgui_render/pyodide_imgui_render.py');
         if (!response.ok) {
@@ -11,10 +11,10 @@ async function load_pyodide_imgui_render() {
 
         // Execute the Python code
         await pyodide.runPythonAsync(pythonCode);
-        console.log('Pyodide ImGui render code loaded and executed successfully.');
+        // console.log('Pyodide ImGui render code loaded and executed successfully.');
     } catch (error) {
-        console.error('Error loading or executing Pyodide ImGui render code:', error);
-        displayError('Failed to load or execute Pyodide ImGui render code. See console for details.');
+        console.error('Error in load_pyodide_imgui_render:', error);
+        displayError('Failed during init (load_pyodide_imgui_render): see console for details.');
     }
 }
 

@@ -18,10 +18,10 @@ function _getEmscriptenCanvas() {
 
 async function passCanvasToPyodide() {
     const canvas = _getEmscriptenCanvas();
-    console.log("initEmscriptenCanvas canvas:", canvas);
+    // console.log("initEmscriptenCanvas canvas:", canvas);
     // Example: Expose canvas to Python
     pyodide.canvas.setCanvas3D(canvas);  // Set canvas for 3D rendering
-    console.log("initEmscriptenCanvas canvas set");
+    // console.log("initEmscriptenCanvas canvas set");
 }
 
 // Handle canvas resizing
