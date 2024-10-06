@@ -2,16 +2,9 @@
 
 function initial_example_code() {
     code = `# Write your Python code here
-from imgui_bundle import hello_imgui, imgui
+from imgui_bundle import immapp, imgui_md
 
-
-def gui():
-    imgui.text("Hello, world!")
-
-
-runner_params = hello_imgui.RunnerParams()
-runner_params.callbacks.show_gui = gui
-hello_imgui.run(runner_params)
+immapp.run(lambda: imgui_md.render("# Hello, Pyodide!"), with_markdown=True)
     `
     return code;
 }
@@ -19,7 +12,7 @@ hello_imgui.run(runner_params)
 // Function to fetch example metadata from JSON
 async function fetchExampleMetadata() {
     try {
-        const response = await fetch('examples.json');
+        const response = await fetch('examples/examples.json');
         const data = await response.json();
         return data.examples;
     } catch (error) {

@@ -28,7 +28,7 @@ def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> N
     demo_function()
 
 
-def main() -> None:
+def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     print(
         f"For information, demos sources are available in {demo_utils.api_demos.demos_python_folder()}"
     )
@@ -128,6 +128,12 @@ def main() -> None:
     addons.with_markdown = True
     addons.with_implot = True
     addons.with_tex_inspect = True
+
+    return runner_params, addons
+
+
+def main():
+    runner_params, addons = make_params()
     immapp.run(runner_params=runner_params, add_ons_params=addons)
 
 
