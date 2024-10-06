@@ -7,6 +7,7 @@ import random as rng
 import numpy as np
 from numpy.typing import NDArray
 
+immvision.use_bgr_color_order()  # because cv2.imread reads in BGR
 
 class BlurData:
     src_gray: NDArray[np.uint8]

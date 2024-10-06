@@ -7,6 +7,9 @@ import numpy as np
 from numpy.typing import NDArray
 
 
+immvision.use_bgr_color_order() # because cv2.imread reads in BGR
+
+
 # First, lets define `LaplacianData` (a class that contains an image and its laplacian)
 class LaplacianData:
     src_gray: NDArray[np.float64]
