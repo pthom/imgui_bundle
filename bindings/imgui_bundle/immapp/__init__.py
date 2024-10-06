@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+from imgui_bundle import _imgui_bundle as _native_bundle
 from imgui_bundle._imgui_bundle import immapp_cpp as immapp_cpp  # type: ignore
 from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
     clock_seconds,
@@ -32,7 +33,7 @@ from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
 #     runner_params.callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
 from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome_4
 from imgui_bundle.immapp import icons_fontawesome_6 as icons_fontawesome_6
-from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome  # v4
+from imgui_bundle.immapp import icons_fontawesome_4 as icons_fontawesome  # Icons font awesome v4
 
 from imgui_bundle.immapp.immapp_utils import (
     static as static,
@@ -45,6 +46,9 @@ from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
     RunnerParams as RunnerParams,
     SimpleRunnerParams as SimpleRunnerParams,
 )
+
+
+manual_render = _native_bundle.immapp_cpp.manual_render
 
 __all__ = [
     "clock_seconds",
@@ -69,6 +73,7 @@ __all__ = [
     "RunnerParams",
     "SimpleRunnerParams",
     "snippets",
+    "manual_render",
     "begin_plot_in_node_editor",
     "end_plot_in_node_editor",
     "show_resizable_plot_in_node_editor",

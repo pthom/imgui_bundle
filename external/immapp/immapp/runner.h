@@ -174,4 +174,58 @@ namespace ImmApp
     void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams);
 
 #endif
+
+
+// =========================== HelloImGui::ManualRender ==================================
+// @@md#HelloImGui::ManualRender
+
+    namespace ManualRender
+    {
+        // Immapp::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
+        // - It is customizable like Immapp::Run: initialize it with `RunnerParams` and `AddOnsParams`.
+        // - `ManualRender::Render()` will render the application for one frame:
+        // - Ensure that `ManualRender::Render()` is triggered regularly (e.g., through a loop or other mechanism)
+        //   to maintain responsiveness. This method must be called on the main thread.
+
+        // Initializes the rendering with the full customizable `RunnerParams`.
+        // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        // A distinct copy of `RunnerParams` is stored internally.
+        void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
+
+        // Initializes the rendering with `SimpleRunnerParams`.
+        // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        void SetupFromSimpleRunnerParams(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams = AddOnsParams());
+
+        // Initializes the renderer with a simple GUI function and additional parameters.
+        // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        void SetupFromGuiFunction(
+            const VoidFunction& guiFunction,
+            const std::string& windowTitle = "",
+            bool windowSizeAuto = false,
+            bool windowRestorePreviousGeometry = false,
+            const ScreenSize& windowSize = DefaultWindowSize,
+            float fpsIdle = 10.f,
+
+            // AddOnsParams below:
+            bool withImplot = false,
+            bool withMarkdown = false,
+            bool withNodeEditor = false,
+            bool withTexInspect = false,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+            const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+#endif
+            const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+        );
+
+        // Renders the current frame. Should be called regularly to maintain the application's responsiveness.
+        void Render();
+
+        // Tears down the renderer and releases all associated resources.
+        // This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        // After calling `TearDown()`, the InitFromXXX can be called with new parameters.
+        void TearDown();
+    } // namespace ManualRender
+
+// @@md
+
 } // namespace ImmApp

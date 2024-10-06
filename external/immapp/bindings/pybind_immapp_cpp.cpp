@@ -193,7 +193,31 @@ void py_init_module_immapp_cpp(py::module& m)
         py::arg("runner_params"),
         "DeleteNodeEditorSettings deletes the json file for the node editor settings.");
     // #endif
-    // }
+    //
+
+    { // <namespace ManualRender>
+        py::module_ pyNsManualRender = m.def_submodule("manual_render", "namespace ManualRender");
+        pyNsManualRender.def("setup_from_runner_params",
+            ImmApp::ManualRender::SetupFromRunnerParams,
+            py::arg("runner_params"), py::arg("add_ons_params") = ImmApp::AddOnsParams(),
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.");
+
+        pyNsManualRender.def("setup_from_simple_runner_params",
+            ImmApp::ManualRender::SetupFromSimpleRunnerParams,
+            py::arg("simple_params"), py::arg("add_ons_params") = ImmApp::AddOnsParams(),
+            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("setup_from_gui_function",
+            ImmApp::ManualRender::SetupFromGuiFunction,
+            py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("render",
+            ImmApp::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");
+
+        pyNsManualRender.def("tear_down",
+            ImmApp::ManualRender::TearDown, " Tears down the renderer and releases all associated resources.\n This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n After calling `TearDown()`, the InitFromXXX can be called with new parameters.");
+    } // </namespace ManualRender>
     ////////////////////    </generated_from:runner.h>    ////////////////////
 
 

@@ -280,8 +280,78 @@ def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
     pass
 
 # #endif
-# }
+#
 
+# =========================== HelloImGui::ManualRender ==================================
+# @@md#HelloImGui::ManualRender
+
+# @@md
+
+# <submodule manual_render>
+class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
+    pass  # (This corresponds to a C++ namespace. All method are static!)
+    """ namespace ManualRender"""
+    # Immapp::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
+    # - It is customizable like Immapp::Run: initialize it with `RunnerParams` and `AddOnsParams`.
+    # - `ManualRender::Render()` will render the application for one frame:
+    # - Ensure that `ManualRender::Render()` is triggered regularly (e.g., through a loop or other mechanism)
+    #   to maintain responsiveness. This method must be called on the main thread.
+
+    @staticmethod
+    def setup_from_runner_params(
+        runner_params: HelloImGui.RunnerParams,
+        add_ons_params: AddOnsParams = AddOnsParams(),
+    ) -> None:
+        """Initializes the rendering with the full customizable `RunnerParams`.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        A distinct copy of `RunnerParams` is stored internally.
+        """
+        pass
+
+    @staticmethod
+    def setup_from_simple_runner_params(
+        simple_params: HelloImGui.SimpleRunnerParams,
+        add_ons_params: AddOnsParams = AddOnsParams(),
+    ) -> None:
+        """Initializes the rendering with `SimpleRunnerParams`.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        """
+        pass
+
+    @staticmethod
+    def setup_from_gui_function(
+        gui_function: VoidFunction,
+        window_title: str = "",
+        window_size_auto: bool = False,
+        window_restore_previous_geometry: bool = False,
+        window_size: ScreenSize = DefaultWindowSize,
+        fps_idle: float = 10.0,
+        with_implot: bool = False,
+        with_markdown: bool = False,
+        with_node_editor: bool = False,
+        with_tex_inspect: bool = False,
+        with_node_editor_config: Optional[NodeEditorConfig] = None,
+        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    ) -> None:
+        """Initializes the renderer with a simple GUI function and additional parameters.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        """
+        pass
+
+    @staticmethod
+    def render() -> None:
+        """Renders the current frame. Should be called regularly to maintain the application's responsiveness."""
+        pass
+
+    @staticmethod
+    def tear_down() -> None:
+        """Tears down the renderer and releases all associated resources.
+        This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        After calling `TearDown()`, the InitFromXXX can be called with new parameters.
+        """
+        pass
+
+# </submodule manual_render>
 ####################    </generated_from:runner.h>    ####################
 
 ####################    <generated_from:clock.h>    ####################

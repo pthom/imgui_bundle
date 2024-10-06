@@ -48,11 +48,8 @@ namespace ImmApp
 
     ImmAppContext gImmAppContext;
 
-
-    void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
+    static void Priv_Setup(HelloImGui::RunnerParams& runnerParams, AddOnsParams& addOnsParams)
     {
-        AddOnsParams addOnsParams = addOnsParams_;
-
         // create implot context if required
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
@@ -139,7 +136,7 @@ namespace ImmApp
                 runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_Init,
                     runnerParams.callbacks.PostInit
-                    );
+                );
             }
 
             // Modify before-exit: DeInit ImGuiTexInspect
@@ -155,7 +152,7 @@ namespace ImmApp
                 runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
                     fn_ImGuiTextInspect_DeInit,
                     runnerParams.callbacks.BeforeExit
-                    );
+                );
             }
         }
 #endif
@@ -166,10 +163,10 @@ namespace ImmApp
             runnerParams.callbacks.BeforeExit,
             ImmVision::ClearTextureCache);
 #endif
+    }
 
-
-        HelloImGui::Run(runnerParams);
-
+    void Priv_Teardown(AddOnsParams& addOnsParams)
+    {
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
             ImPlot::DestroyContext();
@@ -186,7 +183,14 @@ namespace ImmApp
 
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
             ImGuiMd::DeInitializeMarkdown();
+    }
 
+    void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
+    {
+        AddOnsParams addOnsParams = addOnsParams_;
+        Priv_Setup(runnerParams, addOnsParams);
+        HelloImGui::Run(runnerParams);
+        Priv_Teardown(addOnsParams);
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
@@ -354,4 +358,108 @@ namespace ImmApp
     }
 
 #endif
+
+
+// ========================= ManualRender ====================================================
+
+namespace ManualRender  // namespace ImmApp::ManualRender
+{
+    // Enumeration to track the current state of the ManualRenderer
+    enum class RendererStatus
+    {
+        NotInitialized,
+        Initialized,
+    };
+    RendererStatus sCurrentStatus = RendererStatus::NotInitialized;
+
+    static AddOnsParams sAddOnsParams;
+
+    // Changes the current status to Initialized if it was NotInitialized,
+    // otherwise raises an error (assert or exception)
+    void TrySwitchToInitialized()
+    {
+        if (sCurrentStatus == RendererStatus::Initialized)
+            IM_ASSERT(false && "ImmApp::ManualRender::SetupFromXXX() cannot be called while already initialized. Call TearDown() first.");
+        sCurrentStatus = RendererStatus::Initialized;
+    }
+
+    // Changes the current status to NotInitialized if it was Initialized,
+    // otherwise raises an error (assert or exception)
+    void TrySwitchToNotInitialized()
+    {
+        if (sCurrentStatus == RendererStatus::NotInitialized)
+            IM_ASSERT(false && "ImmApp::ManualRender::TearDown() cannot be called while not initialized.");
+        sCurrentStatus = RendererStatus::NotInitialized;
+    }
+
+
+    void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
+    {
+        TrySwitchToInitialized();
+        sAddOnsParams = addOnsParams;
+        HelloImGui::RunnerParams runnerParamsCopy = runnerParams;
+        Priv_Setup(runnerParamsCopy, sAddOnsParams);
+        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParamsCopy);
+    }
+
+    void SetupFromSimpleRunnerParams(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
+    {
+        HelloImGui::RunnerParams runnerParams = simpleParams.ToRunnerParams();
+        SetupFromRunnerParams(runnerParams, addOnsParams);
+    }
+
+    void SetupFromGuiFunction(
+        const VoidFunction& guiFunction,
+        const std::string& windowTitle,
+        bool windowSizeAuto,
+        bool windowRestorePreviousGeometry,
+        const ScreenSize& windowSize,
+        float fpsIdle,
+
+        // AddOnsParams below:
+        bool withImplot,
+        bool withMarkdown,
+        bool withNodeEditor,
+        bool withTexInspect,
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+        const std::optional<NodeEditorConfig>& withNodeEditorConfig,
+#endif
+        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
+    )
+    {
+        HelloImGui::SimpleRunnerParams simpleRunnerParams;
+        simpleRunnerParams.guiFunction = guiFunction;
+        simpleRunnerParams.windowTitle = windowTitle;
+        simpleRunnerParams.windowSizeAuto = windowSizeAuto;
+        simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
+        simpleRunnerParams.windowSize = windowSize;
+        simpleRunnerParams.fpsIdle = fpsIdle;
+
+        AddOnsParams addOnsParams;
+        addOnsParams.withImplot = withImplot;
+        addOnsParams.withMarkdown = true;
+        addOnsParams.withNodeEditor = withNodeEditor;
+        addOnsParams.withTexInspect = withTexInspect;
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+        addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
+#endif
+        addOnsParams.withMarkdownOptions = withMarkdownOptions;
+
+        SetupFromSimpleRunnerParams(simpleRunnerParams, addOnsParams);
+    }
+
+    void Render()
+    {
+        HelloImGui::ManualRender::Render();
+    }
+
+    void TearDown()
+    {
+        TrySwitchToNotInitialized();
+        HelloImGui::ManualRender::TearDown();
+        Priv_Teardown(sAddOnsParams);
+        sAddOnsParams = AddOnsParams();
+    }
+} // namespace ManualRender
+
 } // namespace ImmApp
