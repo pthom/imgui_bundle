@@ -63,38 +63,35 @@ class HelloImGuiRunnerJs:
             # Force garbage collection to free resources
             gc.collect()
 
-    def run(self, runner_params: hello_imgui.RunnerParams):
-        """Runs the ImGui application with the provided RunnerParams."""
-        print("HelloImGuiRunnerJs.run")
-
-        # Stop any existing renderer before starting a new one
+    def run_overloaded(self, *args, **kwargs):
+        print("run_overloaded")
         self.stop()
 
         try:
-            # Initialize the ManualRender with RunnerParams
-            hello_imgui.manual_render.setup_from_runner_params(runner_params)
-            print("HelloImGuiRunnerJs.run: Renderer initialized successfully.")
+            if len(args) == 1 and isinstance(args[0], hello_imgui.RunnerParams):
+                print("overload with RunnerParams")
+                runner_params = args[0]
+                hello_imgui.manual_render.setup_from_runner_params(runner_params)
+            elif len(args) == 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams):
+                print("overload with SimpleRunnerParams")
+                simple_runner_params = args[0]
+                hello_imgui.manual_render.setup_from_simple_runner_params(simple_runner_params)
+            elif len(args) == 1 and callable(args[0]):
+                print("overload with callable")
+                gui_function = args[0]
+                hello_imgui.manual_render.setup_from_gui_function(gui_function, **kwargs)
         except Exception as e:
             js.console.error(f"Failed to initialize Renderer: {e}")
             return
 
-        # Create a JsAnimationRenderer to handle the rendering loop
         self.js_animation_renderer = JsAnimationRenderer(hello_imgui.manual_render.render)
         self.js_animation_renderer.start()
-        print("HelloImGuiRunnerJs.run: Rendering loop started.")
+
+
 
 
 # Instantiate a global runner
 _HELLO_IMGUI_RUNNER_JS = HelloImGuiRunnerJs()
 
-# def run(code: str):
-#     """Runs the provided Python code in Pyodide."""
-#     try:
-#         # Execute the user-provided code asynchronously
-#         asyncio.ensure_future(js.pyodide.runPythonAsync(code))
-#     except Exception as e:
-#         js.console.error(f"Error during run: {e}")
-
 # Monkey patch the hello_imgui.run function to use the js version
-hello_imgui.run = _HELLO_IMGUI_RUNNER_JS.run
-# hello_imgui.stop = _HELLO_IMGUI_RUNNER_JS.stop  # Optionally add a stop method
+hello_imgui.run = _HELLO_IMGUI_RUNNER_JS.run_overloaded

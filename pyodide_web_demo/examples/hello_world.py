@@ -7,6 +7,5 @@ def gui():
     imgui.text("Hello, world!")
 
 
-runner_params = hello_imgui.RunnerParams()
-runner_params.callbacks.show_gui = gui
-hello_imgui.run(runner_params)
+# The window title will become the HTML title of the rendered page.
+hello_imgui.run(gui, window_title="Hello HelloImGui!")
