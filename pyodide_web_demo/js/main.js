@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add event listener for the Run button
 // =====================================
 const runButton = document.getElementById('run-button');
-runButton.addEventListener('click', runPythonCode);
+runButton.addEventListener('click', runEditorPythonCode);
 
 
 // =====================================
