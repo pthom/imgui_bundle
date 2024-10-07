@@ -67,24 +67,21 @@ class HelloImGuiRunnerJs:
         print("HelloImGuiRunnerJs: run_overloaded")
         self.stop()
 
-        try:
-            if len(args) == 1 and isinstance(args[0], hello_imgui.RunnerParams):
-                print("HelloImGuiRunnerJs: overload with RunnerParams")
-                runner_params = args[0]
-                hello_imgui.manual_render.setup_from_runner_params(runner_params)
-            elif len(args) == 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams):
-                print("HelloImGuiRunnerJs: overload with SimpleRunnerParams")
-                simple_runner_params = args[0]
-                hello_imgui.manual_render.setup_from_simple_runner_params(simple_runner_params)
-            elif len(args) == 1 and callable(args[0]):
-                print("HelloImGuiRunnerJs: overload with callable")
-                gui_function = args[0]
-                hello_imgui.manual_render.setup_from_gui_function(gui_function, **kwargs)
-            else:
-                raise ValueError("HelloImGuiRunnerJs: Invalid arguments")
-        except Exception as e:
-            js.console.error(f"HelloImGuiRunnerJs: Failed to initialize Renderer: {e}")
-            return
+        use_runner_params = (len(args) >= 1 and isinstance(args[0], hello_imgui.RunnerParams)) or "runner_params" in kwargs
+        use_simple_params = (len(args) >= 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams)) or "simple_params" in kwargs
+        use_gui_function = (len(args) >= 1 and callable(args[0])) or "gui_function" in kwargs
+
+        if use_runner_params:
+            print("HelloImGuiRunnerJs: overload with RunnerParams")
+            immapp.manual_render.setup_from_runner_params(*args, **kwargs)
+        elif use_simple_params:
+            print("HelloImGuiRunnerJs: overload with SimpleRunnerParams")
+            immapp.manual_render.setup_from_simple_runner_params(*args, **kwargs)
+        elif use_gui_function:
+            print("HelloImGuiRunnerJs: overload with callable")
+            immapp.manual_render.setup_from_gui_function(*args, **kwargs)
+        else:
+            raise ValueError("HelloImGuiRunnerJs: Invalid arguments")
 
         self.js_animation_renderer = JsAnimationRenderer(hello_imgui.manual_render.render)
         self.js_animation_renderer.start()
@@ -116,25 +113,23 @@ class ImmAppRunnerJs:
     def run_overloaded(self, *args, **kwargs):
         print("ImmAppRunnerJs: run_overloaded")
         self.stop()
+        print(f"{len(args)=}  args: {args} kwargs: {kwargs}")
 
-        try:
-            if len(args) == 1 and isinstance(args[0], hello_imgui.RunnerParams):
-                print("ImmAppRunnerJs: overload with RunnerParams")
-                runner_params = args[0]
-                immapp.manual_render.setup_from_runner_params(runner_params)
-            elif len(args) == 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams):
-                print("ImmAppRunnerJs: overload with SimpleRunnerParams")
-                simple_runner_params = args[0]
-                immapp.manual_render.setup_from_simple_runner_params(simple_runner_params)
-            elif len(args) == 1 and callable(args[0]):
-                print("ImmAppRunnerJs: overload with callable")
-                gui_function = args[0]
-                immapp.manual_render.setup_from_gui_function(gui_function, **kwargs)
-            else:
-                raise ValueError("ImmAppRunnerJs: Invalid arguments")
-        except Exception as e:
-            js.console.error(f"ImmAppRunnerJs: Failed to initialize Renderer: {e}")
-            return
+        use_runner_params = (len(args) >= 1 and isinstance(args[0], hello_imgui.RunnerParams)) or "runner_params" in kwargs
+        use_simple_params = (len(args) >= 1 and isinstance(args[0], hello_imgui.SimpleRunnerParams)) or "simple_params" in kwargs
+        use_gui_function = (len(args) >= 1 and callable(args[0])) or "gui_function" in kwargs
+
+        if use_runner_params:
+            print("ImmAppRunnerJs: overload with RunnerParams")
+            immapp.manual_render.setup_from_runner_params(*args, **kwargs)
+        elif use_simple_params:
+            print("ImmAppRunnerJs: overload with SimpleRunnerParams")
+            immapp.manual_render.setup_from_simple_runner_params(*args, **kwargs)
+        elif use_gui_function:
+            print("ImmAppRunnerJs: overload with callable")
+            immapp.manual_render.setup_from_gui_function(*args, **kwargs)
+        else:
+            raise ValueError("ImmAppRunnerJs: Invalid arguments")
 
         self.js_animation_renderer = JsAnimationRenderer(hello_imgui.manual_render.render)
         self.js_animation_renderer.start()

@@ -23,6 +23,10 @@
       {
         "label": "Docking demo",
         "filename": "demo_docking.py"
+      },
+      {
+        "label": "Fiatlight: Word Count",
+        "filename": "fl_word_count.py"
       }
     ]
   }
