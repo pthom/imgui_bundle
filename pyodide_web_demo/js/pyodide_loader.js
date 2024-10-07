@@ -36,13 +36,28 @@ async function loadPyodideAndPackages() {
 
         // List of packages to install
         const packages = [
+            // For imgui_bundle below
+            // -----------------------
             'numpy',
             'pydantic',
             'typing_extensions',
             'munch',
             'imgui_bundle',
             'pillow',
-            // Add more packages as needed
+
+            // For fiatlight below
+            // --------------------
+            'pandas',
+            'matplotlib',
+            'opencv-python',
+
+            // Loading Pygments, asttokens, decorator, executing, ipython, matplotlib-inline, pandas, prompt_toolkit, pure_eval, sqlite3, stack_data, traitlets, wcwidth
+            // 'Pygments',
+            // 'ipython',
+            // 'sqlite3',
+
+            "pyodide_dist/fiatlight-0.1.0-py3-none-any.whl"
+
         ];
 
         const totalSteps = packages.length;
