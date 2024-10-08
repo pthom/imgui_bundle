@@ -67,6 +67,29 @@ def is_using_bgr_color_order() -> bool:
     """
     pass
 
+# bool IsColorOrderUndefined();    /* original C++ signature */
+def is_color_order_undefined() -> bool:
+    """Returns True if the color order is undefined (i.e. UseRgbColorOrder or UseBgrColorOrder was not called)
+    (private API)
+    """
+    pass
+
+# Temporary change of color order (useful for displaying a single image with a different color order)
+# void PushColorOrderRgb();    /* original C++ signature */
+def push_color_order_rgb() -> None:
+    """(private API)"""
+    pass
+
+# void PushColorOrderBgr();    /* original C++ signature */
+def push_color_order_bgr() -> None:
+    """(private API)"""
+    pass
+
+# void PopColorOrder();    /* original C++ signature */
+def pop_color_order() -> None:
+    """(private API)"""
+    pass
+
 class ColorMapStatsTypeId(enum.Enum):
     """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
 

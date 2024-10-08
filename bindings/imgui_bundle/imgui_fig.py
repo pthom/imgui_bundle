@@ -9,7 +9,6 @@ import matplotlib
 matplotlib.use('Agg')  # set the renderer to Tk
 from matplotlib.figure import Figure  # noqa: E402
 import numpy  # noqa: E402
-import cv2  # noqa: E402
 import matplotlib  # noqa: E402
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
@@ -37,10 +36,8 @@ def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) ->
         w, h = figure.canvas.get_width_height()
         buf = numpy.fromstring(figure.canvas.tostring_rgb(), dtype=numpy.uint8)
         buf.shape = (h, w, 3)
-        if immvision.is_using_bgr_color_order():
-            img = cv2.cvtColor(buf, cv2.COLOR_RGB2BGR)
-        else:
-            img = buf
+
+        img = buf
         matplotlib.pyplot.close(figure)
         statics.fig_image_cache[fig_id] = img
     return statics.fig_image_cache[fig_id]
@@ -78,7 +75,9 @@ def fig(label_id: str,
     """
     image_rgb = _fig_to_image(label_id, figure, refresh_image)
 
+    immvision.push_color_order_rgb()
     mouse_position_tuple = immvision.image_display_resizable(
         label_id, image_rgb, size, refresh_image, resizable, show_options_button)
+    immvision.pop_color_order()
     mouse_position = ImVec2(mouse_position_tuple[0], mouse_position_tuple[1])
     return mouse_position

@@ -56,6 +56,18 @@ void py_init_module_immvision(py::module& m)
     m.def("is_using_bgr_color_order",
         ImmVision::IsUsingBgrColorOrder, " Returns True if we are using BGR color order\n(private API)");
 
+    m.def("is_color_order_undefined",
+        ImmVision::IsColorOrderUndefined, " Returns True if the color order is undefined (i.e. UseRgbColorOrder or UseBgrColorOrder was not called)\n(private API)");
+
+    m.def("push_color_order_rgb",
+        ImmVision::PushColorOrderRgb, "(private API)");
+
+    m.def("push_color_order_bgr",
+        ImmVision::PushColorOrderBgr, "(private API)");
+
+    m.def("pop_color_order",
+        ImmVision::PopColorOrder, "(private API)");
+
 
     py::enum_<ImmVision::ColorMapStatsTypeId>(m, "ColorMapStatsTypeId", py::arithmetic(), "Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values")
         .value("from_full_image", ImmVision::ColorMapStatsTypeId::FromFullImage, "")
