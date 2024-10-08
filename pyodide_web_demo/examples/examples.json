@@ -25,6 +25,14 @@
         "filename": "demo_docking.py"
       },
       {
+        "label": "Image processing",
+        "filename": "dem_immvision_process.py"
+      },
+      {
+        "label": "Fiatlight: Toon Edges",
+        "filename": "fl_demo_toon_edges.py"
+      },
+      {
         "label": "Fiatlight: Word Count",
         "filename": "fl_word_count.py"
       }
