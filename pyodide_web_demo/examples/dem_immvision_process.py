@@ -79,13 +79,13 @@ def gui_sobel_params(params: SobelParams) -> bool:
     imgui.text("Orientation")
     imgui.same_line()
     if imgui.radio_button(
-        "Horizontal", params.orientation == SobelParams.Orientation.Horizontal
+            "Horizontal", params.orientation == SobelParams.Orientation.Horizontal
     ):
         changed = True
         params.orientation = SobelParams.Orientation.Horizontal
     imgui.same_line()
     if imgui.radio_button(
-        "Vertical", params.orientation == SobelParams.Orientation.Vertical
+            "Vertical", params.orientation == SobelParams.Orientation.Vertical
     ):
         changed = True
         params.orientation = SobelParams.Orientation.Vertical
@@ -157,6 +157,5 @@ def demo_gui():
 
 
 # The main entry point will run our GUI function
-if __name__ == "__main__":
-    demo_utils.set_hello_imgui_demo_assets_folder()
-    immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
+immapp.run(demo_gui, with_markdown=True)
+

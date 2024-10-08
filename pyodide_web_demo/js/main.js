@@ -5,7 +5,7 @@
 // Initialize Split.js for resizable panes
 Split(['#editor-container', '#canvas-container'], {
     sizes: [25, 75], // Adjusted sizes as per user's update
-    minSize: 200,    // Minimum size of each pane in pixels
+    minSize: 0,    // Minimum size of each pane in pixels
     gutterSize: 8,
     cursor: 'col-resize',
     onDrag: () => {
