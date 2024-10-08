@@ -6417,10 +6417,19 @@ void py_init_module_imgui_main(py::module& m)
         .def_readwrite("y0", &ImFontGlyph::Y0, "Glyph corners")
         .def_readwrite("x1", &ImFontGlyph::X1, "Glyph corners")
         .def_readwrite("y1", &ImFontGlyph::Y1, "Glyph corners")
-        .def_readwrite("u0", &ImFontGlyph::U0, "Texture coordinates")
-        .def_readwrite("v0", &ImFontGlyph::V0, "Texture coordinates")
-        .def_readwrite("u1", &ImFontGlyph::U1, "Texture coordinates")
-        .def_readwrite("v1", &ImFontGlyph::V1, "Texture coordinates")
+        .def_readwrite("u0", &ImFontGlyph::U0, "")
+        .def_readwrite("v0", &ImFontGlyph::V0, "")
+        .def_readwrite("u1", &ImFontGlyph::U1, "")
+        .def_readwrite("v1", &ImFontGlyph::V1, "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("is_colored",
+            &ImFontGlyph::isColored, "(private API)")
+        .def("is_visible",
+            &ImFontGlyph::isVisible, "(private API)")
+        .def("get_codepoint",
+            &ImFontGlyph::getCodepoint, "(private API)")
+        // #endif
         ;
 
 

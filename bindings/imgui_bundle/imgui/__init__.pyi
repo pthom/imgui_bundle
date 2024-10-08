@@ -10234,13 +10234,32 @@ class ImFontGlyph:
     # Y1;    /* original C++ signature */
     y1: float  # Glyph corners
     # float           U0,     /* original C++ signature */
-    u0: float  # Texture coordinates
+    u0: float
     # V0,     /* original C++ signature */
-    v0: float  # Texture coordinates
+    v0: float
     # U1,     /* original C++ signature */
-    u1: float  # Texture coordinates
+    u1: float
     # V1;    /* original C++ signature */
-    v1: float  # Texture coordinates
+    v1: float
+    # Texture coordinates
+
+    #                 #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # [ADAPT_IMGUI_BUNDLE]
+    # bool isColored() const { return Colored != 0; }    /* original C++ signature */
+    def is_colored(self) -> bool:
+        """(private API)"""
+        pass
+    # bool isVisible() const { return Visible != 0; }    /* original C++ signature */
+    def is_visible(self) -> bool:
+        """(private API)"""
+        pass
+    # unsigned int getCodepoint() const { return Codepoint; }    /* original C++ signature */
+    def get_codepoint(self) -> int:
+        """(private API)"""
+        pass
+    # [/ADAPT_IMGUI_BUNDLE]
+    #                 #endif
     # ImFontGlyph(float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float());    /* original C++ signature */
     def __init__(
         self,
