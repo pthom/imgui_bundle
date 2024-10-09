@@ -1,12 +1,14 @@
 """imgui_fig.fig: Display Matplotlib figures in an ImGui window.
 
-Important: before importing pyplot, set the renderer to Tk,
-so that the figure is not displayed on the screen before we can capture it:
-    import matplotlib
-    matplotlib.use('Agg')
+Important:
+  in order to use imgui_fig, you need to change matplotlib renderer to Agg.
+  so that the figure is not displayed on the screen before we can capture it:
+  add the following lines at the start of your script (and before importing pyplot):
+
+        import matplotlib
+        matplotlib.use('Agg')
+
 """
-import matplotlib
-matplotlib.use('Agg')  # set the renderer to Tk
 from matplotlib.figure import Figure  # noqa: E402
 import numpy  # noqa: E402
 import matplotlib  # noqa: E402
@@ -35,12 +37,24 @@ def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) ->
         # Get the RGBA buffer from the figure
         w, h = figure.canvas.get_width_height()
         buf = numpy.fromstring(figure.canvas.tostring_rgb(), dtype=numpy.uint8)
-        buf.shape = (h, w, 3)
+
+        try:
+            buf.shape = (h, w, 3)
+        except ValueError as e:
+            msg = """
+        imgui_fig.fig failed: in order to use imgui_fig, you need to change matplotlib renderer to Agg.
+        Add the following lines at the start of your script (and before importing pyplot):
+
+            import matplotlib
+            matplotlib.use('Agg')
+            """
+            raise RuntimeError(msg) from e
 
         img = buf
         matplotlib.pyplot.close(figure)
         statics.fig_image_cache[fig_id] = img
     return statics.fig_image_cache[fig_id]
+
 
 
 
