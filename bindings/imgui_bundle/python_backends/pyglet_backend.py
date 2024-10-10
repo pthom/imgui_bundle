@@ -43,14 +43,14 @@ class PygletMixin(object):
         key.Z: imgui.Key.z,
     }
     modifier_map = {
-        key.LCTRL: imgui.Key.im_gui_mod_ctrl,
-        key.RCTRL: imgui.Key.im_gui_mod_ctrl,
-        key.LSHIFT: imgui.Key.im_gui_mod_shift,
-        key.RSHIFT: imgui.Key.im_gui_mod_shift,
-        key.LALT: imgui.Key.im_gui_mod_alt,
-        key.RALT: imgui.Key.im_gui_mod_alt,
-        key.LCOMMAND: imgui.Key.im_gui_mod_super,
-        key.RCOMMAND: imgui.Key.im_gui_mod_super,
+        key.LCTRL: imgui.Key.mod_ctrl,
+        key.RCTRL: imgui.Key.mod_ctrl,
+        key.LSHIFT: imgui.Key.mod_shift,
+        key.RSHIFT: imgui.Key.mod_shift,
+        key.LALT: imgui.Key.mod_alt,
+        key.RALT: imgui.Key.mod_alt,
+        key.LCOMMAND: imgui.Key.mod_super,
+        key.RCOMMAND: imgui.Key.mod_super,
     }
     _gui_time = None
 

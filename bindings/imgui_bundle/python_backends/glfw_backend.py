@@ -81,14 +81,14 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[glfw.KEY_Z] = imgui.Key.z
 
         self.modifier_map = {}
-        self.modifier_map[glfw.KEY_LEFT_CONTROL] = imgui.Key.im_gui_mod_ctrl
-        self.modifier_map[glfw.KEY_RIGHT_CONTROL] = imgui.Key.im_gui_mod_ctrl
-        self.modifier_map[glfw.KEY_LEFT_SHIFT] = imgui.Key.im_gui_mod_shift
-        self.modifier_map[glfw.KEY_RIGHT_SHIFT] = imgui.Key.im_gui_mod_shift
-        self.modifier_map[glfw.KEY_LEFT_ALT] = imgui.Key.im_gui_mod_alt
-        self.modifier_map[glfw.KEY_RIGHT_ALT] = imgui.Key.im_gui_mod_alt
-        self.modifier_map[glfw.KEY_LEFT_SUPER] = imgui.Key.im_gui_mod_super
-        self.modifier_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.im_gui_mod_super
+        self.modifier_map[glfw.KEY_LEFT_CONTROL] = imgui.Key.mod_ctrl
+        self.modifier_map[glfw.KEY_RIGHT_CONTROL] = imgui.Key.mod_ctrl
+        self.modifier_map[glfw.KEY_LEFT_SHIFT] = imgui.Key.mod_shift
+        self.modifier_map[glfw.KEY_RIGHT_SHIFT] = imgui.Key.mod_shift
+        self.modifier_map[glfw.KEY_LEFT_ALT] = imgui.Key.mod_alt
+        self.modifier_map[glfw.KEY_RIGHT_ALT] = imgui.Key.mod_alt
+        self.modifier_map[glfw.KEY_LEFT_SUPER] = imgui.Key.mod_super
+        self.modifier_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.mod_super
 
     def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
         # perf: local for faster access

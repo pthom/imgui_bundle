@@ -64,14 +64,14 @@ class PygameRenderer(FixedPipelineRenderer):
         }
 
         self.modifier_map = {
-            pygame.K_LCTRL: imgui.Key.im_gui_mod_ctrl,
-            pygame.K_RCTRL: imgui.Key.im_gui_mod_ctrl,
-            pygame.K_LSHIFT: imgui.Key.im_gui_mod_shift,
-            pygame.K_RSHIFT: imgui.Key.im_gui_mod_shift,
-            pygame.K_LALT: imgui.Key.im_gui_mod_alt,
-            pygame.K_RALT: imgui.Key.im_gui_mod_alt,
-            pygame.K_LSUPER: imgui.Key.im_gui_mod_super,
-            pygame.K_RSUPER: imgui.Key.im_gui_mod_super,
+            pygame.K_LCTRL: imgui.Key.mod_ctrl,
+            pygame.K_RCTRL: imgui.Key.mod_ctrl,
+            pygame.K_LSHIFT: imgui.Key.mod_shift,
+            pygame.K_RSHIFT: imgui.Key.mod_shift,
+            pygame.K_LALT: imgui.Key.mod_alt,
+            pygame.K_RALT: imgui.Key.mod_alt,
+            pygame.K_LSUPER: imgui.Key.mod_super,
+            pygame.K_RSUPER: imgui.Key.mod_super,
         }
 
     def process_event(self, event):

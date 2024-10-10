@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # ruff: noqa: F403, F405
 from __future__ import absolute_import
+from typing import Any
 
 from imgui_bundle import imgui
 from sdl2 import *
@@ -34,14 +35,14 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
 
         self.io.display_size = width_ptr[0], height_ptr[0]
 
-        def get_clipboard_text() -> str:
+        def get_clipboard_text(_imgui_context: Any) -> str:
             return SDL_GetClipboardText()
 
-        def set_clipboard_text(text: str) -> None:
+        def set_clipboard_text(_imgui_context: Any, text: str) -> None:
             SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
 
-        imgui.get_io().get_clipboard_text_fn_ = get_clipboard_text
-        imgui.get_io().set_clipboard_text_fn_ = set_clipboard_text
+        imgui.get_platform_io().platform_get_clipboard_text_fn = get_clipboard_text
+        imgui.get_platform_io().platform_set_clipboard_text_fn = set_clipboard_text
 
         self._map_keys()
 
@@ -72,14 +73,14 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[SDL_SCANCODE_Z] = imgui.Key.z
 
         self.modifier_map = {}
-        self.modifier_map[SDL_SCANCODE_LCTRL] = imgui.Key.im_gui_mod_ctrl
-        self.modifier_map[SDL_SCANCODE_RCTRL] = imgui.Key.im_gui_mod_ctrl
-        self.modifier_map[SDL_SCANCODE_LSHIFT] = imgui.Key.im_gui_mod_shift
-        self.modifier_map[SDL_SCANCODE_RSHIFT] = imgui.Key.im_gui_mod_shift
-        self.modifier_map[SDL_SCANCODE_LALT] = imgui.Key.im_gui_mod_alt
-        self.modifier_map[SDL_SCANCODE_RALT] = imgui.Key.im_gui_mod_alt
-        self.modifier_map[SDL_SCANCODE_LGUI] = imgui.Key.im_gui_mod_super
-        self.modifier_map[SDL_SCANCODE_RGUI] = imgui.Key.im_gui_mod_super
+        self.modifier_map[SDL_SCANCODE_LCTRL] = imgui.Key.mod_ctrl
+        self.modifier_map[SDL_SCANCODE_RCTRL] = imgui.Key.mod_ctrl
+        self.modifier_map[SDL_SCANCODE_LSHIFT] = imgui.Key.mod_shift
+        self.modifier_map[SDL_SCANCODE_RSHIFT] = imgui.Key.mod_shift
+        self.modifier_map[SDL_SCANCODE_LALT] = imgui.Key.mod_alt
+        self.modifier_map[SDL_SCANCODE_RALT] = imgui.Key.mod_alt
+        self.modifier_map[SDL_SCANCODE_LGUI] = imgui.Key.mod_super
+        self.modifier_map[SDL_SCANCODE_RGUI] = imgui.Key.mod_super
 
     def process_event(self, event):
         io = self.io
