@@ -56,8 +56,11 @@ async function loadPyodideAndPackages() {
             // 'ipython',
             // 'sqlite3',
 
-            "pyodide_dist/fiatlight-0.1.0-py3-none-any.whl"
+            "pyodide_dist/fiatlight-0.1.0-py3-none-any.whl",
 
+            "scikit-learn",
+            "scipy",
+            "pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
         ];
 
         const totalSteps = packages.length;
