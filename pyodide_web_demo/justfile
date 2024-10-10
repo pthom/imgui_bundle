@@ -42,3 +42,5 @@ build_dist:
 srv:
     python3 -m http.server 8005
 
+rsync_tq:
+    rsync -avz --delete . pascal@traineq.org:HTML/probabl/

@@ -35,6 +35,10 @@
       {
         "label": "Fiatlight: Word Count",
         "filename": "fl_word_count.py"
+      },
+      {
+        "label": "Fiatlight: Draw Scatter",
+        "filename": "scatter_fiatlight.py"
       }
     ]
   }
