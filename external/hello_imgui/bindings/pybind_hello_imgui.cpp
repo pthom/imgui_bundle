@@ -1067,11 +1067,17 @@ void py_init_module_hello_imgui(py::module& m)
         "Returns the path corresponding to the given IniFolderType");
 
 
+    py::enum_<HelloImGui::FpsIdlingMode>(m, "FpsIdlingMode", py::arithmetic(), " FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.\n - Sleep: the application will sleep when idling to reduce CPU usage.\n - EarlyReturn: rendering will return immediately when idling.\n   This is specifically designed for event-driven, and real-time applications.\n   Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.\n - Auto: use platform-specific default behavior.\n    On most platforms, it will sleep. On Emscripten, `Render()` will return immediately\n    to avoid blocking the main thread.\n Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.")
+        .value("sleep", HelloImGui::FpsIdlingMode::Sleep, "")
+        .value("early_return", HelloImGui::FpsIdlingMode::EarlyReturn, "")
+        .value("auto", HelloImGui::FpsIdlingMode::Auto, "");
+
+
     auto pyClassFpsIdling =
         py::class_<HelloImGui::FpsIdling>
             (m, "FpsIdling", "FpsIdling is a struct that contains Fps Idling parameters")
         .def(py::init<>([](
-        float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
+        float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, HelloImGui::FpsIdlingMode fpsIdlingMode = HelloImGui::FpsIdlingMode::Auto)
         {
             auto r = std::make_unique<HelloImGui::FpsIdling>();
             r->fpsIdle = fpsIdle;
@@ -1079,15 +1085,17 @@ void py_init_module_hello_imgui(py::module& m)
             r->enableIdling = enableIdling;
             r->isIdling = isIdling;
             r->rememberEnableIdling = rememberEnableIdling;
+            r->fpsIdlingMode = fpsIdlingMode;
             return r;
         })
-        , py::arg("fps_idle") = 9.f, py::arg("time_active_after_last_event") = 3.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false
+        , py::arg("fps_idle") = 9.f, py::arg("time_active_after_last_event") = 3.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false, py::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto
         )
         .def_readwrite("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen\n  very frequently. In order to reduce the CPU usage, the FPS is reduced when\n  no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets\n  (for example a live video), you may want to ask for a faster refresh:\n  either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application\n  refresh needs)")
         .def_readwrite("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default=3._.\n  Time in seconds after the last event before the application is considered idling.")
         .def_readwrite("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling by setting this to False.\n  (this can be changed dynamically during execution)")
         .def_readwrite("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution,\n  and will be set to True when it is idling.")
         .def_readwrite("remember_enable_idling", &HelloImGui::FpsIdling::rememberEnableIdling, " `rememberEnableIdling`: _bool, default=true_.\n  If True, the last value of enableIdling is restored from the settings at startup.")
+        .def_readwrite("fps_idling_mode", &HelloImGui::FpsIdling::fpsIdlingMode, " `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.\n Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)")
         ;
 
 
@@ -1318,6 +1326,30 @@ void py_init_module_hello_imgui(py::module& m)
         pyNsImGuiDefaultSettings.def("setup_default_imgui_style",
             HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle);
     } // </namespace ImGuiDefaultSettings>
+
+    { // <namespace ManualRender>
+        py::module_ pyNsManualRender = m.def_submodule("manual_render", "namespace ManualRender");
+        pyNsManualRender.def("setup_from_runner_params",
+            HelloImGui::ManualRender::SetupFromRunnerParams,
+            py::arg("runner_params"),
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.");
+
+        pyNsManualRender.def("setup_from_simple_runner_params",
+            HelloImGui::ManualRender::SetupFromSimpleRunnerParams,
+            py::arg("simple_params"),
+            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("setup_from_gui_function",
+            HelloImGui::ManualRender::SetupFromGuiFunction,
+            py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f,
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("render",
+            HelloImGui::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");
+
+        pyNsManualRender.def("tear_down",
+            HelloImGui::ManualRender::TearDown, " Tears down the renderer and releases all associated resources.\n This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n After calling `TearDown()`, the InitFromXXX can be called with new parameters.");
+    } // </namespace ManualRender>
     ////////////////////    </generated_from:hello_imgui_amalgamation.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
