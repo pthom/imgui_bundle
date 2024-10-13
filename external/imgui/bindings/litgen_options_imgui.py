@@ -365,6 +365,41 @@ def litgen_options_imgui(
         ]
     )
 
+    options.member_exclude_by_name_and_class__regex = {
+        "ImVector": join_string_by_pipe_char([
+            # IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+            r"^Size$",
+            r"^Capacity$",
+            r"^Data$",
+            r"^value_type$",
+            r"^iterator$",
+            r"^const_iterator$",
+            r"^clear_delete$",
+            r"^size_in_bytes$",
+            r"^max_size$",
+            r"^capacity$",
+            r"^begin$",
+            r"^end$",
+            r"^front$",
+            r"^back$",
+            r"^swap$",
+            r"^_grow_capacity$",
+            r"^resize$",
+            r"^shrink$",
+            r"^reserve$",
+            r"^reserve_discard$",
+            r"^erase$",
+            r"^erase_unsorted$",
+            r"^insert$",
+            r"^contains$",
+            r"^find$",
+            r"^find_index$",
+            r"^find_erase$",
+            r"^find_erase_unsorted$",
+            r"^index_from_ptr$",
+        ])
+    }
+
     options.member_exclude_by_type__regex = join_string_by_pipe_char(
         [
             r"^ImDrawCallback$",
@@ -452,6 +487,11 @@ def litgen_options_imgui(
 
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"
+        # IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+        options.fn_exclude_by_name_and_signature = {
+            "Selectable": "const char *, bool, ImGuiSelectableFlags, const ImVec2 &",
+            "MenuItem": "const char *, const char *, bool, bool",
+        }
     elif options_type == ImguiOptionsType.imgui_internal_h:
         pass
     elif options_type == ImguiOptionsType.imgui_stdlib_h:
