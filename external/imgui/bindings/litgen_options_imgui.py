@@ -54,7 +54,10 @@ def _preprocess_imgui_code(code: str) -> str:
     return new_code
 
 
-def _add_imvector_template_options(options: litgen.LitgenOptions):
+def _add_imvector_template_options(
+        options: litgen.LitgenOptions,
+        docking_branch: bool
+):
     instantiated_types = [
         "int",
         "uint",
@@ -69,7 +72,6 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImDrawList*",
         "ImFont*",
         "ImFontGlyph",
-        "ImGuiPlatformMonitor",
         "ImGuiViewport*",
         "ImGuiWindow*",
         "ImFontAtlasCustomRect",
@@ -85,7 +87,6 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTableColumnSortSpecs",
         "ImGuiTableInstanceData",
         "ImGuiTableTempData",
-        "ImGuiNavTreeNodeData",
         "ImGuiPtrOrIndex",
         "ImGuiSettingsHandler",
         "ImGuiShrinkWidthItem",
@@ -97,6 +98,10 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiOldColumnData",
         "ImGuiOldColumns",
         "ImGuiStyleMod",  # uses union
+
+        # (davidlatwe) Renamed in imgui commit 2d0baaabe62a
+        # "ImGuiNavTreeNodeData",
+        "ImGuiTreeNodeStackData",
 
         # TODO: (davidlatwe) For some unknown reason I get this error when
         #   I do `import imgui`, module was build with pybind11:
@@ -112,6 +117,11 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         #   in. But it didn't. Also, the error didn't occur if with nanobind.
         "ImDrawIdx",
     ]
+    if docking_branch:
+        instantiated_types += [
+            "ImGuiPlatformMonitor",
+        ]
+
     cpp_synonyms_list_str = [
         "ImTextureID=int",
         "ImDrawIdx=uint",
@@ -455,6 +465,8 @@ def litgen_options_imgui(
             r"^IsMouse",
             r"^AddPolyline",
             r"^AddConvexPolyFilled",
+            r"^Shortcut$",
+            r"^SetItemKeyOwner",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
@@ -483,7 +495,7 @@ def litgen_options_imgui(
 
     options.srcmlcpp_options.flag_show_progress = True
 
-    _add_imvector_template_options(options)
+    _add_imvector_template_options(options, docking_branch)
 
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"
