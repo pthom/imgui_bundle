@@ -3392,3 +3392,7 @@ class imgui_default_settings:  # Proxy class that introduces typings for the *su
 def final_app_window_screenshot() -> np.ndarray:
     """Return a screenshot of the final screen of the last (exited) app"""
     pass
+
+def final_app_window_screenshot_framebuffer_scale() -> float:
+    """Returns the scale of the framebuffer used to take the screenshot"""
+    pass

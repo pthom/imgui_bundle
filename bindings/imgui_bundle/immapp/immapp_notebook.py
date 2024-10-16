@@ -19,7 +19,7 @@ def run_nb(
     with_implot: bool = True,
     with_markdown: bool = True,
     with_node_editor: bool = True,
-    thumbnail_height: int = 150,
+    thumbnail_height: int = 0,
     thumbnail_ratio: float = 0.0,
     run_id: Optional[str] = None,
 ) -> None:
@@ -89,10 +89,16 @@ def run_nb(
         display(pil_image)
 
     def run_app_and_display_thumb():
+        nonlocal thumbnail_ratio
         from imgui_bundle import hello_imgui
 
         run_app()
         app_image = hello_imgui.final_app_window_screenshot()
+
+        scale = hello_imgui.final_app_window_screenshot_framebuffer_scale()
+        if thumbnail_ratio == 0.0:
+            thumbnail_ratio = 1.0  / scale
+
         thumbnail = make_thumbnail(app_image)
         display_image(thumbnail)
 

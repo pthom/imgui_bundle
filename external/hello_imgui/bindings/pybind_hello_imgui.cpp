@@ -45,6 +45,7 @@ py::array_t<uint8_t> FinalAppWindowScreenshot()
     return r;
 }
 
+namespace HelloImGui { float FinalAppWindowScreenshotFramebufferScale(); }
 
 void py_init_module_hello_imgui(py::module& m)
 {
@@ -59,6 +60,7 @@ void py_init_module_hello_imgui(py::module& m)
 
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
+    m.def("final_app_window_screenshot_framebuffer_scale", HelloImGui::FinalAppWindowScreenshotFramebufferScale);
 
     m.def("get_glfw_window_address", []() {
         return (size_t) HelloImGui::GetRunnerParams()->backendPointers.glfwWindow;
