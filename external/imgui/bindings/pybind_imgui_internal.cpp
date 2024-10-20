@@ -2040,7 +2040,7 @@ void py_init_module_imgui_internal(py::module& m)
         ;
 
 
-    py::enum_<ImGuiContextHookType>(m, "ContextHookType", py::arithmetic(), "")
+    py::enum_<ImGuiContextHookType>(m, "ContextHookType", py::arithmetic(), "[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
         .value("new_frame_pre", ImGuiContextHookType_NewFramePre, "")
         .value("new_frame_post", ImGuiContextHookType_NewFramePost, "")
         .value("end_frame_pre", ImGuiContextHookType_EndFramePre, "")
@@ -2048,7 +2048,9 @@ void py_init_module_imgui_internal(py::module& m)
         .value("render_pre", ImGuiContextHookType_RenderPre, "")
         .value("render_post", ImGuiContextHookType_RenderPost, "")
         .value("shutdown", ImGuiContextHookType_Shutdown, "")
-        .value("pending_removal_", ImGuiContextHookType_PendingRemoval_, "");
+        .value("pending_removal_", ImGuiContextHookType_PendingRemoval_, "")
+        .value("begin_window", ImGuiContextHookType_BeginWindow, "")
+        .value("end_window", ImGuiContextHookType_EndWindow, "");
 
 
     auto pyClassImGuiContextHook =

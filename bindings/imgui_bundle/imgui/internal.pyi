@@ -3239,6 +3239,8 @@ class IDStackTool:
 # -----------------------------------------------------------------------------
 
 class ContextHookType(enum.Enum):
+    """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764"""
+
     # ImGuiContextHookType_NewFramePre,     /* original C++ signature */
     new_frame_pre = enum.auto()  # (= 0)
     # ImGuiContextHookType_NewFramePost,     /* original C++ signature */
@@ -3253,8 +3255,12 @@ class ContextHookType(enum.Enum):
     render_post = enum.auto()  # (= 5)
     # ImGuiContextHookType_Shutdown,     /* original C++ signature */
     shutdown = enum.auto()  # (= 6)
-    # ImGuiContextHookType_PendingRemoval_ }    /* original C++ signature */
+    # ImGuiContextHookType_PendingRemoval_,     /* original C++ signature */
     pending_removal_ = enum.auto()  # (= 7)
+    # ImGuiContextHookType_BeginWindow,     /* original C++ signature */
+    begin_window = enum.auto()  # (= 8)
+    # ImGuiContextHookType_EndWindow }    /* original C++ signature */
+    end_window = enum.auto()  # (= 9)
 
 class ContextHook:
     # ImGuiID                     HookId;    /* original C++ signature */
