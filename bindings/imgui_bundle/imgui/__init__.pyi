@@ -10,6 +10,9 @@ from typing import (
     overload,
     Iterator,
     Callable,
+    Union,
+    Protocol,
+    TypeVar,
 )
 import numpy as np
 import enum
@@ -321,6 +324,16 @@ VERTEX_BUFFER_UV_OFFSET: int
 VERTEX_BUFFER_COL_OFFSET: int
 INDEX_SIZE: int
 
+# VecProtocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec2 and ImVec4
+TVec = TypeVar("TVec", bound="VecProtocol")
+
+class VecProtocol(Protocol[TVec]):
+    def __add__(self: TVec, other: TVec) -> TVec: ...
+    def __sub__(self: TVec, other: TVec) -> TVec: ...
+    def __mul__(self: TVec, other: Union[TVec, float]) -> TVec: ...
+    def __truediv__(self: TVec, other: Union[TVec, float]) -> TVec: ...
+    def __neg__(self: TVec) -> TVec: ...
+
 ##################################################
 #    AUTO GENERATED CODE BELOW
 ##################################################
@@ -469,7 +482,7 @@ INDEX_SIZE: int
 # #endif
 #
 
-class ImVec2:
+class ImVec2(VecProtocol["ImVec2"]):
     # float                                   x,     /* original C++ signature */
     x: float
     # y;    /* original C++ signature */
@@ -509,7 +522,7 @@ class ImVec2:
     # #endif
     #
 
-class ImVec4:
+class ImVec4(VecProtocol["ImVec4"]):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
     # float                                                     x,     /* original C++ signature */

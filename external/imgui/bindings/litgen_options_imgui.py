@@ -179,14 +179,6 @@ def add_imgui_test_engine_options(options: LitgenOptions):
     options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
     options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
 
-    def postprocess_stub(code: str):
-        # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
-        r = code.replace(": TestRef", ": Union[TestRef, str]")
-        r = r.replace("(TestEngineExportFormat)0", "TestEngineExportFormat.j_unit_xml")
-        return r
-
-    options.postprocess_stub_function = postprocess_stub
-
 
 def litgen_options_imgui(
     options_type: ImguiOptionsType, docking_branch: bool
@@ -440,6 +432,26 @@ def litgen_options_imgui(
         pass
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
+
+    def postprocess_stub_add_vec_protocol(stub_code: str) -> str:
+        stub_code = stub_code.replace(
+            "class ImVec2:", "class ImVec2(VecProtocol['ImVec2']):"
+        )
+        stub_code = stub_code.replace(
+            "class ImVec4:", "class ImVec4(VecProtocol['ImVec4']):"
+        )
+        return stub_code
+
+    def postprocess_stub_test_engine(code: str) -> str:
+        # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
+        r = code.replace(": TestRef", ": Union[TestRef, str]")
+        r = r.replace("(TestEngineExportFormat)0", "TestEngineExportFormat.j_unit_xml")
+        return r
+
+    if options_type == ImguiOptionsType.imgui_test_engine:
+        options.postprocess_stub_function = postprocess_stub_test_engine
+    else:
+        options.postprocess_stub_function = postprocess_stub_add_vec_protocol
 
     return options
 
