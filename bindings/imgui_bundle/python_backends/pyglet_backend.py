@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 import warnings
-from distutils.version import LooseVersion
 
 from imgui_bundle import imgui
 
@@ -230,7 +229,7 @@ def create_renderer(window, attach_callbacks=True):
     # Pyglet < 2.0 has issues with ProgrammablePipeline even when the context
     # is OpenGL 3, so we need to check the pyglet version rather than looking
     # at window.config.major_version to see if we want to use programmable.
-    if LooseVersion(pyglet.version) < LooseVersion("2.0"):
+    if int(pyglet.version.split('.')[0]) < 2:
         return PygletFixedPipelineRenderer(window, attach_callbacks)
     else:
         return PygletProgrammablePipelineRenderer(window, attach_callbacks)
