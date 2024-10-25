@@ -18,7 +18,7 @@ def litgen_options_implot() -> LitgenOptions:
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
 
     options.fn_force_overload__regex = "BeginPlot"
-    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$"])
+    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$", "^SetupAxisLinks$", "^SetNextAxisLinks$"])
 
     options.fn_params_exclude_names__regex += "|^stride$"
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"

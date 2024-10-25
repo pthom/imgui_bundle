@@ -84,318 +84,367 @@ void py_init_module_implot(py::module& m)
     ////////////////////    <generated_from:implot.h>    ////////////////////
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
+
+
+    auto pyClassBoxedValue =
+        py::class_<BoxedValue>
+            (m, "BoxedValue", "")
+        .def(py::init<>([](
+        double value = double())
+        {
+            auto r = std::make_unique<BoxedValue>();
+            r->value = value;
+            return r;
+        })
+        , py::arg("value") = double()
+        )
+        .def_readwrite("value", &BoxedValue::value, "")
+        ;
     // #endif
     //
 
 
-    py::enum_<ImAxis_>(m, "ImAxis_", py::arithmetic(), "Axis indices. The values assigned may change; NEVER hardcode these.")
-        .value("x1", ImAxis_X1, "enabled by default")
-        .value("x2", ImAxis_X2, "disabled by default")
-        .value("x3", ImAxis_X3, "disabled by default")
-        .value("y1", ImAxis_Y1, "enabled by default")
-        .value("y2", ImAxis_Y2, "disabled by default")
-        .value("y3", ImAxis_Y3, "disabled by default")
-        .value("count", ImAxis_COUNT, "bookeeping");
-
-
-    py::enum_<ImPlotFlags_>(m, "Flags_", py::arithmetic(), "Options for plots (see BeginPlot).")
-        .value("none", ImPlotFlags_None, "default")
-        .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\")")
-        .value("no_legend", ImPlotFlags_NoLegend, "the legend will not be displayed")
-        .value("no_mouse_text", ImPlotFlags_NoMouseText, "the mouse position, in plot coordinates, will not be displayed inside of the plot")
-        .value("no_inputs", ImPlotFlags_NoInputs, "the user will not be able to interact with the plot")
-        .value("no_menus", ImPlotFlags_NoMenus, "the user will not be able to open context menus")
-        .value("no_box_select", ImPlotFlags_NoBoxSelect, "the user will not be able to box-select")
-        .value("no_frame", ImPlotFlags_NoFrame, "the ImGui frame will not be rendered")
-        .value("equal", ImPlotFlags_Equal, "x and y axes pairs will be constrained to have the same units/pixel")
-        .value("crosshairs", ImPlotFlags_Crosshairs, "the default mouse cursor will be replaced with a crosshair when hovered")
-        .value("canvas_only", ImPlotFlags_CanvasOnly, "");
-
-
-    py::enum_<ImPlotAxisFlags_>(m, "AxisFlags_", py::arithmetic(), "Options for plot axes (see SetupAxis).")
-        .value("none", ImPlotAxisFlags_None, "default")
-        .value("no_label", ImPlotAxisFlags_NoLabel, "the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)")
-        .value("no_grid_lines", ImPlotAxisFlags_NoGridLines, "no grid lines will be displayed")
-        .value("no_tick_marks", ImPlotAxisFlags_NoTickMarks, "no tick marks will be displayed")
-        .value("no_tick_labels", ImPlotAxisFlags_NoTickLabels, "no text labels will be displayed")
-        .value("no_initial_fit", ImPlotAxisFlags_NoInitialFit, "axis will not be initially fit to data extents on the first rendered frame")
-        .value("no_menus", ImPlotAxisFlags_NoMenus, "the user will not be able to open context menus with right-click")
-        .value("no_side_switch", ImPlotAxisFlags_NoSideSwitch, "the user will not be able to switch the axis side by dragging it")
-        .value("no_highlight", ImPlotAxisFlags_NoHighlight, "the axis will not have its background highlighted when hovered or held")
-        .value("opposite", ImPlotAxisFlags_Opposite, "axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)")
-        .value("foreground", ImPlotAxisFlags_Foreground, "grid lines will be displayed in the foreground (i.e. on top of data) instead of the background")
-        .value("invert", ImPlotAxisFlags_Invert, "the axis will be inverted")
-        .value("auto_fit", ImPlotAxisFlags_AutoFit, "axis will be auto-fitting to data extents")
-        .value("range_fit", ImPlotAxisFlags_RangeFit, "axis will only fit points if the point is in the visible range of the **orthogonal** axis")
-        .value("pan_stretch", ImPlotAxisFlags_PanStretch, "panning in a locked or constrained state will cause the axis to stretch if possible")
-        .value("lock_min", ImPlotAxisFlags_LockMin, "the axis minimum value will be locked when panning/zooming")
-        .value("lock_max", ImPlotAxisFlags_LockMax, "the axis maximum value will be locked when panning/zooming")
-        .value("lock", ImPlotAxisFlags_Lock, "")
-        .value("no_decorations", ImPlotAxisFlags_NoDecorations, "")
-        .value("aux_default", ImPlotAxisFlags_AuxDefault, "");
-
-
-    py::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags_", py::arithmetic(), "Options for subplots (see BeginSubplot)")
-        .value("none", ImPlotSubplotFlags_None, "default")
-        .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MySubplot\")")
-        .value("no_legend", ImPlotSubplotFlags_NoLegend, "the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)")
-        .value("no_menus", ImPlotSubplotFlags_NoMenus, "the user will not be able to open context menus with right-click")
-        .value("no_resize", ImPlotSubplotFlags_NoResize, "resize splitters between subplot cells will be not be provided")
-        .value("no_align", ImPlotSubplotFlags_NoAlign, "subplot edges will not be aligned vertically or horizontally")
-        .value("share_items", ImPlotSubplotFlags_ShareItems, "items across all subplots will be shared and rendered into a single legend entry")
-        .value("link_rows", ImPlotSubplotFlags_LinkRows, "link the y-axis limits of all plots in each row (does not apply to auxiliary axes)")
-        .value("link_cols", ImPlotSubplotFlags_LinkCols, "link the x-axis limits of all plots in each column (does not apply to auxiliary axes)")
-        .value("link_all_x", ImPlotSubplotFlags_LinkAllX, "link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)")
-        .value("link_all_y", ImPlotSubplotFlags_LinkAllY, "link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)")
-        .value("col_major", ImPlotSubplotFlags_ColMajor, "subplots are added in column major order instead of the default row major order");
-
-
-    py::enum_<ImPlotLegendFlags_>(m, "LegendFlags_", py::arithmetic(), "Options for legends (see SetupLegend)")
-        .value("none", ImPlotLegendFlags_None, "default")
-        .value("no_buttons", ImPlotLegendFlags_NoButtons, "legend icons will not function as hide/show buttons")
-        .value("no_highlight_item", ImPlotLegendFlags_NoHighlightItem, "plot items will not be highlighted when their legend entry is hovered")
-        .value("no_highlight_axis", ImPlotLegendFlags_NoHighlightAxis, "axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)")
-        .value("no_menus", ImPlotLegendFlags_NoMenus, "the user will not be able to open context menus with right-click")
-        .value("outside", ImPlotLegendFlags_Outside, "legend will be rendered outside of the plot area")
-        .value("horizontal", ImPlotLegendFlags_Horizontal, "legend entries will be displayed horizontally")
-        .value("sort", ImPlotLegendFlags_Sort, "legend entries will be displayed in alphabetical order");
-
-
-    py::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", py::arithmetic(), "Options for mouse hover text (see SetupMouseText)")
-        .value("none", ImPlotMouseTextFlags_None, "default")
-        .value("no_aux_axes", ImPlotMouseTextFlags_NoAuxAxes, "only show the mouse position for primary axes")
-        .value("no_format", ImPlotMouseTextFlags_NoFormat, "axes label formatters won't be used to render text")
-        .value("show_always", ImPlotMouseTextFlags_ShowAlways, "always display mouse position even if plot not hovered");
+    auto pyEnumImAxis_ =
+        py::enum_<ImAxis_>(m, "ImAxis_", py::arithmetic(), "Axis indices. The values assigned may change; NEVER hardcode these.")
+            .value("x1", ImAxis_X1, "enabled by default")
+            .value("x2", ImAxis_X2, "disabled by default")
+            .value("x3", ImAxis_X3, "disabled by default")
+            .value("y1", ImAxis_Y1, "enabled by default")
+            .value("y2", ImAxis_Y2, "disabled by default")
+            .value("y3", ImAxis_Y3, "disabled by default")
+            .value("count", ImAxis_COUNT, "bookeeping");
+
+
+    auto pyEnumFlags_ =
+        py::enum_<ImPlotFlags_>(m, "Flags_", py::arithmetic(), "Options for plots (see BeginPlot).")
+            .value("none", ImPlotFlags_None, "default")
+            .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\")")
+            .value("no_legend", ImPlotFlags_NoLegend, "the legend will not be displayed")
+            .value("no_mouse_text", ImPlotFlags_NoMouseText, "the mouse position, in plot coordinates, will not be displayed inside of the plot")
+            .value("no_inputs", ImPlotFlags_NoInputs, "the user will not be able to interact with the plot")
+            .value("no_menus", ImPlotFlags_NoMenus, "the user will not be able to open context menus")
+            .value("no_box_select", ImPlotFlags_NoBoxSelect, "the user will not be able to box-select")
+            .value("no_frame", ImPlotFlags_NoFrame, "the ImGui frame will not be rendered")
+            .value("equal", ImPlotFlags_Equal, "x and y axes pairs will be constrained to have the same units/pixel")
+            .value("crosshairs", ImPlotFlags_Crosshairs, "the default mouse cursor will be replaced with a crosshair when hovered")
+            .value("canvas_only", ImPlotFlags_CanvasOnly, "");
+
+
+    auto pyEnumAxisFlags_ =
+        py::enum_<ImPlotAxisFlags_>(m, "AxisFlags_", py::arithmetic(), "Options for plot axes (see SetupAxis).")
+            .value("none", ImPlotAxisFlags_None, "default")
+            .value("no_label", ImPlotAxisFlags_NoLabel, "the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)")
+            .value("no_grid_lines", ImPlotAxisFlags_NoGridLines, "no grid lines will be displayed")
+            .value("no_tick_marks", ImPlotAxisFlags_NoTickMarks, "no tick marks will be displayed")
+            .value("no_tick_labels", ImPlotAxisFlags_NoTickLabels, "no text labels will be displayed")
+            .value("no_initial_fit", ImPlotAxisFlags_NoInitialFit, "axis will not be initially fit to data extents on the first rendered frame")
+            .value("no_menus", ImPlotAxisFlags_NoMenus, "the user will not be able to open context menus with right-click")
+            .value("no_side_switch", ImPlotAxisFlags_NoSideSwitch, "the user will not be able to switch the axis side by dragging it")
+            .value("no_highlight", ImPlotAxisFlags_NoHighlight, "the axis will not have its background highlighted when hovered or held")
+            .value("opposite", ImPlotAxisFlags_Opposite, "axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)")
+            .value("foreground", ImPlotAxisFlags_Foreground, "grid lines will be displayed in the foreground (i.e. on top of data) instead of the background")
+            .value("invert", ImPlotAxisFlags_Invert, "the axis will be inverted")
+            .value("auto_fit", ImPlotAxisFlags_AutoFit, "axis will be auto-fitting to data extents")
+            .value("range_fit", ImPlotAxisFlags_RangeFit, "axis will only fit points if the point is in the visible range of the **orthogonal** axis")
+            .value("pan_stretch", ImPlotAxisFlags_PanStretch, "panning in a locked or constrained state will cause the axis to stretch if possible")
+            .value("lock_min", ImPlotAxisFlags_LockMin, "the axis minimum value will be locked when panning/zooming")
+            .value("lock_max", ImPlotAxisFlags_LockMax, "the axis maximum value will be locked when panning/zooming")
+            .value("lock", ImPlotAxisFlags_Lock, "")
+            .value("no_decorations", ImPlotAxisFlags_NoDecorations, "")
+            .value("aux_default", ImPlotAxisFlags_AuxDefault, "");
+
+
+    auto pyEnumSubplotFlags_ =
+        py::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags_", py::arithmetic(), "Options for subplots (see BeginSubplot)")
+            .value("none", ImPlotSubplotFlags_None, "default")
+            .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MySubplot\")")
+            .value("no_legend", ImPlotSubplotFlags_NoLegend, "the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)")
+            .value("no_menus", ImPlotSubplotFlags_NoMenus, "the user will not be able to open context menus with right-click")
+            .value("no_resize", ImPlotSubplotFlags_NoResize, "resize splitters between subplot cells will be not be provided")
+            .value("no_align", ImPlotSubplotFlags_NoAlign, "subplot edges will not be aligned vertically or horizontally")
+            .value("share_items", ImPlotSubplotFlags_ShareItems, "items across all subplots will be shared and rendered into a single legend entry")
+            .value("link_rows", ImPlotSubplotFlags_LinkRows, "link the y-axis limits of all plots in each row (does not apply to auxiliary axes)")
+            .value("link_cols", ImPlotSubplotFlags_LinkCols, "link the x-axis limits of all plots in each column (does not apply to auxiliary axes)")
+            .value("link_all_x", ImPlotSubplotFlags_LinkAllX, "link the x-axis limits in every plot in the subplot (does not apply to auxiliary axes)")
+            .value("link_all_y", ImPlotSubplotFlags_LinkAllY, "link the y-axis limits in every plot in the subplot (does not apply to auxiliary axes)")
+            .value("col_major", ImPlotSubplotFlags_ColMajor, "subplots are added in column major order instead of the default row major order");
+
+
+    auto pyEnumLegendFlags_ =
+        py::enum_<ImPlotLegendFlags_>(m, "LegendFlags_", py::arithmetic(), "Options for legends (see SetupLegend)")
+            .value("none", ImPlotLegendFlags_None, "default")
+            .value("no_buttons", ImPlotLegendFlags_NoButtons, "legend icons will not function as hide/show buttons")
+            .value("no_highlight_item", ImPlotLegendFlags_NoHighlightItem, "plot items will not be highlighted when their legend entry is hovered")
+            .value("no_highlight_axis", ImPlotLegendFlags_NoHighlightAxis, "axes will not be highlighted when legend entries are hovered (only relevant if x/y-axis count > 1)")
+            .value("no_menus", ImPlotLegendFlags_NoMenus, "the user will not be able to open context menus with right-click")
+            .value("outside", ImPlotLegendFlags_Outside, "legend will be rendered outside of the plot area")
+            .value("horizontal", ImPlotLegendFlags_Horizontal, "legend entries will be displayed horizontally")
+            .value("sort", ImPlotLegendFlags_Sort, "legend entries will be displayed in alphabetical order");
+
+
+    auto pyEnumMouseTextFlags_ =
+        py::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", py::arithmetic(), "Options for mouse hover text (see SetupMouseText)")
+            .value("none", ImPlotMouseTextFlags_None, "default")
+            .value("no_aux_axes", ImPlotMouseTextFlags_NoAuxAxes, "only show the mouse position for primary axes")
+            .value("no_format", ImPlotMouseTextFlags_NoFormat, "axes label formatters won't be used to render text")
+            .value("show_always", ImPlotMouseTextFlags_ShowAlways, "always display mouse position even if plot not hovered");
+
+
+    auto pyEnumDragToolFlags_ =
+        py::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", py::arithmetic(), "Options for DragPoint, DragLine, DragRect")
+            .value("none", ImPlotDragToolFlags_None, "default")
+            .value("no_cursors", ImPlotDragToolFlags_NoCursors, "drag tools won't change cursor icons when hovered or held")
+            .value("no_fit", ImPlotDragToolFlags_NoFit, "the drag tool won't be considered for plot fits")
+            .value("no_inputs", ImPlotDragToolFlags_NoInputs, "lock the tool from user inputs")
+            .value("delayed", ImPlotDragToolFlags_Delayed, "tool rendering will be delayed one frame; useful when applying position-constraints");
+
+
+    auto pyEnumColormapScaleFlags_ =
+        py::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", py::arithmetic(), "Flags for ColormapScale")
+            .value("none", ImPlotColormapScaleFlags_None, "default")
+            .value("no_label", ImPlotColormapScaleFlags_NoLabel, "the colormap axis label will not be displayed")
+            .value("opposite", ImPlotColormapScaleFlags_Opposite, "render the colormap label and tick labels on the opposite side")
+            .value("invert", ImPlotColormapScaleFlags_Invert, "invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)");
 
 
-    py::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", py::arithmetic(), "Options for DragPoint, DragLine, DragRect")
-        .value("none", ImPlotDragToolFlags_None, "default")
-        .value("no_cursors", ImPlotDragToolFlags_NoCursors, "drag tools won't change cursor icons when hovered or held")
-        .value("no_fit", ImPlotDragToolFlags_NoFit, "the drag tool won't be considered for plot fits")
-        .value("no_inputs", ImPlotDragToolFlags_NoInputs, "lock the tool from user inputs")
-        .value("delayed", ImPlotDragToolFlags_Delayed, "tool rendering will be delayed one frame; useful when applying position-constraints");
+    auto pyEnumItemFlags_ =
+        py::enum_<ImPlotItemFlags_>(m, "ItemFlags_", py::arithmetic(), "Flags for ANY PlotX function")
+            .value("none", ImPlotItemFlags_None, "")
+            .value("no_legend", ImPlotItemFlags_NoLegend, "the item won't have a legend entry displayed")
+            .value("no_fit", ImPlotItemFlags_NoFit, "the item won't be considered for plot fits");
 
 
-    py::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", py::arithmetic(), "Flags for ColormapScale")
-        .value("none", ImPlotColormapScaleFlags_None, "default")
-        .value("no_label", ImPlotColormapScaleFlags_NoLabel, "the colormap axis label will not be displayed")
-        .value("opposite", ImPlotColormapScaleFlags_Opposite, "render the colormap label and tick labels on the opposite side")
-        .value("invert", ImPlotColormapScaleFlags_Invert, "invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)");
+    auto pyEnumLineFlags_ =
+        py::enum_<ImPlotLineFlags_>(m, "LineFlags_", py::arithmetic(), "Flags for PlotLine")
+            .value("none", ImPlotLineFlags_None, "default")
+            .value("segments", ImPlotLineFlags_Segments, "a line segment will be rendered from every two consecutive points")
+            .value("loop", ImPlotLineFlags_Loop, "the last and first point will be connected to form a closed loop")
+            .value("skip_na_n", ImPlotLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data")
+            .value("no_clip", ImPlotLineFlags_NoClip, "markers (if displayed) on the edge of a plot will not be clipped")
+            .value("shaded", ImPlotLineFlags_Shaded, "a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
 
-    py::enum_<ImPlotItemFlags_>(m, "ItemFlags_", py::arithmetic(), "Flags for ANY PlotX function")
-        .value("none", ImPlotItemFlags_None, "")
-        .value("no_legend", ImPlotItemFlags_NoLegend, "the item won't have a legend entry displayed")
-        .value("no_fit", ImPlotItemFlags_NoFit, "the item won't be considered for plot fits");
+    auto pyEnumScatterFlags_ =
+        py::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", py::arithmetic(), "Flags for PlotScatter")
+            .value("none", ImPlotScatterFlags_None, "default")
+            .value("no_clip", ImPlotScatterFlags_NoClip, "markers on the edge of a plot will not be clipped");
 
 
-    py::enum_<ImPlotLineFlags_>(m, "LineFlags_", py::arithmetic(), "Flags for PlotLine")
-        .value("none", ImPlotLineFlags_None, "default")
-        .value("segments", ImPlotLineFlags_Segments, "a line segment will be rendered from every two consecutive points")
-        .value("loop", ImPlotLineFlags_Loop, "the last and first point will be connected to form a closed loop")
-        .value("skip_na_n", ImPlotLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data")
-        .value("no_clip", ImPlotLineFlags_NoClip, "markers (if displayed) on the edge of a plot will not be clipped")
-        .value("shaded", ImPlotLineFlags_Shaded, "a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases");
+    auto pyEnumStairsFlags_ =
+        py::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", py::arithmetic(), "Flags for PlotStairs")
+            .value("none", ImPlotStairsFlags_None, "default")
+            .value("pre_step", ImPlotStairsFlags_PreStep, "the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]")
+            .value("shaded", ImPlotStairsFlags_Shaded, "a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
 
-    py::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", py::arithmetic(), "Flags for PlotScatter")
-        .value("none", ImPlotScatterFlags_None, "default")
-        .value("no_clip", ImPlotScatterFlags_NoClip, "markers on the edge of a plot will not be clipped");
+    auto pyEnumShadedFlags_ =
+        py::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", py::arithmetic(), "Flags for PlotShaded (placeholder)")
+            .value("none", ImPlotShadedFlags_None, "default");
 
 
-    py::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", py::arithmetic(), "Flags for PlotStairs")
-        .value("none", ImPlotStairsFlags_None, "default")
-        .value("pre_step", ImPlotStairsFlags_PreStep, "the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]")
-        .value("shaded", ImPlotStairsFlags_Shaded, "a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases");
+    auto pyEnumBarsFlags_ =
+        py::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", py::arithmetic(), "Flags for PlotBars")
+            .value("none", ImPlotBarsFlags_None, "default")
+            .value("horizontal", ImPlotBarsFlags_Horizontal, "bars will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", py::arithmetic(), "Flags for PlotShaded (placeholder)")
-        .value("none", ImPlotShadedFlags_None, "default");
+    auto pyEnumBarGroupsFlags_ =
+        py::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", py::arithmetic(), "Flags for PlotBarGroups")
+            .value("none", ImPlotBarGroupsFlags_None, "default")
+            .value("horizontal", ImPlotBarGroupsFlags_Horizontal, "bar groups will be rendered horizontally on the current y-axis")
+            .value("stacked", ImPlotBarGroupsFlags_Stacked, "items in a group will be stacked on top of each other");
 
 
-    py::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", py::arithmetic(), "Flags for PlotBars")
-        .value("none", ImPlotBarsFlags_None, "default")
-        .value("horizontal", ImPlotBarsFlags_Horizontal, "bars will be rendered horizontally on the current y-axis");
+    auto pyEnumErrorBarsFlags_ =
+        py::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", py::arithmetic(), "Flags for PlotErrorBars")
+            .value("none", ImPlotErrorBarsFlags_None, "default")
+            .value("horizontal", ImPlotErrorBarsFlags_Horizontal, "error bars will be rendered horizontally on the current y-axis");
 
 
-    py::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", py::arithmetic(), "Flags for PlotBarGroups")
-        .value("none", ImPlotBarGroupsFlags_None, "default")
-        .value("horizontal", ImPlotBarGroupsFlags_Horizontal, "bar groups will be rendered horizontally on the current y-axis")
-        .value("stacked", ImPlotBarGroupsFlags_Stacked, "items in a group will be stacked on top of each other");
-
-
-    py::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", py::arithmetic(), "Flags for PlotErrorBars")
-        .value("none", ImPlotErrorBarsFlags_None, "default")
-        .value("horizontal", ImPlotErrorBarsFlags_Horizontal, "error bars will be rendered horizontally on the current y-axis");
-
-
-    py::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", py::arithmetic(), "Flags for PlotStems")
-        .value("none", ImPlotStemsFlags_None, "default")
-        .value("horizontal", ImPlotStemsFlags_Horizontal, "stems will be rendered horizontally on the current y-axis");
-
-
-    py::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", py::arithmetic(), "Flags for PlotInfLines")
-        .value("none", ImPlotInfLinesFlags_None, "default")
-        .value("horizontal", ImPlotInfLinesFlags_Horizontal, "lines will be rendered horizontally on the current y-axis");
-
-
-    py::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", py::arithmetic(), "Flags for PlotPieChart")
-        .value("none", ImPlotPieChartFlags_None, "default")
-        .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
-        .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)");
-
-
-    py::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", py::arithmetic(), "Flags for PlotHeatmap")
-        .value("none", ImPlotHeatmapFlags_None, "default")
-        .value("col_major", ImPlotHeatmapFlags_ColMajor, "data will be read in column major order");
-
-
-    py::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", py::arithmetic(), "Flags for PlotHistogram and PlotHistogram2D")
-        .value("none", ImPlotHistogramFlags_None, "default")
-        .value("horizontal", ImPlotHistogramFlags_Horizontal, "histogram bars will be rendered horizontally (not supported by PlotHistogram2D)")
-        .value("cumulative", ImPlotHistogramFlags_Cumulative, "each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)")
-        .value("density", ImPlotHistogramFlags_Density, "counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set")
-        .value("no_outliers", ImPlotHistogramFlags_NoOutliers, "exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts")
-        .value("col_major", ImPlotHistogramFlags_ColMajor, "data will be read in column major order (not supported by PlotHistogram)");
-
-
-    py::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", py::arithmetic(), "Flags for PlotDigital (placeholder)")
-        .value("none", ImPlotDigitalFlags_None, "default");
-
-
-    py::enum_<ImPlotImageFlags_>(m, "ImageFlags_", py::arithmetic(), "Flags for PlotImage (placeholder)")
-        .value("none", ImPlotImageFlags_None, "default");
-
-
-    py::enum_<ImPlotTextFlags_>(m, "TextFlags_", py::arithmetic(), "Flags for PlotText")
-        .value("none", ImPlotTextFlags_None, "default")
-        .value("vertical", ImPlotTextFlags_Vertical, "text will be rendered vertically");
-
-
-    py::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", py::arithmetic(), "Flags for PlotDummy (placeholder)")
-        .value("none", ImPlotDummyFlags_None, "default");
-
-
-    py::enum_<ImPlotCond_>(m, "Cond_", py::arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
-        .value("none", ImPlotCond_None, "No condition (always set the variable), same as _Always")
-        .value("always", ImPlotCond_Always, "No condition (always set the variable)")
-        .value("once", ImPlotCond_Once, "Set the variable once per runtime session (only the first call will succeed)");
-
-
-    py::enum_<ImPlotCol_>(m, "Col_", py::arithmetic(), "Plot styling colors.")
-        .value("line", ImPlotCol_Line, "plot line/outline color (defaults to next unused color in current colormap)")
-        .value("fill", ImPlotCol_Fill, "plot fill color for bars (defaults to the current line color)")
-        .value("marker_outline", ImPlotCol_MarkerOutline, "marker outline color (defaults to the current line color)")
-        .value("marker_fill", ImPlotCol_MarkerFill, "marker fill color (defaults to the current line color)")
-        .value("error_bar", ImPlotCol_ErrorBar, "error bar color (defaults to ImGuiCol_Text)")
-        .value("frame_bg", ImPlotCol_FrameBg, "plot frame background color (defaults to ImGuiCol_FrameBg)")
-        .value("plot_bg", ImPlotCol_PlotBg, "plot area background color (defaults to ImGuiCol_WindowBg)")
-        .value("plot_border", ImPlotCol_PlotBorder, "plot area border color (defaults to ImGuiCol_Border)")
-        .value("legend_bg", ImPlotCol_LegendBg, "legend background color (defaults to ImGuiCol_PopupBg)")
-        .value("legend_border", ImPlotCol_LegendBorder, "legend border color (defaults to ImPlotCol_PlotBorder)")
-        .value("legend_text", ImPlotCol_LegendText, "legend text color (defaults to ImPlotCol_InlayText)")
-        .value("title_text", ImPlotCol_TitleText, "plot title text color (defaults to ImGuiCol_Text)")
-        .value("inlay_text", ImPlotCol_InlayText, "color of text appearing inside of plots (defaults to ImGuiCol_Text)")
-        .value("axis_text", ImPlotCol_AxisText, "axis label and tick lables color (defaults to ImGuiCol_Text)")
-        .value("axis_grid", ImPlotCol_AxisGrid, "axis grid color (defaults to 25% ImPlotCol_AxisText)")
-        .value("axis_tick", ImPlotCol_AxisTick, "axis tick color (defaults to AxisGrid)")
-        .value("axis_bg", ImPlotCol_AxisBg, "background color of axis hover region (defaults to transparent)")
-        .value("axis_bg_hovered", ImPlotCol_AxisBgHovered, "axis hover color (defaults to ImGuiCol_ButtonHovered)")
-        .value("axis_bg_active", ImPlotCol_AxisBgActive, "axis active color (defaults to ImGuiCol_ButtonActive)")
-        .value("selection", ImPlotCol_Selection, "box-selection color (defaults to yellow)")
-        .value("crosshairs", ImPlotCol_Crosshairs, "crosshairs color (defaults to ImPlotCol_PlotBorder)")
-        .value("count", ImPlotCol_COUNT, "");
-
-
-    py::enum_<ImPlotStyleVar_>(m, "StyleVar_", py::arithmetic(), "Plot styling variables.")
-        .value("line_weight", ImPlotStyleVar_LineWeight, "float,  plot item line weight in pixels")
-        .value("marker", ImPlotStyleVar_Marker, "int,    marker specification")
-        .value("marker_size", ImPlotStyleVar_MarkerSize, "float,  marker size in pixels (roughly the marker's \"radius\")")
-        .value("marker_weight", ImPlotStyleVar_MarkerWeight, "float,  plot outline weight of markers in pixels")
-        .value("fill_alpha", ImPlotStyleVar_FillAlpha, "float,  alpha modifier applied to all plot item fills")
-        .value("error_bar_size", ImPlotStyleVar_ErrorBarSize, "float,  error bar whisker width in pixels")
-        .value("error_bar_weight", ImPlotStyleVar_ErrorBarWeight, "float,  error bar whisker weight in pixels")
-        .value("digital_bit_height", ImPlotStyleVar_DigitalBitHeight, "float,  digital channels bit height (at 1) in pixels")
-        .value("digital_bit_gap", ImPlotStyleVar_DigitalBitGap, "float,  digital channels bit padding gap in pixels")
-        .value("plot_border_size", ImPlotStyleVar_PlotBorderSize, "float,  thickness of border around plot area")
-        .value("minor_alpha", ImPlotStyleVar_MinorAlpha, "float,  alpha multiplier applied to minor axis grid lines")
-        .value("major_tick_len", ImPlotStyleVar_MajorTickLen, "ImVec2, major tick lengths for X and Y axes")
-        .value("minor_tick_len", ImPlotStyleVar_MinorTickLen, "ImVec2, minor tick lengths for X and Y axes")
-        .value("major_tick_size", ImPlotStyleVar_MajorTickSize, "ImVec2, line thickness of major ticks")
-        .value("minor_tick_size", ImPlotStyleVar_MinorTickSize, "ImVec2, line thickness of minor ticks")
-        .value("major_grid_size", ImPlotStyleVar_MajorGridSize, "ImVec2, line thickness of major grid lines")
-        .value("minor_grid_size", ImPlotStyleVar_MinorGridSize, "ImVec2, line thickness of minor grid lines")
-        .value("plot_padding", ImPlotStyleVar_PlotPadding, "ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)")
-        .value("label_padding", ImPlotStyleVar_LabelPadding, "ImVec2, padding between axes labels, tick labels, and plot edge")
-        .value("legend_padding", ImPlotStyleVar_LegendPadding, "ImVec2, legend padding from plot edges")
-        .value("legend_inner_padding", ImPlotStyleVar_LegendInnerPadding, "ImVec2, legend inner padding from legend edges")
-        .value("legend_spacing", ImPlotStyleVar_LegendSpacing, "ImVec2, spacing between legend entries")
-        .value("mouse_pos_padding", ImPlotStyleVar_MousePosPadding, "ImVec2, padding between plot edge and interior info text")
-        .value("annotation_padding", ImPlotStyleVar_AnnotationPadding, "ImVec2, text padding around annotation labels")
-        .value("fit_padding", ImPlotStyleVar_FitPadding, "ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")
-        .value("plot_default_size", ImPlotStyleVar_PlotDefaultSize, "ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot")
-        .value("plot_min_size", ImPlotStyleVar_PlotMinSize, "ImVec2, minimum size plot frame can be when shrunk")
-        .value("count", ImPlotStyleVar_COUNT, "");
-
-
-    py::enum_<ImPlotScale_>(m, "Scale_", py::arithmetic(), "Axis scale")
-        .value("linear", ImPlotScale_Linear, "default linear scale")
-        .value("time", ImPlotScale_Time, "date/time scale")
-        .value("log10", ImPlotScale_Log10, "base 10 logartithmic scale")
-        .value("sym_log", ImPlotScale_SymLog, "symmetric log scale");
-
-
-    py::enum_<ImPlotMarker_>(m, "Marker_", py::arithmetic(), "Marker specifications.")
-        .value("none", ImPlotMarker_None, "no marker")
-        .value("circle", ImPlotMarker_Circle, "a circle marker (default)")
-        .value("square", ImPlotMarker_Square, "a square maker")
-        .value("diamond", ImPlotMarker_Diamond, "a diamond marker")
-        .value("up", ImPlotMarker_Up, "an upward-pointing triangle marker")
-        .value("down", ImPlotMarker_Down, "an downward-pointing triangle marker")
-        .value("left", ImPlotMarker_Left, "an leftward-pointing triangle marker")
-        .value("right", ImPlotMarker_Right, "an rightward-pointing triangle marker")
-        .value("cross", ImPlotMarker_Cross, "a cross marker (not fillable)")
-        .value("plus", ImPlotMarker_Plus, "a plus marker (not fillable)")
-        .value("asterisk", ImPlotMarker_Asterisk, "a asterisk marker (not fillable)")
-        .value("count", ImPlotMarker_COUNT, "");
-
-
-    py::enum_<ImPlotColormap_>(m, "Colormap_", py::arithmetic(), "Built-in colormaps")
-        .value("deep", ImPlotColormap_Deep, "a.k.a. seaborn deep             (qual=True,  n=10) (default)")
-        .value("dark", ImPlotColormap_Dark, "a.k.a. matplotlib \"Set1\"        (qual=True,  n=9 )")
-        .value("pastel", ImPlotColormap_Pastel, "a.k.a. matplotlib \"Pastel1\"     (qual=True,  n=9 )")
-        .value("paired", ImPlotColormap_Paired, "a.k.a. matplotlib \"Paired\"      (qual=True,  n=12)")
-        .value("viridis", ImPlotColormap_Viridis, "a.k.a. matplotlib \"viridis\"     (qual=False, n=11)")
-        .value("plasma", ImPlotColormap_Plasma, "a.k.a. matplotlib \"plasma\"      (qual=False, n=11)")
-        .value("hot", ImPlotColormap_Hot, "a.k.a. matplotlib/MATLAB \"hot\"  (qual=False, n=11)")
-        .value("cool", ImPlotColormap_Cool, "a.k.a. matplotlib/MATLAB \"cool\" (qual=False, n=11)")
-        .value("pink", ImPlotColormap_Pink, "a.k.a. matplotlib/MATLAB \"pink\" (qual=False, n=11)")
-        .value("jet", ImPlotColormap_Jet, "a.k.a. MATLAB \"jet\"             (qual=False, n=11)")
-        .value("twilight", ImPlotColormap_Twilight, "a.k.a. matplotlib \"twilight\"    (qual=False, n=11)")
-        .value("rd_bu", ImPlotColormap_RdBu, "red/blue, Color Brewer          (qual=False, n=11)")
-        .value("br_bg", ImPlotColormap_BrBG, "brown/blue-green, Color Brewer  (qual=False, n=11)")
-        .value("pi_yg", ImPlotColormap_PiYG, "pink/yellow-green, Color Brewer (qual=False, n=11)")
-        .value("spectral", ImPlotColormap_Spectral, "color spectrum, Color Brewer    (qual=False, n=11)")
-        .value("greys", ImPlotColormap_Greys, "white/black                     (qual=False, n=2 )");
-
-
-    py::enum_<ImPlotLocation_>(m, "Location_", py::arithmetic(), "Used to position items on a plot (e.g. legends, labels, etc.)")
-        .value("center", ImPlotLocation_Center, "center-center")
-        .value("north", ImPlotLocation_North, "top-center")
-        .value("south", ImPlotLocation_South, "bottom-center")
-        .value("west", ImPlotLocation_West, "center-left")
-        .value("east", ImPlotLocation_East, "center-right")
-        .value("north_west", ImPlotLocation_NorthWest, "top-left")
-        .value("north_east", ImPlotLocation_NorthEast, "top-right")
-        .value("south_west", ImPlotLocation_SouthWest, "bottom-left")
-        .value("south_east", ImPlotLocation_SouthEast, "bottom-right");
-
-
-    py::enum_<ImPlotBin_>(m, "Bin_", py::arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")
-        .value("sqrt", ImPlotBin_Sqrt, "k = sqrt(n)")
-        .value("sturges", ImPlotBin_Sturges, "k = 1 + log2(n)")
-        .value("rice", ImPlotBin_Rice, "k = 2 * cbrt(n)")
-        .value("scott", ImPlotBin_Scott, "w = 3.49 * sigma / cbrt(n)");
+    auto pyEnumStemsFlags_ =
+        py::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", py::arithmetic(), "Flags for PlotStems")
+            .value("none", ImPlotStemsFlags_None, "default")
+            .value("horizontal", ImPlotStemsFlags_Horizontal, "stems will be rendered horizontally on the current y-axis");
+
+
+    auto pyEnumInfLinesFlags_ =
+        py::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", py::arithmetic(), "Flags for PlotInfLines")
+            .value("none", ImPlotInfLinesFlags_None, "default")
+            .value("horizontal", ImPlotInfLinesFlags_Horizontal, "lines will be rendered horizontally on the current y-axis");
+
+
+    auto pyEnumPieChartFlags_ =
+        py::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", py::arithmetic(), "Flags for PlotPieChart")
+            .value("none", ImPlotPieChartFlags_None, "default")
+            .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
+            .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)");
+
+
+    auto pyEnumHeatmapFlags_ =
+        py::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", py::arithmetic(), "Flags for PlotHeatmap")
+            .value("none", ImPlotHeatmapFlags_None, "default")
+            .value("col_major", ImPlotHeatmapFlags_ColMajor, "data will be read in column major order");
+
+
+    auto pyEnumHistogramFlags_ =
+        py::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", py::arithmetic(), "Flags for PlotHistogram and PlotHistogram2D")
+            .value("none", ImPlotHistogramFlags_None, "default")
+            .value("horizontal", ImPlotHistogramFlags_Horizontal, "histogram bars will be rendered horizontally (not supported by PlotHistogram2D)")
+            .value("cumulative", ImPlotHistogramFlags_Cumulative, "each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)")
+            .value("density", ImPlotHistogramFlags_Density, "counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set")
+            .value("no_outliers", ImPlotHistogramFlags_NoOutliers, "exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts")
+            .value("col_major", ImPlotHistogramFlags_ColMajor, "data will be read in column major order (not supported by PlotHistogram)");
+
+
+    auto pyEnumDigitalFlags_ =
+        py::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", py::arithmetic(), "Flags for PlotDigital (placeholder)")
+            .value("none", ImPlotDigitalFlags_None, "default");
+
+
+    auto pyEnumImageFlags_ =
+        py::enum_<ImPlotImageFlags_>(m, "ImageFlags_", py::arithmetic(), "Flags for PlotImage (placeholder)")
+            .value("none", ImPlotImageFlags_None, "default");
+
+
+    auto pyEnumTextFlags_ =
+        py::enum_<ImPlotTextFlags_>(m, "TextFlags_", py::arithmetic(), "Flags for PlotText")
+            .value("none", ImPlotTextFlags_None, "default")
+            .value("vertical", ImPlotTextFlags_Vertical, "text will be rendered vertically");
+
+
+    auto pyEnumDummyFlags_ =
+        py::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", py::arithmetic(), "Flags for PlotDummy (placeholder)")
+            .value("none", ImPlotDummyFlags_None, "default");
+
+
+    auto pyEnumCond_ =
+        py::enum_<ImPlotCond_>(m, "Cond_", py::arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
+            .value("none", ImPlotCond_None, "No condition (always set the variable), same as _Always")
+            .value("always", ImPlotCond_Always, "No condition (always set the variable)")
+            .value("once", ImPlotCond_Once, "Set the variable once per runtime session (only the first call will succeed)");
+
+
+    auto pyEnumCol_ =
+        py::enum_<ImPlotCol_>(m, "Col_", py::arithmetic(), "Plot styling colors.")
+            .value("line", ImPlotCol_Line, "plot line/outline color (defaults to next unused color in current colormap)")
+            .value("fill", ImPlotCol_Fill, "plot fill color for bars (defaults to the current line color)")
+            .value("marker_outline", ImPlotCol_MarkerOutline, "marker outline color (defaults to the current line color)")
+            .value("marker_fill", ImPlotCol_MarkerFill, "marker fill color (defaults to the current line color)")
+            .value("error_bar", ImPlotCol_ErrorBar, "error bar color (defaults to ImGuiCol_Text)")
+            .value("frame_bg", ImPlotCol_FrameBg, "plot frame background color (defaults to ImGuiCol_FrameBg)")
+            .value("plot_bg", ImPlotCol_PlotBg, "plot area background color (defaults to ImGuiCol_WindowBg)")
+            .value("plot_border", ImPlotCol_PlotBorder, "plot area border color (defaults to ImGuiCol_Border)")
+            .value("legend_bg", ImPlotCol_LegendBg, "legend background color (defaults to ImGuiCol_PopupBg)")
+            .value("legend_border", ImPlotCol_LegendBorder, "legend border color (defaults to ImPlotCol_PlotBorder)")
+            .value("legend_text", ImPlotCol_LegendText, "legend text color (defaults to ImPlotCol_InlayText)")
+            .value("title_text", ImPlotCol_TitleText, "plot title text color (defaults to ImGuiCol_Text)")
+            .value("inlay_text", ImPlotCol_InlayText, "color of text appearing inside of plots (defaults to ImGuiCol_Text)")
+            .value("axis_text", ImPlotCol_AxisText, "axis label and tick lables color (defaults to ImGuiCol_Text)")
+            .value("axis_grid", ImPlotCol_AxisGrid, "axis grid color (defaults to 25% ImPlotCol_AxisText)")
+            .value("axis_tick", ImPlotCol_AxisTick, "axis tick color (defaults to AxisGrid)")
+            .value("axis_bg", ImPlotCol_AxisBg, "background color of axis hover region (defaults to transparent)")
+            .value("axis_bg_hovered", ImPlotCol_AxisBgHovered, "axis hover color (defaults to ImGuiCol_ButtonHovered)")
+            .value("axis_bg_active", ImPlotCol_AxisBgActive, "axis active color (defaults to ImGuiCol_ButtonActive)")
+            .value("selection", ImPlotCol_Selection, "box-selection color (defaults to yellow)")
+            .value("crosshairs", ImPlotCol_Crosshairs, "crosshairs color (defaults to ImPlotCol_PlotBorder)")
+            .value("count", ImPlotCol_COUNT, "");
+
+
+    auto pyEnumStyleVar_ =
+        py::enum_<ImPlotStyleVar_>(m, "StyleVar_", py::arithmetic(), "Plot styling variables.")
+            .value("line_weight", ImPlotStyleVar_LineWeight, "float,  plot item line weight in pixels")
+            .value("marker", ImPlotStyleVar_Marker, "int,    marker specification")
+            .value("marker_size", ImPlotStyleVar_MarkerSize, "float,  marker size in pixels (roughly the marker's \"radius\")")
+            .value("marker_weight", ImPlotStyleVar_MarkerWeight, "float,  plot outline weight of markers in pixels")
+            .value("fill_alpha", ImPlotStyleVar_FillAlpha, "float,  alpha modifier applied to all plot item fills")
+            .value("error_bar_size", ImPlotStyleVar_ErrorBarSize, "float,  error bar whisker width in pixels")
+            .value("error_bar_weight", ImPlotStyleVar_ErrorBarWeight, "float,  error bar whisker weight in pixels")
+            .value("digital_bit_height", ImPlotStyleVar_DigitalBitHeight, "float,  digital channels bit height (at 1) in pixels")
+            .value("digital_bit_gap", ImPlotStyleVar_DigitalBitGap, "float,  digital channels bit padding gap in pixels")
+            .value("plot_border_size", ImPlotStyleVar_PlotBorderSize, "float,  thickness of border around plot area")
+            .value("minor_alpha", ImPlotStyleVar_MinorAlpha, "float,  alpha multiplier applied to minor axis grid lines")
+            .value("major_tick_len", ImPlotStyleVar_MajorTickLen, "ImVec2, major tick lengths for X and Y axes")
+            .value("minor_tick_len", ImPlotStyleVar_MinorTickLen, "ImVec2, minor tick lengths for X and Y axes")
+            .value("major_tick_size", ImPlotStyleVar_MajorTickSize, "ImVec2, line thickness of major ticks")
+            .value("minor_tick_size", ImPlotStyleVar_MinorTickSize, "ImVec2, line thickness of minor ticks")
+            .value("major_grid_size", ImPlotStyleVar_MajorGridSize, "ImVec2, line thickness of major grid lines")
+            .value("minor_grid_size", ImPlotStyleVar_MinorGridSize, "ImVec2, line thickness of minor grid lines")
+            .value("plot_padding", ImPlotStyleVar_PlotPadding, "ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)")
+            .value("label_padding", ImPlotStyleVar_LabelPadding, "ImVec2, padding between axes labels, tick labels, and plot edge")
+            .value("legend_padding", ImPlotStyleVar_LegendPadding, "ImVec2, legend padding from plot edges")
+            .value("legend_inner_padding", ImPlotStyleVar_LegendInnerPadding, "ImVec2, legend inner padding from legend edges")
+            .value("legend_spacing", ImPlotStyleVar_LegendSpacing, "ImVec2, spacing between legend entries")
+            .value("mouse_pos_padding", ImPlotStyleVar_MousePosPadding, "ImVec2, padding between plot edge and interior info text")
+            .value("annotation_padding", ImPlotStyleVar_AnnotationPadding, "ImVec2, text padding around annotation labels")
+            .value("fit_padding", ImPlotStyleVar_FitPadding, "ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)")
+            .value("plot_default_size", ImPlotStyleVar_PlotDefaultSize, "ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot")
+            .value("plot_min_size", ImPlotStyleVar_PlotMinSize, "ImVec2, minimum size plot frame can be when shrunk")
+            .value("count", ImPlotStyleVar_COUNT, "");
+
+
+    auto pyEnumScale_ =
+        py::enum_<ImPlotScale_>(m, "Scale_", py::arithmetic(), "Axis scale")
+            .value("linear", ImPlotScale_Linear, "default linear scale")
+            .value("time", ImPlotScale_Time, "date/time scale")
+            .value("log10", ImPlotScale_Log10, "base 10 logartithmic scale")
+            .value("sym_log", ImPlotScale_SymLog, "symmetric log scale");
+
+
+    auto pyEnumMarker_ =
+        py::enum_<ImPlotMarker_>(m, "Marker_", py::arithmetic(), "Marker specifications.")
+            .value("none", ImPlotMarker_None, "no marker")
+            .value("circle", ImPlotMarker_Circle, "a circle marker (default)")
+            .value("square", ImPlotMarker_Square, "a square maker")
+            .value("diamond", ImPlotMarker_Diamond, "a diamond marker")
+            .value("up", ImPlotMarker_Up, "an upward-pointing triangle marker")
+            .value("down", ImPlotMarker_Down, "an downward-pointing triangle marker")
+            .value("left", ImPlotMarker_Left, "an leftward-pointing triangle marker")
+            .value("right", ImPlotMarker_Right, "an rightward-pointing triangle marker")
+            .value("cross", ImPlotMarker_Cross, "a cross marker (not fillable)")
+            .value("plus", ImPlotMarker_Plus, "a plus marker (not fillable)")
+            .value("asterisk", ImPlotMarker_Asterisk, "a asterisk marker (not fillable)")
+            .value("count", ImPlotMarker_COUNT, "");
+
+
+    auto pyEnumColormap_ =
+        py::enum_<ImPlotColormap_>(m, "Colormap_", py::arithmetic(), "Built-in colormaps")
+            .value("deep", ImPlotColormap_Deep, "a.k.a. seaborn deep             (qual=True,  n=10) (default)")
+            .value("dark", ImPlotColormap_Dark, "a.k.a. matplotlib \"Set1\"        (qual=True,  n=9 )")
+            .value("pastel", ImPlotColormap_Pastel, "a.k.a. matplotlib \"Pastel1\"     (qual=True,  n=9 )")
+            .value("paired", ImPlotColormap_Paired, "a.k.a. matplotlib \"Paired\"      (qual=True,  n=12)")
+            .value("viridis", ImPlotColormap_Viridis, "a.k.a. matplotlib \"viridis\"     (qual=False, n=11)")
+            .value("plasma", ImPlotColormap_Plasma, "a.k.a. matplotlib \"plasma\"      (qual=False, n=11)")
+            .value("hot", ImPlotColormap_Hot, "a.k.a. matplotlib/MATLAB \"hot\"  (qual=False, n=11)")
+            .value("cool", ImPlotColormap_Cool, "a.k.a. matplotlib/MATLAB \"cool\" (qual=False, n=11)")
+            .value("pink", ImPlotColormap_Pink, "a.k.a. matplotlib/MATLAB \"pink\" (qual=False, n=11)")
+            .value("jet", ImPlotColormap_Jet, "a.k.a. MATLAB \"jet\"             (qual=False, n=11)")
+            .value("twilight", ImPlotColormap_Twilight, "a.k.a. matplotlib \"twilight\"    (qual=False, n=11)")
+            .value("rd_bu", ImPlotColormap_RdBu, "red/blue, Color Brewer          (qual=False, n=11)")
+            .value("br_bg", ImPlotColormap_BrBG, "brown/blue-green, Color Brewer  (qual=False, n=11)")
+            .value("pi_yg", ImPlotColormap_PiYG, "pink/yellow-green, Color Brewer (qual=False, n=11)")
+            .value("spectral", ImPlotColormap_Spectral, "color spectrum, Color Brewer    (qual=False, n=11)")
+            .value("greys", ImPlotColormap_Greys, "white/black                     (qual=False, n=2 )");
+
+
+    auto pyEnumLocation_ =
+        py::enum_<ImPlotLocation_>(m, "Location_", py::arithmetic(), "Used to position items on a plot (e.g. legends, labels, etc.)")
+            .value("center", ImPlotLocation_Center, "center-center")
+            .value("north", ImPlotLocation_North, "top-center")
+            .value("south", ImPlotLocation_South, "bottom-center")
+            .value("west", ImPlotLocation_West, "center-left")
+            .value("east", ImPlotLocation_East, "center-right")
+            .value("north_west", ImPlotLocation_NorthWest, "top-left")
+            .value("north_east", ImPlotLocation_NorthEast, "top-right")
+            .value("south_west", ImPlotLocation_SouthWest, "bottom-left")
+            .value("south_east", ImPlotLocation_SouthEast, "bottom-right");
+
+
+    auto pyEnumBin_ =
+        py::enum_<ImPlotBin_>(m, "Bin_", py::arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")
+            .value("sqrt", ImPlotBin_Sqrt, "k = sqrt(n)")
+            .value("sturges", ImPlotBin_Sturges, "k = 1 + log2(n)")
+            .value("rice", ImPlotBin_Rice, "k = 2 * cbrt(n)")
+            .value("scott", ImPlotBin_Scott, "w = 3.49 * sigma / cbrt(n)");
 
 
     auto pyClassImPlotPoint =
@@ -412,7 +461,7 @@ void py_init_module_implot(py::module& m)
             py::overload_cast<size_t>(&ImPlotPoint::operator[]),
             py::arg("idx"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("__getitem__",
             py::overload_cast<size_t>(&ImPlotPoint::operator[], py::const_),
             py::arg("idx"),
@@ -537,7 +586,7 @@ void py_init_module_implot(py::module& m)
             &ImPlotStyle::Color_,
             py::arg("idx_color"),
             "Array of styling colors (index from implot.Col_.xxx)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("set_color_",
             &ImPlotStyle::SetColor_,
             py::arg("idx_color"), py::arg("color"),
@@ -574,7 +623,7 @@ void py_init_module_implot(py::module& m)
     m.def("create_context",
         ImPlot::CreateContext,
         "Creates a new ImPlot context. Call this after ImGui::CreateContext.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("destroy_context",
         ImPlot::DestroyContext,
@@ -584,7 +633,7 @@ void py_init_module_implot(py::module& m)
     m.def("get_current_context",
         ImPlot::GetCurrentContext,
         "Returns the current ImPlot context. None if no context has ben set.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("set_current_context",
         ImPlot::SetCurrentContext,
@@ -642,23 +691,23 @@ void py_init_module_implot(py::module& m)
         ImPlot::SetupAxisLimits,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("setup_axis_links",
-        [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
+        [](ImAxis axis, BoxedValue * link_min, BoxedValue * link_max)
         {
-            auto SetupAxisLinks_adapt_modifiable_immutable_to_return = [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
+            auto SetupAxisLinks_adapt_force_lambda = [](ImAxis axis, BoxedValue * link_min, BoxedValue * link_max)
             {
-                double * link_min_adapt_modifiable = & link_min;
-                double * link_max_adapt_modifiable = & link_max;
-
-                ImPlot::SetupAxisLinks(axis, link_min_adapt_modifiable, link_max_adapt_modifiable);
-                return std::make_tuple(link_min, link_max);
+                ImPlot::SetupAxisLinks(axis, link_min, link_max);
             };
 
-            return SetupAxisLinks_adapt_modifiable_immutable_to_return(axis, link_min, link_max);
+            SetupAxisLinks_adapt_force_lambda(axis, link_min, link_max);
         },
         py::arg("axis"), py::arg("link_min"), py::arg("link_max"),
-        "Links an axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot.");
+        "Links an axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot).");
+    // #endif
+    //
 
     m.def("setup_axis_format",
         py::overload_cast<ImAxis, const char *>(ImPlot::SetupAxisFormat),
@@ -707,23 +756,23 @@ void py_init_module_implot(py::module& m)
         ImPlot::SetNextAxisLimits,
         py::arg("axis"), py::arg("v_min"), py::arg("v_max"), py::arg("cond") = ImPlotCond_Once,
         "Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("set_next_axis_links",
-        [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
+        [](ImAxis axis, BoxedValue * link_min, BoxedValue * link_max)
         {
-            auto SetNextAxisLinks_adapt_modifiable_immutable_to_return = [](ImAxis axis, double link_min, double link_max) -> std::tuple<double, double>
+            auto SetNextAxisLinks_adapt_force_lambda = [](ImAxis axis, BoxedValue * link_min, BoxedValue * link_max)
             {
-                double * link_min_adapt_modifiable = & link_min;
-                double * link_max_adapt_modifiable = & link_max;
-
-                ImPlot::SetNextAxisLinks(axis, link_min_adapt_modifiable, link_max_adapt_modifiable);
-                return std::make_tuple(link_min, link_max);
+                ImPlot::SetNextAxisLinks(axis, link_min, link_max);
             };
 
-            return SetNextAxisLinks_adapt_modifiable_immutable_to_return(axis, link_min, link_max);
+            SetNextAxisLinks_adapt_force_lambda(axis, link_min, link_max);
         },
         py::arg("axis"), py::arg("link_min"), py::arg("link_max"),
-        "Links an upcoming axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot!");
+        "Links an upcoming axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot).");
+    // #endif
+    //
 
     m.def("set_next_axis_to_fit",
         ImPlot::SetNextAxisToFit,
@@ -2483,7 +2532,7 @@ void py_init_module_implot(py::module& m)
     m.def("get_style",
         ImPlot::GetStyle,
         "Provides access to plot style structure for permanant modifications to colors, sizes, etc.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("style_colors_auto",
         ImPlot::StyleColorsAuto,
@@ -2563,13 +2612,13 @@ void py_init_module_implot(py::module& m)
         ImPlot::GetStyleColorName,
         py::arg("idx"),
         "Returns the null terminated string name for an ImPlotCol.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_marker_name",
         ImPlot::GetMarkerName,
         py::arg("idx"),
         "Returns the null terminated string name for an ImPlotMarker.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_colormap_count",
         ImPlot::GetColormapCount, "Returns the number of available colormaps (i.e. the built-in + user-added count).");
@@ -2578,7 +2627,7 @@ void py_init_module_implot(py::module& m)
         ImPlot::GetColormapName,
         py::arg("cmap"),
         "Returns a null terminated string name for a colormap given an index. Returns None if index is invalid.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_colormap_index",
         ImPlot::GetColormapIndex,
@@ -2652,7 +2701,7 @@ void py_init_module_implot(py::module& m)
     m.def("get_input_map",
         ImPlot::GetInputMap,
         "Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("map_input_default",
         ImPlot::MapInputDefault,
@@ -2676,7 +2725,7 @@ void py_init_module_implot(py::module& m)
     m.def("get_plot_draw_list",
         ImPlot::GetPlotDrawList,
         "Get the plot draw list for custom rendering to the current plot area. Call between Begin/EndPlot.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("push_plot_clip_rect",
         ImPlot::PushPlotClipRect,

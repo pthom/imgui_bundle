@@ -173,6 +173,14 @@ Bin_Sturges = Bin_.sturges
 # IMGUI_BUNDLE_PYTHON_API is defined when building the python bindings.
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+class BoxedValue:
+    # double value;    /* original C++ signature */
+    value: float
+    # BoxedValue(double value = double());    /* original C++ signature */
+    def __init__(self, value: float = float()) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 # #endif
 #
 # [/ADAPT_IMGUI_BUNDLE]
@@ -1265,11 +1273,15 @@ def setup_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Cond = Con
     """Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead."""
     pass
 
-# IMPLOT_API void SetupAxisLinks(ImAxis axis, double* link_min, double* link_max);    /* original C++ signature */
-def setup_axis_links(axis: ImAxis, link_min: float, link_max: float) -> Tuple[float, float]:
-    """Links an axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot."""
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMPLOT_API inline void SetupAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max) { SetupAxisLinks(axis, &link_min->value, &link_max->value); }    /* original C++ signature */
+def setup_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -> None:
+    """Links an axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot)."""
     pass
 
+# #endif
+#
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
 @overload
 def setup_axis_format(axis: ImAxis, fmt: str) -> None:
@@ -1347,10 +1359,15 @@ def set_next_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Cond = 
     """Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked."""
     pass
 
-# IMPLOT_API void SetNextAxisLinks(ImAxis axis, double* link_min, double* link_max);    /* original C++ signature */
-def set_next_axis_links(axis: ImAxis, link_min: float, link_max: float) -> Tuple[float, float]:
-    """Links an upcoming axis range limits to external values. Set to None for no linkage. The pointer data must remain valid until EndPlot!"""
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMPLOT_API inline void SetNextAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max) { SetNextAxisLinks(axis, &link_min->value, &link_max->value); }    /* original C++ signature */
+def set_next_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -> None:
+    """Links an upcoming axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot)."""
     pass
+
+# #endif
+#
 
 # IMPLOT_API void SetNextAxisToFit(ImAxis axis);    /* original C++ signature */
 def set_next_axis_to_fit(axis: ImAxis) -> None:

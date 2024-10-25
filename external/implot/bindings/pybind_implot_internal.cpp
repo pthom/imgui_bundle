@@ -110,38 +110,41 @@ void py_init_module_implot_internal(py::module& m)
         " Set alpha channel of 32-bit color from float in range [0.0 1.0]\n(private API)");
 
 
-    py::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", py::arithmetic(), "")
-        .value("us", ImPlotTimeUnit_Us, "microsecond")
-        .value("ms", ImPlotTimeUnit_Ms, "millisecond")
-        .value("s", ImPlotTimeUnit_S, "second")
-        .value("min", ImPlotTimeUnit_Min, "minute")
-        .value("hr", ImPlotTimeUnit_Hr, "hour")
-        .value("day", ImPlotTimeUnit_Day, "day")
-        .value("mo", ImPlotTimeUnit_Mo, "month")
-        .value("yr", ImPlotTimeUnit_Yr, "year")
-        .value("count", ImPlotTimeUnit_COUNT, "");
+    auto pyEnumTimeUnit_ =
+        py::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", py::arithmetic(), "")
+            .value("us", ImPlotTimeUnit_Us, "microsecond")
+            .value("ms", ImPlotTimeUnit_Ms, "millisecond")
+            .value("s", ImPlotTimeUnit_S, "second")
+            .value("min", ImPlotTimeUnit_Min, "minute")
+            .value("hr", ImPlotTimeUnit_Hr, "hour")
+            .value("day", ImPlotTimeUnit_Day, "day")
+            .value("mo", ImPlotTimeUnit_Mo, "month")
+            .value("yr", ImPlotTimeUnit_Yr, "year")
+            .value("count", ImPlotTimeUnit_COUNT, "");
 
 
-    py::enum_<ImPlotDateFmt_>(m, "DateFmt_", py::arithmetic(), "")
-        .value("none", ImPlotDateFmt_None, "")
-        .value("day_mo", ImPlotDateFmt_DayMo, "10/3           [ --10-03      ]")
-        .value("day_mo_yr", ImPlotDateFmt_DayMoYr, "10/3/91        [ 1991-10-03   ]")
-        .value("mo_yr", ImPlotDateFmt_MoYr, "Oct 1991       [ 1991-10      ]")
-        .value("mo", ImPlotDateFmt_Mo, "Oct            [ --10         ]")
-        .value("yr", ImPlotDateFmt_Yr, "1991           [ 1991         ]");
+    auto pyEnumDateFmt_ =
+        py::enum_<ImPlotDateFmt_>(m, "DateFmt_", py::arithmetic(), "")
+            .value("none", ImPlotDateFmt_None, "")
+            .value("day_mo", ImPlotDateFmt_DayMo, "10/3           [ --10-03      ]")
+            .value("day_mo_yr", ImPlotDateFmt_DayMoYr, "10/3/91        [ 1991-10-03   ]")
+            .value("mo_yr", ImPlotDateFmt_MoYr, "Oct 1991       [ 1991-10      ]")
+            .value("mo", ImPlotDateFmt_Mo, "Oct            [ --10         ]")
+            .value("yr", ImPlotDateFmt_Yr, "1991           [ 1991         ]");
 
 
-    py::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", py::arithmetic(), "")
-        .value("none", ImPlotTimeFmt_None, "")
-        .value("us", ImPlotTimeFmt_Us, ".428 552       [ .428 552     ]")
-        .value("s_us", ImPlotTimeFmt_SUs, ":29.428 552    [ :29.428 552  ]")
-        .value("s_ms", ImPlotTimeFmt_SMs, ":29.428        [ :29.428      ]")
-        .value("s", ImPlotTimeFmt_S, ":29            [ :29          ]")
-        .value("min_s_ms", ImPlotTimeFmt_MinSMs, "21:29.428      [ 21:29.428    ]")
-        .value("hr_min_s_ms", ImPlotTimeFmt_HrMinSMs, "7:21:29.428pm  [ 19:21:29.428 ]")
-        .value("hr_min_s", ImPlotTimeFmt_HrMinS, "7:21:29pm      [ 19:21:29     ]")
-        .value("hr_min", ImPlotTimeFmt_HrMin, "7:21pm         [ 19:21        ]")
-        .value("hr", ImPlotTimeFmt_Hr, "7pm            [ 19:00        ]");
+    auto pyEnumTimeFmt_ =
+        py::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", py::arithmetic(), "")
+            .value("none", ImPlotTimeFmt_None, "")
+            .value("us", ImPlotTimeFmt_Us, ".428 552       [ .428 552     ]")
+            .value("s_us", ImPlotTimeFmt_SUs, ":29.428 552    [ :29.428 552  ]")
+            .value("s_ms", ImPlotTimeFmt_SMs, ":29.428        [ :29.428      ]")
+            .value("s", ImPlotTimeFmt_S, ":29            [ :29          ]")
+            .value("min_s_ms", ImPlotTimeFmt_MinSMs, "21:29.428      [ 21:29.428    ]")
+            .value("hr_min_s_ms", ImPlotTimeFmt_HrMinSMs, "7:21:29.428pm  [ 19:21:29.428 ]")
+            .value("hr_min_s", ImPlotTimeFmt_HrMinS, "7:21:29pm      [ 19:21:29     ]")
+            .value("hr_min", ImPlotTimeFmt_HrMin, "7:21pm         [ 19:21        ]")
+            .value("hr", ImPlotTimeFmt_Hr, "7pm            [ 19:00        ]");
 
 
     auto pyClassImPlotDateTimeSpec =
@@ -208,7 +211,7 @@ void py_init_module_implot_internal(py::module& m)
             &ImPlotColormapData::GetName,
             py::arg("cmap"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_index",
             &ImPlotColormapData::GetIndex,
             py::arg("name"),
@@ -217,7 +220,7 @@ void py_init_module_implot_internal(py::module& m)
             &ImPlotColormapData::GetKeys,
             py::arg("cmap"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_key_count",
             &ImPlotColormapData::GetKeyCount,
             py::arg("cmap"),
@@ -234,7 +237,7 @@ void py_init_module_implot_internal(py::module& m)
             &ImPlotColormapData::GetTable,
             py::arg("cmap"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_table_size",
             &ImPlotColormapData::GetTableSize,
             py::arg("cmap"),
@@ -306,7 +309,7 @@ void py_init_module_implot_internal(py::module& m)
             },
             py::arg("idx"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("reset",
             &ImPlotAnnotationCollection::Reset, "(private API)")
         ;
@@ -367,7 +370,7 @@ void py_init_module_implot_internal(py::module& m)
             },
             py::arg("idx"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("reset",
             &ImPlotTagCollection::Reset, "(private API)")
         ;
@@ -401,12 +404,12 @@ void py_init_module_implot_internal(py::module& m)
             py::overload_cast<double, bool, int, bool, const char *>(&ImPlotTicker::AddTick),
             py::arg("value"), py::arg("major"), py::arg("level"), py::arg("show_label"), py::arg("label"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("add_tick",
             py::overload_cast<ImPlotTick>(&ImPlotTicker::AddTick),
             py::arg("tick"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_text",
             [](const ImPlotTicker & self, int idx) -> const char *
             {
@@ -420,7 +423,7 @@ void py_init_module_implot_internal(py::module& m)
             },
             py::arg("idx"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_text",
             [](ImPlotTicker & self, const ImPlotTick & tick) -> const char *
             {
@@ -434,7 +437,7 @@ void py_init_module_implot_internal(py::module& m)
             },
             py::arg("tick"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("override_size_late",
             &ImPlotTicker::OverrideSizeLate,
             py::arg("size"),
@@ -678,22 +681,22 @@ void py_init_module_implot_internal(py::module& m)
             py::overload_cast<ImGuiID>(&ImPlotItemGroup::GetItem),
             py::arg("id_"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_item",
             py::overload_cast<const char *>(&ImPlotItemGroup::GetItem),
             py::arg("label_id"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_or_add_item",
             &ImPlotItemGroup::GetOrAddItem,
             py::arg("id_"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_item_by_index",
             &ImPlotItemGroup::GetItemByIndex,
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_item_index",
             &ImPlotItemGroup::GetItemIndex,
             py::arg("item"),
@@ -704,12 +707,12 @@ void py_init_module_implot_internal(py::module& m)
             &ImPlotItemGroup::GetLegendItem,
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("get_legend_label",
             &ImPlotItemGroup::GetLegendLabel,
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("reset",
             &ImPlotItemGroup::Reset, "(private API)")
         ;
@@ -757,27 +760,27 @@ void py_init_module_implot_internal(py::module& m)
         .def("get_title",
             &ImPlotPlot::GetTitle,
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("x_axis",
             py::overload_cast<int>(&ImPlotPlot::XAxis),
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("x_axis",
             py::overload_cast<int>(&ImPlotPlot::XAxis, py::const_),
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("y_axis",
             py::overload_cast<int>(&ImPlotPlot::YAxis),
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("y_axis",
             py::overload_cast<int>(&ImPlotPlot::YAxis, py::const_),
             py::arg("i"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("enabled_axes_x",
             &ImPlotPlot::EnabledAxesX, "(private API)")
         .def("enabled_axes_y",
@@ -790,7 +793,7 @@ void py_init_module_implot_internal(py::module& m)
             &ImPlotPlot::GetAxisLabel,
             py::arg("axis"),
             "(private API)",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         ;
 
 
@@ -935,12 +938,12 @@ void py_init_module_implot_internal(py::module& m)
         ImPlot::GetPlot,
         py::arg("title"),
         "Gets a plot from the current ImPlotContext",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_current_plot",
         ImPlot::GetCurrentPlot,
         "Gets the current plot from the current ImPlotContext",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("bust_plot_cache",
         ImPlot::BustPlotCache, "Busts the cache for every plot in the current context");
@@ -986,18 +989,18 @@ void py_init_module_implot_internal(py::module& m)
         },
         py::arg("label_id"), py::arg("flags"), py::arg("just_created") = py::none(),
         "Register or get an existing item from the current plot.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_item",
         ImPlot::GetItem,
         py::arg("label_id"),
         "Get a plot item from the current plot.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_current_item",
         ImPlot::GetCurrentItem,
         "Gets the current item.",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("bust_item_cache",
         ImPlot::BustItemCache, "Busts the cache for every item for every plot in the current context.");
@@ -1083,7 +1086,7 @@ void py_init_module_implot_internal(py::module& m)
     m.def("get_item_data",
         ImPlot::GetItemData,
         " Get styling data for next item (call between Begin/EndItem)\n(private API)",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("is_color_auto",
         py::overload_cast<const ImVec4 &>(ImPlot::IsColorAuto),
