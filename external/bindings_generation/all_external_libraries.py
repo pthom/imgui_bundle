@@ -173,7 +173,9 @@ def lib_implot() -> ExternalLibrary:
     return ExternalLibrary(
         name="implot",
         official_git_url="https://github.com/epezent/implot.git",
-        official_branch="master"
+        fork_git_url="https://github.com/pthom/implot.git",
+        official_branch="master",
+        fork_branch="imgui_bundle"
     )
 
 
