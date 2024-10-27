@@ -263,7 +263,7 @@ class TestFlags_(enum.Enum):
     # ImGuiTestFlags_NoRecoveryWarnings   = 1 << 2        /* original C++ signature */
     no_recovery_warnings = (
         enum.auto()
-    )  # (= 1 << 2)  # Disable state recovery warnings (missing End/Pop calls etc.) for tests which may rely on those.
+    )  # (= 1 << 2)  # Error/recovery warnings (missing End/Pop calls etc.) will be displayed as normal debug entries, for tests which may rely on those.
     # ImGuiTestFlags_RequireViewports   = 1 << 10
 
 class TestCheckFlags_(enum.Enum):
@@ -644,8 +644,9 @@ class TestItemInfo:
     rect_full: ImRect = ImRect()  # Item Rectangle
     # ImRect                      RectClipped = ImRect();    /* original C++ signature */
     rect_clipped: ImRect = ImRect()  # Item Rectangle (clipped with window->ClipRect at time of item submission)
-    # ImGuiItemFlags              InFlags = 0;    /* original C++ signature */
-    in_flags: ItemFlags = 0  # Item flags
+    # ImGuiItemFlags              ItemFlags = 0;    /* original C++ signature */
+    item_flags: ItemFlags = 0  # Item flags
+    # ImGuiItemFlags            InFlags = 0;                // Item flags (OBSOLETE: before 2024/10/17 ItemFlags was called InFlags)
     # ImGuiItemStatusFlags        StatusFlags = 0;    /* original C++ signature */
     status_flags: ItemStatusFlags = (
         0  # Item Status flags (fully updated for some items only, compare TimestampStatus to FrameCount)
@@ -1241,10 +1242,6 @@ class TestContext:
     # -------------------------------------------------------------------------
 
     # Main control
-    # void            RecoverFromUiContextErrors();    /* original C++ signature */
-    def recover_from_ui_context_errors(self) -> None:
-        """(private API)"""
-        pass
     # void            Finish(ImGuiTestStatus status = ImGuiTestStatus_Success);                           /* original C++ signature */
     def finish(self, status: TestStatus = TestStatus_Success) -> None:
         """(private API)
@@ -2038,10 +2035,19 @@ class TestContext:
     # Obsolete functions
 
     # [Internal]
-    # FIXME: Aim to remove this system...
-    # void        ForeignWindowsUnhideAll();    /* original C++ signature */
-    def foreign_windows_unhide_all(self) -> None:
-        """(private API)"""
+    # void        _MakeAimingSpaceOverPos(ImGuiViewport* viewport, ImGuiWindow* over_window, const ImVec2& over_pos);     /* original C++ signature */
+    def _make_aiming_space_over_pos(self, viewport: Viewport, over_window: Window, over_pos: ImVec2) -> None:
+        """(private API)
+
+        Move windows covering 'window' at pos.
+        """
+        pass
+    # void        _ForeignWindowsUnhideAll();                                                    /* original C++ signature */
+    def _foreign_windows_unhide_all(self) -> None:
+        """(private API)
+
+        FIXME: Aim to remove this system...
+        """
         pass
     # ImGuiTestContext(ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImVector<char> Clipboard = ImVector<char>(), ImVector<ImGuiWindow*> ForeignWindowsToHide = ImVector<ImGuiWindow*>(), ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false);    /* original C++ signature */
     def __init__(
@@ -2201,9 +2207,13 @@ class TestInputType(enum.Enum):
     char = enum.auto()  # (= 2)
     # ImGuiTestInputType_ViewportFocus,    /* original C++ signature */
     viewport_focus = enum.auto()  # (= 3)
+    # ImGuiTestInputType_ViewportSetPos,    /* original C++ signature */
+    viewport_set_pos = enum.auto()  # (= 4)
+    # ImGuiTestInputType_ViewportSetSize,    /* original C++ signature */
+    viewport_set_size = enum.auto()  # (= 5)
     # ImGuiTestInputType_ViewportClose    /* original C++ signature */
     # }
-    viewport_close = enum.auto()  # (= 4)
+    viewport_close = enum.auto()  # (= 6)
 
 class TestInput:
     """FIXME: May want to strip further now that core imgui is using its own input queue"""
@@ -2218,6 +2228,8 @@ class TestInput:
     down: bool = False
     # ImGuiID                 ViewportId = 0;    /* original C++ signature */
     viewport_id: ID = 0
+    # ImVec2                  ViewportPosSize;    /* original C++ signature */
+    viewport_pos_size: ImVec2
 
     # static ImGuiTestInput   ForKeyChord(ImGuiKeyChord key_chord, bool down)    /* original C++ signature */
     #     {
@@ -2253,6 +2265,30 @@ class TestInput:
     def for_viewport_focus(viewport_id: ID) -> TestInput:
         """(private API)"""
         pass
+    # static ImGuiTestInput   ForViewportSetPos(ImGuiID viewport_id, const ImVec2& pos)    /* original C++ signature */
+    #     {
+    #         ImGuiTestInput inp;
+    #         inp.Type = ImGuiTestInputType_ViewportSetPos;
+    #         inp.ViewportId = viewport_id;
+    #         inp.ViewportPosSize = pos;
+    #         return inp;
+    #     }
+    @staticmethod
+    def for_viewport_set_pos(viewport_id: ID, pos: ImVec2) -> TestInput:
+        """(private API)"""
+        pass
+    # static ImGuiTestInput   ForViewportSetSize(ImGuiID viewport_id, const ImVec2& size)    /* original C++ signature */
+    #     {
+    #         ImGuiTestInput inp;
+    #         inp.Type = ImGuiTestInputType_ViewportSetSize;
+    #         inp.ViewportId = viewport_id;
+    #         inp.ViewportPosSize = size;
+    #         return inp;
+    #     }
+    @staticmethod
+    def for_viewport_set_size(viewport_id: ID, size: ImVec2) -> TestInput:
+        """(private API)"""
+        pass
     # static ImGuiTestInput   ForViewportClose(ImGuiID viewport_id)    /* original C++ signature */
     #     {
     #         ImGuiTestInput inp;
@@ -2264,7 +2300,7 @@ class TestInput:
     def for_viewport_close(viewport_id: ID) -> TestInput:
         """(private API)"""
         pass
-    # ImGuiTestInput(ImGuiTestInputType Type = ImGuiTestInputType_None, ImGuiKeyChord KeyChord = ImGuiKey_None, ImWchar Char = 0, bool Down = false, ImGuiID ViewportId = 0);    /* original C++ signature */
+    # ImGuiTestInput(ImGuiTestInputType Type = ImGuiTestInputType_None, ImGuiKeyChord KeyChord = ImGuiKey_None, ImWchar Char = 0, bool Down = false, ImGuiID ViewportId = 0, ImVec2 ViewportPosSize = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         type: TestInputType = TestInputType_None,
@@ -2272,6 +2308,7 @@ class TestInput:
         char: ImWchar = 0,
         down: bool = False,
         viewport_id: ID = 0,
+        viewport_pos_size: ImVec2 = ImVec2(),
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2451,9 +2488,13 @@ def get_verbose_level_name(v: TestVerboseLevel) -> str:
 # - "Dear ImGui Perf Tool"
 # - other core debug functions: Metrics, Debug Log
 
-# IMGUI_API void    ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* engine, bool* p_open);    /* original C++ signature */
+# Functions
+# IMGUI_API void  ImGuiTestEngine_ShowTestEngineWindows(ImGuiTestEngine* engine, bool* p_open);    /* original C++ signature */
 def show_test_engine_windows(engine: TestEngine, p_open: bool) -> bool:
-    """Functions"""
+    pass
+
+# IMGUI_API void  ImGuiTestEngine_OpenSourceFile(ImGuiTestEngine* engine, const char* source_filename, int source_line_no);    /* original C++ signature */
+def open_source_file(engine: TestEngine, source_filename: str, source_line_no: int) -> None:
     pass
 
 ####################    </generated_from:imgui_te_ui.h>    ####################

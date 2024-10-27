@@ -27,3 +27,9 @@ imgui_tag:
 # Push a new tag to the imgui_test_engine fork repository with the current date
 imgui_te_tag:
     cd external/imgui_test_engine/imgui_test_engine && git tag `date +'bundle_%Y%m%d'` && git push --tags
+
+imgui_rebase:
+    cd external/imgui/imgui && git fetch official && git rebase official/docking
+
+imgui_te_rebase:
+    cd external/imgui_test_engine/imgui_test_engine && git fetch official && git rebase official/main

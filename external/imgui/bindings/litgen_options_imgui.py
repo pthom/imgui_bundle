@@ -331,6 +331,7 @@ def litgen_options_imgui(
             #     ImDrawCallback  UserCallback;       // 4-8  // If != NULL, call the function instead of rendering the vertices. clip_rect and texture_id will be set normally.
             r"^TexPixelsAlpha8$",
             r"^Stb$",
+            r"^ErrorCallback$",  # callback with C function pointers
         ]
     )
 
