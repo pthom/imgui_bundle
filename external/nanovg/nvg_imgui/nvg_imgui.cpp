@@ -20,6 +20,7 @@
 #endif
 
 #ifdef HAS_NVG_METAL
+    #include <stdint.h>
     #include "nvg_mtl_hello_imgui.h"
     #include "nanovg_mtl.h"
 #endif
@@ -128,7 +129,7 @@ namespace NvgImgui
                 return;
             fb = mnvgCreateFramebuffer(_parent->vg, _parent->Width, _parent->Height, _parent->NvgImageFlags);
             IM_ASSERT(fb && "Failed to create NVGLU framebuffer");
-            _parent->TextureId = mnvgImageHandle(_parent->vg, fb->image);
+            _parent->TextureId = (ImTextureID)(intptr_t)mnvgImageHandle(_parent->vg, fb->image);
         }
 
         void ReleaseResource()
