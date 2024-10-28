@@ -488,20 +488,7 @@ def demo_fonts(app_state: AppState):
 
     with imgui_ctx.begin_group():
         imgui.push_font(app_state.emoji_font)
-        # ✌️ (Victory Hand Emoji)
-        imgui.text("\U0000270C\U0000FE0F")
-        imgui.same_line()
-
-        # ❤️ (Red Heart Emoji)
-        imgui.text("\U00002764\U0000FE0F")
-        imgui.same_line()
-
-        # 🌴 (Palm Tree Emoji)
-        imgui.text("\U0001F334")
-        imgui.same_line()
-
-        # 🚀 (Rocket Emoji)
-        imgui.text("\U0001F680")
+        imgui.text("✌❤🌴🚀")
         imgui.pop_font()
 
     if imgui.is_item_hovered():
@@ -509,7 +496,7 @@ def demo_fonts(app_state: AppState):
 
     imgui.text("Colored Fonts")
     imgui.push_font(app_state.color_font)
-    imgui.text("C O L O R !")
+    imgui.text("COLOR!")
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip("Example with Playbox-FREE.otf font")
