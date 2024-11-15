@@ -1,9 +1,11 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/functional.h>
-
-#include <pybind11/stl_bind.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/array.h>
+#include <nanobind/stl/optional.h>
+#include <nanobind/stl/vector.h>
+#include <nanobind/stl/function.h>
+#include <nanobind/ndarray.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
@@ -26,7 +28,7 @@ namespace ax
 #endif
 
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 
 
@@ -41,7 +43,7 @@ namespace py = pybind11;
 #include <vector>
 
 
-void py_init_module_immapp_cpp(py::module& m)
+void py_init_module_immapp_cpp(nb::module_& m)
 {
     using namespace ImmApp;
     using namespace Snippets;

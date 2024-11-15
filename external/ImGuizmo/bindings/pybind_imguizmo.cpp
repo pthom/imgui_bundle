@@ -1,8 +1,16 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/numpy.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/array.h>
+#include <nanobind/stl/optional.h>
+#include <nanobind/stl/vector.h>
+#include <nanobind/stl/function.h>
+#include <nanobind/stl/tuple.h>
+#include <nanobind/stl/optional.h>
+#include <nanobind/make_iterator.h>
+#include <nanobind/trampoline.h>
+#include <nanobind/ndarray.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
@@ -13,7 +21,7 @@
 #include "ImGuizmoPure/ImGuizmoPure.h"
 
 
-namespace py = pybind11;
+namespace nb = nanobind;
 using namespace ImGuizmo;
 
 
@@ -548,7 +556,7 @@ public:
 
 
 
-void py_init_module_imguizmo(py::module& m)
+void py_init_module_imguizmo(nb::module_& m)
 {
     using SelectedPoints = ImCurveEdit::SelectedPoints;
     using Range = ImZoomSlider::Range;
