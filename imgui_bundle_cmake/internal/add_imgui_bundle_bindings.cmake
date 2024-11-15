@@ -26,15 +26,17 @@ function(add_imgui_bundle_bindings)
         ${all_pybind_files}
         )
 
-    pybind11_add_module(${python_native_module_name} ${python_module_sources})
+    nanobind_add_module(${python_native_module_name} ${python_module_sources})
     target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
     # add cvnp for immvision
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        add_subdirectory(external/immvision/cvnp)
-        target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+        set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
+        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.cpp ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
+        target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
+
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 
@@ -45,4 +47,8 @@ function(add_imgui_bundle_bindings)
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
+
+    # Link with OpenGL (necessary for nanobind)
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
 endfunction()

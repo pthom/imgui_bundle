@@ -321,7 +321,7 @@ endif()
 # -----------------------------------------------------------------------------
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(imgui_bundle_cmake/internal/litgen_setup_module.cmake)
-    litgen_find_pybind11()  # provided by cmake/find_pybind11.cmake
+    litgen_find_nanobind()
 endif()
 
 # Fake main library (imgui_bundle is just an interface to define common options)

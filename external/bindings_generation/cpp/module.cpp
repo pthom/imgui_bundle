@@ -1,20 +1,20 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
 
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 
-void py_init_module_imgui_bundle(py::module& m);
+void py_init_module_imgui_bundle(nb::module_& m);
 
 
 // This builds the native python module `_imgui_bundle`
 // it will be wrapped in a standard python module `imgui_bundle`
-PYBIND11_MODULE(_imgui_bundle, m)
+NB_MODULE(_imgui_bundle, m)
 {
     #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
