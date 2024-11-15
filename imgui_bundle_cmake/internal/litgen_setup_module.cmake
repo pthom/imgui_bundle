@@ -53,8 +53,9 @@ function(litgen_find_pybind11)
         # we only need the Development.Module component to build native modules
         find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development.Module)
     else()
-        # when building via CMake, we need the full Development component,
-        # to be able to debug the native module
+        # when building via CMake, we may need the full Development component to be able to debug the native module
+        # warning, Starting with CMake 3.18, the FindPython module introduced more granular components:
+        # Development.Module (and probably others)
         find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)
     endif()
     set(Python_EXECUTABLE ${Python_EXECUTABLE} CACHE PATH "Python executable" FORCE)

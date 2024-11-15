@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.18)
 project(imgui_bundle VERSION "1.5.2") # Remember to mirror changes to pyproject.toml!
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle

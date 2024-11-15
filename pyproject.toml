@@ -54,7 +54,7 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
 
-# cmake.version = ">=3.26.1"
+cmake.version = ">=3.26.1"
 # cmake.verbose = true
 # logging.level = "INFO"
 
