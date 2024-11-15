@@ -23,7 +23,7 @@ def main():
     options.srcmlcpp_options.ignored_warnings.append(
         "Block elements of type decl_stmt are not supported in python conversion"
     )
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR"
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR|IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR"
     options.srcmlcpp_options.ignored_warning_parts += ["unhandled tag endif", "unhandled tag ifdef"]
 
     options.fn_return_force_policy_reference_for_references__regex = r".*"
