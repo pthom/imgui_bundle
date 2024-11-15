@@ -145,17 +145,6 @@ void demo_imgui_bundle_intro()
         if (ImGui::Button("Show me##demo_imm_apps"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
     }
-
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
-    {
-        ImGuiMd::RenderUnindented(R"(
-            * The automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine), which is integrated into ImGui Bundle and available via Python and C++.
-        )");
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-        if (ImGui::Button("Show me##demo_test_engine"))
-            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImGuiTestEngine);
-        ImGuiMd::RenderUnindented("&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*");
-    }
 #endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
     ImGuiMd::RenderUnindented(R"(
         * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
@@ -163,6 +152,17 @@ void demo_imgui_bundle_intro()
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
     if (ImGui::Button("Open ImGui Manual"))
         ImmApp::BrowseToUrl("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html");
+
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+    {
+        ImGui::NewLine();
+        ImGuiMd::RenderUnindented(R"(
+            *Note: the automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine). See [license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*
+        )");
+    }
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+
 
     // Navigation buttons
     {

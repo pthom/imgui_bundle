@@ -145,23 +145,6 @@ def demo_gui():
                 statics.automation_show_me_immediate_apps,
             )
 
-    if hello_imgui.get_runner_params().use_imgui_test_engine:
-        imgui_md.render_unindented(
-            """
-            * The automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine), which is integrated into ImGui Bundle and available via Python and C++.
-        """
-        )
-
-        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
-        if imgui.button("Show me##demo_test_engine"):
-            imgui.test_engine.queue_test(
-                hello_imgui.get_imgui_test_engine(),
-                automation_show_me_imgui_test_engine(),
-            )
-        imgui_md.render_unindented(
-            "&nbsp;&nbsp;&nbsp;*Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*"
-        )
-
     imgui_md.render_unindented(
         """
         * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
@@ -171,6 +154,14 @@ def demo_gui():
     if imgui.button("Open ImGui Manual"):
         webbrowser.open(
             "https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html"
+        )
+
+    if hello_imgui.get_runner_params().use_imgui_test_engine:
+        imgui.new_line()
+        imgui_md.render_unindented(
+            """
+            *Note: the automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine). See [license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*
+        """
         )
 
     # Navigation buttons

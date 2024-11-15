@@ -1,4 +1,4 @@
-from imgui_bundle import immapp, imgui_md
+from imgui_bundle import immapp
 
 import inspect
 import json
@@ -78,6 +78,7 @@ def _compact_json(data, indent=4):
 
 
 def show_json_dict(json_dict: dict[str, Any]):
+    from imgui_bundle import imgui_md
     """Render a json dict as a markdown code block"""
     md_string = "```\n" +  _compact_json(json_dict, indent=4) + "\n```"
     imgui_md.render(md_string)

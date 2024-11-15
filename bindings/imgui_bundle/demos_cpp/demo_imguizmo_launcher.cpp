@@ -18,30 +18,11 @@ void demo_imguizmo_launcher()
         Open the demos below by clicking on their title.
     )");
 
-    if (ImGui::CollapsingHeader("Gizmo"))
-    {
-        ImGui::Text(
-            "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)"
-        );
-        if (ImGui::Button("Run gizmo demo"))
-            SpawnDemo("demo_gizmo");
-        HelloImGui::ImageFromAsset("images/gizmo_screenshot.jpg", ImVec2(0, HelloImGui::EmSize(15.0f)));
-        ShowPythonVsCppFile("demos_imguizmo/demo_gizmo", 30);
-    }
-    if (ImGui::CollapsingHeader("Curve Edit"))
-    {
-        demo_guizmo_curve_edit();
-        ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_curve_edit", 30);
-    }
-    //if (ImGui::CollapsingHeader("Zoom Slider")) // Disabled, because of missing high DPI support
-    //{
-    //    ImGui::Text("Click the button below to launch the demo");
-    //    if (ImGui::Button("Run demo"))
-    //    {
-    //        SpawnDemo("demo_guizmo_zoom_slider");
-    //    }
-    //    ShowPythonVsCppFile("demos_imguizmo/demo_guizmo_zoom_slider", 30);
-    //}
-
-
+    ImGui::Text(
+        "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)"
+    );
+    if (ImGui::Button("Run gizmo demo"))
+        SpawnDemo("demo_gizmo");
+    HelloImGui::ImageFromAsset("images/gizmo_screenshot.jpg", ImVec2(0, HelloImGui::EmSize(15.0f)));
+    ShowPythonVsCppFile("demos_imguizmo/demo_gizmo", 30);
 }

@@ -159,7 +159,11 @@ def demo_gui():
     )
 
 
-# The main entry point will run our GUI function
-if __name__ == "__main__":
+def main():
     demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
+
+
+# The main entry point will run our GUI function
+if __name__ == "__main__":
+    main()

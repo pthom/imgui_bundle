@@ -222,7 +222,7 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
 
     def show_test_engine_windows():
         imgui.test_engine.show_test_engine_windows(
-            hello_imgui.get_imgui_test_engine(), None
+            hello_imgui.get_imgui_test_engine(), True
         )
 
     test_engine_window.gui_function = show_test_engine_windows

@@ -138,7 +138,7 @@ def demo_heatmap():
     plot_size = (imgui.get_content_region_avail().x - immapp.em_size() * 5, -1)
     plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
     if implot.begin_plot("Sinc Function", plot_size, plot_flags):
-        implot.setup_axes(None, None, axis_flags, axis_flags)
+        implot.setup_axes("", "", axis_flags, axis_flags)
         implot.setup_axis_ticks(
             implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False
         )
@@ -150,7 +150,7 @@ def demo_heatmap():
             data.values,
             data.values.min(),
             data.values.max(),
-            None,
+            "",  # no label
             [0, 1],
             [1, 0],
             0,

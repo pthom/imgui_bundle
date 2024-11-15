@@ -4,7 +4,7 @@ import math
 
 ImVec2 = imgui.ImVec2
 ImVec4 = imgui.ImVec4
-
+immvision.use_rgb_color_order()
 
 def main() -> None:
     from imgui_bundle import immapp
@@ -16,9 +16,9 @@ def main() -> None:
         for col in range(w):
             x = col / w * math.pi
             y = row / h * math.pi
-            image[row, col, 0] = np.uint8((math.cos(x * 2) + math.sin(y)) * 128)
-            image[row, col, 1] = np.uint8((math.cos(x) + math.sin(y * 2)) * 128)
-            image[row, col, 2] = np.uint8((math.cos(x * 5) + math.sin(y * 3)) * 128)
+            image[row, col, 0] = np.uint8((math.cos(x * 2) + math.sin(y) + 2) * 127.5 / 2.0)
+            image[row, col, 1] = np.uint8((math.cos(x) + math.sin(y * 2) + 2) * 127.5 / 2.0)
+            image[row, col, 2] = np.uint8((math.cos(x * 5) + math.sin(y * 3) + 2) * 127.5 / 2.0)
 
     image_params = immvision.ImageParams()
     image_params.image_display_size = (1000, 800)
