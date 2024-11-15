@@ -24,6 +24,8 @@ struct NVGcontext {};
 
 void py_init_module_nanovg(py::module& m)
 {
+    using namespace NvgImgui;
+
     py::class_<NVGcontext, std::unique_ptr<NVGcontext, py::nodelete>>
         //py::class_<NVGcontext>
         (m, "Context", "Dummy definition (NVGcontext is an opaque pointer)")
@@ -115,60 +117,66 @@ void py_init_module_nanovg(py::module& m)
         ;
 
 
-    py::enum_<NVGwinding>(m, "Winding", py::arithmetic(), "")
-        .value("ccw", NVG_CCW, "Winding for solid shapes")
-        .value("cw", NVG_CW, "Winding for holes");
+    auto pyEnumWinding =
+        py::enum_<NVGwinding>(m, "Winding", py::arithmetic(), "")
+            .value("ccw", NVG_CCW, "Winding for solid shapes")
+            .value("cw", NVG_CW, "Winding for holes");
 
 
-    py::enum_<NVGsolidity>(m, "Solidity", py::arithmetic(), "")
-        .value("solid", NVG_SOLID, "CCW")
-        .value("hole", NVG_HOLE, "CW");
+    auto pyEnumSolidity =
+        py::enum_<NVGsolidity>(m, "Solidity", py::arithmetic(), "")
+            .value("solid", NVG_SOLID, "CCW")
+            .value("hole", NVG_HOLE, "CW");
 
 
-    py::enum_<NVGlineCap>(m, "LineCap", py::arithmetic(), "")
-        .value("butt", NVG_BUTT, "")
-        .value("round", NVG_ROUND, "")
-        .value("square", NVG_SQUARE, "")
-        .value("bevel", NVG_BEVEL, "")
-        .value("miter", NVG_MITER, "");
+    auto pyEnumLineCap =
+        py::enum_<NVGlineCap>(m, "LineCap", py::arithmetic(), "")
+            .value("butt", NVG_BUTT, "")
+            .value("round", NVG_ROUND, "")
+            .value("square", NVG_SQUARE, "")
+            .value("bevel", NVG_BEVEL, "")
+            .value("miter", NVG_MITER, "");
 
 
-    py::enum_<NVGalign>(m, "Align", py::arithmetic(), "")
-        .value("align_left", NVG_ALIGN_LEFT, "Default, align text horizontally to left.")
-        .value("align_center", NVG_ALIGN_CENTER, "Align text horizontally to center.")
-        .value("align_right", NVG_ALIGN_RIGHT, "Align text horizontally to right.")
-        .value("align_top", NVG_ALIGN_TOP, "Align text vertically to top.")
-        .value("align_middle", NVG_ALIGN_MIDDLE, "Align text vertically to middle.")
-        .value("align_bottom", NVG_ALIGN_BOTTOM, "Align text vertically to bottom.")
-        .value("align_baseline", NVG_ALIGN_BASELINE, "Default, align text vertically to baseline.");
+    auto pyEnumAlign =
+        py::enum_<NVGalign>(m, "Align", py::arithmetic(), "")
+            .value("align_left", NVG_ALIGN_LEFT, "Default, align text horizontally to left.")
+            .value("align_center", NVG_ALIGN_CENTER, "Align text horizontally to center.")
+            .value("align_right", NVG_ALIGN_RIGHT, "Align text horizontally to right.")
+            .value("align_top", NVG_ALIGN_TOP, "Align text vertically to top.")
+            .value("align_middle", NVG_ALIGN_MIDDLE, "Align text vertically to middle.")
+            .value("align_bottom", NVG_ALIGN_BOTTOM, "Align text vertically to bottom.")
+            .value("align_baseline", NVG_ALIGN_BASELINE, "Default, align text vertically to baseline.");
 
 
-    py::enum_<NVGblendFactor>(m, "BlendFactor", py::arithmetic(), "")
-        .value("zero", NVG_ZERO, "")
-        .value("one", NVG_ONE, "")
-        .value("src_color", NVG_SRC_COLOR, "")
-        .value("one_minus_src_color", NVG_ONE_MINUS_SRC_COLOR, "")
-        .value("dst_color", NVG_DST_COLOR, "")
-        .value("one_minus_dst_color", NVG_ONE_MINUS_DST_COLOR, "")
-        .value("src_alpha", NVG_SRC_ALPHA, "")
-        .value("one_minus_src_alpha", NVG_ONE_MINUS_SRC_ALPHA, "")
-        .value("dst_alpha", NVG_DST_ALPHA, "")
-        .value("one_minus_dst_alpha", NVG_ONE_MINUS_DST_ALPHA, "")
-        .value("src_alpha_saturate", NVG_SRC_ALPHA_SATURATE, "");
+    auto pyEnumBlendFactor =
+        py::enum_<NVGblendFactor>(m, "BlendFactor", py::arithmetic(), "")
+            .value("zero", NVG_ZERO, "")
+            .value("one", NVG_ONE, "")
+            .value("src_color", NVG_SRC_COLOR, "")
+            .value("one_minus_src_color", NVG_ONE_MINUS_SRC_COLOR, "")
+            .value("dst_color", NVG_DST_COLOR, "")
+            .value("one_minus_dst_color", NVG_ONE_MINUS_DST_COLOR, "")
+            .value("src_alpha", NVG_SRC_ALPHA, "")
+            .value("one_minus_src_alpha", NVG_ONE_MINUS_SRC_ALPHA, "")
+            .value("dst_alpha", NVG_DST_ALPHA, "")
+            .value("one_minus_dst_alpha", NVG_ONE_MINUS_DST_ALPHA, "")
+            .value("src_alpha_saturate", NVG_SRC_ALPHA_SATURATE, "");
 
 
-    py::enum_<NVGcompositeOperation>(m, "CompositeOperation", py::arithmetic(), "")
-        .value("source_over", NVG_SOURCE_OVER, "")
-        .value("source_in", NVG_SOURCE_IN, "")
-        .value("source_out", NVG_SOURCE_OUT, "")
-        .value("atop", NVG_ATOP, "")
-        .value("destination_over", NVG_DESTINATION_OVER, "")
-        .value("destination_in", NVG_DESTINATION_IN, "")
-        .value("destination_out", NVG_DESTINATION_OUT, "")
-        .value("destination_atop", NVG_DESTINATION_ATOP, "")
-        .value("lighter", NVG_LIGHTER, "")
-        .value("copy", NVG_COPY, "")
-        .value("xor", NVG_XOR, "");
+    auto pyEnumCompositeOperation =
+        py::enum_<NVGcompositeOperation>(m, "CompositeOperation", py::arithmetic(), "")
+            .value("source_over", NVG_SOURCE_OVER, "")
+            .value("source_in", NVG_SOURCE_IN, "")
+            .value("source_out", NVG_SOURCE_OUT, "")
+            .value("atop", NVG_ATOP, "")
+            .value("destination_over", NVG_DESTINATION_OVER, "")
+            .value("destination_in", NVG_DESTINATION_IN, "")
+            .value("destination_out", NVG_DESTINATION_OUT, "")
+            .value("destination_atop", NVG_DESTINATION_ATOP, "")
+            .value("lighter", NVG_LIGHTER, "")
+            .value("copy", NVG_COPY, "")
+            .value("xor", NVG_XOR, "");
 
 
     auto pyClassNVGcompositeOperationState =
@@ -237,13 +245,14 @@ void py_init_module_nanovg(py::module& m)
         ;
 
 
-    py::enum_<NVGimageFlags>(m, "ImageFlags", py::arithmetic(), "")
-        .value("image_generate_mipmaps", NVG_IMAGE_GENERATE_MIPMAPS, "Generate mipmaps during creation of the image.")
-        .value("image_repeatx", NVG_IMAGE_REPEATX, "Repeat image in X direction.")
-        .value("image_repeaty", NVG_IMAGE_REPEATY, "Repeat image in Y direction.")
-        .value("image_flipy", NVG_IMAGE_FLIPY, "Flips (inverses) image in Y direction when rendered.")
-        .value("image_premultiplied", NVG_IMAGE_PREMULTIPLIED, "Image data has premultiplied alpha.")
-        .value("image_nearest", NVG_IMAGE_NEAREST, "Image interpolation is Nearest instead Linear");
+    auto pyEnumImageFlags =
+        py::enum_<NVGimageFlags>(m, "ImageFlags", py::arithmetic(), "")
+            .value("image_generate_mipmaps", NVG_IMAGE_GENERATE_MIPMAPS, "Generate mipmaps during creation of the image.")
+            .value("image_repeatx", NVG_IMAGE_REPEATX, "Repeat image in X direction.")
+            .value("image_repeaty", NVG_IMAGE_REPEATY, "Repeat image in Y direction.")
+            .value("image_flipy", NVG_IMAGE_FLIPY, "Flips (inverses) image in Y direction when rendered.")
+            .value("image_premultiplied", NVG_IMAGE_PREMULTIPLIED, "Image data has premultiplied alpha.")
+            .value("image_nearest", NVG_IMAGE_NEAREST, "Image interpolation is Nearest instead Linear");
 
 
     m.def("begin_frame",
@@ -688,9 +697,10 @@ void py_init_module_nanovg(py::module& m)
         "Sets the font face based on specified name of current text style.");
 
 
-    py::enum_<NVGtexture>(m, "Texture", py::arithmetic(), "\n Internal Render API\n")
-        .value("texture_alpha", NVG_TEXTURE_ALPHA, "")
-        .value("texture_rgba", NVG_TEXTURE_RGBA, "");
+    auto pyEnumTexture =
+        py::enum_<NVGtexture>(m, "Texture", py::arithmetic(), "\n Internal Render API\n")
+            .value("texture_alpha", NVG_TEXTURE_ALPHA, "")
+            .value("texture_rgba", NVG_TEXTURE_RGBA, "");
 
 
     auto pyClassNVGscissor =
@@ -814,12 +824,13 @@ void py_init_module_nanovg(py::module& m)
 
     { // <namespace NvgImgui>
         py::module_ pyNsNvgImgui = m.def_submodule("nvg_imgui", "");
-        py::enum_<NvgImgui::NvgCreateFlags>(pyNsNvgImgui, "NvgCreateFlags", py::arithmetic(), "Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h")
-            .value("antialias", NvgImgui::NVG_ANTIALIAS, "Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).")
-            .value("stencil_strokes", NvgImgui::NVG_STENCIL_STROKES, " Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little\n slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.")
-            .value("debug", NvgImgui::NVG_DEBUG, "Flag indicating that additional debug checks are done.")
-            .value("double_buffer", NvgImgui::NVG_DOUBLE_BUFFER, "Flag indicating if double buffering scheme is used (Metal only!)")
-            .value("triple_buffer", NvgImgui::NVG_TRIPLE_BUFFER, "Flag indicating if triple buffering scheme is used (Metal only!)");
+        auto pyEnumNvgCreateFlags =
+            py::enum_<NvgImgui::NvgCreateFlags>(pyNsNvgImgui, "NvgCreateFlags", py::arithmetic(), "Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h")
+                .value("antialias", NvgImgui::NVG_ANTIALIAS, "Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).")
+                .value("stencil_strokes", NvgImgui::NVG_STENCIL_STROKES, " Flag indicating if strokes should be drawn using stencil buffer. The rendering will be a little\n slower, but path overlaps (i.e. self-intersecting or sharp turns) will be drawn just once.")
+                .value("debug", NvgImgui::NVG_DEBUG, "Flag indicating that additional debug checks are done.")
+                .value("double_buffer", NvgImgui::NVG_DOUBLE_BUFFER, "Flag indicating if double buffering scheme is used (Metal only!)")
+                .value("triple_buffer", NvgImgui::NVG_TRIPLE_BUFFER, "Flag indicating if triple buffering scheme is used (Metal only!)");
 
 
         pyNsNvgImgui.def("create_nvg_context_hello_imgui",

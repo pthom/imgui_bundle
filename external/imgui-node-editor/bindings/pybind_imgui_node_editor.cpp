@@ -106,31 +106,35 @@ void py_init_module_imgui_node_editor(py::module& m)
     //
 
 
-    py::enum_<ax::NodeEditor::PinKind>(m, "PinKind", py::arithmetic(), "------------------------------------------------------------------------------")
-        .value("input", ax::NodeEditor::PinKind::Input, "")
-        .value("output", ax::NodeEditor::PinKind::Output, "");
+    auto pyEnumPinKind =
+        py::enum_<ax::NodeEditor::PinKind>(m, "PinKind", py::arithmetic(), "------------------------------------------------------------------------------")
+            .value("input", ax::NodeEditor::PinKind::Input, "")
+            .value("output", ax::NodeEditor::PinKind::Output, "");
 
 
-    py::enum_<ax::NodeEditor::FlowDirection>(m, "FlowDirection", py::arithmetic(), "")
-        .value("forward", ax::NodeEditor::FlowDirection::Forward, "")
-        .value("backward", ax::NodeEditor::FlowDirection::Backward, "");
+    auto pyEnumFlowDirection =
+        py::enum_<ax::NodeEditor::FlowDirection>(m, "FlowDirection", py::arithmetic(), "")
+            .value("forward", ax::NodeEditor::FlowDirection::Forward, "")
+            .value("backward", ax::NodeEditor::FlowDirection::Backward, "");
 
 
-    py::enum_<ax::NodeEditor::CanvasSizeMode>(m, "CanvasSizeMode", py::arithmetic(), "")
-        .value("fit_vertical_view", ax::NodeEditor::CanvasSizeMode::FitVerticalView, "Previous view will be scaled to fit new view on Y axis")
-        .value("fit_horizontal_view", ax::NodeEditor::CanvasSizeMode::FitHorizontalView, "Previous view will be scaled to fit new view on X axis")
-        .value("center_only", ax::NodeEditor::CanvasSizeMode::CenterOnly, "Previous view will be centered on new view");
+    auto pyEnumCanvasSizeMode =
+        py::enum_<ax::NodeEditor::CanvasSizeMode>(m, "CanvasSizeMode", py::arithmetic(), "")
+            .value("fit_vertical_view", ax::NodeEditor::CanvasSizeMode::FitVerticalView, "Previous view will be scaled to fit new view on Y axis")
+            .value("fit_horizontal_view", ax::NodeEditor::CanvasSizeMode::FitHorizontalView, "Previous view will be scaled to fit new view on X axis")
+            .value("center_only", ax::NodeEditor::CanvasSizeMode::CenterOnly, "Previous view will be centered on new view");
 
 
-    py::enum_<ax::NodeEditor::SaveReasonFlags>(m, "SaveReasonFlags", py::arithmetic(), "------------------------------------------------------------------------------")
-        .value("none", ax::NodeEditor::SaveReasonFlags::None, "")
-        .value("navigation", ax::NodeEditor::SaveReasonFlags::Navigation, "")
-        .value("position", ax::NodeEditor::SaveReasonFlags::Position, "")
-        .value("size", ax::NodeEditor::SaveReasonFlags::Size, "")
-        .value("selection", ax::NodeEditor::SaveReasonFlags::Selection, "")
-        .value("add_node", ax::NodeEditor::SaveReasonFlags::AddNode, "")
-        .value("remove_node", ax::NodeEditor::SaveReasonFlags::RemoveNode, "")
-        .value("user", ax::NodeEditor::SaveReasonFlags::User, "");
+    auto pyEnumSaveReasonFlags =
+        py::enum_<ax::NodeEditor::SaveReasonFlags>(m, "SaveReasonFlags", py::arithmetic(), "------------------------------------------------------------------------------")
+            .value("none", ax::NodeEditor::SaveReasonFlags::None, "")
+            .value("navigation", ax::NodeEditor::SaveReasonFlags::Navigation, "")
+            .value("position", ax::NodeEditor::SaveReasonFlags::Position, "")
+            .value("size", ax::NodeEditor::SaveReasonFlags::Size, "")
+            .value("selection", ax::NodeEditor::SaveReasonFlags::Selection, "")
+            .value("add_node", ax::NodeEditor::SaveReasonFlags::AddNode, "")
+            .value("remove_node", ax::NodeEditor::SaveReasonFlags::RemoveNode, "")
+            .value("user", ax::NodeEditor::SaveReasonFlags::User, "");
 
 
     auto pyClassConfig =
@@ -150,58 +154,60 @@ void py_init_module_imgui_node_editor(py::module& m)
         ;
 
 
-    py::enum_<ax::NodeEditor::StyleColor>(m, "StyleColor", py::arithmetic(), "------------------------------------------------------------------------------")
-        .value("bg", ax::NodeEditor::StyleColor_Bg, "")
-        .value("grid", ax::NodeEditor::StyleColor_Grid, "")
-        .value("node_bg", ax::NodeEditor::StyleColor_NodeBg, "")
-        .value("node_border", ax::NodeEditor::StyleColor_NodeBorder, "")
-        .value("hov_node_border", ax::NodeEditor::StyleColor_HovNodeBorder, "")
-        .value("sel_node_border", ax::NodeEditor::StyleColor_SelNodeBorder, "")
-        .value("node_sel_rect", ax::NodeEditor::StyleColor_NodeSelRect, "")
-        .value("node_sel_rect_border", ax::NodeEditor::StyleColor_NodeSelRectBorder, "")
-        .value("hov_link_border", ax::NodeEditor::StyleColor_HovLinkBorder, "")
-        .value("sel_link_border", ax::NodeEditor::StyleColor_SelLinkBorder, "")
-        .value("highlight_link_border", ax::NodeEditor::StyleColor_HighlightLinkBorder, "")
-        .value("link_sel_rect", ax::NodeEditor::StyleColor_LinkSelRect, "")
-        .value("link_sel_rect_border", ax::NodeEditor::StyleColor_LinkSelRectBorder, "")
-        .value("pin_rect", ax::NodeEditor::StyleColor_PinRect, "")
-        .value("pin_rect_border", ax::NodeEditor::StyleColor_PinRectBorder, "")
-        .value("flow", ax::NodeEditor::StyleColor_Flow, "")
-        .value("flow_marker", ax::NodeEditor::StyleColor_FlowMarker, "")
-        .value("group_bg", ax::NodeEditor::StyleColor_GroupBg, "")
-        .value("group_border", ax::NodeEditor::StyleColor_GroupBorder, "")
-        .value("count", ax::NodeEditor::StyleColor_Count, "");
+    auto pyEnumStyleColor =
+        py::enum_<ax::NodeEditor::StyleColor>(m, "StyleColor", py::arithmetic(), "------------------------------------------------------------------------------")
+            .value("bg", ax::NodeEditor::StyleColor_Bg, "")
+            .value("grid", ax::NodeEditor::StyleColor_Grid, "")
+            .value("node_bg", ax::NodeEditor::StyleColor_NodeBg, "")
+            .value("node_border", ax::NodeEditor::StyleColor_NodeBorder, "")
+            .value("hov_node_border", ax::NodeEditor::StyleColor_HovNodeBorder, "")
+            .value("sel_node_border", ax::NodeEditor::StyleColor_SelNodeBorder, "")
+            .value("node_sel_rect", ax::NodeEditor::StyleColor_NodeSelRect, "")
+            .value("node_sel_rect_border", ax::NodeEditor::StyleColor_NodeSelRectBorder, "")
+            .value("hov_link_border", ax::NodeEditor::StyleColor_HovLinkBorder, "")
+            .value("sel_link_border", ax::NodeEditor::StyleColor_SelLinkBorder, "")
+            .value("highlight_link_border", ax::NodeEditor::StyleColor_HighlightLinkBorder, "")
+            .value("link_sel_rect", ax::NodeEditor::StyleColor_LinkSelRect, "")
+            .value("link_sel_rect_border", ax::NodeEditor::StyleColor_LinkSelRectBorder, "")
+            .value("pin_rect", ax::NodeEditor::StyleColor_PinRect, "")
+            .value("pin_rect_border", ax::NodeEditor::StyleColor_PinRectBorder, "")
+            .value("flow", ax::NodeEditor::StyleColor_Flow, "")
+            .value("flow_marker", ax::NodeEditor::StyleColor_FlowMarker, "")
+            .value("group_bg", ax::NodeEditor::StyleColor_GroupBg, "")
+            .value("group_border", ax::NodeEditor::StyleColor_GroupBorder, "")
+            .value("count", ax::NodeEditor::StyleColor_Count, "");
 
 
-    py::enum_<ax::NodeEditor::StyleVar>(m, "StyleVar", py::arithmetic(), "")
-        .value("node_padding", ax::NodeEditor::StyleVar_NodePadding, "")
-        .value("node_rounding", ax::NodeEditor::StyleVar_NodeRounding, "")
-        .value("node_border_width", ax::NodeEditor::StyleVar_NodeBorderWidth, "")
-        .value("hovered_node_border_width", ax::NodeEditor::StyleVar_HoveredNodeBorderWidth, "")
-        .value("selected_node_border_width", ax::NodeEditor::StyleVar_SelectedNodeBorderWidth, "")
-        .value("pin_rounding", ax::NodeEditor::StyleVar_PinRounding, "")
-        .value("pin_border_width", ax::NodeEditor::StyleVar_PinBorderWidth, "")
-        .value("link_strength", ax::NodeEditor::StyleVar_LinkStrength, "")
-        .value("source_direction", ax::NodeEditor::StyleVar_SourceDirection, "")
-        .value("target_direction", ax::NodeEditor::StyleVar_TargetDirection, "")
-        .value("scroll_duration", ax::NodeEditor::StyleVar_ScrollDuration, "")
-        .value("flow_marker_distance", ax::NodeEditor::StyleVar_FlowMarkerDistance, "")
-        .value("flow_speed", ax::NodeEditor::StyleVar_FlowSpeed, "")
-        .value("flow_duration", ax::NodeEditor::StyleVar_FlowDuration, "")
-        .value("pivot_alignment", ax::NodeEditor::StyleVar_PivotAlignment, "")
-        .value("pivot_size", ax::NodeEditor::StyleVar_PivotSize, "")
-        .value("pivot_scale", ax::NodeEditor::StyleVar_PivotScale, "")
-        .value("pin_corners", ax::NodeEditor::StyleVar_PinCorners, "")
-        .value("pin_radius", ax::NodeEditor::StyleVar_PinRadius, "")
-        .value("pin_arrow_size", ax::NodeEditor::StyleVar_PinArrowSize, "")
-        .value("pin_arrow_width", ax::NodeEditor::StyleVar_PinArrowWidth, "")
-        .value("group_rounding", ax::NodeEditor::StyleVar_GroupRounding, "")
-        .value("group_border_width", ax::NodeEditor::StyleVar_GroupBorderWidth, "")
-        .value("highlight_connected_links", ax::NodeEditor::StyleVar_HighlightConnectedLinks, "")
-        .value("snap_link_to_pin_dir", ax::NodeEditor::StyleVar_SnapLinkToPinDir, "")
-        .value("hovered_node_border_offset", ax::NodeEditor::StyleVar_HoveredNodeBorderOffset, "")
-        .value("selected_node_border_offset", ax::NodeEditor::StyleVar_SelectedNodeBorderOffset, "")
-        .value("count", ax::NodeEditor::StyleVar_Count, "");
+    auto pyEnumStyleVar =
+        py::enum_<ax::NodeEditor::StyleVar>(m, "StyleVar", py::arithmetic(), "")
+            .value("node_padding", ax::NodeEditor::StyleVar_NodePadding, "")
+            .value("node_rounding", ax::NodeEditor::StyleVar_NodeRounding, "")
+            .value("node_border_width", ax::NodeEditor::StyleVar_NodeBorderWidth, "")
+            .value("hovered_node_border_width", ax::NodeEditor::StyleVar_HoveredNodeBorderWidth, "")
+            .value("selected_node_border_width", ax::NodeEditor::StyleVar_SelectedNodeBorderWidth, "")
+            .value("pin_rounding", ax::NodeEditor::StyleVar_PinRounding, "")
+            .value("pin_border_width", ax::NodeEditor::StyleVar_PinBorderWidth, "")
+            .value("link_strength", ax::NodeEditor::StyleVar_LinkStrength, "")
+            .value("source_direction", ax::NodeEditor::StyleVar_SourceDirection, "")
+            .value("target_direction", ax::NodeEditor::StyleVar_TargetDirection, "")
+            .value("scroll_duration", ax::NodeEditor::StyleVar_ScrollDuration, "")
+            .value("flow_marker_distance", ax::NodeEditor::StyleVar_FlowMarkerDistance, "")
+            .value("flow_speed", ax::NodeEditor::StyleVar_FlowSpeed, "")
+            .value("flow_duration", ax::NodeEditor::StyleVar_FlowDuration, "")
+            .value("pivot_alignment", ax::NodeEditor::StyleVar_PivotAlignment, "")
+            .value("pivot_size", ax::NodeEditor::StyleVar_PivotSize, "")
+            .value("pivot_scale", ax::NodeEditor::StyleVar_PivotScale, "")
+            .value("pin_corners", ax::NodeEditor::StyleVar_PinCorners, "")
+            .value("pin_radius", ax::NodeEditor::StyleVar_PinRadius, "")
+            .value("pin_arrow_size", ax::NodeEditor::StyleVar_PinArrowSize, "")
+            .value("pin_arrow_width", ax::NodeEditor::StyleVar_PinArrowWidth, "")
+            .value("group_rounding", ax::NodeEditor::StyleVar_GroupRounding, "")
+            .value("group_border_width", ax::NodeEditor::StyleVar_GroupBorderWidth, "")
+            .value("highlight_connected_links", ax::NodeEditor::StyleVar_HighlightConnectedLinks, "")
+            .value("snap_link_to_pin_dir", ax::NodeEditor::StyleVar_SnapLinkToPinDir, "")
+            .value("hovered_node_border_offset", ax::NodeEditor::StyleVar_HoveredNodeBorderOffset, "")
+            .value("selected_node_border_offset", ax::NodeEditor::StyleVar_SelectedNodeBorderOffset, "")
+            .value("count", ax::NodeEditor::StyleVar_Count, "");
 
 
     auto pyClassStyle =
@@ -239,7 +245,7 @@ void py_init_module_imgui_node_editor(py::module& m)
         .def("color_",
             &ax::NodeEditor::Style::Color_,
             py::arg("idx_color"),
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("set_color_",
             &ax::NodeEditor::Style::SetColor_, py::arg("idx_color"), py::arg("color"))
         // #endif
@@ -252,12 +258,12 @@ void py_init_module_imgui_node_editor(py::module& m)
         ax::NodeEditor::SetCurrentEditor, py::arg("ctx"));
 
     m.def("get_current_editor",
-        ax::NodeEditor::GetCurrentEditor, pybind11::return_value_policy::reference);
+        ax::NodeEditor::GetCurrentEditor, py::return_value_policy::reference);
 
     m.def("create_editor",
         ax::NodeEditor::CreateEditor,
         py::arg("config") = py::none(),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("destroy_editor",
         ax::NodeEditor::DestroyEditor, py::arg("ctx"));
@@ -265,15 +271,15 @@ void py_init_module_imgui_node_editor(py::module& m)
     m.def("get_config",
         ax::NodeEditor::GetConfig,
         py::arg("ctx") = py::none(),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_style",
-        ax::NodeEditor::GetStyle, pybind11::return_value_policy::reference);
+        ax::NodeEditor::GetStyle, py::return_value_policy::reference);
 
     m.def("get_style_color_name",
         ax::NodeEditor::GetStyleColorName,
         py::arg("color_index"),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("push_style_color",
         ax::NodeEditor::PushStyleColor, py::arg("color_index"), py::arg("color"));
@@ -339,10 +345,10 @@ void py_init_module_imgui_node_editor(py::module& m)
         ax::NodeEditor::GetGroupMax);
 
     m.def("get_hint_foreground_draw_list",
-        ax::NodeEditor::GetHintForegroundDrawList, pybind11::return_value_policy::reference);
+        ax::NodeEditor::GetHintForegroundDrawList, py::return_value_policy::reference);
 
     m.def("get_hint_background_draw_list",
-        ax::NodeEditor::GetHintBackgroundDrawList, pybind11::return_value_policy::reference);
+        ax::NodeEditor::GetHintBackgroundDrawList, py::return_value_policy::reference);
 
     m.def("end_group_hint",
         ax::NodeEditor::EndGroupHint);
@@ -351,7 +357,7 @@ void py_init_module_imgui_node_editor(py::module& m)
         ax::NodeEditor::GetNodeBackgroundDrawList,
         py::arg("node_id"),
         "TODO: Add a way to manage node background channels",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("link",
         ax::NodeEditor::Link, py::arg("id"), py::arg("start_pin_id"), py::arg("end_pin_id"), py::arg("color") = ImVec4(1, 1, 1, 1), py::arg("thickness") = 1.0f);
@@ -623,7 +629,7 @@ void py_init_module_imgui_node_editor(py::module& m)
 
     ////////////////////    <generated_from:node_editor_default_context.h>    ////////////////////
     m.def("default_node_editor_context_immapp",
-        DefaultNodeEditorContext_Immapp, pybind11::return_value_policy::reference);
+        DefaultNodeEditorContext_Immapp, py::return_value_policy::reference);
 
     m.def("suspend_node_editor_canvas_immapp",
         SuspendNodeEditorCanvas_Immapp);

@@ -29,17 +29,18 @@ void py_init_module_imspinner(py::module& m)
     m.attr("red") = (const ImColor) ImColor(1.f, 0.f, 0.f, 1.f);
 
 
-    py::enum_<ImSpinner::SpinnerTypeT>(m, "SpinnerTypeT", py::arithmetic(), "")
-        .value("e_st_rainbow", ImSpinner::e_st_rainbow, "")
-        .value("e_st_angle", ImSpinner::e_st_angle, "")
-        .value("e_st_dots", ImSpinner::e_st_dots, "")
-        .value("e_st_ang", ImSpinner::e_st_ang, "")
-        .value("e_st_vdots", ImSpinner::e_st_vdots, "")
-        .value("e_st_bounce_ball", ImSpinner::e_st_bounce_ball, "")
-        .value("e_st_eclipse", ImSpinner::e_st_eclipse, "")
-        .value("e_st_ingyang", ImSpinner::e_st_ingyang, "")
-        .value("e_st_barchartsine", ImSpinner::e_st_barchartsine, "")
-        .value("e_st_count", ImSpinner::e_st_count, "");
+    auto pyEnumSpinnerTypeT =
+        py::enum_<ImSpinner::SpinnerTypeT>(m, "SpinnerTypeT", py::arithmetic(), "")
+            .value("e_st_rainbow", ImSpinner::e_st_rainbow, "")
+            .value("e_st_angle", ImSpinner::e_st_angle, "")
+            .value("e_st_dots", ImSpinner::e_st_dots, "")
+            .value("e_st_ang", ImSpinner::e_st_ang, "")
+            .value("e_st_vdots", ImSpinner::e_st_vdots, "")
+            .value("e_st_bounce_ball", ImSpinner::e_st_bounce_ball, "")
+            .value("e_st_eclipse", ImSpinner::e_st_eclipse, "")
+            .value("e_st_ingyang", ImSpinner::e_st_ingyang, "")
+            .value("e_st_barchartsine", ImSpinner::e_st_barchartsine, "")
+            .value("e_st_count", ImSpinner::e_st_count, "");
     m.attr("PI_DIV_4") = (float) IM_PI / 4.f;
     m.attr("PI_DIV_2") = (float) IM_PI / 2.f;
     m.attr("PI_2") = (float) IM_PI * 2.f;

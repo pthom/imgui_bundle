@@ -2617,7 +2617,20 @@ void py_init_module_imgui_internal(py::module& m)
         .def(py::init<ImGuiContext *, const char *>(),
             py::arg("context"), py::arg("name"))
         .def("get_id",
-            py::overload_cast<const char *, const char *>(&ImGuiWindow::GetID),
+            [](ImGuiWindow & self, const char * str, std::optional<std::string> str_end = std::nullopt) -> ImGuiID
+            {
+                auto GetID_adapt_const_char_pointer_with_default_null = [&self](const char * str, std::optional<std::string> str_end = std::nullopt) -> ImGuiID
+                {
+                    const char * str_end_adapt_default_null = nullptr;
+                    if (str_end.has_value())
+                        str_end_adapt_default_null = str_end.value().c_str();
+
+                    auto lambda_result = self.GetID(str, str_end_adapt_default_null);
+                    return lambda_result;
+                };
+
+                return GetID_adapt_const_char_pointer_with_default_null(str, str_end);
+            },
             py::arg("str"), py::arg("str_end") = py::none(),
             "(private API)")
         .def("get_id",
@@ -3357,7 +3370,19 @@ void py_init_module_imgui_internal(py::module& m)
         "Start logging/capturing to internal buffer");
 
     m.def("log_rendered_text",
-        ImGui::LogRenderedText, py::arg("ref_pos"), py::arg("text"), py::arg("text_end") = py::none());
+        [](const ImVec2 * ref_pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+        {
+            auto LogRenderedText_adapt_const_char_pointer_with_default_null = [](const ImVec2 * ref_pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImGui::LogRenderedText(ref_pos, text, text_end_adapt_default_null);
+            };
+
+            LogRenderedText_adapt_const_char_pointer_with_default_null(ref_pos, text, text_end);
+        },     py::arg("ref_pos"), py::arg("text"), py::arg("text_end") = py::none());
 
     m.def("log_set_next_text_decoration",
         ImGui::LogSetNextTextDecoration, py::arg("prefix"), py::arg("suffix"));
@@ -3418,7 +3443,20 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::BeginMenuEx, py::arg("label"), py::arg("icon"), py::arg("enabled") = true);
 
     m.def("menu_item_ex",
-        ImGui::MenuItemEx, py::arg("label"), py::arg("icon"), py::arg("shortcut") = py::none(), py::arg("selected") = false, py::arg("enabled") = true);
+        [](const char * label, const char * icon, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
+        {
+            auto MenuItemEx_adapt_const_char_pointer_with_default_null = [](const char * label, const char * icon, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
+            {
+                const char * shortcut_adapt_default_null = nullptr;
+                if (shortcut.has_value())
+                    shortcut_adapt_default_null = shortcut.value().c_str();
+
+                auto lambda_result = ImGui::MenuItemEx(label, icon, shortcut_adapt_default_null, selected, enabled);
+                return lambda_result;
+            };
+
+            return MenuItemEx_adapt_const_char_pointer_with_default_null(label, icon, shortcut, selected, enabled);
+        },     py::arg("label"), py::arg("icon"), py::arg("shortcut") = py::none(), py::arg("selected") = false, py::arg("enabled") = true);
 
     m.def("begin_combo_popup",
         py::overload_cast<ImGuiID, const ImRect &, ImGuiComboFlags>(ImGui::BeginComboPopup), py::arg("popup_id"), py::arg("bb"), py::arg("flags"));
@@ -4233,7 +4271,19 @@ void py_init_module_imgui_internal(py::module& m)
         },     py::arg("draw_list"), py::arg("bb"), py::arg("flags"), py::arg("frame_padding"), py::arg("label"), py::arg("tab_id"), py::arg("close_button_id"), py::arg("is_contents_visible"), py::arg("out_just_closed"), py::arg("out_text_clipped"));
 
     m.def("render_text",
-        ImGui::RenderText, py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none(), py::arg("hide_text_after_hash") = true);
+        [](ImVec2 pos, const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_hash = true)
+        {
+            auto RenderText_adapt_const_char_pointer_with_default_null = [](ImVec2 pos, const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_hash = true)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImGui::RenderText(pos, text, text_end_adapt_default_null, hide_text_after_hash);
+            };
+
+            RenderText_adapt_const_char_pointer_with_default_null(pos, text, text_end, hide_text_after_hash);
+        },     py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none(), py::arg("hide_text_after_hash") = true);
 
     m.def("render_text_wrapped",
         ImGui::RenderTextWrapped, py::arg("pos"), py::arg("text"), py::arg("text_end"), py::arg("wrap_width"));
@@ -4260,7 +4310,20 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::RenderNavCursor, py::arg("bb"), py::arg("id_"), py::arg("flags") = ImGuiNavRenderCursorFlags_None);
 
     m.def("find_rendered_text_end",
-        ImGui::FindRenderedTextEnd,
+        [](const char * text, std::optional<std::string> text_end = std::nullopt) -> const char *
+        {
+            auto FindRenderedTextEnd_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt) -> const char *
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                auto lambda_result = ImGui::FindRenderedTextEnd(text, text_end_adapt_default_null);
+                return lambda_result;
+            };
+
+            return FindRenderedTextEnd_adapt_const_char_pointer_with_default_null(text, text_end);
+        },
         py::arg("text"), py::arg("text_end") = py::none(),
         "Find the optional ## from which we stop displaying text.",
         py::return_value_policy::reference);
@@ -4293,7 +4356,19 @@ void py_init_module_imgui_internal(py::module& m)
         ImGui::CalcRoundingFlagsForRectInRect, py::arg("r_in"), py::arg("r_outer"), py::arg("threshold"));
 
     m.def("text_ex",
-        ImGui::TextEx, py::arg("text"), py::arg("text_end") = py::none(), py::arg("flags") = 0);
+        [](const char * text, std::optional<std::string> text_end = std::nullopt, ImGuiTextFlags flags = 0)
+        {
+            auto TextEx_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt, ImGuiTextFlags flags = 0)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImGui::TextEx(text, text_end_adapt_default_null, flags);
+            };
+
+            TextEx_adapt_const_char_pointer_with_default_null(text, text_end, flags);
+        },     py::arg("text"), py::arg("text_end") = py::none(), py::arg("flags") = 0);
 
     m.def("button_ex",
         ImGui::ButtonEx, py::arg("label"), py::arg("size_arg") = ImVec2(0, 0), py::arg("flags") = 0);
@@ -4379,7 +4454,20 @@ void py_init_module_imgui_internal(py::module& m)
         },     py::arg("bb"), py::arg("id_"), py::arg("axis"), py::arg("size1"), py::arg("size2"), py::arg("min_size1"), py::arg("min_size2"), py::arg("hover_extend") = 0.0f, py::arg("hover_visibility_delay") = 0.0f, py::arg("bg_col") = 0);
 
     m.def("tree_node_behavior",
-        ImGui::TreeNodeBehavior, py::arg("id_"), py::arg("flags"), py::arg("label"), py::arg("label_end") = py::none());
+        [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label, std::optional<std::string> label_end = std::nullopt) -> bool
+        {
+            auto TreeNodeBehavior_adapt_const_char_pointer_with_default_null = [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label, std::optional<std::string> label_end = std::nullopt) -> bool
+            {
+                const char * label_end_adapt_default_null = nullptr;
+                if (label_end.has_value())
+                    label_end_adapt_default_null = label_end.value().c_str();
+
+                auto lambda_result = ImGui::TreeNodeBehavior(id, flags, label, label_end_adapt_default_null);
+                return lambda_result;
+            };
+
+            return TreeNodeBehavior_adapt_const_char_pointer_with_default_null(id, flags, label, label_end);
+        },     py::arg("id_"), py::arg("flags"), py::arg("label"), py::arg("label_end") = py::none());
 
     m.def("tree_push_override_id",
         ImGui::TreePushOverrideID, py::arg("id_"));

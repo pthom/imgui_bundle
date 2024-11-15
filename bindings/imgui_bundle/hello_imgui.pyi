@@ -1491,7 +1491,7 @@ class ImGuiWindowParams:
     # tweakedTheme: (enum ImGuiTheme::ImGuiTweakedTheme)
     # Changes the ImGui theme. Several themes are available, you can query the list
     # by calling HelloImGui::AvailableThemes()
-    tweaked_theme: ImGuiTheme.ImGuiTweakedTheme
+    tweaked_theme: ImGuiTweakedTheme
 
     # ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
     # backgroundColor:
@@ -1519,7 +1519,7 @@ class ImGuiWindowParams:
         remember_status_bar_settings: bool = True,
         full_screen_window_margin_top_left: ImVec2 = ImVec2(0.0, 0.0),
         full_screen_window_margin_bottom_right: ImVec2 = ImVec2(0.0, 0.0),
-        tweaked_theme: ImGuiTheme.ImGuiTweakedTheme = ImGuiTheme.ImGuiTweakedTheme(),
+        tweaked_theme: ImGuiTweakedTheme = ImGuiTweakedTheme(),
         background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0),
     ) -> None:
         """Auto-generated default constructor with named params"""
@@ -1781,7 +1781,7 @@ class RunnerCallbacks:
     # If you want to load additional fonts, during the app execution, you can
     # set LoadAdditionalFonts to a function that will load the additional fonts.
     load_additional_fonts: VoidFunction = (
-        ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons
+        imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons
     )
     # DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4;    /* original C++ signature */
     # If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control
@@ -1792,12 +1792,12 @@ class RunnerCallbacks:
     # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, change ImGui config via SetupImGuiConfig
     #  (enable docking, gamepad, etc)
-    setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig
+    setup_imgui_config: VoidFunction = imgui_default_settings.SetupDefaultImGuiConfig
 
     # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle;    /* original C++ signature */
     # `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, set your own style by providing your own SetupImGuiStyle callback
-    setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle
+    setup_imgui_style: VoidFunction = imgui_default_settings.SetupDefaultImGuiStyle
 
     # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
     # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
@@ -1880,10 +1880,10 @@ class RunnerCallbacks:
         show_status: VoidFunction = EmptyVoidFunction(),
         post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction(),
         post_init: VoidFunction = EmptyVoidFunction(),
-        load_additional_fonts: VoidFunction = ImGuiDefaultSettings.LoadDefaultFont_WithFontAwesomeIcons,
+        load_additional_fonts: VoidFunction = imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons,
         default_icon_font: DefaultIconFont = DefaultIconFont.font_awesome4,
-        setup_imgui_config: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiConfig,
-        setup_imgui_style: VoidFunction = ImGuiDefaultSettings.SetupDefaultImGuiStyle,
+        setup_imgui_config: VoidFunction = imgui_default_settings.SetupDefaultImGuiConfig,
+        setup_imgui_style: VoidFunction = imgui_default_settings.SetupDefaultImGuiStyle,
         register_tests: VoidFunction = EmptyVoidFunction(),
         register_tests_called: bool = False,
         before_exit: VoidFunction = EmptyVoidFunction(),
@@ -2095,7 +2095,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2105,9 +2105,9 @@ class DockingSplit:
         self,
         initial_dock_: DockSpaceName = "",
         new_dock_: DockSpaceName = "",
-        direction_: ImGuiDir = ImGuiDir_Down,
+        direction_: ImGuiDir = Dir.down,
         ratio_: float = 0.25,
-        node_flags_: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None,
+        node_flags_: ImGuiDockNodeFlags = DockNodeFlags_.none,
     ) -> None:
         """Constructor"""
         pass
@@ -2187,7 +2187,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2197,7 +2197,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2270,7 +2270,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        ImGuiDockNodeFlags_PassthruCentralNode
+        DockNodeFlags_.passthru_central_node
     )
 
     # --------------- Layout handling -----------------------------
@@ -2315,7 +2315,7 @@ class DockingParams:
         docking_splits: List[DockingSplit] = List[DockingSplit](),
         dockable_windows: List[DockableWindow] = List[DockableWindow](),
         layout_name: str = "Default",
-        main_dock_space_node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode,
+        main_dock_space_node_flags: ImGuiDockNodeFlags = DockNodeFlags_.passthru_central_node,
         layout_condition: DockingLayoutCondition = DockingLayoutCondition.first_use_ever,
         layout_reset: bool = False,
     ) -> None:
@@ -2709,6 +2709,26 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # @@md#FpsIdling
 
+class FpsIdlingMode(enum.Enum):
+    """FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.
+    - Sleep: the application will sleep when idling to reduce CPU usage.
+    - EarlyReturn: rendering will return immediately when idling.
+      This is specifically designed for event-driven, and real-time applications.
+      Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.
+    - Auto: use platform-specific default behavior.
+       On most platforms, it will sleep. On Emscripten, `Render()` will return immediately
+       to avoid blocking the main thread.
+    Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.
+    """
+
+    # Sleep,    /* original C++ signature */
+    sleep = enum.auto()  # (= 0)
+    # EarlyReturn,    /* original C++ signature */
+    early_return = enum.auto()  # (= 1)
+    # Auto,    /* original C++ signature */
+    # }
+    auto = enum.auto()  # (= 2)
+
 class FpsIdling:
     """FpsIdling is a struct that contains Fps Idling parameters"""
 
@@ -2745,7 +2765,12 @@ class FpsIdling:
     # `rememberEnableIdling`: _bool, default=true_.
     #  If True, the last value of enableIdling is restored from the settings at startup.
     remember_enable_idling: bool = False
-    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false);    /* original C++ signature */
+
+    # FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto;    /* original C++ signature */
+    # `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.
+    # Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)
+    fps_idling_mode: FpsIdlingMode = FpsIdlingMode.auto
+    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
@@ -2753,6 +2778,7 @@ class FpsIdling:
         enable_idling: bool = True,
         is_idling: bool = False,
         remember_enable_idling: bool = False,
+        fps_idling_mode: FpsIdlingMode = FpsIdlingMode.auto,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -3212,6 +3238,15 @@ def run(
     """Runs an application, by providing the Gui function, the window title, etc."""
     pass
 
+# =========================== HelloImGui::ManualRender ==================================
+# @@md#HelloImGui::ManualRender
+
+# @@md
+
+# ============================== Utility functions ===============================
+
+# @@md#UtilityFunctions
+
 # RunnerParams* GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
     """`GetRunnerParams()`:  a convenience function that will return the runnerParams
@@ -3223,10 +3258,6 @@ def get_runner_params() -> RunnerParams:
 def is_using_hello_imgui() -> bool:
     """`IsUsingHelloImGui()`: returns True if the application is using HelloImGui"""
     pass
-
-# ============================== Utility functions ===============================
-
-# @@md#UtilityFunctions
 
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
 def frame_rate(duration_for_mean: float = 0.5) -> float:
@@ -3384,6 +3415,102 @@ class imgui_default_settings:  # Proxy class that introduces typings for the *su
         pass
 
 # </submodule imgui_default_settings>
+
+# <submodule manual_render>
+class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
+    pass  # (This corresponds to a C++ namespace. All method are static!)
+    """ namespace ManualRender"""
+    # HelloImGui::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
+    # - It is customizable like HelloImGui::Run: initialize it with `RunnerParams` or `SimpleRunnerParams`
+    # - `ManualRender::Render()` will render the application for one frame:
+    # - Ensure that `ManualRender::Render()` is triggered regularly (e.g., through a loop or other mechanism)
+    #   to maintain responsiveness. This method must be called on the main thread.
+    #
+    # A typical use case is:
+    # C++
+    #        ```cpp
+    #        HelloImGui::RunnerParams runnerParams;
+    #        runnerParams.callbacks.ShowGui = ...; // your GUI function
+    #      // Optionally, choose between Sleep, EarlyReturn, or Auto for fps idling mode:
+    #      // runnerParams.fpsIdling.fpsIdlingMode = HelloImGui::FpsIdlingMode::Sleep; // or EarlyReturn, Auto
+    #        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParams);
+    #        while (!HelloImGui::GetRunnerParams()->appShallExit)
+    #        {
+    #            HelloImGui::ManualRender::Render();
+    #        }
+    #        HelloImGui::ManualRender::TearDown();
+    #        ```
+    # Python:
+    #        ```python
+    #        runnerParams = HelloImGui.RunnerParams()
+    #        runnerParams.callbacks.show_gui = ... # your GUI function
+    #        while not hello_imgui.get_runner_params().app_shall_exit:
+    #            hello_imgui.manual_render.render()
+    #        hello_imgui.manual_render.tear_down()
+    #        ```
+    #
+    # **Notes:**
+    #  1. Depending on the configuration (`runnerParams.fpsIdling.fpsIdlingMode`), `HelloImGui` may enter
+    #     an idle state to reduce CPU usage, if no events are received (e.g., no input or interaction).
+    #     In this case, `Render()` will either sleep or return immediately.
+    #     By default,
+    #       - On Emscripten, `ManualRender::Render()` will return immediately to avoid blocking the main thread.
+    #       - On other platforms, it will sleep
+    #  2. If initialized with `RunnerParams`, a copy of the `RunnerParams` will be made
+    #     (which can be accessed with `HelloImGui::GetRunnerParams()`).
+
+    # void SetupFromRunnerParams(const RunnerParams& runnerParams);    /* original C++ signature */
+    @staticmethod
+    def setup_from_runner_params(runner_params: RunnerParams) -> None:
+        """Initializes the rendering with the full customizable `RunnerParams`.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        A distinct copy of `RunnerParams` is stored internally.
+        """
+        pass
+    # void SetupFromSimpleRunnerParams(const SimpleRunnerParams& simpleParams);    /* original C++ signature */
+    @staticmethod
+    def setup_from_simple_runner_params(simple_params: SimpleRunnerParams) -> None:
+        """Initializes the rendering with `SimpleRunnerParams`.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        """
+        pass
+    # void SetupFromGuiFunction(    /* original C++ signature */
+    #         const VoidFunction& guiFunction,
+    #         const std::string& windowTitle = "",
+    #         bool windowSizeAuto = false,
+    #         bool windowRestorePreviousGeometry = false,
+    #         const ScreenSize& windowSize = DefaultWindowSize,
+    #         float fpsIdle = 10.f
+    #     );
+    @staticmethod
+    def setup_from_gui_function(
+        gui_function: VoidFunction,
+        window_title: str = "",
+        window_size_auto: bool = False,
+        window_restore_previous_geometry: bool = False,
+        window_size: ScreenSize = DefaultWindowSize,
+        fps_idle: float = 10.0,
+    ) -> None:
+        """Initializes the renderer with a simple GUI function and additional parameters.
+        This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        """
+        pass
+    # void Render();    /* original C++ signature */
+    @staticmethod
+    def render() -> None:
+        """Renders the current frame. Should be called regularly to maintain the application's responsiveness."""
+        pass
+    # void TearDown();    /* original C++ signature */
+    # }
+    @staticmethod
+    def tear_down() -> None:
+        """Tears down the renderer and releases all associated resources.
+        This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
+        After calling `TearDown()`, the InitFromXXX can be called with new parameters.
+        """
+        pass
+
+# </submodule manual_render>
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

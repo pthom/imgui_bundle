@@ -33,34 +33,36 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             (m, "TextEditor", "");
 
     { // inner classes & enums of TextEditor
-        py::enum_<TextEditor::PaletteIndex>(pyClassTextEditor, "PaletteIndex", py::arithmetic(), "")
-            .value("default", TextEditor::PaletteIndex::Default, "")
-            .value("keyword", TextEditor::PaletteIndex::Keyword, "")
-            .value("number", TextEditor::PaletteIndex::Number, "")
-            .value("string", TextEditor::PaletteIndex::String, "")
-            .value("char_literal", TextEditor::PaletteIndex::CharLiteral, "")
-            .value("punctuation", TextEditor::PaletteIndex::Punctuation, "")
-            .value("preprocessor", TextEditor::PaletteIndex::Preprocessor, "")
-            .value("identifier", TextEditor::PaletteIndex::Identifier, "")
-            .value("known_identifier", TextEditor::PaletteIndex::KnownIdentifier, "")
-            .value("preproc_identifier", TextEditor::PaletteIndex::PreprocIdentifier, "")
-            .value("comment", TextEditor::PaletteIndex::Comment, "")
-            .value("multi_line_comment", TextEditor::PaletteIndex::MultiLineComment, "")
-            .value("background", TextEditor::PaletteIndex::Background, "")
-            .value("cursor", TextEditor::PaletteIndex::Cursor, "")
-            .value("selection", TextEditor::PaletteIndex::Selection, "")
-            .value("error_marker", TextEditor::PaletteIndex::ErrorMarker, "")
-            .value("control_character", TextEditor::PaletteIndex::ControlCharacter, "")
-            .value("breakpoint", TextEditor::PaletteIndex::Breakpoint, "")
-            .value("line_number", TextEditor::PaletteIndex::LineNumber, "")
-            .value("current_line_fill", TextEditor::PaletteIndex::CurrentLineFill, "")
-            .value("current_line_fill_inactive", TextEditor::PaletteIndex::CurrentLineFillInactive, "")
-            .value("current_line_edge", TextEditor::PaletteIndex::CurrentLineEdge, "")
-            .value("max", TextEditor::PaletteIndex::Max, "");
-        py::enum_<TextEditor::SelectionMode>(pyClassTextEditor, "SelectionMode", py::arithmetic(), "")
-            .value("normal", TextEditor::SelectionMode::Normal, "")
-            .value("word", TextEditor::SelectionMode::Word, "")
-            .value("line", TextEditor::SelectionMode::Line, "");
+        auto pyEnumPaletteIndex =
+            py::enum_<TextEditor::PaletteIndex>(pyClassTextEditor, "PaletteIndex", py::arithmetic(), "")
+                .value("default", TextEditor::PaletteIndex::Default, "")
+                .value("keyword", TextEditor::PaletteIndex::Keyword, "")
+                .value("number", TextEditor::PaletteIndex::Number, "")
+                .value("string", TextEditor::PaletteIndex::String, "")
+                .value("char_literal", TextEditor::PaletteIndex::CharLiteral, "")
+                .value("punctuation", TextEditor::PaletteIndex::Punctuation, "")
+                .value("preprocessor", TextEditor::PaletteIndex::Preprocessor, "")
+                .value("identifier", TextEditor::PaletteIndex::Identifier, "")
+                .value("known_identifier", TextEditor::PaletteIndex::KnownIdentifier, "")
+                .value("preproc_identifier", TextEditor::PaletteIndex::PreprocIdentifier, "")
+                .value("comment", TextEditor::PaletteIndex::Comment, "")
+                .value("multi_line_comment", TextEditor::PaletteIndex::MultiLineComment, "")
+                .value("background", TextEditor::PaletteIndex::Background, "")
+                .value("cursor", TextEditor::PaletteIndex::Cursor, "")
+                .value("selection", TextEditor::PaletteIndex::Selection, "")
+                .value("error_marker", TextEditor::PaletteIndex::ErrorMarker, "")
+                .value("control_character", TextEditor::PaletteIndex::ControlCharacter, "")
+                .value("breakpoint", TextEditor::PaletteIndex::Breakpoint, "")
+                .value("line_number", TextEditor::PaletteIndex::LineNumber, "")
+                .value("current_line_fill", TextEditor::PaletteIndex::CurrentLineFill, "")
+                .value("current_line_fill_inactive", TextEditor::PaletteIndex::CurrentLineFillInactive, "")
+                .value("current_line_edge", TextEditor::PaletteIndex::CurrentLineEdge, "")
+                .value("max", TextEditor::PaletteIndex::Max, "");
+        auto pyEnumSelectionMode =
+            py::enum_<TextEditor::SelectionMode>(pyClassTextEditor, "SelectionMode", py::arithmetic(), "")
+                .value("normal", TextEditor::SelectionMode::Normal, "")
+                .value("word", TextEditor::SelectionMode::Word, "")
+                .value("line", TextEditor::SelectionMode::Line, "");
         auto pyClassTextEditor_ClassBreakpoint =
             py::class_<TextEditor::Breakpoint>
                 (pyClassTextEditor, "Breakpoint", "")
@@ -133,29 +135,30 @@ void py_init_module_imgui_color_text_edit(py::module& m)
             .def_readwrite("m_case_sensitive", &TextEditor::LanguageDefinition::mCaseSensitive, "")
             .def(py::init<>())
             .def_static("c_plus_plus",
-                &TextEditor::LanguageDefinition::CPlusPlus, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::CPlusPlus, py::return_value_policy::reference)
             .def_static("hlsl",
-                &TextEditor::LanguageDefinition::HLSL, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::HLSL, py::return_value_policy::reference)
             .def_static("glsl",
-                &TextEditor::LanguageDefinition::GLSL, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::GLSL, py::return_value_policy::reference)
             .def_static("python",
-                &TextEditor::LanguageDefinition::Python, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::Python, py::return_value_policy::reference)
             .def_static("c",
-                &TextEditor::LanguageDefinition::C, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::C, py::return_value_policy::reference)
             .def_static("sql",
-                &TextEditor::LanguageDefinition::SQL, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::SQL, py::return_value_policy::reference)
             .def_static("angel_script",
-                &TextEditor::LanguageDefinition::AngelScript, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::AngelScript, py::return_value_policy::reference)
             .def_static("lua",
-                &TextEditor::LanguageDefinition::Lua, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::Lua, py::return_value_policy::reference)
             .def_static("c_sharp",
-                &TextEditor::LanguageDefinition::CSharp, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::CSharp, py::return_value_policy::reference)
             .def_static("json",
-                &TextEditor::LanguageDefinition::Json, pybind11::return_value_policy::reference)
+                &TextEditor::LanguageDefinition::Json, py::return_value_policy::reference)
             ;
-        py::enum_<TextEditor::UndoOperationType>(pyClassTextEditor, "UndoOperationType", py::arithmetic(), "")
-            .value("add", TextEditor::UndoOperationType::Add, "")
-            .value("delete", TextEditor::UndoOperationType::Delete, "");
+        auto pyEnumUndoOperationType =
+            py::enum_<TextEditor::UndoOperationType>(pyClassTextEditor, "UndoOperationType", py::arithmetic(), "")
+                .value("add", TextEditor::UndoOperationType::Add, "")
+                .value("delete", TextEditor::UndoOperationType::Delete, "");
         auto pyClassTextEditor_ClassUndoOperation =
             py::class_<TextEditor::UndoOperation>
                 (pyClassTextEditor, "UndoOperation", "")
@@ -185,7 +188,7 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("get_language_definition_name",
             &TextEditor::GetLanguageDefinitionName)
         .def("get_palette",
-            &TextEditor::GetPalette, pybind11::return_value_policy::reference)
+            &TextEditor::GetPalette, py::return_value_policy::reference)
         .def("set_palette",
             &TextEditor::SetPalette, py::arg("a_value"))
         .def("set_error_markers",
@@ -327,13 +330,13 @@ void py_init_module_imgui_color_text_edit(py::module& m)
         .def("add_cursor_for_next_occurrence",
             &TextEditor::AddCursorForNextOccurrence)
         .def_static("get_mariana_palette",
-            &TextEditor::GetMarianaPalette, pybind11::return_value_policy::reference)
+            &TextEditor::GetMarianaPalette, py::return_value_policy::reference)
         .def_static("get_dark_palette",
-            &TextEditor::GetDarkPalette, pybind11::return_value_policy::reference)
+            &TextEditor::GetDarkPalette, py::return_value_policy::reference)
         .def_static("get_light_palette",
-            &TextEditor::GetLightPalette, pybind11::return_value_policy::reference)
+            &TextEditor::GetLightPalette, py::return_value_policy::reference)
         .def_static("get_retro_blue_palette",
-            &TextEditor::GetRetroBluePalette, pybind11::return_value_policy::reference)
+            &TextEditor::GetRetroBluePalette, py::return_value_policy::reference)
         .def_static("is_glyph_word_char",
             &TextEditor::IsGlyphWordChar, py::arg("a_glyph"))
         .def("im_gui_debug_panel",

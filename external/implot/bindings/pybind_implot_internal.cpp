@@ -1114,12 +1114,36 @@ void py_init_module_implot_internal(py::module& m)
         "(private API)");
 
     m.def("add_text_vertical",
-        ImPlot::AddTextVertical,
+        [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+        {
+            auto AddTextVertical_adapt_const_char_pointer_with_default_null = [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImPlot::AddTextVertical(DrawList, pos, col, text_begin, text_end_adapt_default_null);
+            };
+
+            AddTextVertical_adapt_const_char_pointer_with_default_null(DrawList, pos, col, text_begin, text_end);
+        },
         py::arg("draw_list"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(),
         "Draws vertical text. The position is the bottom left of the text rect.");
 
     m.def("add_text_centered",
-        ImPlot::AddTextCentered,
+        [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+        {
+            auto AddTextCentered_adapt_const_char_pointer_with_default_null = [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImPlot::AddTextCentered(DrawList, top_center, col, text_begin, text_end_adapt_default_null);
+            };
+
+            AddTextCentered_adapt_const_char_pointer_with_default_null(DrawList, top_center, col, text_begin, text_end);
+        },
         py::arg("draw_list"), py::arg("top_center"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(),
         "Draws multiline horizontal text centered.");
 

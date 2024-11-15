@@ -814,7 +814,19 @@ void py_init_module_imgui_main(py::module& m)
         py::overload_cast<int>(ImGui::GetID), py::arg("int_id"));
 
     m.def("text_unformatted",
-        ImGui::TextUnformatted,
+        [](const char * text, std::optional<std::string> text_end = std::nullopt)
+        {
+            auto TextUnformatted_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt)
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                ImGui::TextUnformatted(text, text_end_adapt_default_null);
+            };
+
+            TextUnformatted_adapt_const_char_pointer_with_default_null(text, text_end);
+        },
         py::arg("text"), py::arg("text_end") = py::none(),
         "raw text without formatting. Roughly equivalent to Text(\"%s\", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.");
 
@@ -985,7 +997,19 @@ void py_init_module_imgui_main(py::module& m)
         "shortcut to handle the above pattern when value is an integer");
 
     m.def("progress_bar",
-        ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-FLT_MIN, 0), py::arg("overlay") = py::none());
+        [](float fraction, const ImVec2 & size_arg = ImVec2(-FLT_MIN, 0), std::optional<std::string> overlay = std::nullopt)
+        {
+            auto ProgressBar_adapt_const_char_pointer_with_default_null = [](float fraction, const ImVec2 & size_arg = ImVec2(-FLT_MIN, 0), std::optional<std::string> overlay = std::nullopt)
+            {
+                const char * overlay_adapt_default_null = nullptr;
+                if (overlay.has_value())
+                    overlay_adapt_default_null = overlay.value().c_str();
+
+                ImGui::ProgressBar(fraction, size_arg, overlay_adapt_default_null);
+            };
+
+            ProgressBar_adapt_const_char_pointer_with_default_null(fraction, size_arg, overlay);
+        },     py::arg("fraction"), py::arg("size_arg") = ImVec2(-FLT_MIN, 0), py::arg("overlay") = py::none());
 
     m.def("bullet",
         ImGui::Bullet, "draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses");
@@ -996,7 +1020,19 @@ void py_init_module_imgui_main(py::module& m)
         "hyperlink text button, return True when clicked");
 
     m.def("text_link_open_url",
-        ImGui::TextLinkOpenURL,
+        [](const char * label, std::optional<std::string> url = std::nullopt)
+        {
+            auto TextLinkOpenURL_adapt_const_char_pointer_with_default_null = [](const char * label, std::optional<std::string> url = std::nullopt)
+            {
+                const char * url_adapt_default_null = nullptr;
+                if (url.has_value())
+                    url_adapt_default_null = url.value().c_str();
+
+                ImGui::TextLinkOpenURL(label, url_adapt_default_null);
+            };
+
+            TextLinkOpenURL_adapt_const_char_pointer_with_default_null(label, url);
+        },
         py::arg("label"), py::arg("url") = py::none(),
         "hyperlink text button, automatically open file/url when clicked");
 
@@ -1111,14 +1147,23 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("v"), py::arg("v_speed") = 1.0f, py::arg("v_min") = 0.0f, py::arg("v_max") = 0.0f, py::arg("format") = "%.3f", py::arg("flags") = 0);
 
     m.def("drag_float_range2",
-        [](const char * label, float v_current_min, float v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char * format = "%.3f", const char * format_max = NULL, ImGuiSliderFlags flags = 0) -> std::tuple<bool, float, float>
+        [](const char * label, float v_current_min, float v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char * format = "%.3f", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> std::tuple<bool, float, float>
         {
-            auto DragFloatRange2_adapt_modifiable_immutable_to_return = [](const char * label, float v_current_min, float v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char * format = "%.3f", const char * format_max = NULL, ImGuiSliderFlags flags = 0) -> std::tuple<bool, float, float>
+            auto DragFloatRange2_adapt_const_char_pointer_with_default_null = [](const char * label, float * v_current_min, float * v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char * format = "%.3f", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_max_adapt_default_null = nullptr;
+                if (format_max.has_value())
+                    format_max_adapt_default_null = format_max.value().c_str();
+
+                auto lambda_result = ImGui::DragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max_adapt_default_null, flags);
+                return lambda_result;
+            };
+            auto DragFloatRange2_adapt_modifiable_immutable_to_return = [&DragFloatRange2_adapt_const_char_pointer_with_default_null](const char * label, float v_current_min, float v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char * format = "%.3f", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> std::tuple<bool, float, float>
             {
                 float * v_current_min_adapt_modifiable = & v_current_min;
                 float * v_current_max_adapt_modifiable = & v_current_max;
 
-                bool r = ImGui::DragFloatRange2(label, v_current_min_adapt_modifiable, v_current_max_adapt_modifiable, v_speed, v_min, v_max, format, format_max, flags);
+                bool r = DragFloatRange2_adapt_const_char_pointer_with_default_null(label, v_current_min_adapt_modifiable, v_current_max_adapt_modifiable, v_speed, v_min, v_max, format, format_max, flags);
                 return std::make_tuple(r, v_current_min, v_current_max);
             };
 
@@ -1184,14 +1229,23 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("v"), py::arg("v_speed") = 1.0f, py::arg("v_min") = 0, py::arg("v_max") = 0, py::arg("format") = "%d", py::arg("flags") = 0);
 
     m.def("drag_int_range2",
-        [](const char * label, int v_current_min, int v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", const char * format_max = NULL, ImGuiSliderFlags flags = 0) -> std::tuple<bool, int, int>
+        [](const char * label, int v_current_min, int v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> std::tuple<bool, int, int>
         {
-            auto DragIntRange2_adapt_modifiable_immutable_to_return = [](const char * label, int v_current_min, int v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", const char * format_max = NULL, ImGuiSliderFlags flags = 0) -> std::tuple<bool, int, int>
+            auto DragIntRange2_adapt_const_char_pointer_with_default_null = [](const char * label, int * v_current_min, int * v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_max_adapt_default_null = nullptr;
+                if (format_max.has_value())
+                    format_max_adapt_default_null = format_max.value().c_str();
+
+                auto lambda_result = ImGui::DragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max_adapt_default_null, flags);
+                return lambda_result;
+            };
+            auto DragIntRange2_adapt_modifiable_immutable_to_return = [&DragIntRange2_adapt_const_char_pointer_with_default_null](const char * label, int v_current_min, int v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", std::optional<std::string> format_max = std::nullopt, ImGuiSliderFlags flags = 0) -> std::tuple<bool, int, int>
             {
                 int * v_current_min_adapt_modifiable = & v_current_min;
                 int * v_current_max_adapt_modifiable = & v_current_max;
 
-                bool r = ImGui::DragIntRange2(label, v_current_min_adapt_modifiable, v_current_max_adapt_modifiable, v_speed, v_min, v_max, format, format_max, flags);
+                bool r = DragIntRange2_adapt_const_char_pointer_with_default_null(label, v_current_min_adapt_modifiable, v_current_max_adapt_modifiable, v_speed, v_min, v_max, format, format_max, flags);
                 return std::make_tuple(r, v_current_min, v_current_max);
             };
 
@@ -1199,10 +1253,36 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("v_current_min"), py::arg("v_current_max"), py::arg("v_speed") = 1.0f, py::arg("v_min") = 0, py::arg("v_max") = 0, py::arg("format") = "%d", py::arg("format_max") = py::none(), py::arg("flags") = 0);
 
     m.def("drag_scalar",
-        py::overload_cast<const char *, ImGuiDataType, void *, float, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::DragScalar), py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("v_speed") = 1.0f, py::arg("p_min") = py::none(), py::arg("p_max") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+        {
+            auto DragScalar_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::DragScalar(label, data_type, p_data, v_speed, p_min, p_max, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return DragScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, v_speed, p_min, p_max, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("v_speed") = 1.0f, py::arg("p_min") = py::none(), py::arg("p_max") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("drag_scalar_n",
-        py::overload_cast<const char *, ImGuiDataType, void *, int, float, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::DragScalarN), py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("v_speed") = 1.0f, py::arg("p_min") = py::none(), py::arg("p_max") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, int components, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+        {
+            auto DragScalarN_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, int components, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::DragScalarN(label, data_type, p_data, components, v_speed, p_min, p_max, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return DragScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, v_speed, p_min, p_max, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("v_speed") = 1.0f, py::arg("p_min") = py::none(), py::arg("p_max") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("slider_float",
         [](const char * label, float v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1333,10 +1413,36 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("format") = "%d", py::arg("flags") = 0);
 
     m.def("slider_scalar",
-        py::overload_cast<const char *, ImGuiDataType, void *, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::SliderScalar), py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+        {
+            auto SliderScalar_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::SliderScalar(label, data_type, p_data, p_min, p_max, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return SliderScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, p_min, p_max, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("slider_scalar_n",
-        py::overload_cast<const char *, ImGuiDataType, void *, int, const void *, const void *, const char *, ImGuiSliderFlags>(ImGui::SliderScalarN), py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+        {
+            auto SliderScalarN_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::SliderScalarN(label, data_type, p_data, components, p_min, p_max, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return SliderScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_min, p_max, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("v_slider_float",
         [](const char * label, const ImVec2 & size, float v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1367,7 +1473,20 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("format") = "%d", py::arg("flags") = 0);
 
     m.def("v_slider_scalar",
-        ImGui::VSliderScalar, py::arg("label"), py::arg("size"), py::arg("data_type"), py::arg("p_data"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, const ImVec2 & size, ImGuiDataType data_type, void * p_data, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+        {
+            auto VSliderScalar_adapt_const_char_pointer_with_default_null = [](const char * label, const ImVec2 & size, ImGuiDataType data_type, void * p_data, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::VSliderScalar(label, size, data_type, p_data, p_min, p_max, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return VSliderScalar_adapt_const_char_pointer_with_default_null(label, size, data_type, p_data, p_min, p_max, format, flags);
+        },     py::arg("label"), py::arg("size"), py::arg("data_type"), py::arg("p_data"), py::arg("p_min"), py::arg("p_max"), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("input_float",
         [](const char * label, float v, float step = 0.0f, float step_fast = 0.0f, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, float>
@@ -1496,10 +1615,36 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("v"), py::arg("step") = 0.0, py::arg("step_fast") = 0.0, py::arg("format") = "%.6f", py::arg("flags") = 0);
 
     m.def("input_scalar",
-        ImGui::InputScalar, py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("p_step") = py::none(), py::arg("p_step_fast") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, const void * p_step = NULL, const void * p_step_fast = NULL, std::optional<std::string> format = std::nullopt, ImGuiInputTextFlags flags = 0) -> bool
+        {
+            auto InputScalar_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, const void * p_step = NULL, const void * p_step_fast = NULL, std::optional<std::string> format = std::nullopt, ImGuiInputTextFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::InputScalar(label, data_type, p_data, p_step, p_step_fast, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return InputScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, p_step, p_step_fast, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("p_step") = py::none(), py::arg("p_step_fast") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("input_scalar_n",
-        ImGui::InputScalarN, py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("p_step") = py::none(), py::arg("p_step_fast") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
+        [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_step = NULL, const void * p_step_fast = NULL, std::optional<std::string> format = std::nullopt, ImGuiInputTextFlags flags = 0) -> bool
+        {
+            auto InputScalarN_adapt_const_char_pointer_with_default_null = [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_step = NULL, const void * p_step_fast = NULL, std::optional<std::string> format = std::nullopt, ImGuiInputTextFlags flags = 0) -> bool
+            {
+                const char * format_adapt_default_null = nullptr;
+                if (format.has_value())
+                    format_adapt_default_null = format.value().c_str();
+
+                auto lambda_result = ImGui::InputScalarN(label, data_type, p_data, components, p_step, p_step_fast, format_adapt_default_null, flags);
+                return lambda_result;
+            };
+
+            return InputScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_step, p_step_fast, format, flags);
+        },     py::arg("label"), py::arg("data_type"), py::arg("p_data"), py::arg("components"), py::arg("p_step") = py::none(), py::arg("p_step_fast") = py::none(), py::arg("format") = py::none(), py::arg("flags") = 0);
 
     m.def("color_edit3",
         [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1726,14 +1871,13 @@ void py_init_module_imgui_main(py::module& m)
         },     py::arg("label"), py::arg("current_item"), py::arg("items"), py::arg("height_in_items") = -1);
 
     m.def("plot_lines",
-        [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+        [](const char * label, const py::array & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
         {
             auto PlotLines_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1755,19 +1899,26 @@ void py_init_module_imgui_main(py::module& m)
 
                 ImGui::PlotLines(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
+            auto PlotLines_adapt_const_char_pointer_with_default_null = [&PlotLines_adapt_c_buffers](const char * label, const py::array & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            {
+                const char * overlay_text_adapt_default_null = nullptr;
+                if (overlay_text.has_value())
+                    overlay_text_adapt_default_null = overlay_text.value().c_str();
 
-            PlotLines_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
+                PlotLines_adapt_c_buffers(label, values, values_offset, overlay_text_adapt_default_null, scale_min, scale_max, graph_size, stride);
+            };
+
+            PlotLines_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },     py::arg("label"), py::arg("values"), py::arg("values_offset") = 0, py::arg("overlay_text") = py::none(), py::arg("scale_min") = FLT_MAX, py::arg("scale_max") = FLT_MAX, py::arg("graph_size") = ImVec2(0, 0), py::arg("stride") = -1);
 
     m.def("plot_histogram",
-        [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+        [](const char * label, const py::array & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
         {
             auto PlotHistogram_adapt_c_buffers = [](const char * label, const py::array & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1789,8 +1940,16 @@ void py_init_module_imgui_main(py::module& m)
 
                 ImGui::PlotHistogram(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
+            auto PlotHistogram_adapt_const_char_pointer_with_default_null = [&PlotHistogram_adapt_c_buffers](const char * label, const py::array & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            {
+                const char * overlay_text_adapt_default_null = nullptr;
+                if (overlay_text.has_value())
+                    overlay_text_adapt_default_null = overlay_text.value().c_str();
 
-            PlotHistogram_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
+                PlotHistogram_adapt_c_buffers(label, values, values_offset, overlay_text_adapt_default_null, scale_min, scale_max, graph_size, stride);
+            };
+
+            PlotHistogram_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },     py::arg("label"), py::arg("values"), py::arg("values_offset") = 0, py::arg("overlay_text") = py::none(), py::arg("scale_min") = FLT_MAX, py::arg("scale_max") = FLT_MAX, py::arg("graph_size") = ImVec2(0, 0), py::arg("stride") = -1);
 
     m.def("value",
@@ -1803,7 +1962,19 @@ void py_init_module_imgui_main(py::module& m)
         py::overload_cast<const char *, unsigned int>(ImGui::Value), py::arg("prefix"), py::arg("v"));
 
     m.def("value",
-        py::overload_cast<const char *, float, const char *>(ImGui::Value), py::arg("prefix"), py::arg("v"), py::arg("float_format") = py::none());
+        [](const char * prefix, float v, std::optional<std::string> float_format = std::nullopt)
+        {
+            auto Value_adapt_const_char_pointer_with_default_null = [](const char * prefix, float v, std::optional<std::string> float_format = std::nullopt)
+            {
+                const char * float_format_adapt_default_null = nullptr;
+                if (float_format.has_value())
+                    float_format_adapt_default_null = float_format.value().c_str();
+
+                ImGui::Value(prefix, v, float_format_adapt_default_null);
+            };
+
+            Value_adapt_const_char_pointer_with_default_null(prefix, v, float_format);
+        },     py::arg("prefix"), py::arg("v"), py::arg("float_format") = py::none());
 
     m.def("begin_menu_bar",
         ImGui::BeginMenuBar, "append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window).");
@@ -1828,7 +1999,20 @@ void py_init_module_imgui_main(py::module& m)
     //
 
     m.def("menu_item_simple",
-        ImGui::MenuItemSimple,
+        [](const char * label, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
+        {
+            auto MenuItemSimple_adapt_const_char_pointer_with_default_null = [](const char * label, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
+            {
+                const char * shortcut_adapt_default_null = nullptr;
+                if (shortcut.has_value())
+                    shortcut_adapt_default_null = shortcut.value().c_str();
+
+                auto lambda_result = ImGui::MenuItemSimple(label, shortcut_adapt_default_null, selected, enabled);
+                return lambda_result;
+            };
+
+            return MenuItemSimple_adapt_const_char_pointer_with_default_null(label, shortcut, selected, enabled);
+        },
         py::arg("label"), py::arg("shortcut") = py::none(), py::arg("selected") = false, py::arg("enabled") = true,
         "(private API)");
     // #endif
@@ -1922,7 +2106,19 @@ void py_init_module_imgui_main(py::module& m)
         "id overload to facilitate calling from nested stacks");
 
     m.def("open_popup_on_item_click",
-        py::overload_cast<const char *, ImGuiPopupFlags>(ImGui::OpenPopupOnItemClick),
+        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1)
+        {
+            auto OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1)
+            {
+                const char * str_id_adapt_default_null = nullptr;
+                if (str_id.has_value())
+                    str_id_adapt_default_null = str_id.value().c_str();
+
+                ImGui::OpenPopupOnItemClick(str_id_adapt_default_null, popup_flags);
+            };
+
+            OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
+        },
         py::arg("str_id") = py::none(), py::arg("popup_flags") = 1,
         "helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)");
 
@@ -1930,17 +2126,56 @@ void py_init_module_imgui_main(py::module& m)
         py::overload_cast<>(ImGui::CloseCurrentPopup), "manually close the popup we have begin-ed into.");
 
     m.def("begin_popup_context_item",
-        py::overload_cast<const char *, ImGuiPopupFlags>(ImGui::BeginPopupContextItem),
+        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+        {
+            auto BeginPopupContextItem_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+            {
+                const char * str_id_adapt_default_null = nullptr;
+                if (str_id.has_value())
+                    str_id_adapt_default_null = str_id.value().c_str();
+
+                auto lambda_result = ImGui::BeginPopupContextItem(str_id_adapt_default_null, popup_flags);
+                return lambda_result;
+            };
+
+            return BeginPopupContextItem_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
+        },
         py::arg("str_id") = py::none(), py::arg("popup_flags") = 1,
         "open+begin popup when clicked on last item. Use str_id==None to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!");
 
     m.def("begin_popup_context_window",
-        py::overload_cast<const char *, ImGuiPopupFlags>(ImGui::BeginPopupContextWindow),
+        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+        {
+            auto BeginPopupContextWindow_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+            {
+                const char * str_id_adapt_default_null = nullptr;
+                if (str_id.has_value())
+                    str_id_adapt_default_null = str_id.value().c_str();
+
+                auto lambda_result = ImGui::BeginPopupContextWindow(str_id_adapt_default_null, popup_flags);
+                return lambda_result;
+            };
+
+            return BeginPopupContextWindow_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
+        },
         py::arg("str_id") = py::none(), py::arg("popup_flags") = 1,
         "open+begin popup when clicked on current window.");
 
     m.def("begin_popup_context_void",
-        py::overload_cast<const char *, ImGuiPopupFlags>(ImGui::BeginPopupContextVoid),
+        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+        {
+            auto BeginPopupContextVoid_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 1) -> bool
+            {
+                const char * str_id_adapt_default_null = nullptr;
+                if (str_id.has_value())
+                    str_id_adapt_default_null = str_id.value().c_str();
+
+                auto lambda_result = ImGui::BeginPopupContextVoid(str_id_adapt_default_null, popup_flags);
+                return lambda_result;
+            };
+
+            return BeginPopupContextVoid_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
+        },
         py::arg("str_id") = py::none(), py::arg("popup_flags") = 1,
         "open+begin popup when clicked in None (where there are no windows).");
 
@@ -2026,7 +2261,19 @@ void py_init_module_imgui_main(py::module& m)
         "change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details.");
 
     m.def("columns",
-        ImGui::Columns, py::arg("count") = 1, py::arg("id_") = py::none(), py::arg("borders") = true);
+        [](int count = 1, std::optional<std::string> id = std::nullopt, bool borders = true)
+        {
+            auto Columns_adapt_const_char_pointer_with_default_null = [](int count = 1, std::optional<std::string> id = std::nullopt, bool borders = true)
+            {
+                const char * id_adapt_default_null = nullptr;
+                if (id.has_value())
+                    id_adapt_default_null = id.value().c_str();
+
+                ImGui::Columns(count, id_adapt_default_null, borders);
+            };
+
+            Columns_adapt_const_char_pointer_with_default_null(count, id, borders);
+        },     py::arg("count") = 1, py::arg("id_") = py::none(), py::arg("borders") = true);
 
     m.def("next_column",
         ImGui::NextColumn, "next column, defaults to current row or next row if the current row is finished");
@@ -2129,7 +2376,19 @@ void py_init_module_imgui_main(py::module& m)
         "start logging to tty (stdout)");
 
     m.def("log_to_file",
-        ImGui::LogToFile,
+        [](int auto_open_depth = -1, std::optional<std::string> filename = std::nullopt)
+        {
+            auto LogToFile_adapt_const_char_pointer_with_default_null = [](int auto_open_depth = -1, std::optional<std::string> filename = std::nullopt)
+            {
+                const char * filename_adapt_default_null = nullptr;
+                if (filename.has_value())
+                    filename_adapt_default_null = filename.value().c_str();
+
+                ImGui::LogToFile(auto_open_depth, filename_adapt_default_null);
+            };
+
+            LogToFile_adapt_const_char_pointer_with_default_null(auto_open_depth, filename);
+        },
         py::arg("auto_open_depth") = -1, py::arg("filename") = py::none(),
         "start logging to file");
 
@@ -2312,7 +2571,20 @@ void py_init_module_imgui_main(py::module& m)
         ImGui::GetStateStorage, py::return_value_policy::reference);
 
     m.def("calc_text_size",
-        ImGui::CalcTextSize,
+        [](const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
+        {
+            auto CalcTextSize_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
+            {
+                const char * text_end_adapt_default_null = nullptr;
+                if (text_end.has_value())
+                    text_end_adapt_default_null = text_end.value().c_str();
+
+                auto lambda_result = ImGui::CalcTextSize(text, text_end_adapt_default_null, hide_text_after_double_hash, wrap_width);
+                return lambda_result;
+            };
+
+            return CalcTextSize_adapt_const_char_pointer_with_default_null(text, text_end, hide_text_after_double_hash, wrap_width);
+        },
         py::arg("text"), py::arg("text_end") = py::none(), py::arg("hide_text_after_double_hash") = false, py::arg("wrap_width") = -1.0f,
         "Text Utilities");
 
@@ -5635,7 +5907,19 @@ void py_init_module_imgui_main(py::module& m)
         .def("delete_chars",
             &ImGuiInputTextCallbackData::DeleteChars, py::arg("pos"), py::arg("bytes_count"))
         .def("insert_chars",
-            &ImGuiInputTextCallbackData::InsertChars, py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none())
+            [](ImGuiInputTextCallbackData & self, int pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+            {
+                auto InsertChars_adapt_const_char_pointer_with_default_null = [&self](int pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+                {
+                    const char * text_end_adapt_default_null = nullptr;
+                    if (text_end.has_value())
+                        text_end_adapt_default_null = text_end.value().c_str();
+
+                    self.InsertChars(pos, text, text_end_adapt_default_null);
+                };
+
+                InsertChars_adapt_const_char_pointer_with_default_null(pos, text, text_end);
+            },     py::arg("pos"), py::arg("text"), py::arg("text_end") = py::none())
         .def("select_all",
             &ImGuiInputTextCallbackData::SelectAll, "(private API)")
         .def("clear_selection",
@@ -5742,7 +6026,20 @@ void py_init_module_imgui_main(py::module& m)
             py::arg("label") = "Filter (inc,-exc)", py::arg("width") = 0.0f,
             "Helper calling InputText+Build")
         .def("pass_filter",
-            &ImGuiTextFilter::PassFilter, py::arg("text"), py::arg("text_end") = py::none())
+            [](const ImGuiTextFilter & self, const char * text, std::optional<std::string> text_end = std::nullopt) -> bool
+            {
+                auto PassFilter_adapt_const_char_pointer_with_default_null = [&self](const char * text, std::optional<std::string> text_end = std::nullopt) -> bool
+                {
+                    const char * text_end_adapt_default_null = nullptr;
+                    if (text_end.has_value())
+                        text_end_adapt_default_null = text_end.value().c_str();
+
+                    auto lambda_result = self.PassFilter(text, text_end_adapt_default_null);
+                    return lambda_result;
+                };
+
+                return PassFilter_adapt_const_char_pointer_with_default_null(text, text_end);
+            },     py::arg("text"), py::arg("text_end") = py::none())
         .def("build",
             &ImGuiTextFilter::Build)
         .def("clear",
@@ -5785,7 +6082,19 @@ void py_init_module_imgui_main(py::module& m)
             "(private API)",
             py::return_value_policy::reference)
         .def("append",
-            &ImGuiTextBuffer::append, py::arg("str"), py::arg("str_end") = py::none())
+            [](ImGuiTextBuffer & self, const char * str, std::optional<std::string> str_end = std::nullopt)
+            {
+                auto append_adapt_const_char_pointer_with_default_null = [&self](const char * str, std::optional<std::string> str_end = std::nullopt)
+                {
+                    const char * str_end_adapt_default_null = nullptr;
+                    if (str_end.has_value())
+                        str_end_adapt_default_null = str_end.value().c_str();
+
+                    self.append(str, str_end_adapt_default_null);
+                };
+
+                append_adapt_const_char_pointer_with_default_null(str, str_end);
+            },     py::arg("str"), py::arg("str_end") = py::none())
         .def("appendf",
             [](ImGuiTextBuffer & self, const char * fmt)
             {
@@ -6259,9 +6568,33 @@ void py_init_module_imgui_main(py::module& m)
         .def("add_ellipse_filled",
             &ImDrawList::AddEllipseFilled, py::arg("center"), py::arg("radius"), py::arg("col"), py::arg("rot") = 0.0f, py::arg("num_segments") = 0)
         .def("add_text",
-            py::overload_cast<const ImVec2 &, ImU32, const char *, const char *>(&ImDrawList::AddText), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
+            [](ImDrawList & self, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            {
+                auto AddText_adapt_const_char_pointer_with_default_null = [&self](const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+                {
+                    const char * text_end_adapt_default_null = nullptr;
+                    if (text_end.has_value())
+                        text_end_adapt_default_null = text_end.value().c_str();
+
+                    self.AddText(pos, col, text_begin, text_end_adapt_default_null);
+                };
+
+                AddText_adapt_const_char_pointer_with_default_null(pos, col, text_begin, text_end);
+            },     py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none())
         .def("add_text",
-            py::overload_cast<const ImFont *, float, const ImVec2 &, ImU32, const char *, const char *, float, const ImVec4 *>(&ImDrawList::AddText), py::arg("font"), py::arg("font_size"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip_rect") = py::none())
+            [](ImDrawList & self, const ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
+            {
+                auto AddText_adapt_const_char_pointer_with_default_null = [&self](const ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
+                {
+                    const char * text_end_adapt_default_null = nullptr;
+                    if (text_end.has_value())
+                        text_end_adapt_default_null = text_end.value().c_str();
+
+                    self.AddText(font, font_size, pos, col, text_begin, text_end_adapt_default_null, wrap_width, cpu_fine_clip_rect);
+                };
+
+                AddText_adapt_const_char_pointer_with_default_null(font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect);
+            },     py::arg("font"), py::arg("font_size"), py::arg("pos"), py::arg("col"), py::arg("text_begin"), py::arg("text_end") = py::none(), py::arg("wrap_width") = 0.0f, py::arg("cpu_fine_clip_rect") = py::none())
         .def("add_bezier_cubic",
             &ImDrawList::AddBezierCubic,
             py::arg("p1"), py::arg("p2"), py::arg("p3"), py::arg("p4"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0,
@@ -6510,7 +6843,19 @@ void py_init_module_imgui_main(py::module& m)
             py::arg("c"),
             "(private API)\n\n Add character")
         .def("add_text",
-            &ImFontGlyphRangesBuilder::AddText,
+            [](ImFontGlyphRangesBuilder & self, const char * text, std::optional<std::string> text_end = std::nullopt)
+            {
+                auto AddText_adapt_const_char_pointer_with_default_null = [&self](const char * text, std::optional<std::string> text_end = std::nullopt)
+                {
+                    const char * text_end_adapt_default_null = nullptr;
+                    if (text_end.has_value())
+                        text_end_adapt_default_null = text_end.value().c_str();
+
+                    self.AddText(text, text_end_adapt_default_null);
+                };
+
+                AddText_adapt_const_char_pointer_with_default_null(text, text_end);
+            },
             py::arg("text"), py::arg("text_end") = py::none(),
             "Add string (each character of the UTF-8 string are added)")
         .def("build_ranges",

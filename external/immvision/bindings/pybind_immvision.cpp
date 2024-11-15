@@ -69,9 +69,10 @@ void py_init_module_immvision(py::module& m)
         ImmVision::PopColorOrder, "(private API)");
 
 
-    py::enum_<ImmVision::ColorMapStatsTypeId>(m, "ColorMapStatsTypeId", py::arithmetic(), "Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values")
-        .value("from_full_image", ImmVision::ColorMapStatsTypeId::FromFullImage, "")
-        .value("from_visible_roi", ImmVision::ColorMapStatsTypeId::FromVisibleROI, "");
+    auto pyEnumColorMapStatsTypeId =
+        py::enum_<ImmVision::ColorMapStatsTypeId>(m, "ColorMapStatsTypeId", py::arithmetic(), "Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values")
+            .value("from_full_image", ImmVision::ColorMapStatsTypeId::FromFullImage, "")
+            .value("from_visible_roi", ImmVision::ColorMapStatsTypeId::FromVisibleROI, "");
 
 
     auto pyClassColormapScaleFromStatsData =
@@ -294,16 +295,17 @@ void py_init_module_immvision(py::module& m)
 
     { // <namespace CvDrawingUtils>
         py::module_ pyNsCvDrawingUtils = m.def_submodule("cv_drawing_utils", "namespace CvDrawingUtils");
-        py::enum_<ImmVision::CvDrawingUtils::Colors>(pyNsCvDrawingUtils, "Colors", py::arithmetic(), "")
-            .value("black", ImmVision::CvDrawingUtils::Colors::Black, "")
-            .value("red", ImmVision::CvDrawingUtils::Colors::Red, "")
-            .value("green", ImmVision::CvDrawingUtils::Colors::Green, "")
-            .value("blue", ImmVision::CvDrawingUtils::Colors::Blue, "")
-            .value("white", ImmVision::CvDrawingUtils::Colors::White, "")
-            .value("yellow", ImmVision::CvDrawingUtils::Colors::Yellow, "")
-            .value("cyan", ImmVision::CvDrawingUtils::Colors::Cyan, "")
-            .value("violet", ImmVision::CvDrawingUtils::Colors::Violet, "")
-            .value("orange", ImmVision::CvDrawingUtils::Colors::Orange, "");
+        auto pyEnumColors =
+            py::enum_<ImmVision::CvDrawingUtils::Colors>(pyNsCvDrawingUtils, "Colors", py::arithmetic(), "")
+                .value("black", ImmVision::CvDrawingUtils::Colors::Black, "")
+                .value("red", ImmVision::CvDrawingUtils::Colors::Red, "")
+                .value("green", ImmVision::CvDrawingUtils::Colors::Green, "")
+                .value("blue", ImmVision::CvDrawingUtils::Colors::Blue, "")
+                .value("white", ImmVision::CvDrawingUtils::Colors::White, "")
+                .value("yellow", ImmVision::CvDrawingUtils::Colors::Yellow, "")
+                .value("cyan", ImmVision::CvDrawingUtils::Colors::Cyan, "")
+                .value("violet", ImmVision::CvDrawingUtils::Colors::Violet, "")
+                .value("orange", ImmVision::CvDrawingUtils::Colors::Orange, "");
 
 
         pyNsCvDrawingUtils.def("colors_to_scalar",

@@ -9,7 +9,6 @@ from imgui_bundle.imgui_node_editor import (
     Config as NodeEditorConfig,
     EditorContext as NodeEditorContext,
 )
-from imgui_bundle.hello_imgui import DefaultWindowSize
 
 ImPlotFlags = int  # see implot.Flags_
 ImGuiMd = imgui_md
@@ -26,8 +25,8 @@ DefaultScreenSize = (800, 600)
 
 ####################    <generated_from:immapp_widgets.h>    ####################
 
-# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
-# but they enable to make the plot content draggable inside a node
+# #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
+#
 def begin_plot_in_node_editor(
     title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: ImPlotFlags = 0
 ) -> bool:
@@ -60,6 +59,10 @@ def show_resizable_plot_in_node_editor_em(
     """
     pass
 
+# #endif
+
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#
 def widget_with_resize_handle_in_node_editor(
     id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
 ) -> ImVec2:
@@ -76,6 +79,7 @@ def widget_with_resize_handle_in_node_editor_em(
     """
     pass
 
+# #endif
 ####################    </generated_from:immapp_widgets.h>    ####################
 
 ####################    <generated_from:runner.h>    ####################

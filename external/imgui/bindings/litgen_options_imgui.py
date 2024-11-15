@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+from __future__ import annotations
 from enum import Enum
 import copy
 
@@ -186,8 +187,6 @@ def litgen_options_imgui(
     from litgen.internal import cpp_to_python
 
     options = LitgenOptions()
-
-    options.fn_params_adapt_mutable_param_with_default_value__regex = r".*"
 
     def is_immutable_cpp_type(cpp_type: str) -> bool:
         if cpp_type in [

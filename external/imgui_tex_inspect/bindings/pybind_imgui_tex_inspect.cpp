@@ -49,23 +49,25 @@ void py_init_module_imgui_tex_inspect(py::module& m)
         ImGuiTexInspect::Shutdown);
 
 
-    py::enum_<ImGuiTexInspect::InspectorAlphaMode>(m, "InspectorAlphaMode", py::arithmetic(), "")
-        .value("im_gui", ImGuiTexInspect::InspectorAlphaMode_ImGui, "Alpha is transparency so you see the ImGui panel background behind image")
-        .value("black", ImGuiTexInspect::InspectorAlphaMode_Black, "Alpha is used to blend over a black background")
-        .value("white", ImGuiTexInspect::InspectorAlphaMode_White, "Alpha is used to blend over a white background")
-        .value("custom_color", ImGuiTexInspect::InspectorAlphaMode_CustomColor, "Alpha is used to blend over a custom colour.");
+    auto pyEnumInspectorAlphaMode =
+        py::enum_<ImGuiTexInspect::InspectorAlphaMode>(m, "InspectorAlphaMode", py::arithmetic(), "")
+            .value("im_gui", ImGuiTexInspect::InspectorAlphaMode_ImGui, "Alpha is transparency so you see the ImGui panel background behind image")
+            .value("black", ImGuiTexInspect::InspectorAlphaMode_Black, "Alpha is used to blend over a black background")
+            .value("white", ImGuiTexInspect::InspectorAlphaMode_White, "Alpha is used to blend over a white background")
+            .value("custom_color", ImGuiTexInspect::InspectorAlphaMode_CustomColor, "Alpha is used to blend over a custom colour.");
 
 
-    py::enum_<ImGuiTexInspect::InspectorFlags_>(m, "InspectorFlags_", py::arithmetic(), "")
-        .value("show_wrap", ImGuiTexInspect::InspectorFlags_ShowWrap, "Draw beyong the [0,1] uv range. What you see will depend on API")
-        .value("no_force_filter_nearest", ImGuiTexInspect::InspectorFlags_NoForceFilterNearest, "Normally we force nearest neighbour sampling when zoomed in. Set to disable this.")
-        .value("no_grid", ImGuiTexInspect::InspectorFlags_NoGrid, "By default a grid is shown at high zoom levels")
-        .value("no_tooltip", ImGuiTexInspect::InspectorFlags_NoTooltip, "Disable tooltip on hover")
-        .value("fill_horizontal", ImGuiTexInspect::InspectorFlags_FillHorizontal, "Scale to fill available space horizontally")
-        .value("fill_vertical", ImGuiTexInspect::InspectorFlags_FillVertical, "Scale to fill available space vertically")
-        .value("no_auto_read_texture", ImGuiTexInspect::InspectorFlags_NoAutoReadTexture, "By default texture data is read to CPU every frame for tooltip and annotations")
-        .value("flip_x", ImGuiTexInspect::InspectorFlags_FlipX, "Horizontally flip the way the texture is displayed")
-        .value("flip_y", ImGuiTexInspect::InspectorFlags_FlipY, "Vertically flip the way the texture is displayed");
+    auto pyEnumInspectorFlags_ =
+        py::enum_<ImGuiTexInspect::InspectorFlags_>(m, "InspectorFlags_", py::arithmetic(), "")
+            .value("show_wrap", ImGuiTexInspect::InspectorFlags_ShowWrap, "Draw beyong the [0,1] uv range. What you see will depend on API")
+            .value("no_force_filter_nearest", ImGuiTexInspect::InspectorFlags_NoForceFilterNearest, "Normally we force nearest neighbour sampling when zoomed in. Set to disable this.")
+            .value("no_grid", ImGuiTexInspect::InspectorFlags_NoGrid, "By default a grid is shown at high zoom levels")
+            .value("no_tooltip", ImGuiTexInspect::InspectorFlags_NoTooltip, "Disable tooltip on hover")
+            .value("fill_horizontal", ImGuiTexInspect::InspectorFlags_FillHorizontal, "Scale to fill available space horizontally")
+            .value("fill_vertical", ImGuiTexInspect::InspectorFlags_FillVertical, "Scale to fill available space vertically")
+            .value("no_auto_read_texture", ImGuiTexInspect::InspectorFlags_NoAutoReadTexture, "By default texture data is read to CPU every frame for tooltip and annotations")
+            .value("flip_x", ImGuiTexInspect::InspectorFlags_FlipX, "Horizontally flip the way the texture is displayed")
+            .value("flip_y", ImGuiTexInspect::InspectorFlags_FlipY, "Vertically flip the way the texture is displayed");
 
 
     auto pyClassSizeIncludingBorder =
@@ -158,11 +160,12 @@ void py_init_module_imgui_tex_inspect(py::module& m)
             (m, "ValueText", " ValueText\n * An annoation class that draws text inside each texel when zoom level is high enough for it to fit.\n * The text shows the value of the texel. E.g. \"R:255, G: 128, B:0, A:255\"\n");
 
     { // inner classes & enums of ValueText
-        py::enum_<ImGuiTexInspect::ValueText::Format>(pyClassValueText, "Format", py::arithmetic(), "")
-            .value("hex_string", ImGuiTexInspect::ValueText::HexString, "E.g.  #EF97B9FF")
-            .value("bytes_hex", ImGuiTexInspect::ValueText::BytesHex, "E.g.  R:#EF G:#97 B:#B9 A:#FF  (split over 4 lines)")
-            .value("bytes_dec", ImGuiTexInspect::ValueText::BytesDec, "E.g.  R:239 G: 151 B:185 A:255  (split over 4 lines)")
-            .value("floats", ImGuiTexInspect::ValueText::Floats, "E.g.  0.937 0.592 0.725 1.000 (split over 4 lines)");
+        auto pyEnumFormat =
+            py::enum_<ImGuiTexInspect::ValueText::Format>(pyClassValueText, "Format", py::arithmetic(), "")
+                .value("hex_string", ImGuiTexInspect::ValueText::HexString, "E.g.  #EF97B9FF")
+                .value("bytes_hex", ImGuiTexInspect::ValueText::BytesHex, "E.g.  R:#EF G:#97 B:#B9 A:#FF  (split over 4 lines)")
+                .value("bytes_dec", ImGuiTexInspect::ValueText::BytesDec, "E.g.  R:239 G: 151 B:185 A:255  (split over 4 lines)")
+                .value("floats", ImGuiTexInspect::ValueText::Floats, "E.g.  0.937 0.592 0.725 1.000 (split over 4 lines)");
     } // end of inner classes & enums of ValueText
 
     pyClassValueText
@@ -178,9 +181,10 @@ void py_init_module_imgui_tex_inspect(py::module& m)
             (m, "Arrow", " Arrow\n * An annotation class that draws an arrow inside each texel when zoom level is\n * high enough. The direction and length of the arrow are determined by texel\n * values.\n * The X and Y components of the arrow is determined by the VectorIndex_x, and\n * VectorIndex_y channels of the texel value.  Examples:\n\n * VectorIndex_x = 0,  VectorIndex_y = 1  means  X component is red and Y component is green\n * VectorIndex_x = 1,  VectorIndex_y = 2  means  X component is green and Y component is blue\n * VectorIndex_x = 0,  VectorIndex_y = 3  means  X component is red and Y component is alpha\n *\n * ZeroPoint is the texel value which corresponds to a zero length vector. E.g.\n * ZeroPoint = (0.5, 0.5) means (0.5, 0.5) will be drawn as a zero length arrow\n *\n * All public properties can be directly manipulated.  There are also presets that can be set\n * by calling UsePreset.\n\n");
 
     { // inner classes & enums of Arrow
-        py::enum_<ImGuiTexInspect::Arrow::Preset>(pyClassArrow, "Preset", py::arithmetic(), "")
-            .value("normal_map", ImGuiTexInspect::Arrow::NormalMap, "For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point")
-            .value("normalized_float", ImGuiTexInspect::Arrow::NormalizedFloat, "Arrow in (R,G) channels. 0,0 is zero point, (1,0) will draw an arrow exactly to");
+        auto pyEnumPreset =
+            py::enum_<ImGuiTexInspect::Arrow::Preset>(pyClassArrow, "Preset", py::arithmetic(), "")
+                .value("normal_map", ImGuiTexInspect::Arrow::NormalMap, "For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point")
+                .value("normalized_float", ImGuiTexInspect::Arrow::NormalizedFloat, "Arrow in (R,G) channels. 0,0 is zero point, (1,0) will draw an arrow exactly to");
     } // end of inner classes & enums of Arrow
 
     pyClassArrow

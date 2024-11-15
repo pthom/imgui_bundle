@@ -53,7 +53,9 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
     ////////////////////    <generated_from:immapp_widgets.h>    ////////////////////
-#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR) && defined(IMGUI_BUNDLE_WITH_IMPLOT)
+    // #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
+    //
+
     m.def("begin_plot_in_node_editor",
         ImmApp::BeginPlotInNodeEditor, py::arg("title_id"), py::arg("size") = ImVec2(-1,0), py::arg("flags") = 0);
 
@@ -69,9 +71,10 @@ void py_init_module_immapp_cpp(py::module& m)
         ImmApp::ShowResizablePlotInNodeEditor_Em,
         py::arg("title_id"), py::arg("size_em"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
         " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
-#endif // defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR) && defined(IMGUI_BUNDLE_WITH_IMPLOT)
+    // #endif
+    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    //
 
-#if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     m.def("widget_with_resize_handle_in_node_editor",
         ImmApp::WidgetWithResizeHandle_InNodeEditor,
         py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
@@ -81,7 +84,7 @@ void py_init_module_immapp_cpp(py::module& m)
         ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
         py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
-#endif // defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
+    // #endif
     ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
 
 
@@ -173,10 +176,10 @@ void py_init_module_immapp_cpp(py::module& m)
     //
 
     m.def("default_node_editor_context",
-        ImmApp::DefaultNodeEditorContext, pybind11::return_value_policy::reference);
+        ImmApp::DefaultNodeEditorContext, py::return_value_policy::reference);
 
     m.def("default_node_editor_config",
-        ImmApp::DefaultNodeEditorConfig, pybind11::return_value_policy::reference);
+        ImmApp::DefaultNodeEditorConfig, py::return_value_policy::reference);
 
     m.def("node_editor_settings_location",
         ImmApp::NodeEditorSettingsLocation,
@@ -223,22 +226,24 @@ void py_init_module_immapp_cpp(py::module& m)
 
     { // <namespace Snippets>
         py::module_ pyNsSnippets = m.def_submodule("snippets", "");
-        py::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", py::arithmetic(), "")
-            .value("cpp", Snippets::SnippetLanguage::Cpp, "")
-            .value("hlsl", Snippets::SnippetLanguage::Hlsl, "")
-            .value("glsl", Snippets::SnippetLanguage::Glsl, "")
-            .value("c", Snippets::SnippetLanguage::C, "")
-            .value("sql", Snippets::SnippetLanguage::Sql, "")
-            .value("angel_script", Snippets::SnippetLanguage::AngelScript, "")
-            .value("lua", Snippets::SnippetLanguage::Lua, "")
-            .value("python", Snippets::SnippetLanguage::Python, "");
+        auto pyEnumSnippetLanguage =
+            py::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", py::arithmetic(), "")
+                .value("cpp", Snippets::SnippetLanguage::Cpp, "")
+                .value("hlsl", Snippets::SnippetLanguage::Hlsl, "")
+                .value("glsl", Snippets::SnippetLanguage::Glsl, "")
+                .value("c", Snippets::SnippetLanguage::C, "")
+                .value("sql", Snippets::SnippetLanguage::Sql, "")
+                .value("angel_script", Snippets::SnippetLanguage::AngelScript, "")
+                .value("lua", Snippets::SnippetLanguage::Lua, "")
+                .value("python", Snippets::SnippetLanguage::Python, "");
 
 
-        py::enum_<Snippets::SnippetTheme>(pyNsSnippets, "SnippetTheme", py::arithmetic(), "")
-            .value("dark", Snippets::SnippetTheme::Dark, "")
-            .value("light", Snippets::SnippetTheme::Light, "")
-            .value("retro_blue", Snippets::SnippetTheme::RetroBlue, "")
-            .value("mariana", Snippets::SnippetTheme::Mariana, "");
+        auto pyEnumSnippetTheme =
+            py::enum_<Snippets::SnippetTheme>(pyNsSnippets, "SnippetTheme", py::arithmetic(), "")
+                .value("dark", Snippets::SnippetTheme::Dark, "")
+                .value("light", Snippets::SnippetTheme::Light, "")
+                .value("retro_blue", Snippets::SnippetTheme::RetroBlue, "")
+                .value("mariana", Snippets::SnippetTheme::Mariana, "");
 
 
         pyNsSnippets.def("default_snippet_language",

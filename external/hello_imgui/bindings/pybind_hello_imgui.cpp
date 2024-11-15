@@ -129,7 +129,7 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("get_dpi_aware_params",
         HelloImGui::GetDpiAwareParams,
         " Returns the current DpiAwareParams, which are used\n for font loading and window size scaling",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
 
     m.def("dpi_font_loading_factor",
@@ -198,11 +198,12 @@ void py_init_module_hello_imgui(py::module& m)
         "synonym of SetAssetsFolder");
 
 
-    py::enum_<HelloImGui::LogLevel>(m, "LogLevel", py::arithmetic(), "")
-        .value("debug", HelloImGui::LogLevel::Debug, "")
-        .value("info", HelloImGui::LogLevel::Info, "")
-        .value("warning", HelloImGui::LogLevel::Warning, "")
-        .value("error", HelloImGui::LogLevel::Error, "");
+    auto pyEnumLogLevel =
+        py::enum_<HelloImGui::LogLevel>(m, "LogLevel", py::arithmetic(), "")
+            .value("debug", HelloImGui::LogLevel::Debug, "")
+            .value("info", HelloImGui::LogLevel::Info, "")
+            .value("warning", HelloImGui::LogLevel::Warning, "")
+            .value("error", HelloImGui::LogLevel::Error, "");
 
 
     m.def("log",
@@ -271,31 +272,32 @@ void py_init_module_hello_imgui(py::module& m)
         " `ImVec2 HelloImGui::ImageProportionalSize(askedSize, imageSize)`:\n  will return the displayed size of an image.\n     - if askedSize.x or askedSize.y is 0, then the corresponding dimension\n       will be computed from the image size, keeping the aspect ratio.\n     - if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit\n       exactly the askedSize, thus potentially changing the aspect ratio.\n  Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset,\n        so you don't need to call it directly.");
 
 
-    py::enum_<ImGuiTheme::ImGuiTheme_>(m, "ImGuiTheme_", py::arithmetic(), "")
-        .value("imgui_colors_classic", ImGuiTheme::ImGuiTheme_ImGuiColorsClassic, "")
-        .value("imgui_colors_dark", ImGuiTheme::ImGuiTheme_ImGuiColorsDark, "")
-        .value("imgui_colors_light", ImGuiTheme::ImGuiTheme_ImGuiColorsLight, "")
-        .value("material_flat", ImGuiTheme::ImGuiTheme_MaterialFlat, "")
-        .value("photoshop_style", ImGuiTheme::ImGuiTheme_PhotoshopStyle, "")
-        .value("gray_variations", ImGuiTheme::ImGuiTheme_GrayVariations, "")
-        .value("gray_variations_darker", ImGuiTheme::ImGuiTheme_GrayVariations_Darker, "")
-        .value("microsoft_style", ImGuiTheme::ImGuiTheme_MicrosoftStyle, "")
-        .value("cherry", ImGuiTheme::ImGuiTheme_Cherry, "")
-        .value("darcula", ImGuiTheme::ImGuiTheme_Darcula, "")
-        .value("darcula_darker", ImGuiTheme::ImGuiTheme_DarculaDarker, "")
-        .value("light_rounded", ImGuiTheme::ImGuiTheme_LightRounded, "")
-        .value("so_dark_accent_blue", ImGuiTheme::ImGuiTheme_SoDark_AccentBlue, "")
-        .value("so_dark_accent_yellow", ImGuiTheme::ImGuiTheme_SoDark_AccentYellow, "")
-        .value("so_dark_accent_red", ImGuiTheme::ImGuiTheme_SoDark_AccentRed, "")
-        .value("black_is_black", ImGuiTheme::ImGuiTheme_BlackIsBlack, "")
-        .value("white_is_white", ImGuiTheme::ImGuiTheme_WhiteIsWhite, "")
-        .value("count", ImGuiTheme::ImGuiTheme_Count, "");
+    auto pyEnumImGuiTheme_ =
+        py::enum_<ImGuiTheme::ImGuiTheme_>(m, "ImGuiTheme_", py::arithmetic(), "")
+            .value("imgui_colors_classic", ImGuiTheme::ImGuiTheme_ImGuiColorsClassic, "")
+            .value("imgui_colors_dark", ImGuiTheme::ImGuiTheme_ImGuiColorsDark, "")
+            .value("imgui_colors_light", ImGuiTheme::ImGuiTheme_ImGuiColorsLight, "")
+            .value("material_flat", ImGuiTheme::ImGuiTheme_MaterialFlat, "")
+            .value("photoshop_style", ImGuiTheme::ImGuiTheme_PhotoshopStyle, "")
+            .value("gray_variations", ImGuiTheme::ImGuiTheme_GrayVariations, "")
+            .value("gray_variations_darker", ImGuiTheme::ImGuiTheme_GrayVariations_Darker, "")
+            .value("microsoft_style", ImGuiTheme::ImGuiTheme_MicrosoftStyle, "")
+            .value("cherry", ImGuiTheme::ImGuiTheme_Cherry, "")
+            .value("darcula", ImGuiTheme::ImGuiTheme_Darcula, "")
+            .value("darcula_darker", ImGuiTheme::ImGuiTheme_DarculaDarker, "")
+            .value("light_rounded", ImGuiTheme::ImGuiTheme_LightRounded, "")
+            .value("so_dark_accent_blue", ImGuiTheme::ImGuiTheme_SoDark_AccentBlue, "")
+            .value("so_dark_accent_yellow", ImGuiTheme::ImGuiTheme_SoDark_AccentYellow, "")
+            .value("so_dark_accent_red", ImGuiTheme::ImGuiTheme_SoDark_AccentRed, "")
+            .value("black_is_black", ImGuiTheme::ImGuiTheme_BlackIsBlack, "")
+            .value("white_is_white", ImGuiTheme::ImGuiTheme_WhiteIsWhite, "")
+            .value("count", ImGuiTheme::ImGuiTheme_Count, "");
 
 
     m.def("imgui_theme_name",
         ImGuiTheme::ImGuiTheme_Name,
         py::arg("theme"),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("imgui_theme_from_name",
         ImGuiTheme::ImGuiTheme_FromName, py::arg("theme_name"));
@@ -441,27 +443,27 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("load_font",
         HelloImGui::LoadFont,
         py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("load_font_dpi_responsive",
         HelloImGui::LoadFontDpiResponsive,
         py::arg("font_filename"), py::arg("font_size"), py::arg("params") = HelloImGui::FontLoadingParams{},
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("load_font_ttf",
         HelloImGui::LoadFontTTF,
         py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("load_font_ttf_with_font_awesome_icons",
         HelloImGui::LoadFontTTF_WithFontAwesomeIcons,
         py::arg("font_filename"), py::arg("font_size"), py::arg("use_full_glyph_range") = false, py::arg("config_font") = ImFontConfig(), py::arg("config_icons") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("merge_font_awesome_to_last_font",
         HelloImGui::MergeFontAwesomeToLastFont,
         py::arg("font_size"), py::arg("config") = ImFontConfig(),
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("did_call_hello_imgui_load_font_ttf",
         HelloImGui::DidCallHelloImGuiLoadFontTTF, " indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to\n account for HighDPI (on macOS and emscripten)");
@@ -501,28 +503,32 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::FullScreenMode>(m, "FullScreenMode", py::arithmetic(), "")
-        .value("no_full_screen", HelloImGui::FullScreenMode::NoFullScreen, "")
-        .value("full_screen", HelloImGui::FullScreenMode::FullScreen, "Full screen with specified resolution")
-        .value("full_screen_desktop_resolution", HelloImGui::FullScreenMode::FullScreenDesktopResolution, "Full screen with current desktop mode & resolution")
-        .value("full_monitor_work_area", HelloImGui::FullScreenMode::FullMonitorWorkArea, "Fake full screen, maximized window on the selected monitor");
+    auto pyEnumFullScreenMode =
+        py::enum_<HelloImGui::FullScreenMode>(m, "FullScreenMode", py::arithmetic(), "")
+            .value("no_full_screen", HelloImGui::FullScreenMode::NoFullScreen, "")
+            .value("full_screen", HelloImGui::FullScreenMode::FullScreen, "Full screen with specified resolution")
+            .value("full_screen_desktop_resolution", HelloImGui::FullScreenMode::FullScreenDesktopResolution, "Full screen with current desktop mode & resolution")
+            .value("full_monitor_work_area", HelloImGui::FullScreenMode::FullMonitorWorkArea, "Fake full screen, maximized window on the selected monitor");
 
 
-    py::enum_<HelloImGui::WindowSizeState>(m, "WindowSizeState", py::arithmetic(), "")
-        .value("standard", HelloImGui::WindowSizeState::Standard, "")
-        .value("minimized", HelloImGui::WindowSizeState::Minimized, "")
-        .value("maximized", HelloImGui::WindowSizeState::Maximized, "");
+    auto pyEnumWindowSizeState =
+        py::enum_<HelloImGui::WindowSizeState>(m, "WindowSizeState", py::arithmetic(), "")
+            .value("standard", HelloImGui::WindowSizeState::Standard, "")
+            .value("minimized", HelloImGui::WindowSizeState::Minimized, "")
+            .value("maximized", HelloImGui::WindowSizeState::Maximized, "");
 
 
-    py::enum_<HelloImGui::WindowPositionMode>(m, "WindowPositionMode", py::arithmetic(), "")
-        .value("os_default", HelloImGui::WindowPositionMode::OsDefault, "")
-        .value("monitor_center", HelloImGui::WindowPositionMode::MonitorCenter, "")
-        .value("from_coords", HelloImGui::WindowPositionMode::FromCoords, "");
+    auto pyEnumWindowPositionMode =
+        py::enum_<HelloImGui::WindowPositionMode>(m, "WindowPositionMode", py::arithmetic(), "")
+            .value("os_default", HelloImGui::WindowPositionMode::OsDefault, "")
+            .value("monitor_center", HelloImGui::WindowPositionMode::MonitorCenter, "")
+            .value("from_coords", HelloImGui::WindowPositionMode::FromCoords, "");
 
 
-    py::enum_<HelloImGui::WindowSizeMeasureMode>(m, "WindowSizeMeasureMode", py::arithmetic(), "")
-        .value("screen_coords", HelloImGui::WindowSizeMeasureMode::ScreenCoords, " ScreenCoords: measure window size in screen coords.\n     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.\n         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen\n           coordinates\n         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,\n           even on high density screens")
-        .value("relative_to96_ppi", HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, " RelativeTo96Ppi enables to give screen size that are independant from the screen density.\n For example, a window size expressed as 800x600 will correspond to a size\n    800x600 (in screen coords) if the monitor dpi is 96\n    1600x120 (in screen coords) if the monitor dpi is 192");
+    auto pyEnumWindowSizeMeasureMode =
+        py::enum_<HelloImGui::WindowSizeMeasureMode>(m, "WindowSizeMeasureMode", py::arithmetic(), "")
+            .value("screen_coords", HelloImGui::WindowSizeMeasureMode::ScreenCoords, " ScreenCoords: measure window size in screen coords.\n     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.\n         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen\n           coordinates\n         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,\n           even on high density screens")
+            .value("relative_to96_ppi", HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, " RelativeTo96Ppi enables to give screen size that are independant from the screen density.\n For example, a window size expressed as 800x600 will correspond to a size\n    800x600 (in screen coords) if the monitor dpi is 96\n    1600x120 (in screen coords) if the monitor dpi is 192");
 
 
     auto pyClassWindowGeometry =
@@ -619,10 +625,11 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::DefaultImGuiWindowType>(m, "DefaultImGuiWindowType", py::arithmetic(), " `DefaultImGuiWindowType` is an enum class that defines whether a full screen background\n window is provided or not")
-        .value("provide_full_screen_window", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, "`ProvideFullScreenWindow`: a full window is provided in the background")
-        .value("provide_full_screen_dock_space", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace, "`ProvideFullScreenDockSpace`: a full screen dockspace is provided in the background")
-        .value("no_default_window", HelloImGui::DefaultImGuiWindowType::NoDefaultWindow, " `NoDefaultWindow`: No default window is provided\n (except for ImGui's default \"debug\" window)");
+    auto pyEnumDefaultImGuiWindowType =
+        py::enum_<HelloImGui::DefaultImGuiWindowType>(m, "DefaultImGuiWindowType", py::arithmetic(), " `DefaultImGuiWindowType` is an enum class that defines whether a full screen background\n window is provided or not")
+            .value("provide_full_screen_window", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, "`ProvideFullScreenWindow`: a full window is provided in the background")
+            .value("provide_full_screen_dock_space", HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace, "`ProvideFullScreenDockSpace`: a full screen dockspace is provided in the background")
+            .value("no_default_window", HelloImGui::DefaultImGuiWindowType::NoDefaultWindow, " `NoDefaultWindow`: No default window is provided\n (except for ImGui's default \"debug\" window)");
 
 
     auto pyClassImGuiWindowParams =
@@ -707,11 +714,12 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::EdgeToolbarType>(m, "EdgeToolbarType", py::arithmetic(), "EdgeToolbarType: location of an Edge Toolbar")
-        .value("top", HelloImGui::EdgeToolbarType::Top, "")
-        .value("bottom", HelloImGui::EdgeToolbarType::Bottom, "")
-        .value("left", HelloImGui::EdgeToolbarType::Left, "")
-        .value("right", HelloImGui::EdgeToolbarType::Right, "");
+    auto pyEnumEdgeToolbarType =
+        py::enum_<HelloImGui::EdgeToolbarType>(m, "EdgeToolbarType", py::arithmetic(), "EdgeToolbarType: location of an Edge Toolbar")
+            .value("top", HelloImGui::EdgeToolbarType::Top, "")
+            .value("bottom", HelloImGui::EdgeToolbarType::Bottom, "")
+            .value("left", HelloImGui::EdgeToolbarType::Left, "")
+            .value("right", HelloImGui::EdgeToolbarType::Right, "");
 
 
     auto pyClassEdgeToolbarOptions =
@@ -759,10 +767,11 @@ void py_init_module_hello_imgui(py::module& m)
         HelloImGui::EdgeToolbarTypeName, py::arg("e"));
 
 
-    py::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", py::arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n Breaking change in v1.5.0:\n - the default icon font is now FontAwesome 6, which includes many more icons.\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
-        .value("no_icons", HelloImGui::DefaultIconFont::NoIcons, "")
-        .value("font_awesome4", HelloImGui::DefaultIconFont::FontAwesome4, "")
-        .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
+    auto pyEnumDefaultIconFont =
+        py::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", py::arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n Breaking change in v1.5.0:\n - the default icon font is now FontAwesome 6, which includes many more icons.\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
+            .value("no_icons", HelloImGui::DefaultIconFont::NoIcons, "")
+            .value("font_awesome4", HelloImGui::DefaultIconFont::FontAwesome4, "")
+            .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
 
 
     auto pyClassRunnerCallbacks =
@@ -875,10 +884,11 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::DockingLayoutCondition>(m, "DockingLayoutCondition", py::arithmetic(), "")
-        .value("first_use_ever", HelloImGui::DockingLayoutCondition::FirstUseEver, "")
-        .value("application_start", HelloImGui::DockingLayoutCondition::ApplicationStart, "")
-        .value("never", HelloImGui::DockingLayoutCondition::Never, "");
+    auto pyEnumDockingLayoutCondition =
+        py::enum_<HelloImGui::DockingLayoutCondition>(m, "DockingLayoutCondition", py::arithmetic(), "")
+            .value("first_use_ever", HelloImGui::DockingLayoutCondition::FirstUseEver, "")
+            .value("application_start", HelloImGui::DockingLayoutCondition::ApplicationStart, "")
+            .value("never", HelloImGui::DockingLayoutCondition::Never, "");
 
 
     auto pyClassDockingParams =
@@ -908,7 +918,7 @@ void py_init_module_hello_imgui(py::module& m)
             &HelloImGui::DockingParams::dockableWindowOfName,
             py::arg("name"),
             " `DockableWindow * dockableWindowOfName(const std::string & name)`:\n returns a pointer to a dockable window",
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::reference)
         .def("focus_dockable_window",
             &HelloImGui::DockingParams::focusDockableWindow,
             py::arg("window_name"),
@@ -1036,31 +1046,34 @@ void py_init_module_hello_imgui(py::module& m)
         ;
 
 
-    py::enum_<HelloImGui::PlatformBackendType>(m, "PlatformBackendType", py::arithmetic(), " Platform backend type (SDL, GLFW)\n They are listed in the order of preference when FirstAvailable is selected.")
-        .value("first_available", HelloImGui::PlatformBackendType::FirstAvailable, "")
-        .value("glfw", HelloImGui::PlatformBackendType::Glfw, "")
-        .value("sdl", HelloImGui::PlatformBackendType::Sdl, "")
-        .value("null", HelloImGui::PlatformBackendType::Null, "");
+    auto pyEnumPlatformBackendType =
+        py::enum_<HelloImGui::PlatformBackendType>(m, "PlatformBackendType", py::arithmetic(), " Platform backend type (SDL, GLFW)\n They are listed in the order of preference when FirstAvailable is selected.")
+            .value("first_available", HelloImGui::PlatformBackendType::FirstAvailable, "")
+            .value("glfw", HelloImGui::PlatformBackendType::Glfw, "")
+            .value("sdl", HelloImGui::PlatformBackendType::Sdl, "")
+            .value("null", HelloImGui::PlatformBackendType::Null, "");
 
 
-    py::enum_<HelloImGui::RendererBackendType>(m, "RendererBackendType", py::arithmetic(), " Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)\n They are listed in the order of preference when FirstAvailable is selected.")
-        .value("first_available", HelloImGui::RendererBackendType::FirstAvailable, "")
-        .value("open_gl3", HelloImGui::RendererBackendType::OpenGL3, "")
-        .value("metal", HelloImGui::RendererBackendType::Metal, "")
-        .value("vulkan", HelloImGui::RendererBackendType::Vulkan, "")
-        .value("direct_x11", HelloImGui::RendererBackendType::DirectX11, "")
-        .value("direct_x12", HelloImGui::RendererBackendType::DirectX12, "")
-        .value("null", HelloImGui::RendererBackendType::Null, "");
+    auto pyEnumRendererBackendType =
+        py::enum_<HelloImGui::RendererBackendType>(m, "RendererBackendType", py::arithmetic(), " Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)\n They are listed in the order of preference when FirstAvailable is selected.")
+            .value("first_available", HelloImGui::RendererBackendType::FirstAvailable, "")
+            .value("open_gl3", HelloImGui::RendererBackendType::OpenGL3, "")
+            .value("metal", HelloImGui::RendererBackendType::Metal, "")
+            .value("vulkan", HelloImGui::RendererBackendType::Vulkan, "")
+            .value("direct_x11", HelloImGui::RendererBackendType::DirectX11, "")
+            .value("direct_x12", HelloImGui::RendererBackendType::DirectX12, "")
+            .value("null", HelloImGui::RendererBackendType::Null, "");
 
 
-    py::enum_<HelloImGui::IniFolderType>(m, "IniFolderType", py::arithmetic(), " IniFolderType is an enum which describes where is the base path to store\n the ini file for the application settings.\n\n You can use IniFolderLocation(iniFolderType) to get the corresponding path.\n\n RunnerParams contains the following members, which are used to compute\n the ini file location:\n     iniFolderType           (IniFolderType::CurrentFolder by default)\n     iniFilename             (empty string by default)\n     iniFilename_useAppWindowTitle\n         (True by default: iniFilename is derived from\n          appWindowParams.windowTitle)\n\n iniFilename may contain a subfolder\n (which will be created inside the iniFolderType folder if needed)\n")
-        .value("current_folder", HelloImGui::IniFolderType::CurrentFolder, " CurrentFolder: the folder where the application is executed\n (convenient for development, but not recommended for production)")
-        .value("absolute_path", HelloImGui::IniFolderType::AbsolutePath, " AbsolutePath: an absolute path\n (convenient, but not recommended if targeting multiple platforms)")
-        .value("app_user_config_folder", HelloImGui::IniFolderType::AppUserConfigFolder, " AppUserConfigFolder:\n      AppData under Windows (Example: C:\\Users\\[Username]\\AppData\\Roaming under windows)\n      ~/.config under Linux\n      \"~/Library/Application Support\" under macOS\n (recommended for production, if settings do not need to be easily accessible by the user)")
-        .value("app_executable_folder", HelloImGui::IniFolderType::AppExecutableFolder, " AppExecutableFolder: the folder where the application executable is located\n (this may be different from CurrentFolder if the application is launched from a shortcut)\n (convenient for development, but not recommended for production)")
-        .value("home_folder", HelloImGui::IniFolderType::HomeFolder, " HomeFolder: the user home folder\n (recommended for production, if settings need to be easily accessible by the user)")
-        .value("documents_folder", HelloImGui::IniFolderType::DocumentsFolder, "DocumentsFolder: the user documents folder")
-        .value("temp_folder", HelloImGui::IniFolderType::TempFolder, "TempFolder: the system temp folder");
+    auto pyEnumIniFolderType =
+        py::enum_<HelloImGui::IniFolderType>(m, "IniFolderType", py::arithmetic(), " IniFolderType is an enum which describes where is the base path to store\n the ini file for the application settings.\n\n You can use IniFolderLocation(iniFolderType) to get the corresponding path.\n\n RunnerParams contains the following members, which are used to compute\n the ini file location:\n     iniFolderType           (IniFolderType::CurrentFolder by default)\n     iniFilename             (empty string by default)\n     iniFilename_useAppWindowTitle\n         (True by default: iniFilename is derived from\n          appWindowParams.windowTitle)\n\n iniFilename may contain a subfolder\n (which will be created inside the iniFolderType folder if needed)\n")
+            .value("current_folder", HelloImGui::IniFolderType::CurrentFolder, " CurrentFolder: the folder where the application is executed\n (convenient for development, but not recommended for production)")
+            .value("absolute_path", HelloImGui::IniFolderType::AbsolutePath, " AbsolutePath: an absolute path\n (convenient, but not recommended if targeting multiple platforms)")
+            .value("app_user_config_folder", HelloImGui::IniFolderType::AppUserConfigFolder, " AppUserConfigFolder:\n      AppData under Windows (Example: C:\\Users\\[Username]\\AppData\\Roaming under windows)\n      ~/.config under Linux\n      \"~/Library/Application Support\" under macOS\n (recommended for production, if settings do not need to be easily accessible by the user)")
+            .value("app_executable_folder", HelloImGui::IniFolderType::AppExecutableFolder, " AppExecutableFolder: the folder where the application executable is located\n (this may be different from CurrentFolder if the application is launched from a shortcut)\n (convenient for development, but not recommended for production)")
+            .value("home_folder", HelloImGui::IniFolderType::HomeFolder, " HomeFolder: the user home folder\n (recommended for production, if settings need to be easily accessible by the user)")
+            .value("documents_folder", HelloImGui::IniFolderType::DocumentsFolder, "DocumentsFolder: the user documents folder")
+            .value("temp_folder", HelloImGui::IniFolderType::TempFolder, "TempFolder: the system temp folder");
 
 
     m.def("ini_folder_location",
@@ -1069,11 +1082,18 @@ void py_init_module_hello_imgui(py::module& m)
         "Returns the path corresponding to the given IniFolderType");
 
 
+    auto pyEnumFpsIdlingMode =
+        py::enum_<HelloImGui::FpsIdlingMode>(m, "FpsIdlingMode", py::arithmetic(), " FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.\n - Sleep: the application will sleep when idling to reduce CPU usage.\n - EarlyReturn: rendering will return immediately when idling.\n   This is specifically designed for event-driven, and real-time applications.\n   Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.\n - Auto: use platform-specific default behavior.\n    On most platforms, it will sleep. On Emscripten, `Render()` will return immediately\n    to avoid blocking the main thread.\n Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.")
+            .value("sleep", HelloImGui::FpsIdlingMode::Sleep, "")
+            .value("early_return", HelloImGui::FpsIdlingMode::EarlyReturn, "")
+            .value("auto", HelloImGui::FpsIdlingMode::Auto, "");
+
+
     auto pyClassFpsIdling =
         py::class_<HelloImGui::FpsIdling>
             (m, "FpsIdling", "FpsIdling is a struct that contains Fps Idling parameters")
         .def(py::init<>([](
-        float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false)
+        float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, HelloImGui::FpsIdlingMode fpsIdlingMode = HelloImGui::FpsIdlingMode::Auto)
         {
             auto r = std::make_unique<HelloImGui::FpsIdling>();
             r->fpsIdle = fpsIdle;
@@ -1081,15 +1101,17 @@ void py_init_module_hello_imgui(py::module& m)
             r->enableIdling = enableIdling;
             r->isIdling = isIdling;
             r->rememberEnableIdling = rememberEnableIdling;
+            r->fpsIdlingMode = fpsIdlingMode;
             return r;
         })
-        , py::arg("fps_idle") = 9.f, py::arg("time_active_after_last_event") = 3.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false
+        , py::arg("fps_idle") = 9.f, py::arg("time_active_after_last_event") = 3.f, py::arg("enable_idling") = true, py::arg("is_idling") = false, py::arg("remember_enable_idling") = false, py::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto
         )
         .def_readwrite("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen\n  very frequently. In order to reduce the CPU usage, the FPS is reduced when\n  no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets\n  (for example a live video), you may want to ask for a faster refresh:\n  either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application\n  refresh needs)")
         .def_readwrite("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default=3._.\n  Time in seconds after the last event before the application is considered idling.")
         .def_readwrite("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling by setting this to False.\n  (this can be changed dynamically during execution)")
         .def_readwrite("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution,\n  and will be set to True when it is idling.")
         .def_readwrite("remember_enable_idling", &HelloImGui::FpsIdling::rememberEnableIdling, " `rememberEnableIdling`: _bool, default=true_.\n  If True, the last value of enableIdling is restored from the settings at startup.")
+        .def_readwrite("fps_idling_mode", &HelloImGui::FpsIdling::fpsIdlingMode, " `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.\n Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)")
         ;
 
 
@@ -1248,7 +1270,7 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams,
         " `GetRunnerParams()`:  a convenience function that will return the runnerParams\n of the current application",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("is_using_hello_imgui",
         HelloImGui::IsUsingHelloImGui, "`IsUsingHelloImGui()`: returns True if the application is using HelloImGui");
@@ -1261,7 +1283,7 @@ void py_init_module_hello_imgui(py::module& m)
     m.def("get_imgui_test_engine",
         HelloImGui::GetImGuiTestEngine,
         " `ImGuiTestEngine* GetImGuiTestEngine()`: returns a pointer to the global instance\n  of ImGuiTestEngine that was initialized by HelloImGui\n  (iif ImGui Test Engine is active).",
-        pybind11::return_value_policy::reference);
+        py::return_value_policy::reference);
 
     m.def("get_backend_description",
         HelloImGui::GetBackendDescription, " `GetBackendDescription()`: returns a string with the backend info\n Could be for example:\n     \"Glfw - OpenGL3\"\n     \"Glfw - Metal\"\n     \"Sdl - Vulkan\"");
@@ -1320,6 +1342,30 @@ void py_init_module_hello_imgui(py::module& m)
         pyNsImGuiDefaultSettings.def("setup_default_imgui_style",
             HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle);
     } // </namespace ImGuiDefaultSettings>
+
+    { // <namespace ManualRender>
+        py::module_ pyNsManualRender = m.def_submodule("manual_render", "namespace ManualRender");
+        pyNsManualRender.def("setup_from_runner_params",
+            HelloImGui::ManualRender::SetupFromRunnerParams,
+            py::arg("runner_params"),
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.");
+
+        pyNsManualRender.def("setup_from_simple_runner_params",
+            HelloImGui::ManualRender::SetupFromSimpleRunnerParams,
+            py::arg("simple_params"),
+            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("setup_from_gui_function",
+            HelloImGui::ManualRender::SetupFromGuiFunction,
+            py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = HelloImGui::DefaultWindowSize, py::arg("fps_idle") = 10.f,
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
+
+        pyNsManualRender.def("render",
+            HelloImGui::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");
+
+        pyNsManualRender.def("tear_down",
+            HelloImGui::ManualRender::TearDown, " Tears down the renderer and releases all associated resources.\n This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n After calling `TearDown()`, the InitFromXXX can be called with new parameters.");
+    } // </namespace ManualRender>
     ////////////////////    </generated_from:hello_imgui_amalgamation.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end

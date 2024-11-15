@@ -683,7 +683,19 @@ void py_init_module_implot(py::module& m)
         ImPlot::EndSubplots, " Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end\n of an if statement conditioned on BeginSublots(). See example above.");
 
     m.def("setup_axis",
-        ImPlot::SetupAxis,
+        [](ImAxis axis, std::optional<std::string> label = std::nullopt, ImPlotAxisFlags flags = 0)
+        {
+            auto SetupAxis_adapt_const_char_pointer_with_default_null = [](ImAxis axis, std::optional<std::string> label = std::nullopt, ImPlotAxisFlags flags = 0)
+            {
+                const char * label_adapt_default_null = nullptr;
+                if (label.has_value())
+                    label_adapt_default_null = label.value().c_str();
+
+                ImPlot::SetupAxis(axis, label_adapt_default_null, flags);
+            };
+
+            SetupAxis_adapt_const_char_pointer_with_default_null(axis, label, flags);
+        },
         py::arg("axis"), py::arg("label") = py::none(), py::arg("flags") = 0,
         "Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label.");
 
@@ -792,10 +804,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -856,19 +867,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotLine_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotLineFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -929,10 +938,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -993,19 +1001,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotScatterFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -1066,10 +1072,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & values, double xscale = 1, double xstart = 0, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1130,19 +1135,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotStairsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -1203,10 +1206,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & values, double yref = 0, double xscale = 1, double xstart = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1267,19 +1269,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double yref = 0, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -1340,28 +1340,25 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys1, const py::array & ys2, ImPlotShadedFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys1.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys1.ndim() == 1 && ys1.strides(0) == ys1.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys1_from_pyarray = ys1.data();
                 py::ssize_t ys1_count = ys1.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys2.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys2.ndim() == 1 && ys2.strides(0) == ys2.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys2_from_pyarray = ys2.data();
@@ -1422,10 +1419,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & values, double bar_size = 0.67, double shift = 0, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1486,19 +1482,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double bar_size, ImPlotBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -1559,10 +1553,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotBarGroups_adapt_c_buffers = [](const char * const label_ids[], const py::array & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1624,28 +1617,25 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & err, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 py::ssize_t ys_count = ys.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!err.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (err.ndim() == 1 && err.strides(0) == err.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * err_from_pyarray = err.data();
@@ -1706,37 +1696,33 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, const py::array & neg, const py::array & pos, ImPlotErrorBarsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 py::ssize_t ys_count = ys.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!neg.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (neg.ndim() == 1 && neg.strides(0) == neg.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * neg_from_pyarray = neg.data();
                 py::ssize_t neg_count = neg.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!pos.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (pos.ndim() == 1 && pos.strides(0) == pos.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * pos_from_pyarray = pos.data();
@@ -1797,10 +1783,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & values, double ref = 0, double scale = 1, double start = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -1861,19 +1846,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotStems_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, double ref = 0, ImPlotStemsFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -1934,10 +1917,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotInfLines_adapt_c_buffers = [](const char * label_id, const py::array & values, ImPlotInfLinesFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -2000,10 +1982,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotPieChart_adapt_c_buffers = [](const char * const label_ids[], const py::array & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, ImPlotPieChartFlags flags = 0)
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -2063,10 +2044,9 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotHistogram_adapt_c_buffers = [](const char * label_id, const py::array & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), ImPlotHistogramFlags flags = 0) -> double
             {
-                // Check if the array is C-contiguous
-                if (!values.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (values.ndim() == 1 && values.strides(0) == values.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * values_from_pyarray = values.data();
@@ -2120,19 +2100,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), ImPlotHistogramFlags flags = 0) -> double
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -2186,19 +2164,17 @@ void py_init_module_implot(py::module& m)
         {
             auto PlotDigital_adapt_c_buffers = [](const char * label_id, const py::array & xs, const py::array & ys, ImPlotDigitalFlags flags = 0, int offset = 0, int stride = -1)
             {
-                // Check if the array is C-contiguous
-                if (!xs.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.strides(0) == xs.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * xs_from_pyarray = xs.data();
                 py::ssize_t xs_count = xs.shape()[0];
 
-                // Check if the array is C-contiguous
-                if (!ys.attr("flags").attr("c_contiguous").cast<bool>()) {
-                    throw std::runtime_error("The array must be contiguous, i.e, `a.flags.c_contiguous` must be True. Hint: use `numpy.ascontiguousarray`.");
-                }
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.strides(0) == ys.itemsize()) )
+                    throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert py::array to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
@@ -2694,7 +2670,19 @@ void py_init_module_implot(py::module& m)
         "Shows a button with a colormap gradient brackground.");
 
     m.def("bust_color_cache",
-        ImPlot::BustColorCache,
+        [](std::optional<std::string> plot_title_id = std::nullopt)
+        {
+            auto BustColorCache_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> plot_title_id = std::nullopt)
+            {
+                const char * plot_title_id_adapt_default_null = nullptr;
+                if (plot_title_id.has_value())
+                    plot_title_id_adapt_default_null = plot_title_id.value().c_str();
+
+                ImPlot::BustColorCache(plot_title_id_adapt_default_null);
+            };
+
+            BustColorCache_adapt_const_char_pointer_with_default_null(plot_title_id);
+        },
         py::arg("plot_title_id") = py::none(),
         " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
 

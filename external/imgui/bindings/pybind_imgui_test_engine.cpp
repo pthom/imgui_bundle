@@ -230,7 +230,20 @@ void py_init_module_imgui_test_engine(py::module& m)
         py::return_value_policy::reference);
 
     m.def("register_test",
-        ImGuiTestEngine_RegisterTest,
+        [](ImGuiTestEngine * engine, const char * category, const char * name, std::optional<std::string> src_file = std::nullopt, int src_line = 0) -> ImGuiTest *
+        {
+            auto ImGuiTestEngine_RegisterTest_adapt_const_char_pointer_with_default_null = [](ImGuiTestEngine * engine, const char * category, const char * name, std::optional<std::string> src_file = std::nullopt, int src_line = 0) -> ImGuiTest *
+            {
+                const char * src_file_adapt_default_null = nullptr;
+                if (src_file.has_value())
+                    src_file_adapt_default_null = src_file.value().c_str();
+
+                auto lambda_result = ImGuiTestEngine_RegisterTest(engine, category, name, src_file_adapt_default_null, src_line);
+                return lambda_result;
+            };
+
+            return ImGuiTestEngine_RegisterTest_adapt_const_char_pointer_with_default_null(engine, category, name, src_file, src_line);
+        },
         py::arg("engine"), py::arg("category"), py::arg("name"), py::arg("src_file") = py::none(), py::arg("src_line") = 0,
         "Prefer calling IM_REGISTER_TEST()",
         py::return_value_policy::reference);
@@ -242,7 +255,19 @@ void py_init_module_imgui_test_engine(py::module& m)
         ImGuiTestEngine_QueueTest, py::arg("engine"), py::arg("test"), py::arg("run_flags") = 0);
 
     m.def("queue_tests",
-        ImGuiTestEngine_QueueTests, py::arg("engine"), py::arg("group"), py::arg("filter") = py::none(), py::arg("run_flags") = 0);
+        [](ImGuiTestEngine * engine, ImGuiTestGroup group, std::optional<std::string> filter = std::nullopt, ImGuiTestRunFlags run_flags = 0)
+        {
+            auto ImGuiTestEngine_QueueTests_adapt_const_char_pointer_with_default_null = [](ImGuiTestEngine * engine, ImGuiTestGroup group, std::optional<std::string> filter = std::nullopt, ImGuiTestRunFlags run_flags = 0)
+            {
+                const char * filter_adapt_default_null = nullptr;
+                if (filter.has_value())
+                    filter_adapt_default_null = filter.value().c_str();
+
+                ImGuiTestEngine_QueueTests(engine, group, filter_adapt_default_null, run_flags);
+            };
+
+            ImGuiTestEngine_QueueTests_adapt_const_char_pointer_with_default_null(engine, group, filter, run_flags);
+        },     py::arg("engine"), py::arg("group"), py::arg("filter") = py::none(), py::arg("run_flags") = 0);
 
     m.def("try_abort_engine",
         ImGuiTestEngine_TryAbortEngine, py::arg("engine"));
@@ -773,7 +798,20 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("is_gui_func_only",
             &ImGuiTestContext::IsGuiFuncOnly, "(private API)")
         .def("suspend_test_func",
-            &ImGuiTestContext::SuspendTestFunc,
+            [](ImGuiTestContext & self, std::optional<std::string> file = std::nullopt, int line = 0) -> bool
+            {
+                auto SuspendTestFunc_adapt_const_char_pointer_with_default_null = [&self](std::optional<std::string> file = std::nullopt, int line = 0) -> bool
+                {
+                    const char * file_adapt_default_null = nullptr;
+                    if (file.has_value())
+                        file_adapt_default_null = file.value().c_str();
+
+                    auto lambda_result = self.SuspendTestFunc(file_adapt_default_null, line);
+                    return lambda_result;
+                };
+
+                return SuspendTestFunc_adapt_const_char_pointer_with_default_null(file, line);
+            },
             py::arg("file") = py::none(), py::arg("line") = 0,
             "(private API)\n\n [DEBUG] Generally called via IM_SUSPEND_TESTFUNC")
         .def("log_ex",
@@ -789,7 +827,19 @@ void py_init_module_imgui_test_engine(py::module& m)
             py::arg("level"), py::arg("flags"), py::arg("fmt"),
             "(private API)")
         .def("log_to_tty",
-            &ImGuiTestContext::LogToTTY,
+            [](ImGuiTestContext & self, ImGuiTestVerboseLevel level, const char * message, std::optional<std::string> message_end = std::nullopt)
+            {
+                auto LogToTTY_adapt_const_char_pointer_with_default_null = [&self](ImGuiTestVerboseLevel level, const char * message, std::optional<std::string> message_end = std::nullopt)
+                {
+                    const char * message_end_adapt_default_null = nullptr;
+                    if (message_end.has_value())
+                        message_end_adapt_default_null = message_end.value().c_str();
+
+                    self.LogToTTY(level, message, message_end_adapt_default_null);
+                };
+
+                LogToTTY_adapt_const_char_pointer_with_default_null(level, message, message_end);
+            },
             py::arg("level"), py::arg("message"), py::arg("message_end") = py::none(),
             "(private API)")
         .def("log_to_debugger",
@@ -1399,7 +1449,25 @@ void py_init_module_imgui_test_engine(py::module& m)
         .def("perf_calc_ref",
             &ImGuiTestContext::PerfCalcRef, "(private API)")
         .def("perf_capture",
-            &ImGuiTestContext::PerfCapture,
+            [](ImGuiTestContext & self, std::optional<std::string> category = std::nullopt, std::optional<std::string> test_name = std::nullopt, std::optional<std::string> csv_file = std::nullopt)
+            {
+                auto PerfCapture_adapt_const_char_pointer_with_default_null = [&self](std::optional<std::string> category = std::nullopt, std::optional<std::string> test_name = std::nullopt, std::optional<std::string> csv_file = std::nullopt)
+                {
+                    const char * category_adapt_default_null = nullptr;
+                    if (category.has_value())
+                        category_adapt_default_null = category.value().c_str();
+                    const char * test_name_adapt_default_null = nullptr;
+                    if (test_name.has_value())
+                        test_name_adapt_default_null = test_name.value().c_str();
+                    const char * csv_file_adapt_default_null = nullptr;
+                    if (csv_file.has_value())
+                        csv_file_adapt_default_null = csv_file.value().c_str();
+
+                    self.PerfCapture(category_adapt_default_null, test_name_adapt_default_null, csv_file_adapt_default_null);
+                };
+
+                PerfCapture_adapt_const_char_pointer_with_default_null(category, test_name, csv_file);
+            },
             py::arg("category") = py::none(), py::arg("test_name") = py::none(), py::arg("csv_file") = py::none(),
             "(private API)")
         .def("_make_aiming_space_over_pos",

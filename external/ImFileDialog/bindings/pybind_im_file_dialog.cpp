@@ -63,7 +63,7 @@ void py_init_module_im_file_dialog(py::module& m)
 
     pyClassFileDialog
         .def_static("instance",
-            &ifd::FileDialog::Instance, pybind11::return_value_policy::reference)
+            &ifd::FileDialog::Instance, py::return_value_policy::reference)
         .def(py::init<>())
         .def("save",
             &ifd::FileDialog::Save, py::arg("key"), py::arg("title"), py::arg("filter"), py::arg("starting_dir") = "")

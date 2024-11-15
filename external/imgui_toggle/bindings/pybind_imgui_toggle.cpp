@@ -113,24 +113,26 @@ void py_init_module_imgui_toggle(py::module& m)
         },     py::arg("label"), py::arg("v"), py::arg("config"));
 
 
-    py::enum_<ImGuiToggleFlags_>(m, "ToggleFlags_", py::arithmetic(), "ImGuiToggleFlags: A set of flags that adjust behavior and display for ImGui::Toggle().")
-        .value("none", ImGuiToggleFlags_None, "")
-        .value("animated", ImGuiToggleFlags_Animated, "The toggle's knob should be animated.")
-        .value("bordered_frame", ImGuiToggleFlags_BorderedFrame, "The toggle should have a border drawn on the frame.")
-        .value("bordered_knob", ImGuiToggleFlags_BorderedKnob, "The toggle should have a border drawn on the knob.")
-        .value("shadowed_frame", ImGuiToggleFlags_ShadowedFrame, "The toggle should have a shadow drawn under the frame.")
-        .value("shadowed_knob", ImGuiToggleFlags_ShadowedKnob, "The toggle should have a shadow drawn under the knob.")
-        .value("a11y", ImGuiToggleFlags_A11y, "The toggle should draw on and off glyphs to help indicate its state.")
-        .value("bordered", ImGuiToggleFlags_Bordered, "Shorthand for bordered frame and knob.")
-        .value("shadowed", ImGuiToggleFlags_Shadowed, "Shorthand for shadowed frame and knob.")
-        .value("default", ImGuiToggleFlags_Default, "The default flags used when no ImGuiToggleFlags_ are specified.");
+    auto pyEnumToggleFlags_ =
+        py::enum_<ImGuiToggleFlags_>(m, "ToggleFlags_", py::arithmetic(), "ImGuiToggleFlags: A set of flags that adjust behavior and display for ImGui::Toggle().")
+            .value("none", ImGuiToggleFlags_None, "")
+            .value("animated", ImGuiToggleFlags_Animated, "The toggle's knob should be animated.")
+            .value("bordered_frame", ImGuiToggleFlags_BorderedFrame, "The toggle should have a border drawn on the frame.")
+            .value("bordered_knob", ImGuiToggleFlags_BorderedKnob, "The toggle should have a border drawn on the knob.")
+            .value("shadowed_frame", ImGuiToggleFlags_ShadowedFrame, "The toggle should have a shadow drawn under the frame.")
+            .value("shadowed_knob", ImGuiToggleFlags_ShadowedKnob, "The toggle should have a shadow drawn under the knob.")
+            .value("a11y", ImGuiToggleFlags_A11y, "The toggle should draw on and off glyphs to help indicate its state.")
+            .value("bordered", ImGuiToggleFlags_Bordered, "Shorthand for bordered frame and knob.")
+            .value("shadowed", ImGuiToggleFlags_Shadowed, "Shorthand for shadowed frame and knob.")
+            .value("default", ImGuiToggleFlags_Default, "The default flags used when no ImGuiToggleFlags_ are specified.");
 
 
-    py::enum_<ImGuiToggleA11yStyle_>(m, "ToggleA11yStyle_", py::arithmetic(), "ImGuiToggleA11yStyle: Styles to draw A11y labels.")
-        .value("label", ImGuiToggleA11yStyle_Label, "A11y glyphs draw as text labels.")
-        .value("glyph", ImGuiToggleA11yStyle_Glyph, "A11y glyphs draw as power-icon style \"I/O\" glyphs.")
-        .value("dot", ImGuiToggleA11yStyle_Dot, "A11y glyphs draw as a small dot that can be colored separately from the frame.")
-        .value("default", ImGuiToggleA11yStyle_Default, "Default: text labels.");
+    auto pyEnumToggleA11yStyle_ =
+        py::enum_<ImGuiToggleA11yStyle_>(m, "ToggleA11yStyle_", py::arithmetic(), "ImGuiToggleA11yStyle: Styles to draw A11y labels.")
+            .value("label", ImGuiToggleA11yStyle_Label, "A11y glyphs draw as text labels.")
+            .value("glyph", ImGuiToggleA11yStyle_Glyph, "A11y glyphs draw as power-icon style \"I/O\" glyphs.")
+            .value("dot", ImGuiToggleA11yStyle_Dot, "A11y glyphs draw as a small dot that can be colored separately from the frame.")
+            .value("default", ImGuiToggleA11yStyle_Default, "Default: text labels.");
 
 
     auto pyClassImGuiToggleStateConfig =
