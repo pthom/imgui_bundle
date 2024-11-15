@@ -40,9 +40,9 @@ endfunction()
 
 #
 # Add the executable
-#
+include(${IMGUI_BUNDLE_PATH}/imgui_bundle_cmake/internal/litgen_setup_module.cmake)
+litgen_find_pybind11()
 add_executable(pybind_native_debug pybind_native_debug.cpp)
-find_package(pybind11 CONFIG REQUIRED)
 target_link_libraries(pybind_native_debug PRIVATE pybind11::embed)
 # Set the path to the venv
 find_package(Python 3.8 REQUIRED COMPONENTS Interpreter Development)

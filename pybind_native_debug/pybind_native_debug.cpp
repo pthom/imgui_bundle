@@ -41,23 +41,15 @@ int main()
 {
     py::scoped_interpreter guard{};
 
-    //This program reads the Python virtual environment path from a configuration file named
-    //    pybind_native_debug_venv.txt
-    //This file should be placed next to this C++ file, and must contain a single line that specifies the path
-    //to the Python virtual environment.
-    //
-    //Example of 'pybind_native_debug_venv.txt' content:
-    //
-    ///home/me/venv
-
-    // Initialize python path with the virtual environment
     auto this_dir = std::filesystem::path(__FILE__).parent_path();
-    std::string venv_path = VENV_PATH; // VENV_PATH is set by CMake
-    initialize_python_with_venv(venv_path);
 
     // Add path to src/python_bindings (in pip editable development mode)
     auto bundle_bindings_dir = this_dir.parent_path() / "bindings";
     add_python_path(bundle_bindings_dir.string());
+
+    // Initialize python path with the virtual environment
+    std::string venv_path = VENV_PATH; // VENV_PATH is set by CMake
+    initialize_python_with_venv(venv_path);
 
     // Add path to this dir, so that we can import pybind_native_debug.py
     add_python_path(this_dir.string());
