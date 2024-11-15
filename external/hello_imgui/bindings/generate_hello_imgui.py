@@ -41,6 +41,7 @@ def main():
     from codemanip.code_replacements import RegexReplacement
 
     options = litgen.LitgenOptions()
+    options.use_nanobind()
     # options.original_location_flag_show = True
     options.original_signature_flag_show = True
     options.srcmlcpp_options.ignored_warnings = [WarningType.LitgenIgnoreElement]

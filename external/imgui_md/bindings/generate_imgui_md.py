@@ -17,6 +17,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.namespaces_root = ["ImGuiMd"]
     options.python_run_black_formatter = True
     options.value_replacements.add_last_replacement(

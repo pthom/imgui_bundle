@@ -22,6 +22,9 @@ def autogenerate_implot():
     options = litgen_options_implot()
     options.srcmlcpp_options.flag_show_progress = True
 
+    options.use_nanobind()
+
+
     litgen.write_generated_code_for_file(
         options,
         input_cpp_header_file=input_cpp_header,

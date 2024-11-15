@@ -37,6 +37,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.class_override_virtual_methods_in_python__regex = r".*"
     options.struct_create_default_named_ctor__regex = ""
     options.python_run_black_formatter = False
@@ -74,29 +76,29 @@ def main():
     )
     options.type_replacements.add_last_replacement("Editable<Range>", "EditableRange")
 
-    # Process ImCurveEditStl
-    options_curve = copy.deepcopy(options)
-    options_curve.fn_exclude_by_name__regex = "^Edit$|GetPointCount$|^GetPoints$"
-    options_curve.fn_exclude_by_param_type__regex = "^Delegate[ ]*&$"
-    process_one_amalgamated_file("ImCurveEditPure.h", options_curve)
-
-    # Process ImGradientStl
-    options_gradient = copy.deepcopy(options)
-    options_gradient.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
-    process_one_amalgamated_file("ImGradientPure.h", options_gradient)
-
-    # Process ImZoomSlider
-    options_slider = copy.deepcopy(options)
-    options_slider.srcmlcpp_options.ignored_warning_parts.append(
-        "Ignoring template function"
-    )
-    options_slider.var_names_replacements.add_last_replacement(
-        "im_gui_zoom_slider_flags_", ""
-    )
-    options_slider.type_replacements.add_last_replacement(
-        "ImGuiPopupFlags_", "ImGuiZoomSliderFlags_"
-    )
-    process_one_amalgamated_file("ImZoomSliderPure.h", options_slider)
+    # # Process ImCurveEditStl
+    # options_curve = copy.deepcopy(options)
+    # options_curve.fn_exclude_by_name__regex = "^Edit$|GetPointCount$|^GetPoints$"
+    # options_curve.fn_exclude_by_param_type__regex = "^Delegate[ ]*&$"
+    # process_one_amalgamated_file("ImCurveEditPure.h", options_curve)
+    #
+    # # Process ImGradientStl
+    # options_gradient = copy.deepcopy(options)
+    # options_gradient.fn_exclude_by_name__regex = "^Edit$|^GetPointCount$|^GetPoints$"
+    # process_one_amalgamated_file("ImGradientPure.h", options_gradient)
+    #
+    # # Process ImZoomSlider
+    # options_slider = copy.deepcopy(options)
+    # options_slider.srcmlcpp_options.ignored_warning_parts.append(
+    #     "Ignoring template function"
+    # )
+    # options_slider.var_names_replacements.add_last_replacement(
+    #     "im_gui_zoom_slider_flags_", ""
+    # )
+    # options_slider.type_replacements.add_last_replacement(
+    #     "ImGuiPopupFlags_", "ImGuiZoomSliderFlags_"
+    # )
+    # process_one_amalgamated_file("ImZoomSliderPure.h", options_slider)
 
     # Process ImSequencer:
     # abandoned due to double pointer in the public API
