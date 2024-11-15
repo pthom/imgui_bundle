@@ -91,66 +91,65 @@ ImVec2 cast_to_imvec2(nb::handle obj)
 {
     if (len(obj) != 2)
         throw std::invalid_argument("Python tuple/list/array to imgui.ImVec2: size should be 2!");
-    auto floats = obj.cast<std::vector<float>>();
+    auto floats = nb::cast<std::vector<float>>(obj);
     return ImVec2(floats[0], floats[1]);
 }
-ImVec4 cast_to_imvec4(py::handle obj)
+ImVec4 cast_to_imvec4(nb::handle obj)
 {
     if (len(obj) != 4)
         throw std::invalid_argument("Python tuple/list/array to imgui.ImVec4: size should be 4!");
-    auto floats = obj.cast<std::vector<float>>();
+    auto floats = nb::cast<std::vector<float>>(obj);
     return ImVec4(floats[0], floats[1], floats[2], floats[3]);
 }
 
 template <typename T>
-ImColor cast_to_imcolor_impl(py::handle obj);
+ImColor cast_to_imcolor_impl(nb::handle obj);
 template <>
-ImColor cast_to_imcolor_impl<float>(py::handle obj)
+ImColor cast_to_imcolor_impl<float>(nb::handle obj)
 {
-    auto values = obj.cast<std::vector<float>>();
+    auto values = nb::cast<std::vector<float>>(obj);
     if (values.size()==3)
         return ImColor(values[0], values[1], values[2]);
     else
         return ImColor(values[0], values[1], values[2], values[3]);
 }
 template <>
-ImColor cast_to_imcolor_impl<int>(py::handle obj)
+ImColor cast_to_imcolor_impl<int>(nb::handle obj)
 {
-    auto values = obj.cast<std::vector<int>>();
+    auto values = nb::cast<std::vector<int>>(obj);
     if (values.size()==3)
         return ImColor(values[0], values[1], values[2]);
     else
         return ImColor(values[0], values[1], values[2], values[3]);
 }
-void imcolor_check_size(py::handle obj)
+void imcolor_check_size(nb::handle obj)
 {
     if (len(obj)!=3 && len(obj)!=4)
         throw std::invalid_argument("python tuple/list/array to imgui.imcolor: size should be 3 or 4!");
 }
 
 template<class T>
-typename std::enable_if_t<std::is_same_v<T,py::tuple>||std::is_same_v<T,py::list>,ImColor>
+typename std::enable_if_t<std::is_same_v<T,nb::tuple>||std::is_same_v<T,nb::list>,ImColor>
   cast_to_imcolor(T obj)
 {
     imcolor_check_size(obj);
-    if (py::isinstance<py::float_>(obj[0]))
+    if (nb::isinstance<nb::float_>(obj[0]))
         return cast_to_imcolor_impl<float>(obj);
     else
         // NB: internal cast will assert if not float or int, so we don't need to check
         return cast_to_imcolor_impl<int>(obj);
 }
-template<class T>
-typename std::enable_if_t<std::is_same_v<T,py::array>,ImColor>
-  cast_to_imcolor(T ar)
-{
-    imcolor_check_size(ar);
-    if (ar.dtype().kind()=='f')
-        return cast_to_imcolor_impl<float>(ar);
-    else
-        // NB: internal cast will assert if not float or int, so we don't need to check
-        return cast_to_imcolor_impl<int>(ar);
-}
-
+//template<class T>
+//typename std::enable_if_t<std::is_same_v<T,py::array>,ImColor>
+//  cast_to_imcolor(T ar)
+//{
+//    imcolor_check_size(ar);
+//    if (ar.dtype().kind()=='f')
+//        return cast_to_imcolor_impl<float>(ar);
+//    else
+//        // NB: internal cast will assert if not float or int, so we don't need to check
+//        return cast_to_imcolor_impl<int>(ar);
+//}
 
 
 void py_init_module_imgui_main(nb::module_& m)
@@ -7323,27 +7322,34 @@ void py_init_module_imgui_main(nb::module_& m)
         return 2;
     });
     pyClassImVec2.def("__iter__", [](const ImVec2& self) {
-            return py::make_iterator(&self.x, &self.x+2);
+            return nb::make_iterator(nb::type<ImVec2>(), "iterator", &self.x, &self.x+2);
         },
-        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+        nb::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
     );
-    pyClassImVec2.def(py::init([](py::tuple t) {
-        return cast_to_imvec2(t);
-    }), py::arg("tuple"));
-    pyClassImVec2.def(py::init([](py::list l) {
-        return cast_to_imvec2(l);
-    }), py::arg("list"));
-    pyClassImVec2.def(py::init([](py::array a) {
-        return cast_to_imvec2(a);
-    }), py::arg("array"));
 
-    py::implicitly_convertible<py::tuple, ImVec2>();
-    py::implicitly_convertible<py::list, ImVec2>();
-    py::implicitly_convertible<py::array, ImVec2>();
+    pyClassImVec2.def("__init__", [](ImVec2 *self, nb::tuple t) {
+        new (self) ImVec2();
+        *self = cast_to_imvec2(t);
+    });
+    pyClassImVec2.def("__init__", [](ImVec2 *self, nb::list l) {
+        new (self) ImVec2();
+        *self = cast_to_imvec2(l);
+    });
+//    pyClassImVec2.def("__init__", [](ImVec2 *self, nb::ndarray<> a) {
+//        new (self) ImVec2();
+//        *self = cast_to_imvec2(a);
+//    });
 
-    pyClassImVec2.def(py::init([](ImVec2 imv) {
-        return ImVec2(imv.x, imv.y);
-    }), py::arg("xy"));
+
+    nb::implicitly_convertible<nb::tuple, ImVec2>();
+    nb::implicitly_convertible<nb::list, ImVec2>();
+    //nb::implicitly_convertible<nb::array, ImVec2>();
+
+    pyClassImVec2.def("__init__", [](ImVec2 *self, ImVec2 imv) {
+        new (self) ImVec2();
+        *self = ImVec2(imv.x, imv.y);
+    });
+
 
     //
     // Add math operators to ImVec2
@@ -7409,17 +7415,16 @@ void py_init_module_imgui_main(nb::module_& m)
     });
 
     // Pickle support
-    pyClassImVec2.def(py::pickle(
-        [](const ImVec2 &p) { // __getstate__
-            return py::make_tuple(p.x, p.y);
-        },
-        [](py::tuple t) { // __setstate__
-            if (t.size() != 2)
-                throw std::runtime_error("ImVec2 unpickling failed");
-            ImVec2 r(t[0].cast<float>(), t[1].cast<float>());
-            return r;
-        }
-    ));
+    pyClassImVec2.def("__getstate__", [](const ImVec2 &v) {
+        return nb::make_tuple(v.x, v.y);
+    });
+    pyClassImVec2.def("__setstate__", [](ImVec2 &self, nb::tuple t) {
+        new(&self) ImVec2();
+        if (t.size() != 2)
+            throw std::runtime_error("ImVec2 unpickling failed");
+        ImVec2 r(nb::cast<float>(t[0]), nb::cast<float>(t[1]));
+        self = r;
+    });
 
     //
     //  Patches to ImVec4
@@ -7436,7 +7441,7 @@ void py_init_module_imgui_main(nb::module_& m)
     });
     pyClassImVec4.def("__getitem__", [](const ImVec4& self, size_t idx) -> float {
         if (idx >= 4)
-            throw py::index_error();
+            throw nb::index_error();
         switch (idx)
         {
         case 0:
@@ -7457,27 +7462,32 @@ void py_init_module_imgui_main(nb::module_& m)
         return 4;
     });
     pyClassImVec4.def("__iter__", [](const ImVec4& self) {
-            return py::make_iterator(&self.x, &self.x + 4);
+            return nb::make_iterator(nb::type<ImVec4>(), "iterator", &self.x, &self.x+4);
         },
-        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+        nb::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
     );
-    pyClassImVec4.def(py::init([](py::tuple t) {
-        return cast_to_imvec4(t);
-    }), py::arg("tuple"));
-    pyClassImVec4.def(py::init([](py::list l) {
-        return cast_to_imvec4(l);
-    }), py::arg("list"));
-    pyClassImVec4.def(py::init([](py::array a) {
-        return cast_to_imvec4(a);
-    }), py::arg("array"));
+    pyClassImVec4.def("__init__", [](ImVec4 *self, nb::tuple t) {
+        new (self) ImVec4();
+        *self = cast_to_imvec4(t);
+    });
+    pyClassImVec4.def("__init__", [](ImVec4 *self, nb::list l) {
+        new (self) ImVec4();
+        *self = cast_to_imvec4(l);
+    });
+//    pyClassImVec4.def("__init__", [](ImVec4 *self, nb::ndarray<> a) {
+//        new (self) ImVec4();
+//        *self = cast_to_imvec4(a);
+//    });
 
-    py::implicitly_convertible<py::tuple, ImVec4>();
-    py::implicitly_convertible<py::list, ImVec4>();
-    py::implicitly_convertible<py::array, ImVec4>();
+    nb::implicitly_convertible<nb::tuple, ImVec4>();
+    nb::implicitly_convertible<nb::list, ImVec4>();
+    //nb::implicitly_convertible<nb::array, ImVec4>();
 
-    pyClassImVec4.def(py::init([](ImVec4 imv) {
-        return ImVec4(imv.x, imv.y, imv.z, imv.w);
-    }), py::arg("xyzw"));
+    pyClassImVec4.def("__init__", [](ImVec4 *self, ImVec4 imv) {
+        new (self) ImVec4();
+        *self = ImVec4(imv.x, imv.y, imv.z, imv.w);
+    }, nb::arg("xyzw"));
+
     //
     // Add math operators to ImVec4
     //
@@ -7554,17 +7564,17 @@ void py_init_module_imgui_main(nb::module_& m)
     });
 
     // Pickle support
-    pyClassImVec4.def(py::pickle(
-        [](const ImVec4 &p) { // __getstate__
-            return py::make_tuple(p.x, p.y, p.z, p.w);
-        },
-        [](py::tuple t) { // __setstate__
-            if (t.size() != 4)
-                throw std::runtime_error("ImVec4 unpickling failed");
-            ImVec4 r(t[0].cast<float>(), t[1].cast<float>(), t[2].cast<float>(), t[3].cast<float>());
-            return r;
-        }
-    ));
+    pyClassImVec4.def("__getstate__", [](const ImVec4 &v) {
+        return nb::make_tuple(v.x, v.y, v.z, v.w);
+    });
+    pyClassImVec4.def("__setstate__", [](ImVec4 &self, nb::tuple t) {
+        new(&self) ImVec2();
+        if (t.size() != 4)
+            throw std::runtime_error("ImVec4 unpickling failed");
+        ImVec4 r(nb::cast<float>(t[0]), nb::cast<float>(t[1]), nb::cast<float>(t[2]), nb::cast<float>(t[3]));
+        self = r;
+    });
+
 
     //
     //  Patches to ImColor
@@ -7581,7 +7591,7 @@ void py_init_module_imgui_main(nb::module_& m)
     });
     pyClassImColor.def("__getitem__", [](const ImColor& self, size_t idx) -> float {
         if (idx >= 4)
-            throw py::index_error();
+            throw nb::index_error();
         switch (idx)
         {
         case 0:
@@ -7602,45 +7612,53 @@ void py_init_module_imgui_main(nb::module_& m)
         return 4;
     });
     pyClassImColor.def("__iter__", [](const ImColor& self) {
-            return py::make_iterator(&self.Value.x, &self.Value.x + 4);
+            return nb::make_iterator(nb::type<ImColor>(), "iterator", &self.Value.x, &self.Value.x + 4);
         },
-        py::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
+        nb::keep_alive<0, 1>() /* Essential: keep object alive while iterator exists */
     );
-    pyClassImColor.def(py::init([](py::tuple t) {
-        return cast_to_imcolor(t);
-    }), py::arg("tuple"));
-    pyClassImColor.def(py::init([](py::list l) {
-        return cast_to_imcolor(l);
-    }), py::arg("list"));
-    pyClassImColor.def(py::init([](py::array a) {
-        return cast_to_imcolor(a);
-    }), py::arg("array"));
 
-    py::implicitly_convertible<py::tuple, ImColor>();
-    py::implicitly_convertible<py::list, ImColor>();
-    py::implicitly_convertible<py::array, ImColor>();
-    py::implicitly_convertible<ImVec4, ImColor>();
-    py::implicitly_convertible<ImColor, ImVec4>();
+    pyClassImColor.def("__init__", [](ImColor *self, nb::tuple t) {
+        new (self) ImColor();
+        *self = cast_to_imcolor(t);
+    });
+    pyClassImColor.def("__init__", [](ImColor *self, nb::list l) {
+        new (self) ImColor();
+        *self = cast_to_imcolor(l);
+    });
+//    pyClassImColor.def("__init__", [](ImColor *self, nb::ndarray<> a) {
+//        new (self) ImColor();
+//        *self = cast_to_imcolor(a);
+//    });
+
+
+    nb::implicitly_convertible<nb::tuple, ImColor>();
+    nb::implicitly_convertible<nb::list, ImColor>();
+    //nb::implicitly_convertible<nb::array, ImColor>();
+    nb::implicitly_convertible<ImVec4, ImColor>();
+    nb::implicitly_convertible<ImColor, ImVec4>();
     // below two are not possible, even if sorely needed for our API, with current pybind11
-    //py::implicitly_convertible<ImU32, ImColor>();
-    //py::implicitly_convertible<ImColor, ImU32>();
+    //nb::implicitly_convertible<ImU32, ImColor>();
+    //nb::implicitly_convertible<ImColor, ImU32>();
 
-    pyClassImColor.def(py::init([](ImColor imc) {
-        return ImColor(imc.Value.x, imc.Value.y, imc.Value.z, imc.Value.w);
-    }), py::arg("rgba"));
+    pyClassImColor.def("__init__", [](ImColor *self, ImColor imc) {
+        new (self) ImColor();
+        *self = ImColor(imc.Value.x, imc.Value.y, imc.Value.z, imc.Value.w);
+    });
+
 
     // Pickle support
-    pyClassImColor.def(py::pickle(
-        [](const ImColor &p) { // __getstate__
-            return py::make_tuple(p.Value.x, p.Value.y, p.Value.z, p.Value.w);
-        },
-        [](py::tuple t) { // __setstate__
-            if (t.size() != 4)
-                throw std::runtime_error("ImColor unpickling failed");
-            ImVec4 r(t[0].cast<float>(), t[1].cast<float>(), t[2].cast<float>(), t[3].cast<float>());
-            return ImColor(r);
-        }
-    ));
+    pyClassImColor.def("__getstate__", [](const ImColor &p) {
+        return nb::make_tuple(p.Value.x, p.Value.y, p.Value.z, p.Value.w);
+    });
+    pyClassImColor.def("__setstate__", [](ImColor &self, nb::tuple t) {
+        new(&self) ImColor();
+        if (t.size() != 4)
+            throw std::runtime_error("ImVec4 unpickling failed");
+        ImVec4 r(nb::cast<float>(t[0]), nb::cast<float>(t[1]), nb::cast<float>(t[2]), nb::cast<float>(t[3]));
+        self = ImColor(r);
+    });
+
+
     pyClassImColor.def("__eq__", [](const ImColor& self, const ImColor& other) -> bool {
         return self.Value.x == other.Value.x && self.Value.y == other.Value.y && self.Value.z == other.Value.z && self.Value.w == other.Value.w;
     });
