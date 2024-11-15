@@ -103,7 +103,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiStyleMod",  # uses union
         "ImGuiTableHeaderData",  # new in v1.90.7
         "ImGuiTreeNodeStackData",
-        "ImGuiMultiSelectTempData"
+        "ImGuiMultiSelectTempData",
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
@@ -186,6 +186,21 @@ def litgen_options_imgui(
     from litgen.internal import cpp_to_python
 
     options = LitgenOptions()
+
+    options.fn_params_adapt_mutable_param_with_default_value__regex = r".*"
+
+    def is_immutable_cpp_type(cpp_type: str) -> bool:
+        if cpp_type in [
+            "ImGuiDataType_", "ImGuiKey",  # enums
+            "ImGuiID", "ImS8", "ImU8", "ImS16", "ImU16", "ImS32", "ImU32", "ImS64", "ImU64",  # Scalar types
+            "IM_COL32"  # a function that returns a color (ImU32)
+        ]:
+            return True
+        if cpp_type.endswith("Flags"):
+            return True
+        return False
+
+    options.fn_params_adapt_mutable_param_with_default_value__fn_is_known_immutable_type = is_immutable_cpp_type
 
     options.srcmlcpp_options.ignored_warnings = [
         WarningType.LitgenClassMemberSkipBitfield,
@@ -434,13 +449,19 @@ def litgen_options_imgui(
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
 
-    def postprocess_stub_add_vec_protocol(stub_code: str) -> str:
+    def postprocess_stub_imgui(stub_code: str) -> str:
         stub_code = stub_code.replace(
             "class ImVec2:", "class ImVec2(VecProtocol['ImVec2']):"
         )
         stub_code = stub_code.replace(
             "class ImVec4:", "class ImVec4(VecProtocol['ImVec4']):"
         )
+        # Replace ImVector[int] by ImVector_int, etc.
+        import re
+        pattern = r'\bImVector\s*\[\s*(.*?)\s*\]'
+        replacement = r'ImVector_\1'
+        stub_code = re.sub(pattern, replacement, stub_code)
+
         return stub_code
 
     def postprocess_stub_test_engine(code: str) -> str:
@@ -452,7 +473,7 @@ def litgen_options_imgui(
     if options_type == ImguiOptionsType.imgui_test_engine:
         options.postprocess_stub_function = postprocess_stub_test_engine
     else:
-        options.postprocess_stub_function = postprocess_stub_add_vec_protocol
+        options.postprocess_stub_function = postprocess_stub_imgui
 
     return options
 
