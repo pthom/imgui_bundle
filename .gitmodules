@@ -77,3 +77,6 @@
 [submodule "external/nanovg/MetalNanoVG"]
 	path = external/nanovg/MetalNanoVG
 	url = https://github.com/ollix/MetalNanoVG.git
+[submodule "external/immvision/cvnp_nano"]
+	path = external/immvision/cvnp_nano
+	url = https://github.com/pthom/cvnp_nano.git
