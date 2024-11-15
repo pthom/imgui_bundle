@@ -62,11 +62,11 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         _static_next_editor_id = 1;
     };
 
-    py::class_<EditorContext>(m, "EditorContext");
+    nb::class_<EditorContext>(m, "EditorContext");
 
-    py::class_<NodeId>(m, "NodeId")
-        .def(py::init<>())
-        .def(py::init<uintptr_t>())
+    nb::class_<NodeId>(m, "NodeId")
+        .def(nb::init<>())
+        .def(nb::init<uintptr_t>())
         .def("create", []() { return NodeId(get_next_id()); })
         .def("id", [](const NodeId& self) { return self.Get(); })
         .def("__eq__", [](const NodeId& self, const NodeId& other) {
@@ -74,9 +74,9 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         })
         .def("__str__", [](const NodeId& self) { return std::to_string(self.Get()); })
         ;
-    py::class_<LinkId>(m, "LinkId")
-        .def(py::init<>())
-        .def(py::init<uintptr_t>())
+    nb::class_<LinkId>(m, "LinkId")
+        .def(nb::init<>())
+        .def(nb::init<uintptr_t>())
         .def("create", []() { return LinkId(get_next_id()); })
         .def("id", [](const LinkId& self) { return self.Get(); })
         .def("__eq__", [](const LinkId& self, const LinkId& other) {
@@ -84,9 +84,9 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         })
         .def("__str__", [](const LinkId& self) { return std::to_string(self.Get()); })
         ;
-    py::class_<PinId>(m, "PinId")
-        .def(py::init<>())
-        .def(py::init<uintptr_t>())
+    nb::class_<PinId>(m, "PinId")
+        .def(nb::init<>())
+        .def(nb::init<uintptr_t>())
         .def("create", []() { return PinId(get_next_id()); })
         .def("id", [](const PinId& self) { return self.Get(); })
         .def("__eq__", [](const PinId& self, const PinId& other) {
