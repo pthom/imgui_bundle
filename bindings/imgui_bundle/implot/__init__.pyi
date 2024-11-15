@@ -1114,23 +1114,26 @@ def set_imgui_context(ctx: ImGui_Context) -> None:
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API bool BeginPlot(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
-def begin_plot(title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: Flags = 0) -> bool:
+def begin_plot(title_id: str, size: Optional[ImVec2] = None, flags: Flags = 0) -> bool:
     """Starts a 2D plotting context. If this function returns True, EndPlot() MUST
-    be called! You are encouraged to use the following convention:
+     be called! You are encouraged to use the following convention:
 
-    if (BeginPlot(...)) {
-        PlotLine(...);
-        ...
-        EndPlot();
-    }
+     if (BeginPlot(...)) {
+         PlotLine(...);
+         ...
+         EndPlot();
+     }
 
-    Important notes:
+     Important notes:
 
-    - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
-      collisions or don't want to display a title in the plot, use double hashes
-      (e.g. "MyPlot##HiddenIdText" or "##NoTitle").
-    - #size is the **frame** size of the plot widget, not the plot area. The default
-      size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.
+     - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
+       collisions or don't want to display a title in the plot, use double hashes
+       (e.g. "MyPlot##HiddenIdText" or "##NoTitle").
+     - #size is the **frame** size of the plot widget, not the plot area. The default
+       size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.
+    ---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(-1,0)
     """
     pass
 
@@ -1199,8 +1202,14 @@ class SubplotsRowColRatios:
     # std::vector<float> col_ratios;    /* original C++ signature */
     col_ratios: List[float]
     # SubplotsRowColRatios(std::vector<float> row_ratios = std::vector<float>(), std::vector<float> col_ratios = std::vector<float>());    /* original C++ signature */
-    def __init__(self, row_ratios: List[float] = List[float](), col_ratios: List[float] = List[float]()) -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(self, row_ratios: Optional[List[float]] = None, col_ratios: Optional[List[float]] = None) -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                row_ratios: List[float]()
+                col_ratios: List[float]()
+        """
         pass
 
 # IMPLOT_API inline bool BeginSubplotsWithRatios(const char* title_id,    /* original C++ signature */
@@ -1269,8 +1278,12 @@ def setup_axis(axis: ImAxis, label: Optional[str] = None, flags: AxisFlags = 0) 
     pass
 
 # IMPLOT_API void SetupAxisLimits(ImAxis axis, double v_min, double v_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def setup_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Cond = Cond_Once) -> None:
-    """Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead."""
+def setup_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Optional[Cond] = None) -> None:
+    """Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.
+    ---
+    Python bindings defaults:
+        If cond is None, then its default value will be: Cond_Once
+    """
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1310,8 +1323,12 @@ def setup_axes(x_label: str, y_label: str, x_flags: AxisFlags = 0, y_flags: Axis
     pass
 
 # IMPLOT_API void SetupAxesLimits(double x_min, double x_max, double y_min, double y_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def setup_axes_limits(x_min: float, x_max: float, y_min: float, y_max: float, cond: Cond = Cond_Once) -> None:
-    """Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)."""
+def setup_axes_limits(x_min: float, x_max: float, y_min: float, y_max: float, cond: Optional[Cond] = None) -> None:
+    """Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).
+    ---
+    Python bindings defaults:
+        If cond is None, then its default value will be: Cond_Once
+    """
     pass
 
 # IMPLOT_API void SetupLegend(ImPlotLocation location, ImPlotLegendFlags flags=0);    /* original C++ signature */
@@ -1355,8 +1372,12 @@ def setup_finish() -> None:
 #   to work properly.
 
 # IMPLOT_API void SetNextAxisLimits(ImAxis axis, double v_min, double v_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def set_next_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Cond = Cond_Once) -> None:
-    """Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked."""
+def set_next_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Optional[Cond] = None) -> None:
+    """Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.
+    ---
+    Python bindings defaults:
+        If cond is None, then its default value will be: Cond_Once
+    """
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1375,8 +1396,12 @@ def set_next_axis_to_fit(axis: ImAxis) -> None:
     pass
 
 # IMPLOT_API void SetNextAxesLimits(double x_min, double x_max, double y_min, double y_max, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def set_next_axes_limits(x_min: float, x_max: float, y_min: float, y_max: float, cond: Cond = Cond_Once) -> None:
-    """Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)."""
+def set_next_axes_limits(x_min: float, x_max: float, y_min: float, y_max: float, cond: Optional[Cond] = None) -> None:
+    """Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).
+    ---
+    Python bindings defaults:
+        If cond is None, then its default value will be: Cond_Once
+    """
     pass
 
 # IMPLOT_API void SetNextAxesToFit();    /* original C++ signature */
@@ -1598,11 +1623,14 @@ def plot_histogram(
     values: np.ndarray,
     bins: int = Bin_Sturges,
     bar_scale: float = 1.0,
-    range: Range = Range(),
+    range: Optional[Range] = None,
     flags: HistogramFlags = 0,
 ) -> float:
     """Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.
-    Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
+     Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
+    ---
+    Python bindings defaults:
+        If range is None, then its default value will be: Range()
     """
     pass
 
@@ -1613,11 +1641,14 @@ def plot_histogram_2d(
     ys: np.ndarray,
     x_bins: int = Bin_Sturges,
     y_bins: int = Bin_Sturges,
-    range: Rect = Rect(),
+    range: Optional[Rect] = None,
     flags: HistogramFlags = 0,
 ) -> float:
     """Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
-    #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
+     #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
+    ---
+    Python bindings defaults:
+        If range is None, then its default value will be: Rect()
     """
     pass
 
@@ -1632,17 +1663,28 @@ def plot_image(
     user_texture_id: ImTextureID,
     bounds_min: Point,
     bounds_max: Point,
-    uv0: ImVec2 = ImVec2(0, 0),
-    uv1: ImVec2 = ImVec2(1, 1),
-    tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
+    uv0: Optional[ImVec2] = None,
+    uv1: Optional[ImVec2] = None,
+    tint_col: Optional[ImVec4] = None,
     flags: ImageFlags = 0,
 ) -> None:
-    """Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down)."""
+    """Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            uv0: ImVec2(0,0)
+            uv1: ImVec2(1,1)
+            tint_col: ImVec4(1,1,1,1)
+    """
     pass
 
 # IMPLOT_API void PlotText(const char* text, double x, double y, const ImVec2& pix_offset=ImVec2(0,0), ImPlotTextFlags flags=0);    /* original C++ signature */
-def plot_text(text: str, x: float, y: float, pix_offset: ImVec2 = ImVec2(0, 0), flags: TextFlags = 0) -> None:
-    """Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...)."""
+def plot_text(text: str, x: float, y: float, pix_offset: Optional[ImVec2] = None, flags: TextFlags = 0) -> None:
+    """Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).
+    ---
+    Python bindings defaults:
+        If pix_offset is None, then its default value will be: ImVec2(0,0)
+    """
     pass
 
 # IMPLOT_API void PlotDummy(const char* label_id, ImPlotDummyFlags flags=0);    /* original C++ signature */
@@ -1768,23 +1810,47 @@ def set_axes(x_axis: ImAxis, y_axis: ImAxis) -> None:
 # Convert pixels to a position in the current plot's coordinate system. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 @overload
-def pixels_to_plot(pix: ImVec2, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Point:
+def pixels_to_plot(pix: ImVec2, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Point:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 @overload
-def pixels_to_plot(x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Point:
+def pixels_to_plot(x: float, y: float, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Point:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # Convert a position in the current plot's coordinate system to pixels. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImVec2 PlotToPixels(const ImPlotPoint& plt, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 @overload
-def plot_to_pixels(plt: Point, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> ImVec2:
+def plot_to_pixels(plt: Point, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> ImVec2:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImVec2 PlotToPixels(double x, double y, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 @overload
-def plot_to_pixels(x: float, y: float, x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> ImVec2:
+def plot_to_pixels(x: float, y: float, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> ImVec2:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImVec2 GetPlotPos();    /* original C++ signature */
@@ -1798,13 +1864,25 @@ def get_plot_size() -> ImVec2:
     pass
 
 # IMPLOT_API ImPlotPoint GetPlotMousePos(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
-def get_plot_mouse_pos(x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Point:
-    """Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes."""
+def get_plot_mouse_pos(x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Point:
+    """Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImPlotRect GetPlotLimits(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
-def get_plot_limits(x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Rect:
-    """Returns the current plot axis range."""
+def get_plot_limits(x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Rect:
+    """Returns the current plot axis range.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API bool IsPlotHovered();    /* original C++ signature */
@@ -1828,8 +1906,14 @@ def is_plot_selected() -> bool:
     pass
 
 # IMPLOT_API ImPlotRect GetPlotSelection(ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
-def get_plot_selection(x_axis: ImAxis = IMPLOT_AUTO, y_axis: ImAxis = IMPLOT_AUTO) -> Rect:
-    """Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes."""
+def get_plot_selection(x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Rect:
+    """Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            x_axis: IMPLOT_AUTO
+            y_axis: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API void CancelPlotSelection();    /* original C++ signature */
@@ -1838,9 +1922,12 @@ def cancel_plot_selection() -> None:
     pass
 
 # IMPLOT_API void HideNextItem(bool hidden = true, ImPlotCond cond = ImPlotCond_Once);    /* original C++ signature */
-def hide_next_item(hidden: bool = True, cond: Cond = Cond_Once) -> None:
+def hide_next_item(hidden: bool = True, cond: Optional[Cond] = None) -> None:
     """Hides or shows the next plot item (i.e. as if it were toggled from the legend).
-    Use ImPlotCond_Always if you need to forcefully set this every frame.
+     Use ImPlotCond_Always if you need to forcefully set this every frame.
+    ---
+    Python bindings defaults:
+        If cond is None, then its default value will be: Cond_Once
     """
     pass
 
@@ -2034,31 +2121,50 @@ def pop_style_var(count: int = 1) -> None:
 # values in your ImPlotStyle or from Colormap data.
 
 # IMPLOT_API void SetNextLineStyle(const ImVec4& col = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_line_style(col: ImVec4 = IMPLOT_AUTO_COL, weight: float = IMPLOT_AUTO) -> None:
-    """Set the line color and weight for the next item only."""
+def set_next_line_style(col: Optional[ImVec4] = None, weight: float = IMPLOT_AUTO) -> None:
+    """Set the line color and weight for the next item only.
+    ---
+    Python bindings defaults:
+        If col is None, then its default value will be: IMPLOT_AUTO_COL
+    """
     pass
 
 # IMPLOT_API void SetNextFillStyle(const ImVec4& col = IMPLOT_AUTO_COL, float alpha_mod = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_fill_style(col: ImVec4 = IMPLOT_AUTO_COL, alpha_mod: float = IMPLOT_AUTO) -> None:
-    """Set the fill color for the next item only."""
+def set_next_fill_style(col: Optional[ImVec4] = None, alpha_mod: float = IMPLOT_AUTO) -> None:
+    """Set the fill color for the next item only.
+    ---
+    Python bindings defaults:
+        If col is None, then its default value will be: IMPLOT_AUTO_COL
+    """
     pass
 
 # IMPLOT_API void SetNextMarkerStyle(ImPlotMarker marker = IMPLOT_AUTO, float size = IMPLOT_AUTO, const ImVec4& fill = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO, const ImVec4& outline = IMPLOT_AUTO_COL);    /* original C++ signature */
 def set_next_marker_style(
-    marker: Marker = IMPLOT_AUTO,
+    marker: Optional[Marker] = None,
     size: float = IMPLOT_AUTO,
-    fill: ImVec4 = IMPLOT_AUTO_COL,
+    fill: Optional[ImVec4] = None,
     weight: float = IMPLOT_AUTO,
-    outline: ImVec4 = IMPLOT_AUTO_COL,
+    outline: Optional[ImVec4] = None,
 ) -> None:
-    """Set the marker style for the next item only."""
+    """Set the marker style for the next item only.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            marker: IMPLOT_AUTO
+            fill: IMPLOT_AUTO_COL
+            outline: IMPLOT_AUTO_COL
+    """
     pass
 
 # IMPLOT_API void SetNextErrorBarStyle(const ImVec4& col = IMPLOT_AUTO_COL, float size = IMPLOT_AUTO, float weight = IMPLOT_AUTO);    /* original C++ signature */
 def set_next_error_bar_style(
-    col: ImVec4 = IMPLOT_AUTO_COL, size: float = IMPLOT_AUTO, weight: float = IMPLOT_AUTO
+    col: Optional[ImVec4] = None, size: float = IMPLOT_AUTO, weight: float = IMPLOT_AUTO
 ) -> None:
-    """Set the error bar style for the next item only."""
+    """Set the error bar style for the next item only.
+    ---
+    Python bindings defaults:
+        If col is None, then its default value will be: IMPLOT_AUTO_COL
+    """
     pass
 
 # IMPLOT_API ImVec4 GetLastItemColor();    /* original C++ signature */
@@ -2139,18 +2245,30 @@ def next_colormap_color() -> ImVec4:
 # Pass an explicit colormap index (built-in or user-added) to specify otherwise.
 
 # IMPLOT_API int GetColormapSize(ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def get_colormap_size(cmap: Colormap = IMPLOT_AUTO) -> int:
-    """Returns the size of a colormap."""
+def get_colormap_size(cmap: Optional[Colormap] = None) -> int:
+    """Returns the size of a colormap.
+    ---
+    Python bindings defaults:
+        If cmap is None, then its default value will be: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImVec4 GetColormapColor(int idx, ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def get_colormap_color(idx: int, cmap: Colormap = IMPLOT_AUTO) -> ImVec4:
-    """Returns a color from a colormap given an index >= 0 (modulo will be performed)."""
+def get_colormap_color(idx: int, cmap: Optional[Colormap] = None) -> ImVec4:
+    """Returns a color from a colormap given an index >= 0 (modulo will be performed).
+    ---
+    Python bindings defaults:
+        If cmap is None, then its default value will be: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API ImVec4 SampleColormap(float t, ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def sample_colormap(t: float, cmap: Colormap = IMPLOT_AUTO) -> ImVec4:
-    """Sample a color from the current colormap given t between 0 and 1."""
+def sample_colormap(t: float, cmap: Optional[Colormap] = None) -> ImVec4:
+    """Sample a color from the current colormap given t between 0 and 1.
+    ---
+    Python bindings defaults:
+        If cmap is None, then its default value will be: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API void ColormapScale(const char* label, double scale_min, double scale_max, const ImVec2& size = ImVec2(0,0), const char* format = "%g", ImPlotColormapScaleFlags flags = 0, ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
@@ -2158,24 +2276,40 @@ def colormap_scale(
     label: str,
     scale_min: float,
     scale_max: float,
-    size: ImVec2 = ImVec2(0, 0),
+    size: Optional[ImVec2] = None,
     format: str = "%g",
     flags: ColormapScaleFlags = 0,
-    cmap: Colormap = IMPLOT_AUTO,
+    cmap: Optional[Colormap] = None,
 ) -> None:
-    """Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. "##NoLabel"). If scale_min > scale_max, the scale to color mapping will be reversed."""
+    """Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. "##NoLabel"). If scale_min > scale_max, the scale to color mapping will be reversed.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            size: ImVec2(0,0)
+            cmap: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API bool ColormapSlider(const char* label, float* t, ImVec4* out = nullptr, const char* format = "", ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
 def colormap_slider(
-    label: str, t: float, out: Optional[ImVec4] = None, format: str = "", cmap: Colormap = IMPLOT_AUTO
+    label: str, t: float, out: Optional[ImVec4] = None, format: str = "", cmap: Optional[Colormap] = None
 ) -> Tuple[bool, float]:
-    """Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1]."""
+    """Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].
+    ---
+    Python bindings defaults:
+        If cmap is None, then its default value will be: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API bool ColormapButton(const char* label, const ImVec2& size = ImVec2(0,0), ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def colormap_button(label: str, size: ImVec2 = ImVec2(0, 0), cmap: Colormap = IMPLOT_AUTO) -> bool:
-    """Shows a button with a colormap gradient brackground."""
+def colormap_button(label: str, size: Optional[ImVec2] = None, cmap: Optional[Colormap] = None) -> bool:
+    """Shows a button with a colormap gradient brackground.
+    ---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            size: ImVec2(0,0)
+            cmap: IMPLOT_AUTO
+    """
     pass
 
 # IMPLOT_API void BustColorCache(const char* plot_title_id = nullptr);    /* original C++ signature */

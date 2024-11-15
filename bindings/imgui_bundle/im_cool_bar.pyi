@@ -3,7 +3,7 @@ Python bindings for https://github.com/aiekick/ImCoolBar
 """
 # ruff: noqa: B008
 import enum
-
+from typing import Optional
 from imgui_bundle.imgui import ImVec2, WindowFlags, WindowFlags_
 
 ImCoolBarFlags = int
@@ -54,20 +54,32 @@ class ImCoolBarConfig:
     effect_strength: float = 0.5
     def __init__(
         self,
-        v_anchor: ImVec2 = ImVec2(-1.0, -1.0),
+        v_anchor: Optional[ImVec2] = None,
         v_normal_size: float = 40.0,
         v_hovered_size: float = 60.0,
         v_anim_step: float = 0.15,
         v_effect_strength: float = 0.5
         ) -> None:
-        """ //"""
+        """---
+        Python bindings defaults:
+            If vAnchor is None, then its default value will be: ImVec2(-1.0, -1.0)
+
+         //
+        """
         pass
 def begin_cool_bar(
     v_label: str,
-    v_cb_flags: ImCoolBarFlags = ImCoolBarFlags_.vertical,
-    v_config: ImCoolBarConfig = ImCoolBarConfig(),
-    v_flags: ImGuiWindowFlags = WindowFlags_.none
+    v_cb_flags: Optional[ImCoolBarFlags] = None,
+    v_config: Optional[ImCoolBarConfig] = None,
+    v_flags: Optional[ImGuiWindowFlags] = None
     ) -> bool:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            vCBFlags: ImCoolBarFlags_.vertical
+            vConfig: initialized with default value
+            vFlags: WindowFlags_.none
+    """
     pass
 def end_cool_bar() -> None:
     pass

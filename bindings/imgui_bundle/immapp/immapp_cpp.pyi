@@ -28,8 +28,12 @@ DefaultScreenSize = (800, 600)
 # #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
 #
 def begin_plot_in_node_editor(
-    title_id: str, size: ImVec2 = ImVec2(-1, 0), flags: ImPlotFlags = 0
+    title_id: str, size: Optional[ImVec2] = None, flags: ImPlotFlags = 0
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(-1,0)
+    """
     pass
 
 def end_plot_in_node_editor() -> None:
@@ -154,15 +158,23 @@ class AddOnsParams:
 @overload
 def run(
     runner_params: HelloImGui.RunnerParams,
-    add_ons_params: AddOnsParams = AddOnsParams(),
+    add_ons_params: Optional[AddOnsParams] = None,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If addOnsParams is None, then its default value will be: AddOnsParams()
+    """
     pass
 
 @overload
 def run(
     simple_params: HelloImGui.SimpleRunnerParams,
-    add_ons_params: AddOnsParams = AddOnsParams(),
+    add_ons_params: Optional[AddOnsParams] = None,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If addOnsParams is None, then its default value will be: AddOnsParams()
+    """
     pass
 
 @overload
@@ -171,7 +183,7 @@ def run(
     window_title: str = "",
     window_size_auto: bool = False,
     window_restore_previous_geometry: bool = False,
-    window_size: ScreenSize = DefaultWindowSize,
+    window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
     with_implot: bool = False,
     with_markdown: bool = False,
@@ -201,6 +213,9 @@ def run(
            (i.e. required fonts will be loaded)
          - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
            will be created automatically.
+    ---
+    Python bindings defaults:
+        If windowSize is None, then its default value will be: DefaultWindowSize
     """
     pass
 
@@ -209,7 +224,7 @@ def run_with_markdown(
     window_title: str = "",
     window_size_auto: bool = False,
     window_restore_previous_geometry: bool = False,
-    window_size: ScreenSize = DefaultWindowSize,
+    window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
     with_implot: bool = False,
     with_node_editor: bool = False,
@@ -217,7 +232,11 @@ def run_with_markdown(
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
-    """Run an application with markdown"""
+    """Run an application with markdown
+    ---
+    Python bindings defaults:
+        If windowSize is None, then its default value will be: DefaultWindowSize
+    """
     pass
 
 # ///////////////////////////////////////////////////////////////////////////////////////
