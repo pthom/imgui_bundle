@@ -36,7 +36,7 @@ using namespace ImGuizmo;
 namespace matrix_to_numpy
 {
     template<int N>
-    std::vector<pybind11::ssize_t> matrix_shape()
+    std::vector<size_t> matrix_shape()
     {
         // we will transcribe a Matrix16 into a 4x4 matrix on python side
         // But the others will stay flat
@@ -51,9 +51,9 @@ namespace matrix_to_numpy
     }
 
     template<int N>
-    std::vector<pybind11::ssize_t> matrix_strides()
+    std::vector<int64_t> matrix_strides()
     {
-        pybind11::ssize_t s = sizeof(float);
+        nb::ssize_t s = sizeof(float);
         if ((N == 3) || (N == 6))
             return {s};
         else if (N == 16)
@@ -63,19 +63,40 @@ namespace matrix_to_numpy
     }
 
     template<int N>
-    pybind11::array matrix_to_nparray(const MatrixFixedSize<N>& m)
+    nb::ndarray<> matrix_to_nparray(const MatrixFixedSize<N>& m)
     {
-        auto shape = matrix_shape<N>();
-        auto strides = matrix_strides<N>();
+        std::vector<size_t> shape = matrix_shape<N>();
+        std::vector<int64_t> strides = matrix_strides<N>();
 
-        static std::string float_numpy_str = pybind11::format_descriptor<float>::format();
-        static auto dtype_float = pybind11::dtype(float_numpy_str);
+        // old pybind11 code
+        // static std::string float_numpy_str = nb::format_descriptor<float>::format();
+        // static auto dtype_float = nb::dtype(float_numpy_str);
+        // return nb::array(dtype_float, shape, strides, m.values);
 
-        return pybind11::array(dtype_float, shape, strides, m.values);
+        // new nanobind code:
+        // ndarray constructor signature:
+        //        ndarray(VoidPtr data,
+        //            size_t ndim,
+        //            const size_t *shape,
+        //            handle owner = { },
+        //            const int64_t *strides = nullptr,
+        //            dlpack::dtype dtype = nanobind::dtype<Scalar>(),
+        //            int device_type = DeviceType,
+        //            int device_id = 0,
+        //            char order = Order)
+        nb::ndarray<> a(
+            const_cast<void*>(static_cast<const void*>(m.values)), // Ensure non-const void*
+            shape.size(), // ndim
+            shape.data(), // shape
+            {}, // owner
+            strides.data(), // strides as initializer_list
+            nb::dtype<float>()
+        );
+        return a;
     }
 
     template<int N>
-    MatrixFixedSize<N> nparray_to_matrix(pybind11::array& a)
+    MatrixFixedSize<N> nparray_to_matrix(nb::ndarray<>& a)
     {
         MatrixFixedSize<N> r;
 
@@ -83,7 +104,13 @@ namespace matrix_to_numpy
             throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
 
         // Check input array type
-        if (a.dtype().kind() != pybind11::format_descriptor<float>::c)
+
+        // old pybind11 code
+        //        if (a.dtype().kind() != nb::format_descriptor<float>::c)
+        //            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
+
+        // new nanobind code:
+        if (! (a.dtype().code == static_cast<uint8_t>(nb::dlpack::dtype_code::Float) && a.dtype().bits / 8 == sizeof(float)))
             throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
 
         // Check input array total length
@@ -91,7 +118,7 @@ namespace matrix_to_numpy
             throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / bad size!");
 
         // ...and then copy its values
-        float* np_values_ptr = (float *) a.data();
+        const float* np_values_ptr = static_cast<const float*>(a.data());
         for (int i = 0; i < N; ++i)
             r.values[i] = np_values_ptr[i];
 
@@ -103,40 +130,55 @@ namespace matrix_to_numpy
 // ----------------------------------------------------------------------------
 // Part 1 : Type casters numpy.array <=> MatrixXX
 // ----------------------------------------------------------------------------
-namespace pybind11
+namespace nanobind
 {
     namespace detail
     {
         template<int N>
         struct type_caster<MatrixFixedSize<N>>
         {
-        public:
-        PYBIND11_TYPE_CASTER(MatrixFixedSize<N>, _("numpy.ndarray"));
+            NB_TYPE_CASTER(MatrixFixedSize<N>, const_name("MatrixFixedSize"))
 
-            /**
-             * Conversion part 1 (Python->C++):
-             * Return false upon failure.
-             * The second argument indicates whether implicit conversions should be applied.
-             */
-            bool load(handle src, bool)
+            bool from_python(handle src, uint8_t flags, cleanup_list *cleanup) noexcept
             {
-                if (!isinstance<array>(src))
+                // Check if the source is a numpy.ndarray
+                if (!isinstance<ndarray<>>(src))
+                {
+                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: MatrixFixedSize type_caster from_python: expected a numpy.ndarray");
                     return false;
-                auto a = reinterpret_borrow<array>(src);
-                value =  matrix_to_numpy::nparray_to_matrix<N>(a);
-                return true;
+                }
+
+                try
+                {
+                    auto a = nb::cast<ndarray<>>(src);
+                    // Store the conversion into the member
+                    // value (of type MatrixFixedSize<N>)
+                    value = matrix_to_numpy::nparray_to_matrix<N>(a);
+                    return true;
+                }
+                catch (const std::runtime_error& e) {
+                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: exception in MatrixFixedSize type_caster from_python: %s", e.what());
+                    return false;
+                }
             }
 
-            /**
-             * Conversion part 2 (C++ -> Python):
-             * The second and third arguments are used to indicate the return value policy and parent object
-             * (for ``return_value_policy::reference_internal``) and are generally
-             * ignored by implicit casters.
-             */
-            static handle cast(const MatrixFixedSize<N> &m, return_value_policy, handle defval)
+            static handle from_cpp(const MatrixFixedSize<N> &m, rv_policy policy, cleanup_list *cleanup) noexcept
             {
-                auto a = matrix_to_numpy::matrix_to_nparray<N>(m);
-                return a.release();
+                try {
+                    ndarray<> a = matrix_to_numpy::matrix_to_nparray<N>(m); // This succeeds
+                    // inspired by ndarray.h caster:
+                    // We need to call ndarray_export to export a python handle for the ndarray
+                    auto r = ndarray_export(
+                        a.handle(), // internal array handle
+                        nb::numpy::value, // framework (i.e numpy, pytorch, etc)
+                        policy,
+                        cleanup);
+                    return r;
+                }
+                catch (const std::runtime_error& e) {
+                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: exception in MatrixFixedSize type_caster from_cpp: %s", e.what());
+                    return {};
+                }
             }
         };
     }
