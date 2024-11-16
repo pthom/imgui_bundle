@@ -34,7 +34,7 @@ function(add_imgui_bundle_bindings)
     # add cvnp for immvision
     if (IMGUI_BUNDLE_WITH_IMMVISION)
         set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
-        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.cpp ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
+        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
         target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
 
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
