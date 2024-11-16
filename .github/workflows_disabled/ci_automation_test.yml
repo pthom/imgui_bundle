@@ -1,6 +1,7 @@
 name: "ci_automation_test"
 
 # Run an app with automation thanks to imgui_test_engine / ensure it works
+# Disabled for now, as it does not work on GitHub CI
 
 on:
   workflow_dispatch:
