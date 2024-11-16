@@ -1751,9 +1751,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
         "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        color: white\n        bg: half_white");
 
-    m.def("spinner_camera",
-        SpinnerCamera, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("leaf_color"), nb::arg("speed") = 2.8f, nb::arg("bars") = 8);
-
     m.def("spinner_flowing_gradient",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 2.8f, float angle = IM_PI)
         {

@@ -1335,15 +1335,6 @@ def spinner_triangles_selector(
     """
     pass
 
-def spinner_camera(
-    label: str,
-    radius: float,
-    thickness: float,
-    leaf_color: LeafColor,
-    speed: float = 2.8,
-    bars: int = 8
-    ) -> None:
-    pass
 
 def spinner_flowing_gradient(
     label: str,
