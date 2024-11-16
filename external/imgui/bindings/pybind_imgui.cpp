@@ -7146,10 +7146,6 @@ void py_init_module_imgui_main(nb::module_& m)
             "Quadratic Bezier (3 control points)")
         .def("path_rect",
             &ImDrawList::PathRect, nb::arg("rect_min"), nb::arg("rect_max"), nb::arg("rounding") = 0.0f, nb::arg("flags") = 0)
-        .def("add_callback",
-            &ImDrawList::AddCallback,
-            nb::arg("callback"), nb::arg("userdata"), nb::arg("userdata_size") = 0,
-            " Advanced: Draw Callbacks\n - May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).\n - Use special ImDrawCallback_ResetRenderState callback to instruct backend to reset its render state to the default.\n - Your rendering loop must check for 'UserCallback' in ImDrawCmd and call the function instead of rendering triangles. All standard backends are honoring this.\n - For some backends, the callback may access selected render-states exposed by the backend in a ImGui_ImplXXXX_RenderState structure pointed to by platform_io.Renderer_RenderState.\n - IMPORTANT: please be mindful of the different level of indirection between using size==0 (copying argument) and using size>0 (copying pointed data into a buffer).\n   - If userdata_size == 0: we copy/store the 'userdata' argument as-is. It will be available unmodified in ImDrawCmd::UserCallbackData during render.\n   - If userdata_size > 0,  we copy/store 'userdata_size' bytes pointed to by 'userdata'. We store them in a buffer stored inside the drawlist. ImDrawCmd::UserCallbackData will point inside that buffer so you have to retrieve data from there. Your callback may need to use ImDrawCmd::UserCallbackDataSize if you expect dynamically-sized data.\n   - Support for userdata_size > 0 was added in v1.91.4, October 2024. So earlier code always only allowed to copy/store a simple None*.")
         .def("add_draw_cmd",
             &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible")
         .def("clone_output",
