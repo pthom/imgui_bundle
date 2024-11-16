@@ -5,7 +5,15 @@
 #include <nanobind/stl/optional.h>
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/function.h>
+#include <nanobind/stl/map.h>
+#include <nanobind/stl/variant.h>
+#include <nanobind/trampoline.h>
+#include <nanobind/stl/shared_ptr.h>
+#include <nanobind/stl/unique_ptr.h>
+#include <nanobind/stl/tuple.h>
+#include <nanobind/make_iterator.h>
 #include <nanobind/ndarray.h>
+
 #include <cstring> // memcpy
 
 #include "hello_imgui/hello_imgui.h"
