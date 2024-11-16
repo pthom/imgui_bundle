@@ -6,6 +6,7 @@
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/function.h>
 #include <nanobind/ndarray.h>
+#include <cstring> // memcpy
 
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/hello_imgui_screenshot.h"
