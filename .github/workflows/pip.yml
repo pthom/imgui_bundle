@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
     - uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
     - name: install xorg-dev & start Xvfb (ubuntu only)
       if: ${{ matrix.platform == 'ubuntu-latest' }}
       run: |
-        sudo apt-get update && sudo apt-get install -y xorg-dev
+        sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev
         sudo apt-get install -y xvfb
         Xvfb :99 &
         echo "DISPLAY=:99.0" >> $GITHUB_ENV
