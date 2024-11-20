@@ -121,15 +121,8 @@ if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
 #
 # Import Python submodules
 #
-
-try:
-    # if matplotlib is not installed, we can't import imgui_fig
-    from imgui_bundle import imgui_fig as imgui_fig
-    __all__.extend(["imgui_fig"])
-except ImportError:
-    pass
-
-
+from imgui_bundle import imgui_fig as imgui_fig
+__all__.extend(["imgui_fig"])
 
 
 # Glfw setup:

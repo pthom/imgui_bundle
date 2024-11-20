@@ -9,15 +9,13 @@ Important:
         matplotlib.use('Agg')
 
 """
-from matplotlib.figure import Figure  # noqa: E402
 import numpy  # noqa: E402
-import matplotlib  # noqa: E402
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 
 
 @static(fig_image_cache=dict())
-def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) -> numpy.ndarray:
+def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> numpy.ndarray:
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -27,6 +25,19 @@ def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) ->
     Returns:
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
+    import matplotlib  # noqa: E402
+
+    backend_message = """
+    imgui_fig.fig failed: in order to use imgui_fig, you need to change matplotlib renderer to Agg.
+    Add the following lines at the start of your script (and before importing pyplot):
+            import matplotlib
+            matplotlib.use('Agg')
+            """
+
+    matplotlib_backend  = matplotlib.rcParams['backend']
+    if matplotlib_backend.lower() != 'agg':
+        raise RuntimeError(backend_message)
+
     statics = _fig_to_image
     fig_id = imgui.get_id(label_id)
     if refresh_image and fig_id in statics.fig_image_cache:
@@ -40,26 +51,21 @@ def _fig_to_image(label_id: str, figure: Figure, refresh_image: bool = False) ->
 
         try:
             buf.shape = (h, w, 3)
+            img = buf
+            matplotlib.pyplot.close(figure)
+            statics.fig_image_cache[fig_id] = img
         except ValueError as e:
-            msg = """
-        imgui_fig.fig failed: in order to use imgui_fig, you need to change matplotlib renderer to Agg.
-        Add the following lines at the start of your script (and before importing pyplot):
+            raise RuntimeError(backend_message) from e
+        except Exception as e:
+            print(f"Error: {e}")
 
-            import matplotlib
-            matplotlib.use('Agg')
-            """
-            raise RuntimeError(msg) from e
-
-        img = buf
-        matplotlib.pyplot.close(figure)
-        statics.fig_image_cache[fig_id] = img
     return statics.fig_image_cache[fig_id]
 
 
 
 
 def fig(label_id: str,
-        figure: matplotlib.figure.Figure,
+        figure: "matplotlib.figure.Figure",
         size: ImVec2 | None = None,
         refresh_image: bool = False,
         resizable: bool = True,
